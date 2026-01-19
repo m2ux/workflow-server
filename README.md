@@ -38,6 +38,13 @@ git worktree add ./workflow-data workflows
 2. Reference from workflow JSON via `guide.path`
 3. Commit to this branch
 
+## Workflow Origins
+
+| Workflow | Source | Notes |
+|----------|--------|-------|
+| `work-package.json` | [`agent-resources/workflows/work-package/work-package.md`](https://github.com/m2ux/agent-resources/blob/main/workflows/work-package/work-package.md) | 11 phases, 15 checkpoints |
+| `example-workflow.json` | N/A | Created as schema demonstration |
+
 ## Validation
 
 Workflows are validated against the Zod schema at runtime. Invalid workflows will fail to load with descriptive error messages.
