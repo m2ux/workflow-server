@@ -118,6 +118,13 @@ The agent should use `list_workflows` and return the available workflow definiti
 | `work-package` | 11 | Full work package lifecycle from issue to PR |
 | `example-workflow` | 3 | Example demonstrating schema features |
 
+### Workflow Sources
+
+| Workflow | Source |
+|----------|--------|
+| `work-package` | Migrated from [`agent-resources/workflows/work-package/work-package.md`](https://github.com/m2ux/agent-resources/blob/main/workflows/work-package/work-package.md) |
+| `example-workflow` | Created as schema demonstration |
+
 ## 📁 Branch Structure
 
 | Branch | Content | Purpose |
