@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/workflow.schema.json",
+  "id": "example-workflow",
+  "version": "1.0.0",
+  "title": "Example Workflow",
+  "description": "Demonstrates workflow primitives",
+  "initialPhase": "phase-1",
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Phase 1: Setup",
+      "required": true,
+      "steps": [{ "id": "step-1", "name": "Setup step" }],
+      "checkpoints": [{
+        "id": "checkpoint-1",
+        "name": "Setup Complete",
+        "message": "Setup is complete. Proceed?",
+        "blocking": true,
+        "options": [
+          { "id": "proceed", "label": "Proceed", "effect": { "transitionTo": "phase-2" } },
+          { "id": "skip", "label": "Skip to end", "effect": { "transitionTo": "phase-3", "skipPhases": ["phase-2"] } }
+        ]
+      }],
+      "transitions": [{ "to": "phase-2", "isDefault": true }]
+    },
+    {
+      "id": "phase-2",
+      "name": "Phase 2: Implementation",
+      "required": true,
+      "steps": [{ "id": "step-2", "name": "Implement" }],
+      "transitions": [{ "to": "phase-3", "isDefault": true }]
+    },
+    {
+      "id": "phase-3",
+      "name": "Phase 3: Complete",
+      "required": true,
+      "steps": [{ "id": "step-3", "name": "Finalize" }],
+      "checkpoints": [{
+        "id": "checkpoint-final",
+        "name": "Complete",
+        "message": "Workflow complete.",
+        "blocking": true,
+        "options": [{ "id": "done", "label": "Done" }]
+      }]
+    }
+  ]
+}
