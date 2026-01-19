@@ -8,8 +8,12 @@ This server enables AI agents to discover, execute, and orchestrate structured w
 
 ## Branch Structure
 
-- **`main`** - Server code (TypeScript implementation)
-- **`workflows`** - Workflow data (JSON definitions, orphan branch)
+| Branch | Content | History |
+|--------|---------|---------|
+| `main` | Server code (TypeScript) | Shared |
+| `workflows` | Workflow data (JSON) | Orphan (separate) |
+
+This separation allows workflow definitions to evolve independently from server code, with separate versioning and commit histories.
 
 ## Development
 
