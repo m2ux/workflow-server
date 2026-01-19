@@ -42,8 +42,27 @@ git worktree add ./workflow-data workflows
 
 | Workflow | Source | Notes |
 |----------|--------|-------|
-| `work-package.json` | [`agent-resources/workflows/work-package/work-package.md`](https://github.com/m2ux/agent-resources/blob/main/workflows/work-package/work-package.md) | 11 phases, 15 checkpoints |
+| `work-package.json` | [`agent-resources/workflows/work-package/`](https://github.com/m2ux/agent-resources/tree/main/workflows/work-package) | 11 phases, 15 checkpoints |
 | `example-workflow.json` | N/A | Created as schema demonstration |
+
+### Guide References
+
+The `work-package.json` workflow references guides via URL from the source repository:
+
+```
+https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/<guide>.md
+```
+
+Referenced guides (14 total):
+- `work-package.md` - Main workflow document
+- `requirements-elicitation.guide.md` - Phase 2
+- `implementation-analysis.guide.md` - Phase 3
+- `knowledge-base-research.guide.md` - Phase 4
+- `plan.guide.md`, `design-framework.guide.md`, `test-plan.guide.md`, `pr-description.guide.md` - Phase 5
+- `assumptions-review.guide.md`, `task-completion-review.guide.md`, `architecture-review.guide.md` - Phase 6
+- `strategic-review.guide.md` - Phase 8
+- `complete.guide.md` - Phase 9
+- `workflow-retrospective.guide.md` - Phase 11
 
 ## Validation
 

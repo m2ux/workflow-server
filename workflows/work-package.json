@@ -33,7 +33,7 @@
       "description": "Every work package should be linked to a GitHub or Jira issue. Issues define the problem space and provide traceability from requirements through implementation.",
       "required": true,
       "estimatedTime": "10-20m",
-      "guide": { "path": "work-package/work-package.md", "section": "Phase 1: Issue Verification & PR Creation" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/work-package.md", "section": "Phase 1: Issue Verification & PR Creation" },
       "entryActions": [
         { "action": "log", "message": "Starting issue verification and PR creation" }
       ],
@@ -42,7 +42,7 @@
           "id": "step-1-1-check-issue",
           "name": "Check for Existing Issue",
           "description": "Verify whether an issue has been specified by user or in context",
-          "guide": { "path": "work-package/work-package.md", "section": "1.1 Check for Existing Issue" }
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/work-package.md", "section": "1.1 Check for Existing Issue" }
         }
       ],
       "checkpoints": [
@@ -50,7 +50,7 @@
           "id": "checkpoint-1-2-issue-verification",
           "name": "Issue Verification Checkpoint",
           "message": "I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?",
-          "guide": { "path": "work-package/work-package.md", "section": "1.2 🛑 Issue Verification Checkpoint" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/work-package.md", "section": "1.2 🛑 Issue Verification Checkpoint" },
           "options": [
             { "id": "provide-existing", "label": "Provide existing issue", "description": "Share the issue number or URL (GitHub #N or Jira PROJ-N)" },
             { "id": "create-github", "label": "Create GitHub issue", "description": "Draft one using the GitHub Issue Creation Guide", "effect": { "setVariable": { "issue_platform": "github" } } },
@@ -62,7 +62,7 @@
           "id": "checkpoint-1-4-issue-created",
           "name": "Issue Created Checkpoint",
           "message": "Issue created. Proceed to create feature branch and initial PR?",
-          "guide": { "path": "work-package/work-package.md", "section": "1.4 🛑 Issue Created Checkpoint" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/work-package.md", "section": "1.4 🛑 Issue Created Checkpoint" },
           "options": [
             { "id": "proceed", "label": "Proceed" },
             { "id": "modify", "label": "Modify issue first" }
@@ -72,7 +72,7 @@
           "id": "checkpoint-1-8-pr-created",
           "name": "PR Created Checkpoint",
           "message": "PR created and linked to issue. Do you need requirements elicitation?",
-          "guide": { "path": "work-package/work-package.md", "section": "1.8 🛑 PR Created Checkpoint" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/work-package.md", "section": "1.8 🛑 PR Created Checkpoint" },
           "options": [
             { "id": "yes-elicit", "label": "Yes, elicit requirements", "description": "Proceed to Phase 2 (Requirements Elicitation)", "effect": { "setVariable": { "needs_elicitation": true } } },
             { "id": "no-skip", "label": "No, skip elicitation", "description": "Proceed to research decision", "effect": { "setVariable": { "needs_elicitation": false } } }
@@ -93,7 +93,7 @@
       "description": "Discover and clarify what the work package should accomplish through structured conversation. This phase ensures requirements are explicitly captured before planning the approach.",
       "required": false,
       "estimatedTime": "15-30m",
-      "guide": { "path": "work-package/requirements-elicitation.guide.md" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/requirements-elicitation.guide.md" },
       "steps": [
         {
           "id": "step-2-1-explore",
@@ -124,7 +124,7 @@
           "id": "checkpoint-2-2-requirements-confirmed",
           "name": "Requirements Elicitation Checkpoint",
           "message": "Have I understood the requirements correctly?",
-          "guide": { "path": "work-package/requirements-elicitation.guide.md", "section": "Checkpoint Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/requirements-elicitation.guide.md", "section": "Checkpoint Template" },
           "options": [
             { "id": "confirmed", "label": "Requirements confirmed" },
             { "id": "clarify", "label": "Need clarification" }
@@ -141,12 +141,12 @@
       "description": "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement.",
       "required": true,
       "estimatedTime": "10-20m",
-      "guide": { "path": "work-package/implementation-analysis.guide.md" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/implementation-analysis.guide.md" },
       "steps": [
         {
           "id": "step-3-1-analyze",
           "name": "Complete implementation analysis",
-          "guide": { "path": "work-package/implementation-analysis.guide.md" }
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/implementation-analysis.guide.md" }
         },
         {
           "id": "step-3-2-document",
@@ -159,7 +159,7 @@
           "id": "checkpoint-3-1-research-decision",
           "name": "Research Decision Checkpoint",
           "message": "Implementation analysis complete. Would you like to perform research?",
-          "guide": { "path": "work-package/implementation-analysis.guide.md", "section": "Checkpoint Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/implementation-analysis.guide.md", "section": "Checkpoint Template" },
           "options": [
             { "id": "yes-research", "label": "Yes, perform research", "effect": { "setVariable": { "needs_research": true } } },
             { "id": "no-skip", "label": "No, skip research", "effect": { "setVariable": { "needs_research": false } } }
@@ -177,13 +177,13 @@
       "description": "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the planning phase.",
       "required": false,
       "estimatedTime": "20-45m",
-      "guide": { "path": "work-package/knowledge-base-research.guide.md" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/knowledge-base-research.guide.md" },
       "steps": [
         {
           "id": "step-4-1-kb-research",
           "name": "Knowledge base research",
           "description": "Call get_guidance before making concept-rag MCP tool calls",
-          "guide": { "path": "work-package/knowledge-base-research.guide.md" }
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/knowledge-base-research.guide.md" }
         },
         {
           "id": "step-4-2-web-research",
@@ -226,22 +226,22 @@
       "description": "Design the approach, create the work package plan, and prepare for implementation.",
       "required": true,
       "estimatedTime": "20-45m",
-      "guide": { "path": "work-package/plan.guide.md" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/plan.guide.md" },
       "steps": [
         {
           "id": "step-5-1-design",
           "name": "Apply design framework",
-          "guide": { "path": "work-package/design-framework.guide.md" }
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/design-framework.guide.md" }
         },
         {
           "id": "step-5-2-create-plan",
           "name": "Create work package plan",
-          "guide": { "path": "work-package/plan.guide.md" }
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/plan.guide.md" }
         },
         {
           "id": "step-5-3-test-plan",
           "name": "Create test plan",
-          "guide": { "path": "work-package/test-plan.guide.md" }
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/test-plan.guide.md" }
         },
         {
           "id": "step-5-4-sync-branch",
@@ -250,7 +250,7 @@
         {
           "id": "step-5-5-update-pr",
           "name": "Update PR description",
-          "guide": { "path": "work-package/pr-description.guide.md" }
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/pr-description.guide.md" }
         },
         {
           "id": "step-5-6-create-todos",
@@ -262,7 +262,7 @@
           "id": "checkpoint-5-2-approach-confirmed",
           "name": "Approach Checkpoint",
           "message": "Approach confirmed?",
-          "guide": { "path": "work-package/plan.guide.md", "section": "Checkpoint Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/plan.guide.md", "section": "Checkpoint Template" },
           "options": [
             { "id": "confirmed", "label": "Approach confirmed" },
             { "id": "revise", "label": "Revise approach" }
@@ -288,7 +288,7 @@
       "description": "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit → review assumptions → checkpoint.",
       "required": true,
       "estimatedTime": "1-4h",
-      "guide": { "path": "work-package/work-package.md", "section": "Phase 6: Implement Tasks" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/work-package.md", "section": "Phase 6: Implement Tasks" },
       "entryActions": [
         { "action": "validate", "target": "branch", "message": "Verify on correct feature branch before any code changes" }
       ],
@@ -303,7 +303,7 @@
             { "id": "step-6-1-implement", "name": "Implement task" },
             { "id": "step-6-2-test", "name": "Run tests" },
             { "id": "step-6-3-commit", "name": "Commit changes" },
-            { "id": "step-6-4-assumptions", "name": "Review assumptions", "guide": { "path": "work-package/assumptions-review.guide.md" } }
+            { "id": "step-6-4-assumptions", "name": "Review assumptions", "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/assumptions-review.guide.md" } }
           ]
         }
       ],
@@ -312,7 +312,7 @@
           "id": "checkpoint-6-2-task-progress",
           "name": "Task Progress Checkpoint",
           "message": "Task complete. Assumptions confirmed?",
-          "guide": { "path": "work-package/assumptions-review.guide.md", "section": "Checkpoint Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/assumptions-review.guide.md", "section": "Checkpoint Template" },
           "options": [
             { "id": "confirmed", "label": "Assumptions confirmed" },
             { "id": "correction", "label": "Need correction" }
@@ -322,7 +322,7 @@
           "id": "checkpoint-6-3-code-review",
           "name": "Code Review Checkpoint",
           "message": "Review findings confirmed?",
-          "guide": { "path": "work-package/task-completion-review.guide.md", "section": "Checkpoint Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/task-completion-review.guide.md", "section": "Checkpoint Template" },
           "options": [
             { "id": "confirmed", "label": "Findings confirmed" },
             { "id": "needs-fixes", "label": "Needs fixes" }
@@ -332,7 +332,7 @@
           "id": "checkpoint-6-4-arch-significance",
           "name": "Architectural Significance Checkpoint",
           "message": "Significance assessment confirmed?",
-          "guide": { "path": "work-package/architecture-review.guide.md", "section": "Checkpoint Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/architecture-review.guide.md", "section": "Checkpoint Template" },
           "options": [
             { "id": "significant", "label": "Architecturally significant - create ADR", "effect": { "setVariable": { "is_architecturally_significant": true } } },
             { "id": "not-significant", "label": "Not significant", "effect": { "setVariable": { "is_architecturally_significant": false } } }
@@ -342,7 +342,7 @@
           "id": "checkpoint-6-5-adr",
           "name": "ADR Checkpoint",
           "message": "ADR confirmed?",
-          "guide": { "path": "work-package/architecture-review.guide.md", "section": "ADR Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/architecture-review.guide.md", "section": "ADR Template" },
           "required": false,
           "options": [
             { "id": "confirmed", "label": "ADR confirmed" },
@@ -360,7 +360,7 @@
       "description": "Validate the implementation through comprehensive testing. All tests must pass before the work package is considered complete.",
       "required": true,
       "estimatedTime": "30-60m",
-      "guide": { "path": "work-package/test-plan.guide.md" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/test-plan.guide.md" },
       "steps": [
         { "id": "step-7-1-run-tests", "name": "Run all tests", "description": "Unit, integration, e2e tests" },
         { "id": "step-7-2-build", "name": "Verify build succeeds" },
@@ -371,7 +371,7 @@
           "id": "decision-7-2-validation",
           "name": "Validation Decision",
           "description": "Assess validation results and decide next action",
-          "guide": { "path": "work-package/work-package.md", "section": "7.2 🔀 Validation Decision Point" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/work-package.md", "section": "7.2 🔀 Validation Decision Point" },
           "branches": [
             { "id": "pass", "label": "Pass - All tests pass, build succeeds", "transitionTo": "phase-8-review", "condition": { "type": "simple", "variable": "validation_passed", "operator": "==", "value": true } },
             { "id": "minor-issues", "label": "Minor issues - Isolated failures, localized bugs", "transitionTo": "phase-6-implement" },
@@ -390,16 +390,16 @@
       "description": "Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution.",
       "required": true,
       "estimatedTime": "15-30m",
-      "guide": { "path": "work-package/strategic-review.guide.md" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/strategic-review.guide.md" },
       "steps": [
-        { "id": "step-8-1-review", "name": "Complete strategic review", "guide": { "path": "work-package/strategic-review.guide.md" } }
+        { "id": "step-8-1-review", "name": "Complete strategic review", "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/strategic-review.guide.md" } }
       ],
       "checkpoints": [
         {
           "id": "checkpoint-8-1-review-findings",
           "name": "Strategic Review Checkpoint",
           "message": "Review findings confirmed?",
-          "guide": { "path": "work-package/strategic-review.guide.md", "section": "Checkpoint Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/strategic-review.guide.md", "section": "Checkpoint Template" },
           "options": [
             { "id": "confirmed", "label": "Findings confirmed" },
             { "id": "needs-cleanup", "label": "Needs cleanup" }
@@ -411,7 +411,7 @@
           "id": "decision-8-2-review",
           "name": "Strategic Review Decision",
           "description": "Assess whether issues require re-planning",
-          "guide": { "path": "work-package/work-package.md", "section": "8.2 🔀 Strategic Review Decision Point" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/work-package.md", "section": "8.2 🔀 Strategic Review Decision Point" },
           "branches": [
             { "id": "pass", "label": "Pass - Changes are minimal and focused", "transitionTo": "phase-9-finalize", "condition": { "type": "simple", "variable": "review_passed", "operator": "==", "value": true } },
             { "id": "issues", "label": "Issues found - Significant rework needed", "transitionTo": "phase-5-plan-prepare", "isDefault": true }
@@ -431,8 +431,8 @@
       "estimatedTime": "15-30m",
       "steps": [
         { "id": "step-9-1-adr", "name": "Update ADR status to Accepted", "description": "If ADR exists" },
-        { "id": "step-9-2-test-plan", "name": "Finalize test plan with source links", "guide": { "path": "work-package/test-plan.guide.md" } },
-        { "id": "step-9-3-complete", "name": "Create COMPLETE.md", "guide": { "path": "work-package/complete.guide.md" } },
+        { "id": "step-9-2-test-plan", "name": "Finalize test plan with source links", "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/test-plan.guide.md" } },
+        { "id": "step-9-3-complete", "name": "Create COMPLETE.md", "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/complete.guide.md" } },
         { "id": "step-9-4-docs", "name": "Ensure inline documentation on public APIs" }
       ],
       "transitions": [
@@ -445,10 +445,10 @@
       "description": "Update the PR with final implementation details and mark ready for review.",
       "required": true,
       "estimatedTime": "10-15m",
-      "guide": { "path": "work-package/pr-description.guide.md" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/pr-description.guide.md" },
       "steps": [
         { "id": "step-10-1-push", "name": "Push all commits" },
-        { "id": "step-10-2-update-pr", "name": "Update PR description", "guide": { "path": "work-package/pr-description.guide.md" } },
+        { "id": "step-10-2-update-pr", "name": "Update PR description", "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/pr-description.guide.md" } },
         { "id": "step-10-3-ready", "name": "Mark PR ready for review" }
       ],
       "checkpoints": [
@@ -456,7 +456,7 @@
           "id": "checkpoint-10-2-pr-description",
           "name": "PR Update Checkpoint",
           "message": "PR description confirmed?",
-          "guide": { "path": "work-package/pr-description.guide.md", "section": "Checkpoint Template" },
+          "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/pr-description.guide.md", "section": "Checkpoint Template" },
           "options": [
             { "id": "confirmed", "label": "PR description confirmed" },
             { "id": "revise", "label": "Revise PR description" }
@@ -473,10 +473,10 @@
       "description": "Complete post-implementation tasks after the PR is created.",
       "required": true,
       "estimatedTime": "10-20m",
-      "guide": { "path": "work-package/workflow-retrospective.guide.md" },
+      "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/workflow-retrospective.guide.md" },
       "steps": [
         { "id": "step-11-1-history", "name": "Capture session history", "description": "If metadata repository exists - private, never committed" },
-        { "id": "step-11-2-retro", "name": "Workflow retrospective", "guide": { "path": "work-package/workflow-retrospective.guide.md" }, "description": "Skip if trivial session" },
+        { "id": "step-11-2-retro", "name": "Workflow retrospective", "guide": { "path": "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/workflow-retrospective.guide.md" }, "description": "Skip if trivial session" },
         { "id": "step-11-3-status", "name": "Update work package plan status", "description": "After PR merged" },
         { "id": "step-11-4-next", "name": "Select next work package" }
       ],
