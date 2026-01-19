@@ -9,7 +9,7 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 ---
 
-**[Quick Start](#-quick-start)** • **[MCP Tools](#-mcp-tools)** • **[Development](#-development)** • **[Testing](#-testing)**
+**[Quick Start](#-quick-start)** • **[MCP Tools](#-mcp-tools)** • **[Development](docs/development.md)**
 
 ---
 
@@ -111,6 +111,13 @@ The agent should use `list_workflows` and return the available workflow definiti
 | `workflow://guides` | List all available guide documents |
 | `workflow://guides/{name}` | Get content of a specific guide |
 
+## 📖 Available Workflows
+
+| Workflow | Phases | Description |
+|----------|--------|-------------|
+| `work-package` | 11 | Full work package lifecycle from issue to PR |
+| `example-workflow` | 3 | Example demonstrating schema features |
+
 ## 📁 Branch Structure
 
 | Branch | Content | Purpose |
@@ -120,75 +127,11 @@ The agent should use `list_workflows` and return the available workflow definiti
 
 This separation allows workflow definitions to evolve independently from server code, with separate versioning and commit histories.
 
-### Accessing Workflow Data
+## 📚 Documentation
 
-The `workflows` branch is checked out as a git worktree:
-
-```bash
-# Initial setup (already done if you followed Quick Start)
-git worktree add ./workflow-data workflows
-
-# The server reads from:
-# - workflow-data/workflows/*.json  (workflow definitions)
-# - workflow-data/guides/*.md       (guide content)
-```
-
-## 🔧 Development
-
-```bash
-# Install dependencies
-npm install
-
-# Type check
-npm run typecheck
-
-# Build
-npm run build
-
-# Run in development mode
-npm run dev
-
-# Generate JSON schemas from Zod definitions
-npm run build:schemas
-```
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflow-data/workflows` | Path to workflow JSON files |
-| `GUIDE_DIR` | `./workflow-data/guides` | Path to guide markdown files |
-| `SERVER_NAME` | `workflow-server` | Server name in health check |
-| `SERVER_VERSION` | `1.0.0` | Server version in health check |
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run tests once (no watch)
-npm test -- --run
-
-# Run specific test file
-npm test -- --run tests/mcp-server.test.ts
-```
-
-### Test Coverage
-
-| Test Suite | Tests | Coverage |
-|------------|-------|----------|
-| `workflow-loader.test.ts` | 17 | Loaders, transitions, validation |
-| `schema-validation.test.ts` | 23 | All Zod schemas |
-| `mcp-server.test.ts` | 12 | MCP tools and resources |
-| **Total** | **52** | ✅ All passing |
-
-## 📖 Available Workflows
-
-| Workflow | Phases | Description |
-|----------|--------|-------------|
-| `work-package` | 11 | Full work package lifecycle from issue to PR |
-| `example-workflow` | 3 | Example demonstrating schema features |
+| Resource | Description |
+|----------|-------------|
+| [Development Guide](docs/development.md) | Setup, testing, project structure |
 
 ## 📜 License
 
