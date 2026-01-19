@@ -1,0 +1,295 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "state",
+  "description": "Workflow state schema",
+  "$ref": "#/definitions/state",
+  "definitions": {
+    "state": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string"
+        },
+        "workflowVersion": {
+          "type": "string"
+        },
+        "stateVersion": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "currentPhase": {
+          "type": "string"
+        },
+        "currentStep": {
+          "type": "string"
+        },
+        "completedPhases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "skippedPhases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "completedSteps": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "default": {}
+        },
+        "checkpointResponses": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "checkpointId": {
+                "type": "string"
+              },
+              "optionId": {
+                "type": "string"
+              },
+              "respondedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "effects": {
+                "type": "object",
+                "properties": {
+                  "variablesSet": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "transitionedTo": {
+                    "type": "string"
+                  },
+                  "phasesSkipped": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "checkpointId",
+              "optionId",
+              "respondedAt"
+            ],
+            "additionalProperties": false
+          },
+          "default": {}
+        },
+        "decisionOutcomes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "decisionId": {
+                "type": "string"
+              },
+              "branchId": {
+                "type": "string"
+              },
+              "decidedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "transitionedTo": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "decisionId",
+              "branchId",
+              "decidedAt",
+              "transitionedTo"
+            ],
+            "additionalProperties": false
+          },
+          "default": {}
+        },
+        "activeLoops": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "loopId": {
+                "type": "string"
+              },
+              "currentIteration": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "totalItems": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "currentItem": {},
+              "startedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "loopId",
+              "currentIteration",
+              "startedAt"
+            ],
+            "additionalProperties": false
+          },
+          "default": []
+        },
+        "variables": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "workflow_started",
+                  "workflow_completed",
+                  "workflow_aborted",
+                  "phase_entered",
+                  "phase_exited",
+                  "phase_skipped",
+                  "step_started",
+                  "step_completed",
+                  "checkpoint_reached",
+                  "checkpoint_response",
+                  "decision_reached",
+                  "decision_branch_taken",
+                  "loop_started",
+                  "loop_iteration",
+                  "loop_completed",
+                  "loop_break",
+                  "variable_set",
+                  "error"
+                ]
+              },
+              "phase": {
+                "type": "string"
+              },
+              "step": {
+                "type": "string"
+              },
+              "checkpoint": {
+                "type": "string"
+              },
+              "decision": {
+                "type": "string"
+              },
+              "loop": {
+                "type": "string"
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              "error": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "message"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "timestamp",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "default": []
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "running",
+            "paused",
+            "completed",
+            "aborted",
+            "error"
+          ],
+          "default": "running"
+        },
+        "lastError": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            },
+            "phase": {
+              "type": "string"
+            },
+            "step": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "message",
+            "timestamp"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "workflowId",
+        "workflowVersion",
+        "startedAt",
+        "updatedAt",
+        "currentPhase"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
