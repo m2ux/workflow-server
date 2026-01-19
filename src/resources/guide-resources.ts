@@ -22,7 +22,7 @@ export function registerGuideResources(server: McpServer, config: ServerConfig):
     new ResourceTemplate('workflow://guides/{name}', { list: undefined }),
     { description: 'Get content of a specific workflow guide' },
     async (uri, variables) => {
-      const name = variables.name as string;
+      const name = variables['name'] as string;
       if (!name) throw new Error('Invalid guide URI');
       logInfo('Resource accessed: guide', { name });
       const result = await readGuide(config.guideDir, name);
