@@ -1,31 +1,41 @@
-# Workflow Definitions
+# Workflow Data
 
-This orphan branch contains workflow JSON definitions for the MCP Workflow Server.
+This orphan branch contains workflow JSON definitions and guide markdown files for the MCP Workflow Server.
 
 ## Branch Structure
 
 - **`main`** - Server code (TypeScript implementation)
-- **`workflows`** - Workflow data (JSON definitions) ← You are here
+- **`workflows`** - Workflow data (JSON + guides) ← You are here
 
 ## Directory Structure
 
 ```
-workflows/
-├── example-workflow.json     # Example demonstrating all primitives
-├── work-package.json         # Work package workflow (WP05)
-└── ...                       # Additional workflows
+workflow-data/              # Worktree checkout
+├── workflows/              # Workflow JSON definitions
+│   ├── example-workflow.json
+│   └── work-package.json   # (WP05)
+└── guides/                 # Guide markdown files
+    └── project-setup.guide.md
 ```
 
-## Usage
+## Worktree Setup
 
-The server on `main` branch reads workflow files from this branch via:
-- Direct file system access (local development)
-- Git worktree (production deployment)
+This branch is checked out as a worktree inside the main repo:
 
-## Adding New Workflows
+```bash
+git worktree add ./workflow-data workflows
+```
 
+## Adding Content
+
+**Workflows:**
 1. Create a new JSON file in `workflows/`
 2. Follow the schema defined in `main:schemas/workflow.schema.json`
+3. Commit to this branch
+
+**Guides:**
+1. Create a new `.guide.md` file in `guides/`
+2. Reference from workflow JSON via `guide.path`
 3. Commit to this branch
 
 ## Validation
