@@ -15,11 +15,11 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.19.30",
     "ajv": "^8.17.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.0"
+    "vitest": "^1.6.1"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
