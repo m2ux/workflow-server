@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "description": "Match user goal to an intent. Intents use multiple skills to achieve outcomes.",
+  "intents": [
+    {
+      "id": "start-workflow",
+      "problem": "Begin executing a new workflow from the beginning",
+      "primary_skill": "workflow-execution"
+    },
+    {
+      "id": "resume-workflow",
+      "problem": "Continue a workflow that was previously started",
+      "primary_skill": "workflow-execution"
+    },
+    {
+      "id": "end-workflow",
+      "problem": "Complete and finalize a workflow execution",
+      "primary_skill": "workflow-execution"
+    }
+  ],
+  "quick_match": {
+    "start a workflow": "start-workflow",
+    "begin workflow": "start-workflow",
+    "new workflow": "start-workflow",
+    "execute workflow": "start-workflow",
+    "run workflow": "start-workflow",
+    "resume workflow": "resume-workflow",
+    "continue workflow": "resume-workflow",
+    "restart workflow": "resume-workflow",
+    "pick up where I left off": "resume-workflow",
+    "end workflow": "end-workflow",
+    "finish workflow": "end-workflow",
+    "complete workflow": "end-workflow",
+    "finalize workflow": "end-workflow"
+  }
+}

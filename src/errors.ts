@@ -21,3 +21,13 @@ export class WorkflowValidationError extends Error {
     super(`Workflow validation failed for ${workflowId}: ${issues.join(', ')}`); this.name = 'WorkflowValidationError';
   }
 }
+
+export class SkillNotFoundError extends Error {
+  readonly code = 'SKILL_NOT_FOUND';
+  constructor(public readonly skillId: string) { super(`Skill not found: ${skillId}`); this.name = 'SkillNotFoundError'; }
+}
+
+export class IntentNotFoundError extends Error {
+  readonly code = 'INTENT_NOT_FOUND';
+  constructor(public readonly intentId: string) { super(`Intent not found: ${intentId}`); this.name = 'IntentNotFoundError'; }
+}

@@ -1,0 +1,100 @@
+# Setup Guide
+
+## Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- MCP Client (Cursor, Claude Desktop, or compatible client)
+
+## Installation
+
+```bash
+# Clone and install
+git clone https://github.com/m2ux/workflow-server.git
+cd workflow-server
+npm install
+
+# Set up workflow data (worktree for orphan branch)
+git worktree add ./workflow-data workflows
+
+# Build the server
+npm run build
+```
+
+## MCP Client Configuration
+
+### Cursor
+
+Edit `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "workflow-server": {
+      "command": "node",
+      "args": ["/path/to/workflow-server/dist/index.js"],
+      "env": {
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows",
+        "GUIDE_DIR": "/path/to/workflow-server/workflow-data/guides"
+      }
+    }
+  }
+}
+```
+
+### Claude Desktop
+
+**macOS**: Edit `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+**Windows**: Edit `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "workflow-server": {
+      "command": "node",
+      "args": ["/path/to/workflow-server/dist/index.js"],
+      "env": {
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows",
+        "GUIDE_DIR": "/path/to/workflow-server/workflow-data/guides"
+      }
+    }
+  }
+}
+```
+
+## IDE Rules Setup
+
+Add the following to your IDE rules (see [`prompts/ide-setup.md`](prompts/ide-setup.md)):
+
+```
+Before using workflow-server MCP tools, fetch the `workflow://intents` resource.
+```
+
+## Verify Installation
+
+After restarting your MCP client, verify the server is working:
+
+```
+Use the workflow server to list available workflows
+```
+
+The agent should use `list_workflows` and return the available workflow definitions.
+
+## Branch Structure
+
+| Branch | Content | Purpose |
+|--------|---------|---------|
+| `main` | TypeScript server code | Implementation |
+| `workflows` | JSON workflows + guides | Data (orphan branch) |
+
+This separation allows workflow definitions to evolve independently from server code.
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `WORKFLOW_DIR` | `./workflow-data/workflows` | Path to workflow JSON files |
+| `GUIDE_DIR` | `./workflow-data/guides` | Path to guide markdown files |
+| `SERVER_NAME` | `workflow-server` | Server name for MCP |
+| `SERVER_VERSION` | `1.0.0` | Server version |
