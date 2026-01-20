@@ -29,7 +29,7 @@ This reduces context overhead and provides deterministic tool selection.
 
 ### Intents
 
-| Intent | User Goal |
+| Intent | Description |
 |--------|-----------|
 | `start-workflow` | Begin executing a new workflow from the beginning |
 | `resume-workflow` | Continue a workflow that was previously started |
