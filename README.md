@@ -27,7 +27,7 @@ After initial setup of an always-applied [rule](prompts/ide-setup.md), agents:
 
 This reduces context overhead and provides deterministic tool selection.
 
-### Supported Intents
+### Intents
 
 | Intent | User Goal |
 |--------|-----------|
@@ -85,7 +85,7 @@ Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 Add the following to your IDE 'always-applied' rule-set:
 
 ```
-Before using workflow-server MCP tools, fetch the `workflow://intents` resource.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must* fetch the `workflow://intents` resource.
 ```
 
 Start executing workflows!
