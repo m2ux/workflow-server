@@ -17,7 +17,7 @@ describe('skill-loader', () => {
       
       expect(workflowExecution).toBeDefined();
       expect(workflowExecution?.name).toBe('Workflow Execution');
-      expect(workflowExecution?.path).toBe('workflow-execution.json');
+      expect(workflowExecution?.path).toBe('workflow-execution.toon');
     });
   });
 

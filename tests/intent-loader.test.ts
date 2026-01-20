@@ -25,7 +25,7 @@ describe('intent-loader', () => {
       
       expect(startWorkflow).toBeDefined();
       expect(startWorkflow?.name).toBe('Start Workflow');
-      expect(startWorkflow?.path).toBe('start-workflow.json');
+      expect(startWorkflow?.path).toBe('start-workflow.toon');
     });
   });
 
