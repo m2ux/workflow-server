@@ -1,0 +1,10 @@
+id: end-workflow
+version: 1.0.0
+problem: The user wants to complete and finalize an active workflow execution.
+recognition[6]: End the workflow,Finish the workflow,Complete the workflow,Finalize workflow,We're done with the workflow,Close out the workflow
+skills:
+  primary: workflow-execution
+  supporting[0]:
+outcome[4]: All required phases are completed or accounted for,Final phase actions are executed,Workflow summary is presented,State is marked as completed
+flow[7]: 1. Verify current workflow state,2. Check for incomplete required phases,"3. If incomplete phases exist: present remaining work, ask user to confirm skip or complete",4. Execute final phase if not completed,5. Run any exit actions defined in final phase,"6. Present workflow completion summary: phases completed, key decisions, variables set",7. Mark workflow as completed
+context_to_preserve[5]: workflowId - The completed workflow,completedPhases - All phases that were completed,skippedPhases - Any phases that were skipped,checkpointResponses - All user decisions,completedAt - Timestamp of completion
