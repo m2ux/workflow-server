@@ -3,7 +3,7 @@
 Paste the following into your IDE rules location:
 
 ```
-Before using workflow-server MCP tools, fetch the `workflow://intents` resource.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must* fetch the `workflow://intents` resource.
 ```
 
 ## How It Works
