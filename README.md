@@ -17,15 +17,21 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 Workflow Server uses an **Intent → Skill → Tool** architecture to guide AI agents through structured workflows.
 
-```
-User Goal (complete a work package) → Intent (start-workflow,..) → Skill (execute-workflow) → Tools(get-transition,..)
-```
 After initial setup of an always-applied [rule](prompts/ide-setup.md), agents:
 1. **Match the user's goal** to an [intent](prompts/intents/index.json)
 2. **Follow the [skill](prompts/skills/workflow-execution.json) workflow** which orchestrates the right tool sequence
 3. **Execute phases** with state management and checkpoint handling
 
 This reduces context overhead and provides deterministic tool selection.
+
+Problem Domain:
+```
+User Goal (complete a work package) → Intent (start-workflow,..)
+```
+Solution Domain:
+```
+Skill (execute-workflow) → Tools(get-transition,..)
+```
 
 ### Intents
 
