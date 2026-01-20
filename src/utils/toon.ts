@@ -7,14 +7,3 @@ import { decode } from '@toon-format/toon';
 export function decodeToon<T = unknown>(content: string): T {
   return decode(content) as T;
 }
-
-/**
- * Safely decode a TOON string, returning null on error.
- */
-export function safeDecodeToon<T = unknown>(content: string): T | null {
-  try {
-    return decode(content) as T;
-  } catch {
-    return null;
-  }
-}
