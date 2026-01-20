@@ -20,6 +20,12 @@ Workflow Server uses an **Intent → Skill → Tool** architecture to guide AI a
 ```
 User Goal → Intent (problem domain) → Skill (solution domain) → Tools
 ```
+After initial setup of an always-applied [rule](prompts/ide-setup.md), agents:
+1. **Match the user's goal** to an [intent](prompts/intents/index.json)
+2. **Follow the [skill](prompts/skills/workflow-execution.json) workflow** which orchestrates the right tool sequence
+3. **Execute phases** with state management and checkpoint handling
+
+This reduces context overhead and provides deterministic tool selection.
 
 ### Supported Intents
 
@@ -28,13 +34,6 @@ User Goal → Intent (problem domain) → Skill (solution domain) → Tools
 | `start-workflow` | Begin executing a new workflow from the beginning |
 | `resume-workflow` | Continue a workflow that was previously started |
 | `end-workflow` | Complete and finalize an active workflow |
-
-After initial setup of an always-applied [rule](prompts/ide-setup.md), agents:
-1. **Match the user's goal** to an [intent](prompts/intents/index.json)
-2. **Follow the [skill](prompts/skills/workflow-execution.json) workflow** which orchestrates the right tool sequence
-3. **Execute phases** with state management and checkpoint handling
-
-This reduces context overhead and provides deterministic tool selection.
 
 ---
 
