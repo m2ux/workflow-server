@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logInfo } from '../logging.js';
+import { decodeToon } from '../utils/toon.js';
 
 export interface SkillEntry { id: string; name: string; path: string; }
 
@@ -42,7 +43,7 @@ function getSkillDir(): string {
 
 export async function readSkill(skillId: string): Promise<Result<Skill, SkillNotFoundError>> {
   const skillDir = getSkillDir();
-  const filePath = join(skillDir, `${skillId}.json`);
+  const filePath = join(skillDir, `${skillId}.toon`);
   
   if (!existsSync(filePath)) {
     return err(new SkillNotFoundError(skillId));
@@ -50,7 +51,7 @@ export async function readSkill(skillId: string): Promise<Result<Skill, SkillNot
   
   try {
     const content = await readFile(filePath, 'utf-8');
-    const skill = JSON.parse(content) as Skill;
+    const skill = decodeToon<Skill>(content);
     logInfo('Skill loaded', { id: skillId, path: filePath });
     return ok(skill);
   } catch {
@@ -65,8 +66,8 @@ export async function listSkills(): Promise<SkillEntry[]> {
   
   try {
     const files = await readdir(skillDir);
-    return files.filter(f => f.endsWith('.json')).map(file => {
-      const id = basename(file, '.json');
+    return files.filter(f => f.endsWith('.toon')).map(file => {
+      const id = basename(file, '.toon');
       const name = id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
       return { id, name, path: file };
     });
