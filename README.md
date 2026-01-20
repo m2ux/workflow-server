@@ -59,7 +59,7 @@ git worktree add ./workflow-data workflows
 npm run build
 ```
 
-## Setup IDE Rule
+### Setup IDE Rule
 
 Add the following to your IDE 'always-applied' rule-set:
 
