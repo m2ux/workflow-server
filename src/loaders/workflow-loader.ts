@@ -5,15 +5,16 @@ import { type Workflow, safeValidateWorkflow } from '../schema/workflow.schema.j
 import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError } from '../errors.js';
 import { logInfo, logError } from '../logging.js';
+import { decodeToon } from '../utils/toon.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; description?: string | undefined; }
 
 export async function loadWorkflow(workflowDir: string, workflowId: string): Promise<Result<Workflow, WorkflowNotFoundError | WorkflowValidationError>> {
-  const filePath = join(workflowDir, `${workflowId}.json`);
+  const filePath = join(workflowDir, `${workflowId}.toon`);
   if (!existsSync(filePath)) return err(new WorkflowNotFoundError(workflowId));
   try {
     const content = await readFile(filePath, 'utf-8');
-    const result = safeValidateWorkflow(JSON.parse(content));
+    const result = safeValidateWorkflow(decodeToon(content));
     if (!result.success) return err(new WorkflowValidationError(workflowId, result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`)));
     logInfo('Workflow loaded', { workflowId, version: result.data.version });
     return ok(result.data);
@@ -28,8 +29,8 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
   try {
     const files = await readdir(workflowDir);
     const manifests: WorkflowManifestEntry[] = [];
-    for (const file of files.filter(f => f.endsWith('.json'))) {
-      const result = await loadWorkflow(workflowDir, basename(file, '.json'));
+    for (const file of files.filter(f => f.endsWith('.toon'))) {
+      const result = await loadWorkflow(workflowDir, basename(file, '.toon'));
       if (result.success) manifests.push({ id: result.value.id, title: result.value.title, version: result.value.version, description: result.value.description });
     }
     return manifests;
