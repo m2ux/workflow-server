@@ -9,31 +9,46 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 ---
 
-**[Quick Start](#-quick-start)** • **[MCP Tools](#-mcp-tools)** • **[Development](docs/development.md)**
+**[Quick Start](#-quick-start)** • **[API Reference](docs/api-reference.md)** • **[Development](docs/development.md)**
 
 ---
 
 ## 🎯 Overview
 
-This server provides workflow orchestration capabilities for AI agents:
+Workflow Server uses an **Intent → Skill → Tool** architecture to guide AI agents through structured workflows.
 
-- **Workflow Discovery** - List and retrieve available workflow definitions
-- **Phase Navigation** - Access individual phases, steps, and checkpoints
-- **Transition Validation** - Validate allowed state transitions
-- **Guide Resources** - Access markdown documentation for each workflow step
+```
+User Goal → Intent (problem domain) → Skill (solution domain) → Tools
+```
+
+### Supported Intents
+
+| Intent | User Goal |
+|--------|-----------|
+| `start-workflow` | Begin executing a new workflow from the beginning |
+| `resume-workflow` | Continue a workflow that was previously started |
+| `end-workflow` | Complete and finalize an active workflow |
+
+After initial setup of an always-applied [rule](prompts/ide-setup.md), agents:
+1. **Match the user's goal** to an [intent](prompts/intents/index.json)
+2. **Follow the [skill](prompts/skills/workflow-execution.json) workflow** which orchestrates the right tool sequence
+3. **Execute phases** with state management and checkpoint handling
+
+This reduces context overhead and provides deterministic tool selection.
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - Node.js 18+
-- npm or yarn
-- MCP Client (Cursor, Claude Desktop, or compatible client)
+- MCP Client (Cursor or Claude Desktop)
 
 ### Installation
 
 ```bash
-# Clone and install
+# Clone and build
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
 npm install
@@ -64,81 +79,7 @@ npm run build
 }
 ```
 
-**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
-
-```json
-{
-  "mcpServers": {
-    "workflow-server": {
-      "command": "node",
-      "args": ["/path/to/workflow-server/dist/index.js"],
-      "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows",
-        "GUIDE_DIR": "/path/to/workflow-server/workflow-data/guides"
-      }
-    }
-  }
-}
-```
-
-Restart your MCP client after configuration.
-
-### Verify Installation
-
-After restarting your MCP client, you can verify the server is working:
-
-```
-Use the workflow server to list available workflows
-```
-
-The agent should use `list_workflows` and return the available workflow definitions.
-
-## 🛠 MCP Tools
-
-| Tool | Description |
-|------|-------------|
-| `list_workflows` | List all available workflow definitions with metadata |
-| `get_workflow` | Get complete workflow definition by ID |
-| `get_phase` | Get details of a specific phase within a workflow |
-| `get_checkpoint` | Get checkpoint details including options and effects |
-| `validate_transition` | Validate if a transition between phases is allowed |
-| `health_check` | Check server health and available workflows |
-
-## 📚 MCP Resources
-
-| Resource | Description |
-|----------|-------------|
-| `workflow://guides` | List all available guide documents |
-| `workflow://guides/{name}` | Get content of a specific guide |
-
-## 📖 Available Workflows
-
-| Workflow | Phases | Description |
-|----------|--------|-------------|
-| `work-package` | 11 | Full work package lifecycle from issue to PR |
-| `example-workflow` | 3 | Example demonstrating schema features |
-
-### Workflow Sources
-
-| Workflow | Source |
-|----------|--------|
-| `work-package` | Migrated from [`agent-resources/workflows/work-package/work-package.md`](https://github.com/m2ux/agent-resources/blob/main/workflows/work-package/work-package.md) |
-| `example-workflow` | Created as schema demonstration |
-
-## 📁 Branch Structure
-
-| Branch | Content | Purpose |
-|--------|---------|---------|
-| `main` | TypeScript server code | Implementation |
-| `workflows` | JSON workflows + guides | Data (orphan branch) |
-
-This separation allows workflow definitions to evolve independently from server code, with separate versioning and commit histories.
-
-## 📚 Documentation
-
-| Resource | Description |
-|----------|-------------|
-| [Development Guide](docs/development.md) | Setup, testing, project structure |
+Restart your MCP client and start executing workflows. See [SETUP.md](SETUP.md) for other IDEs.
 
 ## 📜 License
 

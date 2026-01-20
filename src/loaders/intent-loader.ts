@@ -1,0 +1,96 @@
+import { existsSync } from 'node:fs';
+import { readFile, readdir } from 'node:fs/promises';
+import { join, basename, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { type Result, ok, err } from '../result.js';
+import { IntentNotFoundError } from '../errors.js';
+import { logInfo } from '../logging.js';
+
+export interface IntentEntry { id: string; name: string; path: string; }
+
+export interface Intent {
+  id: string;
+  version: string;
+  problem: string;
+  recognition: string[];
+  skills: {
+    primary: string;
+    supporting: string[];
+  };
+  outcome: string[];
+  flow: string[];
+  context_to_preserve: string[];
+}
+
+function getIntentDir(): string {
+  const currentFile = fileURLToPath(import.meta.url);
+  const srcDir = dirname(dirname(currentFile));
+  const projectRoot = dirname(srcDir);
+  return join(projectRoot, 'prompts', 'intents');
+}
+
+export async function readIntent(intentId: string): Promise<Result<Intent, IntentNotFoundError>> {
+  const intentDir = getIntentDir();
+  const filePath = join(intentDir, `${intentId}.json`);
+  
+  if (!existsSync(filePath)) {
+    return err(new IntentNotFoundError(intentId));
+  }
+  
+  try {
+    const content = await readFile(filePath, 'utf-8');
+    const intent = JSON.parse(content) as Intent;
+    logInfo('Intent loaded', { id: intentId, path: filePath });
+    return ok(intent);
+  } catch {
+    return err(new IntentNotFoundError(intentId));
+  }
+}
+
+export async function listIntents(): Promise<IntentEntry[]> {
+  const intentDir = getIntentDir();
+  
+  if (!existsSync(intentDir)) return [];
+  
+  try {
+    const files = await readdir(intentDir);
+    return files
+      .filter(f => f.endsWith('.json') && f !== 'index.json')
+      .map(file => {
+        const id = basename(file, '.json');
+        const name = id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        return { id, name, path: file };
+      });
+  } catch { 
+    return []; 
+  }
+}
+
+export interface IntentIndex {
+  version: string;
+  description: string;
+  intents: Array<{
+    id: string;
+    problem: string;
+    primary_skill: string;
+  }>;
+  quick_match: Record<string, string>;
+}
+
+export async function readIntentIndex(): Promise<Result<IntentIndex, IntentNotFoundError>> {
+  const intentDir = getIntentDir();
+  const filePath = join(intentDir, 'index.json');
+  
+  if (!existsSync(filePath)) {
+    return err(new IntentNotFoundError('index'));
+  }
+  
+  try {
+    const content = await readFile(filePath, 'utf-8');
+    const index = JSON.parse(content) as IntentIndex;
+    logInfo('Intent index loaded', { path: filePath });
+    return ok(index);
+  } catch {
+    return err(new IntentNotFoundError('index'));
+  }
+}
