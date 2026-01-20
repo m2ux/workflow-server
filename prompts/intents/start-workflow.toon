@@ -1,10 +1,31 @@
 id: start-workflow
 version: 1.0.0
 problem: The user wants to begin executing a new workflow from the beginning.
-recognition[6]: Start a workflow,Begin workflow,Execute workflow,Run workflow,New workflow,Let's start the work-package workflow
+recognition[6]:
+  - Start a workflow
+  - Begin workflow
+  - Execute workflow
+  - Run workflow
+  - New workflow
+  - Let's start the work-package workflow
 skills:
   primary: workflow-execution
   supporting[0]:
-outcome[4]: Workflow is selected and loaded,Initial state is created with correct initial phase,First phase is entered,Agent is ready to guide user through workflow
-flow[7]: "1. If workflow not specified, call list_workflows to show options",2. Call get_workflow to load the selected workflow,"3. Initialize state: { workflowId, currentPhase: initialPhase, completedPhases: [], variables: defaults }",4. Read and apply workflow rules,5. Call get_phase for initialPhase,6. Present first phase to user with steps and any entry actions,"7. If phase has checkpoints, prepare to present when reached"
-context_to_preserve[4]: workflowId - The selected workflow identifier,currentPhase - Currently active phase,rules - Workflow rules to follow throughout,variables - Workflow variables with defaults
+outcome[4]:
+  - Workflow is selected and loaded
+  - Initial state is created with correct initial phase
+  - First phase is entered
+  - Agent is ready to guide user through workflow
+flow[7]:
+  - "1. If workflow not specified, call list_workflows to show options"
+  - 2. Call get_workflow to load the selected workflow
+  - "3. Initialize state: { workflowId, currentPhase: initialPhase, completedPhases: [], variables: defaults }"
+  - 4. Read and apply workflow rules
+  - 5. Call get_phase for initialPhase
+  - 6. Present first phase to user with steps and any entry actions
+  - "7. If phase has checkpoints, prepare to present when reached"
+context_to_preserve[4]:
+  - workflowId - The selected workflow identifier
+  - currentPhase - Currently active phase
+  - rules - Workflow rules to follow throughout
+  - variables - Workflow variables with defaults
