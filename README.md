@@ -21,7 +21,7 @@ Workflow Server uses an **Intent → Skill → Tool** architecture to guide AI a
 User Goal → Intent (problem domain) → Skill (solution domain) → Tools
 ```
 
-### Available Intents
+### Supported Intents
 
 | Intent | User Goal |
 |--------|-----------|
