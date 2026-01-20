@@ -24,14 +24,14 @@ After initial setup of an always-applied [rule](prompts/ide-setup.md), agents:
 
 This reduces context overhead and provides deterministic tool selection.
 
-Problem Domain:
-```
-User Goal (complete a work package) → Intent (start-workflow, resume-workflow, ..)
-```
-Solution Domain:
-```
-Skill(s) (execute-workflow) → Tool(s) (get-transition, get-phase, get-checkpoint, ..)
-```
+> Problem Domain:
+> ```
+> User Goal (complete a work package) → Intent (start-workflow, resume-workflow, ..)
+> ```
+> Solution Domain:
+> ```
+> Skill(s) (execute-workflow) → Tool(s) (get-transition, get-phase, get-checkpoint, ..)
+> ```
 
 ### Intents
 
