@@ -4,8 +4,17 @@ version: 1.0.0
 title: Work Package Implementation Workflow
 description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change."
 author: m2ux
-tags[3]: implementation,engineering,workflow
-rules[6]: Agents must NOT proceed past checkpoints without user confirmation,"Ask, don't assume - Clarify requirements before acting","Summarize, then proceed - Provide brief status before asking to continue",One task at a time - Complete current work before starting new work,Explicit approval - Get clear 'yes' or 'proceed' before major actions,"Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
+tags[3]:
+  - implementation
+  - engineering
+  - workflow
+rules[6]:
+  - Agents must NOT proceed past checkpoints without user confirmation
+  - "Ask, don't assume - Clarify requirements before acting"
+  - "Summarize, then proceed - Provide brief status before asking to continue"
+  - One task at a time - Complete current work before starting new work
+  - Explicit approval - Get clear 'yes' or 'proceed' before major actions
+  - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
 variables[9]:
   - name: issue_number
     type: string

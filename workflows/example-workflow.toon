@@ -24,7 +24,8 @@ phases[3]:
             label: Skip to end
             effect:
               transitionTo: phase-3
-              skipPhases[1]: phase-2
+              skipPhases[1]:
+                - phase-2
     transitions[1]{to,isDefault}:
       phase-2,true
   - id: phase-2
