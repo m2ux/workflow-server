@@ -1,0 +1,48 @@
+"$schema": ../schemas/workflow.schema.json
+id: example-workflow
+version: 1.0.0
+title: Example Workflow
+description: Demonstrates workflow primitives
+initialPhase: phase-1
+phases[3]:
+  - id: phase-1
+    name: "Phase 1: Setup"
+    required: true
+    steps[1]{id,name}:
+      step-1,Setup step
+    checkpoints[1]:
+      - id: checkpoint-1
+        name: Setup Complete
+        message: Setup is complete. Proceed?
+        blocking: true
+        options[2]:
+          - id: proceed
+            label: Proceed
+            effect:
+              transitionTo: phase-2
+          - id: skip
+            label: Skip to end
+            effect:
+              transitionTo: phase-3
+              skipPhases[1]: phase-2
+    transitions[1]{to,isDefault}:
+      phase-2,true
+  - id: phase-2
+    name: "Phase 2: Implementation"
+    required: true
+    steps[1]{id,name}:
+      step-2,Implement
+    transitions[1]{to,isDefault}:
+      phase-3,true
+  - id: phase-3
+    name: "Phase 3: Complete"
+    required: true
+    steps[1]{id,name}:
+      step-3,Finalize
+    checkpoints[1]:
+      - id: checkpoint-final
+        name: Complete
+        message: Workflow complete.
+        blocking: true
+        options[1]{id,label}:
+          done,Done
