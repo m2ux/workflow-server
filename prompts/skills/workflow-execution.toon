@@ -1,0 +1,55 @@
+id: workflow-execution
+version: 1.0.0
+capability: Execute workflows from start to completion with consistent tool usage
+execution_pattern:
+  start[2]: list_workflows,get_workflow
+  per_phase[2]: get_phase,get_checkpoint
+  transitions[1]: validate_transition
+tools:
+  list_workflows:
+    when: Discovering available workflows
+    returns: Array of workflow IDs with metadata
+    next: get_workflow
+  get_workflow:
+    when: Loading workflow for execution
+    returns: Complete workflow definition
+    preserve[5]: id,initialPhase,variables,rules,phases
+  get_phase:
+    when: Entering a new phase
+    returns: "Phase details with steps, checkpoints, decisions"
+    preserve[4]: steps,checkpoints,decisions,transitions
+  get_checkpoint:
+    when: User decision required at checkpoint
+    returns: Checkpoint options and their effects
+    action: Present options to user; apply selected effect
+  validate_transition:
+    when: Moving between phases
+    returns: Validity of transition and applicable conditions
+state:
+  track[5]: workflowId,currentPhase,completedPhases,variables,checkpointResponses
+  initialize: "On get_workflow, set currentPhase to initialPhase"
+  update_on:
+    phase_transition: Add previous phase to completedPhases; update currentPhase
+    checkpoint_response: "Record response; apply effects (setVariable, transitionTo, skipPhases)"
+    variable_change: Update variables object
+interpretation:
+  transitions: Evaluate conditions against state.variables; take matching transition or default
+  checkpoints: Present message and options to user; apply effect from selected option
+  decisions: Evaluate branch conditions; take first matching branch or default
+  loops: "For forEach: iterate over collection; For while: check condition before each iteration"
+errors:
+  workflow_not_found:
+    cause: Invalid workflow_id parameter
+    recovery: Call list_workflows to discover valid IDs
+  phase_not_found:
+    cause: Invalid phase_id or workflow not loaded
+    recovery: Verify phase exists in workflow.phases array
+  invalid_transition:
+    cause: Transition not allowed from current phase
+    recovery: Check phase.transitions for valid targets; evaluate conditions
+  missing_variable:
+    cause: Condition references undefined variable
+    recovery: Check workflow.variables for required variables; ensure checkpoint effects set them
+  checkpoint_required:
+    cause: Attempting to transition past blocking checkpoint
+    recovery: Present checkpoint to user; await response before continuing
