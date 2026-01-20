@@ -26,11 +26,11 @@ This reduces context overhead and provides deterministic tool selection.
 
 Problem Domain:
 ```
-User Goal (complete a work package) → Intent (start-workflow,..)
+User Goal (complete a work package) → Intent (start-workflow, resume-workflow, ..)
 ```
 Solution Domain:
 ```
-Skill (execute-workflow) → Tools(get-transition,..)
+Skill(s) (execute-workflow) → Tool(s) (get-transition, get-phase, get-checkpoint, ..)
 ```
 
 ### Intents
