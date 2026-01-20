@@ -59,14 +59,6 @@ git worktree add ./workflow-data workflows
 npm run build
 ```
 
-### Setup IDE Rule
-
-Add the following to your IDE 'always-applied' rule-set:
-
-```
-Before using workflow-server MCP tools, fetch the `workflow://intents` resource.
-```
-
 ### Configure MCP Client
 
 **Cursor** (`~/.cursor/mcp.json`):
@@ -86,7 +78,17 @@ Before using workflow-server MCP tools, fetch the `workflow://intents` resource.
 }
 ```
 
-Restart your MCP client and start executing workflows. See [SETUP.md](SETUP.md) for other IDEs.
+Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
+
+### Setup IDE Rule
+
+Add the following to your IDE 'always-applied' rule-set:
+
+```
+Before using workflow-server MCP tools, fetch the `workflow://intents` resource.
+```
+
+Start executing workflows!
 
 ## 📜 License
 
