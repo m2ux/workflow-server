@@ -232,12 +232,12 @@ describe('mcp-server integration', () => {
     it('should get universal skill without workflow_id', async () => {
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { skill_id: 'intent-resolution' },
+        arguments: { skill_id: 'activity-resolution' },
       });
       
       expect(result.content).toBeDefined();
       const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(skill.id).toBe('intent-resolution');
+      expect(skill.id).toBe('activity-resolution');
     });
   });
 

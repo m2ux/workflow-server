@@ -11,19 +11,19 @@ describe('skill-loader', () => {
       expect(skills.length).toBeGreaterThanOrEqual(2);
       
       const ids = skills.map(s => s.id);
-      expect(ids).toContain('intent-resolution');
+      expect(ids).toContain('activity-resolution');
       expect(ids).toContain('workflow-execution');
     });
 
     it('should include index, name, and path in universal skills', async () => {
       const skills = await listUniversalSkills(WORKFLOW_DIR);
-      const intentResolution = skills.find(s => s.id === 'intent-resolution');
+      const activityResolution = skills.find(s => s.id === 'activity-resolution');
       
-      expect(intentResolution).toBeDefined();
-      expect(intentResolution?.index).toBe('00');
-      expect(intentResolution?.name).toBe('Intent Resolution');
-      expect(intentResolution?.path).toBe('00-intent-resolution.toon');
-      expect(intentResolution?.workflowId).toBeUndefined();
+      expect(activityResolution).toBeDefined();
+      expect(activityResolution?.index).toBe('00');
+      expect(activityResolution?.name).toBe('Activity Resolution');
+      expect(activityResolution?.path).toBe('00-activity-resolution.toon');
+      expect(activityResolution?.workflowId).toBeUndefined();
     });
   });
 
@@ -42,17 +42,17 @@ describe('skill-loader', () => {
       
       const ids = skills.map(s => s.id);
       expect(ids).toContain('workflow-execution');
-      expect(ids).toContain('intent-resolution');
+      expect(ids).toContain('activity-resolution');
     });
   });
 
   describe('readSkill', () => {
     it('should load a universal skill from meta workflow', async () => {
-      const result = await readSkill('intent-resolution', WORKFLOW_DIR);
+      const result = await readSkill('activity-resolution', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.id).toBe('intent-resolution');
+        expect(result.value.id).toBe('activity-resolution');
         expect(result.value.capability).toBeDefined();
       }
     });
@@ -156,7 +156,7 @@ describe('skill-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         const ids = result.value.universal.map(s => s.id);
-        expect(ids).toContain('intent-resolution');
+        expect(ids).toContain('activity-resolution');
         expect(ids).toContain('workflow-execution');
         
         for (const skill of result.value.universal) {
