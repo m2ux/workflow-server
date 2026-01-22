@@ -9,19 +9,19 @@ export interface TemplateEntry {
   index: string;  // e.g., "01", "02"
   name: string;   // e.g., "implementation-analysis"
   title: string;  // e.g., "Implementation Analysis"
-  path: string;   // e.g., "01-implementation-analysis.template.md"
+  path: string;   // e.g., "templates/01-implementation-analysis.md"
 }
 
 /**
  * Parse a template filename to extract index and name.
- * Expected format: {NN}-{name}.template.md
+ * Expected format: {NN}-{name}.md (in templates/ subdirectory)
  * 
  * @param filename - Template filename
  * @returns Parsed index and name, or null if not a valid template file
  */
 function parseTemplateFilename(filename: string): { index: string; name: string } | null {
-  // Match pattern: {digits}-{name}.template.md
-  const match = filename.match(/^(\d+)-(.+)\.template\.md$/);
+  // Match pattern: {digits}-{name}.md
+  const match = filename.match(/^(\d+)-(.+)\.md$/);
   if (!match || !match[1] || !match[2]) return null;
   
   return {
@@ -32,6 +32,7 @@ function parseTemplateFilename(filename: string): { index: string; name: string 
 
 /**
  * Read a template by index from a workflow directory.
+ * Templates are stored in {workflowDir}/{workflowId}/templates/ subdirectory.
  * 
  * @param workflowDir - Base workflow directory (e.g., './workflow-data/workflows')
  * @param workflowId - Workflow ID (e.g., 'work-package')
@@ -43,7 +44,7 @@ export async function readTemplate(
   workflowId: string, 
   templateIndex: string
 ): Promise<Result<string, TemplateNotFoundError>> {
-  const templateDir = join(workflowDir, workflowId);
+  const templateDir = join(workflowDir, workflowId, 'templates');
   
   if (!existsSync(templateDir)) {
     return err(new TemplateNotFoundError(templateIndex, workflowId));
@@ -77,10 +78,10 @@ export async function readTemplate(
 
 /**
  * List all templates available for a workflow.
- * Looks in {workflowDir}/{workflowId}/ for .template.md files.
+ * Looks in {workflowDir}/{workflowId}/templates/ for {NN}-{name}.md files.
  */
 export async function listTemplates(workflowDir: string, workflowId: string): Promise<TemplateEntry[]> {
-  const templateDir = join(workflowDir, workflowId);
+  const templateDir = join(workflowDir, workflowId, 'templates');
   
   if (!existsSync(templateDir)) return [];
   
@@ -100,7 +101,7 @@ export async function listTemplates(workflowDir: string, workflowId: string): Pr
           index: parsed.index,
           name: parsed.name,
           title,
-          path: file,
+          path: `templates/${file}`,
         });
       }
     }

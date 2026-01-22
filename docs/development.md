@@ -77,8 +77,10 @@ workflow-server/
 │   └── workflows/            # Workflow directories
 │       └── {workflow-id}/    # Each workflow folder contains:
 │           ├── {workflow-id}.toon    # Workflow definition
-│           ├── {NN}-*.guide.toon     # Guides (indexed)
-│           └── {NN}-*.template.md    # Templates (indexed)
+│           ├── guides/               # Guide subdirectory
+│           │   └── {NN}-{name}.toon  # Guides (indexed)
+│           └── templates/            # Template subdirectory
+│               └── {NN}-{name}.md    # Templates (indexed)
 └── docs/                     # Documentation
 ```
 
@@ -182,9 +184,9 @@ git push origin workflows
 
 ## Adding New Guides
 
-Guides are stored alongside workflows using indexed filenames:
+Guides are stored in a `guides/` subdirectory within each workflow:
 
-1. Create `{NN}-{name}.guide.toon` in `workflow-data/workflows/{workflow-id}/`
+1. Create `{NN}-{name}.toon` in `workflow-data/workflows/{workflow-id}/guides/`
 2. Use sequential index (00, 01, 02, etc.)
 3. Guides are auto-discovered - no manifest update needed
 4. Access via: `get_guide { workflow_id: "{id}", index: "{NN}" }`
@@ -192,9 +194,9 @@ Guides are stored alongside workflows using indexed filenames:
 
 ## Adding New Templates
 
-Templates are Markdown files for document generation:
+Templates are stored in a `templates/` subdirectory within each workflow:
 
-1. Create `{NN}-{name}.template.md` in `workflow-data/workflows/{workflow-id}/`
+1. Create `{NN}-{name}.md` in `workflow-data/workflows/{workflow-id}/templates/`
 2. Use sequential index (01, 02, 03, etc.)
 3. Templates are auto-discovered - no manifest update needed
 4. Access via: `get_template { workflow_id: "{id}", index: "{NN}" }`

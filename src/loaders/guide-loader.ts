@@ -10,7 +10,7 @@ export interface GuideEntry {
   index: string;  // e.g., "00", "01"
   name: string;   // e.g., "start-here"
   title: string;  // e.g., "Start Here"
-  path: string;   // e.g., "00-start-here.guide.toon"
+  path: string;   // e.g., "guides/00-start-here.toon"
   format: 'toon' | 'markdown';
 }
 
@@ -25,20 +25,20 @@ export interface Guide {
 
 /**
  * Parse a guide filename to extract index and name.
- * Expected format: {NN}-{name}.guide.toon or {NN}-{name}.guide.md
+ * Expected format: {NN}-{name}.toon or {NN}-{name}.md (in guides/ subdirectory)
  * 
  * @param filename - Guide filename
  * @returns Parsed index, name, and format, or null if not a valid guide file
  */
 function parseGuideFilename(filename: string): { index: string; name: string; format: 'toon' | 'markdown' } | null {
-  // Match pattern: {digits}-{name}.guide.toon
-  const toonMatch = filename.match(/^(\d+)-(.+)\.guide\.toon$/);
+  // Match pattern: {digits}-{name}.toon
+  const toonMatch = filename.match(/^(\d+)-(.+)\.toon$/);
   if (toonMatch && toonMatch[1] && toonMatch[2]) {
     return { index: toonMatch[1], name: toonMatch[2], format: 'toon' };
   }
   
-  // Match pattern: {digits}-{name}.guide.md
-  const mdMatch = filename.match(/^(\d+)-(.+)\.guide\.md$/);
+  // Match pattern: {digits}-{name}.md
+  const mdMatch = filename.match(/^(\d+)-(.+)\.md$/);
   if (mdMatch && mdMatch[1] && mdMatch[2]) {
     return { index: mdMatch[1], name: mdMatch[2], format: 'markdown' };
   }
@@ -48,7 +48,8 @@ function parseGuideFilename(filename: string): { index: string; name: string; fo
 
 /**
  * Read a guide by index from a workflow directory.
- * Supports both TOON (.guide.toon) and Markdown (.guide.md) formats.
+ * Guides are stored in {workflowDir}/{workflowId}/guides/ subdirectory.
+ * Supports both TOON (.toon) and Markdown (.md) formats.
  * 
  * @param workflowDir - Base workflow directory (e.g., './workflow-data/workflows')
  * @param workflowId - Workflow ID (e.g., 'work-package')
@@ -60,7 +61,7 @@ export async function readGuide(
   workflowId: string, 
   guideIndex: string
 ): Promise<Result<Guide | string, GuideNotFoundError>> {
-  const guideDir = join(workflowDir, workflowId);
+  const guideDir = join(workflowDir, workflowId, 'guides');
   
   if (!existsSync(guideDir)) {
     return err(new GuideNotFoundError(guideIndex, workflowId));
@@ -98,6 +99,7 @@ export async function readGuide(
 
 /**
  * Read a guide by index and return raw content (for resource serving).
+ * Guides are stored in {workflowDir}/{workflowId}/guides/ subdirectory.
  * Returns the original file content without parsing.
  */
 export async function readGuideRaw(
@@ -105,7 +107,7 @@ export async function readGuideRaw(
   workflowId: string, 
   guideIndex: string
 ): Promise<Result<{ content: string; format: 'toon' | 'markdown' }, GuideNotFoundError>> {
-  const guideDir = join(workflowDir, workflowId);
+  const guideDir = join(workflowDir, workflowId, 'guides');
   
   if (!existsSync(guideDir)) {
     return err(new GuideNotFoundError(guideIndex, workflowId));
@@ -138,10 +140,10 @@ export async function readGuideRaw(
 
 /**
  * List all guides available for a workflow.
- * Looks in {workflowDir}/{workflowId}/ for {NN}-{name}.guide.toon and .guide.md files.
+ * Looks in {workflowDir}/{workflowId}/guides/ for {NN}-{name}.toon and .md files.
  */
 export async function listGuides(workflowDir: string, workflowId: string): Promise<GuideEntry[]> {
-  const guideDir = join(workflowDir, workflowId);
+  const guideDir = join(workflowDir, workflowId, 'guides');
   
   if (!existsSync(guideDir)) return [];
   
@@ -161,7 +163,7 @@ export async function listGuides(workflowDir: string, workflowId: string): Promi
           index: parsed.index,
           name: parsed.name,
           title,
-          path: file,
+          path: `guides/${file}`,
           format: parsed.format,
         });
       }
@@ -195,7 +197,7 @@ export async function getGuideEntry(
 
 /**
  * List all workflows that contain guides.
- * Scans {workflowDir}/ for subdirectories containing guide files.
+ * Scans {workflowDir}/ for subdirectories containing a guides/ subdirectory with guide files.
  */
 export async function listWorkflowsWithGuides(workflowDir: string): Promise<string[]> {
   if (!existsSync(workflowDir)) return [];
