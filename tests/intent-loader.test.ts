@@ -36,7 +36,7 @@ describe('intent-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('start-workflow');
-        expect(result.value.version).toBe('1.0.0');
+        expect(result.value.version).toBe('2.0.0');
         expect(result.value.problem).toBeDefined();
       }
     });
@@ -101,7 +101,7 @@ describe('intent-loader', () => {
       
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.version).toBe('1.0.0');
+        expect(result.value.version).toBe('2.0.0');
         expect(result.value.description).toBeDefined();
         expect(result.value.intents.length).toBe(3);
       }

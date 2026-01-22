@@ -1,5 +1,8 @@
-version: 1.0.0
+version: 2.0.0
 description: Match user goal to an intent. Intents use multiple skills to achieve outcomes.
+skills[2]:
+  - workflow-execution
+  - intent-resolution
 intents[3]{id,problem,primary_skill}:
   start-workflow,Begin executing a new workflow from the beginning,workflow-execution
   resume-workflow,Continue a workflow that was previously started,workflow-execution

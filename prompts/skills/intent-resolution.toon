@@ -1,0 +1,65 @@
+id: intent-resolution
+version: 1.0.0
+capability: Resolve user goals to appropriate intents and skills
+execution_pattern:
+  bootstrap[2]:
+    - get_intents
+    - get_intent
+  skill_loading[1]:
+    - get_skill
+  discovery[1]:
+    - list_resources
+tools:
+  get_intents:
+    when: Agent starts; IDE rule triggers; user mentions workflow
+    params: none
+    returns: Intent index with quick_match patterns and intent list
+    preserve[2]:
+      - intents
+      - quick_match
+    usage: Primary entry point; match user goal to intent ID
+  get_intent:
+    when: User goal matched to intent; need execution flow
+    params: intent_id
+    returns: Full intent with problem, recognition, skills, outcome, flow
+    preserve[4]:
+      - problem
+      - skills
+      - flow
+      - context_to_preserve
+    next: get_skill for skills.primary
+  get_skill:
+    when: Intent loaded; need tool orchestration pattern
+    params: skill_id
+    returns: Full skill with execution_pattern, tools, state, errors
+    preserve[4]:
+      - execution_pattern
+      - tools
+      - state
+      - errors
+    usage: Follow execution_pattern; use tools guidance for each tool call
+  list_resources:
+    when: "Understanding what's available; exploring workflow contents"
+    params: none
+    returns: Hierarchical index of all resources by workflow
+    usage: Discovery of available workflows, guides, templates
+flow[5]:
+  - 1. Call get_intents to get intent index
+  - 2. Match user goal using quick_match patterns or intent descriptions
+  - 3. Call get_intent with matched intent_id
+  - 4. Call get_skill with intent.skills.primary
+  - 5. Execute following skill.execution_pattern
+matching:
+  quick_match: "Use exact or fuzzy match against quick_match keys"
+  fallback: "If no quick_match, compare user goal to intent.problem descriptions"
+  ambiguous: "If multiple intents match, ask user to clarify"
+errors:
+  intent_not_found:
+    cause: Invalid intent_id parameter
+    recovery: Call get_intents to see valid intent IDs
+  skill_not_found:
+    cause: Invalid skill_id in intent.skills
+    recovery: Call list_skills to see valid skill IDs
+  no_match:
+    cause: User goal doesn't match any intent
+    recovery: Present available intents; ask user to rephrase

@@ -5,10 +5,11 @@ describe('skill-loader', () => {
   describe('listSkills', () => {
     it('should list available skills', async () => {
       const skills = await listSkills();
-      expect(skills.length).toBeGreaterThanOrEqual(1);
+      expect(skills.length).toBeGreaterThanOrEqual(2);
       
       const ids = skills.map(s => s.id);
       expect(ids).toContain('workflow-execution');
+      expect(ids).toContain('intent-resolution');
     });
 
     it('should include name and path in skill entries', async () => {
@@ -19,6 +20,15 @@ describe('skill-loader', () => {
       expect(workflowExecution?.name).toBe('Workflow Execution');
       expect(workflowExecution?.path).toBe('workflow-execution.toon');
     });
+
+    it('should include intent-resolution skill', async () => {
+      const skills = await listSkills();
+      const intentResolution = skills.find(s => s.id === 'intent-resolution');
+      
+      expect(intentResolution).toBeDefined();
+      expect(intentResolution?.name).toBe('Intent Resolution');
+      expect(intentResolution?.path).toBe('intent-resolution.toon');
+    });
   });
 
   describe('readSkill', () => {
@@ -28,7 +38,7 @@ describe('skill-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('workflow-execution');
-        expect(result.value.version).toBe('1.0.0');
+        expect(result.value.version).toBe('2.0.0');
         expect(result.value.capability).toBeDefined();
       }
     });
