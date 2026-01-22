@@ -1,11 +1,13 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
-import { join, basename, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, basename } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { IntentNotFoundError } from '../errors.js';
 import { logInfo } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
+
+/** The meta workflow contains all intents */
+const META_WORKFLOW_ID = 'meta';
 
 export interface IntentEntry { id: string; name: string; path: string; }
 
@@ -23,15 +25,13 @@ export interface Intent {
   context_to_preserve: string[];
 }
 
-function getIntentDir(): string {
-  const currentFile = fileURLToPath(import.meta.url);
-  const srcDir = dirname(dirname(currentFile));
-  const projectRoot = dirname(srcDir);
-  return join(projectRoot, 'prompts', 'intents');
+/** Get the intent directory from the meta workflow */
+function getIntentDir(workflowDir: string): string {
+  return join(workflowDir, META_WORKFLOW_ID, 'intents');
 }
 
-export async function readIntent(intentId: string): Promise<Result<Intent, IntentNotFoundError>> {
-  const intentDir = getIntentDir();
+export async function readIntent(workflowDir: string, intentId: string): Promise<Result<Intent, IntentNotFoundError>> {
+  const intentDir = getIntentDir(workflowDir);
   const filePath = join(intentDir, `${intentId}.toon`);
   
   if (!existsSync(filePath)) {
@@ -48,8 +48,8 @@ export async function readIntent(intentId: string): Promise<Result<Intent, Inten
   }
 }
 
-export async function listIntents(): Promise<IntentEntry[]> {
-  const intentDir = getIntentDir();
+export async function listIntents(workflowDir: string): Promise<IntentEntry[]> {
+  const intentDir = getIntentDir(workflowDir);
   
   if (!existsSync(intentDir)) return [];
   
@@ -78,8 +78,8 @@ export interface IntentIndex {
   quick_match: Record<string, string>;
 }
 
-export async function readIntentIndex(): Promise<Result<IntentIndex, IntentNotFoundError>> {
-  const intentDir = getIntentDir();
+export async function readIntentIndex(workflowDir: string): Promise<Result<IntentIndex, IntentNotFoundError>> {
+  const intentDir = getIntentDir(workflowDir);
   const filePath = join(intentDir, 'index.toon');
   
   if (!existsSync(filePath)) {

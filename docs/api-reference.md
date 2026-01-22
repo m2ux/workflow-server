@@ -63,9 +63,11 @@ Skills provide structured guidance for agents to consistently execute workflows.
 
 ### Universal Skills
 
+Universal skills are stored in the `meta` workflow and apply to all workflows.
+
 | Skill | Location | Description |
 |-------|----------|-------------|
-| `intent-resolution` | `prompts/skills/` | Bootstraps agent interaction by resolving user goals to intents and loading appropriate skills |
+| `intent-resolution` | `meta/skills/` | Bootstraps agent interaction by resolving user goals to intents and loading appropriate skills |
 
 ### Workflow-Specific Skills
 
@@ -73,11 +75,17 @@ Skills provide structured guidance for agents to consistently execute workflows.
 |-------|----------|----------|-------------|
 | `workflow-execution` | `work-package` | `work-package/skills/` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
 
+### The Meta Workflow
+
+The `meta` workflow is the bootstrap workflow for the workflow-server. It contains:
+- **Intents** (`meta/intents/`): All user intents for workflow operations
+- **Universal skills** (`meta/skills/`): Skills that apply to all workflows
+
 ### Skill Resolution
 
 When calling `get_skill { skill_id, workflow_id }`:
 1. First checks `{workflow_id}/skills/{skill_id}.toon`
-2. Falls back to `prompts/skills/{skill_id}.toon`
+2. Falls back to `meta/skills/{skill_id}.toon` (universal)
 
 ### Skill Contents
 
@@ -108,5 +116,6 @@ Bootstrap skill for agent initialization:
 
 | Workflow | Phases | Description |
 |----------|--------|-------------|
+| `meta` | 2 | Bootstrap workflow - manages intents and universal skills |
 | `work-package` | 11 | Full work package lifecycle from issue to PR |
 | `example-workflow` | 3 | Example demonstrating schema features |

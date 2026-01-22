@@ -6,8 +6,8 @@ const WORKFLOW_DIR = join(process.cwd(), 'workflow-data', 'workflows');
 
 describe('skill-loader', () => {
   describe('listUniversalSkills', () => {
-    it('should list universal skills', async () => {
-      const skills = await listUniversalSkills();
+    it('should list universal skills from meta workflow', async () => {
+      const skills = await listUniversalSkills(WORKFLOW_DIR);
       expect(skills.length).toBeGreaterThanOrEqual(1);
       
       const ids = skills.map(s => s.id);
@@ -15,7 +15,7 @@ describe('skill-loader', () => {
     });
 
     it('should include intent-resolution as universal skill', async () => {
-      const skills = await listUniversalSkills();
+      const skills = await listUniversalSkills(WORKFLOW_DIR);
       const intentResolution = skills.find(s => s.id === 'intent-resolution');
       
       expect(intentResolution).toBeDefined();
@@ -57,8 +57,8 @@ describe('skill-loader', () => {
   });
 
   describe('readSkill', () => {
-    it('should load a universal skill without workflow context', async () => {
-      const result = await readSkill('intent-resolution');
+    it('should load a universal skill from meta workflow', async () => {
+      const result = await readSkill('intent-resolution', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -79,7 +79,7 @@ describe('skill-loader', () => {
     });
 
     it('should return error for non-existent skill', async () => {
-      const result = await readSkill('non-existent-skill');
+      const result = await readSkill('non-existent-skill', WORKFLOW_DIR);
       
       expect(result.success).toBe(false);
       if (!result.success) {

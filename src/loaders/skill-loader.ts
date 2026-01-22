@@ -1,11 +1,13 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir, stat } from 'node:fs/promises';
-import { join, basename, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, basename } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logInfo } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
+
+/** The meta workflow contains universal skills */
+const META_WORKFLOW_ID = 'meta';
 
 export interface SkillEntry { 
   id: string; 
@@ -39,12 +41,9 @@ export interface Skill {
   errors: Record<string, { cause: string; recovery: string }>;
 }
 
-/** Get the universal skills directory (prompts/skills/) */
-function getUniversalSkillDir(): string {
-  const currentFile = fileURLToPath(import.meta.url);
-  const srcDir = dirname(dirname(currentFile));
-  const projectRoot = dirname(srcDir);
-  return join(projectRoot, 'prompts', 'skills');
+/** Get the universal skills directory (meta workflow skills/) */
+function getUniversalSkillDir(workflowDir: string): string {
+  return join(workflowDir, META_WORKFLOW_ID, 'skills');
 }
 
 /** Get the workflow-specific skills directory */
@@ -53,18 +52,18 @@ function getWorkflowSkillDir(workflowDir: string, workflowId: string): string {
 }
 
 /**
- * Read a skill by ID, with optional workflow context.
+ * Read a skill by ID, with workflow context.
  * Resolution order:
  * 1. If workflowId provided: check {workflowDir}/{workflowId}/skills/{skillId}.toon
- * 2. Fallback to universal: check prompts/skills/{skillId}.toon
+ * 2. Fallback to universal: check {workflowDir}/meta/skills/{skillId}.toon
  */
 export async function readSkill(
   skillId: string, 
-  workflowDir?: string, 
+  workflowDir: string, 
   workflowId?: string
 ): Promise<Result<Skill, SkillNotFoundError>> {
   // Try workflow-specific skill first
-  if (workflowDir && workflowId) {
+  if (workflowId && workflowId !== META_WORKFLOW_ID) {
     const workflowSkillDir = getWorkflowSkillDir(workflowDir, workflowId);
     const workflowFilePath = join(workflowSkillDir, `${skillId}.toon`);
     
@@ -80,8 +79,8 @@ export async function readSkill(
     }
   }
   
-  // Try universal skill
-  const universalDir = getUniversalSkillDir();
+  // Try universal skill (from meta workflow)
+  const universalDir = getUniversalSkillDir(workflowDir);
   const universalFilePath = join(universalDir, `${skillId}.toon`);
   
   if (existsSync(universalFilePath)) {
@@ -99,10 +98,10 @@ export async function readSkill(
 }
 
 /**
- * List all universal skills from prompts/skills/
+ * List all universal skills from meta/skills/
  */
-export async function listUniversalSkills(): Promise<SkillEntry[]> {
-  const skillDir = getUniversalSkillDir();
+export async function listUniversalSkills(workflowDir: string): Promise<SkillEntry[]> {
+  const skillDir = getUniversalSkillDir(workflowDir);
   
   if (!existsSync(skillDir)) return [];
   
@@ -139,19 +138,20 @@ export async function listWorkflowSkills(workflowDir: string, workflowId: string
 }
 
 /**
- * List all skills - both universal and workflow-specific for all workflows.
+ * List all skills - both universal (from meta) and workflow-specific for all workflows.
  */
-export async function listSkills(workflowDir?: string): Promise<SkillEntry[]> {
+export async function listSkills(workflowDir: string): Promise<SkillEntry[]> {
   const skills: SkillEntry[] = [];
   
-  // Add universal skills
-  skills.push(...await listUniversalSkills());
+  // Add universal skills from meta workflow
+  skills.push(...await listUniversalSkills(workflowDir));
   
-  // Add workflow-specific skills if workflowDir provided
-  if (workflowDir && existsSync(workflowDir)) {
+  // Add workflow-specific skills (excluding meta which is the universal source)
+  if (existsSync(workflowDir)) {
     try {
       const entries = await readdir(workflowDir);
       for (const entry of entries) {
+        if (entry === META_WORKFLOW_ID) continue; // Skip meta, already included as universal
         const entryPath = join(workflowDir, entry);
         const stats = await stat(entryPath);
         if (stats.isDirectory()) {

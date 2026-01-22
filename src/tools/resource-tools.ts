@@ -19,10 +19,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'Get the intent index - the primary entry point for workflow execution. Returns quick_match patterns to identify user intent.',
     {},
     withAuditLog('get_intents', async () => {
-      const result = await readIntentIndex();
+      const result = await readIntentIndex(config.workflowDir);
       if (!result.success) {
         // Fall back to listing intents
-        const intents = await listIntents();
+        const intents = await listIntents(config.workflowDir);
         return { content: [{ type: 'text', text: JSON.stringify(intents, null, 2) }] };
       }
       return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
@@ -34,7 +34,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'Get a specific intent by ID for detailed flow guidance',
     { intent_id: z.string().describe('Intent ID (e.g., start-workflow, resume-workflow)') },
     withAuditLog('get_intent', async ({ intent_id }) => {
-      const result = await readIntent(intent_id);
+      const result = await readIntent(config.workflowDir, intent_id);
       if (!result.success) throw result.error;
       return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
     })
@@ -44,7 +44,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'list_skills',
-    'List all available skills - both universal and workflow-specific. Optionally filter by workflow.',
+    'List all available skills - both universal (from meta workflow) and workflow-specific. Optionally filter by workflow.',
     { 
       workflow_id: z.string().optional().describe('Optional workflow ID to filter workflow-specific skills')
     },
@@ -52,7 +52,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (workflow_id) {
         // List skills for a specific workflow + universal skills
         const workflowSkills = await listWorkflowSkills(config.workflowDir, workflow_id);
-        const universalSkills = await listUniversalSkills();
+        const universalSkills = await listUniversalSkills(config.workflowDir);
         const result = {
           universal: universalSkills,
           workflow: workflowSkills,
@@ -151,7 +151,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     withAuditLog('list_resources', async () => {
       const workflows = await listWorkflows(config.workflowDir);
       const workflowsWithGuides = await listWorkflowsWithGuides(config.workflowDir);
-      const universalSkills = await listUniversalSkills();
+      const universalSkills = await listUniversalSkills(config.workflowDir);
       
       const resources: Record<string, unknown> = {
         intents: {

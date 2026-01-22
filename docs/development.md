@@ -75,6 +75,13 @@ workflow-server/
 ├── tests/                    # Test suites
 ├── workflow-data/            # Worktree (workflows branch)
 │   └── workflows/            # Workflow directories
+│       ├── meta/             # Bootstrap workflow (manages other workflows)
+│       │   ├── meta.toon             # Meta workflow definition
+│       │   ├── intents/              # All intents live here
+│       │   │   ├── index.toon        # Intent index (primary entry point)
+│       │   │   └── {intent-id}.toon  # Individual intents
+│       │   └── skills/               # Universal skills
+│       │       └── {skill-id}.toon   # Skills that apply to all workflows
 │       └── {workflow-id}/    # Each workflow folder contains:
 │           ├── {workflow-id}.toon    # Workflow definition
 │           ├── guides/               # Guide subdirectory
@@ -210,11 +217,12 @@ Skills can be **universal** (apply to all workflows) or **workflow-specific**.
 
 ### Universal Skills
 
-Universal skills are stored in `prompts/skills/` on the main branch:
+Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
-1. Create `{skill-id}.toon` in `prompts/skills/`
+1. Create `{skill-id}.toon` in `workflow-data/workflows/meta/skills/`
 2. Access via: `get_skill { skill_id: "{skill-id}" }`
 3. Example: `intent-resolution` (applies to all workflow discovery)
+4. Commit to the `workflows` branch
 
 ### Workflow-Specific Skills
 
@@ -230,4 +238,4 @@ Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
 
 When loading a skill with `workflow_id`:
 1. First checks `{workflow-id}/skills/{skill-id}.toon`
-2. Falls back to `prompts/skills/{skill-id}.toon`
+2. Falls back to `meta/skills/{skill-id}.toon` (universal)
