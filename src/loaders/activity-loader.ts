@@ -160,7 +160,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
   }
   
   const index: ActivityIndex = {
-    description: 'Match process to an activity. Activities use skills to achieve outcomes.',
+    description: 'Match user goal to an activity. Activities use skills to achieve outcomes.',
     usage: 'After matching an activity, call the tool specified in next_action with the given parameters to get execution instructions.',
     activities,
     quick_match,
