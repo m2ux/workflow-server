@@ -17,9 +17,9 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 Workflow Server uses an **Intent → Skill → Tool** architecture to guide AI agents through structured workflows.
 
-After initial setup of an always-applied [rule](prompts/ide-setup.md), agents:
-1. **Match the user's goal** to an [intent](prompts/intents/index.json)
-2. **Follow the [skill](prompts/skills/workflow-execution.json) workflow** which orchestrates the right tool sequence
+After initial setup of an always-applied [rule](docs/ide-setup.md), agents:
+1. **Match the user's goal** to an intent via `get_intents`
+2. **Follow the skill workflow** via `get_skill` which orchestrates the right tool sequence
 3. **Execute phases** with state management and checkpoint handling
 
 This reduces context overhead and provides deterministic tool selection.
@@ -61,7 +61,7 @@ cd workflow-server
 npm install
 
 # Set up workflow data (worktree for orphan branch)
-git worktree add ./workflow-data workflows
+git worktree add ./workflows workflows
 
 # Build the server
 npm run build
@@ -78,8 +78,7 @@ npm run build
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows",
-        "GUIDE_DIR": "/path/to/workflow-server/workflow-data/guides"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }
@@ -93,10 +92,24 @@ Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 Add the following to your IDE 'always-applied' rule-set:
 
 ```
-For all workflow execution user requests use the workflow-server MCP server. Before use you *must* fetch the `workflow://intents` resource.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the get_intents tool.
 ```
 
-Start executing workflows!
+### Execute a Workflow
+
+Tell the agent what you want to do using natural language:
+
+```
+Start a new workflow for implementing user authentication
+```
+```
+Begin the work-package workflow for issue #42
+```
+```
+Let's start a workflow to add dark mode support
+```
+
+The agent matches your request to the appropriate intent and guides you through the structured phases.
 
 ## 📜 License
 

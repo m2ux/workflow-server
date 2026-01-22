@@ -19,7 +19,7 @@ cd workflow-server
 npm install
 
 # Set up workflow data (worktree for orphan branch)
-git worktree add ./workflow-data workflows
+git worktree add ./workflows workflows
 ```
 
 ## Development Commands
@@ -59,19 +59,35 @@ workflow-server/
 │   ├── types/                # Generated TypeScript types
 │   ├── loaders/              # File loaders
 │   │   ├── workflow-loader.ts
-│   │   └── guide-loader.ts
+│   │   ├── guide-loader.ts
+│   │   ├── template-loader.ts
+│   │   ├── intent-loader.ts
+│   │   └── skill-loader.ts
 │   ├── tools/                # MCP tool implementations
-│   │   └── workflow-tools.ts
-│   └── resources/            # MCP resource implementations
-│       └── guide-resources.ts
+│   │   ├── workflow-tools.ts
+│   │   └── resource-tools.ts
+│   └── utils/                # Utility functions
+│       └── toon.ts           # TOON format parser
 ├── schemas/                  # Generated JSON schemas
 ├── scripts/                  # Build scripts
 │   ├── generate-schemas.ts
 │   └── validate-workflow.ts
 ├── tests/                    # Test suites
-├── workflow-data/            # Worktree (workflows branch)
-│   ├── workflows/            # JSON workflow definitions
-│   └── guides/               # Markdown guides
+├── workflows/                # Worktree (workflows branch)
+│   ├── meta/                 # Bootstrap workflow (manages other workflows)
+│   │   ├── meta.toon             # Meta workflow definition
+│   │   ├── intents/              # All intents (indexed, no separate index file)
+│   │   │   └── {NN}-{id}.toon    # Individual intents (01-start-workflow, etc.)
+│   │   └── skills/               # Universal skills (indexed)
+│   │       └── {NN}-{id}.toon    # Skills that apply to all workflows
+│   └── {workflow-id}/        # Each workflow folder contains:
+│       ├── {workflow-id}.toon    # Workflow definition
+│       ├── guides/               # Guide subdirectory
+│       │   └── {NN}-{name}.toon  # Guides (indexed)
+│       ├── templates/            # Template subdirectory
+│       │   └── {NN}-{name}.md    # Templates (indexed)
+│       └── skills/               # Workflow-specific skills (indexed)
+│           └── {NN}-{id}.toon    # Skills for this workflow
 └── docs/                     # Documentation
 ```
 
@@ -79,8 +95,7 @@ workflow-server/
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflow-data/workflows` | Path to workflow JSON files |
-| `GUIDE_DIR` | `./workflow-data/guides` | Path to guide markdown files |
+| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories |
 | `SERVER_NAME` | `workflow-server` | Server name in health check |
 | `SERVER_VERSION` | `1.0.0` | Server version in health check |
 
@@ -106,10 +121,12 @@ npm test -- --run --coverage
 
 | Test Suite | Tests | Coverage |
 |------------|-------|----------|
-| `workflow-loader.test.ts` | 17 | Loaders, transitions, validation |
+| `workflow-loader.test.ts` | 17 | Workflow loading, transitions, validation |
 | `schema-validation.test.ts` | 23 | All Zod schemas |
-| `mcp-server.test.ts` | 12 | MCP tools and resources |
-| **Total** | **52** | ✅ All passing |
+| `mcp-server.test.ts` | 19 | All MCP tools |
+| `intent-loader.test.ts` | 10 | Intent loading and dynamic index |
+| `skill-loader.test.ts` | 13 | Skill loading and dynamic index |
+| **Total** | **82** | ✅ All passing |
 
 ### Test Infrastructure
 
@@ -136,7 +153,7 @@ This creates:
 Use the validation script to check workflow JSON files:
 
 ```bash
-npx tsx scripts/validate-workflow.ts workflow-data/workflows/work-package.json
+npx tsx scripts/validate-workflow.ts workflows/work-package/work-package.toon
 ```
 
 ## Branch Structure
@@ -152,14 +169,14 @@ The `workflows` branch is an orphan branch with separate history. Access it via 
 
 ```bash
 # Add worktree (one-time setup)
-git worktree add ./workflow-data workflows
+git worktree add ./workflows workflows
 
 # Update workflow data
-cd workflow-data
+cd workflows
 git pull origin workflows
 
 # Commit workflow changes
-cd workflow-data
+cd workflows
 git add -A
 git commit -m "feat: update workflow"
 git push origin workflows
@@ -167,13 +184,57 @@ git push origin workflows
 
 ## Adding New Workflows
 
-1. Create a new JSON file in `workflow-data/workflows/`
-2. Follow the schema defined in `schemas/workflow.schema.json`
+1. Create a new directory in `workflows/{workflow-id}/`
+2. Create `{workflow-id}.toon` workflow definition in that directory
 3. Validate with: `npx tsx scripts/validate-workflow.ts <path>`
 4. Commit to the `workflows` branch
 
 ## Adding New Guides
 
-1. Create a new `.guide.md` file in `workflow-data/guides/`
-2. Reference from workflow JSON via `guide.path`
-3. Commit to the `workflows` branch
+Guides are stored in a `guides/` subdirectory within each workflow:
+
+1. Create `{NN}-{name}.toon` in `workflows/{workflow-id}/guides/`
+2. Use sequential index (00, 01, 02, etc.)
+3. Guides are auto-discovered - no manifest update needed
+4. Access via: `get_guide { workflow_id: "{id}", index: "{NN}" }`
+5. Commit to the `workflows` branch
+
+## Adding New Templates
+
+Templates are stored in a `templates/` subdirectory within each workflow:
+
+1. Create `{NN}-{name}.md` in `workflows/{workflow-id}/templates/`
+2. Use sequential index (01, 02, 03, etc.)
+3. Templates are auto-discovered - no manifest update needed
+4. Access via: `get_template { workflow_id: "{id}", index: "{NN}" }`
+5. Commit to the `workflows` branch
+
+## Adding New Skills
+
+Skills can be **universal** (apply to all workflows) or **workflow-specific**. All skills use NN- indexed filenames.
+
+### Universal Skills
+
+Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
+
+1. Create `{NN}-{skill-id}.toon` in `workflows/meta/skills/`
+2. Use sequential index (00, 01, 02, etc.)
+3. Access via: `get_skill { skill_id: "{skill-id}" }`
+4. Examples: `00-intent-resolution`, `01-workflow-execution`
+5. Commit to the `workflows` branch
+
+### Workflow-Specific Skills
+
+Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
+
+1. Create `{NN}-{skill-id}.toon` in `workflows/{workflow-id}/skills/`
+2. Use sequential index (00, 01, 02, etc.)
+3. Skills are auto-discovered - no manifest update needed
+4. Access via: `get_skill { skill_id: "{skill-id}", workflow_id: "{workflow-id}" }`
+5. Commit to the `workflows` branch
+
+### Skill Resolution
+
+When loading a skill with `workflow_id`:
+1. First checks `{workflow-id}/skills/{NN}-{skill-id}.toon`
+2. Falls back to `meta/skills/{NN}-{skill-id}.toon` (universal)

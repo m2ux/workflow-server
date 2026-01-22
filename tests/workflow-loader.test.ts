@@ -9,7 +9,7 @@ import {
   validateTransition,
 } from '../src/loaders/workflow-loader.js';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflow-data/workflows');
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('workflow-loader', () => {
   describe('listWorkflows', () => {
@@ -19,7 +19,7 @@ describe('workflow-loader', () => {
       
       const ids = workflows.map(w => w.id);
       expect(ids).toContain('work-package');
-      expect(ids).toContain('example-workflow');
+      expect(ids).toContain('meta');
     });
 
     it('should return empty array for non-existent directory', async () => {

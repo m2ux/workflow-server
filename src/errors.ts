@@ -5,7 +5,18 @@ export class WorkflowNotFoundError extends Error {
 
 export class GuideNotFoundError extends Error {
   readonly code = 'GUIDE_NOT_FOUND';
-  constructor(public readonly guideName: string) { super(`Guide not found: ${guideName}`); this.name = 'GuideNotFoundError'; }
+  constructor(public readonly guideId: string, public readonly workflowId?: string) { 
+    super(workflowId ? `Guide not found: ${guideId} in workflow ${workflowId}` : `Guide not found: ${guideId}`); 
+    this.name = 'GuideNotFoundError'; 
+  }
+}
+
+export class TemplateNotFoundError extends Error {
+  readonly code = 'TEMPLATE_NOT_FOUND';
+  constructor(public readonly templateIndex: string, public readonly workflowId: string) { 
+    super(`Template not found: index ${templateIndex} in workflow ${workflowId}`); 
+    this.name = 'TemplateNotFoundError'; 
+  }
 }
 
 export class PhaseNotFoundError extends Error {

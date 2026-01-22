@@ -10,8 +10,8 @@ describe('mcp-server integration', () => {
 
   beforeAll(async () => {
     const config = {
-      workflowDir: resolve(import.meta.dirname, '../workflow-data/workflows'),
-      guideDir: resolve(import.meta.dirname, '../workflow-data/guides'),
+      workflowDir: resolve(import.meta.dirname, '../workflows'),
+      guideDir: resolve(import.meta.dirname, '../workflows/guides'),
       serverName: 'test-workflow-server',
       serverVersion: '1.0.0',
     };
@@ -47,7 +47,7 @@ describe('mcp-server integration', () => {
       
       const ids = workflows.map((w: { id: string }) => w.id);
       expect(ids).toContain('work-package');
-      expect(ids).toContain('example-workflow');
+      expect(ids).toContain('meta');
     });
   });
 
@@ -168,37 +168,130 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('resource: guides', () => {
-    it('should list available resources', async () => {
-      const resources = await client.listResources();
+  describe('tool: list_resources', () => {
+    it('should list all available resources', async () => {
+      const result = await client.callTool({ name: 'list_resources', arguments: {} });
       
-      expect(resources.resources).toBeDefined();
-      // Server registers two resource templates
-      expect(resources.resources.length).toBeGreaterThanOrEqual(0);
+      expect(result.content).toBeDefined();
+      const resources = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      
+      expect(resources.intents).toBeDefined();
+      expect(resources.universal_skills).toBeDefined();
+      expect(resources.workflows).toBeDefined();
+      expect(resources['work-package']).toBeDefined();
+      expect(resources['work-package'].guides).toBeDefined();
+    });
+  });
+
+  describe('tool: get_intents', () => {
+    it('should get intents index', async () => {
+      const result = await client.callTool({ name: 'get_intents', arguments: {} });
+      
+      expect(result.content).toBeDefined();
+      const intents = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(intents).toBeDefined();
+      expect(intents.quick_match).toBeDefined();
+    });
+  });
+
+  describe('tool: get_intent', () => {
+    it('should get specific intent', async () => {
+      const result = await client.callTool({
+        name: 'get_intent',
+        arguments: { intent_id: 'start-workflow' },
+      });
+      
+      expect(result.content).toBeDefined();
+      const intent = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(intent.id).toBe('start-workflow');
+    });
+  });
+
+  describe('tool: list_skills', () => {
+    it('should list skills', async () => {
+      const result = await client.callTool({ name: 'list_skills', arguments: {} });
+      
+      expect(result.content).toBeDefined();
+      const skills = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(Array.isArray(skills)).toBe(true);
+    });
+  });
+
+  describe('tool: get_skill', () => {
+    it('should get workflow-specific skill with workflow_id', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { skill_id: 'workflow-execution', workflow_id: 'work-package' },
+      });
+      
+      expect(result.content).toBeDefined();
+      const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(skill.id).toBe('workflow-execution');
     });
 
-    it('should read guides list resource', async () => {
-      const result = await client.readResource({ uri: 'workflow://guides' });
+    it('should get universal skill without workflow_id', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { skill_id: 'intent-resolution' },
+      });
       
-      expect(result.contents).toBeDefined();
-      expect(result.contents.length).toBeGreaterThan(0);
+      expect(result.content).toBeDefined();
+      const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(skill.id).toBe('intent-resolution');
+    });
+  });
+
+  describe('tool: list_guides', () => {
+    it('should list guides for a workflow', async () => {
+      const result = await client.callTool({
+        name: 'list_guides',
+        arguments: { workflow_id: 'work-package' },
+      });
       
-      const content = result.contents[0];
-      expect(content.uri).toBe('workflow://guides');
-      
-      const guides = JSON.parse((content as { text: string }).text);
+      expect(result.content).toBeDefined();
+      const guides = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(Array.isArray(guides)).toBe(true);
+      expect(guides.length).toBeGreaterThan(0);
+      expect(guides[0].index).toBeDefined();
+      expect(guides[0].name).toBeDefined();
     });
+  });
 
-    it('should read specific guide content', async () => {
-      const result = await client.readResource({ uri: 'workflow://guides/project-setup.guide.md' });
+  describe('tool: get_guide', () => {
+    it('should get specific guide by index', async () => {
+      const result = await client.callTool({
+        name: 'get_guide',
+        arguments: { workflow_id: 'work-package', index: '00' },
+      });
       
-      expect(result.contents).toBeDefined();
-      expect(result.contents.length).toBeGreaterThan(0);
+      expect(result.content).toBeDefined();
+      expect((result.content[0] as { type: 'text'; text: string }).text).toContain('start-here');
+    });
+  });
+
+  describe('tool: list_templates', () => {
+    it('should list templates for a workflow', async () => {
+      const result = await client.callTool({
+        name: 'list_templates',
+        arguments: { workflow_id: 'work-package' },
+      });
       
-      const content = result.contents[0];
-      expect(content.uri).toBe('workflow://guides/project-setup.guide.md');
-      expect((content as { text: string }).text).toContain('Project Setup');
+      expect(result.content).toBeDefined();
+      const templates = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(Array.isArray(templates)).toBe(true);
+      expect(templates.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('tool: get_template', () => {
+    it('should get specific template by index', async () => {
+      const result = await client.callTool({
+        name: 'get_template',
+        arguments: { workflow_id: 'work-package', index: '01' },
+      });
+      
+      expect(result.content).toBeDefined();
+      expect((result.content[0] as { type: 'text'; text: string }).text).toContain('Implementation Analysis');
     });
   });
 });

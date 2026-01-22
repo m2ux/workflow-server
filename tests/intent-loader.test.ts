@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { listIntents, readIntent, readIntentIndex } from '../src/loaders/intent-loader.js';
+import { join } from 'node:path';
+
+const WORKFLOW_DIR = join(process.cwd(), 'workflows');
 
 describe('intent-loader', () => {
   describe('listIntents', () => {
-    it('should list available intents', async () => {
-      const intents = await listIntents();
+    it('should list available intents from meta workflow', async () => {
+      const intents = await listIntents(WORKFLOW_DIR);
       expect(intents.length).toBeGreaterThanOrEqual(3);
       
       const ids = intents.map(i => i.id);
@@ -13,36 +16,37 @@ describe('intent-loader', () => {
       expect(ids).toContain('end-workflow');
     });
 
-    it('should not include index.json in intent list', async () => {
-      const intents = await listIntents();
+    it('should not include index.toon in intent list', async () => {
+      const intents = await listIntents(WORKFLOW_DIR);
       const ids = intents.map(i => i.id);
       expect(ids).not.toContain('index');
     });
 
-    it('should include name and path in intent entries', async () => {
-      const intents = await listIntents();
+    it('should include index, name, and path in intent entries', async () => {
+      const intents = await listIntents(WORKFLOW_DIR);
       const startWorkflow = intents.find(i => i.id === 'start-workflow');
       
       expect(startWorkflow).toBeDefined();
+      expect(startWorkflow?.index).toBe('01');
       expect(startWorkflow?.name).toBe('Start Workflow');
-      expect(startWorkflow?.path).toBe('start-workflow.toon');
+      expect(startWorkflow?.path).toBe('01-start-workflow.toon');
     });
   });
 
   describe('readIntent', () => {
     it('should load a valid intent', async () => {
-      const result = await readIntent('start-workflow');
+      const result = await readIntent(WORKFLOW_DIR, 'start-workflow');
       
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('start-workflow');
-        expect(result.value.version).toBe('1.0.0');
+        expect(result.value.version).toBe('2.0.0');
         expect(result.value.problem).toBeDefined();
       }
     });
 
     it('should return error for non-existent intent', async () => {
-      const result = await readIntent('non-existent-intent');
+      const result = await readIntent(WORKFLOW_DIR, 'non-existent-intent');
       
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -52,7 +56,7 @@ describe('intent-loader', () => {
     });
 
     it('should load intent with all required sections', async () => {
-      const result = await readIntent('start-workflow');
+      const result = await readIntent(WORKFLOW_DIR, 'start-workflow');
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -85,7 +89,7 @@ describe('intent-loader', () => {
       const intentIds = ['start-workflow', 'resume-workflow', 'end-workflow'];
       
       for (const id of intentIds) {
-        const result = await readIntent(id);
+        const result = await readIntent(WORKFLOW_DIR, id);
         expect(result.success, `Intent ${id} should load successfully`).toBe(true);
         if (result.success) {
           expect(result.value.id).toBe(id);
@@ -96,23 +100,23 @@ describe('intent-loader', () => {
   });
 
   describe('readIntentIndex', () => {
-    it('should load the intent index', async () => {
-      const result = await readIntentIndex();
+    it('should build intent index dynamically from intent files', async () => {
+      const result = await readIntentIndex(WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.version).toBe('1.0.0');
         expect(result.value.description).toBeDefined();
         expect(result.value.intents.length).toBe(3);
       }
     });
 
-    it('should have quick_match patterns', async () => {
-      const result = await readIntentIndex();
+    it('should have quick_match patterns from intent recognition arrays', async () => {
+      const result = await readIntentIndex(WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.quick_match).toBeDefined();
+        // Recognition patterns are lowercased
         expect(result.value.quick_match['start a workflow']).toBe('start-workflow');
         expect(result.value.quick_match['resume workflow']).toBe('resume-workflow');
         expect(result.value.quick_match['end workflow']).toBe('end-workflow');
@@ -120,7 +124,7 @@ describe('intent-loader', () => {
     });
 
     it('should list all intents with problem and primary skill', async () => {
-      const result = await readIntentIndex();
+      const result = await readIntentIndex(WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {

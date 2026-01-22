@@ -5,7 +5,7 @@ node_modules/
 dist/
 
 # Worktree for workflows branch
-workflow-data/
+workflows/
 
 # IDE
 .idea/

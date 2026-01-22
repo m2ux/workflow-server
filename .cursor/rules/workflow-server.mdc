@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+---
+# Overview
+
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the `get_intents` tool.

@@ -15,7 +15,7 @@ cd workflow-server
 npm install
 
 # Set up workflow data (worktree for orphan branch)
-git worktree add ./workflow-data workflows
+git worktree add ./workflows workflows
 
 # Build the server
 npm run build
@@ -34,8 +34,7 @@ Edit `~/.cursor/mcp.json`:
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows",
-        "GUIDE_DIR": "/path/to/workflow-server/workflow-data/guides"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }
@@ -55,8 +54,7 @@ Edit `~/.cursor/mcp.json`:
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows",
-        "GUIDE_DIR": "/path/to/workflow-server/workflow-data/guides"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }
@@ -65,10 +63,10 @@ Edit `~/.cursor/mcp.json`:
 
 ## IDE Rules Setup
 
-Add the following to your IDE rules (see [`prompts/ide-setup.md`](prompts/ide-setup.md)):
+Add the following to your IDE rules (see [`docs/ide-setup.md`](docs/ide-setup.md)):
 
 ```
-Before using workflow-server MCP tools, fetch the `workflow://intents` resource.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the get_intents tool.
 ```
 
 ## Verify Installation
@@ -94,7 +92,6 @@ This separation allows workflow definitions to evolve independently from server 
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflow-data/workflows` | Path to workflow JSON files |
-| `GUIDE_DIR` | `./workflow-data/guides` | Path to guide markdown files |
+| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (each contains .toon workflow, guides, templates) |
 | `SERVER_NAME` | `workflow-server` | Server name for MCP |
 | `SERVER_VERSION` | `1.0.0` | Server version |
