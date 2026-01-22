@@ -199,3 +199,81 @@ export async function listSkills(workflowDir: string): Promise<SkillEntry[]> {
   
   return skills;
 }
+
+export interface SkillIndex {
+  description: string;
+  universal: Array<{
+    id: string;
+    capability: string;
+  }>;
+  workflow_specific: Record<string, Array<{
+    id: string;
+    capability: string;
+  }>>;
+}
+
+/**
+ * Build skill index dynamically from skill files.
+ * Returns universal skills and workflow-specific skills grouped by workflow.
+ */
+export async function readSkillIndex(workflowDir: string): Promise<Result<SkillIndex, SkillNotFoundError>> {
+  const universal: SkillIndex['universal'] = [];
+  const workflow_specific: SkillIndex['workflow_specific'] = {};
+  
+  // Load universal skills
+  const universalEntries = await listUniversalSkills(workflowDir);
+  for (const entry of universalEntries) {
+    const result = await readSkill(entry.id, workflowDir);
+    if (result.success) {
+      universal.push({
+        id: result.value.id,
+        capability: result.value.capability,
+      });
+    }
+  }
+  
+  // Load workflow-specific skills
+  if (existsSync(workflowDir)) {
+    try {
+      const entries = await readdir(workflowDir);
+      for (const workflowId of entries) {
+        if (workflowId === META_WORKFLOW_ID) continue;
+        const entryPath = join(workflowDir, workflowId);
+        const stats = await stat(entryPath);
+        if (stats.isDirectory()) {
+          const workflowSkillEntries = await listWorkflowSkills(workflowDir, workflowId);
+          if (workflowSkillEntries.length > 0) {
+            workflow_specific[workflowId] = [];
+            for (const skillEntry of workflowSkillEntries) {
+              const result = await readSkill(skillEntry.id, workflowDir, workflowId);
+              if (result.success) {
+                workflow_specific[workflowId].push({
+                  id: result.value.id,
+                  capability: result.value.capability,
+                });
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      // Ignore errors
+    }
+  }
+  
+  if (universal.length === 0 && Object.keys(workflow_specific).length === 0) {
+    return err(new SkillNotFoundError('index'));
+  }
+  
+  const index: SkillIndex = {
+    description: 'Skills provide tool orchestration patterns for executing intents.',
+    universal,
+    workflow_specific,
+  };
+  
+  logInfo('Skill index built dynamically', { 
+    universalCount: universal.length, 
+    workflowCount: Object.keys(workflow_specific).length 
+  });
+  return ok(index);
+}

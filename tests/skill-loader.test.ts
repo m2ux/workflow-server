@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill } from '../src/loaders/skill-loader.js';
+import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../src/loaders/skill-loader.js';
 import { join } from 'node:path';
 
 const WORKFLOW_DIR = join(process.cwd(), 'workflows');
@@ -135,6 +135,44 @@ describe('skill-loader', () => {
           expect(errorInfo.cause, `${errorName} should have 'cause' field`).toBeDefined();
           expect(errorInfo.recovery, `${errorName} should have 'recovery' field`).toBeDefined();
         }
+      }
+    });
+  });
+
+  describe('readSkillIndex', () => {
+    it('should build skill index dynamically from skill files', async () => {
+      const result = await readSkillIndex(WORKFLOW_DIR);
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.description).toBeDefined();
+        expect(result.value.universal.length).toBeGreaterThanOrEqual(2);
+      }
+    });
+
+    it('should include universal skills with id and capability', async () => {
+      const result = await readSkillIndex(WORKFLOW_DIR);
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const ids = result.value.universal.map(s => s.id);
+        expect(ids).toContain('intent-resolution');
+        expect(ids).toContain('workflow-execution');
+        
+        for (const skill of result.value.universal) {
+          expect(skill.id).toBeDefined();
+          expect(skill.capability).toBeDefined();
+        }
+      }
+    });
+
+    it('should group workflow-specific skills by workflow', async () => {
+      const result = await readSkillIndex(WORKFLOW_DIR);
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Currently no workflow-specific skills exist
+        expect(result.value.workflow_specific).toBeDefined();
       }
     });
   });

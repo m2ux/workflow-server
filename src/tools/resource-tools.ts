@@ -8,7 +8,7 @@ import { listWorkflows } from '../loaders/workflow-loader.js';
 import { listGuides, readGuideRaw, listWorkflowsWithGuides } from '../loaders/guide-loader.js';
 import { listTemplates, readTemplate } from '../loaders/template-loader.js';
 import { listIntents, readIntent, readIntentIndex } from '../loaders/intent-loader.js';
-import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill } from '../loaders/skill-loader.js';
+import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   
@@ -41,6 +41,21 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   );
 
   // ============== Skill Tools ==============
+
+  server.tool(
+    'get_skills',
+    'Get the skill index - summary of all available skills with capabilities. Returns universal skills and workflow-specific skills grouped by workflow.',
+    {},
+    withAuditLog('get_skills', async () => {
+      const result = await readSkillIndex(config.workflowDir);
+      if (!result.success) {
+        // Fall back to listing skills
+        const skills = await listSkills(config.workflowDir);
+        return { content: [{ type: 'text', text: JSON.stringify(skills, null, 2) }] };
+      }
+      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
+    })
+  );
 
   server.tool(
     'list_skills',
