@@ -123,10 +123,10 @@ npm test -- --run --coverage
 |------------|-------|----------|
 | `workflow-loader.test.ts` | 17 | Workflow loading, transitions, validation |
 | `schema-validation.test.ts` | 23 | All Zod schemas |
-| `mcp-server.test.ts` | 20 | All MCP tools |
-| `intent-loader.test.ts` | 10 | Intent loading and index |
-| `skill-loader.test.ts` | 10 | Skill loading (universal + workflow-specific) |
-| **Total** | **80** | ✅ All passing |
+| `mcp-server.test.ts` | 19 | All MCP tools |
+| `intent-loader.test.ts` | 10 | Intent loading and dynamic index |
+| `skill-loader.test.ts` | 13 | Skill loading and dynamic index |
+| **Total** | **82** | ✅ All passing |
 
 ### Test Infrastructure
 
@@ -211,29 +211,30 @@ Templates are stored in a `templates/` subdirectory within each workflow:
 
 ## Adding New Skills
 
-Skills can be **universal** (apply to all workflows) or **workflow-specific**.
+Skills can be **universal** (apply to all workflows) or **workflow-specific**. All skills use NN- indexed filenames.
 
 ### Universal Skills
 
 Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
-1. Create `{skill-id}.toon` in `workflows/meta/skills/`
-2. Access via: `get_skill { skill_id: "{skill-id}" }`
-3. Example: `intent-resolution` (applies to all workflow discovery)
-4. Commit to the `workflows` branch
+1. Create `{NN}-{skill-id}.toon` in `workflows/meta/skills/`
+2. Use sequential index (00, 01, 02, etc.)
+3. Access via: `get_skill { skill_id: "{skill-id}" }`
+4. Examples: `00-intent-resolution`, `01-workflow-execution`
+5. Commit to the `workflows` branch
 
 ### Workflow-Specific Skills
 
 Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
 
-1. Create `{skill-id}.toon` in `workflows/{workflow-id}/skills/`
-2. Skills are auto-discovered - no manifest update needed
-3. Access via: `get_skill { skill_id: "{skill-id}", workflow_id: "{workflow-id}" }`
-4. Commit to the `workflows` branch
-5. Example: `workflow-execution` in `work-package/skills/`
+1. Create `{NN}-{skill-id}.toon` in `workflows/{workflow-id}/skills/`
+2. Use sequential index (00, 01, 02, etc.)
+3. Skills are auto-discovered - no manifest update needed
+4. Access via: `get_skill { skill_id: "{skill-id}", workflow_id: "{workflow-id}" }`
+5. Commit to the `workflows` branch
 
 ### Skill Resolution
 
 When loading a skill with `workflow_id`:
-1. First checks `{workflow-id}/skills/{skill-id}.toon`
-2. Falls back to `meta/skills/{skill-id}.toon` (universal)
+1. First checks `{workflow-id}/skills/{NN}-{skill-id}.toon`
+2. Falls back to `meta/skills/{NN}-{skill-id}.toon` (universal)

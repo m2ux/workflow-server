@@ -24,6 +24,7 @@
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
+| `get_skills` | - | Get skill index - summary of all skills with capabilities |
 | `list_skills` | `workflow_id?` | List all skills (universal + workflow-specific if workflow_id provided) |
 | `get_skill` | `skill_id`, `workflow_id?` | Get a skill (checks workflow-specific first, then universal) |
 
@@ -68,12 +69,11 @@ Universal skills are stored in the `meta` workflow and apply to all workflows.
 | Skill | Location | Description |
 |-------|----------|-------------|
 | `intent-resolution` | `meta/skills/` | Bootstraps agent interaction by resolving user goals to intents and loading appropriate skills |
+| `workflow-execution` | `meta/skills/` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
 
 ### Workflow-Specific Skills
 
-| Skill | Workflow | Location | Description |
-|-------|----------|----------|-------------|
-| `workflow-execution` | `work-package` | `work-package/skills/` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
+Workflow-specific skills are stored in each workflow's `skills/` directory. Currently no workflow-specific skills are defined.
 
 ### The Meta Workflow
 
@@ -84,8 +84,10 @@ The `meta` workflow is the bootstrap workflow for the workflow-server. It contai
 ### Skill Resolution
 
 When calling `get_skill { skill_id, workflow_id }`:
-1. First checks `{workflow_id}/skills/{skill_id}.toon`
-2. Falls back to `meta/skills/{skill_id}.toon` (universal)
+1. First checks `{workflow_id}/skills/{NN}-{skill_id}.toon`
+2. Falls back to `meta/skills/{NN}-{skill_id}.toon` (universal)
+
+All skills use NN- indexed filenames (e.g., `00-intent-resolution.toon`, `01-workflow-execution.toon`).
 
 ### Skill Contents
 
@@ -97,7 +99,7 @@ Each skill provides:
 - **Interpretation rules** - How to evaluate transitions, checkpoints, decisions
 - **Error recovery** - Common error scenarios and recovery patterns
 
-#### workflow-execution (workflow-specific)
+#### workflow-execution (universal)
 
 Primary skill for workflow navigation:
 - **Start**: `list_workflows` → `get_workflow` → `list_guides`
