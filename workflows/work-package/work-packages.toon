@@ -1,0 +1,149 @@
+id: work-packages
+version: 1.2.0
+title: Work Packages Workflow
+purpose: Organize multiple related work packages into an actionable roadmap
+
+lastUpdated: January 2026
+
+sections[8]:
+  - id: overview
+    title: Overview
+    content: """
+      This workflow defines how to plan and coordinate **multiple work packages** that share context, dependencies, or a common initiative. It produces a structured planning folder with analysis, prioritization, and links to individual work package plans.
+
+      **Use this workflow when you have:**
+      - Multiple related features to implement
+      - A roadmap spanning several weeks/months
+      - Features that share context or build on each other
+      - Need for prioritization across multiple initiatives
+
+      **For single work packages:** Use the Work Package Workflow directly.
+
+      > **Key Principle:** This workflow handles **coordination and planning**. Individual work packages are implemented using the Work Package Workflow.
+    """
+
+  - id: rules
+    title: Workflow Rules
+    rules[5]:
+      - Agents must NOT proceed past checkpoints without user confirmation
+      - "Ask, don't assume - Clarify scope and priorities before planning"
+      - "Summarize, then proceed - Present findings before asking to continue"
+      - User controls priorities - Never assume priority order without confirmation
+      - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
+
+  - id: workflow-overview
+    title: Workflow Overview
+    phases[7]:
+      - id: phase-1
+        name: Scope Assessment
+        duration: 5-10m
+        steps[3]:
+          - Confirm this is a multi-work-package initiative
+          - Identify the work packages to be planned
+          - "🛑 CHECKPOINT: 'I've identified N work packages. Proceed with planning?'"
+
+      - id: phase-2
+        name: Planning Folder Setup
+        duration: 5-10m
+        steps[4]:
+          - Create planning folder (.engineering/artifacts/planning/YYYY-MM-DD-name/)
+          - Create START-HERE.md skeleton
+          - Create README.md skeleton
+          - "🛑 CHECKPOINT: 'Planning folder created. Proceed with analysis?'"
+
+      - id: phase-3
+        name: Analysis
+        duration: 20-45m
+        optional: "[If applicable]"
+        steps[4]:
+          - Completion Analysis (if continuing previous work)
+          - Context Analysis (if new initiative)
+          - Document in 01-COMPLETION-ANALYSIS.md or 02-CONTEXT-ANALYSIS.md
+          - "🛑 CHECKPOINT: 'Analysis complete. Does this context look correct?'"
+
+      - id: phase-4
+        name: Work Package Planning
+        duration: 15-30m per WP
+        steps[6]:
+          - "For each work package:"
+          - "  Define scope (in/out)"
+          - "  Identify dependencies"
+          - "  Estimate effort"
+          - "  Define success criteria"
+          - "🛑 CHECKPOINT: 'Work package plans created. Ready for prioritization?'"
+
+      - id: phase-5
+        name: Prioritization
+        duration: 10-15m
+        criteria[4]:
+          - Dependencies (what blocks what)
+          - Business value (impact)
+          - Risk (technical uncertainty)
+          - Effort (quick wins vs large efforts)
+        steps[2]:
+          - Create dependency graph
+          - "🛑 CHECKPOINT: 'Here's the proposed priority order. Adjust as needed?'"
+
+      - id: phase-6
+        name: Finalize Roadmap
+        duration: 10-15m
+        steps[5]:
+          - Update START-HERE.md with final content
+          - Update README.md with navigation
+          - Add timeline estimates
+          - Document overall success criteria
+          - "🛑 CHECKPOINT: 'Roadmap complete. Ready to begin implementation?'"
+
+      - id: phase-7
+        name: Implementation
+        duration: ongoing
+        steps[5]:
+          - Select first work package by priority
+          - Follow Work Package Workflow
+          - After completion, return here
+          - Update roadmap status
+          - Select next work package
+
+  - id: folder-structure
+    title: Folder Structure
+    structure: """
+      .engineering/artifacts/planning/YYYY-MM-DD-initiative-name/
+      ├── START-HERE.md         # Entry point, executive summary
+      ├── README.md             # Quick navigation
+      ├── 01-COMPLETION-ANALYSIS.md  # (if continuing previous work)
+      ├── 02-CONTEXT-ANALYSIS.md     # (for new initiatives)
+      ├── 03-feature-a-plan.md  # Individual work package plan
+      ├── 04-feature-b-plan.md  # Individual work package plan
+      └── ...
+    """
+
+  - id: prioritization-guide
+    title: Prioritization Guidelines
+    criteria[4]{criterion,description}:
+      Dependencies,What blocks what - required work must come first
+      Business Value,Impact on users or business - higher value items first
+      Risk,Technical uncertainty - may want to address early or defer
+      Effort,Quick wins vs large efforts - balance for momentum
+
+  - id: status-tracking
+    title: Status Tracking
+    statuses[5]{status,symbol,meaning}:
+      Not Started,⬚,Work package not yet begun
+      In Progress,◐,Currently being implemented
+      Complete,✅,Work package finished and merged
+      Blocked,❌,Cannot proceed due to dependency or issue
+      Cancelled,⊘,Work package no longer needed
+
+  - id: templates
+    title: Templates
+    templates[3]:
+      - workflow://work-package/templates/03
+      - workflow://work-package/guides/start-here
+      - workflow://work-package/guides/readme
+
+  - id: related-workflows
+    title: Related Workflows
+    workflows[3]:
+      - workflow://work-package/guides/work-package
+      - workflow://work-package/guides/resume-work
+      - workflow://work-package/guides/_START_HERE

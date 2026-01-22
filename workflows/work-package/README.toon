@@ -1,0 +1,64 @@
+id: readme-index
+version: 1.0.0
+title: Work Package Workflow
+purpose: A structured workflow for planning and implementing features, enhancements, and technical changes
+
+sections[5]:
+  - id: overview
+    title: Overview
+    content: """
+      This workflow guides agents (and humans) through the complete lifecycle of a work package—from initial requirements gathering through implementation, testing, and delivery.
+    """
+    entryPoints[2]:
+      - "**work-package.toon** - For single work packages"
+      - "**work-packages.toon** - For multi-package initiatives"
+
+  - id: phases
+    title: Phases
+    phases[7]{phase,description,artifacts}:
+      1. Setup,"Create folder structure, initialize documents","START-HERE.md, README.md"
+      2. Requirements,Elicit and document requirements,00-requirements-elicitation.md
+      3. Research,"Explore codebase, research solutions",Research notes
+      4. Planning,Create detailed work package plan,03-work-package-plan.md
+      5. Implementation,Execute the plan,Code changes
+      6. Review,Self-review before merge,PR description
+      7. Completion,"Final checks, cleanup",Updated docs
+
+  - id: guides
+    title: Guides
+    guides[10]{file,purpose}:
+      workflow://work-package/guides/requirements-elicitation,Structured approach to gathering requirements
+      workflow://work-package/guides/knowledge-base-research,Research using knowledge base tools
+      workflow://work-package/guides/design-framework,Design decision framework
+      workflow://work-package/guides/architecture-review,Architecture review and ADR creation
+      workflow://work-package/guides/test-plan,Test planning and strategy
+      workflow://work-package/guides/implementation-analysis,Analyzing implementation approach
+      workflow://work-package/guides/github-issue-creation,Creating GitHub issues
+      workflow://work-package/guides/pr-description,Writing PR descriptions
+      workflow://work-package/guides/task-completion-review,Post-task verification checklist
+      workflow://work-package/guides/assumptions-review,Tracking assumptions during work
+
+  - id: templates
+    title: Templates
+    templates[4]{file,purpose}:
+      workflow://work-package/guides/start-here,Entry point for work package folder
+      workflow://work-package/guides/readme,Work package README
+      workflow://work-package/guides/plan,Work package plan structure
+      workflow://work-package/guides/complete,Completion checklist
+
+  - id: usage
+    title: Usage
+    steps[4]:
+      - Reference work-package.toon or work-packages.toon in your agent's context
+      - Follow the phases sequentially
+      - Use guides as needed for specific activities
+      - Generate artifacts using templates
+    exampleStructure: """
+      .engineering/artifacts/planning/2026-01-15-feature-name/
+      ├── START-HERE.md                    # Entry point
+      ├── README.md                        # Overview
+      ├── 00-requirements-elicitation.md   # Requirements
+      ├── 03-work-package-plan.md          # Detailed plan
+      ├── 04-test-plan.md                  # Test strategy
+      └── 05-assumptions-log.md            # Tracked assumptions
+    """

@@ -1,0 +1,143 @@
+id: jira-issue-creation
+version: 1.0.0
+title: Jira Issue Creation Guide
+purpose: Guidelines for creating well-structured Jira issues using the Atlassian MCP tools without prescribing solutions
+
+sections[8]:
+  - id: overview
+    title: Overview
+    content: """
+      This guide parallels the GitHub Issue Creation Guide but is tailored for Jira and uses the Atlassian MCP server tools for issue creation.
+
+      > **Key Principle:** Issues define problems, not solutions. Describe *what* needs to be solved and *why*, leaving *how* for subsequent design work.
+    """
+    shouldInclude[5]:
+      - Problem statement and impact
+      - Current vs desired state
+      - User stories and acceptance criteria
+      - Success metrics
+      - Scope boundaries
+    shouldNotInclude[5]:
+      - Technical approach or architecture
+      - Schema changes or data structures
+      - Code snippets or API designs
+      - File paths or module names
+      - Implementation timeline
+
+  - id: terminology
+    title: Jira vs GitHub Terminology
+    mappings[10]{jiraTerm,githubEquivalent,notes}:
+      Issue,Issue,Generic term
+      Story,Issue (feature),User-facing capability
+      Bug,Issue (bug),Defect report
+      Task,Issue (chore),Technical work
+      Epic,Milestone or Project,Large feature grouping
+      Subtask,Checklist item,Breakdown of parent
+      Summary,Title,Short description
+      Description,Body,Detailed content
+      Components,Labels,Categorization
+      Labels,Labels,Tags
+
+  - id: issue-types
+    title: Issue Types
+    types[5]{type,whenToUse,example}:
+      Epic,Large feature spanning multiple stories/tasks,User Authentication System
+      Story,User-facing capability with clear value,Users can reset their password
+      Task,Technical work not directly user-facing,Migrate database to new schema
+      Bug,Defect in existing functionality,Login fails with special characters
+      Subtask,Breakdown of a Story or Task,Implement email validation
+    selectionGuide: """
+      Is it a defect in existing functionality?
+          └─ Yes → Bug
+          └─ No ↓
+      Is it user-facing with clear user value?
+          └─ Yes → Story
+          └─ No ↓
+      Is it technical work or internal improvement?
+          └─ Yes → Task
+          └─ No ↓
+      Does it span multiple deliverables?
+          └─ Yes → Epic
+    """
+
+  - id: pre-creation-workflow
+    title: Pre-Creation Workflow
+    steps[4]:
+      - id: get-cloud-id
+        name: Get Cloud ID
+        tool: mcp_atlassian_getAccessibleAtlassianResources
+        purpose: Returns the cloud ID needed for all subsequent Jira operations
+
+      - id: find-project
+        name: Find Project
+        tool: mcp_atlassian_getVisibleJiraProjects
+        params: "cloudId, action: 'create'"
+        checkpoint: "If the project is not known, ask the user which project to use"
+
+      - id: get-issue-types
+        name: Get Issue Types
+        tool: mcp_atlassian_getJiraProjectIssueTypesMetadata
+        params: "cloudId, projectIdOrKey"
+        purpose: Returns available issue types for the selected project
+
+      - id: lookup-assignee
+        name: Look Up Assignee (Optional)
+        tool: mcp_atlassian_lookupJiraAccountId
+        params: "cloudId, searchString"
+
+  - id: issue-structure
+    title: Issue Structure
+    subsections[2]:
+      - id: summary
+        title: Summary (Title)
+        rules[3]:
+          - 50-80 characters ideal
+          - "Describe the problem or capability, not the solution"
+          - Use active voice when possible
+        good[3]:
+          - "Users cannot search by diagram content"
+          - "Login fails with special characters in password"
+          - "Add support for PDF document ingestion"
+        bad[3]:
+          - "Fix the search thing"
+          - "Implement new visuals table with CLIP embeddings"
+          - "Bug"
+
+      - id: description
+        title: Description
+        structure[4]:
+          - "**Problem Statement** - Gap between current and desired state"
+          - "**Goal** - One sentence core objective"
+          - "**Scope** - In scope and out of scope items"
+          - "**Acceptance Criteria** - Observable, testable criteria"
+        template: workflow://work-package/templates/11
+
+  - id: mcp-tool-usage
+    title: MCP Tool Usage
+    creationTool: mcp_atlassian_createJiraIssue
+    requiredParams[4]:
+      - cloudId (from getAccessibleAtlassianResources)
+      - projectIdOrKey (from getVisibleJiraProjects)
+      - issueTypeName (from getJiraProjectIssueTypesMetadata)
+      - summary (50-80 characters)
+    optionalParams[4]:
+      - description (formatted as ADF or markdown)
+      - assigneeAccountId (from lookupJiraAccountId)
+      - labels (array of strings)
+      - components (array of component names)
+
+  - id: anti-patterns
+    title: Anti-Patterns to Avoid
+    patterns[5]{pattern,symptom,solution}:
+      Solution Masquerading as Problem,"'Add X table' instead of 'Users can't find X'",Reframe: What user need does this solve?
+      Vague Problem Statement,"'Improve search' with no specifics",Add concrete examples of current failures
+      Missing Acceptance Criteria,Endless scope creep,Define checkboxes that mark completion
+      Kitchen Sink Scope,Touches every part of the system,Split into focused issues
+      Assumed Context,Reader must already know the problem,Write as if reader has no prior context
+
+  - id: related-guides
+    title: Related Guides
+    guides[3]:
+      - workflow://work-package/guides/github-issue-creation
+      - workflow://work-package/guides/requirements-elicitation
+      - workflow://work-package/guides/work-package

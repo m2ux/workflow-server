@@ -1,0 +1,127 @@
+id: readme
+version: 1.0.0
+title: Work Package README Guide
+purpose: Guidelines for creating the README.md quick navigation document for work package planning folders
+
+sections[8]:
+  - id: overview
+    title: Overview
+    content: """
+      The `README.md` file serves as a quick-reference navigation hub for a work package folder. It provides:
+      - Brief overview of the work package
+      - Directory of all planning documents
+      - Priority summary
+      - Clear next steps
+
+      > **Key Insight:** This document answers "What's in this folder and where do I start?" in under 30 seconds.
+    """
+
+  - id: when-to-create
+    title: When to Create
+    content: """
+      **Always create `README.md` when:**
+      - Creating a new work package planning folder
+      - Work package has multiple planning documents
+
+      **Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/README.md`
+    """
+    template: workflow://work-package/templates/13
+
+  - id: section-guidelines
+    title: Section Guidelines
+    subsections[5]:
+      - id: header-block
+        title: Header Block
+        intro: "Keep the header minimal - detailed metadata belongs in START-HERE.md:"
+        fields[3]{field,description,example}:
+          Name,Work package name (no date),Hybrid Search Implementation
+          Created,Creation date,2024-12-21
+          Status,Current state,"Planning, Ready, In Progress, Complete"
+
+      - id: overview-section
+        title: Overview
+        content: """
+          Write 1-2 sentences only. This is a teaser, not the full summary.
+
+          **Good:** "Implement hybrid search combining vector similarity with BM25 keyword matching to improve search relevance."
+
+          **Bad:** A multi-paragraph description with implementation details.
+        """
+
+      - id: whats-inside
+        title: What's Inside Table
+        intro: "List all documents in the planning folder with clear descriptions:"
+        columns[3]{column,purpose}:
+          Document,Linked filename
+          Description,What the document contains
+          Status,Document readiness
+        statusIndicators[4]{symbol,meaning}:
+          ✅,Complete and ready
+          📋 Ready,Available to read
+          🚧 Draft,In progress
+          ⬚ Pending,Not yet created
+        standardDocs[6]{document,description}:
+          START-HERE.md,Executive summary and entry point
+          03-work-package-plan.md,Detailed implementation plan
+          02-kb-research.md,Knowledge base research findings
+          01-implementation-analysis.md,Current implementation analysis
+          04-test-plan.md,Detailed testing plan (if needed)
+          COMPLETE.md,Completion summary (after done)
+
+      - id: priority-table
+        title: Priority Table
+        intro: "Summarize priority and effort for quick scanning:"
+        priorities[3]{priority,symbol,when}:
+          HIGH,🔴,Critical path or blocking other work
+          MEDIUM,🟡,Important but not blocking
+          LOW,🟢,Nice to have or can defer
+
+      - id: next-steps
+        title: Next Steps
+        content: "Provide a clear ordered list of actions. Always start with 'Read START-HERE.md'."
+
+  - id: updating
+    title: Updating README.md
+    intro: "Update this document when:"
+    triggers[3]:
+      - Adding new documents - Update What's Inside table
+      - Status changes - Update header status
+      - Completion - Add link to COMPLETE.md
+
+  - id: quality-checklist
+    title: Quality Checklist
+    items[7]:
+      - Header has current status
+      - Overview is 1-2 sentences only
+      - All planning documents are listed in What's Inside
+      - Document links are correct
+      - Priority and effort are specified
+      - Next steps start with START-HERE.md
+      - Footer links to START-HERE.md
+
+  - id: differences
+    title: Differences from START-HERE.md
+    comparison[5]{aspect,readme,starthere}:
+      Purpose,Navigation hub,Executive summary
+      Length,Very short,Moderate
+      Detail,Minimal,Comprehensive
+      Progress tracking,No,Yes
+      Timeline,No,Yes
+    ruleOfThumb: """
+      - README.md = "What's in this folder?"
+      - START-HERE.md = "What is this work package?"
+    """
+
+  - id: integration
+    title: Integration with Workflow
+    steps[3]:
+      - Create planning folder → Create README.md alongside START-HERE.md
+      - Add documents → Update What's Inside table
+      - Status changes → Keep header status in sync with START-HERE.md
+
+  - id: related-guides
+    title: Related Guides
+    guides[3]:
+      - workflow://work-package/guides/work-package
+      - workflow://work-package/guides/start-here
+      - workflow://work-package/guides/work-packages

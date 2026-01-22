@@ -1,0 +1,48 @@
+id: references
+version: 1.0.0
+title: Work Package Workflow References
+purpose: Consolidated external references used across the work package workflow guides
+
+sections[4]:
+  - id: requirements-engineering
+    title: Requirements Engineering
+    sources[2]{source,topics,usedIn}:
+      "Gause & Weinberg - Exploring Requirements: Quality Before Design (1989)","Assumption Elevation, False Assumption Sources, Ambiguity Sources, Context-Free Questions",assumptions-review.guide
+      "Wiegers & Beatty - Software Requirements (3rd Edition, 2013)",Requirements Traceability,assumptions-review.guide
+
+  - id: software-architecture
+    title: Software Architecture
+    sources[6]{source,topics,usedIn}:
+      "Keeling, M. - Love Unrequited: ADRs - IEEE Software (2022)","ADR Practice, Architecture Documentation",architecture-review.guide
+      "Richards & Ford - Fundamentals of Software Architecture - O'Reilly (2020)","Trade-off Analysis, Architecture Decisions","architecture-review.guide, assumptions-review.guide"
+      "Richards, Gandhi & Ford - Head First Software Architecture - O'Reilly (2024)",Architecture Fundamentals,architecture-review.guide
+      "Keeling, M. - Design It! - Pragmatic Programmers (2017)","Design Process, ADRs",architecture-review.guide
+      "Fairbanks, G. - Just Enough Software Architecture (2010)",Risk-Driven Design,architecture-review.guide
+      "Brown, S. - Software Architecture for Developers (2019-2022)","C4 Model, Architecture Documentation",architecture-review.guide
+
+  - id: development-practices
+    title: Development Practices
+    sources[1]{source,topics,usedIn}:
+      "GitHub PR Best Practices",Pull Request Creation,pr-description.guide
+
+  - id: internal-workflow
+    title: Internal Workflow Documents
+    intro: "For navigation between workflow documents, see the Work Package Workflow which serves as the central hub linking all guides."
+    guides[11]{guide,purpose}:
+      workflow://work-package/guides/work-package,Single work package implementation
+      workflow://work-package/guides/assumptions-review,Assumption identification and documentation
+      workflow://work-package/guides/architecture-review,Architecture Decision Records
+      workflow://work-package/guides/design-framework,Design approach structuring
+      workflow://work-package/guides/implementation-analysis,Codebase analysis
+      workflow://work-package/guides/github-issue-creation,Problem-focused issue creation
+      workflow://work-package/guides/knowledge-base-research,Research methodology
+      workflow://work-package/guides/pr-description,Pull request documentation
+      workflow://work-package/guides/requirements-elicitation,Requirements gathering
+      workflow://work-package/guides/task-completion-review,Post-task verification
+      workflow://work-package/guides/test-plan,Test planning
+    templates[5]{template,purpose}:
+      workflow://work-package/guides/complete,Work package completion documentation
+      workflow://work-package/guides/plan,Implementation planning
+      workflow://work-package/guides/readme,Work package folder README
+      workflow://work-package/guides/start-here,Work package entry point
+      workflow://work-package/guides/work-packages,Multi work package planning
