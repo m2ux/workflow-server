@@ -26,7 +26,6 @@ workflows/                    # Worktree checkout
 │   │   └── {NN}-{name}.md    # Templates (indexed)
 │   └── skills/               # Workflow-specific skills
 │       └── {skill-id}.toon   # Skills for this workflow
-└── example-workflow.toon     # Simple example workflow
 ```
 
 ## Worktree Setup
