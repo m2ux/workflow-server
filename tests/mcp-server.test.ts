@@ -168,78 +168,108 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('resource: guides', () => {
-    it('should list available resources', async () => {
-      const resources = await client.listResources();
+  describe('tool: list_resources', () => {
+    it('should list all available resources', async () => {
+      const result = await client.callTool({ name: 'list_resources', arguments: {} });
       
-      expect(resources.resources).toBeDefined();
-      // Server registers two resource templates
-      expect(resources.resources.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should read guides list resource', async () => {
-      const result = await client.readResource({ uri: 'workflow://guides' });
+      expect(result.content).toBeDefined();
+      const resources = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
-      expect(result.contents).toBeDefined();
-      expect(result.contents.length).toBeGreaterThan(0);
-      
-      const content = result.contents[0];
-      expect(content.uri).toBe('workflow://guides');
-      
-      const workflows = JSON.parse((content as { text: string }).text);
-      expect(Array.isArray(workflows)).toBe(true);
-    });
-
-    it('should list guides for a specific workflow', async () => {
-      const result = await client.readResource({ uri: 'workflow://work-package/guides' });
-      
-      expect(result.contents).toBeDefined();
-      expect(result.contents.length).toBeGreaterThan(0);
-      
-      const content = result.contents[0];
-      expect(content.uri).toBe('workflow://work-package/guides');
-      
-      const guides = JSON.parse((content as { text: string }).text);
-      expect(Array.isArray(guides)).toBe(true);
-      expect(guides.length).toBeGreaterThan(0);
-    });
-
-    it('should read specific guide by index', async () => {
-      const result = await client.readResource({ uri: 'workflow://work-package/guides/00' });
-      
-      expect(result.contents).toBeDefined();
-      expect(result.contents.length).toBeGreaterThan(0);
-      
-      const content = result.contents[0];
-      expect(content.uri).toBe('workflow://work-package/guides/00');
-      expect((content as { text: string }).text).toContain('start-here');
+      expect(resources.intents).toBeDefined();
+      expect(resources.skills).toBeDefined();
+      expect(resources.workflows).toBeDefined();
+      expect(resources['work-package']).toBeDefined();
     });
   });
 
-  describe('resource: templates', () => {
+  describe('tool: fetch_resource', () => {
+    it('should fetch intents index', async () => {
+      const result = await client.callTool({
+        name: 'fetch_resource',
+        arguments: { uri: 'workflow://intents' },
+      });
+      
+      expect(result.content).toBeDefined();
+      const intents = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(intents).toBeDefined();
+    });
+
+    it('should fetch skills list', async () => {
+      const result = await client.callTool({
+        name: 'fetch_resource',
+        arguments: { uri: 'workflow://skills' },
+      });
+      
+      expect(result.content).toBeDefined();
+      const skills = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(Array.isArray(skills)).toBe(true);
+    });
+
+    it('should fetch workflow definition', async () => {
+      const result = await client.callTool({
+        name: 'fetch_resource',
+        arguments: { uri: 'workflow://work-package' },
+      });
+      
+      expect(result.content).toBeDefined();
+      const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(workflow.id).toBe('work-package');
+      expect(workflow.phases).toHaveLength(11);
+    });
+
+    it('should list guides for a workflow', async () => {
+      const result = await client.callTool({
+        name: 'fetch_resource',
+        arguments: { uri: 'workflow://work-package/guides' },
+      });
+      
+      expect(result.content).toBeDefined();
+      const guides = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(Array.isArray(guides)).toBe(true);
+      expect(guides.length).toBeGreaterThan(0);
+      expect(guides[0].index).toBeDefined();
+      expect(guides[0].uri).toContain('workflow://work-package/guides/');
+    });
+
+    it('should fetch specific guide by index', async () => {
+      const result = await client.callTool({
+        name: 'fetch_resource',
+        arguments: { uri: 'workflow://work-package/guides/00' },
+      });
+      
+      expect(result.content).toBeDefined();
+      expect((result.content[0] as { type: 'text'; text: string }).text).toContain('start-here');
+    });
+
     it('should list templates for a workflow', async () => {
-      const result = await client.readResource({ uri: 'workflow://work-package/templates' });
+      const result = await client.callTool({
+        name: 'fetch_resource',
+        arguments: { uri: 'workflow://work-package/templates' },
+      });
       
-      expect(result.contents).toBeDefined();
-      expect(result.contents.length).toBeGreaterThan(0);
-      
-      const content = result.contents[0];
-      expect(content.uri).toBe('workflow://work-package/templates');
-      
-      const templates = JSON.parse((content as { text: string }).text);
+      expect(result.content).toBeDefined();
+      const templates = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(Array.isArray(templates)).toBe(true);
       expect(templates.length).toBeGreaterThan(0);
     });
 
-    it('should read specific template by index', async () => {
-      const result = await client.readResource({ uri: 'workflow://work-package/templates/01' });
+    it('should fetch specific template by index', async () => {
+      const result = await client.callTool({
+        name: 'fetch_resource',
+        arguments: { uri: 'workflow://work-package/templates/01' },
+      });
       
-      expect(result.contents).toBeDefined();
-      expect(result.contents.length).toBeGreaterThan(0);
+      expect(result.content).toBeDefined();
+      expect((result.content[0] as { type: 'text'; text: string }).text).toContain('Implementation Analysis');
+    });
+
+    it('should return error for invalid URI', async () => {
+      const result = await client.callTool({
+        name: 'fetch_resource',
+        arguments: { uri: 'workflow://invalid/path/too/deep/here' },
+      });
       
-      const content = result.contents[0];
-      expect(content.uri).toBe('workflow://work-package/templates/01');
-      expect((content as { text: string }).text).toContain('Implementation Analysis');
+      expect(result.isError).toBe(true);
     });
   });
 });
