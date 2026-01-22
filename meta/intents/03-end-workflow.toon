@@ -11,7 +11,7 @@ recognition[6]:
 skills:
   primary: workflow-execution
   supporting[1]:
-    - intent-resolution
+    - activity-resolution
 outcome[4]:
   - Final phase is completed
   - All required checkpoints are resolved
