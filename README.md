@@ -100,13 +100,13 @@ For all workflow execution user requests use the workflow-server MCP server. Bef
 Tell the agent what you want to do using natural language:
 
 ```
-Start a new work-package for implementing user authentication
+Start a new work-package workflow for implementing user authentication
 ```
 ```
-Begin a work-package for issue #42
+Begin a work-package workflow for issue #42
 ```
 ```
-Let's start a work-package to add dark mode support
+Let's start a work-package workflow to add dark mode support
 ```
 
 The agent matches your request to the appropriate intent and guides you through the structured phases.
