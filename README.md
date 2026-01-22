@@ -9,7 +9,7 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 ---
 
-**[Quick Start](#-quick-start)** • **[API Reference](docs/api-reference.md)** • **[Development](docs/development.md)**
+**[Quick Start](#-quick-start)** • **[Schema Guide](schemas/README.md)** • **[API Reference](docs/api-reference.md)** • **[Development](docs/development.md)**
 
 ---
 
