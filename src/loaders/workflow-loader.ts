@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, basename } from 'node:path';
 import { type Workflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
 import { type Result, ok, err } from '../result.js';
@@ -9,9 +9,27 @@ import { decodeToon } from '../utils/toon.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; description?: string | undefined; }
 
+/**
+ * Resolve the path to a workflow file.
+ * Supports two directory structures:
+ * 1. Root-level: {workflowDir}/{workflowId}.toon
+ * 2. Subdirectory: {workflowDir}/{workflowId}/{workflowId}.toon
+ */
+function resolveWorkflowPath(workflowDir: string, workflowId: string): string | null {
+  // Try root-level first
+  const rootPath = join(workflowDir, `${workflowId}.toon`);
+  if (existsSync(rootPath)) return rootPath;
+  
+  // Try subdirectory
+  const subPath = join(workflowDir, workflowId, `${workflowId}.toon`);
+  if (existsSync(subPath)) return subPath;
+  
+  return null;
+}
+
 export async function loadWorkflow(workflowDir: string, workflowId: string): Promise<Result<Workflow, WorkflowNotFoundError | WorkflowValidationError>> {
-  const filePath = join(workflowDir, `${workflowId}.toon`);
-  if (!existsSync(filePath)) return err(new WorkflowNotFoundError(workflowId));
+  const filePath = resolveWorkflowPath(workflowDir, workflowId);
+  if (!filePath) return err(new WorkflowNotFoundError(workflowId));
   try {
     const content = await readFile(filePath, 'utf-8');
     const result = safeValidateWorkflow(decodeToon(content));
@@ -27,12 +45,27 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
 export async function listWorkflows(workflowDir: string): Promise<WorkflowManifestEntry[]> {
   if (!existsSync(workflowDir)) return [];
   try {
-    const files = await readdir(workflowDir);
+    const entries = await readdir(workflowDir);
     const manifests: WorkflowManifestEntry[] = [];
-    for (const file of files.filter(f => f.endsWith('.toon'))) {
-      const result = await loadWorkflow(workflowDir, basename(file, '.toon'));
-      if (result.success) manifests.push({ id: result.value.id, title: result.value.title, version: result.value.version, description: result.value.description });
+    
+    for (const entry of entries) {
+      const entryPath = join(workflowDir, entry);
+      const stats = await stat(entryPath);
+      
+      if (stats.isFile() && entry.endsWith('.toon')) {
+        // Root-level workflow file
+        const result = await loadWorkflow(workflowDir, basename(entry, '.toon'));
+        if (result.success) manifests.push({ id: result.value.id, title: result.value.title, version: result.value.version, description: result.value.description });
+      } else if (stats.isDirectory()) {
+        // Check for workflow in subdirectory
+        const subWorkflowPath = join(entryPath, `${entry}.toon`);
+        if (existsSync(subWorkflowPath)) {
+          const result = await loadWorkflow(workflowDir, entry);
+          if (result.success) manifests.push({ id: result.value.id, title: result.value.title, version: result.value.version, description: result.value.description });
+        }
+      }
     }
+    
     return manifests;
   } catch { return []; }
 }

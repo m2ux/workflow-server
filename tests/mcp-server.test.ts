@@ -186,19 +186,60 @@ describe('mcp-server integration', () => {
       const content = result.contents[0];
       expect(content.uri).toBe('workflow://guides');
       
-      const guides = JSON.parse((content as { text: string }).text);
-      expect(Array.isArray(guides)).toBe(true);
+      const workflows = JSON.parse((content as { text: string }).text);
+      expect(Array.isArray(workflows)).toBe(true);
     });
 
-    it('should read specific guide content', async () => {
-      const result = await client.readResource({ uri: 'workflow://guides/project-setup.guide.md' });
+    it('should list guides for a specific workflow', async () => {
+      const result = await client.readResource({ uri: 'workflow://work-package/guides' });
       
       expect(result.contents).toBeDefined();
       expect(result.contents.length).toBeGreaterThan(0);
       
       const content = result.contents[0];
-      expect(content.uri).toBe('workflow://guides/project-setup.guide.md');
-      expect((content as { text: string }).text).toContain('Project Setup');
+      expect(content.uri).toBe('workflow://work-package/guides');
+      
+      const guides = JSON.parse((content as { text: string }).text);
+      expect(Array.isArray(guides)).toBe(true);
+      expect(guides.length).toBeGreaterThan(0);
+    });
+
+    it('should read specific guide content', async () => {
+      const result = await client.readResource({ uri: 'workflow://work-package/guides/start-here' });
+      
+      expect(result.contents).toBeDefined();
+      expect(result.contents.length).toBeGreaterThan(0);
+      
+      const content = result.contents[0];
+      expect(content.uri).toBe('workflow://work-package/guides/start-here');
+      expect((content as { text: string }).text).toContain('start-here');
+    });
+  });
+
+  describe('resource: templates', () => {
+    it('should list templates for a workflow', async () => {
+      const result = await client.readResource({ uri: 'workflow://work-package/templates' });
+      
+      expect(result.contents).toBeDefined();
+      expect(result.contents.length).toBeGreaterThan(0);
+      
+      const content = result.contents[0];
+      expect(content.uri).toBe('workflow://work-package/templates');
+      
+      const templates = JSON.parse((content as { text: string }).text);
+      expect(Array.isArray(templates)).toBe(true);
+      expect(templates.length).toBeGreaterThan(0);
+    });
+
+    it('should read specific template by index', async () => {
+      const result = await client.readResource({ uri: 'workflow://work-package/templates/01' });
+      
+      expect(result.contents).toBeDefined();
+      expect(result.contents.length).toBeGreaterThan(0);
+      
+      const content = result.contents[0];
+      expect(content.uri).toBe('workflow://work-package/templates/01');
+      expect((content as { text: string }).text).toContain('Implementation Analysis');
     });
   });
 });
