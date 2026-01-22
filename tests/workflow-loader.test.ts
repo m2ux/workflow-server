@@ -19,7 +19,7 @@ describe('workflow-loader', () => {
       
       const ids = workflows.map(w => w.id);
       expect(ids).toContain('work-package');
-      expect(ids).toContain('example-workflow');
+      expect(ids).toContain('meta');
     });
 
     it('should return empty array for non-existent directory', async () => {

@@ -118,4 +118,3 @@ Bootstrap skill for agent initialization:
 |----------|--------|-------------|
 | `meta` | 2 | Bootstrap workflow - manages intents and universal skills |
 | `work-package` | 11 | Full work package lifecycle from issue to PR |
-| `example-workflow` | 3 | Example demonstrating schema features |

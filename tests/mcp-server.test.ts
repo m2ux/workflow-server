@@ -47,7 +47,7 @@ describe('mcp-server integration', () => {
       
       const ids = workflows.map((w: { id: string }) => w.id);
       expect(ids).toContain('work-package');
-      expect(ids).toContain('example-workflow');
+      expect(ids).toContain('meta');
     });
   });
 
