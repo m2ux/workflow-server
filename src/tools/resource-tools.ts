@@ -7,34 +7,34 @@ import { withAuditLog } from '../logging.js';
 import { listWorkflows } from '../loaders/workflow-loader.js';
 import { listGuides, readGuideRaw, listWorkflowsWithGuides } from '../loaders/guide-loader.js';
 import { listTemplates, readTemplate } from '../loaders/template-loader.js';
-import { listIntents, readIntent, readIntentIndex } from '../loaders/intent-loader.js';
+import { listActivities, readActivity, readActivityIndex } from '../loaders/activity-loader.js';
 import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   
-  // ============== Intent Tools ==============
+  // ============== Activity Tools ==============
   
   server.tool(
-    'get_intents',
-    'Get the intent index - the primary entry point for workflow execution. Returns quick_match patterns to identify user intent.',
+    'get_activities',
+    'Get the activity index - the primary entry point for workflow execution. Returns quick_match patterns to identify user activity.',
     {},
-    withAuditLog('get_intents', async () => {
-      const result = await readIntentIndex(config.workflowDir);
+    withAuditLog('get_activities', async () => {
+      const result = await readActivityIndex(config.workflowDir);
       if (!result.success) {
-        // Fall back to listing intents
-        const intents = await listIntents(config.workflowDir);
-        return { content: [{ type: 'text', text: JSON.stringify(intents, null, 2) }] };
+        // Fall back to listing activities
+        const activities = await listActivities(config.workflowDir);
+        return { content: [{ type: 'text', text: JSON.stringify(activities, null, 2) }] };
       }
       return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
     })
   );
 
   server.tool(
-    'get_intent',
-    'Get a specific intent by ID for detailed flow guidance',
-    { intent_id: z.string().describe('Intent ID (e.g., start-workflow, resume-workflow)') },
-    withAuditLog('get_intent', async ({ intent_id }) => {
-      const result = await readIntent(config.workflowDir, intent_id);
+    'get_activity',
+    'Get a specific activity by ID for detailed flow guidance',
+    { activity_id: z.string().describe('Activity ID (e.g., start-workflow, resume-workflow)') },
+    withAuditLog('get_activity', async ({ activity_id }) => {
+      const result = await readActivity(config.workflowDir, activity_id);
       if (!result.success) throw result.error;
       return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
     })
@@ -84,7 +84,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'get_skill',
     'Get a specific skill for tool orchestration guidance. Workflow-specific skills are checked first, then universal.',
     { 
-      skill_id: z.string().describe('Skill ID (e.g., workflow-execution, intent-resolution)'),
+      skill_id: z.string().describe('Skill ID (e.g., workflow-execution, activity-resolution)'),
       workflow_id: z.string().optional().describe('Optional workflow ID to look for workflow-specific skill first')
     },
     withAuditLog('get_skill', async ({ skill_id, workflow_id }) => {
@@ -161,7 +161,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'list_resources',
-    'Discover all available resources: workflows, guides, templates, intents, skills',
+    'Discover all available resources: workflows, guides, templates, activities, skills',
     {},
     withAuditLog('list_resources', async () => {
       const workflows = await listWorkflows(config.workflowDir);
@@ -169,9 +169,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const universalSkills = await listUniversalSkills(config.workflowDir);
       
       const resources: Record<string, unknown> = {
-        intents: {
-          tool: 'get_intents',
-          description: 'Intent index - primary entry point for workflow execution',
+        activities: {
+          tool: 'get_activities',
+          description: 'Activity index - primary entry point for workflow execution',
         },
         universal_skills: {
           items: universalSkills.map(s => s.id),

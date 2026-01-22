@@ -13,12 +13,12 @@
 | `validate_transition` | `workflow_id`, `from_phase`, `to_phase` | Validate if a transition between phases is allowed |
 | `health_check` | - | Check server health and available workflows |
 
-### Intent Tools
+### Activity Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_intents` | - | Get intent index - primary entry point for agents |
-| `get_intent` | `intent_id` | Get a specific workflow intent |
+| `get_activities` | - | Get activity index - primary entry point for agents |
+| `get_activity` | `activity_id` | Get a specific workflow activity |
 
 ### Skill Tools
 
@@ -48,12 +48,12 @@
 |------|------------|-------------|
 | `list_resources` | - | Discover all available resources |
 
-## Intents
+## Activities
 
-Intents define user goals and map them to skills. They are the primary entry point for agent interaction.
+Activities define user goals and map them to skills. They are the primary entry point for agent interaction.
 
-| Intent | Problem | Primary Skill |
-|--------|---------|---------------|
+| Activity | Problem | Primary Skill |
+|----------|---------|---------------|
 | `start-workflow` | Begin executing a new workflow | `workflow-execution` |
 | `resume-workflow` | Continue a previously started workflow | `workflow-execution` |
 | `end-workflow` | Complete and finalize a workflow | `workflow-execution` |
@@ -68,7 +68,7 @@ Universal skills are stored in the `meta` workflow and apply to all workflows.
 
 | Skill | Location | Description |
 |-------|----------|-------------|
-| `intent-resolution` | `meta/skills/` | Bootstraps agent interaction by resolving user goals to intents and loading appropriate skills |
+| `activity-resolution` | `meta/skills/` | Bootstraps agent interaction by resolving user goals to activities and loading appropriate skills |
 | `workflow-execution` | `meta/skills/` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
 
 ### Workflow-Specific Skills
@@ -78,7 +78,7 @@ Workflow-specific skills are stored in each workflow's `skills/` directory. Curr
 ### The Meta Workflow
 
 The `meta` workflow is the bootstrap workflow for the workflow-server. It contains:
-- **Intents** (`meta/intents/`): All user intents for workflow operations
+- **Activities** (`meta/intents/`): All user activities for workflow operations
 - **Universal skills** (`meta/skills/`): Skills that apply to all workflows
 
 ### Skill Resolution
@@ -87,7 +87,7 @@ When calling `get_skill { skill_id, workflow_id }`:
 1. First checks `{workflow_id}/skills/{NN}-{skill_id}.toon`
 2. Falls back to `meta/skills/{NN}-{skill_id}.toon` (universal)
 
-All skills use NN- indexed filenames (e.g., `00-intent-resolution.toon`, `01-workflow-execution.toon`).
+All skills use NN- indexed filenames (e.g., `00-activity-resolution.toon`, `01-workflow-execution.toon`).
 
 ### Skill Contents
 
@@ -107,10 +107,10 @@ Primary skill for workflow navigation:
 - **Transitions**: `validate_transition`
 - **Artifacts**: `list_templates` → `get_template`
 
-#### intent-resolution (universal)
+#### activity-resolution (universal)
 
 Bootstrap skill for agent initialization:
-- **Bootstrap**: `get_intents` → `get_intent`
+- **Bootstrap**: `get_activities` → `get_activity`
 - **Skill loading**: `get_skill`
 - **Discovery**: `list_resources`
 
@@ -118,5 +118,5 @@ Bootstrap skill for agent initialization:
 
 | Workflow | Phases | Description |
 |----------|--------|-------------|
-| `meta` | 2 | Bootstrap workflow - manages intents and universal skills |
+| `meta` | 2 | Bootstrap workflow - manages activities and universal skills |
 | `work-package` | 11 | Full work package lifecycle from issue to PR |

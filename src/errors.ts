@@ -38,7 +38,7 @@ export class SkillNotFoundError extends Error {
   constructor(public readonly skillId: string) { super(`Skill not found: ${skillId}`); this.name = 'SkillNotFoundError'; }
 }
 
-export class IntentNotFoundError extends Error {
-  readonly code = 'INTENT_NOT_FOUND';
-  constructor(public readonly intentId: string) { super(`Intent not found: ${intentId}`); this.name = 'IntentNotFoundError'; }
+export class ActivityNotFoundError extends Error {
+  readonly code = 'ACTIVITY_NOT_FOUND';
+  constructor(public readonly activityId: string) { super(`Activity not found: ${activityId}`); this.name = 'ActivityNotFoundError'; }
 }

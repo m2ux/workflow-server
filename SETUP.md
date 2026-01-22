@@ -66,7 +66,7 @@ Edit `~/.cursor/mcp.json`:
 Add the following to your IDE rules (see [`docs/ide-setup.md`](docs/ide-setup.md)):
 
 ```
-For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the get_intents tool.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the get_activities tool.
 ```
 
 ## Verify Installation

@@ -175,7 +175,7 @@ describe('mcp-server integration', () => {
       expect(result.content).toBeDefined();
       const resources = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
-      expect(resources.intents).toBeDefined();
+      expect(resources.activities).toBeDefined();
       expect(resources.universal_skills).toBeDefined();
       expect(resources.workflows).toBeDefined();
       expect(resources['work-package']).toBeDefined();
@@ -183,27 +183,27 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: get_intents', () => {
-    it('should get intents index', async () => {
-      const result = await client.callTool({ name: 'get_intents', arguments: {} });
+  describe('tool: get_activities', () => {
+    it('should get activities index', async () => {
+      const result = await client.callTool({ name: 'get_activities', arguments: {} });
       
       expect(result.content).toBeDefined();
-      const intents = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(intents).toBeDefined();
-      expect(intents.quick_match).toBeDefined();
+      const activities = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(activities).toBeDefined();
+      expect(activities.quick_match).toBeDefined();
     });
   });
 
-  describe('tool: get_intent', () => {
-    it('should get specific intent', async () => {
+  describe('tool: get_activity', () => {
+    it('should get specific activity', async () => {
       const result = await client.callTool({
-        name: 'get_intent',
-        arguments: { intent_id: 'start-workflow' },
+        name: 'get_activity',
+        arguments: { activity_id: 'start-workflow' },
       });
       
       expect(result.content).toBeDefined();
-      const intent = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(intent.id).toBe('start-workflow');
+      const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(activity.id).toBe('start-workflow');
     });
   });
 
@@ -232,12 +232,12 @@ describe('mcp-server integration', () => {
     it('should get universal skill without workflow_id', async () => {
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { skill_id: 'intent-resolution' },
+        arguments: { skill_id: 'activity-resolution' },
       });
       
       expect(result.content).toBeDefined();
       const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(skill.id).toBe('intent-resolution');
+      expect(skill.id).toBe('activity-resolution');
     });
   });
 

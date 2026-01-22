@@ -61,7 +61,7 @@ workflow-server/
 │   │   ├── workflow-loader.ts
 │   │   ├── guide-loader.ts
 │   │   ├── template-loader.ts
-│   │   ├── intent-loader.ts
+│   │   ├── activity-loader.ts
 │   │   └── skill-loader.ts
 │   ├── tools/                # MCP tool implementations
 │   │   ├── workflow-tools.ts
@@ -76,8 +76,8 @@ workflow-server/
 ├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow (manages other workflows)
 │   │   ├── meta.toon             # Meta workflow definition
-│   │   ├── intents/              # All intents (indexed, no separate index file)
-│   │   │   └── {NN}-{id}.toon    # Individual intents (01-start-workflow, etc.)
+│   │   ├── intents/              # All activities (indexed, no separate index file)
+│   │   │   └── {NN}-{id}.toon    # Individual activities (01-start-workflow, etc.)
 │   │   └── skills/               # Universal skills (indexed)
 │   │       └── {NN}-{id}.toon    # Skills that apply to all workflows
 │   └── {workflow-id}/        # Each workflow folder contains:
@@ -124,7 +124,7 @@ npm test -- --run --coverage
 | `workflow-loader.test.ts` | 17 | Workflow loading, transitions, validation |
 | `schema-validation.test.ts` | 23 | All Zod schemas |
 | `mcp-server.test.ts` | 19 | All MCP tools |
-| `intent-loader.test.ts` | 10 | Intent loading and dynamic index |
+| `activity-loader.test.ts` | 10 | Activity loading and dynamic index |
 | `skill-loader.test.ts` | 13 | Skill loading and dynamic index |
 | **Total** | **82** | ✅ All passing |
 
@@ -220,7 +220,7 @@ Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 1. Create `{NN}-{skill-id}.toon` in `workflows/meta/skills/`
 2. Use sequential index (00, 01, 02, etc.)
 3. Access via: `get_skill { skill_id: "{skill-id}" }`
-4. Examples: `00-intent-resolution`, `01-workflow-execution`
+4. Examples: `00-activity-resolution`, `01-workflow-execution`
 5. Commit to the `workflows` branch
 
 ### Workflow-Specific Skills

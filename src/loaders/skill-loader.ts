@@ -283,7 +283,7 @@ export async function readSkillIndex(workflowDir: string): Promise<Result<SkillI
   }
   
   const index: SkillIndex = {
-    description: 'Skills provide tool orchestration patterns for executing intents.',
+    description: 'Skills provide tool orchestration patterns for executing activities.',
     usage: 'After identifying a skill, call the tool specified in next_action with the given parameters to get full execution guidance.',
     universal,
     workflow_specific,
