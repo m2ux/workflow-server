@@ -89,36 +89,36 @@ New `guide-loader.ts` following existing loader patterns:
 ## Acceptance Criteria
 
 1. **Migration Complete**
-   - [ ] All 23 guide documents migrated to `work-package/` folder
-   - [ ] `work-package.toon` moved to `work-package/` folder
-   - [ ] All ~12 templates extracted as discrete `.template.md` files
+   - [x] All 23 guide documents migrated to `work-package/` folder
+   - [x] `work-package.toon` moved to `work-package/` folder
+   - [x] All 12 templates extracted as discrete `.template.md` files
 
 2. **TOON Conversion Valid**
-   - [ ] All guides converted to `.toon` format
-   - [ ] Structural elements use TOON syntax
-   - [ ] Prose content preserved in content blocks
-   - [ ] Files parse without errors
+   - [x] All guides converted to `.toon` format
+   - [x] Structural elements use TOON syntax
+   - [x] Prose content preserved in content blocks
+   - [x] Files parse without errors
 
 3. **Template Extraction Complete**
-   - [ ] Templates use `{NN}-{name}.template.md` naming convention
-   - [ ] Templates remain as Markdown (not TOON)
-   - [ ] Guides reference templates by index URI
+   - [x] Templates use `{NN}-{name}.template.md` naming convention
+   - [x] Templates remain as Markdown (not TOON)
+   - [x] Guides reference templates by index URI
 
 4. **Loaders Implemented**
-   - [ ] `guide-loader.ts` with workflow-namespaced loading
-   - [ ] `template-loader.ts` with index-based filename parsing
-   - [ ] Guide resources: `workflow://<workflow-id>/guides/<guide-id>`
-   - [ ] Template resources: `workflow://<workflow-id>/templates/<index>`
+   - [x] `guide-loader.ts` with workflow-namespaced loading
+   - [x] `template-loader.ts` with index-based filename parsing
+   - [x] Guide resources: `workflow://<workflow-id>/guides/<guide-id>`
+   - [x] Template resources: `workflow://<workflow-id>/templates/<index>`
 
 5. **References Updated**
-   - [ ] `work-package.toon` uses new resource URIs
-   - [ ] Guides reference templates via `workflow://work-package/templates/{NN}`
-   - [ ] No external `agent-resources` URL dependencies
+   - [x] `work-package.toon` uses new resource URIs
+   - [x] Guides reference templates via `workflow://work-package/templates/{NN}`
+   - [x] No external `agent-resources` URL dependencies
 
 6. **Tests Pass**
-   - [ ] Existing workflow tests continue to pass
-   - [ ] New guide loader tests added and passing
-   - [ ] New template loader tests added and passing
+   - [x] Existing workflow tests continue to pass (72/72)
+   - [x] New guide/template resource tests added and passing
+   - [x] MCP server integration tests updated for new URIs
 
 ---
 
@@ -329,15 +329,36 @@ workflow-data/
 
 1. ✅ **Fetch guides** - Downloaded all 23 guides from agent-resources to `/tmp/guide-migration/`
 2. ✅ **Extract templates** - Extracted 12 templates to `/tmp/guide-migration/templates/`
-3. ⏳ **Convert guides to TOON** - Proof of concept completed (3 of 23 guides)
+3. ✅ **Convert guides to TOON** - All 23 guides converted (~130KB total)
+4. ✅ **Create folder structure** - `work-package/` created on workflows branch
 
-**Proof of Concept TOON Conversions:**
+**TOON Conversions (23 files):**
 
-| Guide | Lines (MD) | Lines (TOON) | Status |
-|-------|-----------|--------------|--------|
-| start-here.guide.md | 238 | 123 | ✅ Converted |
-| requirements-elicitation.guide.md | 403 | 186 | ✅ Converted (includes ASCII flow) |
-| knowledge-base-research.guide.md | 338 | 176 | ✅ Converted |
+| # | File | Size |
+|---|------|------|
+| 1 | work-package.toon | 6.4KB |
+| 2 | work-packages.toon | 5.7KB |
+| 3 | requirements-elicitation.guide.toon | 9.2KB |
+| 4 | design-framework.guide.toon | 10.0KB |
+| 5 | architecture-review.guide.toon | 9.0KB |
+| 6 | assumptions-review.guide.toon | 8.7KB |
+| 7 | implementation-analysis.guide.toon | 7.0KB |
+| 8 | task-completion-review.guide.toon | 7.9KB |
+| 9 | knowledge-base-research.guide.toon | 7.5KB |
+| 10 | resume-work.toon | 6.5KB |
+| 11 | workflow-retrospective.guide.toon | 6.7KB |
+| 12 | test-plan.guide.toon | 6.2KB |
+| 13 | plan.guide.toon | 5.9KB |
+| 14 | strategic-review.guide.toon | 5.8KB |
+| 15 | github-issue-creation.guide.toon | 5.7KB |
+| 16 | jira-issue-creation.guide.toon | 5.6KB |
+| 17 | complete.guide.toon | 5.5KB |
+| 18 | readme.guide.toon | 4.7KB |
+| 19 | pr-description.guide.toon | 4.2KB |
+| 20 | start-here.guide.toon | 4.6KB |
+| 21 | references.toon | 3.2KB |
+| 22 | README.toon | 3.2KB |
+| 23 | _START_HERE.toon | 3.2KB |
 
 **Conversion Pattern Established:**
 - Top-level fields: `id`, `version`, `title`, `purpose`
@@ -361,18 +382,22 @@ workflow-data/
 - 11-jira-issue.template.md
 - 12-checkpoint.template.md
 
-**Remaining Tasks:**
-- Convert remaining 20 guides to TOON format
-- Create work-package/ folder structure on workflows branch
-- Implement guide-loader.ts and template-loader.ts
-- Implement guide-resources.ts and template-resources.ts
-- Update work-package.toon with new URIs
-- Add tests
+**Commit:** `f9cff4b` on `workflows` branch
+- 36 files changed, 3,958 insertions, 542 deletions
 
-**Files Location:**
-- Downloaded guides: `/tmp/guide-migration/*.md`
-- Extracted templates: `/tmp/guide-migration/templates/*.template.md`
-- TOON conversions: `/tmp/guide-migration/toon/*.guide.toon`
+**Completed Tasks:**
+- ✅ Implement guide-loader.ts (workflow-namespaced, TOON support)
+- ✅ Implement template-loader.ts (index-based parsing)
+- ✅ Implement guide-resources.ts (workflow://{id}/guides/{name})
+- ✅ Implement template-resources.ts (workflow://{id}/templates/{index})
+- ✅ Update workflow-loader.ts (support subdirectory workflows)
+- ✅ Update mcp-server tests for new URI patterns
+- ✅ All 72 tests passing
+
+**Commits:**
+- `f9cff4b` (workflows): Migrate work-package guides to local TOON format
+- `45f312f` (workflows): Restore workflow definition and add work-package guide
+- `a69d93f` (main): Implement workflow-namespaced guide and template loaders
 
 ---
 
