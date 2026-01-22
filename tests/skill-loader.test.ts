@@ -1,39 +1,74 @@
 import { describe, it, expect } from 'vitest';
-import { listSkills, readSkill } from '../src/loaders/skill-loader.js';
+import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill } from '../src/loaders/skill-loader.js';
+import { join } from 'node:path';
+
+const WORKFLOW_DIR = join(process.cwd(), 'workflow-data', 'workflows');
 
 describe('skill-loader', () => {
+  describe('listUniversalSkills', () => {
+    it('should list universal skills', async () => {
+      const skills = await listUniversalSkills();
+      expect(skills.length).toBeGreaterThanOrEqual(1);
+      
+      const ids = skills.map(s => s.id);
+      expect(ids).toContain('intent-resolution');
+    });
+
+    it('should include intent-resolution as universal skill', async () => {
+      const skills = await listUniversalSkills();
+      const intentResolution = skills.find(s => s.id === 'intent-resolution');
+      
+      expect(intentResolution).toBeDefined();
+      expect(intentResolution?.name).toBe('Intent Resolution');
+      expect(intentResolution?.path).toBe('intent-resolution.toon');
+      expect(intentResolution?.workflowId).toBeUndefined();
+    });
+  });
+
+  describe('listWorkflowSkills', () => {
+    it('should list workflow-specific skills', async () => {
+      const skills = await listWorkflowSkills(WORKFLOW_DIR, 'work-package');
+      expect(skills.length).toBeGreaterThanOrEqual(1);
+      
+      const ids = skills.map(s => s.id);
+      expect(ids).toContain('workflow-execution');
+    });
+
+    it('should include workflowId in workflow-specific skills', async () => {
+      const skills = await listWorkflowSkills(WORKFLOW_DIR, 'work-package');
+      const workflowExecution = skills.find(s => s.id === 'workflow-execution');
+      
+      expect(workflowExecution).toBeDefined();
+      expect(workflowExecution?.name).toBe('Workflow Execution');
+      expect(workflowExecution?.path).toBe('skills/workflow-execution.toon');
+      expect(workflowExecution?.workflowId).toBe('work-package');
+    });
+  });
+
   describe('listSkills', () => {
-    it('should list available skills', async () => {
-      const skills = await listSkills();
+    it('should list all skills when given workflowDir', async () => {
+      const skills = await listSkills(WORKFLOW_DIR);
       expect(skills.length).toBeGreaterThanOrEqual(2);
       
       const ids = skills.map(s => s.id);
       expect(ids).toContain('workflow-execution');
       expect(ids).toContain('intent-resolution');
     });
-
-    it('should include name and path in skill entries', async () => {
-      const skills = await listSkills();
-      const workflowExecution = skills.find(s => s.id === 'workflow-execution');
-      
-      expect(workflowExecution).toBeDefined();
-      expect(workflowExecution?.name).toBe('Workflow Execution');
-      expect(workflowExecution?.path).toBe('workflow-execution.toon');
-    });
-
-    it('should include intent-resolution skill', async () => {
-      const skills = await listSkills();
-      const intentResolution = skills.find(s => s.id === 'intent-resolution');
-      
-      expect(intentResolution).toBeDefined();
-      expect(intentResolution?.name).toBe('Intent Resolution');
-      expect(intentResolution?.path).toBe('intent-resolution.toon');
-    });
   });
 
   describe('readSkill', () => {
-    it('should load a valid skill', async () => {
-      const result = await readSkill('workflow-execution');
+    it('should load a universal skill without workflow context', async () => {
+      const result = await readSkill('intent-resolution');
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.id).toBe('intent-resolution');
+        expect(result.value.capability).toBeDefined();
+      }
+    });
+
+    it('should load a workflow-specific skill with workflow context', async () => {
+      const result = await readSkill('workflow-execution', WORKFLOW_DIR, 'work-package');
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -53,8 +88,8 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should load skill with all required sections', async () => {
-      const result = await readSkill('workflow-execution');
+    it('should load workflow-specific skill with all required sections', async () => {
+      const result = await readSkill('workflow-execution', WORKFLOW_DIR, 'work-package');
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -90,7 +125,7 @@ describe('skill-loader', () => {
     });
 
     it('should have tool guidance with when and returns fields', async () => {
-      const result = await readSkill('workflow-execution');
+      const result = await readSkill('workflow-execution', WORKFLOW_DIR, 'work-package');
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -102,7 +137,7 @@ describe('skill-loader', () => {
     });
 
     it('should have error recovery patterns', async () => {
-      const result = await readSkill('workflow-execution');
+      const result = await readSkill('workflow-execution', WORKFLOW_DIR, 'work-package');
       
       expect(result.success).toBe(true);
       if (result.success) {

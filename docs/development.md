@@ -79,8 +79,10 @@ workflow-server/
 │           ├── {workflow-id}.toon    # Workflow definition
 │           ├── guides/               # Guide subdirectory
 │           │   └── {NN}-{name}.toon  # Guides (indexed)
-│           └── templates/            # Template subdirectory
-│               └── {NN}-{name}.md    # Templates (indexed)
+│           ├── templates/            # Template subdirectory
+│           │   └── {NN}-{name}.md    # Templates (indexed)
+│           └── skills/               # Workflow-specific skills
+│               └── {skill-id}.toon   # Skills for this workflow
 └── docs/                     # Documentation
 ```
 
@@ -116,10 +118,10 @@ npm test -- --run --coverage
 |------------|-------|----------|
 | `workflow-loader.test.ts` | 17 | Workflow loading, transitions, validation |
 | `schema-validation.test.ts` | 23 | All Zod schemas |
-| `mcp-server.test.ts` | 18 | All MCP tools |
+| `mcp-server.test.ts` | 20 | All MCP tools |
 | `intent-loader.test.ts` | 10 | Intent loading and index |
-| `skill-loader.test.ts` | 8 | Skill loading |
-| **Total** | **76** | ✅ All passing |
+| `skill-loader.test.ts` | 10 | Skill loading (universal + workflow-specific) |
+| **Total** | **80** | ✅ All passing |
 
 ### Test Infrastructure
 
@@ -201,3 +203,31 @@ Templates are stored in a `templates/` subdirectory within each workflow:
 3. Templates are auto-discovered - no manifest update needed
 4. Access via: `get_template { workflow_id: "{id}", index: "{NN}" }`
 5. Commit to the `workflows` branch
+
+## Adding New Skills
+
+Skills can be **universal** (apply to all workflows) or **workflow-specific**.
+
+### Universal Skills
+
+Universal skills are stored in `prompts/skills/` on the main branch:
+
+1. Create `{skill-id}.toon` in `prompts/skills/`
+2. Access via: `get_skill { skill_id: "{skill-id}" }`
+3. Example: `intent-resolution` (applies to all workflow discovery)
+
+### Workflow-Specific Skills
+
+Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
+
+1. Create `{skill-id}.toon` in `workflow-data/workflows/{workflow-id}/skills/`
+2. Skills are auto-discovered - no manifest update needed
+3. Access via: `get_skill { skill_id: "{skill-id}", workflow_id: "{workflow-id}" }`
+4. Commit to the `workflows` branch
+5. Example: `workflow-execution` in `work-package/skills/`
+
+### Skill Resolution
+
+When loading a skill with `workflow_id`:
+1. First checks `{workflow-id}/skills/{skill-id}.toon`
+2. Falls back to `prompts/skills/{skill-id}.toon`

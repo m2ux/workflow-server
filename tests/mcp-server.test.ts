@@ -176,9 +176,10 @@ describe('mcp-server integration', () => {
       const resources = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
       expect(resources.intents).toBeDefined();
-      expect(resources.skills).toBeDefined();
+      expect(resources.universal_skills).toBeDefined();
       expect(resources.workflows).toBeDefined();
       expect(resources['work-package']).toBeDefined();
+      expect(resources['work-package'].skills).toBeDefined(); // Workflow-specific skills
     });
   });
 
@@ -217,15 +218,26 @@ describe('mcp-server integration', () => {
   });
 
   describe('tool: get_skill', () => {
-    it('should get specific skill', async () => {
+    it('should get workflow-specific skill with workflow_id', async () => {
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { skill_id: 'workflow-execution' },
+        arguments: { skill_id: 'workflow-execution', workflow_id: 'work-package' },
       });
       
       expect(result.content).toBeDefined();
       const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(skill.id).toBe('workflow-execution');
+    });
+
+    it('should get universal skill without workflow_id', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { skill_id: 'intent-resolution' },
+      });
+      
+      expect(result.content).toBeDefined();
+      const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(skill.id).toBe('intent-resolution');
     });
   });
 

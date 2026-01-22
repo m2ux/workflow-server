@@ -24,8 +24,8 @@
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `list_skills` | - | List all available workflow execution skills |
-| `get_skill` | `skill_id` | Get a specific workflow execution skill |
+| `list_skills` | `workflow_id?` | List all skills (universal + workflow-specific if workflow_id provided) |
+| `get_skill` | `skill_id`, `workflow_id?` | Get a skill (checks workflow-specific first, then universal) |
 
 ### Guide Tools
 
@@ -59,12 +59,25 @@ Intents define user goals and map them to skills. They are the primary entry poi
 
 ## Skills
 
-Skills provide structured guidance for agents to consistently execute workflows.
+Skills provide structured guidance for agents to consistently execute workflows. Skills can be **universal** (apply globally) or **workflow-specific**.
 
-| Skill | Description |
-|-------|-------------|
-| `workflow-execution` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
-| `intent-resolution` | Bootstraps agent interaction by resolving user goals to intents and loading appropriate skills |
+### Universal Skills
+
+| Skill | Location | Description |
+|-------|----------|-------------|
+| `intent-resolution` | `prompts/skills/` | Bootstraps agent interaction by resolving user goals to intents and loading appropriate skills |
+
+### Workflow-Specific Skills
+
+| Skill | Workflow | Location | Description |
+|-------|----------|----------|-------------|
+| `workflow-execution` | `work-package` | `work-package/skills/` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
+
+### Skill Resolution
+
+When calling `get_skill { skill_id, workflow_id }`:
+1. First checks `{workflow_id}/skills/{skill_id}.toon`
+2. Falls back to `prompts/skills/{skill_id}.toon`
 
 ### Skill Contents
 
@@ -76,7 +89,7 @@ Each skill provides:
 - **Interpretation rules** - How to evaluate transitions, checkpoints, decisions
 - **Error recovery** - Common error scenarios and recovery patterns
 
-#### workflow-execution
+#### workflow-execution (workflow-specific)
 
 Primary skill for workflow navigation:
 - **Start**: `list_workflows` → `get_workflow` → `list_guides`
@@ -84,7 +97,7 @@ Primary skill for workflow navigation:
 - **Transitions**: `validate_transition`
 - **Artifacts**: `list_templates` → `get_template`
 
-#### intent-resolution
+#### intent-resolution (universal)
 
 Bootstrap skill for agent initialization:
 - **Bootstrap**: `get_intents` → `get_intent`
