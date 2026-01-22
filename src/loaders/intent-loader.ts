@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { type Result, ok, err } from '../result.js';
 import { IntentNotFoundError } from '../errors.js';
 import { logInfo } from '../logging.js';
+import { decodeToon } from '../utils/toon.js';
 
 export interface IntentEntry { id: string; name: string; path: string; }
 
@@ -31,7 +32,7 @@ function getIntentDir(): string {
 
 export async function readIntent(intentId: string): Promise<Result<Intent, IntentNotFoundError>> {
   const intentDir = getIntentDir();
-  const filePath = join(intentDir, `${intentId}.json`);
+  const filePath = join(intentDir, `${intentId}.toon`);
   
   if (!existsSync(filePath)) {
     return err(new IntentNotFoundError(intentId));
@@ -39,7 +40,7 @@ export async function readIntent(intentId: string): Promise<Result<Intent, Inten
   
   try {
     const content = await readFile(filePath, 'utf-8');
-    const intent = JSON.parse(content) as Intent;
+    const intent = decodeToon<Intent>(content);
     logInfo('Intent loaded', { id: intentId, path: filePath });
     return ok(intent);
   } catch {
@@ -55,9 +56,9 @@ export async function listIntents(): Promise<IntentEntry[]> {
   try {
     const files = await readdir(intentDir);
     return files
-      .filter(f => f.endsWith('.json') && f !== 'index.json')
+      .filter(f => f.endsWith('.toon') && f !== 'index.toon')
       .map(file => {
-        const id = basename(file, '.json');
+        const id = basename(file, '.toon');
         const name = id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         return { id, name, path: file };
       });
@@ -79,7 +80,7 @@ export interface IntentIndex {
 
 export async function readIntentIndex(): Promise<Result<IntentIndex, IntentNotFoundError>> {
   const intentDir = getIntentDir();
-  const filePath = join(intentDir, 'index.json');
+  const filePath = join(intentDir, 'index.toon');
   
   if (!existsSync(filePath)) {
     return err(new IntentNotFoundError('index'));
@@ -87,7 +88,7 @@ export async function readIntentIndex(): Promise<Result<IntentIndex, IntentNotFo
   
   try {
     const content = await readFile(filePath, 'utf-8');
-    const index = JSON.parse(content) as IntentIndex;
+    const index = decodeToon<IntentIndex>(content);
     logInfo('Intent index loaded', { path: filePath });
     return ok(index);
   } catch {
