@@ -116,8 +116,8 @@ npm test -- --run --coverage
 | `schema-validation.test.ts` | 23 | All Zod schemas |
 | `mcp-server.test.ts` | 18 | All MCP tools |
 | `intent-loader.test.ts` | 10 | Intent loading and index |
-| `skill-loader.test.ts` | 7 | Skill loading |
-| **Total** | **75** | ✅ All passing |
+| `skill-loader.test.ts` | 8 | Skill loading |
+| **Total** | **76** | ✅ All passing |
 
 ### Test Infrastructure
 

@@ -64,16 +64,32 @@ Skills provide structured guidance for agents to consistently execute workflows.
 | Skill | Description |
 |-------|-------------|
 | `workflow-execution` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
+| `intent-resolution` | Bootstraps agent interaction by resolving user goals to intents and loading appropriate skills |
 
 ### Skill Contents
 
-The `workflow-execution` skill provides:
+Each skill provides:
 
-- **Execution pattern** - Tool sequence for workflow stages (start, per-phase, transitions)
-- **Tool guidance** - When to use each tool, what to preserve from results
+- **Execution pattern** - Tool sequence for workflow stages
+- **Tool guidance** - When to use each tool, parameters, what to preserve
 - **State management** - What to track in memory during execution
 - **Interpretation rules** - How to evaluate transitions, checkpoints, decisions
 - **Error recovery** - Common error scenarios and recovery patterns
+
+#### workflow-execution
+
+Primary skill for workflow navigation:
+- **Start**: `list_workflows` → `get_workflow` → `list_guides`
+- **Per-phase**: `get_phase` → `get_checkpoint` → `get_guide`
+- **Transitions**: `validate_transition`
+- **Artifacts**: `list_templates` → `get_template`
+
+#### intent-resolution
+
+Bootstrap skill for agent initialization:
+- **Bootstrap**: `get_intents` → `get_intent`
+- **Skill loading**: `get_skill`
+- **Discovery**: `list_resources`
 
 ## Available Workflows
 
