@@ -5,7 +5,7 @@
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI agent workflow orchestration. Enables agents to discover, navigate, and execute structured workflows.
+An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI agent workflow orchestration. Enables agents to discover, navigate, and execute structured workflows that fulfill user goals.
 
 ---
 
@@ -15,7 +15,7 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 ## 🎯 Overview
 
-Workflow Server uses an **Activity → Skill → Tool** architecture to guide AI agents through structured workflows.
+Workflow Server uses an **Goal → Activity → Skill → Tool** architecture to guide AI agents through structured workflows.
 
 After initial setup of an always-applied [rule](docs/ide-setup.md), agents:
 1. **Match the user's goal** to an activity via `get_activities`
