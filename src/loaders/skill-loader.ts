@@ -202,13 +202,22 @@ export async function listSkills(workflowDir: string): Promise<SkillEntry[]> {
 
 export interface SkillIndex {
   description: string;
+  usage: string;
   universal: Array<{
     id: string;
     capability: string;
+    next_action: {
+      tool: string;
+      parameters: Record<string, string>;
+    };
   }>;
   workflow_specific: Record<string, Array<{
     id: string;
     capability: string;
+    next_action: {
+      tool: string;
+      parameters: Record<string, string>;
+    };
   }>>;
 }
 
@@ -228,6 +237,10 @@ export async function readSkillIndex(workflowDir: string): Promise<Result<SkillI
       universal.push({
         id: result.value.id,
         capability: result.value.capability,
+        next_action: {
+          tool: 'get_skill',
+          parameters: { skill_id: result.value.id },
+        },
       });
     }
   }
@@ -250,6 +263,10 @@ export async function readSkillIndex(workflowDir: string): Promise<Result<SkillI
                 workflow_specific[workflowId].push({
                   id: result.value.id,
                   capability: result.value.capability,
+                  next_action: {
+                    tool: 'get_skill',
+                    parameters: { skill_id: result.value.id, workflow_id: workflowId },
+                  },
                 });
               }
             }
@@ -267,6 +284,7 @@ export async function readSkillIndex(workflowDir: string): Promise<Result<SkillI
   
   const index: SkillIndex = {
     description: 'Skills provide tool orchestration patterns for executing intents.',
+    usage: 'After identifying a skill, call the tool specified in next_action with the given parameters to get full execution guidance.',
     universal,
     workflow_specific,
   };

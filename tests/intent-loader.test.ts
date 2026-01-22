@@ -97,6 +97,18 @@ describe('intent-loader', () => {
         }
       }
     });
+
+    it('should include next_action with primary skill guidance', async () => {
+      const result = await readIntent(WORKFLOW_DIR, 'start-workflow');
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.next_action).toBeDefined();
+        expect(result.value.next_action.tool).toBe('get_skill');
+        expect(result.value.next_action.parameters).toBeDefined();
+        expect(result.value.next_action.parameters.skill_id).toBe(result.value.skills.primary);
+      }
+    });
   });
 
   describe('readIntentIndex', () => {
@@ -132,6 +144,25 @@ describe('intent-loader', () => {
           expect(intent.id).toBeDefined();
           expect(intent.problem).toBeDefined();
           expect(intent.primary_skill).toBe('workflow-execution');
+        }
+      }
+    });
+
+    it('should include usage instructions and next_action for each intent', async () => {
+      const result = await readIntentIndex(WORKFLOW_DIR);
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Check usage instructions exist
+        expect(result.value.usage).toBeDefined();
+        expect(result.value.usage).toContain('next_action');
+        
+        // Check each intent has next_action
+        for (const intent of result.value.intents) {
+          expect(intent.next_action).toBeDefined();
+          expect(intent.next_action.tool).toBe('get_skill');
+          expect(intent.next_action.parameters).toBeDefined();
+          expect(intent.next_action.parameters.skill_id).toBe(intent.primary_skill);
         }
       }
     });

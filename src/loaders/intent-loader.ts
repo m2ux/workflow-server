@@ -37,12 +37,19 @@ export interface Intent {
   context_to_preserve: string[];
 }
 
+export interface IntentWithGuidance extends Intent {
+  next_action: {
+    tool: string;
+    parameters: Record<string, string>;
+  };
+}
+
 /** Get the intent directory from the meta workflow */
 function getIntentDir(workflowDir: string): string {
   return join(workflowDir, META_WORKFLOW_ID, 'intents');
 }
 
-export async function readIntent(workflowDir: string, intentId: string): Promise<Result<Intent, IntentNotFoundError>> {
+export async function readIntent(workflowDir: string, intentId: string): Promise<Result<IntentWithGuidance, IntentNotFoundError>> {
   const intentDir = getIntentDir(workflowDir);
   
   if (!existsSync(intentDir)) {
@@ -65,7 +72,17 @@ export async function readIntent(workflowDir: string, intentId: string): Promise
     const content = await readFile(filePath, 'utf-8');
     const intent = decodeToon<Intent>(content);
     logInfo('Intent loaded', { id: intentId, path: filePath });
-    return ok(intent);
+    
+    // Add next_action guidance for the primary skill
+    const intentWithGuidance: IntentWithGuidance = {
+      ...intent,
+      next_action: {
+        tool: 'get_skill',
+        parameters: { skill_id: intent.skills.primary },
+      },
+    };
+    
+    return ok(intentWithGuidance);
   } catch {
     return err(new IntentNotFoundError(intentId));
   }
@@ -94,10 +111,15 @@ export async function listIntents(workflowDir: string): Promise<IntentEntry[]> {
 
 export interface IntentIndex {
   description: string;
+  usage: string;
   intents: Array<{
     id: string;
     problem: string;
     primary_skill: string;
+    next_action: {
+      tool: string;
+      parameters: Record<string, string>;
+    };
   }>;
   quick_match: Record<string, string>;
 }
@@ -124,6 +146,10 @@ export async function readIntentIndex(workflowDir: string): Promise<Result<Inten
         id: intent.id,
         problem: intent.problem,
         primary_skill: intent.skills.primary,
+        next_action: {
+          tool: 'get_skill',
+          parameters: { skill_id: intent.skills.primary },
+        },
       });
       
       // Build quick_match from recognition patterns
@@ -135,6 +161,7 @@ export async function readIntentIndex(workflowDir: string): Promise<Result<Inten
   
   const index: IntentIndex = {
     description: 'Match user goal to an intent. Intents use skills to achieve outcomes.',
+    usage: 'After matching an intent, call the tool specified in next_action with the given parameters to get execution instructions.',
     intents,
     quick_match,
   };
