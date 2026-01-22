@@ -22,13 +22,14 @@ describe('intent-loader', () => {
       expect(ids).not.toContain('index');
     });
 
-    it('should include name and path in intent entries', async () => {
+    it('should include index, name, and path in intent entries', async () => {
       const intents = await listIntents(WORKFLOW_DIR);
       const startWorkflow = intents.find(i => i.id === 'start-workflow');
       
       expect(startWorkflow).toBeDefined();
+      expect(startWorkflow?.index).toBe('01');
       expect(startWorkflow?.name).toBe('Start Workflow');
-      expect(startWorkflow?.path).toBe('start-workflow.toon');
+      expect(startWorkflow?.path).toBe('01-start-workflow.toon');
     });
   });
 

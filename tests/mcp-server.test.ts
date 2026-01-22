@@ -179,7 +179,7 @@ describe('mcp-server integration', () => {
       expect(resources.universal_skills).toBeDefined();
       expect(resources.workflows).toBeDefined();
       expect(resources['work-package']).toBeDefined();
-      expect(resources['work-package'].skills).toBeDefined(); // Workflow-specific skills
+      expect(resources['work-package'].guides).toBeDefined();
     });
   });
 

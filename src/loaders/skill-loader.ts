@@ -10,10 +10,34 @@ import { decodeToon } from '../utils/toon.js';
 const META_WORKFLOW_ID = 'meta';
 
 export interface SkillEntry { 
+  index: string;
   id: string; 
   name: string; 
   path: string;
   workflowId?: string;  // If set, this is a workflow-specific skill
+}
+
+/** Parse skill filename to extract index and id: NN-skill-id.toon */
+function parseSkillFilename(filename: string): { index: string; id: string } | null {
+  const match = filename.match(/^(\d{2})-(.+)\.toon$/);
+  if (!match || !match[1] || !match[2]) return null;
+  return { index: match[1], id: match[2] };
+}
+
+/** Find skill file by ID in a directory (handles NN- prefix) */
+async function findSkillFile(skillDir: string, skillId: string): Promise<string | null> {
+  if (!existsSync(skillDir)) return null;
+  
+  try {
+    const files = await readdir(skillDir);
+    const matchingFile = files.find(f => {
+      const parsed = parseSkillFilename(f);
+      return parsed && parsed.id === skillId;
+    });
+    return matchingFile ? join(skillDir, matchingFile) : null;
+  } catch {
+    return null;
+  }
 }
 
 export interface Skill {
@@ -54,8 +78,8 @@ function getWorkflowSkillDir(workflowDir: string, workflowId: string): string {
 /**
  * Read a skill by ID, with workflow context.
  * Resolution order:
- * 1. If workflowId provided: check {workflowDir}/{workflowId}/skills/{skillId}.toon
- * 2. Fallback to universal: check {workflowDir}/meta/skills/{skillId}.toon
+ * 1. If workflowId provided: check {workflowDir}/{workflowId}/skills/NN-{skillId}.toon
+ * 2. Fallback to universal: check {workflowDir}/meta/skills/NN-{skillId}.toon
  */
 export async function readSkill(
   skillId: string, 
@@ -65,9 +89,9 @@ export async function readSkill(
   // Try workflow-specific skill first
   if (workflowId && workflowId !== META_WORKFLOW_ID) {
     const workflowSkillDir = getWorkflowSkillDir(workflowDir, workflowId);
-    const workflowFilePath = join(workflowSkillDir, `${skillId}.toon`);
+    const workflowFilePath = await findSkillFile(workflowSkillDir, skillId);
     
-    if (existsSync(workflowFilePath)) {
+    if (workflowFilePath) {
       try {
         const content = await readFile(workflowFilePath, 'utf-8');
         const skill = decodeToon<Skill>(content);
@@ -81,9 +105,9 @@ export async function readSkill(
   
   // Try universal skill (from meta workflow)
   const universalDir = getUniversalSkillDir(workflowDir);
-  const universalFilePath = join(universalDir, `${skillId}.toon`);
+  const universalFilePath = await findSkillFile(universalDir, skillId);
   
-  if (existsSync(universalFilePath)) {
+  if (universalFilePath) {
     try {
       const content = await readFile(universalFilePath, 'utf-8');
       const skill = decodeToon<Skill>(content);
@@ -107,11 +131,15 @@ export async function listUniversalSkills(workflowDir: string): Promise<SkillEnt
   
   try {
     const files = await readdir(skillDir);
-    return files.filter(f => f.endsWith('.toon')).map(file => {
-      const id = basename(file, '.toon');
-      const name = id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      return { id, name, path: file };
-    });
+    return files
+      .map(file => {
+        const parsed = parseSkillFilename(file);
+        if (!parsed) return null;
+        const name = parsed.id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        return { index: parsed.index, id: parsed.id, name, path: file };
+      })
+      .filter((entry): entry is SkillEntry => entry !== null)
+      .sort((a, b) => a.index.localeCompare(b.index));
   } catch { 
     return []; 
   }
@@ -127,11 +155,16 @@ export async function listWorkflowSkills(workflowDir: string, workflowId: string
   
   try {
     const files = await readdir(skillDir);
-    return files.filter(f => f.endsWith('.toon')).map(file => {
-      const id = basename(file, '.toon');
-      const name = id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      return { id, name, path: `skills/${file}`, workflowId };
-    });
+    const entries: SkillEntry[] = [];
+    
+    for (const file of files) {
+      const parsed = parseSkillFilename(file);
+      if (!parsed) continue;
+      const name = parsed.id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      entries.push({ index: parsed.index, id: parsed.id, name, path: `skills/${file}`, workflowId });
+    }
+    
+    return entries.sort((a, b) => a.index.localeCompare(b.index));
   } catch { 
     return []; 
   }
