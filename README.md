@@ -13,8 +13,7 @@ This orphan branch contains workflow definitions, intents, skills, guides, and t
 workflows/                    # Worktree checkout
 ├── meta/                     # Bootstrap workflow (manages other workflows)
 │   ├── meta.toon             # Meta workflow definition
-│   ├── intents/              # All intents (indexed)
-│   │   ├── 00-index.toon     # Intent index (primary entry point)
+│   ├── intents/              # All intents (indexed, no separate index file)
 │   │   └── {NN}-{id}.toon    # Individual intents (01-start-workflow, etc.)
 │   └── skills/               # Universal skills (indexed)
 │       └── {NN}-{id}.toon    # 00-intent-resolution, 01-workflow-execution
