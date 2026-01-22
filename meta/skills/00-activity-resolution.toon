@@ -1,13 +1,13 @@
 id: activity-resolution
 version: 1.1.0
-capability: Resolve processes to appropriate activities and skills
+capability: Resolve user goals to appropriate activities and skills
 architecture:
-  principle: "Processes resolve to activities; activities resolve to skills. Processes NEVER resolve directly to skills."
+  principle: "Goals resolve to activities; activities resolve to skills. Goals NEVER resolve directly to skills."
   layers[3]:
-    - "Process (problem domain) → Activity"
+    - "User Goal (problem domain) → Activity"
     - "Activity → Skill(s) (solution domain)"
     - "Skill → Tools (execution domain)"
-  gap_detection: "If a process matches a skill but no activity exists, this indicates a missing activity - create one"
+  gap_detection: "If a goal matches a skill but no activity exists, this indicates a missing activity - create one"
 execution_pattern:
   bootstrap[2]:
     - get_activities
@@ -24,9 +24,9 @@ tools:
     preserve[2]:
       - activities
       - quick_match
-    usage: Primary entry point; match process to activity ID
+    usage: Primary entry point; match user goal to activity ID
   get_activity:
-    when: Process matched to activity; need execution flow
+    when: User goal matched to activity; need execution flow
     params: activity_id
     returns: Full activity with problem, recognition, skills, outcome, flow
     preserve[4]:
@@ -52,13 +52,13 @@ tools:
     usage: Discovery of available workflows, guides, templates
 flow[5]:
   - 1. Call get_activities to get activity index
-  - 2. Match process using quick_match patterns or activity descriptions
+  - 2. Match user goal using quick_match patterns or activity descriptions
   - 3. Call get_activity with matched activity_id
   - 4. Call get_skill with activity.skills.primary
   - 5. Execute following skill.execution_pattern
 matching:
   quick_match: "Use exact or fuzzy match against quick_match keys"
-  fallback: "If no quick_match, compare process to activity.problem descriptions"
+  fallback: "If no quick_match, compare user goal to activity.problem descriptions"
   ambiguous: "If multiple activities match, ask user to clarify"
   never: "NEVER skip activity matching to use a skill directly"
 errors:
@@ -69,10 +69,10 @@ errors:
     cause: Invalid skill_id in activity.skills
     recovery: Call list_skills to see valid skill IDs
   no_matching_activity:
-    cause: Process doesn't match any existing activity
-    detection: "Process could be served by existing skill but no activity maps to it"
+    cause: User goal doesn't match any existing activity
+    detection: "Goal could be served by existing skill but no activity maps to it"
     resolution[3]:
-      - "1. Identify which skill(s) would serve this process"
-      - "2. Create a new activity that maps process to skill"
+      - "1. Identify which skill(s) would serve this goal"
+      - "2. Create a new activity that maps goal to skill"
       - "3. Add activity to prompts/intents/ with recognition patterns"
     note: "This is a design gap, not a user error - do not ask user to rephrase"
