@@ -1,0 +1,138 @@
+id: strategic-review
+version: 1.0.0
+title: Strategic Review Guide
+purpose: Ensure the final implementation is minimal and focused by identifying and removing speculative changes
+
+sections[7]:
+  - id: purpose
+    title: Purpose
+    content: """
+      The strategic review ensures the final implementation is minimal and focused. During problem-solving, it's common to add speculative changes, debugging infrastructure, or exploratory code that becomes unnecessary once the root cause is understood. This review identifies and removes such artifacts before finalizing the PR.
+    """
+
+  - id: when-to-perform
+    title: When to Perform
+    intro: "Perform a strategic review in Phase 8 (Strategic Review), after validation and before finalization. The review is especially important when:"
+    triggers[4]:
+      - The implementation involved significant investigation or debugging
+      - Multiple approaches were tried before finding the solution
+      - Infrastructure or tooling changes were made during development
+      - The final solution is simpler than initially anticipated
+
+  - id: review-checklist
+    title: Review Checklist
+    subsections[4]:
+      - id: speculative-audit
+        title: Speculative Changes Audit
+        intro: "Identify changes made during investigation that are no longer required:"
+        categories[5]{category,questions}:
+          Infrastructure,"Were CI/CD changes, build configuration, or environment setup modified speculatively? Are they still needed?"
+          Dependencies,Were dependencies added/removed/modified that aren't required by the final implementation?
+          Debug Code,"Are there debug statements, verbose logging, or diagnostic outputs that should be removed?"
+          Fallback Logic,Were fallback mechanisms added that are unnecessary given the final approach?
+          Configuration,Were configuration files modified beyond what the final solution requires?
+
+      - id: compare-baseline
+        title: Compare Against Baseline
+        commands: """
+          # List all files changed in this branch
+          git diff --name-only <base-branch> HEAD
+
+          # For each file, ask: Is this change necessary for the solution?
+          git diff <base-branch> HEAD -- <file>
+        """
+        verifications[4]:
+          - The change directly supports the solution (not a speculative attempt)
+          - The change is minimal (no unnecessary additions)
+          - The change doesn't include debugging artifacts
+          - The change wasn't superseded by a simpler approach
+
+      - id: minimality-check
+        title: Solution Minimality Check
+        questions[5]{question,ifNo}:
+          Is every changed file necessary for the fix?,Revert unnecessary file changes
+          Is every added line of code necessary?,Remove speculative or debug code
+          Are all new dependencies required?,Remove unused dependencies
+          Are all configuration changes required?,Revert unnecessary config changes
+          Is the solution as simple as it could be?,Consider simplification
+
+      - id: revert-changes
+        title: Revert Unnecessary Changes
+        commands: """
+          # Revert a specific file to match the base branch
+          git checkout <base-branch> -- <file>
+
+          # Or use interactive staging to selectively revert portions
+          git checkout -p <base-branch> -- <file>
+
+          # Stage reverted changes
+          git add <reverted-files>
+        """
+
+  - id: checkpoint
+    title: Checkpoint Template
+    intro: "After completing the strategic review, present findings to the user:"
+    template: workflow://work-package/templates/12
+
+  - id: common-patterns
+    title: Common Patterns to Watch For
+    subsections[3]:
+      - id: investigation-artifacts
+        title: Investigation Artifacts
+        intro: "Changes made while understanding the problem:"
+        examples[4]:
+          - Extra logging or print statements
+          - Verbose error messages for debugging
+          - Temporary workarounds that were superseded
+          - Test configurations that were exploratory
+
+      - id: over-engineering
+        title: Over-Engineering
+        intro: "Solutions that grew beyond what was needed:"
+        examples[4]:
+          - Generic abstractions for specific problems
+          - Fallback mechanisms for cases that can't occur
+          - Configuration options that aren't used
+          - Infrastructure for features not implemented
+
+      - id: orphaned-infrastructure
+        title: Orphaned Infrastructure
+        intro: "Supporting changes that outlived their purpose:"
+        examples[4]:
+          - CI job dependencies added for failed approaches
+          - Environment variables for abandoned features
+          - Build steps for removed functionality
+          - Wait/synchronization logic that's unnecessary
+
+  - id: integration
+    title: Integration with Workflow
+    flow: """
+      Phase 6: Implement Tasks
+              │
+              ▼
+      Phase 7: Testing & Validation
+              │
+              ▼
+      Phase 8: Strategic Review  ← You are here
+          ├─ 8.1 Speculative Changes Audit
+          ├─ 8.2 Compare Against Baseline
+          ├─ 8.3 Revert Unnecessary Changes
+          ├─ 8.4 Checkpoint
+          └─ 8.5 Checklist
+              │
+              ▼
+      Phase 9: Finalize
+    """
+
+  - id: summary
+    title: Summary
+    content: """
+      The strategic review prevents "solution sprawl" by:
+
+      1. **Auditing** all changes against the baseline
+      2. **Identifying** speculative or unnecessary modifications
+      3. **Reverting** changes that don't support the final solution
+      4. **Verifying** the implementation is minimal and focused
+
+      This ensures PRs are clean, reviewable, and contain only intentional changes.
+    """

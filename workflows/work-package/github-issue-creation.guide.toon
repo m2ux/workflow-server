@@ -1,0 +1,112 @@
+id: github-issue-creation
+version: 1.0.0
+title: GitHub Issue Creation Guide
+purpose: Guidelines for creating well-structured GitHub issues that clearly define the problem space without prescribing solutions
+
+sections[9]:
+  - id: overview
+    title: Overview
+    content: """
+      A well-written issue defines a problem clearly enough that multiple implementation approaches could be evaluated. Issues should focus on *what* needs to be solved and *why*, leaving *how* for subsequent design work.
+
+      > **Key Insight:** Issues that prescribe solutions prematurely constrain design options and may miss better alternatives. Define the problem well, and good solutions will follow.
+    """
+
+  - id: issues-define-problems
+    title: "Issues Define Problems, Not Solutions"
+    intro: "**Issues document requirements, not implementation.** An issue should describe the problem space—what's broken, missing, or suboptimal—without dictating the technical approach."
+    shouldInclude[5]:
+      - Problem statement and impact
+      - Current vs desired state
+      - User stories and acceptance criteria
+      - Success metrics
+      - Scope boundaries
+    shouldNotInclude[5]:
+      - Technical approach or architecture
+      - Schema changes or data structures
+      - Code snippets or API designs
+      - File paths or module names
+      - Implementation timeline
+    forbiddenContent[6]{forbidden,example,whereBelongs}:
+      Solution section,"Solution: Use gap detection algorithm","Planning docs, ADRs"
+      Implementation Approach,"Create filterByScoreGap() utility","Planning docs, PRs"
+      Technical Approach,Modify scoring-strategies.ts,"Planning docs, PRs"
+      Algorithms or patterns,"Use elbow method to find clusters","ADRs, planning docs"
+      File/code locations,"Update conceptual_catalog_search.ts:80","PRs, commit messages"
+      Schema or data structures,"Add gap_threshold column",ADRs
+
+  - id: when-to-write
+    title: When to Write an Issue
+    writeWhen[5]:
+      - A feature is missing or incomplete
+      - A bug affects user experience or system reliability
+      - "Performance doesn't meet user expectations"
+      - Technical debt impacts development velocity
+      - A user request reveals an unmet need
+    skipFor[3]:
+      - "Trivial fixes (typos, formatting)"
+      - Internal refactoring with no user-visible impact
+      - Changes already covered by existing issues
+
+  - id: anti-patterns
+    title: Issue Anti-Patterns to Avoid
+    patterns[5]{pattern,description,symptoms,solution}:
+      Solution Masquerading as Problem,Describing implementation rather than need,"'Add X table' instead of 'Users can't find X'",Reframe: What user need does this solve?
+      Vague Problem Statement,Problem unclear or too broad,"'Improve search' with no specifics",Add concrete examples of current failures
+      Missing Acceptance Criteria,No way to know when it's done,"Endless scope creep, 'one more thing'",Define checkboxes that mark completion
+      Kitchen Sink Scope,Too many unrelated problems in one issue,Touches every part of the system,"Split into focused, independent issues"
+      Assumed Context,Reader must already know the problem,"'Fix the thing we discussed'",Write as if reader has no prior context
+
+  - id: issue-structure
+    title: Issue Structure
+    requiredSections[4]:
+      - "**Problem Statement** - Gap between current and desired state"
+      - "**Goal** - One sentence core objective (no implementation)"
+      - "**Scope** - In scope and out of scope items"
+      - "**User Stories** - As a [persona], I want [capability] so that [benefit]"
+    optionalSections[4]:
+      - "**Success Metrics** - How will we measure improvement?"
+      - "**Context & Background** - Additional information"
+      - "**Constraints** - Non-functional requirements"
+      - "**References** - Links to related resources"
+    template: workflow://work-package/templates/10
+
+  - id: problem-statement-guide
+    title: Problem Statement Guidelines
+    content: """
+      The problem statement is the most critical section. It should pass the "5 Whys" test—dig deep enough that the root problem is clear.
+
+      **Good Example:**
+      > The system currently processes PDF and EPUB documents to extract text-based chunks and concepts. However, many technical documents contain valuable visual content (diagrams, flowcharts, charts) that conveys information not captured in text.
+
+      **Bad Example:**
+      > We need to add diagram support using PyMuPDF and store images in a new visuals table.
+
+      The bad example describes a solution, not a problem. Ask: "What user problem does this solve?"
+    """
+
+  - id: goal-guide
+    title: Goal Guidelines
+    content: """
+      The goal should be a single sentence that captures the essence of what success looks like—without prescribing how to achieve it.
+
+      **Good:** Enable users to discover and leverage visual content (diagrams, charts, figures) alongside text when searching their document library.
+
+      **Bad:** Implement PyMuPDF integration with new visuals table.
+    """
+
+  - id: user-stories-guide
+    title: User Stories Guidelines
+    format: "As a **[persona]**, I want **[capability]** so that **[benefit]**."
+    acceptanceCriteria[4]:
+      - "Start with 'User can...' not 'System does...'"
+      - "Describe observable outcomes"
+      - "Avoid implementation details"
+      - "Make criteria testable"
+
+  - id: related-guides
+    title: Related Guides
+    guides[3]:
+      - workflow://work-package/guides/requirements-elicitation
+      - workflow://work-package/guides/jira-issue-creation
+      - workflow://work-package/guides/work-package

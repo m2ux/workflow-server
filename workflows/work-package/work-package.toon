@@ -1,0 +1,155 @@
+id: work-package
+version: 1.0.0
+title: Work Package Implementation Workflow
+purpose: Define how to plan and implement ONE work package from inception to merged PR
+
+sections[13]:
+  - id: overview
+    title: Overview
+    content: """
+      This workflow defines how to plan and implement ONE work package from inception to merged PR. A **work package** is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change.
+
+      **For multiple related work packages:** Use the Work Packages Workflow to create a roadmap first.
+    """
+
+  - id: rules
+    title: Workflow Rules
+    rules[6]:
+      - Agents must NOT proceed past checkpoints without user confirmation
+      - "Ask, don't assume - Clarify requirements before acting"
+      - "Summarize, then proceed - Provide brief status before asking to continue"
+      - One task at a time - Complete current work before starting new work
+      - "Explicit approval - Get clear 'yes' or 'proceed' before major actions"
+      - Decision points require user choice - When issues are found, user decides whether to proceed or loop back
+    notation[2]:
+      - "🛑 **CHECKPOINT** — Requires user confirmation before proceeding"
+      - "🔀 **DECISION POINT** — User chooses path based on findings (proceed or loop back)"
+
+  - id: phase-1
+    title: "Phase 1: Issue Verification & PR Creation"
+    duration: 10-20m
+    content: "Every work package should be linked to a GitHub or Jira issue. Issues define the problem space and provide traceability."
+    steps[7]:
+      - Check if GitHub or Jira issue specified
+      - "🛑 CHECKPOINT: 'No issue found. Should I create one?'"
+      - "If creating: Use Issue Creation Guide to define problem space"
+      - Create GitHub issue (problem-focused, no solutions)
+      - "🛑 CHECKPOINT: 'Issue #N created. Proceed?'"
+      - Create feature branch (type/work-package-name)
+      - Create draft PR with changelog only
+    issueGuides[2]:
+      - workflow://work-package/guides/github-issue-creation
+      - workflow://work-package/guides/jira-issue-creation
+
+  - id: phase-2
+    title: "Phase 2: Requirements Elicitation"
+    duration: 15-30m
+    optional: "[If requested]"
+    steps[7]:
+      - Explore problem space through conversation
+      - Clarify stakeholders and context
+      - Define scope boundaries (in/out lists)
+      - Establish success criteria
+      - Review elicited requirements
+      - "🛑 CHECKPOINT: 'Have I understood the requirements correctly?'"
+      - Create 00-requirements-elicitation.md
+    guide: workflow://work-package/guides/requirements-elicitation
+
+  - id: phase-3
+    title: "Phase 3: Implementation Analysis"
+    duration: 10-20m
+    optional: "[Always]"
+    steps[3]:
+      - Complete analysis per Implementation Analysis Guide
+      - Create 01-implementation-analysis.md
+      - "🛑 CHECKPOINT: 'Would you like to perform research?'"
+    guide: workflow://work-package/guides/implementation-analysis
+
+  - id: phase-4
+    title: "Phase 4: Research"
+    duration: 20-45m
+    optional: "[If requested]"
+    steps[3]:
+      - Complete research per Knowledge Base Research Guide
+      - "🛑 CHECKPOINT: 'Knowledge insights confirmed?'"
+      - "🛑 CHECKPOINT: 'Web research findings confirmed?'"
+    guide: workflow://work-package/guides/knowledge-base-research
+
+  - id: phase-5
+    title: "Phase 5: Plan & Prepare"
+    duration: 20-45m
+    steps[4]:
+      - Complete planning per guides (design framework, plan, test plan)
+      - "🛑 CHECKPOINT: 'Approach confirmed?'"
+      - Prepare for implementation (sync branch, PR, TODOs)
+      - "🛑 CHECKPOINT: 'Ready to implement?'"
+    guides[3]:
+      - workflow://work-package/guides/design-framework
+      - workflow://work-package/guides/plan
+      - workflow://work-package/guides/test-plan
+
+  - id: phase-6
+    title: "Phase 6: Implement Tasks"
+    duration: varies
+    content: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit → review assumptions → checkpoint."
+    steps[8]:
+      - "🛑 VERIFY: On feature branch before any code changes"
+      - "For each task: implement → test → commit → assumptions"
+      - "🛑 CHECKPOINT: 'Task N complete. Assumptions confirmed?'"
+      - "After all tasks: code review per guide"
+      - "🛑 CHECKPOINT: 'Review findings confirmed?'"
+      - Architectural significance check per guide
+      - "🛑 CHECKPOINT: 'Significance assessment confirmed?'"
+      - "ADR (if significant) 🛑 'ADR confirmed?'"
+    guides[3]:
+      - workflow://work-package/guides/task-completion-review
+      - workflow://work-package/guides/assumptions-review
+      - workflow://work-package/guides/architecture-review
+
+  - id: phase-7
+    title: "Phase 7: Verify & Validate Design"
+    duration: 30-60m
+    steps[2]:
+      - All tests pass, build succeeds (per Test Plan Guide)
+      - "🔀 DECISION: Pass → Phase 8 | Minor change → Phase 6 | Major change → Phase 5"
+    guide: workflow://work-package/guides/test-plan
+
+  - id: phase-8
+    title: "Phase 8: Strategic Review"
+    duration: 15-30m
+    steps[3]:
+      - Complete review per Strategic Review Guide
+      - "🛑 CHECKPOINT: 'Review findings confirmed?'"
+      - "🔀 DECISION: Pass → Phase 9 | Issues → Phase 5"
+    guide: workflow://work-package/guides/strategic-review
+
+  - id: phase-9
+    title: "Phase 9: Finalize"
+    duration: 15-30m
+    steps[1]:
+      - Complete finalization tasks per guides (ADR, test plan, COMPLETE.md)
+    guides[2]:
+      - workflow://work-package/guides/complete
+      - workflow://work-package/guides/architecture-review
+
+  - id: phase-10
+    title: "Phase 10: Update PR"
+    duration: 10-15m
+    steps[3]:
+      - Update PR per PR Description Guide
+      - "🛑 CHECKPOINT: 'PR description confirmed?'"
+      - Mark PR ready for review
+    guide: workflow://work-package/guides/pr-description
+
+  - id: phase-11
+    title: "Phase 11: Post-Implementation"
+    steps[1]:
+      - Complete post-implementation tasks per Workflow Retrospective Guide
+    guide: workflow://work-package/guides/workflow-retrospective
+
+  - id: related-workflows
+    title: Related Workflows
+    workflows[3]:
+      - workflow://work-package/guides/work-packages
+      - workflow://work-package/guides/resume-work
+      - workflow://work-package/guides/_START_HERE

@@ -1,0 +1,143 @@
+id: complete
+version: 1.0.0
+title: Work Package Completion Guide
+purpose: Guidelines for creating the COMPLETE.md document that records what was actually implemented in a work package
+
+sections[9]:
+  - id: overview
+    title: Overview
+    content: """
+      The `COMPLETE.md` file serves as the completion record for a work package. It provides:
+      - Summary of what was built and key outcomes
+      - Record of implemented tasks and deliverables
+      - Test results and coverage metrics
+      - Files changed (new and modified)
+      - Items not implemented with reasons
+      - Design decisions made during implementation
+
+      > **Key Insight:** This document answers "What was actually delivered?" and captures implementation reality that may differ from the original plan.
+    """
+
+  - id: when-to-create
+    title: When to Create
+    content: """
+      **Always create `COMPLETE.md` when:**
+      - Work package implementation is finished
+      - All tests are passing
+      - PR is ready for review
+
+      **Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/COMPLETE.md`
+    """
+    template: workflow://work-package/templates/07
+
+  - id: section-guidelines
+    title: Section Guidelines
+    subsections[8]:
+      - id: header-block
+        title: Header Block
+        fields[6]{field,description,example}:
+          Name,Work package name,Hybrid Search Implementation
+          Date,Completion date,2024-12-21
+          Type,Category of work,"Feature, Bug-Fix, Enhancement, Refactor"
+          Status,Always COMPLETED,COMPLETED
+          Branch,Git branch name,feat/hybrid-search
+          PR,Pull request number,#42
+
+      - id: summary
+        title: Summary
+        content: """
+          Write 2-3 sentences capturing:
+          - What was built
+          - Why it matters
+          - Key measurable outcomes
+
+          **Good:** "Implemented hybrid search combining vector similarity with BM25 keyword matching. This improves search precision by 35% on benchmark queries and reduces zero-result queries from 36% to 8%. The implementation adds 1,200 lines of tested code with 100% coverage."
+
+          **Bad:** "Added search improvements."
+        """
+
+      - id: what-implemented
+        title: What Was Implemented
+        content: """
+          Document each task with concrete deliverables:
+          - File paths with line counts
+          - Test file paths with test counts
+          - Key features implemented
+        """
+
+      - id: test-results
+        title: Test Results
+        content: "Include actual metrics: component, test count, coverage percentage, and test summary."
+
+      - id: files-changed
+        title: Files Changed
+        content: "Organize by new vs modified, with description of purpose/change for each file."
+
+      - id: success-criteria-results
+        title: Success Criteria Results
+        content: "Compare actual results to original targets with columns: Criterion, Target, Actual, Status."
+
+      - id: not-implemented
+        title: What Was NOT Implemented
+        content: "Be explicit about deferrals and reasons (deferred to future, out of scope, blocked by X)."
+
+      - id: design-decisions
+        title: Design Decisions
+        content: "Capture decisions made during implementation (Context, Decision, Rationale, Alternatives). These may feed into formal ADRs."
+
+  - id: lessons-learned
+    title: Lessons Learned
+    subsections[2]:
+      - id: went-well
+        title: What Went Well
+        content: "Positive observations and successful approaches"
+
+      - id: could-improve
+        title: What Could Be Improved
+        content: "Challenges encountered and how to avoid in future"
+
+  - id: quality-checklist
+    title: Quality Checklist
+    items[9]:
+      - Header has correct branch and PR number
+      - Summary captures what was built and key outcomes
+      - All implemented tasks listed with deliverables
+      - Test results include actual metrics
+      - Files changed lists both new and modified
+      - Success criteria compared to original targets
+      - Unimplemented items documented with reasons
+      - Design decisions captured for reference
+      - Status is marked as COMPLETE AND TESTED
+
+  - id: when-to-update
+    title: When to Update
+    triggers[4]:
+      - After all tasks done - Create initial document
+      - After final testing - Add test results
+      - After PR created - Add PR number
+      - After PR merged - Final status update
+
+  - id: relationships
+    title: Relationship to Other Documents
+    relationships[4]{document,relationship}:
+      03-work-package-plan.md,"Original plan; COMPLETE records what actually happened"
+      START-HERE.md,Update status to Complete after COMPLETE.md created
+      ADR,Design decisions in COMPLETE.md may warrant formal ADRs
+      PR Description,COMPLETE.md provides content for PR description
+
+  - id: integration
+    title: Integration with Workflow
+    steps[4]:
+      - After implementation complete → Create COMPLETE.md
+      - Document actual results → Compare to original plan
+      - Capture decisions → Feed into ADR if needed
+      - After PR merged → Final update with merged status
+
+  - id: related-guides
+    title: Related Guides
+    guides[5]:
+      - workflow://work-package/guides/work-package
+      - workflow://work-package/guides/plan
+      - workflow://work-package/guides/start-here
+      - workflow://work-package/guides/architecture-review
+      - workflow://work-package/guides/pr-description

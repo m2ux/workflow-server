@@ -1,0 +1,108 @@
+id: pr-description
+version: 1.0.0
+title: Pull Request Description Guide
+purpose: Guidelines for creating well-structured Pull Request descriptions that communicate changes clearly and facilitate effective code review
+
+sections[8]:
+  - id: overview
+    title: Overview
+    content: """
+      A well-written PR description serves multiple audiences:
+      - **Reviewers** need to understand what changed and why
+      - **Future maintainers** need context when reading git history
+      - **Release managers** need to assess impact and changelog entries
+
+      > **Key Insight:** The PR description is the first thing reviewers see. A clear, well-structured description reduces review time and improves feedback quality.
+    """
+
+  - id: when-to-apply
+    title: When to Apply These Guidelines
+    applyTo[5]:
+      - Introduce new features or capabilities
+      - Fix bugs or address issues
+      - Refactor existing code
+      - Make architectural changes
+      - Update dependencies with breaking changes
+    simplifiedAcceptable[4]:
+      - Documentation-only changes
+      - Typo fixes
+      - Dependency bumps (non-breaking)
+      - Automated/generated changes
+
+  - id: structure
+    title: PR Description Structure
+    requiredSections[4]:
+      - "**Summary** - 1-2 sentence summary of the change and key benefit"
+      - "**Artifact Links** - 🎫 Ticket  📐 ADR  🧪 Test Plan"
+      - "**Motivation** - 1-2 paragraphs explaining why this change is needed"
+      - "**Changes** - Bullet list of what changed"
+    optionalSections[2]:
+      - "**Migration Notes** - Required steps for consumers, if breaking changes"
+      - "**Screenshots** - Visual changes, UI updates"
+    templates:
+      initial: workflow://work-package/templates/08
+      final: workflow://work-package/templates/09
+
+  - id: section-guidelines
+    title: Section Guidelines
+    subsections[4]:
+      - id: summary
+        title: Summary
+        tips[3]:
+          - "Lead with what the change does, not how"
+          - "Include quantifiable impact when available"
+          - "Keep to 1-2 sentences maximum"
+        good: "Add hybrid search combining vector similarity with BM25 keyword matching, improving search relevance by 35% on benchmark queries."
+        bad: "This PR adds some improvements to search."
+
+      - id: artifact-links
+        title: "Ticket, ADR, and Test Plan Links"
+        format: "🎫 [Ticket](link)  📐 [ADR](branch-link)  🧪 [Test Plan](branch-link)"
+        whenToInclude[3]:
+          - "**Ticket** - Always include if work is tracked in a ticket"
+          - "**ADR** - Include for architectural decisions"
+          - "**Test Plan** - Include when formal test documentation exists"
+        important: "Link to ADRs and test plans on the *feature branch*, not main."
+
+      - id: motivation
+        title: Motivation
+        tips[3]:
+          - "Describe the problem from the user's perspective"
+          - "Explain consequences of not addressing it"
+          - "Keep to 1-2 paragraphs"
+
+      - id: changes
+        title: Changes
+        tips[3]:
+          - "List what changed, organized by component or area"
+          - "Use bullet points for scanability"
+          - "Include test coverage summary"
+
+  - id: submission-checklist
+    title: Submission Checklist
+    items[7]:
+      - Changes are backward-compatible (or flagged if breaking)
+      - Pull request description explains why the change is needed
+      - Self-reviewed the diff
+      - "I have included a change file, or skipped for this reason"
+      - "If the changes introduce a new feature, I have bumped the node minor version"
+      - Update documentation (if relevant)
+      - No new todos introduced
+
+  - id: pr-lifecycle
+    title: PR Lifecycle
+    draftPRs[3]:
+      - ADR needs review before implementation
+      - Work is in progress
+      - Seeking early feedback
+
+  - id: updating-prs
+    title: Updating PR Descriptions
+    content: "Use the GitHub API when `gh pr edit` encounters issues with markdown escaping."
+
+  - id: related-guides
+    title: Related Guides
+    guides[3]:
+      - workflow://work-package/guides/architecture-review
+      - workflow://work-package/guides/test-plan
+      - workflow://work-package/guides/complete

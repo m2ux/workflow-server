@@ -1,0 +1,61 @@
+id: start-here-index
+version: 1.0.0
+title: Work Package Workflow - Start Here
+purpose: Entry point for the work package workflow system
+
+sections[5]:
+  - id: mandatory-agents
+    title: "⚠️ MANDATORY: Read AGENTS.md First"
+    content: """
+      **Before starting any work package, agents MUST read and follow AGENTS.md.**
+
+      This file contains critical guidelines for:
+      - Code modification boundaries (when to ask permission)
+      - Communication standards (tone, language, no process attribution)
+      - Implementation workflow boundaries (one task at a time)
+      - File and directory restrictions
+      - Version control practices
+    """
+    keyRules[4]:
+      - Do not modify code unless explicitly directed by the user
+      - Complete only ONE numbered task at a time - stop and ask permission before proceeding
+      - Never add process attribution comments to code
+      - Never commit changes unless user explicitly asks
+
+  - id: new-or-resuming
+    title: New Work or Resuming?
+    options[2]{situation,document,when}:
+      Starting fresh,See Choose Your Workflow below,No existing branch or starting a new work package
+      Resuming work,resume-work.toon,Continuing work on an existing branch (new chat session or work started elsewhere)
+    resumeNote: "The resume workflow will assess the current state of your branch/PR and determine where to continue in the standard workflow. Minimum requirement is an existing branch name."
+
+  - id: choose-workflow
+    title: Choose Your Workflow
+    options[2]{scope,workflow,when}:
+      Single Work Package,workflow://work-package/guides/work-package,A focused task that can be completed in one work package
+      Multiple Work Packages,workflow://work-package/guides/work-packages,Complex initiatives requiring multiple coordinated work packages
+    howToDecide[2]:
+      - "If the request involves a single feature, fix, or enhancement → use work-package"
+      - "If the request involves multiple phases, features, or requires high-level planning → use work-packages"
+
+  - id: mandatory-rules
+    title: Workflow Rules Are Mandatory
+    content: "Both workflows define how to plan and implement work packages from inception to merged PR. **All rules and checkpoints in the workflows are mandatory and must be followed.**"
+    coreRules[5]:
+      - Agents must NOT proceed past checkpoints without user confirmation
+      - "Ask, don't assume - Clarify requirements before acting"
+      - "Summarize, then proceed - Provide brief status before asking to continue"
+      - One task at a time - Complete current work before starting new work
+      - "Explicit approval - Get clear 'yes' or 'proceed' before major actions"
+
+  - id: getting-started
+    title: Getting Started
+    steps[4]:
+      - Read AGENTS.md
+      - "Determine if starting fresh or resuming"
+      - "Follow each phase in sequence, respecting all checkpoints"
+      - Use the reference guides linked from each workflow phase for detailed instructions
+    resources[3]:
+      - workflow://work-package/guides/resume-work
+      - workflow://work-package/guides/work-package
+      - workflow://work-package/guides/work-packages
