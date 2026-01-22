@@ -182,45 +182,58 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: fetch_resource', () => {
-    it('should fetch intents index', async () => {
-      const result = await client.callTool({
-        name: 'fetch_resource',
-        arguments: { uri: 'workflow://intents' },
-      });
+  describe('tool: get_intents', () => {
+    it('should get intents index', async () => {
+      const result = await client.callTool({ name: 'get_intents', arguments: {} });
       
       expect(result.content).toBeDefined();
       const intents = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(intents).toBeDefined();
+      expect(intents.quick_match).toBeDefined();
     });
+  });
 
-    it('should fetch skills list', async () => {
+  describe('tool: get_intent', () => {
+    it('should get specific intent', async () => {
       const result = await client.callTool({
-        name: 'fetch_resource',
-        arguments: { uri: 'workflow://skills' },
+        name: 'get_intent',
+        arguments: { intent_id: 'start-workflow' },
       });
+      
+      expect(result.content).toBeDefined();
+      const intent = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(intent.id).toBe('start-workflow');
+    });
+  });
+
+  describe('tool: list_skills', () => {
+    it('should list skills', async () => {
+      const result = await client.callTool({ name: 'list_skills', arguments: {} });
       
       expect(result.content).toBeDefined();
       const skills = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(Array.isArray(skills)).toBe(true);
     });
+  });
 
-    it('should fetch workflow definition', async () => {
+  describe('tool: get_skill', () => {
+    it('should get specific skill', async () => {
       const result = await client.callTool({
-        name: 'fetch_resource',
-        arguments: { uri: 'workflow://work-package' },
+        name: 'get_skill',
+        arguments: { skill_id: 'workflow-execution' },
       });
       
       expect(result.content).toBeDefined();
-      const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(workflow.id).toBe('work-package');
-      expect(workflow.phases).toHaveLength(11);
+      const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(skill.id).toBe('workflow-execution');
     });
+  });
 
+  describe('tool: list_guides', () => {
     it('should list guides for a workflow', async () => {
       const result = await client.callTool({
-        name: 'fetch_resource',
-        arguments: { uri: 'workflow://work-package/guides' },
+        name: 'list_guides',
+        arguments: { workflow_id: 'work-package' },
       });
       
       expect(result.content).toBeDefined();
@@ -228,23 +241,27 @@ describe('mcp-server integration', () => {
       expect(Array.isArray(guides)).toBe(true);
       expect(guides.length).toBeGreaterThan(0);
       expect(guides[0].index).toBeDefined();
-      expect(guides[0].uri).toContain('workflow://work-package/guides/');
+      expect(guides[0].name).toBeDefined();
     });
+  });
 
-    it('should fetch specific guide by index', async () => {
+  describe('tool: get_guide', () => {
+    it('should get specific guide by index', async () => {
       const result = await client.callTool({
-        name: 'fetch_resource',
-        arguments: { uri: 'workflow://work-package/guides/00' },
+        name: 'get_guide',
+        arguments: { workflow_id: 'work-package', index: '00' },
       });
       
       expect(result.content).toBeDefined();
       expect((result.content[0] as { type: 'text'; text: string }).text).toContain('start-here');
     });
+  });
 
+  describe('tool: list_templates', () => {
     it('should list templates for a workflow', async () => {
       const result = await client.callTool({
-        name: 'fetch_resource',
-        arguments: { uri: 'workflow://work-package/templates' },
+        name: 'list_templates',
+        arguments: { workflow_id: 'work-package' },
       });
       
       expect(result.content).toBeDefined();
@@ -252,24 +269,17 @@ describe('mcp-server integration', () => {
       expect(Array.isArray(templates)).toBe(true);
       expect(templates.length).toBeGreaterThan(0);
     });
+  });
 
-    it('should fetch specific template by index', async () => {
+  describe('tool: get_template', () => {
+    it('should get specific template by index', async () => {
       const result = await client.callTool({
-        name: 'fetch_resource',
-        arguments: { uri: 'workflow://work-package/templates/01' },
+        name: 'get_template',
+        arguments: { workflow_id: 'work-package', index: '01' },
       });
       
       expect(result.content).toBeDefined();
       expect((result.content[0] as { type: 'text'; text: string }).text).toContain('Implementation Analysis');
-    });
-
-    it('should return error for invalid URI', async () => {
-      const result = await client.callTool({
-        name: 'fetch_resource',
-        arguments: { uri: 'workflow://invalid/path/too/deep/here' },
-      });
-      
-      expect(result.isError).toBe(true);
     });
   });
 });
