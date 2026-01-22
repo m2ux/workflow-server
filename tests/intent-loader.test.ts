@@ -100,23 +100,23 @@ describe('intent-loader', () => {
   });
 
   describe('readIntentIndex', () => {
-    it('should load the intent index from meta workflow', async () => {
+    it('should build intent index dynamically from intent files', async () => {
       const result = await readIntentIndex(WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.version).toBe('3.0.0');
         expect(result.value.description).toBeDefined();
         expect(result.value.intents.length).toBe(3);
       }
     });
 
-    it('should have quick_match patterns', async () => {
+    it('should have quick_match patterns from intent recognition arrays', async () => {
       const result = await readIntentIndex(WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.quick_match).toBeDefined();
+        // Recognition patterns are lowercased
         expect(result.value.quick_match['start a workflow']).toBe('start-workflow');
         expect(result.value.quick_match['resume workflow']).toBe('resume-workflow');
         expect(result.value.quick_match['end workflow']).toBe('end-workflow');

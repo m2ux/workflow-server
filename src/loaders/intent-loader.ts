@@ -93,7 +93,6 @@ export async function listIntents(workflowDir: string): Promise<IntentEntry[]> {
 }
 
 export interface IntentIndex {
-  version: string;
   description: string;
   intents: Array<{
     id: string;
@@ -103,20 +102,43 @@ export interface IntentIndex {
   quick_match: Record<string, string>;
 }
 
+/**
+ * Build intent index dynamically from individual intent files.
+ * Each intent's `recognition` patterns become quick_match entries.
+ */
 export async function readIntentIndex(workflowDir: string): Promise<Result<IntentIndex, IntentNotFoundError>> {
-  const intentDir = getIntentDir(workflowDir);
-  const filePath = join(intentDir, '00-index.toon');
+  const intentEntries = await listIntents(workflowDir);
   
-  if (!existsSync(filePath)) {
+  if (intentEntries.length === 0) {
     return err(new IntentNotFoundError('index'));
   }
   
-  try {
-    const content = await readFile(filePath, 'utf-8');
-    const index = decodeToon<IntentIndex>(content);
-    logInfo('Intent index loaded', { path: filePath });
-    return ok(index);
-  } catch {
-    return err(new IntentNotFoundError('index'));
+  const intents: IntentIndex['intents'] = [];
+  const quick_match: Record<string, string> = {};
+  
+  for (const entry of intentEntries) {
+    const result = await readIntent(workflowDir, entry.id);
+    if (result.success) {
+      const intent = result.value;
+      intents.push({
+        id: intent.id,
+        problem: intent.problem,
+        primary_skill: intent.skills.primary,
+      });
+      
+      // Build quick_match from recognition patterns
+      for (const pattern of intent.recognition) {
+        quick_match[pattern.toLowerCase()] = intent.id;
+      }
+    }
   }
+  
+  const index: IntentIndex = {
+    description: 'Match user goal to an intent. Intents use skills to achieve outcomes.',
+    intents,
+    quick_match,
+  };
+  
+  logInfo('Intent index built dynamically', { intentCount: intents.length });
+  return ok(index);
 }
