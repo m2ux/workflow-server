@@ -1,0 +1,48 @@
+id: meta
+version: 1.0.0
+title: Meta Workflow
+description: Bootstrap workflow for the workflow-server. Manages other workflows by providing intents, skills, and workflow discovery.
+author: m2ux
+tags[3]:
+  - meta
+  - bootstrap
+  - workflow-management
+rules[3]:
+  - This workflow is the entrypoint for all workflow operations
+  - Intents in this workflow map user goals to other workflows
+  - Skills in this workflow are universal and apply to all workflows
+initialPhase: phase-discovery
+phases[2]:
+  - id: phase-discovery
+    name: Workflow Discovery
+    description: Discover available workflows and match user intent
+    required: true
+    steps[3]:
+      - id: step-1-intents
+        name: Load intent index
+        description: Call get_intents to get available intents and quick_match patterns
+        required: true
+      - id: step-2-match
+        name: Match user goal to intent
+        description: Use quick_match or intent.problem to identify the right intent
+        required: true
+      - id: step-3-load
+        name: Load intent and skill
+        description: Call get_intent and get_skill to get execution guidance
+        required: true
+    transitions[1]:
+      - to: phase-execution
+        isDefault: true
+  - id: phase-execution
+    name: Workflow Execution
+    description: Execute the selected workflow using the loaded skill
+    required: true
+    steps[2]:
+      - id: step-1-workflow
+        name: Load target workflow
+        description: Call get_workflow for the user's selected workflow
+        required: true
+      - id: step-2-execute
+        name: Execute workflow
+        description: Follow skill execution_pattern to navigate the workflow
+        required: true

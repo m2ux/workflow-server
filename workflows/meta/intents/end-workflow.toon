@@ -1,0 +1,35 @@
+id: end-workflow
+version: 2.0.0
+problem: The user wants to complete and finalize a workflow execution.
+recognition[6]:
+  - End workflow
+  - Finish workflow
+  - Complete workflow
+  - Finalize workflow
+  - We're done with the workflow
+  - Mark workflow as complete
+skills:
+  primary: workflow-execution
+  supporting[1]:
+    - intent-resolution
+outcome[4]:
+  - Final phase is completed
+  - All required checkpoints are resolved
+  - Completion summary is presented
+  - State is finalized or archived
+flow[10]:
+  - 1. Verify current phase is the final phase
+  - 2. Ensure all required checkpoints are resolved
+  - 3. Execute any exit actions for final phase
+  - "4. Check list_templates for completion artifacts"
+  - "5. If templates exist, call get_template to generate final documents"
+  - "6. Present completion summary:"
+  - "   - Phases completed"
+  - "   - Key decisions made"
+  - "   - Artifacts created"
+  - 7. Archive or clear workflow state
+context_to_preserve[4]:
+  - workflowId - The completed workflow
+  - completedPhases - Full list of completed phases
+  - checkpointResponses - All user decisions for record
+  - artifacts - Documents created during workflow
