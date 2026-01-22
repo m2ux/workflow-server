@@ -9,7 +9,7 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 ---
 
-**[Quick Start](#-quick-start)** • **[API Reference](docs/api-reference.md)** • **[Development](docs/development.md)**
+**[Quick Start](#-quick-start)** • **[Schema Guide](schemas/README.md)** • **[API Reference](docs/api-reference.md)** • **[Development](docs/development.md)**
 
 ---
 
@@ -100,13 +100,13 @@ For all workflow execution user requests use the workflow-server MCP server. Bef
 Tell the agent what you want to do using natural language:
 
 ```
-Start a new workflow for implementing user authentication
+Start a new work-package for implementing user authentication
 ```
 ```
-Begin the work-package workflow for issue #42
+Begin a work-package for issue #42
 ```
 ```
-Let's start a workflow to add dark mode support
+Let's start a work-package to add dark mode support
 ```
 
 The agent matches your request to the appropriate intent and guides you through the structured phases.
