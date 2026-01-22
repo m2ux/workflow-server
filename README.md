@@ -95,7 +95,21 @@ Add the following to your IDE 'always-applied' rule-set:
 For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the get_intents tool.
 ```
 
-Start executing workflows!
+### Execute a Workflow
+
+Tell the agent what you want to do using natural language:
+
+```
+Start a new workflow for implementing user authentication
+```
+```
+Begin the work-package workflow for issue #42
+```
+```
+Let's start a workflow to add dark mode support
+```
+
+The agent matches your request to the appropriate intent and guides you through the structured phases.
 
 ## 📜 License
 
