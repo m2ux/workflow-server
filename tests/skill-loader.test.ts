@@ -175,5 +175,24 @@ describe('skill-loader', () => {
         expect(result.value.workflow_specific).toBeDefined();
       }
     });
+
+    it('should include usage instructions and next_action for each skill', async () => {
+      const result = await readSkillIndex(WORKFLOW_DIR);
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Check usage instructions exist
+        expect(result.value.usage).toBeDefined();
+        expect(result.value.usage).toContain('next_action');
+        
+        // Check each universal skill has next_action
+        for (const skill of result.value.universal) {
+          expect(skill.next_action).toBeDefined();
+          expect(skill.next_action.tool).toBe('get_skill');
+          expect(skill.next_action.parameters).toBeDefined();
+          expect(skill.next_action.parameters.skill_id).toBe(skill.id);
+        }
+      }
+    });
   });
 });
