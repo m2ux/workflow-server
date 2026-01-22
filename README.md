@@ -28,7 +28,7 @@ This reduces context overhead and provides deterministic tool selection.
 
 > Problem Domain:
 > ```
-> User Goal (complete a work package) → Activity (start-workflow, resume-workflow, ..)
+> Process (complete a work package) → Activity (start-workflow, resume-workflow, ..)
 > ```
 > Solution Domain:
 > ```

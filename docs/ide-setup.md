@@ -9,7 +9,7 @@ For all workflow execution user requests use the workflow-server MCP server. Bef
 ## How It Works
 
 1. **Get activities** - Call `get_activities` to get the activity index with `quick_match` patterns
-2. **Match user goal** - Use `quick_match` patterns to identify the appropriate activity
+2. **Match process** - Use `quick_match` patterns to identify the appropriate activity
 3. **Load activity** - Call `get_activity { activity_id: "{id}" }` for detailed flow
 4. **Load skill** - Call `get_skill { skill_id: "{skill}" }` referenced by the activity
 5. **Execute** - Follow the skill's tool orchestration and workflow interpretation guidance

@@ -50,7 +50,7 @@
 
 ## Activities
 
-Activities define user goals and map them to skills. They are the primary entry point for agent interaction.
+Activities define processes and map them to skills. They are the primary entry point for agent interaction.
 
 | Activity | Problem | Primary Skill |
 |----------|---------|---------------|
@@ -68,7 +68,7 @@ Universal skills are stored in the `meta` workflow and apply to all workflows.
 
 | Skill | Location | Description |
 |-------|----------|-------------|
-| `activity-resolution` | `meta/skills/` | Bootstraps agent interaction by resolving user goals to activities and loading appropriate skills |
+| `activity-resolution` | `meta/skills/` | Bootstraps agent interaction by resolving processes to activities and loading appropriate skills |
 | `workflow-execution` | `meta/skills/` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
 
 ### Workflow-Specific Skills
