@@ -1,6 +1,13 @@
 id: intent-resolution
-version: 1.0.0
+version: 1.1.0
 capability: Resolve user goals to appropriate intents and skills
+architecture:
+  principle: "Goals resolve to intents; intents resolve to skills. Goals NEVER resolve directly to skills."
+  layers[3]:
+    - "User Goal (problem domain) → Intent"
+    - "Intent → Skill(s) (solution domain)"
+    - "Skill → Tools (execution domain)"
+  gap_detection: "If a goal matches a skill but no intent exists, this indicates a missing intent - create one"
 execution_pattern:
   bootstrap[2]:
     - get_intents
@@ -53,6 +60,7 @@ matching:
   quick_match: "Use exact or fuzzy match against quick_match keys"
   fallback: "If no quick_match, compare user goal to intent.problem descriptions"
   ambiguous: "If multiple intents match, ask user to clarify"
+  never: "NEVER skip intent matching to use a skill directly"
 errors:
   intent_not_found:
     cause: Invalid intent_id parameter
@@ -60,6 +68,11 @@ errors:
   skill_not_found:
     cause: Invalid skill_id in intent.skills
     recovery: Call list_skills to see valid skill IDs
-  no_match:
-    cause: User goal doesn't match any intent
-    recovery: Present available intents; ask user to rephrase
+  no_matching_intent:
+    cause: User goal doesn't match any existing intent
+    detection: "Goal could be served by existing skill but no intent maps to it"
+    resolution[3]:
+      - "1. Identify which skill(s) would serve this goal"
+      - "2. Create a new intent that maps goal to skill"
+      - "3. Add intent to prompts/intents/ with recognition patterns"
+    note: "This is a design gap, not a user error - do not ask user to rephrase"

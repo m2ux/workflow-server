@@ -24,6 +24,8 @@ Implement a three-layer architecture for agent guidance:
 User Goal → Intent (problem domain) → Skill (solution domain) → Tools
 ```
 
+**Critical Principle:** Goals resolve to intents; intents resolve to skills. Goals NEVER resolve directly to skills. If a user goal could be served by an existing skill but no intent exists, this indicates a **design gap** - a missing intent that should be created.
+
 ### Layer 1: Intents
 
 **Purpose:** Define user goals and map them to skills.
