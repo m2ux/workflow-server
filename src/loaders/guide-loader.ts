@@ -51,7 +51,7 @@ function parseGuideFilename(filename: string): { index: string; name: string; fo
  * Guides are stored in {workflowDir}/{workflowId}/guides/ subdirectory.
  * Supports both TOON (.toon) and Markdown (.md) formats.
  * 
- * @param workflowDir - Base workflow directory (e.g., './workflow-data/workflows')
+ * @param workflowDir - Base workflow directory (e.g., './workflow-data')
  * @param workflowId - Workflow ID (e.g., 'work-package')
  * @param guideIndex - Guide index (e.g., '00', '0', '01')
  * @returns Guide content as decoded object (TOON) or raw string (Markdown)

@@ -34,7 +34,7 @@ function parseTemplateFilename(filename: string): { index: string; name: string 
  * Read a template by index from a workflow directory.
  * Templates are stored in {workflowDir}/{workflowId}/templates/ subdirectory.
  * 
- * @param workflowDir - Base workflow directory (e.g., './workflow-data/workflows')
+ * @param workflowDir - Base workflow directory (e.g., './workflow-data')
  * @param workflowId - Workflow ID (e.g., 'work-package')
  * @param templateIndex - Template index (e.g., '01', '1')
  * @returns Template content as raw Markdown string

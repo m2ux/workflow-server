@@ -74,22 +74,21 @@ workflow-server/
 │   └── validate-workflow.ts
 ├── tests/                    # Test suites
 ├── workflow-data/            # Worktree (workflows branch)
-│   └── workflows/            # Workflow directories
-│       ├── meta/             # Bootstrap workflow (manages other workflows)
-│       │   ├── meta.toon             # Meta workflow definition
-│       │   ├── intents/              # All intents live here
-│       │   │   ├── index.toon        # Intent index (primary entry point)
-│       │   │   └── {intent-id}.toon  # Individual intents
-│       │   └── skills/               # Universal skills
-│       │       └── {skill-id}.toon   # Skills that apply to all workflows
-│       └── {workflow-id}/    # Each workflow folder contains:
-│           ├── {workflow-id}.toon    # Workflow definition
-│           ├── guides/               # Guide subdirectory
-│           │   └── {NN}-{name}.toon  # Guides (indexed)
-│           ├── templates/            # Template subdirectory
-│           │   └── {NN}-{name}.md    # Templates (indexed)
-│           └── skills/               # Workflow-specific skills
-│               └── {skill-id}.toon   # Skills for this workflow
+│   ├── meta/                 # Bootstrap workflow (manages other workflows)
+│   │   ├── meta.toon             # Meta workflow definition
+│   │   ├── intents/              # All intents live here
+│   │   │   ├── index.toon        # Intent index (primary entry point)
+│   │   │   └── {intent-id}.toon  # Individual intents
+│   │   └── skills/               # Universal skills
+│   │       └── {skill-id}.toon   # Skills that apply to all workflows
+│   └── {workflow-id}/        # Each workflow folder contains:
+│       ├── {workflow-id}.toon    # Workflow definition
+│       ├── guides/               # Guide subdirectory
+│       │   └── {NN}-{name}.toon  # Guides (indexed)
+│       ├── templates/            # Template subdirectory
+│       │   └── {NN}-{name}.md    # Templates (indexed)
+│       └── skills/               # Workflow-specific skills
+│           └── {skill-id}.toon   # Skills for this workflow
 └── docs/                     # Documentation
 ```
 
@@ -219,7 +218,7 @@ Skills can be **universal** (apply to all workflows) or **workflow-specific**.
 
 Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
-1. Create `{skill-id}.toon` in `workflow-data/workflows/meta/skills/`
+1. Create `{skill-id}.toon` in `workflow-data/meta/skills/`
 2. Access via: `get_skill { skill_id: "{skill-id}" }`
 3. Example: `intent-resolution` (applies to all workflow discovery)
 4. Commit to the `workflows` branch
@@ -228,7 +227,7 @@ Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
 Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
 
-1. Create `{skill-id}.toon` in `workflow-data/workflows/{workflow-id}/skills/`
+1. Create `{skill-id}.toon` in `workflow-data/{workflow-id}/skills/`
 2. Skills are auto-discovered - no manifest update needed
 3. Access via: `get_skill { skill_id: "{skill-id}", workflow_id: "{workflow-id}" }`
 4. Commit to the `workflows` branch

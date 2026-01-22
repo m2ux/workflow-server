@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill } from '../src/loaders/skill-loader.js';
 import { join } from 'node:path';
 
-const WORKFLOW_DIR = join(process.cwd(), 'workflow-data', 'workflows');
+const WORKFLOW_DIR = join(process.cwd(), 'workflow-data');
 
 describe('skill-loader', () => {
   describe('listUniversalSkills', () => {
