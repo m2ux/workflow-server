@@ -1,6 +1,6 @@
 # Workflows
 
-This orphan branch contains workflow definitions, intents, skills, guides, and templates for the MCP Workflow Server.
+This orphan branch contains workflow definitions, activities, skills, guides, and templates for the MCP Workflow Server.
 
 ## Branch Structure
 
@@ -13,10 +13,10 @@ This orphan branch contains workflow definitions, intents, skills, guides, and t
 workflows/                    # Worktree checkout
 ├── meta/                     # Bootstrap workflow (manages other workflows)
 │   ├── meta.toon             # Meta workflow definition
-│   ├── intents/              # All intents (indexed, no separate index file)
-│   │   └── {NN}-{id}.toon    # Individual intents (01-start-workflow, etc.)
+│   ├── intents/              # All activities (indexed, no separate index file)
+│   │   └── {NN}-{id}.toon    # Individual activities (01-start-workflow, etc.)
 │   └── skills/               # Universal skills (indexed)
-│       └── {NN}-{id}.toon    # 00-intent-resolution, 01-workflow-execution
+│       └── {NN}-{id}.toon    # 00-activity-resolution, 01-workflow-execution
 ├── {workflow-id}/            # Each workflow folder
 │   ├── {workflow-id}.toon    # Workflow definition
 │   ├── guides/               # Guide subdirectory
@@ -43,8 +43,8 @@ git worktree add ./workflows workflows
 3. Add `guides/`, `templates/`, `skills/` subdirectories as needed
 4. Commit to this branch
 
-**Intents (meta only):**
-1. Create `{NN}-{intent-id}.toon` in `meta/intents/`
+**Activities (meta only):**
+1. Create `{NN}-{activity-id}.toon` in `meta/intents/`
 2. Prefix with two-digit index (01, 02, 03, etc.)
 3. Include `recognition[]` patterns for quick_match
 4. Commit to this branch
@@ -61,7 +61,7 @@ git worktree add ./workflows workflows
 
 **Skills:**
 1. Create `{NN}-{skill-id}.toon` with two-digit index
-2. Universal: Create in `meta/skills/` (e.g., `00-intent-resolution.toon`)
+2. Universal: Create in `meta/skills/` (e.g., `00-activity-resolution.toon`)
 3. Workflow-specific: Create in `{workflow-id}/skills/`
 4. Commit to this branch
 
