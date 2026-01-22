@@ -103,7 +103,7 @@ Tell the agent what you want to do using natural language:
 Start a new work-package for implementing user authentication
 ```
 ```
-Begin the work-package workflow for issue #42
+Begin a work-package for issue #42
 ```
 ```
 Let's start a work-package to add dark mode support
