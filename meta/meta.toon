@@ -9,7 +9,7 @@ tags[3]:
   - workflow-management
 rules[3]:
   - This workflow is the entrypoint for all workflow operations
-  - Activities in this workflow map user goals to other workflows
+  - Activities in this workflow map processes to other workflows
   - Skills in this workflow are universal and apply to all workflows
 initialPhase: phase-discovery
 phases[2]:
@@ -23,7 +23,7 @@ phases[2]:
         description: Call get_activities to get available activities and quick_match patterns
         required: true
       - id: step-2-match
-        name: Match user goal to activity
+        name: Match process to activity
         description: Use quick_match or activity.problem to identify the right activity
         required: true
       - id: step-3-load
