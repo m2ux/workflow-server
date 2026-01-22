@@ -9,7 +9,7 @@ import {
   validateTransition,
 } from '../src/loaders/workflow-loader.js';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflow-data');
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('workflow-loader', () => {
   describe('listWorkflows', () => {

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { listIntents, readIntent, readIntentIndex } from '../src/loaders/intent-loader.js';
 import { join } from 'node:path';
 
-const WORKFLOW_DIR = join(process.cwd(), 'workflow-data');
+const WORKFLOW_DIR = join(process.cwd(), 'workflows');
 
 describe('intent-loader', () => {
   describe('listIntents', () => {

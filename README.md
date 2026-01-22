@@ -61,7 +61,7 @@ cd workflow-server
 npm install
 
 # Set up workflow data (worktree for orphan branch)
-git worktree add ./workflow-data workflows
+git worktree add ./workflows workflows
 
 # Build the server
 npm run build
@@ -78,7 +78,7 @@ npm run build
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }

@@ -19,7 +19,7 @@ cd workflow-server
 npm install
 
 # Set up workflow data (worktree for orphan branch)
-git worktree add ./workflow-data workflows
+git worktree add ./workflows workflows
 ```
 
 ## Development Commands
@@ -73,7 +73,7 @@ workflow-server/
 │   ├── generate-schemas.ts
 │   └── validate-workflow.ts
 ├── tests/                    # Test suites
-├── workflow-data/            # Worktree (workflows branch)
+├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow (manages other workflows)
 │   │   ├── meta.toon             # Meta workflow definition
 │   │   ├── intents/              # All intents live here
@@ -96,7 +96,7 @@ workflow-server/
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflow-data/workflows` | Path to workflow directories |
+| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories |
 | `SERVER_NAME` | `workflow-server` | Server name in health check |
 | `SERVER_VERSION` | `1.0.0` | Server version in health check |
 
@@ -154,7 +154,7 @@ This creates:
 Use the validation script to check workflow JSON files:
 
 ```bash
-npx tsx scripts/validate-workflow.ts workflow-data/workflows/work-package.json
+npx tsx scripts/validate-workflow.ts workflows/work-package/work-package.toon
 ```
 
 ## Branch Structure
@@ -170,14 +170,14 @@ The `workflows` branch is an orphan branch with separate history. Access it via 
 
 ```bash
 # Add worktree (one-time setup)
-git worktree add ./workflow-data workflows
+git worktree add ./workflows workflows
 
 # Update workflow data
-cd workflow-data
+cd workflows
 git pull origin workflows
 
 # Commit workflow changes
-cd workflow-data
+cd workflows
 git add -A
 git commit -m "feat: update workflow"
 git push origin workflows
@@ -185,7 +185,7 @@ git push origin workflows
 
 ## Adding New Workflows
 
-1. Create a new directory in `workflow-data/workflows/{workflow-id}/`
+1. Create a new directory in `workflows/{workflow-id}/`
 2. Create `{workflow-id}.toon` workflow definition in that directory
 3. Validate with: `npx tsx scripts/validate-workflow.ts <path>`
 4. Commit to the `workflows` branch
@@ -194,7 +194,7 @@ git push origin workflows
 
 Guides are stored in a `guides/` subdirectory within each workflow:
 
-1. Create `{NN}-{name}.toon` in `workflow-data/workflows/{workflow-id}/guides/`
+1. Create `{NN}-{name}.toon` in `workflows/{workflow-id}/guides/`
 2. Use sequential index (00, 01, 02, etc.)
 3. Guides are auto-discovered - no manifest update needed
 4. Access via: `get_guide { workflow_id: "{id}", index: "{NN}" }`
@@ -204,7 +204,7 @@ Guides are stored in a `guides/` subdirectory within each workflow:
 
 Templates are stored in a `templates/` subdirectory within each workflow:
 
-1. Create `{NN}-{name}.md` in `workflow-data/workflows/{workflow-id}/templates/`
+1. Create `{NN}-{name}.md` in `workflows/{workflow-id}/templates/`
 2. Use sequential index (01, 02, 03, etc.)
 3. Templates are auto-discovered - no manifest update needed
 4. Access via: `get_template { workflow_id: "{id}", index: "{NN}" }`
@@ -218,7 +218,7 @@ Skills can be **universal** (apply to all workflows) or **workflow-specific**.
 
 Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
-1. Create `{skill-id}.toon` in `workflow-data/meta/skills/`
+1. Create `{skill-id}.toon` in `workflows/meta/skills/`
 2. Access via: `get_skill { skill_id: "{skill-id}" }`
 3. Example: `intent-resolution` (applies to all workflow discovery)
 4. Commit to the `workflows` branch
@@ -227,7 +227,7 @@ Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
 Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
 
-1. Create `{skill-id}.toon` in `workflow-data/{workflow-id}/skills/`
+1. Create `{skill-id}.toon` in `workflows/{workflow-id}/skills/`
 2. Skills are auto-discovered - no manifest update needed
 3. Access via: `get_skill { skill_id: "{skill-id}", workflow_id: "{workflow-id}" }`
 4. Commit to the `workflows` branch

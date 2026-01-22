@@ -15,7 +15,7 @@ cd workflow-server
 npm install
 
 # Set up workflow data (worktree for orphan branch)
-git worktree add ./workflow-data workflows
+git worktree add ./workflows workflows
 
 # Build the server
 npm run build
@@ -34,7 +34,7 @@ Edit `~/.cursor/mcp.json`:
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }
@@ -54,7 +54,7 @@ Edit `~/.cursor/mcp.json`:
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflow-data/workflows"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }
@@ -92,6 +92,6 @@ This separation allows workflow definitions to evolve independently from server 
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflow-data/workflows` | Path to workflow directories (each contains .toon workflow, guides, templates) |
+| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (each contains .toon workflow, guides, templates) |
 | `SERVER_NAME` | `workflow-server` | Server name for MCP |
 | `SERVER_VERSION` | `1.0.0` | Server version |
