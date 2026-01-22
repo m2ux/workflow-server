@@ -59,19 +59,26 @@ workflow-server/
 │   ├── types/                # Generated TypeScript types
 │   ├── loaders/              # File loaders
 │   │   ├── workflow-loader.ts
-│   │   └── guide-loader.ts
+│   │   ├── guide-loader.ts
+│   │   ├── template-loader.ts
+│   │   ├── intent-loader.ts
+│   │   └── skill-loader.ts
 │   ├── tools/                # MCP tool implementations
-│   │   └── workflow-tools.ts
-│   └── resources/            # MCP resource implementations
-│       └── guide-resources.ts
+│   │   ├── workflow-tools.ts
+│   │   └── resource-tools.ts
+│   └── utils/                # Utility functions
+│       └── toon.ts           # TOON format parser
 ├── schemas/                  # Generated JSON schemas
 ├── scripts/                  # Build scripts
 │   ├── generate-schemas.ts
 │   └── validate-workflow.ts
 ├── tests/                    # Test suites
 ├── workflow-data/            # Worktree (workflows branch)
-│   ├── workflows/            # JSON workflow definitions
-│   └── guides/               # Markdown guides
+│   └── workflows/            # Workflow directories
+│       └── {workflow-id}/    # Each workflow folder contains:
+│           ├── {workflow-id}.toon    # Workflow definition
+│           ├── {NN}-*.guide.toon     # Guides (indexed)
+│           └── {NN}-*.template.md    # Templates (indexed)
 └── docs/                     # Documentation
 ```
 
@@ -79,8 +86,7 @@ workflow-server/
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflow-data/workflows` | Path to workflow JSON files |
-| `GUIDE_DIR` | `./workflow-data/guides` | Path to guide markdown files |
+| `WORKFLOW_DIR` | `./workflow-data/workflows` | Path to workflow directories |
 | `SERVER_NAME` | `workflow-server` | Server name in health check |
 | `SERVER_VERSION` | `1.0.0` | Server version in health check |
 
@@ -106,10 +112,12 @@ npm test -- --run --coverage
 
 | Test Suite | Tests | Coverage |
 |------------|-------|----------|
-| `workflow-loader.test.ts` | 17 | Loaders, transitions, validation |
+| `workflow-loader.test.ts` | 17 | Workflow loading, transitions, validation |
 | `schema-validation.test.ts` | 23 | All Zod schemas |
-| `mcp-server.test.ts` | 12 | MCP tools and resources |
-| **Total** | **52** | ✅ All passing |
+| `mcp-server.test.ts` | 18 | All MCP tools |
+| `intent-loader.test.ts` | 10 | Intent loading and index |
+| `skill-loader.test.ts` | 7 | Skill loading |
+| **Total** | **75** | ✅ All passing |
 
 ### Test Infrastructure
 
@@ -167,13 +175,27 @@ git push origin workflows
 
 ## Adding New Workflows
 
-1. Create a new JSON file in `workflow-data/workflows/`
-2. Follow the schema defined in `schemas/workflow.schema.json`
+1. Create a new directory in `workflow-data/workflows/{workflow-id}/`
+2. Create `{workflow-id}.toon` workflow definition in that directory
 3. Validate with: `npx tsx scripts/validate-workflow.ts <path>`
 4. Commit to the `workflows` branch
 
 ## Adding New Guides
 
-1. Create a new `.guide.md` file in `workflow-data/guides/`
-2. Reference from workflow JSON via `guide.path`
-3. Commit to the `workflows` branch
+Guides are stored alongside workflows using indexed filenames:
+
+1. Create `{NN}-{name}.guide.toon` in `workflow-data/workflows/{workflow-id}/`
+2. Use sequential index (00, 01, 02, etc.)
+3. Guides are auto-discovered - no manifest update needed
+4. Access via: `get_guide { workflow_id: "{id}", index: "{NN}" }`
+5. Commit to the `workflows` branch
+
+## Adding New Templates
+
+Templates are Markdown files for document generation:
+
+1. Create `{NN}-{name}.template.md` in `workflow-data/workflows/{workflow-id}/`
+2. Use sequential index (01, 02, 03, etc.)
+3. Templates are auto-discovered - no manifest update needed
+4. Access via: `get_template { workflow_id: "{id}", index: "{NN}" }`
+5. Commit to the `workflows` branch

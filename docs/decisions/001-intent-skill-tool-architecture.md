@@ -30,9 +30,9 @@ User Goal → Intent (problem domain) → Skill (solution domain) → Tools
 
 **Location:** `prompts/intents/`
 
-**MCP Resources:**
-- `workflow://intents` - Primary agent entry point
-- `workflow://intents/{id}` - Individual intent details
+**MCP Tools:**
+- `get_intents` - Primary agent entry point (intent index)
+- `get_intent { intent_id }` - Individual intent details
 
 ### Layer 2: Skills
 
@@ -40,23 +40,25 @@ User Goal → Intent (problem domain) → Skill (solution domain) → Tools
 
 **Location:** `prompts/skills/`
 
-**MCP Resources:**
-- `workflow://skills` - Skill listing
-- `workflow://skills/{id}` - Individual skill content
+**MCP Tools:**
+- `list_skills` - Skill listing
+- `get_skill { skill_id }` - Individual skill content
 
 ### Layer 3: Tools
 
 **Purpose:** Execute atomic operations on workflows.
 
-**Existing tools:** `list_workflows`, `get_workflow`, `get_phase`, `get_checkpoint`, `validate_transition`, `health_check`
+**Workflow tools:** `list_workflows`, `get_workflow`, `get_phase`, `get_checkpoint`, `validate_transition`, `health_check`
+
+**Resource tools:** `list_guides`, `get_guide`, `list_templates`, `get_template`, `list_resources`
 
 ## Agent Interaction Flow
 
 ```
-1. Agent fetches workflow://intents (via IDE rule bootstrap)
+1. Agent calls get_intents (via IDE rule bootstrap)
 2. Agent matches user goal to intent using quick_match
-3. Agent fetches workflow://intents/{id} for detailed flow
-4. Agent fetches workflow://skills/{primary_skill} for tool guidance
+3. Agent calls get_intent { intent_id } for detailed flow
+4. Agent calls get_skill { skill_id } for tool guidance
 5. Agent executes tools following skill patterns
 6. Agent maintains state in memory per skill guidance
 ```
@@ -82,14 +84,14 @@ This separation allows:
 - Reduced context overhead (load only what's needed)
 - Clear separation of concerns
 - Extensible pattern for future skills/intents
+- Tool-based API is discoverable via MCP tool listing
 
 ### Negative
 
 - Initial learning curve for new contributors
 - Three files to maintain per capability (intent, skill, docs)
-- Agents must fetch multiple resources to begin
 
 ## References
 
 - concept-rag project: Reference implementation of Intent→Skill→Tool pattern
-- MCP Resources specification: https://modelcontextprotocol.io/docs/concepts/resources
+- MCP Tools specification: https://modelcontextprotocol.io/docs/concepts/tools

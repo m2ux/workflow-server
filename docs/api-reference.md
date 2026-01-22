@@ -2,25 +2,50 @@
 
 ## MCP Tools
 
-| Tool | Description |
-|------|-------------|
-| `list_workflows` | List all available workflow definitions with metadata |
-| `get_workflow` | Get complete workflow definition by ID |
-| `get_phase` | Get details of a specific phase within a workflow |
-| `get_checkpoint` | Get checkpoint details including options and effects |
-| `validate_transition` | Validate if a transition between phases is allowed |
-| `health_check` | Check server health and available workflows |
+### Workflow Tools
 
-## MCP Resources
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `list_workflows` | - | List all available workflow definitions with metadata |
+| `get_workflow` | `workflow_id` | Get complete workflow definition by ID |
+| `get_phase` | `workflow_id`, `phase_id` | Get details of a specific phase within a workflow |
+| `get_checkpoint` | `workflow_id`, `phase_id`, `checkpoint_id` | Get checkpoint details including options and effects |
+| `validate_transition` | `workflow_id`, `from_phase`, `to_phase` | Validate if a transition between phases is allowed |
+| `health_check` | - | Check server health and available workflows |
 
-| Resource | Description |
-|----------|-------------|
-| `workflow://intents` | Intent index - primary entry point for agents |
-| `workflow://intents/{id}` | Get a specific workflow intent |
-| `workflow://skills` | List all available workflow execution skills |
-| `workflow://skills/{id}` | Get a specific workflow execution skill |
-| `workflow://guides` | List all available guide documents |
-| `workflow://guides/{name}` | Get content of a specific guide |
+### Intent Tools
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `get_intents` | - | Get intent index - primary entry point for agents |
+| `get_intent` | `intent_id` | Get a specific workflow intent |
+
+### Skill Tools
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `list_skills` | - | List all available workflow execution skills |
+| `get_skill` | `skill_id` | Get a specific workflow execution skill |
+
+### Guide Tools
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `list_guides` | `workflow_id` | List all guides for a workflow |
+| `get_guide` | `workflow_id`, `index` | Get content of a specific guide by index |
+
+### Template Tools
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `list_templates` | `workflow_id` | List all templates for a workflow |
+| `get_template` | `workflow_id`, `index` | Get content of a specific template by index |
+
+### Discovery Tools
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `list_resources` | - | Discover all available resources |
 
 ## Intents
 
