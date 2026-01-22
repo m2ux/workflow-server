@@ -204,14 +204,14 @@ describe('mcp-server integration', () => {
       expect(guides.length).toBeGreaterThan(0);
     });
 
-    it('should read specific guide content', async () => {
-      const result = await client.readResource({ uri: 'workflow://work-package/guides/start-here' });
+    it('should read specific guide by index', async () => {
+      const result = await client.readResource({ uri: 'workflow://work-package/guides/00' });
       
       expect(result.contents).toBeDefined();
       expect(result.contents.length).toBeGreaterThan(0);
       
       const content = result.contents[0];
-      expect(content.uri).toBe('workflow://work-package/guides/start-here');
+      expect(content.uri).toBe('workflow://work-package/guides/00');
       expect((content as { text: string }).text).toContain('start-here');
     });
   });

@@ -40,10 +40,11 @@ export function registerGuideResources(server: McpServer, config: ServerConfig):
       const guides = await listGuides(config.workflowDir, workflowId);
       
       const result = guides.map(g => ({
-        id: g.id,
+        index: g.index,
+        name: g.name,
         title: g.title,
         format: g.format,
-        uri: `workflow://${workflowId}/guides/${g.id}`,
+        uri: `workflow://${workflowId}/guides/${g.index}`,
       }));
       
       return { 
@@ -56,20 +57,20 @@ export function registerGuideResources(server: McpServer, config: ServerConfig):
     }
   );
 
-  // Dynamic resource template for individual guides
+  // Dynamic resource template for individual guides by index
   server.resource(
     'guide',
-    new ResourceTemplate('workflow://{workflowId}/guides/{guideId}', { list: undefined }),
-    { description: 'Get content of a specific workflow guide' },
+    new ResourceTemplate('workflow://{workflowId}/guides/{guideIndex}', { list: undefined }),
+    { description: 'Get content of a specific workflow guide by index' },
     async (uri, variables) => {
       const workflowId = variables['workflowId'] as string;
-      const guideId = variables['guideId'] as string;
+      const guideIndex = variables['guideIndex'] as string;
       
-      if (!workflowId || !guideId) throw new Error('Invalid guide URI');
+      if (!workflowId || !guideIndex) throw new Error('Invalid guide URI');
       
-      logInfo('Resource accessed: guide', { workflowId, guideId });
+      logInfo('Resource accessed: guide', { workflowId, guideIndex });
       
-      const result = await readGuideRaw(config.workflowDir, workflowId, guideId);
+      const result = await readGuideRaw(config.workflowDir, workflowId, guideIndex);
       if (!result.success) throw result.error;
       
       const mimeType = result.value.format === 'toon' ? 'text/plain' : 'text/markdown';
