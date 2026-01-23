@@ -3,8 +3,9 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join, basename } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { ActivityNotFoundError } from '../errors.js';
-import { logInfo } from '../logging.js';
+import { logInfo, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
+import { readGuideRaw } from './guide-loader.js';
 
 /** The meta workflow contains all activities */
 const META_WORKFLOW_ID = 'meta';
@@ -23,6 +24,18 @@ function parseActivityFilename(filename: string): { index: string; id: string } 
   return { index: match[1], id: match[2] };
 }
 
+/** Reference to a mandatory guide that must be loaded before proceeding */
+export interface MandatoryGuideRef {
+  workflow_id: string;
+  index: string;
+}
+
+/** Mandatory guide with embedded content (raw TOON/markdown string) */
+export interface MandatoryGuide extends MandatoryGuideRef {
+  content: string;
+  format: 'toon' | 'markdown';
+}
+
 export interface Activity {
   id: string;
   version: string;
@@ -32,6 +45,7 @@ export interface Activity {
     primary: string;
     supporting: string[];
   };
+  mandatory_guide?: MandatoryGuideRef;
   outcome: string[];
   flow: string[];
   context_to_preserve: string[];
@@ -109,6 +123,17 @@ export async function listActivities(workflowDir: string): Promise<ActivityEntry
   }
 }
 
+export interface ActivityIndexEntry {
+  id: string;
+  problem: string;
+  primary_skill: string;
+  mandatory_guide?: MandatoryGuide;
+  next_action: {
+    tool: string;
+    parameters: Record<string, string>;
+  };
+}
+
 export interface ActivityIndex {
   description: string;
   usage: string;
@@ -116,21 +141,14 @@ export interface ActivityIndex {
     tool: string;
     parameters: Record<string, unknown>;
   };
-  activities: Array<{
-    id: string;
-    problem: string;
-    primary_skill: string;
-    next_action: {
-      tool: string;
-      parameters: Record<string, string>;
-    };
-  }>;
+  activities: ActivityIndexEntry[];
   quick_match: Record<string, string>;
 }
 
 /**
  * Build activity index dynamically from individual activity files.
  * Each activity's `recognition` patterns become quick_match entries.
+ * If an activity has a mandatory_guide, the guide content is loaded and embedded.
  */
 export async function readActivityIndex(workflowDir: string): Promise<Result<ActivityIndex, ActivityNotFoundError>> {
   const activityEntries = await listActivities(workflowDir);
@@ -146,7 +164,9 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
     const result = await readActivity(workflowDir, entry.id);
     if (result.success) {
       const activity = result.value;
-      activities.push({
+      
+      // Build activity entry for index
+      const activityEntry: ActivityIndex['activities'][number] = {
         id: activity.id,
         problem: activity.problem,
         primary_skill: activity.skills.primary,
@@ -154,7 +174,36 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
           tool: 'get_skill',
           parameters: { skill_id: activity.skills.primary },
         },
-      });
+      };
+      
+      // Load and embed mandatory guide content if specified
+      if (activity.mandatory_guide) {
+        const guideResult = await readGuideRaw(
+          workflowDir,
+          activity.mandatory_guide.workflow_id,
+          activity.mandatory_guide.index
+        );
+        
+        if (guideResult.success) {
+          activityEntry.mandatory_guide = {
+            workflow_id: activity.mandatory_guide.workflow_id,
+            index: activity.mandatory_guide.index,
+            content: guideResult.value.content,
+            format: guideResult.value.format,
+          };
+          logInfo('Embedded mandatory guide in activity', { 
+            activityId: activity.id, 
+            guideIndex: activity.mandatory_guide.index 
+          });
+        } else {
+          logWarn('Failed to load mandatory guide for activity', { 
+            activityId: activity.id, 
+            guideRef: activity.mandatory_guide 
+          });
+        }
+      }
+      
+      activities.push(activityEntry);
       
       // Build quick_match from recognition patterns
       for (const pattern of activity.recognition) {
@@ -165,7 +214,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
   
   const index: ActivityIndex = {
     description: 'Match user goal to an activity. Activities use skills to achieve outcomes.',
-    usage: 'Call the tool in next_action first (get_rules), then proceed to the matched activity.',
+    usage: 'Call the tool in next_action first (get_rules), then proceed to the matched activity. If mandatory_guide is present, read the guide content before calling the skill.',
     next_action: {
       tool: 'get_rules',
       parameters: {},
