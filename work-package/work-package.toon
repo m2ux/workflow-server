@@ -325,7 +325,8 @@ phases[11]:
     checkpoints[4]:
       - id: checkpoint-6-2-task-progress
         name: Task Progress Checkpoint
-        message: Task complete. Assumptions confirmed?
+        prerequisite: List all assumptions made during implementation with category and risk level before presenting this checkpoint
+        message: "Review the assumptions listed above. Are they confirmed?"
         guide:
           path: "https://raw.githubusercontent.com/m2ux/agent-resources/main/workflows/work-package/assumptions-review.guide.md"
           section: Checkpoint Template
