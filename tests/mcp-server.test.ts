@@ -192,6 +192,42 @@ describe('mcp-server integration', () => {
       expect(activities).toBeDefined();
       expect(activities.quick_match).toBeDefined();
     });
+
+    it('should include next_action instructing to call get_rules', async () => {
+      const result = await client.callTool({ name: 'get_activities', arguments: {} });
+      
+      const activities = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(activities.next_action).toBeDefined();
+      expect(activities.next_action.tool).toBe('get_rules');
+    });
+  });
+
+  describe('tool: get_rules', () => {
+    it('should get global agent rules', async () => {
+      const result = await client.callTool({ name: 'get_rules', arguments: {} });
+      
+      expect(result.content).toBeDefined();
+      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(rules.id).toBe('agent-rules');
+      expect(rules.sections).toBeDefined();
+      expect(Array.isArray(rules.sections)).toBe(true);
+    });
+
+    it('should include code modification boundaries', async () => {
+      const result = await client.callTool({ name: 'get_rules', arguments: {} });
+      
+      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const codeModSection = rules.sections.find((s: { id: string }) => s.id === 'code-modification');
+      expect(codeModSection).toBeDefined();
+      expect(codeModSection.priority).toBe('critical');
+    });
+
+    it('should include precedence statement', async () => {
+      const result = await client.callTool({ name: 'get_rules', arguments: {} });
+      
+      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(rules.precedence).toContain('Workflow-specific rules override');
+    });
   });
 
   describe('tool: get_activity', () => {
