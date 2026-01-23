@@ -197,9 +197,9 @@ describe('mcp-server integration', () => {
       const result = await client.callTool({ name: 'get_activities', arguments: {} });
       
       const activities = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(activities.important).toContain('get_rules');
       expect(activities.first_action).toBeDefined();
       expect(activities.first_action.tool).toBe('get_rules');
+      expect(activities.usage).toContain('get_rules');
     });
   });
 

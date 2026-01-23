@@ -112,7 +112,6 @@ export async function listActivities(workflowDir: string): Promise<ActivityEntry
 export interface ActivityIndex {
   description: string;
   usage: string;
-  important: string;
   first_action: {
     tool: string;
     parameters: Record<string, unknown>;
@@ -166,8 +165,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
   
   const index: ActivityIndex = {
     description: 'Match user goal to an activity. Activities use skills to achieve outcomes.',
-    usage: 'After matching an activity, call the tool specified in next_action with the given parameters to get execution instructions.',
-    important: 'Before executing any workflow, call get_rules to retrieve global agent guidelines that apply to all workflow executions.',
+    usage: 'After matching an activity, call get_rules first to retrieve global agent guidelines, then call the tool specified in next_action.',
     first_action: {
       tool: 'get_rules',
       parameters: {},
