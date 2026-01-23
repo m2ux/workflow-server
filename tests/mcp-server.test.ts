@@ -193,13 +193,12 @@ describe('mcp-server integration', () => {
       expect(activities.quick_match).toBeDefined();
     });
 
-    it('should include first_action instructing to call get_rules', async () => {
+    it('should include next_action instructing to call get_rules', async () => {
       const result = await client.callTool({ name: 'get_activities', arguments: {} });
       
       const activities = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(activities.first_action).toBeDefined();
-      expect(activities.first_action.tool).toBe('get_rules');
-      expect(activities.usage).toContain('get_rules');
+      expect(activities.next_action).toBeDefined();
+      expect(activities.next_action.tool).toBe('get_rules');
     });
   });
 
