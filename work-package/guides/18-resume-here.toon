@@ -1,0 +1,106 @@
+id: resume-here
+version: 1.0.0
+title: Resume Workflow Guide
+purpose: Guide for resuming a previously started work-package workflow
+
+sections[6]:
+  - id: overview
+    title: Overview
+    content: """
+      This guide helps you resume a work-package workflow that was previously started. Resuming requires reconstructing the workflow state to understand where you left off and what remains to be done.
+
+      > **Key Insight:** A successful resumption requires understanding both the workflow progress AND the context of previous decisions.
+    """
+
+  - id: resumption-phases
+    title: Resumption Phases
+    intro: "Follow these 5 phases to properly resume a workflow:"
+    phases[5]:
+      - id: phase-1-identify
+        name: "Phase 1: Identify Workflow"
+        steps[3]:
+          - Confirm which workflow is being resumed (e.g., work-package)
+          - Locate the planning folder (.engineering/artifacts/planning/YYYY-MM-DD-*)
+          - Read START-HERE.md for current status
+        checkpoint: "🛑 CHECKPOINT: 'Is this the correct workflow to resume?'"
+
+      - id: phase-2-reconstruct
+        name: "Phase 2: Reconstruct State"
+        steps[4]:
+          - Review planning documents to understand progress
+          - Identify completed phases from START-HERE.md progress table
+          - Note any checkpoint responses or decisions made
+          - Check git branch and PR status
+        checkpoint: "🛑 CHECKPOINT: 'Have I correctly identified where we left off?'"
+
+      - id: phase-3-context
+        name: "Phase 3: Restore Context"
+        steps[4]:
+          - Read the work package plan (03-work-package-plan.md)
+          - Review any implementation analysis or research documents
+          - Check completed TODOs and remaining tasks
+          - Note any assumptions or decisions documented
+        checkpoint: "🛑 CHECKPOINT: 'Do I have sufficient context to continue?'"
+
+      - id: phase-4-validate
+        name: "Phase 4: Validate Current State"
+        steps[4]:
+          - Verify feature branch exists and is current
+          - Check for any uncommitted changes
+          - Ensure PR is still open and in expected state
+          - Run tests to verify codebase is in working state
+        checkpoint: "🛑 CHECKPOINT: 'Is the codebase ready to continue?'"
+
+      - id: phase-5-resume
+        name: "Phase 5: Resume Execution"
+        steps[3]:
+          - Present summary of progress and remaining work
+          - Confirm next step with user
+          - Continue from identified phase using workflow-execution skill
+
+  - id: state-reconstruction
+    title: State Reconstruction Checklist
+    items[8]:
+      - workflowId - Which workflow (e.g., work-package)
+      - currentPhase - Which phase to resume from
+      - completedPhases - List of completed phases
+      - variables - Any workflow variables set (issue_number, pr_number, etc.)
+      - checkpointResponses - Previous user decisions
+      - planningFolder - Path to planning artifacts
+      - branch - Current git branch name
+      - prNumber - Pull request number if created
+
+  - id: common-scenarios
+    title: Common Resumption Scenarios
+    scenarios[4]:
+      - id: mid-planning
+        name: "Resuming During Planning (Phases 1-5)"
+        approach: "Review planning documents, confirm approach, continue to next checkpoint"
+        
+      - id: mid-implementation
+        name: "Resuming During Implementation (Phase 6)"
+        approach: "Check TODO list, verify last completed task, run tests, continue from next task"
+        
+      - id: after-validation
+        name: "Resuming After Validation (Phases 7-8)"
+        approach: "Re-run tests, confirm validation status, proceed to review/finalize"
+        
+      - id: before-merge
+        name: "Resuming Before Merge (Phases 9-11)"
+        approach: "Check PR status, verify finalization docs, complete remaining steps"
+
+  - id: rules
+    title: Resumption Rules
+    rules[5]:
+      - Always read START-HERE.md before proceeding
+      - Verify git branch matches expected feature branch
+      - Run tests before making any new changes
+      - Present progress summary to user before continuing
+      - Get explicit confirmation before resuming work
+
+  - id: related-guides
+    title: Related Guides
+    guides[3]:
+      - workflow://work-package/guides/work-package
+      - workflow://work-package/guides/start-here
+      - workflow://work-package/guides/complete

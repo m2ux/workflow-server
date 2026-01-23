@@ -1,5 +1,5 @@
 id: resume-workflow
-version: 2.0.0
+version: 2.1.0
 problem: The user wants to continue a workflow that was previously started.
 recognition[6]:
   - Resume workflow
@@ -12,6 +12,9 @@ skills:
   primary: workflow-execution
   supporting[1]:
     - activity-resolution
+mandatory_guide:
+  workflow_id: work-package
+  index: "18"
 outcome[4]:
   - Previous state is restored or reconstructed
   - Current phase is identified
