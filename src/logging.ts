@@ -2,6 +2,7 @@ export interface AuditEvent { timestamp: string; tool: string; parameters: Recor
 
 export function logAuditEvent(event: AuditEvent): void { console.error(JSON.stringify({ type: 'audit', ...event })); }
 export function logInfo(message: string, data?: Record<string, unknown>): void { console.error(JSON.stringify({ type: 'info', message, ...data, timestamp: new Date().toISOString() })); }
+export function logWarn(message: string, data?: Record<string, unknown>): void { console.error(JSON.stringify({ type: 'warn', message, ...data, timestamp: new Date().toISOString() })); }
 export function logError(message: string, error?: Error, data?: Record<string, unknown>): void { console.error(JSON.stringify({ type: 'error', message, error: error?.message, stack: error?.stack, ...data, timestamp: new Date().toISOString() })); }
 
 export function withAuditLog<T extends Record<string, unknown>, R>(toolName: string, handler: (params: T) => Promise<R>): (params: T) => Promise<R> {

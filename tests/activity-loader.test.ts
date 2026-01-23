@@ -40,8 +40,19 @@ describe('activity-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('start-workflow');
-        expect(result.value.version).toBe('2.0.0');
+        expect(result.value.version).toBe('2.1.0');
         expect(result.value.problem).toBeDefined();
+      }
+    });
+
+    it('should load activity with mandatory_guide reference', async () => {
+      const result = await readActivity(WORKFLOW_DIR, 'start-workflow');
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.mandatory_guide).toBeDefined();
+        expect(result.value.mandatory_guide?.workflow_id).toBe('work-package');
+        expect(result.value.mandatory_guide?.index).toBe('00');
       }
     });
 
@@ -164,6 +175,47 @@ describe('activity-loader', () => {
           expect(activity.next_action.parameters).toBeDefined();
           expect(activity.next_action.parameters.skill_id).toBe(activity.primary_skill);
         }
+      }
+    });
+
+    it('should embed mandatory_guide content for activities with guides', async () => {
+      const result = await readActivityIndex(WORKFLOW_DIR);
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // start-workflow should have mandatory_guide with embedded content
+        const startWorkflow = result.value.activities.find(a => a.id === 'start-workflow');
+        expect(startWorkflow).toBeDefined();
+        expect(startWorkflow?.mandatory_guide).toBeDefined();
+        expect(startWorkflow?.mandatory_guide?.workflow_id).toBe('work-package');
+        expect(startWorkflow?.mandatory_guide?.index).toBe('00');
+        expect(startWorkflow?.mandatory_guide?.content).toBeDefined();
+        expect(typeof startWorkflow?.mandatory_guide?.content).toBe('string');
+        expect(startWorkflow?.mandatory_guide?.content).toContain('id: start-here');
+        expect(startWorkflow?.mandatory_guide?.format).toBe('toon');
+        
+        // resume-workflow should have mandatory_guide
+        const resumeWorkflow = result.value.activities.find(a => a.id === 'resume-workflow');
+        expect(resumeWorkflow).toBeDefined();
+        expect(resumeWorkflow?.mandatory_guide).toBeDefined();
+        expect(resumeWorkflow?.mandatory_guide?.content).toBeDefined();
+        expect(resumeWorkflow?.mandatory_guide?.content).toContain('id: resume-here');
+        
+        // end-workflow should have mandatory_guide
+        const endWorkflow = result.value.activities.find(a => a.id === 'end-workflow');
+        expect(endWorkflow).toBeDefined();
+        expect(endWorkflow?.mandatory_guide).toBeDefined();
+        expect(endWorkflow?.mandatory_guide?.content).toBeDefined();
+        expect(endWorkflow?.mandatory_guide?.content).toContain('id: end-here');
+      }
+    });
+
+    it('should include usage mentioning mandatory_guide', async () => {
+      const result = await readActivityIndex(WORKFLOW_DIR);
+      
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.usage).toContain('mandatory_guide');
       }
     });
   });
