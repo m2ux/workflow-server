@@ -78,7 +78,7 @@ Workflow-specific skills are stored in each workflow's `skills/` directory. Curr
 ### The Meta Workflow
 
 The `meta` workflow is the bootstrap workflow for the workflow-server. It contains:
-- **Activities** (`meta/intents/`): All user activities for workflow operations
+- **Activities** (`meta/activities/`): All user activities for workflow operations
 - **Universal skills** (`meta/skills/`): Skills that apply to all workflows
 
 ### Skill Resolution
