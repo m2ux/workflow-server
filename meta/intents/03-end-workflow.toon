@@ -1,5 +1,5 @@
 id: end-workflow
-version: 2.0.0
+version: 2.1.0
 problem: The user wants to complete and finalize a workflow execution.
 recognition[6]:
   - End workflow
@@ -12,6 +12,9 @@ skills:
   primary: workflow-execution
   supporting[1]:
     - activity-resolution
+mandatory_guide:
+  workflow_id: work-package
+  index: "19"
 outcome[4]:
   - Final phase is completed
   - All required checkpoints are resolved

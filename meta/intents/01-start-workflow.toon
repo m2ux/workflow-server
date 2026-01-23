@@ -1,5 +1,5 @@
 id: start-workflow
-version: 2.0.0
+version: 2.1.0
 problem: The user wants to begin executing a new workflow from the beginning.
 recognition[6]:
   - Start a workflow
@@ -12,6 +12,9 @@ skills:
   primary: workflow-execution
   supporting[1]:
     - activity-resolution
+mandatory_guide:
+  workflow_id: work-package
+  index: "00"
 outcome[4]:
   - Workflow is selected and loaded
   - Initial state is created with correct initial phase
