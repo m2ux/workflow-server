@@ -60,7 +60,7 @@ export interface ActivityWithGuidance extends Activity {
 
 /** Get the activity directory from the meta workflow */
 function getActivityDir(workflowDir: string): string {
-  return join(workflowDir, META_WORKFLOW_ID, 'intents');
+  return join(workflowDir, META_WORKFLOW_ID, 'activities');
 }
 
 export async function readActivity(workflowDir: string, activityId: string): Promise<Result<ActivityWithGuidance, ActivityNotFoundError>> {

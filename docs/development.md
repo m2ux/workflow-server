@@ -76,7 +76,7 @@ workflow-server/
 ├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow (manages other workflows)
 │   │   ├── meta.toon             # Meta workflow definition
-│   │   ├── intents/              # All activities (indexed, no separate index file)
+│   │   ├── activities/           # All activities (indexed, no separate index file)
 │   │   │   └── {NN}-{id}.toon    # Individual activities (01-start-workflow, etc.)
 │   │   └── skills/               # Universal skills (indexed)
 │   │       └── {NN}-{id}.toon    # Skills that apply to all workflows
