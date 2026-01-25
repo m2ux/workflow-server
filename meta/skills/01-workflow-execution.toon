@@ -1,14 +1,6 @@
 id: workflow-execution
 version: 2.0.0
-capability: Execute workflows with consistent tool usage and agent behavioral guidelines
-
-context:
-  description: Bootstrap workflow for the workflow-server. Manages other workflows by providing activities, skills, and workflow discovery.
-  principles[3]:
-    - This workflow is the entrypoint for all workflow operations
-    - Activities in this workflow map user goals to other workflows
-    - Skills in this workflow are universal and apply to all workflows
-
+capability: Execute workflows from start to completion with consistent tool usage
 execution_pattern:
   start[3]:
     - list_workflows
@@ -23,7 +15,6 @@ execution_pattern:
   artifacts[2]:
     - list_templates
     - get_template
-
 tools:
   list_workflows:
     when: Discovering available workflows
@@ -78,7 +69,6 @@ tools:
     params: workflow_id, index
     returns: Template content with placeholders
     usage: Fill template placeholders with context-specific values
-
 state:
   format: Numeric indices (1-based) for phases and steps
   structure:
@@ -121,7 +111,6 @@ state:
       branchId: string
       decidedAt: datetime
       transitionedTo: integer (phase index)
-
 interpretation:
   transitions: Evaluate conditions against state.variables; take matching transition or default
   checkpoints: Present message and options to user; apply effect from selected option
@@ -129,129 +118,6 @@ interpretation:
   loops: "For forEach: iterate over collection; For while: check condition before each iteration"
   guides: Reference guides when phase steps are unclear or user requests help
   templates: Use templates when workflow requires artifact creation
-
-rules:
-  precedence: Workflow-specific rules override these global rules on conflict
-  sections[10]:
-    - id: code-modification
-      title: Code Modification Boundaries
-      priority: critical
-      rules[6]:
-        - Do not modify code unless explicitly directed by the user
-        - Always request permission before making changes to existing code
-        - Prefer reading and analyzing code over modifying it
-        - When modifications are requested implement them precisely as specified
-        - Focus on factual observations rather than prescriptive changes
-        - Never add process attribution comments to code
-    - id: implementation-workflow
-      title: Implementation Workflow Boundaries
-      priority: critical
-      rules[5]:
-        - For complex implementations complete only ONE numbered task at a time
-        - Stop and ask user permission before proceeding to the next item
-        - NEVER implement multiple recommendations in a single iteration
-        - Provide brief summary of completed work before asking to continue
-        - Break complex tasks into manageable specific steps
-    - id: file-restrictions
-      title: File and Directory Restrictions
-      priority: high
-      rules[4]:
-        - Do not modify core configuration files without explicit user direction
-        - Avoid changes to build scripts unless specifically requested
-        - Be cautious with database migration files and schema changes
-        - Request approval before modifying CI/CD configuration or Docker files
-    - id: communication
-      title: Communication Standards
-      priority: high
-      rules[6]:
-        - Use measured technical language appropriate for senior software engineering
-        - Avoid hyperbolic statements and superlatives
-        - Use precise descriptive language
-        - Provide respectful constructive feedback focused on code quality
-        - Focus on technical merit rather than emotional assessments
-        - Present design decisions directly without referencing their origin
-    - id: documentation
-      title: Documentation Standards
-      priority: high
-      rules[5]:
-        - AVOID process attribution references in documentation
-        - Do not include citations referencing how code was generated
-        - Comments should explain what code does and why it exists
-        - Focus on self-documenting code and maintainability
-        - Explain why decisions were made not what the code does
-    - id: task-management
-      title: Task Management
-      priority: medium
-      whenToCreate[4]:
-        - Complex multi-step tasks with 3+ distinct steps
-        - Non-trivial tasks requiring careful planning
-        - Multiple tasks provided as numbered or comma-separated list
-        - After receiving new instructions to capture requirements
-      whenNotToCreate[4]:
-        - Single straightforward tasks
-        - Trivial tasks with no organizational benefit
-        - Tasks completable in less than 3 trivial steps
-        - Purely conversational or informational requests
-      rules[4]:
-        - Only ONE task marked in_progress at a time
-        - Mark complete IMMEDIATELY after finishing
-        - Complete current tasks before starting new ones
-        - Never include operational tasks like linting or testing in todos
-    - id: error-recovery
-      title: Error Recovery and Edge Cases
-      priority: medium
-      whenThingsGoWrong[5]:
-        - Acknowledge errors clearly and directly
-        - Analyze the root cause before proposing fixes
-        - Do not make the same mistake multiple times
-        - Learn from correction patterns in project history
-        - Ask clarifying questions when uncertain
-      handlingAmbiguity[4]:
-        - When requirements are unclear ask specific questions
-        - Propose concrete options with tradeoffs
-        - Reference similar patterns in codebase for context
-        - Do not guess at critical implementation details
-    - id: version-control
-      title: Version Control Practices
-      priority: high
-      commitStandards[4]:
-        - Follow the Conventional Commits specification for all commit messages
-        - Use format type followed by optional scope and description
-        - Common types are feat fix docs style refactor test chore build ci
-        - Reference issue numbers when applicable
-      destructiveOperations[4]:
-        - NEVER run destructive or irreversible operations without explicit request
-        - Examples include force push to protected branches and hard resets
-        - NEVER skip hooks unless explicitly requested
-        - NEVER commit changes unless user explicitly asks
-      preCommitVerification[2]:
-        - Verify user explicitly requested the commit
-        - For Rust projects run cargo fmt to format code before committing
-    - id: github-cli
-      title: GitHub CLI Usage
-      priority: medium
-      guidance: Prefer REST API for mutating operations to avoid GraphQL errors
-      mutatingOperations[3]:
-        - Update PR description using gh api with PATCH method
-        - Update PR title using gh api with PATCH method
-        - Add labels using gh api with POST method
-      readOperationsOk[3]:
-        - gh pr view for viewing PRs
-        - gh pr list for listing PRs
-        - gh issue list for listing issues
-    - id: context-management
-      title: Context Management Strategy
-      priority: low
-      directContext[4]:
-        - Use @filename or @filepath to add specific files to context
-        - Open relevant files in tabs for agents to see
-        - Most explicit and immediate approach
-        - Better for focused specific tasks
-      hybridApproach[3]:
-        - Add a context document explaining the task and scope
-        - Mention 2-4 key files that are most relevant
-        - Let the agent search for the rest using semantic search
-
 errors:
   workflow_not_found:
     cause: Invalid workflow_id parameter
