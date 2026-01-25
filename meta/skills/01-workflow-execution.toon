@@ -1,5 +1,5 @@
 id: workflow-execution
-version: 2.2.0
+version: 2.0.0
 capability: Execute workflows from start to completion with consistent tool usage
 execution_pattern:
   start[3]:

@@ -1,5 +1,5 @@
 id: end-workflow
-version: 2.4.0
+version: 2.1.0
 problem: The user wants to complete and finalize a workflow execution.
 recognition[6]:
   - End workflow
@@ -21,7 +21,7 @@ outcome[4]:
   - All required checkpoints are resolved
   - Completion summary is presented
   - State is finalized or archived
-flow[10]:
+flow[11]:
   - 1. Verify current phase is the final phase (highest index)
   - 2. Ensure all required checkpoints are resolved
   - 3. Execute any exit actions for final phase

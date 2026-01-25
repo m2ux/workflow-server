@@ -1,5 +1,5 @@
 id: resume-workflow
-version: 2.4.0
+version: 2.1.0
 problem: The user wants to continue a workflow that was previously started.
 recognition[6]:
   - Resume workflow
@@ -21,7 +21,7 @@ outcome[4]:
   - Current phase is identified
   - Remaining work is presented
   - Agent is ready to continue guiding user
-flow[14]:
+flow[15]:
   - 1. Ask user to identify the workflow being resumed
   - 2. Call get_workflow to load workflow definition
   - 3. Call list_guides to discover available guidance
