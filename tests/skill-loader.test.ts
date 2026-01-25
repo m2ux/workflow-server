@@ -100,8 +100,9 @@ describe('skill-loader', () => {
         
         // Check state management
         expect(skill.state).toBeDefined();
-        expect(skill.state.track).toContain('currentPhase');
-        expect(skill.state.track).toContain('completedPhases');
+        expect(skill.state.structure).toBeDefined();
+        expect(skill.state.structure.currentPhase).toBeDefined();
+        expect(skill.state.structure.completedPhases).toBeDefined();
         
         // Check interpretation
         expect(skill.interpretation).toBeDefined();
