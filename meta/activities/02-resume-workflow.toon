@@ -10,10 +10,9 @@ recognition[6]:
   - Where were we?
 skills:
   primary: workflow-execution
-  supporting[3]:
+  supporting[2]:
     - activity-resolution
     - state-management
-    - workflow-management
 outcome[4]:
   - Previous state is restored or reconstructed
   - Current phase is identified
