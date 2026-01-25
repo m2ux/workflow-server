@@ -10,9 +10,10 @@ recognition[6]:
   - Mark workflow as complete
 skills:
   primary: workflow-execution
-  supporting[2]:
+  supporting[3]:
     - activity-resolution
     - state-management
+    - workflow-management
 outcome[4]:
   - Final phase is completed
   - All required checkpoints are resolved
