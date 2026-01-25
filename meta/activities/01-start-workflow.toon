@@ -13,9 +13,6 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
-mandatory_guide:
-  workflow_id: work-package
-  index: "00"
 outcome[4]:
   - Workflow is selected and loaded
   - Initial state is created with correct initial phase
