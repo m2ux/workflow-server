@@ -1,22 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "state",
-  "description": "Workflow state schema",
+  "description": "Workflow state schema - uses numeric indices for phases/steps to eliminate redundancy",
   "$ref": "#/definitions/state",
   "definitions": {
     "state": {
       "type": "object",
       "properties": {
         "workflowId": {
-          "type": "string"
+          "type": "string",
+          "description": "ID of the workflow being executed"
         },
         "workflowVersion": {
-          "type": "string"
+          "type": "string",
+          "description": "Version of the workflow"
         },
         "stateVersion": {
           "type": "integer",
           "exclusiveMinimum": 0,
-          "default": 1
+          "default": 1,
+          "description": "State schema version for migration support"
         },
         "startedAt": {
           "type": "string",
@@ -31,45 +34,53 @@
           "format": "date-time"
         },
         "currentPhase": {
-          "type": "string"
+          "type": "integer",
+          "minimum": 1,
+          "description": "Current phase index (1-based)"
         },
         "currentStep": {
-          "type": "string"
+          "type": "integer",
+          "minimum": 1,
+          "description": "Current step index within current phase (1-based)"
         },
         "completedPhases": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "integer",
+            "minimum": 1
           },
-          "default": []
+          "default": [],
+          "description": "Array of completed phase indices"
         },
         "skippedPhases": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "integer",
+            "minimum": 1
           },
-          "default": []
+          "default": [],
+          "description": "Array of skipped phase indices"
         },
         "completedSteps": {
           "type": "object",
           "additionalProperties": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "integer",
+              "minimum": 1
             }
           },
-          "default": {}
+          "default": {},
+          "description": "Map of phase index to array of completed step indices"
         },
         "checkpointResponses": {
           "type": "object",
           "additionalProperties": {
             "type": "object",
             "properties": {
-              "checkpointId": {
-                "type": "string"
-              },
               "optionId": {
-                "type": "string"
+                "type": "string",
+                "description": "ID of the selected option"
               },
               "respondedAt": {
                 "type": "string",
@@ -83,24 +94,24 @@
                     "additionalProperties": {}
                   },
                   "transitionedTo": {
-                    "type": "string"
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Phase index transitioned to"
                   },
                   "phasesSkipped": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "integer",
+                      "minimum": 1
                     }
                   }
                 },
                 "additionalProperties": false
               }
             },
-            "required": [
-              "checkpointId",
-              "optionId",
-              "respondedAt"
-            ],
-            "additionalProperties": false
+            "required": ["optionId", "respondedAt"],
+            "additionalProperties": false,
+            "description": "Key is 'phaseIndex-checkpointIndex' (e.g., '1-2')"
           },
           "default": {}
         },
@@ -109,27 +120,23 @@
           "additionalProperties": {
             "type": "object",
             "properties": {
-              "decisionId": {
-                "type": "string"
-              },
               "branchId": {
-                "type": "string"
+                "type": "string",
+                "description": "ID of the branch taken"
               },
               "decidedAt": {
                 "type": "string",
                 "format": "date-time"
               },
               "transitionedTo": {
-                "type": "string"
+                "type": "integer",
+                "minimum": 1,
+                "description": "Phase index transitioned to"
               }
             },
-            "required": [
-              "decisionId",
-              "branchId",
-              "decidedAt",
-              "transitionedTo"
-            ],
-            "additionalProperties": false
+            "required": ["branchId", "decidedAt", "transitionedTo"],
+            "additionalProperties": false,
+            "description": "Key is 'phaseIndex-decisionIndex' (e.g., '7-2')"
           },
           "default": {}
         },
@@ -138,8 +145,15 @@
           "items": {
             "type": "object",
             "properties": {
-              "loopId": {
-                "type": "string"
+              "phaseIndex": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Phase containing this loop"
+              },
+              "loopIndex": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Index of the loop within the phase"
               },
               "currentIteration": {
                 "type": "integer",
@@ -155,11 +169,7 @@
                 "format": "date-time"
               }
             },
-            "required": [
-              "loopId",
-              "currentIteration",
-              "startedAt"
-            ],
+            "required": ["phaseIndex", "loopIndex", "currentIteration", "startedAt"],
             "additionalProperties": false
           },
           "default": []
@@ -202,19 +212,29 @@
                 ]
               },
               "phase": {
-                "type": "string"
+                "type": "integer",
+                "minimum": 1,
+                "description": "Phase index"
               },
               "step": {
-                "type": "string"
+                "type": "integer",
+                "minimum": 1,
+                "description": "Step index within phase"
               },
               "checkpoint": {
-                "type": "string"
+                "type": "integer",
+                "minimum": 1,
+                "description": "Checkpoint index within phase"
               },
               "decision": {
-                "type": "string"
+                "type": "integer",
+                "minimum": 1,
+                "description": "Decision index within phase"
               },
               "loop": {
-                "type": "string"
+                "type": "integer",
+                "minimum": 1,
+                "description": "Loop index within phase"
               },
               "data": {
                 "type": "object",
@@ -230,29 +250,18 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "message"
-                ],
+                "required": ["message"],
                 "additionalProperties": false
               }
             },
-            "required": [
-              "timestamp",
-              "type"
-            ],
+            "required": ["timestamp", "type"],
             "additionalProperties": false
           },
           "default": []
         },
         "status": {
           "type": "string",
-          "enum": [
-            "running",
-            "paused",
-            "completed",
-            "aborted",
-            "error"
-          ],
+          "enum": ["running", "paused", "completed", "aborted", "error"],
           "default": "running"
         },
         "lastError": {
@@ -265,30 +274,25 @@
               "type": "string"
             },
             "phase": {
-              "type": "string"
+              "type": "integer",
+              "minimum": 1,
+              "description": "Phase index where error occurred"
             },
             "step": {
-              "type": "string"
+              "type": "integer",
+              "minimum": 1,
+              "description": "Step index where error occurred"
             },
             "timestamp": {
               "type": "string",
               "format": "date-time"
             }
           },
-          "required": [
-            "message",
-            "timestamp"
-          ],
+          "required": ["message", "timestamp"],
           "additionalProperties": false
         }
       },
-      "required": [
-        "workflowId",
-        "workflowVersion",
-        "startedAt",
-        "updatedAt",
-        "currentPhase"
-      ],
+      "required": ["workflowId", "workflowVersion", "startedAt", "updatedAt", "currentPhase"],
       "additionalProperties": false
     }
   }

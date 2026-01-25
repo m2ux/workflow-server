@@ -14,7 +14,11 @@ The workflow server uses three interconnected schemas:
 
 ## Schema Relationships
 
-<!-- TODO: Add descriptive context for the diagrams below -->
+The three schemas work together to define workflows (design-time) and track their execution (runtime). The diagrams below illustrate these relationships.
+
+### Workflow Structure
+
+The first diagram shows how a workflow definition is structured. A workflow consists of phases connected by transitions. Each phase can contain steps (individual tasks), checkpoints (user decision points), decisions (automated branching), and loops (iteration constructs). The `initialPhase` property determines where execution begins.
 
 ```mermaid
 stateDiagram-v2
@@ -46,6 +50,16 @@ stateDiagram-v2
     end note
 ```
 
+### Schema Dependencies
+
+The second diagram shows how the three schema files depend on each other:
+
+- **workflow.schema.json** defines the overall structure and references `condition.schema.json` for conditional logic in transitions, decisions, and loops
+- **condition.schema.json** provides reusable condition expressions (simple comparisons, AND/OR/NOT combinators)
+- **state.schema.json** tracks runtime execution state, linking back to the workflow definition
+
+At design-time, you work with `workflow.schema.json`. At runtime, `state.schema.json` captures progress through the workflow.
+
 ```mermaid
 flowchart TB
     subgraph Workflow["workflow.schema.json"]
@@ -76,6 +90,311 @@ flowchart TB
         ST --> V[variables]
     end
 ```
+
+---
+
+## Schema Ontology
+
+This section defines the key concepts, their fields, and relationships within the schema system.
+
+### Entity Relationships
+
+```mermaid
+erDiagram
+    Workflow ||--o{ Phase : contains
+    Workflow ||--o{ Variable : defines
+    
+    Phase ||--o{ Step : contains
+    Phase ||--o{ Checkpoint : contains
+    Phase ||--o{ Decision : contains
+    Phase ||--o{ Loop : contains
+    Phase ||--o{ Transition : contains
+    Phase |o--o| Guide : references
+    Phase ||--o{ Action : "entry/exit"
+    
+    Step |o--o| Guide : references
+    Step ||--o{ Action : performs
+    
+    Checkpoint |o--o| Guide : references
+    Checkpoint ||--|{ CheckpointOption : has
+    CheckpointOption ||--o| Effect : triggers
+    
+    Decision |o--o| Guide : references
+    Decision ||--|{ DecisionBranch : has
+    DecisionBranch |o--o| Condition : "evaluated by"
+    
+    Loop |o--o| Condition : "controlled by"
+    Loop |o--o| Condition : "break on"
+    Loop ||--o{ Step : iterates
+    
+    Transition |o--o| Condition : "guarded by"
+
+    Workflow {
+        string id PK
+        string version
+        string title
+        string description
+        string initialPhase FK
+    }
+    
+    Phase {
+        string id PK
+        string name
+        string description
+        boolean required
+        string estimatedTime
+    }
+    
+    Step {
+        string id PK
+        string name
+        string description
+        boolean required
+    }
+    
+    Checkpoint {
+        string id PK
+        string name
+        string message
+        boolean blocking
+    }
+    
+    CheckpointOption {
+        string id PK
+        string label
+        string description
+    }
+    
+    Decision {
+        string id PK
+        string name
+        string description
+    }
+    
+    DecisionBranch {
+        string id PK
+        string label
+        string transitionTo FK
+        boolean isDefault
+    }
+    
+    Transition {
+        string to FK
+        boolean isDefault
+    }
+    
+    Loop {
+        string id PK
+        string name
+        enum type
+        string variable
+        integer maxIterations
+    }
+    
+    Variable {
+        string name PK
+        enum type
+        string description
+        any defaultValue
+        boolean required
+    }
+    
+    Guide {
+        string path
+        string section
+        string title
+    }
+    
+    Action {
+        enum action
+        string target
+        string message
+        any value
+    }
+    
+    Condition {
+        enum type
+        string variable
+        string operator
+        any value
+    }
+    
+    Effect {
+        object setVariable
+        string transitionTo
+        array skipPhases
+    }
+```
+
+### Core Concepts
+
+#### Workflow (Root Entity)
+
+A workflow is the top-level container representing a complete process definition.
+
+| Field          | Type       | Purpose                            |
+| -------------- | ---------- | ---------------------------------- |
+| `id`           | string     | Unique identifier for the workflow |
+| `version`      | string     | Semantic version (X.Y.Z)           |
+| `title`        | string     | Human-readable display name        |
+| `description`  | string     | Detailed description               |
+| `author`       | string     | Creator of the workflow            |
+| `tags`         | string[]   | Categorization labels              |
+| `rules`        | string[]   | Execution guidelines               |
+| `variables`    | Variable[] | State variables                    |
+| `initialPhase` | string     | Starting phase ID                  |
+| `phases`       | Phase[]    | Ordered list of phases             |
+
+#### Phase
+
+A phase represents a major stage of workflow execution containing related steps and control flow elements.
+
+| Field           | Type         | Purpose                           |
+| --------------- | ------------ | --------------------------------- |
+| `id`            | string       | Unique identifier within workflow |
+| `name`          | string       | Display name                      |
+| `description`   | string       | What this phase accomplishes      |
+| `required`      | boolean      | Whether phase must be completed   |
+| `estimatedTime` | string       | Time estimate (e.g., "10-15m")    |
+| `guide`         | Guide        | Reference to detailed guidance    |
+| `entryActions`  | Action[]     | Actions on entering phase         |
+| `exitActions`   | Action[]     | Actions on exiting phase          |
+| `steps`         | Step[]       | Individual tasks                  |
+| `checkpoints`   | Checkpoint[] | User decision points              |
+| `decisions`     | Decision[]   | Automated branching points        |
+| `loops`         | Loop[]       | Iteration constructs              |
+| `transitions`   | Transition[] | Phase navigation rules            |
+
+#### Step
+
+A step represents an individual task within a phase.
+
+| Field         | Type     | Purpose                        |
+| ------------- | -------- | ------------------------------ |
+| `id`          | string   | Unique identifier within phase |
+| `name`        | string   | Task name                      |
+| `description` | string   | What this step accomplishes    |
+| `guide`       | Guide    | Reference to detailed guidance |
+| `required`    | boolean  | Whether step must be completed |
+| `actions`     | Action[] | Actions to perform             |
+
+#### Checkpoint
+
+A checkpoint is a blocking decision point requiring user input.
+
+| Field      | Type               | Purpose                                  |
+| ---------- | ------------------ | ---------------------------------------- |
+| `id`       | string             | Unique identifier within phase           |
+| `name`     | string             | Checkpoint name                          |
+| `message`  | string             | Question to present to user              |
+| `guide`    | Guide              | Reference to detailed guidance           |
+| `options`  | CheckpointOption[] | Available choices                        |
+| `required` | boolean            | Whether checkpoint must be answered      |
+| `blocking` | boolean            | Always true - checkpoints block progress |
+
+#### Decision
+
+A decision is an automated branching point based on variable conditions.
+
+| Field         | Type             | Purpose                        |
+| ------------- | ---------------- | ------------------------------ |
+| `id`          | string           | Unique identifier within phase |
+| `name`        | string           | Decision name                  |
+| `description` | string           | What is being decided          |
+| `guide`       | Guide            | Reference to detailed guidance |
+| `branches`    | DecisionBranch[] | Conditional paths (min 2)      |
+
+#### Transition
+
+A transition defines navigation from one phase to another.
+
+| Field       | Type      | Purpose                         |
+| ----------- | --------- | ------------------------------- |
+| `to`        | string    | Target phase ID                 |
+| `condition` | Condition | When this transition applies    |
+| `isDefault` | boolean   | Fallback if no conditions match |
+
+#### Loop
+
+A loop enables iteration over collections or while conditions hold.
+
+| Field            | Type      | Purpose                            |
+| ---------------- | --------- | ---------------------------------- |
+| `id`             | string    | Unique identifier within phase     |
+| `name`           | string    | Loop name                          |
+| `type`           | enum      | "forEach", "while", or "doWhile"   |
+| `variable`       | string    | Iteration variable name            |
+| `over`           | string    | Collection to iterate (forEach)    |
+| `condition`      | Condition | Continue condition (while/doWhile) |
+| `maxIterations`  | integer   | Safety limit                       |
+| `breakCondition` | Condition | Early exit condition               |
+| `steps`          | Step[]    | Steps to execute per iteration     |
+
+### Supporting Types
+
+#### Guide
+
+A reference to external guidance documentation.
+
+| Field     | Type   | Purpose                       |
+| --------- | ------ | ----------------------------- |
+| `path`    | string | URL or path to guide          |
+| `section` | string | Specific section within guide |
+| `title`   | string | Display title                 |
+
+#### Action
+
+An action performed during workflow execution.
+
+| Field     | Type   | Purpose                             |
+| --------- | ------ | ----------------------------------- |
+| `action`  | enum   | "log", "validate", "set", or "emit" |
+| `target`  | string | Target of the action                |
+| `message` | string | Message content                     |
+| `value`   | any    | Value for set/emit actions          |
+
+#### Variable
+
+A workflow variable definition.
+
+| Field          | Type    | Purpose                                          |
+| -------------- | ------- | ------------------------------------------------ |
+| `name`         | string  | Variable name                                    |
+| `type`         | enum    | "string", "number", "boolean", "array", "object" |
+| `description`  | string  | Variable purpose                                 |
+| `defaultValue` | any     | Initial value                                    |
+| `required`     | boolean | Whether variable must be set                     |
+
+#### Condition
+
+A conditional expression for control flow. Defined in `condition.schema.json`.
+
+| Type     | Structure                 | Purpose                   |
+| -------- | ------------------------- | ------------------------- |
+| `simple` | variable, operator, value | Basic comparison          |
+| `and`    | conditions[]              | All must be true          |
+| `or`     | conditions[]              | At least one must be true |
+| `not`    | condition                 | Negation                  |
+
+### Field Naming Conventions
+
+#### Consistent Patterns
+
+| Pattern       | Usage                     | Examples                                |
+| ------------- | ------------------------- | --------------------------------------- |
+| `id`          | Unique identifier         | phase.id, step.id, checkpoint.id        |
+| `name`        | Display name for entities | phase.name, step.name, loop.name        |
+| `description` | Detailed explanation      | workflow.description, phase.description |
+| `required`    | Mandatory flag            | variable.required, step.required        |
+| `guide`       | Documentation reference   | phase.guide, step.guide                 |
+
+#### Distinct Concepts
+
+| Field   | Context            | Meaning                 |
+| ------- | ------------------ | ----------------------- |
+| `title` | Workflow only      | Top-level display name  |
+| `name`  | All other entities | Entity display name     |
+| `label` | Options/branches   | User-facing choice text |
 
 ---
 
@@ -466,7 +785,39 @@ Conditions can be nested for complex logic:
 
 ## State Schema
 
-The state schema (`state.schema.json`) tracks runtime execution of a workflow.
+The state schema (`state.schema.json`) tracks runtime execution of a workflow using numeric indices for efficiency.
+
+### Key Optimizations
+
+The state schema uses numeric indices rather than string prefixes to reduce redundancy:
+
+| Field                 | Old Format                  | New Format   | Rationale                  |
+| --------------------- | --------------------------- | ------------ | -------------------------- |
+| `currentPhase`        | `"phase-2"`                 | `2`          | Redundant prefix removed   |
+| `currentStep`         | `"step-2-1"`                | `1`          | Phase context implicit     |
+| `completedPhases`     | `["phase-1"]`               | `[1]`        | Numeric array              |
+| `completedSteps`      | `{"phase-1": ["step-1-1"]}` | `{"1": [1]}` | Numeric keys and values    |
+| `checkpointResponses` | Includes `checkpointId`     | Key only     | Redundant ID field removed |
+| `decisionOutcomes`    | Includes `decisionId`       | Key only     | Redundant ID field removed |
+
+### State Fields
+
+| Field                 | Type                      | Purpose                                              |
+| --------------------- | ------------------------- | ---------------------------------------------------- |
+| `workflowId`          | string                    | Workflow being executed                              |
+| `workflowVersion`     | string                    | Version of workflow                                  |
+| `stateVersion`        | integer                   | State schema version                                 |
+| `currentPhase`        | integer                   | Current phase index (1-based)                        |
+| `currentStep`         | integer                   | Current step index within phase                      |
+| `completedPhases`     | integer[]                 | Completed phase indices                              |
+| `skippedPhases`       | integer[]                 | Skipped phase indices                                |
+| `completedSteps`      | Record<string, integer[]> | Steps completed per phase                            |
+| `checkpointResponses` | Record<string, Response>  | Checkpoint answers (key: "phase-checkpoint")         |
+| `decisionOutcomes`    | Record<string, Outcome>   | Decision results (key: "phase-decision")             |
+| `activeLoops`         | LoopState[]               | Currently executing loops                            |
+| `variables`           | Record<string, any>       | Runtime variable values                              |
+| `history`             | HistoryEntry[]            | Execution event log                                  |
+| `status`              | enum                      | "running", "paused", "completed", "aborted", "error" |
 
 ### State Structure
 
@@ -477,12 +828,12 @@ The state schema (`state.schema.json`) tracks runtime execution of a workflow.
   "stateVersion": 1,
   "startedAt": "2026-01-22T10:00:00.000Z",
   "updatedAt": "2026-01-22T10:05:00.000Z",
-  "currentPhase": "phase-2",
-  "currentStep": "step-2-1",
-  "completedPhases": ["phase-1"],
+  "currentPhase": 2,
+  "currentStep": 1,
+  "completedPhases": [1],
   "skippedPhases": [],
   "completedSteps": {
-    "phase-1": ["step-1-1", "step-1-2"]
+    "1": [1, 2]
   },
   "checkpointResponses": {},
   "decisionOutcomes": {},
@@ -503,7 +854,7 @@ The state schema (`state.schema.json`) tracks runtime execution of a workflow.
 | `workflowVersion` | string | Version of the workflow |
 | `startedAt` | datetime | When execution started |
 | `updatedAt` | datetime | Last state update |
-| `currentPhase` | string | Currently active phase ID |
+| `currentPhase` | integer | Currently active phase index (1-based) |
 
 ### Status Values
 
@@ -517,7 +868,7 @@ The state schema (`state.schema.json`) tracks runtime execution of a workflow.
 
 ### History Events
 
-The `history` array tracks all workflow events:
+The `history` array tracks all workflow events using numeric indices:
 
 ```json
 {
@@ -525,19 +876,19 @@ The `history` array tracks all workflow events:
     {
       "timestamp": "2026-01-22T10:00:00.000Z",
       "type": "workflow_started",
-      "phase": "phase-1"
+      "phase": 1
     },
     {
       "timestamp": "2026-01-22T10:01:00.000Z",
       "type": "step_completed",
-      "phase": "phase-1",
-      "step": "step-1-1"
+      "phase": 1,
+      "step": 1
     },
     {
       "timestamp": "2026-01-22T10:02:00.000Z",
       "type": "checkpoint_response",
-      "phase": "phase-1",
-      "checkpoint": "checkpoint-1",
+      "phase": 1,
+      "checkpoint": 1,
       "data": { "optionId": "proceed" }
     }
   ]
