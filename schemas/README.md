@@ -4,13 +4,15 @@ This folder contains JSON Schema definitions for the workflow server. These sche
 
 ## Overview
 
-The workflow server uses three interconnected schemas:
+The workflow server uses five interconnected schemas:
 
 | Schema | Purpose | Use Case |
 |--------|---------|----------|
 | `workflow.schema.json` | Defines workflow structure | Creating new workflows with phases, steps, checkpoints |
 | `condition.schema.json` | Defines conditional expressions | Controlling transitions and decisions |
 | `state.schema.json` | Tracks runtime execution state | Persisting workflow progress |
+| `skill.schema.json` | Defines agent skill capabilities | Describing tool orchestration patterns and execution guidance |
+| `activity.schema.json` | Defines agent activities | Mapping user goals to skills and workflows |
 
 ## Schema Relationships
 
@@ -1040,6 +1042,411 @@ if (result.success) {
 | Invalid phase reference | `initialPhase` or transition `to` references non-existent phase | Check phase IDs match |
 | Checkpoint missing options | Checkpoint defined without any options | Add at least one option |
 | Decision needs branches | Decision defined with fewer than 2 branches | Add at least 2 branches |
+
+---
+
+## Activity Schema
+
+The activity schema (`activity.schema.json`) defines how user goals map to skills and workflows. Activities are the bridge between user intent (problem domain) and skill execution (solution domain).
+
+### Top-Level Structure
+
+```json
+{
+  "id": "start-workflow",
+  "version": "2.1.0",
+  "problem": "The user wants to begin executing a new workflow from the beginning.",
+  "recognition": ["Start a workflow", "Begin workflow", "Execute workflow"],
+  "skills": {
+    "primary": "workflow-execution",
+    "supporting": ["activity-resolution", "state-management"]
+  },
+  "outcome": ["Workflow is selected and loaded", "Initial state is created"],
+  "flow": ["1. Call list_workflows to show options", "2. Call get_workflow to load"],
+  "context_to_preserve": ["workflowId", "currentPhase", "rules"]
+}
+```
+
+### Required Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | string | Unique activity identifier |
+| `version` | string | Semantic version (e.g., `2.1.0`) |
+| `problem` | string | Description of the user problem this activity addresses |
+| `recognition` | string[] | Patterns to match user intent to this activity |
+| `skills` | object | Primary and supporting skill references |
+| `outcome` | string[] | Expected outcomes when activity completes successfully |
+| `flow` | string[] | Ordered execution steps for this activity |
+
+### Optional Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `context_to_preserve` | string[] | Context items to preserve across the activity |
+| `usage` | string | How to use this activity |
+| `notes` | string[] | Additional notes or caveats |
+
+### Skills Reference
+
+The `skills` object defines which skills are used to execute the activity:
+
+```json
+{
+  "skills": {
+    "primary": "workflow-execution",
+    "supporting": ["activity-resolution", "state-management"]
+  }
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `primary` | string | Yes | The main skill that drives execution |
+| `supporting` | string[] | No | Additional skills that provide context or capabilities |
+
+### Recognition Patterns
+
+The `recognition` array contains patterns that match user intents to this activity:
+
+```json
+{
+  "recognition": [
+    "Start a workflow",
+    "Begin workflow",
+    "Execute workflow",
+    "Run workflow",
+    "New workflow",
+    "Let's start the work-package workflow"
+  ]
+}
+```
+
+Patterns can be:
+- Exact phrases: `"Start a workflow"`
+- Workflow-specific: `"Let's start the work-package workflow"`
+- Questions: `"Where were we?"`
+- Commands: `"Continue workflow"`
+
+### Flow Steps
+
+The `flow` array defines the execution sequence:
+
+```json
+{
+  "flow": [
+    "1. If workflow not specified, call list_workflows to show options",
+    "2. Call get_workflow to load the selected workflow",
+    "3. Initialize state per state-management skill",
+    "4. Read and apply workflow rules",
+    "5. Call list_guides to discover available guidance",
+    "6. Call get_guide for index 00 (start-here guide) if available",
+    "7. Call get_phase for phase index 1 (initialPhase)",
+    "8. Present first phase to user with steps and any entry actions",
+    "9. If phase has checkpoints, prepare to present when reached"
+  ]
+}
+```
+
+Flow steps can include:
+- Numbered steps for ordering
+- Conditional logic: `"If workflow not specified..."`
+- Tool calls: `"Call get_workflow to load..."`
+- Skill references: `"per state-management skill"`
+- Sub-steps with indentation
+
+### Context to Preserve
+
+Defines what context should be maintained across the activity:
+
+```json
+{
+  "context_to_preserve": [
+    "workflowId - The selected workflow identifier",
+    "currentPhase - Currently active phase index (1-based integer)",
+    "rules - Workflow rules to follow throughout",
+    "variables - Workflow variables with defaults",
+    "guides - Available guide indices for reference"
+  ]
+}
+```
+
+Each entry describes a context item and its purpose.
+
+### Outcome
+
+Defines what success looks like for this activity:
+
+```json
+{
+  "outcome": [
+    "Workflow is selected and loaded",
+    "Initial state is created with correct initial phase",
+    "First phase is entered",
+    "Agent is ready to guide user through workflow"
+  ]
+}
+```
+
+### Complete Example
+
+A complete activity definition:
+
+```json
+{
+  "id": "resume-workflow",
+  "version": "2.1.0",
+  "problem": "The user wants to continue a workflow that was previously started.",
+  "recognition": [
+    "Resume workflow",
+    "Continue workflow",
+    "Restart workflow",
+    "Pick up where I left off",
+    "Continue the work-package",
+    "Where were we?"
+  ],
+  "skills": {
+    "primary": "workflow-execution",
+    "supporting": ["activity-resolution", "state-management"]
+  },
+  "outcome": [
+    "Previous state is restored or reconstructed",
+    "Current phase is identified",
+    "Remaining work is presented",
+    "Agent is ready to continue guiding user"
+  ],
+  "flow": [
+    "1. Ask user to identify the workflow being resumed",
+    "2. Call get_workflow to load workflow definition",
+    "3. Call list_guides to discover available guidance",
+    "4. Reconstruct state by asking user (use numeric indices per state-management skill):",
+    "   - Which phase were you on? (e.g., phase 3)",
+    "   - What phases have been completed? (e.g., [1, 2])",
+    "   - Any key decisions already made?",
+    "5. Build state object per state-management skill",
+    "6. Call get_phase for current phase index",
+    "7. Call get_guide for phase-specific guide if available",
+    "8. Present current phase status:",
+    "   - Completed steps (by index within phase)",
+    "   - Remaining steps",
+    "   - Upcoming checkpoints",
+    "9. Resume execution from current position"
+  ],
+  "context_to_preserve": [
+    "workflowId - The workflow being resumed",
+    "currentPhase - Phase index to resume from (1-based integer)",
+    "completedPhases - Array of completed phase indices",
+    "checkpointResponses - Previous user decisions (keyed by 'phase-checkpoint')",
+    "variables - Current variable values",
+    "guides - Available guide indices for reference"
+  ]
+}
+```
+
+---
+
+## Skill Schema
+
+The skill schema (`skill.schema.json`) defines agent capabilities for workflow execution. Skills describe tool orchestration patterns, execution guidance, and error handling strategies.
+
+### Top-Level Structure
+
+```json
+{
+  "id": "workflow-execution",
+  "version": "2.0.0",
+  "capability": "Execute workflows from start to completion with consistent tool usage",
+  "execution_pattern": {},
+  "tools": {},
+  "state": {},
+  "errors": {}
+}
+```
+
+### Required Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | string | Unique skill identifier |
+| `version` | string | Semantic version (e.g., `2.0.0`) |
+| `capability` | string | What this skill enables agents to do |
+
+### Optional Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `description` | string | Detailed skill description |
+| `architecture` | object | Architectural principles and layers |
+| `execution_pattern` | object | Tool call sequences for different stages |
+| `tools` | object | Tool definitions and usage patterns |
+| `flow` | string[] | Ordered execution steps |
+| `matching` | object | Goal-to-activity matching strategies |
+| `state` | object | State structure and update patterns |
+| `interpretation` | object | How to interpret workflow constructs |
+| `errors` | object | Error definitions and recovery strategies |
+
+### Execution Pattern
+
+Defines the sequence of tool calls for different execution stages:
+
+```json
+{
+  "execution_pattern": {
+    "start": ["list_workflows", "get_workflow", "list_guides"],
+    "per_phase": ["get_phase", "get_checkpoint", "get_guide"],
+    "transitions": ["validate_transition"],
+    "artifacts": ["list_templates", "get_template"]
+  }
+}
+```
+
+| Field | Purpose |
+|-------|---------|
+| `start` | Tools to call at workflow start |
+| `bootstrap` | Initial bootstrap tools |
+| `per_phase` | Tools to call for each phase |
+| `skill_loading` | Tools for loading skills |
+| `discovery` | Tools for resource discovery |
+| `transitions` | Tools for phase transitions |
+| `artifacts` | Tools for artifact management |
+
+### Tool Definitions
+
+Describe how and when to use each tool:
+
+```json
+{
+  "tools": {
+    "get_workflow": {
+      "when": "Loading workflow for execution",
+      "params": "workflow_id",
+      "returns": "Complete workflow definition",
+      "preserve": ["id", "initialPhase", "variables", "rules", "phases"]
+    },
+    "get_phase": {
+      "when": "Entering a new phase",
+      "params": "workflow_id, phase_id",
+      "returns": "Phase details with steps, checkpoints, decisions",
+      "preserve": ["steps", "checkpoints", "decisions", "transitions"]
+    }
+  }
+}
+```
+
+| Field | Purpose |
+|-------|---------|
+| `when` | Conditions or triggers for using this tool |
+| `params` | Parameters the tool accepts |
+| `returns` | What the tool returns |
+| `next` | Suggested next tool to call |
+| `action` | Action to take with the result |
+| `usage` | How to use the tool effectively |
+| `preserve` | Fields to preserve from the result |
+
+### Architecture
+
+For skills that define architectural patterns:
+
+```json
+{
+  "architecture": {
+    "principle": "Goals resolve to activities; activities resolve to skills",
+    "layers": [
+      "User Goal (problem domain) → Activity",
+      "Activity → Skill(s) (solution domain)",
+      "Skill → Tools (execution domain)"
+    ],
+    "gap_detection": "If a goal matches a skill but no activity exists, create one"
+  }
+}
+```
+
+### Matching
+
+For skills that involve goal resolution:
+
+```json
+{
+  "matching": {
+    "quick_match": "Use exact or fuzzy match against quick_match keys",
+    "fallback": "If no quick_match, compare user goal to activity.problem",
+    "ambiguous": "If multiple activities match, ask user to clarify",
+    "never": "NEVER skip activity matching to use a skill directly"
+  }
+}
+```
+
+### Error Definitions
+
+Define error conditions and recovery strategies:
+
+```json
+{
+  "errors": {
+    "workflow_not_found": {
+      "cause": "Invalid workflow_id parameter",
+      "recovery": "Call list_workflows to discover valid IDs"
+    },
+    "no_matching_activity": {
+      "cause": "User goal doesn't match any existing activity",
+      "detection": "Goal could be served by existing skill but no activity maps to it",
+      "resolution": [
+        "1. Identify which skill(s) would serve this goal",
+        "2. Create a new activity that maps goal to skill",
+        "3. Add activity to prompts/intents/ with recognition patterns"
+      ],
+      "note": "This is a design gap, not a user error"
+    }
+  }
+}
+```
+
+### Complete Example
+
+A minimal skill demonstrating key concepts:
+
+```json
+{
+  "id": "example-skill",
+  "version": "1.0.0",
+  "capability": "Demonstrate skill schema structure",
+  "description": "A minimal skill showing required and optional fields",
+  "execution_pattern": {
+    "start": ["discover_resources"],
+    "per_task": ["execute_task", "validate_result"]
+  },
+  "tools": {
+    "discover_resources": {
+      "when": "Beginning a new task",
+      "params": "none",
+      "returns": "List of available resources"
+    },
+    "execute_task": {
+      "when": "Ready to perform work",
+      "params": "task_id, options",
+      "returns": "Execution result",
+      "next": "validate_result"
+    },
+    "validate_result": {
+      "when": "After task execution",
+      "params": "result",
+      "returns": "Validation status"
+    }
+  },
+  "flow": [
+    "1. Call discover_resources to understand context",
+    "2. Match task to available resources",
+    "3. Call execute_task with appropriate parameters",
+    "4. Call validate_result to confirm success"
+  ],
+  "errors": {
+    "resource_not_found": {
+      "cause": "Requested resource does not exist",
+      "recovery": "Call discover_resources to see available options"
+    }
+  }
+}
+```
 
 ---
 

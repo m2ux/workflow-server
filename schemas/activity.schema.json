@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "activity",
+  "description": "Activity definition schema for workflow-server",
+  "$ref": "#/definitions/activity",
+  "definitions": {
+    "skills": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string",
+          "description": "Primary skill ID for this activity"
+        },
+        "supporting": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Supporting skill IDs"
+        }
+      },
+      "required": ["primary"],
+      "additionalProperties": false
+    },
+    "activity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the activity"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version of the activity"
+        },
+        "problem": {
+          "type": "string",
+          "description": "Description of the user problem this activity addresses"
+        },
+        "recognition": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Patterns to match user intent to this activity"
+        },
+        "skills": {
+          "$ref": "#/definitions/skills"
+        },
+        "outcome": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Expected outcomes when activity completes successfully"
+        },
+        "flow": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Ordered execution steps for this activity"
+        },
+        "context_to_preserve": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Context items to preserve across the activity"
+        },
+        "usage": {
+          "type": "string",
+          "description": "How to use this activity"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional notes or caveats"
+        }
+      },
+      "required": ["id", "version", "problem", "recognition", "skills", "outcome", "flow"],
+      "additionalProperties": true
+    }
+  }
+}
