@@ -1,5 +1,5 @@
 id: workflow-execution
-version: 2.1.0
+version: 2.2.0
 capability: Execute workflows from start to completion with consistent tool usage
 execution_pattern:
   start[3]:
@@ -70,21 +70,47 @@ tools:
     returns: Template content with placeholders
     usage: Fill template placeholders with context-specific values
 state:
-  guide: meta/guides/00-state-management.toon
   format: Numeric indices (1-based) for phases and steps
-  track[6]:
-    - workflowId
-    - currentPhase (integer)
-    - currentStep (integer)
-    - completedPhases (integer[])
-    - variables
-    - checkpointResponses
-  initialize: "On get_workflow, set currentPhase to 1, status to 'running'"
+  structure:
+    workflowId: string
+    workflowVersion: string
+    stateVersion: integer
+    startedAt: datetime
+    updatedAt: datetime
+    completedAt: datetime (when finished)
+    currentPhase: integer (1-based)
+    currentStep: integer (1-based within phase)
+    completedPhases: integer[]
+    skippedPhases: integer[]
+    completedSteps: "Record<phaseIndex, stepIndex[]>"
+    checkpointResponses: "Record<'phase-checkpoint', Response>"
+    decisionOutcomes: "Record<'phase-decision', Outcome>"
+    activeLoops: LoopState[]
+    variables: "Record<string, any>"
+    history: HistoryEntry[]
+    status: "enum: running, paused, completed, aborted, error"
+  initialize: "On get_workflow, set currentPhase: 1, currentStep: 1, status: 'running'"
   update_on:
-    phase_transition: "Add previous phase index to completedPhases; update currentPhase to new index"
+    phase_transition: "Add previous phase index to completedPhases; set currentPhase to new index; reset currentStep to 1"
     step_completion: "Add step index to completedSteps[currentPhase]; increment currentStep"
-    checkpoint_response: "Record response keyed by 'phase-checkpoint'; apply effects"
+    checkpoint_response: "Record response keyed by 'phase-checkpoint' (e.g., '2-1'); apply effects"
+    decision_outcome: "Record outcome keyed by 'phase-decision'; apply transitionTo"
     variable_change: Update variables object
+  checkpoint_response_format:
+    key: "'phase-checkpoint' (e.g., '1-2' for phase 1, checkpoint 2)"
+    value:
+      optionId: string
+      respondedAt: datetime
+      effects:
+        variablesSet: "Record<string, any>"
+        transitionedTo: integer (phase index)
+        phasesSkipped: integer[]
+  decision_outcome_format:
+    key: "'phase-decision' (e.g., '3-1' for phase 3, decision 1)"
+    value:
+      branchId: string
+      decidedAt: datetime
+      transitionedTo: integer (phase index)
 interpretation:
   transitions: Evaluate conditions against state.variables; take matching transition or default
   checkpoints: Present message and options to user; apply effect from selected option

@@ -1,5 +1,5 @@
 id: start-workflow
-version: 2.2.0
+version: 2.3.0
 problem: The user wants to begin executing a new workflow from the beginning.
 recognition[6]:
   - Start a workflow
@@ -15,8 +15,6 @@ skills:
 mandatory_guide:
   workflow_id: work-package
   index: "00"
-related_guides[1]:
-  - meta/guides/00-state-management.toon
 outcome[4]:
   - Workflow is selected and loaded
   - Initial state is created with correct initial phase
@@ -25,8 +23,7 @@ outcome[4]:
 flow[9]:
   - "1. If workflow not specified, call list_workflows to show options"
   - 2. Call get_workflow to load the selected workflow
-  - "3. Initialize state (see state-management guide for full schema):"
-  - "   { workflowId, workflowVersion, currentPhase: 1, completedPhases: [], variables: defaults, status: 'running' }"
+  - "3. Initialize state using the state_schema below"
   - 4. Read and apply workflow rules
   - 5. Call list_guides to discover available guidance
   - "6. Call get_guide for index 00 (start-here guide) if available"
@@ -39,6 +36,34 @@ context_to_preserve[5]:
   - rules - Workflow rules to follow throughout
   - variables - Workflow variables with defaults
   - guides - Available guide indices for reference
-state_notes: |
-  State uses numeric indices (1-based) for phases and steps.
-  See meta/guides/00-state-management.toon for complete state schema.
+state_schema:
+  description: |
+    State uses numeric indices (1-based) for phases and steps.
+    Initialize state when starting a workflow.
+  initial_state:
+    workflowId: workflow.id
+    workflowVersion: workflow.version
+    stateVersion: 1
+    startedAt: now()
+    updatedAt: now()
+    currentPhase: 1
+    currentStep: 1
+    completedPhases: []
+    skippedPhases: []
+    completedSteps: {}
+    checkpointResponses: {}
+    decisionOutcomes: {}
+    activeLoops: []
+    variables: workflow.variables.defaults
+    history:
+      - timestamp: now()
+        type: workflow_started
+        phase: 1
+    status: running
+  key_fields:
+    currentPhase: "integer (1-based index)"
+    currentStep: "integer (1-based index within current phase)"
+    completedPhases: "integer[] (array of completed phase indices)"
+    completedSteps: "Record<phaseIndex, stepIndex[]> (e.g., {'1': [1, 2]})"
+    checkpointResponses: "Record<'phase-checkpoint', Response> (e.g., {'1-1': {...}})"
+    status: "enum: running, paused, completed, aborted, error"
