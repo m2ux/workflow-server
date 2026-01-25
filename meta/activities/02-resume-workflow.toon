@@ -1,5 +1,5 @@
 id: resume-workflow
-version: 2.3.0
+version: 2.4.0
 problem: The user wants to continue a workflow that was previously started.
 recognition[6]:
   - Resume workflow
@@ -10,8 +10,9 @@ recognition[6]:
   - Where were we?
 skills:
   primary: workflow-execution
-  supporting[1]:
+  supporting[2]:
     - activity-resolution
+    - state-management
 mandatory_guide:
   workflow_id: work-package
   index: "18"
@@ -24,11 +25,11 @@ flow[14]:
   - 1. Ask user to identify the workflow being resumed
   - 2. Call get_workflow to load workflow definition
   - 3. Call list_guides to discover available guidance
-  - "4. Reconstruct state by asking user (use numeric indices):"
+  - "4. Reconstruct state by asking user (use numeric indices per state-management skill):"
   - "   - Which phase were you on? (e.g., phase 3)"
   - "   - What phases have been completed? (e.g., [1, 2])"
   - "   - Any key decisions already made?"
-  - 5. Build state object using state_schema below
+  - 5. Build state object per state-management skill
   - 6. Call get_phase for current phase index
   - "7. Call get_guide for phase-specific guide if available"
   - "8. Present current phase status:"
@@ -43,31 +44,3 @@ context_to_preserve[6]:
   - checkpointResponses - Previous user decisions (keyed by "phase-checkpoint")
   - variables - Current variable values
   - guides - Available guide indices for reference
-state_schema:
-  description: |
-    State uses numeric indices (1-based) for phases and steps.
-    When reconstructing state, convert user descriptions to numeric indices.
-  reconstructed_state:
-    workflowId: workflow.id
-    workflowVersion: workflow.version
-    stateVersion: 1
-    startedAt: "original start time or now()"
-    updatedAt: now()
-    currentPhase: "integer from user (e.g., 3)"
-    currentStep: "integer from user or 1"
-    completedPhases: "integer[] from user (e.g., [1, 2])"
-    skippedPhases: "integer[] if any phases were skipped"
-    completedSteps: "Record<phaseIndex, stepIndex[]>"
-    checkpointResponses: "Record<'phase-checkpoint', Response>"
-    decisionOutcomes: "Record<'phase-decision', Outcome>"
-    activeLoops: []
-    variables: "reconstructed from user input"
-    history: "reconstructed or start fresh"
-    status: running
-  key_fields:
-    currentPhase: "integer (1-based index)"
-    currentStep: "integer (1-based index within current phase)"
-    completedPhases: "integer[] (array of completed phase indices)"
-    completedSteps: "Record<phaseIndex, stepIndex[]> (e.g., {'1': [1, 2]})"
-    checkpointResponses: "Record<'phase-checkpoint', Response> (e.g., {'1-1': {...}})"
-    status: "enum: running, paused, completed, aborted, error"

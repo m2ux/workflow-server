@@ -1,0 +1,164 @@
+id: state-management
+version: 1.0.0
+capability: Manage workflow execution state using numeric indices
+description: |
+  Provides the state schema and patterns for tracking workflow execution progress.
+  State uses 1-based numeric indices for phases and steps rather than string prefixes.
+
+state_structure:
+  workflowId: string
+  workflowVersion: string
+  stateVersion: integer (incremented on each change)
+  startedAt: datetime
+  updatedAt: datetime
+  completedAt: datetime (when finished)
+  currentPhase: integer (1-based)
+  currentStep: integer (1-based within phase)
+  completedPhases: integer[]
+  skippedPhases: integer[]
+  completedSteps: "Record<phaseIndex, stepIndex[]>"
+  checkpointResponses: "Record<'phase-checkpoint', Response>"
+  decisionOutcomes: "Record<'phase-decision', Outcome>"
+  activeLoops: LoopState[]
+  variables: "Record<string, any>"
+  history: HistoryEntry[]
+  status: "enum: running, paused, completed, aborted, error"
+
+numeric_format:
+  description: State uses 1-based numeric indices instead of string prefixes
+  examples:
+    currentPhase: "2 (not 'phase-2')"
+    currentStep: "1 (not 'step-2-1')"
+    completedPhases: "[1, 2] (not ['phase-1', 'phase-2'])"
+    completedSteps: "{'1': [1, 2]} (not {'phase-1': ['step-1-1', 'step-1-2']})"
+
+initialization:
+  trigger: On workflow start (get_workflow)
+  state:
+    workflowId: workflow.id
+    workflowVersion: workflow.version
+    stateVersion: 1
+    startedAt: now()
+    updatedAt: now()
+    currentPhase: 1
+    currentStep: 1
+    completedPhases: []
+    skippedPhases: []
+    completedSteps: {}
+    checkpointResponses: {}
+    decisionOutcomes: {}
+    activeLoops: []
+    variables: workflow.variables.defaults
+    history:
+      - timestamp: now()
+        type: workflow_started
+        phase: 1
+    status: running
+
+update_patterns:
+  phase_transition:
+    trigger: Moving to a new phase
+    actions:
+      - Add previous phase index to completedPhases
+      - Set currentPhase to new phase index
+      - Reset currentStep to 1
+      - Add history entry with type phase_entered
+  step_completion:
+    trigger: Completing a step
+    actions:
+      - Add step index to completedSteps[currentPhase]
+      - Increment currentStep
+      - Add history entry with type step_completed
+  checkpoint_response:
+    trigger: User responds to checkpoint
+    actions:
+      - Record in checkpointResponses with key "phase-checkpoint"
+      - Apply effects (setVariable, transitionTo, skipPhases)
+      - Add history entry with type checkpoint_response
+  decision_outcome:
+    trigger: Decision branch is taken
+    actions:
+      - Record in decisionOutcomes with key "phase-decision"
+      - Store branchId and transitionedTo
+      - Add history entry with type decision_branch_taken
+  workflow_completion:
+    trigger: Workflow finishes
+    actions:
+      - Set completedAt to now()
+      - Set status to completed
+      - Add history entry with type workflow_completed
+
+checkpoint_response_format:
+  key: "'phase-checkpoint' (e.g., '1-2' for phase 1, checkpoint 2)"
+  value:
+    optionId: string
+    respondedAt: datetime
+    effects:
+      variablesSet: "Record<string, any>"
+      transitionedTo: integer (phase index)
+      phasesSkipped: integer[]
+  note: checkpointId is implicit in the key, not stored redundantly
+
+decision_outcome_format:
+  key: "'phase-decision' (e.g., '3-1' for phase 3, decision 1)"
+  value:
+    branchId: string
+    decidedAt: datetime
+    transitionedTo: integer (phase index)
+  note: decisionId is implicit in the key, not stored redundantly
+
+history_event_types:
+  workflow:
+    - workflow_started
+    - workflow_completed
+    - workflow_aborted
+  phase:
+    - phase_entered
+    - phase_exited
+    - phase_skipped
+  step:
+    - step_started
+    - step_completed
+  checkpoint:
+    - checkpoint_reached
+    - checkpoint_response
+  decision:
+    - decision_reached
+    - decision_branch_taken
+  loop:
+    - loop_started
+    - loop_iteration
+    - loop_completed
+    - loop_break
+  other:
+    - variable_set
+    - error
+
+history_entry_format:
+  timestamp: datetime
+  type: "one of history_event_types"
+  phase: integer (phase index)
+  step: integer (step index, optional)
+  checkpoint: integer (checkpoint index, optional)
+  decision: integer (decision index, optional)
+  loop: integer (loop index, optional)
+  data: "Record<string, any> (optional additional data)"
+  error: "{ message: string, code?: string } (for error events)"
+
+status_values:
+  running: Workflow actively executing
+  paused: Awaiting user input (checkpoint)
+  completed: Workflow finished successfully
+  aborted: Workflow was cancelled
+  error: Workflow encountered an error
+
+resumption:
+  description: To resume a workflow from persisted state
+  steps:
+    - Load the state object
+    - Verify workflowId and workflowVersion match available workflow
+    - Set status to running if it was paused
+    - Load the phase at currentPhase index
+    - Continue from currentStep within that phase
+    - Present any pending checkpoints
+  note: The history array provides context for what was previously completed

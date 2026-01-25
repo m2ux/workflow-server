@@ -1,5 +1,5 @@
 id: end-workflow
-version: 2.3.0
+version: 2.4.0
 problem: The user wants to complete and finalize a workflow execution.
 recognition[6]:
   - End workflow
@@ -10,8 +10,9 @@ recognition[6]:
   - Mark workflow as complete
 skills:
   primary: workflow-execution
-  supporting[1]:
+  supporting[2]:
     - activity-resolution
+    - state-management
 mandatory_guide:
   workflow_id: work-package
   index: "19"
@@ -26,7 +27,7 @@ flow[10]:
   - 3. Execute any exit actions for final phase
   - "4. Check list_templates for completion artifacts"
   - "5. If templates exist, call get_template to generate final documents"
-  - 6. Update state to completed using state_schema below
+  - 6. Update state to completed per state-management skill
   - "7. Present completion summary:"
   - "   - Phases completed (by index)"
   - "   - Key decisions made (from checkpointResponses)"
@@ -37,31 +38,3 @@ context_to_preserve[4]:
   - completedPhases - Full list of completed phase indices
   - checkpointResponses - All user decisions for record
   - artifacts - Documents created during workflow
-state_schema:
-  description: |
-    State uses numeric indices (1-based) for phases and steps.
-    Finalize state when completing a workflow.
-  final_state_updates:
-    completedAt: now()
-    status: completed
-    history_entry:
-      timestamp: now()
-      type: workflow_completed
-      phase: currentPhase
-  key_fields:
-    currentPhase: "integer (1-based index)"
-    completedPhases: "integer[] (all phase indices that were completed)"
-    completedSteps: "Record<phaseIndex, stepIndex[]>"
-    checkpointResponses: "Record<'phase-checkpoint', Response>"
-    status: "set to 'completed' on successful finish"
-    completedAt: "datetime when workflow finished"
-  history_event_types:
-    - workflow_started
-    - workflow_completed
-    - workflow_aborted
-    - phase_entered
-    - phase_exited
-    - step_completed
-    - checkpoint_response
-    - decision_branch_taken
-    - error
