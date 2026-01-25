@@ -214,10 +214,10 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
   
   const index: ActivityIndex = {
     description: 'Match user goal to an activity. Activities use skills to achieve outcomes.',
-    usage: 'Call the tool in next_action first (get_rules), then proceed to the matched activity. If mandatory_guide is present, read the guide content before calling the skill.',
+    usage: 'Match user goal to an activity using quick_match, then call get_skill for the primary skill (workflow-execution) which includes agent rules.',
     next_action: {
-      tool: 'get_rules',
-      parameters: {},
+      tool: 'get_skill',
+      parameters: { skill_id: 'workflow-execution' },
     },
     activities,
     quick_match,

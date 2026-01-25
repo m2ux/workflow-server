@@ -9,7 +9,6 @@ import { listGuides, readGuideRaw, listWorkflowsWithGuides } from '../loaders/gu
 import { listTemplates, readTemplate } from '../loaders/template-loader.js';
 import { listActivities, readActivity, readActivityIndex } from '../loaders/activity-loader.js';
 import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
-import { readRules } from '../loaders/rules-loader.js';
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   
@@ -36,19 +35,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     { activity_id: z.string().describe('Activity ID (e.g., start-workflow, resume-workflow)') },
     withAuditLog('get_activity', async ({ activity_id }) => {
       const result = await readActivity(config.workflowDir, activity_id);
-      if (!result.success) throw result.error;
-      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
-    })
-  );
-
-  // ============== Rules Tools ==============
-
-  server.tool(
-    'get_rules',
-    'Get global agent rules - behavioral guidelines that apply to all workflow executions. Call this after get_activities and before executing any workflow.',
-    {},
-    withAuditLog('get_rules', async () => {
-      const result = await readRules(config.workflowDir);
       if (!result.success) throw result.error;
       return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
     })

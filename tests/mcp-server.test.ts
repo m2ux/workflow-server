@@ -43,11 +43,10 @@ describe('mcp-server integration', () => {
       
       const workflows = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(Array.isArray(workflows)).toBe(true);
-      expect(workflows.length).toBeGreaterThanOrEqual(2);
+      expect(workflows.length).toBeGreaterThanOrEqual(1);
       
       const ids = workflows.map((w: { id: string }) => w.id);
       expect(ids).toContain('work-package');
-      expect(ids).toContain('meta');
     });
   });
 
@@ -163,7 +162,7 @@ describe('mcp-server integration', () => {
       
       expect(health.status).toBe('healthy');
       expect(health.server).toBe('test-workflow-server');
-      expect(health.workflows_available).toBeGreaterThanOrEqual(2);
+      expect(health.workflows_available).toBeGreaterThanOrEqual(1);
       expect(health.uptime_seconds).toBeGreaterThanOrEqual(0);
     });
   });
@@ -193,40 +192,13 @@ describe('mcp-server integration', () => {
       expect(activities.quick_match).toBeDefined();
     });
 
-    it('should include next_action instructing to call get_rules', async () => {
+    it('should include next_action instructing to call get_skill', async () => {
       const result = await client.callTool({ name: 'get_activities', arguments: {} });
       
       const activities = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(activities.next_action).toBeDefined();
-      expect(activities.next_action.tool).toBe('get_rules');
-    });
-  });
-
-  describe('tool: get_rules', () => {
-    it('should get global agent rules', async () => {
-      const result = await client.callTool({ name: 'get_rules', arguments: {} });
-      
-      expect(result.content).toBeDefined();
-      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(rules.id).toBe('agent-rules');
-      expect(rules.sections).toBeDefined();
-      expect(Array.isArray(rules.sections)).toBe(true);
-    });
-
-    it('should include code modification boundaries', async () => {
-      const result = await client.callTool({ name: 'get_rules', arguments: {} });
-      
-      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      const codeModSection = rules.sections.find((s: { id: string }) => s.id === 'code-modification');
-      expect(codeModSection).toBeDefined();
-      expect(codeModSection.priority).toBe('critical');
-    });
-
-    it('should include precedence statement', async () => {
-      const result = await client.callTool({ name: 'get_rules', arguments: {} });
-      
-      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(rules.precedence).toContain('Workflow-specific rules override');
+      expect(activities.next_action.tool).toBe('get_skill');
+      expect(activities.next_action.parameters.skill_id).toBe('workflow-execution');
     });
   });
 

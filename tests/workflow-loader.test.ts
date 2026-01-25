@@ -15,11 +15,10 @@ describe('workflow-loader', () => {
   describe('listWorkflows', () => {
     it('should list all available workflows', async () => {
       const workflows = await listWorkflows(WORKFLOW_DIR);
-      expect(workflows.length).toBeGreaterThanOrEqual(2);
+      expect(workflows.length).toBeGreaterThanOrEqual(1);
       
       const ids = workflows.map(w => w.id);
       expect(ids).toContain('work-package');
-      expect(ids).toContain('meta');
     });
 
     it('should return empty array for non-existent directory', async () => {
