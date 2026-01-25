@@ -1,5 +1,5 @@
 id: start-workflow
-version: 2.4.0
+version: 2.1.0
 problem: The user wants to begin executing a new workflow from the beginning.
 recognition[6]:
   - Start a workflow
