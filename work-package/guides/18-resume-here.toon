@@ -1,73 +1,28 @@
 id: resume-here
-version: 1.1.0
+version: 1.2.0
 title: Resume Workflow Guide
-purpose: Guide for resuming a previously started work-package workflow
+purpose: Reference material for resuming a previously started work-package workflow
 
 minimumRequirement: "An existing feature branch."
 
-sections[10]:
+sections[7]:
   - id: overview
     title: Overview
     content: """
-      This guide helps you resume a work-package workflow that was previously started. Resuming requires reconstructing the workflow state to understand where you left off and what remains to be done.
+      This guide provides reference material for resuming a work-package workflow.
+      The procedural steps are defined in the resume-workflow activity.
 
       > **Key Insight:** A successful resumption requires understanding both the workflow progress AND the context of previous decisions.
     """
 
   - id: gather-context
-    title: "Phase 1: Gather Context"
+    title: Gather Context
     required[1]:
       - Branch name (the feature branch to resume work on)
     optional[3]:
       - PR number (if a PR already exists)
       - Planning folder (path to existing planning documents)
       - Issue reference (GitHub issue # or Jira ticket)
-
-  - id: resumption-phases
-    title: Resumption Phases
-    intro: "Follow these 5 phases to properly resume a workflow:"
-    phases[5]:
-      - id: phase-1-identify
-        name: "Phase 1: Identify Workflow"
-        steps[3]:
-          - Confirm which workflow is being resumed (e.g., work-package)
-          - Locate the planning folder (.engineering/artifacts/planning/YYYY-MM-DD-*)
-          - Read START-HERE.md for current status
-        checkpoint: "🛑 CHECKPOINT: 'Is this the correct workflow to resume?'"
-
-      - id: phase-2-reconstruct
-        name: "Phase 2: Reconstruct State"
-        steps[4]:
-          - Review planning documents to understand progress
-          - Identify completed phases from START-HERE.md progress table
-          - Note any checkpoint responses or decisions made
-          - Check git branch and PR status
-        checkpoint: "🛑 CHECKPOINT: 'Have I correctly identified where we left off?'"
-
-      - id: phase-3-context
-        name: "Phase 3: Restore Context"
-        steps[4]:
-          - Read the work package plan (03-work-package-plan.md)
-          - Review any implementation analysis or research documents
-          - Check completed TODOs and remaining tasks
-          - Note any assumptions or decisions documented
-        checkpoint: "🛑 CHECKPOINT: 'Do I have sufficient context to continue?'"
-
-      - id: phase-4-validate
-        name: "Phase 4: Validate Current State"
-        steps[4]:
-          - Verify feature branch exists and is current
-          - Check for any uncommitted changes
-          - Ensure PR is still open and in expected state
-          - Run tests to verify codebase is in working state
-        checkpoint: "🛑 CHECKPOINT: 'Is the codebase ready to continue?'"
-
-      - id: phase-5-resume
-        name: "Phase 5: Resume Execution"
-        steps[3]:
-          - Present summary of progress and remaining work
-          - Confirm next step with user
-          - Continue from identified phase using workflow-execution skill
 
   - id: assess-state
     title: Assess Current State
@@ -129,18 +84,6 @@ sections[10]:
               └─ Yes → Continue to validation phases
     """
 
-  - id: state-reconstruction
-    title: State Reconstruction Checklist
-    items[8]:
-      - workflowId - Which workflow (e.g., work-package)
-      - currentPhase - Which phase to resume from
-      - completedPhases - List of completed phases
-      - variables - Any workflow variables set (issue_number, pr_number, etc.)
-      - checkpointResponses - Previous user decisions
-      - planningFolder - Path to planning artifacts
-      - branch - Current git branch name
-      - prNumber - Pull request number if created
-
   - id: special-cases
     title: Special Cases
     cases[4]:
@@ -193,20 +136,6 @@ sections[10]:
       - id: before-merge
         name: "Resuming Before Merge (Phases 9-11)"
         approach: "Check PR status, verify finalization docs, complete remaining steps"
-
-  - id: resume-checklist
-    title: Resume Checklist
-    items[10]:
-      - Branch name confirmed with user
-      - Branch checked out and synced
-      - Existing commits and changes reviewed
-      - PR status assessed (exists/needs creation)
-      - Planning artifacts assessed
-      - "🛑 State assessment confirmed with user"
-      - "Entry point determined and 🛑 confirmed with user"
-      - Pre-existing work documented in planning
-      - "🛑 Ready to continue confirmed with user"
-      - Handed off to appropriate phase in work-package workflow
 
   - id: rules
     title: Resumption Rules
