@@ -14,6 +14,8 @@ The workflow server uses three interconnected schemas:
 
 ## Schema Relationships
 
+<!-- TODO: Add descriptive context for the diagrams below -->
+
 ```mermaid
 stateDiagram-v2
     direction LR
