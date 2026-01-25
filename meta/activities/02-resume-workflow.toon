@@ -13,9 +13,6 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
-mandatory_guide:
-  workflow_id: work-package
-  index: "18"
 outcome[4]:
   - Previous state is restored or reconstructed
   - Current phase is identified
