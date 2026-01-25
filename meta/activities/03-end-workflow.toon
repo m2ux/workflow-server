@@ -1,5 +1,5 @@
 id: end-workflow
-version: 2.1.0
+version: 2.2.0
 problem: The user wants to complete and finalize a workflow execution.
 recognition[6]:
   - End workflow
@@ -15,24 +15,32 @@ skills:
 mandatory_guide:
   workflow_id: work-package
   index: "19"
+related_guides[1]:
+  - meta/guides/00-state-management.toon
 outcome[4]:
   - Final phase is completed
   - All required checkpoints are resolved
   - Completion summary is presented
   - State is finalized or archived
 flow[10]:
-  - 1. Verify current phase is the final phase
+  - 1. Verify current phase is the final phase (highest index)
   - 2. Ensure all required checkpoints are resolved
   - 3. Execute any exit actions for final phase
   - "4. Check list_templates for completion artifacts"
   - "5. If templates exist, call get_template to generate final documents"
-  - "6. Present completion summary:"
-  - "   - Phases completed"
-  - "   - Key decisions made"
+  - "6. Update state: set status to 'completed', set completedAt timestamp"
+  - "7. Add history entry: { type: 'workflow_completed', phase: currentPhase }"
+  - "8. Present completion summary:"
+  - "   - Phases completed (by index)"
+  - "   - Key decisions made (from checkpointResponses)"
   - "   - Artifacts created"
-  - 7. Archive or clear workflow state
+  - 9. Archive or clear workflow state
 context_to_preserve[4]:
   - workflowId - The completed workflow
-  - completedPhases - Full list of completed phases
+  - completedPhases - Full list of completed phase indices
   - checkpointResponses - All user decisions for record
   - artifacts - Documents created during workflow
+state_notes: |
+  State uses numeric indices (1-based) for phases and steps.
+  See meta/guides/00-state-management.toon for complete state schema.
+  Final state should have status: 'completed' and completedAt set.

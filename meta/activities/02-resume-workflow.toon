@@ -1,5 +1,5 @@
 id: resume-workflow
-version: 2.1.0
+version: 2.2.0
 problem: The user wants to continue a workflow that was previously started.
 recognition[6]:
   - Resume workflow
@@ -15,6 +15,8 @@ skills:
 mandatory_guide:
   workflow_id: work-package
   index: "18"
+related_guides[1]:
+  - meta/guides/00-state-management.toon
 outcome[4]:
   - Previous state is restored or reconstructed
   - Current phase is identified
@@ -24,21 +26,26 @@ flow[14]:
   - 1. Ask user to identify the workflow being resumed
   - 2. Call get_workflow to load workflow definition
   - 3. Call list_guides to discover available guidance
-  - "4. Reconstruct state by asking user:"
-  - "   - Which phase were you on?"
-  - "   - What phases have been completed?"
+  - "4. Reconstruct state by asking user (use numeric indices):"
+  - "   - Which phase were you on? (e.g., phase 3)"
+  - "   - What phases have been completed? (e.g., [1, 2])"
   - "   - Any key decisions already made?"
-  - 5. Call get_phase for current phase
-  - "6. Call get_guide for phase-specific guide if available"
-  - "7. Present current phase status:"
-  - "   - Completed steps (if any)"
+  - 5. Build state object with numeric currentPhase and completedPhases
+  - 6. Call get_phase for current phase index
+  - "7. Call get_guide for phase-specific guide if available"
+  - "8. Present current phase status:"
+  - "   - Completed steps (by index within phase)"
   - "   - Remaining steps"
   - "   - Upcoming checkpoints"
-  - 8. Resume execution from current position
+  - 9. Resume execution from current position
 context_to_preserve[6]:
   - workflowId - The workflow being resumed
-  - currentPhase - Phase to resume from
-  - completedPhases - Phases already completed
-  - checkpointResponses - Previous user decisions
+  - currentPhase - Phase index to resume from (1-based integer)
+  - completedPhases - Array of completed phase indices
+  - checkpointResponses - Previous user decisions (keyed by "phase-checkpoint")
   - variables - Current variable values
   - guides - Available guide indices for reference
+state_notes: |
+  State uses numeric indices (1-based) for phases and steps.
+  See meta/guides/00-state-management.toon for complete state schema.
+  When reconstructing state, convert user descriptions to numeric indices.

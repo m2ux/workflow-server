@@ -1,5 +1,5 @@
 id: start-workflow
-version: 2.1.0
+version: 2.2.0
 problem: The user wants to begin executing a new workflow from the beginning.
 recognition[6]:
   - Start a workflow
@@ -15,6 +15,8 @@ skills:
 mandatory_guide:
   workflow_id: work-package
   index: "00"
+related_guides[1]:
+  - meta/guides/00-state-management.toon
 outcome[4]:
   - Workflow is selected and loaded
   - Initial state is created with correct initial phase
@@ -23,16 +25,20 @@ outcome[4]:
 flow[9]:
   - "1. If workflow not specified, call list_workflows to show options"
   - 2. Call get_workflow to load the selected workflow
-  - "3. Initialize state: { workflowId, currentPhase: initialPhase, completedPhases: [], variables: defaults }"
+  - "3. Initialize state (see state-management guide for full schema):"
+  - "   { workflowId, workflowVersion, currentPhase: 1, completedPhases: [], variables: defaults, status: 'running' }"
   - 4. Read and apply workflow rules
   - 5. Call list_guides to discover available guidance
   - "6. Call get_guide for index 00 (start-here guide) if available"
-  - 7. Call get_phase for initialPhase
+  - 7. Call get_phase for phase index 1 (initialPhase)
   - 8. Present first phase to user with steps and any entry actions
   - "9. If phase has checkpoints, prepare to present when reached"
 context_to_preserve[5]:
   - workflowId - The selected workflow identifier
-  - currentPhase - Currently active phase
+  - currentPhase - Currently active phase index (1-based integer)
   - rules - Workflow rules to follow throughout
   - variables - Workflow variables with defaults
   - guides - Available guide indices for reference
+state_notes: |
+  State uses numeric indices (1-based) for phases and steps.
+  See meta/guides/00-state-management.toon for complete state schema.
