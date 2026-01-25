@@ -142,7 +142,7 @@ describe('activity-loader', () => {
       if (result.success) {
         // Check usage instructions exist
         expect(result.value.usage).toBeDefined();
-        expect(result.value.usage).toContain('get_skill');
+        expect(result.value.usage).toContain('next_action');
         
         // Check each activity has next_action
         for (const activity of result.value.activities) {

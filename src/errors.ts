@@ -42,3 +42,8 @@ export class ActivityNotFoundError extends Error {
   readonly code = 'ACTIVITY_NOT_FOUND';
   constructor(public readonly activityId: string) { super(`Activity not found: ${activityId}`); this.name = 'ActivityNotFoundError'; }
 }
+
+export class RulesNotFoundError extends Error {
+  readonly code = 'RULES_NOT_FOUND';
+  constructor() { super('Global rules not found'); this.name = 'RulesNotFoundError'; }
+}
