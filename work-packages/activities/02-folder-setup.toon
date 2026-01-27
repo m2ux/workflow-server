@@ -20,7 +20,8 @@ steps[4]:
     description: Show user the created folder structure
 checkpoints[1]:
   - id: folder-created
-    prompt: "Planning folder created. Proceed with analysis?"
+    name: Folder Setup Complete
+    message: "Planning folder created. Proceed with analysis?"
     options[2]:
       - id: proceed
         label: Proceed with analysis

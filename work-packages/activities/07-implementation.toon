@@ -29,9 +29,12 @@ steps[6]:
     description: Determine if more work packages remain in priority order
 loops[1]:
   - id: package-iteration
-    description: Repeat for each work package in priority order until all complete
-    condition: remaining_packages.length > 0
-    returnTo: select-package
+    name: Package Iteration
+    type: forEach
+    variable: current_package
+    over: remaining_packages
+    activities[1]:
+      - select-package
 outcome[4]:
   - All planned work packages implemented via work-package workflow
   - Each package has merged PR

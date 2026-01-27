@@ -20,7 +20,8 @@ steps[4]:
     description: Summarize analysis findings for user review
 checkpoints[1]:
   - id: analysis-confirmed
-    prompt: "Analysis complete. Does this context look correct?"
+    name: Analysis Confirmation
+    message: "Analysis complete. Does this context look correct?"
     options[2]:
       - id: proceed
         label: Context is correct, proceed

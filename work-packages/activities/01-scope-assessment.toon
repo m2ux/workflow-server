@@ -22,7 +22,8 @@ steps[3]:
     description: Summarize the identified work packages for user confirmation
 checkpoints[1]:
   - id: scope-confirmed
-    prompt: "I've identified N work packages. Proceed with planning?"
+    name: Scope Confirmation
+    message: "I've identified N work packages. Proceed with planning?"
     options[2]:
       - id: proceed
         label: Proceed with planning
