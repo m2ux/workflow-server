@@ -102,6 +102,8 @@ sections[10]:
     title: GitHub CLI Usage
     priority: medium
     guidance: Prefer REST API for mutating operations to avoid GraphQL errors
+    userApprovalRequired[1]:
+      - ALWAYS ask user before replying to PR comments or review feedback
     mutatingOperations[3]:
       - Update PR description using gh api with PATCH method
       - Update PR title using gh api with PATCH method
