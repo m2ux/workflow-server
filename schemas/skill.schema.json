@@ -87,12 +87,12 @@
           },
           "description": "Initial bootstrap tools"
         },
-        "per_phase": {
+        "per_activity": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Tools to call for each phase"
+          "description": "Tools to call for each activity"
         },
         "skill_loading": {
           "type": "array",
@@ -113,7 +113,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Tools for phase transitions"
+          "description": "Tools for activity transitions"
         },
         "artifacts": {
           "type": "array",

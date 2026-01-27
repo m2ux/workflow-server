@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-// Phase and step indices are 1-based integers
-const PhaseIndex = z.number().int().min(1);
+// Step indices are 1-based integers
 const StepIndex = z.number().int().min(1);
 
 export const HistoryEventTypeSchema = z.enum([
   'workflow_started', 'workflow_completed', 'workflow_aborted',
-  'phase_entered', 'phase_exited', 'phase_skipped',
+  'workflow_triggered', 'workflow_returned', 'workflow_suspended',
+  'activity_entered', 'activity_exited', 'activity_skipped',
   'step_started', 'step_completed',
   'checkpoint_reached', 'checkpoint_response',
   'decision_reached', 'decision_branch_taken',
@@ -18,45 +18,68 @@ export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 export const HistoryEntrySchema = z.object({
   timestamp: z.string().datetime(),
   type: HistoryEventTypeSchema,
-  phase: PhaseIndex.optional(),
+  activity: z.string().optional(),
   step: StepIndex.optional(),
-  checkpoint: z.number().int().min(1).optional(),
-  decision: z.number().int().min(1).optional(),
-  loop: z.number().int().min(1).optional(),
+  checkpoint: z.string().optional(),
+  decision: z.string().optional(),
+  loop: z.string().optional(),
   data: z.record(z.unknown()).optional(),
   error: z.object({ message: z.string(), code: z.string().optional() }).optional(),
 });
 export type HistoryEntry = z.infer<typeof HistoryEntrySchema>;
 
-// Key format: "phaseIndex-checkpointIndex" (e.g., "1-2")
+// Key format: "activityId-checkpointId" (e.g., "review-approve")
 export const CheckpointResponseSchema = z.object({
   optionId: z.string(),
   respondedAt: z.string().datetime(),
   effects: z.object({
     variablesSet: z.record(z.unknown()).optional(),
-    transitionedTo: PhaseIndex.optional(),
-    phasesSkipped: z.array(PhaseIndex).optional(),
+    transitionedTo: z.string().optional(),
+    activitiesSkipped: z.array(z.string()).optional(),
   }).optional(),
 });
 export type CheckpointResponse = z.infer<typeof CheckpointResponseSchema>;
 
-// Key format: "phaseIndex-decisionIndex" (e.g., "7-2")
+// Key format: "activityId-decisionId"
 export const DecisionOutcomeSchema = z.object({
   branchId: z.string(),
   decidedAt: z.string().datetime(),
-  transitionedTo: PhaseIndex,
+  transitionedTo: z.string(),
 });
 export type DecisionOutcome = z.infer<typeof DecisionOutcomeSchema>;
 
 export const LoopStateSchema = z.object({
-  phaseIndex: PhaseIndex,
-  loopIndex: z.number().int().min(1),
+  activityId: z.string(),
+  loopId: z.string(),
   currentIteration: z.number().int().nonnegative(),
   totalItems: z.number().int().nonnegative().optional(),
   currentItem: z.unknown().optional(),
   startedAt: z.string().datetime(),
 });
 export type LoopState = z.infer<typeof LoopStateSchema>;
+
+export const ParentWorkflowRefSchema = z.object({
+  workflowId: z.string(),
+  activityId: z.string(),
+  passedContext: z.record(z.unknown()).optional(),
+  returnTo: z.object({
+    activityId: z.string(),
+    stepIndex: StepIndex.optional(),
+  }).optional(),
+});
+export type ParentWorkflowRef = z.infer<typeof ParentWorkflowRefSchema>;
+
+export const TriggeredWorkflowRefSchema = z.object({
+  workflowId: z.string(),
+  triggeredAt: z.string().datetime(),
+  triggeredFrom: z.object({
+    activityId: z.string(),
+    stepIndex: StepIndex.optional(),
+  }),
+  status: z.enum(['running', 'completed', 'aborted', 'error']),
+  returnedContext: z.record(z.unknown()).optional(),
+});
+export type TriggeredWorkflowRef = z.infer<typeof TriggeredWorkflowRefSchema>;
 
 export const WorkflowStateSchema = z.object({
   workflowId: z.string(),
@@ -65,34 +88,36 @@ export const WorkflowStateSchema = z.object({
   startedAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   completedAt: z.string().datetime().optional(),
-  currentPhase: PhaseIndex,
+  currentActivity: z.string(),
   currentStep: StepIndex.optional(),
-  completedPhases: z.array(PhaseIndex).default([]),
-  skippedPhases: z.array(PhaseIndex).default([]),
+  completedActivities: z.array(z.string()).default([]),
+  skippedActivities: z.array(z.string()).default([]),
   completedSteps: z.record(z.array(StepIndex)).default({}),
   checkpointResponses: z.record(CheckpointResponseSchema).default({}),
   decisionOutcomes: z.record(DecisionOutcomeSchema).default({}),
   activeLoops: z.array(LoopStateSchema).default([]),
   variables: z.record(z.unknown()).default({}),
   history: z.array(HistoryEntrySchema).default([]),
-  status: z.enum(['running', 'paused', 'completed', 'aborted', 'error']).default('running'),
+  status: z.enum(['running', 'paused', 'suspended', 'completed', 'aborted', 'error']).default('running'),
+  parentWorkflow: ParentWorkflowRefSchema.optional(),
+  triggeredWorkflows: z.array(TriggeredWorkflowRefSchema).default([]),
   lastError: z.object({
     message: z.string(),
     code: z.string().optional(),
-    phase: PhaseIndex.optional(),
+    activity: z.string().optional(),
     step: StepIndex.optional(),
     timestamp: z.string().datetime(),
   }).optional(),
 });
 export type WorkflowState = z.infer<typeof WorkflowStateSchema>;
 
-export function createInitialState(workflowId: string, workflowVersion: string, initialPhase: number, initialVariables?: Record<string, unknown>): WorkflowState {
+export function createInitialState(workflowId: string, workflowVersion: string, initialActivity: string, initialVariables?: Record<string, unknown>): WorkflowState {
   const now = new Date().toISOString();
   return {
-    workflowId, workflowVersion, stateVersion: 1, startedAt: now, updatedAt: now, currentPhase: initialPhase,
-    completedPhases: [], skippedPhases: [], completedSteps: {}, checkpointResponses: {}, decisionOutcomes: {},
-    activeLoops: [], variables: initialVariables ?? {},
-    history: [{ timestamp: now, type: 'workflow_started', phase: initialPhase, data: { initialVariables } }],
+    workflowId, workflowVersion, stateVersion: 1, startedAt: now, updatedAt: now, currentActivity: initialActivity,
+    completedActivities: [], skippedActivities: [], completedSteps: {}, checkpointResponses: {}, decisionOutcomes: {},
+    activeLoops: [], variables: initialVariables ?? {}, triggeredWorkflows: [],
+    history: [{ timestamp: now, type: 'workflow_started', activity: initialActivity, data: { initialVariables } }],
     status: 'running',
   };
 }

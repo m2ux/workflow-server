@@ -8,9 +8,9 @@
 |------|------------|-------------|
 | `list_workflows` | - | List all available workflow definitions with metadata |
 | `get_workflow` | `workflow_id` | Get complete workflow definition by ID |
-| `get_phase` | `workflow_id`, `phase_id` | Get details of a specific phase within a workflow |
-| `get_checkpoint` | `workflow_id`, `phase_id`, `checkpoint_id` | Get checkpoint details including options and effects |
-| `validate_transition` | `workflow_id`, `from_phase`, `to_phase` | Validate if a transition between phases is allowed |
+| `get_workflow_activity` | `workflow_id`, `activity_id` | Get details of a specific activity within a workflow |
+| `get_checkpoint` | `workflow_id`, `activity_id`, `checkpoint_id` | Get checkpoint details including options and effects |
+| `validate_transition` | `workflow_id`, `from_activity`, `to_activity` | Validate if a transition between activities is allowed |
 | `health_check` | - | Check server health and available workflows |
 
 ### Activity Tools
@@ -95,16 +95,17 @@ Each skill provides:
 
 - **Execution pattern** - Tool sequence for workflow stages
 - **Tool guidance** - When to use each tool, parameters, what to preserve
-- **State management** - What to track in memory during execution
-- **Interpretation rules** - How to evaluate transitions, checkpoints, decisions
+- **State management** - What to track in memory during execution (activity IDs, step indices)
+- **Interpretation rules** - How to evaluate transitions, checkpoints, decisions, triggers
 - **Error recovery** - Common error scenarios and recovery patterns
 
 #### workflow-execution (universal)
 
 Primary skill for workflow navigation:
 - **Start**: `list_workflows` → `get_workflow` → `list_guides`
-- **Per-phase**: `get_phase` → `get_checkpoint` → `get_guide`
+- **Per-activity**: `get_workflow_activity` → `get_checkpoint` → `get_guide`
 - **Transitions**: `validate_transition`
+- **Triggers**: Suspend parent, execute child workflow, return to parent
 - **Artifacts**: `list_templates` → `get_template`
 
 #### activity-resolution (universal)
@@ -116,7 +117,29 @@ Bootstrap skill for agent initialization:
 
 ## Available Workflows
 
-| Workflow | Phases | Description |
-|----------|--------|-------------|
-| `meta` | 2 | Bootstrap workflow - manages activities and universal skills |
-| `work-package` | 11 | Full work package lifecycle from issue to PR |
+| Workflow | Activities | Description |
+|----------|------------|-------------|
+| `meta` | 3 | Bootstrap workflow - independent activities for workflow lifecycle |
+| `work-package` | 11 | Single work package from issue to merged PR |
+| `work-packages` | 7 | Plan and coordinate multiple related work packages |
+
+### Workflow Types
+
+**Sequential workflows** (e.g., `work-package`, `work-packages`):
+- Activities connected by transitions
+- Require `initialActivity`
+- Follow a defined flow
+
+**Independent activities** (e.g., `meta`):
+- Activities matched via recognition patterns
+- No transitions between activities
+- Each is a self-contained entry point
+
+### Cross-Workflow Triggering
+
+Activities can trigger other workflows using the `triggers` property. When triggered:
+1. Parent workflow state is suspended
+2. Child workflow executes to completion
+3. Parent workflow resumes with returned context
+
+Example: `work-packages` implementation activity triggers `work-package` for each planned package.
