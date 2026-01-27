@@ -1,0 +1,56 @@
+id: plan-prepare
+version: 1.0.0
+name: Plan & Prepare
+description: "Design the approach, create the work package plan, and prepare for implementation."
+problem: User needs to plan the implementation approach
+recognition[3]:
+  - plan implementation
+  - create plan
+  - prepare for implementation
+skills:
+  primary: planning
+  supporting[2]:
+    - design-framework
+    - test-planning
+required: true
+estimatedTime: 20-45m
+steps[6]:
+  - id: apply-design
+    name: Apply design framework
+    description: Use design framework skill to structure the approach
+  - id: create-plan
+    name: Create work package plan
+    description: Document the implementation plan
+  - id: create-test-plan
+    name: Create test plan
+    description: Define test strategy and cases
+  - id: sync-branch
+    name: Sync feature branch with main
+  - id: update-pr
+    name: Update PR description
+    description: Update PR with planning information
+  - id: create-todos
+    name: Create TODO list from plan
+checkpoints[2]:
+  - id: approach-confirmed
+    name: Approach Checkpoint
+    message: Approach confirmed?
+    options[2]{id,label}:
+      confirmed,Approach confirmed
+      revise,Revise approach
+  - id: ready-implement
+    name: Ready to Implement Checkpoint
+    message: Ready to implement?
+    options[2]{id,label}:
+      ready,Ready to implement
+      not-ready,"Not ready, need more preparation"
+transitions[1]{to,isDefault}:
+  implement,true
+outcome[3]:
+  - Implementation plan created
+  - Test plan created
+  - PR updated with plan
+context_to_preserve[3]:
+  - plan - Work package plan document
+  - test_plan - Test plan document
+  - tasks - List of implementation tasks

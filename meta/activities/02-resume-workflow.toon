@@ -1,5 +1,6 @@
 id: resume-workflow
-version: 2.1.0
+version: 3.0.0
+name: Resume Workflow
 problem: The user wants to continue a workflow that was previously started.
 recognition[6]:
   - Resume workflow
@@ -13,31 +14,43 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
+steps[9]:
+  - id: identify-workflow
+    name: Identify workflow
+    description: Ask user to identify the workflow being resumed
+  - id: load-workflow
+    name: Load workflow
+    description: Call get_workflow to load workflow definition
+  - id: discover-guides
+    name: Discover guides
+    description: Call list_guides to discover available guidance
+  - id: reconstruct-state
+    name: Reconstruct state
+    description: "Reconstruct state by asking user: Which activity were you on? What activities have been completed? Any key decisions already made?"
+  - id: build-state
+    name: Build state object
+    description: Build state object per state-management skill using numeric indices
+  - id: get-current-activity
+    name: Get current activity
+    description: Call get_activity for current activity
+  - id: load-activity-guide
+    name: Load activity guide
+    description: Call get_guide for activity-specific guide if available
+  - id: present-status
+    name: Present status
+    description: "Present current activity status: Completed steps, Remaining steps, Upcoming checkpoints"
+  - id: resume-execution
+    name: Resume execution
+    description: Resume execution from current position
 outcome[4]:
   - Previous state is restored or reconstructed
-  - Current phase is identified
+  - Current activity is identified
   - Remaining work is presented
   - Agent is ready to continue guiding user
-flow[15]:
-  - 1. Ask user to identify the workflow being resumed
-  - 2. Call get_workflow to load workflow definition
-  - 3. Call list_guides to discover available guidance
-  - "4. Reconstruct state by asking user (use numeric indices per state-management skill):"
-  - "   - Which phase were you on? (e.g., phase 3)"
-  - "   - What phases have been completed? (e.g., [1, 2])"
-  - "   - Any key decisions already made?"
-  - 5. Build state object per state-management skill
-  - 6. Call get_phase for current phase index
-  - "7. Call get_guide for phase-specific guide if available"
-  - "8. Present current phase status:"
-  - "   - Completed steps (by index within phase)"
-  - "   - Remaining steps"
-  - "   - Upcoming checkpoints"
-  - 9. Resume execution from current position
 context_to_preserve[6]:
   - workflowId - The workflow being resumed
-  - currentPhase - Phase index to resume from (1-based integer)
-  - completedPhases - Array of completed phase indices
-  - checkpointResponses - Previous user decisions (keyed by "phase-checkpoint")
+  - currentActivity - Activity to resume from
+  - completedActivities - Array of completed activity IDs
+  - checkpointResponses - Previous user decisions
   - variables - Current variable values
   - guides - Available guide indices for reference

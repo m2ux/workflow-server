@@ -1,0 +1,43 @@
+id: finalize-roadmap
+version: 1.0.0
+name: Finalize Roadmap
+description: Complete roadmap documentation with timeline, navigation, and success criteria
+problem: Need to finalize planning documentation before implementation begins
+skills:
+  primary: workflow-execution
+steps[5]:
+  - id: update-start-here
+    name: Update START-HERE.md
+    description: Complete START-HERE.md with executive summary, status table, and success criteria
+  - id: update-readme
+    name: Update README.md
+    description: Add navigation links to all planning documents
+  - id: add-timeline
+    name: Add timeline estimates
+    description: Include timeline estimates based on effort and dependencies
+  - id: document-success
+    name: Document overall success criteria
+    description: Define how initiative completion will be measured
+  - id: present-roadmap
+    name: Present final roadmap
+    description: Show completed roadmap to user for final approval
+checkpoints[1]:
+  - id: roadmap-complete
+    prompt: "Roadmap complete. Ready to begin implementation?"
+    options[2]:
+      - id: begin
+        label: Begin implementation
+        transitionTo: implementation
+      - id: refine
+        label: Refine roadmap
+        transitionTo: finalize-roadmap
+transitions[1]:
+  - to: implementation
+    isDefault: true
+outcome[3]:
+  - Complete roadmap documentation
+  - Timeline established
+  - Ready for implementation phase
+context_to_preserve[2]:
+  - roadmap_complete - Boolean indicating roadmap is finalized
+  - timeline_estimate - Overall timeline for initiative

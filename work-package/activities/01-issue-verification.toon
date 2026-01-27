@@ -1,0 +1,93 @@
+id: issue-verification
+version: 1.0.0
+name: Issue Verification & PR Creation
+description: Every work package should be linked to a GitHub or Jira issue. Issues define the problem space and provide traceability from requirements through implementation.
+problem: User needs to verify or create an issue and PR for a work package
+recognition[4]:
+  - start work package
+  - verify issue
+  - create issue
+  - begin implementation
+skills:
+  primary: issue-management
+  supporting[2]:
+    - git-workflow
+    - pr-creation
+required: true
+estimatedTime: 10-20m
+entryActions[1]{action,message}:
+  log,Starting issue verification and PR creation
+steps[1]:
+  - id: check-issue
+    name: Check for Existing Issue
+    description: Verify whether an issue has been specified by user or in context
+checkpoints[3]:
+  - id: issue-verification
+    name: Issue Verification Checkpoint
+    message: I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?
+    options[4]:
+      - id: provide-existing
+        label: Provide existing issue
+        description: Share the issue number or URL (GitHub #N or Jira PROJ-N)
+      - id: create-github
+        label: Create GitHub issue
+        description: Draft one using the GitHub Issue Creation Guide
+        effect:
+          setVariable:
+            issue_platform: github
+      - id: create-jira
+        label: Create Jira issue
+        description: Draft one using the Jira Issue Creation Guide
+        effect:
+          setVariable:
+            issue_platform: jira
+      - id: skip-issue
+        label: Skip issue
+        description: Proceed without (not recommended for non-trivial work)
+  - id: issue-created
+    name: Issue Created Checkpoint
+    message: Issue created. Proceed to create feature branch and initial PR?
+    options[2]{id,label}:
+      proceed,Proceed
+      modify,Modify issue first
+  - id: pr-created
+    name: PR Created Checkpoint
+    message: PR created and linked to issue. Do you need requirements elicitation?
+    options[2]:
+      - id: yes-elicit
+        label: "Yes, elicit requirements"
+        description: Proceed to Requirements Elicitation
+        effect:
+          setVariable:
+            needs_elicitation: true
+      - id: no-skip
+        label: "No, skip elicitation"
+        description: Proceed to Implementation Analysis
+        effect:
+          setVariable:
+            needs_elicitation: false
+transitions[2]:
+  - to: requirements-elicitation
+    condition:
+      type: simple
+      variable: needs_elicitation
+      operator: ==
+      value: true
+  - to: implementation-analysis
+    condition:
+      type: simple
+      variable: needs_elicitation
+      operator: ==
+      value: false
+    isDefault: true
+exitActions[1]{action,message}:
+  log,"Issue verified, PR created"
+outcome[3]:
+  - Issue exists or is created
+  - Feature branch created
+  - Draft PR created and linked
+context_to_preserve[4]:
+  - issue_number - The associated issue number
+  - issue_platform - github or jira
+  - branch_name - Feature branch name
+  - pr_number - Draft PR number

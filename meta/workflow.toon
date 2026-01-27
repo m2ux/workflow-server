@@ -1,0 +1,14 @@
+id: meta
+version: 2.0.0
+title: Meta Workflow
+description: "Bootstrap workflow for the workflow-server. Provides self-contained activities for workflow lifecycle management (start, resume, end). Each activity is an independent entry point matched via recognition patterns."
+author: m2ux
+tags[3]:
+  - meta
+  - bootstrap
+  - workflow-management
+rules[3]:
+  - This workflow is the entrypoint for all workflow operations
+  - Each activity is matched independently via recognition patterns in get_activities
+  - Skills in this workflow are universal and apply to all workflows
+activitiesDir: activities

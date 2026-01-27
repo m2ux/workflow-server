@@ -1,0 +1,43 @@
+id: prioritization
+version: 1.0.0
+name: Prioritization
+description: Prioritize work packages based on dependencies, value, risk, and effort
+problem: Need to determine execution order for work packages
+skills:
+  primary: workflow-execution
+steps[4]:
+  - id: analyze-dependencies
+    name: Analyze dependencies
+    description: Create dependency graph showing what blocks what
+  - id: evaluate-criteria
+    name: Evaluate prioritization criteria
+    description: "Assess each package on: business value, risk, effort"
+  - id: propose-order
+    name: Propose priority order
+    description: Generate recommended execution order based on analysis
+  - id: present-prioritization
+    name: Present prioritization
+    description: Show dependency graph and proposed priority order to user
+checkpoints[1]:
+  - id: priority-confirmed
+    prompt: "Here's the proposed priority order. Adjust as needed?"
+    options[3]:
+      - id: accept
+        label: Accept priority order
+        transitionTo: finalize-roadmap
+      - id: adjust
+        label: Adjust priorities
+        transitionTo: prioritization
+      - id: revisit
+        label: Revisit package plans
+        transitionTo: package-planning
+transitions[1]:
+  - to: finalize-roadmap
+    isDefault: true
+outcome[2]:
+  - Priority order established
+  - User has approved execution sequence
+context_to_preserve[3]:
+  - priority_order - Ordered list of work packages
+  - dependency_graph - Visual or structured dependency representation
+  - prioritization_rationale - Reasoning for the priority order

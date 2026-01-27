@@ -1,0 +1,32 @@
+id: finalize
+version: 1.0.0
+name: Finalize
+description: Finalize documentation after implementation is complete.
+problem: User needs to finalize documentation before PR review
+recognition[3]:
+  - finalize documentation
+  - complete documentation
+  - finalize work package
+skills:
+  primary: documentation
+required: true
+estimatedTime: 15-30m
+steps[4]:
+  - id: update-adr
+    name: Update ADR status to Accepted
+    description: If ADR exists
+  - id: finalize-test-plan
+    name: Finalize test plan with source links
+  - id: create-complete
+    name: Create COMPLETE.md
+    skill: completion
+  - id: ensure-docs
+    name: Ensure inline documentation on public APIs
+transitions[1]{to,isDefault}:
+  update-pr,true
+outcome[2]:
+  - Documentation complete
+  - ADR finalized (if applicable)
+context_to_preserve[2]:
+  - documentation_status - Documentation completion status
+  - adr_status - ADR status (if applicable)

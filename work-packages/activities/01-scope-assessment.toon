@@ -1,0 +1,41 @@
+id: scope-assessment
+version: 1.0.0
+name: Scope Assessment
+description: Confirm multi-work-package initiative and identify work packages to be planned
+problem: User has multiple related work items that need coordination and planning
+recognition[4]:
+  - Multiple features to implement
+  - Roadmap planning
+  - Multi-package initiative
+  - Related work items needing coordination
+skills:
+  primary: workflow-execution
+steps[3]:
+  - id: confirm-multi-package
+    name: Confirm initiative scope
+    description: Verify this is a multi-work-package initiative rather than a single work package
+  - id: identify-packages
+    name: Identify work packages
+    description: List all work packages to be planned in this initiative
+  - id: present-scope
+    name: Present scope summary
+    description: Summarize the identified work packages for user confirmation
+checkpoints[1]:
+  - id: scope-confirmed
+    prompt: "I've identified N work packages. Proceed with planning?"
+    options[2]:
+      - id: proceed
+        label: Proceed with planning
+        transitionTo: folder-setup
+      - id: refine
+        label: Refine scope
+        transitionTo: scope-assessment
+transitions[1]:
+  - to: folder-setup
+    isDefault: true
+outcome[2]:
+  - Work packages identified and confirmed
+  - Initiative scope agreed with user
+context_to_preserve[2]:
+  - work_packages - List of identified work packages
+  - initiative_name - Name of the overall initiative

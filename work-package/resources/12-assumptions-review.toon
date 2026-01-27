@@ -139,7 +139,6 @@ sections[12]:
 
   - id: related-guides
     title: Related Guides
-    guides[3]:
+    guides[2]:
       - workflow://work-package/guides/work-package
       - workflow://work-package/guides/task-completion-review
-      - workflow://work-package/guides/references

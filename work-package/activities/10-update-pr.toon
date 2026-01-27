@@ -1,0 +1,36 @@
+id: update-pr
+version: 1.0.0
+name: Update PR
+description: Update the PR with final implementation details and mark ready for review.
+problem: User needs to update PR and mark ready for review
+recognition[3]:
+  - update pr
+  - mark pr ready
+  - finalize pr
+skills:
+  primary: pr-management
+required: true
+estimatedTime: 10-15m
+steps[3]:
+  - id: push-commits
+    name: Push all commits
+  - id: update-description
+    name: Update PR description
+    description: Final PR description with implementation details
+  - id: mark-ready
+    name: Mark PR ready for review
+checkpoints[1]:
+  - id: pr-description
+    name: PR Update Checkpoint
+    message: PR description confirmed?
+    options[2]{id,label}:
+      confirmed,PR description confirmed
+      revise,Revise PR description
+transitions[1]{to,isDefault}:
+  post-implementation,true
+outcome[2]:
+  - PR pushed and updated
+  - Ready for review
+context_to_preserve[2]:
+  - pr_url - PR URL
+  - pr_status - PR status (draft/ready)

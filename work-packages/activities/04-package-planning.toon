@@ -1,0 +1,50 @@
+id: package-planning
+version: 1.0.0
+name: Work Package Planning
+description: Define scope, dependencies, effort, and success criteria for each work package
+problem: Each work package needs detailed planning before prioritization
+skills:
+  primary: workflow-execution
+steps[6]:
+  - id: iterate-packages
+    name: Iterate through packages
+    description: For each identified work package, perform planning steps
+  - id: define-scope
+    name: Define scope
+    description: Identify what is in scope and out of scope for the work package
+  - id: identify-dependencies
+    name: Identify dependencies
+    description: Document dependencies on other work packages or external factors
+  - id: estimate-effort
+    name: Estimate effort
+    description: Provide rough effort estimate for the work package
+  - id: define-success
+    name: Define success criteria
+    description: Establish measurable success criteria
+  - id: document-plan
+    name: Document plan
+    description: Create work package plan document (NN-package-name-plan.md)
+checkpoints[1]:
+  - id: plans-created
+    prompt: "Work package plans created. Ready for prioritization?"
+    options[2]:
+      - id: proceed
+        label: Proceed to prioritization
+        transitionTo: prioritization
+      - id: revise
+        label: Revise plans
+        transitionTo: package-planning
+loops[1]:
+  - id: package-loop
+    description: Repeat planning steps for each work package
+    condition: More work packages to plan
+    returnTo: iterate-packages
+transitions[1]:
+  - to: prioritization
+    isDefault: true
+outcome[2]:
+  - All work packages have detailed plans
+  - Dependencies documented
+context_to_preserve[2]:
+  - package_plans - List of created plan documents
+  - dependency_map - Map of inter-package dependencies

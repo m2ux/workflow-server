@@ -1,5 +1,6 @@
 id: end-workflow
-version: 2.1.0
+version: 3.0.0
+name: End Workflow
 problem: The user wants to complete and finalize a workflow execution.
 recognition[6]:
   - End workflow
@@ -10,28 +11,32 @@ recognition[6]:
   - Mark workflow as complete
 skills:
   primary: workflow-execution
-  supporting[2]:
-    - activity-resolution
+  supporting[1]:
     - state-management
-outcome[4]:
-  - Final phase is completed
-  - All required checkpoints are resolved
-  - Completion summary is presented
-  - State is finalized or archived
-flow[11]:
-  - 1. Verify current phase is the final phase (highest index)
-  - 2. Ensure all required checkpoints are resolved
-  - 3. Execute any exit actions for final phase
-  - "4. Check list_templates for completion artifacts"
-  - "5. If templates exist, call get_template to generate final documents"
-  - 6. Update state to completed per state-management skill
-  - "7. Present completion summary:"
-  - "   - Phases completed (by index)"
-  - "   - Key decisions made (from checkpointResponses)"
-  - "   - Artifacts created"
-  - 8. Archive or clear workflow state
-context_to_preserve[4]:
+steps[6]:
+  - id: verify-completion
+    name: Verify completion
+    description: Verify all required activities are complete
+  - id: check-checkpoints
+    name: Check checkpoints
+    description: Ensure all blocking checkpoints have responses
+  - id: execute-exit-actions
+    name: Execute exit actions
+    description: Execute any exit actions from final activity
+  - id: update-state
+    name: Update state
+    description: Set workflow status to 'completed' with completedAt timestamp
+  - id: present-summary
+    name: Present summary
+    description: Present completion summary to user
+  - id: cleanup
+    name: Cleanup
+    description: Clear workflow context if appropriate
+outcome[3]:
+  - Workflow is marked as complete
+  - Final state is recorded
+  - User is informed of completion
+context_to_preserve[3]:
   - workflowId - The completed workflow
-  - completedPhases - Full list of completed phase indices
-  - checkpointResponses - All user decisions for record
-  - artifacts - Documents created during workflow
+  - completedAt - Timestamp of completion
+  - finalState - Final state snapshot

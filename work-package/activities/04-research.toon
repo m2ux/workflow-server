@@ -1,0 +1,44 @@
+id: research
+version: 1.0.0
+name: Research
+description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the planning phase."
+problem: User needs to research best practices before planning
+recognition[3]:
+  - research best practices
+  - knowledge base research
+  - research patterns
+skills:
+  primary: knowledge-research
+required: false
+estimatedTime: 20-45m
+steps[3]:
+  - id: kb-research
+    name: Knowledge base research
+    description: Call get_guidance before making concept-rag MCP tool calls
+  - id: web-research
+    name: Web research
+    description: Search web for current information
+  - id: document
+    name: Create research document
+    description: Create 02-kb-research.md
+checkpoints[2]:
+  - id: kb-insights
+    name: Knowledge Base Insights Checkpoint
+    message: Knowledge insights confirmed?
+    options[2]{id,label}:
+      confirmed,Insights confirmed
+      more-research,Need more research
+  - id: web-research-confirmed
+    name: Web Research Checkpoint
+    message: Web research findings confirmed?
+    options[2]{id,label}:
+      confirmed,Findings confirmed
+      more-research,Need more research
+transitions[1]{to,isDefault}:
+  plan-prepare,true
+outcome[2]:
+  - Best practices identified
+  - Relevant resources gathered
+context_to_preserve[2]:
+  - research_findings - Key research findings
+  - resources - Relevant resources identified

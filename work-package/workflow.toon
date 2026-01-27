@@ -1,0 +1,51 @@
+"$schema": ../../schemas/workflow.schema.json
+id: work-package
+version: 2.1.0
+title: Work Package Implementation Workflow
+description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
+author: m2ux
+tags[3]:
+  - implementation
+  - engineering
+  - workflow
+rules[7]:
+  - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+  - Agents must NOT proceed past checkpoints without user confirmation
+  - "Ask, don't assume - Clarify requirements before acting"
+  - "Summarize, then proceed - Provide brief status before asking to continue"
+  - One task at a time - Complete current work before starting new work
+  - Explicit approval - Get clear 'yes' or 'proceed' before major actions
+  - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
+variables[9]:
+  - name: issue_number
+    type: string
+    description: GitHub or Jira issue number
+  - name: issue_platform
+    type: string
+    description: Issue tracking platform (github|jira)
+  - name: pr_number
+    type: string
+    description: Pull request number
+  - name: branch_name
+    type: string
+    description: Feature branch name
+  - name: needs_elicitation
+    type: boolean
+    description: Whether requirements elicitation is needed
+    defaultValue: false
+  - name: needs_research
+    type: boolean
+    description: Whether research phase is needed
+    defaultValue: false
+  - name: is_architecturally_significant
+    type: boolean
+    description: Whether ADR is needed
+    defaultValue: false
+  - name: validation_passed
+    type: boolean
+    description: Whether validation phase passed
+  - name: review_passed
+    type: boolean
+    description: Whether strategic review passed
+initialActivity: issue-verification
+activitiesDir: activities
