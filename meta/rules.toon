@@ -90,6 +90,11 @@ sections[10]:
       - Use format type followed by optional scope and description
       - Common types are feat fix docs style refactor test chore build ci
       - Reference issue numbers when applicable
+    branchManagement[4]:
+      - Understand project branching strategy before creating branches
+      - Follow naming conventions for feature branches
+      - Keep branches focused on specific features or fixes
+      - Regularly sync with main branch
     destructiveOperations[4]:
       - NEVER run destructive or irreversible operations without explicit request
       - Examples include force push to protected branches and hard resets
@@ -100,14 +105,17 @@ sections[10]:
       - For Rust projects run cargo fmt to format code before committing
   - id: github-cli
     title: GitHub CLI Usage
-    priority: medium
-    guidance: Prefer REST API for mutating operations to avoid GraphQL errors
+    priority: high
+    guidance: Use REST API for mutating operations as GraphQL fails due to Projects Classic deprecation
     userApprovalRequired[1]:
       - ALWAYS ask user before replying to PR comments or review feedback
+    avoid[2]:
+      - gh pr edit uses GraphQL which fails with Projects Classic deprecation error
+      - Any gh command that mutates PRs or issues via GraphQL
     mutatingOperations[3]:
-      - Update PR description using gh api with PATCH method
-      - Update PR title using gh api with PATCH method
-      - Add labels using gh api with POST method
+      - Update PR description using gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f body=CONTENT
+      - Update PR title using gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f title=TITLE
+      - Add labels using gh api repos/OWNER/REPO/issues/NUMBER/labels -X POST -f labels=LABELS
     readOperationsOk[3]:
       - gh pr view for viewing PRs
       - gh pr list for listing PRs
