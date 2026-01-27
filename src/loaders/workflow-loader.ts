@@ -71,17 +71,17 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
 /**
  * Resolve the path to a workflow file.
  * Supports two directory structures:
- * 1. Root-level: {workflowDir}/{workflowId}.toon
- * 2. Subdirectory: {workflowDir}/{workflowId}/{workflowId}.toon
+ * 1. Subdirectory (preferred): {workflowDir}/{workflowId}/workflow.toon
+ * 2. Root-level (legacy): {workflowDir}/{workflowId}.toon
  */
 function resolveWorkflowPath(workflowDir: string, workflowId: string): string | null {
-  // Try root-level first
+  // Try subdirectory first (preferred pattern)
+  const subPath = join(workflowDir, workflowId, 'workflow.toon');
+  if (existsSync(subPath)) return subPath;
+  
+  // Fall back to root-level (legacy)
   const rootPath = join(workflowDir, `${workflowId}.toon`);
   if (existsSync(rootPath)) return rootPath;
-  
-  // Try subdirectory
-  const subPath = join(workflowDir, workflowId, `${workflowId}.toon`);
-  if (existsSync(subPath)) return subPath;
   
   return null;
 }
@@ -139,8 +139,8 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
         const result = await loadWorkflow(workflowDir, basename(entry, '.toon'));
         if (result.success) manifests.push({ id: result.value.id, title: result.value.title, version: result.value.version, description: result.value.description });
       } else if (stats.isDirectory()) {
-        // Check for workflow in subdirectory
-        const subWorkflowPath = join(entryPath, `${entry}.toon`);
+        // Check for workflow in subdirectory (workflow.toon is the standard filename)
+        const subWorkflowPath = join(entryPath, 'workflow.toon');
         if (existsSync(subWorkflowPath)) {
           const result = await loadWorkflow(workflowDir, entry);
           if (result.success) manifests.push({ id: result.value.id, title: result.value.title, version: result.value.version, description: result.value.description });

@@ -9,6 +9,7 @@ export type {
   Transition, 
   Loop, 
   SkillsReference,
+  WorkflowTrigger,
   Activity,
 } from '../schema/activity.schema.js';
 
@@ -22,6 +23,7 @@ export {
   TransitionSchema, 
   LoopSchema, 
   SkillsReferenceSchema,
+  WorkflowTriggerSchema,
   ActivitySchema,
   validateActivity, 
   safeValidateActivity,

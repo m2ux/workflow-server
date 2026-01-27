@@ -241,6 +241,28 @@
       "required": ["to"],
       "additionalProperties": false
     },
+    "workflowTrigger": {
+      "type": "object",
+      "properties": {
+        "workflow": {
+          "type": "string",
+          "description": "ID of the workflow to trigger"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of when/why this workflow is triggered"
+        },
+        "passContext": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Context variables to pass to the triggered workflow"
+        }
+      },
+      "required": ["workflow"],
+      "additionalProperties": false
+    },
     "skills": {
       "type": "object",
       "properties": {
@@ -327,6 +349,10 @@
             "$ref": "#/definitions/transition"
           },
           "description": "Navigation to other activities"
+        },
+        "triggers": {
+          "$ref": "#/definitions/workflowTrigger",
+          "description": "Workflow to trigger from this activity"
         },
         "entryActions": {
           "type": "array",

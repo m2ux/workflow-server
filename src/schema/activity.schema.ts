@@ -98,6 +98,14 @@ export const TransitionSchema = z.object({
 });
 export type Transition = z.infer<typeof TransitionSchema>;
 
+// Workflow trigger schema - allows an activity to trigger another workflow
+export const WorkflowTriggerSchema = z.object({
+  workflow: z.string().describe('ID of the workflow to trigger'),
+  description: z.string().optional().describe('Description of when/why this workflow is triggered'),
+  passContext: z.array(z.string()).optional().describe('Context variables to pass to the triggered workflow'),
+});
+export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
+
 // Unified Activity schema
 export const ActivitySchema = z.object({
   // Identity (required)
@@ -123,6 +131,7 @@ export const ActivitySchema = z.object({
   decisions: z.array(DecisionSchema).optional().describe('Conditional branching points'),
   loops: z.array(LoopSchema).optional().describe('Iteration constructs'),
   transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities'),
+  triggers: WorkflowTriggerSchema.optional().describe('Workflow to trigger from this activity'),
   
   // Lifecycle (optional)
   entryActions: z.array(ActionSchema).optional().describe('Actions to execute when entering activity'),
