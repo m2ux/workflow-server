@@ -3,11 +3,11 @@ export class WorkflowNotFoundError extends Error {
   constructor(public readonly workflowId: string) { super(`Workflow not found: ${workflowId}`); this.name = 'WorkflowNotFoundError'; }
 }
 
-export class GuideNotFoundError extends Error {
-  readonly code = 'GUIDE_NOT_FOUND';
-  constructor(public readonly guideId: string, public readonly workflowId?: string) { 
-    super(workflowId ? `Guide not found: ${guideId} in workflow ${workflowId}` : `Guide not found: ${guideId}`); 
-    this.name = 'GuideNotFoundError'; 
+export class ResourceNotFoundError extends Error {
+  readonly code = 'RESOURCE_NOT_FOUND';
+  constructor(public readonly resourceId: string, public readonly workflowId?: string) { 
+    super(workflowId ? `Resource not found: ${resourceId} in workflow ${workflowId}` : `Resource not found: ${resourceId}`); 
+    this.name = 'ResourceNotFoundError'; 
   }
 }
 

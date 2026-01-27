@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 // Loaders
 import { listWorkflows } from '../loaders/workflow-loader.js';
-import { listGuides, readGuideRaw, listWorkflowsWithGuides } from '../loaders/guide-loader.js';
+import { listResources, readResourceRaw, listWorkflowsWithResources } from '../loaders/resource-loader.js';
 import { listTemplates, readTemplate } from '../loaders/template-loader.js';
 import { listActivities, readActivity, readActivityIndex } from '../loaders/activity-loader.js';
 import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
@@ -108,33 +108,33 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     })
   );
 
-  // ============== Guide Tools ==============
+  // ============== Resource Tools ==============
 
   server.tool(
-    'list_guides',
-    'List all guides available for a workflow',
+    'list_workflow_resources',
+    'List all resources available for a workflow',
     { workflow_id: z.string().describe('Workflow ID (e.g., work-package)') },
-    withAuditLog('list_guides', async ({ workflow_id }) => {
-      const guides = await listGuides(config.workflowDir, workflow_id);
-      const result = guides.map(g => ({
-        index: g.index,
-        name: g.name,
-        title: g.title,
-        format: g.format,
+    withAuditLog('list_workflow_resources', async ({ workflow_id }) => {
+      const resources = await listResources(config.workflowDir, workflow_id);
+      const result = resources.map(r => ({
+        index: r.index,
+        name: r.name,
+        title: r.title,
+        format: r.format,
       }));
       return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
     })
   );
 
   server.tool(
-    'get_guide',
-    'Get a specific guide by index',
+    'get_resource',
+    'Get a specific resource by index',
     { 
       workflow_id: z.string().describe('Workflow ID (e.g., work-package)'),
-      index: z.string().describe('Guide index (e.g., 0, 00, 01)')
+      index: z.string().describe('Resource index (e.g., 0, 00, 01)')
     },
-    withAuditLog('get_guide', async ({ workflow_id, index }) => {
-      const result = await readGuideRaw(config.workflowDir, workflow_id, index);
+    withAuditLog('get_resource', async ({ workflow_id, index }) => {
+      const result = await readResourceRaw(config.workflowDir, workflow_id, index);
       if (!result.success) throw result.error;
       return { content: [{ type: 'text', text: result.value.content }] };
     })
@@ -174,15 +174,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   // ============== Discovery Tool ==============
 
   server.tool(
-    'list_resources',
-    'Discover all available resources: workflows, guides, templates, activities, skills',
+    'discover_resources',
+    'Discover all available resources: workflows, resources, templates, activities, skills',
     {},
-    withAuditLog('list_resources', async () => {
+    withAuditLog('discover_resources', async () => {
       const workflows = await listWorkflows(config.workflowDir);
-      const workflowsWithGuides = await listWorkflowsWithGuides(config.workflowDir);
+      const workflowsWithResources = await listWorkflowsWithResources(config.workflowDir);
       const universalSkills = await listUniversalSkills(config.workflowDir);
       
-      const resources: Record<string, unknown> = {
+      const discovery: Record<string, unknown> = {
         activities: {
           tool: 'get_activities',
           description: 'Activity index - primary entry point for workflow execution',
@@ -200,37 +200,37 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       };
       
       // Add workflow-specific resources
-      for (const workflowId of workflowsWithGuides) {
-        const guides = await listGuides(config.workflowDir, workflowId);
+      for (const workflowId of workflowsWithResources) {
+        const resources = await listResources(config.workflowDir, workflowId);
         const templates = await listTemplates(config.workflowDir, workflowId);
         const workflowSkills = await listWorkflowSkills(config.workflowDir, workflowId);
         
-        const workflowResources: Record<string, unknown> = {
-          guides: {
-            count: guides.length,
-            tool: `list_guides { workflow_id: "${workflowId}" }`,
+        const workflowDiscovery: Record<string, unknown> = {
+          resources: {
+            count: resources.length,
+            tool: `list_workflow_resources { workflow_id: "${workflowId}" }`,
           },
         };
         
         if (templates.length > 0) {
-          workflowResources['templates'] = {
+          workflowDiscovery['templates'] = {
             count: templates.length,
             tool: `list_templates { workflow_id: "${workflowId}" }`,
           };
         }
         
         if (workflowSkills.length > 0) {
-          workflowResources['skills'] = {
+          workflowDiscovery['skills'] = {
             items: workflowSkills.map(s => s.id),
             tool: `list_skills { workflow_id: "${workflowId}" }`,
             get: `get_skill { skill_id: "...", workflow_id: "${workflowId}" }`,
           };
         }
         
-        resources[workflowId] = workflowResources;
+        discovery[workflowId] = workflowDiscovery;
       }
       
-      return { content: [{ type: 'text', text: JSON.stringify(resources, null, 2) }] };
+      return { content: [{ type: 'text', text: JSON.stringify(discovery, null, 2) }] };
     })
   );
 }

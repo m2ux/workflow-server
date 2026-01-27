@@ -11,7 +11,6 @@ describe('mcp-server integration', () => {
   beforeAll(async () => {
     const config = {
       workflowDir: resolve(import.meta.dirname, '../workflows'),
-      guideDir: resolve(import.meta.dirname, '../workflows/guides'),
       serverName: 'test-workflow-server',
       serverVersion: '1.0.0',
     };
@@ -211,30 +210,30 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: list_guides', () => {
-    it('should list guides for a workflow', async () => {
+  describe('tool: list_workflow_resources', () => {
+    it('should list resources for a workflow', async () => {
       const result = await client.callTool({
-        name: 'list_guides',
+        name: 'list_workflow_resources',
         arguments: { workflow_id: 'work-package' },
       });
       
-      const guides = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const resources = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
-      expect(Array.isArray(guides)).toBe(true);
-      expect(guides.length).toBeGreaterThan(0);
-      expect(guides[0]).toHaveProperty('index');
-      expect(guides[0]).toHaveProperty('name');
+      expect(Array.isArray(resources)).toBe(true);
+      expect(resources.length).toBeGreaterThan(0);
+      expect(resources[0]).toHaveProperty('index');
+      expect(resources[0]).toHaveProperty('name');
     });
   });
 
-  describe('tool: get_guide', () => {
-    it('should get specific guide', async () => {
+  describe('tool: get_resource', () => {
+    it('should get specific resource', async () => {
       const result = await client.callTool({
-        name: 'get_guide',
+        name: 'get_resource',
         arguments: { workflow_id: 'work-package', index: '00' },
       });
       
-      // get_guide returns raw TOON content, not JSON
+      // get_resource returns raw TOON content, not JSON
       const content = (result.content[0] as { type: 'text'; text: string }).text;
       
       expect(content).toBeDefined();

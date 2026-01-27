@@ -59,7 +59,7 @@ workflow-server/
 │   ├── types/                # Generated TypeScript types
 │   ├── loaders/              # File loaders
 │   │   ├── workflow-loader.ts
-│   │   ├── guide-loader.ts
+│   │   ├── resource-loader.ts
 │   │   ├── template-loader.ts
 │   │   ├── activity-loader.ts
 │   │   └── skill-loader.ts
@@ -81,9 +81,11 @@ workflow-server/
 │   │   └── skills/               # Universal skills (indexed)
 │   │       └── {NN}-{id}.toon    # Skills that apply to all workflows
 │   └── {workflow-id}/        # Each workflow folder contains:
-│       ├── {workflow-id}.toon    # Workflow definition
-│       ├── guides/               # Guide subdirectory
-│       │   └── {NN}-{name}.toon  # Guides (indexed)
+│       ├── workflow.toon         # Workflow definition
+│       ├── activities/           # Activity subdirectory (if activitiesDir used)
+│       │   └── {NN}-{id}.toon    # Activities (indexed)
+│       ├── resources/            # Resource subdirectory
+│       │   └── {NN}-{name}.toon  # Resources (indexed)
 │       ├── templates/            # Template subdirectory
 │       │   └── {NN}-{name}.md    # Templates (indexed)
 │       └── skills/               # Workflow-specific skills (indexed)
@@ -161,7 +163,7 @@ npx tsx scripts/validate-workflow.ts workflows/work-package/work-package.toon
 | Branch | Content | Purpose |
 |--------|---------|---------|
 | `main` | TypeScript server code | Implementation |
-| `workflows` | JSON workflows + guides | Data (orphan branch) |
+| `workflows` | TOON workflows + resources | Data (orphan branch) |
 
 ### Working with the Workflows Branch
 
@@ -189,15 +191,17 @@ git push origin workflows
 3. Validate with: `npx tsx scripts/validate-workflow.ts <path>`
 4. Commit to the `workflows` branch
 
-## Adding New Guides
+## Adding New Resources
 
-Guides are stored in a `guides/` subdirectory within each workflow:
+Resources are stored in a `resources/` subdirectory within each workflow:
 
-1. Create `{NN}-{name}.toon` in `workflows/{workflow-id}/guides/`
+1. Create `{NN}-{name}.toon` or `{NN}-{name}.md` in `workflows/{workflow-id}/resources/`
 2. Use sequential index (00, 01, 02, etc.)
-3. Guides are auto-discovered - no manifest update needed
-4. Access via: `get_guide { workflow_id: "{id}", index: "{NN}" }`
+3. Resources are auto-discovered - no manifest update needed
+4. Access via: `get_resource { workflow_id: "{id}", index: "{NN}" }`
 5. Commit to the `workflows` branch
+
+Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
 
 ## Adding New Templates
 

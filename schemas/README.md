@@ -413,7 +413,6 @@ A conditional expression for control flow. Defined in `condition.schema.json`.
 | `name`        | Display name for entities | phase.name, step.name, loop.name        |
 | `description` | Detailed explanation      | workflow.description, phase.description |
 | `required`    | Mandatory flag            | variable.required, step.required        |
-| `guide`       | Documentation reference   | phase.guide, step.guide                 |
 
 #### Distinct Concepts
 
@@ -551,11 +550,7 @@ Steps are individual tasks within an activity:
       "id": "step-1-1",
       "name": "Verify prerequisites",
       "description": "Check that all requirements are met",
-      "required": true,
-      "guide": {
-        "path": "https://example.com/guide.md",
-        "section": "Prerequisites"
-      }
+      "required": true
     }
   ]
 }
@@ -1281,8 +1276,8 @@ Defines the sequence of tool calls for different execution stages:
 ```json
 {
   "execution_pattern": {
-    "start": ["list_workflows", "get_workflow", "list_guides"],
-    "per_activity": ["get_workflow_activity", "get_checkpoint", "get_guide"],
+    "start": ["list_workflows", "get_workflow", "list_workflow_resources"],
+    "per_activity": ["get_workflow_activity", "get_checkpoint", "get_resource"],
     "transitions": ["validate_transition"],
     "artifacts": ["list_templates", "get_template"]
   }

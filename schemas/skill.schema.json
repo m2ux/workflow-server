@@ -222,7 +222,7 @@
         "loops": {
           "type": "string"
         },
-        "guides": {
+        "resources": {
           "type": "string"
         },
         "templates": {

@@ -24,8 +24,8 @@ For all workflow execution user requests use the workflow-server MCP server. Bef
 | `get_skill` | Get specific skill by ID |
 | `list_workflows` | List all workflows |
 | `get_workflow` | Get workflow definition |
-| `list_guides` | List guides for a workflow |
-| `get_guide` | Get specific guide by index |
+| `list_workflow_resources` | List resources for a workflow |
+| `get_resource` | Get specific resource by index |
 | `list_templates` | List templates for a workflow |
 | `get_template` | Get specific template by index |
-| `list_resources` | Discover all available resources |
+| `discover_resources` | Discover all available resources |

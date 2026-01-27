@@ -28,12 +28,12 @@
 | `list_skills` | `workflow_id?` | List all skills (universal + workflow-specific if workflow_id provided) |
 | `get_skill` | `skill_id`, `workflow_id?` | Get a skill (checks workflow-specific first, then universal) |
 
-### Guide Tools
+### Resource Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `list_guides` | `workflow_id` | List all guides for a workflow |
-| `get_guide` | `workflow_id`, `index` | Get content of a specific guide by index |
+| `list_workflow_resources` | `workflow_id` | List all resources for a workflow |
+| `get_resource` | `workflow_id`, `index` | Get content of a specific resource by index |
 
 ### Template Tools
 
@@ -46,7 +46,7 @@
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `list_resources` | - | Discover all available resources |
+| `discover_resources` | - | Discover all available resources: workflows, resources, templates, activities, skills |
 
 ## Activities
 
@@ -102,8 +102,8 @@ Each skill provides:
 #### workflow-execution (universal)
 
 Primary skill for workflow navigation:
-- **Start**: `list_workflows` → `get_workflow` → `list_guides`
-- **Per-activity**: `get_workflow_activity` → `get_checkpoint` → `get_guide`
+- **Start**: `list_workflows` → `get_workflow` → `list_workflow_resources`
+- **Per-activity**: `get_workflow_activity` → `get_checkpoint` → `get_resource`
 - **Transitions**: `validate_transition`
 - **Triggers**: Suspend parent, execute child workflow, return to parent
 - **Artifacts**: `list_templates` → `get_template`
@@ -113,7 +113,7 @@ Primary skill for workflow navigation:
 Bootstrap skill for agent initialization:
 - **Bootstrap**: `get_activities` → `get_activity`
 - **Skill loading**: `get_skill`
-- **Discovery**: `list_resources`
+- **Discovery**: `discover_resources`
 
 ## Available Workflows
 

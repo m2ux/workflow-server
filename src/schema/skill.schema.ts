@@ -66,7 +66,7 @@ export const InterpretationSchema = z.object({
   checkpoints: z.string().optional(),
   decisions: z.string().optional(),
   loops: z.string().optional(),
-  guides: z.string().optional(),
+  resources: z.string().optional(),
   templates: z.string().optional(),
 }).passthrough();
 export type Interpretation = z.infer<typeof InterpretationSchema>;

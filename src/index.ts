@@ -15,7 +15,7 @@ export type { ServerConfig } from './config.js';
 async function main(): Promise<void> {
   try {
     const config = loadConfig();
-    logInfo('Starting MCP Workflow Server', { workflowDir: config.workflowDir, guideDir: config.guideDir });
+    logInfo('Starting MCP Workflow Server', { workflowDir: config.workflowDir });
     const server = createServer(config);
     await server.connect(new StdioServerTransport());
     logInfo('Server connected and ready');
