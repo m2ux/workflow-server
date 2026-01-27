@@ -1,13 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import {
   WorkflowSchema,
-  PhaseSchema,
+  safeValidateWorkflow,
+} from '../src/schema/workflow.schema.js';
+import {
+  ActivitySchema,
   CheckpointSchema,
   StepSchema,
   DecisionSchema,
   LoopSchema,
-  safeValidateWorkflow,
-} from '../src/schema/workflow.schema.js';
+} from '../src/schema/activity.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
 
 describe('schema-validation', () => {
@@ -85,11 +87,12 @@ describe('schema-validation', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should validate step with guide reference', () => {
+    it('should validate step with description', () => {
       const step = {
         id: 'step-1',
         name: 'Step One',
-        guide: { path: 'guides/my-guide.md', section: 'Section 1' },
+        description: 'Detailed guidance for this step',
+        skill: 'some-skill',
       };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(true);
@@ -126,7 +129,7 @@ describe('schema-validation', () => {
           {
             id: 'option-a',
             label: 'Option A',
-            effect: { setVariable: { selected: 'a' }, transitionTo: 'phase-2' },
+            effect: { setVariable: { selected: 'a' }, transitionTo: 'activity-2' },
           },
           { id: 'option-b', label: 'Option B' },
         ],
@@ -153,8 +156,8 @@ describe('schema-validation', () => {
         id: 'decision-1',
         name: 'Validation Check',
         branches: [
-          { id: 'pass', label: 'Pass', transitionTo: 'next-phase' },
-          { id: 'fail', label: 'Fail', transitionTo: 'retry-phase', isDefault: true },
+          { id: 'pass', label: 'Pass', transitionTo: 'next-activity' },
+          { id: 'fail', label: 'Fail', transitionTo: 'retry-activity', isDefault: true },
         ],
       };
       const result = DecisionSchema.safeParse(decision);
@@ -169,10 +172,10 @@ describe('schema-validation', () => {
           {
             id: 'branch-a',
             label: 'Branch A',
-            transitionTo: 'phase-a',
+            transitionTo: 'activity-a',
             condition: { type: 'simple', variable: 'flag', operator: '==', value: true },
           },
-          { id: 'branch-b', label: 'Branch B', transitionTo: 'phase-b', isDefault: true },
+          { id: 'branch-b', label: 'Branch B', transitionTo: 'activity-b', isDefault: true },
         ],
       };
       const result = DecisionSchema.safeParse(decision);
@@ -216,23 +219,28 @@ describe('schema-validation', () => {
     });
   });
 
-  describe('PhaseSchema', () => {
-    it('should validate minimal phase', () => {
-      const phase = {
-        id: 'phase-1',
-        name: 'Phase One',
+  describe('ActivitySchema', () => {
+    it('should validate minimal activity', () => {
+      const activity = {
+        id: 'activity-1',
+        version: '1.0.0',
+        name: 'Activity One',
+        skills: { primary: 'some-skill' },
       };
-      const result = PhaseSchema.safeParse(phase);
+      const result = ActivitySchema.safeParse(activity);
       expect(result.success).toBe(true);
     });
 
-    it('should validate phase with all features', () => {
-      const phase = {
-        id: 'phase-1',
-        name: 'Full Phase',
-        description: 'A phase with everything',
+    it('should validate activity with all features', () => {
+      const activity = {
+        id: 'activity-1',
+        version: '1.0.0',
+        name: 'Full Activity',
+        description: 'An activity with everything',
+        problem: 'User needs to do something',
+        recognition: ['do something', 'perform action'],
+        skills: { primary: 'main-skill', supporting: ['helper-skill'] },
         estimatedTime: '1-2h',
-        guide: { path: 'guides/phase-guide.md' },
         entryActions: [{ action: 'log', message: 'Entering' }],
         exitActions: [{ action: 'log', message: 'Exiting' }],
         steps: [{ id: 'step-1', name: 'Step 1' }],
@@ -244,9 +252,10 @@ describe('schema-validation', () => {
             options: [{ id: 'yes', label: 'Yes' }],
           },
         ],
-        transitions: [{ to: 'phase-2', isDefault: true }],
+        transitions: [{ to: 'activity-2', isDefault: true }],
+        outcome: ['Something is done'],
       };
-      const result = PhaseSchema.safeParse(phase);
+      const result = ActivitySchema.safeParse(activity);
       expect(result.success).toBe(true);
     });
   });
@@ -257,8 +266,13 @@ describe('schema-validation', () => {
         id: 'test-workflow',
         version: '1.0.0',
         title: 'Test Workflow',
-        initialPhase: 'phase-1',
-        phases: [{ id: 'phase-1', name: 'Phase One' }],
+        initialActivity: 'activity-1',
+        activities: [{ 
+          id: 'activity-1', 
+          version: '1.0.0',
+          name: 'Activity One',
+          skills: { primary: 'some-skill' },
+        }],
       };
       const result = safeValidateWorkflow(workflow);
       expect(result.success).toBe(true);
@@ -269,24 +283,29 @@ describe('schema-validation', () => {
         id: 'test-workflow',
         version: '1.0.0',
         title: 'Test Workflow',
-        initialPhase: 'phase-1',
+        initialActivity: 'activity-1',
         variables: [
           { name: 'counter', type: 'number', defaultValue: 0 },
           { name: 'flag', type: 'boolean', required: true },
         ],
-        phases: [{ id: 'phase-1', name: 'Phase One' }],
+        activities: [{ 
+          id: 'activity-1', 
+          version: '1.0.0',
+          name: 'Activity One',
+          skills: { primary: 'some-skill' },
+        }],
       };
       const result = safeValidateWorkflow(workflow);
       expect(result.success).toBe(true);
     });
 
-    it('should reject workflow without phases', () => {
+    it('should reject workflow without activities', () => {
       const workflow = {
         id: 'test-workflow',
         version: '1.0.0',
         title: 'Test Workflow',
-        initialPhase: 'phase-1',
-        phases: [],
+        initialActivity: 'activity-1',
+        activities: [],
       };
       const result = safeValidateWorkflow(workflow);
       expect(result.success).toBe(false);
@@ -297,8 +316,13 @@ describe('schema-validation', () => {
         id: 'test-workflow',
         version: 'v1',
         title: 'Test Workflow',
-        initialPhase: 'phase-1',
-        phases: [{ id: 'phase-1', name: 'Phase One' }],
+        initialActivity: 'activity-1',
+        activities: [{ 
+          id: 'activity-1', 
+          version: '1.0.0',
+          name: 'Activity One',
+          skills: { primary: 'some-skill' },
+        }],
       };
       const result = safeValidateWorkflow(workflow);
       expect(result.success).toBe(false);

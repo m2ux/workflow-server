@@ -55,7 +55,7 @@ describe('skill-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('workflow-execution');
-        expect(result.value.version).toBe('2.0.0');
+        expect(result.value.version).toBe('3.0.0');
         expect(result.value.capability).toBeDefined();
       }
     });
@@ -86,15 +86,15 @@ describe('skill-loader', () => {
         expect(skill.tools).toBeDefined();
         expect(skill.tools['list_workflows']).toBeDefined();
         expect(skill.tools['get_workflow']).toBeDefined();
-        expect(skill.tools['get_phase']).toBeDefined();
+        expect(skill.tools['get_workflow_activity']).toBeDefined();
         expect(skill.tools['get_checkpoint']).toBeDefined();
         expect(skill.tools['validate_transition']).toBeDefined();
         
         // Check state management
         expect(skill.state).toBeDefined();
         expect(skill.state.structure).toBeDefined();
-        expect(skill.state.structure.currentPhase).toBeDefined();
-        expect(skill.state.structure.completedPhases).toBeDefined();
+        expect(skill.state.structure.currentActivity).toBeDefined();
+        expect(skill.state.structure.completedActivities).toBeDefined();
         
         // Check interpretation
         expect(skill.interpretation).toBeDefined();

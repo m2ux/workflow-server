@@ -46,7 +46,7 @@ export interface Skill {
   capability: string;
   execution_pattern: {
     start: string[];
-    per_phase: string[];
+    per_activity: string[];
     transitions: string[];
   };
   tools: Record<string, {

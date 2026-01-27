@@ -1,323 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "workflow",
-  "description": "Workflow definition schema",
+  "description": "Workflow definition schema - orchestrates activities",
   "$ref": "#/definitions/workflow",
   "definitions": {
-    "action": {
-      "type": "object",
-      "properties": {
-        "action": {
-          "type": "string",
-          "enum": ["log", "validate", "set", "emit"]
-        },
-        "target": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        },
-        "value": {}
-      },
-      "required": ["action"],
-      "additionalProperties": false
-    },
-    "guide": {
-      "type": "object",
-      "properties": {
-        "path": {
-          "type": "string"
-        },
-        "section": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        }
-      },
-      "required": ["path"],
-      "additionalProperties": false
-    },
-    "step": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "guide": {
-          "$ref": "#/definitions/guide"
-        },
-        "required": {
-          "type": "boolean",
-          "default": true
-        },
-        "actions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/action"
-          }
-        }
-      },
-      "required": ["id", "name"],
-      "additionalProperties": false
-    },
-    "checkpointOption": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "label": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "effect": {
-          "type": "object",
-          "properties": {
-            "setVariable": {
-              "type": "object",
-              "additionalProperties": {}
-            },
-            "transitionTo": {
-              "type": "string"
-            },
-            "skipPhases": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "required": ["id", "label"],
-      "additionalProperties": false
-    },
-    "checkpoint": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        },
-        "guide": {
-          "$ref": "#/definitions/guide"
-        },
-        "options": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/checkpointOption"
-          },
-          "minItems": 1
-        },
-        "required": {
-          "type": "boolean",
-          "default": true
-        },
-        "blocking": {
-          "type": "boolean",
-          "const": true,
-          "default": true
-        }
-      },
-      "required": ["id", "name", "message", "options"],
-      "additionalProperties": false
-    },
-    "decisionBranch": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "label": {
-          "type": "string"
-        },
-        "condition": {
-          "$ref": "condition.schema.json"
-        },
-        "transitionTo": {
-          "type": "string"
-        },
-        "isDefault": {
-          "type": "boolean",
-          "default": false
-        }
-      },
-      "required": ["id", "label", "transitionTo"],
-      "additionalProperties": false
-    },
-    "decision": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "guide": {
-          "$ref": "#/definitions/guide"
-        },
-        "branches": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/decisionBranch"
-          },
-          "minItems": 2
-        }
-      },
-      "required": ["id", "name", "branches"],
-      "additionalProperties": false
-    },
-    "loop": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string",
-          "enum": ["forEach", "while", "doWhile"]
-        },
-        "variable": {
-          "type": "string"
-        },
-        "over": {
-          "type": "string"
-        },
-        "condition": {
-          "$ref": "condition.schema.json"
-        },
-        "maxIterations": {
-          "type": "integer",
-          "exclusiveMinimum": 0,
-          "default": 100
-        },
-        "breakCondition": {
-          "$ref": "condition.schema.json"
-        },
-        "steps": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/step"
-          }
-        },
-        "phases": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "required": ["id", "name", "type"],
-      "additionalProperties": false
-    },
-    "transition": {
-      "type": "object",
-      "properties": {
-        "to": {
-          "type": "string"
-        },
-        "condition": {
-          "$ref": "condition.schema.json"
-        },
-        "isDefault": {
-          "type": "boolean",
-          "default": false
-        }
-      },
-      "required": ["to"],
-      "additionalProperties": false
-    },
-    "phase": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "required": {
-          "type": "boolean",
-          "default": true
-        },
-        "estimatedTime": {
-          "type": "string",
-          "pattern": "^\\d+(-\\d+)?\\s*(m|min|h|hr|hours?|d|days?)?$"
-        },
-        "guide": {
-          "$ref": "#/definitions/guide"
-        },
-        "entryActions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/action"
-          }
-        },
-        "exitActions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/action"
-          }
-        },
-        "steps": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/step"
-          }
-        },
-        "checkpoints": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/checkpoint"
-          }
-        },
-        "decisions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/decision"
-          }
-        },
-        "loops": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/loop"
-          }
-        },
-        "transitions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/transition"
-          }
-        }
-      },
-      "required": ["id", "name"],
-      "additionalProperties": false
-    },
     "variable": {
       "type": "object",
       "properties": {
@@ -347,17 +33,21 @@
           "type": "string"
         },
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Unique workflow identifier"
         },
         "version": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version"
         },
         "title": {
-          "type": "string"
+          "type": "string",
+          "description": "Human-readable workflow title"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "Detailed workflow description"
         },
         "author": {
           "type": "string"
@@ -372,26 +62,30 @@
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "Rules that govern workflow execution"
         },
         "variables": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/variable"
-          }
+          },
+          "description": "Workflow-level variables"
         },
-        "initialPhase": {
-          "type": "string"
+        "initialActivity": {
+          "type": "string",
+          "description": "ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points."
         },
-        "phases": {
+        "activities": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/phase"
+            "$ref": "activity.schema.json"
           },
-          "minItems": 1
+          "minItems": 1,
+          "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points."
         }
       },
-      "required": ["id", "version", "title", "initialPhase", "phases"],
+      "required": ["id", "version", "title", "activities"],
       "additionalProperties": false
     }
   }

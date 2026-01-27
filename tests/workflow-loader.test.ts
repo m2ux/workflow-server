@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import {
   loadWorkflow,
   listWorkflows,
-  getPhase,
+  getActivity,
   getCheckpoint,
   getValidTransitions,
   validateTransition,
@@ -33,7 +33,7 @@ describe('workflow-loader', () => {
       
       expect(workPackage).toBeDefined();
       expect(workPackage?.title).toBe('Work Package Implementation Workflow');
-      expect(workPackage?.version).toBe('1.0.0');
+      expect(workPackage?.version).toBe('2.1.0');
     });
   });
 
@@ -44,8 +44,8 @@ describe('workflow-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('work-package');
-        expect(result.value.phases.length).toBe(11);
-        expect(result.value.initialPhase).toBe('phase-1-issue-verification');
+        expect(result.value.activities.length).toBe(11);
+        expect(result.value.initialActivity).toBe('issue-verification');
       }
     });
 
@@ -58,47 +58,47 @@ describe('workflow-loader', () => {
       }
     });
 
-    it('should load workflow with all phase types', async () => {
+    it('should load workflow with all activity types', async () => {
       const result = await loadWorkflow(WORKFLOW_DIR, 'work-package');
       
       expect(result.success).toBe(true);
       if (result.success) {
-        // Check for phases with different features
-        const phase1 = result.value.phases.find(p => p.id === 'phase-1-issue-verification');
-        expect(phase1?.checkpoints?.length).toBeGreaterThan(0);
-        expect(phase1?.steps?.length).toBeGreaterThan(0);
-        expect(phase1?.transitions?.length).toBeGreaterThan(0);
+        // Check for activities with different features
+        const issueVerification = result.value.activities.find(a => a.id === 'issue-verification');
+        expect(issueVerification?.checkpoints?.length).toBeGreaterThan(0);
+        expect(issueVerification?.steps?.length).toBeGreaterThan(0);
+        expect(issueVerification?.transitions?.length).toBeGreaterThan(0);
         
-        const phase6 = result.value.phases.find(p => p.id === 'phase-6-implement');
-        expect(phase6?.loops?.length).toBeGreaterThan(0);
+        const implement = result.value.activities.find(a => a.id === 'implement');
+        expect(implement?.loops?.length).toBeGreaterThan(0);
         
-        const phase7 = result.value.phases.find(p => p.id === 'phase-7-validate');
-        expect(phase7?.decisions?.length).toBeGreaterThan(0);
+        const validate = result.value.activities.find(a => a.id === 'validate');
+        expect(validate?.decisions?.length).toBeGreaterThan(0);
       }
     });
   });
 
-  describe('getPhase', () => {
+  describe('getActivity', () => {
     let workflow: Awaited<ReturnType<typeof loadWorkflow>>;
     
     beforeAll(async () => {
       workflow = await loadWorkflow(WORKFLOW_DIR, 'work-package');
     });
 
-    it('should get existing phase', () => {
+    it('should get existing activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const phase = getPhase(workflow.value, 'phase-1-issue-verification');
-        expect(phase).toBeDefined();
-        expect(phase?.name).toBe('Issue Verification & PR Creation');
+        const activity = getActivity(workflow.value, 'issue-verification');
+        expect(activity).toBeDefined();
+        expect(activity?.name).toBe('Issue Verification & PR Creation');
       }
     });
 
-    it('should return undefined for non-existent phase', () => {
+    it('should return undefined for non-existent activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const phase = getPhase(workflow.value, 'non-existent-phase');
-        expect(phase).toBeUndefined();
+        const activity = getActivity(workflow.value, 'non-existent-activity');
+        expect(activity).toBeUndefined();
       }
     });
   });
@@ -113,7 +113,7 @@ describe('workflow-loader', () => {
     it('should get existing checkpoint', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const checkpoint = getCheckpoint(workflow.value, 'phase-1-issue-verification', 'checkpoint-1-2-issue-verification');
+        const checkpoint = getCheckpoint(workflow.value, 'issue-verification', 'issue-verification');
         expect(checkpoint).toBeDefined();
         expect(checkpoint?.name).toBe('Issue Verification Checkpoint');
         expect(checkpoint?.options.length).toBeGreaterThan(0);
@@ -123,7 +123,7 @@ describe('workflow-loader', () => {
     it('should return undefined for non-existent checkpoint', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const checkpoint = getCheckpoint(workflow.value, 'phase-1-issue-verification', 'non-existent');
+        const checkpoint = getCheckpoint(workflow.value, 'issue-verification', 'non-existent');
         expect(checkpoint).toBeUndefined();
       }
     });
@@ -136,26 +136,26 @@ describe('workflow-loader', () => {
       workflow = await loadWorkflow(WORKFLOW_DIR, 'work-package');
     });
 
-    it('should get valid transitions from phase with conditional transitions', () => {
+    it('should get valid transitions from activity with conditional transitions', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const transitions = getValidTransitions(workflow.value, 'phase-1-issue-verification');
-        expect(transitions).toContain('phase-2-requirements-elicitation');
-        expect(transitions).toContain('phase-3-implementation-analysis');
+        const transitions = getValidTransitions(workflow.value, 'issue-verification');
+        expect(transitions).toContain('requirements-elicitation');
+        expect(transitions).toContain('implementation-analysis');
       }
     });
 
     it('should get transitions from decision branches', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const transitions = getValidTransitions(workflow.value, 'phase-7-validate');
-        expect(transitions).toContain('phase-8-review');
-        expect(transitions).toContain('phase-6-implement');
-        expect(transitions).toContain('phase-5-plan-prepare');
+        const transitions = getValidTransitions(workflow.value, 'validate');
+        expect(transitions).toContain('strategic-review');
+        expect(transitions).toContain('implement');
+        expect(transitions).toContain('plan-prepare');
       }
     });
 
-    it('should return empty array for non-existent phase', () => {
+    it('should return empty array for non-existent activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
         const transitions = getValidTransitions(workflow.value, 'non-existent');
@@ -174,7 +174,7 @@ describe('workflow-loader', () => {
     it('should validate allowed transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'phase-1-issue-verification', 'phase-2-requirements-elicitation');
+        const result = validateTransition(workflow.value, 'issue-verification', 'requirements-elicitation');
         expect(result.valid).toBe(true);
         expect(result.reason).toBeUndefined();
       }
@@ -183,27 +183,27 @@ describe('workflow-loader', () => {
     it('should reject invalid transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'phase-1-issue-verification', 'phase-11-post-implementation');
+        const result = validateTransition(workflow.value, 'issue-verification', 'post-implementation');
         expect(result.valid).toBe(false);
         expect(result.reason).toContain('No valid transition');
       }
     });
 
-    it('should reject transition from non-existent phase', () => {
+    it('should reject transition from non-existent activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'non-existent', 'phase-2-requirements-elicitation');
+        const result = validateTransition(workflow.value, 'non-existent', 'requirements-elicitation');
         expect(result.valid).toBe(false);
-        expect(result.reason).toContain('Source phase not found');
+        expect(result.reason).toContain('Source activity not found');
       }
     });
 
-    it('should reject transition to non-existent phase', () => {
+    it('should reject transition to non-existent activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'phase-1-issue-verification', 'non-existent');
+        const result = validateTransition(workflow.value, 'issue-verification', 'non-existent');
         expect(result.valid).toBe(false);
-        expect(result.reason).toContain('Target phase not found');
+        expect(result.reason).toContain('Target activity not found');
       }
     });
   });

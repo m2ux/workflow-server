@@ -1,9 +1,80 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "state",
-  "description": "Workflow state schema - uses numeric indices for phases/steps to eliminate redundancy",
+  "description": "Workflow state schema - tracks activity execution with nested workflow support",
   "$ref": "#/definitions/state",
   "definitions": {
+    "parentWorkflowRef": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "description": "ID of the parent workflow"
+        },
+        "activityId": {
+          "type": "string",
+          "description": "Activity that triggered this workflow"
+        },
+        "passedContext": {
+          "type": "object",
+          "additionalProperties": {},
+          "description": "Context passed from parent"
+        },
+        "returnTo": {
+          "type": "object",
+          "properties": {
+            "activityId": {
+              "type": "string"
+            },
+            "stepIndex": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": ["activityId"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["workflowId", "activityId"],
+      "additionalProperties": false
+    },
+    "triggeredWorkflowRef": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "description": "ID of the triggered workflow"
+        },
+        "triggeredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "triggeredFrom": {
+          "type": "object",
+          "properties": {
+            "activityId": {
+              "type": "string"
+            },
+            "stepIndex": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": ["activityId"],
+          "additionalProperties": false
+        },
+        "status": {
+          "type": "string",
+          "enum": ["running", "completed", "aborted", "error"]
+        },
+        "returnedContext": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": ["workflowId", "triggeredAt", "triggeredFrom", "status"],
+      "additionalProperties": false
+    },
     "state": {
       "type": "object",
       "properties": {
@@ -33,33 +104,30 @@
           "type": "string",
           "format": "date-time"
         },
-        "currentPhase": {
-          "type": "integer",
-          "minimum": 1,
-          "description": "Current phase index (1-based)"
+        "currentActivity": {
+          "type": "string",
+          "description": "Current activity ID"
         },
         "currentStep": {
           "type": "integer",
           "minimum": 1,
-          "description": "Current step index within current phase (1-based)"
+          "description": "Current step index within current activity (1-based)"
         },
-        "completedPhases": {
+        "completedActivities": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "minimum": 1
+            "type": "string"
           },
           "default": [],
-          "description": "Array of completed phase indices"
+          "description": "Array of completed activity IDs"
         },
-        "skippedPhases": {
+        "skippedActivities": {
           "type": "array",
           "items": {
-            "type": "integer",
-            "minimum": 1
+            "type": "string"
           },
           "default": [],
-          "description": "Array of skipped phase indices"
+          "description": "Array of skipped activity IDs"
         },
         "completedSteps": {
           "type": "object",
@@ -71,7 +139,7 @@
             }
           },
           "default": {},
-          "description": "Map of phase index to array of completed step indices"
+          "description": "Map of activity ID to array of completed step indices"
         },
         "checkpointResponses": {
           "type": "object",
@@ -94,15 +162,13 @@
                     "additionalProperties": {}
                   },
                   "transitionedTo": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "description": "Phase index transitioned to"
+                    "type": "string",
+                    "description": "Activity ID transitioned to"
                   },
-                  "phasesSkipped": {
+                  "activitiesSkipped": {
                     "type": "array",
                     "items": {
-                      "type": "integer",
-                      "minimum": 1
+                      "type": "string"
                     }
                   }
                 },
@@ -111,7 +177,7 @@
             },
             "required": ["optionId", "respondedAt"],
             "additionalProperties": false,
-            "description": "Key is 'phaseIndex-checkpointIndex' (e.g., '1-2')"
+            "description": "Key is 'activityId-checkpointId' (e.g., 'review-approve')"
           },
           "default": {}
         },
@@ -129,14 +195,13 @@
                 "format": "date-time"
               },
               "transitionedTo": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Phase index transitioned to"
+                "type": "string",
+                "description": "Activity ID transitioned to"
               }
             },
             "required": ["branchId", "decidedAt", "transitionedTo"],
             "additionalProperties": false,
-            "description": "Key is 'phaseIndex-decisionIndex' (e.g., '7-2')"
+            "description": "Key is 'activityId-decisionId'"
           },
           "default": {}
         },
@@ -145,15 +210,13 @@
           "items": {
             "type": "object",
             "properties": {
-              "phaseIndex": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Phase containing this loop"
+              "activityId": {
+                "type": "string",
+                "description": "Activity containing this loop"
               },
-              "loopIndex": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Index of the loop within the phase"
+              "loopId": {
+                "type": "string",
+                "description": "ID of the loop"
               },
               "currentIteration": {
                 "type": "integer",
@@ -169,7 +232,7 @@
                 "format": "date-time"
               }
             },
-            "required": ["phaseIndex", "loopIndex", "currentIteration", "startedAt"],
+            "required": ["activityId", "loopId", "currentIteration", "startedAt"],
             "additionalProperties": false
           },
           "default": []
@@ -194,9 +257,12 @@
                   "workflow_started",
                   "workflow_completed",
                   "workflow_aborted",
-                  "phase_entered",
-                  "phase_exited",
-                  "phase_skipped",
+                  "workflow_triggered",
+                  "workflow_returned",
+                  "workflow_suspended",
+                  "activity_entered",
+                  "activity_exited",
+                  "activity_skipped",
                   "step_started",
                   "step_completed",
                   "checkpoint_reached",
@@ -211,30 +277,26 @@
                   "error"
                 ]
               },
-              "phase": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Phase index"
+              "activity": {
+                "type": "string",
+                "description": "Activity ID"
               },
               "step": {
                 "type": "integer",
                 "minimum": 1,
-                "description": "Step index within phase"
+                "description": "Step index within activity"
               },
               "checkpoint": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Checkpoint index within phase"
+                "type": "string",
+                "description": "Checkpoint ID"
               },
               "decision": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Decision index within phase"
+                "type": "string",
+                "description": "Decision ID"
               },
               "loop": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Loop index within phase"
+                "type": "string",
+                "description": "Loop ID"
               },
               "data": {
                 "type": "object",
@@ -261,8 +323,20 @@
         },
         "status": {
           "type": "string",
-          "enum": ["running", "paused", "completed", "aborted", "error"],
+          "enum": ["running", "paused", "suspended", "completed", "aborted", "error"],
           "default": "running"
+        },
+        "parentWorkflow": {
+          "$ref": "#/definitions/parentWorkflowRef",
+          "description": "Reference to parent workflow if this was triggered"
+        },
+        "triggeredWorkflows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/triggeredWorkflowRef"
+          },
+          "default": [],
+          "description": "Child workflows triggered from this one"
         },
         "lastError": {
           "type": "object",
@@ -273,10 +347,9 @@
             "code": {
               "type": "string"
             },
-            "phase": {
-              "type": "integer",
-              "minimum": 1,
-              "description": "Phase index where error occurred"
+            "activity": {
+              "type": "string",
+              "description": "Activity ID where error occurred"
             },
             "step": {
               "type": "integer",
@@ -292,7 +365,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["workflowId", "workflowVersion", "startedAt", "updatedAt", "currentPhase"],
+      "required": ["workflowId", "workflowVersion", "startedAt", "updatedAt", "currentActivity"],
       "additionalProperties": false
     }
   }

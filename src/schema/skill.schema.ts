@@ -25,7 +25,7 @@ export type ErrorDefinition = z.infer<typeof ErrorDefinitionSchema>;
 export const ExecutionPatternSchema = z.object({
   start: z.array(z.string()).optional(),
   bootstrap: z.array(z.string()).optional(),
-  per_phase: z.array(z.string()).optional(),
+  per_activity: z.array(z.string()).optional(),
   skill_loading: z.array(z.string()).optional(),
   discovery: z.array(z.string()).optional(),
   transitions: z.array(z.string()).optional(),
@@ -66,7 +66,7 @@ export const InterpretationSchema = z.object({
   checkpoints: z.string().optional(),
   decisions: z.string().optional(),
   loops: z.string().optional(),
-  guides: z.string().optional(),
+  resources: z.string().optional(),
   templates: z.string().optional(),
 }).passthrough();
 export type Interpretation = z.infer<typeof InterpretationSchema>;

@@ -40,7 +40,8 @@ describe('activity-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('start-workflow');
-        expect(result.value.version).toBe('2.1.0');
+        expect(result.value.version).toBe('3.0.0');
+        expect(result.value.name).toBeDefined();
         expect(result.value.problem).toBeDefined();
       }
     });
@@ -62,9 +63,12 @@ describe('activity-loader', () => {
       if (result.success) {
         const activity = result.value;
         
+        // Check name (required in unified schema)
+        expect(activity.name).toBe('Start Workflow');
+        
         // Check recognition patterns
         expect(activity.recognition).toBeDefined();
-        expect(activity.recognition.length).toBeGreaterThan(0);
+        expect(activity.recognition!.length).toBeGreaterThan(0);
         
         // Check skills
         expect(activity.skills).toBeDefined();
@@ -73,15 +77,15 @@ describe('activity-loader', () => {
         
         // Check outcome
         expect(activity.outcome).toBeDefined();
-        expect(activity.outcome.length).toBeGreaterThan(0);
+        expect(activity.outcome!.length).toBeGreaterThan(0);
         
-        // Check flow
-        expect(activity.flow).toBeDefined();
-        expect(activity.flow.length).toBeGreaterThan(0);
+        // Check steps (unified schema uses steps, not flow)
+        expect(activity.steps).toBeDefined();
+        expect(activity.steps!.length).toBeGreaterThan(0);
         
         // Check context to preserve
         expect(activity.context_to_preserve).toBeDefined();
-        expect(activity.context_to_preserve.length).toBeGreaterThan(0);
+        expect(activity.context_to_preserve!.length).toBeGreaterThan(0);
       }
     });
 
@@ -105,7 +109,8 @@ describe('activity-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.description).toBeDefined();
-        expect(result.value.activities.length).toBe(3);
+        // 3 meta activities + 11 work-package activities = 14 total
+        expect(result.value.activities.length).toBeGreaterThanOrEqual(14);
       }
     });
 
@@ -130,7 +135,15 @@ describe('activity-loader', () => {
         for (const activity of result.value.activities) {
           expect(activity.id).toBeDefined();
           expect(activity.problem).toBeDefined();
-          expect(activity.primary_skill).toBe('workflow-execution');
+          expect(activity.primary_skill).toBeDefined();
+          expect(activity.workflowId).toBeDefined();
+        }
+        
+        // Meta activities should have workflow-execution or activity-resolution as primary skill
+        const metaActivities = result.value.activities.filter(a => a.workflowId === 'meta');
+        const validMetaSkills = ['workflow-execution', 'activity-resolution'];
+        for (const activity of metaActivities) {
+          expect(validMetaSkills).toContain(activity.primary_skill);
         }
       }
     });
@@ -144,7 +157,7 @@ describe('activity-loader', () => {
         expect(result.value.usage).toBeDefined();
         expect(result.value.usage).toContain('next_action');
         
-        // Check each activity has next_action
+        // Check each activity has next_action pointing to its primary skill
         for (const activity of result.value.activities) {
           expect(activity.next_action).toBeDefined();
           expect(activity.next_action.tool).toBe('get_skill');

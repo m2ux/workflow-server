@@ -20,7 +20,7 @@ Workflow Server uses a **Goal → Activity → Skill → Tools** architecture to
 After initial setup of an always-applied [rule](docs/ide-setup.md), agents:
 1. **Match the user's goal** to an activity via `get_activities` (returns `quick_match` patterns and `next_action` guidance)
 2. **Load the primary skill** via `get_skill` to get tool orchestration patterns (execution order, state tracking, error recovery)
-3. **Execute workflow phases** using skill-directed tools (`get_workflow`, `get_phase`, `get_checkpoint`, `validate_transition`)
+3. **Execute workflow activities** using skill-directed tools (`get_workflow`, `get_workflow_activity`, `get_checkpoint`, `validate_transition`)
 
 This reduces context overhead and provides deterministic tool selection.
 
@@ -32,16 +32,26 @@ This reduces context overhead and provides deterministic tool selection.
 > ```
 > Solution Domain:
 > ```
-> Skill(s) (execute-workflow) → Tool(s) (get-transition, get-phase, get-checkpoint, ..)
+> Skill(s) (workflow-execution) → Tool(s) (validate_transition, get_workflow_activity, get_checkpoint, ..)
 > ```
 
 ### Activities
+
+Activities in the meta workflow serve as entry points for workflow operations:
 
 | Activity | Description |
 |----------|-----------|
 | `start-workflow` | Begin executing a new workflow from the beginning |
 | `resume-workflow` | Continue a workflow that was previously started |
 | `end-workflow` | Complete and finalize an active workflow |
+
+### Available Workflows
+
+| Workflow | Activities | Description |
+|----------|------------|-------------|
+| `meta` | 3 | Bootstrap workflow - manages activities and universal skills |
+| `work-package` | 11 | Single work package from issue to merged PR |
+| `work-packages` | 7 | Plan and coordinate multiple related work packages |
 
 ---
 

@@ -3,11 +3,11 @@ export class WorkflowNotFoundError extends Error {
   constructor(public readonly workflowId: string) { super(`Workflow not found: ${workflowId}`); this.name = 'WorkflowNotFoundError'; }
 }
 
-export class GuideNotFoundError extends Error {
-  readonly code = 'GUIDE_NOT_FOUND';
-  constructor(public readonly guideId: string, public readonly workflowId?: string) { 
-    super(workflowId ? `Guide not found: ${guideId} in workflow ${workflowId}` : `Guide not found: ${guideId}`); 
-    this.name = 'GuideNotFoundError'; 
+export class ResourceNotFoundError extends Error {
+  readonly code = 'RESOURCE_NOT_FOUND';
+  constructor(public readonly resourceId: string, public readonly workflowId?: string) { 
+    super(workflowId ? `Resource not found: ${resourceId} in workflow ${workflowId}` : `Resource not found: ${resourceId}`); 
+    this.name = 'ResourceNotFoundError'; 
   }
 }
 
@@ -16,13 +16,6 @@ export class TemplateNotFoundError extends Error {
   constructor(public readonly templateIndex: string, public readonly workflowId: string) { 
     super(`Template not found: index ${templateIndex} in workflow ${workflowId}`); 
     this.name = 'TemplateNotFoundError'; 
-  }
-}
-
-export class PhaseNotFoundError extends Error {
-  readonly code = 'PHASE_NOT_FOUND';
-  constructor(public readonly workflowId: string, public readonly phaseId: string) {
-    super(`Phase not found: ${phaseId} in workflow ${workflowId}`); this.name = 'PhaseNotFoundError';
   }
 }
 
@@ -40,7 +33,10 @@ export class SkillNotFoundError extends Error {
 
 export class ActivityNotFoundError extends Error {
   readonly code = 'ACTIVITY_NOT_FOUND';
-  constructor(public readonly activityId: string) { super(`Activity not found: ${activityId}`); this.name = 'ActivityNotFoundError'; }
+  constructor(public readonly activityId: string, public readonly workflowId?: string) { 
+    super(workflowId ? `Activity not found: ${activityId} in workflow ${workflowId}` : `Activity not found: ${activityId}`); 
+    this.name = 'ActivityNotFoundError'; 
+  }
 }
 
 export class RulesNotFoundError extends Error {
