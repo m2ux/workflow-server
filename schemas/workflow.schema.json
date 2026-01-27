@@ -4,6 +4,342 @@
   "description": "Workflow definition schema",
   "$ref": "#/definitions/workflow",
   "definitions": {
+    "action": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["log", "validate", "set", "emit"]
+        },
+        "target": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": ["action"],
+      "additionalProperties": false
+    },
+    "guide": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "section": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": ["path"],
+      "additionalProperties": false
+    },
+    "step": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "guide": {
+          "$ref": "#/definitions/guide"
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+    "checkpointOption": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "effect": {
+          "type": "object",
+          "properties": {
+            "setVariable": {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            "transitionTo": {
+              "type": "string"
+            },
+            "skipPhases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "label"],
+      "additionalProperties": false
+    },
+    "checkpoint": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "guide": {
+          "$ref": "#/definitions/guide"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/checkpointOption"
+          },
+          "minItems": 1
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "blocking": {
+          "type": "boolean",
+          "const": true,
+          "default": true
+        }
+      },
+      "required": ["id", "name", "message", "options"],
+      "additionalProperties": false
+    },
+    "decisionBranch": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "condition.schema.json"
+        },
+        "transitionTo": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["id", "label", "transitionTo"],
+      "additionalProperties": false
+    },
+    "decision": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "guide": {
+          "$ref": "#/definitions/guide"
+        },
+        "branches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/decisionBranch"
+          },
+          "minItems": 2
+        }
+      },
+      "required": ["id", "name", "branches"],
+      "additionalProperties": false
+    },
+    "loop": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["forEach", "while", "doWhile"]
+        },
+        "variable": {
+          "type": "string"
+        },
+        "over": {
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "condition.schema.json"
+        },
+        "maxIterations": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 100
+        },
+        "breakCondition": {
+          "$ref": "condition.schema.json"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/step"
+          }
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["id", "name", "type"],
+      "additionalProperties": false
+    },
+    "transition": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "condition.schema.json"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["to"],
+      "additionalProperties": false
+    },
+    "phase": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "estimatedTime": {
+          "type": "string",
+          "pattern": "^\\d+(-\\d+)?\\s*(m|min|h|hr|hours?|d|days?)?$"
+        },
+        "guide": {
+          "$ref": "#/definitions/guide"
+        },
+        "entryActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        },
+        "exitActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/step"
+          }
+        },
+        "checkpoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/checkpoint"
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/decision"
+          }
+        },
+        "loops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/loop"
+          }
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/transition"
+          }
+        }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+    "variable": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "array", "object"]
+        },
+        "description": {
+          "type": "string"
+        },
+        "defaultValue": {},
+        "required": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["name", "type"],
+      "additionalProperties": false
+    },
     "workflow": {
       "type": "object",
       "properties": {
@@ -41,35 +377,7 @@
         "variables": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "string",
-                  "number",
-                  "boolean",
-                  "array",
-                  "object"
-                ]
-              },
-              "description": {
-                "type": "string"
-              },
-              "defaultValue": {},
-              "required": {
-                "type": "boolean",
-                "default": false
-              }
-            },
-            "required": [
-              "name",
-              "type"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/variable"
           }
         },
         "initialPhase": {
@@ -78,870 +386,12 @@
         "phases": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "required": {
-                "type": "boolean",
-                "default": true
-              },
-              "estimatedTime": {
-                "type": "string",
-                "pattern": "^\\d+(-\\d+)?\\s*(m|min|h|hr|hours?|d|days?)?$"
-              },
-              "guide": {
-                "type": "object",
-                "properties": {
-                  "path": {
-                    "type": "string"
-                  },
-                  "section": {
-                    "type": "string"
-                  },
-                  "title": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "path"
-                ],
-                "additionalProperties": false
-              },
-              "entryActions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "action": {
-                      "type": "string",
-                      "enum": [
-                        "log",
-                        "validate",
-                        "set",
-                        "emit"
-                      ]
-                    },
-                    "target": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "value": {}
-                  },
-                  "required": [
-                    "action"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "exitActions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "action": {
-                      "type": "string",
-                      "enum": [
-                        "log",
-                        "validate",
-                        "set",
-                        "emit"
-                      ]
-                    },
-                    "target": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "value": {}
-                  },
-                  "required": [
-                    "action"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "steps": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "guide": {
-                      "type": "object",
-                      "properties": {
-                        "path": {
-                          "type": "string"
-                        },
-                        "section": {
-                          "type": "string"
-                        },
-                        "title": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "path"
-                      ],
-                      "additionalProperties": false
-                    },
-                    "required": {
-                      "type": "boolean",
-                      "default": true
-                    },
-                    "actions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "action": {
-                            "type": "string",
-                            "enum": [
-                              "log",
-                              "validate",
-                              "set",
-                              "emit"
-                            ]
-                          },
-                          "target": {
-                            "type": "string"
-                          },
-                          "message": {
-                            "type": "string"
-                          },
-                          "value": {}
-                        },
-                        "required": [
-                          "action"
-                        ],
-                        "additionalProperties": false
-                      }
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "name"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "checkpoints": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "guide": {
-                      "type": "object",
-                      "properties": {
-                        "path": {
-                          "type": "string"
-                        },
-                        "section": {
-                          "type": "string"
-                        },
-                        "title": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "path"
-                      ],
-                      "additionalProperties": false
-                    },
-                    "options": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "label": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "effect": {
-                            "type": "object",
-                            "properties": {
-                              "setVariable": {
-                                "type": "object",
-                                "additionalProperties": {}
-                              },
-                              "transitionTo": {
-                                "type": "string"
-                              },
-                              "skipPhases": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
-                              }
-                            },
-                            "additionalProperties": false
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "label"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "minItems": 1
-                    },
-                    "required": {
-                      "type": "boolean",
-                      "default": true
-                    },
-                    "blocking": {
-                      "type": "boolean",
-                      "const": true,
-                      "default": true
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "name",
-                    "message",
-                    "options"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "decisions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "guide": {
-                      "type": "object",
-                      "properties": {
-                        "path": {
-                          "type": "string"
-                        },
-                        "section": {
-                          "type": "string"
-                        },
-                        "title": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "path"
-                      ],
-                      "additionalProperties": false
-                    },
-                    "branches": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "label": {
-                            "type": "string"
-                          },
-                          "condition": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "simple"
-                                  },
-                                  "variable": {
-                                    "type": "string"
-                                  },
-                                  "operator": {
-                                    "type": "string",
-                                    "enum": [
-                                      "==",
-                                      "!=",
-                                      ">",
-                                      "<",
-                                      ">=",
-                                      "<=",
-                                      "exists",
-                                      "notExists"
-                                    ]
-                                  },
-                                  "value": {
-                                    "type": [
-                                      "string",
-                                      "number",
-                                      "boolean",
-                                      "null"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "variable",
-                                  "operator"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "and"
-                                  },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "or"
-                                  },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "not"
-                                  },
-                                  "condition": {}
-                                },
-                                "required": [
-                                  "type",
-                                  "condition"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ]
-                          },
-                          "transitionTo": {
-                            "type": "string"
-                          },
-                          "isDefault": {
-                            "type": "boolean",
-                            "default": false
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "label",
-                          "transitionTo"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "minItems": 2
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "name",
-                    "branches"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "loops": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "forEach",
-                        "while",
-                        "doWhile"
-                      ]
-                    },
-                    "variable": {
-                      "type": "string"
-                    },
-                    "over": {
-                      "type": "string"
-                    },
-                    "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ]
-                    },
-                    "maxIterations": {
-                      "type": "integer",
-                      "exclusiveMinimum": 0,
-                      "default": 100
-                    },
-                    "breakCondition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ]
-                    },
-                    "steps": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "guide": {
-                            "type": "object",
-                            "properties": {
-                              "path": {
-                                "type": "string"
-                              },
-                              "section": {
-                                "type": "string"
-                              },
-                              "title": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "path"
-                            ],
-                            "additionalProperties": false
-                          },
-                          "required": {
-                            "type": "boolean",
-                            "default": true
-                          },
-                          "actions": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "action": {
-                                  "type": "string",
-                                  "enum": [
-                                    "log",
-                                    "validate",
-                                    "set",
-                                    "emit"
-                                  ]
-                                },
-                                "target": {
-                                  "type": "string"
-                                },
-                                "message": {
-                                  "type": "string"
-                                },
-                                "value": {}
-                              },
-                              "required": [
-                                "action"
-                              ],
-                              "additionalProperties": false
-                            }
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
-                    "phases": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "name",
-                    "type"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "transitions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "to": {
-                      "type": "string"
-                    },
-                    "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ]
-                    },
-                    "isDefault": {
-                      "type": "boolean",
-                      "default": false
-                    }
-                  },
-                  "required": [
-                    "to"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            },
-            "required": [
-              "id",
-              "name"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/phase"
           },
           "minItems": 1
         }
       },
-      "required": [
-        "id",
-        "version",
-        "title",
-        "initialPhase",
-        "phases"
-      ],
+      "required": ["id", "version", "title", "initialPhase", "phases"],
       "additionalProperties": false
     }
   }

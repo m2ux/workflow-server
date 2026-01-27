@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+// Phase and step indices are 1-based integers
+const PhaseIndex = z.number().int().min(1);
+const StepIndex = z.number().int().min(1);
+
 export const HistoryEventTypeSchema = z.enum([
   'workflow_started', 'workflow_completed', 'workflow_aborted',
   'phase_entered', 'phase_exited', 'phase_skipped',
@@ -14,38 +18,39 @@ export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 export const HistoryEntrySchema = z.object({
   timestamp: z.string().datetime(),
   type: HistoryEventTypeSchema,
-  phase: z.string().optional(),
-  step: z.string().optional(),
-  checkpoint: z.string().optional(),
-  decision: z.string().optional(),
-  loop: z.string().optional(),
+  phase: PhaseIndex.optional(),
+  step: StepIndex.optional(),
+  checkpoint: z.number().int().min(1).optional(),
+  decision: z.number().int().min(1).optional(),
+  loop: z.number().int().min(1).optional(),
   data: z.record(z.unknown()).optional(),
   error: z.object({ message: z.string(), code: z.string().optional() }).optional(),
 });
 export type HistoryEntry = z.infer<typeof HistoryEntrySchema>;
 
+// Key format: "phaseIndex-checkpointIndex" (e.g., "1-2")
 export const CheckpointResponseSchema = z.object({
-  checkpointId: z.string(),
   optionId: z.string(),
   respondedAt: z.string().datetime(),
   effects: z.object({
     variablesSet: z.record(z.unknown()).optional(),
-    transitionedTo: z.string().optional(),
-    phasesSkipped: z.array(z.string()).optional(),
+    transitionedTo: PhaseIndex.optional(),
+    phasesSkipped: z.array(PhaseIndex).optional(),
   }).optional(),
 });
 export type CheckpointResponse = z.infer<typeof CheckpointResponseSchema>;
 
+// Key format: "phaseIndex-decisionIndex" (e.g., "7-2")
 export const DecisionOutcomeSchema = z.object({
-  decisionId: z.string(),
   branchId: z.string(),
   decidedAt: z.string().datetime(),
-  transitionedTo: z.string(),
+  transitionedTo: PhaseIndex,
 });
 export type DecisionOutcome = z.infer<typeof DecisionOutcomeSchema>;
 
 export const LoopStateSchema = z.object({
-  loopId: z.string(),
+  phaseIndex: PhaseIndex,
+  loopIndex: z.number().int().min(1),
   currentIteration: z.number().int().nonnegative(),
   totalItems: z.number().int().nonnegative().optional(),
   currentItem: z.unknown().optional(),
@@ -60,11 +65,11 @@ export const WorkflowStateSchema = z.object({
   startedAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   completedAt: z.string().datetime().optional(),
-  currentPhase: z.string(),
-  currentStep: z.string().optional(),
-  completedPhases: z.array(z.string()).default([]),
-  skippedPhases: z.array(z.string()).default([]),
-  completedSteps: z.record(z.array(z.string())).default({}),
+  currentPhase: PhaseIndex,
+  currentStep: StepIndex.optional(),
+  completedPhases: z.array(PhaseIndex).default([]),
+  skippedPhases: z.array(PhaseIndex).default([]),
+  completedSteps: z.record(z.array(StepIndex)).default({}),
   checkpointResponses: z.record(CheckpointResponseSchema).default({}),
   decisionOutcomes: z.record(DecisionOutcomeSchema).default({}),
   activeLoops: z.array(LoopStateSchema).default([]),
@@ -74,14 +79,14 @@ export const WorkflowStateSchema = z.object({
   lastError: z.object({
     message: z.string(),
     code: z.string().optional(),
-    phase: z.string().optional(),
-    step: z.string().optional(),
+    phase: PhaseIndex.optional(),
+    step: StepIndex.optional(),
     timestamp: z.string().datetime(),
   }).optional(),
 });
 export type WorkflowState = z.infer<typeof WorkflowStateSchema>;
 
-export function createInitialState(workflowId: string, workflowVersion: string, initialPhase: string, initialVariables?: Record<string, unknown>): WorkflowState {
+export function createInitialState(workflowId: string, workflowVersion: string, initialPhase: number, initialVariables?: Record<string, unknown>): WorkflowState {
   const now = new Date().toISOString();
   return {
     workflowId, workflowVersion, stateVersion: 1, startedAt: now, updatedAt: now, currentPhase: initialPhase,

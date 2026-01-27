@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../src/loaders/skill-loader.js';
+import { listSkills, listUniversalSkills, readSkill, readSkillIndex } from '../src/loaders/skill-loader.js';
 import { join } from 'node:path';
 
 const WORKFLOW_DIR = join(process.cwd(), 'workflows');
@@ -24,14 +24,6 @@ describe('skill-loader', () => {
       expect(activityResolution?.name).toBe('Activity Resolution');
       expect(activityResolution?.path).toBe('00-activity-resolution.toon');
       expect(activityResolution?.workflowId).toBeUndefined();
-    });
-  });
-
-  describe('listWorkflowSkills', () => {
-    it('should return empty for workflow without skills', async () => {
-      const skills = await listWorkflowSkills(WORKFLOW_DIR, 'work-package');
-      // work-package no longer has workflow-specific skills (they're all in meta)
-      expect(skills.length).toBe(0);
     });
   });
 
@@ -100,8 +92,9 @@ describe('skill-loader', () => {
         
         // Check state management
         expect(skill.state).toBeDefined();
-        expect(skill.state.track).toContain('currentPhase');
-        expect(skill.state.track).toContain('completedPhases');
+        expect(skill.state.structure).toBeDefined();
+        expect(skill.state.structure.currentPhase).toBeDefined();
+        expect(skill.state.structure.completedPhases).toBeDefined();
         
         // Check interpretation
         expect(skill.interpretation).toBeDefined();

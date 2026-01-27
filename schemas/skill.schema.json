@@ -1,0 +1,397 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "skill",
+  "description": "Skill definition schema for workflow-server",
+  "$ref": "#/definitions/skill",
+  "definitions": {
+    "toolDefinition": {
+      "type": "object",
+      "properties": {
+        "when": {
+          "type": "string",
+          "description": "Conditions or triggers for using this tool"
+        },
+        "params": {
+          "type": "string",
+          "description": "Parameters the tool accepts"
+        },
+        "returns": {
+          "type": "string",
+          "description": "What the tool returns"
+        },
+        "next": {
+          "type": "string",
+          "description": "Suggested next tool to call"
+        },
+        "action": {
+          "type": "string",
+          "description": "Action to take with the result"
+        },
+        "usage": {
+          "type": "string",
+          "description": "How to use the tool effectively"
+        },
+        "preserve": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Fields to preserve from the result"
+        }
+      },
+      "additionalProperties": true
+    },
+    "errorDefinition": {
+      "type": "object",
+      "properties": {
+        "cause": {
+          "type": "string",
+          "description": "What causes this error"
+        },
+        "recovery": {
+          "type": "string",
+          "description": "How to recover from this error"
+        },
+        "detection": {
+          "type": "string",
+          "description": "How to detect this error condition"
+        },
+        "resolution": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Steps to resolve the error"
+        },
+        "note": {
+          "type": "string",
+          "description": "Additional notes about the error"
+        }
+      },
+      "additionalProperties": true
+    },
+    "executionPattern": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tools to call at workflow start"
+        },
+        "bootstrap": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Initial bootstrap tools"
+        },
+        "per_phase": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tools to call for each phase"
+        },
+        "skill_loading": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tools for loading skills"
+        },
+        "discovery": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tools for resource discovery"
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tools for phase transitions"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tools for artifact management"
+        }
+      },
+      "additionalProperties": true
+    },
+    "architecture": {
+      "type": "object",
+      "properties": {
+        "principle": {
+          "type": "string",
+          "description": "Core architectural principle"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Architectural layers"
+        },
+        "gap_detection": {
+          "type": "string",
+          "description": "How to detect architectural gaps"
+        }
+      },
+      "additionalProperties": true
+    },
+    "matching": {
+      "type": "object",
+      "properties": {
+        "quick_match": {
+          "type": "string",
+          "description": "Fast matching strategy"
+        },
+        "fallback": {
+          "type": "string",
+          "description": "Fallback matching strategy"
+        },
+        "ambiguous": {
+          "type": "string",
+          "description": "Handling ambiguous matches"
+        },
+        "never": {
+          "type": "string",
+          "description": "What to never do"
+        }
+      },
+      "additionalProperties": true
+    },
+    "stateStructure": {
+      "type": "object",
+      "description": "State field definitions",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "stateDefinition": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "description": "Format description for state values"
+        },
+        "structure": {
+          "$ref": "#/definitions/stateStructure"
+        },
+        "initialize": {
+          "type": "string",
+          "description": "How to initialize state"
+        },
+        "update_on": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "State update triggers and actions"
+        },
+        "checkpoint_response_format": {
+          "type": "object",
+          "description": "Format for checkpoint responses"
+        },
+        "decision_outcome_format": {
+          "type": "object",
+          "description": "Format for decision outcomes"
+        }
+      },
+      "additionalProperties": true
+    },
+    "interpretation": {
+      "type": "object",
+      "properties": {
+        "transitions": {
+          "type": "string"
+        },
+        "checkpoints": {
+          "type": "string"
+        },
+        "decisions": {
+          "type": "string"
+        },
+        "loops": {
+          "type": "string"
+        },
+        "guides": {
+          "type": "string"
+        },
+        "templates": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "numericFormat": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "examples": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "initialization": {
+      "type": "object",
+      "properties": {
+        "trigger": {
+          "type": "string"
+        },
+        "state": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "updatePattern": {
+      "type": "object",
+      "properties": {
+        "trigger": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "resumption": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "skill": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the skill"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version of the skill"
+        },
+        "capability": {
+          "type": "string",
+          "description": "What this skill enables agents to do"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the skill"
+        },
+        "architecture": {
+          "$ref": "#/definitions/architecture"
+        },
+        "execution_pattern": {
+          "$ref": "#/definitions/executionPattern"
+        },
+        "tools": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/toolDefinition"
+          },
+          "description": "Tool definitions and usage patterns"
+        },
+        "flow": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Ordered execution steps"
+        },
+        "matching": {
+          "$ref": "#/definitions/matching"
+        },
+        "state": {
+          "$ref": "#/definitions/stateDefinition"
+        },
+        "state_structure": {
+          "$ref": "#/definitions/stateStructure"
+        },
+        "numeric_format": {
+          "$ref": "#/definitions/numericFormat"
+        },
+        "initialization": {
+          "$ref": "#/definitions/initialization"
+        },
+        "update_patterns": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/updatePattern"
+          }
+        },
+        "checkpoint_response_format": {
+          "type": "object",
+          "description": "Format for checkpoint responses"
+        },
+        "decision_outcome_format": {
+          "type": "object",
+          "description": "Format for decision outcomes"
+        },
+        "history_event_types": {
+          "type": "object",
+          "description": "Categorized event types for history tracking"
+        },
+        "history_entry_format": {
+          "type": "object",
+          "description": "Format for history entries"
+        },
+        "status_values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Valid status values and their meanings"
+        },
+        "interpretation": {
+          "$ref": "#/definitions/interpretation"
+        },
+        "resumption": {
+          "$ref": "#/definitions/resumption"
+        },
+        "errors": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/errorDefinition"
+          },
+          "description": "Error definitions and recovery strategies"
+        }
+      },
+      "required": ["id", "version", "capability"],
+      "additionalProperties": true
+    }
+  }
+}
