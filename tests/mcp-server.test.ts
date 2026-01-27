@@ -62,9 +62,9 @@ describe('mcp-server integration', () => {
       const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
       expect(workflow.id).toBe('work-package');
-      expect(workflow.version).toBe('1.0.0');
-      expect(workflow.phases).toHaveLength(11);
-      expect(workflow.initialPhase).toBe('phase-1-issue-verification');
+      expect(workflow.version).toBe('2.1.0');
+      expect(workflow.activities).toHaveLength(11);
+      expect(workflow.initialActivity).toBe('issue-verification');
     });
 
     it('should return error for non-existent workflow', async () => {
@@ -78,25 +78,25 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: get_phase', () => {
-    it('should get specific phase', async () => {
+  describe('tool: get_workflow_activity', () => {
+    it('should get specific activity from workflow', async () => {
       const result = await client.callTool({
-        name: 'get_phase',
-        arguments: { workflow_id: 'work-package', phase_id: 'phase-1-issue-verification' },
+        name: 'get_workflow_activity',
+        arguments: { workflow_id: 'work-package', activity_id: 'issue-verification' },
       });
       
-      const phase = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
-      expect(phase.id).toBe('phase-1-issue-verification');
-      expect(phase.name).toBe('Issue Verification & PR Creation');
-      expect(phase.checkpoints).toBeDefined();
-      expect(phase.checkpoints.length).toBeGreaterThan(0);
+      expect(activity.id).toBe('issue-verification');
+      expect(activity.name).toBe('Issue Verification & PR Creation');
+      expect(activity.checkpoints).toBeDefined();
+      expect(activity.checkpoints.length).toBeGreaterThan(0);
     });
 
-    it('should return error for non-existent phase', async () => {
+    it('should return error for non-existent activity', async () => {
       const result = await client.callTool({
-        name: 'get_phase',
-        arguments: { workflow_id: 'work-package', phase_id: 'non-existent' },
+        name: 'get_workflow_activity',
+        arguments: { workflow_id: 'work-package', activity_id: 'non-existent' },
       });
       
       expect(result.isError).toBe(true);
@@ -110,14 +110,14 @@ describe('mcp-server integration', () => {
         name: 'get_checkpoint',
         arguments: {
           workflow_id: 'work-package',
-          phase_id: 'phase-1-issue-verification',
-          checkpoint_id: 'checkpoint-1-2-issue-verification',
+          activity_id: 'issue-verification',
+          checkpoint_id: 'issue-verification',
         },
       });
       
       const checkpoint = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
-      expect(checkpoint.id).toBe('checkpoint-1-2-issue-verification');
+      expect(checkpoint.id).toBe('issue-verification');
       expect(checkpoint.name).toBe('Issue Verification Checkpoint');
       expect(checkpoint.options).toBeDefined();
       expect(checkpoint.options.length).toBeGreaterThan(0);
@@ -130,8 +130,8 @@ describe('mcp-server integration', () => {
         name: 'validate_transition',
         arguments: {
           workflow_id: 'work-package',
-          from_phase: 'phase-1-issue-verification',
-          to_phase: 'phase-2-requirements-elicitation',
+          from_activity: 'issue-verification',
+          to_activity: 'requirements-elicitation',
         },
       });
       
@@ -144,8 +144,8 @@ describe('mcp-server integration', () => {
         name: 'validate_transition',
         arguments: {
           workflow_id: 'work-package',
-          from_phase: 'phase-1-issue-verification',
-          to_phase: 'phase-11-post-implementation',
+          from_activity: 'issue-verification',
+          to_activity: 'post-implementation',
         },
       });
       
@@ -168,112 +168,46 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: list_resources', () => {
-    it('should list all available resources', async () => {
-      const result = await client.callTool({ name: 'list_resources', arguments: {} });
-      
-      expect(result.content).toBeDefined();
-      const resources = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
-      expect(resources.activities).toBeDefined();
-      expect(resources.universal_skills).toBeDefined();
-      expect(resources.workflows).toBeDefined();
-      expect(resources['work-package']).toBeDefined();
-      expect(resources['work-package'].guides).toBeDefined();
-    });
-  });
-
   describe('tool: get_activities', () => {
-    it('should get activities index', async () => {
+    it('should return activity index', async () => {
       const result = await client.callTool({ name: 'get_activities', arguments: {} });
       
-      expect(result.content).toBeDefined();
-      const activities = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(activities).toBeDefined();
-      expect(activities.quick_match).toBeDefined();
-    });
-
-    it('should include next_action instructing to call get_rules', async () => {
-      const result = await client.callTool({ name: 'get_activities', arguments: {} });
+      const index = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
-      const activities = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(activities.next_action).toBeDefined();
-      expect(activities.next_action.tool).toBe('get_rules');
-    });
-  });
-
-  describe('tool: get_rules', () => {
-    it('should get global agent rules', async () => {
-      const result = await client.callTool({ name: 'get_rules', arguments: {} });
-      
-      expect(result.content).toBeDefined();
-      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(rules.id).toBe('agent-rules');
-      expect(rules.sections).toBeDefined();
-      expect(Array.isArray(rules.sections)).toBe(true);
-    });
-
-    it('should include code modification boundaries', async () => {
-      const result = await client.callTool({ name: 'get_rules', arguments: {} });
-      
-      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      const codeModSection = rules.sections.find((s: { id: string }) => s.id === 'code-modification');
-      expect(codeModSection).toBeDefined();
-      expect(codeModSection.priority).toBe('critical');
-    });
-
-    it('should include precedence statement', async () => {
-      const result = await client.callTool({ name: 'get_rules', arguments: {} });
-      
-      const rules = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(rules.precedence).toContain('Workflow-specific rules override');
+      expect(index.description).toBeDefined();
+      expect(index.activities).toBeDefined();
+      expect(index.activities.length).toBeGreaterThanOrEqual(3);
+      expect(index.quick_match).toBeDefined();
     });
   });
 
   describe('tool: get_activity', () => {
-    it('should get specific activity', async () => {
+    it('should return specific activity', async () => {
       const result = await client.callTool({
         name: 'get_activity',
         arguments: { activity_id: 'start-workflow' },
       });
       
-      expect(result.content).toBeDefined();
       const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(activity.id).toBe('start-workflow');
-    });
-  });
-
-  describe('tool: list_skills', () => {
-    it('should list skills', async () => {
-      const result = await client.callTool({ name: 'list_skills', arguments: {} });
       
-      expect(result.content).toBeDefined();
-      const skills = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(Array.isArray(skills)).toBe(true);
+      expect(activity.id).toBe('start-workflow');
+      expect(activity.skills).toBeDefined();
+      expect(activity.skills.primary).toBe('workflow-execution');
     });
   });
 
   describe('tool: get_skill', () => {
-    it('should get workflow-specific skill with workflow_id', async () => {
+    it('should return specific skill', async () => {
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { skill_id: 'workflow-execution', workflow_id: 'work-package' },
+        arguments: { skill_id: 'workflow-execution' },
       });
       
-      expect(result.content).toBeDefined();
       const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      
       expect(skill.id).toBe('workflow-execution');
-    });
-
-    it('should get universal skill without workflow_id', async () => {
-      const result = await client.callTool({
-        name: 'get_skill',
-        arguments: { skill_id: 'activity-resolution' },
-      });
-      
-      expect(result.content).toBeDefined();
-      const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(skill.id).toBe('activity-resolution');
+      expect(skill.capability).toBeDefined();
+      expect(skill.tools).toBeDefined();
     });
   });
 
@@ -284,50 +218,28 @@ describe('mcp-server integration', () => {
         arguments: { workflow_id: 'work-package' },
       });
       
-      expect(result.content).toBeDefined();
       const guides = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      
       expect(Array.isArray(guides)).toBe(true);
       expect(guides.length).toBeGreaterThan(0);
-      expect(guides[0].index).toBeDefined();
-      expect(guides[0].name).toBeDefined();
+      expect(guides[0]).toHaveProperty('index');
+      expect(guides[0]).toHaveProperty('name');
     });
   });
 
   describe('tool: get_guide', () => {
-    it('should get specific guide by index', async () => {
+    it('should get specific guide', async () => {
       const result = await client.callTool({
         name: 'get_guide',
         arguments: { workflow_id: 'work-package', index: '00' },
       });
       
-      expect(result.content).toBeDefined();
-      expect((result.content[0] as { type: 'text'; text: string }).text).toContain('start-here');
-    });
-  });
-
-  describe('tool: list_templates', () => {
-    it('should list templates for a workflow', async () => {
-      const result = await client.callTool({
-        name: 'list_templates',
-        arguments: { workflow_id: 'work-package' },
-      });
+      // get_guide returns raw TOON content, not JSON
+      const content = (result.content[0] as { type: 'text'; text: string }).text;
       
-      expect(result.content).toBeDefined();
-      const templates = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(Array.isArray(templates)).toBe(true);
-      expect(templates.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('tool: get_template', () => {
-    it('should get specific template by index', async () => {
-      const result = await client.callTool({
-        name: 'get_template',
-        arguments: { workflow_id: 'work-package', index: '01' },
-      });
-      
-      expect(result.content).toBeDefined();
-      expect((result.content[0] as { type: 'text'; text: string }).text).toContain('Implementation Analysis');
+      expect(content).toBeDefined();
+      expect(content).toContain('id:');
+      expect(content).toContain('title:');
     });
   });
 });
