@@ -1,0 +1,55 @@
+id: implementation-analysis
+version: 1.0.0
+name: Implementation Analysis
+description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
+problem: User needs to understand current state before planning changes
+recognition[3]:
+  - analyze implementation
+  - analyze current state
+  - implementation analysis
+skills:
+  primary: implementation-analysis
+required: true
+estimatedTime: 10-20m
+steps[2]:
+  - id: analyze
+    name: Complete implementation analysis
+    description: Analyze existing code, establish baselines, identify gaps
+  - id: document
+    name: Create analysis document
+    description: Create 01-implementation-analysis.md
+checkpoints[1]:
+  - id: research-decision
+    name: Research Decision Checkpoint
+    message: Implementation analysis complete. Would you like to perform research?
+    options[2]:
+      - id: yes-research
+        label: "Yes, perform research"
+        effect:
+          setVariable:
+            needs_research: true
+      - id: no-skip
+        label: "No, skip research"
+        effect:
+          setVariable:
+            needs_research: false
+transitions[2]:
+  - to: research
+    condition:
+      type: simple
+      variable: needs_research
+      operator: ==
+      value: true
+  - to: plan-prepare
+    condition:
+      type: simple
+      variable: needs_research
+      operator: ==
+      value: false
+    isDefault: true
+outcome[2]:
+  - Current state documented
+  - Baseline metrics established
+context_to_preserve[2]:
+  - analysis_findings - Key findings from analysis
+  - baseline_metrics - Established baselines

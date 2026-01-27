@@ -1,13 +1,13 @@
 id: workflow-execution
-version: 2.0.0
+version: 3.0.0
 capability: Execute workflows from start to completion with consistent tool usage
 execution_pattern:
   start[3]:
     - list_workflows
     - get_workflow
     - list_guides
-  per_phase[3]:
-    - get_phase
+  per_activity[3]:
+    - get_workflow_activity
     - get_checkpoint
     - get_guide
   transitions[1]:
@@ -24,17 +24,17 @@ tools:
   get_workflow:
     when: Loading workflow for execution
     params: workflow_id
-    returns: Complete workflow definition
+    returns: Complete workflow definition with inline activities
     preserve[5]:
       - id
-      - initialPhase
+      - initialActivity
       - variables
       - rules
-      - phases
-  get_phase:
-    when: Entering a new phase
-    params: workflow_id, phase_id
-    returns: "Phase details with steps, checkpoints, decisions"
+      - activities
+  get_workflow_activity:
+    when: Entering a new activity within a workflow
+    params: workflow_id, activity_id
+    returns: "Activity details with steps, checkpoints, decisions"
     preserve[4]:
       - steps
       - checkpoints
@@ -42,12 +42,12 @@ tools:
       - transitions
   get_checkpoint:
     when: User decision required at checkpoint
-    params: workflow_id, phase_id, checkpoint_id
+    params: workflow_id, activity_id, checkpoint_id
     returns: Checkpoint options and their effects
     action: Present options to user; apply selected effect
   validate_transition:
-    when: Moving between phases
-    params: workflow_id, from_phase, to_phase
+    when: Moving between activities
+    params: workflow_id, from_activity, to_activity
     returns: Validity of transition and applicable conditions
   list_guides:
     when: Starting a workflow; understanding available guidance
@@ -55,12 +55,12 @@ tools:
     returns: Array of guide entries with index, name, description
     usage: Review guide list at workflow start; reference guides during execution
   get_guide:
-    when: "Phase requires guidance; user asks for help; complex step encountered"
+    when: "Activity requires guidance; user asks for help; complex step encountered"
     params: workflow_id, index
     returns: Full guide content in TOON format
-    usage: Guides provide detailed instructions for workflow phases and steps
+    usage: Guides provide detailed instructions for workflow activities and steps
   list_templates:
-    when: Phase requires artifact creation; user needs document format
+    when: Activity requires artifact creation; user needs document format
     params: workflow_id
     returns: Array of template entries with index, name, description
     usage: Review templates when creating documents or artifacts
@@ -70,7 +70,7 @@ tools:
     returns: Template content with placeholders
     usage: Fill template placeholders with context-specific values
 state:
-  format: Numeric indices (1-based) for phases and steps
+  format: Activity IDs for current position, step indices within activities
   structure:
     workflowId: string
     workflowVersion: string
@@ -78,56 +78,59 @@ state:
     startedAt: datetime
     updatedAt: datetime
     completedAt: datetime (when finished)
-    currentPhase: integer (1-based)
-    currentStep: integer (1-based within phase)
-    completedPhases: integer[]
-    skippedPhases: integer[]
-    completedSteps: "Record<phaseIndex, stepIndex[]>"
-    checkpointResponses: "Record<'phase-checkpoint', Response>"
-    decisionOutcomes: "Record<'phase-decision', Outcome>"
+    currentActivity: string (activity ID)
+    currentStep: integer (1-based within activity)
+    completedActivities: string[] (activity IDs)
+    skippedActivities: string[] (activity IDs)
+    completedSteps: "Record<activityId, stepIndex[]>"
+    checkpointResponses: "Record<'activity-checkpoint', Response>"
+    decisionOutcomes: "Record<'activity-decision', Outcome>"
     activeLoops: LoopState[]
     variables: "Record<string, any>"
     history: HistoryEntry[]
     status: "enum: running, paused, completed, aborted, error"
-  initialize: "On get_workflow, set currentPhase: 1, currentStep: 1, status: 'running'"
+  initialize: "On get_workflow, set currentActivity to initialActivity, currentStep: 1, status: 'running'"
   update_on:
-    phase_transition: "Add previous phase index to completedPhases; set currentPhase to new index; reset currentStep to 1"
-    step_completion: "Add step index to completedSteps[currentPhase]; increment currentStep"
-    checkpoint_response: "Record response keyed by 'phase-checkpoint' (e.g., '2-1'); apply effects"
-    decision_outcome: "Record outcome keyed by 'phase-decision'; apply transitionTo"
+    activity_transition: "Add previous activity ID to completedActivities; set currentActivity to new ID; reset currentStep to 1"
+    step_completion: "Add step index to completedSteps[currentActivity]; increment currentStep"
+    checkpoint_response: "Record response keyed by 'activity-checkpoint'; apply effects"
+    decision_outcome: "Record outcome keyed by 'activity-decision'; apply transitionTo"
     variable_change: Update variables object
+    workflow_trigger: "Set status to suspended; record position; initialize child workflow with parentWorkflow ref"
+    workflow_return: "Resume from returnTo position; merge returnedContext; set status to running"
   checkpoint_response_format:
-    key: "'phase-checkpoint' (e.g., '1-2' for phase 1, checkpoint 2)"
+    key: "'activity-checkpoint' (e.g., 'issue-verification-1' for activity, checkpoint 1)"
     value:
       optionId: string
       respondedAt: datetime
       effects:
         variablesSet: "Record<string, any>"
-        transitionedTo: integer (phase index)
-        phasesSkipped: integer[]
+        transitionedTo: string (activity ID)
+        activitiesSkipped: string[]
   decision_outcome_format:
-    key: "'phase-decision' (e.g., '3-1' for phase 3, decision 1)"
+    key: "'activity-decision' (e.g., 'validate-1' for activity, decision 1)"
     value:
       branchId: string
       decidedAt: datetime
-      transitionedTo: integer (phase index)
+      transitionedTo: string (activity ID)
 interpretation:
   transitions: Evaluate conditions against state.variables; take matching transition or default
   checkpoints: Present message and options to user; apply effect from selected option
   decisions: Evaluate branch conditions; take first matching branch or default
   loops: "For forEach: iterate over collection; For while: check condition before each iteration"
-  guides: Reference guides when phase steps are unclear or user requests help
+  guides: Reference guides when activity steps are unclear or user requests help
   templates: Use templates when workflow requires artifact creation
+  triggers: "Suspend parent, initialize child with parentWorkflow ref, pass context, execute child to completion, return to parent, merge returnedContext"
 errors:
   workflow_not_found:
     cause: Invalid workflow_id parameter
     recovery: Call list_workflows to discover valid IDs
-  phase_not_found:
-    cause: Invalid phase_id or workflow not loaded
-    recovery: Verify phase exists in workflow.phases array
+  activity_not_found:
+    cause: Invalid activity_id or workflow not loaded
+    recovery: Verify activity exists in workflow.activities array
   invalid_transition:
-    cause: Transition not allowed from current phase
-    recovery: Check phase.transitions for valid targets; evaluate conditions
+    cause: Transition not allowed from current activity
+    recovery: Check activity.transitions for valid targets; evaluate conditions
   missing_variable:
     cause: Condition references undefined variable
     recovery: Check workflow.variables for required variables; ensure checkpoint effects set them

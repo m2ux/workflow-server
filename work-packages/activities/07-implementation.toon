@@ -1,0 +1,45 @@
+id: implementation
+version: 1.1.0
+name: Implementation
+description: Execute each planned work package in priority order by triggering the work-package workflow
+problem: Planned work packages need to be implemented one at a time according to the roadmap
+skills:
+  primary: workflow-execution
+triggers:
+  workflow: work-package
+  description: "Each iteration starts the work-package workflow for one planned package"
+steps[6]:
+  - id: select-package
+    name: Select next work package
+    description: Choose the highest priority unstarted work package from the roadmap
+  - id: trigger-workflow
+    name: Trigger work-package workflow
+    description: "Call get_workflow(work-package) and start the workflow for the selected package. Pass package context (issue, scope, dependencies) as initial variables."
+  - id: execute-workflow
+    name: Execute work-package workflow
+    description: "Follow the work-package workflow through all activities until PR is merged"
+  - id: return-to-roadmap
+    name: Return to roadmap
+    description: "After work-package workflow completes, return context to work-packages workflow"
+  - id: update-status
+    name: Update roadmap status
+    description: "Update START-HERE.md: mark completed package ✅, update progress"
+  - id: check-remaining
+    name: Check remaining packages
+    description: Determine if more work packages remain in priority order
+loops[1]:
+  - id: package-iteration
+    description: Repeat for each work package in priority order until all complete
+    condition: remaining_packages.length > 0
+    returnTo: select-package
+outcome[4]:
+  - All planned work packages implemented via work-package workflow
+  - Each package has merged PR
+  - Roadmap status reflects completion
+  - Initiative complete
+context_to_preserve[5]:
+  - current_package - Currently active work package (passed to work-package workflow)
+  - completed_packages - List of completed work packages
+  - remaining_packages - List of remaining work packages
+  - overall_progress - Percentage or fraction of completion
+  - parent_workflow - Reference back to work-packages context

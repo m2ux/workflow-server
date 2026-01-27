@@ -1,0 +1,56 @@
+id: validate
+version: 1.0.0
+name: Verify & Validate Design
+description: Validate the implementation through comprehensive testing. All tests must pass before the work package is considered complete.
+problem: User needs to validate the implementation passes all tests
+recognition[3]:
+  - validate implementation
+  - run tests
+  - verify build
+skills:
+  primary: validation
+required: true
+estimatedTime: 30-60m
+steps[3]:
+  - id: run-tests
+    name: Run all tests
+    description: "Unit, integration, e2e tests"
+  - id: verify-build
+    name: Verify build succeeds
+  - id: check-lint
+    name: Check for linter errors
+decisions[1]:
+  - id: validation-result
+    name: Validation Decision
+    description: Assess validation results and decide next action
+    branches[3]:
+      - id: pass
+        label: "Pass - All tests pass, build succeeds"
+        transitionTo: strategic-review
+        condition:
+          type: simple
+          variable: validation_passed
+          operator: ==
+          value: true
+      - id: minor-issues
+        label: "Minor issues - Isolated failures, localized bugs"
+        transitionTo: implement
+      - id: major-issues
+        label: Major issues - Fundamental design problems
+        transitionTo: plan-prepare
+        isDefault: true
+transitions[2]:
+  - to: strategic-review
+    condition:
+      type: simple
+      variable: validation_passed
+      operator: ==
+      value: true
+  - to: implement
+    isDefault: true
+outcome[2]:
+  - All tests passing
+  - Build successful
+context_to_preserve[2]:
+  - test_results - Test execution results
+  - build_status - Build success/failure status

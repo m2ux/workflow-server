@@ -1,0 +1,55 @@
+id: strategic-review
+version: 1.0.0
+name: Strategic Review
+description: Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution.
+problem: User needs to ensure changes are minimal and focused
+recognition[3]:
+  - strategic review
+  - review changes
+  - review implementation
+skills:
+  primary: strategic-review
+required: true
+estimatedTime: 15-30m
+steps[1]:
+  - id: complete-review
+    name: Complete strategic review
+    description: Review changes for scope, quality, and focus
+checkpoints[1]:
+  - id: review-findings
+    name: Strategic Review Checkpoint
+    message: Review findings confirmed?
+    options[2]{id,label}:
+      confirmed,Findings confirmed
+      needs-cleanup,Needs cleanup
+decisions[1]:
+  - id: review-result
+    name: Strategic Review Decision
+    description: Assess whether issues require re-planning
+    branches[2]:
+      - id: pass
+        label: Pass - Changes are minimal and focused
+        transitionTo: finalize
+        condition:
+          type: simple
+          variable: review_passed
+          operator: ==
+          value: true
+      - id: issues
+        label: Issues found - Significant rework needed
+        transitionTo: plan-prepare
+        isDefault: true
+transitions[2]:
+  - to: finalize
+    condition:
+      type: simple
+      variable: review_passed
+      operator: ==
+      value: true
+  - to: plan-prepare
+    isDefault: true
+outcome[1]:
+  - Changes validated as minimal and focused
+context_to_preserve[2]:
+  - review_findings - Findings from strategic review
+  - review_passed - Whether review passed

@@ -1,9 +1,9 @@
 id: state-management
-version: 1.0.0
-capability: Manage workflow execution state using numeric indices
+version: 2.0.0
+capability: Manage workflow execution state using activity IDs and step indices
 description: |
   Provides the state schema and patterns for tracking workflow execution progress.
-  State uses 1-based numeric indices for phases and steps rather than string prefixes.
+  State uses activity IDs for current position and step indices within activities.
 
 state_structure:
   workflowId: string
@@ -12,25 +12,40 @@ state_structure:
   startedAt: datetime
   updatedAt: datetime
   completedAt: datetime (when finished)
-  currentPhase: integer (1-based)
-  currentStep: integer (1-based within phase)
-  completedPhases: integer[]
-  skippedPhases: integer[]
-  completedSteps: "Record<phaseIndex, stepIndex[]>"
-  checkpointResponses: "Record<'phase-checkpoint', Response>"
-  decisionOutcomes: "Record<'phase-decision', Outcome>"
+  currentActivity: string (activity ID)
+  currentStep: integer (1-based within activity)
+  completedActivities: string[] (activity IDs)
+  skippedActivities: string[] (activity IDs)
+  completedSteps: "Record<activityId, stepIndex[]>"
+  checkpointResponses: "Record<'activity-checkpoint', Response>"
+  decisionOutcomes: "Record<'activity-decision', Outcome>"
   activeLoops: LoopState[]
   variables: "Record<string, any>"
   history: HistoryEntry[]
-  status: "enum: running, paused, completed, aborted, error"
+  status: "enum: running, paused, completed, aborted, error, suspended"
+  parentWorkflow: ParentWorkflowRef (null if root workflow)
+  triggeredWorkflows: TriggeredWorkflowRef[] (child workflows triggered from this one)
 
-numeric_format:
-  description: State uses 1-based numeric indices instead of string prefixes
+parent_workflow_structure:
+  workflowId: string (parent workflow ID)
+  activityId: string (activity that triggered this workflow)
+  passedContext: "Record<string, any>" (context passed from parent)
+  returnTo: "{ activityId: string, stepIndex: number }" (where to resume in parent)
+
+triggered_workflow_structure:
+  workflowId: string (child workflow ID)
+  triggeredAt: datetime
+  triggeredFrom: "{ activityId: string, stepIndex: number }"
+  status: "enum: running, completed, aborted"
+  returnedContext: "Record<string, any>" (context returned on completion)
+
+format:
+  description: State uses activity IDs for navigation, step indices within activities
   examples:
-    currentPhase: "2 (not 'phase-2')"
-    currentStep: "1 (not 'step-2-1')"
-    completedPhases: "[1, 2] (not ['phase-1', 'phase-2'])"
-    completedSteps: "{'1': [1, 2]} (not {'phase-1': ['step-1-1', 'step-1-2']})"
+    currentActivity: "'issue-verification' (activity ID from workflow)"
+    currentStep: "1 (1-based index within activity)"
+    completedActivities: "['issue-verification', 'requirements-elicitation']"
+    completedSteps: "{'issue-verification': [1], 'requirements-elicitation': [1, 2, 3]}"
 
 initialization:
   trigger: On workflow start (get_workflow)
@@ -40,10 +55,10 @@ initialization:
     stateVersion: 1
     startedAt: now()
     updatedAt: now()
-    currentPhase: 1
+    currentActivity: workflow.initialActivity
     currentStep: 1
-    completedPhases: []
-    skippedPhases: []
+    completedActivities: []
+    skippedActivities: []
     completedSteps: {}
     checkpointResponses: {}
     decisionOutcomes: {}
@@ -52,33 +67,33 @@ initialization:
     history:
       - timestamp: now()
         type: workflow_started
-        phase: 1
+        activity: workflow.initialActivity
     status: running
 
 update_patterns:
-  phase_transition:
-    trigger: Moving to a new phase
+  activity_transition:
+    trigger: Moving to a new activity
     actions:
-      - Add previous phase index to completedPhases
-      - Set currentPhase to new phase index
+      - Add previous activity ID to completedActivities
+      - Set currentActivity to new activity ID
       - Reset currentStep to 1
-      - Add history entry with type phase_entered
+      - Add history entry with type activity_entered
   step_completion:
     trigger: Completing a step
     actions:
-      - Add step index to completedSteps[currentPhase]
+      - Add step index to completedSteps[currentActivity]
       - Increment currentStep
       - Add history entry with type step_completed
   checkpoint_response:
     trigger: User responds to checkpoint
     actions:
-      - Record in checkpointResponses with key "phase-checkpoint"
-      - Apply effects (setVariable, transitionTo, skipPhases)
+      - Record in checkpointResponses with key "activity-checkpoint"
+      - Apply effects (setVariable, transitionTo, skipActivities)
       - Add history entry with type checkpoint_response
   decision_outcome:
     trigger: Decision branch is taken
     actions:
-      - Record in decisionOutcomes with key "phase-decision"
+      - Record in decisionOutcomes with key "activity-decision"
       - Store branchId and transitionedTo
       - Add history entry with type decision_branch_taken
   workflow_completion:
@@ -87,24 +102,41 @@ update_patterns:
       - Set completedAt to now()
       - Set status to completed
       - Add history entry with type workflow_completed
+      - If parentWorkflow exists, return context to parent
+  workflow_trigger:
+    trigger: Activity triggers another workflow
+    actions:
+      - Set current workflow status to suspended
+      - Add history entry with type workflow_triggered
+      - Record in triggeredWorkflows with current position
+      - Initialize new workflow state with parentWorkflow reference
+      - Pass context variables specified in triggers.passContext
+  workflow_return:
+    trigger: Triggered workflow completes and returns to parent
+    actions:
+      - Update triggeredWorkflows entry with returnedContext
+      - Set parent workflow status back to running
+      - Resume at returnTo position (activity and step)
+      - Merge returnedContext into parent variables if needed
+      - Add history entry with type workflow_returned
 
 checkpoint_response_format:
-  key: "'phase-checkpoint' (e.g., '1-2' for phase 1, checkpoint 2)"
+  key: "'activity-checkpoint' (e.g., 'issue-verification-1' for activity, checkpoint 1)"
   value:
     optionId: string
     respondedAt: datetime
     effects:
       variablesSet: "Record<string, any>"
-      transitionedTo: integer (phase index)
-      phasesSkipped: integer[]
+      transitionedTo: string (activity ID)
+      activitiesSkipped: string[]
   note: checkpointId is implicit in the key, not stored redundantly
 
 decision_outcome_format:
-  key: "'phase-decision' (e.g., '3-1' for phase 3, decision 1)"
+  key: "'activity-decision' (e.g., 'validate-1' for activity, decision 1)"
   value:
     branchId: string
     decidedAt: datetime
-    transitionedTo: integer (phase index)
+    transitionedTo: string (activity ID)
   note: decisionId is implicit in the key, not stored redundantly
 
 history_event_types:
@@ -112,10 +144,13 @@ history_event_types:
     - workflow_started
     - workflow_completed
     - workflow_aborted
-  phase:
-    - phase_entered
-    - phase_exited
-    - phase_skipped
+    - workflow_triggered
+    - workflow_returned
+    - workflow_suspended
+  activity:
+    - activity_entered
+    - activity_exited
+    - activity_skipped
   step:
     - step_started
     - step_completed
@@ -137,7 +172,7 @@ history_event_types:
 history_entry_format:
   timestamp: datetime
   type: "one of history_event_types"
-  phase: integer (phase index)
+  activity: string (activity ID)
   step: integer (step index, optional)
   checkpoint: integer (checkpoint index, optional)
   decision: integer (decision index, optional)
@@ -148,6 +183,7 @@ history_entry_format:
 status_values:
   running: Workflow actively executing
   paused: Awaiting user input (checkpoint)
+  suspended: Waiting for triggered child workflow to complete
   completed: Workflow finished successfully
   aborted: Workflow was cancelled
   error: Workflow encountered an error
@@ -158,7 +194,7 @@ resumption:
     - Load the state object
     - Verify workflowId and workflowVersion match available workflow
     - Set status to running if it was paused
-    - Load the phase at currentPhase index
-    - Continue from currentStep within that phase
+    - Load the activity at currentActivity
+    - Continue from currentStep within that activity
     - Present any pending checkpoints
   note: The history array provides context for what was previously completed

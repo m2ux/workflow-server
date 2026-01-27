@@ -1,5 +1,6 @@
 id: start-workflow
-version: 2.1.0
+version: 3.0.0
+name: Start Workflow
 problem: The user wants to begin executing a new workflow from the beginning.
 recognition[6]:
   - Start a workflow
@@ -13,24 +14,42 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
+steps[9]:
+  - id: select-workflow
+    name: Select workflow
+    description: If workflow not specified, call list_workflows to show options
+  - id: load-workflow
+    name: Load workflow
+    description: Call get_workflow to load the selected workflow
+  - id: initialize-state
+    name: Initialize state
+    description: Initialize state per state-management skill
+  - id: apply-rules
+    name: Apply rules
+    description: Read and apply workflow rules
+  - id: discover-guides
+    name: Discover guides
+    description: Call list_guides to discover available guidance
+  - id: load-start-guide
+    name: Load start guide
+    description: Call get_guide for index 00 (start-here guide) if available
+  - id: get-initial-activity
+    name: Get initial activity
+    description: Call get_activity for the initialActivity
+  - id: present-activity
+    name: Present activity
+    description: Present first activity to user with steps and any entry actions
+  - id: prepare-checkpoints
+    name: Prepare checkpoints
+    description: If activity has checkpoints, prepare to present when reached
 outcome[4]:
   - Workflow is selected and loaded
-  - Initial state is created with correct initial phase
-  - First phase is entered
+  - Initial state is created with correct initial activity
+  - First activity is entered
   - Agent is ready to guide user through workflow
-flow[9]:
-  - "1. If workflow not specified, call list_workflows to show options"
-  - 2. Call get_workflow to load the selected workflow
-  - "3. Initialize state per state-management skill"
-  - 4. Read and apply workflow rules
-  - 5. Call list_guides to discover available guidance
-  - "6. Call get_guide for index 00 (start-here guide) if available"
-  - 7. Call get_phase for phase index 1 (initialPhase)
-  - 8. Present first phase to user with steps and any entry actions
-  - "9. If phase has checkpoints, prepare to present when reached"
 context_to_preserve[5]:
   - workflowId - The selected workflow identifier
-  - currentPhase - Currently active phase index (1-based integer)
+  - currentActivity - Currently active activity ID
   - rules - Workflow rules to follow throughout
   - variables - Workflow variables with defaults
   - guides - Available guide indices for reference

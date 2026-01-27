@@ -1,0 +1,39 @@
+id: folder-setup
+version: 1.0.0
+name: Planning Folder Setup
+description: Create planning folder structure with initial documentation skeletons
+problem: Need organized folder structure for multi-package planning artifacts
+skills:
+  primary: workflow-execution
+steps[4]:
+  - id: create-folder
+    name: Create planning folder
+    description: "Create folder at .engineering/artifacts/planning/YYYY-MM-DD-initiative-name/"
+  - id: create-start-here
+    name: Create START-HERE.md
+    description: Create initial START-HERE.md skeleton with header and placeholders
+  - id: create-readme
+    name: Create README.md
+    description: Create README.md skeleton for navigation
+  - id: present-structure
+    name: Present folder structure
+    description: Show user the created folder structure
+checkpoints[1]:
+  - id: folder-created
+    prompt: "Planning folder created. Proceed with analysis?"
+    options[2]:
+      - id: proceed
+        label: Proceed with analysis
+        transitionTo: analysis
+      - id: adjust
+        label: Adjust structure
+        transitionTo: folder-setup
+transitions[1]:
+  - to: analysis
+    isDefault: true
+outcome[2]:
+  - Planning folder structure created
+  - Initial documentation skeletons in place
+context_to_preserve[2]:
+  - planning_folder_path - Path to the created planning folder
+  - documents_created - List of created document files

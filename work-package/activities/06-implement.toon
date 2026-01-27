@@ -1,0 +1,79 @@
+id: implement
+version: 1.0.0
+name: Implement Tasks
+description: Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit → review assumptions → checkpoint.
+problem: User needs to implement the planned tasks
+recognition[3]:
+  - implement tasks
+  - start implementation
+  - execute plan
+skills:
+  primary: implementation
+  supporting[3]:
+    - assumptions-review
+    - task-review
+    - architecture-review
+required: true
+estimatedTime: 1-4h
+entryActions[1]{action,target,message}:
+  validate,branch,Verify on correct feature branch before any code changes
+loops[1]:
+  - id: task-cycle
+    name: Task Implementation Cycle
+    type: forEach
+    variable: current_task
+    over: plan.tasks
+    steps[4]:
+      - id: implement-task
+        name: Implement task
+      - id: run-tests
+        name: Run tests
+      - id: commit
+        name: Commit changes
+      - id: review-assumptions
+        name: Review assumptions
+        skill: assumptions-review
+checkpoints[4]:
+  - id: task-progress
+    name: Task Progress Checkpoint
+    prerequisite: List all assumptions made during implementation with category and risk level before presenting this checkpoint
+    message: "Review the assumptions listed above. Are they confirmed?"
+    options[2]{id,label}:
+      confirmed,Assumptions confirmed
+      correction,Need correction
+  - id: code-review
+    name: Code Review Checkpoint
+    message: Review findings confirmed?
+    options[2]{id,label}:
+      confirmed,Findings confirmed
+      needs-fixes,Needs fixes
+  - id: arch-significance
+    name: Architectural Significance Checkpoint
+    message: Significance assessment confirmed?
+    options[2]:
+      - id: significant
+        label: Architecturally significant - create ADR
+        effect:
+          setVariable:
+            is_architecturally_significant: true
+      - id: not-significant
+        label: Not significant
+        effect:
+          setVariable:
+            is_architecturally_significant: false
+  - id: adr-confirmed
+    name: ADR Checkpoint
+    message: ADR confirmed?
+    required: false
+    options[2]{id,label}:
+      confirmed,ADR confirmed
+      revise,Revise ADR
+transitions[1]{to,isDefault}:
+  validate,true
+outcome[2]:
+  - All tasks implemented
+  - Changes committed
+context_to_preserve[3]:
+  - completed_tasks - Tasks completed during implementation
+  - assumptions - Assumptions made during implementation
+  - commits - Commits created

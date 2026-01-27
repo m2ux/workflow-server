@@ -1,0 +1,42 @@
+id: requirements-elicitation
+version: 1.0.0
+name: Requirements Elicitation
+description: Discover and clarify what the work package should accomplish through structured conversation. This phase ensures requirements are explicitly captured before planning the approach.
+problem: User needs to clarify and capture requirements before implementation
+recognition[3]:
+  - elicit requirements
+  - clarify requirements
+  - gather requirements
+skills:
+  primary: requirements-elicitation
+required: false
+estimatedTime: 15-30m
+steps[5]:
+  - id: explore-problem
+    name: Explore problem space
+    description: Explore problem through sequential conversation (one question at a time)
+  - id: identify-stakeholders
+    name: Identify stakeholders and context
+  - id: define-scope
+    name: Define scope boundaries
+    description: Define in/out scope lists
+  - id: establish-criteria
+    name: Establish success criteria
+  - id: create-document
+    name: Create requirements document
+    description: Create 00-requirements-elicitation.md
+checkpoints[1]:
+  - id: requirements-confirmed
+    name: Requirements Elicitation Checkpoint
+    message: Have I understood the requirements correctly?
+    options[2]{id,label}:
+      confirmed,Requirements confirmed
+      clarify,Need clarification
+transitions[1]{to,isDefault}:
+  implementation-analysis,true
+outcome[2]:
+  - Requirements explicitly captured
+  - Success criteria defined
+context_to_preserve[2]:
+  - requirements - Captured requirements list
+  - success_criteria - Defined success criteria

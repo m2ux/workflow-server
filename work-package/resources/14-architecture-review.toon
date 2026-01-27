@@ -161,8 +161,7 @@ sections[12]:
 
   - id: related-guides
     title: Related Guides
-    guides[4]:
+    guides[3]:
       - workflow://work-package/guides/work-package
       - workflow://work-package/guides/test-plan
       - workflow://work-package/guides/design-framework
-      - workflow://work-package/guides/references

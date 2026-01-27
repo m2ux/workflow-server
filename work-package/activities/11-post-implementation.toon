@@ -1,0 +1,33 @@
+id: post-implementation
+version: 1.0.0
+name: Post-Implementation
+description: Complete post-implementation tasks after the PR is created.
+problem: User needs to complete post-implementation tasks
+recognition[3]:
+  - post implementation
+  - workflow complete
+  - finish work package
+skills:
+  primary: retrospective
+required: true
+estimatedTime: 10-20m
+exitActions[1]{action,message}:
+  log,Work package workflow complete
+steps[4]:
+  - id: capture-history
+    name: Capture session history
+    description: "If metadata repository exists - private, never committed"
+  - id: retrospective
+    name: Workflow retrospective
+    description: Skip if trivial session
+  - id: update-status
+    name: Update work package plan status
+    description: After PR merged
+  - id: select-next
+    name: Select next work package
+outcome[2]:
+  - Retrospective completed
+  - Ready for next work package
+context_to_preserve[2]:
+  - session_history - Session history captured
+  - retrospective_notes - Notes from retrospective
