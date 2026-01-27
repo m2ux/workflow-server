@@ -23,7 +23,8 @@ steps[5]:
     description: Show completed roadmap to user for final approval
 checkpoints[1]:
   - id: roadmap-complete
-    prompt: "Roadmap complete. Ready to begin implementation?"
+    name: Roadmap Completion
+    message: "Roadmap complete. Ready to begin implementation?"
     options[2]:
       - id: begin
         label: Begin implementation

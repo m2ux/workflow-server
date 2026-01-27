@@ -26,7 +26,8 @@ steps[6]:
     description: Create work package plan document (NN-package-name-plan.md)
 checkpoints[1]:
   - id: plans-created
-    prompt: "Work package plans created. Ready for prioritization?"
+    name: Plans Created
+    message: "Work package plans created. Ready for prioritization?"
     options[2]:
       - id: proceed
         label: Proceed to prioritization
@@ -36,9 +37,12 @@ checkpoints[1]:
         transitionTo: package-planning
 loops[1]:
   - id: package-loop
-    description: Repeat planning steps for each work package
-    condition: More work packages to plan
-    returnTo: iterate-packages
+    name: Package Planning Loop
+    type: forEach
+    variable: current_package
+    over: work_packages
+    activities[1]:
+      - define-scope
 transitions[1]:
   - to: prioritization
     isDefault: true

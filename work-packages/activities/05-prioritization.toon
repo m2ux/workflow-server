@@ -20,7 +20,8 @@ steps[4]:
     description: Show dependency graph and proposed priority order to user
 checkpoints[1]:
   - id: priority-confirmed
-    prompt: "Here's the proposed priority order. Adjust as needed?"
+    name: Priority Confirmation
+    message: "Here's the proposed priority order. Adjust as needed?"
     options[3]:
       - id: accept
         label: Accept priority order
