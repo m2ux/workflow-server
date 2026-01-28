@@ -1,19 +1,28 @@
 id: post-implementation
 version: 1.0.0
 name: Post-Implementation
-description: Complete post-implementation tasks after the PR is created.
-problem: User needs to complete post-implementation tasks
+description: Complete post-implementation tasks after the PR is created. Includes waiting for manual review, processing review comments, and completing retrospective.
+problem: User needs to complete post-implementation tasks including handling PR review feedback
 recognition[3]:
   - post implementation
   - workflow complete
   - finish work package
 skills:
   primary: retrospective
+  supporting[1]:
+    - pr-review-response
 required: true
-estimatedTime: 10-20m
+estimatedTime: 30-60m
 exitActions[1]{action,message}:
   log,Work package workflow complete
-steps[4]:
+steps[6]:
+  - id: await-review
+    name: Await Manual Review
+    description: Wait for PR to receive manual review from team members
+  - id: process-review-comments
+    name: Process Review Comments
+    description: Analyze and respond to PR review feedback using the PR Review Response Guide
+    resource: pr-review-response
   - id: capture-history
     name: Capture session history
     description: "If metadata repository exists - private, never committed"
@@ -25,9 +34,53 @@ steps[4]:
     description: After PR merged
   - id: select-next
     name: Select next work package
-outcome[2]:
+checkpoints[2]:
+  - id: review-received
+    name: Review Received Checkpoint
+    message: Has the PR received manual review feedback?
+    options[2]:
+      - id: yes-review
+        label: "Yes, review comments received"
+        description: Proceed to analyze and respond to review comments
+      - id: no-waiting
+        label: "No, still waiting for review"
+        description: Continue waiting for review
+  - id: review-outcome
+    name: Review Outcome Checkpoint
+    message: What is the outcome of processing review comments?
+    options[3]:
+      - id: approved
+        label: Approved - No changes required
+        description: PR approved, proceed to retrospective
+        effect:
+          setVariable:
+            review_requires_changes: false
+      - id: minor-changes
+        label: Minor changes - Can be addressed inline
+        description: Small fixes that don't require re-planning
+        effect:
+          setVariable:
+            review_requires_changes: false
+      - id: significant-changes
+        label: Significant changes required
+        description: Changes require returning to planning stage
+        effect:
+          setVariable:
+            review_requires_changes: true
+transitions[1]:
+  - to: plan-prepare
+    condition:
+      type: simple
+      variable: review_requires_changes
+      operator: ==
+      value: true
+outcome[3]:
+  - Review comments addressed
   - Retrospective completed
   - Ready for next work package
-context_to_preserve[2]:
+context_to_preserve[5]:
   - session_history - Session history captured
   - retrospective_notes - Notes from retrospective
+  - review_analysis_path - Path to review analysis document
+  - review_actions_completed - List of completed review actions
+  - review_requires_changes - Whether review feedback requires returning to planning

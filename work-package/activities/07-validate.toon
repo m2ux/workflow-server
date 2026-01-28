@@ -11,7 +11,7 @@ skills:
   primary: validation
 required: true
 estimatedTime: 30-60m
-steps[3]:
+steps[4]:
   - id: run-tests
     name: Run all tests
     description: "Unit, integration, e2e tests"
@@ -19,6 +19,10 @@ steps[3]:
     name: Verify build succeeds
   - id: check-lint
     name: Check for linter errors
+  - id: test-suite-review
+    name: Test Suite Review
+    description: Review test quality, coverage, and anti-patterns
+    resource: test-review
 decisions[1]:
   - id: validation-result
     name: Validation Decision
