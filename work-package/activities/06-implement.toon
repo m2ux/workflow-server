@@ -36,13 +36,9 @@ loops[1]:
 steps[1]:
   - id: comprehensive-code-review
     name: Comprehensive Code Review
-    description: Perform comprehensive code review of all implementation changes
-    resource: code-review
-    condition:
-      type: simple
-      variable: project_type
-      operator: ==
-      value: rust-substrate
+    description: "Perform comprehensive code review of all implementation changes. Only required for Rust+Substrate projects (when project_type is 'rust-substrate')."
+    skill: code-review
+    required: false
 checkpoints[4]:
   - id: task-progress
     name: Task Progress Checkpoint

@@ -22,7 +22,7 @@ steps[6]:
   - id: process-review-comments
     name: Process Review Comments
     description: Analyze and respond to PR review feedback using the PR Review Response Guide
-    resource: pr-review-response
+    skill: pr-review-response
   - id: capture-history
     name: Capture session history
     description: "If metadata repository exists - private, never committed"
