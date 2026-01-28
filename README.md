@@ -1,6 +1,6 @@
 # Workflows
 
-This orphan branch contains workflow definitions, activities, skills, guides, and templates for the MCP Workflow Server.
+This orphan branch contains workflow definitions, activities, skills, resources, and templates for the MCP Workflow Server.
 
 ## Branch Structure
 
@@ -12,20 +12,42 @@ This orphan branch contains workflow definitions, activities, skills, guides, an
 ```
 workflows/                    # Worktree checkout
 ├── meta/                     # Bootstrap workflow (manages other workflows)
-│   ├── meta.toon             # Meta workflow definition
-│   ├── intents/              # All activities (indexed, no separate index file)
-│   │   └── {NN}-{id}.toon    # Individual activities (01-start-workflow, etc.)
+│   ├── README.md             # Workflow documentation with Mermaid diagrams
+│   ├── workflow.toon         # Meta workflow definition
+│   ├── rules.toon            # Agent rules for workflow execution
+│   ├── activities/           # All activities (indexed)
+│   │   └── {NN}-{id}.toon    # 01-start-workflow, 02-resume-workflow, etc.
 │   └── skills/               # Universal skills (indexed)
-│       └── {NN}-{id}.toon    # 00-activity-resolution, 01-workflow-execution
+│       └── {NN}-{id}.toon    # 00-activity-resolution, 01-workflow-execution, etc.
 ├── {workflow-id}/            # Each workflow folder
-│   ├── {workflow-id}.toon    # Workflow definition
-│   ├── guides/               # Guide subdirectory
-│   │   └── {NN}-{name}.toon  # Guides (indexed)
-│   ├── templates/            # Template subdirectory
-│   │   └── {NN}-{name}.md    # Templates (indexed)
+│   ├── README.md             # Workflow documentation with Mermaid diagrams
+│   ├── workflow.toon         # Workflow definition
+│   ├── activities/           # Activity subdirectory (indexed)
+│   │   └── {NN}-{id}.toon    # Activities for this workflow
+│   ├── resources/            # Resource subdirectory (indexed)
+│   │   └── {NN}-{name}.md    # Guidance resources
+│   ├── templates/            # Template subdirectory (indexed)
+│   │   └── {NN}-{name}.md    # Templates
 │   └── skills/               # Workflow-specific skills (indexed)
 │       └── {NN}-{id}.toon    # Skills for this workflow
 ```
+
+## Available Workflows
+
+| Workflow | Description |
+|----------|-------------|
+| `meta` | Bootstrap workflow - start, resume, and end other workflows |
+| `work-package` | Single work package implementation (issue → PR → merge) |
+| `work-packages` | Multi-package planning for large initiatives |
+
+## Universal Skills (meta/skills/)
+
+| Skill | Description |
+|-------|-------------|
+| `00-activity-resolution` | Resolve user goals to activities |
+| `01-workflow-execution` | Execute workflows following schema patterns |
+| `02-state-management` | Manage workflow state across sessions |
+| `03-artifact-management` | Manage planning artifact folder structure |
 
 ## Worktree Setup
 
@@ -39,18 +61,19 @@ git worktree add ./workflows workflows
 
 **New Workflow:**
 1. Create `{workflow-id}/` directory
-2. Add `{workflow-id}.toon` workflow definition
-3. Add `guides/`, `templates/`, `skills/` subdirectories as needed
-4. Commit to this branch
+2. Add `workflow.toon` workflow definition
+3. Add `README.md` with Mermaid diagrams documenting the workflow
+4. Add `activities/`, `resources/`, `templates/`, `skills/` subdirectories as needed
+5. Commit to this branch
 
-**Activities (meta only):**
-1. Create `{NN}-{activity-id}.toon` in `meta/intents/`
+**Activities:**
+1. Create `{NN}-{activity-id}.toon` in `{workflow-id}/activities/`
 2. Prefix with two-digit index (01, 02, 03, etc.)
-3. Include `recognition[]` patterns for quick_match
+3. For meta activities, include `recognition[]` patterns for intent matching
 4. Commit to this branch
 
-**Guides:**
-1. Create `{NN}-{name}.toon` in `{workflow-id}/guides/`
+**Resources:**
+1. Create `{NN}-{name}.md` in `{workflow-id}/resources/`
 2. Prefix with two-digit index (00, 01, 02, etc.)
 3. Commit to this branch
 
