@@ -81,51 +81,6 @@ git checkout -p <base-branch> -- <file>
 git add <reverted-files>
 ```
 
-## Checkpoint Template
-
-```markdown
-# 🛑 Checkpoint: [Checkpoint Name]
-
-## Summary
-
-[Brief summary of what was completed and key findings/outcomes]
-
----
-
-## Key Points
-
-### Completed
-- [What was accomplished]
-- [Key deliverables produced]
-
-### Findings
-- [Key finding 1]
-- [Key finding 2]
-
-### Decisions Made
-- [Decision 1] - [Rationale]
-- [Decision 2] - [Rationale]
-
----
-
-## Status
-
-[Current status and any blockers or concerns]
-
----
-
-## Next Steps
-
-[What happens next if confirmed]
-
----
-
-**Confirmation Required:**
-
-1. **Confirmed** - Proceed to next phase
-2. **Need clarification** - Discuss further before proceeding
-```
-
 ## Common Patterns to Watch For
 
 ### Investigation Artifacts
@@ -154,32 +109,6 @@ Supporting changes that outlived their purpose:
 - Environment variables for abandoned features
 - Build steps for removed functionality
 - Wait/synchronization logic that's unnecessary
-
-## Integration with Workflow
-
-The strategic review is its own phase (Phase 8) after validation and before finalization. It ensures the PR contains only the minimal, focused changes required for the solution.
-
-```
-Phase 6: Implement Tasks
-        │
-        ▼
-Phase 7: Testing & Validation
-        │
-        ▼
-Phase 8: Strategic Review  ← You are here
-    ├─ 8.1 Speculative Changes Audit
-    ├─ 8.2 Compare Against Baseline
-    ├─ 8.3 Revert Unnecessary Changes
-    ├─ 8.4 Checkpoint
-    └─ 8.5 Checklist
-        │
-        ▼
-Phase 9: Finalize
-    ├─ 9.1 Update ADR Status
-    ├─ 9.2 Finalize Test Plan
-    ├─ 9.3 Completion Document
-    └─ 9.4 Inline Documentation
-```
 
 ## Summary
 

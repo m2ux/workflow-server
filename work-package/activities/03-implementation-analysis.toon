@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 1.0.0
+version: 2.0.0
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
@@ -13,25 +13,54 @@ skills:
     - artifact-management
 required: true
 estimatedTime: 10-20m
-steps[2]:
-  - id: analyze
-    name: Complete implementation analysis
-    description: Analyze existing code, establish baselines, identify gaps
+notes[3]:
+  - "You can't improve what you don't measure - establish quantitative baselines"
+  - "Document how each metric was measured for reproducibility"
+  - "Gaps should be linked to measurable success criteria"
+steps[4]:
+  - id: review-implementation
+    name: Review implementation
+    description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture"
+  - id: evaluate-effectiveness
+    name: Evaluate effectiveness
+    description: "Gather evidence of existing performance: logs, metrics, tests, issues, comments"
+  - id: establish-baselines
+    name: Establish baseline metrics
+    description: "Establish quantitative measurements: performance, quality, usage, reliability"
   - id: document
     name: Create analysis document
-    description: "Create {planning_folder_path}/01-implementation-analysis.md"
-checkpoints[1]:
+    description: "Create implementation analysis document"
+artifacts[1]:
+  - id: analysis-document
+    name: implementation-analysis.md
+    location: planning
+checkpoints[2]:
+  - id: analysis-confirmed
+    name: Analysis Confirmation Checkpoint
+    message: "Here's my analysis of the current implementation. Does this look correct?"
+    options[3]:
+      - id: confirmed
+        label: Analysis confirmed
+        description: Proceed to determine next steps
+      - id: clarify
+        label: Need clarification
+        description: Some findings need discussion
+      - id: more-analysis
+        label: More analysis needed
+        description: Additional areas need investigation
   - id: research-decision
     name: Research Decision Checkpoint
-    message: Implementation analysis complete. Would you like to perform research?
+    message: "Analysis complete. Would you like to perform research before planning?"
     options[2]:
       - id: yes-research
         label: "Yes, perform research"
+        description: Research best practices and patterns before planning
         effect:
           setVariable:
             needs_research: true
       - id: no-skip
-        label: "No, skip research"
+        label: "No, proceed to planning"
+        description: Skip research and proceed to planning phase
         effect:
           setVariable:
             needs_research: false
@@ -49,10 +78,12 @@ transitions[2]:
       operator: ==
       value: false
     isDefault: true
-outcome[2]:
-  - Current state documented
-  - Baseline metrics established
-context_to_preserve[3]:
+outcome[3]:
+  - Current state documented with baseline metrics
+  - Gaps identified and prioritized
+  - Success criteria defined with measurement methodology
+context_to_preserve[4]:
   - analysis_findings - Key findings from analysis
-  - baseline_metrics - Established baselines
+  - baseline_metrics - Established baselines with measurement methods
+  - gaps_identified - Prioritized list of gaps
   - planning_folder_path - Path to planning artifacts folder

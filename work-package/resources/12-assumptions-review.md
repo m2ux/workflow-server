@@ -167,38 +167,24 @@ This provides context for why an assumption was made and what alternatives were 
 
 ## Interactive Assumption Review (Interview Style)
 
-**Preferred approach:** Present assumptions one at a time as questions, with numbered alternatives for the user to choose from.
+**Preferred approach:** Present assumptions one at a time using the activity's assumption review checkpoint, with numbered alternatives for the user to choose from.
 
-### Format
+### Checkpoint Flow
 
-For each assumption, present:
+The assumption review is handled by the `06-implement.toon` activity's `task-progress` checkpoint. For each assumption:
 
-```markdown
-## 📋 Assumption Review (N of M)
-
-**Type:** [Design | Behaviour | Scope | Interface | ...]
-
-**Assumption:** [The assumption made]
-
-**Rationale:** [Why this seemed reasonable]
-
-**Alternatives:**
-1. ✅ **Current choice** - [Description of current implementation]
-2. [Alternative approach] - [Brief description]
-3. [Another alternative] - [Brief description]
-4. Other (please specify)
-
----
-**Options:** Type a number to select an alternative, or **"skip"** to confirm the current choice.
-```
+1. Present the assumption type, statement, and rationale
+2. Offer alternatives including the current choice
+3. User confirms or selects alternative via checkpoint
+4. Mark assumption as confirmed or corrected
 
 ### User Response Options
 
 | Response | Meaning | Agent Action |
 |----------|---------|--------------|
-| `skip` | Current choice is correct | Mark confirmed, proceed to next |
-| `1`, `2`, `3`, etc. | Select numbered alternative | Implement change, mark corrected |
-| Free text | Custom alternative | Discuss and implement as directed |
+| Confirmed | Current choice is correct | Mark confirmed, proceed to next |
+| Select alternative | Choose numbered option | Implement change, mark corrected |
+| Need correction | Custom alternative needed | Discuss and implement as directed |
 
 ### Benefits
 
@@ -234,7 +220,7 @@ Include this context when presenting alternatives to enable informed decisions.
 
 ### When to Create the Log
 
-Create `05-assumptions-log.md` at the start of implementation, before beginning Task 1.
+Create the assumptions log at the start of implementation, before beginning Task 1.
 
 ### When to Update the Log
 
@@ -256,7 +242,6 @@ After each task checkpoint, once the user has reviewed and responded to assumpti
 
 ## Assumptions Log Template
 
-**Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/05-assumptions-log.md`
 
 **Template:**
 
@@ -437,5 +422,5 @@ N/A
 
 ## Related Guides
 
-- [Work Package Implementation Workflow](11-work-package.md)
+- [Work Package Implementation Workflow](../workflow.toon)
 - [Task Completion Review Guide](13-task-completion-review.md)

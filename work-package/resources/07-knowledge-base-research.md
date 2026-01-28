@@ -39,73 +39,60 @@ Before designing a solution, research the knowledge base using concept-rag MCP t
 
 ## Research Approach
 
-Use concept-rag MCP tools to query the knowledge base, guided by the intent-based system.
+Use concept-rag MCP tools to query the knowledge base, following the Activity → Skill → Tool model.
 
-### ⚠️ MANDATORY: Fetch Guidance Resource First
+### ⚠️ MANDATORY: Fetch Activities Resource First
 
-**At the start of any knowledge base research session, fetch the `concept-rag://guidance` resource before making tool calls.**
+**At the start of any knowledge base research session, fetch the `concept-rag://activities` resource before making tool calls.**
 
-The guidance resource provides:
-- **Intent matching** — Match your research goal to the appropriate intent
-- **Skill selection** — Each intent maps to skills that define tool workflows
-- **Efficient searching** — Aim for 4-6 tool calls maximum per research session
+The activities resource provides:
+- **Activity matching** — Match the user's goal to an available activity
+- **Skill mapping** — Each activity links to a skill with a defined tool workflow
+- **Tool sequence** — The order and context to preserve between calls
 - **Proper answer synthesis** — How to combine results into coherent findings
 
-> **Note:** Fetch the guidance resource once per research session. The guidance applies for the duration of the session.
+> **Note:** Fetch the activities resource once per research session. Follow the activity's skill throughout the session.
 
 **Communication rule:** Never narrate your search process to the user. Instead, synthesize answers directly and cite sources. The user wants findings, not a play-by-play of tool calls.
 
-### Intent-Based Research
+### Activity-Based Research
 
-Match your research goal to an intent, then follow the skill workflow:
+```
+User Goal → Activity (problem domain) → Skill (solution domain) → Tools
+```
 
-| Research Goal | Intent | Primary Skill |
-|--------------|--------|---------------|
-| Learn what the KB says about a topic | `understand-topic` | `deep-research` |
-| Find design patterns for a problem | `identify-patterns` | `pattern-research` |
-| Find best practices for a domain | `identify-best-practices` | `practice-research` |
-| Track where a concept appears | `explore-concept` | `concept-exploration` |
-| Understand a category's concepts | `explore-category` | `category-exploration` |
+1. **Identify the activity** — What is the user trying to accomplish?
+2. **Follow the skill** — Each activity maps to a skill with a tool workflow
+3. **Execute tools** — Follow the skill's tool sequence
+4. **Synthesize answer** — Combine findings with citations
 
-> **Reference:** See `concept-rag://intents` for the full intent index and `concept-rag://skills` for skill workflows.
+> **Reference:** See `concept-rag://activities` for the activity index and linked skills.
 
 ---
 
 ## Research Strategy
 
-### Step 0: Fetch Guidance (MANDATORY)
+### Step 0: Fetch Activities (MANDATORY)
 
-**Always start by fetching `concept-rag://guidance`** to receive the intent-based research system:
+**Always start by fetching `concept-rag://activities`** to receive available activities:
 
 ```
-Resource: concept-rag://guidance
+Resource: concept-rag://activities
 ```
 
-This returns the intent matching rules and skill workflows. Follow the guidance throughout your research session.
+This returns the activity index with linked skills. Follow the matched activity's skill throughout your research session.
 
-### Step 1: Match Intent
+### Step 1: Identify Activity
 
-Identify which intent matches your research goal:
-
-| If researching... | Use intent |
-|-------------------|------------|
-| Best practices for a domain | `identify-best-practices` |
-| Design patterns for a problem | `identify-patterns` |
-| General topic understanding | `understand-topic` |
-| Where a concept is discussed | `explore-concept` |
-| Concepts in a category | `explore-category` |
+Match the research goal to an available activity from the activities resource.
 
 ### Step 2: Follow Skill Workflow
 
-Each intent maps to a skill with a defined tool workflow. The skill documentation shows:
+Each activity maps to a skill with a defined tool workflow. The skill documentation shows:
 - Which tools to use
 - The order/iteration pattern
 - What context to preserve between calls
-
-**Example:** For `identify-patterns` → use `pattern-research` skill:
-1. Find pattern concepts in the KB
-2. Get authoritative sources
-3. Extract pattern details (iterate as needed)
+- Expected output format
 
 ### Step 3: Identify Key Concepts
 
@@ -135,9 +122,9 @@ Connect findings to requirements:
 
 ## Research Checklist
 
-- [ ] `concept-rag://guidance` fetched at start of session (MANDATORY)
-- [ ] Intent matched to research goal
-- [ ] Skill workflow followed for selected intent
+- [ ] `concept-rag://activities` fetched at start of session (MANDATORY)
+- [ ] Activity matched to research goal
+- [ ] Skill workflow followed for selected activity
 - [ ] Key concepts identified and noted
 - [ ] Relevant documents discovered
 - [ ] Specific guidance extracted from sources
@@ -153,7 +140,6 @@ Connect findings to requirements:
 
 Store research findings in a discrete planning document:
 
-**Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/02-kb-research.md`
 
 **Template:**
 
@@ -168,9 +154,9 @@ Store research findings in a discrete planning document:
 
 ## Research Approach
 
-| Intent | Skill Used | Results Summary |
-|--------|------------|-----------------|
-| [intent used] | [skill followed] | [Brief findings] |
+| Activity | Skill Used | Results Summary |
+|----------|------------|-----------------|
+| [activity used] | [skill followed] | [Brief findings] |
 
 ---
 
@@ -249,55 +235,6 @@ Based on research findings:
 
 ---
 
-## Checkpoint Template
-
-After completing research, present findings to the user for confirmation:
-
-```markdown
-# 🛑 Checkpoint: [Checkpoint Name]
-
-## Summary
-
-[Brief summary of what was completed and key findings/outcomes]
-
----
-
-## Key Points
-
-### Completed
-- [What was accomplished]
-- [Key deliverables produced]
-
-### Findings
-- [Key finding 1]
-- [Key finding 2]
-
-### Decisions Made
-- [Decision 1] - [Rationale]
-- [Decision 2] - [Rationale]
-
----
-
-## Status
-
-[Current status and any blockers or concerns]
-
----
-
-## Next Steps
-
-[What happens next if confirmed]
-
----
-
-**Confirmation Required:**
-
-1. **Confirmed** - Proceed to next phase
-2. **Need clarification** - Discuss further before proceeding
-```
-
----
-
 ## Quality Indicators
 
 ### Good Research
@@ -349,7 +286,7 @@ We should probably use caching to make things faster.
 This guide supports knowledge base research:
 
 1. **After requirements confirmed** → Begin KB research
-2. **Complete research** → Store in `02-kb-research.md`
+2. **Complete research** → Store in planning folder artifact
 3. **Present checkpoint** → Get user confirmation
 4. **Proceed to analysis** → Use findings to inform implementation analysis
 

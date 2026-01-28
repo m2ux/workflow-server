@@ -1,11 +1,11 @@
 ---
 id: github-issue-creation
-version: 1.0.0
+version: 2.0.0
 ---
 
 # GitHub Issue Creation Guide
 
-**Purpose:** Guidelines for creating well-structured GitHub issues that clearly define the problem space without prescribing solutions.
+**Purpose:** Reference material for creating GitHub issues. Provides templates, anti-patterns, and guidelines. Flow and checkpoints are defined in the [Issue Management Activity](../activities/01-issue-management.toon).
 
 ---
 
@@ -53,7 +53,7 @@ The issue specifies *requirements*; design work determines *implementation*.
 - May miss better approaches discovered during analysis
 
 **Where solutions belong:**
-- `.engineering/artifacts/planning/` documents
+- Planning artifacts (gitignored)
 - ADRs for architectural decisions
 - PR descriptions for implementation details
 

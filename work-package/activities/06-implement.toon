@@ -1,5 +1,5 @@
 id: implement
-version: 1.0.0
+version: 2.0.0
 name: Implement Tasks
 description: Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit → review assumptions → checkpoint.
 problem: User needs to implement the planned tasks
@@ -15,9 +15,28 @@ skills:
     - architecture-review
 required: true
 estimatedTime: 1-4h
+notes[3]:
+  - "After each task, explicitly identify and review assumptions made during implementation"
+  - "Assumptions should be elevated - make implicit decisions explicit for validation"
+  - "Present assumptions one at a time for focused review"
+artifacts[3]:
+  - id: assumptions-log
+    name: assumptions-log.md
+    location: planning
+    description: "Log of assumptions made during implementation"
+  - id: code-review-report
+    name: "{module-name}-code-review.md"
+    location: reviews
+    description: "Code review report (optional, for Rust+Substrate projects)"
+    required: false
+  - id: adr
+    name: "NNNN-{decision-title}.md"
+    location: adr
+    description: "Architecture Decision Record (if architecturally significant)"
+    condition: is_architecturally_significant
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
-loops[1]:
+loops[2]:
   - id: task-cycle
     name: Task Implementation Cycle
     type: forEach
@@ -30,47 +49,85 @@ loops[1]:
         name: Run tests
       - id: commit
         name: Commit changes
-      - id: review-assumptions
-        name: Review assumptions
-        skill: assumptions-review
+      - id: collect-assumptions
+        name: Collect assumptions
+        description: "Identify all assumptions made during this task"
+  - id: assumption-review-cycle
+    name: Assumption Review Cycle
+    type: forEach
+    variable: current_assumption
+    over: task_assumptions
+    description: "Review each assumption one at a time"
+    steps[2]:
+      - id: present-assumption
+        name: Present assumption
+        description: "Show assumption type, statement, rationale, and alternatives"
+      - id: record-response
+        name: Record response
+        description: "Mark as confirmed or record correction needed"
 steps[1]:
   - id: comprehensive-code-review
     name: Comprehensive Code Review
     description: "Perform comprehensive code review of all implementation changes. Only required for Rust+Substrate projects (when project_type is 'rust-substrate')."
     skill: code-review
     required: false
-checkpoints[4]:
-  - id: task-progress
-    name: Task Progress Checkpoint
-    prerequisite: List all assumptions made during implementation with category and risk level before presenting this checkpoint
-    message: "Review the assumptions listed above. Are they confirmed?"
-    options[2]{id,label}:
-      confirmed,Assumptions confirmed
-      correction,Need correction
+checkpoints[5]:
+  - id: task-complete
+    name: Task Complete Checkpoint
+    message: "Task '{current_task}' implemented and tests passing. Ready to review assumptions?"
+    options[2]:
+      - id: review
+        label: Review assumptions
+        description: Proceed to assumption review
+      - id: skip
+        label: No assumptions to review
+        description: No significant assumptions were made
+        effect:
+          setVariable:
+            skip_assumption_review: true
+  - id: assumption-review
+    name: Assumption Review Checkpoint
+    message: "Review this assumption. Is the current choice correct?"
+    options[3]:
+      - id: confirmed
+        label: Confirmed
+        description: Current choice is correct
+      - id: alternative
+        label: Select alternative
+        description: Choose a different approach
+      - id: discuss
+        label: Need to discuss
+        description: Requires further clarification
   - id: code-review
     name: Code Review Checkpoint
-    message: Review findings confirmed?
+    message: "Code review findings ready. Are they confirmed?"
     options[2]{id,label}:
       confirmed,Findings confirmed
       needs-fixes,Needs fixes
   - id: arch-significance
     name: Architectural Significance Checkpoint
-    message: Significance assessment confirmed?
+    message: "Is this implementation architecturally significant?"
     options[2]:
       - id: significant
         label: Architecturally significant - create ADR
+        description: Changes warrant an Architecture Decision Record
         effect:
           setVariable:
             is_architecturally_significant: true
       - id: not-significant
         label: Not significant
+        description: Standard implementation, no ADR needed
         effect:
           setVariable:
             is_architecturally_significant: false
   - id: adr-confirmed
     name: ADR Checkpoint
-    message: ADR confirmed?
-    required: false
+    message: "ADR drafted. Is it ready?"
+    condition:
+      type: simple
+      variable: is_architecturally_significant
+      operator: ==
+      value: true
     options[2]{id,label}:
       confirmed,ADR confirmed
       revise,Revise ADR

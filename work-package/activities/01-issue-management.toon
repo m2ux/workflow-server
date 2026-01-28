@@ -1,0 +1,307 @@
+id: issue-management
+version: 2.0.0
+name: Issue Management
+description: Verify or create an issue, then create feature branch and PR. Issues define the problem space and provide traceability from requirements through implementation.
+problem: User needs to establish issue tracking and PR for a work package
+recognition[6]:
+  - start work package
+  - verify issue
+  - create issue
+  - begin implementation
+  - new issue
+  - create github issue
+skills:
+  primary: issue-management
+  supporting[3]:
+    - git-workflow
+    - pr-creation
+    - artifact-management
+required: true
+estimatedTime: 10-20m
+notes[5]:
+  - "Key principle: Issues define problems, not solutions. Describe what needs to be solved and why."
+  - "Every work package should be linked to a GitHub or Jira issue for traceability"
+  - "Issues should be clear to someone without prior context"
+  - "Acceptance criteria must be observable and testable"
+  - "No implementation details in issues - those belong in planning docs and PRs"
+entryActions[1]{action,message}:
+  log,Starting issue management
+steps[7]:
+  - id: detect-project-type
+    name: Detect Project Type
+    description: "Auto-detect project type: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
+  - id: check-issue
+    name: Check for Existing Issue
+    description: Verify whether an issue has been specified by user or in context
+  - id: create-issue
+    name: Create Issue
+    description: "If needed, create issue in selected platform (GitHub or Jira)"
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: ==
+      value: true
+  - id: create-branch
+    name: Create Feature Branch
+    description: "Create feature branch from main/master with naming convention: type/issue-number-short-description"
+  - id: create-pr
+    name: Create Draft PR
+    description: "Create draft PR linked to issue. PR title should reference issue number."
+  - id: initialize-planning-folder
+    name: Initialize Planning Folder
+    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title."
+    skill: artifact-management
+  - id: determine-next-phase
+    name: Determine Next Phase
+    description: "Based on issue details, determine if requirements elicitation is needed"
+checkpoints[7]:
+  - id: issue-verification
+    name: Issue Verification Checkpoint
+    message: "I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?"
+    options[3]:
+      - id: provide-existing
+        label: Provide existing issue
+        description: Share the issue number or URL (GitHub #N or Jira PROJ-N)
+      - id: create-issue
+        label: Create new issue
+        description: Create a new issue in GitHub or Jira
+        effect:
+          setVariable:
+            needs_issue_creation: true
+      - id: skip-issue
+        label: Skip issue
+        description: Proceed without (not recommended for non-trivial work)
+        effect:
+          setVariable:
+            issue_skipped: true
+  - id: platform-selection
+    name: Platform Selection Checkpoint
+    message: "Which platform should I create this issue in?"
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: ==
+      value: true
+    options[2]:
+      - id: github
+        label: GitHub
+        description: Create issue in GitHub repository
+        effect:
+          setVariable:
+            issue_platform: github
+      - id: jira
+        label: Jira
+        description: Create issue in Jira project
+        effect:
+          setVariable:
+            issue_platform: jira
+  - id: jira-project-selection
+    name: Jira Project Selection Checkpoint
+    message: "Which Jira project should I create this issue in?"
+    condition:
+      type: simple
+      variable: issue_platform
+      operator: ==
+      value: jira
+    options[2]:
+      - id: select
+        label: Select from list
+        description: Choose from available projects
+      - id: specify
+        label: Specify project key
+        description: Provide a specific project key
+  - id: issue-type-selection
+    name: Issue Type Selection Checkpoint
+    message: "What type of issue is this?"
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: ==
+      value: true
+    options[5]:
+      - id: feature
+        label: Feature / Story
+        description: User-facing capability with clear value
+        effect:
+          setVariable:
+            issue_type: feature
+      - id: bug
+        label: Bug
+        description: Defect in existing functionality
+        effect:
+          setVariable:
+            issue_type: bug
+      - id: task
+        label: Task
+        description: Technical work not directly user-facing
+        effect:
+          setVariable:
+            issue_type: task
+      - id: enhancement
+        label: Enhancement
+        description: Improvement to existing functionality
+        effect:
+          setVariable:
+            issue_type: enhancement
+      - id: epic
+        label: Epic (Jira only)
+        description: Large feature spanning multiple stories/tasks
+        effect:
+          setVariable:
+            issue_type: epic
+  - id: issue-review
+    name: Issue Review Checkpoint
+    message: "Here's the drafted issue. Does this look correct?"
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: ==
+      value: true
+    options[3]:
+      - id: create
+        label: Create issue
+        description: Proceed to create the issue
+        effect:
+          setVariable:
+            issue_approved: true
+      - id: edit
+        label: Edit issue
+        description: Make changes before creating
+      - id: cancel
+        label: Cancel issue creation
+        description: Do not create the issue
+        effect:
+          setVariable:
+            issue_cancelled: true
+  - id: pr-creation
+    name: PR Creation Checkpoint
+    message: "Issue confirmed. Proceed to create feature branch and draft PR?"
+    options[2]:
+      - id: proceed
+        label: Create branch and PR
+        description: Create feature branch and draft PR linked to issue
+      - id: skip-pr
+        label: Skip PR for now
+        description: Continue without creating PR (can create later)
+        effect:
+          setVariable:
+            pr_skipped: true
+  - id: next-phase
+    name: Next Phase Checkpoint
+    message: "PR created and linked to issue. Do you need requirements elicitation?"
+    options[2]:
+      - id: yes-elicit
+        label: "Yes, elicit requirements"
+        description: Proceed to clarify and capture detailed requirements
+        effect:
+          setVariable:
+            needs_elicitation: true
+      - id: no-skip
+        label: "No, skip elicitation"
+        description: Proceed directly to Implementation Analysis (requirements are already clear)
+        effect:
+          setVariable:
+            needs_elicitation: false
+decisions[1]:
+  - id: platform-flow
+    name: Platform Flow Decision
+    description: Route to appropriate platform-specific issue creation
+    branches[2]:
+      - id: github-flow
+        label: GitHub issue creation
+        condition:
+          type: simple
+          variable: issue_platform
+          operator: ==
+          value: github
+        transitionTo: github-create-step
+      - id: jira-flow
+        label: Jira issue creation
+        condition:
+          type: simple
+          variable: issue_platform
+          operator: ==
+          value: jira
+        transitionTo: jira-create-step
+issueTypeMapping:
+  github:
+    feature: "enhancement label or no label"
+    bug: "bug label"
+    task: "chore label"
+    enhancement: "enhancement label"
+  jira:
+    feature: Story
+    bug: Bug
+    task: Task
+    enhancement: Story
+    epic: Epic
+githubToolSequence[2]:
+  - tool: gh issue create
+    description: Create GitHub issue via CLI
+    params:
+      required: "--title, --body"
+      optional: "--label, --assignee, --milestone, --project"
+    returns: issue number and URL
+  - tool: gh issue view
+    description: View created issue
+    params: "issue number"
+    returns: issue details
+jiraToolSequence[5]:
+  - tool: mcp_atlassian_getAccessibleAtlassianResources
+    description: Get cloud ID for Atlassian operations
+    params: none
+    returns: cloudId
+  - tool: mcp_atlassian_getVisibleJiraProjects
+    description: List projects where user can create issues
+    params: "cloudId, action='create'"
+    returns: projectKey
+  - tool: mcp_atlassian_getJiraProjectIssueTypesMetadata
+    description: Get available issue types for project
+    params: "cloudId, projectIdOrKey"
+    returns: issueTypeName
+  - tool: mcp_atlassian_lookupJiraAccountId
+    description: Look up account ID for assignee
+    params: "cloudId, searchString (name or email)"
+    returns: assignee_account_id
+    optional: true
+  - tool: mcp_atlassian_createJiraIssue
+    description: Create the issue
+    params:
+      required: "cloudId, projectKey, issueTypeName, summary"
+      optional: "description, assignee_account_id, parent, additional_fields"
+    returns: issue key and URL
+    examples:
+      basic: "cloudId, projectKey, issueTypeName='Story', summary, description"
+      with_assignee: "add assignee_account_id from lookupJiraAccountId"
+      with_parent: "add parent='PROJ-123' for subtasks or stories under epic"
+      with_fields: "add additional_fields={priority:{name:'High'}, labels:['feature'], components:[{name:'backend'}]}"
+transitions[2]:
+  - to: requirements-elicitation
+    condition:
+      type: simple
+      variable: needs_elicitation
+      operator: ==
+      value: true
+  - to: implementation-analysis
+    condition:
+      type: simple
+      variable: needs_elicitation
+      operator: ==
+      value: false
+    isDefault: true
+exitActions[1]{action,message}:
+  log,"Issue management complete - issue verified/created, PR ready"
+outcome[4]:
+  - Issue exists or is created in appropriate platform
+  - Feature branch created from main
+  - Draft PR created and linked to issue
+  - Planning folder initialized
+context_to_preserve[8]:
+  - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
+  - issue_platform - github or jira
+  - issue_type - Type of issue (feature, bug, task, enhancement, epic)
+  - issue_url - URL to the issue
+  - branch_name - Feature branch name
+  - pr_number - Draft PR number
+  - project_type - Detected project type (rust-substrate or other)
+  - planning_folder_path - Path to planning artifacts folder

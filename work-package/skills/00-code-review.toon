@@ -49,4 +49,4 @@ errors:
     recovery: Verify correct branch and commit range
   resource_not_found:
     cause: Code review resource missing
-    recovery: Check resources folder for code-review.md
+    recovery: Check resources folder for 15-rust-substrate-code-review.md

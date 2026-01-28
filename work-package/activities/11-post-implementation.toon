@@ -13,6 +13,15 @@ skills:
     - pr-review-response
 required: true
 estimatedTime: 30-60m
+artifacts[2]:
+  - id: review-analysis
+    name: "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md"
+    location: reviews
+    description: "PR review analysis document"
+  - id: retrospective
+    name: workflow-retrospective.md
+    location: planning
+    description: "Workflow retrospective notes"
 exitActions[1]{action,message}:
   log,Work package workflow complete
 steps[6]:

@@ -94,8 +94,8 @@ When the PR is created with the ADR, create a **minimal placeholder** test plan.
 # Test Plan: [Feature Name]
 
 **ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
-**Ticket:** [{TICKET_ID}](https://{JIRA_DOMAIN}/browse/{TICKET_ID})
-**PR:** [#NNN](https://github.com/{REPO_OWNER}/{REPO_NAME}/pull/NNN)
+**Ticket:** [TICKET-ID](ticket-url)
+**PR:** [#NNN](pr-url)
 
 ---
 
@@ -142,8 +142,8 @@ After implementation is complete, update the test plan with:
 # Test Plan: [Feature Name]
 
 **ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
-**Ticket:** [{TICKET_ID}](https://{JIRA_DOMAIN}/browse/{TICKET_ID})
-**PR:** [#NNN](https://github.com/{REPO_OWNER}/{REPO_NAME}/pull/NNN)
+**Ticket:** [TICKET-ID](ticket-url)
+**PR:** [#NNN](pr-url)
 
 ---
 
@@ -152,8 +152,8 @@ After implementation is complete, update the test plan with:
 This test plan validates [brief description of what the feature/change does and why it matters].
 
 Key changes validated:
-1. [`PrimarySymbol`](../../path/to/file.rs#LNN) - [Description of what it does]
-2. [`SecondarySymbol`](../../path/to/file.rs#LNN) - [Description of what it does]
+1. [`PrimarySymbol`](path/to/file#LNN) - [Description of what it does]
+2. [`SecondarySymbol`](path/to/file#LNN) - [Description of what it does]
 
 ---
 
@@ -161,8 +161,8 @@ Key changes validated:
 
 | <div style="width:120px">Test ID</div> | <div style="width:350px">Objective</div> | <div style="width:400px">Steps</div> | <div style="width:350px">Expected Result</div> | <div style="width:50px">Type</div> |
 |---|---|---|---|---|
-| [PR###-TC-01](../../path/to/test.rs#LNN) | Verify [specific behavior being tested] | 1. [Setup or precondition]  <br>2. [Action to perform]  <br>3. [Verification step] | [What should happen] | Unit |
-| [PR###-TC-02](../../path/to/test.rs#LNN) | Verify [another behavior] | 1. [Step one]  <br>2. [Step two] | [Expected outcome] | Unit |
+| [PR###-TC-01](path/to/test-file#LNN) | Verify [specific behavior being tested] | 1. [Setup or precondition]  <br>2. [Action to perform]  <br>3. [Verification step] | [What should happen] | Unit |
+| [PR###-TC-02](path/to/test-file#LNN) | Verify [another behavior] | 1. [Step one]  <br>2. [Step two] | [Expected outcome] | Unit |
 | PR###-TC-03 | Verify [manual test behavior] | 1. [Manual step one]  <br>2. [Manual step two] | [Expected outcome] | Manual |
 
 ---
@@ -170,17 +170,16 @@ Key changes validated:
 ## Running Tests
 
 \`\`\`bash
-# Run all tests for the package
-cargo test -p package-name --lib
+# Run all tests (adapt commands for your project's language/framework)
+npm test                    # JavaScript/TypeScript
+cargo test --lib            # Rust
+pytest                      # Python
+go test ./...               # Go
 
-# Run module-specific tests
-cargo test -p package-name --lib module_name
-
-# Run a specific test
-cargo test -p package-name --lib test_name
-
-# Verify build
-cargo build -p package-name
+# Run specific test
+npm test -- --grep "name"   # JavaScript/TypeScript
+cargo test test_name        # Rust
+pytest -k "test_name"       # Python
 \`\`\`
 ```
 
@@ -232,8 +231,8 @@ Always include links to related artifacts at the top:
 # Test Plan: Feature Name
 
 **ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
-**Ticket:** [PM-XXXXX](https://shielded.atlassian.net/browse/PM-XXXXX)
-**PR:** [#NNN](https://github.com/ORG/REPO/pull/NNN)
+**Ticket:** [TICKET-ID](ticket-url)
+**PR:** [#NNN](pr-url)
 ```
 
 **Tips:**
@@ -251,8 +250,8 @@ The overview should describe what is being tested and list key changes with hype
 This test plan validates [brief description of what the feature/change does].
 
 Key changes validated:
-1. [`SymbolName`](../../path/to/file.rs#L42) - [What this symbol does]
-2. [`AnotherSymbol`](../../path/to/file.rs#L100) - [What this symbol does]
+1. [`SymbolName`](path/to/file#L42) - [What this symbol does]
+2. [`AnotherSymbol`](path/to/file#L100) - [What this symbol does]
 ```
 
 **Tips:**
@@ -270,7 +269,7 @@ Use a table format with fixed column widths to prevent wrapping:
 
 | <div style="width:120px">Test ID</div> | <div style="width:350px">Objective</div> | <div style="width:400px">Steps</div> | <div style="width:350px">Expected Result</div> | <div style="width:50px">Type</div> |
 |---|---|---|---|---|
-| [PR###-TC-01](../../path/to/test.rs#L42) | Verify [behavior] | 1. Step one  <br>2. Step two | Expected outcome | Unit |
+| [PR###-TC-01](path/to/test-file#L42) | Verify [behavior] | 1. Step one  <br>2. Step two | Expected outcome | Unit |
 ```
 
 #### Column Specifications
@@ -288,7 +287,7 @@ Use a table format with fixed column widths to prevent wrapping:
 Test IDs should be hyperlinks to the exact line in source code:
 
 ```markdown
-[PR###-TC-01](../../runtime/src/module.rs#L78)
+[PR###-TC-01](path/to/test-file#L78)
 ```
 
 **Format:** `PR<number>-TC-<sequence>`
@@ -319,7 +318,7 @@ Use `  <br>` (two spaces + `<br>` tag) to force line breaks between steps:
 Tests that are temporarily ignored (e.g., pending fixture regeneration, external dependencies) should be included in the main table with `**` after the Test ID. Add a note below the table explaining the marker:
 
 ```markdown
-| [PR###-TC-09](../../path/to/test.rs#L455)** | Verify behavior X | 1. Step one  <br>2. Step two | Expected outcome | Unit |
+| [PR###-TC-09](path/to/test-file#L455)** | Verify behavior X | 1. Step one  <br>2. Step two | Expected outcome | Unit |
 
 > [!NOTE]
 > **\*\*** Tests marked with ** are temporarily ignored pending [reason]. These will be re-enabled once [condition].
@@ -353,17 +352,16 @@ Provide commands to execute the tests documented in the plan:
 ## Running Tests
 
 \`\`\`bash
-# Run all tests for the affected package
-cargo test -p package-name --lib
-
-# Run specific module tests
-cargo test -p package-name --lib module_name
+# Run all tests (adapt for your project)
+npm test                    # JavaScript/TypeScript
+cargo test --lib            # Rust
+pytest                      # Python
+go test ./...               # Go
 
 # Run specific test by name
-cargo test -p package-name --lib test_function_name
-
-# Verify build
-cargo build -p package-name
+npm test -- --grep "name"   # JavaScript/TypeScript
+cargo test test_name        # Rust
+pytest -k "test_name"       # Python
 \`\`\`
 ```
 
@@ -384,18 +382,11 @@ test-plan-descriptive-name.md
 
 - Use `test-plan-` prefix followed by kebab-case descriptive name
 - Match the ADR name when possible for easy pairing
-- Examples: `test-plan-ariadne-selection-override.md`, `test-plan-d-parameter-migration.md`
+- Examples: `test-plan-user-authentication.md`, `test-plan-payment-processing.md`
 
 ### Storage Location
 
-```
-docs/tests/
-├── test-plan-ariadne-selection-override.md
-├── test-plan-aiken-permissioned-candidates-d-parameter-migration.md
-└── ...
-```
-
-Test plans are stored in `docs/tests/` and named to match their corresponding ADRs in `docs/decisions/`.
+Store test plans alongside their corresponding ADRs or in a dedicated tests documentation folder.
 
 ---
 
@@ -444,7 +435,7 @@ Test IDs hyperlink directly to test implementations:
 - ❌ Use vague objectives ("test the feature")
 - ❌ Skip line numbers in hyperlinks
 - ❌ Add redundant References section (links are inline)
-- ❌ Reference gitignored files (`.engineering/artifacts/planning/*`)
+- ❌ Reference gitignored planning artifacts
 - ❌ Split test cases across multiple tables (use a single unified table)
 
 ---
@@ -456,18 +447,18 @@ Test IDs hyperlink directly to test implementations:
 ```markdown
 ## Overview
 
-This test plan validates the migration from Haskell-based Permissioned Candidates contracts to Aiken-based contracts, and the transition of D Parameter sourcing from Cardano contracts to `pallet-system-parameters`.
+This test plan validates the feature implementation, ensuring all requirements are met.
 
 Key changes validated:
-1. [`DParameterProvider`](../../runtime/src/d_parameter.rs#L34) trait correctly abstracts D Parameter sourcing
-2. [`MockDParameterProvider`](../../runtime/src/d_parameter.rs#L48) maintains backward compatibility
-3. [`select_authorities_with_provider`](../../runtime/src/lib.rs#L582) authority selection works correctly
+1. [`PrimaryComponent`](path/to/file#L34) - Core functionality implementation
+2. [`MockProvider`](path/to/file#L48) - Maintains backward compatibility
+3. [`IntegrationPoint`](path/to/file#L100) - External integration works correctly
 ```
 
 ### Good Test Case Row
 
 ```markdown
-| [PR378-TC-01](../../runtime/src/d_parameter.rs#L78) | Verify mock provider returns `None` to maintain backward compatibility with inherent data | 1. Call `MockDParameterProvider::get_d_parameter()`  <br>2. Verify result is `None` | Returns `None`, indicating inherent data should be used | Unit |
+| [PR###-TC-01](path/to/test-file#L78) | Verify component returns expected default value | 1. Call `Component.getDefaultValue()`  <br>2. Verify result matches expected | Returns expected default value | Unit |
 ```
 
 ### Bad Test Case Row
@@ -519,5 +510,5 @@ Before submitting a test plan, verify:
 ## Related Guides
 
 - [Architecture Review Guide](14-architecture-review.md)
-- [Complete Guide](16-complete.md)
+- [Complete Guide](20-complete-wp.md)
 - [Task Completion Review Guide](13-task-completion-review.md)
