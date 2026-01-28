@@ -1,7 +1,8 @@
 id: resume-workflow
-version: 3.0.0
+version: 4.0.0
 name: Resume Workflow
 problem: The user wants to continue a workflow that was previously started.
+description: Guide resumption of an existing workflow by gathering context, assessing current state, determining entry point, and continuing from the appropriate activity.
 recognition[6]:
   - Resume workflow
   - Continue workflow
@@ -14,43 +15,192 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
-steps[9]:
-  - id: identify-workflow
-    name: Identify workflow
-    description: Ask user to identify the workflow being resumed
-  - id: load-workflow
-    name: Load workflow
-    description: Call get_workflow to load workflow definition
-  - id: discover-resources
-    name: Discover resources
-    description: Call list_workflow_resources to discover available resources
-  - id: reconstruct-state
-    name: Reconstruct state
-    description: "Reconstruct state by asking user: Which activity were you on? What activities have been completed? Any key decisions already made?"
-  - id: build-state
-    name: Build state object
-    description: Build state object per state-management skill using numeric indices
-  - id: get-current-activity
-    name: Get current activity
-    description: Call get_activity for current activity
-  - id: load-activity-resource
-    name: Load activity guidance resource
-    description: Call get_resource for activity-specific guidance resource if available
-  - id: present-status
-    name: Present status
-    description: "Present current activity status: Completed steps, Remaining steps, Upcoming checkpoints"
-  - id: resume-execution
-    name: Resume execution
-    description: Resume execution from current position
+notes[5]:
+  - "Minimum requirement: User must identify the workflow and provide context"
+  - "Key insight: Successful resumption requires understanding both workflow progress AND context of previous decisions"
+  - "Always verify state with user before resuming - reconstructed state may be incomplete"
+  - "For workflows with external artifacts (files, branches, PRs), assess their state before determining entry point"
+  - "Get explicit confirmation before resuming work"
+steps[5]:
+  - id: gather-context
+    name: Gather context
+    description: "Collect required information: workflow ID, last known activity, any external context (branch, PR, artifacts)"
+  - id: assess-state
+    name: Assess current state
+    description: "Check workflow artifacts, external state (git, PRs), and reconstruct progress"
+  - id: determine-entry-point
+    name: Determine entry point
+    description: "Map available artifacts and state to workflow activities; identify appropriate activity to resume from"
+  - id: acknowledge-existing-work
+    name: Acknowledge existing work
+    description: "Document pre-existing changes if needed; reconcile with workflow artifacts"
+  - id: continue-workflow
+    name: Continue workflow
+    description: "Load target activity and resume execution from determined entry point"
+checkpoints[4]:
+  - id: context-gathered
+    name: Context Checkpoint
+    message: "I've gathered the following context for resumption. Is this correct?"
+    options[2]:
+      - id: confirm
+        label: Context confirmed
+        description: Proceed to assess current state
+      - id: correct
+        label: Needs correction
+        description: Provide additional or corrected context
+  - id: state-assessed
+    name: State Assessment Checkpoint
+    message: "Here's my assessment of the current state. Does this look correct?"
+    options[2]:
+      - id: confirm
+        label: Assessment confirmed
+        description: Proceed to determine entry point
+      - id: clarify
+        label: Needs clarification
+        description: Clarify or correct the assessment
+  - id: entry-point-confirmed
+    name: Entry Point Checkpoint
+    message: "Based on the assessment, I recommend resuming at this activity. Do you agree?"
+    options[3]:
+      - id: agree
+        label: Agree with entry point
+        description: Proceed to acknowledge existing work
+        effect:
+          setVariable:
+            entry_point_confirmed: true
+      - id: different
+        label: Start from different activity
+        description: Specify a different entry point
+      - id: restart
+        label: Start workflow from beginning
+        description: Discard progress and start fresh
+        effect:
+          setVariable:
+            restart_workflow: true
+  - id: ready-to-continue
+    name: Ready to Continue Checkpoint
+    message: "All existing work has been acknowledged and integrated. Ready to proceed from the entry point?"
+    options[2]:
+      - id: proceed
+        label: Proceed with workflow
+        description: Continue workflow execution from entry point
+        effect:
+          setVariable:
+            ready_to_resume: true
+      - id: wait
+        label: Not yet
+        description: Address something before continuing
+decisions[2]:
+  - id: external-state-check
+    name: External State Check
+    description: Determine if workflow has external state to assess
+    branches[2]:
+      - id: has-external
+        label: Workflow has external artifacts
+        condition:
+          type: simple
+          variable: has_external_state
+          operator: ==
+          value: true
+        transitionTo: assess-external-state
+      - id: no-external
+        label: Workflow state is internal only
+        transitionTo: determine-entry-point
+        isDefault: true
+  - id: branch-status-check
+    name: Branch Status Check
+    description: Handle stale or conflicting branches
+    branches[3]:
+      - id: sync-needed
+        label: Branch needs sync
+        condition:
+          type: simple
+          variable: branch_behind_main
+          operator: ">"
+          value: 0
+        transitionTo: branch-sync-checkpoint
+      - id: conflicts
+        label: Branch has conflicts
+        condition:
+          type: simple
+          variable: has_conflicts
+          operator: ==
+          value: true
+        transitionTo: conflict-resolution-checkpoint
+      - id: clean
+        label: Branch is clean
+        transitionTo: continue-assessment
+        isDefault: true
+specialCases[3]:
+  - id: stale-branch
+    name: Conflicting or Stale Branch
+    description: "Branch is significantly behind main or has conflicts"
+    checkpoint:
+      message: "The branch is behind main and may have conflicts. How would you like to proceed?"
+      options[3]:
+        - id: rebase
+          label: Rebase on main
+          description: Bring branch up to date (may require conflict resolution)
+        - id: merge
+          label: Merge main into branch
+          description: Merge main into branch (creates merge commit)
+        - id: continue-as-is
+          label: Continue as-is
+          description: Proceed without syncing (not recommended)
+  - id: ci-failures
+    name: Failed CI or Broken Tests
+    description: "Existing work has failing CI checks"
+    checkpoint:
+      message: "The current branch has failing CI checks. How would you like to proceed?"
+      options[3]:
+        - id: fix-first
+          label: Fix failures first
+          description: Address CI issues before continuing
+        - id: acknowledge
+          label: Acknowledge and continue
+          description: Document failures as known issues
+        - id: investigate
+          label: Investigate
+          description: Review failures to understand scope
+  - id: unclear-status
+    name: Partial Implementation with Unclear Status
+    description: "Implementation status is unclear"
+    steps[4]:
+      - "Review the diff to understand what's been changed"
+      - "Check for TODOs in the code indicating incomplete work"
+      - "Ask the user to clarify what's done vs. remaining"
+      - "Create a task list for remaining work based on findings"
+resumptionRules[5]:
+  - "Always verify context with user before proceeding"
+  - "Check external state (git, PRs, artifacts) before determining entry point"
+  - "Run tests/checks before making any new changes"
+  - "Present progress summary to user before continuing"
+  - "Get explicit confirmation before resuming work"
+transitions[2]:
+  - to: target-activity
+    condition:
+      type: simple
+      variable: ready_to_resume
+      operator: ==
+      value: true
+    isDefault: true
+  - to: start-workflow
+    condition:
+      type: simple
+      variable: restart_workflow
+      operator: ==
+      value: true
 outcome[4]:
   - Previous state is restored or reconstructed
   - Current activity is identified
   - Remaining work is presented
   - Agent is ready to continue guiding user
-context_to_preserve[6]:
+context_to_preserve[8]:
   - workflowId - The workflow being resumed
   - currentActivity - Activity to resume from
   - completedActivities - Array of completed activity IDs
   - checkpointResponses - Previous user decisions
   - variables - Current variable values
   - resources - Available resource indices for reference
+  - entry_point_confirmed - Whether user confirmed the entry point
+  - external_state - Summary of external state (branch, PR, artifacts)

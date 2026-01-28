@@ -30,7 +30,6 @@ The `COMPLETE.md` file serves as the completion record for a work package. It pr
 - All tests are passing
 - PR is ready for review
 
-**Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/COMPLETE.md`
 
 **Template:**
 
@@ -341,7 +340,7 @@ Update `COMPLETE.md` at these points:
 
 | Document | Relationship |
 |----------|--------------|
-| `03-work-package-plan.md` | Original plan; COMPLETE records what actually happened |
+| Work package plan artifact | Original plan; COMPLETE records what actually happened |
 | `START-HERE.md` | Update status to Complete after COMPLETE.md created |
 | ADR | Design decisions in COMPLETE.md may warrant formal ADRs |
 | PR Description | COMPLETE.md provides content for PR description |
@@ -362,7 +361,7 @@ This guide supports the finalization stage of work package implementation:
 ## Related Guides
 
 - [Work Package Implementation Workflow](../work-package.md)
-- [Work Package Plan](09-plan.md)
+- [Work Package Plan](09-wp-plan.md)
 - [Work Package START-HERE](00-start-here.md)
 - [Architecture Review Guide](14-architecture-review.md)
 - [PR Description Guide](11-pr-description.md)

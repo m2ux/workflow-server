@@ -22,12 +22,10 @@ The `START-HERE.md` file serves as the entry point and executive summary for a w
 
 ## When to Create
 
-**Always create `START-HERE.md` when:**
+**Always create the START-HERE artifact when:**
 - Creating a new work package planning folder
 - Work package has multiple tasks or phases
 - Multiple people may work on or review the work
-
-**Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/START-HERE.md`
 
 ---
 
@@ -97,9 +95,9 @@ The `START-HERE.md` file serves as the entry point and executive summary for a w
 |----------|-------------|
 | **[START-HERE.md](START-HERE.md)** | 👈 You are here |
 | [README.md](README.md) | Quick navigation |
-| [03-work-package-plan.md](03-work-package-plan.md) | Implementation details |
-| [02-kb-research.md](02-kb-research.md) | Knowledge base research |
-| [01-implementation-analysis.md](01-implementation-analysis.md) | Implementation analysis |
+| Work package plan | Implementation details |
+| KB research | Knowledge base research |
+| Implementation analysis | Implementation analysis |
 
 ---
 

@@ -1,5 +1,5 @@
 id: research
-version: 1.0.0
+version: 2.0.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the planning phase."
 problem: User needs to research best practices before planning
@@ -11,34 +11,69 @@ skills:
   primary: knowledge-research
 required: false
 estimatedTime: 20-45m
-steps[3]:
+notes[3]:
+  - "Multiple sources should be consulted for robust findings"
+  - "Patterns should be validated across documents"
+  - "Clear mapping to work package needs is essential"
+steps[4]:
   - id: kb-research
     name: Knowledge base research
-    description: Call get_guidance before making concept-rag MCP tool calls
+    description: "Call get_guidance before making concept-rag MCP tool calls. Search for relevant patterns and practices."
   - id: web-research
     name: Web research
-    description: Search web for current information
+    description: "Search web for current information, documentation, and best practices"
+  - id: synthesize
+    name: Synthesize findings
+    description: "Connect findings to requirements: which patterns apply, what modifications needed, risks, success metrics"
   - id: document
     name: Create research document
-    description: Create 02-kb-research.md
-checkpoints[2]:
+    description: "Create knowledge base research document"
+artifacts[1]:
+  - id: research-document
+    name: kb-research.md
+    location: planning
+checkpoints[3]:
   - id: kb-insights
     name: Knowledge Base Insights Checkpoint
-    message: Knowledge insights confirmed?
-    options[2]{id,label}:
-      confirmed,Insights confirmed
-      more-research,Need more research
+    message: "Here are the key insights from the knowledge base. Do these look relevant?"
+    options[3]:
+      - id: confirmed
+        label: Insights confirmed
+        description: Findings are relevant and useful
+      - id: more-research
+        label: Need more research
+        description: Search for additional patterns or sources
+      - id: different-focus
+        label: Different focus needed
+        description: Research should focus on different areas
   - id: web-research-confirmed
     name: Web Research Checkpoint
-    message: Web research findings confirmed?
-    options[2]{id,label}:
-      confirmed,Findings confirmed
-      more-research,Need more research
+    message: "Here are the web research findings. Are they confirmed?"
+    options[2]:
+      - id: confirmed
+        label: Findings confirmed
+        description: Web research is complete
+      - id: more-research
+        label: Need more research
+        description: Additional web research needed
+  - id: research-complete
+    name: Research Complete Checkpoint
+    message: "Research is complete. Ready to proceed to planning?"
+    options[2]:
+      - id: proceed
+        label: Proceed to planning
+        description: Research findings are sufficient
+      - id: revisit
+        label: Revisit research
+        description: Some areas need more investigation
 transitions[1]{to,isDefault}:
   plan-prepare,true
-outcome[2]:
-  - Best practices identified
-  - Relevant resources gathered
-context_to_preserve[2]:
+outcome[3]:
+  - Best practices identified from multiple sources
+  - Patterns validated and mapped to requirements
+  - Risks and anti-patterns documented
+context_to_preserve[4]:
   - research_findings - Key research findings
+  - applicable_patterns - Patterns that apply to this work
+  - risks_identified - Risks and anti-patterns to avoid
   - resources - Relevant resources identified

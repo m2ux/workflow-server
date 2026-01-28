@@ -1,7 +1,8 @@
 id: end-workflow
-version: 3.0.0
+version: 4.0.0
 name: End Workflow
 problem: The user wants to complete and finalize a workflow execution.
+description: Guide completion of a workflow by verifying all activities are complete, executing exit actions, and presenting a final summary.
 recognition[6]:
   - End workflow
   - Finish workflow
@@ -11,32 +12,106 @@ recognition[6]:
   - Mark workflow as complete
 skills:
   primary: workflow-execution
-  supporting[1]:
+  supporting[2]:
     - state-management
+    - artifact-management
+notes[3]:
+  - "Key insight: A well-ended workflow leaves a clear trail for future reference and ensures nothing is left incomplete"
+  - "Never end a workflow with incomplete required activities or unanswered blocking checkpoints"
+  - "Document any deferred or out-of-scope items before completing"
 steps[6]:
   - id: verify-completion
     name: Verify completion
-    description: Verify all required activities are complete
+    description: "Verify all required activities are complete; check for any skipped required activities"
   - id: check-checkpoints
     name: Check checkpoints
-    description: Ensure all blocking checkpoints have responses
+    description: "Ensure all blocking checkpoints have responses; identify any pending decisions"
+  - id: verify-outcomes
+    name: Verify outcomes
+    description: "Check that workflow outcomes are satisfied; verify external state if applicable (tests, builds, PRs)"
   - id: execute-exit-actions
     name: Execute exit actions
-    description: Execute any exit actions from final activity
-  - id: update-state
-    name: Update state
-    description: Set workflow status to 'completed' with completedAt timestamp
+    description: "Execute any exit actions from final activity; update external artifacts as needed"
   - id: present-summary
     name: Present summary
-    description: Present completion summary to user
-  - id: cleanup
-    name: Cleanup
-    description: Clear workflow context if appropriate
-outcome[3]:
+    description: "Present completion summary to user with completed activities, outcomes achieved, and any follow-up items"
+  - id: finalize-state
+    name: Finalize state
+    description: "Set workflow status to 'completed' with completedAt timestamp; archive state if appropriate"
+checkpoints[3]:
+  - id: completion-verified
+    name: Completion Verification Checkpoint
+    message: "All required activities are complete. Ready to finalize the workflow?"
+    options[3]:
+      - id: proceed
+        label: Proceed to finalize
+        description: Continue with workflow completion
+      - id: review-incomplete
+        label: Review incomplete items
+        description: Show details of any incomplete or skipped activities
+      - id: continue-workflow
+        label: Continue workflow
+        description: Return to workflow execution instead of ending
+        effect:
+          setVariable:
+            abort_completion: true
+  - id: outcomes-verified
+    name: Outcomes Verification Checkpoint
+    message: "The following outcomes have been verified. Does this look correct?"
+    options[2]:
+      - id: confirm
+        label: Outcomes confirmed
+        description: Proceed to present final summary
+      - id: address-gaps
+        label: Address gaps
+        description: Some outcomes are not satisfied
+        effect:
+          setVariable:
+            has_outcome_gaps: true
+  - id: workflow-complete
+    name: Workflow Complete Checkpoint
+    message: "Workflow is complete. Any follow-up items to note before closing?"
+    options[2]:
+      - id: complete
+        label: Complete workflow
+        description: Finalize and close the workflow
+        effect:
+          setVariable:
+            workflow_completed: true
+      - id: add-followup
+        label: Add follow-up items
+        description: Document follow-up work before completing
+decisions[1]:
+  - id: has-external-state
+    name: External State Check
+    description: Determine if workflow has external state to verify
+    branches[2]:
+      - id: has-external
+        label: Workflow has external artifacts to verify
+        condition:
+          type: simple
+          variable: has_external_state
+          operator: ==
+          value: true
+        transitionTo: verify-external-state
+      - id: no-external
+        label: No external verification needed
+        transitionTo: present-summary
+        isDefault: true
+completionRules[5]:
+  - "Never end a workflow with required activities incomplete"
+  - "Ensure all blocking checkpoints have responses"
+  - "Verify workflow outcomes are satisfied"
+  - "Document any deferred or out-of-scope items"
+  - "Present clear summary before finalizing"
+outcome[4]:
   - Workflow is marked as complete
-  - Final state is recorded
-  - User is informed of completion
-context_to_preserve[3]:
+  - All required activities verified complete
+  - Final state is recorded with timestamp
+  - User is informed of completion with summary
+context_to_preserve[5]:
   - workflowId - The completed workflow
   - completedAt - Timestamp of completion
   - finalState - Final state snapshot
+  - completedActivities - List of completed activity IDs
+  - followUpItems - Any noted follow-up work

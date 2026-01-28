@@ -136,9 +136,7 @@ Generate a numbered list of applicable comments including:
 
 ## Step 6: Create Review Document
 
-Create a comprehensive review analysis document:
-
-**Location:** `.engineering/artifacts/reviews/[YYYY-MM-DD]-pr[PR_NUMBER]-review-analysis.md`
+Create a comprehensive review analysis document.
 
 **Required Sections:**
 1. Document Header with metadata

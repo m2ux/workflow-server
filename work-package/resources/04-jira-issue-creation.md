@@ -1,29 +1,19 @@
 ---
 id: jira-issue-creation
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Jira Issue Creation Guide
 
-**Purpose:** Guidelines for creating well-structured Jira issues using the Atlassian MCP tools. Issues should clearly define the problem space without prescribing solutions.
+**Purpose:** Reference material for creating Jira issues. Provides terminology, templates, and MCP tool reference. Flow and checkpoints are defined in the activity.
 
 ---
 
 ## Overview
 
-This guide parallels the [GitHub Issue Creation Guide](03-github-issue-creation.md) but is tailored for Jira and uses the Atlassian MCP server tools for issue creation.
+This guide provides reference material for Jira issue creation. For the creation flow, see the [Issue Management Activity](../activities/01-issue-management.toon).
 
 > **Key Principle:** Issues define problems, not solutions. Describe *what* needs to be solved and *why*, leaving *how* for subsequent design work.
-
-### Issues Define Problems, Not Solutions
-
-| Issue Should Include | Issue Should NOT Include |
-|---------------------|-------------------------|
-| Problem statement and impact | Technical approach or architecture |
-| Current vs desired state | Schema changes or data structures |
-| User stories and acceptance criteria | Code snippets or API designs |
-| Success metrics | File paths or module names |
-| Scope boundaries | Implementation timeline |
 
 ---
 
@@ -73,60 +63,6 @@ Is it technical work or internal improvement?
 
 Does it span multiple deliverables?
     └─ Yes → Epic
-```
-
----
-
-## Pre-Creation Workflow
-
-Before creating a Jira issue, gather required information using MCP tools.
-
-### Step 1: Get Cloud ID
-
-```
-mcp_atlassian_getAccessibleAtlassianResources
-```
-
-This returns the cloud ID needed for all subsequent Jira operations. You can also extract the cloud ID from Jira URLs (e.g., `https://yoursite.atlassian.net/...`).
-
-### Step 2: Find Project
-
-```
-mcp_atlassian_getVisibleJiraProjects
-  cloudId: [cloud-id]
-  action: "create"  # Only projects where user can create issues
-```
-
-**🛑 CHECKPOINT:** If the project is not known, ask the user:
-
-```markdown
-## 📋 Jira Project Selection
-
-I need to know which Jira project to create this issue in.
-
-**Available projects:** [List from getVisibleJiraProjects]
-
-**Which project should I use?**
-```
-
-### Step 3: Get Issue Types
-
-```
-mcp_atlassian_getJiraProjectIssueTypesMetadata
-  cloudId: [cloud-id]
-  projectIdOrKey: [project-key]
-```
-
-This returns available issue types for the selected project.
-
-### Step 4: Look Up Assignee (Optional)
-
-If an assignee is needed:
-
-```
-mcp_atlassian_lookupJiraAccountId
-  cloudId: [cloud-id]
-  searchString: [name or email]
 ```
 
 ---
@@ -264,97 +200,6 @@ The description uses Jira's markdown format (similar to standard markdown with s
 
 ---
 
-## Creating Issues via MCP
-
-### Basic Issue Creation
-
-```
-mcp_atlassian_createJiraIssue
-  cloudId: [cloud-id]
-  projectKey: [project-key]
-  issueTypeName: "Story"  # or "Bug", "Task", etc.
-  summary: "Users cannot search by diagram content"
-  description: "[Markdown description - see structure above]"
-```
-
-### With Assignee
-
-```
-mcp_atlassian_createJiraIssue
-  cloudId: [cloud-id]
-  projectKey: [project-key]
-  issueTypeName: "Bug"
-  summary: "Login fails with special characters"
-  description: "[Description]"
-  assignee_account_id: [account-id from lookupJiraAccountId]
-```
-
-### With Parent (Subtask or Story under Epic)
-
-```
-mcp_atlassian_createJiraIssue
-  cloudId: [cloud-id]
-  projectKey: [project-key]
-  issueTypeName: "Subtask"
-  summary: "Implement email validation"
-  description: "[Description]"
-  parent: "PROJ-123"  # Parent issue key
-```
-
-### With Additional Fields
-
-```
-mcp_atlassian_createJiraIssue
-  cloudId: [cloud-id]
-  projectKey: [project-key]
-  issueTypeName: "Story"
-  summary: "Add PDF ingestion support"
-  description: "[Description]"
-  additional_fields: {
-    "priority": {"name": "High"},
-    "labels": ["feature", "ingestion"],
-    "components": [{"name": "backend"}]
-  }
-```
-
----
-
-## Issue Creation Workflow
-
-```
-┌─────────────────────────────────────┐
-│ 1. Verify project with user         │
-│    🛑 CHECKPOINT: Which project?    │
-└────────────┬────────────────────────┘
-             │
-┌────────────▼────────────────────────┐
-│ 2. Select issue type                │
-│    - Bug/Story/Task/Epic            │
-└────────────┬────────────────────────┘
-             │
-┌────────────▼────────────────────────┐
-│ 3. Draft issue content              │
-│    - Summary (title)                │
-│    - Description (from template)    │
-└────────────┬────────────────────────┘
-             │
-┌────────────▼────────────────────────┐
-│ 🛑 CHECKPOINT: Review with user     │
-└────────────┬────────────────────────┘
-             │
-┌────────────▼────────────────────────┐
-│ 4. Create issue via MCP             │
-│    - createJiraIssue                │
-└────────────┬────────────────────────┘
-             │
-┌────────────▼────────────────────────┐
-│ 5. Confirm creation                 │
-│    - Report issue key and URL       │
-└─────────────────────────────────────┘
-```
-
----
-
 ## Anti-Patterns to Avoid
 
 | Anti-Pattern | Description | Solution |
@@ -371,7 +216,6 @@ mcp_atlassian_createJiraIssue
 
 Before creating a Jira issue, verify:
 
-- [ ] **Project confirmed** with user
 - [ ] **Issue type** matches the nature of the work
 - [ ] **Summary** describes problem, not solution (50-80 chars)
 - [ ] **Description** follows appropriate template
@@ -379,32 +223,6 @@ Before creating a Jira issue, verify:
 - [ ] **Scope** has explicit in/out boundaries
 - [ ] **Acceptance criteria** are observable and testable
 - [ ] **No implementation details** in the issue
-- [ ] 🛑 **User reviewed** before creation
-
----
-
-## Quick Reference
-
-### MCP Tool Sequence
-
-```
-1. getAccessibleAtlassianResources → cloudId
-2. getVisibleJiraProjects → projectKey
-3. getJiraProjectIssueTypesMetadata → issueTypeName
-4. lookupJiraAccountId → assignee_account_id (optional)
-5. createJiraIssue → issue created
-```
-
-### Required Fields
-
-| Field | Required | Source |
-|-------|----------|--------|
-| cloudId | Yes | getAccessibleAtlassianResources |
-| projectKey | Yes | User or getVisibleJiraProjects |
-| issueTypeName | Yes | getJiraProjectIssueTypesMetadata |
-| summary | Yes | Draft based on problem |
-| description | No (recommended) | Template-based |
-| assignee_account_id | No | lookupJiraAccountId |
 
 ---
 

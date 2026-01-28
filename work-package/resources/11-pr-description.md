@@ -290,7 +290,7 @@ The PR description should focus on **what** and **why**, not mechanical details:
 | Commit list | Redundant with Git history | Git log / PR "Commits" tab |
 | Files changed | Redundant with diff | PR "Files changed" tab |
 | Line-by-line explanations | Clutters description | Inline PR comments |
-| Implementation steps | Not useful for review | Work package plan (`.engineering/artifacts/planning/`) |
+| Implementation steps | Not useful for review | Work package plan (planning artifacts) |
 
 ---
 
@@ -503,7 +503,7 @@ gh pr ready
 - ❌ Duplicate information available in Git history
 - ❌ Include implementation details better suited to code comments
 - ❌ Use vague language ("some improvements", "various fixes")
-- ❌ Reference gitignored files (`.engineering/artifacts/planning/*`)
+- ❌ Reference gitignored planning artifacts
 - ❌ Add process attribution ("per user request", "AI suggested")
 
 ---
@@ -579,4 +579,4 @@ Before submitting a PR, verify:
 
 - [Architecture Review Guide](14-architecture-review.md)
 - [Test Plan Creation Guide](10-test-plan.md)
-- [Complete Guide](16-complete.md)
+- [Complete Guide](20-complete-wp.md)
