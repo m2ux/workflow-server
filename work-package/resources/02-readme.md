@@ -23,11 +23,9 @@ The `README.md` file serves as a quick-reference navigation hub for a work packa
 
 ## When to Create
 
-**Always create `README.md` when:**
+**Always create the README artifact when:**
 - Creating a new work package planning folder
 - Work package has multiple planning documents
-
-**Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/README.md`
 
 ---
 
@@ -52,9 +50,9 @@ The `README.md` file serves as a quick-reference navigation hub for a work packa
 | Document | Description | Status |
 |----------|-------------|--------|
 | **[START-HERE.md](START-HERE.md)** | 👈 **Read first** | ✅ |
-| [03-work-package-plan.md](03-work-package-plan.md) | Implementation details | 📋 Ready |
-| [02-kb-research.md](02-kb-research.md) | Knowledge base research findings | 📋 Ready |
-| [01-implementation-analysis.md](01-implementation-analysis.md) | Current implementation analysis | 📋 Ready |
+| Work package plan | Implementation details | 📋 Ready |
+| KB research | Knowledge base research findings | 📋 Ready |
+| Implementation analysis | Current implementation analysis | 📋 Ready |
 
 ---
 
@@ -69,8 +67,8 @@ The `README.md` file serves as a quick-reference navigation hub for a work packa
 ## 🚀 Next Steps
 
 1. Read [START-HERE.md](START-HERE.md)
-2. Review [02-kb-research.md](02-kb-research.md) and [01-implementation-analysis.md](01-implementation-analysis.md)
-3. Review [03-work-package-plan.md](03-work-package-plan.md)
+2. Review KB research and implementation analysis artifacts
+3. Review work package plan
 4. Follow implementation workflow
 
 ---
@@ -134,10 +132,10 @@ List all documents in the planning folder with clear descriptions:
 | Document | Description |
 |----------|-------------|
 | `START-HERE.md` | Executive summary and entry point |
-| `03-work-package-plan.md` | Detailed implementation plan |
-| `02-kb-research.md` | Knowledge base research findings |
-| `01-implementation-analysis.md` | Current implementation analysis |
-| `04-test-plan.md` | Detailed testing plan (if needed) |
+| Work package plan | Detailed implementation plan |
+| KB research | Knowledge base research findings |
+| Implementation analysis | Current implementation analysis |
+| Test plan | Detailed testing plan (if needed) |
 | `COMPLETE.md` | Completion summary (after done) |
 
 ### Priority Table

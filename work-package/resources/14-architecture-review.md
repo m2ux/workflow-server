@@ -29,8 +29,8 @@ The architecture review process produces an **Architecture Decision Record (ADR)
 | Expected consequences | Testing strategies |
 
 When referencing tickets or requirements documents:
-- ✅ "PM-1234 requires that X be abstracted behind a configurable provider"
-- ❌ "PM-1234 introduces a `FooProvider` trait in `src/foo.rs`"
+- ✅ "TICKET-1234 requires that X be abstracted behind a configurable provider"
+- ❌ "TICKET-1234 introduces a `FooProvider` trait in `src/foo.ts`"
 
 Tickets specify *requirements*; design work determines *implementation*.
 
@@ -557,16 +557,6 @@ adr-descriptive-name.md
 - Keep names concise but meaningful
 - Examples: `0001-typescript-nodejs-runtime.md`, `0002-vector-storage.md`
 
-### Storage Location
-
-```
-.engineering/artifacts/adr/
-├── 0001-typescript-nodejs-runtime.md
-├── 0002-lancedb-vector-storage.md
-├── ...
-└── NNNN-content-metadata-extraction.md
-```
-
 ### Version Control
 
 - ADRs are committed to the repository
@@ -581,7 +571,7 @@ ADRs can operate at different scopes depending on the decision's impact:
 
 | Scope | Description | Storage | Example |
 |-------|-------------|---------|---------|
-| **Project** | Affects only this codebase | `.engineering/artifacts/adr/` | Choice of ORM library |
+| **Project** | Affects only this codebase | ADR folder | Choice of ORM library |
 | **Team** | Affects multiple projects owned by one team | Shared team docs repo | API versioning strategy |
 | **Organization** | Affects all teams | Central architecture docs | Authentication standard |
 
@@ -613,7 +603,7 @@ Start with plain Markdown files. Adopt tooling when:
 
 > "Get a sense of what works best for your team. Then, as your needs grow, go find a tool that fits those needs." — Head First Software Architecture
 
-**Recommendation:** For most projects, plain Markdown files in `.engineering/artifacts/adr/` with consistent naming are sufficient.
+**Recommendation:** For most projects, plain Markdown files in the ADR folder with consistent naming are sufficient.
 
 ---
 
@@ -634,7 +624,7 @@ Start with plain Markdown files. Adopt tooling when:
 - ❌ Hide negative consequences
 - ❌ Include implementation details (file paths, code snippets, API signatures)
 - ❌ Confuse requirements with implementation ("ticket introduces trait X" vs "ticket requires X")
-- ❌ Reference gitignored files (e.g., `.engineering/artifacts/planning/*`)
+- ❌ Reference gitignored planning artifacts
 - ❌ Add process attribution ("per user request", "AI suggested")
 
 ---
@@ -730,7 +720,7 @@ Before submitting an ADR, verify:
 
 ### Format & Compliance
 - [ ] File follows naming convention (`adr-name.md`)
-- [ ] No references to gitignored paths (`.engineering/artifacts/planning/*`)
+- [ ] No references to gitignored planning artifacts
 - [ ] Success criteria are measurable (if Confirmation section included)
 - [ ] Compliance mechanisms defined (if decision requires ongoing enforcement)
 
@@ -748,6 +738,6 @@ Before submitting an ADR, verify:
 
 ## Related Guides
 
-- [Work Package Implementation Workflow](11-work-package.md)
+- [Work Package Implementation Workflow](../workflow.toon)
 - [Test Plan Creation Guide](16-test-plan.md)
 - [Design Framework Guide](17-design-framework.md)

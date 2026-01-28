@@ -253,7 +253,7 @@ Include symbol verification in the task checkpoint:
 
 ## Updating the Review Log
 
-After user confirmation, update `05-assumptions-log.md` (formerly assumptions log):
+After user confirmation, update the assumptions log artifact:
 
 ```markdown
 ## Task N: [Task Name]
@@ -337,5 +337,5 @@ git diff origin/main --name-only
 ## Related Guides
 
 - [Assumptions Guide](12-assumptions-review.md) — Detailed assumption categories and log template
-- [Work Package Workflow](11-work-package.md) — Overall implementation workflow
+- [Work Package Workflow](../workflow.toon) — Overall implementation workflow
 - [Architecture Review Guide](14-architecture-review.md) — Architecture decision records

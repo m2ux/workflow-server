@@ -119,7 +119,6 @@ Patterns worth noting for future consideration:
 
 ## Output Document Template
 
-**Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/06-workflow-retrospective.md`
 
 **Template:**
 

@@ -17,11 +17,17 @@ steps[4]:
     description: If ADR exists
   - id: finalize-test-plan
     name: Finalize test plan with source links
+    description: Add hyperlinks to test source locations
   - id: create-complete
-    name: Create COMPLETE.md
+    name: Create completion document
     skill: completion
   - id: ensure-docs
     name: Ensure inline documentation on public APIs
+    description: Verify public APIs have documentation
+artifacts[1]:
+  - id: complete-document
+    name: COMPLETE.md
+    location: planning
 transitions[1]{to,isDefault}:
   update-pr,true
 outcome[2]:

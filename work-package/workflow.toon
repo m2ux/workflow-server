@@ -8,7 +8,7 @@ tags[3]:
   - implementation
   - engineering
   - workflow
-rules[7]:
+rules[9]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - Agents must NOT proceed past checkpoints without user confirmation
   - "Ask, don't assume - Clarify requirements before acting"
@@ -16,7 +16,16 @@ rules[7]:
   - One task at a time - Complete current work before starting new work
   - Explicit approval - Get clear 'yes' or 'proceed' before major actions
   - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
-variables[9]:
+  - "Never reference gitignored artifacts in PRs, issues, or ADRs - planning artifacts are local-only"
+  - "Artifacts in 'planning' and 'reviews' locations are gitignored"
+artifactLocations:
+  planning: "{planning_folder_path}"
+  reviews: ".engineering/artifacts/reviews"
+  adr: ".engineering/artifacts/adr"
+variables[10]:
+  - name: planning_folder_path
+    type: string
+    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}"
   - name: issue_number
     type: string
     description: GitHub or Jira issue number
@@ -47,4 +56,4 @@ variables[9]:
   - name: review_passed
     type: boolean
     description: Whether strategic review passed
-initialActivity: issue-verification
+initialActivity: issue-management
