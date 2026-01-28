@@ -340,7 +340,7 @@ For EACH test function:
 
 **After completing the review, generate a markdown report:**
 
-1. **Create report file** in `.engineering/artifacts/reviews/` with filename: `{module-name}-test-review-{YYYY-MM-DD}.md`
+1. **Create report artifact** (location and naming managed by activity)
 2. **Include complete review content** with all sections
 3. **Use professional markdown formatting**
 4. **Add review metadata** (reviewer, timestamp, scope)

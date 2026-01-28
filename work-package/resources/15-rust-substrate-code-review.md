@@ -57,22 +57,11 @@ Before starting a review, determine:
 
 ### When to Generate a Report File
 
-| Context | Generate Report? | Location |
-|---------|------------------|----------|
-| Implementation review | ⚠️ Optional | `.engineering/artifacts/reviews/` |
-| PR review | ⚠️ Optional | `.engineering/artifacts/reviews/pr{N}/` |
-| Module audit | ✅ Yes | `.engineering/artifacts/reviews/audits/` |
-
-### Storage Location
-
-```
-.engineering/artifacts/reviews/
-├── pr471/                              # PR-specific folder
-│   ├── midnight-pallet-review.md
-│   └── implementation-review.md
-└── audits/                             # Standalone audits (not PR-related)
-    └── ledger-types-review.md
-```
+| Context | Generate Report? |
+|---------|------------------|
+| Implementation review | ⚠️ Optional |
+| PR review | ⚠️ Optional |
+| Module audit | ✅ Yes |
 
 ### File Naming Convention
 
@@ -190,7 +179,7 @@ When implementing review recommendations:
    - Integration with parent modules
 
 5. **Determine output destination:**
-   - Implementation review → Optional report in `.engineering/artifacts/reviews/`
+   - Implementation review → Optional report artifact
    - Standalone review → Required report file
 
 ---

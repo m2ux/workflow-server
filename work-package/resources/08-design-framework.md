@@ -289,4 +289,4 @@ This guide is used during the planning stage of work package implementation.
 
 - [Knowledge Base Research Guide](07-knowledge-base-research.md) — Research before design
 - [Implementation Analysis Guide](06-implementation-analysis.md) — Understand existing state
-- [Work Package Plan](09-plan.md) — Document the design
+- [Work Package Plan](09-wp-plan.md) — Document the design

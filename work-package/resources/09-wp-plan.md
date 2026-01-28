@@ -5,13 +5,13 @@ version: 1.0.0
 
 # Work Package Plan Guide
 
-**Purpose:** Guidelines for creating the `03-work-package-plan.md` detailed implementation plan for work package planning folders.
+**Purpose:** Guidelines for creating the work package plan artifact.
 
 ---
 
 ## Overview
 
-The `03-work-package-plan.md` file serves as the detailed implementation specification for a work package. It provides:
+The work package plan artifact serves as the detailed implementation specification for a work package. It provides:
 - Problem statement and scope definition
 - Summary of research and analysis findings
 - Proposed approach with alternatives considered
@@ -25,13 +25,12 @@ The `03-work-package-plan.md` file serves as the detailed implementation specifi
 
 ## When to Create
 
-**Always create `03-work-package-plan.md` when:**
+**Always create the work package plan when:**
 - Work package has 3+ distinct tasks
 - Multiple components or files will be modified
 - Architectural decisions are required
 - Performance or quality targets must be met
 
-**Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/03-work-package-plan.md`
 
 **Template:**
 
@@ -59,8 +58,8 @@ The `03-work-package-plan.md` file serves as the detailed implementation specifi
 ## Research & Analysis
 
 *See companion planning artifacts for full details:*
-- **Knowledge Base Research:** [02-kb-research.md](02-kb-research.md)
-- **Implementation Analysis:** [01-implementation-analysis.md](01-implementation-analysis.md)
+- **Knowledge Base Research:** KB research artifact
+- **Implementation Analysis:** Implementation analysis artifact
 
 ### Key Findings Summary
 
@@ -226,8 +225,8 @@ Link to companion artifacts and summarize key findings. Don't duplicate the full
 ## Research & Analysis
 
 *See companion planning artifacts for full details:*
-- **Knowledge Base Research:** [02-kb-research.md](02-kb-research.md)
-- **Implementation Analysis:** [01-implementation-analysis.md](01-implementation-analysis.md)
+- **Knowledge Base Research:** KB research artifact
+- **Implementation Analysis:** Implementation analysis artifact
 
 ### Key Findings Summary
 
@@ -375,8 +374,8 @@ Document blockers and mitigation strategies:
 |----------|--------------|
 | `START-HERE.md` | High-level summary; plan provides details |
 | `README.md` | Navigation; links to this plan |
-| `02-kb-research.md` | Source for key findings; plan summarizes |
-| `01-implementation-analysis.md` | Source for baselines; plan summarizes |
+| KB research artifact | Source for key findings; plan summarizes |
+| Implementation analysis artifact | Source for baselines; plan summarizes |
 | ADR | Formal decision record; plan is working document |
 
 ---

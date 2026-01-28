@@ -1,7 +1,7 @@
 id: requirements-elicitation
-version: 1.0.0
+version: 2.0.0
 name: Requirements Elicitation
-description: Discover and clarify what the work package should accomplish through structured conversation. This phase ensures requirements are explicitly captured before planning the approach.
+description: Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it.
 problem: User needs to clarify and capture requirements before implementation
 recognition[3]:
   - elicit requirements
@@ -13,33 +13,167 @@ skills:
     - artifact-management
 required: false
 estimatedTime: 15-30m
-steps[5]:
-  - id: explore-problem
-    name: Explore problem space
-    description: Explore problem through sequential conversation (one question at a time)
-  - id: identify-stakeholders
-    name: Identify stakeholders and context
-  - id: define-scope
-    name: Define scope boundaries
-    description: Define in/out scope lists
-  - id: establish-criteria
-    name: Establish success criteria
+notes[4]:
+  - "Core principle: Conversation, not interrogation - discover what user actually needs"
+  - "One question per turn - never present multiple questions in a single message"
+  - "Skip option always available - user can say 'skip' to move to next question"
+  - "Adapt based on responses - skip irrelevant follow-ups, probe deeper when needed"
+steps[2]:
+  - id: elicit-requirements
+    name: Elicit requirements through conversation
+    description: "Iterate through question domains, asking one question at a time"
   - id: create-document
     name: Create requirements document
-    description: "Create {planning_folder_path}/00-requirements-elicitation.md"
-checkpoints[1]:
-  - id: requirements-confirmed
-    name: Requirements Elicitation Checkpoint
-    message: Have I understood the requirements correctly?
+    description: "Create requirements document using elicitation output template"
+artifacts[1]:
+  - id: requirements-document
+    name: requirements-elicitation.md
+    location: planning
+    template: elicitation-output
+loops[1]:
+  - id: domain-iteration
+    name: Question Domain Iteration
+    type: forEach
+    variable: current_domain
+    over: question_domains
+    maxIterations: 5
+    steps[2]:
+      - id: ask-question
+        name: Ask domain question
+        description: "Present ONE question from current domain. Wait for response before proceeding."
+      - id: record-response
+        name: Record response
+        description: "Capture answer or mark as skipped. Adapt follow-up based on response."
+decisions[1]:
+  - id: user-intent
+    name: User Intent Check
+    description: Check user response to determine next action
+    branches[4]:
+      - id: answered
+        label: User answered question
+        transitionTo: next-question
+      - id: skip-question
+        label: User said skip
+        transitionTo: next-question
+      - id: skip-domain
+        label: User said skip all domain
+        transitionTo: next-domain
+      - id: done
+        label: User said done with questions
+        transitionTo: requirements-summary
+        isDefault: false
+checkpoints[3]:
+  - id: domain-complete
+    name: Domain Complete Checkpoint
+    message: "Domain '{current_domain}' complete. How would you like to proceed?"
+    options[3]:
+      - id: next-domain
+        label: Continue to next domain
+        description: Move to the next question category
+      - id: revisit
+        label: Revisit this domain
+        description: Ask more questions in this category
+      - id: finish-early
+        label: Finish elicitation
+        description: I have enough information - proceed to summary
+        effect:
+          setVariable:
+            elicitation_complete: true
+  - id: requirements-summary
+    name: Requirements Summary Checkpoint
+    message: "Here's my understanding of the requirements. Have I captured them correctly?"
+    options[2]:
+      - id: confirmed
+        label: Requirements confirmed
+        description: Proceed to create requirements document
+        effect:
+          setVariable:
+            requirements_confirmed: true
+      - id: clarify
+        label: Need clarification
+        description: Discuss further before proceeding
+        effect:
+          setVariable:
+            requirements_confirmed: false
+  - id: document-review
+    name: Document Review Checkpoint
+    message: "Requirements document created. Ready to proceed to Implementation Analysis?"
     options[2]{id,label}:
-      confirmed,Requirements confirmed
-      clarify,Need clarification
-transitions[1]{to,isDefault}:
-  implementation-analysis,true
-outcome[2]:
-  - Requirements explicitly captured
-  - Success criteria defined
-context_to_preserve[3]:
+      proceed,Proceed to Implementation Analysis
+      revise,Revise requirements first
+questionDomains[5]:
+  - id: problem-exploration
+    name: Problem Exploration
+    goal: Understand the core problem and its impact
+    questions[6]:
+      - "What problem are we trying to solve?"
+      - "What's not working well today?"
+      - "What triggers the need for this now?"
+      - "What would happen if we didn't address this?"
+      - "Have you tried any workarounds?"
+      - "How long has this been a problem?"
+    redFlags[3]:
+      - Vague problem statements
+      - Solutions disguised as problems
+      - Symptoms rather than root causes
+  - id: stakeholder-identification
+    name: Stakeholder Identification
+    goal: Understand who is affected and their specific needs
+    questions[5]:
+      - "Who will use this feature?"
+      - "Are there different user types with different needs?"
+      - "Who else is affected by this change?"
+      - "Who makes decisions about this area?"
+      - "Are there any external parties involved?"
+  - id: context-environment
+    name: Context & Environment
+    goal: Understand the operating environment and constraints
+    questions[6]:
+      - "What systems or components does this interact with?"
+      - "Are there any dependencies on external services?"
+      - "What's the expected usage volume/frequency?"
+      - "Are there any technology constraints?"
+      - "What's the timeline or deadline?"
+      - "Are there any regulatory or compliance requirements?"
+  - id: scope-definition
+    name: Scope Definition
+    goal: Establish clear boundaries to prevent scope creep
+    questions[5]:
+      - "What should definitely be included?"
+      - "What should explicitly NOT be included?"
+      - "What's the minimum viable version?"
+      - "What can be deferred to a later phase?"
+      - "Are there any constraints on complexity?"
+  - id: success-criteria
+    name: Success Criteria
+    goal: Define measurable outcomes that indicate completion
+    questions[5]:
+      - "How will we know this is working correctly?"
+      - "What would a successful outcome look like?"
+      - "Are there any performance targets?"
+      - "What would make this a failure?"
+      - "How will this be tested/validated?"
+transitions[2]:
+  - to: implementation-analysis
+    condition:
+      type: simple
+      variable: requirements_confirmed
+      operator: ==
+      value: true
+    isDefault: true
+  - to: requirements-elicitation
+    condition:
+      type: simple
+      variable: requirements_confirmed
+      operator: ==
+      value: false
+outcome[3]:
+  - Requirements explicitly captured through structured conversation
+  - Success criteria defined with verification methods
+  - Requirements document created in planning folder
+context_to_preserve[5]:
   - requirements - Captured requirements list
   - success_criteria - Defined success criteria
   - planning_folder_path - Path to planning artifacts folder
+  - elicitation_log - Record of questions asked and responses
+  - scope_boundaries - In/out scope definitions

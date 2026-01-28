@@ -142,13 +142,7 @@ Define measurable targets based on baselines:
 
 ---
 
-## Planning Artifact
-
-Store analysis findings in a discrete planning document:
-
-**Location:** `.engineering/artifacts/planning/YYYY-MM-DD-work-package-name/01-implementation-analysis.md`
-
-**Template:**
+## Document Template
 
 ```markdown
 # Implementation Analysis - [Work Package Name]
@@ -284,55 +278,6 @@ Store analysis findings in a discrete planning document:
 
 ---
 
-## Checkpoint Template
-
-After completing analysis, present findings to the user for confirmation:
-
-```markdown
-# 🛑 Checkpoint: [Checkpoint Name]
-
-## Summary
-
-[Brief summary of what was completed and key findings/outcomes]
-
----
-
-## Key Points
-
-### Completed
-- [What was accomplished]
-- [Key deliverables produced]
-
-### Findings
-- [Key finding 1]
-- [Key finding 2]
-
-### Decisions Made
-- [Decision 1] - [Rationale]
-- [Decision 2] - [Rationale]
-
----
-
-## Status
-
-[Current status and any blockers or concerns]
-
----
-
-## Next Steps
-
-[What happens next if confirmed]
-
----
-
-**Confirmation Required:**
-
-1. **Confirmed** - Proceed to next phase
-2. **Need clarification** - Discuss further before proceeding
-```
-
----
-
 ## Quality Indicators
 
 ### Good Analysis
@@ -395,7 +340,7 @@ After completing analysis, present findings to the user for confirmation:
 This guide supports implementation analysis:
 
 1. **After KB research confirmed** → Begin implementation analysis
-2. **Complete analysis** → Store in `01-implementation-analysis.md`
+2. **Complete analysis** → Store in planning folder artifact
 3. **Present checkpoint** → Get user confirmation
 4. **Proceed to design** → Use baselines to inform success criteria
 
