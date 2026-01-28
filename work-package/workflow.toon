@@ -48,4 +48,3 @@ variables[9]:
     type: boolean
     description: Whether strategic review passed
 initialActivity: issue-verification
-activitiesDir: activities
