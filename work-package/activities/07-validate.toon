@@ -22,7 +22,7 @@ steps[4]:
   - id: test-suite-review
     name: Test Suite Review
     description: Review test quality, coverage, and anti-patterns
-    resource: test-review
+    skill: test-review
 decisions[1]:
   - id: validation-result
     name: Validation Decision

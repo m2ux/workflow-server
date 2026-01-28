@@ -1,15 +1,11 @@
 ---
 id: code-review
 version: 1.0.0
-applicability:
-  project_type: rust-substrate
 ---
 
 # Rust/Substrate Code Review Guide
 
 **Purpose:** Guidelines for conducting code reviews of Rust and Substrate codebases. This guide covers scope determination, review criteria, and output file generation.
-
-**Applicability:** Rust and Substrate projects only.
 
 ---
 
