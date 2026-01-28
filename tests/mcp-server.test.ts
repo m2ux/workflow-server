@@ -63,7 +63,7 @@ describe('mcp-server integration', () => {
       expect(workflow.id).toBe('work-package');
       expect(workflow.version).toBe('2.1.0');
       expect(workflow.activities).toHaveLength(11);
-      expect(workflow.initialActivity).toBe('issue-verification');
+      expect(workflow.initialActivity).toBe('issue-management');
     });
 
     it('should return error for non-existent workflow', async () => {
@@ -81,13 +81,13 @@ describe('mcp-server integration', () => {
     it('should get specific activity from workflow', async () => {
       const result = await client.callTool({
         name: 'get_workflow_activity',
-        arguments: { workflow_id: 'work-package', activity_id: 'issue-verification' },
+        arguments: { workflow_id: 'work-package', activity_id: 'issue-management' },
       });
       
       const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
-      expect(activity.id).toBe('issue-verification');
-      expect(activity.name).toBe('Issue Verification & PR Creation');
+      expect(activity.id).toBe('issue-management');
+      expect(activity.name).toBe('Issue Management');
       expect(activity.checkpoints).toBeDefined();
       expect(activity.checkpoints.length).toBeGreaterThan(0);
     });
@@ -109,7 +109,7 @@ describe('mcp-server integration', () => {
         name: 'get_checkpoint',
         arguments: {
           workflow_id: 'work-package',
-          activity_id: 'issue-verification',
+          activity_id: 'issue-management',
           checkpoint_id: 'issue-verification',
         },
       });
@@ -129,7 +129,7 @@ describe('mcp-server integration', () => {
         name: 'validate_transition',
         arguments: {
           workflow_id: 'work-package',
-          from_activity: 'issue-verification',
+          from_activity: 'issue-management',
           to_activity: 'requirements-elicitation',
         },
       });
@@ -143,7 +143,7 @@ describe('mcp-server integration', () => {
         name: 'validate_transition',
         arguments: {
           workflow_id: 'work-package',
-          from_activity: 'issue-verification',
+          from_activity: 'issue-management',
           to_activity: 'post-implementation',
         },
       });
