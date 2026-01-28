@@ -49,7 +49,7 @@ tools:
     when: "Understanding what's available; exploring workflow contents"
     params: none
     returns: Hierarchical index of all resources by workflow
-    usage: Discovery of available workflows, guides, templates
+    usage: Discovery of available workflows, resources, templates
 flow[5]:
   - 1. Call get_activities to get activity index
   - 2. Match user goal using quick_match patterns or activity descriptions

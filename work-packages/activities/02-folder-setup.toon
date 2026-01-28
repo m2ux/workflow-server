@@ -5,16 +5,19 @@ description: Create planning folder structure with initial documentation skeleto
 problem: Need organized folder structure for multi-package planning artifacts
 skills:
   primary: workflow-execution
+  supporting[1]:
+    - artifact-management
 steps[4]:
   - id: create-folder
     name: Create planning folder
-    description: "Create folder at .engineering/artifacts/planning/YYYY-MM-DD-initiative-name/"
+    description: "Use artifact-management skill to create planning folder and store planning_folder_path in context"
+    skill: artifact-management
   - id: create-start-here
     name: Create START-HERE.md
-    description: Create initial START-HERE.md skeleton with header and placeholders
+    description: "Create {planning_folder_path}/START-HERE.md skeleton with header and placeholders"
   - id: create-readme
     name: Create README.md
-    description: Create README.md skeleton for navigation
+    description: "Create {planning_folder_path}/README.md skeleton for navigation"
   - id: present-structure
     name: Present folder structure
     description: Show user the created folder structure
