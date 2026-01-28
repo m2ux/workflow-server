@@ -14,4 +14,3 @@ rules[5]:
   - User controls priorities - Never assume priority order without confirmation
   - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
 initialActivity: scope-assessment
-activitiesDir: activities
