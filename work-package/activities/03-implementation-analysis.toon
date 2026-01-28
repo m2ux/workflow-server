@@ -9,6 +9,8 @@ recognition[3]:
   - implementation analysis
 skills:
   primary: implementation-analysis
+  supporting[1]:
+    - artifact-management
 required: true
 estimatedTime: 10-20m
 steps[2]:
@@ -17,7 +19,7 @@ steps[2]:
     description: Analyze existing code, establish baselines, identify gaps
   - id: document
     name: Create analysis document
-    description: Create 01-implementation-analysis.md
+    description: "Create {planning_folder_path}/01-implementation-analysis.md"
 checkpoints[1]:
   - id: research-decision
     name: Research Decision Checkpoint
@@ -50,6 +52,7 @@ transitions[2]:
 outcome[2]:
   - Current state documented
   - Baseline metrics established
-context_to_preserve[2]:
+context_to_preserve[3]:
   - analysis_findings - Key findings from analysis
   - baseline_metrics - Established baselines
+  - planning_folder_path - Path to planning artifacts folder

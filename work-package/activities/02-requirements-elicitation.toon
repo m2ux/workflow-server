@@ -9,6 +9,8 @@ recognition[3]:
   - gather requirements
 skills:
   primary: requirements-elicitation
+  supporting[1]:
+    - artifact-management
 required: false
 estimatedTime: 15-30m
 steps[5]:
@@ -24,7 +26,7 @@ steps[5]:
     name: Establish success criteria
   - id: create-document
     name: Create requirements document
-    description: Create 00-requirements-elicitation.md
+    description: "Create {planning_folder_path}/00-requirements-elicitation.md"
 checkpoints[1]:
   - id: requirements-confirmed
     name: Requirements Elicitation Checkpoint
@@ -37,6 +39,7 @@ transitions[1]{to,isDefault}:
 outcome[2]:
   - Requirements explicitly captured
   - Success criteria defined
-context_to_preserve[2]:
+context_to_preserve[3]:
   - requirements - Captured requirements list
   - success_criteria - Defined success criteria
+  - planning_folder_path - Path to planning artifacts folder

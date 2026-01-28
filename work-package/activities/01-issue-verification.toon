@@ -10,20 +10,25 @@ recognition[4]:
   - begin implementation
 skills:
   primary: issue-management
-  supporting[2]:
+  supporting[3]:
     - git-workflow
     - pr-creation
+    - artifact-management
 required: true
 estimatedTime: 10-20m
 entryActions[1]{action,message}:
   log,Starting issue verification and PR creation
-steps[2]:
+steps[3]:
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
   - id: check-issue
     name: Check for Existing Issue
     description: Verify whether an issue has been specified by user or in context
+  - id: initialize-planning-folder
+    name: Initialize Planning Folder
+    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title."
+    skill: artifact-management
 checkpoints[3]:
   - id: issue-verification
     name: Issue Verification Checkpoint
@@ -89,9 +94,10 @@ outcome[3]:
   - Issue exists or is created
   - Feature branch created
   - Draft PR created and linked
-context_to_preserve[5]:
+context_to_preserve[6]:
   - issue_number - The associated issue number
   - issue_platform - github or jira
   - branch_name - Feature branch name
   - pr_number - Draft PR number
   - project_type - Detected project type (rust-substrate or other)
+  - planning_folder_path - Path to planning artifacts folder
