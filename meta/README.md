@@ -48,8 +48,8 @@ graph TD
         s2([Load workflow])
         s3([Initialize state])
         s4([Apply rules])
-        s5([Discover guides])
-        s6([Load start guide])
+        s5([Discover resources])
+        s6([Load start resource])
         s7([Get initial activity])
         s8([Present activity])
         s9([Prepare checkpoints])
@@ -72,8 +72,8 @@ graph TD
 | Load workflow | Call `get_workflow` to load the selected workflow |
 | Initialize state | Initialize state per state-management skill |
 | Apply rules | Read and apply workflow rules |
-| Discover guides | Call `list_guides` to discover available guidance |
-| Load start guide | Call `get_guide` for index 00 (start-here guide) if available |
+| Discover resources | Call `list_workflow_resources` to discover available resources |
+| Load start resource | Call `get_resource` for index 00 (start-here resource) if available |
 | Get initial activity | Call `get_activity` for the initialActivity |
 | Present activity | Present first activity to user with steps and entry actions |
 | Prepare checkpoints | If activity has checkpoints, prepare to present when reached |
@@ -98,11 +98,11 @@ graph TD
     subgraph resume-workflow[Resume Workflow]
         r1([Identify workflow])
         r2([Load workflow])
-        r3([Discover guides])
+        r3([Discover resources])
         r4([Reconstruct state])
         r5([Build state object])
         r6([Get current activity])
-        r7([Load activity guide])
+        r7([Load activity resource])
         r8([Present status])
         r9([Resume execution])
         
@@ -120,11 +120,11 @@ graph TD
 |------|-------------|
 | Identify workflow | Ask user to identify the workflow being resumed |
 | Load workflow | Call `get_workflow` to load workflow definition |
-| Discover guides | Call `list_guides` to discover available guidance |
+| Discover resources | Call `list_workflow_resources` to discover available resources |
 | Reconstruct state | Ask user: Which activity? What's completed? Key decisions? |
 | Build state object | Build state object per state-management skill |
 | Get current activity | Call `get_activity` for current activity |
-| Load activity guide | Call `get_guide` for activity-specific guide if available |
+| Load activity resource | Call `get_resource` for activity-specific resource if available |
 | Present status | Present current activity status |
 | Resume execution | Resume execution from current position |
 

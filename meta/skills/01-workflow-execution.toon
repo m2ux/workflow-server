@@ -5,11 +5,11 @@ execution_pattern:
   start[3]:
     - list_workflows
     - get_workflow
-    - list_guides
+    - list_workflow_resources
   per_activity[3]:
     - get_workflow_activity
     - get_checkpoint
-    - get_guide
+    - get_resource
   transitions[1]:
     - validate_transition
   artifacts[2]:
@@ -49,16 +49,16 @@ tools:
     when: Moving between activities
     params: workflow_id, from_activity, to_activity
     returns: Validity of transition and applicable conditions
-  list_guides:
-    when: Starting a workflow; understanding available guidance
+  list_workflow_resources:
+    when: Starting a workflow; understanding available resources
     params: workflow_id
-    returns: Array of guide entries with index, name, description
-    usage: Review guide list at workflow start; reference guides during execution
-  get_guide:
+    returns: Array of resource entries with index, name, description
+    usage: Review resource list at workflow start; reference resources during execution
+  get_resource:
     when: "Activity requires guidance; user asks for help; complex step encountered"
     params: workflow_id, index
-    returns: Full guide content in TOON format
-    usage: Guides provide detailed instructions for workflow activities and steps
+    returns: Full resource content
+    usage: Resources provide detailed instructions for workflow activities and steps
   list_templates:
     when: Activity requires artifact creation; user needs document format
     params: workflow_id
@@ -118,7 +118,7 @@ interpretation:
   checkpoints: Present message and options to user; apply effect from selected option
   decisions: Evaluate branch conditions; take first matching branch or default
   loops: "For forEach: iterate over collection; For while: check condition before each iteration"
-  guides: Reference guides when activity steps are unclear or user requests help
+  resources: Reference resources when activity steps are unclear or user requests help
   templates: Use templates when workflow requires artifact creation
   triggers: "Suspend parent, initialize child with parentWorkflow ref, pass context, execute child to completion, return to parent, merge returnedContext"
 errors:
@@ -137,9 +137,9 @@ errors:
   checkpoint_required:
     cause: Attempting to transition past blocking checkpoint
     recovery: Present checkpoint to user; await response before continuing
-  guide_not_found:
-    cause: Invalid guide index for workflow
-    recovery: Call list_guides to discover valid indices
+  resource_not_found:
+    cause: Invalid resource index for workflow
+    recovery: Call list_workflow_resources to discover valid indices
   template_not_found:
     cause: Invalid template index for workflow
     recovery: Call list_templates to discover valid indices

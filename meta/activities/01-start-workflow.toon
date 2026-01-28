@@ -27,12 +27,12 @@ steps[9]:
   - id: apply-rules
     name: Apply rules
     description: Read and apply workflow rules
-  - id: discover-guides
-    name: Discover guides
-    description: Call list_guides to discover available guidance
-  - id: load-start-guide
-    name: Load start guide
-    description: Call get_guide for index 00 (start-here guide) if available
+  - id: discover-resources
+    name: Discover resources
+    description: Call list_workflow_resources to discover available resources
+  - id: load-start-resource
+    name: Load start resource
+    description: Call get_resource for index 00 (start-here resource) if available
   - id: get-initial-activity
     name: Get initial activity
     description: Call get_activity for the initialActivity
@@ -52,4 +52,4 @@ context_to_preserve[5]:
   - currentActivity - Currently active activity ID
   - rules - Workflow rules to follow throughout
   - variables - Workflow variables with defaults
-  - guides - Available guide indices for reference
+  - resources - Available resource indices for reference

@@ -21,9 +21,9 @@ steps[9]:
   - id: load-workflow
     name: Load workflow
     description: Call get_workflow to load workflow definition
-  - id: discover-guides
-    name: Discover guides
-    description: Call list_guides to discover available guidance
+  - id: discover-resources
+    name: Discover resources
+    description: Call list_workflow_resources to discover available resources
   - id: reconstruct-state
     name: Reconstruct state
     description: "Reconstruct state by asking user: Which activity were you on? What activities have been completed? Any key decisions already made?"
@@ -33,9 +33,9 @@ steps[9]:
   - id: get-current-activity
     name: Get current activity
     description: Call get_activity for current activity
-  - id: load-activity-guide
-    name: Load activity guide
-    description: Call get_guide for activity-specific guide if available
+  - id: load-activity-resource
+    name: Load activity resource
+    description: Call get_resource for activity-specific resource if available
   - id: present-status
     name: Present status
     description: "Present current activity status: Completed steps, Remaining steps, Upcoming checkpoints"
@@ -53,4 +53,4 @@ context_to_preserve[6]:
   - completedActivities - Array of completed activity IDs
   - checkpointResponses - Previous user decisions
   - variables - Current variable values
-  - guides - Available guide indices for reference
+  - resources - Available resource indices for reference
