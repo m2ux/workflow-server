@@ -1,6 +1,6 @@
 # Workflows
 
-This orphan branch contains workflow definitions, activities, skills, resources, and templates for the MCP Workflow Server.
+This orphan branch contains workflow definitions, activities, skills, and resources for the MCP Workflow Server.
 
 ## Branch Structure
 
@@ -26,8 +26,6 @@ workflows/                    # Worktree checkout
 │   │   └── {NN}-{id}.toon    # Activities for this workflow
 │   ├── resources/            # Resource subdirectory (indexed)
 │   │   └── {NN}-{name}.md    # Guidance resources
-│   ├── templates/            # Template subdirectory (indexed)
-│   │   └── {NN}-{name}.md    # Templates
 │   └── skills/               # Workflow-specific skills (indexed)
 │       └── {NN}-{id}.toon    # Skills for this workflow
 ```
@@ -63,7 +61,7 @@ git worktree add ./workflows workflows
 1. Create `{workflow-id}/` directory
 2. Add `workflow.toon` workflow definition
 3. Add `README.md` with Mermaid diagrams documenting the workflow
-4. Add `activities/`, `resources/`, `templates/`, `skills/` subdirectories as needed
+4. Add `activities/`, `resources/`, `skills/` subdirectories as needed
 5. Commit to this branch
 
 **Activities:**
@@ -75,11 +73,6 @@ git worktree add ./workflows workflows
 **Resources:**
 1. Create `{NN}-{name}.md` in `{workflow-id}/resources/`
 2. Prefix with two-digit index (00, 01, 02, etc.)
-3. Commit to this branch
-
-**Templates:**
-1. Create `{NN}-{name}.md` in `{workflow-id}/templates/`
-2. Prefix with two-digit index (01, 02, 03, etc.)
 3. Commit to this branch
 
 **Skills:**
