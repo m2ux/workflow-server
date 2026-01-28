@@ -34,8 +34,8 @@ steps[9]:
     name: Get current activity
     description: Call get_activity for current activity
   - id: load-activity-resource
-    name: Load activity resource
-    description: Call get_resource for activity-specific resource if available
+    name: Load activity guidance resource
+    description: Call get_resource for activity-specific guidance resource if available
   - id: present-status
     name: Present status
     description: "Present current activity status: Completed steps, Remaining steps, Upcoming checkpoints"

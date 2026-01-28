@@ -102,7 +102,7 @@ graph TD
         r4([Reconstruct state])
         r5([Build state object])
         r6([Get current activity])
-        r7([Load activity resource])
+        r7([Load activity guidance resource])
         r8([Present status])
         r9([Resume execution])
         
@@ -124,7 +124,7 @@ graph TD
 | Reconstruct state | Ask user: Which activity? What's completed? Key decisions? |
 | Build state object | Build state object per state-management skill |
 | Get current activity | Call `get_activity` for current activity |
-| Load activity resource | Call `get_resource` for activity-specific resource if available |
+| Load activity guidance resource | Call `get_resource` for activity-specific guidance resource if available |
 | Present status | Present current activity status |
 | Resume execution | Resume execution from current position |
 
