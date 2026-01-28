@@ -45,7 +45,7 @@ describe('workflow-loader', () => {
       if (result.success) {
         expect(result.value.id).toBe('work-package');
         expect(result.value.activities.length).toBe(11);
-        expect(result.value.initialActivity).toBe('issue-verification');
+        expect(result.value.initialActivity).toBe('issue-management');
       }
     });
 
@@ -64,10 +64,10 @@ describe('workflow-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         // Check for activities with different features
-        const issueVerification = result.value.activities.find(a => a.id === 'issue-verification');
-        expect(issueVerification?.checkpoints?.length).toBeGreaterThan(0);
-        expect(issueVerification?.steps?.length).toBeGreaterThan(0);
-        expect(issueVerification?.transitions?.length).toBeGreaterThan(0);
+        const issueManagement = result.value.activities.find(a => a.id === 'issue-management');
+        expect(issueManagement?.checkpoints?.length).toBeGreaterThan(0);
+        expect(issueManagement?.steps?.length).toBeGreaterThan(0);
+        expect(issueManagement?.transitions?.length).toBeGreaterThan(0);
         
         const implement = result.value.activities.find(a => a.id === 'implement');
         expect(implement?.loops?.length).toBeGreaterThan(0);
@@ -88,9 +88,9 @@ describe('workflow-loader', () => {
     it('should get existing activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const activity = getActivity(workflow.value, 'issue-verification');
+        const activity = getActivity(workflow.value, 'issue-management');
         expect(activity).toBeDefined();
-        expect(activity?.name).toBe('Issue Verification & PR Creation');
+        expect(activity?.name).toBe('Issue Management');
       }
     });
 
@@ -113,7 +113,7 @@ describe('workflow-loader', () => {
     it('should get existing checkpoint', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const checkpoint = getCheckpoint(workflow.value, 'issue-verification', 'issue-verification');
+        const checkpoint = getCheckpoint(workflow.value, 'issue-management', 'issue-verification');
         expect(checkpoint).toBeDefined();
         expect(checkpoint?.name).toBe('Issue Verification Checkpoint');
         expect(checkpoint?.options.length).toBeGreaterThan(0);
@@ -123,7 +123,7 @@ describe('workflow-loader', () => {
     it('should return undefined for non-existent checkpoint', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const checkpoint = getCheckpoint(workflow.value, 'issue-verification', 'non-existent');
+        const checkpoint = getCheckpoint(workflow.value, 'issue-management', 'non-existent');
         expect(checkpoint).toBeUndefined();
       }
     });
@@ -139,7 +139,7 @@ describe('workflow-loader', () => {
     it('should get valid transitions from activity with conditional transitions', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const transitions = getValidTransitions(workflow.value, 'issue-verification');
+        const transitions = getValidTransitions(workflow.value, 'issue-management');
         expect(transitions).toContain('requirements-elicitation');
         expect(transitions).toContain('implementation-analysis');
       }
@@ -174,7 +174,7 @@ describe('workflow-loader', () => {
     it('should validate allowed transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'issue-verification', 'requirements-elicitation');
+        const result = validateTransition(workflow.value, 'issue-management', 'requirements-elicitation');
         expect(result.valid).toBe(true);
         expect(result.reason).toBeUndefined();
       }
@@ -183,7 +183,7 @@ describe('workflow-loader', () => {
     it('should reject invalid transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'issue-verification', 'post-implementation');
+        const result = validateTransition(workflow.value, 'issue-management', 'post-implementation');
         expect(result.valid).toBe(false);
         expect(result.reason).toContain('No valid transition');
       }
@@ -201,7 +201,7 @@ describe('workflow-loader', () => {
     it('should reject transition to non-existent activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'issue-verification', 'non-existent');
+        const result = validateTransition(workflow.value, 'issue-management', 'non-existent');
         expect(result.valid).toBe(false);
         expect(result.reason).toContain('Target activity not found');
       }
