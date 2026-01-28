@@ -34,18 +34,18 @@ workflows/                    # Worktree checkout
 
 | Workflow | Description |
 |----------|-------------|
-| `meta` | Bootstrap workflow - start, resume, and end other workflows |
-| `work-package` | Single work package implementation (issue → PR → merge) |
-| `work-packages` | Multi-package planning for large initiatives |
+| [`meta`](meta/) | Bootstrap workflow - start, resume, and end other workflows |
+| [`work-package`](work-package/) | Single work package implementation (issue → PR → merge) |
+| [`work-packages`](work-packages/) | Multi-package planning for large initiatives |
 
-## Universal Skills (meta/skills/)
+## Universal Skills ([meta/skills/](meta/skills/))
 
 | Skill | Description |
 |-------|-------------|
-| `00-activity-resolution` | Resolve user goals to activities |
-| `01-workflow-execution` | Execute workflows following schema patterns |
-| `02-state-management` | Manage workflow state across sessions |
-| `03-artifact-management` | Manage planning artifact folder structure |
+| [`00-activity-resolution`](meta/skills/00-activity-resolution.toon) | Resolve user goals to activities |
+| [`01-workflow-execution`](meta/skills/01-workflow-execution.toon) | Execute workflows following schema patterns |
+| [`02-state-management`](meta/skills/02-state-management.toon) | Manage workflow state across sessions |
+| [`03-artifact-management`](meta/skills/03-artifact-management.toon) | Manage planning artifact folder structure |
 
 ## Worktree Setup
 
