@@ -75,17 +75,9 @@
         "initialActivity": {
           "type": "string",
           "description": "ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points."
-        },
-        "activities": {
-          "type": "array",
-          "items": {
-            "$ref": "activity.schema.json"
-          },
-          "minItems": 1,
-          "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points."
         }
       },
-      "required": ["id", "version", "title", "activities"],
+      "required": ["id", "version", "title"],
       "additionalProperties": false
     }
   }

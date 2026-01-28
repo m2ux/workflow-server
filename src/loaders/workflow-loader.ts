@@ -16,9 +16,8 @@ interface RawWorkflow {
   version: string;
   title: string;
   description?: string;
-  activitiesDir?: string;
-  activities?: Activity[];
-  initialActivity: string;
+  activitiesDir?: string;  // Legacy - will be removed after loading
+  initialActivity?: string;
   [key: string]: unknown;
 }
 
@@ -94,21 +93,23 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
     const content = await readFile(filePath, 'utf-8');
     const rawWorkflow = decodeToon<RawWorkflow>(content);
     
-    // If activitiesDir is specified, load activities from that directory
-    if (rawWorkflow.activitiesDir && (!rawWorkflow.activities || rawWorkflow.activities.length === 0)) {
+    // Load activities from directory if not inline
+    // Default to 'activities/' subfolder, or use activitiesDir if specified
+    if (!rawWorkflow.activities || rawWorkflow.activities.length === 0) {
       const workflowDirPath = dirname(filePath);
-      const activitiesPath = join(workflowDirPath, rawWorkflow.activitiesDir);
+      const activitiesDirName = rawWorkflow.activitiesDir ?? 'activities';
+      const activitiesPath = join(workflowDirPath, activitiesDirName);
       
       const activities = await loadActivitiesFromDir(activitiesPath);
-      if (activities.length === 0) {
-        return err(new WorkflowValidationError(workflowId, [`No activities found in ${rawWorkflow.activitiesDir}`]));
+      if (activities.length > 0) {
+        rawWorkflow.activities = activities;
+        logInfo('Loaded activities from directory', { workflowId, activitiesDir: activitiesDirName, count: activities.length });
       }
       
-      // Merge activities into workflow
-      rawWorkflow.activities = activities;
-      delete rawWorkflow.activitiesDir;
-      
-      logInfo('Loaded activities from directory', { workflowId, activitiesDir: rawWorkflow.activitiesDir, count: activities.length });
+      // Clean up non-schema property
+      if (rawWorkflow.activitiesDir) {
+        delete rawWorkflow.activitiesDir;
+      }
     }
     
     const result = safeValidateWorkflow(rawWorkflow);
