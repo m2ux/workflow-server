@@ -33,6 +33,16 @@ loops[1]:
       - id: review-assumptions
         name: Review assumptions
         skill: assumptions-review
+steps[1]:
+  - id: comprehensive-code-review
+    name: Comprehensive Code Review
+    description: Perform comprehensive code review of all implementation changes
+    resource: code-review
+    condition:
+      type: simple
+      variable: project_type
+      operator: ==
+      value: rust-substrate
 checkpoints[4]:
   - id: task-progress
     name: Task Progress Checkpoint
