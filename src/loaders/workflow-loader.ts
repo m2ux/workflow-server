@@ -95,14 +95,15 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
     
     // Load activities from directory if not inline
     // Default to 'activities/' subfolder, or use activitiesDir if specified
-    if (!rawWorkflow.activities || rawWorkflow.activities.length === 0) {
+    const existingActivities = rawWorkflow['activities'] as Activity[] | undefined;
+    if (!existingActivities || existingActivities.length === 0) {
       const workflowDirPath = dirname(filePath);
       const activitiesDirName = rawWorkflow.activitiesDir ?? 'activities';
       const activitiesPath = join(workflowDirPath, activitiesDirName);
       
       const activities = await loadActivitiesFromDir(activitiesPath);
       if (activities.length > 0) {
-        rawWorkflow.activities = activities;
+        rawWorkflow['activities'] = activities;
         logInfo('Loaded activities from directory', { workflowId, activitiesDir: activitiesDirName, count: activities.length });
       }
       
