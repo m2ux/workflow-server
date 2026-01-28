@@ -233,12 +233,14 @@ describe('mcp-server integration', () => {
         arguments: { workflow_id: 'work-package', index: '00' },
       });
       
-      // get_resource returns raw TOON content, not JSON
+      // get_resource returns raw content (TOON or markdown format)
       const content = (result.content[0] as { type: 'text'; text: string }).text;
       
       expect(content).toBeDefined();
+      // Resource content should contain id (in YAML frontmatter or TOON format)
       expect(content).toContain('id:');
-      expect(content).toContain('title:');
+      // Markdown format uses heading for title, TOON uses title: field
+      expect(content.includes('title:') || content.includes('# ')).toBe(true);
     });
   });
 });
