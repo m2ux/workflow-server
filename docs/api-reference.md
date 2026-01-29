@@ -2,6 +2,69 @@
 
 ## MCP Tools
 
+### Navigation Tools
+
+The navigation tools provide a **server-driven workflow traversal** API. Agents receive a "navigation landscape" of available actions and cannot interpret or modify state directly.
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `nav_start` | `workflow_id`, `initial_variables?` | Start a new workflow execution and get initial situation |
+| `nav_situation` | `state` | Get current navigation situation from state token |
+| `nav_action` | `state`, `action`, `step_id?`, `checkpoint_id?`, `option_id?`, `activity_id?`, `loop_id?`, `loop_items?` | Execute a navigation action |
+| `nav_checkpoint` | `state` | Get details of currently active checkpoint |
+
+#### Navigation Response Format
+
+All navigation tools return a consistent response:
+
+```json
+{
+  "success": true,
+  "position": {
+    "workflow": "work-package",
+    "activity": { "id": "implement", "name": "Implementation" },
+    "step": { "id": "code", "index": 1, "name": "Write Code" },
+    "loop": { "id": "task-loop", "iteration": 2, "total": 5 }
+  },
+  "message": "Completed step 'analyze'",
+  "availableActions": {
+    "required": [{ "action": "complete_step", "step": "code" }],
+    "optional": [{ "action": "get_resource" }],
+    "blocked": []
+  },
+  "checkpoint": null,
+  "state": "v1.gzB64.H4sIAAAA..."
+}
+```
+
+#### State Token
+
+The `state` parameter is an **opaque token** that agents must pass through without interpretation. It contains compressed, encoded workflow state that only the server can decode. This ensures:
+
+- **Engine authority**: Only the server validates transitions
+- **Agent simplicity**: Agents focus on actions, not state management
+- **Resumability**: State can be saved and resumed later
+
+#### Actions
+
+The `nav_action` tool supports these actions:
+
+| Action | Required Parameters | Description |
+|--------|---------------------|-------------|
+| `complete_step` | `step_id` | Mark a step as complete |
+| `respond_to_checkpoint` | `checkpoint_id`, `option_id` | Respond to blocking checkpoint |
+| `transition` | `activity_id` | Transition to a new activity |
+| `advance_loop` | `loop_id`, `loop_items?` | Start or advance a loop iteration |
+
+#### Checkpoint Blocking
+
+When a checkpoint is active, it **blocks** step completion. The agent must:
+1. Call `nav_checkpoint` to see options
+2. Call `nav_action` with `respond_to_checkpoint`
+3. Only then can steps be completed
+
+This ensures agents cannot skip required user decisions.
+
 ### Workflow Tools
 
 | Tool | Parameters | Description |
