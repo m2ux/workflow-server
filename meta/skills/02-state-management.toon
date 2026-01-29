@@ -42,10 +42,10 @@ triggered_workflow_structure:
 format:
   description: State uses activity IDs for navigation, step indices within activities
   examples:
-    currentActivity: "'issue-verification' (activity ID from workflow)"
+    currentActivity: "'issue-management' (activity ID from workflow)"
     currentStep: "1 (1-based index within activity)"
-    completedActivities: "['issue-verification', 'requirements-elicitation']"
-    completedSteps: "{'issue-verification': [1], 'requirements-elicitation': [1, 2, 3]}"
+    completedActivities: "['issue-management', 'requirements-elicitation']"
+    completedSteps: "{'issue-management': [1], 'requirements-elicitation': [1, 2, 3]}"
 
 initialization:
   trigger: On workflow start (get_workflow)
@@ -121,7 +121,7 @@ update_patterns:
       - Add history entry with type workflow_returned
 
 checkpoint_response_format:
-  key: "'activity-checkpoint' (e.g., 'issue-verification-1' for activity, checkpoint 1)"
+  key: "'activity-checkpoint' (e.g., 'issue-management-1' for activity, checkpoint 1)"
   value:
     optionId: string
     respondedAt: datetime

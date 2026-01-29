@@ -5,7 +5,7 @@
 ## Overview
 
 This workflow guides the complete lifecycle of a single work package:
-1. **Issue Verification** → Ensure issue and PR exist
+1. **Issue Management** → Verify/create issue, set up branch and PR
 2. **Requirements Elicitation** (optional) → Clarify requirements
 3. **Implementation Analysis** → Understand current state
 4. **Research** (optional) → Gather best practices
@@ -27,9 +27,9 @@ This workflow guides the complete lifecycle of a single work package:
 
 ```mermaid
 graph TD
-    Start([Start]) --> IV[issue-verification]
+    Start([Start]) --> IM[issue-management]
     
-    IV --> RE{needs_elicitation?}
+    IM --> RE{needs_elicitation?}
     RE -->|yes| REL[requirements-elicitation]
     RE -->|no| IA
     REL --> IA[implementation-analysis]
@@ -58,7 +58,7 @@ graph TD
     PID -->|significant| PP
     PID -->|approved/minor| Done([Complete])
     
-    style IV fill:#e3f2fd
+    style IM fill:#e3f2fd
     style REL fill:#e3f2fd
     style IA fill:#e3f2fd
     style RS fill:#e3f2fd
@@ -77,48 +77,54 @@ graph TD
 
 ## Activities
 
-### 1. Issue Verification & PR Creation
+### 1. Issue Management
 
-**Purpose:** Every work package should be linked to an issue. Issues define the problem space and provide traceability.
+**Purpose:** Verify or create an issue, then create feature branch and PR. Issues define the problem space and provide traceability from requirements through implementation.
 
 **Primary Skill:** `issue-management`  
 **Supporting Skills:** `git-workflow`, `pr-creation`, `artifact-management`
 
 ```mermaid
 graph TD
-    subgraph issue-verification[Issue Verification]
+    subgraph issue-management[Issue Management]
         s1([Detect project type])
         s2([Check for existing issue])
-        s3([Initialize planning folder])
+        s3([Create issue if needed])
+        s4([Create feature branch])
+        s5([Create draft PR])
+        s6([Initialize planning folder])
+        s7([Determine next phase])
         
         cp1{Issue exists?}
-        cp2{Issue created?}
+        cp2{Platform?}
         cp3{PR created?}
+        cp4{Elicitation needed?}
         
-        s1 --> s2 --> s3 --> cp1
-        cp1 -->|provide| HasIssue([Has Issue])
-        cp1 -->|create-github| CreateGH([Create GitHub Issue])
-        cp1 -->|create-jira| CreateJira([Create Jira Issue])
-        cp1 -->|skip| Skip([Skip - Not Recommended])
+        s1 --> s2 --> cp1
+        cp1 -->|provide| s4
+        cp1 -->|create| cp2
+        cp1 -->|skip| s4
         
-        CreateGH --> cp2
-        CreateJira --> cp2
-        cp2 -->|proceed| CreatePR([Create Branch & PR])
-        cp2 -->|modify| CreateGH
+        cp2 -->|github| CreateGH([Create GitHub Issue])
+        cp2 -->|jira| CreateJira([Create Jira Issue])
         
-        HasIssue --> CreatePR
-        Skip --> CreatePR
-        CreatePR --> cp3
+        CreateGH --> s4
+        CreateJira --> s4
         
-        cp3 -->|yes-elicit| Next1([→ requirements-elicitation])
-        cp3 -->|no-skip| Next2([→ implementation-analysis])
+        s4 --> s5 --> s6 --> s7 --> cp4
+        
+        cp4 -->|yes| Next1([→ requirements-elicitation])
+        cp4 -->|no| Next2([→ implementation-analysis])
     end
 ```
 
 **Checkpoints:**
 1. Issue Verification: "I didn't find an issue. Which option?"
-2. Issue Created: "Issue created. Proceed to create branch and PR?"
-3. PR Created: "PR created. Do you need requirements elicitation?"
+2. Platform Selection: "Which platform should I create this issue in?"
+3. Issue Type: "What type of issue is this?"
+4. Issue Review: "Here's the drafted issue. Does this look correct?"
+5. PR Creation: "Proceed to create feature branch and draft PR?"
+6. Next Phase: "Do you need requirements elicitation?"
 
 ---
 
@@ -439,8 +445,8 @@ graph TD
 
 | Skill | Capability | Used By |
 |-------|------------|---------|
-| `code-review` | Comprehensive Rust/Substrate code review | implement |
-| `test-review` | Test suite quality review | validate |
+| `code-review` | Code review (see `15-rust-substrate-code-review.md` for Rust/Substrate) | implement |
+| `test-review` | Test suite quality review (see `16-test-suite-review.md`) | validate |
 | `pr-review-response` | Respond to PR review feedback | post-implementation |
 
 ---
