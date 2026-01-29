@@ -154,7 +154,7 @@ questionDomains[5]:
       - "What would make this a failure?"
       - "How will this be tested/validated?"
 transitions[2]:
-  - to: implementation-analysis
+  - to: research
     condition:
       type: simple
       variable: requirements_confirmed

@@ -34,7 +34,7 @@ artifacts[1]:
   - id: analysis-document
     name: implementation-analysis.md
     location: planning
-checkpoints[2]:
+checkpoints[1]:
   - id: analysis-confirmed
     name: Analysis Confirmation Checkpoint
     message: "Here's my analysis of the current implementation. Does this look correct?"
@@ -48,36 +48,8 @@ checkpoints[2]:
       - id: more-analysis
         label: More analysis needed
         description: Additional areas need investigation
-  - id: research-decision
-    name: Research Decision Checkpoint
-    message: "Analysis complete. Would you like to perform research before planning?"
-    options[2]:
-      - id: yes-research
-        label: "Yes, perform research"
-        description: Research best practices and patterns before planning
-        effect:
-          setVariable:
-            needs_research: true
-      - id: no-skip
-        label: "No, proceed to planning"
-        description: Skip research and proceed to plan-prepare activity
-        effect:
-          setVariable:
-            needs_research: false
-transitions[2]:
-  - to: research
-    condition:
-      type: simple
-      variable: needs_research
-      operator: ==
-      value: true
-  - to: plan-prepare
-    condition:
-      type: simple
-      variable: needs_research
-      operator: ==
-      value: false
-    isDefault: true
+transitions[1]{to,isDefault}:
+  plan-prepare,true
 outcome[3]:
   - Current state documented with baseline metrics
   - Gaps identified and prioritized
