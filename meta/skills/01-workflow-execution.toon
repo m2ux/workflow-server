@@ -99,7 +99,7 @@ state:
     workflow_trigger: "Set status to suspended; record position; initialize child workflow with parentWorkflow ref"
     workflow_return: "Resume from returnTo position; merge returnedContext; set status to running"
   checkpoint_response_format:
-    key: "'activity-checkpoint' (e.g., 'issue-verification-1' for activity, checkpoint 1)"
+    key: "'activity-checkpoint' (e.g., 'issue-management-1' for activity, checkpoint 1)"
     value:
       optionId: string
       respondedAt: datetime
