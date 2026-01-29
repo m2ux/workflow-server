@@ -1,0 +1,119 @@
+id: design-philosophy
+version: 1.0.0
+name: Design Philosophy
+description: "Apply structured design framework to classify the problem, determine complexity, and decide which activities to perform."
+problem: User needs to understand problem nature before deciding on workflow path
+recognition[4]:
+  - classify problem
+  - design philosophy
+  - understand problem
+  - determine approach
+skills:
+  primary: design-framework
+required: true
+estimatedTime: 10-20m
+notes[5]:
+  - "Design philosophy determines the path through the workflow"
+  - "Simple bug fixes with clear scope may skip elicitation and research"
+  - "Complex features typically require full elicitation and research"
+  - "Problem classification informs all subsequent activities"
+  - "For simple changes, lightweight application is acceptable"
+steps[4]:
+  - id: define-problem
+    name: Identify and Define Problem
+    description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
+  - id: classify-problem
+    name: Classify Problem Type
+    description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
+  - id: determine-path
+    name: Determine Workflow Path
+    description: "Based on problem complexity and clarity, determine which optional activities are needed."
+  - id: document-philosophy
+    name: Document Design Philosophy
+    description: "Record problem classification, complexity assessment, and rationale for workflow path decisions."
+checkpoints[2]:
+  - id: problem-classified
+    name: Problem Classification Checkpoint
+    message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Does this assessment look correct?"
+    options[2]:
+      - id: confirmed
+        label: Classification confirmed
+        description: The problem classification is accurate
+      - id: revise
+        label: Revise classification
+        description: The classification needs adjustment
+  - id: workflow-path
+    name: Workflow Path Checkpoint
+    message: "Given the problem complexity, I recommend the following path. Which would you like?"
+    options[4]:
+      - id: full-workflow
+        label: Full workflow (elicitation + research)
+        description: Complex feature requiring requirements discovery and research
+        effect:
+          setVariable:
+            needs_elicitation: true
+            needs_research: true
+            skip_to_planning: false
+      - id: elicitation-only
+        label: Elicitation only (skip research)
+        description: Requirements unclear but domain is well-understood
+        effect:
+          setVariable:
+            needs_elicitation: true
+            needs_research: false
+            skip_to_planning: false
+      - id: research-only
+        label: Research only (skip elicitation)
+        description: Requirements clear but need to research best practices
+        effect:
+          setVariable:
+            needs_elicitation: false
+            needs_research: true
+            skip_to_planning: false
+      - id: direct-to-planning
+        label: Direct to planning (skip both)
+        description: Simple, well-defined issue - proceed directly to planning
+        effect:
+          setVariable:
+            needs_elicitation: false
+            needs_research: false
+            skip_to_planning: true
+transitions[3]:
+  - to: requirements-elicitation
+    condition:
+      type: simple
+      variable: needs_elicitation
+      operator: ==
+      value: true
+  - to: implementation-analysis
+    condition:
+      type: compound
+      operator: and
+      conditions[2]:
+        - type: simple
+          variable: needs_elicitation
+          operator: ==
+          value: false
+        - type: simple
+          variable: skip_to_planning
+          operator: ==
+          value: false
+  - to: plan-prepare
+    condition:
+      type: simple
+      variable: skip_to_planning
+      operator: ==
+      value: true
+    isDefault: true
+outcome[4]:
+  - Problem clearly defined and classified
+  - Complexity assessed
+  - Workflow path determined
+  - Ready for next activity based on problem nature
+context_to_preserve[6]:
+  - problem_statement - Clear problem definition
+  - problem_type - Specific problem or inventive goal
+  - complexity - simple, moderate, or complex
+  - needs_elicitation - Whether requirements elicitation is needed
+  - needs_research - Whether research is needed
+  - skip_to_planning - Whether to skip directly to planning
