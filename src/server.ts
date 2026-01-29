@@ -11,9 +11,9 @@ export function createServer(config: ServerConfig): McpServer {
   registerResourceTools(server, config);
   logInfo('Server configured', { 
     tools: [
-      'list_workflows', 'get_workflow', 'validate_transition', 'get_phase', 'get_checkpoint', 'health_check',
+      'list_workflows', 'get_workflow', 'validate_transition', 'get_workflow_activity', 'get_checkpoint', 'health_check',
       'get_activities', 'get_activity', 'get_rules', 'get_skills', 'list_skills', 'get_skill',
-      'list_workflow_resources', 'get_resource', 'list_templates', 'get_template', 'discover_resources'
+      'list_workflow_resources', 'get_resource', 'discover_resources'
     ]
   });
   return server;

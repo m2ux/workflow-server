@@ -6,7 +6,6 @@ import { withAuditLog } from '../logging.js';
 // Loaders
 import { listWorkflows } from '../loaders/workflow-loader.js';
 import { listResources, readResourceRaw, listWorkflowsWithResources } from '../loaders/resource-loader.js';
-import { listTemplates, readTemplate } from '../loaders/template-loader.js';
 import { listActivities, readActivity, readActivityIndex } from '../loaders/activity-loader.js';
 import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
@@ -140,42 +139,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     })
   );
 
-  // ============== Template Tools ==============
-
-  server.tool(
-    'list_templates',
-    'List all templates available for a workflow',
-    { workflow_id: z.string().describe('Workflow ID (e.g., work-package)') },
-    withAuditLog('list_templates', async ({ workflow_id }) => {
-      const templates = await listTemplates(config.workflowDir, workflow_id);
-      const result = templates.map(t => ({
-        index: t.index,
-        name: t.name,
-        title: t.title,
-      }));
-      return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
-    })
-  );
-
-  server.tool(
-    'get_template',
-    'Get a specific template by index',
-    { 
-      workflow_id: z.string().describe('Workflow ID (e.g., work-package)'),
-      index: z.string().describe('Template index (e.g., 01, 02)')
-    },
-    withAuditLog('get_template', async ({ workflow_id, index }) => {
-      const result = await readTemplate(config.workflowDir, workflow_id, index);
-      if (!result.success) throw result.error;
-      return { content: [{ type: 'text', text: result.value }] };
-    })
-  );
-
   // ============== Discovery Tool ==============
 
   server.tool(
     'discover_resources',
-    'Discover all available resources: workflows, resources, templates, activities, skills',
+    'Discover all available resources: workflows, resources, activities, skills',
     {},
     withAuditLog('discover_resources', async () => {
       const workflows = await listWorkflows(config.workflowDir);
@@ -202,7 +170,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // Add workflow-specific resources
       for (const workflowId of workflowsWithResources) {
         const resources = await listResources(config.workflowDir, workflowId);
-        const templates = await listTemplates(config.workflowDir, workflowId);
         const workflowSkills = await listWorkflowSkills(config.workflowDir, workflowId);
         
         const workflowDiscovery: Record<string, unknown> = {
@@ -211,13 +178,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             tool: `list_workflow_resources { workflow_id: "${workflowId}" }`,
           },
         };
-        
-        if (templates.length > 0) {
-          workflowDiscovery['templates'] = {
-            count: templates.length,
-            tool: `list_templates { workflow_id: "${workflowId}" }`,
-          };
-        }
         
         if (workflowSkills.length > 0) {
           workflowDiscovery['skills'] = {

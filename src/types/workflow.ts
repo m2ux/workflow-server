@@ -37,7 +37,3 @@ export { VariableDefinitionSchema, WorkflowSchema, validateWorkflow, safeValidat
 export type { ComparisonOperator, SimpleCondition, AndCondition, OrCondition, NotCondition, Condition } from '../schema/condition.schema.js';
 export { ComparisonOperatorSchema, SimpleConditionSchema, AndConditionSchema, OrConditionSchema, NotConditionSchema, ConditionSchema, evaluateCondition, validateCondition, safeValidateCondition } from '../schema/condition.schema.js';
 
-// Backward compatibility aliases (deprecated)
-/** @deprecated Use Activity instead */
-export type Phase = Activity;
-import { type Activity } from '../schema/activity.schema.js';

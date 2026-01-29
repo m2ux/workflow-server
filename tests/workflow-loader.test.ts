@@ -44,7 +44,7 @@ describe('workflow-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('work-package');
-        expect(result.value.activities.length).toBe(11);
+        expect(result.value.activities.length).toBe(12);
         expect(result.value.initialActivity).toBe('issue-management');
       }
     });
@@ -136,12 +136,11 @@ describe('workflow-loader', () => {
       workflow = await loadWorkflow(WORKFLOW_DIR, 'work-package');
     });
 
-    it('should get valid transitions from activity with conditional transitions', () => {
+    it('should get valid transitions from activity with single transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
         const transitions = getValidTransitions(workflow.value, 'issue-management');
-        expect(transitions).toContain('requirements-elicitation');
-        expect(transitions).toContain('implementation-analysis');
+        expect(transitions).toContain('design-philosophy');
       }
     });
 
@@ -174,7 +173,7 @@ describe('workflow-loader', () => {
     it('should validate allowed transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'issue-management', 'requirements-elicitation');
+        const result = validateTransition(workflow.value, 'issue-management', 'design-philosophy');
         expect(result.valid).toBe(true);
         expect(result.reason).toBeUndefined();
       }

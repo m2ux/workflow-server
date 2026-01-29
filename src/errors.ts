@@ -11,13 +11,6 @@ export class ResourceNotFoundError extends Error {
   }
 }
 
-export class TemplateNotFoundError extends Error {
-  readonly code = 'TEMPLATE_NOT_FOUND';
-  constructor(public readonly templateIndex: string, public readonly workflowId: string) { 
-    super(`Template not found: index ${templateIndex} in workflow ${workflowId}`); 
-    this.name = 'TemplateNotFoundError'; 
-  }
-}
 
 export class WorkflowValidationError extends Error {
   readonly code = 'WORKFLOW_VALIDATION_ERROR';

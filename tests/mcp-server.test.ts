@@ -62,7 +62,7 @@ describe('mcp-server integration', () => {
       
       expect(workflow.id).toBe('work-package');
       expect(workflow.version).toBe('2.1.0');
-      expect(workflow.activities).toHaveLength(11);
+      expect(workflow.activities).toHaveLength(12);
       expect(workflow.initialActivity).toBe('issue-management');
     });
 
@@ -130,7 +130,7 @@ describe('mcp-server integration', () => {
         arguments: {
           workflow_id: 'work-package',
           from_activity: 'issue-management',
-          to_activity: 'requirements-elicitation',
+          to_activity: 'design-philosophy',
         },
       });
       

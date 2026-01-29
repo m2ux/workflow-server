@@ -184,6 +184,3 @@ export function validateTransition(workflow: Workflow, fromActivityId: string, t
   return { valid: true };
 }
 
-// Backward compatibility aliases (deprecated - will be removed)
-/** @deprecated Use getActivity instead */
-export const getPhase = getActivity;

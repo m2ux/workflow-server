@@ -46,14 +46,4 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const workflows = await listWorkflows(config.workflowDir);
       return { content: [{ type: 'text', text: JSON.stringify({ status: 'healthy', server: config.serverName, version: config.serverVersion, workflows_available: workflows.length, uptime_seconds: Math.floor(process.uptime()) }, null, 2) }] };
     }));
-
-  // Backward compatibility alias (deprecated)
-  server.tool('get_phase', 'Get details of a specific activity (deprecated: use get_activity)', { workflow_id: z.string(), phase_id: z.string() },
-    withAuditLog('get_phase', async ({ workflow_id, phase_id }) => {
-      const result = await loadWorkflow(config.workflowDir, workflow_id);
-      if (!result.success) throw result.error;
-      const activity = getActivity(result.value, phase_id);
-      if (!activity) throw new Error(`Activity not found: ${phase_id}`);
-      return { content: [{ type: 'text', text: JSON.stringify(activity, null, 2) }] };
-    }));
 }
