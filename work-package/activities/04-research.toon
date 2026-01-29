@@ -67,7 +67,7 @@ checkpoints[3]:
         label: Revisit research
         description: Some areas need more investigation
 transitions[1]{to,isDefault}:
-  plan-prepare,true
+  implementation-analysis,true
 outcome[3]:
   - Best practices identified from multiple sources
   - Patterns validated and mapped to requirements

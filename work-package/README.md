@@ -8,8 +8,8 @@ This workflow guides the complete lifecycle of a single work package:
 1. **Issue Management** → Verify/create issue, set up branch and PR
 2. **Design Philosophy** → Classify problem, determine workflow path
 3. **Requirements Elicitation** (optional) → Clarify requirements
-4. **Implementation Analysis** → Understand current state
-5. **Research** (optional) → Gather best practices
+4. **Research** (optional) → Gather best practices
+5. **Implementation Analysis** → Understand current state
 6. **Plan & Prepare** → Create implementation and test plans
 7. **Implement** → Execute tasks with review cycles
 8. **Validate** → Run tests and verify build
@@ -34,15 +34,12 @@ graph TD
     DP --> PATH{workflow path?}
     PATH -->|full| REL[requirements-elicitation]
     PATH -->|elicit-only| REL
-    PATH -->|research-only| IA
+    PATH -->|research-only| RS
     PATH -->|direct| PP
     
-    REL --> IA[implementation-analysis]
-    
-    IA --> RES{needs_research?}
-    RES -->|yes| RS[research]
-    RES -->|no| PP
-    RS --> PP[plan-prepare]
+    REL --> RS[research]
+    RS --> IA[implementation-analysis]
+    IA --> PP[plan-prepare]
     
     PP --> IMP[implement]
     IMP --> VAL[validate]
@@ -207,31 +204,7 @@ graph TD
 
 ---
 
-### 4. Implementation Analysis
-
-**Purpose:** Analyze current implementation to understand effectiveness, establish baselines, identify opportunities.
-
-**Primary Skill:** `implementation-analysis`  
-**Supporting Skill:** `artifact-management`
-
-```mermaid
-graph TD
-    subgraph implementation-analysis[Implementation Analysis]
-        a1([Complete analysis])
-        a2([Create analysis document])
-        cp1{Research needed?}
-        
-        a1 --> a2 --> cp1
-        cp1 -->|yes-research| Next1([→ research])
-        cp1 -->|no-skip| Next2([→ plan-prepare])
-    end
-```
-
-**Checkpoint:** "Implementation analysis complete. Would you like to perform research?"
-
----
-
-### 5. Research (Optional)
+### 4. Research (Optional)
 
 **Purpose:** Research knowledge base and external sources to discover best practices and patterns.
 
@@ -252,13 +225,37 @@ graph TD
         rs2 --> cp2
         cp2 -->|confirmed| rs3
         cp2 -->|more| rs2
-        rs3 --> Next([→ design])
+        rs3 --> Next([→ implementation-analysis])
     end
 ```
 
 **Checkpoints:**
 1. "Knowledge insights confirmed?"
 2. "Web research findings confirmed?"
+
+---
+
+### 5. Implementation Analysis
+
+**Purpose:** Analyze current implementation to understand effectiveness, establish baselines, identify opportunities.
+
+**Primary Skill:** `implementation-analysis`  
+**Supporting Skill:** `artifact-management`
+
+```mermaid
+graph TD
+    subgraph implementation-analysis[Implementation Analysis]
+        a1([Complete analysis])
+        a2([Create analysis document])
+        cp1{Analysis confirmed?}
+        
+        a1 --> a2 --> cp1
+        cp1 -->|confirmed| Next([→ plan-prepare])
+        cp1 -->|clarify| a1
+    end
+```
+
+**Checkpoint:** "Implementation analysis complete. Ready to proceed to planning?"
 
 ---
 

@@ -85,7 +85,7 @@ transitions[3]:
       variable: needs_elicitation
       operator: ==
       value: true
-  - to: implementation-analysis
+  - to: research
     condition:
       type: compound
       operator: and
@@ -95,9 +95,9 @@ transitions[3]:
           operator: ==
           value: false
         - type: simple
-          variable: skip_to_planning
+          variable: needs_research
           operator: ==
-          value: false
+          value: true
   - to: plan-prepare
     condition:
       type: simple
