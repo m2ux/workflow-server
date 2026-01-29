@@ -232,4 +232,4 @@ Then work backward to find practical approximations.
 
 - [Knowledge Base Research Guide](07-knowledge-base-research.md) — Research before design
 - [Implementation Analysis Guide](06-implementation-analysis.md) — Understand existing state
-- [Work Package Plan](09-wp-plan.md) — Document the design
+- [Work Package Plan](10-wp-plan.md) — Document the design

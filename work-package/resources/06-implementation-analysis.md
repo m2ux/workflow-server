@@ -350,5 +350,5 @@ This guide supports implementation analysis:
 
 - [Work Package Implementation Workflow](../workflow.toon)
 - [Knowledge Base Research Guide](07-knowledge-base-research.md)
-- [Architecture Review Guide](14-architecture-review.md)
-- [Test Plan Creation Guide](10-test-plan.md)
+- [Architecture Review Guide](15-architecture-review.md)
+- [Test Plan Creation Guide](11-test-plan.md)

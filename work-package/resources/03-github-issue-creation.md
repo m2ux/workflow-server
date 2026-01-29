@@ -370,6 +370,6 @@ Before submitting an issue, verify:
 
 ## Related Guides
 
-- [Architecture Review Guide](14-architecture-review.md) - For documenting design decisions (comes after issue)
-- [PR Description Guide](11-pr-description.md) - For describing implementations (comes after design)
+- [Architecture Review Guide](15-architecture-review.md) - For documenting design decisions (comes after issue)
+- [PR Description Guide](12-pr-description.md) - For describing implementations (comes after design)
 - [Implementation Analysis Guide](06-implementation-analysis.md) - For planning implementation approach

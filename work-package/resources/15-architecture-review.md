@@ -739,5 +739,5 @@ Before submitting an ADR, verify:
 ## Related Guides
 
 - [Work Package Implementation Workflow](../workflow.toon)
-- [Test Plan Creation Guide](16-test-plan.md)
-- [Design Framework Guide](17-design-framework.md)
+- [Test Plan Creation Guide](11-test-plan.md)
+- [Design Framework Guide](09-design-framework.md)
