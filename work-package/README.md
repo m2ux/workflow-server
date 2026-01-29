@@ -90,7 +90,6 @@ graph TD
     subgraph issue-management[Issue Management]
         s1([Detect project type])
         s2([Check for existing issue])
-        s3([Create issue if needed])
         s4([Check current branch])
         s5([Create/use branch])
         s6([Check for existing PR])
