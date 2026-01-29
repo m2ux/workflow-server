@@ -70,7 +70,7 @@ steps[11]:
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"
-checkpoints[9]:
+checkpoints[8]:
   - id: issue-verification
     name: Issue Verification Checkpoint
     message: "I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?"
@@ -245,22 +245,6 @@ checkpoints[9]:
         effect:
           setVariable:
             pr_skipped: true
-  - id: next-activity
-    name: Next Activity Checkpoint
-    message: "PR created and linked to issue. Do you need requirements elicitation?"
-    options[2]:
-      - id: yes-elicit
-        label: "Yes, elicit requirements"
-        description: Proceed to clarify and capture detailed requirements
-        effect:
-          setVariable:
-            needs_elicitation: true
-      - id: no-skip
-        label: "No, skip elicitation"
-        description: Proceed directly to Implementation Analysis (requirements are already clear)
-        effect:
-          setVariable:
-            needs_elicitation: false
 decisions[1]:
   - id: platform-flow
     name: Platform Flow Decision
@@ -334,20 +318,8 @@ jiraToolSequence[5]:
       with_assignee: "add assignee_account_id from lookupJiraAccountId"
       with_parent: "add parent='PROJ-123' for subtasks or stories under epic"
       with_fields: "add additional_fields={priority:{name:'High'}, labels:['feature'], components:[{name:'backend'}]}"
-transitions[2]:
-  - to: requirements-elicitation
-    condition:
-      type: simple
-      variable: needs_elicitation
-      operator: ==
-      value: true
-  - to: implementation-analysis
-    condition:
-      type: simple
-      variable: needs_elicitation
-      operator: ==
-      value: false
-    isDefault: true
+transitions[1]{to,isDefault}:
+  design-philosophy,true
 exitActions[1]{action,message}:
   log,"Issue management complete - issue verified/created, PR ready"
 outcome[4]:

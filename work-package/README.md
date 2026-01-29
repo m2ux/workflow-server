@@ -6,16 +6,17 @@
 
 This workflow guides the complete lifecycle of a single work package:
 1. **Issue Management** → Verify/create issue, set up branch and PR
-2. **Requirements Elicitation** (optional) → Clarify requirements
-3. **Implementation Analysis** → Understand current state
-4. **Research** (optional) → Gather best practices
-5. **Plan & Prepare** → Design approach and create plan
-6. **Implement** → Execute tasks with review cycles
-7. **Validate** → Run tests and verify build
-8. **Strategic Review** → Ensure minimal, focused changes
-9. **Finalize** → Complete documentation
-10. **Update PR** → Push and mark ready for review
-11. **Post-Implementation** → Handle reviews and retrospective
+2. **Design Philosophy** → Classify problem, determine workflow path
+3. **Requirements Elicitation** (optional) → Clarify requirements
+4. **Implementation Analysis** → Understand current state
+5. **Research** (optional) → Gather best practices
+6. **Plan & Prepare** → Create implementation and test plans
+7. **Implement** → Execute tasks with review cycles
+8. **Validate** → Run tests and verify build
+9. **Strategic Review** → Ensure minimal, focused changes
+10. **Finalize** → Complete documentation
+11. **Update PR** → Push and mark ready for review
+12. **Post-Implementation** → Handle reviews and retrospective
 
 **Key characteristics:**
 - Sequential flow with conditional branches
@@ -28,10 +29,14 @@ This workflow guides the complete lifecycle of a single work package:
 ```mermaid
 graph TD
     Start([Start]) --> IM[issue-management]
+    IM --> DP[design-philosophy]
     
-    IM --> RE{needs_elicitation?}
-    RE -->|yes| REL[requirements-elicitation]
-    RE -->|no| IA
+    DP --> PATH{workflow path?}
+    PATH -->|full| REL[requirements-elicitation]
+    PATH -->|elicit-only| REL
+    PATH -->|research-only| IA
+    PATH -->|direct| PP
+    
     REL --> IA[implementation-analysis]
     
     IA --> RES{needs_research?}
@@ -59,6 +64,7 @@ graph TD
     PID -->|approved/minor| Done([Complete])
     
     style IM fill:#e3f2fd
+    style DP fill:#e3f2fd
     style REL fill:#e3f2fd
     style IA fill:#e3f2fd
     style RS fill:#e3f2fd
@@ -136,11 +142,45 @@ graph TD
 4. Issue Review: "Here's the drafted issue. Does this look correct?"
 5. Branch Check: "You're on branch X. Use existing or create new?"
 6. PR Check: "Found existing PR #N. Use existing or create new?"
-7. Next Activity: "Do you need requirements elicitation?"
 
 ---
 
-### 2. Requirements Elicitation (Optional)
+### 2. Design Philosophy
+
+**Purpose:** Classify the problem, assess complexity, and determine which optional activities are needed.
+
+**Primary Skill:** `design-framework`
+
+```mermaid
+graph TD
+    subgraph design-philosophy[Design Philosophy]
+        d1([Define problem])
+        d2([Classify problem type])
+        d3([Assess complexity])
+        d4([Determine workflow path])
+        
+        cp1{Problem classified?}
+        cp2{Workflow path?}
+        
+        d1 --> d2 --> d3 --> cp1
+        cp1 -->|confirmed| d4
+        cp1 -->|revise| d1
+        d4 --> cp2
+        
+        cp2 -->|full| Next1([→ requirements-elicitation])
+        cp2 -->|elicit-only| Next1
+        cp2 -->|research-only| Next2([→ implementation-analysis])
+        cp2 -->|direct| Next3([→ plan-prepare])
+    end
+```
+
+**Checkpoints:**
+1. Problem Classification: "This appears to be a {type} with {complexity} complexity. Correct?"
+2. Workflow Path: "Given the complexity, which path would you like?"
+
+---
+
+### 3. Requirements Elicitation (Optional)
 
 **Purpose:** Discover and clarify what the work package should accomplish through structured conversation.
 
@@ -167,7 +207,7 @@ graph TD
 
 ---
 
-### 3. Implementation Analysis
+### 4. Implementation Analysis
 
 **Purpose:** Analyze current implementation to understand effectiveness, establish baselines, identify opportunities.
 
@@ -191,7 +231,7 @@ graph TD
 
 ---
 
-### 4. Research (Optional)
+### 5. Research (Optional)
 
 **Purpose:** Research knowledge base and external sources to discover best practices and patterns.
 
@@ -212,7 +252,7 @@ graph TD
         rs2 --> cp2
         cp2 -->|confirmed| rs3
         cp2 -->|more| rs2
-        rs3 --> Next([→ plan-prepare])
+        rs3 --> Next([→ design])
     end
 ```
 
@@ -222,31 +262,26 @@ graph TD
 
 ---
 
-### 5. Plan & Prepare
+### 6. Plan & Prepare
 
-**Purpose:** Design the approach, create the work package plan, and prepare for implementation.
+**Purpose:** Create the work package plan and prepare for implementation.
 
 **Primary Skill:** `planning`  
-**Supporting Skills:** `design-framework`, `test-planning`
+**Supporting Skill:** `test-planning`
 
 ```mermaid
 graph TD
     subgraph plan-prepare[Plan & Prepare]
-        p1([Apply design framework])
-        p2([Create work package plan])
-        p3([Create test plan])
-        p4([Sync feature branch])
-        p5([Update PR description])
-        p6([Create TODO list])
-        cp1{Approach confirmed?}
-        cp2{Ready to implement?}
+        p1([Create work package plan])
+        p2([Create test plan])
+        p3([Sync feature branch])
+        p4([Update PR description])
+        p5([Create TODO list])
+        cp1{Ready to implement?}
         
-        p1 --> cp1
-        cp1 -->|confirmed| p2
-        cp1 -->|revise| p1
-        p2 --> p3 --> p4 --> p5 --> p6 --> cp2
-        cp2 -->|ready| Next([→ implement])
-        cp2 -->|not-ready| p1
+        p1 --> p2 --> p3 --> p4 --> p5 --> cp1
+        cp1 -->|ready| Next([→ implement])
+        cp1 -->|not-ready| p1
     end
 ```
 
@@ -256,7 +291,7 @@ graph TD
 
 ---
 
-### 6. Implement Tasks
+### 7. Implement Tasks
 
 **Purpose:** Execute the implementation plan task by task with review cycles.
 
@@ -307,7 +342,7 @@ graph TD
 
 ---
 
-### 7. Validate
+### 8. Validate
 
 **Purpose:** Validate implementation through comprehensive testing. All tests must pass.
 
@@ -337,7 +372,7 @@ graph TD
 
 ---
 
-### 8. Strategic Review
+### 9. Strategic Review
 
 **Purpose:** Ensure changes are minimal and focused. Validate the PR contains only required changes.
 
@@ -365,7 +400,7 @@ graph TD
 
 ---
 
-### 9. Finalize
+### 10. Finalize
 
 **Purpose:** Finalize documentation after implementation is complete.
 
@@ -387,7 +422,7 @@ graph TD
 
 ---
 
-### 10. Update PR
+### 11. Update PR
 
 **Purpose:** Update PR with final implementation details and mark ready for review.
 
@@ -411,7 +446,7 @@ graph TD
 
 ---
 
-### 11. Post-Implementation
+### 12. Post-Implementation
 
 **Purpose:** Complete post-implementation tasks including handling PR review feedback.
 
