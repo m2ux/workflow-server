@@ -71,8 +71,6 @@ graph TD
     style PI fill:#fce4ec
 ```
 
-**Legend:** 🔵 Setup | 🟠 Development | 🟢 Validation | 🔴 Finalization
-
 ---
 
 ## Activities
