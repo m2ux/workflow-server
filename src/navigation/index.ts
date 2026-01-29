@@ -22,6 +22,17 @@ export {
   generateSituationMessage,
 } from './compute.js';
 
+// State transitions
+export {
+  completeStep,
+  respondToCheckpoint,
+  transitionToActivity,
+  advanceLoop,
+  tryDefaultTransition,
+  TransitionError,
+  type TransitionResult,
+} from './transitions.js';
+
 // Types
 export type { 
   Position, 
