@@ -39,12 +39,12 @@ graph TD
     RES -->|no| PP
     RS --> PP[plan-prepare]
     
-    PP --> IM[implement]
-    IM --> VAL[validate]
+    PP --> IMP[implement]
+    IMP --> VAL[validate]
     
     VAL --> VD{validation result?}
     VD -->|pass| SR[strategic-review]
-    VD -->|minor issues| IM
+    VD -->|minor issues| IMP
     VD -->|major issues| PP
     
     SR --> SRD{review result?}
@@ -63,7 +63,7 @@ graph TD
     style IA fill:#e3f2fd
     style RS fill:#e3f2fd
     style PP fill:#fff3e0
-    style IM fill:#fff3e0
+    style IMP fill:#fff3e0
     style VAL fill:#e8f5e9
     style SR fill:#e8f5e9
     style FIN fill:#fce4ec
