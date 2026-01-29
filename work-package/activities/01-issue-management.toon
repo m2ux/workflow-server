@@ -26,7 +26,7 @@ notes[5]:
   - "No implementation details in issues - those belong in planning docs and PRs"
 entryActions[1]{action,message}:
   log,Starting issue management
-steps[7]:
+steps[11]:
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
@@ -41,12 +41,28 @@ steps[7]:
       variable: needs_issue_creation
       operator: ==
       value: true
+  - id: check-branch
+    name: Check Current Branch
+    description: "Check if already on a feature branch (not main/master). Run 'git branch --show-current' and compare against main/master."
   - id: create-branch
     name: Create Feature Branch
     description: "Create feature branch from main/master with naming convention: type/issue-number-short-description"
+    condition:
+      type: simple
+      variable: use_existing_branch
+      operator: ==
+      value: false
+  - id: check-pr
+    name: Check for Existing PR
+    description: "Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' to detect existing PRs."
   - id: create-pr
     name: Create Draft PR
     description: "Create draft PR linked to issue. PR title should reference issue number."
+    condition:
+      type: simple
+      variable: use_existing_pr
+      operator: ==
+      value: false
   - id: initialize-planning-folder
     name: Initialize Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title."
@@ -54,7 +70,7 @@ steps[7]:
   - id: determine-next-phase
     name: Determine Next Phase
     description: "Based on issue details, determine if requirements elicitation is needed"
-checkpoints[7]:
+checkpoints[9]:
   - id: issue-verification
     name: Issue Verification Checkpoint
     message: "I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?"
@@ -74,6 +90,49 @@ checkpoints[7]:
         effect:
           setVariable:
             issue_skipped: true
+  - id: branch-check
+    name: Branch Check Checkpoint
+    message: "You're currently on branch '{current_branch}'. Would you like to use this branch or create a new one?"
+    condition:
+      type: simple
+      variable: on_feature_branch
+      operator: ==
+      value: true
+    options[2]:
+      - id: use-existing
+        label: Use existing branch
+        description: Continue work on the current feature branch
+        effect:
+          setVariable:
+            use_existing_branch: true
+      - id: create-new
+        label: Create new branch
+        description: Create a new feature branch from main/master
+        effect:
+          setVariable:
+            use_existing_branch: false
+  - id: pr-check
+    name: PR Check Checkpoint
+    message: "Found existing PR #{existing_pr_number} for this branch. Would you like to use it or create a new one?"
+    condition:
+      type: simple
+      variable: pr_exists
+      operator: ==
+      value: true
+    options[2]:
+      - id: use-existing
+        label: Use existing PR
+        description: Continue with the existing pull request
+        effect:
+          setVariable:
+            use_existing_pr: true
+            pr_number: "{existing_pr_number}"
+      - id: create-new
+        label: Create new PR
+        description: Create a new draft pull request
+        effect:
+          setVariable:
+            use_existing_pr: false
   - id: platform-selection
     name: Platform Selection Checkpoint
     message: "Which platform should I create this issue in?"
@@ -296,12 +355,16 @@ outcome[4]:
   - Feature branch created from main
   - Draft PR created and linked to issue
   - Planning folder initialized
-context_to_preserve[8]:
+context_to_preserve[12]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
   - issue_platform - github or jira
   - issue_type - Type of issue (feature, bug, task, enhancement, epic)
   - issue_url - URL to the issue
   - branch_name - Feature branch name
-  - pr_number - Draft PR number
+  - pr_number - Draft PR number (new or existing)
   - project_type - Detected project type (rust-substrate or other)
   - planning_folder_path - Path to planning artifacts folder
+  - on_feature_branch - Whether already on a feature branch (not main/master)
+  - use_existing_branch - Whether to use the existing branch
+  - pr_exists - Whether a PR already exists for the branch
+  - use_existing_pr - Whether to use the existing PR

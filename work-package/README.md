@@ -88,15 +88,18 @@ graph TD
         s1([Detect project type])
         s2([Check for existing issue])
         s3([Create issue if needed])
-        s4([Create feature branch])
-        s5([Create draft PR])
-        s6([Initialize planning folder])
-        s7([Determine next phase])
+        s4([Check current branch])
+        s5([Create/use branch])
+        s6([Check for existing PR])
+        s7([Create/use PR])
+        s8([Initialize planning folder])
+        s9([Determine next phase])
         
         cp1{Issue exists?}
         cp2{Platform?}
-        cp3{PR created?}
-        cp4{Elicitation needed?}
+        cp3{On feature branch?}
+        cp4{PR exists?}
+        cp5{Elicitation needed?}
         
         s1 --> s2 --> cp1
         cp1 -->|provide| s4
@@ -109,10 +112,20 @@ graph TD
         CreateGH --> s4
         CreateJira --> s4
         
-        s4 --> s5 --> s6 --> s7 --> cp4
+        s4 --> cp3
+        cp3 -->|yes-use| s6
+        cp3 -->|no-create| s5
+        s5 --> s6
         
-        cp4 -->|yes| Next1([→ requirements-elicitation])
-        cp4 -->|no| Next2([→ implementation-analysis])
+        s6 --> cp4
+        cp4 -->|yes-use| s8
+        cp4 -->|no-create| s7
+        s7 --> s8
+        
+        s8 --> s9 --> cp5
+        
+        cp5 -->|yes| Next1([→ requirements-elicitation])
+        cp5 -->|no| Next2([→ implementation-analysis])
     end
 ```
 
@@ -121,8 +134,9 @@ graph TD
 2. Platform Selection: "Which platform should I create this issue in?"
 3. Issue Type: "What type of issue is this?"
 4. Issue Review: "Here's the drafted issue. Does this look correct?"
-5. PR Creation: "Proceed to create feature branch and draft PR?"
-6. Next Phase: "Do you need requirements elicitation?"
+5. Branch Check: "You're on branch X. Use existing or create new?"
+6. PR Check: "Found existing PR #N. Use existing or create new?"
+7. Next Phase: "Do you need requirements elicitation?"
 
 ---
 
