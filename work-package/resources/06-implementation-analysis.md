@@ -273,7 +273,7 @@ Define measurable targets based on baselines:
 
 ---
 
-**Status:** Ready for design phase
+**Status:** Ready for plan-prepare activity
 ```
 
 ---

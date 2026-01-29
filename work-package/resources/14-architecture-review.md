@@ -117,7 +117,7 @@ ADRs are created after all implementation tasks are complete:
 3. **Verify architectural significance** using the checklist above
 4. If significant: Create ADR documenting the **actual** architectural decisions made
 5. Set status to **Accepted** (since implementation is already complete)
-6. Commit ADR and proceed to validation phase
+6. Commit ADR and proceed to validate activity
 
 ### Status for New ADRs
 

@@ -67,8 +67,8 @@ steps[11]:
     name: Initialize Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title."
     skill: artifact-management
-  - id: determine-next-phase
-    name: Determine Next Phase
+  - id: determine-next-activity
+    name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"
 checkpoints[9]:
   - id: issue-verification
@@ -245,8 +245,8 @@ checkpoints[9]:
         effect:
           setVariable:
             pr_skipped: true
-  - id: next-phase
-    name: Next Phase Checkpoint
+  - id: next-activity
+    name: Next Activity Checkpoint
     message: "PR created and linked to issue. Do you need requirements elicitation?"
     options[2]:
       - id: yes-elicit

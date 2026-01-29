@@ -145,7 +145,7 @@ Patterns worth noting for future consideration:
 
 | # | User Message | Context | Potential Issue |
 |---|--------------|---------|-----------------|
-| 1 | "[Quote]" | [Phase/step] | [What was unclear] |
+| 1 | "[Quote]" | [Activity/step] | [What was unclear] |
 
 ### Corrections Made
 
@@ -193,7 +193,7 @@ Patterns worth noting for future consideration:
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Phases completed | X/10 | [Any skipped] |
+| Activities completed | X/11 | [Any skipped] |
 | Checkpoints triggered | X | [Expected vs actual] |
 | User corrections | X | [Trend] |
 | Workflow deviations | X | [Types] |

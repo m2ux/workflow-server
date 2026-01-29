@@ -93,7 +93,7 @@ graph TD
         s6([Check for existing PR])
         s7([Create/use PR])
         s8([Initialize planning folder])
-        s9([Determine next phase])
+        s9([Determine next activity])
         
         cp1{Issue exists?}
         cp2{Platform?}
@@ -136,7 +136,7 @@ graph TD
 4. Issue Review: "Here's the drafted issue. Does this look correct?"
 5. Branch Check: "You're on branch X. Use existing or create new?"
 6. PR Check: "Found existing PR #N. Use existing or create new?"
-7. Next Phase: "Do you need requirements elicitation?"
+7. Next Activity: "Do you need requirements elicitation?"
 
 ---
 
@@ -472,9 +472,9 @@ graph TD
 | `pr_number` | string | Pull request number |
 | `branch_name` | string | Feature branch name |
 | `needs_elicitation` | boolean | Whether requirements elicitation is needed |
-| `needs_research` | boolean | Whether research phase is needed |
+| `needs_research` | boolean | Whether research activity is needed |
 | `is_architecturally_significant` | boolean | Whether ADR is needed |
-| `validation_passed` | boolean | Whether validation phase passed |
+| `validation_passed` | boolean | Whether validation activity passed |
 | `review_passed` | boolean | Whether strategic review passed |
 
 ---
