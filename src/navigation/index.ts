@@ -8,6 +8,20 @@ export {
   StateCodecError 
 } from './state-codec.js';
 
+// Navigation computation
+export {
+  computePosition,
+  computeAvailableActions,
+  getCurrentActivity,
+  getCurrentStep,
+  getRemainingSteps,
+  getActiveCheckpoint,
+  isCheckpointBlocking,
+  isActivityComplete,
+  getDefaultTransition,
+  generateSituationMessage,
+} from './compute.js';
+
 // Types
 export type { 
   Position, 
