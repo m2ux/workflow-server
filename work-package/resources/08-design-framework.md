@@ -42,63 +42,19 @@ Before designing a solution, apply a structured design framework to:
 
 This guide uses the **TRIZICS Software Design** methodology, adapted from systematic innovation principles.
 
-### The 5-Step Design Roadmap
+### Design Considerations
 
-```
-┌─────────────────────────────────────────────────────────┐
-│ STEP 1: IDENTIFY & DEFINE PROBLEM                       │
-│ • Problem statement                                     │
-│ • System understanding                                  │
-│ • Impact & success criteria                             │
-│ • Timeline & constraints                                │
-│ • Root cause analysis                                   │
-└────────────────┬────────────────────────────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────────────────────────────┐
-│ STEP 2: SELECT PROBLEM TYPE                             │
-│                                                         │
-│ ┌──────────────────────┐  ┌──────────────────────┐      │
-│ │ SPECIFIC PROBLEM     │  │ INVENTIVE GOAL       │      │
-│ │                      │  │                      │      │
-│ │ • Cause Known        │  │ • Improvement        │      │
-│ │ • Cause Unknown      │  │ • Prevention         │      │
-│ └──────────────────────┘  └──────────────────────┘      │
-└────────────────┬────────────────────────────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────────────────────────────┐
-│ STEP 3: CONVENTIONAL SOLUTIONS (Inside-the-Box)         │
-│ • Design patterns                                       │
-│ • Best practices                                        │
-│ • Existing solutions                                    │
-│ • Constraint analysis                                   │
-└────────────────┬────────────────────────────────────────┘
-                 │
-                 ├──> Solution Found? ──> Go to Step 5
-                 │
-                 ▼ No adequate solution
-┌─────────────────────────────────────────────────────────┐
-│ STEP 4: INVENTIVE SOLUTIONS (Outside-the-Box)           │
-│ • Identify contradictions                               │
-│ • Apply inventive principles                            │
-│ • Ideal solution thinking                               │
-│ • Resource utilization                                  │
-└────────────────┬────────────────────────────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────────────────────────────┐
-│ STEP 5: SOLUTION SYNTHESIS & DESIGN                     │
-│ • Architecture design                                   │
-│ • Design decisions & trade-offs                         │
-│ • Implementation roadmap                                │
-│ • Success metrics                                       │
-└─────────────────────────────────────────────────────────┘
-```
+The framework addresses five key areas:
+
+1. **Identify & Define Problem** — Problem statement, system understanding, impact, constraints, root cause
+2. **Classify Problem Type** — Specific problem (cause known/unknown) vs. inventive goal (improvement/prevention)
+3. **Conventional Solutions** — Design patterns, best practices, existing solutions, constraint analysis
+4. **Inventive Solutions** — Contradictions, inventive principles, ideal solution thinking (only if conventional solutions inadequate)
+5. **Solution Synthesis** — Architecture design, trade-offs, implementation roadmap, success metrics
 
 ---
 
-## Step 1: Identify & Define Problem
+## Identify & Define Problem
 
 ### Problem Definition Checklist
 
@@ -119,7 +75,7 @@ This guide uses the **TRIZICS Software Design** methodology, adapted from system
 
 ---
 
-## Step 2: Select Problem Type
+## Classify Problem Type
 
 ### Specific Problem vs. Inventive Goal
 
@@ -147,7 +103,7 @@ Is something currently broken or failing?
 
 ---
 
-## Step 3: Conventional Solutions
+## Conventional Solutions
 
 **Always start here.** Most problems have known solutions.
 
@@ -166,7 +122,7 @@ Is something currently broken or failing?
 - What do the framework/library docs recommend?
 - What constraints limit conventional approaches?
 
-### When to Proceed to Step 4
+### When to Consider Inventive Solutions
 
 Move to inventive solutions only if:
 - Conventional solutions don't meet requirements
@@ -175,7 +131,7 @@ Move to inventive solutions only if:
 
 ---
 
-## Step 4: Inventive Solutions
+## Inventive Solutions
 
 Apply when conventional solutions are inadequate.
 
@@ -212,7 +168,7 @@ Then work backward to find practical approximations.
 
 ---
 
-## Step 5: Solution Synthesis & Design
+## Solution Synthesis & Design
 
 ### Document the Design
 
@@ -256,32 +212,19 @@ Then work backward to find practical approximations.
 
 | Complexity | Approach |
 |------------|----------|
-| **Simple** (clear problem, known solution) | Steps 1, 3, 5 only |
-| **Moderate** (some uncertainty) | Steps 1-3, 5 |
-| **Complex** (trade-offs, contradictions) | All 5 steps |
+| **Simple** (clear problem, known solution) | Problem definition, conventional solutions, synthesis |
+| **Moderate** (some uncertainty) | Add problem classification |
+| **Complex** (trade-offs, contradictions) | Include inventive solutions |
 
 ### Common Pitfalls
 
 | Pitfall | Remedy |
 |---------|--------|
-| Jumping to solutions | Complete Step 1 first |
-| Only considering one approach | Explore alternatives in Step 3 |
-| Ignoring contradictions | Use Step 4 principles |
+| Jumping to solutions | Complete problem definition first |
+| Only considering one approach | Explore conventional alternatives |
+| Ignoring contradictions | Apply inventive principles |
 | Vague success criteria | Define measurable outcomes |
 | Over-engineering | Apply appropriate complexity level |
-
----
-
-## Integration with Workflow
-
-This guide is used during the planning stage of work package implementation.
-
-**Typical Flow:**
-1. Research activity completes (knowledge base, web research, implementation analysis)
-2. **Apply this design framework** to structure the approach
-3. Present approach checkpoint to user
-4. Create work package plan documents
-5. Proceed to implementation
 
 ---
 
