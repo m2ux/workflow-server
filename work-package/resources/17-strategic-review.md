@@ -11,7 +11,7 @@ The strategic review ensures the final implementation is minimal and focused. Du
 
 ## When to Perform
 
-Perform a strategic review in Phase 8 (Strategic Review), after validation and before finalization. The review is especially important when:
+Perform a strategic review in the Strategic Review activity, after validation and before finalization. The review is especially important when:
 
 - The implementation involved significant investigation or debugging
 - Multiple approaches were tried before finding the solution

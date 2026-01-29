@@ -49,7 +49,7 @@ The issue specifies *requirements*; design work determines *implementation*.
 **Rationale:** Solutions in issues:
 - Constrain design options before research is done
 - Conflate problem definition with implementation
-- Skip the planning phase where alternatives are evaluated
+- Skip the planning activity where alternatives are evaluated
 - May miss better approaches discovered during analysis
 
 **Where solutions belong:**

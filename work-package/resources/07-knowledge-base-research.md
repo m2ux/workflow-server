@@ -230,7 +230,7 @@ Based on research findings:
 
 ---
 
-**Status:** Ready for design phase
+**Status:** Ready for plan-prepare activity
 ```
 
 ---

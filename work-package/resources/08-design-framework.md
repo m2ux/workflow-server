@@ -277,7 +277,7 @@ Then work backward to find practical approximations.
 This guide is used during the planning stage of work package implementation.
 
 **Typical Flow:**
-1. Research phase completes (knowledge base, web research, implementation analysis)
+1. Research activity completes (knowledge base, web research, implementation analysis)
 2. **Apply this design framework** to structure the approach
 3. Present approach checkpoint to user
 4. Create work package plan documents

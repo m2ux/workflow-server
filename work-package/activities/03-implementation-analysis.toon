@@ -60,7 +60,7 @@ checkpoints[2]:
             needs_research: true
       - id: no-skip
         label: "No, proceed to planning"
-        description: Skip research and proceed to planning phase
+        description: Skip research and proceed to plan-prepare activity
         effect:
           setVariable:
             needs_research: false

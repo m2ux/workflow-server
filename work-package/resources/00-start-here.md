@@ -24,7 +24,7 @@ The `START-HERE.md` file serves as the entry point and executive summary for a w
 
 **Always create the START-HERE artifact when:**
 - Creating a new work package planning folder
-- Work package has multiple tasks or phases
+- Work package has multiple tasks or activities
 - Multiple people may work on or review the work
 
 ---
@@ -70,7 +70,7 @@ The `START-HERE.md` file serves as the entry point and executive summary for a w
 
 ## 📅 Timeline
 
-| Phase | Tasks | Time Estimate |
+| Activity | Tasks | Time Estimate |
 |-------|-------|---------------|
 | Planning | Requirements, research, analysis | X-Yh agentic + Zh review |
 | Implementation | Tasks 1-N | X-Yh agentic + Zh review |
