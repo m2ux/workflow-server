@@ -26,7 +26,7 @@ notes[5]:
   - "No implementation details in issues - those belong in planning docs and PRs"
 entryActions[1]{action,message}:
   log,Starting issue management
-steps[11]:
+steps[9]:
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
