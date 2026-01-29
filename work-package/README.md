@@ -96,13 +96,11 @@ graph TD
         s6([Check for existing PR])
         s7([Create/use PR])
         s8([Initialize planning folder])
-        s9([Determine next activity])
         
         cp1{Issue exists?}
         cp2{Platform?}
         cp3{On feature branch?}
         cp4{PR exists?}
-        cp5{Elicitation needed?}
         
         s1 --> s2 --> cp1
         cp1 -->|provide| s4
@@ -125,20 +123,19 @@ graph TD
         cp4 -->|no-create| s7
         s7 --> s8
         
-        s8 --> s9 --> cp5
-        
-        cp5 -->|yes| Next1([→ requirements-elicitation])
-        cp5 -->|no| Next2([→ implementation-analysis])
+        s8 --> Next([→ design-philosophy])
     end
 ```
 
 **Checkpoints:**
 1. Issue Verification: "I didn't find an issue. Which option?"
 2. Platform Selection: "Which platform should I create this issue in?"
-3. Issue Type: "What type of issue is this?"
-4. Issue Review: "Here's the drafted issue. Does this look correct?"
-5. Branch Check: "You're on branch X. Use existing or create new?"
-6. PR Check: "Found existing PR #N. Use existing or create new?"
+3. Jira Project Selection: "Which Jira project?" (conditional - Jira only)
+4. Issue Type: "What type of issue is this?"
+5. Issue Review: "Here's the drafted issue. Does this look correct?"
+6. Branch Check: "You're on branch X. Use existing or create new?"
+7. PR Check: "Found existing PR #N. Use existing or create new?"
+8. PR Creation: "Proceed to create feature branch and draft PR?"
 
 ---
 
