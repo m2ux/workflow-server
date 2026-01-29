@@ -87,8 +87,7 @@ transitions[3]:
       value: true
   - to: research
     condition:
-      type: compound
-      operator: and
+      type: and
       conditions[2]:
         - type: simple
           variable: needs_elicitation
