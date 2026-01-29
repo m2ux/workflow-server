@@ -398,4 +398,4 @@ This guide supports work package planning:
 - [Work Package README](02-readme.md)
 - [Knowledge Base Research Guide](07-knowledge-base-research.md)
 - [Implementation Analysis Guide](06-implementation-analysis.md)
-- [Architecture Review Guide](14-architecture-review.md)
+- [Architecture Review Guide](15-architecture-review.md)

@@ -509,6 +509,6 @@ Before submitting a test plan, verify:
 
 ## Related Guides
 
-- [Architecture Review Guide](14-architecture-review.md)
-- [Complete Guide](20-complete-wp.md)
-- [Task Completion Review Guide](13-task-completion-review.md)
+- [Architecture Review Guide](15-architecture-review.md)
+- [Complete Guide](21-complete-wp.md)
+- [Task Completion Review Guide](14-task-completion-review.md)

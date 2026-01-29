@@ -210,5 +210,5 @@ This guide supports the web research step of the research activity:
 ## Related Guides
 
 - [Knowledge Base Research Guide](07-knowledge-base-research.md)
-- [Design Framework Guide](08-design-framework.md)
+- [Design Framework Guide](09-design-framework.md)
 - [Implementation Analysis Guide](06-implementation-analysis.md)

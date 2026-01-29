@@ -361,7 +361,7 @@ This guide supports the finalization stage of work package implementation:
 ## Related Guides
 
 - [Work Package Implementation Workflow](../work-package.md)
-- [Work Package Plan](09-wp-plan.md)
+- [Work Package Plan](10-wp-plan.md)
 - [Work Package START-HERE](00-start-here.md)
-- [Architecture Review Guide](14-architecture-review.md)
-- [PR Description Guide](11-pr-description.md)
+- [Architecture Review Guide](15-architecture-review.md)
+- [PR Description Guide](12-pr-description.md)

@@ -221,8 +221,8 @@ Always link to related artifacts on the same line for easy scanning:
 
 **When to include each link:**
 - **Ticket** - Always include if work is tracked in a ticket
-- **ADR** - Include for architectural decisions (see [Architecture Review Guide](14-architecture-review.md))
-- **Test Plan** - Include when formal test documentation exists (see [Test Plan Creation Guide](10-test-plan.md))
+- **ADR** - Include for architectural decisions (see [Architecture Review Guide](15-architecture-review.md))
+- **Test Plan** - Include when formal test documentation exists (see [Test Plan Creation Guide](11-test-plan.md))
 
 **Important:** Link to ADRs and test plans on the *feature branch*, not main:
 - ✅ `https://github.com/OWNER/REPO/blob/feat/hybrid-search/docs/decisions/adr-hybrid-search.md`
@@ -577,6 +577,6 @@ Before submitting a PR, verify:
 
 ## Related Guides
 
-- [Architecture Review Guide](14-architecture-review.md)
-- [Test Plan Creation Guide](10-test-plan.md)
-- [Complete Guide](20-complete-wp.md)
+- [Architecture Review Guide](15-architecture-review.md)
+- [Test Plan Creation Guide](11-test-plan.md)
+- [Complete Guide](21-complete-wp.md)
