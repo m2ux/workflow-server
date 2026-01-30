@@ -11,28 +11,38 @@ Skills provide structured guidance for agent execution patterns. They are consum
 
 Skills provide the "how" while effectivities provide the "what capability is needed."
 
-## Skill Categories
+## Available Skills
 
-### Universal Skills (from meta/)
+### Effectivity Skills
 
-Applied across all workflows:
+These skills are associated with effectivities and provide guidance for sub-agents:
+
+| Skill | Effectivity | Description |
+|-------|-------------|-------------|
+| `code-review` | `code-review`, `code-review_rust`, `code-review_rust_substrate` | Code review patterns and quality checks |
+| `test-review` | `test-review` | Test suite quality assessment |
+| `pr-review-response` | `pr-review-response` | PR comment analysis and response |
+
+### Domain Skills
+
+These skills provide domain-specific guidance not tied to effectivities:
 
 | Skill | Description |
 |-------|-------------|
-| `activity-resolution` | Match user intent to activities |
-| `workflow-execution` | Navigate workflow state machine |
-| `state-management` | Track and persist workflow state |
-| `artifact-management` | Manage planning artifacts |
+| `artifact-management` | Initialize and manage planning artifact folders |
 
-### Workflow-Specific Skills (from work-package/)
+## Workflow Navigation
 
-Applied during specific workflows:
+Workflow navigation is handled by the **Navigation API**, not skills:
 
-| Skill | Description |
-|-------|-------------|
-| `code-review` | Rust/Substrate code review patterns |
-| `test-review` | Test suite quality assessment |
-| `pr-review-response` | PR comment response strategy |
+| Tool | Purpose |
+|------|---------|
+| `start-workflow` | Start workflow execution |
+| `resume-workflow` | Resume from saved state |
+| `advance-workflow` | Complete steps, respond to checkpoints |
+| `end-workflow` | End workflow early |
+
+See `rules.toon` in `workflows/meta/` for navigation guidance.
 
 ## Usage
 
@@ -47,7 +57,3 @@ The skill provides structured guidance including:
 - Tool usage guidance
 - State tracking requirements
 - Error recovery patterns
-
-## Migration Note
-
-Skills were previously stored per-workflow in `{workflow}/skills/`. They are now consolidated in this top-level folder for easier agent-side consumption. The original locations remain for backward compatibility but this folder is the authoritative source.

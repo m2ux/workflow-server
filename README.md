@@ -63,17 +63,16 @@ Declare agent capabilities for step-level delegation.
 
 ### Skills ([skills/](skills/))
 
-Provide execution guidance for agents.
+Provide execution guidance for agents. Effectivity skills guide sub-agents; domain skills provide general guidance.
 
-| Skill | Description |
-|-------|-------------|
-| `activity-resolution` | Resolve user goals to activities |
-| `workflow-execution` | Execute workflows following schema patterns |
-| `state-management` | Manage workflow state across sessions |
-| `artifact-management` | Manage planning artifact folder structure |
-| `code-review` | Rust/Substrate code review patterns |
-| `test-review` | Test suite quality assessment |
-| `pr-review-response` | PR comment response strategy |
+| Skill | Type | Description |
+|-------|------|-------------|
+| `code-review` | Effectivity | Code review patterns |
+| `test-review` | Effectivity | Test suite quality assessment |
+| `pr-review-response` | Effectivity | PR comment response strategy |
+| `artifact-management` | Domain | Planning artifact folder management |
+
+Note: Workflow navigation is handled by the Navigation API (`start-workflow`, `resume-workflow`, `advance-workflow`, `end-workflow`), not skills.
 
 ### Workflows ([workflows/](workflows/))
 
