@@ -4,6 +4,69 @@ title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
 sections[13]:
+  - id: workflow-bootstrap
+    title: Workflow Bootstrap Sequence
+    priority: critical
+    description: Required sequence when user requests workflow execution
+    rules[5]:
+      - Call get_rules to load agent guidelines first
+      - Call get_activities to get activity index with quick_match patterns
+      - Match user goal to activity using quick_match patterns
+      - Call nav_start with workflow_id to begin execution
+      - Follow navigation response to execute workflow
+    context:
+      recognition[4]:
+        - User mentions work package or ticket or issue
+        - User asks to implement or build something
+        - User mentions PR review or code review
+        - User references planning or design work
+  - id: navigation-api
+    title: Navigation API Usage
+    priority: critical
+    description: Server-driven workflow traversal using opaque state tokens
+    rules[6]:
+      - ALWAYS pass state token through without interpretation or modification
+      - ONLY execute actions listed in availableActions response
+      - When checkpoint is active respond before attempting step completion
+      - Save state token to resume workflow later
+      - Follow required actions before optional actions
+      - Never attempt to decode or modify state tokens
+    context:
+      core_tools[4]:
+        - nav_start starts workflow and returns initial situation with state token
+        - nav_situation gets current position and available actions from state token
+        - nav_action executes an action and returns new state token
+        - nav_checkpoint gets details of blocking checkpoint requiring response
+      response_handling[4]:
+        - Check success field before proceeding
+        - Read position to understand current location in workflow
+        - Review availableActions.required for next steps
+        - Check if checkpoint is present and respond if blocking
+  - id: effectivity-delegation
+    title: Effectivity-Based Delegation
+    priority: critical
+    description: Delegate tasks to sub-agents based on required effectivities
+    rules[4]:
+      - If you have the required effectivity execute directly
+      - If you lack the effectivity you MUST delegate
+      - Never skip steps due to missing effectivities
+      - Document delegation results before advancing workflow
+    context:
+      when_to_delegate[3]:
+        - When availableActions includes effectivities array
+        - When you lack the specific effectivity required for a step
+        - Exact match is required - base effectivity cannot satisfy extended requirement
+      delegation_process[6]:
+        - Check if action has effectivities field
+        - If effectivities present look up agent in .engineering/agents/*.toml
+        - Find agent with matching effectivity in their effectivities list
+        - Spawn sub-agent with model and instructions from registry
+        - Pass step description and relevant workflow context
+        - Receive result and call nav_action to advance
+      effectivity_naming[3]:
+        - Base effectivity uses hyphens like code-review
+        - Extended effectivity uses underscore delimiter like code-review_rust
+        - Further extensions chain like code-review_rust_substrate
   - id: code-modification
     title: Code Modification Boundaries
     priority: critical
@@ -50,149 +113,84 @@ sections[13]:
       - Comments should explain what code does and why it exists
       - Focus on self-documenting code and maintainability
       - Explain why decisions were made not what the code does
+  - id: version-control
+    title: Version Control Practices
+    priority: high
+    rules[4]:
+      - NEVER run destructive or irreversible operations without explicit request
+      - NEVER skip hooks unless explicitly requested
+      - NEVER commit changes unless user explicitly asks
+      - For Rust projects run cargo fmt before committing
+    context:
+      commit_standards[4]:
+        - Follow the Conventional Commits specification for all commit messages
+        - Use format type followed by optional scope and description
+        - Common types are feat fix docs style refactor test chore build ci
+        - Reference issue numbers when applicable
+      branch_management[4]:
+        - Understand project branching strategy before creating branches
+        - Follow naming conventions for feature branches
+        - Keep branches focused on specific features or fixes
+        - Regularly sync with main branch
+  - id: github-cli
+    title: GitHub CLI Usage
+    priority: high
+    description: Use REST API for mutating operations as GraphQL fails due to Projects Classic deprecation
+    rules[3]:
+      - ALWAYS ask user before replying to PR comments or review feedback
+      - Avoid gh pr edit as it uses GraphQL which fails
+      - Avoid any gh command that mutates PRs or issues via GraphQL
+    context:
+      mutating_operations[3]:
+        - Update PR description using gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f body=CONTENT
+        - Update PR title using gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f title=TITLE
+        - Add labels using gh api repos/OWNER/REPO/issues/NUMBER/labels -X POST -f labels=LABELS
+      read_operations_ok[3]:
+        - gh pr view for viewing PRs
+        - gh pr list for listing PRs
+        - gh issue list for listing issues
   - id: task-management
     title: Task Management
     priority: medium
-    whenToCreate[4]:
-      - Complex multi-step tasks with 3+ distinct steps
-      - Non-trivial tasks requiring careful planning
-      - Multiple tasks provided as numbered or comma-separated list
-      - After receiving new instructions to capture requirements
-    whenNotToCreate[4]:
-      - Single straightforward tasks
-      - Trivial tasks with no organizational benefit
-      - Tasks completable in less than 3 trivial steps
-      - Purely conversational or informational requests
     rules[4]:
       - Only ONE task marked in_progress at a time
       - Mark complete IMMEDIATELY after finishing
       - Complete current tasks before starting new ones
       - Never include operational tasks like linting or testing in todos
+    context:
+      when_to_create[4]:
+        - Complex multi-step tasks with 3+ distinct steps
+        - Non-trivial tasks requiring careful planning
+        - Multiple tasks provided as numbered or comma-separated list
+        - After receiving new instructions to capture requirements
+      when_not_to_create[4]:
+        - Single straightforward tasks
+        - Trivial tasks with no organizational benefit
+        - Tasks completable in less than 3 trivial steps
+        - Purely conversational or informational requests
   - id: error-recovery
     title: Error Recovery and Edge Cases
     priority: medium
-    whenThingsGoWrong[5]:
+    rules[5]:
       - Acknowledge errors clearly and directly
       - Analyze the root cause before proposing fixes
       - Do not make the same mistake multiple times
       - Learn from correction patterns in project history
       - Ask clarifying questions when uncertain
-    handlingAmbiguity[4]:
-      - When requirements are unclear ask specific questions
-      - Propose concrete options with tradeoffs
-      - Reference similar patterns in codebase for context
-      - Do not guess at critical implementation details
-  - id: version-control
-    title: Version Control Practices
-    priority: high
-    commitStandards[4]:
-      - Follow the Conventional Commits specification for all commit messages
-      - Use format type followed by optional scope and description
-      - Common types are feat fix docs style refactor test chore build ci
-      - Reference issue numbers when applicable
-    branchManagement[4]:
-      - Understand project branching strategy before creating branches
-      - Follow naming conventions for feature branches
-      - Keep branches focused on specific features or fixes
-      - Regularly sync with main branch
-    destructiveOperations[4]:
-      - NEVER run destructive or irreversible operations without explicit request
-      - Examples include force push to protected branches and hard resets
-      - NEVER skip hooks unless explicitly requested
-      - NEVER commit changes unless user explicitly asks
-    preCommitVerification[2]:
-      - Verify user explicitly requested the commit
-      - For Rust projects run cargo fmt to format code before committing
-  - id: github-cli
-    title: GitHub CLI Usage
-    priority: high
-    guidance: Use REST API for mutating operations as GraphQL fails due to Projects Classic deprecation
-    userApprovalRequired[1]:
-      - ALWAYS ask user before replying to PR comments or review feedback
-    avoid[2]:
-      - gh pr edit uses GraphQL which fails with Projects Classic deprecation error
-      - Any gh command that mutates PRs or issues via GraphQL
-    mutatingOperations[3]:
-      - Update PR description using gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f body=CONTENT
-      - Update PR title using gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f title=TITLE
-      - Add labels using gh api repos/OWNER/REPO/issues/NUMBER/labels -X POST -f labels=LABELS
-    readOperationsOk[3]:
-      - gh pr view for viewing PRs
-      - gh pr list for listing PRs
-      - gh issue list for listing issues
+    context:
+      handling_ambiguity[4]:
+        - When requirements are unclear ask specific questions
+        - Propose concrete options with tradeoffs
+        - Reference similar patterns in codebase for context
+        - Do not guess at critical implementation details
   - id: context-management
     title: Context Management Strategy
     priority: low
-    directContext[4]:
+    rules[2]:
       - Use @filename or @filepath to add specific files to context
-      - Open relevant files in tabs for agents to see
-      - Most explicit and immediate approach
-      - Better for focused specific tasks
-    hybridApproach[3]:
-      - Add a context document explaining the task and scope
-      - Mention 2-4 key files that are most relevant
-      - Let the agent search for the rest using semantic search
-  - id: navigation-api
-    title: Navigation API Usage
-    priority: critical
-    description: Server-driven workflow traversal using opaque state tokens
-    bootstrap[3]:
-      - Call get_rules to load these guidelines first
-      - Call get_activities to find matching activity for user goal
-      - Use nav_start to begin workflow execution
-    coreTools[4]:
-      - nav_start starts workflow and returns initial situation with state token
-      - nav_situation gets current position and available actions from state token
-      - nav_action executes an action and returns new state token
-      - nav_checkpoint gets details of blocking checkpoint requiring response
-    rules[6]:
-      - ALWAYS pass state token through without interpretation or modification
-      - ONLY execute actions listed in availableActions response
-      - When checkpoint is active respond before attempting step completion
-      - Save state token to resume workflow later
-      - Follow required actions before optional actions
-      - Never attempt to decode or modify state tokens
-    responseHandling[4]:
-      - Check success field before proceeding
-      - Read position to understand current location in workflow
-      - Review availableActions.required for next steps
-      - Check if checkpoint is present and respond if blocking
-  - id: effectivity-delegation
-    title: Effectivity-Based Delegation
-    priority: critical
-    description: Delegate tasks to sub-agents based on required effectivities
-    whenToDelegate[3]:
-      - When availableActions includes effectivities array
-      - When you lack the specific effectivity required for a step
-      - Exact match is required - base effectivity cannot satisfy extended requirement
-    delegationProcess[6]:
-      - Check if action has effectivities field
-      - If effectivities present look up agent in .engineering/agents/*.toml
-      - Find agent with matching effectivity in their effectivities list
-      - Spawn sub-agent with model and instructions from registry
-      - Pass step description and relevant workflow context
-      - Receive result and call nav_action to advance
-    effectivityNaming[3]:
-      - Base effectivity uses hyphens like code-review
-      - Extended effectivity uses underscore delimiter like code-review_rust
-      - Further extensions chain like code-review_rust_substrate
-    rules[4]:
-      - If you have the required effectivity execute directly
-      - If you lack the effectivity you MUST delegate
-      - Never skip steps due to missing effectivities
-      - Document delegation results before advancing workflow
-  - id: workflow-bootstrap
-    title: Workflow Bootstrap Sequence
-    priority: critical
-    description: Required sequence when user requests workflow execution
-    sequence[5]:
-      - 1. Call get_rules to load agent guidelines
-      - 2. Call get_activities to get activity index with quick_match patterns
-      - 3. Match user goal to activity using quick_match patterns
-      - 4. Call nav_start with workflow_id to begin execution
-      - 5. Follow navigation response to execute workflow
-    recognition[4]:
-      - User mentions work package or ticket or issue
-      - User asks to implement or build something
-      - User mentions PR review or code review
-      - User references planning or design work
+      - Let the agent search using semantic search when needed
+    context:
+      hybrid_approach[3]:
+        - Add a context document explaining the task and scope
+        - Mention 2-4 key files that are most relevant
+        - Let the agent search for the rest using semantic search
