@@ -1,0 +1,38 @@
+id: code-review
+name: Code Review
+version: 1.0.0
+description: General code review capability for analyzing implementation quality
+
+applicability:
+  description: Base code review applicable to any language
+
+execution:
+  requires_resource: code-review
+  flow[5]:
+    - Load code-review resource for guidance
+    - Identify all changed files
+    - Review each file for quality issues
+    - Document findings with severity levels
+    - Present summary at checkpoint
+  tools:
+    get_resource:
+      when: Starting code review
+      usage: Load full review guidance
+    read_file:
+      when: Reviewing each changed file
+      usage: Examine implementation details
+    grep:
+      when: Searching for patterns
+      usage: Find related code, check consistency
+
+state:
+  track[3]:
+    - files_reviewed
+    - findings
+    - severity_counts
+  initialize: "Empty findings list, zero counts"
+
+errors:
+  no_changes:
+    cause: No implementation changes found
+    recovery: Verify correct branch and commit range

@@ -1,0 +1,30 @@
+id: code-review_rust_substrate
+name: Rust Substrate Code Review
+version: 1.0.0
+description: Substrate framework-specific code review patterns
+includes[1]:
+  - code-review_rust
+
+applicability:
+  languages[1]:
+    - rust
+  frameworks[1]:
+    - substrate
+  description: Substrate/Polkadot projects requiring framework-specific review
+
+execution:
+  flow[6]:
+    - Check pallet structure and FRAME conventions
+    - Verify weight annotations and benchmarks
+    - Review storage patterns and migration handling
+    - Check event emission patterns
+    - Verify extrinsic signatures and origin checks
+    - Review cross-pallet interactions
+
+errors:
+  missing_weights:
+    cause: Extrinsics missing weight annotations
+    recovery: Add benchmark or use worst-case weight estimates
+  storage_migration:
+    cause: Storage changes without migration
+    recovery: Implement storage migration for version bump

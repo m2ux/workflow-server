@@ -1,0 +1,28 @@
+id: code-review_rust
+name: Rust Code Review
+version: 1.0.0
+description: Rust-specific code review patterns and best practices
+includes[1]:
+  - code-review
+
+applicability:
+  languages[1]:
+    - rust
+  description: Rust projects requiring idiomatic code review
+
+execution:
+  flow[5]:
+    - Run cargo clippy for lint analysis
+    - Check for unsafe blocks and document justifications
+    - Verify error handling with Result/Option patterns
+    - Review ownership and borrowing patterns
+    - Check for common Rust anti-patterns
+  tools:
+    shell:
+      when: Running clippy
+      usage: "cargo clippy --all-targets --all-features"
+
+errors:
+  clippy_fails:
+    cause: Clippy reports errors or warnings
+    recovery: Address clippy warnings before continuing review
