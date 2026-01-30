@@ -8,13 +8,16 @@ sections[13]:
     title: Workflow Bootstrap Sequence
     priority: critical
     description: Required sequence when user requests workflow execution
-    rules[5]:
+    rules[4]:
       - Call get_rules to load agent guidelines first
-      - Call get_activities to get activity index with quick_match patterns
-      - Match user goal to activity using quick_match patterns
+      - Identify workflow from user intent or call list_workflows if unsure
       - Call nav_start with workflow_id to begin execution
-      - Follow navigation response to execute workflow
+      - Follow navigation response availableActions to execute workflow
     context:
+      available_workflows[3]:
+        - work-package for single issue to PR implementation
+        - work-packages for multi-package planning initiatives
+        - meta for workflow management operations
       recognition[4]:
         - User mentions work package or ticket or issue
         - User asks to implement or build something
