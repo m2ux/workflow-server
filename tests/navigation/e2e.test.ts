@@ -102,6 +102,42 @@ const createSimpleWorkflow = (): Workflow => ({
   ],
 });
 
+// Workflow with effectivities for delegation tests
+const createEffectivityWorkflow = (): Workflow => ({
+  id: 'effectivity-workflow',
+  version: '1.0.0',
+  title: 'Effectivity Workflow',
+  initialActivity: 'review',
+  activities: [
+    {
+      id: 'review',
+      name: 'Code Review',
+      version: '1.0.0',
+      steps: [
+        { 
+          id: 'run-review', 
+          name: 'Run Code Review', 
+          required: true,
+          effectivities: ['code-review_rust'],
+        },
+        { 
+          id: 'run-test-review', 
+          name: 'Run Test Review', 
+          required: true,
+          effectivities: ['test-review'],
+        },
+        { 
+          id: 'document', 
+          name: 'Document Findings', 
+          required: true,
+          // No effectivities - can be done by primary agent
+        },
+      ],
+      transitions: [],
+    },
+  ],
+});
+
 const mockConfig: ServerConfig = {
   serverName: 'test-server',
   serverVersion: '1.0.0',
@@ -516,6 +552,86 @@ describe('End-to-End Navigation', () => {
       
       expect(response.success).toBe(true);
       expect(response.message).toContain('verify');
+    });
+  });
+  
+  describe('Effectivity-Aware Navigation', () => {
+    beforeEach(() => {
+      vi.spyOn(workflowLoader, 'loadWorkflow').mockResolvedValue({
+        success: true,
+        value: createEffectivityWorkflow(),
+      });
+      tools = captureTools(mockConfig);
+    });
+    
+    it('includes effectivities in initial navigation response', async () => {
+      const startHandler = tools.get('nav_start')!.handler;
+      const startResult = await startHandler({ workflow_id: 'effectivity-workflow' });
+      const response = JSON.parse(startResult.content[0].text);
+      
+      expect(response.success).toBe(true);
+      expect(response.availableActions.required.length).toBeGreaterThanOrEqual(1);
+      
+      // First step should have effectivities
+      const stepAction = response.availableActions.required.find(
+        (a: Record<string, unknown>) => a.action === 'complete_step' && a.step === 'run-review'
+      );
+      expect(stepAction).toBeDefined();
+      expect(stepAction.effectivities).toBeDefined();
+      expect(stepAction.effectivities).toContain('code-review_rust');
+    });
+    
+    it('effectivities change as workflow progresses', async () => {
+      const startHandler = tools.get('nav_start')!.handler;
+      const startResult = await startHandler({ workflow_id: 'effectivity-workflow' });
+      let response = JSON.parse(startResult.content[0].text);
+      
+      const actionHandler = tools.get('nav_action')!.handler;
+      
+      // Complete first step
+      const step1Result = await actionHandler({
+        state: response.state,
+        action: 'complete_step',
+        step_id: 'run-review',
+      });
+      response = JSON.parse(step1Result.content[0].text);
+      
+      // Second step should have different effectivities
+      const stepAction = response.availableActions.required.find(
+        (a: Record<string, unknown>) => a.action === 'complete_step' && a.step === 'run-test-review'
+      );
+      expect(stepAction).toBeDefined();
+      expect(stepAction.effectivities).toContain('test-review');
+    });
+    
+    it('steps without effectivities have no effectivities field', async () => {
+      const startHandler = tools.get('nav_start')!.handler;
+      const startResult = await startHandler({ workflow_id: 'effectivity-workflow' });
+      let response = JSON.parse(startResult.content[0].text);
+      
+      const actionHandler = tools.get('nav_action')!.handler;
+      
+      // Complete first two steps
+      let result = await actionHandler({
+        state: response.state,
+        action: 'complete_step',
+        step_id: 'run-review',
+      });
+      response = JSON.parse(result.content[0].text);
+      
+      result = await actionHandler({
+        state: response.state,
+        action: 'complete_step',
+        step_id: 'run-test-review',
+      });
+      response = JSON.parse(result.content[0].text);
+      
+      // Third step should have no effectivities
+      const stepAction = response.availableActions.required.find(
+        (a: Record<string, unknown>) => a.action === 'complete_step' && a.step === 'document'
+      );
+      expect(stepAction).toBeDefined();
+      expect(stepAction.effectivities).toBeUndefined();
     });
   });
 });
