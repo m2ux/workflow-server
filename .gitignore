@@ -6,7 +6,7 @@ dist/
 
 # Worktrees for workflows/registry branch
 workflows/
-checkout/
+registry/
 workflow-data/
 
 # IDE
