@@ -97,7 +97,8 @@ export function completeStep(
   };
   
   // Advance currentStep to next incomplete step
-  const nextStepNumber = findNextIncompleteStep(activity, newCompletedSteps[activity.id]);
+  const completedForActivity = newCompletedSteps[activity.id] ?? [];
+  const nextStepNumber = findNextIncompleteStep(activity, completedForActivity);
   
   const newState: WorkflowState = {
     ...state,
@@ -331,9 +332,13 @@ export function advanceLoop(
   
   // Advance existing loop
   const existingLoop = state.activeLoops[existingLoopIndex];
+  if (!existingLoop) {
+    throw new TransitionError(`Loop not found at index ${existingLoopIndex}`, 'LOOP_NOT_FOUND');
+  }
   const nextIteration = existingLoop.currentIteration + 1;
+  const totalItems = existingLoop.totalItems ?? 0;
   
-  if (nextIteration >= existingLoop.totalItems) {
+  if (nextIteration >= totalItems) {
     // Loop complete, remove it
     const newActiveLoops = state.activeLoops.filter((_, i) => i !== existingLoopIndex);
     

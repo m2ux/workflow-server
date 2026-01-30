@@ -34,15 +34,20 @@ function buildResponse(
   const availableActions = computeAvailableActions(workflow, state);
   const checkpoint = getActiveCheckpoint(workflow, state);
   
-  return {
+  const response: NavigationResponse = {
     success,
     position,
     message,
     availableActions,
-    checkpoint: checkpoint ?? undefined,
     state: encodeState(state),
-    error,
   };
+  if (checkpoint) {
+    response.checkpoint = checkpoint;
+  }
+  if (error) {
+    response.error = error;
+  }
+  return response;
 }
 
 /**
@@ -67,11 +72,17 @@ export function registerNavigationTools(server: McpServer, config: ServerConfig)
       }
       const workflow = result.value;
       
+      // Determine initial activity
+      const initialActivity = workflow.initialActivity ?? workflow.activities[0]?.id;
+      if (!initialActivity) {
+        throw new Error(`Workflow '${workflow_id}' has no activities`);
+      }
+      
       // Create initial state
       const state = createInitialState(
         workflow.id,
         workflow.version,
-        workflow.initialActivity,
+        initialActivity,
         initial_variables
       );
       
@@ -79,7 +90,7 @@ export function registerNavigationTools(server: McpServer, config: ServerConfig)
       const response = buildResponse(
         workflow,
         state,
-        `Started workflow '${workflow.title}' at activity '${workflow.initialActivity}'`
+        `Started workflow '${workflow.title}' at activity '${initialActivity}'`
       );
       
       return {

@@ -34,13 +34,18 @@ export function computePosition(workflow: Workflow, state: WorkflowState): Posit
   if (activeLoop) {
     const activityForLoop = workflow.activities.find(a => a.id === activeLoop.activityId);
     const loopDef = activityForLoop?.loops?.find(l => l.id === activeLoop.loopId);
-    position.loop = {
+    const loopInfo: Position['loop'] = {
       id: activeLoop.loopId,
       name: loopDef?.name ?? activeLoop.loopId,
       iteration: activeLoop.currentIteration + 1, // Display as 1-indexed
-      total: activeLoop.totalItems,
-      item: activeLoop.currentItem !== undefined ? String(activeLoop.currentItem) : undefined,
     };
+    if (activeLoop.totalItems !== undefined) {
+      loopInfo.total = activeLoop.totalItems;
+    }
+    if (activeLoop.currentItem !== undefined) {
+      loopInfo.item = String(activeLoop.currentItem);
+    }
+    position.loop = loopInfo;
   }
   
   return position;
@@ -72,17 +77,25 @@ export function getActiveCheckpoint(
     const hasResponse = state.checkpointResponses[responseKey] !== undefined;
     
     // If checkpoint is required and not responded, it's blocking
-    if (checkpoint.required !== false && checkpoint.blocking !== false && !hasResponse) {
+    const isRequired = checkpoint.required === undefined || checkpoint.required === true;
+    const isBlocking = checkpoint.blocking === undefined || checkpoint.blocking === true;
+    if (isRequired && isBlocking && !hasResponse) {
       // Check if we should show this checkpoint based on current step
       // For now, show first unresponded blocking checkpoint
+      const options: ActiveCheckpoint['options'] = checkpoint.options.map(opt => {
+        const option: ActiveCheckpoint['options'][number] = {
+          id: opt.id,
+          label: opt.label,
+        };
+        if (opt.description) {
+          option.description = opt.description;
+        }
+        return option;
+      });
       return {
         id: checkpoint.id,
         message: checkpoint.message,
-        options: checkpoint.options.map(opt => ({
-          id: opt.id,
-          label: opt.label,
-          description: opt.description,
-        })),
+        options,
       };
     }
   }
