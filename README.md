@@ -7,38 +7,47 @@ This orphan branch contains workflow definitions, effectivities, agent registrie
 - **`main`** - Server code (TypeScript implementation)
 - **`registry`** - Workflow data and agent configuration ← You are here
 
-> Note: This branch was previously named `workflows` and is being renamed to `registry` to better reflect its expanded scope.
-
 ## Directory Structure
 
 ```
 registry/                       # Worktree checkout
-├── effectivities/              # Agent capability definitions
-│   ├── code-review.toon        # Base effectivities
-│   ├── code-review_rust.toon   # Extended effectivities
-│   └── README.md
 ├── agents/                     # Agent registry configurations
 │   ├── default.toon            # Default agent registry
 │   ├── minimal.toon            # Minimal variant
+│   └── README.md
+├── effectivities/              # Agent capability definitions
+│   ├── code-review.toon        # Base effectivities
+│   ├── code-review_rust.toon   # Extended effectivities
 │   └── README.md
 ├── skills/                     # All skills (universal + workflow-specific)
 │   ├── 00-activity-resolution.toon
 │   ├── 01-workflow-execution.toon
 │   └── README.md
-├── meta/                       # Bootstrap workflow
-│   ├── README.md
-│   ├── workflow.toon
-│   ├── rules.toon
-│   ├── activities/
-│   └── resources/
-├── {workflow-id}/              # Each workflow folder
-│   ├── README.md
-│   ├── workflow.toon
-│   ├── activities/
-│   └── resources/
+├── workflows/                  # Workflow definitions
+│   ├── meta/                   # Bootstrap workflow
+│   │   ├── workflow.toon
+│   │   ├── rules.toon
+│   │   ├── activities/
+│   │   └── resources/
+│   ├── work-package/           # Single work package workflow
+│   │   ├── workflow.toon
+│   │   ├── activities/
+│   │   └── resources/
+│   └── work-packages/          # Multi-package planning workflow
+│       ├── workflow.toon
+│       └── activities/
 ```
 
 ## Components
+
+### Agents ([agents/](agents/))
+
+Map effectivities to sub-agent configurations.
+
+| Variant | Description |
+|---------|-------------|
+| `default.toon` | Full registry with specialized agents |
+| `minimal.toon` | Minimal registry with consolidated agents |
 
 ### Effectivities ([effectivities/](effectivities/))
 
@@ -51,15 +60,6 @@ Declare agent capabilities for step-level delegation.
 | `code-review_rust_substrate` | Substrate framework review |
 | `test-review` | Test suite quality assessment |
 | `pr-review-response` | PR comment response handling |
-
-### Agent Registry ([agents/](agents/))
-
-Map effectivities to sub-agent configurations.
-
-| Variant | Description |
-|---------|-------------|
-| `default.toon` | Full registry with specialized agents |
-| `minimal.toon` | Minimal registry with consolidated agents |
 
 ### Skills ([skills/](skills/))
 
@@ -75,30 +75,24 @@ Provide execution guidance for agents.
 | `test-review` | Test suite quality assessment |
 | `pr-review-response` | PR comment response strategy |
 
-### Workflows
+### Workflows ([workflows/](workflows/))
 
 | Workflow | Description |
 |----------|-------------|
-| [`meta`](meta/) | Bootstrap workflow - start, resume, and end other workflows |
-| [`work-package`](work-package/) | Single work package implementation (issue → PR → merge) |
-| [`work-packages`](work-packages/) | Multi-package planning for large initiatives |
+| [`meta`](workflows/meta/) | Bootstrap workflow - start, resume, and end other workflows |
+| [`work-package`](workflows/work-package/) | Single work package implementation (issue → PR → merge) |
+| [`work-packages`](workflows/work-packages/) | Multi-package planning for large initiatives |
 
-## Agent-Side Consumption
+## Server Configuration
 
-Agents checkout registry content to `.engineering/`:
+The server's `workflowDir` should point to the `workflows/` subdirectory:
 
 ```bash
-# In project root
-mkdir -p .engineering/agents
-cd .engineering/agents
-git archive --remote=origin registry agents/ | tar -x --strip-components=1
-```
+# Environment variable
+WORKFLOW_DIR=./registry/workflows
 
-Then load effectivities and agent registries:
-
-```typescript
-const registry = await loadDefaultAgentRegistry('.engineering/agents');
-const agent = findAgentForEffectivity(registry, 'code-review_rust');
+# Or in code
+const config = { workflowDir: './registry/workflows' };
 ```
 
 ## Worktree Setup
@@ -106,7 +100,7 @@ const agent = findAgentForEffectivity(registry, 'code-review_rust');
 This branch is checked out as a worktree inside the main repo:
 
 ```bash
-git worktree add ./workflow-data registry
+git worktree add ./registry registry
 ```
 
 ## Adding Content
@@ -126,7 +120,7 @@ git worktree add ./workflow-data registry
 2. Prefix with two-digit index
 
 **Workflows:**
-1. Create `{workflow-id}/` directory
+1. Create `{workflow-id}/` directory in `workflows/`
 2. Add `workflow.toon`, `README.md`, `activities/`, `resources/`
 
 ## Validation
