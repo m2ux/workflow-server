@@ -1,0 +1,42 @@
+id: test-review
+name: Test Review
+version: 1.0.0
+description: Test suite quality assessment and gap analysis
+
+applicability:
+  description: Any project with automated tests
+
+execution:
+  requires_resource: test-review
+  flow[5]:
+    - Run test suite to establish baseline
+    - Assess test coverage and gaps
+    - Check for anti-patterns (flaky tests, over-mocking)
+    - Review assertion quality and test isolation
+    - Document findings and recommendations
+  tools:
+    shell:
+      when: Running test suite
+      usage: Execute tests to verify they pass
+    read_file:
+      when: Reviewing test implementations
+      usage: Examine test structure and assertions
+    grep:
+      when: Searching for test patterns
+      usage: Find test files, check coverage patterns
+
+state:
+  track[4]:
+    - test_files_reviewed
+    - coverage_assessment
+    - anti_patterns_found
+    - recommendations
+  initialize: "Empty lists, no coverage data"
+
+errors:
+  tests_fail:
+    cause: Test suite not passing
+    recovery: Fix failing tests before review
+  no_tests:
+    cause: No test files found
+    recovery: Document missing tests as critical finding

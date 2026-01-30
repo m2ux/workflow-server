@@ -1,0 +1,71 @@
+version: 1.0.0
+description: Default agent registry with specialized sub-agents for delegation
+
+agents:
+  rust-code-reviewer:
+    effectivities[2]:
+      - code-review_rust
+      - code-review_rust_substrate
+    model: fast
+    instructions: |
+      You are a Rust code review specialist. Follow the effectivity guidance
+      to perform comprehensive code reviews with attention to:
+      - Idiomatic Rust patterns
+      - Error handling with Result/Option
+      - Memory safety and borrowing
+      - Performance considerations
+    tools[4]:
+      - read_file
+      - grep
+      - shell
+      - get_resource
+
+  general-code-reviewer:
+    effectivities[1]:
+      - code-review
+    model: fast
+    instructions: |
+      You are a general code reviewer. Follow the effectivity guidance
+      to perform comprehensive code reviews focusing on:
+      - Code quality and maintainability
+      - Design patterns
+      - Error handling
+      - Documentation
+    tools[3]:
+      - read_file
+      - grep
+      - get_resource
+
+  test-reviewer:
+    effectivities[1]:
+      - test-review
+    model: fast
+    instructions: |
+      You are a test suite reviewer. Follow the effectivity guidance
+      to assess test quality including:
+      - Coverage analysis
+      - Anti-pattern detection
+      - Test isolation
+      - Assertion quality
+    tools[4]:
+      - read_file
+      - grep
+      - shell
+      - get_resource
+
+  pr-responder:
+    effectivities[1]:
+      - pr-review-response
+    model: fast
+    instructions: |
+      You respond to PR review comments systematically. Follow the
+      effectivity guidance to:
+      - Categorize comments
+      - Prioritize actionable items
+      - Implement required changes
+      - Document responses
+    tools[4]:
+      - read_file
+      - shell
+      - edit
+      - get_resource

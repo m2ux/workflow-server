@@ -1,0 +1,52 @@
+id: code-review
+version: 1.0.0
+capability: Perform comprehensive Rust/Substrate code review following established patterns
+applicability:
+  project_type: rust-substrate
+  description: Only applies to Rust+Substrate projects
+execution_pattern:
+  start[2]:
+    - Load code-review resource for full guidance
+    - Review all implementation changes since work package started
+  per_file[3]:
+    - Apply architecture and design patterns review
+    - Check error handling and safety
+    - Verify Substrate-specific patterns
+  completion[2]:
+    - Document findings in review notes
+    - Summarize critical issues for checkpoint
+tools:
+  get_resource:
+    when: Starting code review
+    params: "resource_id: code-review, workflow_id: work-package"
+    returns: Full code review guidance document
+    usage: Reference for review criteria and patterns
+  read_file:
+    when: Reviewing each changed file
+    usage: Examine implementation details
+  grep:
+    when: Searching for patterns across codebase
+    usage: Find related code, check consistency
+resource: code-review
+state:
+  track[3]:
+    - files_reviewed
+    - findings
+    - severity_counts
+  initialize: "Empty findings list, zero counts"
+  update_on:
+    file_complete: "Add file to files_reviewed, append findings"
+    issue_found: "Increment severity count, add to findings"
+flow[5]:
+  - 1. Call get_resource to load review guidance
+  - 2. Identify all files changed in work package
+  - 3. Review each file following guidance criteria
+  - 4. Document findings with severity levels
+  - 5. Present summary at checkpoint
+errors:
+  no_changes:
+    cause: No implementation changes found
+    recovery: Verify correct branch and commit range
+  resource_not_found:
+    cause: Code review resource missing
+    recovery: Check resources folder for 15-rust-substrate-code-review.md

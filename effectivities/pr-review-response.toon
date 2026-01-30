@@ -1,0 +1,40 @@
+id: pr-review-response
+name: PR Review Response
+version: 1.0.0
+description: Systematic analysis and response to PR review comments
+
+applicability:
+  description: Any PR with review comments requiring response
+
+execution:
+  requires_resource: pr-review-response
+  flow[6]:
+    - Fetch all review comments from PR
+    - Categorize comments by type and severity
+    - Identify actionable items vs discussions
+    - Address each comment systematically
+    - Update PR with responses
+    - Determine if re-review needed
+  tools:
+    shell:
+      when: Fetching PR comments
+      usage: "gh api repos/{owner}/{repo}/pulls/{number}/comments"
+    edit:
+      when: Implementing requested changes
+      usage: Make code modifications
+
+state:
+  track[4]:
+    - comments_received
+    - comments_addressed
+    - changes_made
+    - requires_replan
+  initialize: "Empty comment lists, requires_replan false"
+
+errors:
+  no_comments:
+    cause: No review comments found
+    recovery: Verify PR has been reviewed
+  api_error:
+    cause: GitHub API error
+    recovery: Check authentication and PR access
