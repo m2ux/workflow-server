@@ -36,10 +36,10 @@ sections[13]:
       - Never attempt to decode or modify state tokens
     context:
       core_tools[4]:
-        - nav_start starts workflow and returns initial situation with state token
-        - nav_situation gets current position and available actions from state token
-        - nav_action executes an action and returns new state token
-        - nav_checkpoint gets details of blocking checkpoint requiring response
+        - start-workflow starts workflow and returns initial situation with state token
+        - resume-workflow resumes workflow from saved state token returning position and actions
+        - advance-workflow advances workflow by performing an action
+        - end-workflow ends workflow early and proceeds to final activity or completes
       response_handling[4]:
         - Check success field before proceeding
         - Read position to understand current location in workflow
