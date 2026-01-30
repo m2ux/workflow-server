@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { join } from 'node:path';
 import { readRules, readRulesRaw } from '../src/loaders/rules-loader.js';
 
-const WORKFLOW_DIR = join(process.cwd(), 'workflows');
+const WORKFLOW_DIR = join(process.cwd(), 'registry/workflows');
 
 describe('rules-loader', () => {
   describe('readRules', () => {
