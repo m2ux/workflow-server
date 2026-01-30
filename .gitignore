@@ -4,8 +4,10 @@ node_modules/
 # Build output
 dist/
 
-# Worktree for workflows branch
+# Worktrees for workflows/registry branch
 workflows/
+checkout/
+workflow-data/
 
 # IDE
 .idea/
