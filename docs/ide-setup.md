@@ -42,7 +42,7 @@ When actions include an `effectivities` array:
 2. If not, look up agent in `.engineering/agents/*.toml`
 3. Spawn sub-agent with configuration from registry
 4. Pass step description and context
-5. Receive result and call `nav_action` to advance
+5. Receive result and call `advance-workflow` to advance
 
 ## Available Tools
 

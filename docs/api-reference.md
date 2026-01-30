@@ -76,7 +76,7 @@ The `advance-workflow` tool supports these actions:
 #### Checkpoint Blocking
 
 When a checkpoint is active, it **blocks** step completion. The agent must:
-1. Check `checkpoint` field in `get-situation` response for options
+1. Check `checkpoint` field in `resume-workflow` response for options
 2. Call `advance-workflow` with `respond_to_checkpoint`
 3. Only then can steps be completed
 

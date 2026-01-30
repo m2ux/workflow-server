@@ -15,35 +15,32 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 ## 🎯 Overview
 
-Workflow Server uses a **Goal → Activity → Skill → Tools** architecture to guide AI agents through structured workflows.
+Workflow Server provides a **server-driven navigation API** that guides AI agents through structured workflows using opaque state tokens.
 
 After initial setup of an always-applied [rule](docs/ide-setup.md), agents:
-1. **Match the user's goal** to an activity via `get_activities` (returns `quick_match` patterns and `next_action` guidance)
-2. **Load the primary skill** via `get_skill` to get tool orchestration patterns (execution order, state tracking, error recovery)
-3. **Execute workflow activities** using skill-directed tools (`get_workflow`, `get_workflow_activity`, `get_checkpoint`, `validate_transition`)
+1. **Load guidelines** via `get_rules` to understand workflow behavior
+2. **Start a workflow** via `start-workflow { workflow_id }` to begin execution
+3. **Follow navigation** by executing actions from `availableActions` in responses
+4. **Advance the workflow** via `advance-workflow` to complete steps
 
-This reduces context overhead and provides deterministic tool selection.
+The server manages all state transitions - agents simply follow the navigation landscape.
 
-### Execution Model
+### Navigation API
 
-> Problem Domain:
-> ```
-> User Goal (complete a work package) → Activity (start-workflow, resume-workflow, ..)
-> ```
-> Solution Domain:
-> ```
-> Skill(s) (workflow-execution) → Tool(s) (validate_transition, get_workflow_activity, get_checkpoint, ..)
-> ```
+| Tool | Purpose |
+|------|---------|
+| `start-workflow` | Start workflow, returns initial situation |
+| `resume-workflow` | Resume from saved state token |
+| `advance-workflow` | Advance workflow (complete_step, transition, etc.) |
+| `end-workflow` | End workflow early, proceed to final activity |
 
-### Activities
+### Effectivity-Based Delegation
 
-Activities in the meta workflow serve as entry points for workflow operations:
-
-| Activity | Description |
-|----------|-----------|
-| `start-workflow` | Begin executing a new workflow from the beginning |
-| `resume-workflow` | Continue a workflow that was previously started |
-| `end-workflow` | Complete and finalize an active workflow |
+When navigation responses include `effectivities` in actions:
+- Primary agent checks if it has the required effectivity
+- If not, spawns a sub-agent from the agent registry
+- Sub-agent performs the work, returns result
+- Primary agent advances the workflow
 
 ### Available Workflows
 
@@ -70,8 +67,8 @@ git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
 npm install
 
-# Set up workflow data (worktree for orphan branch)
-git worktree add ./workflows workflows
+# Set up registry data (worktree for registry branch)
+git worktree add ./registry registry
 
 # Build the server
 npm run build
@@ -88,7 +85,7 @@ npm run build
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
+        "WORKFLOW_DIR": "/path/to/workflow-server/registry/workflows"
       }
     }
   }
@@ -102,7 +99,7 @@ Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 Add the following to your IDE 'always-applied' rule-set:
 
 ```
-For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the get_activities tool.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call get_rules to load agent guidelines.
 ```
 
 ### Execute a Workflow
