@@ -22,12 +22,10 @@ agents:
     effectivities:      # Required: capabilities this agent has
       - effectivity-id
     model: fast         # Optional: fast, default, capable
-    instructions: |     # Optional: system instructions
-      Agent-specific guidance...
-    tools:              # Optional: tools available
-      - tool_name
     timeout: 300        # Optional: timeout in seconds
 ```
+
+Note: Instructions and tools come from skills/effectivities, not from the registry. The registry only maps effectivities to agent configurations.
 
 ## Agent Lookup
 

@@ -1,5 +1,5 @@
 version: 1.0.0
-description: Minimal agent registry with basic coverage
+description: Minimal agent registry with consolidated agents
 
 agents:
   reviewer:
@@ -8,22 +8,8 @@ agents:
       - code-review_rust
       - test-review
     model: fast
-    instructions: |
-      General purpose reviewer for code and tests.
-      Follow the effectivity guidance for the specific review type.
-    tools[4]:
-      - read_file
-      - grep
-      - shell
-      - get_resource
 
   pr-handler:
     effectivities[1]:
       - pr-review-response
     model: fast
-    instructions: |
-      Handle PR review responses following effectivity guidance.
-    tools[3]:
-      - read_file
-      - shell
-      - edit
