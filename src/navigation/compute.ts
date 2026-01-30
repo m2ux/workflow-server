@@ -186,11 +186,15 @@ export function computeAvailableActions(
       const loopStep = loopDef.steps[loopStepIndex - 1];
       
       if (loopStep) {
-        required.push({
+        const stepAction: Action = {
           action: 'complete_step',
           step: loopStep.id,
           description: `Complete: ${loopStep.name}`,
-        });
+        };
+        if (loopStep.effectivities && loopStep.effectivities.length > 0) {
+          stepAction.effectivities = loopStep.effectivities;
+        }
+        required.push(stepAction);
       }
     }
     
@@ -203,11 +207,15 @@ export function computeAvailableActions(
     const currentStep = activity.steps[currentStepIndex - 1];
     
     if (currentStep) {
-      required.push({
+      const stepAction: Action = {
         action: 'complete_step',
         step: currentStep.id,
         description: `Complete: ${currentStep.name}`,
-      });
+      };
+      if (currentStep.effectivities && currentStep.effectivities.length > 0) {
+        stepAction.effectivities = currentStep.effectivities;
+      }
+      required.push(stepAction);
     } else if (currentStepIndex > activity.steps.length) {
       // All steps complete, can transition
       // This would be handled by transition logic

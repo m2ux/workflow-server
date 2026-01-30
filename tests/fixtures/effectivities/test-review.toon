@@ -1,0 +1,11 @@
+id: test-review
+name: Test Review
+version: 1.0.0
+description: Test suite quality assessment and gap analysis
+execution:
+  requires_resource: test-review
+  flow[4]:
+    - Run test suite
+    - Assess coverage
+    - Check for anti-patterns
+    - Document findings

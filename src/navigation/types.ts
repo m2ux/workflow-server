@@ -28,6 +28,8 @@ export interface Action {
   checkpoint?: string;
   resource?: { index: string; name: string; };
   description?: string;
+  /** Required effectivities to perform this action */
+  effectivities?: string[];
 }
 
 /** A blocked action with reason */

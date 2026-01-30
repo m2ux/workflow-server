@@ -28,7 +28,11 @@ All navigation tools return a consistent response:
   },
   "message": "Completed step 'analyze'",
   "availableActions": {
-    "required": [{ "action": "complete_step", "step": "code" }],
+    "required": [{ 
+      "action": "complete_step", 
+      "step": "code",
+      "effectivities": ["code-review_rust"]
+    }],
     "optional": [{ "action": "get_resource" }],
     "blocked": []
   },
@@ -36,6 +40,19 @@ All navigation tools return a consistent response:
   "state": "v1.gzB64.H4sIAAAA..."
 }
 ```
+
+#### Effectivities
+
+Actions may include an `effectivities` array listing required capabilities for executing that action. When present:
+
+- **Exact match required**: Agents must possess the exact effectivity ID specified
+- **Delegation trigger**: If agent lacks the effectivity, it should delegate to a sub-agent with that capability
+- **Multiple effectivities**: A step may require multiple effectivities; all must be satisfied
+
+Effectivity IDs follow a hierarchical naming convention:
+- Base: `code-review` (general capability)
+- Extended: `code-review_rust` (language-specific)
+- Further extended: `code-review_rust_substrate` (framework-specific)
 
 #### State Token
 

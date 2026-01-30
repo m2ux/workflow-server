@@ -1,0 +1,22 @@
+version: 1.0.0
+description: Default agent registry for testing
+agents:
+  code-reviewer:
+    effectivities[2]:
+      - code-review
+      - code-review_rust
+    model: fast
+    instructions: Perform code review following language-specific patterns
+    tools[3]:
+      - read_file
+      - grep
+      - get_resource
+  test-reviewer:
+    effectivities[1]:
+      - test-review
+    model: fast
+    instructions: Review test quality and coverage
+    tools[3]:
+      - shell
+      - read_file
+      - grep

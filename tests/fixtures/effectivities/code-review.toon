@@ -1,0 +1,32 @@
+id: code-review
+name: Code Review
+version: 1.0.0
+description: Comprehensive code review following established patterns
+applicability:
+  languages[2]:
+    - typescript
+    - javascript
+execution:
+  requires_resource: code-review
+  flow[4]:
+    - Load code-review resource
+    - Review changed files
+    - Document findings
+    - Present summary
+  tools:
+    read_file:
+      when: Reviewing each changed file
+      usage: Examine implementation details
+    grep:
+      when: Searching for patterns
+      usage: Find related code
+state:
+  track[3]:
+    - files_reviewed
+    - findings
+    - severity_counts
+  initialize: "Empty findings list, zero counts"
+errors:
+  no_changes:
+    cause: No implementation changes found
+    recovery: Verify correct branch and commit range
