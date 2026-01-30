@@ -10,6 +10,9 @@ export type AgentModel = z.infer<typeof AgentModelSchema>;
 /**
  * Single agent configuration
  * Defines how to spawn a sub-agent for specific effectivities
+ * 
+ * Note: Instructions and tools come from skills/effectivities, not from the registry.
+ * The registry only maps effectivities to agent configurations.
  */
 export const AgentConfigSchema = z.object({
   // Effectivities this agent can handle (exact match required)
@@ -18,17 +21,8 @@ export const AgentConfigSchema = z.object({
   // Model to use for this agent
   model: AgentModelSchema.optional().default('fast'),
   
-  // Instructions/prompt for the sub-agent
-  instructions: z.string().optional(),
-  
-  // Tools available to this agent
-  tools: z.array(z.string()).optional(),
-  
   // Timeout in seconds (optional)
   timeout: z.number().positive().optional(),
-  
-  // Additional configuration
-  config: z.record(z.unknown()).optional(),
 }).passthrough();
 
 export type AgentConfig = z.infer<typeof AgentConfigSchema>;
