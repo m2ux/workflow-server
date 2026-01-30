@@ -7,7 +7,6 @@ dist/
 # Worktrees for workflows/registry branch
 workflows/
 registry/
-workflow-data/
 
 # IDE
 .idea/
