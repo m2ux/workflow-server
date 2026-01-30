@@ -23,9 +23,11 @@ export interface Position {
 
 /** An available action the agent can take */
 export interface Action {
-  action: 'complete_step' | 'respond_to_checkpoint' | 'get_resource';
+  action: 'complete_step' | 'respond_to_checkpoint' | 'transition' | 'advance_loop' | 'get_resource';
   step?: string;
   checkpoint?: string;
+  activity?: string;
+  loop?: string;
   resource?: { index: string; name: string; };
   description?: string;
   /** Required effectivities to perform this action */
@@ -63,6 +65,7 @@ export interface NavigationResponse {
   message: string;
   availableActions: AvailableActions;
   checkpoint?: ActiveCheckpoint;
+  complete?: boolean;
   state: string;
   error?: {
     code: string;

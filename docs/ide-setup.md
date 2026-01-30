@@ -12,7 +12,7 @@ For all workflow execution user requests use the workflow-server MCP server. Bef
 
 1. **Get rules** - Call `get_rules` to load agent guidelines
 2. **Identify workflow** - Match user intent to workflow (or call `list_workflows` if unsure)
-3. **Start workflow** - Call `nav_start { workflow_id: "{id}" }` to begin execution
+3. **Start workflow** - Call `start-workflow { workflow_id: "{id}" }` to begin execution
 4. **Follow navigation** - Execute actions from `availableActions` in response
 
 ### Available Workflows
@@ -26,7 +26,7 @@ For all workflow execution user requests use the workflow-server MCP server. Bef
 ### Navigation Flow
 
 ```
-nav_start → state token → nav_action → new state token → nav_action → ...
+start-workflow → state token → advance-workflow → new state token → advance-workflow → ...
 ```
 
 The server returns opaque state tokens that must be passed through without modification. Each response includes:
@@ -50,10 +50,10 @@ When actions include an `effectivities` array:
 
 | Tool | Purpose |
 |------|---------|
-| `nav_start` | Start workflow execution, returns initial situation |
-| `nav_situation` | Get current position and available actions |
-| `nav_action` | Execute an action (complete_step, respond_to_checkpoint, transition) |
-| `nav_checkpoint` | Get details of active checkpoint |
+| `start-workflow` | Start workflow execution, returns initial situation |
+| `resume-workflow` | Resume from saved state; returns position, actions, checkpoint |
+| `advance-workflow` | Advance workflow (complete_step, respond_to_checkpoint, transition) |
+| `end-workflow` | End workflow early, proceed to final activity or complete |
 
 ### Discovery Tools
 
@@ -78,10 +78,10 @@ User: "Start a new work package for issue #42"
 Agent:
 1. get_rules → Load guidelines
 2. Recognize "work package" → workflow_id = "work-package"
-3. nav_start { workflow_id: "work-package", initial_variables: { issue: 42 } }
+3. start-workflow { workflow_id: "work-package", initial_variables: { issue: 42 } }
 4. Response shows:
    - position: { activity: "issue-management", step: "verify-issue" }
    - availableActions.required: [{ action: "complete_step", step: "verify-issue" }]
-5. Execute step, then nav_action { state: "...", action: "complete_step", step_id: "verify-issue" }
+5. Execute step, then advance-workflow { state: "...", action: "complete_step", step_id: "verify-issue" }
 6. Continue following navigation responses...
 ```

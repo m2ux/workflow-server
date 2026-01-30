@@ -93,17 +93,17 @@ describe('Navigation Tools', () => {
   
   describe('tool registration', () => {
     it('registers all 4 navigation tools', () => {
-      expect(tools.has('nav_start')).toBe(true);
-      expect(tools.has('nav_situation')).toBe(true);
-      expect(tools.has('nav_action')).toBe(true);
-      expect(tools.has('nav_checkpoint')).toBe(true);
+      expect(tools.has('start-workflow')).toBe(true);
+      expect(tools.has('resume-workflow')).toBe(true);
+      expect(tools.has('advance-workflow')).toBe(true);
+      expect(tools.has('end-workflow')).toBe(true);
       expect(tools.size).toBe(4);
     });
   });
   
-  describe('nav_start', () => {
+  describe('start-workflow', () => {
     it('starts workflow and returns initial situation', async () => {
-      const handler = tools.get('nav_start')!.handler;
+      const handler = tools.get('start-workflow')!.handler;
       const result = await handler({ workflow_id: 'test-workflow' });
       
       const response = JSON.parse(result.content[0].text);
@@ -116,7 +116,7 @@ describe('Navigation Tools', () => {
     });
     
     it('includes initial checkpoint in response', async () => {
-      const handler = tools.get('nav_start')!.handler;
+      const handler = tools.get('start-workflow')!.handler;
       const result = await handler({ workflow_id: 'test-workflow' });
       
       const response = JSON.parse(result.content[0].text);
@@ -129,15 +129,15 @@ describe('Navigation Tools', () => {
     });
   });
   
-  describe('nav_situation', () => {
+  describe('resume-workflow', () => {
     it('returns current situation from state token', async () => {
       // First start a workflow
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'test-workflow' });
       const startResponse = JSON.parse(startResult.content[0].text);
       
       // Then get situation
-      const handler = tools.get('nav_situation')!.handler;
+      const handler = tools.get('resume-workflow')!.handler;
       const result = await handler({ state: startResponse.state });
       
       const response = JSON.parse(result.content[0].text);
@@ -148,15 +148,15 @@ describe('Navigation Tools', () => {
     });
   });
   
-  describe('nav_action', () => {
+  describe('advance-workflow', () => {
     it('responds to checkpoint successfully', async () => {
       // Start workflow
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'test-workflow' });
       const startResponse = JSON.parse(startResult.content[0].text);
       
       // Respond to checkpoint
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       const result = await actionHandler({
         state: startResponse.state,
         action: 'respond_to_checkpoint',
@@ -174,12 +174,12 @@ describe('Navigation Tools', () => {
     
     it('completes step after checkpoint responded', async () => {
       // Start workflow
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'test-workflow' });
       let currentState = JSON.parse(startResult.content[0].text).state;
       
       // Respond to checkpoint
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       const checkpointResult = await actionHandler({
         state: currentState,
         action: 'respond_to_checkpoint',
@@ -203,12 +203,12 @@ describe('Navigation Tools', () => {
     
     it('fails to complete step when checkpoint blocking', async () => {
       // Start workflow
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'test-workflow' });
       const currentState = JSON.parse(startResult.content[0].text).state;
       
       // Try to complete step without responding to checkpoint
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       const result = await actionHandler({
         state: currentState,
         action: 'complete_step',
@@ -222,11 +222,11 @@ describe('Navigation Tools', () => {
     });
     
     it('validates required parameters for actions', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'test-workflow' });
       const currentState = JSON.parse(startResult.content[0].text).state;
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // Missing step_id for complete_step
       await expect(actionHandler({
@@ -243,59 +243,15 @@ describe('Navigation Tools', () => {
     });
   });
   
-  describe('nav_checkpoint', () => {
-    it('returns active checkpoint when blocking', async () => {
-      // Start workflow
-      const startHandler = tools.get('nav_start')!.handler;
-      const startResult = await startHandler({ workflow_id: 'test-workflow' });
-      const currentState = JSON.parse(startResult.content[0].text).state;
-      
-      // Get checkpoint
-      const handler = tools.get('nav_checkpoint')!.handler;
-      const result = await handler({ state: currentState });
-      
-      const response = JSON.parse(result.content[0].text);
-      
-      expect(response.active).toBe(true);
-      expect(response.checkpoint.id).toBe('checkpoint-1');
-      expect(response.checkpoint.options).toHaveLength(2);
-    });
-    
-    it('returns inactive when no checkpoint blocking', async () => {
-      // Start workflow
-      const startHandler = tools.get('nav_start')!.handler;
-      const startResult = await startHandler({ workflow_id: 'test-workflow' });
-      let currentState = JSON.parse(startResult.content[0].text).state;
-      
-      // Respond to checkpoint
-      const actionHandler = tools.get('nav_action')!.handler;
-      const checkpointResult = await actionHandler({
-        state: currentState,
-        action: 'respond_to_checkpoint',
-        checkpoint_id: 'checkpoint-1',
-        option_id: 'yes',
-      });
-      currentState = JSON.parse(checkpointResult.content[0].text).state;
-      
-      // Get checkpoint
-      const handler = tools.get('nav_checkpoint')!.handler;
-      const result = await handler({ state: currentState });
-      
-      const response = JSON.parse(result.content[0].text);
-      
-      expect(response.active).toBe(false);
-    });
-  });
-  
   describe('state token opacity', () => {
     it('state token changes between actions', async () => {
       // Start workflow
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'test-workflow' });
       const state1 = JSON.parse(startResult.content[0].text).state;
       
       // Respond to checkpoint
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       const result = await actionHandler({
         state: state1,
         action: 'respond_to_checkpoint',

@@ -4,7 +4,7 @@ import { z } from 'zod';
 const StepIndex = z.number().int().min(1);
 
 export const HistoryEventTypeSchema = z.enum([
-  'workflow_started', 'workflow_completed', 'workflow_aborted',
+  'workflow_started', 'workflow_ending', 'workflow_completed', 'workflow_aborted',
   'workflow_triggered', 'workflow_returned', 'workflow_suspended',
   'activity_entered', 'activity_exited', 'activity_skipped',
   'step_started', 'step_completed',

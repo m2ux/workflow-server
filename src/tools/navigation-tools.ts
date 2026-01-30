@@ -21,6 +21,15 @@ import {
 } from '../navigation/index.js';
 
 /**
+ * Check if workflow is complete (no more actions available or status is completed).
+ */
+function isWorkflowComplete(state: WorkflowState, availableActions: { required: unknown[]; optional: unknown[] }): boolean {
+  if (state.status === 'completed') return true;
+  // Workflow is complete when there are no required or optional actions
+  return availableActions.required.length === 0 && availableActions.optional.length === 0;
+}
+
+/**
  * Build a complete NavigationResponse from workflow and state.
  */
 function buildResponse(
@@ -33,6 +42,7 @@ function buildResponse(
   const position = computePosition(workflow, state);
   const availableActions = computeAvailableActions(workflow, state);
   const checkpoint = getActiveCheckpoint(workflow, state);
+  const complete = isWorkflowComplete(state, availableActions);
   
   const response: NavigationResponse = {
     success,
@@ -43,6 +53,9 @@ function buildResponse(
   };
   if (checkpoint) {
     response.checkpoint = checkpoint;
+  }
+  if (complete) {
+    response.complete = true;
   }
   if (error) {
     response.error = error;
@@ -58,13 +71,13 @@ export function registerNavigationTools(server: McpServer, config: ServerConfig)
   
   // Tool 1: Start a workflow and get initial situation
   server.tool(
-    'nav_start',
+    'start-workflow',
     'Start a new workflow execution and get the initial navigation situation. Returns position, available actions, and an opaque state token.',
     {
       workflow_id: z.string().describe('ID of the workflow to start'),
       initial_variables: z.record(z.unknown()).optional().describe('Optional initial variables for the workflow'),
     },
-    withAuditLog('nav_start', async ({ workflow_id, initial_variables }) => {
+    withAuditLog('start-workflow', async ({ workflow_id, initial_variables }) => {
       // Load workflow
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) {
@@ -102,14 +115,14 @@ export function registerNavigationTools(server: McpServer, config: ServerConfig)
     })
   );
   
-  // Tool 2: Get current situation from state token
+  // Tool 2: Resume workflow from saved state token
   server.tool(
-    'nav_situation',
-    'Get the current navigation situation from a state token. Returns position, available actions, and any active checkpoint.',
+    'resume-workflow',
+    'Resume a workflow from a saved state token. Returns current position, available actions, and any active checkpoint.',
     {
       state: z.string().describe('Opaque state token from previous navigation response'),
     },
-    withAuditLog('nav_situation', async ({ state: stateToken }) => {
+    withAuditLog('resume-workflow', async ({ state: stateToken }) => {
       // Decode state
       const state = decodeState(stateToken);
       
@@ -136,10 +149,10 @@ export function registerNavigationTools(server: McpServer, config: ServerConfig)
     })
   );
   
-  // Tool 3: Execute a navigation action
+  // Tool 3: Advance workflow by performing an action
   server.tool(
-    'nav_action',
-    'Execute a navigation action (complete_step, respond_to_checkpoint, transition, advance_loop). Returns updated situation with new state token.',
+    'advance-workflow',
+    'Advance the workflow by performing an action (complete_step, respond_to_checkpoint, transition, advance_loop). Returns updated situation with new state token.',
     {
       state: z.string().describe('Opaque state token from previous navigation response'),
       action: z.enum(['complete_step', 'respond_to_checkpoint', 'transition', 'advance_loop']).describe('The action to execute'),
@@ -150,7 +163,7 @@ export function registerNavigationTools(server: McpServer, config: ServerConfig)
       loop_id: z.string().optional().describe('For advance_loop: ID of the loop'),
       loop_items: z.array(z.unknown()).optional().describe('For advance_loop: Items to iterate over (required when starting a loop)'),
     },
-    withAuditLog('nav_action', async (params) => {
+    withAuditLog('advance-workflow', async (params) => {
       const { state: stateToken, action } = params;
       
       // Decode state
@@ -309,16 +322,17 @@ export function registerNavigationTools(server: McpServer, config: ServerConfig)
     })
   );
   
-  // Tool 4: Get checkpoint details
+  // Tool 4: End workflow early (proceed to final activity)
   server.tool(
-    'nav_checkpoint',
-    'Get detailed information about the currently active checkpoint. Returns null if no checkpoint is blocking.',
+    'end-workflow',
+    'End the workflow early. If the workflow has a finalActivity, transitions there. Otherwise marks workflow as complete.',
     {
       state: z.string().describe('Opaque state token from previous navigation response'),
+      reason: z.string().optional().describe('Optional reason for ending the workflow early'),
     },
-    withAuditLog('nav_checkpoint', async ({ state: stateToken }) => {
+    withAuditLog('end-workflow', async ({ state: stateToken, reason }) => {
       // Decode state
-      const state = decodeState(stateToken);
+      let state = decodeState(stateToken);
       
       // Load workflow
       const result = await loadWorkflow(config.workflowDir, state.workflowId);
@@ -327,28 +341,68 @@ export function registerNavigationTools(server: McpServer, config: ServerConfig)
       }
       const workflow = result.value;
       
-      // Get active checkpoint
-      const checkpoint = getActiveCheckpoint(workflow, state);
+      // Record the end request in history
+      state = addHistoryEvent(state, 'workflow_ending', { 
+        activity: state.currentActivity,
+        data: reason ? { reason } : undefined
+      });
       
-      if (!checkpoint) {
-        return {
-          content: [{
-            type: 'text',
-            text: JSON.stringify({
-              active: false,
-              message: 'No checkpoint is currently blocking progress',
-            }, null, 2),
-          }],
-        };
+      // Check if workflow has a final activity
+      if (workflow.finalActivity) {
+        const finalActivity = workflow.activities.find(
+          a => a.id === workflow.finalActivity
+        );
+        
+        if (finalActivity) {
+          // Transition to final activity
+          const transitionResult = transitionToActivity(workflow, state, workflow.finalActivity);
+          
+          if (transitionResult.success) {
+            state = addHistoryEvent(transitionResult.state, 'activity_entered', {
+              activity: workflow.finalActivity
+            });
+            
+            const response = buildResponse(
+              workflow,
+              state,
+              `Workflow ending - transitioned to final activity '${finalActivity.name}'`
+            );
+            
+            return {
+              content: [{
+                type: 'text',
+                text: JSON.stringify(response, null, 2),
+              }],
+            };
+          }
+          // If transition fails, fall through to complete immediately
+        }
       }
+      
+      // No final activity or transition failed - mark as complete
+      const now = new Date().toISOString();
+      state = addHistoryEvent(state, 'workflow_completed', {
+        activity: state.currentActivity,
+        data: { earlyEnd: true, reason }
+      });
+      
+      // Mark workflow as completed
+      state = { ...state, status: 'completed', completedAt: now };
+      
+      const position = computePosition(workflow, state);
+      const response: NavigationResponse = {
+        success: true,
+        position,
+        message: 'Workflow ended' + (reason ? `: ${reason}` : ''),
+        availableActions: { required: [], optional: [], blocked: [] },
+        complete: true,
+        state: encodeState(state),
+      };
       
       return {
         content: [{
           type: 'text',
-          text: JSON.stringify({
-            active: true,
-            checkpoint,
-          }, null, 2),
+          text: JSON.stringify(response, null, 2),
         }],
       };
     })

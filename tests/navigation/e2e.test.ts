@@ -176,7 +176,7 @@ describe('End-to-End Navigation', () => {
     
     it('completes workflow without checkpoints', async () => {
       // Start workflow
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'simple-workflow' });
       let response = JSON.parse(startResult.content[0].text);
       
@@ -184,7 +184,7 @@ describe('End-to-End Navigation', () => {
       expect(response.position.activity.id).toBe('task');
       expect(response.checkpoint).toBeUndefined();
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // Complete step 1
       const step1Result = await actionHandler({
@@ -220,7 +220,7 @@ describe('End-to-End Navigation', () => {
     });
     
     it('checkpoint blocks until responded', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'complex-workflow' });
       let response = JSON.parse(startResult.content[0].text);
       
@@ -229,7 +229,7 @@ describe('End-to-End Navigation', () => {
       expect(response.checkpoint.id).toBe('ready-checkpoint');
       
       // Try to complete step - should fail
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       const failResult = await actionHandler({
         state: response.state,
         action: 'complete_step',
@@ -264,11 +264,11 @@ describe('End-to-End Navigation', () => {
     });
     
     it('full activity traversal with transition', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'complex-workflow' });
       let response = JSON.parse(startResult.content[0].text);
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // Respond to checkpoint
       let result = await actionHandler({
@@ -318,11 +318,11 @@ describe('End-to-End Navigation', () => {
     });
     
     it('resume from saved state token', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'simple-workflow' });
       let response = JSON.parse(startResult.content[0].text);
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // Complete step 1
       const step1Result = await actionHandler({
@@ -335,8 +335,8 @@ describe('End-to-End Navigation', () => {
       // Save state token
       const savedToken = response.state;
       
-      // "Resume" by calling nav_situation with saved token
-      const situationHandler = tools.get('nav_situation')!.handler;
+      // "Resume" by calling resume-workflow with saved token
+      const situationHandler = tools.get('resume-workflow')!.handler;
       const resumeResult = await situationHandler({ state: savedToken });
       const resumeResponse = JSON.parse(resumeResult.content[0].text);
       
@@ -355,11 +355,11 @@ describe('End-to-End Navigation', () => {
     });
     
     it('state token contains progress history', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'simple-workflow' });
       let response = JSON.parse(startResult.content[0].text);
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // Complete step 1
       let result = await actionHandler({
@@ -378,7 +378,7 @@ describe('End-to-End Navigation', () => {
       response = JSON.parse(result.content[0].text);
       
       // State token changes after each action
-      const situationHandler = tools.get('nav_situation')!.handler;
+      const situationHandler = tools.get('resume-workflow')!.handler;
       const situationResult = await situationHandler({ state: response.state });
       const situationResponse = JSON.parse(situationResult.content[0].text);
       
@@ -398,7 +398,7 @@ describe('End-to-End Navigation', () => {
         error: new Error('Workflow not found'),
       });
       
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       
       await expect(startHandler({ workflow_id: 'nonexistent' }))
         .rejects.toThrow('Workflow not found');
@@ -410,7 +410,7 @@ describe('End-to-End Navigation', () => {
         value: createSimpleWorkflow(),
       });
       
-      const situationHandler = tools.get('nav_situation')!.handler;
+      const situationHandler = tools.get('resume-workflow')!.handler;
       
       await expect(situationHandler({ state: 'invalid-token' }))
         .rejects.toThrow();
@@ -422,11 +422,11 @@ describe('End-to-End Navigation', () => {
         value: createSimpleWorkflow(),
       });
       
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'simple-workflow' });
       const response = JSON.parse(startResult.content[0].text);
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // Missing step_id
       await expect(actionHandler({
@@ -458,11 +458,11 @@ describe('End-to-End Navigation', () => {
     });
     
     it('traverses multiple activities in sequence', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'complex-workflow' });
       let response = JSON.parse(startResult.content[0].text);
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // === PLANNING PHASE ===
       // Respond to checkpoint
@@ -565,7 +565,7 @@ describe('End-to-End Navigation', () => {
     });
     
     it('includes effectivities in initial navigation response', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'effectivity-workflow' });
       const response = JSON.parse(startResult.content[0].text);
       
@@ -582,11 +582,11 @@ describe('End-to-End Navigation', () => {
     });
     
     it('effectivities change as workflow progresses', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'effectivity-workflow' });
       let response = JSON.parse(startResult.content[0].text);
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // Complete first step
       const step1Result = await actionHandler({
@@ -605,11 +605,11 @@ describe('End-to-End Navigation', () => {
     });
     
     it('steps without effectivities have no effectivities field', async () => {
-      const startHandler = tools.get('nav_start')!.handler;
+      const startHandler = tools.get('start-workflow')!.handler;
       const startResult = await startHandler({ workflow_id: 'effectivity-workflow' });
       let response = JSON.parse(startResult.content[0].text);
       
-      const actionHandler = tools.get('nav_action')!.handler;
+      const actionHandler = tools.get('advance-workflow')!.handler;
       
       // Complete first two steps
       let result = await actionHandler({

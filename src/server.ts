@@ -16,7 +16,7 @@ export function createServer(config: ServerConfig): McpServer {
       'list_workflows', 'get_workflow', 'validate_transition', 'get_workflow_activity', 'get_checkpoint', 'health_check',
       'get_activities', 'get_activity', 'get_rules', 'get_skills', 'list_skills', 'get_skill',
       'list_workflow_resources', 'get_resource', 'discover_resources',
-      'nav_start', 'nav_situation', 'nav_action', 'nav_checkpoint'
+      'start-workflow', 'resume-workflow', 'advance-workflow', 'end-workflow'
     ]
   });
   return server;

@@ -8,10 +8,10 @@ The navigation tools provide a **server-driven workflow traversal** API. Agents 
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `nav_start` | `workflow_id`, `initial_variables?` | Start a new workflow execution and get initial situation |
-| `nav_situation` | `state` | Get current navigation situation from state token |
-| `nav_action` | `state`, `action`, `step_id?`, `checkpoint_id?`, `option_id?`, `activity_id?`, `loop_id?`, `loop_items?` | Execute a navigation action |
-| `nav_checkpoint` | `state` | Get details of currently active checkpoint |
+| `start-workflow` | `workflow_id`, `initial_variables?` | Start a new workflow execution and get initial situation |
+| `resume-workflow` | `state` | Resume workflow from saved state token; returns position, actions, checkpoint |
+| `advance-workflow` | `state`, `action`, `step_id?`, `checkpoint_id?`, `option_id?`, `activity_id?`, `loop_id?`, `loop_items?` | Advance workflow by performing an action |
+| `end-workflow` | `state`, `reason?` | End workflow early; transitions to finalActivity if defined, otherwise completes |
 
 #### Navigation Response Format
 
@@ -64,7 +64,7 @@ The `state` parameter is an **opaque token** that agents must pass through witho
 
 #### Actions
 
-The `nav_action` tool supports these actions:
+The `advance-workflow` tool supports these actions:
 
 | Action | Required Parameters | Description |
 |--------|---------------------|-------------|
@@ -76,8 +76,8 @@ The `nav_action` tool supports these actions:
 #### Checkpoint Blocking
 
 When a checkpoint is active, it **blocks** step completion. The agent must:
-1. Call `nav_checkpoint` to see options
-2. Call `nav_action` with `respond_to_checkpoint`
+1. Check `checkpoint` field in `get-situation` response for options
+2. Call `advance-workflow` with `respond_to_checkpoint`
 3. Only then can steps be completed
 
 This ensures agents cannot skip required user decisions.

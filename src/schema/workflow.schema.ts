@@ -23,6 +23,7 @@ export const WorkflowSchema = z.object({
   rules: z.array(z.string()).optional().describe('Rules that govern workflow execution'),
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
+  finalActivity: z.string().optional().describe('ID of the activity to jump to when end-workflow is called. If not specified, workflow ends immediately.'),
   activities: z.array(ActivitySchema).min(1).describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points.'),
 });
 export type Workflow = z.infer<typeof WorkflowSchema>;
