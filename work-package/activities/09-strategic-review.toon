@@ -17,9 +17,9 @@ notes[3]:
   - "Check for orphaned infrastructure: commented-out code, unused utilities, duplicate functionality"
 artifacts[1]:
   - id: strategic-review-doc
-    name: strategic-review.md
+    name: "{NN}-strategic-review-{n}.md"
     location: planning
-    description: "Documents review findings, identified artifacts, and cleanup actions"
+    description: "Documents review findings, identified artifacts, and cleanup actions. NN follows artifact numbering sequence, n increments on successive reviews."
 steps[4]:
   - id: diff-review
     name: Review diff
@@ -29,7 +29,7 @@ steps[4]:
     description: "Find investigation artifacts, over-engineering, orphaned infrastructure"
   - id: document-findings
     name: Document findings
-    description: "Create strategic-review.md with items that should be removed or simplified"
+    description: "Create {NN}-strategic-review-{n}.md with items that should be removed or simplified"
   - id: apply-cleanup
     name: Apply cleanup
     description: "If cleanup needed, remove identified artifacts and update review document with actions taken"
@@ -101,7 +101,7 @@ transitions[2]:
 outcome[3]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
-  - Review findings documented in strategic-review.md
+  - Review findings documented in {NN}-strategic-review-{n}.md
 context_to_preserve[3]:
   - review_findings - Findings from strategic review
   - review_passed - Whether review passed
