@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.0.0
+version: 2.1.0
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
@@ -9,15 +9,17 @@ recognition[3]:
   - implementation analysis
 skills:
   primary: implementation-analysis
-  supporting[1]:
+  supporting[2]:
     - artifact-management
+    - assumptions-review
 required: true
 estimatedTime: 10-20m
-notes[3]:
+notes[4]:
   - "You can't improve what you don't measure - establish quantitative baselines"
   - "Document how each metric was measured for reproducibility"
   - "Gaps should be linked to measurable success criteria"
-steps[4]:
+  - "Assumptions about current behavior and gaps should be documented"
+steps[6]:
   - id: review-implementation
     name: Review implementation
     description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture"
@@ -27,14 +29,20 @@ steps[4]:
   - id: establish-baselines
     name: Establish baseline metrics
     description: "Establish quantitative measurements: performance, quality, usage, reliability"
+  - id: collect-assumptions
+    name: Collect assumptions
+    description: "Identify assumptions made during analysis. Categories: Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding."
   - id: document
     name: Create analysis document
     description: "Create implementation analysis document"
+  - id: update-assumptions-log
+    name: Update assumptions log
+    description: "Add analysis-phase assumptions to the assumptions log"
 artifacts[1]:
   - id: analysis-document
     name: implementation-analysis.md
     location: planning
-checkpoints[1]:
+checkpoints[2]:
   - id: analysis-confirmed
     name: Analysis Confirmation Checkpoint
     message: "Here's my analysis of the current implementation. Does this look correct?"
@@ -48,6 +56,19 @@ checkpoints[1]:
       - id: more-analysis
         label: More analysis needed
         description: Additional areas need investigation
+  - id: assumptions-review
+    name: Analysis Assumptions Checkpoint
+    message: "Here are the assumptions made during implementation analysis. Are they correct?"
+    options[3]:
+      - id: confirmed
+        label: Assumptions confirmed
+        description: All analysis assumptions are correct
+      - id: corrections
+        label: Some need correction
+        description: One or more assumptions need adjustment
+      - id: skip
+        label: No significant assumptions
+        description: No analysis assumptions worth documenting
 transitions[1]{to,isDefault}:
   plan-prepare,true
 outcome[3]:

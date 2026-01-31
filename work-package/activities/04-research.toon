@@ -1,5 +1,5 @@
 id: research
-version: 2.0.0
+version: 2.1.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
@@ -9,13 +9,16 @@ recognition[3]:
   - research patterns
 skills:
   primary: knowledge-research
+  supporting[1]:
+    - assumptions-review
 required: false
 estimatedTime: 20-45m
-notes[3]:
+notes[4]:
   - "Multiple sources should be consulted for robust findings"
   - "Patterns should be validated across documents"
   - "Clear mapping to work package needs is essential"
-steps[4]:
+  - "Assumptions about pattern applicability and synthesis should be documented"
+steps[6]:
   - id: kb-research
     name: Knowledge base research
     description: "Call get_guidance before making concept-rag MCP tool calls. Search for relevant patterns and practices."
@@ -25,14 +28,20 @@ steps[4]:
   - id: synthesize
     name: Synthesize findings
     description: "Connect findings to requirements: which patterns apply, what modifications needed, risks, success metrics"
+  - id: collect-assumptions
+    name: Collect assumptions
+    description: "Identify assumptions made during research synthesis. Categories: Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment."
   - id: document
     name: Create research document
     description: "Create knowledge base research document"
+  - id: update-assumptions-log
+    name: Update assumptions log
+    description: "Add research-phase assumptions to the assumptions log"
 artifacts[1]:
   - id: research-document
     name: kb-research.md
     location: planning
-checkpoints[3]:
+checkpoints[4]:
   - id: kb-insights
     name: Knowledge Base Insights Checkpoint
     message: "Here are the key insights from the knowledge base. Do these look relevant?"
@@ -56,12 +65,25 @@ checkpoints[3]:
       - id: more-research
         label: Need more research
         description: Additional web research needed
+  - id: assumptions-review
+    name: Research Assumptions Checkpoint
+    message: "Here are the assumptions made during research synthesis. Are they correct?"
+    options[3]:
+      - id: confirmed
+        label: Assumptions confirmed
+        description: All pattern/synthesis assumptions are correct
+      - id: corrections
+        label: Some need correction
+        description: One or more assumptions need adjustment
+      - id: skip
+        label: No significant assumptions
+        description: No synthesis assumptions worth documenting
   - id: research-complete
     name: Research Complete Checkpoint
-    message: "Research is complete. Ready to proceed to planning?"
+    message: "Research is complete. Ready to proceed to implementation analysis?"
     options[2]:
       - id: proceed
-        label: Proceed to planning
+        label: Proceed to implementation analysis
         description: Research findings are sufficient
       - id: revisit
         label: Revisit research

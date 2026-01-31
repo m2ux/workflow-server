@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.0.0
+version: 2.1.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it.
 problem: User needs to clarify and capture requirements before implementation
@@ -9,22 +9,30 @@ recognition[3]:
   - gather requirements
 skills:
   primary: requirements-elicitation
-  supporting[1]:
+  supporting[2]:
     - artifact-management
+    - assumptions-review
 required: false
 estimatedTime: 15-30m
-notes[4]:
+notes[5]:
   - "Core principle: Conversation, not interrogation - discover what user actually needs"
   - "One question per turn - never present multiple questions in a single message"
   - "Skip option always available - user can say 'skip' to move to next question"
   - "Adapt based on responses - skip irrelevant follow-ups, probe deeper when needed"
-steps[2]:
+  - "Assumptions about requirement interpretation should be documented and reviewed"
+steps[4]:
   - id: elicit-requirements
     name: Elicit requirements through conversation
     description: "Iterate through question domains, asking one question at a time"
+  - id: collect-assumptions
+    name: Collect assumptions
+    description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
   - id: create-document
     name: Create requirements document
     description: "Create requirements document using elicitation output template"
+  - id: update-assumptions-log
+    name: Update assumptions log
+    description: "Add requirements-phase assumptions to the assumptions log"
 artifacts[1]:
   - id: requirements-document
     name: requirements-elicitation.md
@@ -62,7 +70,7 @@ decisions[1]:
         label: User said done with questions
         transitionTo: requirements-summary
         isDefault: false
-checkpoints[3]:
+checkpoints[4]:
   - id: domain-complete
     name: Domain Complete Checkpoint
     message: "Domain '{current_domain}' complete. How would you like to proceed?"
@@ -95,11 +103,24 @@ checkpoints[3]:
         effect:
           setVariable:
             requirements_confirmed: false
+  - id: assumptions-review
+    name: Requirements Assumptions Checkpoint
+    message: "Here are the assumptions made when interpreting requirements. Are they correct?"
+    options[3]:
+      - id: confirmed
+        label: Assumptions confirmed
+        description: All interpretations are correct
+      - id: corrections
+        label: Some need correction
+        description: One or more interpretations need adjustment
+      - id: skip
+        label: No significant assumptions
+        description: No interpretation assumptions worth documenting
   - id: document-review
     name: Document Review Checkpoint
-    message: "Requirements document created. Ready to proceed to Implementation Analysis?"
+    message: "Requirements document created. Ready to proceed to Research?"
     options[2]{id,label}:
-      proceed,Proceed to Implementation Analysis
+      proceed,Proceed to Research
       revise,Revise requirements first
 questionDomains[5]:
   - id: problem-exploration

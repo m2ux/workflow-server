@@ -228,6 +228,101 @@ Then work backward to find practical approximations.
 
 ---
 
+## Design Philosophy Artifact Template
+
+Create `design-philosophy.md` in the planning folder using this template:
+
+```markdown
+# Design Philosophy
+
+**Work Package:** [Name]
+**Issue:** #[number] - [Title]
+**Created:** YYYY-MM-DD
+
+---
+
+## Problem Statement
+
+[Clear, specific description of the problem being solved]
+
+### System Context
+
+[Components, relationships, and context relevant to this problem]
+
+### Impact Assessment
+
+| Aspect | Description |
+|--------|-------------|
+| Severity | [Critical/High/Medium/Low] |
+| Scope | [Users/components affected] |
+| Business Impact | [What happens if not addressed] |
+
+---
+
+## Problem Classification
+
+**Type:** [Specific Problem / Inventive Goal]
+
+**Subtype:** 
+- [ ] Cause Known (direct fix)
+- [ ] Cause Unknown (investigate first)
+- [ ] Improvement goal
+- [ ] Prevention goal
+
+**Complexity:** [Simple / Moderate / Complex]
+
+**Rationale:** [Why this classification]
+
+---
+
+## Workflow Path Decision
+
+**Selected Path:** [Full workflow / Elicitation only / Research only / Direct to planning]
+
+**Activities Included:**
+- [ ] Requirements Elicitation
+- [ ] Research
+- [ ] Implementation Analysis
+- [ ] Plan & Prepare
+
+**Rationale:** [Why this path was chosen]
+
+---
+
+## Constraints
+
+| Constraint Type | Description |
+|-----------------|-------------|
+| Time | [Timeline constraints] |
+| Technical | [Technical limitations] |
+| Dependencies | [External dependencies] |
+| Resources | [Resource constraints] |
+
+---
+
+## Success Criteria
+
+| Criterion | Measurement | Target |
+|-----------|-------------|--------|
+| [What success looks like] | [How to measure] | [Specific target] |
+
+---
+
+## Design Decisions (if applicable at this stage)
+
+| Decision | Options Considered | Chosen | Rationale |
+|----------|-------------------|--------|-----------|
+| [Decision point] | [Option A, Option B] | [Chosen option] | [Why] |
+
+---
+
+## Notes
+
+[Any additional context, open questions, or considerations for subsequent phases]
+```
+
+---
+
 ## Related Guides
 
 - [Knowledge Base Research Guide](07-knowledge-base-research.md) — Research before design
