@@ -49,7 +49,7 @@ artifacts[2]:
   - id: test-plan-document
     name: test-plan.md
     location: planning
-checkpoints[3]:
+checkpoints[4]:
   - id: approach-confirmed
     name: Approach Checkpoint
     message: Approach confirmed?
@@ -75,6 +75,19 @@ checkpoints[3]:
     options[2]{id,label}:
       ready,Ready to implement
       not-ready,"Not ready, need more preparation"
+  - id: assumptions-log-final
+    name: Final Assumptions Review
+    message: "Before implementation: the assumptions log contains all assumptions from design, requirements, research, analysis, and planning phases. Do these meet expectations?"
+    options[3]:
+      - id: acceptable
+        label: Assumptions log is acceptable
+        description: Proceed to implementation with current assumptions
+      - id: revisit
+        label: Need to revisit some assumptions
+        description: Return to earlier phase to address assumption gaps
+      - id: document-concerns
+        label: Document concerns and proceed
+        description: Note concerns in the log but continue to implementation
 transitions[1]{to,isDefault}:
   implement,true
 outcome[3]:
