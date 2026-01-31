@@ -120,3 +120,103 @@ The strategic review prevents "solution sprawl" by:
 4. **Verifying** the implementation is minimal and focused
 
 This ensures PRs are clean, reviewable, and contain only intentional changes.
+
+---
+
+## Strategic Review Artifact Template
+
+Create `strategic-review.md` in the planning folder using this template:
+
+```markdown
+# Strategic Review
+
+**Work Package:** [Name]
+**Issue:** #[number] - [Title]
+**Date:** YYYY-MM-DD
+**Reviewer:** [Agent/Human]
+
+---
+
+## Review Scope
+
+**Base Branch:** [main/develop]
+**Feature Branch:** [branch-name]
+**Files Changed:** [count]
+**Lines Changed:** +[added] / -[removed]
+
+---
+
+## Findings Summary
+
+| Category | Items Found | Action Required |
+|----------|-------------|-----------------|
+| Investigation Artifacts | [count] | [Remove/Keep/Partial] |
+| Over-Engineering | [count] | [Remove/Keep/Partial] |
+| Orphaned Infrastructure | [count] | [Remove/Keep/Partial] |
+| **Total** | **[count]** | |
+
+---
+
+## Investigation Artifacts
+
+Items added during debugging/investigation that may no longer be needed:
+
+| File | Line(s) | Description | Action | Rationale |
+|------|---------|-------------|--------|-----------|
+| [file.rs] | [10-15] | Debug logging for X | Remove | No longer needed after fix |
+| [file.rs] | [42] | Verbose error message | Keep | Useful for production debugging |
+
+---
+
+## Over-Engineering
+
+Solutions that grew beyond what was needed:
+
+| File | Description | Action | Rationale |
+|------|-------------|--------|-----------|
+| [file.rs] | Generic abstraction for specific case | Simplify | Only one use case exists |
+| [config.rs] | Unused configuration options | Remove | Not used by implementation |
+
+---
+
+## Orphaned Infrastructure
+
+Supporting changes that outlived their purpose:
+
+| File | Description | Action | Rationale |
+|------|-------------|--------|-----------|
+| [ci.yml] | Build step for abandoned approach | Remove | Approach was superseded |
+| [.env] | Environment variable for removed feature | Remove | Feature not implemented |
+
+---
+
+## Minimality Assessment
+
+| Question | Answer | Notes |
+|----------|--------|-------|
+| Is every changed file necessary? | Yes/No | [Details] |
+| Is every added line necessary? | Yes/No | [Details] |
+| Are all new dependencies required? | Yes/No | [Details] |
+| Are all config changes required? | Yes/No | [Details] |
+| Is the solution as simple as possible? | Yes/No | [Details] |
+
+---
+
+## Cleanup Actions Taken
+
+| Action | Files Affected | Commit |
+|--------|----------------|--------|
+| Removed debug logging | [file1, file2] | [hash] |
+| Reverted config changes | [config.rs] | [hash] |
+| Simplified abstraction | [file.rs] | [hash] |
+
+---
+
+## Review Result
+
+**Outcome:** [Passed / Minor Cleanup Completed / Significant Rework Needed]
+
+**Rationale:** [Brief explanation of the outcome]
+
+**Next Step:** [Proceed to finalize / Return to planning]
+```
