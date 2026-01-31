@@ -340,10 +340,138 @@ For EACH test function:
 
 **After completing the review, generate a markdown report:**
 
-1. **Create report artifact** (location and naming managed by activity)
+1. **Create report artifact** at `reviews/test-suite-review.md`
 2. **Include complete review content** with all sections
 3. **Use professional markdown formatting**
 4. **Add review metadata** (reviewer, timestamp, scope)
+
+### Test Suite Review Report Template
+
+```markdown
+# Test Suite Review Report
+
+**Work Package:** [Name]
+**Issue:** #[number] - [Title]
+**Date:** YYYY-MM-DD
+**Reviewer:** [Agent/Human]
+
+---
+
+## Review Scope
+
+| Aspect | Details |
+|--------|---------|
+| Module(s) Reviewed | [module names] |
+| Test Files Analyzed | [count] |
+| Total Tests Reviewed | [count] |
+| Testing Framework | [framework name] |
+
+---
+
+## Summary Assessment
+
+| Criteria | Rating | Notes |
+|----------|--------|-------|
+| Overall Test Quality | ⭐⭐⭐⭐☆ (X/5) | [Brief assessment] |
+| Relevance & Business Alignment | PASS / FAIL | [Notes] |
+| Coverage Completeness | PASS / FAIL | [Notes] |
+| Test Effectiveness | PASS / FAIL | [Notes] |
+| Critical Issues Found | [count] | [Brief description] |
+
+---
+
+## Individual Test Function Analysis
+
+| Test Function | Anti-Patterns | Business Value | Issues |
+|---------------|---------------|----------------|--------|
+| `test_name_1` | ✓ None | High | None |
+| `test_name_2` | ✗ Mock passthrough | Low | No real logic tested |
+| `test_name_3` | ✗ Always-true assertion | None | Should be removed |
+
+---
+
+## Anti-Pattern Detection Summary
+
+| Metric | Count |
+|--------|-------|
+| Total Tests Analyzed | [X] |
+| Tests with Anti-Patterns | [Y] |
+| Clean Tests | [X-Y] |
+| Anti-Pattern Rate | [Y/X %] |
+
+### Anti-Patterns Found
+
+| Pattern Type | Count | Examples |
+|--------------|-------|----------|
+| Constructor + field validation | [n] | `test_config_creation` |
+| Mock-only passthrough | [n] | `test_get_data_success` |
+| Always-true assertions | [n] | `test_placeholder` |
+| Default config validation | [n] | `test_defaults` |
+| Validation theater | [n] | `test_functionality` |
+
+---
+
+## Coverage Analysis
+
+### Coverage Gaps Identified
+
+| Area | Gap Description | Priority |
+|------|-----------------|----------|
+| [Module/Function] | [Missing test scenarios] | High/Medium/Low |
+| [Module/Function] | [Missing edge cases] | High/Medium/Low |
+
+### Test Pyramid Assessment
+
+| Test Type | Count | Expected Ratio | Actual Ratio | Status |
+|-----------|-------|----------------|--------------|--------|
+| Unit Tests | [n] | 70-80% | [x%] | OK / INVERTED |
+| Integration Tests | [n] | 15-25% | [x%] | OK / INVERTED |
+| E2E Tests | [n] | 5-10% | [x%] | OK / INVERTED |
+
+---
+
+## Test Redundancy Analysis
+
+| Integration Test | Unit Test Coverage | Redundancy | Recommended Strategy |
+|------------------|-------------------|------------|---------------------|
+| `test_workflow_a` | `unit_a` + `unit_b` | 100% | DELETE integration |
+| `test_workflow_b` | `unit_c` (partial) | 70% | ENHANCE unit tests |
+| `test_workflow_c` | None | 0% | KEEP or CONVERT to unit |
+
+---
+
+## Recommendations
+
+### 1. Immediate Actions (Critical/High Priority)
+
+| # | Action | Affected Tests | Rationale |
+|---|--------|----------------|-----------|
+| 1.1 | [Specific action] | `test_name` | [Why] |
+| 1.2 | [Specific action] | `test_name` | [Why] |
+
+### 2. Near-term Improvements (Medium Priority)
+
+| # | Action | Affected Tests | Rationale |
+|---|--------|----------------|-----------|
+| 2.1 | [Specific action] | `test_name` | [Why] |
+| 2.2 | [Specific action] | `test_name` | [Why] |
+
+### 3. Long-term Enhancements (Low Priority)
+
+| # | Action | Affected Tests | Rationale |
+|---|--------|----------------|-----------|
+| 3.1 | [Specific action] | `test_name` | [Why] |
+
+---
+
+## Review Outcome
+
+**Result:** [Acceptable / Needs Improvement / Significant Issues]
+
+**Summary:** [1-2 sentence summary of findings and next steps]
+
+**Deferred Improvements:** [List any improvements noted for future work]
+```
 
 ---
 
