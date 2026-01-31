@@ -1,0 +1,8 @@
+version: 1.0.0
+description: Minimal agent registry for testing
+agents:
+  reviewer:
+    effectivities[1]:
+      - code-review
+    model: fast
+    instructions: Basic code review

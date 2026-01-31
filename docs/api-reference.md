@@ -2,6 +2,86 @@
 
 ## MCP Tools
 
+### Navigation Tools
+
+The navigation tools provide a **server-driven workflow traversal** API. Agents receive a "navigation landscape" of available actions and cannot interpret or modify state directly.
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `start-workflow` | `workflow_id`, `initial_variables?` | Start a new workflow execution and get initial situation |
+| `resume-workflow` | `state` | Resume workflow from saved state token; returns position, actions, checkpoint |
+| `advance-workflow` | `state`, `action`, `step_id?`, `checkpoint_id?`, `option_id?`, `activity_id?`, `loop_id?`, `loop_items?` | Advance workflow by performing an action |
+| `end-workflow` | `state`, `reason?` | End workflow early; transitions to finalActivity if defined, otherwise completes |
+
+#### Navigation Response Format
+
+All navigation tools return a consistent response:
+
+```json
+{
+  "success": true,
+  "position": {
+    "workflow": "work-package",
+    "activity": { "id": "implement", "name": "Implementation" },
+    "step": { "id": "code", "index": 1, "name": "Write Code" },
+    "loop": { "id": "task-loop", "iteration": 2, "total": 5 }
+  },
+  "message": "Completed step 'analyze'",
+  "availableActions": {
+    "required": [{ 
+      "action": "complete_step", 
+      "step": "code",
+      "effectivities": ["code-review_rust"]
+    }],
+    "optional": [{ "action": "get_resource" }],
+    "blocked": []
+  },
+  "checkpoint": null,
+  "state": "v1.gzB64.H4sIAAAA..."
+}
+```
+
+#### Effectivities
+
+Actions may include an `effectivities` array listing required capabilities for executing that action. When present:
+
+- **Exact match required**: Agents must possess the exact effectivity ID specified
+- **Delegation trigger**: If agent lacks the effectivity, it should delegate to a sub-agent with that capability
+- **Multiple effectivities**: A step may require multiple effectivities; all must be satisfied
+
+Effectivity IDs follow a hierarchical naming convention:
+- Base: `code-review` (general capability)
+- Extended: `code-review_rust` (language-specific)
+- Further extended: `code-review_rust_substrate` (framework-specific)
+
+#### State Token
+
+The `state` parameter is an **opaque token** that agents must pass through without interpretation. It contains compressed, encoded workflow state that only the server can decode. This ensures:
+
+- **Engine authority**: Only the server validates transitions
+- **Agent simplicity**: Agents focus on actions, not state management
+- **Resumability**: State can be saved and resumed later
+
+#### Actions
+
+The `advance-workflow` tool supports these actions:
+
+| Action | Required Parameters | Description |
+|--------|---------------------|-------------|
+| `complete_step` | `step_id` | Mark a step as complete |
+| `respond_to_checkpoint` | `checkpoint_id`, `option_id` | Respond to blocking checkpoint |
+| `transition` | `activity_id` | Transition to a new activity |
+| `advance_loop` | `loop_id`, `loop_items?` | Start or advance a loop iteration |
+
+#### Checkpoint Blocking
+
+When a checkpoint is active, it **blocks** step completion. The agent must:
+1. Check `checkpoint` field in `resume-workflow` response for options
+2. Call `advance-workflow` with `respond_to_checkpoint`
+3. Only then can steps be completed
+
+This ensures agents cannot skip required user decisions.
+
 ### Workflow Tools
 
 | Tool | Parameters | Description |

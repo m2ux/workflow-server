@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { listActivities, readActivity, readActivityIndex } from '../src/loaders/activity-loader.js';
 import { join } from 'node:path';
 
-const WORKFLOW_DIR = join(process.cwd(), 'workflows');
+const WORKFLOW_DIR = join(process.cwd(), 'registry/workflows');
 
 describe('activity-loader', () => {
   describe('listActivities', () => {

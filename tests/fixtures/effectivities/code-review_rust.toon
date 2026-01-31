@@ -1,0 +1,14 @@
+id: code-review_rust
+name: Rust Code Review
+version: 1.0.0
+description: Rust-specific code review patterns
+includes[1]:
+  - code-review
+applicability:
+  languages[1]:
+    - rust
+execution:
+  flow[3]:
+    - Run cargo clippy
+    - Check unsafe blocks
+    - Verify error handling patterns

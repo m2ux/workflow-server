@@ -10,7 +10,7 @@ describe('mcp-server integration', () => {
 
   beforeAll(async () => {
     const config = {
-      workflowDir: resolve(import.meta.dirname, '../workflows'),
+      workflowDir: resolve(import.meta.dirname, '../registry/workflows'),
       serverName: 'test-workflow-server',
       serverVersion: '1.0.0',
     };

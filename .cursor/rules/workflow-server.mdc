@@ -5,4 +5,6 @@ alwaysApply: true
 
 # Overview
 
-For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the `get_activities` tool.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call `get_rules` to load agent guidelines.
+
+CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics

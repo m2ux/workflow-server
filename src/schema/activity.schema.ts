@@ -26,6 +26,7 @@ export const StepSchema = z.object({
   name: z.string().describe('Human-readable step name'),
   description: z.string().optional().describe('Detailed guidance for executing this step'),
   skill: z.string().optional().describe('Skill ID to apply for this step'),
+  effectivities: z.array(z.string()).optional().describe('Required effectivities to execute this step'),
   required: z.boolean().default(true),
   actions: z.array(ActionSchema).optional(),
 });
