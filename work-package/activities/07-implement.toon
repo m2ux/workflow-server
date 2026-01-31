@@ -28,9 +28,9 @@ artifacts[4]:
     description: "Log of assumptions - continues from earlier phases (design-philosophy, requirements, research, analysis, planning)"
     action: update
   - id: code-review-report
-    name: "{module-name}-code-review.md"
-    location: reviews
-    description: "Code review report (optional, for Rust+Substrate projects)"
+    name: "{NN}-code-review-{n}.md"
+    location: planning
+    description: "Code review report (optional). NN follows artifact numbering sequence, n increments on successive reviews."
     required: false
   - id: adr
     name: "NNNN-{decision-title}.md"
