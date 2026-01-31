@@ -1,13 +1,13 @@
 ---
 id: assumptions-review
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Assumptions Guide
 
-**Purpose:** Define rules for identifying, documenting, and reviewing assumptions during implementation. This guide covers both the review process and the log template.
+**Purpose:** Define rules for identifying, documenting, and reviewing assumptions throughout the work package lifecycle. This guide covers both the review process and the log template.
 
-**When to use:** Throughout implementation, after completing each task.
+**When to use:** Throughout the entire workflow - from design philosophy through implementation. Each phase that involves decision-making should collect and review assumptions.
 
 ---
 
@@ -171,7 +171,7 @@ This provides context for why an assumption was made and what alternatives were 
 
 ### Checkpoint Flow
 
-The assumption review is handled by the `06-implement.toon` activity's `task-progress` checkpoint. For each assumption:
+Each activity has an `assumptions-review` checkpoint. During implementation, the `07-implement.toon` activity has per-task assumption checkpoints. For each assumption:
 
 1. Present the assumption type, statement, and rationale
 2. Offer alternatives including the current choice
@@ -220,15 +220,37 @@ Include this context when presenting alternatives to enable informed decisions.
 
 ### When to Create the Log
 
-Create the assumptions log at the start of implementation, before beginning Task 1.
+Create the assumptions log during **design-philosophy** (the first activity that makes decisions requiring assumptions). This ensures assumptions are tracked from the very beginning of the work package.
+
+### Which Activities Update the Log
+
+Each phase that involves decision-making should collect and review assumptions:
+
+| Activity | Assumption Categories |
+|----------|----------------------|
+| **02-design-philosophy** | Problem Interpretation, Complexity Assessment, Workflow Path |
+| **03-requirements-elicitation** | Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria |
+| **04-research** | Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment |
+| **05-implementation-analysis** | Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding |
+| **06-plan-prepare** | Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions |
+| **07-implement** | Behavioral, Architectural, Interface, Performance, Compatibility, Scope, Implicit Requirements |
 
 ### When to Update the Log
 
-After each task checkpoint, once the user has reviewed and responded to assumptions:
+**After each activity's assumption checkpoint**, once the user has reviewed and responded to assumptions:
 
-1. Record the assumptions that were surfaced
+1. Record the assumptions that were surfaced for that phase
 2. Document the user's response (confirmed, corrected, or deferred)
 3. Note any changes made as a result
+
+**During implementation**, update the log AFTER completing the assumption review for each task:
+
+1. Collect assumptions during task implementation
+2. Present assumptions at checkpoint for user review
+3. Record user responses (confirmed, corrected, deferred)
+4. **Then update the assumptions log** with outcomes
+
+This ensures the log reflects the reviewed state, not just the initially collected assumptions.
 
 ### Outcome Statuses
 
@@ -257,14 +279,154 @@ After each task checkpoint, once the user has reviewed and responded to assumpti
 
 ## Summary
 
-| Task | Assumptions | Confirmed | Corrected | Deferred |
-|------|-------------|-----------|-----------|----------|
+| Phase/Task | Assumptions | Confirmed | Corrected | Deferred |
+|------------|-------------|-----------|-----------|----------|
+| Design Philosophy | X | Y | Z | W |
+| Requirements Elicitation | X | Y | Z | W |
+| Research | X | Y | Z | W |
+| Implementation Analysis | X | Y | Z | W |
+| Planning | X | Y | Z | W |
 | Task 1 | X | Y | Z | W |
 | Task 2 | X | Y | Z | W |
 | ... | ... | ... | ... | ... |
 | **Total** | **X** | **Y** | **Z** | **W** |
 
 ---
+
+# Pre-Implementation Phases
+
+## Design Philosophy
+
+**Date:** YYYY-MM-DD
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| DP-1 | Problem Interpretation | H/M/L | [Assumption about problem nature] | [Why this seemed reasonable] |
+| DP-2 | Complexity Assessment | H/M/L | [Assumption about complexity] | [Why this seemed reasonable] |
+| DP-3 | Workflow Path | H/M/L | [Assumption about which activities needed] | [Why this seemed reasonable] |
+
+**Categories:** Problem Interpretation, Complexity Assessment, Workflow Path
+
+### User Response
+
+**Review Status:** ✅ All Confirmed | 🔄 Some Corrected | ⏸️ Some Deferred
+
+**Feedback:**
+- **DP-1:** [User's response]
+
+### Outcome
+
+| ID | Original Assumption | Outcome | Changes Made |
+|----|---------------------|---------|--------------|
+| DP-1 | [Assumption] | ✅ Confirmed | None required |
+
+---
+
+## Requirements Elicitation
+
+**Date:** YYYY-MM-DD
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| RE-1 | Requirement Interpretation | H/M/L | [Assumption about requirement meaning] | [Why this interpretation] |
+| RE-2 | Scope Boundaries | H/M/L | [Assumption about in/out of scope] | [Why this boundary] |
+| RE-3 | Implicit Requirements | H/M/L | [Assumed unstated requirement] | [Why this seemed needed] |
+
+**Categories:** Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation
+
+### User Response
+
+**Review Status:** ✅ All Confirmed | 🔄 Some Corrected | ⏸️ Some Deferred
+
+### Outcome
+
+| ID | Original Assumption | Outcome | Changes Made |
+|----|---------------------|---------|--------------|
+| RE-1 | [Assumption] | ✅ Confirmed | None required |
+
+---
+
+## Research
+
+**Date:** YYYY-MM-DD
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| RS-1 | Pattern Applicability | H/M/L | [Assumption about pattern relevance] | [Why this pattern applies] |
+| RS-2 | Synthesis Decision | H/M/L | [Assumption about connecting findings] | [Why this synthesis] |
+
+**Categories:** Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment
+
+### User Response
+
+**Review Status:** ✅ All Confirmed | 🔄 Some Corrected | ⏸️ Some Deferred
+
+### Outcome
+
+| ID | Original Assumption | Outcome | Changes Made |
+|----|---------------------|---------|--------------|
+| RS-1 | [Assumption] | ✅ Confirmed | None required |
+
+---
+
+## Implementation Analysis
+
+**Date:** YYYY-MM-DD
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| IA-1 | Current Behavior | H/M/L | [Assumption about existing behavior] | [Based on what evidence] |
+| IA-2 | Gap Identification | H/M/L | [Assumption about what's missing] | [Why this is a gap] |
+
+**Categories:** Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding
+
+### User Response
+
+**Review Status:** ✅ All Confirmed | 🔄 Some Corrected | ⏸️ Some Deferred
+
+### Outcome
+
+| ID | Original Assumption | Outcome | Changes Made |
+|----|---------------------|---------|--------------|
+| IA-1 | [Assumption] | ✅ Confirmed | None required |
+
+---
+
+## Planning
+
+**Date:** YYYY-MM-DD
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| PL-1 | Design Approach | H/M/L | [Assumption about design choice] | [Why this approach] |
+| PL-2 | Task Breakdown | H/M/L | [Assumption about task structure] | [Why this breakdown] |
+| PL-3 | Dependency | H/M/L | [Assumption about dependencies] | [Why this order] |
+
+**Categories:** Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions
+
+### User Response
+
+**Review Status:** ✅ All Confirmed | 🔄 Some Corrected | ⏸️ Some Deferred
+
+### Outcome
+
+| ID | Original Assumption | Outcome | Changes Made |
+|----|---------------------|---------|--------------|
+| PL-1 | [Assumption] | ✅ Confirmed | None required |
+
+---
+
+# Implementation Phase
 
 ## Task 1: [Task Name]
 
@@ -347,10 +509,27 @@ After each task checkpoint, once the user has reviewed and responded to assumpti
 
 **Completed:** YYYY-MM-DD
 
-### Assumption Accuracy Analysis
+### Phase-Based Assumption Analysis
+
+| Phase | Total | Confirmed | Corrected | Deferred | Accuracy |
+|-------|-------|-----------|-----------|----------|----------|
+| Design Philosophy | X | Y | Z | W | Y/X% |
+| Requirements Elicitation | X | Y | Z | W | Y/X% |
+| Research | X | Y | Z | W | Y/X% |
+| Implementation Analysis | X | Y | Z | W | Y/X% |
+| Planning | X | Y | Z | W | Y/X% |
+| Implementation | X | Y | Z | W | Y/X% |
+| **Total** | **X** | **Y** | **Z** | **W** | **Y/X%** |
+
+### Category-Based Assumption Analysis
 
 | Category | Total | Confirmed | Corrected | Accuracy |
 |----------|-------|-----------|-----------|----------|
+| Problem/Complexity | X | Y | Z | Y/X% |
+| Requirements/Scope | X | Y | Z | Y/X% |
+| Pattern/Research | X | Y | Z | Y/X% |
+| Current State/Gaps | X | Y | Z | Y/X% |
+| Design/Planning | X | Y | Z | Y/X% |
 | Behavioral | X | Y | Z | Y/X% |
 | Architectural | X | Y | Z | Y/X% |
 | Interface | X | Y | Z | Y/X% |
@@ -381,10 +560,12 @@ After each task checkpoint, once the user has reviewed and responded to assumpti
 
 ### Key Insights
 
-1. [Pattern observed in assumptions that needed correction]
-2. [Areas where assumptions were consistently accurate]
-3. [Common ambiguity sources that caused issues]
-4. [Recommendations for future work packages]
+1. [Which phases generated the most corrected assumptions?]
+2. [Pattern observed in assumptions that needed correction]
+3. [Areas where assumptions were consistently accurate]
+4. [Common ambiguity sources that caused issues]
+5. [Were early-phase assumptions validated or invalidated during implementation?]
+6. [Recommendations for future work packages]
 
 ### Deferred Decisions
 
@@ -397,17 +578,17 @@ After each task checkpoint, once the user has reviewed and responded to assumpti
 
 ## When No Assumptions Were Made
 
-Not every task generates significant assumptions. It's acceptable to record:
+Not every phase or task generates significant assumptions. It's acceptable to record:
 
 ```markdown
-## Task N: [Task Name]
+## [Phase Name] or Task N: [Task Name]
 
 **Date:** YYYY-MM-DD
-**Commit:** `abc123`
+**Commit:** `abc123` (for tasks)
 
 ### Assumptions Surfaced
 
-No significant assumptions were made during this task. Implementation followed established patterns and explicit requirements.
+No significant assumptions were made during this phase/task. [For phases: Decisions followed from explicit requirements and prior phase outputs.] [For tasks: Implementation followed established patterns and explicit requirements.]
 
 ### User Response
 
@@ -417,6 +598,8 @@ N/A
 
 N/A
 ```
+
+**Note:** Even when no assumptions are recorded, the phase section should still exist in the log to show that assumption review was performed.
 
 ---
 

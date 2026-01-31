@@ -1,5 +1,5 @@
 id: plan-prepare
-version: 1.0.0
+version: 1.1.0
 name: Plan & Prepare
 description: "Design the approach, create the work package plan, and prepare for implementation."
 problem: User needs to plan the implementation approach
@@ -9,12 +9,15 @@ recognition[3]:
   - prepare for implementation
 skills:
   primary: planning
-  supporting[2]:
+  supporting[3]:
     - design-framework
     - test-planning
+    - assumptions-review
 required: true
 estimatedTime: 20-45m
-steps[6]:
+notes[1]:
+  - "Design and planning decisions often involve significant assumptions that should be documented before implementation"
+steps[8]:
   - id: apply-design
     name: Apply design framework
     description: Use design framework skill to structure the approach
@@ -24,6 +27,12 @@ steps[6]:
   - id: create-test-plan
     name: Create test plan
     description: "Create test plan document"
+  - id: collect-assumptions
+    name: Collect assumptions
+    description: "Identify assumptions made during planning. Categories: Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions."
+  - id: update-assumptions-log
+    name: Update assumptions log
+    description: "Add planning-phase assumptions to the assumptions log"
   - id: sync-branch
     name: Sync feature branch with main
     description: Ensure feature branch is up to date with main
@@ -40,13 +49,26 @@ artifacts[2]:
   - id: test-plan-document
     name: test-plan.md
     location: planning
-checkpoints[2]:
+checkpoints[3]:
   - id: approach-confirmed
     name: Approach Checkpoint
     message: Approach confirmed?
     options[2]{id,label}:
       confirmed,Approach confirmed
       revise,Revise approach
+  - id: assumptions-review
+    name: Planning Assumptions Checkpoint
+    message: "Here are the assumptions made during planning. Are they correct?"
+    options[3]:
+      - id: confirmed
+        label: Assumptions confirmed
+        description: All planning assumptions are correct
+      - id: corrections
+        label: Some need correction
+        description: One or more assumptions need adjustment
+      - id: skip
+        label: No significant assumptions
+        description: No planning assumptions worth documenting
   - id: ready-implement
     name: Ready to Implement Checkpoint
     message: Ready to implement?

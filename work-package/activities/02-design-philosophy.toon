@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.0.0
+version: 1.1.0
 name: Design Philosophy
 description: "Apply structured design framework to classify the problem, determine complexity, and decide which activities to perform."
 problem: User needs to understand problem nature before deciding on workflow path
@@ -10,15 +10,27 @@ recognition[4]:
   - determine approach
 skills:
   primary: design-framework
+  supporting[1]:
+    - assumptions-review
 required: true
 estimatedTime: 10-20m
-notes[5]:
+notes[6]:
   - "Design philosophy determines the path through the workflow"
   - "Simple bug fixes with clear scope may skip elicitation and research"
   - "Complex features typically require full elicitation and research"
   - "Problem classification informs all subsequent activities"
   - "For simple changes, lightweight application is acceptable"
-steps[4]:
+  - "Create assumptions log here - first activity that makes decisions requiring assumptions"
+artifacts[2]:
+  - id: design-philosophy-doc
+    name: design-philosophy.md
+    location: planning
+    description: "Records problem classification, design rationale, and workflow path decisions"
+  - id: assumptions-log
+    name: assumptions-log.md
+    location: planning
+    description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
+steps[6]:
   - id: define-problem
     name: Identify and Define Problem
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
@@ -30,8 +42,14 @@ steps[4]:
     description: "Based on problem complexity and clarity, determine which optional activities are needed."
   - id: document-philosophy
     name: Document Design Philosophy
-    description: "Record problem classification, complexity assessment, and rationale for workflow path decisions."
-checkpoints[2]:
+    description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
+  - id: collect-assumptions
+    name: Collect assumptions
+    description: "Identify assumptions made during problem classification and path selection. Categories: Problem Interpretation, Complexity Assessment, Workflow Path."
+  - id: create-assumptions-log
+    name: Create assumptions log
+    description: "Create the assumptions log with initial assumptions from this activity."
+checkpoints[4]:
   - id: problem-classified
     name: Problem Classification Checkpoint
     message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Does this assessment look correct?"
@@ -78,6 +96,29 @@ checkpoints[2]:
             needs_elicitation: false
             needs_research: false
             skip_to_planning: true
+  - id: design-philosophy-doc
+    name: Design Philosophy Document Checkpoint
+    message: "Design philosophy document created. Does it accurately capture the problem, classification, and workflow rationale?"
+    options[2]:
+      - id: confirmed
+        label: Document confirmed
+        description: The design philosophy is accurately documented
+      - id: revise
+        label: Revise document
+        description: Some aspects need correction
+  - id: assumptions-review
+    name: Design Philosophy Assumptions Checkpoint
+    message: "Here are the assumptions made during problem classification and path selection. Are they correct?"
+    options[3]:
+      - id: confirmed
+        label: Assumptions confirmed
+        description: All assumptions are correct
+      - id: corrections
+        label: Some need correction
+        description: One or more assumptions need adjustment
+      - id: skip
+        label: No significant assumptions
+        description: No assumptions worth documenting
 transitions[3]:
   - to: requirements-elicitation
     condition:
@@ -104,15 +145,17 @@ transitions[3]:
       operator: ==
       value: true
     isDefault: true
-outcome[4]:
+outcome[5]:
   - Problem clearly defined and classified
   - Complexity assessed
   - Workflow path determined
+  - Design philosophy documented in artifact
   - Ready for next activity based on problem nature
-context_to_preserve[6]:
+context_to_preserve[7]:
   - problem_statement - Clear problem definition
   - problem_type - Specific problem or inventive goal
   - complexity - simple, moderate, or complex
   - needs_elicitation - Whether requirements elicitation is needed
   - needs_research - Whether research is needed
   - skip_to_planning - Whether to skip directly to planning
+  - design_philosophy_doc - Path to design philosophy artifact

@@ -9,21 +9,24 @@ recognition[3]:
   - execute plan
 skills:
   primary: implementation
-  supporting[3]:
+  supporting[4]:
     - assumptions-review
     - task-review
     - architecture-review
+    - test-review
 required: true
 estimatedTime: 1-4h
-notes[3]:
+notes[4]:
   - "After each task, explicitly identify and review assumptions made during implementation"
   - "Assumptions should be elevated - make implicit decisions explicit for validation"
   - "Present assumptions one at a time for focused review"
+  - "Update assumptions log AFTER the assumption review checkpoint - record user responses and outcomes"
 artifacts[3]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
-    description: "Log of assumptions made during implementation"
+    description: "Log of assumptions - continues from earlier phases (design-philosophy, requirements, research, analysis, planning)"
+    action: update
   - id: code-review-report
     name: "{module-name}-code-review.md"
     location: reviews
@@ -31,7 +34,7 @@ artifacts[3]:
     required: false
   - id: adr
     name: "NNNN-{decision-title}.md"
-    location: adr
+    location: .engineering/artifacts/adr
     description: "Architecture Decision Record (if architecturally significant)"
     condition: is_architecturally_significant
 entryActions[1]{action,target,message}:
@@ -42,7 +45,7 @@ loops[2]:
     type: forEach
     variable: current_task
     over: plan.tasks
-    steps[4]:
+    steps[5]:
       - id: implement-task
         name: Implement task
       - id: run-tests
@@ -52,6 +55,10 @@ loops[2]:
       - id: collect-assumptions
         name: Collect assumptions
         description: "Identify all assumptions made during this task"
+      - id: update-assumptions-log
+        name: Update assumptions log
+        description: "After assumption review checkpoint, record outcomes in assumptions log"
+        triggeredAfter: assumption-review-cycle
   - id: assumption-review-cycle
     name: Assumption Review Cycle
     type: forEach
@@ -65,13 +72,21 @@ loops[2]:
       - id: record-response
         name: Record response
         description: "Mark as confirmed or record correction needed"
-steps[1]:
+steps[3]:
   - id: comprehensive-code-review
     name: Comprehensive Code Review
-    description: "Perform comprehensive code review of all implementation changes. Only required for Rust+Substrate projects (when project_type is 'rust-substrate')."
+    description: "Perform comprehensive code review of all implementation changes."
     skill: code-review
     required: false
-checkpoints[5]:
+  - id: architecture-review
+    name: Architecture Review
+    description: "Review architectural significance and create ADR if warranted."
+    skill: architecture-review
+  - id: test-suite-review
+    name: Test Suite Review
+    description: "Review test quality: coverage gaps, anti-patterns, missing edge cases. Ensures test suite is valid before validation phase."
+    skill: test-review
+checkpoints[6]:
   - id: task-complete
     name: Task Complete Checkpoint
     message: "Task '{current_task}' implemented and tests passing. Ready to review assumptions?"
@@ -131,6 +146,22 @@ checkpoints[5]:
     options[2]{id,label}:
       confirmed,ADR confirmed
       revise,Revise ADR
+  - id: test-quality
+    name: Test Quality Checkpoint
+    message: "Test suite review complete. Here are the findings on test quality, coverage, and potential improvements."
+    options[3]:
+      - id: acceptable
+        label: Test quality acceptable
+        description: Tests adequately cover the implementation
+      - id: improve-tests
+        label: Improve tests before proceeding
+        description: Test gaps should be addressed now
+        effect:
+          setVariable:
+            needs_test_improvements: true
+      - id: defer-improvements
+        label: Defer test improvements
+        description: Note improvements for future but proceed now
 transitions[1]{to,isDefault}:
   validate,true
 outcome[2]:

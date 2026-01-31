@@ -1,7 +1,7 @@
 id: validate
-version: 1.0.0
+version: 2.1.0
 name: Verify & Validate Design
-description: Validate the implementation through comprehensive testing. All tests must pass before the work package is considered complete.
+description: Validate the implementation through testing and build verification. Test suite quality was already reviewed in implement phase.
 problem: User needs to validate the implementation passes all tests
 recognition[3]:
   - validate implementation
@@ -10,48 +10,31 @@ recognition[3]:
 skills:
   primary: validation
 required: true
-estimatedTime: 30-60m
+estimatedTime: 15-30m
+notes[3]:
+  - "Test pass/fail, build success, lint errors are observable - do not ask user about these"
+  - "If failures occur, analyze root cause, fix, and re-run until all pass"
+  - "Test suite quality was already reviewed at end of implement phase"
 steps[4]:
   - id: run-tests
     name: Run all tests
-    description: "Unit, integration, e2e tests"
+    description: "Execute unit, integration, e2e tests. Observe and record results."
   - id: verify-build
     name: Verify build succeeds
+    description: "Run build. Observe and record result."
   - id: check-lint
     name: Check for linter errors
-  - id: test-suite-review
-    name: Test Suite Review
-    description: Review test quality, coverage, and anti-patterns
-    skill: test-review
-decisions[1]:
-  - id: validation-result
-    name: Validation Decision
-    description: Assess validation results and decide next action
-    branches[3]:
-      - id: pass
-        label: "Pass - All tests pass, build succeeds"
-        transitionTo: strategic-review
-        condition:
-          type: simple
-          variable: validation_passed
-          operator: ==
-          value: true
-      - id: minor-issues
-        label: "Minor issues - Isolated failures, localized bugs"
-        transitionTo: implement
-      - id: major-issues
-        label: Major issues - Fundamental design problems
-        transitionTo: plan-prepare
-        isDefault: true
-transitions[2]:
-  - to: strategic-review
+    description: "Run linter. Observe and record results."
+  - id: fix-failures
+    name: Fix any failures
+    description: "If tests/build/lint fail, analyze root cause, fix, and re-run. Repeat until all pass."
     condition:
       type: simple
-      variable: validation_passed
+      variable: has_failures
       operator: ==
       value: true
-  - to: implement
-    isDefault: true
+transitions[1]{to,isDefault}:
+  strategic-review,true
 outcome[2]:
   - All tests passing
   - Build successful
