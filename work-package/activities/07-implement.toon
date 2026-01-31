@@ -38,9 +38,9 @@ artifacts[4]:
     description: "Architecture Decision Record (if architecturally significant)"
     condition: is_architecturally_significant
   - id: test-suite-review-report
-    name: test-suite-review.md
-    location: reviews
-    description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations"
+    name: "{NN}-test-suite-review-{n}.md"
+    location: planning
+    description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations. NN follows artifact numbering sequence, n increments on successive reviews."
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 loops[2]:
@@ -88,7 +88,7 @@ steps[3]:
     skill: architecture-review
   - id: test-suite-review
     name: Test Suite Review
-    description: "Review test quality and create test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
+    description: "Review test quality and create {NN}-test-suite-review-{n}.md report. Covers coverage gaps, anti-patterns, missing edge cases."
     skill: test-review
 checkpoints[6]:
   - id: task-complete
