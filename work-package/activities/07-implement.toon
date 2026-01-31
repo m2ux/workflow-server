@@ -21,7 +21,7 @@ notes[4]:
   - "Assumptions should be elevated - make implicit decisions explicit for validation"
   - "Present assumptions one at a time for focused review"
   - "Update assumptions log AFTER the assumption review checkpoint - record user responses and outcomes"
-artifacts[3]:
+artifacts[4]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
@@ -37,6 +37,10 @@ artifacts[3]:
     location: .engineering/artifacts/adr
     description: "Architecture Decision Record (if architecturally significant)"
     condition: is_architecturally_significant
+  - id: test-suite-review-report
+    name: test-suite-review.md
+    location: reviews
+    description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations"
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 loops[2]:
@@ -84,7 +88,7 @@ steps[3]:
     skill: architecture-review
   - id: test-suite-review
     name: Test Suite Review
-    description: "Review test quality: coverage gaps, anti-patterns, missing edge cases. Ensures test suite is valid before validation phase."
+    description: "Review test quality and create test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
     skill: test-review
 checkpoints[6]:
   - id: task-complete
