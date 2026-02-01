@@ -3,7 +3,14 @@ version: 1.0.0
 title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
-sections[10]:
+sections[11]:
+  - id: workflow-fidelity
+    title: Workflow Execution Fidelity
+    priority: critical
+    rules[3]:
+      - "CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics"
+      - Execute workflow activities in the defined sequence unless transitions explicitly allow alternatives
+      - Honor all checkpoints and await user confirmation before proceeding
   - id: code-modification
     title: Code Modification Boundaries
     priority: critical
