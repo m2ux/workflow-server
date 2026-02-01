@@ -3,7 +3,7 @@ version: 1.0.0
 title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
-sections[11]:
+sections[12]:
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical
@@ -110,6 +110,27 @@ sections[11]:
     preCommitVerification[2]:
       - Verify user explicitly requested the commit
       - For Rust projects run cargo fmt to format code before committing
+  - id: engineering-artifacts
+    title: Engineering Artifacts Management
+    priority: high
+    overview: |
+      Engineering artifacts (planning documents, ADRs, reviews) are stored in a 
+      sparse checkout or symlinked folder (commonly .engineering or .ai) that is 
+      locally gitignored from the host project. These artifacts must be committed 
+      to their own repository/branch, not the host project.
+    rules[5]:
+      - "At the end of each activity, check for new or modified engineering artifacts"
+      - "If artifacts were created or updated, commit them to the engineering folder's own git repository"
+      - "NEVER attempt to commit engineering artifacts to the host project repository"
+      - "The engineering folder has its own git context separate from the host project"
+      - "Use git -C <engineering-folder> commands to operate on the engineering repo"
+    workflowIntegration[3]:
+      - "After completing an activity, check git status in the engineering folder"
+      - "If changes exist, stage and commit with a descriptive message referencing the work package"
+      - "Push to the engineering repository if network access is available"
+    commonPaths[2]:
+      - ".engineering/ - Sparse checkout of engineering artifacts repository"
+      - ".ai/ - Symlinked project folder from ai-metadata repository"
   - id: github-cli
     title: GitHub CLI Usage
     priority: high
