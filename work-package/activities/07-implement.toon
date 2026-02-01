@@ -9,11 +9,12 @@ recognition[3]:
   - execute plan
 skills:
   primary: implementation
-  supporting[4]:
+  supporting[5]:
     - assumptions-review
     - task-review
     - architecture-review
     - test-review
+    - architecture-summary
 required: true
 estimatedTime: 1-4h
 notes[4]:
@@ -21,7 +22,7 @@ notes[4]:
   - "Assumptions should be elevated - make implicit decisions explicit for validation"
   - "Present assumptions one at a time for focused review"
   - "Update assumptions log AFTER the assumption review checkpoint - record user responses and outcomes"
-artifacts[4]:
+artifacts[5]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
@@ -41,6 +42,10 @@ artifacts[4]:
     name: "{NN}-test-suite-review-{n}.md"
     location: planning
     description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations. NN follows artifact numbering sequence, n increments on successive reviews."
+  - id: architecture-summary
+    name: "{NN}-architecture-summary-{n}.md"
+    location: planning
+    description: "High-level architecture summary with Mermaid C4 diagrams for management stakeholders. NN follows artifact sequence, n increments on successive versions."
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 loops[2]:
@@ -76,7 +81,7 @@ loops[2]:
       - id: record-response
         name: Record response
         description: "Mark as confirmed or record correction needed"
-steps[3]:
+steps[4]:
   - id: comprehensive-code-review
     name: Comprehensive Code Review
     description: "Perform comprehensive code review of all implementation changes."
@@ -90,7 +95,11 @@ steps[3]:
     name: Test Suite Review
     description: "Review test quality and create {NN}-test-suite-review-{n}.md report. Covers coverage gaps, anti-patterns, missing edge cases."
     skill: test-review
-checkpoints[6]:
+  - id: architecture-summary
+    name: Create Architecture Summary
+    description: "Create {NN}-architecture-summary-{n}.md with Mermaid C4 diagrams showing changes and their relationship to existing system components. Targeted at management-level stakeholders."
+    skill: architecture-summary
+checkpoints[7]:
   - id: task-complete
     name: Task Complete Checkpoint
     message: "Task '{current_task}' implemented and tests passing. Ready to review assumptions?"
@@ -166,11 +175,28 @@ checkpoints[6]:
       - id: defer-improvements
         label: Defer test improvements
         description: Note improvements for future but proceed now
+  - id: architecture-summary
+    name: Architecture Summary Checkpoint
+    message: "Architecture summary created with C4 diagrams. Does it clearly communicate the changes to management-level stakeholders?"
+    options[3]:
+      - id: approved
+        label: Summary is clear and complete
+        description: Document effectively communicates changes
+      - id: revise
+        label: Needs revision
+        description: Diagrams or explanations need improvement
+      - id: skip
+        label: Skip architecture summary
+        description: Changes don't warrant management-level documentation
+        effect:
+          setVariable:
+            skip_architecture_summary: true
 transitions[1]{to,isDefault}:
   validate,true
-outcome[2]:
+outcome[3]:
   - All tasks implemented
   - Changes committed
+  - Architecture summary created with C4 diagrams for stakeholder communication
 context_to_preserve[3]:
   - completed_tasks - Tasks completed during implementation
   - assumptions - Assumptions made during implementation
