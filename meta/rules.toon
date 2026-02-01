@@ -115,7 +115,7 @@ sections[12]:
     priority: high
     overview: |
       Engineering artifacts (planning documents, ADRs, reviews) are stored in a 
-      sparse checkout or symlinked folder (commonly .engineering or .ai) that is 
+      sparse checkout or symlinked folder '.engineering' that is 
       locally gitignored from the host project. These artifacts must be committed 
       to their own repository/branch, not the host project.
     rules[5]:
