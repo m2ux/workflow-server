@@ -12,6 +12,7 @@ This workflow guides the complete lifecycle of a single work package:
 5. **Implementation Analysis** → Understand current state
 6. **Plan & Prepare** → Create implementation and test plans
 7. **Implement** → Execute tasks with review cycles
+7b. **Post-Implementation Review** → Manual diff review, code review, test review
 8. **Validate** → Run tests and verify build
 9. **Strategic Review** → Ensure minimal, focused changes
 10. **Finalize** → Complete documentation
@@ -21,8 +22,9 @@ This workflow guides the complete lifecycle of a single work package:
 **Key characteristics:**
 - Sequential flow with conditional branches
 - Multiple feedback loops for quality gates
-- 17 checkpoints across all activities
+- 22 checkpoints across all activities
 - Task implementation loop with reviews
+- Manual diff review with interview-based finding collection
 
 ## Workflow Flow
 
@@ -42,7 +44,8 @@ graph TD
     IA --> PP[plan-prepare]
     
     PP --> IMP[implement]
-    IMP --> VAL[validate]
+    IMP --> PIR[post-impl-review]
+    PIR --> VAL[validate]
     
     VAL --> VD{validation result?}
     VD -->|pass| SR[strategic-review]
@@ -67,6 +70,7 @@ graph TD
     style RS fill:#e3f2fd
     style PP fill:#fff3e0
     style IMP fill:#fff3e0
+    style PIR fill:#fff3e0
     style VAL fill:#e8f5e9
     style SR fill:#e8f5e9
     style FIN fill:#fce4ec
@@ -335,6 +339,71 @@ graph TD
 
 ---
 
+### 7b. Post-Implementation Review
+
+**Purpose:** Review implementation quality regardless of whether code was newly written or adopted. Ensures manual diff review, code review, test suite review, and architecture summary are completed before validation.
+
+**Primary Skill:** `manual-diff-review`  
+**Supporting Skills:** `code-review`, `test-review`, `architecture-summary`
+
+```mermaid
+graph TD
+    subgraph post-impl-review[Post-Implementation Review]
+        pr1([Generate file index])
+        pr2([User reviews in diff tool])
+        pr3([Collect flagged rows])
+        pr4([Interview loop])
+        pr5([Compile manual review report])
+        pr6([Automated code review])
+        pr7([Test suite review])
+        pr8([Architecture summary])
+        
+        cp1{Files flagged?}
+        cp2{Code review confirmed?}
+        cp3{Test quality acceptable?}
+        cp4{Create arch summary?}
+        
+        pr1 --> pr2 --> cp1
+        cp1 -->|yes| pr3 --> pr4 --> pr5
+        cp1 -->|none| pr6
+        pr5 --> pr6
+        
+        pr6 --> cp2
+        cp2 -->|confirmed| pr7
+        cp2 -->|revise| pr6
+        
+        pr7 --> cp3
+        cp3 -->|acceptable| cp4
+        cp3 -->|improve| pr7
+        
+        cp4 -->|yes| pr8 --> Next([→ validate])
+        cp4 -->|skip| Next
+    end
+    
+    skill1((manual-diff-review))
+    skill2((code-review))
+    skill3((test-review))
+    pr1 -.-> skill1
+    pr6 -.-> skill2
+    pr7 -.-> skill3
+```
+
+**Artifacts:**
+- `{NN}-change-block-index.md` - File index for cross-reference during manual review
+- `{NN}-manual-diff-review.md` - Manual diff review findings
+- `{NN}-code-review.md` - Automated code review report
+- `{NN}-test-suite-review.md` - Test suite quality assessment
+- `{NN}-architecture-summary.md` - C4 diagrams for stakeholders (optional)
+
+**Checkpoints:**
+1. File Index: "Review in your diff tool, then provide row numbers with issues"
+2. Block Interview: "What's the issue with this change?" (repeats for each flagged row)
+3. Code Review: "Code review findings confirmed?"
+4. Test Quality: "Test quality acceptable?"
+5. Architecture Summary: "Create architecture summary for stakeholders?"
+
+---
+
 ### 8. Validate
 
 **Purpose:** Validate implementation through comprehensive testing. All tests must pass.
@@ -485,8 +554,9 @@ graph TD
 
 | Skill | Capability | Used By |
 |-------|------------|---------|
-| `code-review` | Code review (see `15-rust-substrate-code-review.md` for Rust/Substrate) | implement |
-| `test-review` | Test suite quality review (see `16-test-suite-review.md`) | validate |
+| `manual-diff-review` | Manual diff review with file index and interview loop (see `22-manual-diff-review.md`) | post-impl-review |
+| `code-review` | Code review (see `16-rust-substrate-code-review.md` for Rust/Substrate) | post-impl-review, implement |
+| `test-review` | Test suite quality review (see `17-test-suite-review.md`) | post-impl-review, validate |
 | `pr-review-response` | Respond to PR review feedback | post-implementation |
 
 ---
