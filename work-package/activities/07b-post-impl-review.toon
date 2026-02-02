@@ -14,19 +14,21 @@ skills:
     - architecture-summary
 required: true
 estimatedTime: 30-60m
-notes[9]:
+notes[10]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
   - "NEW FILES: Entire file = single change block (consolidate all hunks)"
   - "MODIFIED FILES: Each hunk (contiguous changed lines) = separate change block"
-  - "SORTING: Blocks sorted by path (alphabetical), then by line number. Index assigned after sort."
-  - "Table format: | Index | Path | Line Range | Status | with [NEW] marker for new files"
-  - "User returns list of flagged indices, then interview loop collects details for each"
+  - "TABLE STRUCTURE: One row per file. Columns: Row | Path | File"
+  - "Table format: | Row | Path | File | - simple file index for cross-reference"
+  - "USER REPORTS: Row numbers only (e.g., '24, 31, 106'). User describes specific issues in interview loop."
+  - "Interview loop uses row-column to identify specific hunk"
   - "All three automated reviews (code, test suite, architecture) should be completed"
   - "Adoption workflows must still complete quality reviews"
-entryActions[2]{action,description}:
-  parse-diff-hunks,"Parse git diff to extract change blocks. NEW FILES: Entire file = single block (L1-Lend). MODIFIED FILES: Each hunk (contiguous changed lines) = separate block. Record: file path, start line, end line, is_new_file flag."
-  write-block-index,"Sort blocks by path (alphabetical), then by start line number. Assign sequential index after sorting. Write to {NN}-change-block-index.md. Mark new files with [NEW] in Status column. Notify user of file path."
+entryActions[3]{action,description}:
+  git-pull,"Run git pull to ensure branch is up to date with latest changes before evaluating diffs."
+  parse-diff-files,"Parse git diff to extract list of changed files."
+  write-file-index,"Create table with one row per file, sorted alphabetically. Columns: Row | Path | File. Include header with total change count and estimated review time (30 sec/change). Write to {NN}-change-block-index.md. Notify user of file path."
 artifacts[5]:
   - id: change-block-index
     name: "{NN}-change-block-index.md"
@@ -58,14 +60,14 @@ steps[4]:
     name: Manual Diff Review
     description: |
       Structured manual review process:
-      1. GENERATE CHANGE BLOCK INDEX: Parse git diff to extract all hunks (contiguous changed lines). Write indexed table to {NN}-change-block-index.md with columns: Index | Path | Line Range. Notify user of file location.
-      2. USER REVIEWS: User opens index file for reference while reviewing changes in external side-by-side diff app.
-      3. COLLECT FLAGGED INDICES: User returns flat list of indices with issues (e.g., "3, 7, 12") or "none" if no issues.
-      4. INTERVIEW LOOP: For each flagged index:
+      1. GENERATE FILE INDEX: Parse git diff. Create table with one row per file (sorted alphabetically). Columns: Row | Path | File. Write to {NN}-change-block-index.md.
+      2. USER REVIEWS: User opens index file for reference while reviewing in external side-by-side diff app.
+      3. COLLECT FLAGGED ROWS: User returns row numbers with issues (e.g., "24, 31, 106") or "none" if no issues.
+      4. INTERVIEW LOOP: For each flagged row:
          a. Display full diff content of that hunk
          b. Ask: "What's the issue with this change?"
          c. Record user's response
-         d. Continue to next flagged index
+         d. Continue to next flagged ref
       5. COMPILE REPORT: Create {NN}-manual-diff-review.md with all findings
     required: true
   - id: code-review
@@ -84,9 +86,9 @@ steps[4]:
     skill: architecture-summary
     required: false
 checkpoints[5]:
-  - id: change-block-table
-    name: Change Block Table Checkpoint
-    message: "Change block index written to {change_block_index_path}. Please review the diff in your side-by-side app using the index file for reference, then provide the indices of any blocks with issues (e.g., '3, 7, 12') or 'none' if all looks good."
+  - id: file-index-table
+    name: File Index Checkpoint
+    message: "File index written to {change_block_index_path}. Please review the diff in your side-by-side app using the index for reference, then provide row numbers for any files with issues (e.g., '24, 31, 106') or 'none' if all looks good."
     blocking: true
     options[2]:
       - id: has-issues
