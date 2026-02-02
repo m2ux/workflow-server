@@ -21,7 +21,7 @@ notes[6]:
   - "Skip option always available - user can say 'skip' to move to next question"
   - "Adapt based on responses - skip irrelevant follow-ups, probe deeper when needed"
   - "Assumptions about requirement interpretation should be documented and reviewed"
-steps[6]:
+steps[7]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion
     description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
@@ -31,12 +31,6 @@ steps[6]:
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
-  - id: create-document
-    name: Create requirements document
-    description: "Create requirements document using elicitation output template"
-  - id: update-assumptions-log
-    name: Update assumptions log
-    description: "Add requirements-phase assumptions to the assumptions log"
   - id: post-assumptions-to-jira
     name: Post assumptions to Jira
     description: "Prepare assumptions as Jira comment, get user approval, then post to ticket. Only runs if issue_platform is jira."
@@ -45,6 +39,15 @@ steps[6]:
       variable: issue_platform
       operator: ==
       value: jira
+  - id: await-stakeholder-response
+    name: Await stakeholder response
+    description: "Wait for stakeholders to review the Jira comment. User returns with stakeholder feedback or indicates further discussion is needed."
+  - id: create-document
+    name: Create requirements document
+    description: "Create requirements document using elicitation output template"
+  - id: update-assumptions-log
+    name: Update assumptions log
+    description: "Add requirements-phase assumptions to the assumptions log"
 artifacts[1]:
   - id: requirements-document
     name: requirements-elicitation.md
@@ -64,7 +67,7 @@ loops[1]:
       - id: record-response
         name: Record response
         description: "Capture answer or mark as skipped. Adapt follow-up based on response."
-decisions[2]:
+decisions[1]:
   - id: user-intent
     name: User Intent Check
     description: Check user response to determine next action
@@ -80,52 +83,8 @@ decisions[2]:
         transitionTo: next-domain
       - id: done
         label: User said done with questions
-        transitionTo: requirements-summary
-        isDefault: false
-  - id: post-review
-    name: Post Requirements & Assumptions Review Decision
-    description: Determine next step after combined review
-    branches[4]:
-      - id: confirmed
-        label: All confirmed
-        condition:
-          type: compound
-          operator: and
-          conditions[2]:
-            - type: simple
-              variable: requirements_confirmed
-              operator: ==
-              value: true
-            - type: simple
-              variable: assumptions_approved
-              operator: ==
-              value: true
         transitionTo: jira-comment-review
-        isDefault: true
-      - id: further-discussion
-        label: Further discussion needed
-        condition:
-          type: simple
-          variable: needs_further_discussion
-          operator: ==
-          value: true
-        transitionTo: stakeholder-discussion
-      - id: clarify
-        label: Clarify requirements
-        condition:
-          type: simple
-          variable: requirements_confirmed
-          operator: ==
-          value: false
-        transitionTo: elicit-requirements
-      - id: correct-assumptions
-        label: Correct assumptions
-        condition:
-          type: simple
-          variable: assumptions_approved
-          operator: ==
-          value: false
-        transitionTo: collect-assumptions
+        isDefault: false
 checkpoints[5]:
   - id: stakeholder-transcript
     name: Stakeholder Discussion Checkpoint
@@ -160,51 +119,14 @@ checkpoints[5]:
         effect:
           setVariable:
             elicitation_complete: true
-  - id: requirements-and-assumptions
-    name: Requirements & Assumptions Review Checkpoint
-    message: "Here's my understanding of the requirements and the assumptions made when interpreting them. Please review both."
-    options[4]:
-      - id: confirmed
-        label: All confirmed
-        description: Requirements and assumptions are correct, proceed to document
-        effect:
-          setVariable:
-            requirements_confirmed: true
-            assumptions_approved: true
-      - id: clarify-requirements
-        label: Clarify requirements
-        description: Need to discuss requirements further
-        effect:
-          setVariable:
-            requirements_confirmed: false
-      - id: correct-assumptions
-        label: Correct assumptions
-        description: One or more assumptions need adjustment
-        effect:
-          setVariable:
-            assumptions_approved: false
-      - id: further-discussion
-        label: Further discussion
-        description: Conduct additional stakeholder discussions and re-elicit
-        effect:
-          setVariable:
-            needs_further_discussion: true
-          transitionTo: stakeholder-discussion
   - id: jira-comment-review
     name: Jira Comment Review Checkpoint
-    message: "Here's the assumptions summary prepared as a Jira comment. Review the content before posting."
+    message: "Here's the requirements and assumptions summary prepared as a Jira comment for stakeholder review. Review the content before posting."
     condition:
-      type: compound
-      operator: and
-      conditions[2]:
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: jira
-        - type: simple
-          variable: assumptions_approved
-          operator: ==
-          value: true
+      type: simple
+      variable: issue_platform
+      operator: ==
+      value: jira
     blocking: true
     options[3]:
       - id: post-comment
@@ -222,6 +144,30 @@ checkpoints[5]:
         effect:
           setVariable:
             post_jira_comment: false
+  - id: stakeholder-response
+    name: Stakeholder Response Checkpoint
+    message: "The assumptions have been posted to Jira for stakeholder review. Once stakeholders have reviewed, provide their feedback here."
+    blocking: true
+    options[3]:
+      - id: stakeholder-comment
+        label: Stakeholder commented
+        description: Provide the stakeholder's comment or feedback for review
+        effect:
+          setVariable:
+            has_stakeholder_comment: true
+      - id: stakeholders-approved
+        label: Stakeholders approved
+        description: No issues raised, proceed to create document
+        effect:
+          setVariable:
+            stakeholder_review_complete: true
+      - id: further-discussion
+        label: Further discussion needed
+        description: Stakeholder feedback requires additional discussion
+        effect:
+          setVariable:
+            needs_further_discussion: true
+          transitionTo: stakeholder-discussion
   - id: document-review
     name: Document Review Checkpoint
     message: "Requirements document created. Ready to proceed to Research?"
@@ -301,12 +247,13 @@ transitions[2]:
       variable: requirements_confirmed
       operator: ==
       value: false
-outcome[4]:
+outcome[5]:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods
+  - Assumptions posted to Jira and reviewed by stakeholders (if Jira issue)
+  - Stakeholder feedback incorporated into requirements
   - Requirements document created in planning folder
-  - Assumptions posted to Jira ticket as comment (if Jira issue)
-context_to_preserve[11]:
+context_to_preserve[12]:
   - stakeholder_transcript - Transcript or summary from stakeholder discussion
   - has_stakeholder_input - Whether stakeholder discussion was provided
   - requirements - Captured requirements list
@@ -314,7 +261,8 @@ context_to_preserve[11]:
   - planning_folder_path - Path to planning artifacts folder
   - elicitation_log - Record of questions asked and responses
   - scope_boundaries - In/out scope definitions
-  - assumptions_approved - Whether assumptions were approved by user
   - jira_comment_body - Prepared comment content for Jira
   - post_jira_comment - Whether to post assumptions to Jira
-  - needs_further_discussion - Whether user wants additional stakeholder discussion
+  - has_stakeholder_comment - Whether stakeholder provided feedback comment
+  - stakeholder_comment - Content of stakeholder's response to Jira comment
+  - stakeholder_review_complete - Whether stakeholder review is complete
