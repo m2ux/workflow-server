@@ -14,18 +14,25 @@ skills:
     - architecture-summary
 required: true
 estimatedTime: 30-60m
-notes[7]:
+notes[9]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
-  - "Generate indexed change block table using git diff hunks (contiguous changed lines)"
-  - "Table format: | Index | Path | Line Range | (e.g., | 1 | src/main.rs | L45-L52 |)"
+  - "NEW FILES: Entire file = single change block (consolidate all hunks)"
+  - "MODIFIED FILES: Each hunk (contiguous changed lines) = separate change block"
+  - "SORTING: Blocks sorted by path (alphabetical), then by line number. Index assigned after sort."
+  - "Table format: | Index | Path | Line Range | Status | with [NEW] marker for new files"
   - "User returns list of flagged indices, then interview loop collects details for each"
   - "All three automated reviews (code, test suite, architecture) should be completed"
   - "Adoption workflows must still complete quality reviews"
 entryActions[2]{action,description}:
-  parse-diff-hunks,"Parse git diff to extract all hunks. For each hunk, record: file path, start line, end line. Assign sequential index to each hunk."
-  generate-block-table,"Create markdown table with columns: Index | Path | Line Range. Present to user for cross-reference during side-by-side review."
-artifacts[4]:
+  parse-diff-hunks,"Parse git diff to extract change blocks. NEW FILES: Entire file = single block (L1-Lend). MODIFIED FILES: Each hunk (contiguous changed lines) = separate block. Record: file path, start line, end line, is_new_file flag."
+  write-block-index,"Sort blocks by path (alphabetical), then by start line number. Assign sequential index after sorting. Write to {NN}-change-block-index.md. Mark new files with [NEW] in Status column. Notify user of file path."
+artifacts[5]:
+  - id: change-block-index
+    name: "{NN}-change-block-index.md"
+    location: planning
+    description: "Indexed table of all change blocks (git diff hunks) for cross-reference during manual review"
+    required: true
   - id: manual-diff-review-report
     name: "{NN}-manual-diff-review.md"
     location: planning
@@ -51,8 +58,8 @@ steps[4]:
     name: Manual Diff Review
     description: |
       Structured manual review process:
-      1. GENERATE CHANGE BLOCK TABLE: Parse git diff to extract all hunks (contiguous changed lines). Create indexed table with columns: Index | Path | Line Range (e.g., "| 1 | src/main.rs | L45-L52 |"). Each hunk gets a unique index.
-      2. PRESENT TABLE: Show indexed table to user. User reviews changes in external side-by-side diff app.
+      1. GENERATE CHANGE BLOCK INDEX: Parse git diff to extract all hunks (contiguous changed lines). Write indexed table to {NN}-change-block-index.md with columns: Index | Path | Line Range. Notify user of file location.
+      2. USER REVIEWS: User opens index file for reference while reviewing changes in external side-by-side diff app.
       3. COLLECT FLAGGED INDICES: User returns flat list of indices with issues (e.g., "3, 7, 12") or "none" if no issues.
       4. INTERVIEW LOOP: For each flagged index:
          a. Display full diff content of that hunk
@@ -79,7 +86,7 @@ steps[4]:
 checkpoints[5]:
   - id: change-block-table
     name: Change Block Table Checkpoint
-    message: "Here is the indexed table of all change blocks. Please review the diff in your side-by-side app, then provide the indices of any blocks with issues (e.g., '3, 7, 12') or 'none' if all looks good."
+    message: "Change block index written to {change_block_index_path}. Please review the diff in your side-by-side app using the index file for reference, then provide the indices of any blocks with issues (e.g., '3, 7, 12') or 'none' if all looks good."
     blocking: true
     options[2]:
       - id: has-issues
@@ -157,8 +164,9 @@ outcome[5]:
   - Code review complete with documented findings
   - Test suite quality reviewed
   - Architecture summary created (if applicable)
-context_to_preserve[8]:
-  - change_block_table - Indexed table of all change blocks (hunks)
+context_to_preserve[9]:
+  - change_block_index_path - Path to {NN}-change-block-index.md file
+  - change_block_data - Parsed hunk data for interview loop
   - flagged_block_indices - List of indices flagged by user during review
   - manual_review_findings - Interview responses for each flagged block
   - has_critical_blocker - Whether any flagged block is a critical blocker
