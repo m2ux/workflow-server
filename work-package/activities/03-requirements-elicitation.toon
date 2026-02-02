@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.1.0
+version: 2.2.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it.
 problem: User needs to clarify and capture requirements before implementation
@@ -14,16 +14,20 @@ skills:
     - assumptions-review
 required: false
 estimatedTime: 15-30m
-notes[5]:
+notes[6]:
   - "Core principle: Conversation, not interrogation - discover what user actually needs"
+  - "Stakeholder input first: User should discuss with key stakeholders before agent elicitation"
   - "One question per turn - never present multiple questions in a single message"
   - "Skip option always available - user can say 'skip' to move to next question"
   - "Adapt based on responses - skip irrelevant follow-ups, probe deeper when needed"
   - "Assumptions about requirement interpretation should be documented and reviewed"
-steps[4]:
+steps[5]:
+  - id: stakeholder-discussion
+    name: Stakeholder Discussion
+    description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
   - id: elicit-requirements
     name: Elicit requirements through conversation
-    description: "Iterate through question domains, asking one question at a time"
+    description: "Iterate through question domains, asking one question at a time. Use stakeholder transcript as context."
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
@@ -70,7 +74,24 @@ decisions[1]:
         label: User said done with questions
         transitionTo: requirements-summary
         isDefault: false
-checkpoints[4]:
+checkpoints[5]:
+  - id: stakeholder-transcript
+    name: Stakeholder Discussion Checkpoint
+    message: "Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here."
+    blocking: true
+    options[2]:
+      - id: provide-transcript
+        label: Provide transcript/summary
+        description: Paste or attach the stakeholder discussion content
+        effect:
+          setVariable:
+            has_stakeholder_input: true
+      - id: skip-discussion
+        label: Skip stakeholder discussion
+        description: Proceed directly to agent-led elicitation (not recommended)
+        effect:
+          setVariable:
+            has_stakeholder_input: false
   - id: domain-complete
     name: Domain Complete Checkpoint
     message: "Domain '{current_domain}' complete. How would you like to proceed?"
@@ -192,7 +213,9 @@ outcome[3]:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods
   - Requirements document created in planning folder
-context_to_preserve[5]:
+context_to_preserve[7]:
+  - stakeholder_transcript - Transcript or summary from stakeholder discussion
+  - has_stakeholder_input - Whether stakeholder discussion was provided
   - requirements - Captured requirements list
   - success_criteria - Defined success criteria
   - planning_folder_path - Path to planning artifacts folder

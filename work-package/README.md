@@ -179,7 +179,7 @@ graph TD
 
 ### 3. Requirements Elicitation (Optional)
 
-**Purpose:** Discover and clarify what the work package should accomplish through structured conversation.
+**Purpose:** Discover and clarify what the work package should accomplish through stakeholder discussion and structured conversation.
 
 **Primary Skill:** `requirements-elicitation`  
 **Supporting Skill:** `artifact-management`
@@ -187,20 +187,28 @@ graph TD
 ```mermaid
 graph TD
     subgraph requirements-elicitation[Requirements Elicitation]
-        r1([Explore problem space])
-        r2([Identify stakeholders])
-        r3([Define scope boundaries])
-        r4([Establish success criteria])
-        r5([Create requirements document])
+        r0([Stakeholder discussion])
+        r1([Elicit requirements])
+        r2([Collect assumptions])
+        r3([Create requirements document])
+        r4([Update assumptions log])
+        
+        cp0{Transcript provided?}
         cp1{Requirements confirmed?}
         
-        r1 --> r2 --> r3 --> r4 --> r5 --> cp1
-        cp1 -->|confirmed| Next([→ implementation-analysis])
+        r0 --> cp0
+        cp0 -->|yes| r1
+        cp0 -->|skip| r1
+        r1 --> r2 --> cp1
+        cp1 -->|confirmed| r3
         cp1 -->|clarify| r1
+        r3 --> r4 --> Next([→ research])
     end
 ```
 
-**Checkpoint:** "Have I understood the requirements correctly?"
+**Checkpoints:**
+1. Stakeholder Discussion: "Please discuss with key stakeholders and provide the transcript"
+2. Requirements Summary: "Have I understood the requirements correctly?"
 
 ---
 
