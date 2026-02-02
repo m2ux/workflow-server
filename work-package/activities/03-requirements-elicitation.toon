@@ -82,18 +82,18 @@ decisions[2]:
         label: User said done with questions
         transitionTo: requirements-summary
         isDefault: false
-  - id: post-document-review
-    name: Post Document Review Decision
-    description: Determine next step after document review
+  - id: post-requirements-summary
+    name: Post Requirements Summary Decision
+    description: Determine next step after requirements summary review
     branches[3]:
-      - id: proceed
-        label: Proceed to research
+      - id: confirmed
+        label: Requirements confirmed
         condition:
           type: simple
-          variable: elicitation_complete
+          variable: requirements_confirmed
           operator: ==
           value: true
-        transitionTo: research
+        transitionTo: assumptions-review
         isDefault: true
       - id: more-stakeholders
         label: More stakeholder discussion needed
@@ -103,9 +103,9 @@ decisions[2]:
           operator: ==
           value: true
         transitionTo: stakeholder-discussion
-      - id: revise
-        label: Revise requirements
-        transitionTo: create-document
+      - id: clarify
+        label: Need clarification
+        transitionTo: elicit-requirements
 checkpoints[6]:
   - id: stakeholder-transcript
     name: Stakeholder Discussion Checkpoint
@@ -143,7 +143,7 @@ checkpoints[6]:
   - id: requirements-summary
     name: Requirements Summary Checkpoint
     message: "Here's my understanding of the requirements. Have I captured them correctly?"
-    options[2]:
+    options[3]:
       - id: confirmed
         label: Requirements confirmed
         description: Proceed to create requirements document
@@ -156,6 +156,13 @@ checkpoints[6]:
         effect:
           setVariable:
             requirements_confirmed: false
+      - id: more-stakeholders
+        label: More stakeholder discussion
+        description: Conduct additional stakeholder discussions and re-elicit
+        effect:
+          setVariable:
+            needs_more_stakeholder_input: true
+          transitionTo: stakeholder-discussion
   - id: assumptions-review
     name: Requirements Assumptions Checkpoint
     message: "Here are the assumptions made when interpreting requirements. Are they correct?"
@@ -209,8 +216,8 @@ checkpoints[6]:
             post_jira_comment: false
   - id: document-review
     name: Document Review Checkpoint
-    message: "Requirements document created. How would you like to proceed?"
-    options[3]:
+    message: "Requirements document created. Ready to proceed to Research?"
+    options[2]:
       - id: proceed
         label: Proceed to Research
         description: Requirements are complete, move to next activity
@@ -220,13 +227,6 @@ checkpoints[6]:
       - id: revise
         label: Revise requirements
         description: Make adjustments to the requirements document
-      - id: more-stakeholders
-        label: More stakeholder discussion
-        description: Conduct additional stakeholder discussions and re-elicit
-        effect:
-          setVariable:
-            needs_more_stakeholder_input: true
-          transitionTo: stakeholder-discussion
 questionDomains[5]:
   - id: problem-exploration
     name: Problem Exploration
