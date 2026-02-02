@@ -15,15 +15,16 @@ skills:
     - architecture-summary
 required: true
 estimatedTime: 30-60m
-notes[4]:
+notes[7]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
   - "All three automated reviews (code, test suite, architecture) should be completed"
   - "Adoption workflows must still complete quality reviews"
-entryActions[3]{action,description}:
-  git-pull,"Run git pull to ensure branch is up to date with latest changes before evaluating diffs."
-  parse-diff-files,"Parse git diff to extract list of changed files."
-  write-file-index,"Create table with one row per file, sorted alphabetically. Columns: Row | Path | File. Include header with total change count and estimated review time (30 sec/change). Write to {NN}-change-block-index.md. Notify user of file path."
+  - "ENTRY: Run git pull to ensure branch is up to date before evaluating diffs"
+  - "ENTRY: Parse git diff to extract list of changed files"
+  - "ENTRY: Create file index table (Row | Path | File) with review time estimate (30 sec/change), write to {NN}-change-block-index.md"
+entryActions[1]{action,message}:
+  log,Starting post-implementation review
 artifacts[5]:
   - id: change-block-index
     name: "{NN}-change-block-index.md"
