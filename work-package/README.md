@@ -206,7 +206,7 @@ graph TD
         r1 --> r2 --> cp1
         cp1 -->|confirmed| cp2
         cp1 -->|clarify| r1
-        cp1 -->|more stakeholders| r0
+        cp1 -->|further discussion| r0
         cp2 -->|approved + jira| cp3
         cp2 -->|approved + github| r3
         cp2 -->|skip| r3
@@ -220,7 +220,7 @@ graph TD
 
 **Checkpoints:**
 1. Stakeholder Discussion: "Please discuss with key stakeholders and provide the transcript"
-2. Requirements Summary: "Have I understood the requirements correctly?" (includes option for more stakeholder discussion)
+2. Requirements Summary: "Have I understood the requirements correctly?" (includes option for further discussion)
 3. Assumptions Review: "Are these assumptions correct?"
 4. Jira Comment Review: "Review the comment before posting to Jira" (Jira issues only)
 5. Document Review: "Ready to proceed to Research?"

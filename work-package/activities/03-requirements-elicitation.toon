@@ -95,11 +95,11 @@ decisions[2]:
           value: true
         transitionTo: assumptions-review
         isDefault: true
-      - id: more-stakeholders
-        label: More stakeholder discussion needed
+      - id: further-discussion
+        label: Further discussion needed
         condition:
           type: simple
-          variable: needs_more_stakeholder_input
+          variable: needs_further_discussion
           operator: ==
           value: true
         transitionTo: stakeholder-discussion
@@ -156,12 +156,12 @@ checkpoints[6]:
         effect:
           setVariable:
             requirements_confirmed: false
-      - id: more-stakeholders
-        label: More stakeholder discussion
+      - id: further-discussion
+        label: Further discussion
         description: Conduct additional stakeholder discussions and re-elicit
         effect:
           setVariable:
-            needs_more_stakeholder_input: true
+            needs_further_discussion: true
           transitionTo: stakeholder-discussion
   - id: assumptions-review
     name: Requirements Assumptions Checkpoint
@@ -309,4 +309,4 @@ context_to_preserve[11]:
   - assumptions_approved - Whether assumptions were approved by user
   - jira_comment_body - Prepared comment content for Jira
   - post_jira_comment - Whether to post assumptions to Jira
-  - needs_more_stakeholder_input - Whether user wants additional stakeholder discussion
+  - needs_further_discussion - Whether user wants additional stakeholder discussion
