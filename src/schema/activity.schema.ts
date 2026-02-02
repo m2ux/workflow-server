@@ -106,6 +106,15 @@ export const WorkflowTriggerSchema = z.object({
 });
 export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
+// Artifact schema - defines outputs produced by an activity
+export const ArtifactSchema = z.object({
+  id: z.string().describe('Unique identifier for the artifact'),
+  name: z.string().describe('Filename or template (supports {variable} substitution)'),
+  location: z.string().optional().describe('Location category (e.g., planning, docs)'),
+  description: z.string().optional().describe('Purpose of the artifact'),
+});
+export type Artifact = z.infer<typeof ArtifactSchema>;
+
 // Unified Activity schema
 export const ActivitySchema = z.object({
   // Identity (required)
@@ -143,7 +152,8 @@ export const ActivitySchema = z.object({
   required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
   estimatedTime: TimeEstimateSchema.describe('Estimated time to complete'),
   notes: z.array(z.string()).optional().describe('Additional notes or caveats'),
-}).passthrough();
+  artifacts: z.array(ArtifactSchema).optional().describe('Output artifacts produced by this activity'),
+});
 
 export type Activity = z.infer<typeof ActivitySchema>;
 
