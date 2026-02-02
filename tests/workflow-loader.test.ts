@@ -72,8 +72,8 @@ describe('workflow-loader', () => {
         const implement = result.value.activities.find(a => a.id === 'implement');
         expect(implement?.loops?.length).toBeGreaterThan(0);
         
-        const validate = result.value.activities.find(a => a.id === 'validate');
-        expect(validate?.decisions?.length).toBeGreaterThan(0);
+        const strategicReview = result.value.activities.find(a => a.id === 'strategic-review');
+        expect(strategicReview?.decisions?.length).toBeGreaterThan(0);
       }
     });
   });
@@ -147,9 +147,8 @@ describe('workflow-loader', () => {
     it('should get transitions from decision branches', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const transitions = getValidTransitions(workflow.value, 'validate');
-        expect(transitions).toContain('strategic-review');
-        expect(transitions).toContain('implement');
+        const transitions = getValidTransitions(workflow.value, 'strategic-review');
+        expect(transitions).toContain('finalize');
         expect(transitions).toContain('plan-prepare');
       }
     });
