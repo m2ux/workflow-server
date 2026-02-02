@@ -8,21 +8,16 @@ recognition[3]:
   - post implementation review
   - quality review
 skills:
-  primary: code-review
-  supporting[2]:
+  primary: manual-diff-review
+  supporting[3]:
+    - code-review
     - test-review
     - architecture-summary
 required: true
 estimatedTime: 30-60m
-notes[10]:
+notes[4]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
-  - "NEW FILES: Entire file = single change block (consolidate all hunks)"
-  - "MODIFIED FILES: Each hunk (contiguous changed lines) = separate change block"
-  - "TABLE STRUCTURE: One row per file. Columns: Row | Path | File"
-  - "Table format: | Row | Path | File | - simple file index for cross-reference"
-  - "USER REPORTS: Row numbers only (e.g., '24, 31, 106'). User describes specific issues in interview loop."
-  - "Interview loop uses row-column to identify specific hunk"
   - "All three automated reviews (code, test suite, architecture) should be completed"
   - "Adoption workflows must still complete quality reviews"
 entryActions[3]{action,description}:
@@ -58,17 +53,8 @@ artifacts[5]:
 steps[4]:
   - id: manual-diff-review
     name: Manual Diff Review
-    description: |
-      Structured manual review process:
-      1. GENERATE FILE INDEX: Parse git diff. Create table with one row per file (sorted alphabetically). Columns: Row | Path | File. Write to {NN}-change-block-index.md.
-      2. USER REVIEWS: User opens index file for reference while reviewing in external side-by-side diff app.
-      3. COLLECT FLAGGED ROWS: User returns row numbers with issues (e.g., "24, 31, 106") or "none" if no issues.
-      4. INTERVIEW LOOP: For each flagged row:
-         a. Display full diff content of that hunk
-         b. Ask: "What's the issue with this change?"
-         c. Record user's response
-         d. Continue to next flagged ref
-      5. COMPILE REPORT: Create {NN}-manual-diff-review.md with all findings
+    description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
+    skill: manual-diff-review
     required: true
   - id: code-review
     name: Code Review
