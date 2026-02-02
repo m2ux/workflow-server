@@ -14,15 +14,23 @@ skills:
     - architecture-summary
 required: true
 estimatedTime: 30-60m
-notes[5]:
+notes[7]:
   - "This activity runs after implement, whether code was new or adopted"
-  - "Manual diff review is FIRST - user must review changes before automated reviews"
-  - "Present diff summary with file list and stats before asking for manual review"
+  - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
+  - "Generate indexed change block table using git diff hunks (contiguous changed lines)"
+  - "Table format: | Index | Path | Line Range | (e.g., | 1 | src/main.rs | L45-L52 |)"
+  - "User returns list of flagged indices, then interview loop collects details for each"
   - "All three automated reviews (code, test suite, architecture) should be completed"
   - "Adoption workflows must still complete quality reviews"
-entryActions[1]{action,description}:
-  present-diff,"Show diff summary: files changed, lines added/removed, key changes. Use 'git diff --stat' and 'gh pr diff --name-only' to gather information."
-artifacts[3]:
+entryActions[2]{action,description}:
+  parse-diff-hunks,"Parse git diff to extract all hunks. For each hunk, record: file path, start line, end line. Assign sequential index to each hunk."
+  generate-block-table,"Create markdown table with columns: Index | Path | Line Range. Present to user for cross-reference during side-by-side review."
+artifacts[4]:
+  - id: manual-diff-review-report
+    name: "{NN}-manual-diff-review.md"
+    location: planning
+    description: "Manual diff review report with indexed findings from user's side-by-side review"
+    required: true
   - id: code-review-report
     name: "{NN}-code-review.md"
     location: planning
@@ -41,7 +49,17 @@ artifacts[3]:
 steps[4]:
   - id: manual-diff-review
     name: Manual Diff Review
-    description: "User performs manual review of the code diff. Agent presents the diff summary and prompts user to review. User provides feedback, concerns, or approval before automated reviews proceed."
+    description: |
+      Structured manual review process:
+      1. GENERATE CHANGE BLOCK TABLE: Parse git diff to extract all hunks (contiguous changed lines). Create indexed table with columns: Index | Path | Line Range (e.g., "| 1 | src/main.rs | L45-L52 |"). Each hunk gets a unique index.
+      2. PRESENT TABLE: Show indexed table to user. User reviews changes in external side-by-side diff app.
+      3. COLLECT FLAGGED INDICES: User returns flat list of indices with issues (e.g., "3, 7, 12") or "none" if no issues.
+      4. INTERVIEW LOOP: For each flagged index:
+         a. Display full diff content of that hunk
+         b. Ask: "What's the issue with this change?"
+         c. Record user's response
+         d. Continue to next flagged index
+      5. COMPILE REPORT: Create {NN}-manual-diff-review.md with all findings
     required: true
   - id: code-review
     name: Code Review
@@ -58,27 +76,40 @@ steps[4]:
     description: "Create {NN}-architecture-summary.md with Mermaid C4 diagrams showing changes. Optional but recommended for significant changes."
     skill: architecture-summary
     required: false
-checkpoints[4]:
-  - id: manual-diff-review
-    name: Manual Diff Review Checkpoint
-    message: "Please review the code diff manually. Once reviewed, provide your feedback or confirm to proceed."
+checkpoints[5]:
+  - id: change-block-table
+    name: Change Block Table Checkpoint
+    message: "Here is the indexed table of all change blocks. Please review the diff in your side-by-side app, then provide the indices of any blocks with issues (e.g., '3, 7, 12') or 'none' if all looks good."
     blocking: true
+    options[2]:
+      - id: has-issues
+        label: Issues found - provide indices
+        description: Enter comma-separated list of block indices with issues
+        effect:
+          setVariable:
+            has_flagged_blocks: true
+      - id: no-issues
+        label: No issues found
+        description: All changes look good, proceed with automated reviews
+  - id: block-interview
+    name: Block Interview Checkpoint
+    message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. What's the issue with this change?"
+    blocking: true
+    repeats: true
+    repeatOver: flagged_block_indices
     options[3]:
-      - id: approved
-        label: Diff reviewed - no concerns
-        description: Manual review complete, proceed with automated reviews
-      - id: feedback
-        label: Diff reviewed - have feedback
-        description: Provide specific feedback or concerns about the changes
+      - id: issue-recorded
+        label: Issue recorded - continue
+        description: Move to next flagged block
+      - id: critical-blocker
+        label: This is a critical blocker
+        description: Mark as blocking issue that must be fixed
         effect:
           setVariable:
-            has_manual_feedback: true
-      - id: changes-needed
-        label: Changes needed before proceeding
-        description: Issues found that should be addressed before review continues
-        effect:
-          setVariable:
-            manual_review_blocked: true
+            has_critical_blocker: true
+      - id: skip-block
+        label: Skip this block
+        description: No longer an issue, move to next
   - id: code-review
     name: Code Review Checkpoint
     message: "Code review complete. Here are the findings. Are they confirmed?"
@@ -120,14 +151,18 @@ checkpoints[4]:
             skip_architecture_summary: true
 transitions[1]{to,isDefault}:
   validate,true
-outcome[4]:
-  - Manual diff review completed by user
+outcome[5]:
+  - Manual diff review completed with indexed block table and interview findings
+  - Manual diff review report created ({NN}-manual-diff-review.md)
   - Code review complete with documented findings
   - Test suite quality reviewed
   - Architecture summary created (if applicable)
-context_to_preserve[5]:
-  - manual_review_feedback - User feedback from manual diff review
-  - has_manual_feedback - Whether user provided specific feedback
+context_to_preserve[8]:
+  - change_block_table - Indexed table of all change blocks (hunks)
+  - flagged_block_indices - List of indices flagged by user during review
+  - manual_review_findings - Interview responses for each flagged block
+  - has_critical_blocker - Whether any flagged block is a critical blocker
   - code_review_findings - Findings from code review
   - test_review_findings - Findings from test suite review
   - architecture_summary_created - Whether architecture summary was created
+  - manual_diff_review_report_path - Path to generated manual diff review report
