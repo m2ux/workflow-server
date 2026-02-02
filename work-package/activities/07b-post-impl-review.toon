@@ -1,0 +1,133 @@
+id: post-impl-review
+version: 1.0.0
+name: Post-Implementation Review
+description: Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation.
+problem: User needs to review implementation quality before validation
+recognition[3]:
+  - review implementation
+  - post implementation review
+  - quality review
+skills:
+  primary: code-review
+  supporting[2]:
+    - test-review
+    - architecture-summary
+required: true
+estimatedTime: 30-60m
+notes[5]:
+  - "This activity runs after implement, whether code was new or adopted"
+  - "Manual diff review is FIRST - user must review changes before automated reviews"
+  - "Present diff summary with file list and stats before asking for manual review"
+  - "All three automated reviews (code, test suite, architecture) should be completed"
+  - "Adoption workflows must still complete quality reviews"
+entryActions[1]{action,description}:
+  present-diff,"Show diff summary: files changed, lines added/removed, key changes. Use 'git diff --stat' and 'gh pr diff --name-only' to gather information."
+artifacts[3]:
+  - id: code-review-report
+    name: "{NN}-code-review.md"
+    location: planning
+    description: "Code review report documenting findings by severity"
+    required: true
+  - id: test-suite-review-report
+    name: "{NN}-test-suite-review.md"
+    location: planning
+    description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations"
+    required: true
+  - id: architecture-summary
+    name: "{NN}-architecture-summary.md"
+    location: planning
+    description: "High-level architecture summary with Mermaid C4 diagrams for management stakeholders"
+    required: false
+steps[4]:
+  - id: manual-diff-review
+    name: Manual Diff Review
+    description: "User performs manual review of the code diff. Agent presents the diff summary and prompts user to review. User provides feedback, concerns, or approval before automated reviews proceed."
+    required: true
+  - id: code-review
+    name: Code Review
+    description: "Perform comprehensive code review of all implementation changes. Create {NN}-code-review.md report."
+    skill: code-review
+    required: true
+  - id: test-suite-review
+    name: Test Suite Review
+    description: "Review test quality and create {NN}-test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
+    skill: test-review
+    required: true
+  - id: architecture-summary
+    name: Architecture Summary
+    description: "Create {NN}-architecture-summary.md with Mermaid C4 diagrams showing changes. Optional but recommended for significant changes."
+    skill: architecture-summary
+    required: false
+checkpoints[4]:
+  - id: manual-diff-review
+    name: Manual Diff Review Checkpoint
+    message: "Please review the code diff manually. Once reviewed, provide your feedback or confirm to proceed."
+    blocking: true
+    options[3]:
+      - id: approved
+        label: Diff reviewed - no concerns
+        description: Manual review complete, proceed with automated reviews
+      - id: feedback
+        label: Diff reviewed - have feedback
+        description: Provide specific feedback or concerns about the changes
+        effect:
+          setVariable:
+            has_manual_feedback: true
+      - id: changes-needed
+        label: Changes needed before proceeding
+        description: Issues found that should be addressed before review continues
+        effect:
+          setVariable:
+            manual_review_blocked: true
+  - id: code-review
+    name: Code Review Checkpoint
+    message: "Code review complete. Here are the findings. Are they confirmed?"
+    options[2]:
+      - id: confirmed
+        label: Findings confirmed
+        description: Code review findings are accurate
+      - id: revise
+        label: Needs revision
+        description: Review needs additional analysis
+  - id: test-quality
+    name: Test Quality Checkpoint
+    message: "Test suite review complete. Here are the findings on test quality, coverage, and potential improvements."
+    options[3]:
+      - id: acceptable
+        label: Test quality acceptable
+        description: Tests adequately cover the implementation
+      - id: improve-tests
+        label: Improve tests before proceeding
+        description: Test gaps should be addressed now
+        effect:
+          setVariable:
+            needs_test_improvements: true
+      - id: defer-improvements
+        label: Defer test improvements
+        description: Note improvements for future but proceed now
+  - id: architecture-summary
+    name: Architecture Summary Checkpoint
+    message: "Create architecture summary for management stakeholders?"
+    options[2]:
+      - id: create
+        label: Create architecture summary
+        description: Changes warrant stakeholder documentation
+      - id: skip
+        label: Skip architecture summary
+        description: Changes don't warrant management-level documentation
+        effect:
+          setVariable:
+            skip_architecture_summary: true
+transitions[1]{to,isDefault}:
+  validate,true
+outcome[4]:
+  - Manual diff review completed by user
+  - Code review complete with documented findings
+  - Test suite quality reviewed
+  - Architecture summary created (if applicable)
+context_to_preserve[5]:
+  - manual_review_feedback - User feedback from manual diff review
+  - has_manual_feedback - Whether user provided specific feedback
+  - code_review_findings - Findings from code review
+  - test_review_findings - Findings from test suite review
+  - architecture_summary_created - Whether architecture summary was created

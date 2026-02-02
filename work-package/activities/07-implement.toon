@@ -9,12 +9,9 @@ recognition[3]:
   - execute plan
 skills:
   primary: implementation
-  supporting[5]:
+  supporting[2]:
     - assumptions-review
-    - task-review
     - architecture-review
-    - test-review
-    - architecture-summary
 required: true
 estimatedTime: 1-4h
 notes[4]:
@@ -22,30 +19,17 @@ notes[4]:
   - "Assumptions should be elevated - make implicit decisions explicit for validation"
   - "Present assumptions one at a time for focused review"
   - "Update assumptions log AFTER the assumption review checkpoint - record user responses and outcomes"
-artifacts[5]:
+artifacts[2]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions - continues from earlier phases (design-philosophy, requirements, research, analysis, planning)"
     action: update
-  - id: code-review-report
-    name: "{NN}-code-review-{n}.md"
-    location: planning
-    description: "Code review report (optional). NN follows artifact numbering sequence, n increments on successive reviews."
-    required: false
   - id: adr
     name: "NNNN-{decision-title}.md"
     location: .engineering/artifacts/adr
     description: "Architecture Decision Record (if architecturally significant)"
     condition: is_architecturally_significant
-  - id: test-suite-review-report
-    name: "{NN}-test-suite-review-{n}.md"
-    location: planning
-    description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations. NN follows artifact numbering sequence, n increments on successive reviews."
-  - id: architecture-summary
-    name: "{NN}-architecture-summary-{n}.md"
-    location: planning
-    description: "High-level architecture summary with Mermaid C4 diagrams for management stakeholders. NN follows artifact sequence, n increments on successive versions."
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 loops[2]:
@@ -81,25 +65,12 @@ loops[2]:
       - id: record-response
         name: Record response
         description: "Mark as confirmed or record correction needed"
-steps[4]:
-  - id: comprehensive-code-review
-    name: Comprehensive Code Review
-    description: "Perform comprehensive code review of all implementation changes."
-    skill: code-review
-    required: false
+steps[1]:
   - id: architecture-review
     name: Architecture Review
     description: "Review architectural significance and create ADR if warranted."
     skill: architecture-review
-  - id: test-suite-review
-    name: Test Suite Review
-    description: "Review test quality and create {NN}-test-suite-review-{n}.md report. Covers coverage gaps, anti-patterns, missing edge cases."
-    skill: test-review
-  - id: architecture-summary
-    name: Create Architecture Summary
-    description: "Create {NN}-architecture-summary-{n}.md with Mermaid C4 diagrams showing changes and their relationship to existing system components. Targeted at management-level stakeholders."
-    skill: architecture-summary
-checkpoints[7]:
+checkpoints[4]:
   - id: task-complete
     name: Task Complete Checkpoint
     message: "Task '{current_task}' implemented and tests passing. Ready to review assumptions?"
@@ -126,12 +97,6 @@ checkpoints[7]:
       - id: discuss
         label: Need to discuss
         description: Requires further clarification
-  - id: code-review
-    name: Code Review Checkpoint
-    message: "Code review findings ready. Are they confirmed?"
-    options[2]{id,label}:
-      confirmed,Findings confirmed
-      needs-fixes,Needs fixes
   - id: arch-significance
     name: Architectural Significance Checkpoint
     message: "Is this implementation architecturally significant?"
@@ -159,44 +124,11 @@ checkpoints[7]:
     options[2]{id,label}:
       confirmed,ADR confirmed
       revise,Revise ADR
-  - id: test-quality
-    name: Test Quality Checkpoint
-    message: "Test suite review complete. Here are the findings on test quality, coverage, and potential improvements."
-    options[3]:
-      - id: acceptable
-        label: Test quality acceptable
-        description: Tests adequately cover the implementation
-      - id: improve-tests
-        label: Improve tests before proceeding
-        description: Test gaps should be addressed now
-        effect:
-          setVariable:
-            needs_test_improvements: true
-      - id: defer-improvements
-        label: Defer test improvements
-        description: Note improvements for future but proceed now
-  - id: architecture-summary
-    name: Architecture Summary Checkpoint
-    message: "Architecture summary created with C4 diagrams. Does it clearly communicate the changes to management-level stakeholders?"
-    options[3]:
-      - id: approved
-        label: Summary is clear and complete
-        description: Document effectively communicates changes
-      - id: revise
-        label: Needs revision
-        description: Diagrams or explanations need improvement
-      - id: skip
-        label: Skip architecture summary
-        description: Changes don't warrant management-level documentation
-        effect:
-          setVariable:
-            skip_architecture_summary: true
 transitions[1]{to,isDefault}:
-  validate,true
-outcome[3]:
+  post-impl-review,true
+outcome[2]:
   - All tasks implemented
   - Changes committed
-  - Architecture summary created with C4 diagrams for stakeholder communication
 context_to_preserve[3]:
   - completed_tasks - Tasks completed during implementation
   - assumptions - Assumptions made during implementation
