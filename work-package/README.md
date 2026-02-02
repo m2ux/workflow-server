@@ -192,23 +192,38 @@ graph TD
         r2([Collect assumptions])
         r3([Create requirements document])
         r4([Update assumptions log])
+        r5([Post to Jira])
         
         cp0{Transcript provided?}
         cp1{Requirements confirmed?}
+        cp2{Assumptions approved?}
+        cp3{Jira comment OK?}
+        cp4{Document review?}
         
         r0 --> cp0
         cp0 -->|yes| r1
         cp0 -->|skip| r1
         r1 --> r2 --> cp1
-        cp1 -->|confirmed| r3
+        cp1 -->|confirmed| cp2
         cp1 -->|clarify| r1
-        r3 --> r4 --> Next([→ research])
+        cp2 -->|approved + jira| cp3
+        cp2 -->|approved + github| r3
+        cp2 -->|skip| r3
+        cp3 -->|post| r5 --> r3
+        cp3 -->|skip| r3
+        r3 --> r4 --> cp4
+        cp4 -->|proceed| Next([→ research])
+        cp4 -->|more stakeholders| r0
+        cp4 -->|revise| r3
     end
 ```
 
 **Checkpoints:**
 1. Stakeholder Discussion: "Please discuss with key stakeholders and provide the transcript"
 2. Requirements Summary: "Have I understood the requirements correctly?"
+3. Assumptions Review: "Are these assumptions correct?"
+4. Jira Comment Review: "Review the comment before posting to Jira" (Jira issues only)
+5. Document Review: "How would you like to proceed?" (includes option for more stakeholder discussion)
 
 ---
 
