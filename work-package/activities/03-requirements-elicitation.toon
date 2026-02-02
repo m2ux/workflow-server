@@ -82,18 +82,25 @@ decisions[2]:
         label: User said done with questions
         transitionTo: requirements-summary
         isDefault: false
-  - id: post-requirements-summary
-    name: Post Requirements Summary Decision
-    description: Determine next step after requirements summary review
-    branches[3]:
+  - id: post-review
+    name: Post Requirements & Assumptions Review Decision
+    description: Determine next step after combined review
+    branches[4]:
       - id: confirmed
-        label: Requirements confirmed
+        label: All confirmed
         condition:
-          type: simple
-          variable: requirements_confirmed
-          operator: ==
-          value: true
-        transitionTo: assumptions-review
+          type: compound
+          operator: and
+          conditions[2]:
+            - type: simple
+              variable: requirements_confirmed
+              operator: ==
+              value: true
+            - type: simple
+              variable: assumptions_approved
+              operator: ==
+              value: true
+        transitionTo: jira-comment-review
         isDefault: true
       - id: further-discussion
         label: Further discussion needed
@@ -104,9 +111,22 @@ decisions[2]:
           value: true
         transitionTo: stakeholder-discussion
       - id: clarify
-        label: Need clarification
+        label: Clarify requirements
+        condition:
+          type: simple
+          variable: requirements_confirmed
+          operator: ==
+          value: false
         transitionTo: elicit-requirements
-checkpoints[6]:
+      - id: correct-assumptions
+        label: Correct assumptions
+        condition:
+          type: simple
+          variable: assumptions_approved
+          operator: ==
+          value: false
+        transitionTo: collect-assumptions
+checkpoints[5]:
   - id: stakeholder-transcript
     name: Stakeholder Discussion Checkpoint
     message: "Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here."
@@ -140,22 +160,29 @@ checkpoints[6]:
         effect:
           setVariable:
             elicitation_complete: true
-  - id: requirements-summary
-    name: Requirements Summary Checkpoint
-    message: "Here's my understanding of the requirements. Have I captured them correctly?"
-    options[3]:
+  - id: requirements-and-assumptions
+    name: Requirements & Assumptions Review Checkpoint
+    message: "Here's my understanding of the requirements and the assumptions made when interpreting them. Please review both."
+    options[4]:
       - id: confirmed
-        label: Requirements confirmed
-        description: Proceed to create requirements document
+        label: All confirmed
+        description: Requirements and assumptions are correct, proceed to document
         effect:
           setVariable:
             requirements_confirmed: true
-      - id: clarify
-        label: Need clarification
-        description: Discuss further before proceeding
+            assumptions_approved: true
+      - id: clarify-requirements
+        label: Clarify requirements
+        description: Need to discuss requirements further
         effect:
           setVariable:
             requirements_confirmed: false
+      - id: correct-assumptions
+        label: Correct assumptions
+        description: One or more assumptions need adjustment
+        effect:
+          setVariable:
+            assumptions_approved: false
       - id: further-discussion
         label: Further discussion
         description: Conduct additional stakeholder discussions and re-elicit
@@ -163,25 +190,6 @@ checkpoints[6]:
           setVariable:
             needs_further_discussion: true
           transitionTo: stakeholder-discussion
-  - id: assumptions-review
-    name: Requirements Assumptions Checkpoint
-    message: "Here are the assumptions made when interpreting requirements. Are they correct?"
-    options[3]:
-      - id: confirmed
-        label: Assumptions confirmed
-        description: All interpretations are correct
-        effect:
-          setVariable:
-            assumptions_approved: true
-      - id: corrections
-        label: Some need correction
-        description: One or more interpretations need adjustment
-      - id: skip
-        label: No significant assumptions
-        description: No interpretation assumptions worth documenting
-        effect:
-          setVariable:
-            assumptions_approved: false
   - id: jira-comment-review
     name: Jira Comment Review Checkpoint
     message: "Here's the assumptions summary prepared as a Jira comment. Review the content before posting."
