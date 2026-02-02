@@ -195,35 +195,32 @@ graph TD
         r5([Post to Jira])
         
         cp0{Transcript provided?}
-        cp1{Requirements confirmed?}
-        cp2{Assumptions approved?}
-        cp3{Jira comment OK?}
-        cp4{Document review?}
+        cp1{Requirements & assumptions OK?}
+        cp2{Jira comment OK?}
+        cp3{Document review?}
         
         r0 --> cp0
         cp0 -->|yes| r1
         cp0 -->|skip| r1
         r1 --> r2 --> cp1
-        cp1 -->|confirmed| cp2
+        cp1 -->|confirmed + jira| cp2
+        cp1 -->|confirmed + github| r3
         cp1 -->|clarify| r1
+        cp1 -->|correct| r2
         cp1 -->|further discussion| r0
-        cp2 -->|approved + jira| cp3
-        cp2 -->|approved + github| r3
+        cp2 -->|post| r5 --> r3
         cp2 -->|skip| r3
-        cp3 -->|post| r5 --> r3
-        cp3 -->|skip| r3
-        r3 --> r4 --> cp4
-        cp4 -->|proceed| Next([→ research])
-        cp4 -->|revise| r3
+        r3 --> r4 --> cp3
+        cp3 -->|proceed| Next([→ research])
+        cp3 -->|revise| r3
     end
 ```
 
 **Checkpoints:**
 1. Stakeholder Discussion: "Please discuss with key stakeholders and provide the transcript"
-2. Requirements Summary: "Have I understood the requirements correctly?" (includes option for further discussion)
-3. Assumptions Review: "Are these assumptions correct?"
-4. Jira Comment Review: "Review the comment before posting to Jira" (Jira issues only)
-5. Document Review: "Ready to proceed to Research?"
+2. Requirements & Assumptions Review: "Review requirements and assumptions" (includes option for further discussion)
+3. Jira Comment Review: "Review the comment before posting to Jira" (Jira issues only)
+4. Document Review: "Ready to proceed to Research?"
 
 ---
 
