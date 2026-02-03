@@ -347,13 +347,15 @@ For EACH test function:
 
 ### Test Suite Review Report Template
 
+When generating a test suite review report, include a reference back to this guide in the Author field. This helps readers understand the methodology used.
+
 ```markdown
 # Test Suite Review Report
 
 **Work Package:** [Name]
 **Issue:** #[number] - [Title]
 **Date:** YYYY-MM-DD
-**Reviewer:** [Agent/Human]
+**Author:** [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/17-test-suite-review.md) Agent
 
 ---
 
