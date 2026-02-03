@@ -71,11 +71,13 @@ Before starting a review, determine:
 
 ### Report Template
 
+When generating a code review report, include a reference back to this guide in the Author field. This helps readers understand the methodology used.
+
 ```markdown
 # Code Review Report
 
 **Date:** YYYY-MM-DD
-**Reviewer:** [Agent/Human name]
+**Author:** [Rust/Substrate Code Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/16-rust-substrate-code-review.md) Agent
 **Scope:** [Module/PR/Directory path]
 **Files Reviewed:** [Count]
 
