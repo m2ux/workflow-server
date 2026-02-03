@@ -140,7 +140,6 @@ erDiagram
         string title
         string description
         string initialActivity FK
-        string activitiesDir
     }
     
     Activity {
