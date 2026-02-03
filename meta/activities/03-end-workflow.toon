@@ -98,12 +98,6 @@ decisions[1]:
         label: No external verification needed
         transitionTo: present-summary
         isDefault: true
-completionRules[5]:
-  - "Never end a workflow with required activities incomplete"
-  - "Ensure all blocking checkpoints have responses"
-  - "Verify workflow outcomes are satisfied"
-  - "Document any deferred or out-of-scope items"
-  - "Present clear summary before finalizing"
 outcome[4]:
   - Workflow is marked as complete
   - All required activities verified complete

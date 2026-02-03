@@ -105,6 +105,52 @@ This workflow resumes with prior changes already in place.
 
 ---
 
+## Resumption Rules
+
+1. Always verify context with user before proceeding
+2. Check external state (git, PRs, artifacts) before determining entry point
+3. Run tests/checks before making any new changes
+4. Present progress summary to user before continuing
+5. Get explicit confirmation before resuming work
+
+---
+
+## Special Cases
+
+### Conflicting or Stale Branch
+
+**Situation:** Branch is significantly behind main or has conflicts.
+
+**Checkpoint message:** "The branch is behind main and may have conflicts. How would you like to proceed?"
+
+**Options:**
+- **Rebase on main** - Bring branch up to date (may require conflict resolution)
+- **Merge main into branch** - Merge main into branch (creates merge commit)
+- **Continue as-is** - Proceed without syncing (not recommended)
+
+### Failed CI or Broken Tests
+
+**Situation:** Existing work has failing CI checks.
+
+**Checkpoint message:** "The current branch has failing CI checks. How would you like to proceed?"
+
+**Options:**
+- **Fix failures first** - Address CI issues before continuing
+- **Acknowledge and continue** - Document failures as known issues
+- **Investigate** - Review failures to understand scope
+
+### Partial Implementation with Unclear Status
+
+**Situation:** Implementation status is unclear.
+
+**Steps:**
+1. Review the diff to understand what's been changed
+2. Check for TODOs in the code indicating incomplete work
+3. Ask the user to clarify what's done vs. remaining
+4. Create a task list for remaining work based on findings
+
+---
+
 ## Related Activities
 
 - [Resume Workflow Activity](../activities/02-resume-workflow.toon)
