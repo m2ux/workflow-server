@@ -67,7 +67,6 @@ At design-time, you work with `workflow.schema.json` and `activity.schema.json`.
 flowchart TB
     subgraph Workflow["workflow.schema.json"]
         W[Workflow] --> A[Activities]
-        W --> AD[activitiesDir]
     end
     
     subgraph Activity["activity.schema.json"]
