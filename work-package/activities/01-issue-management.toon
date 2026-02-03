@@ -248,7 +248,7 @@ checkpoints[8]:
 decisions[1]:
   - id: platform-flow
     name: Platform Flow Decision
-    description: Route to appropriate platform-specific issue creation
+    description: Route to appropriate platform-specific issue creation activity
     branches[2]:
       - id: github-flow
         label: GitHub issue creation
@@ -257,7 +257,7 @@ decisions[1]:
           variable: issue_platform
           operator: ==
           value: github
-        transitionTo: github-create-step
+        transitionTo: github-issue-creation
       - id: jira-flow
         label: Jira issue creation
         condition:
@@ -265,59 +265,7 @@ decisions[1]:
           variable: issue_platform
           operator: ==
           value: jira
-        transitionTo: jira-create-step
-issueTypeMapping:
-  github:
-    feature: "enhancement label or no label"
-    bug: "bug label"
-    task: "chore label"
-    enhancement: "enhancement label"
-  jira:
-    feature: Story
-    bug: Bug
-    task: Task
-    enhancement: Story
-    epic: Epic
-githubToolSequence[2]:
-  - tool: gh issue create
-    description: Create GitHub issue via CLI
-    params:
-      required: "--title, --body"
-      optional: "--label, --assignee, --milestone, --project"
-    returns: issue number and URL
-  - tool: gh issue view
-    description: View created issue
-    params: "issue number"
-    returns: issue details
-jiraToolSequence[5]:
-  - tool: mcp_atlassian_getAccessibleAtlassianResources
-    description: Get cloud ID for Atlassian operations
-    params: none
-    returns: cloudId
-  - tool: mcp_atlassian_getVisibleJiraProjects
-    description: List projects where user can create issues
-    params: "cloudId, action='create'"
-    returns: projectKey
-  - tool: mcp_atlassian_getJiraProjectIssueTypesMetadata
-    description: Get available issue types for project
-    params: "cloudId, projectIdOrKey"
-    returns: issueTypeName
-  - tool: mcp_atlassian_lookupJiraAccountId
-    description: Look up account ID for assignee
-    params: "cloudId, searchString (name or email)"
-    returns: assignee_account_id
-    optional: true
-  - tool: mcp_atlassian_createJiraIssue
-    description: Create the issue
-    params:
-      required: "cloudId, projectKey, issueTypeName, summary"
-      optional: "description, assignee_account_id, parent, additional_fields"
-    returns: issue key and URL
-    examples:
-      basic: "cloudId, projectKey, issueTypeName='Story', summary, description"
-      with_assignee: "add assignee_account_id from lookupJiraAccountId"
-      with_parent: "add parent='PROJ-123' for subtasks or stories under epic"
-      with_fields: "add additional_fields={priority:{name:'High'}, labels:['feature'], components:[{name:'backend'}]}"
+        transitionTo: jira-issue-creation
 transitions[1]{to,isDefault}:
   design-philosophy,true
 exitActions[1]{action,message}:

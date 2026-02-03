@@ -15,12 +15,16 @@ notes[3]:
   - "Look for investigation artifacts: extra logging, debug messages, temporary workarounds"
   - "Watch for over-engineering: generic abstractions for specific problems, unused config options"
   - "Check for orphaned infrastructure: commented-out code, unused utilities, duplicate functionality"
-artifacts[1]:
+artifacts[2]:
   - id: strategic-review-doc
     name: "{NN}-strategic-review-{n}.md"
     location: planning
     description: "Documents review findings, identified artifacts, and cleanup actions. NN follows artifact numbering sequence, n increments on successive reviews."
-steps[4]:
+  - id: architecture-summary-doc
+    name: "{NN}-architecture-summary.md"
+    location: planning
+    description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
+steps[5]:
   - id: diff-review
     name: Review diff
     description: "Examine all changes in the PR for scope and relevance"
@@ -33,6 +37,9 @@ steps[4]:
   - id: apply-cleanup
     name: Apply cleanup
     description: "If cleanup needed, remove identified artifacts and update review document with actions taken"
+  - id: create-architecture-summary
+    name: Create architecture summary
+    description: "Create {NN}-architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
 checkpoints[2]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
@@ -98,10 +105,11 @@ transitions[2]:
       value: true
   - to: plan-prepare
     isDefault: true
-outcome[3]:
+outcome[4]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
   - Review findings documented in {NN}-strategic-review-{n}.md
+  - Architecture summary created in {NN}-architecture-summary.md for stakeholder communication
 context_to_preserve[3]:
   - review_findings - Findings from strategic review
   - review_passed - Whether review passed

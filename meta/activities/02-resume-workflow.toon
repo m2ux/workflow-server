@@ -131,51 +131,6 @@ decisions[2]:
         label: Branch is clean
         transitionTo: continue-assessment
         isDefault: true
-specialCases[3]:
-  - id: stale-branch
-    name: Conflicting or Stale Branch
-    description: "Branch is significantly behind main or has conflicts"
-    checkpoint:
-      message: "The branch is behind main and may have conflicts. How would you like to proceed?"
-      options[3]:
-        - id: rebase
-          label: Rebase on main
-          description: Bring branch up to date (may require conflict resolution)
-        - id: merge
-          label: Merge main into branch
-          description: Merge main into branch (creates merge commit)
-        - id: continue-as-is
-          label: Continue as-is
-          description: Proceed without syncing (not recommended)
-  - id: ci-failures
-    name: Failed CI or Broken Tests
-    description: "Existing work has failing CI checks"
-    checkpoint:
-      message: "The current branch has failing CI checks. How would you like to proceed?"
-      options[3]:
-        - id: fix-first
-          label: Fix failures first
-          description: Address CI issues before continuing
-        - id: acknowledge
-          label: Acknowledge and continue
-          description: Document failures as known issues
-        - id: investigate
-          label: Investigate
-          description: Review failures to understand scope
-  - id: unclear-status
-    name: Partial Implementation with Unclear Status
-    description: "Implementation status is unclear"
-    steps[4]:
-      - "Review the diff to understand what's been changed"
-      - "Check for TODOs in the code indicating incomplete work"
-      - "Ask the user to clarify what's done vs. remaining"
-      - "Create a task list for remaining work based on findings"
-resumptionRules[5]:
-  - "Always verify context with user before proceeding"
-  - "Check external state (git, PRs, artifacts) before determining entry point"
-  - "Run tests/checks before making any new changes"
-  - "Present progress summary to user before continuing"
-  - "Get explicit confirmation before resuming work"
 transitions[2]:
   - to: target-activity
     condition:

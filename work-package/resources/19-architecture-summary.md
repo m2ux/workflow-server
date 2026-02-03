@@ -18,7 +18,7 @@ The architecture summary is a high-level visual document that answers:
 3. **Why does it matter?** - Business impact and value delivered
 4. **What's next?** - Dependencies, follow-up work, or considerations
 
-This document uses the **C4 Model System Context** level of abstraction—showing the system as a whole, its users, and external dependencies. This is the appropriate level for stakeholders who need to understand impact without implementation details.
+This document uses **UML-style diagrams** at a high level of abstraction—showing the system as a whole, its users, and external dependencies. This is the appropriate level for stakeholders who need to understand impact without implementation details.
 
 ---
 
@@ -52,80 +52,164 @@ Skip for:
 
 ---
 
-## C4 Model Context Level
+## UML Diagram Types
 
-The **System Context diagram** is the highest abstraction level in the C4 model:
+For architecture summaries, we use three primary diagram types:
+
+### Component Diagram (System Context)
+
+Shows the system at its highest level of abstraction:
 
 | Element | Description | Example |
 |---------|-------------|---------|
-| **Person** | Users of the system | "End User", "Administrator" |
-| **System** | The system being changed | "Midnight Node" |
+| **Actor** | Users of the system | "End User", "Administrator" |
+| **Component** | The system being changed | "Midnight Node" |
 | **External System** | Systems that interact | "Cardano Mainchain", "Indexer" |
 | **Relationship** | How elements communicate | "Submits transactions", "Queries state" |
+
+### Package Diagram (Module Organization)
+
+Shows logical groupings and dependencies between subsystems or modules:
+
+| Element | Description | Example |
+|---------|-------------|---------|
+| **Package** | Logical grouping of related elements | "Runtime", "Pallets", "RPC" |
+| **Dependency** | How packages depend on each other | "Runtime uses Pallets" |
+| **Nesting** | Hierarchical organization | "Pallets contains Midnight, Governance" |
+
+Use package diagrams when:
+- Changes affect multiple subsystems or modules
+- You need to show the organizational structure of the codebase
+- Dependencies between packages are architecturally significant
+
+### Container Diagram (Deployment View)
+
+Shows runtime containers, services, and their interactions when infrastructure context is needed.
 
 **Key Principle:** Show the forest, not the trees. Management doesn't need to see individual functions or modules.
 
 ---
 
-## Mermaid C4 Diagram Syntax
+## Mermaid Diagram Syntax
 
 ### System Context Diagram
 
-```mermaid
-C4Context
-    title System Context - [Feature Name]
-    
-    Person(user, "End User", "Interacts with the system")
-    
-    System(main, "Main System", "The system being modified")
-    
-    System_Ext(external, "External System", "External dependency")
-    
-    Rel(user, main, "Uses")
-    Rel(main, external, "Calls API")
-```
-
-### Container Diagram (if more detail needed)
+Use a flowchart to show actors, the main system, and external systems:
 
 ```mermaid
-C4Container
-    title Container View - [Feature Name]
+---
+title: System Context - [Feature Name]
+---
+flowchart LR
+    User([👤 End User])
     
-    Person(user, "User", "System user")
+    Main[Main System]
+    External[(External System)]
     
-    Container_Boundary(system, "System") {
-        Container(api, "API", "Rust", "Handles requests")
-        Container(db, "Database", "PostgreSQL", "Stores data")
-    }
+    User -->|Uses| Main
+    Main -->|Calls API| External
     
-    Rel(user, api, "HTTP/REST")
-    Rel(api, db, "Reads/Writes")
+    style Main fill:#e1f5fe,stroke:#01579b
+    style External fill:#f5f5f5,stroke:#9e9e9e
 ```
+
+**Node shapes:**
+- `([text])` - Stadium/pill shape for actors
+- `[text]` - Rectangle for internal systems
+- `[(text)]` - Cylinder for databases
+- `[[text]]` - Subroutine for external services
+
+### Package Diagram (Module Organization)
+
+Use subgraphs to show logical groupings and dependencies between modules:
+
+```mermaid
+---
+title: Package Diagram - [Feature Name]
+---
+flowchart TB
+    subgraph Node [Midnight Node]
+        subgraph Runtime [Runtime]
+            Pallets[Pallets]
+            Primitives[Primitives]
+        end
+        
+        subgraph Pallets_Detail [Pallets]
+            Midnight[midnight]
+            Governance[federated-authority]
+            Observation[cnight-observation]
+        end
+        
+        RPC[RPC Layer]
+    end
+    
+    Runtime --> Pallets_Detail
+    RPC --> Runtime
+    
+    style Node fill:#fafafa,stroke:#424242
+    style Runtime fill:#e3f2fd,stroke:#1976d2
+    style Pallets_Detail fill:#e8f5e9,stroke:#2e7d32
+```
+
+**When to use:** Changes that affect module organization, cross-cutting concerns, or introduce new packages/crates.
+
+### Container Diagram (Deployment View)
+
+Use subgraphs to show runtime containers and services:
+
+```mermaid
+---
+title: Container View - [Feature Name]
+---
+flowchart LR
+    User([👤 User])
+    
+    subgraph System [Main System]
+        API[API<br/>Rust]
+        DB[(Database<br/>PostgreSQL)]
+    end
+    
+    User -->|HTTP/REST| API
+    API -->|Reads/Writes| DB
+    
+    style System fill:#e3f2fd,stroke:#1976d2
+    style API fill:#e1f5fe,stroke:#01579b
+    style DB fill:#fff3e0,stroke:#ef6c00
+```
+
+**When to use:** Changes that affect deployment topology, infrastructure, or service boundaries.
 
 ### Before/After Comparison
 
 For changes that modify existing architecture, show both states:
 
 ```mermaid
-C4Context
-    title BEFORE: [Description]
+---
+title: "BEFORE: [Description]"
+---
+flowchart LR
+    User([👤 User])
+    Sys[System<br/>Original state]
     
-    Person(user, "User", "")
-    System(sys, "System", "Original state")
+    User -->|Direct connection| Sys
     
-    Rel(user, sys, "Direct connection")
+    style Sys fill:#f5f5f5,stroke:#9e9e9e
 ```
 
 ```mermaid
-C4Context
-    title AFTER: [Description]
+---
+title: "AFTER: [Description]"
+---
+flowchart LR
+    User([👤 User])
+    Sys[System<br/>Modified state]
+    New[New Component<br/>Added by this work]
     
-    Person(user, "User", "")
-    System(sys, "System", "Modified state")
-    System(new, "New Component", "Added by this work")
+    User --> Sys
+    Sys -->|Delegates to| New
     
-    Rel(user, sys, "")
-    Rel(sys, new, "Delegates to")
+    style Sys fill:#f5f5f5,stroke:#9e9e9e
+    style New fill:#c8e6c9,stroke:#2e7d32
 ```
 
 ---
@@ -141,6 +225,7 @@ C4Context
 
 ### Optional Sections
 
+- **Package Diagram** - If changes affect module organization or dependencies
 - **Before/After Diagrams** - If the change modifies existing flows
 - **Dependencies** - Upstream/downstream systems affected
 - **Risks & Mitigations** - Key risks and how they're addressed
@@ -193,22 +278,54 @@ Create `{NN}-architecture-summary-{n}.md` in the planning folder using this temp
 [Brief description of the system and its environment]
 
 ```mermaid
-C4Context
-    title System Context - [Feature/Change Name]
+---
+title: System Context - [Feature/Change Name]
+---
+flowchart LR
+    User([👤 User Role])
     
-    Person(user, "User Role", "Brief description")
+    Main[System Name<br/>Core system]
+    Ext1[(External System)]
     
-    System(main, "System Name", "Core system")
+    User -->|Action/Interaction| Main
+    Main -->|Integration type| Ext1
     
-    System_Ext(ext1, "External System", "Description")
-    
-    Rel(user, main, "Action/Interaction")
-    Rel(main, ext1, "Integration type")
-    
-    UpdateElementStyle(main, $bgColor="lightblue", $borderColor="blue")
+    style Main fill:#e1f5fe,stroke:#01579b
+    style Ext1 fill:#f5f5f5,stroke:#9e9e9e
 ```
 
 *[Optional: Add note explaining the diagram if needed]*
+
+---
+
+## Package Structure
+
+*[Include this section if changes affect module organization or dependencies]*
+
+```mermaid
+---
+title: Package Diagram - [Feature/Change Name]
+---
+flowchart TB
+    subgraph System [System Name]
+        subgraph Package1 [Package 1]
+            Module1[Module A]
+            Module2[Module B]
+        end
+        
+        subgraph Package2 [Package 2]
+            Module3[Module C]
+        end
+    end
+    
+    Package1 --> Package2
+    
+    style System fill:#fafafa,stroke:#424242
+    style Package1 fill:#e3f2fd,stroke:#1976d2
+    style Package2 fill:#c8e6c9,stroke:#2e7d32
+```
+
+*[Highlight new or modified packages with distinct colors]*
 
 ---
 
@@ -236,20 +353,36 @@ C4Context
 ### Before
 
 ```mermaid
-C4Context
-    title Before: [Description]
-    
+---
+title: "Before: [Description]"
+---
+flowchart LR
     %% Show original state
+    Actor([👤 Actor])
+    System[System]
+    
+    Actor --> System
+    
+    style System fill:#f5f5f5,stroke:#9e9e9e
 ```
 
 ### After
 
 ```mermaid
-C4Context
-    title After: [Description]
-    
+---
+title: "After: [Description]"
+---
+flowchart LR
     %% Show new state with changes highlighted
-    UpdateElementStyle(newComponent, $bgColor="lightgreen", $borderColor="green")
+    Actor([👤 Actor])
+    System[System]
+    NewComponent[New Component]
+    
+    Actor --> System
+    System --> NewComponent
+    
+    style System fill:#f5f5f5,stroke:#9e9e9e
+    style NewComponent fill:#c8e6c9,stroke:#2e7d32
 ```
 
 ---
@@ -343,7 +476,8 @@ C4Context
 Before completing the architecture summary:
 
 - [ ] Executive summary is understandable by non-technical stakeholders
-- [ ] Diagrams use C4 System Context level (not too detailed)
+- [ ] System context diagram shows where changes fit
+- [ ] Package diagram included if module structure is affected
 - [ ] Each diagram has ≤10 elements
 - [ ] All relationships are labeled
 - [ ] Changes are highlighted visually
