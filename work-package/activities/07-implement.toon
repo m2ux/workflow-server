@@ -9,9 +9,8 @@ recognition[3]:
   - execute plan
 skills:
   primary: implementation
-  supporting[2]:
+  supporting[1]:
     - assumptions-review
-    - architecture-review
 required: true
 estimatedTime: 1-4h
 notes[4]:
@@ -19,17 +18,12 @@ notes[4]:
   - "Assumptions should be elevated - make implicit decisions explicit for validation"
   - "Present assumptions one at a time for focused review"
   - "Update assumptions log AFTER the assumption review checkpoint - record user responses and outcomes"
-artifacts[2]:
+artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions - continues from earlier phases (design-philosophy, requirements, research, analysis, planning)"
     action: update
-  - id: adr
-    name: "NNNN-{decision-title}.md"
-    location: .engineering/artifacts/adr
-    description: "Architecture Decision Record (if architecturally significant)"
-    condition: is_architecturally_significant
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 loops[2]:
@@ -65,12 +59,7 @@ loops[2]:
       - id: record-response
         name: Record response
         description: "Mark as confirmed or record correction needed"
-steps[1]:
-  - id: architecture-review
-    name: Architecture Review
-    description: "Review architectural significance and create ADR if warranted."
-    skill: architecture-review
-checkpoints[4]:
+checkpoints[2]:
   - id: task-complete
     name: Task Complete Checkpoint
     message: "Task '{current_task}' implemented and tests passing. Ready to review assumptions?"
@@ -97,33 +86,6 @@ checkpoints[4]:
       - id: discuss
         label: Need to discuss
         description: Requires further clarification
-  - id: arch-significance
-    name: Architectural Significance Checkpoint
-    message: "Is this implementation architecturally significant?"
-    options[2]:
-      - id: significant
-        label: Architecturally significant - create ADR
-        description: Changes warrant an Architecture Decision Record
-        effect:
-          setVariable:
-            is_architecturally_significant: true
-      - id: not-significant
-        label: Not significant
-        description: Standard implementation, no ADR needed
-        effect:
-          setVariable:
-            is_architecturally_significant: false
-  - id: adr-confirmed
-    name: ADR Checkpoint
-    message: "ADR drafted. Is it ready?"
-    condition:
-      type: simple
-      variable: is_architecturally_significant
-      operator: ==
-      value: true
-    options[2]{id,label}:
-      confirmed,ADR confirmed
-      revise,Revise ADR
 transitions[1]{to,isDefault}:
   post-impl-review,true
 outcome[2]:
