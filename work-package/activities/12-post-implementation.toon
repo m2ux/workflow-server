@@ -13,7 +13,7 @@ skills:
     - pr-review-response
 required: true
 estimatedTime: 30-60m
-artifacts[2]:
+artifacts[3]:
   - id: review-analysis
     name: "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md"
     location: reviews
@@ -22,9 +22,38 @@ artifacts[2]:
     name: workflow-retrospective.md
     location: planning
     description: "Workflow retrospective notes"
+  - id: adr
+    name: "NNNN-{decision-title}.md"
+    location: .engineering/artifacts/adr
+    description: "Architecture Decision Record for moderate or complex implementations"
+    condition:
+      type: or
+      conditions[2]:
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: moderate
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: complex
 exitActions[1]{action,message}:
   log,Work package workflow complete
-steps[6]:
+steps[7]:
+  - id: create-adr
+    name: Create Architecture Decision Record
+    description: "Automatically create ADR based on design philosophy complexity assessment. Triggered for moderate or complex implementations."
+    condition:
+      type: or
+      conditions[2]:
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: moderate
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: complex
   - id: await-review
     name: Await Manual Review
     description: Wait for PR to receive manual review from team members
