@@ -19,7 +19,7 @@ notes[3]:
   - "After each task, explicitly identify and review assumptions made during implementation"
   - "Assumptions should be elevated - make implicit decisions explicit for validation"
   - "Present assumptions one at a time for focused review"
-artifacts[3]:
+artifacts[2]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
@@ -29,11 +29,6 @@ artifacts[3]:
     location: reviews
     description: "Code review report (optional, for Rust+Substrate projects)"
     required: false
-  - id: adr
-    name: "NNNN-{decision-title}.md"
-    location: adr
-    description: "Architecture Decision Record (if architecturally significant)"
-    condition: is_architecturally_significant
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 loops[2]:
@@ -71,7 +66,7 @@ steps[1]:
     description: "Perform comprehensive code review of all implementation changes. Only required for Rust+Substrate projects (when project_type is 'rust-substrate')."
     skill: code-review
     required: false
-checkpoints[5]:
+checkpoints[3]:
   - id: task-complete
     name: Task Complete Checkpoint
     message: "Task '{current_task}' implemented and tests passing. Ready to review assumptions?"
@@ -104,33 +99,6 @@ checkpoints[5]:
     options[2]{id,label}:
       confirmed,Findings confirmed
       needs-fixes,Needs fixes
-  - id: arch-significance
-    name: Architectural Significance Checkpoint
-    message: "Is this implementation architecturally significant?"
-    options[2]:
-      - id: significant
-        label: Architecturally significant - create ADR
-        description: Changes warrant an Architecture Decision Record
-        effect:
-          setVariable:
-            is_architecturally_significant: true
-      - id: not-significant
-        label: Not significant
-        description: Standard implementation, no ADR needed
-        effect:
-          setVariable:
-            is_architecturally_significant: false
-  - id: adr-confirmed
-    name: ADR Checkpoint
-    message: "ADR drafted. Is it ready?"
-    condition:
-      type: simple
-      variable: is_architecturally_significant
-      operator: ==
-      value: true
-    options[2]{id,label}:
-      confirmed,ADR confirmed
-      revise,Revise ADR
 transitions[1]{to,isDefault}:
   validate,true
 outcome[2]:

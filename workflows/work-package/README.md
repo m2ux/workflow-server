@@ -21,8 +21,9 @@ This workflow guides the complete lifecycle of a single work package:
 **Key characteristics:**
 - Sequential flow with conditional branches
 - Multiple feedback loops for quality gates
-- 17 checkpoints across all activities
+- 15 checkpoints across all activities
 - Task implementation loop with reviews
+- Automatic ADR creation for moderate/complex implementations
 
 ## Workflow Flow
 
@@ -304,23 +305,14 @@ graph TD
         
         cp1{Assumptions confirmed?}
         cp2{Code review findings?}
-        cp3{Architecturally significant?}
-        cp4{ADR confirmed?}
         
         loop --> t1 --> t2 --> t3 --> t4 --> cp1
         cp1 -->|confirmed| loop
         cp1 -->|correction| t1
         
         loop -->|done| cr --> cp2
-        cp2 -->|confirmed| cp3
+        cp2 -->|confirmed| Next([→ validate])
         cp2 -->|needs-fixes| t1
-        
-        cp3 -->|significant| ADR([Create ADR])
-        cp3 -->|not-significant| Next([→ validate])
-        
-        ADR --> cp4
-        cp4 -->|confirmed| Next
-        cp4 -->|revise| ADR
     end
     
     skill1((code-review))
@@ -330,8 +322,6 @@ graph TD
 **Checkpoints:**
 1. Task Progress: "Review assumptions. Are they confirmed?"
 2. Code Review: "Review findings confirmed?"
-3. Architectural Significance: "Significance assessment confirmed?"
-4. ADR: "ADR confirmed?" (if significant)
 
 ---
 
@@ -441,7 +431,7 @@ graph TD
 
 ### 12. Post-Implementation
 
-**Purpose:** Complete post-implementation tasks including handling PR review feedback.
+**Purpose:** Complete post-implementation tasks including handling PR review feedback and creating ADRs for moderate/complex implementations.
 
 **Primary Skill:** `retrospective`  
 **Supporting Skill:** `pr-review-response`
@@ -449,6 +439,7 @@ graph TD
 ```mermaid
 graph TD
     subgraph post-implementation[Post-Implementation]
+        adr([Create ADR])
         pi1([Await manual review])
         pi2([Process review comments])
         pi3([Capture session history])
@@ -456,8 +447,12 @@ graph TD
         pi5([Update work package status])
         pi6([Select next work package])
         
+        cond{complexity?}
         cp1{Review received?}
         cp2{Review outcome?}
+        
+        cond -->|moderate/complex| adr --> pi1
+        cond -->|simple| pi1
         
         pi1 --> cp1
         cp1 -->|yes-review| pi2
@@ -474,6 +469,15 @@ graph TD
     skill((pr-review-response))
     pi2 -.-> skill
 ```
+
+**Steps:**
+1. Create ADR (automatic, if complexity is moderate or complex based on design-philosophy assessment)
+2. Await manual review
+3. Process review comments
+4. Capture session history
+5. Workflow retrospective
+6. Update work package status
+7. Select next work package
 
 **Checkpoints:**
 1. "Has the PR received manual review feedback?"
@@ -501,7 +505,7 @@ graph TD
 | `branch_name` | string | Feature branch name |
 | `needs_elicitation` | boolean | Whether requirements elicitation is needed |
 | `needs_research` | boolean | Whether research activity is needed |
-| `is_architecturally_significant` | boolean | Whether ADR is needed |
+| `complexity` | string | Problem complexity (simple/moderate/complex) - drives ADR creation |
 | `validation_passed` | boolean | Whether validation activity passed |
 | `review_passed` | boolean | Whether strategic review passed |
 
