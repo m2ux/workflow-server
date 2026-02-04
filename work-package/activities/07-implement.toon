@@ -13,11 +13,12 @@ skills:
     - assumptions-review
 required: true
 estimatedTime: 1-4h
-notes[4]:
+notes[5]:
   - "After each task, explicitly identify and review assumptions made during implementation"
   - "Assumptions should be elevated - make implicit decisions explicit for validation"
   - "Present assumptions one at a time for focused review"
   - "Update assumptions log AFTER the assumption review checkpoint - record user responses and outcomes"
+  - "For Rust projects, follow TDD best practices from 23-tdd-concepts-rust.md when writing tests (Red-Green-Refactor, FIRST principles, test doubles, boundary testing)"
 artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
