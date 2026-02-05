@@ -34,7 +34,6 @@ workflows/                    # Worktree checkout
 
 | Workflow | Description |
 |----------|-------------|
-| [`meta`](meta/) | Bootstrap workflow - start, resume, and end other workflows |
 | [`work-package`](work-package/) | Single work package implementation (issue → PR → merge) |
 | [`work-packages`](work-packages/) | Multi-package planning for large initiatives |
 
