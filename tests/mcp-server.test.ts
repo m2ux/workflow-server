@@ -61,7 +61,7 @@ describe('mcp-server integration', () => {
       const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
       expect(workflow.id).toBe('work-package');
-      expect(workflow.version).toBe('2.1.0');
+      expect(workflow.version).toBe('2.3.0');
       expect(workflow.activities).toHaveLength(12);
       expect(workflow.initialActivity).toBe('issue-management');
     });

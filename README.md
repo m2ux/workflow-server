@@ -9,7 +9,7 @@ An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for A
 
 ---
 
-**[Quick Start](#-quick-start)** • **[Schema Guide](schemas/README.md)** • **[API Reference](docs/api-reference.md)** • **[Development](docs/development.md)**
+**[Quick Start](#-quick-start)** • **[Schema Guide](schemas/README.md)** • **[API Reference](docs/api-reference.md)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Engineering](https://github.com/m2ux/workflow-server/tree/engineering)**
 
 ---
 
@@ -35,21 +35,10 @@ This reduces context overhead and provides deterministic tool selection.
 > Skill(s) (workflow-execution) → Tool(s) (validate_transition, get_workflow_activity, get_checkpoint, ..)
 > ```
 
-### Activities
-
-Activities in the meta workflow serve as entry points for workflow operations:
-
-| Activity | Description |
-|----------|-----------|
-| `start-workflow` | Begin executing a new workflow from the beginning |
-| `resume-workflow` | Continue a workflow that was previously started |
-| `end-workflow` | Complete and finalize an active workflow |
-
 ### Available Workflows
 
 | Workflow | Activities | Description |
 |----------|------------|-------------|
-| `meta` | 3 | Bootstrap workflow - manages activities and universal skills |
 | `work-package` | 11 | Single work package from issue to merged PR |
 | `work-packages` | 7 | Plan and coordinate multiple related work packages |
 
@@ -99,24 +88,42 @@ Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 
 ### Setup IDE Rule
 
-Add the following to your IDE 'always-applied' rule-set:
+Add the following to your IDE 'always-applied' rule-set (see [`docs/ide-setup.md`](docs/ide-setup.md) for details):
 
 ```
-For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the get_activities tool.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must*:
+1. Fetch the `workflow-server://schemas` resource to load TOON schema definitions
+2. Call the `get_rules` tool to load agent guidelines
+
+CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics
 ```
 
 ### Execute a Workflow
 
 Tell the agent what you want to do using natural language:
 
+**Start a workflow:**
 ```
 Start a new work-package workflow for implementing user authentication
 ```
 ```
 Begin a work-package workflow for issue #42
 ```
+
+**Resume a workflow:**
 ```
-Let's start a work-package workflow to add dark mode support
+Resume the work-package workflow we were working on
+```
+```
+Continue the authentication work package from where we left off
+```
+
+**End a workflow:**
+```
+End the current work-package workflow
+```
+```
+Complete the work package and clean up
 ```
 
 The agent matches your request to the appropriate activity and guides you through the structured phases.
