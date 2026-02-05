@@ -60,9 +60,10 @@ workflow-server/
 │   ├── loaders/              # File loaders
 │   │   ├── workflow-loader.ts
 │   │   ├── resource-loader.ts
-│   │   ├── template-loader.ts
 │   │   ├── activity-loader.ts
-│   │   └── skill-loader.ts
+│   │   ├── skill-loader.ts
+│   │   ├── rules-loader.ts
+│   │   └── schema-loader.ts
 │   ├── tools/                # MCP tool implementations
 │   │   ├── workflow-tools.ts
 │   │   └── resource-tools.ts
@@ -86,8 +87,6 @@ workflow-server/
 │       │   └── {NN}-{id}.toon    # Activities (indexed)
 │       ├── resources/            # Resource subdirectory
 │       │   └── {NN}-{name}.toon  # Resources (indexed)
-│       ├── templates/            # Template subdirectory
-│       │   └── {NN}-{name}.md    # Templates (indexed)
 │       └── skills/               # Workflow-specific skills (indexed)
 │           └── {NN}-{id}.toon    # Skills for this workflow
 └── docs/                     # Documentation
@@ -202,16 +201,6 @@ Resources are stored in a `resources/` subdirectory within each workflow:
 5. Commit to the `workflows` branch
 
 Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
-
-## Adding New Templates
-
-Templates are stored in a `templates/` subdirectory within each workflow:
-
-1. Create `{NN}-{name}.md` in `workflows/{workflow-id}/templates/`
-2. Use sequential index (01, 02, 03, etc.)
-3. Templates are auto-discovered - no manifest update needed
-4. Access via: `get_template { workflow_id: "{id}", index: "{NN}" }`
-5. Commit to the `workflows` branch
 
 ## Adding New Skills
 

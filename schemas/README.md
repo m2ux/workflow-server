@@ -1276,8 +1276,7 @@ Defines the sequence of tool calls for different execution stages:
   "execution_pattern": {
     "start": ["list_workflows", "get_workflow", "list_workflow_resources"],
     "per_activity": ["get_workflow_activity", "get_checkpoint", "get_resource"],
-    "transitions": ["validate_transition"],
-    "artifacts": ["list_templates", "get_template"]
+    "transitions": ["validate_transition"]
   }
 }
 ```
@@ -1290,7 +1289,6 @@ Defines the sequence of tool calls for different execution stages:
 | `skill_loading` | Tools for loading skills |
 | `discovery` | Tools for resource discovery |
 | `transitions` | Tools for activity transitions |
-| `artifacts` | Tools for artifact management |
 
 ### Tool Definitions
 

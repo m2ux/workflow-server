@@ -20,6 +20,12 @@
 | `get_activities` | - | Get activity index - primary entry point for agents |
 | `get_activity` | `activity_id` | Get a specific workflow activity |
 
+### Rules Tools
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `get_rules` | - | Get global agent rules - behavioral guidelines for workflow execution |
+
 ### Skill Tools
 
 | Tool | Parameters | Description |
@@ -35,18 +41,11 @@
 | `list_workflow_resources` | `workflow_id` | List all resources for a workflow |
 | `get_resource` | `workflow_id`, `index` | Get content of a specific resource by index |
 
-### Template Tools
-
-| Tool | Parameters | Description |
-|------|------------|-------------|
-| `list_templates` | `workflow_id` | List all templates for a workflow |
-| `get_template` | `workflow_id`, `index` | Get content of a specific template by index |
-
 ### Discovery Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `discover_resources` | - | Discover all available resources: workflows, resources, templates, activities, skills |
+| `discover_resources` | - | Discover all available resources: workflows, resources, activities, skills |
 
 ## Activities
 
@@ -106,7 +105,6 @@ Primary skill for workflow navigation:
 - **Per-activity**: `get_workflow_activity` → `get_checkpoint` → `get_resource`
 - **Transitions**: `validate_transition`
 - **Triggers**: Suspend parent, execute child workflow, return to parent
-- **Artifacts**: `list_templates` → `get_template`
 
 #### activity-resolution (universal)
 

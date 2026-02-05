@@ -39,6 +39,4 @@ CRITICAL: When following the workflow you *must* respect workflow fidelity as de
 | `get_workflow` | Get workflow definition |
 | `list_workflow_resources` | List resources for a workflow |
 | `get_resource` | Get specific resource by index |
-| `list_templates` | List templates for a workflow |
-| `get_template` | Get specific template by index |
 | `discover_resources` | Discover all available resources |

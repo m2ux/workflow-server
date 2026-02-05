@@ -99,10 +99,14 @@ Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 
 ### Setup IDE Rule
 
-Add the following to your IDE 'always-applied' rule-set:
+Add the following to your IDE 'always-applied' rule-set (see [`docs/ide-setup.md`](docs/ide-setup.md) for details):
 
 ```
-For all workflow execution user requests use the workflow-server MCP server. Before use you *must* call the get_activities tool.
+For all workflow execution user requests use the workflow-server MCP server. Before use you *must*:
+1. Fetch the `workflow-server://schemas` resource to load TOON schema definitions
+2. Call the `get_rules` tool to load agent guidelines
+
+CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics
 ```
 
 ### Execute a Workflow
