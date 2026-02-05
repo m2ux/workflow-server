@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.1.0
+version: 1.3.0
 name: Design Philosophy
 description: "Apply structured design framework to classify the problem, determine complexity, and decide which activities to perform."
 problem: User needs to understand problem nature before deciding on workflow path
@@ -21,6 +21,46 @@ notes[6]:
   - "Problem classification informs all subsequent activities"
   - "For simple changes, lightweight application is acceptable"
   - "Create assumptions log here - first activity that makes decisions requiring assumptions"
+modeOverrides:
+  review:
+    description: "Assess ticket completeness and determine workflow path. Always skip elicitation."
+    notes[3]:
+      - Always skip elicitation - requirements come solely from the ticket
+      - Assess ticket completeness using Jira Issue Creation Guide checklist
+      - Research may still be needed based on complexity assessment
+    steps[2]:
+      - id: assess-ticket-completeness
+        name: Assess Ticket Completeness
+        description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
+      - id: set-review-mode-path
+        name: Set Review Mode Path
+        description: "Force needs_elicitation=false. Research may still be needed based on complexity."
+    checkpoints[1]:
+      - id: ticket-completeness
+        name: Ticket Completeness Checkpoint
+        message: "I've assessed the associated ticket. Here are any gaps found. Would you like to refactor the ticket?"
+        options[3]:
+          - id: refactor-ticket
+            label: Refactor ticket
+            description: Update the ticket to address identified gaps
+            effect:
+              setVariable:
+                ticket_refactor_needed: true
+          - id: proceed-with-gaps
+            label: Proceed with gaps noted
+            description: Continue review with gaps documented as review findings
+            effect:
+              setVariable:
+                ticket_refactor_needed: false
+          - id: no-gaps
+            label: Ticket is complete
+            description: No significant gaps were found
+            effect:
+              setVariable:
+                ticket_refactor_needed: false
+    context_to_preserve[2]:
+      - ticket_gaps - List of ticket completeness gaps found
+      - ticket_refactor_needed - Whether ticket needs refactoring
 artifacts[2]:
   - id: design-philosophy-doc
     name: design-philosophy.md

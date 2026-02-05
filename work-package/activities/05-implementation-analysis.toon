@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.1.0
+version: 2.3.0
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
@@ -19,10 +19,31 @@ notes[4]:
   - "Document how each metric was measured for reproducibility"
   - "Gaps should be linked to measurable success criteria"
   - "Assumptions about current behavior and gaps should be documented"
+modeOverrides:
+  review:
+    description: "Analyze the pre-change baseline state from the base branch to establish reference for PR evaluation."
+    notes[3]:
+      - Checkout base branch to analyze PRE-change state (what existed before the PR)
+      - Document what would need to change to fulfill requirements (the expected changes)
+      - This baseline becomes the reference for evaluating what the PR actually changed
+    steps[3]:
+      - id: checkout-baseline
+        name: Checkout Baseline State
+        description: "Checkout the base branch (PR target) to analyze the pre-change state. Record the base commit SHA for reference."
+      - id: document-expected-changes
+        name: Document Expected Changes
+        description: "Based on ticket requirements and baseline analysis, document what changes SHOULD be made to fulfill requirements. This becomes the reference for evaluating the actual PR."
+      - id: return-to-pr-branch
+        name: Return to PR Branch
+        description: "Checkout the PR branch to continue workflow. Note the diff between base and PR branch for later comparison."
+    context_to_preserve[3]:
+      - base_commit_sha - SHA of base branch at time of analysis
+      - expected_changes - What changes should be made per requirements
+      - pr_diff_summary - Summary of changes between base and PR branch
 steps[6]:
   - id: review-implementation
     name: Review implementation
-    description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture"
+    description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture."
   - id: evaluate-effectiveness
     name: Evaluate effectiveness
     description: "Gather evidence of existing performance: logs, metrics, tests, issues, comments"

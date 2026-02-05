@@ -1,7 +1,7 @@
 id: validate
-version: 2.1.0
+version: 2.3.0
 name: Verify & Validate Design
-description: Validate the implementation through testing and build verification. Test suite quality was already reviewed in implement phase.
+description: "Validate the implementation through testing and build verification. Test suite quality was already reviewed in implement phase."
 problem: User needs to validate the implementation passes all tests
 recognition[3]:
   - validate implementation
@@ -15,6 +15,25 @@ notes[3]:
   - "Test pass/fail, build success, lint errors are observable - do not ask user about these"
   - "If failures occur, analyze root cause, fix, and re-run until all pass"
   - "Test suite quality was already reviewed at end of implement phase"
+modeOverrides:
+  review:
+    description: "Run validation checks and document failures as review findings (do not fix)."
+    notes[3]:
+      - Run existing tests to verify they pass as claimed by the PR
+      - Document failures as review findings - do NOT fix them (that's the PR author's job)
+      - Failures become critical findings in the review summary
+    steps[2]:
+      - id: document-failures
+        name: Document Failures as Findings
+        description: "Document all test/build/lint failures as review findings with severity (critical for test failures, high for build failures). Do NOT attempt to fix."
+      - id: assess-test-coverage
+        name: Assess Test Coverage
+        description: "Evaluate whether the tests added are sufficient for the changes made. Check coverage of edge cases and error paths."
+    skipSteps[1]:
+      - fix-failures
+    context_to_preserve[2]:
+      - validation_failures - List of failures documented as findings
+      - test_coverage_assessment - Evaluation of test sufficiency
 steps[4]:
   - id: run-tests
     name: Run all tests
@@ -38,6 +57,7 @@ transitions[1]{to,isDefault}:
 outcome[2]:
   - All tests passing
   - Build successful
-context_to_preserve[2]:
+context_to_preserve[3]:
   - test_results - Test execution results
   - build_status - Build success/failure status
+  - validation_passed - Whether all validation checks passed

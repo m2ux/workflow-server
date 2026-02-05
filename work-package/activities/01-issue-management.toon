@@ -1,7 +1,7 @@
 id: issue-management
-version: 2.0.0
+version: 2.2.0
 name: Issue Management
-description: Verify or create an issue, then create feature branch and PR. Issues define the problem space and provide traceability from requirements through implementation.
+description: "Verify or create an issue, then create feature branch and PR. Issues define the problem space and provide traceability from requirements through implementation."
 problem: User needs to establish issue tracking and PR for a work package
 recognition[6]:
   - start work package
@@ -24,6 +24,60 @@ notes[5]:
   - "Issues should be clear to someone without prior context"
   - "Acceptance criteria must be observable and testable"
   - "No implementation details in issues - those belong in planning docs and PRs"
+modeOverrides:
+  review:
+    description: "Capture PR reference and extract associated Jira ticket. Skip branch/PR creation."
+    notes[3]:
+      - Detect review mode from user request patterns
+      - Capture PR URL/number and extract associated Jira ticket from PR body or commits
+      - Skip branch/PR creation - use existing PR from review target
+    steps[2]:
+      - id: detect-review-mode
+        name: Detect Review Mode
+        description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
+      - id: capture-pr-reference
+        name: Capture PR Reference
+        description: "Get PR number/URL, checkout PR branch, extract associated Jira ticket from PR body or commits."
+    skipSteps[3]:
+      - create-branch
+      - check-pr
+      - create-pr
+    checkpoints[2]:
+      - id: review-mode-detection
+        name: Review Mode Detection Checkpoint
+        message: "This appears to be a review of an existing PR. Is that correct?"
+        options[2]:
+          - id: confirm-review
+            label: "Yes, review existing PR"
+            description: Review an existing implementation
+            effect:
+              setVariable:
+                is_review_mode: true
+          - id: new-implementation
+            label: "No, new implementation"
+            description: This is new work, not a review
+            effect:
+              setVariable:
+                is_review_mode: false
+      - id: review-pr-reference
+        name: Review PR Reference Checkpoint
+        message: "Please provide the PR to review (number or URL):"
+        options[2]:
+          - id: pr-provided
+            label: PR reference provided
+            description: Proceed with the specified PR
+            effect:
+              setVariable:
+                review_pr_captured: true
+          - id: cancel-review
+            label: Cancel review mode
+            description: Switch to standard work package mode
+            effect:
+              setVariable:
+                is_review_mode: false
+    context_to_preserve[2]:
+      - review_pr_url - URL of PR being reviewed
+      - review_base_branch - Base branch of PR being reviewed
 entryActions[1]{action,message}:
   log,Starting issue management
 steps[9]:
