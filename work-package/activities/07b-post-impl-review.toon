@@ -1,7 +1,7 @@
 id: post-impl-review
-version: 1.0.0
+version: 1.2.0
 name: Post-Implementation Review
-description: Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation.
+description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
 problem: User needs to review implementation quality before validation
 recognition[3]:
   - review implementation
@@ -23,6 +23,13 @@ notes[7]:
   - "ENTRY: Run git pull to ensure branch is up to date before evaluating diffs"
   - "ENTRY: Parse git diff to extract list of changed files"
   - "ENTRY: Create file index table (Row | Path | File) with review time estimate (30 sec/change), write to {NN}-change-block-index.md"
+modeOverrides:
+  review:
+    description: "Compare PR changes against expected changes from implementation analysis. Document findings for PR author."
+    notes[3]:
+      - Compare actual PR changes against 'expected_changes' documented in implementation analysis
+      - Identify deviations - missing changes, unexpected changes, alternative approaches
+      - Document findings as review comments for PR author, not fixes to apply
 entryActions[1]{action,message}:
   log,Starting post-implementation review
 artifacts[5]:

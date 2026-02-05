@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change.
+> Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ## Overview
 
@@ -25,6 +25,22 @@ This workflow guides the complete lifecycle of a single work package:
 - 22 checkpoints across all activities
 - Task implementation loop with reviews
 - Manual diff review with interview-based finding collection
+- **Review mode** for reviewing existing PRs (see [Review Mode](#review-mode) section)
+
+---
+
+## Review Mode
+
+This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. When activated, the workflow adapts its behavior using the formal `modes` and `modeOverrides` schema constructs.
+
+**See [REVIEW-MODE.md](REVIEW-MODE.md) for complete documentation.**
+
+Quick summary:
+- Detected from user intent (e.g., "start review work package", "review PR #123")
+- Skips elicitation and implementation phases
+- Analyzes pre-change baseline from base branch
+- Documents findings rather than applying fixes
+- Generates structured PR review comments
 
 ## Workflow Flow
 
@@ -84,7 +100,7 @@ graph TD
 
 ### 1. Issue Management
 
-**Purpose:** Verify or create an issue, then create feature branch and PR. Issues define the problem space and provide traceability from requirements through implementation.
+**Purpose:** Verify or create an issue, then create feature branch and PR. Issues define the problem space and provide traceability from requirements through implementation. **In review mode:** Detects review requests, captures PR reference, and extracts associated Jira ticket.
 
 **Primary Skill:** `issue-management`  
 **Supporting Skills:** `git-workflow`, `pr-creation`, `artifact-management`
@@ -144,7 +160,7 @@ graph TD
 
 ### 2. Design Philosophy
 
-**Purpose:** Classify the problem, assess complexity, and determine which optional activities are needed.
+**Purpose:** Classify the problem, assess complexity, and determine which optional activities are needed. **In review mode:** Assesses ticket completeness and always skips elicitation (requirements come from the ticket).
 
 **Primary Skill:** `design-framework`
 
@@ -256,7 +272,7 @@ graph TD
 
 ### 5. Implementation Analysis
 
-**Purpose:** Analyze current implementation to understand effectiveness, establish baselines, identify opportunities.
+**Purpose:** Analyze current implementation to understand effectiveness, establish baselines, identify opportunities. **In review mode:** Checks out base branch to analyze pre-change state, documents expected changes based on requirements.
 
 **Primary Skill:** `implementation-analysis`  
 **Supporting Skill:** `artifact-management`
@@ -309,7 +325,7 @@ graph TD
 
 ### 7. Implement Tasks
 
-**Purpose:** Execute the implementation plan task by task with review cycles.
+**Purpose:** Execute the implementation plan task by task with review cycles. **In review mode:** This activity is SKIPPED entirely—implementation already exists in the PR.
 
 **Primary Skill:** `implementation`  
 **Supporting Skill:** `assumptions-review`
@@ -405,7 +421,7 @@ graph TD
 
 ### 8. Validate
 
-**Purpose:** Validate implementation through comprehensive testing. All tests must pass.
+**Purpose:** Validate implementation through comprehensive testing. All tests must pass. **In review mode:** Documents failures as review findings rather than fixing them.
 
 **Primary Skill:** `validation`
 
@@ -435,7 +451,7 @@ graph TD
 
 ### 9. Strategic Review
 
-**Purpose:** Ensure changes are minimal and focused. Validate the PR contains only required changes.
+**Purpose:** Ensure changes are minimal and focused. Validate the PR contains only required changes. **In review mode:** Documents cleanup recommendations rather than applying them.
 
 **Primary Skill:** `strategic-review`
 
@@ -485,7 +501,7 @@ graph TD
 
 ### 11. Update PR
 
-**Purpose:** Update PR with final implementation details and mark ready for review.
+**Purpose:** Update PR with final implementation details and mark ready for review. **In review mode:** Generates consolidated review summary and posts PR review comments.
 
 **Primary Skill:** `pr-management`
 
@@ -572,6 +588,28 @@ graph TD
 | `test-review` | Test suite quality review (see `17-test-suite-review.md`) | post-impl-review, validate |
 | `pr-review-response` | Respond to PR review feedback | post-implementation |
 
+## Schema Extensions
+
+This workflow uses schema extensions for mode support:
+
+| Schema | Extension | Purpose |
+|--------|-----------|---------|
+| `workflow.schema.json` | `modes[]` | Define workflow execution modes with activation, recognition, skip lists |
+| `activity.schema.json` | `modeOverrides{}` | Define activity-level behavior for each mode |
+
+See `../../schemas/workflow.schema.json` and `../../schemas/activity.schema.json` for full definitions.
+
+---
+
+## Resources
+
+| Resource | Purpose |
+|----------|---------|
+| `24-review-mode.md` | Complete guide for review mode behavior and PR review comment formats |
+| `16-rust-substrate-code-review.md` | Rust/Substrate code review criteria |
+| `17-test-suite-review.md` | Test suite quality assessment |
+| `22-manual-diff-review.md` | Manual diff review with interview loop |
+
 ---
 
 ## Variables
@@ -587,6 +625,8 @@ graph TD
 | `complexity` | string | Problem complexity (simple/moderate/complex) - drives ADR creation |
 | `validation_passed` | boolean | Whether validation activity passed |
 | `review_passed` | boolean | Whether strategic review passed |
+| `is_review_mode` | boolean | Whether this is a review of existing implementation |
+| `review_pr_url` | string | URL of PR being reviewed (review mode only) |
 
 ---
 

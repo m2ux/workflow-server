@@ -1,7 +1,7 @@
 id: update-pr
-version: 1.0.0
+version: 1.2.0
 name: Update PR
-description: Update the PR with final implementation details and mark ready for review.
+description: "Update the PR with final implementation details and mark ready for review."
 problem: User needs to update PR and mark ready for review
 recognition[3]:
   - update pr
@@ -9,8 +9,70 @@ recognition[3]:
   - finalize pr
 skills:
   primary: pr-management
+  supporting[1]:
+    - code-review
 required: true
 estimatedTime: 10-15m
+notes[1]:
+  - "Push commits, update description, mark ready for review"
+modeOverrides:
+  review:
+    description: "Generate and post consolidated PR review comments with findings from all review stages."
+    notes[4]:
+      - Generate consolidated review summary from all review stages
+      - Post PR review comments using GitHub PR review API (gh pr review)
+      - "Use structured format: Summary → Code Review → Test Review → Doc Review → Recommendations"
+      - Include severity ratings and actionable items for PR author
+    steps[4]:
+      - id: consolidate-review-findings
+        name: Consolidate Review Findings
+        description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
+      - id: generate-review-summary
+        name: Generate Review Summary
+        description: "Create structured review summary. Use format from 24-review-mode.md."
+      - id: present-summary-to-user
+        name: Present Summary to User
+        description: "Show the review summary for confirmation before posting."
+      - id: post-pr-review
+        name: Post PR Review
+        description: "Post review to GitHub PR using 'gh pr review'. Include consolidated findings with severity ratings."
+    skipSteps[3]:
+      - push-commits
+      - update-description
+      - mark-ready
+    checkpoints[2]:
+      - id: review-summary-approval
+        name: Review Summary Approval Checkpoint
+        message: "Here is the consolidated review summary. Ready to post to the PR?"
+        options[3]:
+          - id: post-review
+            label: Post review to PR
+            description: Post the review summary as a PR comment
+            effect:
+              setVariable:
+                review_posted: true
+          - id: refine
+            label: Refine summary
+            description: Adjust the review summary before posting
+          - id: skip-posting
+            label: Skip posting to PR
+            description: Keep the summary local, don't post to GitHub
+            effect:
+              setVariable:
+                review_posted: false
+      - id: review-complete
+        name: Review Complete Checkpoint
+        message: "Review workflow complete."
+        options[1]:
+          - id: done
+            label: Complete review workflow
+            description: End the review workflow
+    transitionOverride: workflow-end
+    context_to_preserve[4]:
+      - review_summary - Consolidated review summary text
+      - review_posted - Whether review was posted to PR
+      - review_severity - Overall review severity rating
+      - actionable_items - List of specific items for PR author to address
 steps[3]:
   - id: push-commits
     name: Push all commits

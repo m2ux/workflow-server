@@ -1,7 +1,7 @@
 id: implement
-version: 2.0.0
+version: 2.2.0
 name: Implement Tasks
-description: Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit → review assumptions → checkpoint.
+description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit → review assumptions → checkpoint."
 problem: User needs to implement the planned tasks
 recognition[3]:
   - implement tasks
