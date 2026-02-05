@@ -9,9 +9,8 @@
 #
 # Options:
 #   --external-repo <url>    Use external repo for engineering branch
-#   --resources-repo <url>   Custom resources repo (default: m2ux/agent-resources)
 #   --metadata-repo <url>    Custom metadata repo (default: m2ux/ai-metadata)
-#   --skip-metadata          Skip private metadata submodule
+#   --skip-metadata          Skip private history submodule
 #   --keep                   Don't self-destruct after deployment
 #   --help                   Show this help
 
@@ -21,7 +20,6 @@ set -e
 # Configuration
 # =============================================================================
 
-DEFAULT_RESOURCES_REPO="https://github.com/m2ux/agent-resources.git"
 DEFAULT_METADATA_REPO="https://github.com/m2ux/ai-metadata.git"
 DEFAULT_EXTERNAL_REPO="https://github.com/m2ux/ai-metadata.git"
 
@@ -35,7 +33,6 @@ ENGINEERING_DIR="$REPO_ROOT/.engineering"
 # =============================================================================
 
 EXTERNAL_REPO=""
-RESOURCES_REPO="$DEFAULT_RESOURCES_REPO"
 METADATA_REPO="$DEFAULT_METADATA_REPO"
 SKIP_METADATA=false
 KEEP_SCRIPT=false
@@ -51,10 +48,6 @@ while [[ $# -gt 0 ]]; do
         --internal)
             INTERACTIVE=false
             shift
-            ;;
-        --resources-repo)
-            RESOURCES_REPO="$2"
-            shift 2
             ;;
         --metadata-repo)
             METADATA_REPO="$2"
@@ -83,12 +76,6 @@ done
 # Helper Functions
 # =============================================================================
 
-get_latest_resources_version() {
-    git ls-remote --tags --refs "$RESOURCES_REPO" 2>/dev/null | \
-        grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+$' | \
-        sort -V | tail -1 || echo "main"
-}
-
 create_engineering_structure() {
     local target_dir="$1"
     
@@ -99,7 +86,6 @@ create_engineering_structure() {
     mkdir -p "$target_dir/artifacts/planning"
     mkdir -p "$target_dir/artifacts/reviews"
     mkdir -p "$target_dir/artifacts/templates"
-    mkdir -p "$target_dir/agent"
     mkdir -p "$target_dir/scripts"
     
     # Create files only if they don't exist
@@ -121,10 +107,8 @@ engineering/
 │   ├── planning/             # Work package plans
 │   ├── reviews/              # Code and architecture reviews
 │   └── templates/            # Reusable templates
-├── agent/                    # Agent-related content
-│   ├── resources/            # Agent resources and guides
-│   ├── workflows/            # Workflow definitions
-│   └── metadata/             # Private metadata
+├── workflows/                # Workflow definitions (submodule)
+├── history/                  # Project history (orphan branch submodule)
 └── scripts/                  # Utility scripts
 \`\`\`
 EOF
@@ -172,9 +156,8 @@ Engineering artifacts should be:
 - `artifacts/planning/` - Work package plans and specifications
 - `artifacts/reviews/` - Code and architecture reviews
 - `artifacts/templates/` - Reusable documentation templates
-- `agent/resources/` - Agent resources and guides
-- `agent/workflows/` - Workflow definitions
-- `agent/metadata/` - Private agent metadata
+- `workflows/` - Workflow definitions (submodule)
+- `history/` - Project history (orphan branch submodule)
 - `scripts/` - Utility scripts
 EOF
     fi
@@ -182,39 +165,87 @@ EOF
     if [ ! -f "$target_dir/scripts/update.sh" ]; then
         cat > "$target_dir/scripts/update.sh" << 'EOF'
 #!/usr/bin/env bash
-# Update agent submodules (workflows and/or metadata)
-# Usage: ./scripts/update.sh [--workflows] [--metadata] [--project NAME]
+# Update submodules (workflows and/or history)
+# Usage: ./scripts/update.sh [--workflows] [--history] [--project NAME]
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-AGENT_DIR="$(dirname "$SCRIPT_DIR")/agent"
 ENGINEERING_ROOT="$(dirname "$SCRIPT_DIR")"
 PROJECT_NAME="${PROJECT_NAME:-$(basename "$(dirname "$ENGINEERING_ROOT")")}"
-UPDATE_WORKFLOWS=false; UPDATE_METADATA=false
+UPDATE_WORKFLOWS=false; UPDATE_HISTORY=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --workflows) UPDATE_WORKFLOWS=true; shift ;;
-        --metadata) UPDATE_METADATA=true; shift ;;
+        --history) UPDATE_HISTORY=true; shift ;;
         --project) PROJECT_NAME="$2"; shift 2 ;;
         *) shift ;;
     esac
 done
-[ "$UPDATE_WORKFLOWS" = false ] && [ "$UPDATE_METADATA" = false ] && { UPDATE_WORKFLOWS=true; UPDATE_METADATA=true; }
-if [ "$UPDATE_WORKFLOWS" = true ] && [ -d "$AGENT_DIR/workflows" ]; then
-    echo "=== Updating workflows ===" && cd "$AGENT_DIR/workflows"
+[ "$UPDATE_WORKFLOWS" = false ] && [ "$UPDATE_HISTORY" = false ] && { UPDATE_WORKFLOWS=true; UPDATE_HISTORY=true; }
+if [ "$UPDATE_WORKFLOWS" = true ] && [ -d "$ENGINEERING_ROOT/workflows" ]; then
+    echo "=== Updating workflows ===" && cd "$ENGINEERING_ROOT/workflows"
     git fetch origin --quiet 2>/dev/null || true
     git checkout workflows --quiet 2>/dev/null || true
     git pull origin workflows --quiet && echo "✓ workflows: $(git rev-parse --short HEAD)"
 fi
-if [ "$UPDATE_METADATA" = true ] && [ -d "$AGENT_DIR/metadata" ]; then
-    echo "=== Updating metadata ===" && cd "$AGENT_DIR/metadata"
-    git fetch origin master && git checkout master 2>/dev/null || true
-    git pull origin master && echo "✓ metadata: $(git rev-parse --short HEAD)"
+if [ "$UPDATE_HISTORY" = true ] && [ -d "$ENGINEERING_ROOT/history" ]; then
+    echo "=== Updating history ===" && cd "$ENGINEERING_ROOT/history"
+    git fetch origin "$PROJECT_NAME" && git checkout "$PROJECT_NAME" 2>/dev/null || true
+    git pull origin "$PROJECT_NAME" && echo "✓ history: $(git rev-parse --short HEAD)"
 fi
 EOF
         chmod +x "$target_dir/scripts/update.sh"
     fi
     
     echo "  ✓ Structure verified"
+}
+
+# Create orphan branch for project history if it doesn't exist
+ensure_history_branch() {
+    local repo_url="$1"
+    local branch_name="$2"
+    
+    # Check if branch exists
+    if git ls-remote --heads "$repo_url" "$branch_name" 2>/dev/null | grep -q "$branch_name"; then
+        echo "  ✓ History branch '$branch_name' exists"
+        return 0
+    fi
+    
+    echo "  Creating orphan branch '$branch_name' in metadata repo..."
+    
+    local temp_dir=$(mktemp -d)
+    git clone --depth 1 "$repo_url" "$temp_dir" 2>/dev/null || {
+        # If clone fails (empty repo), init fresh
+        cd "$temp_dir"
+        git init
+        git remote add origin "$repo_url"
+    }
+    
+    cd "$temp_dir"
+    git checkout --orphan "$branch_name"
+    git rm -rf . 2>/dev/null || true
+    
+    # Create minimal README
+    cat > README.md << EOF
+# $branch_name
+
+Project history and AI conversation artifacts.
+EOF
+    
+    git add README.md
+    git commit -m "docs: initialize $branch_name history branch"
+    
+    if git push -u origin "$branch_name" 2>/dev/null; then
+        echo "  ✓ Created and pushed branch '$branch_name'"
+    else
+        echo "  ⚠ Failed to push branch '$branch_name' - check repo permissions"
+        cd "$REPO_ROOT"
+        rm -rf "$temp_dir"
+        return 1
+    fi
+    
+    cd "$REPO_ROOT"
+    rm -rf "$temp_dir"
+    return 0
 }
 
 # =============================================================================
@@ -363,53 +394,35 @@ if [ -n "$EXTERNAL_REPO" ]; then
     # Add submodules if not present (run from repo root with full paths)
     ENG_PATH="engineering/$PROJECT_NAME"
     
-    if [ ! -d "$ENG_PATH/agent/resources/.git" ] && [ ! -f "$ENG_PATH/agent/resources/.git" ]; then
-        rm -rf "$ENG_PATH/agent/resources" 2>/dev/null || true
-        git submodule add "$RESOURCES_REPO" "$ENG_PATH/agent/resources" 2>/dev/null || true
-        
-        RESOURCES_VERSION=$(get_latest_resources_version)
-        if [ -d "$ENG_PATH/agent/resources" ]; then
-            cd "$ENG_PATH/agent/resources"
-            git fetch --tags 2>/dev/null || true
-            git checkout "$RESOURCES_VERSION" 2>/dev/null || true
-            cd "$TEMP_CLONE"
-            echo "✓ Added agent/resources submodule"
-            NEEDS_COMMIT=true
-        fi
-    else
-        echo "✓ agent/resources submodule exists"
-    fi
-    
-    if [ ! -d "$ENG_PATH/agent/workflows/.git" ] && [ ! -f "$ENG_PATH/agent/workflows/.git" ]; then
-        rm -rf "$ENG_PATH/agent/workflows" 2>/dev/null || true
-        git submodule add -b workflows "https://github.com/m2ux/workflow-server.git" "$ENG_PATH/agent/workflows" 2>/dev/null || true
-        if [ -d "$ENG_PATH/agent/workflows" ]; then
-            cd "$ENG_PATH/agent/workflows"
+    if [ ! -d "$ENG_PATH/workflows/.git" ] && [ ! -f "$ENG_PATH/workflows/.git" ]; then
+        rm -rf "$ENG_PATH/workflows" 2>/dev/null || true
+        git submodule add -b workflows "https://github.com/m2ux/workflow-server.git" "$ENG_PATH/workflows" 2>/dev/null || true
+        if [ -d "$ENG_PATH/workflows" ]; then
+            cd "$ENG_PATH/workflows"
             git checkout workflows 2>/dev/null || true
             cd "$TEMP_CLONE"
-            echo "✓ Added agent/workflows submodule"
+            echo "✓ Added workflows submodule"
             NEEDS_COMMIT=true
         fi
     else
-        echo "✓ agent/workflows submodule exists"
+        echo "✓ workflows submodule exists"
     fi
     
     if [ "$SKIP_METADATA" = false ]; then
-        if [ ! -d "$ENG_PATH/agent/metadata/.git" ] && [ ! -f "$ENG_PATH/agent/metadata/.git" ]; then
-            rm -rf "$ENG_PATH/agent/metadata" 2>/dev/null || true
-            git submodule add "$METADATA_REPO" "$ENG_PATH/agent/metadata" 2>/dev/null || true
-            if [ -d "$ENG_PATH/agent/metadata" ]; then
-                # Configure sparse checkout for projects/<project-name>/
-                cd "$ENG_PATH/agent/metadata"
-                git sparse-checkout init --cone 2>/dev/null || true
-                git sparse-checkout set "projects/$PROJECT_NAME" 2>/dev/null || true
-                git checkout master 2>/dev/null || git checkout main 2>/dev/null || true
+        if [ ! -d "$ENG_PATH/history/.git" ] && [ ! -f "$ENG_PATH/history/.git" ]; then
+            rm -rf "$ENG_PATH/history" 2>/dev/null || true
+            # Ensure orphan branch exists for this project
+            ensure_history_branch "$METADATA_REPO" "$PROJECT_NAME"
+            git submodule add -b "$PROJECT_NAME" "$METADATA_REPO" "$ENG_PATH/history" 2>/dev/null || true
+            if [ -d "$ENG_PATH/history" ]; then
+                cd "$ENG_PATH/history"
+                git checkout "$PROJECT_NAME" 2>/dev/null || true
                 cd "$TEMP_CLONE"
-                echo "✓ Added agent/metadata submodule (sparse: projects/$PROJECT_NAME)"
+                echo "✓ Added history submodule (branch: $PROJECT_NAME)"
                 NEEDS_COMMIT=true
             fi
         else
-            echo "✓ agent/metadata submodule exists"
+            echo "✓ history submodule exists"
         fi
     fi
     
@@ -447,46 +460,28 @@ if [ -n "$EXTERNAL_REPO" ]; then
     
     # Clone submodules as standalone repos (external mode doesn't use git submodule refs)
     echo ""
-    echo "Setting up agent repos..."
+    echo "Setting up submodule repos..."
     cd "$ENGINEERING_DIR"
     
-    # Clone resources
-    rm -rf agent/resources 2>/dev/null || true
-    mkdir -p agent
-    git clone "$RESOURCES_REPO" agent/resources 2>/dev/null || true
-    if [ -d "agent/resources" ]; then
-        RESOURCES_VERSION=$(get_latest_resources_version)
-        cd agent/resources
-        git fetch --tags 2>/dev/null || true
-        git checkout "$RESOURCES_VERSION" 2>/dev/null || true
-        cd "$ENGINEERING_DIR"
-        echo "✓ agent/resources ($RESOURCES_VERSION)"
-    fi
-    
     # Clone workflows (only if not already present)
-    if [ ! -d "agent/workflows/.git" ]; then
-        rm -rf agent/workflows 2>/dev/null || true
-        if git clone -b workflows "https://github.com/m2ux/workflow-server.git" agent/workflows 2>/dev/null; then
-            echo "✓ agent/workflows (workflows branch)"
+    if [ ! -d "workflows/.git" ]; then
+        rm -rf workflows 2>/dev/null || true
+        if git clone -b workflows "https://github.com/m2ux/workflow-server.git" workflows 2>/dev/null; then
+            echo "✓ workflows (workflows branch)"
         else
-            echo "⚠ agent/workflows skipped"
+            echo "⚠ workflows skipped"
         fi
     else
-        echo "✓ agent/workflows exists"
+        echo "✓ workflows exists"
     fi
     
-    # Clone metadata with sparse checkout
+    # Clone history from project-specific orphan branch
     if [ "$SKIP_METADATA" = false ]; then
-        rm -rf agent/metadata 2>/dev/null || true
-        if git clone --no-checkout "$METADATA_REPO" agent/metadata 2>/dev/null; then
-            cd agent/metadata
-            git sparse-checkout init --cone 2>/dev/null || true
-            git sparse-checkout set "projects/$PROJECT_NAME" 2>/dev/null || true
-            git checkout master 2>/dev/null || git checkout main 2>/dev/null || true
-            cd "$ENGINEERING_DIR"
-            echo "✓ agent/metadata (sparse: projects/$PROJECT_NAME)"
+        rm -rf history 2>/dev/null || true
+        if git clone --single-branch --branch "$PROJECT_NAME" "$METADATA_REPO" history 2>/dev/null; then
+            echo "✓ history (branch: $PROJECT_NAME)"
         else
-            echo "⚠ agent/metadata skipped (private)"
+            echo "⚠ history skipped (private or branch not found)"
         fi
     fi
     
@@ -524,32 +519,21 @@ else
         create_engineering_structure "."
         
         # Add submodules for in-repo mode
-        mkdir -p agent
-        git submodule add "$RESOURCES_REPO" agent/resources 2>/dev/null || true
-        
-        RESOURCES_VERSION=$(get_latest_resources_version)
-        if [ -d "agent/resources" ]; then
-            cd agent/resources
-            git fetch --tags
-            git checkout "$RESOURCES_VERSION" 2>/dev/null || true
-            cd ../..
-        fi
-        
-        git submodule add -b workflows "https://github.com/m2ux/workflow-server.git" agent/workflows 2>/dev/null || true
-        if [ -d "agent/workflows" ]; then
-            cd agent/workflows
+        git submodule add -b workflows "https://github.com/m2ux/workflow-server.git" workflows 2>/dev/null || true
+        if [ -d "workflows" ]; then
+            cd workflows
             git checkout workflows 2>/dev/null || true
-            cd ../..
+            cd ..
         fi
         
         if [ "$SKIP_METADATA" = false ]; then
-            git submodule add "$METADATA_REPO" agent/metadata 2>/dev/null || true
-            if [ -d "agent/metadata" ]; then
-                cd agent/metadata
-                git sparse-checkout init --cone 2>/dev/null || true
-                git sparse-checkout set "projects/$PROJECT_NAME" 2>/dev/null || true
-                git checkout master 2>/dev/null || git checkout main 2>/dev/null || true
-                cd ../..
+            # Ensure orphan branch exists for this project
+            ensure_history_branch "$METADATA_REPO" "$PROJECT_NAME"
+            git submodule add -b "$PROJECT_NAME" "$METADATA_REPO" history 2>/dev/null || true
+            if [ -d "history" ]; then
+                cd history
+                git checkout "$PROJECT_NAME" 2>/dev/null || true
+                cd ..
             fi
         fi
         
@@ -575,24 +559,20 @@ else
     cd "$ENGINEERING_DIR"
     
     if [ -f .gitmodules ]; then
-        git submodule update --init agent/resources 2>/dev/null && echo "✓ agent/resources" || true
-        
-        if git submodule update --init agent/workflows 2>/dev/null; then
-            echo "✓ agent/workflows"
+        if git submodule update --init workflows 2>/dev/null; then
+            echo "✓ workflows"
         else
-            echo "⚠ agent/workflows skipped"
+            echo "⚠ workflows skipped"
         fi
         
         if [ "$SKIP_METADATA" = false ]; then
-            if git submodule update --init agent/metadata 2>/dev/null; then
-                cd agent/metadata
-                git sparse-checkout init --cone 2>/dev/null || true
-                git sparse-checkout set "projects/$PROJECT_NAME" 2>/dev/null || true
-                git checkout master 2>/dev/null || git checkout main 2>/dev/null || true
-                cd ../..
-                echo "✓ agent/metadata (sparse: projects/$PROJECT_NAME)"
+            if git submodule update --init history 2>/dev/null; then
+                cd history
+                git checkout "$PROJECT_NAME" 2>/dev/null || true
+                cd ..
+                echo "✓ history (branch: $PROJECT_NAME)"
             else
-                echo "⚠ agent/metadata skipped (private)"
+                echo "⚠ history skipped (private or branch not found)"
             fi
         fi
     fi
