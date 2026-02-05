@@ -86,6 +86,17 @@ npm run build
 
 Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 
+### Deploy to Your Project
+
+To set up the engineering branch pattern in your own project:
+
+```bash
+curl -O https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/deploy.sh
+chmod +x deploy.sh && ./deploy.sh
+```
+
+This creates a `.engineering/` folder with workflows and artifact directories. See [SETUP.md](SETUP.md#deploying-to-projects) for options and details.
+
 ### Setup IDE Rule
 
 Add the following to your IDE 'always-applied' rule-set (see [`docs/ide-setup.md`](docs/ide-setup.md) for details):
