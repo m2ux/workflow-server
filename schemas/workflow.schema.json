@@ -26,6 +26,53 @@
       "required": ["name", "type"],
       "additionalProperties": false
     },
+    "mode": {
+      "type": "object",
+      "description": "Defines a workflow execution mode that modifies standard behavior",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this mode"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable mode name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of mode behavior"
+        },
+        "activationVariable": {
+          "type": "string",
+          "description": "Variable name that activates this mode when true"
+        },
+        "recognition": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Patterns to detect mode activation from user intent"
+        },
+        "skipActivities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Activity IDs to skip entirely in this mode"
+        },
+        "defaults": {
+          "type": "object",
+          "additionalProperties": {},
+          "description": "Default variable values when mode is active"
+        },
+        "resource": {
+          "type": "string",
+          "description": "Path to resource file with detailed mode guidance"
+        }
+      },
+      "required": ["id", "name", "activationVariable"],
+      "additionalProperties": false
+    },
     "workflow": {
       "type": "object",
       "properties": {
@@ -71,6 +118,13 @@
             "$ref": "#/definitions/variable"
           },
           "description": "Workflow-level variables"
+        },
+        "modes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mode"
+          },
+          "description": "Execution modes that modify standard workflow behavior"
         },
         "initialActivity": {
           "type": "string",

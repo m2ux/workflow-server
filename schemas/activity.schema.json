@@ -398,6 +398,59 @@
             "type": "string"
           },
           "description": "Additional notes or caveats"
+        },
+        "modeOverrides": {
+          "type": "object",
+          "description": "Mode-specific behavior overrides. Keys are mode IDs from workflow.modes",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": "Mode-specific activity description"
+              },
+              "notes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Mode-specific notes"
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/step"
+                },
+                "description": "Additional steps for this mode (merged with base steps)"
+              },
+              "skipSteps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Step IDs to skip in this mode"
+              },
+              "checkpoints": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/checkpoint"
+                },
+                "description": "Additional checkpoints for this mode"
+              },
+              "transitionOverride": {
+                "type": "string",
+                "description": "Override default transition target in this mode"
+              },
+              "context_to_preserve": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Additional context to preserve in this mode"
+              }
+            },
+            "additionalProperties": false
+          }
         }
       },
       "required": ["id", "version", "name", "skills"],
