@@ -282,27 +282,33 @@ fi
 if [ "$INTERACTIVE" = true ]; then
     echo "How should engineering artifacts be managed?"
     echo ""
-    echo "  [1] Orphan Branch (default)"
-    echo "      → Adds .engineering as submodule tracking an orphan branch"
-    echo "      → Engineering history separate from code history"
+    echo "  [1] Orphan Branch - Local (default)"
+    echo "      → Creates 'engineering' branch in this repo"
+    echo "      → Adds .engineering as submodule tracking that branch"
     echo ""
-    echo "  [2] In-Branch"
+    echo "  [2] Orphan Branch - External"
+    echo "      → Creates '$PROJECT_NAME' branch in external repo"
+    echo "      → Adds .engineering as submodule tracking that branch"
+    echo ""
+    echo "  [3] In-Branch"
     echo "      → .engineering/ as regular files in current branch"
     echo "      → Engineering artifacts committed with code"
     echo ""
-    read -p "Choice [1/2, Enter → Orphan Branch]: " CHOICE
+    read -p "Choice [1/2/3, Enter → Local Orphan]: " CHOICE
     
     case "$CHOICE" in
         1|"")
             DEPLOY_MODE="orphan"
-            echo ""
-            echo "Orphan branch location:"
-            echo "  - Press Enter for local 'engineering' branch in this repo"
-            echo "  - Or enter URL for external repo (uses '$PROJECT_NAME' branch)"
-            echo ""
-            read -p "External repo URL (or Enter for local): " ORPHAN_REPO
             ;;
         2)
+            DEPLOY_MODE="orphan"
+            read -p "External repo URL: " ORPHAN_REPO
+            if [ -z "$ORPHAN_REPO" ]; then
+                echo "Error: External repo URL is required"
+                exit 1
+            fi
+            ;;
+        3)
             DEPLOY_MODE="in-branch"
             ;;
         *)
