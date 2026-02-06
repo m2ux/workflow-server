@@ -1,0 +1,4 @@
+[submodule ".engineering"]
+	path = .engineering
+	url = https://github.com/m2ux/workflow-server.git
+	branch = engineering
