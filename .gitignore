@@ -28,6 +28,3 @@ coverage/
 .env
 .env.local
 .env.*.local
-
-# Engineering artifacts (planning, reviews)
-.engineering/
