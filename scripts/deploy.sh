@@ -15,8 +15,8 @@
 #                              No URL: local 'engineering' branch
 #                              With URL: external repo, project-named branch
 #   --in-branch                Use in-branch mode (regular files)
-#   --metadata-repo <url>      Custom metadata repo (default: m2ux/ai-metadata)
-#   --skip-metadata            Skip private history submodule
+#   --history-repo <url>       Custom history repo (default: m2ux/ai-metadata)
+#   --skip-history             Skip private history submodule
 #   --keep                     Don't self-destruct after deployment
 #   --help                     Show this help
 
@@ -26,7 +26,7 @@ set -e
 # Configuration
 # =============================================================================
 
-DEFAULT_METADATA_REPO="https://github.com/m2ux/ai-metadata.git"
+DEFAULT_HISTORY_REPO="https://github.com/m2ux/ai-metadata.git"
 
 SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
@@ -41,8 +41,8 @@ ENGINEERING_DIR="$REPO_ROOT/.engineering"
 # ORPHAN_REPO: empty = local repo, non-empty = external repo URL
 DEPLOY_MODE=""
 ORPHAN_REPO=""
-METADATA_REPO="$DEFAULT_METADATA_REPO"
-SKIP_METADATA=false
+HISTORY_REPO="$DEFAULT_HISTORY_REPO"
+SKIP_HISTORY=false
 KEEP_SCRIPT=false
 INTERACTIVE=true
 
@@ -63,12 +63,12 @@ while [[ $# -gt 0 ]]; do
             INTERACTIVE=false
             shift
             ;;
-        --metadata-repo)
-            METADATA_REPO="$2"
+        --history-repo)
+            HISTORY_REPO="$2"
             shift 2
             ;;
-        --skip-metadata)
-            SKIP_METADATA=true
+        --skip-history)
+            SKIP_HISTORY=true
             shift
             ;;
         --keep)
@@ -224,7 +224,7 @@ ensure_history_branch() {
         return 0
     fi
     
-    echo "  Creating orphan branch '$branch_name' in metadata repo..."
+    echo "  Creating orphan branch '$branch_name' in history repo..."
     
     local temp_dir=$(mktemp -d)
     git clone --depth 1 "$repo_url" "$temp_dir" 2>/dev/null || {
@@ -411,12 +411,12 @@ if [ "$DEPLOY_MODE" = "in-branch" ]; then
     fi
     
     # Clone history from project-specific orphan branch
-    if [ "$SKIP_METADATA" = false ]; then
+    if [ "$SKIP_HISTORY" = false ]; then
         if [ ! -d "history/.git" ]; then
             rm -rf history 2>/dev/null || true
             # Ensure orphan branch exists for this project
-            ensure_history_branch "$METADATA_REPO" "$PROJECT_NAME"
-            if git clone --single-branch --branch "$PROJECT_NAME" "$METADATA_REPO" history 2>/dev/null; then
+            ensure_history_branch "$HISTORY_REPO" "$PROJECT_NAME"
+            if git clone --single-branch --branch "$PROJECT_NAME" "$HISTORY_REPO" history 2>/dev/null; then
                 echo "✓ history (branch: $PROJECT_NAME)"
             else
                 echo "⚠ history skipped (private or branch not found)"
@@ -504,9 +504,9 @@ else
             cd ..
         fi
         
-        if [ "$SKIP_METADATA" = false ]; then
-            ensure_history_branch "$METADATA_REPO" "$PROJECT_NAME"
-            git submodule add -b "$PROJECT_NAME" "$METADATA_REPO" history 2>/dev/null || true
+        if [ "$SKIP_HISTORY" = false ]; then
+            ensure_history_branch "$HISTORY_REPO" "$PROJECT_NAME"
+            git submodule add -b "$PROJECT_NAME" "$HISTORY_REPO" history 2>/dev/null || true
             if [ -d "history" ]; then
                 cd history
                 git checkout "$PROJECT_NAME" 2>/dev/null || true
@@ -547,7 +547,7 @@ else
             echo "⚠ workflows skipped"
         fi
         
-        if [ "$SKIP_METADATA" = false ]; then
+        if [ "$SKIP_HISTORY" = false ]; then
             if git submodule update --init history 2>/dev/null; then
                 cd history
                 git checkout "$PROJECT_NAME" 2>/dev/null || true
