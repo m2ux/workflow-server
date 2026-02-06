@@ -113,29 +113,29 @@ sections[12]:
   - id: engineering-artifacts
     title: Engineering Artifacts Management
     priority: high
-    overview: Engineering artifacts (planning documents, ADRs, reviews) are stored in a sparse checkout or symlinked folder '.engineering' that is locally gitignored from the host project. These artifacts must be committed to their own repository/branch, not the host project.
+    overview: Engineering artifacts (planning documents, ADRs, reviews) are stored in '.engineering' which is a git submodule tracking an orphan branch. The submodule has its own git context and commits must be made within the submodule, then the parent repo's reference updated.
     critical[2]:
       - "BEFORE committing engineering artifacts, ALWAYS read and follow .engineering/AGENTS.md"
-      - "The AGENTS.md file contains project-specific git commit instructions including path mappings for sparse checkouts"
+      - "The AGENTS.md file contains project-specific guidelines for artifact management"
     rules[5]:
       - "At the end of each activity, check for new or modified engineering artifacts"
-      - "If artifacts were created or updated, commit them to the engineering folder's own git repository"
-      - "NEVER attempt to commit engineering artifacts to the host project repository"
-      - "The engineering folder has its own git context separate from the host project"
-      - "Use git -C <engineering-folder> commands to operate on the engineering repo"
-    sparseCheckoutMode[4]:
-      - "In sparse checkout mode, local paths differ from git-tracked paths"
-      - "Local convenience path: .engineering/artifacts/... is NOT where git tracks files"
-      - "Git-tracked path: engineering/<project>/artifacts/... is the actual commit path"
-      - "Use 'git add --sparse' when adding files in sparse checkout repositories"
+      - "If artifacts were created or updated, commit them within the .engineering submodule"
+      - "After committing to the submodule, update the parent repo's submodule reference"
+      - "The .engineering folder has its own git context separate from the host project"
+      - "Use 'cd .engineering && git ...' or 'git -C .engineering ...' to operate on the submodule"
+    submoduleWorkflow[4]:
+      - "The .engineering folder is a submodule - local paths match git-tracked paths directly"
+      - "Changes in .engineering are committed to the submodule's own branch (e.g., 'engineering')"
+      - "After pushing submodule changes, update parent: 'git add .engineering && git commit'"
+      - "The parent repo tracks a specific commit SHA of the submodule"
     workflowIntegration[4]:
-      - "After completing an activity, check git status in the engineering folder"
-      - "Read .engineering/AGENTS.md to determine correct commit procedure"
+      - "After completing an activity, check git status in the .engineering submodule"
+      - "Read .engineering/AGENTS.md for any project-specific commit guidelines"
       - "If changes exist, stage and commit with a descriptive message referencing the work package"
-      - "Push to the engineering repository if network access is available"
+      - "Push submodule changes, then update and push the parent repo's reference"
     commonPaths[2]:
-      - ".engineering/ - Sparse checkout of engineering artifacts repository"
-      - ".ai/ - Symlinked project folder from ai-metadata repository"
+      - ".engineering/ - Submodule tracking orphan 'engineering' branch"
+      - ".engineering/history/ - Nested submodule for AI conversation artifacts"
   - id: github-cli
     title: GitHub CLI Usage
     priority: high
