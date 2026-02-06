@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
 # Engineering Branch Deploy Script
 #
-# Deploys an engineering branch to this project. If the engineering branch
-# doesn't exist, creates it first.
+# Deploys engineering infrastructure to this project. Supports two modes:
+#   - Orphan Branch (default): Creates orphan branch, adds .engineering as submodule
+#     - No URL: 'engineering' branch in this repo
+#     - With URL: project-named branch in external repo
+#   - In-Branch: Manages .engineering/ as regular files in current branch
 #
 # Usage:
 #   ./deploy.sh [options]
 #
 # Options:
-#   --external-repo <url>    Use external repo for engineering branch
-#   --metadata-repo <url>    Custom metadata repo (default: m2ux/ai-metadata)
-#   --skip-metadata          Skip private history submodule
-#   --keep                   Don't self-destruct after deployment
-#   --help                   Show this help
+#   --orphan [url]             Use orphan branch mode (default if no args)
+#                              No URL: local 'engineering' branch
+#                              With URL: external repo, project-named branch
+#   --in-branch                Use in-branch mode (regular files)
+#   --metadata-repo <url>      Custom metadata repo (default: m2ux/ai-metadata)
+#   --skip-metadata            Skip private history submodule
+#   --keep                     Don't self-destruct after deployment
+#   --help                     Show this help
 
 set -e
 
@@ -21,7 +27,6 @@ set -e
 # =============================================================================
 
 DEFAULT_METADATA_REPO="https://github.com/m2ux/ai-metadata.git"
-DEFAULT_EXTERNAL_REPO="https://github.com/m2ux/ai-metadata.git"
 
 SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
@@ -32,7 +37,10 @@ ENGINEERING_DIR="$REPO_ROOT/.engineering"
 # Argument Parsing
 # =============================================================================
 
-EXTERNAL_REPO=""
+# Modes: "orphan" (default) or "in-branch"
+# ORPHAN_REPO: empty = local repo, non-empty = external repo URL
+DEPLOY_MODE=""
+ORPHAN_REPO=""
 METADATA_REPO="$DEFAULT_METADATA_REPO"
 SKIP_METADATA=false
 KEEP_SCRIPT=false
@@ -40,12 +48,18 @@ INTERACTIVE=true
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --external-repo)
-            EXTERNAL_REPO="$2"
+        --orphan)
+            DEPLOY_MODE="orphan"
             INTERACTIVE=false
-            shift 2
+            shift
+            # Check if next arg is a URL (not another flag)
+            if [[ $# -gt 0 && ! "$1" =~ ^-- ]]; then
+                ORPHAN_REPO="$1"
+                shift
+            fi
             ;;
-        --internal)
+        --in-branch)
+            DEPLOY_MODE="in-branch"
             INTERACTIVE=false
             shift
             ;;
@@ -62,7 +76,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --help|-h)
-            head -24 "$0" | tail -20
+            head -28 "$0" | tail -24
             exit 0
             ;;
         *)
@@ -266,22 +280,30 @@ fi
 
 # Interactive prompt if no flags specified
 if [ "$INTERACTIVE" = true ]; then
-    echo "Where should the engineering branch be located?"
+    echo "How should engineering artifacts be managed?"
     echo ""
-    echo "  [1] External repo: $DEFAULT_EXTERNAL_REPO"
-    echo "      → Creates: engineering/$PROJECT_NAME/"
+    echo "  [1] Orphan Branch (default)"
+    echo "      → Adds .engineering as submodule tracking an orphan branch"
+    echo "      → Engineering history separate from code history"
     echo ""
-    echo "  [2] In-repo (creates orphan 'engineering' branch)"
+    echo "  [2] In-Branch"
+    echo "      → .engineering/ as regular files in current branch"
+    echo "      → Engineering artifacts committed with code"
     echo ""
-    read -p "Choice [1/2, Enter → in-repo]: " CHOICE
+    read -p "Choice [1/2, Enter → Orphan Branch]: " CHOICE
     
     case "$CHOICE" in
-        1)
-            read -p "External repo URL [$DEFAULT_EXTERNAL_REPO]: " CUSTOM_EXTERNAL
-            EXTERNAL_REPO="${CUSTOM_EXTERNAL:-$DEFAULT_EXTERNAL_REPO}"
+        1|"")
+            DEPLOY_MODE="orphan"
+            echo ""
+            echo "Orphan branch location:"
+            echo "  - Press Enter for local 'engineering' branch in this repo"
+            echo "  - Or enter URL for external repo (uses '$PROJECT_NAME' branch)"
+            echo ""
+            read -p "External repo URL (or Enter for local): " ORPHAN_REPO
             ;;
-        2|"")
-            EXTERNAL_REPO=""
+        2)
+            DEPLOY_MODE="in-branch"
             ;;
         *)
             echo "Invalid choice"
@@ -289,18 +311,17 @@ if [ "$INTERACTIVE" = true ]; then
             ;;
     esac
     echo ""
+else
+    # Default to orphan if not specified
+    [ -z "$DEPLOY_MODE" ] && DEPLOY_MODE="orphan"
 fi
 
 # =============================================================================
 # Main
 # =============================================================================
 
-# Add to local git exclude
-EXCLUDE_FILE="$(git rev-parse --git-dir)/info/exclude"
-if ! grep -q "^\.engineering/$" "$EXCLUDE_FILE" 2>/dev/null; then
-    echo ".engineering/" >> "$EXCLUDE_FILE"
-    echo "✓ Added .engineering/ to local git exclude"
-fi
+# Note: For orphan modes, .engineering is added as a submodule (tracked by parent repo)
+# For in-branch mode, user decides whether to commit or gitignore
 
 # Handle existing .engineering - migrate data if present
 MIGRATION_BACKUP=""
@@ -362,108 +383,22 @@ migrate_existing_data() {
     echo "  ✓ Cleaned up migration backup"
 }
 
-if [ -n "$EXTERNAL_REPO" ]; then
+if [ "$DEPLOY_MODE" = "in-branch" ]; then
     # ==========================================================================
-    # External Repo Mode
+    # In-Branch Mode (Regular Files)
     # ==========================================================================
-    echo "Using external repo: $EXTERNAL_REPO"
-    echo "Engineering path: engineering/$PROJECT_NAME/"
+    echo "Using in-branch mode (regular files)"
     echo ""
     
-    # Clone external repo
-    TEMP_CLONE=$(mktemp -d)
-    echo "Cloning external repo..."
-    git clone "$EXTERNAL_REPO" "$TEMP_CLONE"
+    # Create engineering structure directly
+    echo "Creating .engineering/ structure..."
+    create_engineering_structure "$ENGINEERING_DIR"
     
-    cd "$TEMP_CLONE"
-    
-    # Create or update engineering folder for this project
-    NEEDS_COMMIT=false
-    
-    if [ -d "engineering/$PROJECT_NAME" ]; then
-        echo "✓ Engineering folder found, checking structure..."
-    else
-        echo "Creating engineering/$PROJECT_NAME/..."
-        mkdir -p "engineering/$PROJECT_NAME"
-        NEEDS_COMMIT=true
-    fi
-    
-    # Ensure full structure exists (only creates missing items)
-    create_engineering_structure "engineering/$PROJECT_NAME"
-    
-    # Add submodules if not present (run from repo root with full paths)
-    ENG_PATH="engineering/$PROJECT_NAME"
-    
-    if [ ! -d "$ENG_PATH/workflows/.git" ] && [ ! -f "$ENG_PATH/workflows/.git" ]; then
-        rm -rf "$ENG_PATH/workflows" 2>/dev/null || true
-        git submodule add -b workflows "https://github.com/m2ux/workflow-server.git" "$ENG_PATH/workflows" 2>/dev/null || true
-        if [ -d "$ENG_PATH/workflows" ]; then
-            cd "$ENG_PATH/workflows"
-            git checkout workflows 2>/dev/null || true
-            cd "$TEMP_CLONE"
-            echo "✓ Added workflows submodule"
-            NEEDS_COMMIT=true
-        fi
-    else
-        echo "✓ workflows submodule exists"
-    fi
-    
-    if [ "$SKIP_METADATA" = false ]; then
-        if [ ! -d "$ENG_PATH/history/.git" ] && [ ! -f "$ENG_PATH/history/.git" ]; then
-            rm -rf "$ENG_PATH/history" 2>/dev/null || true
-            # Ensure orphan branch exists for this project
-            ensure_history_branch "$METADATA_REPO" "$PROJECT_NAME"
-            git submodule add -b "$PROJECT_NAME" "$METADATA_REPO" "$ENG_PATH/history" 2>/dev/null || true
-            if [ -d "$ENG_PATH/history" ]; then
-                cd "$ENG_PATH/history"
-                git checkout "$PROJECT_NAME" 2>/dev/null || true
-                cd "$TEMP_CLONE"
-                echo "✓ Added history submodule (branch: $PROJECT_NAME)"
-                NEEDS_COMMIT=true
-            fi
-        else
-            echo "✓ history submodule exists"
-        fi
-    fi
-    
-    # Commit if there are changes
-    if [ "$NEEDS_COMMIT" = true ] || [ -n "$(git status --porcelain)" ]; then
-        git add "engineering/$PROJECT_NAME"
-        git commit -m "docs: update engineering for $PROJECT_NAME" 2>/dev/null || true
-        git push origin HEAD 2>/dev/null || true
-        echo "✓ Pushed changes to external repo"
-    fi
-    
-    cd "$REPO_ROOT"
-    
-    # Clean up temp clone
-    rm -rf "$TEMP_CLONE"
-    
-    # Clone with sparse checkout to get only this project's engineering folder
-    echo ""
-    echo "Setting up .engineering/ with sparse checkout..."
-    git clone --no-checkout "$EXTERNAL_REPO" "$ENGINEERING_DIR"
-    cd "$ENGINEERING_DIR"
-    git sparse-checkout init --cone
-    git sparse-checkout set "engineering/$PROJECT_NAME"
-    git checkout HEAD
-    
-    # Move content up so .engineering/ points directly to project folder
-    cd "$REPO_ROOT"
-    if [ -d "$ENGINEERING_DIR/engineering/$PROJECT_NAME" ]; then
-        mv "$ENGINEERING_DIR" "${ENGINEERING_DIR}_tmp"
-        mv "${ENGINEERING_DIR}_tmp/engineering/$PROJECT_NAME" "$ENGINEERING_DIR"
-        # Preserve the .git directory so .engineering remains a git repo
-        mv "${ENGINEERING_DIR}_tmp/.git" "$ENGINEERING_DIR/.git"
-        rm -rf "${ENGINEERING_DIR}_tmp"
-    fi
-    
-    # Clone submodules as standalone repos (external mode doesn't use git submodule refs)
+    # Clone workflows as standalone repo
     echo ""
     echo "Setting up submodule repos..."
     cd "$ENGINEERING_DIR"
     
-    # Clone workflows (only if not already present)
     if [ ! -d "workflows/.git" ]; then
         rm -rf workflows 2>/dev/null || true
         if git clone -b workflows "https://github.com/m2ux/workflow-server.git" workflows 2>/dev/null; then
@@ -477,48 +412,91 @@ if [ -n "$EXTERNAL_REPO" ]; then
     
     # Clone history from project-specific orphan branch
     if [ "$SKIP_METADATA" = false ]; then
-        rm -rf history 2>/dev/null || true
-        if git clone --single-branch --branch "$PROJECT_NAME" "$METADATA_REPO" history 2>/dev/null; then
-            echo "✓ history (branch: $PROJECT_NAME)"
+        if [ ! -d "history/.git" ]; then
+            rm -rf history 2>/dev/null || true
+            # Ensure orphan branch exists for this project
+            ensure_history_branch "$METADATA_REPO" "$PROJECT_NAME"
+            if git clone --single-branch --branch "$PROJECT_NAME" "$METADATA_REPO" history 2>/dev/null; then
+                echo "✓ history (branch: $PROJECT_NAME)"
+            else
+                echo "⚠ history skipped (private or branch not found)"
+            fi
         else
-            echo "⚠ history skipped (private or branch not found)"
+            echo "✓ history exists"
         fi
     fi
     
-    echo "✓ Deployed to .engineering/"
+    cd "$REPO_ROOT"
+    
+    echo ""
+    echo "✓ Created .engineering/ structure"
     
     # Migrate existing data if backup exists
     migrate_existing_data "$ENGINEERING_DIR"
     
+    # Note: In-branch mode - user should commit .engineering/ to their branch
+    echo ""
+    echo "Note: .engineering/ is ready for use."
+    echo "      Add to .gitignore if you don't want to track artifacts."
+    echo "      Or commit to include engineering files in your branch."
+    
 else
     # ==========================================================================
-    # In-Repo Mode (Orphan Branch)
+    # Orphan Branch Mode (Default)
     # ==========================================================================
     
-    SOURCE_REPO="$(git remote get-url origin 2>/dev/null || echo "")"
-    if [ -z "$SOURCE_REPO" ]; then
-        echo "Error: Could not determine remote URL"
-        exit 1
-    fi
-    
-    # Check if engineering branch exists
-    if git ls-remote --heads "$SOURCE_REPO" engineering 2>/dev/null | grep -q engineering; then
-        echo "✓ Engineering branch found"
+    # Determine repo and branch based on ORPHAN_REPO
+    if [ -n "$ORPHAN_REPO" ]; then
+        # External repo mode: use project-named branch
+        TARGET_REPO="$ORPHAN_REPO"
+        TARGET_BRANCH="$PROJECT_NAME"
+        echo "Using orphan branch mode (external repo)"
+        echo "Repo: $TARGET_REPO"
+        echo "Branch: $TARGET_BRANCH"
     else
-        echo "Engineering branch not found. Creating..."
+        # Local repo mode: use 'engineering' branch
+        TARGET_REPO="$(git remote get-url origin 2>/dev/null || echo "")"
+        TARGET_BRANCH="engineering"
+        echo "Using orphan branch mode (local)"
+        echo "Branch: $TARGET_BRANCH"
+        
+        if [ -z "$TARGET_REPO" ]; then
+            echo "Error: Could not determine remote URL"
+            exit 1
+        fi
+    fi
+    echo ""
+    
+    # Check if target branch exists
+    if git ls-remote --heads "$TARGET_REPO" "$TARGET_BRANCH" 2>/dev/null | grep -q "$TARGET_BRANCH"; then
+        echo "✓ Branch '$TARGET_BRANCH' found"
+    else
+        echo "Branch '$TARGET_BRANCH' not found. Creating..."
         echo ""
         
-        WORKTREE_DIR="${REPO_ROOT}_engineering_tmp"
+        if [ -n "$ORPHAN_REPO" ]; then
+            # External repo: clone to temp dir
+            TEMP_DIR=$(mktemp -d)
+            git clone --depth 1 "$TARGET_REPO" "$TEMP_DIR" 2>/dev/null || {
+                # If clone fails (empty repo), init fresh
+                cd "$TEMP_DIR"
+                git init
+                git remote add origin "$TARGET_REPO"
+            }
+            cd "$TEMP_DIR"
+        else
+            # Local repo: use worktree
+            WORKTREE_DIR="${REPO_ROOT}_engineering_tmp"
+            git worktree add --detach "$WORKTREE_DIR" 2>/dev/null || true
+            cd "$WORKTREE_DIR"
+        fi
         
-        git worktree add --detach "$WORKTREE_DIR" 2>/dev/null || true
-        cd "$WORKTREE_DIR"
-        
-        git checkout --orphan engineering
+        git checkout --orphan "$TARGET_BRANCH"
         git rm -rf . 2>/dev/null || true
         
         create_engineering_structure "."
         
-        # Add submodules for in-repo mode
+        # Add submodules
         git submodule add -b workflows "https://github.com/m2ux/workflow-server.git" workflows 2>/dev/null || true
         if [ -d "workflows" ]; then
             cd workflows
@@ -527,7 +505,6 @@ else
         fi
         
         if [ "$SKIP_METADATA" = false ]; then
-            # Ensure orphan branch exists for this project
             ensure_history_branch "$METADATA_REPO" "$PROJECT_NAME"
             git submodule add -b "$PROJECT_NAME" "$METADATA_REPO" history 2>/dev/null || true
             if [ -d "history" ]; then
@@ -538,24 +515,29 @@ else
         fi
         
         git add .
-        git commit -m "docs: initialize engineering branch"
-        git push -u origin engineering
+        git commit -m "docs: initialize $TARGET_BRANCH engineering branch"
+        git push -u origin "$TARGET_BRANCH"
         
-        echo "✓ Created and pushed engineering branch"
+        echo "✓ Created and pushed branch '$TARGET_BRANCH'"
         
         cd "$REPO_ROOT"
-        git worktree remove "$WORKTREE_DIR" 2>/dev/null || rm -rf "$WORKTREE_DIR"
+        if [ -n "$ORPHAN_REPO" ]; then
+            rm -rf "$TEMP_DIR"
+        else
+            git worktree remove "$WORKTREE_DIR" 2>/dev/null || rm -rf "$WORKTREE_DIR"
+        fi
     fi
     
-    # Clone engineering branch
+    # Add .engineering as submodule
     echo ""
-    echo "Cloning engineering branch..."
-    git clone --single-branch --branch engineering "$SOURCE_REPO" "$ENGINEERING_DIR"
-    echo "✓ Cloned to .engineering/"
+    echo "Adding .engineering submodule..."
+    cd "$REPO_ROOT"
+    git submodule add -b "$TARGET_BRANCH" "$TARGET_REPO" .engineering
+    echo "✓ Added .engineering submodule (branch: $TARGET_BRANCH)"
     
-    # Initialize submodules
+    # Initialize nested submodules
     echo ""
-    echo "Initializing submodules..."
+    echo "Initializing nested submodules..."
     cd "$ENGINEERING_DIR"
     
     if [ -f .gitmodules ]; then
@@ -577,8 +559,13 @@ else
         fi
     fi
     
-    # Migrate existing data if backup exists (in-repo mode)
+    cd "$REPO_ROOT"
+    
+    # Migrate existing data if backup exists
     migrate_existing_data "$ENGINEERING_DIR"
+    
+    echo ""
+    echo "Note: .engineering submodule added. Run 'git commit' to save."
 fi
 
 cd "$REPO_ROOT"
