@@ -1,7 +1,7 @@
 id: reconnaissance
-version: 1.0.0
+version: 2.0.0
 name: Reconnaissance
-description: "Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. This is §1.2 of the audit template."
+description: "Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. This is §1.2 of the audit template. Fully automated — no user checkpoints."
 problem: The agent needs a complete mental model of the system before detailed review can begin.
 recognition[3]:
   - map architecture
@@ -47,36 +47,23 @@ steps[9]:
     description: "For every priority-1 and priority-2 crate, enumerate critical functions per §1.2 step 8. Include pallet hooks, ProvideInherent methods, extrinsics, service functions, data source functions, and startup handlers."
   - id: assign-agent-groups
     name: Assign Agent Groups
-    description: "Based on the crate map, assign crates to sub-agent groups for Phase 1b: Group A (crate-level deep review), Group B (static analysis), Group C (cross-cutting traces), Group D (toolkit review)."
-checkpoints[1]:
-  - id: reconnaissance-complete
-    name: Reconnaissance Complete
-    message: "Architecture mapped: {crate_count} crates identified, {function_count} functions in registry, {large_file_count} files >200 lines. Proceed to primary audit?"
-    options[2]:
-      - id: proceed
-        label: Proceed to primary audit
-        description: Begin multi-agent dispatch
-        effect:
-          setVariable:
-            reconnaissance_complete: true
-      - id: review-map
-        label: Review architecture map
-        description: Examine the crate map and function registry before proceeding
+    description: "Based on the crate map, assign crates to sub-agent groups for Phase 1b: Group A (crate-level deep review), Group B (static analysis), Group C (cross-cutting traces), Group D (toolkit review), Group E (mechanical checklist verification). Organize into Wave 1 (priority-1 + B + C) and Wave 2 (priority-2 + D + E)."
 transitions[1]{to,isDefault}:
   primary-audit,true
-exitActions[1]{action,message}:
+exitActions[2]{action,message}:
   log,Reconnaissance complete — architecture mapped and function registry built
+  set,reconnaissance_complete=true
 outcome[5]:
   - All crates explicitly identified and classified
   - Trust boundaries mapped
   - Consensus-critical paths identified
   - Function registry built for priority-1 and priority-2 crates
-  - Agent groups assigned for multi-agent dispatch
+  - Agent groups assigned for two-wave multi-agent dispatch
 context_to_preserve[5]:
   - crate_map - Classification of all crates by type and priority
   - function_registry - Registry of critical functions per crate
   - trust_boundaries - List of identified trust boundaries
-  - agent_assignments - Crate-to-agent-group assignments
+  - agent_assignments - Crate-to-agent-group assignments with wave allocation
   - large_files - List of .rs files >200 lines sorted by size
 artifacts[1]:
   - id: readme

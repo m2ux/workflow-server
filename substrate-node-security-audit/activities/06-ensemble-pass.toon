@@ -1,7 +1,7 @@
 id: ensemble-pass
-version: 1.0.0
+version: 2.0.0
 name: Ensemble Pass
-description: "Optional second-model audit run on priority-1/2 components. Merges findings with the primary report using union-with-consensus-severity strategy. Findings in both reports are high-confidence; single-source findings are flagged for verification."
+description: "Optional second-model audit run on priority-1/2 components. Merges findings with the primary report using union-with-consensus-severity strategy. Fully automated — no user checkpoints."
 problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures the 'sometimes found' tier more reliably. In validated sessions, any 2 runs unioned cover ~65-70% of professional findings.
 recognition[3]:
   - run ensemble pass
@@ -31,17 +31,6 @@ steps[4]:
   - id: update-report
     name: Update Report
     description: "Update 01-audit-report.md with ensemble results. Add a section noting which findings are consensus (both runs) vs single-source (one run only)."
-checkpoints[1]:
-  - id: ensemble-review
-    name: Ensemble Results Review
-    message: "Ensemble merge complete. {consensus_count} consensus findings, {single_source_count} single-source findings, {escalated_count} escalated (PASS→FAIL). Update report?"
-    options[2]:
-      - id: update
-        label: Update report with ensemble results
-        description: Integrate ensemble findings into the final report
-      - id: skip
-        label: Keep primary report only
-        description: Discard ensemble results and proceed with primary report
 decisions[1]:
   - id: next-phase
     name: Post-Ensemble Decision

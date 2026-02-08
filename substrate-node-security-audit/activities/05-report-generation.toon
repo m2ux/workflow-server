@@ -1,7 +1,7 @@
 id: report-generation
-version: 1.0.0
+version: 2.0.0
 name: Report Generation
-description: "Consolidate all findings from primary audit and adversarial verification into a final report. Apply severity scoring rubric, verify coverage gate, deduplicate, and produce the deliverable audit report."
+description: "Consolidate all findings from primary audit and adversarial verification into a final report. Apply severity scoring rubric with cross-check, verify coverage gate, deduplicate, and produce the deliverable audit report. Fully automated — no user checkpoints."
 problem: Findings from multiple agents and phases must be merged, deduplicated, severity-calibrated, and formatted into a cohesive report with coverage verification.
 recognition[3]:
   - generate audit report
@@ -18,10 +18,10 @@ notes[5]:
   - "Severity MUST use the Impact x Feasibility rubric (resource 02) — not intuitive assignment"
   - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
   - "Cross-reference findings from different agents to create coherent multi-facet findings"
-  - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis-offer checkpoint below. DO NOT read, open, or query the reference report during report generation steps (merge, deduplicate, severity scoring, coverage gate, report writing). The reference_report_path variable is set ONLY at the gap-analysis-offer checkpoint AFTER the report is finalized."
+  - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation. The reference_report_path was recorded at scope-setup but must NOT be loaded until gap-analysis."
 entryActions[1]{action,message}:
   log,Starting report generation — consolidating findings from all phases
-steps[6]:
+steps[7]:
   - id: merge-findings
     name: Merge All Findings
     description: "Combine primary audit findings, adversarial verification refutations, and any trace agent findings into a single list."
@@ -32,6 +32,9 @@ steps[6]:
     name: Apply Severity Scoring
     description: "For each finding, compute Impact (1-4) and Feasibility (1-4) scores with one-sentence justifications. Map average to severity per the rubric. Use severity-scoring skill."
     skill: severity-scoring
+  - id: severity-crosscheck
+    name: Severity Cross-Check
+    description: "For each finding with Impact >= 3 (node availability or consensus impact), re-evaluate Feasibility from the attacker's perspective: what is the minimum capability needed to trigger this condition? If the answer is 'any network participant' or 'any RPC client', Feasibility is at least 3. If the condition occurs under normal operation (pruning, routine block production), Feasibility is 4. Compare against calibration examples in the severity-scoring skill."
   - id: coverage-gate
     name: Verify Coverage Gate
     description: "Check that every .rs file >200 lines in priority-1/2 crates was read by at least one agent (§5.14). If any file was missed, flag as a coverage gap in the report."
@@ -41,41 +44,6 @@ steps[6]:
   - id: write-report
     name: Write Final Report
     description: "Produce 01-audit-report.md in the planning folder. Include: executive summary, crate inventory, all numbered findings with severity scores, severity distribution table, methodology notes, and coverage gate results."
-checkpoints[2]:
-  - id: report-review
-    name: Report Review
-    message: "Audit report generated: {finding_count} findings ({critical_count} Critical, {high_count} High, {medium_count} Medium, {low_count} Low, {info_count} Informational). Coverage gate: {coverage_status}. Review the report?"
-    options[2]:
-      - id: finalize
-        label: Finalize report
-        description: Accept the report and proceed
-        effect:
-          setVariable:
-            report_complete: true
-      - id: revise
-        label: Revise findings
-        description: Make adjustments before finalizing
-  - id: gap-analysis-offer
-    name: Gap Analysis Offer
-    message: "Report finalized. Would you like to compare against a professional reference report? (The reference will only be loaded now — it was not used during the audit to avoid contamination.)"
-    options[3]:
-      - id: provide-reference
-        label: Provide reference report for gap analysis
-        description: Supply a professional audit report path for comparison
-        effect:
-          setVariable:
-            has_reference_report: true
-      - id: skip-gap
-        label: Skip gap analysis
-        description: Complete the workflow without comparison
-      - id: skip-to-ensemble
-        label: Skip to ensemble pass
-        description: Run a second-model ensemble pass instead
-        condition:
-          type: simple
-          variable: ensemble_enabled
-          operator: ==
-          value: true
 decisions[1]:
   - id: next-phase
     name: Next Phase Decision
@@ -115,11 +83,12 @@ transitions[3]:
       value: true
   - to: gap-analysis
     isDefault: true
-exitActions[1]{action,message}:
+exitActions[2]{action,message}:
   log,Report generation complete — audit report finalized
+  set,report_complete=true
 outcome[4]:
   - All findings merged and deduplicated
-  - Severity scored using Impact x Feasibility rubric
+  - Severity scored using Impact x Feasibility rubric with cross-check
   - Coverage gate verified
   - Final audit report produced
 context_to_preserve[3]:
