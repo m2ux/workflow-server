@@ -18,8 +18,6 @@ rules[9]:
   - "Every FAIL in the scratchpad MUST be elevated to a numbered finding in the report"
   - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
   - "CONTAMINATION PREVENTION: A reference report (professional audit) must NEVER be loaded, read, or discussed before Phase 5 (gap-analysis). Loading it earlier biases the audit by populating context with known issues, masking the workflow's genuine ability to identify those issues independently. The reference_report_path variable is set ONLY at the gap-analysis-offer checkpoint after the report is finalized."
-artifactLocations:
-  planning: "{planning_folder_path}"
 variables[15]:
   - name: target_submodule
     type: string
