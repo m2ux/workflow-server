@@ -40,7 +40,7 @@ steps[6]:
   - id: write-report
     name: Write Final Report
     description: "Produce 01-audit-report.md in the planning folder. Include: executive summary, crate inventory, all numbered findings with severity scores, severity distribution table, methodology notes, and coverage gate results."
-checkpoints[1]:
+checkpoints[2]:
   - id: report-review
     name: Report Review
     message: "Audit report generated: {finding_count} findings ({critical_count} Critical, {high_count} High, {medium_count} Medium, {low_count} Low, {info_count} Informational). Coverage gate: {coverage_status}. Review the report?"
@@ -54,6 +54,27 @@ checkpoints[1]:
       - id: revise
         label: Revise findings
         description: Make adjustments before finalizing
+  - id: gap-analysis-offer
+    name: Gap Analysis Offer
+    message: "Report finalized. Would you like to compare against a professional reference report? (The reference will only be loaded now — it was not used during the audit to avoid contamination.)"
+    options[3]:
+      - id: provide-reference
+        label: Provide reference report for gap analysis
+        description: Supply a professional audit report path for comparison
+        effect:
+          setVariable:
+            has_reference_report: true
+      - id: skip-gap
+        label: Skip gap analysis
+        description: Complete the workflow without comparison
+      - id: skip-to-ensemble
+        label: Skip to ensemble pass
+        description: Run a second-model ensemble pass instead
+        condition:
+          type: simple
+          variable: ensemble_enabled
+          operator: ==
+          value: true
 decisions[1]:
   - id: next-phase
     name: Next Phase Decision

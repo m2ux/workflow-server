@@ -38,10 +38,10 @@ This workflow guides the complete lifecycle of a security audit:
 
 | Input | Description | When to Use |
 |-------|-------------|-------------|
-| **Reference report** | Path to a professional audit report (PDF or MD) | When you want gap analysis comparing AI findings against a professional benchmark |
 | **Ensemble pass** | Enable a second-model run on priority-1/2 components | When maximum coverage is needed and compute cost is acceptable |
+| **Reference report** | Path to a professional audit report (PDF or MD) | When you want gap analysis comparing AI findings against a professional benchmark |
 
-Both optional inputs can be provided at the setup checkpoint — you don't need to specify them upfront.
+The ensemble option can be enabled at the setup checkpoint. The reference report is requested **only after the report is finalized** (Phase 5) — it is never loaded during the audit itself to avoid contaminating the results with known issues.
 
 ### Prerequisites
 
