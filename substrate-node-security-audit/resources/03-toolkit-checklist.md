@@ -6,7 +6,7 @@ Apply this checklist to ALL files in:
 - `ledger/helpers/src/*.rs`
 - `util/toolkit/src/**/*.rs`
 
-This checklist is mandatory even at priority 11 (off-chain tooling). In 4 validated audit sessions, every session missed the same 9 Low-severity findings because toolkit code was systematically under-reviewed.
+This checklist is mandatory even at priority 11 (off-chain tooling). In validated audit sessions, toolkit code is consistently the most under-reviewed area, leaving a cluster of Low-severity findings undetected.
 
 ## Checklist
 
@@ -109,4 +109,4 @@ For every wallet constructor (`from_path`, `from_seed`):
 
 ## Expected Findings
 
-Applying this checklist to a typical Substrate node's toolkit code produces 7-9 Low-severity findings covering state management, arithmetic safety, and file I/O bounds.
+Applying this checklist to a typical Substrate node's toolkit code consistently surfaces Low-severity findings covering state management, arithmetic safety, and file I/O bounds.

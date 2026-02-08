@@ -2,7 +2,7 @@
 id: substrate-node-security-audit
 version: 3.0.0
 title: Security Audit Workflow
-description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, two-wave multi-agent deep review (Groups A-E) with cross-layer deferral, anti-anchoring adversarial verification, severity-calibrated reporting with cross-check, optional ensemble passes, and gap analysis against professional audit reports. Based on the Substrate Node Security Audit Template v3 (validated at 59-75% overlap with professional audits across 8 sessions). v3 adds: mandatory Group D/E dispatch, two-wave agent structure, field-enumeration in adversarial verification, severity cross-check, and checklist completion gates."
+description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, two-wave multi-agent deep review (Groups A-E) with cross-layer deferral, anti-anchoring adversarial verification, severity-calibrated reporting with cross-check, optional ensemble passes, and gap analysis against professional audit reports. Based on the Substrate Node Security Audit Template v3 (iteratively improved via gap analysis against professional audit benchmarks). v3 adds: mandatory Group D/E dispatch, two-wave agent structure, field-enumeration in adversarial verification, severity cross-check, and checklist completion gates."
 author: m2ux
 tags[3]:
   - security

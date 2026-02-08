@@ -24,7 +24,7 @@ This workflow guides the complete lifecycle of a security audit:
 - Anti-anchoring adversarial verification (no findings/severity shared with verifier)
 - Extended coverage gate (file read + panic sweep + late-file re-read + scope completeness)
 - Impact x Feasibility severity scoring with calibration cross-check
-- Based on the Substrate Node Security Audit Template v3 (validated at 75% overlap with professional audits in 7 sessions)
+- Based on the Substrate Node Security Audit Template v3 (iteratively improved via gap analysis against professional audit benchmarks)
 
 ---
 
@@ -37,7 +37,7 @@ This workflow guides the complete lifecycle of a security audit:
 | Input | Description | Example |
 |-------|-------------|---------|
 | **Target submodule** | Which submodule to audit | `midnight-node` |
-| **Target commit** | Git commit hash (defaults to HEAD if not specified) | `d204679fea653a34fa6dccd0e6792c34a2e9937b` |
+| **Target commit** | Git commit hash (defaults to HEAD if not specified) | `abc1234...` |
 
 ### Optional Inputs
 

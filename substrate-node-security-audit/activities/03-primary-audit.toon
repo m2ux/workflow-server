@@ -44,7 +44,7 @@ steps[10]:
   - id: dispatch-wave-2-group-d
     name: "Wave 2: Dispatch Group D — Toolkit Review (MANDATORY)"
     required: true
-    description: "MANDATORY: Spawn one agent for ledger/helpers/ and util/toolkit/ with the mandatory toolkit minimum checklist (resource 03). This agent MUST be dispatched even when agent slots are constrained. Apply state management, arithmetic, file I/O, mutex, and wallet-specific checks. The 7-item toolkit checklist is non-negotiable — in 8 validated sessions, every session that skipped Group D missed 9+ Low-severity findings."
+    description: "MANDATORY: Spawn one agent for ledger/helpers/ and util/toolkit/ with the mandatory toolkit minimum checklist (resource 03). This agent MUST be dispatched even when agent slots are constrained. Apply state management, arithmetic, file I/O, mutex, and wallet-specific checks. The 7-item toolkit checklist is non-negotiable — validated sessions consistently show that skipping toolkit review leaves a cluster of Low-severity findings undetected."
   - id: dispatch-wave-2-group-e
     name: "Wave 2: Dispatch Group E — Mechanical Checklist Verification (MANDATORY)"
     required: true
