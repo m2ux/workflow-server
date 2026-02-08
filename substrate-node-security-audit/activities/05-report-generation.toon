@@ -13,11 +13,12 @@ skills:
     - severity-scoring
 required: true
 estimatedTime: 20-40m
-notes[4]:
+notes[5]:
   - "Every FAIL in every scratchpad MUST have a corresponding numbered finding (§5.12)"
   - "Severity MUST use the Impact x Feasibility rubric (resource 02) — not intuitive assignment"
   - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
   - "Cross-reference findings from different agents to create coherent multi-facet findings"
+  - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis-offer checkpoint below. DO NOT read, open, or query the reference report during report generation steps (merge, deduplicate, severity scoring, coverage gate, report writing). The reference_report_path variable is set ONLY at the gap-analysis-offer checkpoint AFTER the report is finalized."
 entryActions[1]{action,message}:
   log,Starting report generation — consolidating findings from all phases
 steps[6]:

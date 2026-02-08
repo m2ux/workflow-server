@@ -11,12 +11,13 @@ skills:
   primary: audit-execution
 required: true
 estimatedTime: 15-30m
-notes[5]:
+notes[6]:
   - "Explicitly list EVERY pallet and primitive crate — do not summarize or group"
   - "Map which crates are runtime (Wasm), native (node binary), shared primitives, or off-chain tooling"
   - "Identify trust boundaries: RPC, inherent data, chain specs, config files, databases, file system, native/Wasm boundary"
   - "Build the function registry for ALL priority-1 and priority-2 crates (§1.2 step 8)"
   - "Sort .rs files by line count — the top 10 files MUST be in the registry and read during review (§5.14)"
+  - "CONTAMINATION GUARD: DO NOT read, open, fetch, or query any reference audit report, prior gap analysis, or file containing professional audit findings. These are quarantined until Phase 5 (gap-analysis). DO NOT read files from prior audit sessions (e.g., 02-gap-analysis-vs-least-authority.md) — they reveal the findings this workflow must independently discover."
 entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2)
 steps[9]:
