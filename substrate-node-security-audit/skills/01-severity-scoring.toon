@@ -48,7 +48,7 @@ scoring_rubric:
         severity: Critical
 
 calibration_examples:
-  description: "From 8 validated audit sessions benchmarked against a professional audit"
+  description: "From validated audit sessions benchmarked against professional audits"
   examples[9]:
     - finding: "Connection pool shared (5 conns) between RPC and consensus"
       impact: 4
@@ -98,14 +98,14 @@ calibration_examples:
       feasibility: 3
       feasibility_reason: "Any network participant can submit a partially-failing transaction"
       severity: Low
-      note: "LA rated High — calibration depends on whether events drive financial logic in downstream systems. If indexers trigger actions on these events, impact rises to 3 (Medium). Default to Medium if downstream usage is unknown."
+      note: "Professional audits may rate higher if events drive financial logic in downstream systems. If indexers trigger actions on these events, impact rises to 3 (Medium). Default to Medium if downstream usage is unknown."
     - finding: "SSL mode defaults to Prefer (plaintext downgrade)"
       impact: 3
       impact_reason: "MITM on db-sync connection could falsify mainchain observation data feeding consensus inherents"
       feasibility: 3
       feasibility_reason: "Requires network-level MITM position between node and db-sync database"
       severity: Medium
-      note: "LA rated High — justified if db-sync is on a separate host. Rate High if db-sync traffic crosses untrusted networks."
+      note: "Rate High if database traffic crosses untrusted networks. The severity depends on deployment topology — same-host connections are lower risk than cross-network connections."
     - finding: "i64 to u128 cast on token quantity from database"
       impact: 4
       impact_reason: "Negative DB value wraps to astronomically large token amount — unbounded minting"

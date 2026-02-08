@@ -46,7 +46,7 @@ Every finding must include:
 
 ## Calibration Examples
 
-These examples are derived from 4 validated audit sessions benchmarked against the Least Authority professional audit:
+These examples are derived from validated audit sessions benchmarked against professional audit reports:
 
 | Finding | I | F | Avg | Severity | Key Insight |
 |---------|---|---|-----|----------|-------------|

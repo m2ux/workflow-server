@@ -2,7 +2,7 @@ id: adversarial-verification
 version: 2.0.0
 name: Adversarial Verification
 description: "Verify every PASS item from the primary audit scratchpads by decomposing each claim into constituent properties, enumerating all fields/sites, and independently verifying each one. The agent's role is to REFUTE, not confirm. Fully automated — no user checkpoints."
-problem: AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. In 4 validated sessions, this caused 4-5 Medium/High findings to be missed as false PASSes.
+problem: AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. In validated sessions, this consistently causes Medium/High findings to be missed as false PASSes.
 recognition[3]:
   - verify audit findings
   - adversarial review

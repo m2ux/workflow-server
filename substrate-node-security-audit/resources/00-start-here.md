@@ -2,7 +2,7 @@
 
 ## Overview
 
-This workflow orchestrates a multi-phase AI security audit of a Substrate-based blockchain node codebase. It follows the Substrate Node Security Audit Template v3 with multi-agent execution, exhaustive panic sweep, hard-gate adversarial verification, and optional ensemble passes. Validated at 75% overlap with professional audits across 7 sessions.
+This workflow orchestrates a multi-phase AI security audit of a Substrate-based blockchain node codebase. It follows the Substrate Node Security Audit Template v3 with two-wave multi-agent execution, exhaustive panic sweep, hard-gate adversarial verification with anti-anchoring, and optional ensemble passes. Iteratively improved via gap analysis against professional audit benchmarks.
 
 ## Prerequisites
 
