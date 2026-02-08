@@ -170,7 +170,7 @@ export function getValidTransitions(workflow: Workflow, fromActivityId: string):
   if (!activity) return [];
   const transitions: string[] = [];
   activity.transitions?.forEach(t => transitions.push(t.to));
-  activity.decisions?.forEach(d => d.branches.forEach(b => transitions.push(b.transitionTo)));
+  activity.decisions?.forEach(d => d.branches.forEach(b => { if (b.transitionTo) transitions.push(b.transitionTo); }));
   activity.checkpoints?.forEach(c => c.options.forEach(o => o.effect?.transitionTo && transitions.push(o.effect.transitionTo)));
   return [...new Set(transitions)];
 }

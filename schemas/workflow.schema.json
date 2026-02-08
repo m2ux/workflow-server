@@ -73,6 +73,27 @@
       "required": ["id", "name", "activationVariable"],
       "additionalProperties": false
     },
+    "artifactLocation": {
+      "type": "object",
+      "description": "Defines a named artifact storage location referenced by activity artifacts",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path pattern for this location. Supports workflow variable interpolation (e.g., '{planning_folder_path}')"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of what artifacts this location stores"
+        },
+        "gitignored": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether artifacts in this location are gitignored from the host project"
+        }
+      },
+      "required": ["path"],
+      "additionalProperties": false
+    },
     "workflow": {
       "type": "object",
       "properties": {
@@ -125,6 +146,13 @@
             "$ref": "#/definitions/mode"
           },
           "description": "Execution modes that modify standard workflow behavior"
+        },
+        "artifactLocations": {
+          "type": "object",
+          "description": "Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions (e.g., 'planning'), values define path patterns and metadata.",
+          "additionalProperties": {
+            "$ref": "#/definitions/artifactLocation"
+          }
         },
         "initialActivity": {
           "type": "string",

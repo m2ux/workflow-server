@@ -61,7 +61,7 @@ export const DecisionBranchSchema = z.object({
   id: z.string(),
   label: z.string(),
   condition: ConditionSchema.optional(),
-  transitionTo: z.string().describe('Activity ID to transition to'),
+  transitionTo: z.string().optional().describe('Activity ID to transition to. Omit for terminal branches (workflow ends)'),
   isDefault: z.boolean().default(false),
 });
 export type DecisionBranch = z.infer<typeof DecisionBranchSchema>;

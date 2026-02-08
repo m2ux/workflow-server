@@ -150,7 +150,7 @@
           "default": false
         }
       },
-      "required": ["id", "label", "transitionTo"],
+      "required": ["id", "label"],
       "additionalProperties": false
     },
     "decision": {

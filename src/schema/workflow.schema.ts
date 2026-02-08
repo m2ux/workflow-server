@@ -22,6 +22,11 @@ export const WorkflowSchema = z.object({
   tags: z.array(z.string()).optional(),
   rules: z.array(z.string()).optional().describe('Rules that govern workflow execution'),
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
+  artifactLocations: z.record(z.object({
+    path: z.string().describe('Path pattern for this location. Supports workflow variable interpolation (e.g., \'{planning_folder_path}\')'),
+    description: z.string().optional().describe('Description of what artifacts this location stores'),
+    gitignored: z.boolean().default(false).describe('Whether artifacts in this location are gitignored from the host project'),
+  })).optional().describe('Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions.'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   activities: z.array(ActivitySchema).min(1).describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points.'),
 });
