@@ -11,7 +11,7 @@ skills:
   primary: audit-execution
 required: true
 estimatedTime: 60-120m
-notes[7]:
+notes[8]:
   - "The orchestrator coordinates but does NOT perform manual review itself"
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "Group B static analysis agent runs ALL §2 grep patterns against the FULL in-scope directory set"
@@ -19,6 +19,7 @@ notes[7]:
   - "Group D toolkit agent applies the mandatory toolkit minimum checklist (resource 03)"
   - "Every agent must return structured findings AND a completed scratchpad with PASS/FAIL/NA per check"
   - "Invariant extraction (§5.15) is mandatory for every priority-1 function before applying the §3 checklist"
+  - "CONTAMINATION GUARD: DO NOT read, open, fetch, or query any reference audit report, prior gap analysis, or professional audit findings. Sub-agent prompts MUST NOT include content from reference reports. All findings must be independently derived from the source code."
 entryActions[1]{action,message}:
   log,Starting primary audit — dispatching multi-agent groups
 steps[6]:

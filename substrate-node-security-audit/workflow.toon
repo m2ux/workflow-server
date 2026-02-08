@@ -17,7 +17,7 @@ rules[9]:
   - "Every PASS in the scratchpad MUST cite specific code — bare PASSes are invalid"
   - "Every FAIL in the scratchpad MUST be elevated to a numbered finding in the report"
   - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
-  - "CONTAMINATION PREVENTION: A reference report (professional audit) must NEVER be loaded, read, or discussed before Phase 5 (gap-analysis). Loading it earlier biases the audit by populating context with known issues, masking the workflow's genuine ability to identify those issues independently. The reference_report_path variable is set ONLY at the gap-analysis-offer checkpoint after the report is finalized."
+  - "CONTAMINATION PREVENTION (CRITICAL): A reference report (professional audit) must NEVER be loaded, read, opened, fetched, searched, queried via concept-rag, or discussed before Phase 5 (gap-analysis). This includes: (1) the reference PDF/document itself, (2) any prior gap analysis files from earlier audit sessions (e.g., 02-gap-analysis-vs-least-authority.md), (3) any file whose name or content reveals professional audit findings. Loading ANY of these before the report is finalized biases the audit by populating context with known issues. The reference_report_path variable is set ONLY at the gap-analysis-offer checkpoint after the report is finalized. If the user mentions a reference report in their initial request, acknowledge it and defer to Phase 5 — do NOT read it."
 variables[15]:
   - name: target_submodule
     type: string
