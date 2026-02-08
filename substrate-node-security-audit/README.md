@@ -23,6 +23,33 @@ This workflow guides the complete lifecycle of a security audit:
 
 ---
 
+## Getting Started
+
+**To start an audit, say:** `"start security audit"` or `"audit midnight-node at commit abc123"`
+
+### Required Inputs
+
+| Input | Description | Example |
+|-------|-------------|---------|
+| **Target submodule** | Which submodule to audit | `midnight-node` |
+| **Target commit** | Git commit hash (defaults to HEAD if not specified) | `d204679fea653a34fa6dccd0e6792c34a2e9937b` |
+
+### Optional Inputs
+
+| Input | Description | When to Use |
+|-------|-------------|-------------|
+| **Reference report** | Path to a professional audit report (PDF or MD) | When you want gap analysis comparing AI findings against a professional benchmark |
+| **Ensemble pass** | Enable a second-model run on priority-1/2 components | When maximum coverage is needed and compute cost is acceptable |
+
+Both optional inputs can be provided at the setup checkpoint — you don't need to specify them upfront.
+
+### Prerequisites
+
+- Read and follow `AGENTS.md` in the project root
+- The target submodule must exist in the repository (see `.gitmodules`)
+
+---
+
 ## Workflow Flow
 
 ```mermaid
