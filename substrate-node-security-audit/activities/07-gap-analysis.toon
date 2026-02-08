@@ -11,15 +11,21 @@ skills:
   primary: audit-execution
 required: false
 estimatedTime: 30-60m
-notes[4]:
+notes[5]:
   - "This activity is OPTIONAL — only runs when has_reference_report is true"
+  - "CRITICAL: The reference report must NOT be loaded, read, or discussed before this phase. Loading it earlier contaminates the audit by populating context with known issues, masking the workflow's genuine ability to identify those issues independently."
   - "The reference report must target the same commit for valid comparison"
   - "Map every reference finding to the AI finding or note as a gap"
   - "Analyze severity calibration: which findings are over-rated vs under-rated and why"
-steps[6]:
+entryActions[1]{action,message}:
+  log,Starting gap analysis — reference report will be loaded NOW (not before)
+steps[7]:
+  - id: request-reference
+    name: Request Reference Report
+    description: "Ask the user to provide the path to the professional audit report. This is the FIRST time the reference report is accessed — it must not have been loaded or discussed during any prior phase."
   - id: load-reference
     name: Load Reference Report
-    description: "Read the professional audit report from reference_report_path. Extract the finding list with severities, descriptions, and affected files."
+    description: "Read the professional audit report from reference_report_path. Extract the finding list with severities, descriptions, and affected files. This is the first and only time the reference report enters the agent's context."
   - id: map-findings
     name: Map Findings
     description: "For each reference finding, identify the closest matching AI finding. Classify as: matched (same root cause), partial match (related but incomplete), or gap (missed entirely)."

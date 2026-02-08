@@ -8,7 +8,7 @@ tags[3]:
   - security
   - audit
   - workflow
-rules[8]:
+rules[9]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
   - Agents must NOT proceed past checkpoints without user confirmation
@@ -17,6 +17,7 @@ rules[8]:
   - "Every PASS in the scratchpad MUST cite specific code — bare PASSes are invalid"
   - "Every FAIL in the scratchpad MUST be elevated to a numbered finding in the report"
   - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
+  - "CONTAMINATION PREVENTION: A reference report (professional audit) must NEVER be loaded, read, or discussed before Phase 5 (gap-analysis). Loading it earlier biases the audit by populating context with known issues, masking the workflow's genuine ability to identify those issues independently. The reference_report_path variable is set ONLY at the gap-analysis-offer checkpoint after the report is finalized."
 artifactLocations:
   planning: "{planning_folder_path}"
 variables[14]:

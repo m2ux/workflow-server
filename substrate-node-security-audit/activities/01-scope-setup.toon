@@ -59,7 +59,7 @@ checkpoints[2]:
   - id: setup-complete
     name: Setup Complete
     message: "Setup complete. Submodule checked out, planning folder created, dependency scan {cargo_audit_available ? 'completed' : 'skipped (fallback in §2.2 applies)'}. Proceed to reconnaissance?"
-    options[3]:
+    options[2]:
       - id: proceed
         label: Proceed to reconnaissance
         description: Begin architecture mapping and file inventory
@@ -71,13 +71,6 @@ checkpoints[2]:
           setVariable:
             ensemble_enabled: true
         transitionTo: reconnaissance
-      - id: provide-reference
-        label: Provide reference report
-        description: Supply a professional audit report for gap analysis
-        effect:
-          setVariable:
-            has_reference_report: true
-        transitionTo: reconnaissance
 transitions[1]{to,isDefault}:
   reconnaissance,true
 exitActions[1]{action,message}:
@@ -88,13 +81,12 @@ outcome[5]:
   - Dependency scan completed or fallback noted
   - File inventory generated
   - Planning folder created with START-HERE.md
-context_to_preserve[6]:
+context_to_preserve[5]:
   - target_submodule - Path to the submodule being audited
   - target_commit - Git commit hash
   - planning_folder_path - Path to planning artifacts folder
   - cargo_audit_available - Whether cargo audit ran successfully
   - ensemble_enabled - Whether ensemble pass is enabled
-  - has_reference_report - Whether a reference report is available
 artifacts[1]:
   - id: start-here
     name: START-HERE.md
