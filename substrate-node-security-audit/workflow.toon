@@ -19,13 +19,19 @@ rules[8]:
   - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
 artifactLocations:
   planning: "{planning_folder_path}"
-variables[12]:
+variables[14]:
   - name: target_submodule
     type: string
     description: "Path to the submodule being audited (e.g., midnight-node)"
   - name: target_commit
     type: string
     description: "Git commit hash to audit"
+  - name: in_scope
+    type: string
+    description: "Space-separated list of crate/module paths to audit (e.g., 'node/ pallets/ primitives/ runtime/ ledger/ util/ res/ metadata/')"
+  - name: out_of_scope
+    type: string
+    description: "Space-separated list of exclusions (e.g., 'indexer/ target/ test/ mock/ bench/')"
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-NN-{submodule}-security-audit"

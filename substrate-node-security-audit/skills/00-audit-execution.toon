@@ -55,8 +55,9 @@ agent_dispatch:
   group_a:
     description: Crate-level deep review agents
     count: One per priority-1/2 crate
-    receives: "Crate path, §3 checklist, function registry entries, invariant extraction requirement"
-    must_do[4]:
+    receives: "Crate path, relevant §3 checklist sections from the template, function registry entries, invariant extraction requirement, in_scope/out_of_scope paths"
+    must_do[5]:
+      - "Load the audit template content provided by the orchestrator (sub-agents do NOT load the template independently)"
       - Read every .rs file in the crate including large submodules
       - Perform invariant extraction for every priority-1 function (§5.15)
       - Apply every applicable §3 check with evidence-based PASS/FAIL/NA
