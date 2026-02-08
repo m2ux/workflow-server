@@ -1,8 +1,8 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 1.0.0
+version: 2.0.0
 title: Security Audit Workflow
-description: "Multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, multi-agent deep review, adversarial verification, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports. Based on the Substrate Node Security Audit Template v2."
+description: "Multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, multi-agent deep review with cross-layer deferral, exhaustive panic sweep, hard-gate adversarial verification with anti-anchoring, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports. Based on the Substrate Node Security Audit Template v3 (validated at 75% overlap with professional audits in 7 sessions)."
 author: m2ux
 tags[3]:
   - security
@@ -20,7 +20,7 @@ rules[9]:
   - "CONTAMINATION PREVENTION: A reference report (professional audit) must NEVER be loaded, read, or discussed before Phase 5 (gap-analysis). Loading it earlier biases the audit by populating context with known issues, masking the workflow's genuine ability to identify those issues independently. The reference_report_path variable is set ONLY at the gap-analysis-offer checkpoint after the report is finalized."
 artifactLocations:
   planning: "{planning_folder_path}"
-variables[14]:
+variables[15]:
   - name: target_submodule
     type: string
     description: "Path to the submodule being audited (e.g., midnight-node)"
@@ -62,6 +62,10 @@ variables[14]:
   - name: primary_audit_complete
     type: boolean
     description: "Phase 1b gate — primary audit finished"
+    defaultValue: false
+  - name: panic_sweep_complete
+    type: boolean
+    description: "Phase 1.5 gate — exhaustive panic sweep finished"
     defaultValue: false
   - name: adversarial_complete
     type: boolean
