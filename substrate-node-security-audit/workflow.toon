@@ -1,0 +1,67 @@
+"$schema": ../../schemas/workflow.schema.json
+id: substrate-node-security-audit
+version: 1.0.0
+title: Security Audit Workflow
+description: "Multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, multi-agent deep review, adversarial verification, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports. Based on the Substrate Node Security Audit Template v2."
+author: m2ux
+tags[3]:
+  - security
+  - audit
+  - workflow
+rules[8]:
+  - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+  - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
+  - Agents must NOT proceed past checkpoints without user confirmation
+  - "The audit prompt template defines the checklist — the workflow defines the execution phases"
+  - "Severity scoring MUST use the Impact x Feasibility rubric, not intuitive assignment"
+  - "Every PASS in the scratchpad MUST cite specific code — bare PASSes are invalid"
+  - "Every FAIL in the scratchpad MUST be elevated to a numbered finding in the report"
+  - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
+artifactLocations:
+  planning: "{planning_folder_path}"
+variables[12]:
+  - name: target_submodule
+    type: string
+    description: "Path to the submodule being audited (e.g., midnight-node)"
+  - name: target_commit
+    type: string
+    description: "Git commit hash to audit"
+  - name: planning_folder_path
+    type: string
+    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-NN-{submodule}-security-audit"
+  - name: template_path
+    type: string
+    description: "Path to the audit prompt template"
+    defaultValue: ".engineering/artifacts/planning/2026-02-06-audit-strategy-reverse-engineering/01-audit-prompt-template.md"
+  - name: reference_report_path
+    type: string
+    description: "Path to professional audit report for gap analysis (optional)"
+  - name: ensemble_enabled
+    type: boolean
+    description: "Whether to run an ensemble pass with a second model"
+    defaultValue: false
+  - name: has_reference_report
+    type: boolean
+    description: "Whether a professional reference report is available for gap analysis"
+    defaultValue: false
+  - name: cargo_audit_available
+    type: boolean
+    description: "Whether cargo audit ran successfully during setup"
+    defaultValue: false
+  - name: reconnaissance_complete
+    type: boolean
+    description: "Phase 1a gate — reconnaissance finished"
+    defaultValue: false
+  - name: primary_audit_complete
+    type: boolean
+    description: "Phase 1b gate — primary audit finished"
+    defaultValue: false
+  - name: adversarial_complete
+    type: boolean
+    description: "Phase 2 gate — adversarial verification finished"
+    defaultValue: false
+  - name: report_complete
+    type: boolean
+    description: "Phase 3 gate — report generation finished"
+    defaultValue: false
+initialActivity: scope-setup

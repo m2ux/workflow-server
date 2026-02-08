@@ -1,0 +1,70 @@
+id: primary-audit
+version: 1.0.0
+name: Primary Audit
+description: "Execute the multi-agent audit using the template. Dispatches parallel sub-agents for crate-level deep review (Group A), static analysis (Group B), cross-cutting trace analysis (Group C), and toolkit review (Group D). Each agent applies the §3 checklist with evidence-based PASS/FAIL/NA and invariant extraction (§5.15)."
+problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while cross-cutting agents catch boundary issues.
+recognition[3]:
+  - run primary audit
+  - dispatch audit agents
+  - execute audit template
+skills:
+  primary: audit-execution
+required: true
+estimatedTime: 60-120m
+notes[7]:
+  - "The orchestrator coordinates but does NOT perform manual review itself"
+  - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
+  - "Group B static analysis agent runs ALL §2 grep patterns against the FULL in-scope directory set"
+  - "Group C trace agents read files from multiple crates to detect cross-boundary issues"
+  - "Group D toolkit agent applies the mandatory toolkit minimum checklist (resource 03)"
+  - "Every agent must return structured findings AND a completed scratchpad with PASS/FAIL/NA per check"
+  - "Invariant extraction (§5.15) is mandatory for every priority-1 function before applying the §3 checklist"
+entryActions[1]{action,message}:
+  log,Starting primary audit — dispatching multi-agent groups
+steps[6]:
+  - id: dispatch-group-a
+    name: Dispatch Group A — Crate-Level Deep Review
+    description: "Spawn one sub-agent per priority-1/2 crate. Each receives: crate path, §3 checklist, function registry entries, invariant extraction requirement (§5.15). Each must read every .rs file, build per-function review status, and apply every applicable §3 check with evidence."
+  - id: dispatch-group-b
+    name: Dispatch Group B — Static Analysis
+    description: "Spawn one agent that runs ALL §2 grep patterns (panic paths, unsafe, crypto, casts, feature flags, resource consumption, connection security, info leaks) against the full in-scope directory set. Returns categorized hits."
+  - id: dispatch-group-c
+    name: Dispatch Group C — Cross-Cutting Trace Agents
+    description: "Spawn trace agents for: connection pool isolation, genesis consistency, inherent provider symmetry, Ord/PartialOrd verification, timestamp source tracing (layer-by-layer), input validation tracing (entry-to-consumption), and struct diff (event vs storage fields)."
+  - id: dispatch-group-d
+    name: Dispatch Group D — Toolkit Review
+    description: "Spawn one agent for ledger/helpers/ and util/toolkit/ with the mandatory toolkit minimum checklist (resource 03). Apply state management, arithmetic, file I/O, mutex, and wallet-specific checks."
+  - id: collect-results
+    name: Collect Sub-Agent Results
+    description: "Wait for all sub-agents to return. Collect findings lists and scratchpads from every agent."
+  - id: preliminary-merge
+    name: Preliminary Merge
+    description: "Merge all findings into a single list. Deduplicate by affected file and description. Cross-reference findings from different agents (e.g., insert-without-remove from Agent A + write-before-validate from Agent B = one coherent finding). Preserve all scratchpad PASS/FAIL items for adversarial verification."
+checkpoints[1]:
+  - id: audit-complete
+    name: Primary Audit Complete
+    message: "Primary audit complete. {finding_count} findings from {agent_count} agents. {pass_count} PASS items in scratchpads pending adversarial verification. Proceed?"
+    options[2]:
+      - id: proceed
+        label: Proceed to adversarial verification
+        description: Verify PASS items from scratchpads
+        effect:
+          setVariable:
+            primary_audit_complete: true
+      - id: review-findings
+        label: Review preliminary findings
+        description: Examine the merged findings before verification
+transitions[1]{to,isDefault}:
+  adversarial-verification,true
+exitActions[1]{action,message}:
+  log,Primary audit complete — findings collected from all agent groups
+outcome[4]:
+  - All priority-1/2 crates reviewed with full §3 checklist
+  - Static analysis patterns run against full in-scope directories
+  - Cross-cutting traces completed (pools, genesis, inherents, ordering, timestamps, validation, struct diffs)
+  - Toolkit code reviewed with mandatory minimum checklist
+context_to_preserve[4]:
+  - merged_findings - Deduplicated findings from all agents
+  - scratchpad_passes - All PASS items with cited evidence for adversarial verification
+  - agent_scratchpads - Complete scratchpads from each agent
+  - coverage_report - Files read by each agent

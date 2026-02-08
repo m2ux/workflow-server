@@ -1,0 +1,60 @@
+id: adversarial-verification
+version: 1.0.0
+name: Adversarial Verification
+description: "Verify every PASS item from the primary audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. The agent's role is to REFUTE, not confirm."
+problem: AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. In 4 validated sessions, this caused 4-5 Medium/High findings to be missed as false PASSes.
+recognition[3]:
+  - verify audit findings
+  - adversarial review
+  - check pass items
+skills:
+  primary: audit-execution
+required: true
+estimatedTime: 30-60m
+notes[5]:
+  - "This agent's role is to REFUTE safety claims, not confirm them"
+  - "Focus on §3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these have the highest false-PASS rates"
+  - "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? Are call_addresses filtered? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."
+  - "A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'"
+  - "Output CONFIRMED only when ALL decomposed properties are verified with code citations"
+entryActions[1]{action,message}:
+  log,Starting adversarial verification of PASS items
+steps[4]:
+  - id: extract-pass-items
+    name: Extract PASS Items
+    description: "Collect every §3 checklist item marked PASS from all agent scratchpads. Filter to items with severity >= Medium potential (§3.1-§3.4, §3.6, §3.8, §3.10, §3.14)."
+  - id: decompose-claims
+    name: Decompose PASS Claims
+    description: "For each PASS item, enumerate the specific properties the PASS requires to be true. Example: 'events filtered for failed segments' requires 5 independent properties (UTXO data, call_addresses, deploy_addresses, maintain_addresses, claim_rewards)."
+  - id: verify-properties
+    name: Verify Properties Independently
+    description: "For each decomposed property, read the cited code location and search for the specific implementation. If any property lacks implementation, output REFUTED with evidence."
+  - id: compile-results
+    name: Compile Verification Results
+    description: "Produce structured output: CONFIRMED (all properties verified), REFUTED (finding with evidence), or INSUFFICIENT (cannot determine). Every REFUTED item becomes a new finding."
+checkpoints[1]:
+  - id: verification-complete
+    name: Adversarial Verification Complete
+    message: "{confirmed_count} PASSes confirmed, {refuted_count} PASSes refuted (new findings), {insufficient_count} items need manual review. Proceed to report generation?"
+    options[2]:
+      - id: proceed
+        label: Proceed to report generation
+        description: Merge refuted items into findings and generate report
+        effect:
+          setVariable:
+            adversarial_complete: true
+      - id: review-refutations
+        label: Review refuted items
+        description: Examine the refuted PASS items before proceeding
+transitions[1]{to,isDefault}:
+  report-generation,true
+exitActions[1]{action,message}:
+  log,Adversarial verification complete — {refuted_count} false PASSes identified
+outcome[3]:
+  - Every High/Medium PASS item decomposed and independently verified
+  - False PASSes identified and converted to new findings
+  - Verification results documented for report integration
+context_to_preserve[3]:
+  - confirmed_passes - PASS items verified as correct with evidence
+  - refuted_passes - False PASSes converted to new findings
+  - insufficient_items - Items requiring manual review

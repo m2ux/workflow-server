@@ -1,0 +1,111 @@
+id: audit-execution
+version: 1.0.0
+capability: Execute security audit phases with consistent tool usage and multi-agent coordination
+
+execution_pattern:
+  setup[4]:
+    - Confirm target submodule and commit with user
+    - Checkout submodule at target commit
+    - Run cargo audit / cargo deny or fallback to manual dependency inspection
+    - Create planning folder and initialize artifacts
+  reconnaissance[5]:
+    - Read workspace Cargo.toml and list all crates
+    - Classify crates by type (runtime, native, shared, tooling)
+    - Identify trust boundaries and consensus paths
+    - Build function registry for priority-1/2 crates
+    - Generate file inventory sorted by line count
+  primary_audit[4]:
+    - Dispatch Group A agents (one per priority-1/2 crate) with §3 checklist
+    - Dispatch Group B agent for §2 static analysis across full scope
+    - Dispatch Group C agents for cross-cutting traces (pools, genesis, inherents, ordering, timestamps, validation, struct diffs)
+    - Dispatch Group D agent for toolkit review with minimum checklist
+  adversarial[3]:
+    - Extract all PASS items from agent scratchpads
+    - Decompose each PASS into constituent properties
+    - Verify each property independently — output CONFIRMED/REFUTED/INSUFFICIENT
+  consolidation[4]:
+    - Merge findings from all agents and phases
+    - Deduplicate by root cause
+    - Apply severity scoring rubric (Impact x Feasibility)
+    - Verify coverage gate (§5.14)
+
+tools:
+  read_file:
+    when: Reading source code files for manual review
+    params: file_path
+    returns: File contents
+    usage: Read every .rs file in assigned crate; prioritize files >200 lines
+  grep:
+    when: Running §2 static analysis patterns
+    params: pattern, scope, exclusions
+    returns: Matching lines with file paths and line numbers
+    usage: Run against FULL in-scope directory set, not selectively
+  shell:
+    when: Running cargo audit, cargo deny, git operations, file inventory
+    params: command
+    returns: Command output
+    usage: Capture and save output to planning folder
+  task:
+    when: Dispatching sub-agents for crate-level review or trace analysis
+    params: description, prompt, subagent_type
+    returns: Sub-agent findings and scratchpad
+    usage: Use generalPurpose for deep review agents; explore for quick searches
+
+agent_dispatch:
+  group_a:
+    description: Crate-level deep review agents
+    count: One per priority-1/2 crate
+    receives: "Crate path, §3 checklist, function registry entries, invariant extraction requirement"
+    must_do[4]:
+      - Read every .rs file in the crate including large submodules
+      - Perform invariant extraction for every priority-1 function (§5.15)
+      - Apply every applicable §3 check with evidence-based PASS/FAIL/NA
+      - Return structured findings and completed scratchpad
+  group_b:
+    description: Static analysis agent
+    count: 1
+    receives: "Full in-scope directory set, all §2 grep patterns"
+    must_do[2]:
+      - Run every §2 pattern against ALL in-scope directories
+      - Return categorized hits with triage by reachability
+  group_c:
+    description: Cross-cutting trace agents
+    count: 5-7 depending on codebase
+    traces[7]:
+      - Connection pool tracer — pool creation to all consumers via .clone()
+      - Genesis consistency tracer — StorageInit across all code paths
+      - Inherent symmetry tracer — proposer vs verifier tuple field-by-field
+      - Ord/PartialOrd verifier — every impl Ord for total ordering
+      - Timestamp source tracer — layer-by-layer clock verification
+      - Input validation tracer — entry-to-consumption validation chain
+      - Struct diff agent — event struct vs storage struct field comparison
+  group_d:
+    description: Toolkit review agent
+    count: 1
+    receives: "ledger/helpers/ and util/toolkit/ paths, toolkit minimum checklist (resource 03)"
+    must_do[2]:
+      - Read all toolkit .rs files
+      - Apply the 7-item mandatory toolkit checklist
+
+state:
+  track[6]:
+    - current_phase - Which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
+    - agent_status - Status of dispatched sub-agents
+    - findings_count - Running count of identified findings
+    - pass_count - Running count of PASS items in scratchpads
+    - coverage_files - List of files read by agents
+    - scratchpad_items - Collected PASS/FAIL/NA items from all agents
+
+errors:
+  submodule_not_found:
+    cause: Target submodule path does not exist
+    recovery: Ask user to specify the correct submodule path
+  commit_not_found:
+    cause: Target commit hash not found in submodule history
+    recovery: Ask user to verify the commit hash; run git log to show recent commits
+  template_not_found:
+    cause: Audit prompt template not at expected path
+    recovery: Ask user for the template location
+  agent_timeout:
+    cause: Sub-agent did not return within expected time
+    recovery: Check terminal output; resume or re-dispatch the agent
