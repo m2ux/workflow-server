@@ -1,7 +1,7 @@
 id: scope-setup
-version: 1.0.0
+version: 2.0.0
 name: Scope Setup
-description: "Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder with START-HERE.md."
+description: "Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder with START-HERE.md. Fully automated — no user checkpoints."
 problem: The audit requires a confirmed target, reproducible commit, dependency scan outputs, and an organized artifact folder before analysis begins.
 recognition[4]:
   - start security audit
@@ -14,22 +14,26 @@ skills:
     - artifact-management
 required: true
 estimatedTime: 5-15m
-notes[6]:
-  - "The target submodule MUST be specified — ask if not provided"
+notes[7]:
+  - "The target submodule MUST be specified in the initial request — if not provided, fail with an error describing the required format"
+  - "The target commit MUST be specified or default to the submodule's current HEAD"
   - "The submodule must be checked out at the exact target commit before any analysis"
   - "cargo audit and cargo deny are best-effort — the fallback in §2.2 handles unavailability"
   - "The planning folder naming pattern must match existing audit folders (YYYY-MM-DD-NN-{name})"
-  - "CONTAMINATION GUARD: If the user mentions a reference report (e.g., Least Authority audit, professional audit PDF), acknowledge it but DO NOT read, open, fetch, search, or query the file. DO NOT set reference_report_path. Record only the file name for use in Phase 5. The reference report is structurally quarantined until the gap-analysis-offer checkpoint in report-generation."
+  - "CONTAMINATION GUARD: If the user mentions a reference report (e.g., Least Authority audit, professional audit PDF), acknowledge it but DO NOT read, open, fetch, search, or query the file. Record the file path in reference_report_path and set has_reference_report=true for use in Phase 5. The reference report is structurally quarantined until the gap-analysis activity."
   - "CONTAMINATION GUARD: DO NOT read any prior gap analysis documents, prior audit session findings, or any file whose name contains 'gap-analysis', 'least-authority', or references a professional audit report. These contain the answers the workflow is trying to independently discover."
 entryActions[1]{action,message}:
   log,Starting security audit scope setup
-steps[7]:
+steps[8]:
   - id: confirm-target
     name: Confirm Target Submodule
-    description: "Confirm the target submodule with the user. If not specified, ask which submodule to audit (e.g., midnight-node, midnight-ledger, compact)."
+    description: "Extract the target submodule from the user's initial request or workflow variables. If target_submodule is empty, fail with error: 'Target submodule not specified. Provide e.g., midnight-node, midnight-ledger, compact.'"
   - id: confirm-commit
     name: Confirm Target Commit
-    description: "Confirm the git commit hash. If not specified, use the submodule's current HEAD. Record the exact commit for reproducibility."
+    description: "Extract the git commit hash from the user's initial request or workflow variables. If not specified, use the submodule's current HEAD. Record the exact commit for reproducibility."
+  - id: record-reference
+    name: Record Reference Report Path
+    description: "If the user mentioned a reference audit report in their initial request, record the file path in reference_report_path and set has_reference_report=true. DO NOT read or open the file — only record the path for Phase 5."
   - id: checkout-submodule
     name: Checkout Submodule at Commit
     description: "Fetch and checkout the submodule at the target commit: cd <submodule-path> && git fetch origin && git checkout <commit>"
@@ -46,49 +50,24 @@ steps[7]:
   - id: load-template
     name: Load Audit Template
     description: "Read the audit prompt template from template_path. Confirm it is accessible and note the template version."
-checkpoints[2]:
-  - id: target-confirmation
-    name: Target Confirmation
-    message: "Audit target: {target_submodule} @ commit {target_commit}. Proceed with setup?"
-    options[2]:
-      - id: proceed
-        label: Proceed with setup
-        description: Confirm target and begin checkout
-      - id: change-target
-        label: Change target
-        description: Specify a different submodule or commit
-        transitionTo: scope-setup
-  - id: setup-complete
-    name: Setup Complete
-    message: "Setup complete. Submodule checked out, planning folder created, dependency scan {cargo_audit_available ? 'completed' : 'skipped (fallback in §2.2 applies)'}. Proceed to reconnaissance?"
-    options[2]:
-      - id: proceed
-        label: Proceed to reconnaissance
-        description: Begin architecture mapping and file inventory
-        transitionTo: reconnaissance
-      - id: configure-ensemble
-        label: Enable ensemble pass
-        description: Enable a second-model ensemble pass after the primary audit
-        effect:
-          setVariable:
-            ensemble_enabled: true
-        transitionTo: reconnaissance
 transitions[1]{to,isDefault}:
   reconnaissance,true
 exitActions[1]{action,message}:
   log,Scope setup complete — target confirmed and planning folder created
-outcome[5]:
+outcome[6]:
   - Target submodule and commit confirmed
   - Submodule checked out at exact commit
+  - Reference report path recorded (if provided) but not loaded
   - Dependency scan completed or fallback noted
   - File inventory generated
   - Planning folder created with START-HERE.md
-context_to_preserve[5]:
+context_to_preserve[6]:
   - target_submodule - Path to the submodule being audited
   - target_commit - Git commit hash
   - planning_folder_path - Path to planning artifacts folder
   - cargo_audit_available - Whether cargo audit ran successfully
-  - ensemble_enabled - Whether ensemble pass is enabled
+  - reference_report_path - Path to reference report (quarantined until Phase 5)
+  - has_reference_report - Whether a reference report was provided
 artifacts[1]:
   - id: start-here
     name: START-HERE.md

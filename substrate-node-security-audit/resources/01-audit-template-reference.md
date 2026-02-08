@@ -10,7 +10,7 @@ The audit prompt template is located at:
 
 ## Version
 
-Template v2 (revised 2026-02-08) — includes 7 integrated strategies from cross-session gap analysis:
+Template v3 (revised 2026-02-08) — includes strategies from cross-session gap analysis across 8 sessions:
 
 1. **Severity scoring rubric** (§4) — Impact x Feasibility matrix replaces intuitive assignment
 2. **Mandatory struct diff** (§3.3) — field-by-field event vs storage struct comparison table
@@ -20,12 +20,24 @@ Template v2 (revised 2026-02-08) — includes 7 integrated strategies from cross
 6. **Cross-layer trace agents** (§5 Group C) — timestamp source and input validation layer-by-layer
 7. **Dependency scanning fallback** (§2.2) — structured crate table for manual inspection
 
+## Workflow v3 Additions
+
+The workflow v3.0.0 adds structural improvements based on gap analysis:
+
+8. **Two-wave agent dispatch** — Wave 1 (priority-1 + B + C), Wave 2 (priority-2 + D + E)
+9. **Group E mechanical verification** — dedicated agent for historically-missed pattern searches (impl Ord completeness, take_while truncation, buffer preallocation, RPC fan-out, StorageInit consistency)
+10. **Anti-anchoring instructions** — Group A agents must verify ALL fields/sites independently, not just the first matching instance
+11. **Checklist completion gate** — Group A agents must produce PASS/FAIL/NA for every numbered item
+12. **Field-enumeration step** — adversarial verification enumerates all instances before verifying
+13. **Severity cross-check** — report generation re-evaluates Feasibility from attacker's perspective for I >= 3 findings
+14. **Fully automated execution** — no user checkpoints; all phase gates are set via exitActions
+
 ## Template Sections
 
 | Section | Purpose | When Used |
 |---------|---------|-----------|
 | §1 Audit Setup | Scope, reconnaissance, ingestion | Phase 0-1a |
-| §2 Static Analysis | Grep-based pattern detection | Phase 1b (Group B agent) |
+| §2 Static Analysis | Grep-based pattern detection | Phase 1b (Group B + E agents) |
 | §3 Manual Review | Per-component checklist | Phase 1b (Group A agents) |
 | §4 Reporting | Finding format, severity rubric | Phase 3 |
 | §5 Execution Strategy | Multi-agent protocol, requirements, limitations | All phases |
@@ -33,11 +45,12 @@ Template v2 (revised 2026-02-08) — includes 7 integrated strategies from cross
 ## Usage in This Workflow
 
 The template is the **checklist** — this workflow is the **execution framework**. The workflow handles:
-- Phase sequencing and dependency management
-- Agent dispatch and result collection
-- Adversarial verification as a separate phase
-- Severity calibration via the skill rubric
+- Phase sequencing and automatic transitions (no checkpoints)
+- Two-wave agent dispatch and result collection
+- Adversarial verification with field-enumeration as a separate phase
+- Severity calibration via the skill rubric with cross-check
 - Ensemble and gap analysis orchestration
+- Mechanical verification of historically-missed patterns (Group E)
 
 The template handles:
 - What to look for (§2 patterns, §3 checklists)

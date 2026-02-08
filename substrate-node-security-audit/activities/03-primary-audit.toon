@@ -1,7 +1,7 @@
 id: primary-audit
-version: 1.0.0
+version: 2.0.0
 name: Primary Audit
-description: "Execute the multi-agent audit using the template. Dispatches parallel sub-agents for crate-level deep review (Group A), static analysis (Group B), cross-cutting trace analysis (Group C), and toolkit review (Group D). Each agent applies the §3 checklist with evidence-based PASS/FAIL/NA and invariant extraction (§5.15)."
+description: "Execute the multi-agent audit using the template via two-wave dispatch. Wave 1: priority-1 crate agents (Group A), static analysis (Group B), cross-cutting traces (Group C). Wave 2: priority-2 crate agents (Group A), toolkit review (Group D), mechanical checklist verification (Group E). Each agent applies the §3 checklist with evidence-based PASS/FAIL/NA, anti-anchoring instructions, and mandatory checklist completion gates."
 problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while cross-cutting agents catch boundary issues.
 recognition[3]:
   - run primary audit
@@ -11,61 +11,66 @@ skills:
   primary: audit-execution
 required: true
 estimatedTime: 60-120m
-notes[8]:
+notes[11]:
   - "The orchestrator coordinates but does NOT perform manual review itself"
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "Group B static analysis agent runs ALL §2 grep patterns against the FULL in-scope directory set"
   - "Group C trace agents read files from multiple crates to detect cross-boundary issues"
-  - "Group D toolkit agent applies the mandatory toolkit minimum checklist (resource 03)"
+  - "Group D toolkit agent applies the mandatory toolkit minimum checklist (resource 03) — MANDATORY even when agent slots are constrained"
+  - "Group E mechanical agent runs all historically-missed pattern searches — MANDATORY"
   - "Every agent must return structured findings AND a completed scratchpad with PASS/FAIL/NA per check"
   - "Invariant extraction (§5.15) is mandatory for every priority-1 function before applying the §3 checklist"
+  - "ANTI-ANCHORING (R-05): Every Group A agent prompt MUST include: 'When checking a multi-field or multi-site property, you MUST check EVERY field/site independently. Finding one correct instance does NOT justify PASS for all. Produce a table listing every instance with individual PASS/FAIL verdicts.'"
+  - "COMPLETION GATE (R-07): Every Group A agent prompt MUST end with: 'Before returning, verify you have produced a PASS/FAIL/NA/DEFERRED verdict for EVERY numbered checklist item. List any unevaluated item and explain why. An unevaluated item is a gap, not a PASS.'"
   - "CONTAMINATION GUARD: DO NOT read, open, fetch, or query any reference audit report, prior gap analysis, or professional audit findings. Sub-agent prompts MUST NOT include content from reference reports. All findings must be independently derived from the source code."
 entryActions[1]{action,message}:
-  log,Starting primary audit — dispatching multi-agent groups
-steps[6]:
-  - id: dispatch-group-a
-    name: Dispatch Group A — Crate-Level Deep Review
-    description: "Spawn one sub-agent per priority-1/2 crate. Each receives: crate path, the relevant §3 checklist sections from the audit prompt template (template_path), function registry entries, invariant extraction requirement (§5.15), and in_scope/out_of_scope paths. The orchestrator MUST include the template's §3 checklist content and §5 execution requirements in each sub-agent's prompt — sub-agents do not load the template themselves. Each must read every .rs file, build per-function review status, and apply every applicable §3 check with evidence."
-  - id: dispatch-group-b
-    name: Dispatch Group B — Static Analysis
+  log,Starting primary audit — two-wave multi-agent dispatch
+steps[10]:
+  - id: dispatch-wave-1-group-a
+    name: "Wave 1: Dispatch Group A — Priority-1 Crate Deep Review"
+    description: "Spawn one sub-agent per priority-1 crate. Each receives: crate path, the relevant §3 checklist sections from the audit prompt template (template_path), function registry entries, invariant extraction requirement (§5.15), in_scope/out_of_scope paths, ANTI-ANCHORING instructions, and COMPLETION GATE requirement. The orchestrator MUST include the template's §3 checklist content and §5 execution requirements in each sub-agent's prompt — sub-agents do not load the template themselves."
+  - id: dispatch-wave-1-group-b
+    name: "Wave 1: Dispatch Group B — Static Analysis"
     description: "Spawn one agent that runs ALL §2 grep patterns from the audit prompt template (panic paths, unsafe, crypto, casts, feature flags, resource consumption, connection security, info leaks) against the full in_scope directory set. The orchestrator MUST include the template's §2 grep commands and triage criteria in the agent's prompt. Returns categorized hits."
-  - id: dispatch-group-c
-    name: Dispatch Group C — Cross-Cutting Trace Agents
-    description: "Spawn trace agents for: connection pool isolation, genesis consistency, inherent provider symmetry, Ord/PartialOrd verification, timestamp source tracing (layer-by-layer), input validation tracing (entry-to-consumption), and struct diff (event vs storage fields)."
-  - id: dispatch-group-d
-    name: Dispatch Group D — Toolkit Review
-    description: "Spawn one agent for ledger/helpers/ and util/toolkit/ with the mandatory toolkit minimum checklist (resource 03). Apply state management, arithmetic, file I/O, mutex, and wallet-specific checks."
-  - id: collect-results
-    name: Collect Sub-Agent Results
-    description: "Wait for all sub-agents to return. Collect findings lists and scratchpads from every agent."
+  - id: dispatch-wave-1-group-c
+    name: "Wave 1: Dispatch Group C — Cross-Cutting Traces"
+    description: "Spawn trace agents for: (1) connection pool isolation, (2) genesis consistency — every StorageInit construction site, (3) inherent provider symmetry — proposer vs verifier tuple field-by-field, (4) Ord/PartialOrd completeness — every impl Ord verified for field coverage, (5) timestamp source — layer-by-layer clock verification, (6) input validation — entry-to-consumption chain, (7) struct diff — event struct vs storage struct field comparison, (8) pagination loop — counter initialization and termination across all layers."
+  - id: collect-wave-1
+    name: Collect Wave 1 Results
+    description: "Wait for all Wave 1 sub-agents to return. Collect findings lists and scratchpads. Identify any coverage gaps in priority-1 crates."
+  - id: dispatch-wave-2-group-a
+    name: "Wave 2: Dispatch Group A — Priority-2 Crate Deep Review"
+    description: "Spawn sub-agents for remaining priority-2 crates not covered in Wave 1. Apply the same ANTI-ANCHORING and COMPLETION GATE requirements."
+  - id: dispatch-wave-2-group-d
+    name: "Wave 2: Dispatch Group D — Toolkit Review (MANDATORY)"
+    required: true
+    description: "MANDATORY: Spawn one agent for ledger/helpers/ and util/toolkit/ with the mandatory toolkit minimum checklist (resource 03). This agent MUST be dispatched even when agent slots are constrained. Apply state management, arithmetic, file I/O, mutex, and wallet-specific checks. The 7-item toolkit checklist is non-negotiable — in 8 validated sessions, every session that skipped Group D missed 9+ Low-severity findings."
+  - id: dispatch-wave-2-group-e
+    name: "Wave 2: Dispatch Group E — Mechanical Checklist Verification (MANDATORY)"
+    required: true
+    description: "MANDATORY: Spawn one agent that runs all historically-missed mechanical checks: (1) search every impl Ord/PartialOrd and verify all struct fields are included in cmp(), (2) search for take_while(Result::is_ok) and filter_map(Result::ok) patterns, (3) search for Vec::with_capacity(serialized_size vs tagged_serialized_size mismatch, (4) search for subscribe/notification_service/justification_stream for fan-out limits, (5) enumerate every StorageInit construction site and verify genesis source, (6) search for RPC subscription endpoints without per-connection limits. Return PASS/FAIL per pattern with line citations."
+  - id: collect-wave-2
+    name: Collect Wave 2 Results
+    description: "Wait for all Wave 2 sub-agents to return. Collect findings lists and scratchpads."
   - id: preliminary-merge
     name: Preliminary Merge
-    description: "Merge all findings into a single list. Deduplicate by affected file and description. Cross-reference findings from different agents (e.g., insert-without-remove from Agent A + write-before-validate from Agent B = one coherent finding). Preserve all scratchpad PASS/FAIL items for adversarial verification."
-checkpoints[1]:
-  - id: audit-complete
-    name: Primary Audit Complete
-    message: "Primary audit complete. {finding_count} findings from {agent_count} agents. {pass_count} PASS items in scratchpads pending adversarial verification. Proceed?"
-    options[2]:
-      - id: proceed
-        label: Proceed to adversarial verification
-        description: Verify PASS items from scratchpads
-        effect:
-          setVariable:
-            primary_audit_complete: true
-      - id: review-findings
-        label: Review preliminary findings
-        description: Examine the merged findings before verification
+    description: "Merge all findings from both waves into a single list. Deduplicate by affected file and description. Cross-reference findings from different agents (e.g., insert-without-remove from Agent A + write-before-validate from Agent B = one coherent finding). Preserve all scratchpad PASS/FAIL items for adversarial verification."
+  - id: checklist-gap-check
+    name: Checklist Gap Check
+    description: "Review all agent scratchpads for unevaluated checklist items (from the COMPLETION GATE). If any priority-1 checklist items were not evaluated by any agent, flag as coverage gaps and dispatch targeted follow-up if needed."
 transitions[1]{to,isDefault}:
   adversarial-verification,true
-exitActions[1]{action,message}:
-  log,Primary audit complete — findings collected from all agent groups
-outcome[4]:
-  - All priority-1/2 crates reviewed with full §3 checklist
+exitActions[2]{action,message}:
+  log,Primary audit complete — findings collected from all agent groups across both waves
+  set,primary_audit_complete=true
+outcome[5]:
+  - All priority-1/2 crates reviewed with full §3 checklist via two-wave dispatch
   - Static analysis patterns run against full in-scope directories
-  - Cross-cutting traces completed (pools, genesis, inherents, ordering, timestamps, validation, struct diffs)
-  - Toolkit code reviewed with mandatory minimum checklist
+  - Cross-cutting traces completed (pools, genesis, inherents, ordering, timestamps, validation, struct diffs, pagination)
+  - Toolkit code reviewed with mandatory minimum checklist (Group D)
+  - Mechanical checklist verified for historically-missed patterns (Group E)
 context_to_preserve[4]:
-  - merged_findings - Deduplicated findings from all agents
+  - merged_findings - Deduplicated findings from all agents across both waves
   - scratchpad_passes - All PASS items with cited evidence for adversarial verification
   - agent_scratchpads - Complete scratchpads from each agent
-  - coverage_report - Files read by each agent
+  - coverage_report - Files read by each agent and checklist completion status
