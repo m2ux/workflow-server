@@ -1,0 +1,108 @@
+id: severity-scoring
+version: 1.0.0
+capability: Compute finding severity using the Impact x Feasibility rubric with calibrated examples
+
+scoring_rubric:
+  impact:
+    description: How severe is the consequence if exploited?
+    scale[4]:
+      - score: 1
+        label: Informational
+        definition: "No direct security impact — code quality, documentation, style"
+      - score: 2
+        label: Low
+        definition: "Affects local tooling or off-chain state only (wallets, CLI, deployers)"
+      - score: 3
+        label: Medium
+        definition: "Affects node availability, correctness, or data integrity"
+      - score: 4
+        label: Critical
+        definition: "Affects consensus integrity, enables fund loss, or halts the network"
+  feasibility:
+    description: How easy is it for an attacker to trigger the condition?
+    scale[4]:
+      - score: 1
+        label: Unlikely
+        definition: "Requires physical access, highly unlikely conditions, or multiple independent failures"
+      - score: 2
+        label: Privileged
+        definition: "Requires privileged access (root, validator key, config file control, operator action)"
+      - score: 3
+        label: Network
+        definition: "Requires only network access (RPC, p2p, public endpoint)"
+      - score: 4
+        label: Passive
+        definition: "Occurs under normal operation, passive conditions, or routine network activity"
+  severity_mapping:
+    description: "Severity = map((Impact + Feasibility) / 2)"
+    scale[5]:
+      - range: "1.0-1.5"
+        severity: Informational
+      - range: "2.0-2.5"
+        severity: Low
+      - range: "3.0"
+        severity: Medium
+      - range: "3.5"
+        severity: High
+      - range: "4.0"
+        severity: Critical
+
+calibration_examples:
+  description: "From 4 validated audit sessions benchmarked against a professional audit"
+  examples[6]:
+    - finding: "Connection pool shared (5 conns) between RPC and consensus"
+      impact: 4
+      impact_reason: "Consensus starvation blocks block production"
+      feasibility: 3
+      feasibility_reason: "Requires only RPC access, routinely available"
+      severity: High
+      note: "Not Medium — RPC access is routine, no special attacker capability needed"
+    - finding: "Mock data source toggled by environment variable"
+      impact: 4
+      impact_reason: "All consensus data sources replaced with attacker-controlled mocks"
+      feasibility: 2
+      feasibility_reason: "Requires config file control and node restart"
+      severity: Medium
+      note: "Not Critical — requires privileged access to configuration"
+    - finding: "unwrap() on parent header in inherent data creation"
+      impact: 3
+      impact_reason: "Crashes the essential block production task, killing the node"
+      feasibility: 4
+      feasibility_reason: "Database pruning or reorgs trigger without an active attacker"
+      severity: High
+      note: "Not Low — occurs under normal operation conditions"
+    - finding: "Feature-gated genesis digest divergence"
+      impact: 4
+      impact_reason: "Different genesis hash prevents peer-to-peer sync"
+      feasibility: 2
+      feasibility_reason: "Requires heterogeneous build configurations across operators"
+      severity: Medium
+      note: "Not Critical — requires heterogeneous builds which are operationally unlikely"
+    - finding: "Fixed-seed RNG (0x42) in treasury minting"
+      impact: 4
+      impact_reason: "Predictable nonces enable output collisions and replay"
+      feasibility: 3
+      feasibility_reason: "Seed is a public constant, no privileges needed to observe"
+      severity: High
+      note: "Impact is consensus-level but feasibility needs observation capability"
+    - finding: "Chain spec unwrap() panics on malformed properties"
+      impact: 3
+      impact_reason: "Node crashes on startup, preventing availability"
+      feasibility: 3
+      feasibility_reason: "Attacker controls chain spec file via distribution channel"
+      severity: Medium
+      note: "Availability impact but requires attacker-controlled config"
+
+flow[4]:
+  - 1. For each finding, determine the Impact score (1-4) with a one-sentence justification
+  - 2. Determine the Feasibility score (1-4) with a one-sentence justification
+  - 3. Compute average and map to severity using the scale
+  - 4. Compare against calibration examples to verify the rating makes sense
+
+common_biases:
+  over_rating[2]:
+    - "Configuration/toggle findings rated by worst-case impact without accounting for access requirements"
+    - "Feature-flag findings rated Critical when heterogeneous builds are operationally unlikely"
+  under_rating[2]:
+    - "RPC-accessible DoS findings rated Medium when exploitation requires only public network access"
+    - "Availability findings (panics, crashes) rated Low when trigger conditions occur under normal operation"

@@ -1,0 +1,66 @@
+id: gap-analysis
+version: 1.0.0
+name: Gap Analysis
+description: "Compare the AI audit report against a professional reference report. Produce a finding-by-finding mapping, identify gaps, analyze severity calibration differences, and provide root cause analysis for missed findings."
+problem: Without comparison against a professional benchmark, the AI audit's coverage and calibration cannot be assessed. Gap analysis identifies structural blind spots and informs template improvements.
+recognition[3]:
+  - compare with reference audit
+  - gap analysis
+  - benchmark against professional report
+skills:
+  primary: audit-execution
+required: false
+estimatedTime: 30-60m
+notes[4]:
+  - "This activity is OPTIONAL — only runs when has_reference_report is true"
+  - "The reference report must target the same commit for valid comparison"
+  - "Map every reference finding to the AI finding or note as a gap"
+  - "Analyze severity calibration: which findings are over-rated vs under-rated and why"
+steps[6]:
+  - id: load-reference
+    name: Load Reference Report
+    description: "Read the professional audit report from reference_report_path. Extract the finding list with severities, descriptions, and affected files."
+  - id: map-findings
+    name: Map Findings
+    description: "For each reference finding, identify the closest matching AI finding. Classify as: matched (same root cause), partial match (related but incomplete), or gap (missed entirely)."
+  - id: identify-gaps
+    name: Identify Gaps
+    description: "List all reference findings missed by the AI audit. Group by severity and root cause category (pattern-absence, toolkit depth, wrong-layer check, first-positive-signal bias, etc.)."
+  - id: analyze-severity
+    name: Analyze Severity Calibration
+    description: "For matched findings, compare severity ratings. Identify systematic over-rating (AI higher than reference) and under-rating (AI lower) patterns."
+  - id: root-cause-analysis
+    name: Root Cause Analysis
+    description: "For each gap cluster, determine why the AI audit missed it: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, or other structural cause."
+  - id: write-gap-analysis
+    name: Write Gap Analysis Report
+    description: "Produce 02-gap-analysis.md in the planning folder. Include: summary table, finding-by-finding mapping, gap list with root causes, severity calibration analysis, and recommendations for template improvement."
+checkpoints[1]:
+  - id: gap-analysis-review
+    name: Gap Analysis Review
+    message: "Gap analysis complete. {overlap_rate}% overlap with reference ({matched_count}/{reference_count} findings). {gap_count} gaps identified. Review?"
+    options[2]:
+      - id: finalize
+        label: Finalize gap analysis
+        description: Accept the analysis and complete the workflow
+      - id: deep-dive
+        label: Deep-dive on specific gaps
+        description: Investigate specific missed findings in more detail
+transitions[0]:
+exitActions[1]{action,message}:
+  log,Gap analysis complete — audit workflow finished
+outcome[4]:
+  - Finding-by-finding mapping between AI and reference reports
+  - Gaps identified with root cause analysis
+  - Severity calibration differences documented
+  - Recommendations for template improvement
+context_to_preserve[4]:
+  - overlap_rate - Percentage of reference findings matched
+  - gap_list - List of missed findings with root causes
+  - severity_calibration - Over-rating and under-rating patterns
+  - recommendations - Suggestions for closing gaps
+artifacts[1]:
+  - id: gap-analysis-report
+    name: 02-gap-analysis.md
+    location: planning
+    description: "Finding-by-finding comparison against professional audit with gap analysis and root causes"

@@ -1,0 +1,111 @@
+id: report-generation
+version: 1.0.0
+name: Report Generation
+description: "Consolidate all findings from primary audit and adversarial verification into a final report. Apply severity scoring rubric, verify coverage gate, deduplicate, and produce the deliverable audit report."
+problem: Findings from multiple agents and phases must be merged, deduplicated, severity-calibrated, and formatted into a cohesive report with coverage verification.
+recognition[3]:
+  - generate audit report
+  - consolidate findings
+  - finalize report
+skills:
+  primary: audit-execution
+  supporting[1]:
+    - severity-scoring
+required: true
+estimatedTime: 20-40m
+notes[4]:
+  - "Every FAIL in every scratchpad MUST have a corresponding numbered finding (§5.12)"
+  - "Severity MUST use the Impact x Feasibility rubric (resource 02) — not intuitive assignment"
+  - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
+  - "Cross-reference findings from different agents to create coherent multi-facet findings"
+entryActions[1]{action,message}:
+  log,Starting report generation — consolidating findings from all phases
+steps[6]:
+  - id: merge-findings
+    name: Merge All Findings
+    description: "Combine primary audit findings, adversarial verification refutations, and any trace agent findings into a single list."
+  - id: deduplicate
+    name: Deduplicate Findings
+    description: "Identify findings that describe the same root cause from different agents. Cross-reference (e.g., insert-without-remove from one agent + write-before-validate from another = one coherent finding with two facets)."
+  - id: apply-severity
+    name: Apply Severity Scoring
+    description: "For each finding, compute Impact (1-4) and Feasibility (1-4) scores with one-sentence justifications. Map average to severity per the rubric. Use severity-scoring skill."
+    skill: severity-scoring
+  - id: coverage-gate
+    name: Verify Coverage Gate
+    description: "Check that every .rs file >200 lines in priority-1/2 crates was read by at least one agent (§5.14). If any file was missed, flag as a coverage gap in the report."
+  - id: scratchpad-elevation
+    name: Verify Scratchpad Elevation
+    description: "Check that every FAIL item from every scratchpad has a corresponding numbered finding (§5.12). Promote any orphaned FAILs."
+  - id: write-report
+    name: Write Final Report
+    description: "Produce 01-audit-report.md in the planning folder. Include: executive summary, crate inventory, all numbered findings with severity scores, severity distribution table, methodology notes, and coverage gate results."
+checkpoints[1]:
+  - id: report-review
+    name: Report Review
+    message: "Audit report generated: {finding_count} findings ({critical_count} Critical, {high_count} High, {medium_count} Medium, {low_count} Low, {info_count} Informational). Coverage gate: {coverage_status}. Review the report?"
+    options[2]:
+      - id: finalize
+        label: Finalize report
+        description: Accept the report and proceed
+        effect:
+          setVariable:
+            report_complete: true
+      - id: revise
+        label: Revise findings
+        description: Make adjustments before finalizing
+decisions[1]:
+  - id: next-phase
+    name: Next Phase Decision
+    description: Route to ensemble pass, gap analysis, or completion based on configuration
+    branches[3]:
+      - id: ensemble
+        label: Run ensemble pass
+        condition:
+          type: simple
+          variable: ensemble_enabled
+          operator: ==
+          value: true
+        transitionTo: ensemble-pass
+      - id: gap-analysis
+        label: Run gap analysis
+        condition:
+          type: simple
+          variable: has_reference_report
+          operator: ==
+          value: true
+        transitionTo: gap-analysis
+      - id: complete
+        label: Audit complete
+        isDefault: true
+transitions[3]:
+  - to: ensemble-pass
+    condition:
+      type: simple
+      variable: ensemble_enabled
+      operator: ==
+      value: true
+  - to: gap-analysis
+    condition:
+      type: simple
+      variable: has_reference_report
+      operator: ==
+      value: true
+  - to: gap-analysis
+    isDefault: true
+exitActions[1]{action,message}:
+  log,Report generation complete — audit report finalized
+outcome[4]:
+  - All findings merged and deduplicated
+  - Severity scored using Impact x Feasibility rubric
+  - Coverage gate verified
+  - Final audit report produced
+context_to_preserve[3]:
+  - final_findings - Complete list of numbered findings with severity
+  - coverage_status - Coverage gate pass/fail with details
+  - report_path - Path to the final audit report
+artifacts[1]:
+  - id: audit-report
+    name: 01-audit-report.md
+    location: planning
+    description: "Complete security audit report with numbered findings, severity scores, and methodology notes"

@@ -1,0 +1,79 @@
+id: ensemble-pass
+version: 1.0.0
+name: Ensemble Pass
+description: "Optional second-model audit run on priority-1/2 components. Merges findings with the primary report using union-with-consensus-severity strategy. Findings in both reports are high-confidence; single-source findings are flagged for verification."
+problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures the 'sometimes found' tier more reliably. In validated sessions, any 2 runs unioned cover ~65-70% of professional findings.
+recognition[3]:
+  - run ensemble pass
+  - second model audit
+  - multi-model merge
+skills:
+  primary: audit-execution
+  supporting[1]:
+    - severity-scoring
+required: false
+estimatedTime: 60-90m
+notes[4]:
+  - "This activity is OPTIONAL — only runs when ensemble_enabled is true"
+  - "Scope the second pass to priority-1/2 components only to control cost"
+  - "Use a different model or temperature if available; same model with different system prompt is acceptable"
+  - "The merge strategy is union: include all findings from both runs, flag consensus vs single-source"
+steps[4]:
+  - id: configure-ensemble
+    name: Configure Ensemble Run
+    description: "Determine the scope (priority-1/2 components only), model configuration, and any prompt variations for the second pass."
+  - id: execute-second-pass
+    name: Execute Second Pass
+    description: "Run the audit template against priority-1/2 components. The second pass follows the same §3 checklist and §5 execution requirements."
+  - id: union-merge
+    name: Union-Merge Findings
+    description: "Merge the second pass findings with the primary report. For each finding: if present in both → high confidence, use median severity; if present in only one → include but flag as single-source; if PASS in primary but FAIL in ensemble → escalate as new finding."
+  - id: update-report
+    name: Update Report
+    description: "Update 01-audit-report.md with ensemble results. Add a section noting which findings are consensus (both runs) vs single-source (one run only)."
+checkpoints[1]:
+  - id: ensemble-review
+    name: Ensemble Results Review
+    message: "Ensemble merge complete. {consensus_count} consensus findings, {single_source_count} single-source findings, {escalated_count} escalated (PASS→FAIL). Update report?"
+    options[2]:
+      - id: update
+        label: Update report with ensemble results
+        description: Integrate ensemble findings into the final report
+      - id: skip
+        label: Keep primary report only
+        description: Discard ensemble results and proceed with primary report
+decisions[1]:
+  - id: next-phase
+    name: Post-Ensemble Decision
+    description: Route to gap analysis or completion
+    branches[2]:
+      - id: gap-analysis
+        label: Run gap analysis
+        condition:
+          type: simple
+          variable: has_reference_report
+          operator: ==
+          value: true
+        transitionTo: gap-analysis
+      - id: complete
+        label: Audit complete
+        isDefault: true
+transitions[2]:
+  - to: gap-analysis
+    condition:
+      type: simple
+      variable: has_reference_report
+      operator: ==
+      value: true
+  - to: gap-analysis
+    isDefault: true
+exitActions[1]{action,message}:
+  log,Ensemble pass complete — findings merged with primary report
+outcome[3]:
+  - Second-pass findings merged with primary report
+  - Findings classified as consensus or single-source
+  - Escalated findings (PASS in primary, FAIL in ensemble) added
+context_to_preserve[3]:
+  - consensus_findings - Findings confirmed by both runs
+  - single_source_findings - Findings from only one run
+  - escalated_findings - PASSes in primary that became FAILs in ensemble
