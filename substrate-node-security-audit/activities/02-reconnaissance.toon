@@ -19,7 +19,7 @@ notes[5]:
   - "Sort .rs files by line count — the top 10 files MUST be in the registry and read during review (§5.14)"
 entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2)
-steps[8]:
+steps[9]:
   - id: identify-crates
     name: Identify All Crates
     description: "Read workspace Cargo.toml and list every crate. Explicitly name each pallet, primitive, ledger crate, and utility crate. Do not summarize."
@@ -38,6 +38,9 @@ steps[8]:
   - id: map-data-flows
     name: Map Data Flows
     description: "Apply forward tracing (entry → sink) and backward tracing (sensitive op → source) per §1.2 step 6."
+  - id: check-send-sync
+    name: Check Send/Sync Boundary Violations
+    description: "Search for 'unsafe impl Send' and 'unsafe impl Sync' across all in-scope code (§1.2 step 7). These override the compiler's safety analysis and must be manually verified for soundness. Note any occurrences for priority review during the primary audit."
   - id: build-function-registry
     name: Build Function Registry
     description: "For every priority-1 and priority-2 crate, enumerate critical functions per §1.2 step 8. Include pallet hooks, ProvideInherent methods, extrinsics, service functions, data source functions, and startup handlers."

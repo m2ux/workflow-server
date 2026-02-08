@@ -24,10 +24,10 @@ entryActions[1]{action,message}:
 steps[6]:
   - id: dispatch-group-a
     name: Dispatch Group A — Crate-Level Deep Review
-    description: "Spawn one sub-agent per priority-1/2 crate. Each receives: crate path, §3 checklist, function registry entries, invariant extraction requirement (§5.15). Each must read every .rs file, build per-function review status, and apply every applicable §3 check with evidence."
+    description: "Spawn one sub-agent per priority-1/2 crate. Each receives: crate path, the relevant §3 checklist sections from the audit prompt template (template_path), function registry entries, invariant extraction requirement (§5.15), and in_scope/out_of_scope paths. The orchestrator MUST include the template's §3 checklist content and §5 execution requirements in each sub-agent's prompt — sub-agents do not load the template themselves. Each must read every .rs file, build per-function review status, and apply every applicable §3 check with evidence."
   - id: dispatch-group-b
     name: Dispatch Group B — Static Analysis
-    description: "Spawn one agent that runs ALL §2 grep patterns (panic paths, unsafe, crypto, casts, feature flags, resource consumption, connection security, info leaks) against the full in-scope directory set. Returns categorized hits."
+    description: "Spawn one agent that runs ALL §2 grep patterns from the audit prompt template (panic paths, unsafe, crypto, casts, feature flags, resource consumption, connection security, info leaks) against the full in_scope directory set. The orchestrator MUST include the template's §2 grep commands and triage criteria in the agent's prompt. Returns categorized hits."
   - id: dispatch-group-c
     name: Dispatch Group C — Cross-Cutting Trace Agents
     description: "Spawn trace agents for: connection pool isolation, genesis consistency, inherent provider symmetry, Ord/PartialOrd verification, timestamp source tracing (layer-by-layer), input validation tracing (entry-to-consumption), and struct diff (event vs storage fields)."
