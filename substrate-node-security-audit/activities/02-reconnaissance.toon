@@ -8,7 +8,7 @@ recognition[3]:
   - codebase reconnaissance
   - identify crates and trust boundaries
 skills:
-  primary: audit-execution
+  primary: execute-audit
 required: true
 estimatedTime: 15-30m
 notes[5]:
@@ -22,31 +22,54 @@ entryActions[1]{action,message}:
 steps[9]:
   - id: identify-crates
     name: Identify All Crates
-    description: "Read workspace Cargo.toml and list every crate. Explicitly name each pallet, primitive, ledger crate, and utility crate. Do not summarize."
+    skill: map-codebase
+    skill_args:
+      output_format: "Explicit crate list — no summarization"
+    description: "Enumerate every crate in the workspace."
   - id: map-architecture
     name: Map Architecture
-    description: "Classify each crate as: runtime (on-chain/Wasm), native (node binary), shared primitives, or off-chain tooling."
+    skill: map-codebase
+    skill_args:
+      output_format: "Crate classification table with category and priority"
+    description: "Classify each crate by architectural category and priority."
   - id: identify-trust-boundaries
     name: Identify Trust Boundaries
-    description: "What data enters from external sources? What crosses the native/Wasm boundary? List every entry point: RPC, inherent data, config, database, file system."
+    skill: map-codebase
+    skill_args:
+      output_format: "Trust boundary map with entry point types"
+    description: "Enumerate all trust boundary entry points."
   - id: identify-consensus-paths
     name: Identify Consensus Paths
-    description: "Map block production, verification, inherent data creation/validation, genesis initialization, and state transition paths."
+    skill: map-codebase
+    skill_args:
+      output_format: "Critical path inventory"
+    description: "Map all consensus-critical code paths."
   - id: identify-pallet-hooks
     name: Identify Pallet Hooks
-    description: "For every pallet, list on_initialize, on_finalize, on_idle, offchain_worker hooks. Note which exist and which are absent."
+    skill: map-codebase
+    skill_args:
+      output_format: "Hook presence/absence table per pallet"
+    description: "Enumerate framework hooks for every pallet."
   - id: map-data-flows
     name: Map Data Flows
-    description: "Apply forward tracing (entry → sink) and backward tracing (sensitive op → source) per §1.2 step 6."
+    skill: map-codebase
+    skill_args:
+      output_format: "Forward and backward data flow traces"
+    description: "Trace data flows through priority-1 paths."
   - id: check-send-sync
-    name: Check Send/Sync Boundary Violations
-    description: "Search for 'unsafe impl Send' and 'unsafe impl Sync' across all in-scope code (§1.2 step 7). These override the compiler's safety analysis and must be manually verified for soundness. Note any occurrences for priority review during the primary audit."
+    name: Check Safety Boundary Overrides
+    skill: map-codebase
+    skill_args:
+      output_format: "Override inventory with verification status"
+    description: "Identify all safety analysis overrides for priority review."
   - id: build-function-registry
     name: Build Function Registry
-    description: "For every priority-1 and priority-2 crate, enumerate critical functions per §1.2 step 8. Include pallet hooks, ProvideInherent methods, extrinsics, service functions, data source functions, and startup handlers."
+    skill: build-function-registry
+    description: "Enumerate critical functions for all priority-1/2 crates."
   - id: assign-agent-groups
     name: Assign Agent Groups
-    description: "Based on the crate map, assign crates to sub-agent groups for Phase 1b: Group A (crate-level deep review, one per priority-1/2 crate), Group B (static analysis + mechanical checks + storage lifecycle scan), Group D (toolkit review). For Group A agents that handle cross-crate checks, note which supplementary files from other crates must be included in their prompts. All groups dispatch concurrently — no wave separation."
+    skill: dispatch-sub-agents
+    description: "Assign crates to sub-agent groups and identify cross-crate supplementary files."
 transitions[1]{to,isDefault}:
   primary-audit,true
 exitActions[2]{action,message}:

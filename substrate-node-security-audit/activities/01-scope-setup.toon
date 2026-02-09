@@ -9,7 +9,7 @@ recognition[4]:
   - run security review
   - security audit setup
 skills:
-  primary: audit-execution
+  primary: execute-audit
   supporting[1]:
     - artifact-management
 required: true
@@ -25,22 +25,28 @@ entryActions[1]{action,message}:
 steps[8]:
   - id: confirm-target
     name: Confirm Target Submodule
-    description: "Extract the target submodule from the user's initial request or workflow variables. If target_submodule is empty, fail with error: 'Target submodule not specified. Provide e.g., midnight-node, midnight-ledger, compact.'"
+    skill: setup-audit-target
+    description: "Extract and validate the target submodule."
   - id: confirm-commit
     name: Confirm Target Commit
-    description: "Extract the git commit hash from the user's initial request or workflow variables. If not specified, use the submodule's current HEAD. Record the exact commit for reproducibility."
+    skill: setup-audit-target
+    description: "Extract and validate the target commit."
   - id: record-reference
     name: Record Reference Report Path
-    description: "If the user mentioned a reference audit report in their initial request, record the file path in reference_report_path and set has_reference_report=true. DO NOT read or open the file — only record the path for Phase 5."
+    skill: setup-audit-target
+    description: "Record any reference report path without loading."
   - id: checkout-submodule
     name: Checkout Submodule at Commit
-    description: "Fetch and checkout the submodule at the target commit: cd <submodule-path> && git fetch origin && git checkout <commit>"
+    skill: setup-audit-target
+    description: "Checkout the submodule at the target revision."
   - id: run-cargo-audit
     name: Run Dependency Scanning
-    description: "Attempt to run cargo audit and cargo deny. Save outputs to planning folder. If tools are unavailable, extract dependency list from Cargo.lock and set cargo_audit_available=false."
+    skill: setup-audit-target
+    description: "Run dependency scanners with fallback."
   - id: create-file-inventory
     name: Create File Inventory
-    description: "Generate sorted file inventory: find . -name '*.rs' -not -path '*/target/*' -exec wc -l {} + | sort -rn > file-inventory.txt"
+    skill: setup-audit-target
+    description: "Generate sorted file inventory by line count."
   - id: create-planning-folder
     name: Create Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-NN-{submodule}-security-audit/ with START-HERE.md and README.md. Use artifact-management skill for folder naming."

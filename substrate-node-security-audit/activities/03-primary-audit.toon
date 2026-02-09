@@ -8,7 +8,7 @@ recognition[3]:
   - dispatch audit agents
   - execute audit template
 skills:
-  primary: audit-execution
+  primary: execute-audit
 required: true
 estimatedTime: 60-120m
 notes[13]:
@@ -30,12 +30,14 @@ entryActions[1]{action,message}:
 steps[9]:
   - id: dispatch-wave-1
     name: "Dispatch Wave 1 — Highest-Priority Group A + Group B"
-    description: "Dispatch concurrently (up to platform limit): (1) Group A agents for the highest-priority crates — typically NTO pallet (with cross-crate supplements: data_source/mod.rs, idp.rs, types.rs), midnight pallet + ledger (with api/*.rs), and node binary (with inherent_data.rs, main_chain_follower.rs, rpc.rs, command.rs); (2) Group B static analysis agent. Each Group A sub-agent's prompt MUST include workflow-server bootstrap instructions: 'You have access to the workflow-server MCP tools. Before starting, call get_rules() then call get_workflow_activity({ workflow_id: \"substrate-node-security-audit\", activity_id: \"sub-crate-review\" }). Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04 (sub-agent-output-schema).' Additionally provide: crate path, the relevant §3 checklist sections from the template, function registry entries, in_scope/out_of_scope paths, and supplementary cross-crate files. Group B receives workflow-server bootstrap for sub-static-analysis activity."
     required: true
+    skill: dispatch-sub-agents
+    description: "Dispatch the highest-priority agents concurrently: Group A for top-priority crates, Group B for static analysis."
   - id: dispatch-wave-2
     name: "Dispatch Wave 2 — Remaining Group A + Group D"
-    description: "After Wave 1 returns, dispatch concurrently: (1) Group A agents for remaining priority-1/2 crates — typically runtime, mainchain-follower primitives, and upgrade/version pallets; (2) Group D toolkit review agent. Each Group A agent receives the same workflow-server bootstrap as Wave 1. Group D receives bootstrap for sub-toolkit-review activity with explicit output format requirement: 'Your output MUST contain three structured tables: (1) Function enumeration with one row per function, (2) Per-function x 7-item checklist matrix, (3) Coverage attestation with percentages. Prose summaries without these tables are insufficient and will be rejected.'"
     required: true
+    skill: dispatch-sub-agents
+    description: "After Wave 1 returns, dispatch remaining Group A agents and Group D toolkit review."
   - id: collect-all
     name: Collect All Results
     description: "Wait for all sub-agents from both waves to return. Collect structured finding lists from each agent."
@@ -43,24 +45,32 @@ steps[9]:
   - id: verify-coverage-gate
     name: "Verify Coverage Gate (HARD STOP)"
     required: true
-    description: "List every .rs file >200 lines in priority-1/2 crates. For each file, check whether at least one agent's output references it (via file manifest from sub-crate-review step 1, or via Group B grep hits). Produce a coverage table: | File | Lines | Read By Agent | Status |. If ANY file shows Status=UNREAD, dispatch a targeted follow-up agent to read and review that file BEFORE proceeding. The audit MUST NOT continue to structured-merge with unread files. This step was validated as critical: when skipped, coverage dropped 11pp (Session 12 regression)."
+    skill: verify-sub-agent-output
+    description: "Verify every large file in priority-1/2 crates was read by at least one agent. Dispatch follow-up for gaps."
   - id: verify-mandatory-tables
     name: "Verify Mandatory Output Tables"
     required: true
-    description: "For each Group A agent: (a) Check §3 checklist evaluation table exists (sub-crate-review step 4). (b) For pallet agents: check per-field event trace table exists for §3.3 if the pallet has deposit_event() with partial-success paths — a PASS on §3.3 without this table is INVALID. (c) Check cross-function invariant table exists (step 6). (d) For agents with cross-crate supplements: check cross-layer verification matrix exists for §3.2 and §3.10. For Group D: check function enumeration table, per-function checklist matrix, and coverage attestation exist. For any missing table, dispatch a targeted follow-up agent for that specific check."
+    skill: verify-sub-agent-output
+    description: "Verify each agent produced all required structured tables. Re-dispatch for any missing table."
   - id: verify-storageinit-trace
     name: "Verify StorageInit Construction Site Trace"
     required: true
-    description: "Check that the node agent (A3) explicitly enumerated every StorageInit (or equivalent genesis state) construction site, covering BOTH online paths (run_node/new_full) and offline subcommand paths (check-block, export-state, revert, import-blocks, benchmark). Verify the agent confirmed all paths derive genesis state from the same source. If the node agent did not trace offline subcommands, dispatch a targeted follow-up agent for §3.5. This check was validated as necessary: the divergent StorageInit finding (LA-L, High) was missed when this trace was omitted."
+    skill: verify-sub-agent-output
+    description: "Verify the node agent traced all genesis state construction sites. Re-dispatch if incomplete."
   - id: structured-merge
     name: Structured Merge
-    description: "Concatenate all agent finding lists into a single flat table. Every agent finding becomes a row with fields: agent_id, finding_id, file, line, title, severity, checklist_item, evidence. No agent output is discarded. This table is the canonical finding inventory."
+    skill: merge-findings
+    skill_args:
+      merge_strategy: structured-merge
+    description: "Concatenate all agent finding lists into a canonical flat table."
   - id: dedup-and-map
     name: Deduplicate and Map to Report Findings
-    description: "For each row in the flat table, assign a report finding number. Rows describing the same root cause get the same number with a note: 'merged: same root cause as Finding X — [justification]'. Every row MUST have a mapping. Any row without a mapping is automatically promoted to a new finding. The completed mapping table IS the elevation verification — it is not a separate check."
+    skill: merge-findings
+    description: "Assign report finding numbers. Deduplicate by root cause with justification."
   - id: verify-checklist-completeness
     name: Verify §3 Checklist Completeness
-    description: "Produce a §3 coverage matrix: for every numbered §3 checklist item (§3.1 through §3.14), list which agent(s) evaluated it and their verdict (PASS/FAIL/NA). Any item with zero verdicts is a coverage gap. For each gap, dispatch a targeted follow-up agent that reads the relevant files and evaluates the specific checklist item. The audit cannot proceed to adversarial verification with unevaluated §3 items."
+    skill: verify-sub-agent-output
+    description: "Produce a checklist coverage matrix. Dispatch follow-up for any unevaluated items."
 transitions[1]{to,isDefault}:
   adversarial-verification,true
 exitActions[2]{action,message}:

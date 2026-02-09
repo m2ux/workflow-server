@@ -8,7 +8,7 @@ recognition[3]:
   - adversarial review
   - check pass items
 skills:
-  primary: audit-execution
+  primary: execute-audit
 required: true
 estimatedTime: 30-60m
 notes[5]:
@@ -22,19 +22,34 @@ entryActions[1]{action,message}:
 steps[5]:
   - id: extract-pass-items
     name: Extract PASS Items
-    description: "Collect every §3 checklist item marked PASS from all agent scratchpads. Filter to items with severity >= Medium potential (§3.1-§3.4, §3.6, §3.8, §3.10, §3.14)."
+    skill: decompose-safety-claims
+    skill_args:
+      output_format: "Filtered PASS list with checklist references"
+    description: "Collect and filter PASS items for adversarial verification."
   - id: decompose-claims
     name: Decompose PASS Claims
-    description: "For each PASS item, enumerate the specific properties the PASS requires to be true. Example: 'events filtered for failed segments' requires 5 independent properties (UTXO data, call_addresses, deploy_addresses, maintain_addresses, claim_rewards)."
+    skill: decompose-safety-claims
+    skill_args:
+      output_format: "Decomposition table with one row per property"
+    description: "Decompose each PASS into constituent independent properties."
   - id: field-enumeration
     name: Enumerate Multi-Site Properties
-    description: "For every PASS involving multiple fields, sites, or instances (e.g., 'events filter by outcome', 'addresses are validated', 'subscriptions have limits'), enumerate ALL instances and verify each independently. A single-instance verification is INSUFFICIENT for a PASS. Produce a structured table: | Instance | Verified? | Evidence | for each."
+    skill: decompose-safety-claims
+    skill_args:
+      output_format: "| Property | Instance | Verified? | Evidence |"
+    description: "Enumerate ALL instances per property for independent verification."
   - id: verify-properties
     name: Verify Properties Independently
-    description: "For each decomposed property, read the cited code location and search for the specific implementation. If any property lacks implementation, output REFUTED with evidence."
+    skill: decompose-safety-claims
+    skill_args:
+      output_format: "Per-property verdict with code citations"
+    description: "Independently verify each decomposed property against source code."
   - id: compile-results
     name: Compile Verification Results
-    description: "Produce structured output: CONFIRMED (all properties verified), REFUTED (finding with evidence), or INSUFFICIENT (cannot determine). Every REFUTED item becomes a new finding."
+    skill: decompose-safety-claims
+    skill_args:
+      output_format: "Verdict summary with CONFIRMED/REFUTED/INSUFFICIENT counts"
+    description: "Produce final verdicts. Every REFUTED item becomes a new finding."
 transitions[1]{to,isDefault}:
   report-generation,true
 exitActions[2]{action,message}:

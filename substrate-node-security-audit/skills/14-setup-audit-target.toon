@@ -1,0 +1,64 @@
+id: setup-audit-target
+version: 1.0.0
+capability: "Extract, validate, and initialize a target codebase at a specific revision for analysis, including dependency scanning and file inventory generation"
+
+description: "A reusable skill for initializing an audit or review session against a specific codebase revision. Defines the procedure for extracting target parameters from user input or workflow variables, applying defaults and validation, checking out the codebase at the target revision, running dependency scans with fallback handling, and generating file inventories."
+
+inputs:
+  user_request:
+    description: "The user's initial request or workflow variables containing target specification"
+    required: true
+  workspace_root:
+    description: "Path to the repository root"
+    required: true
+
+protocol:
+  description: "The target initialization procedure."
+  steps[6]:
+    - id: extract-target
+      name: Extract Target Component
+      description: "Extract the target component (submodule, crate, directory) from the user's request or workflow variables. If not specified, fail with a descriptive error listing available targets."
+    - id: extract-revision
+      name: Extract Target Revision
+      description: "Extract the git commit hash or branch from the request. If not specified, default to the component's current HEAD. Record the exact revision for reproducibility."
+    - id: extract-reference
+      name: Extract Optional Reference Inputs
+      description: "If the user specified any reference documents (e.g., professional audit reports, prior reviews), record their paths without loading or reading them. Set corresponding workflow variables for later phases."
+    - id: checkout-revision
+      name: Checkout at Target Revision
+      description: "Fetch and checkout the target component at the specified revision. Verify the checkout succeeded by confirming the HEAD matches the expected revision."
+    - id: scan-dependencies
+      name: Scan Dependencies
+      description: "Attempt to run dependency scanning tools (e.g., cargo audit, cargo deny, npm audit). Save outputs to the planning folder. If tools are unavailable, extract the dependency manifest (e.g., Cargo.lock, package-lock.json) and set a flag indicating manual inspection is needed."
+    - id: generate-inventory
+      name: Generate File Inventory
+      description: "Produce a sorted file inventory listing all source files with line counts, largest first. Save to the planning folder."
+
+output:
+  description: "Initialized target ready for analysis."
+  components[4]:
+    - "Confirmed target component and revision"
+    - "Dependency scan results or fallback manifest"
+    - "File inventory sorted by size"
+    - "Reference document paths (if any, quarantined for later phases)"
+
+tools:
+  shell:
+    when: "Checking out revisions, running dependency scanners, generating file inventories"
+    params: "command"
+    returns: "Command output"
+  read_file:
+    when: "Extracting dependency manifests when scanning tools are unavailable"
+    params: "file_path"
+    returns: "File contents"
+
+errors:
+  target_not_specified:
+    cause: "No target component identified in the user request"
+    recovery: "Fail with descriptive error listing available targets"
+  revision_not_found:
+    cause: "The specified commit hash does not exist in the component's history"
+    recovery: "Fail with error showing recent commits"
+  scanner_unavailable:
+    cause: "Dependency scanning tools cannot be executed"
+    recovery: "Fall back to manual dependency manifest extraction"

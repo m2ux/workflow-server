@@ -1,0 +1,50 @@
+id: apply-checklist
+version: 1.0.0
+capability: "Given a checklist (from a resource) and a set of items (functions, crate components, code paths), iterate every item against every checklist entry, produce a verdict matrix, and verify completeness"
+
+description: "A reusable skill for systematic checklist application. The checklist content comes from a resource; the item set comes from a prior enumeration step. This skill defines the iteration protocol, verdict types (PASS/FAIL/NA), evidence requirements, and completeness verification. It prevents skimming by requiring an explicit entry for every item x checklist combination."
+
+inputs:
+  checklist_source:
+    description: "Resource containing the checklist entries (e.g., resource 03 for toolkit, audit template §3 for crate review)"
+    required: true
+  item_set:
+    description: "The enumerated items to evaluate against the checklist (e.g., function list, crate components, code paths)"
+    required: true
+  scope_files:
+    description: "Source files to read for evidence gathering"
+    required: true
+
+protocol:
+  description: "The procedure for systematic checklist application."
+  steps[5]:
+    - id: load-checklist
+      name: Load Checklist
+      description: "Fetch the checklist from the specified resource. Parse every numbered entry. Identify which entries apply universally and which apply conditionally (e.g., 'only for wallet constructors', 'only for pallets with events')."
+    - id: iterate-items
+      name: Iterate Items Against Checklist
+      description: "For EACH item in the item set, evaluate EVERY checklist entry. Produce a verdict for each combination: PASS (with code citation — bare PASSes are invalid), FAIL (becomes a finding), or NA (with explicit justification for why the entry is structurally inapplicable). Every NA must be explicit — silent omission is not permitted."
+    - id: produce-tables
+      name: Produce Required Analysis Tables
+      description: "Where the checklist specifies that certain entries require structured tables as evidence, produce those tables or state 'N/A — [reason]' with a specific justification. Standard required tables for crate-level review: (1) Per-field event trace table — for every event constructor with partial success, trace each collection field to its population source and whether it filters by outcome; a PASS on the event emission checklist item without this table is INVALID for pallets with deposit_event() and partial-success paths. (2) Struct diff table — event vs storage field-by-field comparison. (3) Cross-layer verification matrix — data source / IDP / pallet for pagination and timestamp checks. (4) Two-level input validation table — structural (Level 1) and semantic (Level 2) per external input type."
+    - id: verify-matrix-completeness
+      name: Verify Matrix Completeness
+      description: "Count items in the item set vs rows in the verdict matrix. Every item must have a row. Count checklist entries vs columns. Every entry must have a verdict per item. List any gaps and resolve them."
+    - id: produce-verdict-matrix
+      name: Produce Verdict Matrix
+      description: "Output the complete item x checklist verdict matrix in the format specified by the activity step that invoked this skill."
+
+output:
+  description: "Complete verdict matrix and coverage attestation."
+  components[3]:
+    - "Verdict matrix: one row per item, one column per checklist entry, each cell is PASS/FAIL/NA with evidence"
+    - "Required analysis tables: any structured tables mandated by specific checklist entries"
+    - "Coverage attestation: total items, total reviewed, coverage percentage, gaps list"
+
+errors:
+  bare_pass:
+    cause: "A PASS verdict lacks a code citation"
+    recovery: "The PASS is invalid — re-evaluate with evidence or downgrade to INSUFFICIENT"
+  silent_skip:
+    cause: "An item appears in the enumeration but not in the matrix"
+    recovery: "Add the missing row and evaluate all checklist entries for it"

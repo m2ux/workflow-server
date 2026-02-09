@@ -1,4 +1,4 @@
-id: severity-scoring
+id: score-severity
 version: 1.0.0
 capability: Compute finding severity using the Impact x Feasibility rubric with calibrated examples
 
@@ -149,11 +149,20 @@ calibration_examples:
       severity: High
       note: "Not Medium — consensus-relevant ordering bugs have cascading effects on state consistency."
 
-flow[4]:
+flow[5]:
   - 1. For each finding, determine the Impact score (1-4) with a one-sentence justification
   - 2. Determine the Feasibility score (1-4) with a one-sentence justification
   - 3. Compute average and map to severity using the scale
   - 4. Compare against calibration examples to verify the rating makes sense
+  - 5. For each finding with Impact >= 3, apply the severity crosscheck (see below)
+
+severity_crosscheck:
+  description: "Re-evaluate Feasibility from the attacker's perspective for all High/Critical findings."
+  threshold_rules[3]:
+    - "Connection pool and infrastructure findings affecting consensus paths through routinely-accessible systems (RPC, p2p): Feasibility >= 3"
+    - "Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility = 2"
+    - "Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility = 4"
+  procedure: "For each finding rated Critical or High, verify: (1) Is the affected code reachable from the production node binary? (2) What is the minimum privilege level to trigger? No privileges → F >= 3; Config file → F = 2; Validator key → F = 1. (3) Does the finding affect consensus or just availability? Consensus → I = 4; Availability → I = 3; Off-chain → I <= 2. If I + F < 6, not Critical. If I + F < 5, not High."
 
 bias_correction:
   description: "Correct these biases by comparing against the calibration examples above — do not rely on narrative rules."

@@ -1,4 +1,4 @@
-id: sub-agent-execution
+id: execute-sub-agent
 version: 1.0.0
 capability: "Bootstrap the workflow-server, load an assigned activity, follow its steps sequentially, and return structured output"
 
