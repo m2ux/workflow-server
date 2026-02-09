@@ -1,5 +1,5 @@
 id: primary-audit
-version: 3.0.0
+version: 4.0.0
 name: Primary Audit
 description: "Execute the multi-agent audit using the template via concurrent dispatch. Group A (one agent per priority-1/2 crate) applies the full §3 checklist including cross-crate checks. Group B runs all §2 static analysis patterns plus mechanical pattern searches and storage lifecycle scanning. Group D reviews toolkit code with the mandatory 7-item checklist. All groups dispatch concurrently. Consolidation uses structured merge with mandatory elevation table."
 problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while the static analysis agent catches mechanical patterns across the full scope.
@@ -11,31 +11,47 @@ skills:
   primary: audit-execution
 required: true
 estimatedTime: 60-120m
-notes[8]:
-  - "The orchestrator coordinates but does NOT perform manual review itself"
+notes[13]:
+  - "The orchestrator coordinates but does NOT perform manual review itself — reading files during reconnaissance to build the crate map is permitted, but applying §3 checklist items or producing trace tables is Group A work"
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "For cross-crate checks (§3.2 pagination, §3.4 inherent symmetry, §3.8 pool isolation, §3.10 timestamp source), the orchestrator includes supplementary files from other crates in the Group A agent's prompt"
-  - "Group B runs ALL §2 grep patterns against the FULL in-scope directory set, plus mechanical pattern searches (Ord completeness, take_while truncation, StorageInit consistency, RPC fan-out, storage lifecycle pairing)"
-  - "Group D toolkit agent applies the mandatory toolkit minimum checklist (resource 03) — MANDATORY even when agent slots are constrained"
+  - "Group B runs ALL §2 grep patterns against the FULL in-scope directory set, plus mechanical pattern searches (Ord completeness, take_while truncation, StorageInit consistency, RPC fan-out, storage lifecycle pairing, preallocation mismatch, mock data source toggle)"
+  - "Group D toolkit agent applies the mandatory toolkit minimum checklist (resource 03) — MANDATORY even when agent slots are constrained — and MUST produce the per-function enumeration table and checklist matrix as structured output"
   - "Every agent must return findings as a structured list with fields: id, file, line, title, severity, checklist_item, evidence"
   - "Invariant extraction (§5.15) is mandatory for every priority-1 function before applying the §3 checklist"
   - "CONTAMINATION GUARD: DO NOT read, open, fetch, or query any reference audit report, prior gap analysis, or professional audit findings. Sub-agent prompts MUST NOT include content from reference reports. All findings must be independently derived from the source code."
+  - "WAVE DISPATCH (when platform limits concurrent agents to N): Dispatch agents in ceil(total_agents / N) waves. Wave 1 MUST include the highest-priority Group A agents (NTO pallet, midnight pallet + ledger, node binary) plus Group B. Wave 2 includes remaining Group A agents (runtime, mainchain-follower, upgrade pallet) plus Group D. Wait for each wave to return before dispatching the next. Every wave MUST include at least one Group A crate-level agent. Dispatching only Groups B and D without any Group A agents violates the workflow — this was validated as the primary cause of an 11pp coverage regression."
+  - "COVERAGE GATE (hard stop): After collect-all and before structured-merge, verify that every .rs file >200 lines in priority-1/2 crates was read by at least one agent. List all files, check agent file manifests. If any file was NOT read, dispatch a targeted follow-up agent to read it BEFORE proceeding to merge. Do NOT defer unread files to the ensemble pass."
+  - "§3.3 TRACE TABLE VERIFICATION: After collecting Group A results, check that every pallet agent whose crate contains deposit_event() with partial-success paths produced a per-field event trace table (sub-crate-review step 5, table 1). If a pallet agent marked §3.3 as PASS without producing this table, the PASS is INVALID — dispatch a targeted follow-up agent specifically for §3.3 with the relevant file."
+  - "§3.5 STORAGEINIT VERIFICATION: After collecting Group A results, check that the node agent (A3) produced a StorageInit construction site enumeration covering both online (run_node/new_full) and offline (check-block, export-state, revert, import-blocks) subcommand paths. If the node agent did not trace offline subcommands, dispatch a targeted follow-up agent for §3.5."
+  - "GROUP D OUTPUT VALIDATION: After collecting Group D results, verify the output contains: (a) function enumeration table with one row per function, (b) per-function x 7-item checklist matrix, (c) coverage attestation with percentage. If any of these are absent (agent returned prose summary instead), re-dispatch Group D with explicit output format instructions."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
-steps[7]:
-  - id: dispatch-group-a
-    name: "Dispatch Group A — All Crate Deep Reviews (Workflow-Directed)"
-    description: "Spawn one sub-agent per priority-1 and priority-2 crate concurrently. Each sub-agent's prompt MUST include workflow-server bootstrap instructions: 'You have access to the workflow-server MCP tools. Before starting, call get_rules() then call get_workflow_activity({ workflow_id: \"substrate-node-security-audit\", activity_id: \"sub-crate-review\" }). Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04 (sub-agent-output-schema).' Additionally provide: crate path, the relevant §3 checklist sections from the template, function registry entries, in_scope/out_of_scope paths, and supplementary cross-crate files (NTO agent gets data_source/mod.rs + idp.rs + types.rs; node agent gets inherent_data.rs + main_chain_follower.rs + rpc.rs; ledger agent gets api/*.rs)."
-  - id: dispatch-group-b
-    name: "Dispatch Group B — Static Analysis and Mechanical Checks (Workflow-Directed)"
-    description: "Spawn one agent with workflow-server bootstrap instructions: 'You have access to the workflow-server MCP tools. Before starting, call get_rules() then call get_workflow_activity({ workflow_id: \"substrate-node-security-audit\", activity_id: \"sub-static-analysis\" }). Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04.' Provide: in_scope/out_of_scope paths, the §2 grep pattern list from the template."
-  - id: dispatch-group-d
-    name: "Dispatch Group D — Toolkit Review (MANDATORY, Workflow-Directed)"
+steps[9]:
+  - id: dispatch-wave-1
+    name: "Dispatch Wave 1 — Highest-Priority Group A + Group B"
+    description: "Dispatch concurrently (up to platform limit): (1) Group A agents for the highest-priority crates — typically NTO pallet (with cross-crate supplements: data_source/mod.rs, idp.rs, types.rs), midnight pallet + ledger (with api/*.rs), and node binary (with inherent_data.rs, main_chain_follower.rs, rpc.rs, command.rs); (2) Group B static analysis agent. Each Group A sub-agent's prompt MUST include workflow-server bootstrap instructions: 'You have access to the workflow-server MCP tools. Before starting, call get_rules() then call get_workflow_activity({ workflow_id: \"substrate-node-security-audit\", activity_id: \"sub-crate-review\" }). Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04 (sub-agent-output-schema).' Additionally provide: crate path, the relevant §3 checklist sections from the template, function registry entries, in_scope/out_of_scope paths, and supplementary cross-crate files. Group B receives workflow-server bootstrap for sub-static-analysis activity."
     required: true
-    description: "MANDATORY: Spawn one agent with workflow-server bootstrap instructions: 'You have access to the workflow-server MCP tools. Before starting, call get_rules() then call get_workflow_activity({ workflow_id: \"substrate-node-security-audit\", activity_id: \"sub-toolkit-review\" }). Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04.' Provide: toolkit paths (ledger/helpers/, util/toolkit/), reference to resource 03 (toolkit checklist). This agent MUST be dispatched concurrently with Groups A and B."
+  - id: dispatch-wave-2
+    name: "Dispatch Wave 2 — Remaining Group A + Group D"
+    description: "After Wave 1 returns, dispatch concurrently: (1) Group A agents for remaining priority-1/2 crates — typically runtime, mainchain-follower primitives, and upgrade/version pallets; (2) Group D toolkit review agent. Each Group A agent receives the same workflow-server bootstrap as Wave 1. Group D receives bootstrap for sub-toolkit-review activity with explicit output format requirement: 'Your output MUST contain three structured tables: (1) Function enumeration with one row per function, (2) Per-function x 7-item checklist matrix, (3) Coverage attestation with percentages. Prose summaries without these tables are insufficient and will be rejected.'"
+    required: true
   - id: collect-all
     name: Collect All Results
-    description: "Wait for all sub-agents (Group A, B, D) to return. Collect structured finding lists from each agent."
+    description: "Wait for all sub-agents from both waves to return. Collect structured finding lists from each agent."
+    required: true
+  - id: verify-coverage-gate
+    name: "Verify Coverage Gate (HARD STOP)"
+    required: true
+    description: "List every .rs file >200 lines in priority-1/2 crates. For each file, check whether at least one agent's output references it (via file manifest from sub-crate-review step 1, or via Group B grep hits). Produce a coverage table: | File | Lines | Read By Agent | Status |. If ANY file shows Status=UNREAD, dispatch a targeted follow-up agent to read and review that file BEFORE proceeding. The audit MUST NOT continue to structured-merge with unread files. This step was validated as critical: when skipped, coverage dropped 11pp (Session 12 regression)."
+  - id: verify-mandatory-tables
+    name: "Verify Mandatory Output Tables"
+    required: true
+    description: "For each Group A agent: (a) Check §3 checklist evaluation table exists (sub-crate-review step 4). (b) For pallet agents: check per-field event trace table exists for §3.3 if the pallet has deposit_event() with partial-success paths — a PASS on §3.3 without this table is INVALID. (c) Check cross-function invariant table exists (step 6). (d) For agents with cross-crate supplements: check cross-layer verification matrix exists for §3.2 and §3.10. For Group D: check function enumeration table, per-function checklist matrix, and coverage attestation exist. For any missing table, dispatch a targeted follow-up agent for that specific check."
+  - id: verify-storageinit-trace
+    name: "Verify StorageInit Construction Site Trace"
+    required: true
+    description: "Check that the node agent (A3) explicitly enumerated every StorageInit (or equivalent genesis state) construction site, covering BOTH online paths (run_node/new_full) and offline subcommand paths (check-block, export-state, revert, import-blocks, benchmark). Verify the agent confirmed all paths derive genesis state from the same source. If the node agent did not trace offline subcommands, dispatch a targeted follow-up agent for §3.5. This check was validated as necessary: the divergent StorageInit finding (LA-L, High) was missed when this trace was omitted."
   - id: structured-merge
     name: Structured Merge
     description: "Concatenate all agent finding lists into a single flat table. Every agent finding becomes a row with fields: agent_id, finding_id, file, line, title, severity, checklist_item, evidence. No agent output is discarded. This table is the canonical finding inventory."

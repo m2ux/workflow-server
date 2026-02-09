@@ -1,5 +1,5 @@
 id: sub-toolkit-review
-version: 1.0.0
+version: 1.1.0
 name: "Sub-Agent: Toolkit Per-Function Review"
 description: "Workflow for Group D sub-agent. Executes a 4-step structured toolkit review that forces per-function iteration across the mandatory 7-item checklist. The agent must produce a function x checklist matrix entry for every function, preventing the skimming behavior that caused 0% detection rates on AM, AO, AQ across 8 prior sessions."
 problem: "Toolkit review agents read files but skim functions with benign-looking names. The 7-item checklist exists but is applied to representative functions, not exhaustively. Three findings (AM, AO, AQ) had 0% detection rate across 8+ sessions despite the checklist containing exact descriptions of the bug patterns."
@@ -12,11 +12,14 @@ skills:
 required: false
 estimatedTime: 20-30m
 
-notes[4]:
+notes[7]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: toolkit_paths (ledger/helpers/, util/toolkit/), toolkit_checklist (resource 03)"
   - "The per-function x checklist matrix in step 2 is the key mechanism — it prevents skimming by requiring an entry for every combination"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
+  - "OUTPUT FORMAT IS NON-NEGOTIABLE: The orchestrator will reject prose summaries that lack the three required structured tables (function enumeration, checklist matrix, coverage attestation). If the agent returns a narrative summary with only 2-3 highlighted findings instead of the full matrix, the orchestrator will re-dispatch. This is the validated failure mode: S12's Group D returned 2 findings in prose form, missing LA-AM (save_intents_to_file) and LA-AP (IntentCustom::build) that S11's Group D found via exhaustive enumeration."
+  - "FUNCTION COUNT VERIFICATION: After producing the enumeration table, the agent must independently count functions per file using grep or equivalent ('fn ' pattern) and compare against the table row count. A discrepancy > 10% indicates skimming and requires re-enumeration of the affected file."
+  - "INCLUDE SUBDIRECTORIES: The toolkit paths include nested modules (ledger/helpers/src/wallet/, ledger/helpers/src/contract/, util/toolkit/src/tx_generator/, util/toolkit/src/commands/). Every .rs file in every subdirectory must be enumerated. A common failure mode is reading only the top-level lib.rs and missing wallet/dust.rs, wallet/hd.rs, contract/call.rs etc."
 steps[4]:
   - id: enumerate-functions
     name: Enumerate All Functions
