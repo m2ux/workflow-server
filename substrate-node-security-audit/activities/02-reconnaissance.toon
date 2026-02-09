@@ -17,7 +17,7 @@ rules[6]:
   - "Identify trust boundaries: RPC, inherent data, chain specs, config files, databases, file system, native/Wasm boundary"
   - "Build the function registry for ALL priority-1 and priority-2 crates (§1.2 step 8)"
   - "Sort .rs files by line count — the top 10 files MUST be in the registry and read during review (§5.14)"
-  - "CONFIGURATION INVARIANT ENUMERATION (v4.5): Enumerate every struct used in ProposalCIDP and VerifierCIDP constructors (e.g., CreateInherentDataConfig, ScSlotConfig, MainchainEpochConfig). Check whether constructors validate mathematical invariants. Missing validation is a reconnaissance lead assigned to the node agent."
+  - "Enumerate consensus-critical configuration structs per the target profile. Record missing constructor invariant validation as reconnaissance leads assigned to the node agent."
 entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2)
 steps[10]:
