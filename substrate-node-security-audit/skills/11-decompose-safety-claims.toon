@@ -1,0 +1,35 @@
+id: decompose-safety-claims
+version: 1.0.0
+capability: "Take a safety claim (PASS verdict), enumerate the constituent properties it asserts, enumerate all instances that must hold, and produce a decomposition table for independent verification"
+
+description: "A reusable adversarial analysis skill. When a review produces a PASS verdict on a multi-faceted check, this skill decomposes the claim into independent properties, enumerates every instance/field/site that must satisfy each property, and produces a structured table for independent verification. The goal is to refute, not confirm."
+
+inputs:
+  pass_items:
+    description: "List of PASS verdicts to decompose, each with the claim text, cited evidence, and checklist reference"
+    required: true
+  source_files:
+    description: "Code files to read for independent verification"
+    required: true
+
+protocol:
+  description: "The adversarial decomposition procedure."
+  steps[4]:
+    - id: extract-and-filter
+      name: Extract and Filter PASS Items
+      description: "Collect all PASS verdicts from agent results. Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. These items are most susceptible to first-positive-signal false PASSes."
+    - id: decompose-claims
+      name: Decompose Claims Into Properties
+      description: "For each PASS item, enumerate the specific independent properties the PASS requires to be true. A claim like 'events are filtered for failed segments' decomposes into N properties — one per event field type (e.g., UTXOs, call_addresses, deploy_addresses, maintain_addresses, claim_rewards)."
+    - id: enumerate-instances
+      name: Enumerate All Instances Per Property
+      description: "For every property involving multiple fields, sites, or instances, enumerate ALL of them. A single-instance verification is insufficient. Produce a table: | Property | Instance | Verified? | Evidence |"
+    - id: verify-independently
+      name: Verify Each Property Independently
+      description: "For each decomposed property, read the cited code location and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine)."
+
+output:
+  description: "Decomposition table with per-instance verification results."
+  components[2]:
+    - "Decomposition table: | PASS Item | Property | Instance | Verified? | Evidence |"
+    - "Verdict summary: CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count"

@@ -19,12 +19,12 @@ This workflow guides the complete lifecycle of a security audit:
 **Key characteristics:**
 - Fully automated sequential flow — no user checkpoints (phase gates via exitActions)
 - **Goal → Activity → Skill → Tools** ontology: activities define step skeletons, skills define tool orchestration and resource loading, resources contain detailed content (progressive disclosure)
-- Workflow-directed sub-agents: each sub-agent bootstraps the workflow-server MCP, loads its assigned activity and the `sub-agent-execution` skill, which maps activity steps to resources loaded on demand
+- Workflow-directed sub-agents: each sub-agent bootstraps the workflow-server MCP, loads its assigned activity and the `execute-sub-agent` skill, which maps activity steps to resources loaded on demand
 - **Wave-based Group A dispatch** — agents dispatched in waves of 3–4 when the platform limits concurrency; each wave includes at least one Group A crate-level agent (v4.2)
 - **Coverage gate hard stop** — report generation blocked until every >200-line file in priority-1/2 crates is confirmed read by at least one sub-agent (v4.2)
 - **Mandatory output verification** — orchestrator validates that each Group A agent produced required tables (§3.3 per-field trace, §3.5 StorageInit enumeration, cross-function invariant comparison) before consolidation (v4.2)
 - **Orchestrator role discipline** — the orchestrator coordinates and dispatches but does not perform crate-level review itself (v4.2)
-- Impact x Feasibility severity scoring via `severity-scoring` skill with resource-backed calibration examples
+- Impact x Feasibility severity scoring via `score-severity` skill with resource-backed calibration examples
 - Contamination prevention — reference report quarantined until gap-analysis phase
 - Structured merge table with mandatory elevation verification
 - §3 checklist completeness verification with gap-filling follow-up
@@ -133,7 +133,7 @@ graph TD
     MERGE --> DEDUP --> CHECK
 ```
 
-> Wave 1 covers the 3 highest-priority crates plus static analysis. Wave 2 covers remaining crates plus toolkit. The orchestrator waits for each wave to return before dispatching the next. All sub-agents follow dedicated workflow activities via the workflow-server MCP using the `sub-agent-execution` skill.
+> Wave 1 covers the 3 highest-priority crates plus static analysis. Wave 2 covers remaining crates plus toolkit. The orchestrator waits for each wave to return before dispatching the next. All sub-agents follow dedicated workflow activities via the workflow-server MCP using the `execute-sub-agent` skill.
 
 ### Verification Gates (v4.2)
 
@@ -149,7 +149,7 @@ These gates were added in v4.2 after validated regression analysis showed that s
 
 ### Sub-Agent Activity Flows
 
-Each sub-agent bootstraps the workflow-server, loads its assigned activity and the `sub-agent-execution` skill. The skill's `resource_map` directs which resources to load — sub-agents never reference resource indices directly.
+Each sub-agent bootstraps the workflow-server, loads its assigned activity and the `execute-sub-agent` skill. The skill's `resource_map` directs which resources to load — sub-agents never reference resource indices directly.
 
 #### `sub-crate-review` (Group A — one per crate)
 
@@ -195,7 +195,7 @@ graph TD
     subgraph activity [Activity defines WHAT]
         STEPS["Step skeleton: id + name"]
     end
-    subgraph skill ["Skill defines HOW (sub-agent-execution)"]
+    subgraph skill ["Skill defines HOW (execute-sub-agent)"]
         BOOT[Bootstrap protocol]
         RMAP["resource_map: activity → resources"]
         EXEC[Step execution protocol]
@@ -220,9 +220,9 @@ graph TD
 
 | Group | Activity | Skill | Resources Loaded | Key Outputs |
 |-------|----------|-------|-----------------|-------------|
-| A (per crate) | `sub-crate-review` | `sub-agent-execution` | 04, 07, 08, 09 | Findings, checklist coverage, mandatory tables |
-| B (1 agent) | `sub-static-analysis` | `sub-agent-execution` | 04, 10, 11 | Pattern hits, storage pairing, zero-hit audit |
-| D (1 agent) | `sub-toolkit-review` | `sub-agent-execution` | 03, 04 | Function x checklist matrix, coverage attestation |
+| A (per crate) | `sub-crate-review` | `execute-sub-agent` | 04, 07, 08, 09 | Findings, checklist coverage, mandatory tables |
+| B (1 agent) | `sub-static-analysis` | `execute-sub-agent` | 04, 10, 11 | Pattern hits, storage pairing, zero-hit audit |
+| D (1 agent) | `sub-toolkit-review` | `execute-sub-agent` | 03, 04 | Function x checklist matrix, coverage attestation |
 
 ---
 
@@ -232,7 +232,7 @@ graph TD
 
 **Purpose:** Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder.
 
-**Primary Skill:** `audit-execution`
+**Primary Skill:** `execute-audit`
 **Supporting Skill:** `artifact-management`
 
 **Artifacts:** `START-HERE.md`, `file-inventory.txt`, `cargo-audit-output.txt`
@@ -243,7 +243,7 @@ graph TD
 
 **Purpose:** Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry (template §1.2). Assign crates to sub-agent groups with cross-crate supplement mappings.
 
-**Primary Skill:** `audit-execution`
+**Primary Skill:** `execute-audit`
 
 **Artifacts:** `README.md` (scope and architecture summary)
 
@@ -253,7 +253,7 @@ graph TD
 
 **Purpose:** Execute the multi-agent audit via wave-based dispatch. Includes hard-gate verification steps before consolidation.
 
-**Primary Skill:** `audit-execution`
+**Primary Skill:** `execute-audit`
 
 **Agent Groups:**
 
@@ -282,7 +282,7 @@ graph TD
 
 **Purpose:** Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. The agent's role is to **refute**, not confirm.
 
-**Primary Skill:** `audit-execution`
+**Primary Skill:** `execute-audit`
 
 **Steps:**
 1. Extract PASS items from all scratchpads (§3.1-§3.4, §3.6, §3.10, §3.14)
@@ -296,8 +296,8 @@ graph TD
 
 **Purpose:** Consolidate all findings from primary audit and adversarial verification. Apply severity scoring with calibration cross-check. Verify coverage gate (blocking). Produce final report.
 
-**Primary Skill:** `audit-execution`
-**Supporting Skill:** `severity-scoring`
+**Primary Skill:** `execute-audit`
+**Supporting Skill:** `score-severity`
 
 **Blocking entry condition (v4.2):** This activity must not begin unless the coverage gate passed during primary-audit. If `coverage_report` shows any unread files, return to primary-audit and dispatch follow-up agents first.
 
@@ -354,13 +354,13 @@ Skills define tool orchestration, state management, and resource loading strateg
 
 | Skill | Capability | Resources Used | Used By |
 |-------|------------|----------------|---------|
-| `audit-execution` | Orchestrator-level audit execution: agent dispatch, tool usage, consolidation | `05` (agent-dispatch-config), `06` (merge-table-schema) | All orchestrator activities |
-| `severity-scoring` | Impact × Feasibility severity scoring procedure with bias correction | `02` (severity-rubric), `13` (calibration-examples) | report-generation, ensemble-pass |
-| `sub-agent-execution` | Sub-agent workflow bootstrap, step-by-step execution with resource loading, structured output | `04` (output-schema) + activity-specific resources via `resource_map` | Sub-agent activities |
+| `execute-audit` | Orchestrator-level audit execution: agent dispatch, tool usage, consolidation | `05` (agent-dispatch-config), `06` (merge-table-schema) | All orchestrator activities |
+| `score-severity` | Impact × Feasibility severity scoring procedure with bias correction | `02` (severity-rubric), `13` (calibration-examples) | report-generation, ensemble-pass |
+| `execute-sub-agent` | Sub-agent workflow bootstrap, step-by-step execution with resource loading, structured output | `04` (output-schema) + activity-specific resources via `resource_map` | Sub-agent activities |
 
 ### Sub-Agent Execution — Resource Map
 
-The `sub-agent-execution` skill owns a `resource_map` that defines which resources each sub-agent activity needs. Activities define *what* to produce; the skill defines *which resources to load*; resources contain *the content*.
+The `execute-sub-agent` skill owns a `resource_map` that defines which resources each sub-agent activity needs. Activities define *what* to produce; the skill defines *which resources to load*; resources contain *the content*.
 
 | Activity | Resources Loaded by Skill |
 |----------|--------------------------|
@@ -378,9 +378,9 @@ Resources contain detailed reference content loaded on demand by skills. Activit
 |-------|----------|---------|-----------|
 | `00` | `start-here.md` | Quick start guide and workflow overview | Orchestrator bootstrap |
 | `01` | `audit-template-reference.md` | Pointer to the audit prompt template with section summary | Orchestrator setup |
-| `02` | `severity-rubric.md` | Impact/Feasibility scales, severity mapping table | `severity-scoring` skill |
-| `03` | `toolkit-checklist.md` | Mandatory 7-item toolkit minimum checklist | `sub-agent-execution` skill (for `sub-toolkit-review`) |
-| `04` | `sub-agent-output-schema.md` | Structured JSON output schema with per-group field requirements and validation rules | `sub-agent-execution` skill (all activities) |
+| `02` | `severity-rubric.md` | Impact/Feasibility scales, severity mapping table | `score-severity` skill |
+| `03` | `toolkit-checklist.md` | Mandatory 7-item toolkit minimum checklist | `execute-sub-agent` skill (for `sub-toolkit-review`) |
+| `04` | `sub-agent-output-schema.md` | Structured JSON output schema with per-group field requirements and validation rules | `execute-sub-agent` skill (all activities) |
 
 ---
 

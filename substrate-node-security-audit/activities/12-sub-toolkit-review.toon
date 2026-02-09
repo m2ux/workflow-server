@@ -8,7 +8,7 @@ recognition[3]:
   - group d sub-agent
   - per-function checklist
 skills:
-  primary: sub-agent-execution
+  primary: execute-sub-agent
 required: false
 estimatedTime: 20-30m
 
@@ -24,19 +24,30 @@ steps[4]:
   - id: enumerate-functions
     name: Enumerate All Functions
     required: true
-    description: "Read every .rs file in ledger/helpers/src/ and util/toolkit/src/. For each file, enumerate EVERY function (public, private, trait impl, standalone). Include: function name, file path, line number, visibility (pub/private), whether it modifies state (self.xxx = ..., state.xxx = ...), whether it returns Result or (). REQUIRED OUTPUT: Function enumeration table. Format: | File | Function | Line | Visibility | Modifies State? | Returns Result? | Every function must appear in this table — verify the count matches the actual function count per file."
+    skill: apply-checklist
+    skill_args:
+      output_format: "| File | Function | Line | Visibility | Modifies State? | Returns Result? |"
+    description: "Enumerate every function in the toolkit scope as the item set for checklist application."
   - id: apply-checklist-per-function
     name: Apply 7-Item Checklist Per Function
     required: true
-    description: "For EACH function in the enumeration table, evaluate ALL 7 toolkit checklist items (from resource 03). The 7 items are: (1) State modification on failure — is modification conditional on success? (2) State mutation completeness — is modified state written back to self? (3) Mutex poisoning risk — does expect/unwrap execute under lock? (4) Unbounded file I/O — is there a size limit before read? (5) Unchecked arithmetic on financial values — is it checked_*/saturating_*? (6) Silent error consumption — should the error be propagated? (7) Wallet constructor validation — does role match wallet type? Not every item applies to every function — mark N/A where the item is structurally inapplicable (e.g., item 7 only applies to wallet constructors). But the N/A MUST be explicit. REQUIRED OUTPUT: Per-function checklist matrix. Format: | Function | File:Line | Item 1 | Item 2 | Item 3 | Item 4 | Item 5 | Item 6 | Item 7 | Findings |"
+    skill: apply-checklist
+    skill_args:
+      checklist_source: resource 03 (toolkit-checklist)
+      output_format: "| Function | File:Line | Item 1 | ... | Item 7 | Findings |"
+    description: "Evaluate every function against all toolkit checklist items. Mark N/A where structurally inapplicable."
   - id: verify-function-coverage
     name: Verify Function Coverage
     required: true
-    description: "Count functions in the enumeration table (step 1) vs functions in the checklist matrix (step 2). Every function in the enumeration must have a row in the matrix. List any functions that appear in the enumeration but not in the matrix — these are coverage gaps. REQUIRED OUTPUT: Coverage attestation. Format: Total functions: N. Functions reviewed: M. Coverage: M/N (X%). Gaps: [list of unreviewed functions, if any]."
+    skill: apply-checklist
+    skill_args:
+      output_format: "Coverage attestation: total, reviewed, percentage, gaps"
+    description: "Verify every enumerated function has a row in the checklist matrix."
   - id: format-output
     name: Format Structured Output
     required: true
-    description: "Compile all findings from the per-function checklist matrix into the structured output format defined in resource 04 (sub-agent-output-schema). Every cell in the matrix that is FAIL becomes a finding. Include: agent_id, activity_followed ('sub-toolkit-review'), steps_completed, findings (structured list), mandatory_tables (function enumeration table, per-function checklist matrix, coverage attestation), and reconnaissance_leads. REQUIRED OUTPUT: Structured JSON conforming to the output schema."
+    skill: execute-sub-agent
+    description: "Format all findings and tables as structured output. Every FAIL cell in the matrix becomes a finding."
 outcome[3]:
   - Every function in toolkit crates enumerated and reviewed against all 7 checklist items
   - Per-function x checklist matrix produced with no gaps

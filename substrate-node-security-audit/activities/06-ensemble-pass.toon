@@ -8,9 +8,9 @@ recognition[3]:
   - second model audit
   - multi-model merge
 skills:
-  primary: audit-execution
+  primary: execute-audit
   supporting[1]:
-    - severity-scoring
+    - score-severity
 required: false
 estimatedTime: 60-90m
 notes[4]:
@@ -27,7 +27,10 @@ steps[4]:
     description: "Run the audit template against priority-1/2 components. The second pass follows the same §3 checklist and §5 execution requirements."
   - id: union-merge
     name: Union-Merge Findings
-    description: "Merge the second pass findings with the primary report. For each finding: if present in both → high confidence, use median severity; if present in only one → include but flag as single-source; if PASS in primary but FAIL in ensemble → escalate as new finding."
+    skill: merge-findings
+    skill_args:
+      merge_strategy: union-merge
+    description: "Merge second-pass findings with the primary report using union strategy."
   - id: update-report
     name: Update Report
     description: "Update 01-audit-report.md with ensemble results. Add a section noting which findings are consensus (both runs) vs single-source (one run only)."

@@ -1,0 +1,47 @@
+id: verify-sub-agent-output
+version: 1.0.0
+capability: "Validate that sub-agent results meet structural completeness requirements, check coverage gates and mandatory output tables, and flag or re-dispatch on failure"
+
+description: "A reusable verification skill for multi-agent workflows. After collecting sub-agent results, this skill defines how to check that each agent's output contains all required tables, covers all expected files, and meets structural completeness criteria. Missing outputs are flagged for targeted re-dispatch."
+
+inputs:
+  agent_results:
+    description: "Collected structured outputs from sub-agents"
+    required: true
+  expected_outputs:
+    description: "Per-agent list of required tables, coverage criteria, and completeness checks"
+    required: true
+  file_inventory:
+    description: "List of files that must be covered (for coverage gate verification)"
+    required: false
+
+protocol:
+  description: "The verification procedure for sub-agent output validation."
+  steps[4]:
+    - id: check-coverage-gate
+      name: Verify File Coverage
+      description: "For each .rs file exceeding 200 lines in priority-1/2 crates, check whether at least one agent's output references it (via file manifest or grep hits). Produce a coverage table: file, lines, read-by-agent, status. Flag any UNREAD files. This is a HARD STOP — the workflow must not proceed with unread files."
+    - id: check-mandatory-tables
+      name: Verify Mandatory Output Tables
+      description: "For each agent, check that every required table exists in the agent's result. Required tables include: (a) §3 checklist evaluation table for crate-review agents; (b) per-field event trace table for pallet agents whose crate has deposit_event() with partial-success paths — a PASS on §3.3 without this table is INVALID; (c) cross-function invariant table; (d) cross-layer verification matrix for agents with cross-crate supplements; (e) StorageInit construction site enumeration from the node agent covering both online (run_node/new_full) and offline (check-block, export-state, revert, import-blocks) subcommand paths; (f) function enumeration table, per-function checklist matrix, and coverage attestation from the toolkit review agent. If any required table is missing or was replaced with prose, flag the agent and table for re-dispatch."
+    - id: check-structural-completeness
+      name: Verify Structural Completeness
+      description: "Check that each agent's steps_completed list matches the activity definition. Check that every FAIL verdict has a corresponding finding entry. Check that every mandatory_tables field is populated or null with justification."
+    - id: produce-verification-report
+      name: Produce Verification Report
+      description: "Output a structured report listing: all coverage gaps (files not read), all missing tables (agent + table ID), all structural issues. For each gap, recommend a targeted follow-up dispatch."
+
+output:
+  description: "Verification report with gap list and re-dispatch recommendations."
+  components[3]:
+    - "Coverage table: file, lines, agent, PASS/UNREAD"
+    - "Missing tables list: agent_id, table_id, reason"
+    - "Re-dispatch recommendations: agent_id, scope, specific check to perform"
+
+errors:
+  coverage_gate_failure:
+    cause: "One or more files were not read by any agent"
+    recovery: "Dispatch targeted follow-up agents for unread files before proceeding"
+  missing_mandatory_table:
+    cause: "An agent returned prose instead of a required structured table"
+    recovery: "Re-dispatch the agent with explicit output format instructions"

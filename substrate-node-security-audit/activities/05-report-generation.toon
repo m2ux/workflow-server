@@ -8,14 +8,14 @@ recognition[3]:
   - consolidate findings
   - finalize report
 skills:
-  primary: audit-execution
+  primary: execute-audit
   supporting[1]:
-    - severity-scoring
+    - score-severity
 required: true
 estimatedTime: 20-40m
 notes[6]:
   - "The structured merge table from primary-audit is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
-  - "Severity MUST use the Impact x Feasibility rubric — compare each finding against the calibration examples in the severity-scoring skill before finalizing"
+  - "Severity MUST use the Impact x Feasibility rubric — compare each finding against the calibration examples in the score-severity skill before finalizing"
   - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
   - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation."
   - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless the coverage gate was verified during primary-audit (verify-coverage-gate step). If coverage_report shows any UNREAD files, return to primary-audit and dispatch follow-up agents. Proceeding to report generation with unread files is the primary cause of coverage regression — validated in Session 12 where 5 deferred files caused an 11pp overlap drop."
@@ -25,21 +25,27 @@ entryActions[1]{action,message}:
 steps[6]:
   - id: integrate-adversarial-results
     name: Integrate Adversarial Verification Results
-    description: "Add any REFUTED items from adversarial verification as new rows in the structured merge table. Update the elevation mapping for affected findings."
+    skill: merge-findings
+    skill_args:
+      merge_strategy: integrate
+    description: "Add REFUTED items from adversarial verification as new rows in the merge table."
   - id: apply-severity
     name: Apply Severity Scoring
-    description: "For each finding in the merge table, compute Impact (1-4) and Feasibility (1-4) scores with one-sentence justifications. Map average to severity per the rubric. Compare each finding against the calibration examples in the severity-scoring skill — if the finding is similar to a calibration example, use the example's severity as a baseline."
-    skill: severity-scoring
+    skill: score-severity
+    description: "Score every finding in the merge table using the severity rubric and calibration examples."
   - id: severity-crosscheck
     name: Severity Cross-Check Against Calibration Examples
-    description: "For each finding with Impact >= 3, re-evaluate Feasibility from the attacker's perspective by comparing against the calibration examples table. Specifically: (1) Connection pool / infrastructure findings affecting consensus paths through routinely-accessible systems: F >= 3. (2) Panics triggered only by operator-provided invalid configuration: F = 2. (3) Conditions occurring under normal operation (pruning, routine block production): F = 4. Adjust severity if the calibration comparison indicates a mismatch."
+    skill: score-severity
+    description: "Re-evaluate all High/Critical findings against the bias-correction protocol."
   - id: coverage-gate
     name: "Verify Coverage Gate (BLOCKING)"
     required: true
-    description: "Check that every .rs file >200 lines in priority-1/2 crates was read by at least one agent (§5.14). If any file was missed, this is a BLOCKING failure — do NOT proceed to write-report. Instead, return to primary-audit's verify-coverage-gate step and dispatch targeted follow-up agents. The report MUST NOT be generated with coverage gaps. In the report, include the coverage table showing every file >200 lines, which agent read it, and PASS/FAIL status."
+    skill: verify-sub-agent-output
+    description: "Re-verify file coverage before report generation. Block if any file is UNREAD."
   - id: verify-elevation-completeness
     name: Verify Elevation Completeness
-    description: "Review the structured merge table. Every row must have a report finding number. Count rows marked 'merged' and verify each has a justification. Count total findings. If any row lacks a mapping, promote it now. Output the final elevation summary: total agent findings, total report findings, merged count, promoted count."
+    skill: merge-findings
+    description: "Verify every row in the merge table has a report finding number. Promote any unmapped rows."
   - id: write-report
     name: Write Final Report
     description: "Produce 01-audit-report.md in the planning folder. Include: executive summary, crate inventory, all numbered findings with severity scores (I and F with justifications), severity distribution table, methodology notes, coverage gate results, and elevation summary."

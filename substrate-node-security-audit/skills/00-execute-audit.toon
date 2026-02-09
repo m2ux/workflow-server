@@ -1,4 +1,4 @@
-id: audit-execution
+id: execute-audit
 version: 3.0.0
 capability: Execute security audit phases with consistent tool usage, concurrent multi-agent coordination, and §3 checklist completeness verification
 
@@ -60,7 +60,7 @@ agent_dispatch:
     description: Crate-level deep review agents
     count: One per priority-1/2 crate
     activity: sub-crate-review
-    skill: sub-agent-execution
+    skill: execute-sub-agent
     receives: "Crate path, relevant §3 checklist sections from the template, function registry entries, in_scope/out_of_scope paths, supplementary cross-crate files"
     cross_crate_supplements:
       - "NTO pallet agent: include primitives/mainchain-follower/src/data_source/mod.rs, primitives/mainchain-follower/src/idp.rs, primitives/mainchain-follower/src/types.rs"
@@ -70,14 +70,14 @@ agent_dispatch:
     description: Static analysis and mechanical checks agent
     count: 1
     activity: sub-static-analysis
-    skill: sub-agent-execution
+    skill: execute-sub-agent
     receives: "Full in-scope directory set, all §2 grep patterns from the template"
   group_d:
     description: Toolkit review agent
     count: 1
     mandatory: true
     activity: sub-toolkit-review
-    skill: sub-agent-execution
+    skill: execute-sub-agent
     receives: "ledger/helpers/ and util/toolkit/ paths, toolkit minimum checklist (resource 03)"
 
 state:

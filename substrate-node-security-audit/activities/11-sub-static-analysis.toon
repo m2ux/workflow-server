@@ -1,49 +1,68 @@
 id: sub-static-analysis
-version: 1.1.0
+version: 1.3.0
 name: "Sub-Agent: Static Analysis and Mechanical Checks"
-description: "Workflow for Group B sub-agent. Executes a 6-step structured static analysis with mandatory zero-hit audit and finding aggregation. Each step defines a REQUIRED OUTPUT. The sub-agent loads this activity via get_workflow_activity and follows it sequentially."
+description: "Executes a 6-step structured static analysis with mandatory zero-hit audit and finding aggregation. Each step defines a REQUIRED OUTPUT that must be produced before proceeding."
 problem: "Static analysis agents return individual grep hits without aggregation (multiple panics in the same pallet stay as separate results) and silently pass on patterns with zero hits (e.g., RPC fan-out). This activity forces aggregation and zero-hit verification."
 recognition[3]:
   - static analysis
-  - group b sub-agent
+  - pattern-based search
   - mechanical checks
 skills:
-  primary: sub-agent-execution
+  primary: execute-sub-agent
+  supporting[1]:
+    - search-pattern-catalog
 required: false
 estimatedTime: 15-30m
 
 notes[4]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
-  - "The sub-agent receives context variables: in_scope paths, out_of_scope exclusions, grep pattern list from §2"
-  - "Step 4 (zero-hit audit) is the key design element — patterns with no results must be explicitly verified or flagged"
+  - "The sub-agent receives context variables: in_scope paths, out_of_scope exclusions, and resource 05 (static-analysis-patterns)"
+  - "Steps 1 and 2 delegate to the search-pattern-catalog skill, which defines the execution protocol for catalog-based searching"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
 steps[6]:
-  - id: run-section2-patterns
-    name: Run All §2 Grep Patterns
+  - id: run-grep-patterns
+    name: Run All Grep Patterns
     required: true
-    description: "Run every grep pattern from §2 of the audit template against the FULL in-scope directory set, excluding test/mock/bench files. Patterns: (1) §2.1 panic paths — unwrap(), .expect(, panic!, assert!, unreachable!; (2) §2.3 unsafe code; (3) §2.4 cryptographic weaknesses — seed_from_u64, StdRng, SmallRng, 0x42, from_seed; (4) §2.5 type casts — as i128, as u32, as i32, as u64, as usize; (5) §2.6 feature flags — #[cfg(feature; (6) §2.7 resource consumption — std::fs::read, read_to_end, take_while, filter_map.*ok, without_storage_info, subscribe, into_rpc; (7) §2.8 connection security — PgPool, PgSslMode, max_connections; (8) §2.9 information leaks — password, secret, credential in error contexts. REQUIRED OUTPUT: Categorized hits table. Format: | §2 Section | Pattern | File:Line | Hit | Triage (Critical/High/Medium/Low) |"
+    skill: search-pattern-catalog
+    skill_args:
+      resource_id: 05-static-analysis-patterns
+      catalog_section: Grep Patterns
+      output_format: "| Category | Pattern | File:Line | Hit | Triage |"
+    description: "Apply the 'Grep Patterns' catalog section against the full in-scope directory set, excluding test/mock/bench files."
   - id: run-mechanical-checks
-    name: Run Mechanical Pattern Checks
+    name: Run Mechanical Checks
     required: true
-    description: "Run all mechanical pattern searches that extend §2: (1) Every impl Ord and impl PartialOrd — verify all struct fields are included in cmp(); (2) take_while(Result::is_ok) and filter_map(Result::ok) — verify error logging exists; (3) Vec::with_capacity(serialized_size) vs tagged_serialized_size — verify size function matches serialization method; (4) subscribe/notification_service/justification_stream — verify per-connection limits or bounded channels; (5) Every StorageInit construction site — verify genesis data source consistency; (6) RPC subscription endpoints via into_rpc() — verify explicit per-connection limits; (7) pallet_timestamp usage in cross-chain contexts — flag any call site where the local timestamp is used for cross-chain event attribution; (8) Preallocation mismatch — search for 'Vec::with_capacity(serialized_size' and verify the corresponding serialize call uses the matching size function (serialized_size pairs with serialize, tagged_serialized_size pairs with tagged_serialize; a mismatch causes under-allocation and heap reallocation); (9) Mock data source toggle — search for 'MOCK', 'mock.*env', 'from_env.*mock', 'use_main_chain_follower_mock' patterns to identify runtime-configurable flags that swap production data sources for mocks (these must be compile-time gated, not runtime config); (10) SmallRng and block-hash-derived randomness — search for 'SmallRng', 'thread_rng', 'parent_block_hash' used as RNG seeds in security-sensitive contexts (extends §2.4 crypto patterns beyond StdRng). REQUIRED OUTPUT: Mechanical check results table. Format: | Check | Pattern | File:Line | PASS/FAIL | Evidence |"
+    skill: search-pattern-catalog
+    skill_args:
+      resource_id: 05-static-analysis-patterns
+      catalog_section: Mechanical Checks
+      output_format: "| Check | Pattern | File:Line | PASS/FAIL | Evidence |"
+    description: "Apply the 'Mechanical Checks' catalog section."
   - id: run-storage-lifecycle-scan
     name: Run Storage Lifecycle Pairing Scan
     required: true
-    description: "For every StorageMap/StorageDoubleMap/StorageNMap in the codebase: (1) find every insert()/push()/append() call site; (2) find every remove()/take() call site; (3) pair inserts with removes on the same storage map; (4) flag any unpaired insert as a finding lead; (5) for each storage map with insertions, check if any declared capacity constant (e.g., MaxRegistrationsPerCardanoAddress) is enforced at the insertion point. REQUIRED OUTPUT: Storage lifecycle pairing table. Format: | StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
+    skill: scan-storage-lifecycle
+    skill_args:
+      output_format: "| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
+    description: "Scan all storage maps in the full in-scope codebase."
   - id: produce-zero-hit-audit
     name: Produce Zero-Hit Pattern Audit
     required: true
-    description: "Review every pattern from steps 1 and 2. List every pattern that returned ZERO results. For each zero-hit pattern, determine: (a) TRUE NEGATIVE — the pattern genuinely does not exist in the codebase (with justification), or (b) POSSIBLE FALSE NEGATIVE — the pattern may exist but was not caught by the grep (flag for Group A manual follow-up). REQUIRED OUTPUT: Zero-hit patterns table. Format: | Pattern | §2 Section | Hits | Verdict (True Negative / Flag for Follow-up) | Justification |"
+    skill: search-pattern-catalog
+    skill_args:
+      output_format: "| Pattern | Category | Hits | Verdict | Justification |"
+    description: "Compile zero-hit verdicts from steps 1 and 2 into a single table."
   - id: aggregate-findings
     name: Aggregate Hits Into Distinct Findings
     required: true
-    description: "Consolidate individual grep hits and mechanical check results into distinct findings. Aggregation rules: (1) Multiple panic sites (unwrap/expect) in the same file or pallet become ONE aggregated finding with a count and severity based on the highest-reachability site. (2) Multiple type casts in the same function become ONE finding. (3) RPC subscription endpoints without limits across multiple modules become ONE finding. (4) Each unpaired StorageMap insert is a separate finding. (5) Each mechanical check FAIL is a separate finding. REQUIRED OUTPUT: Aggregated findings list with fields: id, file, line, title, severity, checklist_item, evidence, aggregated_from (list of source hits)."
+    description: "Consolidate individual grep hits and mechanical check results into distinct findings using the aggregation rules in resource 05 (static-analysis-patterns)."
   - id: format-output
     name: Format Structured Output
     required: true
-    description: "Compile all findings, tables, and the zero-hit audit into the structured output format defined in resource 04 (sub-agent-output-schema). Include: agent_id, activity_followed ('sub-static-analysis'), steps_completed, findings (aggregated list), mandatory_tables (categorized hits, mechanical checks, storage lifecycle pairing, zero-hit audit), and reconnaissance_leads. REQUIRED OUTPUT: Structured JSON conforming to the output schema."
+    skill: execute-sub-agent
+    description: "Format all findings and tables as structured output."
 outcome[4]:
-  - All §2 grep patterns executed against full scope
+  - All patterns from resource 05 executed against full scope via search-pattern-catalog skill
   - Mechanical checks completed with per-pattern PASS/FAIL
   - Storage lifecycle pairing table produced
   - Zero-hit patterns audited and classified

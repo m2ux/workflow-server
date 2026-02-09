@@ -8,7 +8,7 @@ recognition[3]:
   - gap analysis
   - benchmark against professional report
 skills:
-  primary: audit-execution
+  primary: execute-audit
 required: false
 estimatedTime: 30-60m
 notes[5]:
@@ -25,16 +25,28 @@ steps[6]:
     description: "Read the professional audit report from reference_report_path (recorded during scope-setup, quarantined until now). Extract the finding list with severities, descriptions, and affected files. This is the first and only time the reference report enters the agent's context."
   - id: map-findings
     name: Map Findings
-    description: "For each reference finding, identify the closest matching AI finding. Classify as: matched (same root cause), partial match (related but incomplete), or gap (missed entirely)."
+    skill: compare-finding-sets
+    skill_args:
+      output_format: "Finding-by-finding mapping table"
+    description: "Map each reference finding to the closest AI finding. Classify as matched, partial, or gap."
   - id: identify-gaps
     name: Identify Gaps
-    description: "List all reference findings missed by the AI audit. Group by severity and root cause category (pattern-absence, toolkit depth, wrong-layer check, first-positive-signal bias, mechanical-check miss, etc.)."
+    skill: compare-finding-sets
+    skill_args:
+      output_format: "Gap list grouped by severity and root cause category"
+    description: "List all reference findings missed by the AI audit."
   - id: analyze-severity
     name: Analyze Severity Calibration
-    description: "For matched findings, compare severity ratings. Identify systematic over-rating (AI higher than reference) and under-rating (AI lower) patterns."
+    skill: compare-finding-sets
+    skill_args:
+      output_format: "Severity calibration analysis with over/under-rating patterns"
+    description: "Compare severity ratings for matched findings."
   - id: root-cause-analysis
     name: Root Cause Analysis
-    description: "For each gap cluster, determine why the AI audit missed it: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other structural cause."
+    skill: compare-finding-sets
+    skill_args:
+      output_format: "Root cause analysis with countermeasures per gap cluster"
+    description: "Determine structural causes for each gap cluster."
   - id: write-gap-analysis
     name: Write Gap Analysis Report
     description: "Produce 02-gap-analysis.md in the planning folder. Include: summary table, finding-by-finding mapping, gap list with root causes, severity calibration analysis, and recommendations for workflow improvement."

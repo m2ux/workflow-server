@@ -1,0 +1,37 @@
+id: compare-finding-sets
+version: 1.0.0
+capability: "Given two finding lists, produce a finding-by-finding mapping, classify matches/partials/gaps, analyze severity calibration differences, and identify root cause patterns for gaps"
+
+description: "A reusable skill for benchmarking one set of findings against a reference set. Defines the mapping protocol (match/partial/gap classification), severity calibration analysis (over-rating/under-rating pattern identification), and root cause taxonomy for missed findings."
+
+inputs:
+  primary_findings:
+    description: "The finding list to evaluate (e.g., AI audit results)"
+    required: true
+  reference_findings:
+    description: "The benchmark finding list to compare against (e.g., professional audit report)"
+    required: true
+
+protocol:
+  description: "The comparison procedure for finding-set benchmarking."
+  steps[4]:
+    - id: map-findings
+      name: Map Findings
+      description: "For each reference finding, identify the closest matching primary finding. Classify as: matched (same root cause and affected code), partial match (related but incomplete coverage or different framing), or gap (missed entirely)."
+    - id: identify-gaps
+      name: Identify and Classify Gaps
+      description: "List all reference findings classified as gaps. Group by severity and root cause category (e.g., pattern-absence blindness, insufficient file coverage, wrong-layer check, first-positive-signal bias, toolkit depth limitation, mechanical-check skip)."
+    - id: analyze-severity-calibration
+      name: Analyze Severity Calibration
+      description: "For matched findings, compare severity ratings between primary and reference. Identify systematic over-rating patterns (primary higher than reference) and under-rating patterns (primary lower). Compute average delta by severity tier."
+    - id: analyze-root-causes
+      name: Root Cause Analysis for Gaps
+      description: "For each gap cluster, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause."
+
+output:
+  description: "Comparison report with mapping, gaps, calibration analysis, and countermeasures."
+  components[4]:
+    - "Finding-by-finding mapping table: reference finding, primary finding, match type, severity comparison"
+    - "Gap list: missed reference findings grouped by severity and root cause"
+    - "Severity calibration analysis: over-rated findings, under-rated findings, average delta"
+    - "Root cause analysis with proposed countermeasures"
