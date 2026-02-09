@@ -14,7 +14,7 @@ skills:
     - assumptions-review
 required: true
 estimatedTime: 10-20m
-notes[4]:
+rules[4]:
   - "You can't improve what you don't measure - establish quantitative baselines"
   - "Document how each metric was measured for reproducibility"
   - "Gaps should be linked to measurable success criteria"
@@ -22,7 +22,7 @@ notes[4]:
 modeOverrides:
   review:
     description: "Analyze the pre-change baseline state from the base branch to establish reference for PR evaluation."
-    notes[3]:
+    rules[3]:
       - Checkout base branch to analyze PRE-change state (what existed before the PR)
       - Document what would need to change to fulfill requirements (the expected changes)
       - This baseline becomes the reference for evaluating what the PR actually changed

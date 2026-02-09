@@ -11,14 +11,14 @@ skills:
   primary: validation
 required: true
 estimatedTime: 15-30m
-notes[3]:
+rules[3]:
   - "Test pass/fail, build success, lint errors are observable - do not ask user about these"
   - "If failures occur, analyze root cause, fix, and re-run until all pass"
   - "Test suite quality was already reviewed at end of implement phase"
 modeOverrides:
   review:
     description: "Run validation checks and document failures as review findings (do not fix)."
-    notes[3]:
+    rules[3]:
       - Run existing tests to verify they pass as claimed by the PR
       - Document failures as review findings - do NOT fix them (that's the PR author's job)
       - Failures become critical findings in the review summary

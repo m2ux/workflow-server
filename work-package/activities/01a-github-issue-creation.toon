@@ -9,7 +9,7 @@ skills:
     - git-workflow
 required: false
 estimatedTime: 5-10m
-notes[3]:
+rules[3]:
   - "Issues define problems, not solutions - describe what needs to be solved and why"
   - "Acceptance criteria must be observable and testable"
   - "No implementation details in issues - those belong in planning docs and PRs"

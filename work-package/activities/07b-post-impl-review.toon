@@ -15,7 +15,7 @@ skills:
     - architecture-summary
 required: true
 estimatedTime: 30-60m
-notes[7]:
+rules[7]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
   - "All three automated reviews (code, test suite, architecture) should be completed"
@@ -26,7 +26,7 @@ notes[7]:
 modeOverrides:
   review:
     description: "Compare PR changes against expected changes from implementation analysis. Document findings for PR author."
-    notes[3]:
+    rules[3]:
       - Compare actual PR changes against 'expected_changes' documented in implementation analysis
       - Identify deviations - missing changes, unexpected changes, alternative approaches
       - Document findings as review comments for PR author, not fixes to apply
