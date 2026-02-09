@@ -2,7 +2,7 @@
 
 > Multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, wave-based workflow-directed multi-agent deep review, adversarial verification, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports.
 
-**Version:** 4.3.0
+**Version:** 4.4.0
 
 ## Overview
 
@@ -21,11 +21,13 @@ This workflow guides the complete lifecycle of a security audit:
 - **Goal → Activity → Skill → Tools** ontology: activities define step skeletons with activity-level rules; skills define tool orchestration and protocols; resources contain detailed reference content (progressive disclosure)
 - Workflow-directed sub-agents: each sub-agent bootstraps the workflow-server MCP, loads its assigned activity and the `execute-sub-agent` skill, which follows activity steps sequentially with verifiable outputs
 - **Composable skill architecture** — 15 single-responsibility skills: orchestrator skills (`execute-audit`, `dispatch-sub-agents`, `verify-sub-agent-output`, `merge-findings`), analysis skills (`apply-checklist`, `build-function-registry`, `extract-invariants`, `scan-storage-lifecycle`, `decompose-safety-claims`, `map-codebase`), and sub-agent skills (`execute-sub-agent`, `search-pattern-catalog`)
-- **Wave-based Group A dispatch** — agents dispatched in waves of 3–4 when the platform limits concurrency; each wave includes at least one Group A crate-level agent
-- **Coverage gate hard stop** — report generation blocked until every >200-line file in priority-1/2 crates is confirmed read by at least one sub-agent
-- **Mandatory output verification** — orchestrator validates that each Group A agent produced required tables (§3.3 per-field trace, §3.5 StorageInit enumeration, cross-function invariant comparison) before consolidation
+- **Wave-based dispatch with mandatory completion** — agents dispatched in waves of 3–5 when the platform limits concurrency. Wave 1 includes highest-priority Group A agents, Group B, AND Group D (v4.4: Group D moved to Wave 1). Wave 2 includes remaining Group A agents and is MANDATORY — skipping Wave 2 is a hard stop violation.
+- **Dispatch completeness gate (v4.4)** — every crate assigned to a Group A agent during reconnaissance must have a corresponding dispatched sub-agent. Reconnaissance reads do not substitute for §3-applying agents. Validated: skipping this gate caused 11–19pp coverage regression in two sessions.
+- **Coverage gate hard stop** — report generation blocked until every >200-line file in priority-1/2 crates is confirmed read by a **§3-applying Group A sub-agent** (not a reconnaissance agent, not the orchestrator)
+- **Mandatory output verification** — orchestrator validates that each Group A agent produced required tables (§3.3 per-field trace + struct diff, §3.5 StorageInit + genesis header construction, cross-function invariant comparison) before consolidation
 - **Orchestrator role discipline** — the orchestrator coordinates and dispatches but does not perform crate-level review itself
 - **Mechanical pattern coverage** — Group B checks must cover ledger internal API files; zero hits on serialization checks in the ledger directory is a possible false negative
+- **Ensemble execution verification (v4.4)** — when ensemble is enabled, the pass must produce a verifiable `second-pass-findings` artifact; declaring completion without execution violates the workflow
 - Impact x Feasibility severity scoring via `score-severity` skill with resource-backed calibration examples
 - Contamination prevention — reference report quarantined until gap-analysis phase
 - Structured merge table with mandatory elevation verification
@@ -83,7 +85,7 @@ graph TD
 
 ## Primary Audit — Wave-Based Agent Dispatch
 
-When the platform limits concurrent sub-agents (e.g., max 4), agents are dispatched in waves. Each wave must include at least one Group A crate-level agent — dispatching only Groups B and D without any Group A agents violates the workflow architecture.
+When the platform limits concurrent sub-agents (e.g., max 5), agents are dispatched in waves. Wave 2 dispatch is **mandatory** — skipping it is a hard stop violation (validated: S12 and S14 regressions).
 
 ```mermaid
 graph TD
@@ -94,26 +96,27 @@ graph TD
         A2["A2: Midnight Pallet + Ledger"]
         A3["A3: Node Binary"]
         B1["B: Static Analysis"]
+        D1["D: Toolkit Review"]
     end
 
     W1 --> W2
 
-    subgraph W2["Wave 2 (concurrent)"]
+    subgraph W2["Wave 2 — MANDATORY (concurrent)"]
         A4["A4: Runtime"]
         A5["A5: MC-Follower Primitives"]
         A6["A6: Upgrade + Version Pallets"]
-        D1["D: Toolkit Review"]
     end
 
-    W2 --> COV
+    W2 --> DISPATCH_CHECK
 
-    subgraph verification["Verification Gates (v4.2)"]
-        COV["Coverage Gate (HARD STOP)"]
+    subgraph verification["Verification Gates (v4.4)"]
+        DISPATCH_CHECK["Dispatch Completeness (HARD STOP)"]
+        COV["Coverage Gate — §3 Agents Only (HARD STOP)"]
         VTBL["Verify Mandatory Tables"]
-        VSTO["Verify StorageInit Trace"]
+        VSTO["Verify StorageInit + Genesis Header"]
     end
 
-    COV --> VTBL --> VSTO --> MERGE
+    DISPATCH_CHECK --> COV --> VTBL --> VSTO --> MERGE
 
     subgraph consolidation[Consolidation]
         MERGE[Structured Merge]
@@ -124,19 +127,20 @@ graph TD
     MERGE --> DEDUP --> CHECK
 ```
 
-> Wave 1 covers the 3 highest-priority crates plus static analysis. Wave 2 covers remaining crates plus toolkit. The orchestrator waits for each wave to return before dispatching the next. All sub-agents follow dedicated workflow activities via the workflow-server MCP using the `execute-sub-agent` skill.
+> **v4.4 changes:** Group D moved to Wave 1 to ensure toolkit review is never deferred. Wave 2 covers remaining Group A crates and is explicitly mandatory. The dispatch completeness gate verifies every assigned agent was dispatched before allowing consolidation. The coverage gate now requires files to be read by §3-applying Group A agents — reconnaissance reads do not count.
 
-### Verification Gates
+### Verification Gates (v4.4)
 
-Between agent collection and consolidation, the orchestrator runs three verification gates. These are hard stops — the audit does not proceed to structured merge with failures.
+Between agent collection and consolidation, the orchestrator runs four verification gates. These are hard stops — the audit does not proceed to structured merge with failures.
 
 | Gate | What It Checks | Failure Action |
 |------|---------------|----------------|
-| **Coverage Gate** | Every `.rs` file >200 lines in priority-1/2 crates was read by at least one agent | Dispatch targeted follow-up agents for unread files |
-| **Mandatory Tables** | Each Group A agent produced: §3 checklist table, per-field event trace table (§3.3 if applicable), cross-function invariant table. Group D produced: function enumeration table, per-function checklist matrix, coverage attestation. | Dispatch targeted follow-up for missing tables |
-| **StorageInit Trace** | The node agent (A3) enumerated every `StorageInit` construction site covering both online and offline subcommand paths | Dispatch targeted follow-up for §3.5 |
+| **Dispatch Completeness** (v4.4) | Every agent assigned during reconnaissance was dispatched and returned structured output. `agents_dispatched == agents_assigned`. | HARD STOP — dispatch missing agents before proceeding |
+| **Coverage Gate** (v4.4: §3-agent distinction) | Every `.rs` file >200 lines in priority-1/2 crates was read by a **§3-applying Group A sub-agent**. Files read only during reconnaissance do not satisfy this gate. | Dispatch targeted Group A follow-up agents for RECON-ONLY files |
+| **Mandatory Tables** | Each Group A agent produced: §3 checklist table, per-field event trace table AND struct diff table (§3.3 if applicable), cross-function invariant table. Group D produced: function enumeration table, per-function checklist matrix, coverage attestation. | Dispatch targeted follow-up for missing tables |
+| **StorageInit + Genesis Header** (v4.4: expanded) | The node agent (A3) enumerated every `StorageInit` construction site covering both online and offline subcommand paths, AND checked genesis header construction for feature-gated digest items | Dispatch targeted follow-up for §3.5 |
 
-These gates are hard stops — skipping them risks significant coverage regression.
+These gates are hard stops — skipping them risks significant coverage regression. Validated: S12 (93%→82%) and S14 (93%→74%) regressions were directly caused by proceeding with failed or bypassed gates.
 
 ### Sub-Agent Activity Flows
 
@@ -259,18 +263,19 @@ graph TD
 | B | 1 | `sub-static-analysis` | All §2 grep patterns + mechanical checks (incl. preallocation mismatch, mock toggle, SmallRng) + storage lifecycle pairing |
 | D | 1 (MANDATORY) | `sub-toolkit-review` | ledger/helpers/ and util/toolkit/ with 7-item mandatory checklist applied per-function. Must produce structured tables. |
 
-**Steps (9):**
-1. `dispatch-wave-1` — Highest-priority Group A agents (NTO, midnight+ledger, node) + Group B
-2. `dispatch-wave-2` — Remaining Group A agents (runtime, mc-follower, upgrade) + Group D
-3. `collect-all` — Wait for all sub-agents from both waves
-4. `verify-coverage-gate` — **HARD STOP**: confirm every >200-line file was read
-5. `verify-mandatory-tables` — Confirm Group A produced required tables; Group D produced function matrix
-6. `verify-storageinit-trace` — Confirm node agent traced all StorageInit construction sites
-7. `structured-merge` — Flat table of all findings
-8. `dedup-and-map` — Assign report finding numbers
-9. `verify-checklist-completeness` — §3 coverage matrix with gap-filling follow-up
+**Steps (10):**
+1. `dispatch-wave-1` — Highest-priority Group A agents (NTO, midnight+ledger, node) + Group B + **Group D** (v4.4: moved to Wave 1)
+2. `dispatch-wave-2` — Remaining Group A agents (runtime, mc-follower, upgrade). **MANDATORY** — skipping is a hard stop violation.
+3. `verify-dispatch-completeness` — **HARD STOP (v4.4)**: confirm `agents_dispatched == agents_assigned`
+4. `collect-all` — Wait for all sub-agents from both waves
+5. `verify-coverage-gate` — **HARD STOP**: confirm every >200-line file was read by §3-applying agents
+6. `verify-mandatory-tables` — Confirm Group A produced required tables (incl. struct diff); Group D produced function matrix
+7. `verify-storageinit-trace` — Confirm node agent traced StorageInit sites + genesis header construction
+8. `structured-merge` — Flat table of all findings
+9. `dedup-and-map` — Assign report finding numbers
+10. `verify-checklist-completeness` — §3 coverage matrix with gap-filling follow-up
 
-**Consolidation:** Steps 4–6 are verification gates that run between agent collection and the structured merge. Any failure triggers targeted follow-up agent dispatch before proceeding.
+**Consolidation:** Steps 3 and 5–7 are verification gates that run between agent dispatch and the structured merge. Any failure triggers targeted follow-up agent dispatch before proceeding.
 
 ---
 
@@ -316,10 +321,14 @@ graph TD
 
 **Condition:** `ensemble_enabled == true`
 
+**Execution verification (v4.4):** The ensemble must actually dispatch sub-agents and produce a `second-pass-findings.md` artifact in the planning folder. Declaring completion without execution violates the workflow. If context constraints prevent a full second pass, a reduced-scope pass (top 3–5 files) is always preferable to skipping entirely.
+
 **Merge Strategy:**
 - Finding in both runs: high confidence, median severity
 - Finding in one run only: include, flag as single-source
 - PASS in primary but FAIL in ensemble: escalate as new finding
+
+**Artifacts:** `second-pass-findings.md`
 
 ---
 
@@ -355,8 +364,8 @@ Skills define tool orchestration, protocols, and composable capabilities. They a
 |-------|------------|---------|
 | `execute-audit` | Orchestrator-level audit execution: 5-phase execution pattern, agent dispatch coordination, tool usage, consolidation | All orchestrator activities (scope-setup through gap-analysis) |
 | `score-severity` | Impact × Feasibility severity scoring with calibration examples and bias correction | report-generation, ensemble-pass |
-| `dispatch-sub-agents` | Compose sub-agent Task prompts with workflow-server bootstrap instructions, context variables, and supplementary files; dispatch concurrently within platform limits | primary-audit (wave dispatch) |
-| `verify-sub-agent-output` | Validate sub-agent results against structural completeness requirements, check coverage gates and mandatory tables, flag or re-dispatch on failure | primary-audit (verification gates) |
+| `dispatch-sub-agents` | Compose sub-agent Task prompts with workflow-server bootstrap instructions, context variables, and supplementary files; dispatch concurrently within platform limits; **verify dispatch completeness** (v4.4) | primary-audit (wave dispatch) |
+| `verify-sub-agent-output` | Validate sub-agent results against structural completeness requirements, check **dispatch completeness** and **§3-agent coverage gates** (v4.4), verify mandatory tables, flag or re-dispatch on failure | primary-audit (verification gates) |
 | `merge-findings` | Concatenate finding lists from multiple sources into a canonical flat table, deduplicate by root cause, assign report finding numbers, verify elevation completeness | primary-audit (consolidation), ensemble-pass (union-merge) |
 | `compare-finding-sets` | Finding-by-finding mapping between two finding sets, classify matches/partials/gaps, analyze severity calibration differences, root cause analysis | gap-analysis |
 
@@ -417,6 +426,9 @@ Resources contain detailed reference content loaded on demand by skills. Activit
 | `panic_sweep_complete` | boolean | Phase 1.5 gate |
 | `adversarial_complete` | boolean | Phase 2 gate |
 | `report_complete` | boolean | Phase 3 gate |
+| `agents_assigned` | number | Count of agents assigned during reconnaissance (v4.4) |
+| `agents_dispatched` | number | Count of agents actually dispatched across all waves (v4.4) |
+| `dispatch_complete` | boolean | All assigned agents dispatched and returned (v4.4) |
 
 ---
 
@@ -429,6 +441,7 @@ Resources contain detailed reference content loaded on demand by skills. Activit
 | Setup | `file-inventory.txt` | Source files sorted by line count |
 | Reconnaissance | `README.md` | Scope, methodology, crate inventory |
 | Report | `01-audit-report.md` | Full audit report with numbered findings |
+| Ensemble | `second-pass-findings.md` | Raw findings from second-pass run (v4.4: required artifact when ensemble enabled) |
 | Gap Analysis | `02-gap-analysis.md` | Comparison against reference report |
 
 
