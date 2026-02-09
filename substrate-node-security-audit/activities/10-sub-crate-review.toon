@@ -1,5 +1,5 @@
 id: sub-crate-review
-version: 1.3.0
+version: 1.4.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Workflow for Group A sub-agents. Executes an 8-step structured crate review with verifiable outputs at each stage. Each step defines a REQUIRED OUTPUT that must be produced before proceeding. The sub-agent loads this activity via get_workflow_activity and follows it sequentially."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
@@ -12,7 +12,7 @@ skills:
 required: false
 estimatedTime: 20-40m
 
-rules[12]:
+rules[13]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: crate_path, checklist_sections, function_registry, supplementary_files, in_scope, out_of_scope"
   - "Every step defines a REQUIRED OUTPUT. The agent must produce this output before proceeding."
@@ -25,6 +25,7 @@ rules[12]:
   - "TIMESTAMP SOURCE DEFAULT-FAIL: For pallets processing external-chain inherent data (see target profile cross-chain pallets list), pallet_timestamp usage in cross-chain event/payload construction is DEFAULT FAIL. Agent must prove usage is local-only to override. 'Design choice' is NOT a valid PASS when event content derives from external chain observations."
   - "VERIFIER RECOMPUTATION REQUIREMENT: For §3.4, every type in the proposer tuple but absent from the verifier tuple is FAIL UNLESS the agent cites a specific code path where the verifier independently recomputes the value from its own data source. Invalid PASS justifications: 'value in digest', 'by design', 'framework handles it', 'extracted from header'. Valid PASS requires: 'verifier recomputes X at [file:line] from its own [source]'."
   - "SYSTEM TRANSACTION TYPE EXHAUSTIVENESS: The ledger agent MUST check for wildcard _ => match arms in apply_system_transaction. Wildcard arms allowing unknown types to be applied to state = FAIL. The orchestrator MUST include this check in the ledger agent's prompt."
+  - "§3.1 FLUSH ORDERING VERIFICATION: For every on_finalize hook, the sub-agent MUST enumerate ALL state-modifying operations in execution order (including conditional paths such as reward distribution and minting). The flush call must occur AFTER the last state-modifying operation. A flush followed by additional writes (e.g., mint_coins after flush_storage) is FAIL. Finding the flush call alone is NOT sufficient — the agent must verify nothing writes after it."
 steps[8]:
   - id: read-all-files
     name: Read All Crate Files
