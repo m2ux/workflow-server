@@ -50,7 +50,7 @@ steps[10]:
     skill: map-codebase
     skill_args:
       output_format: "| Struct | File | Fields | Constructor Validates Invariants? |"
-    description: "Enumerate every struct that aggregates consensus-critical off-chain parameters (slot duration, epoch length, block window size, capacity limits). For each, check whether the constructor validates mathematical invariants (e.g., epoch_duration % slot_duration == 0, slot_duration > 0). Record structs with missing invariant validation as reconnaissance leads."
+    description: "Enumerate consensus-critical configuration structs per the target profile. Check constructor invariant validation. Record gaps as reconnaissance leads."
   - id: identify-pallet-hooks
     name: Identify Pallet Hooks
     skill: map-codebase
