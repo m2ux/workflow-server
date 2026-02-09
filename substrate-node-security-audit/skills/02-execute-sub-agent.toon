@@ -59,7 +59,7 @@ tools:
   get_workflow_activity:
     when: "Bootstrap — second call"
     params: "workflow_id, activity_id"
-    returns: "Activity definition with steps, notes, outcome"
+    returns: "Activity definition with steps, rules, outcome"
   get_resource:
     when: "Loading the output schema or toolkit checklist"
     params: "workflow_id, index"

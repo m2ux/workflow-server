@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 30-60m
-notes[5]:
+rules[5]:
   - "This agent's role is to REFUTE safety claims, not confirm them"
   - "Focus on §3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these checks are most susceptible to false PASSes"
   - "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? Are call_addresses filtered? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."

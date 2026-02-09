@@ -14,7 +14,7 @@ skills:
     - artifact-management
 required: true
 estimatedTime: 5-15m
-notes[5]:
+rules[5]:
   - "The target submodule MUST be specified in the initial request — if not provided, fail with an error describing the required format"
   - "The target commit MUST be specified or default to the submodule's current HEAD"
   - "The submodule must be checked out at the exact target commit before any analysis"

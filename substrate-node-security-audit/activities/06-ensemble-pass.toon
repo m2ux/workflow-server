@@ -13,7 +13,7 @@ skills:
     - score-severity
 required: false
 estimatedTime: 60-90m
-notes[4]:
+rules[4]:
   - "This activity is OPTIONAL — only runs when ensemble_enabled is true"
   - "Scope the second pass to priority-1/2 components only to control cost"
   - "Use a different model or temperature if available; same model with different system prompt is acceptable"

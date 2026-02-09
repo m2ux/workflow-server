@@ -13,7 +13,7 @@ skills:
     - score-severity
 required: true
 estimatedTime: 20-40m
-notes[6]:
+rules[6]:
   - "The structured merge table from primary-audit is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
   - "Severity MUST use the Impact x Feasibility rubric — compare each finding against the calibration examples in the score-severity skill before finalizing"
   - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"

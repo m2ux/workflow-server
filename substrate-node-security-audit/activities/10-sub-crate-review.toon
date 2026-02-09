@@ -12,7 +12,7 @@ skills:
 required: false
 estimatedTime: 20-40m
 
-notes[5]:
+rules[5]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: crate_path, checklist_sections, function_registry, supplementary_files, in_scope, out_of_scope"
   - "Every step defines a REQUIRED OUTPUT. The agent must produce this output before proceeding to the next step."

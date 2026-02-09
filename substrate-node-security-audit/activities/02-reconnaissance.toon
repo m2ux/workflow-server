@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 15-30m
-notes[5]:
+rules[5]:
   - "Explicitly list EVERY pallet and primitive crate — do not summarize or group"
   - "Map which crates are runtime (Wasm), native (node binary), shared primitives, or off-chain tooling"
   - "Identify trust boundaries: RPC, inherent data, chain specs, config files, databases, file system, native/Wasm boundary"
