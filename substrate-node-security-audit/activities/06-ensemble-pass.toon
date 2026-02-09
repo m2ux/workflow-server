@@ -1,5 +1,5 @@
 id: ensemble-pass
-version: 2.1.0
+version: 2.2.0
 name: Ensemble Pass
 description: "Optional second-model audit run on priority-1/2 components. Merges findings with the primary report using union-with-consensus-severity strategy. Fully automated — no user checkpoints."
 problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures findings that are non-deterministically detected in any single run, improving overall coverage.
@@ -13,7 +13,7 @@ skills:
     - score-severity
 required: false
 estimatedTime: 60-90m
-rules[7]:
+rules[9]:
   - "This activity is OPTIONAL — only runs when ensemble_enabled is true"
   - "Scope the second pass to priority-1/2 components only to control cost"
   - "Use a different model or temperature if available; same model with different system prompt is acceptable"
@@ -21,10 +21,16 @@ rules[7]:
   - "EXECUTION VERIFICATION (v4.4): The ensemble pass MUST dispatch at least one sub-agent that independently applies the §3 checklist to priority-1/2 crates. Declaring the ensemble complete without dispatching any sub-agents violates this activity. The execute-second-pass step is the core of this activity — it is not optional."
   - "ARTIFACT REQUIREMENT (v4.4): The execute-second-pass step MUST produce a second-pass-findings artifact (MD or JSON) in the planning folder. This artifact is the verification mechanism — if it does not exist when the activity exits, the ensemble was not executed. The orchestrator checks for this artifact during the update-report step."
   - "CONTEXT CONSTRAINT HANDLING (v4.4): If context window pressure prevents executing a full second pass, the orchestrator MUST: (a) explicitly acknowledge the constraint, (b) scope the second pass to the top 3-5 files by priority rather than skipping entirely, and (c) produce the artifact even if the scope is reduced. A reduced-scope ensemble is always preferable to a skipped ensemble."
-steps[4]:
+  - "TARGETED BLIND-SPOT VERIFICATION (v4.6): The ensemble agent's prompt MUST include a list of checklist items with historically high false-PASS rates. The agent checks these items FIRST before performing general review: (1) §3.1 weight accounting — read weights.rs and verify non-zero return value for on_finalize; (2) §3.3 event filtering on partial success — trace EVERY event field independently, not just UTXOs; verify coverage spans ALL event construction sites (NTO events, midnight pallet events, model.rs export_events); (3) §3.2 pagination counter initialization — trace first-iteration behavior of cur_tx or equivalent; (4) §2.10 serialization buffer pairing — compare size function name against serialize function name character by character and produce the pairing table. This converts the ensemble from 'independent re-audit' to 'targeted verification of known blind spots plus independent re-audit.'"
+  - "ENSEMBLE SUPPLEMENTARY FILES (v4.6): The ensemble agent MUST receive these supplementary files explicitly: (a) pallets/midnight/src/weights.rs for weight verification; (b) runtime/src/model.rs for export_events verification; (c) ledger/src/versions/common/api/mod.rs for serialization pairing verification. Including these files ensures the blind-spot checklist items can be mechanically verified without depending on the agent to discover them independently."
+steps[5]:
   - id: configure-ensemble
     name: Configure Ensemble Run
-    description: "Determine the scope (priority-1/2 components only), model configuration, and any prompt variations for the second pass."
+    description: "Determine the scope (priority-1/2 components only), model configuration, and any prompt variations for the second pass. Include the targeted blind-spot checklist and mandatory supplementary files (weights.rs, model.rs, api/mod.rs) in the agent prompt."
+  - id: verify-blind-spots
+    name: "Verify Known Blind Spots (v4.6)"
+    required: true
+    description: "Before general review, the ensemble agent applies the targeted blind-spot checklist: (1) Read weights.rs — does WeightInfo::on_finalize() return non-zero Weight? (2) Read model.rs export_events — are NativeTokenObservation/NativeTokenManagement events handled (not unimplemented!())? Are all event fields filtered on partial success? (3) Read pagination code — trace first-iteration behavior of cur_tx or equivalent. (4) Read serialization code — produce the mandatory size-function/serialize-function pairing table. Each blind-spot item produces a CONFIRMED/REFUTED/INSUFFICIENT verdict. REFUTED items become findings."
   - id: execute-second-pass
     name: Execute Second Pass
     description: "Run the audit template against priority-1/2 components. The second pass follows the same §3 checklist and §5 execution requirements."

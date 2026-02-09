@@ -2,6 +2,57 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.6.0 (2026-02-09) — Session 16 Regression Countermeasures and Blind-Spot Targeting
+
+Addresses 4 regressions from Session 16 vs Session 15 (82% → 89% LA match rate regression on Low-severity findings) while preserving Session 16's improvements in severity calibration (all Critical findings correctly rated). Also adds ensemble blind-spot targeting based on validated false-PASS patterns.
+
+**Session 16 performance context:**
+
+| Session | Version | Agents | LA Match | LA Match+Partial | Critical Accuracy | Severity Calibration |
+|---------|---------|--------|----------|-----------------|-------------------|---------------------|
+| S15 | v4.5 | 5 (combined) | **89%** | 93% | 2/3 (67%) | 3 findings ±2 levels |
+| S16 | v4.5 | 8 (individual) | 82% | 91% | **3/3 (100%)** | **0 findings ±2 levels** |
+
+Session 16 had better Critical finding accuracy and severity calibration but regressed on 4 Low-severity findings. This release targets both.
+
+**New workflow rules (4):**
+- MANDATORY TABLE AUTO-ELEVATION (v4.6): Orchestrator scans mandatory tables for FAIL/DIFF/Missing cells and auto-promotes to findings. Fixes the scratchpad-to-report elevation failure pattern (LA-P utxo_index regression).
+- DEFENSE-IN-DEPTH VALIDATION (v4.6): §3.6 input validation PASS requires evidence at consumption layer, not just production layer. Fixes LA-Q Cardano address regression.
+- MANDATORY WEIGHTS.RS READ (v4.6): Sub-agents must read weights.rs for §3.1 checks. Fixes the primary-pass miss on LA-A (weight benchmarks) that required ensemble to catch.
+- ENSEMBLE TARGETED BLIND-SPOTS (v4.6): Ensemble agent verifies historically high false-PASS items first before general review.
+
+**Activity changes:**
+- primary-audit (4.5.0 → 4.6.0): +3 rules (table auto-elevation, event construction site verification, hybrid wave dispatch), +1 step (extract-table-derived-findings before structured-merge)
+- sub-crate-review (1.1.0 → 1.2.0): +3 rules (defense-in-depth validation, mandatory weights.rs read, supplementary file budget)
+- ensemble-pass (2.1.0 → 2.2.0): +2 rules (targeted blind-spot verification, ensemble supplementary files), +1 step (verify-blind-spots before execute-second-pass)
+
+**Skill changes:**
+- verify-sub-agent-output (1.1.0 → 1.2.0): +2 protocol steps (extract-table-findings, verify-event-construction-site)
+- apply-checklist (1.0.0 → 1.1.0): Updated produce-tables step with weight accounting table and defense-in-depth validation requirements
+
+**Resource changes:**
+- 05-static-analysis-patterns.md:
+  - +1 grep pattern: File I/O Safety (universal scope, not toolkit-only) — fixes LA-AI regression
+  - +1 mechanical check: Check 13 Universal File I/O Safety
+  - Updated Check 3: Serialization Size/Method Pairing now requires mandatory pairing table — fixes LA-AA regression
+  - Renumbered Check 13 (Error Type Topology Leakage) → Check 14
+
+**Regression targets:**
+
+| Regression | LA ID | Root Cause | Fix |
+|-----------|-------|-----------|-----|
+| utxo_index not elevated | LA-P | Scratchpad elevation failure | Rec 1: Table auto-elevation |
+| Cfg::load_spec file I/O | LA-AI | File I/O checklist scope | Rec 2: Universal file I/O in resource 05 |
+| Buffer prealloc function name | LA-AA | Agent didn't compare names | Rec 3: Mandatory pairing table in Check 3 |
+| Cardano address validation | LA-Q | Defense-in-depth philosophy | Rec 4: Consumption-layer validation rule |
+
+**Primary-pass blind-spot targets:**
+
+| Blind Spot | LA ID | Root Cause | Fix |
+|-----------|-------|-----------|-----|
+| Weight benchmark zero | LA-A | weights.rs not read | Rec 5: Mandatory weights.rs read |
+| Event partial success | LA-E | Wrong construction site checked | Rec 6: Event construction site gate |
+
 ## v4.3.0 (2026-02-09) — Skill Decomposition and Schema Alignment
 
 **Skill architecture refactored** from 3 monolithic skills to 15 composable single-responsibility skills:
