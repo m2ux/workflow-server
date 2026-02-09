@@ -1,5 +1,5 @@
 id: primary-audit
-version: 4.6.0
+version: 4.7.0
 name: Primary Audit
 description: "Execute the multi-agent audit using the template via concurrent dispatch. Group A (one agent per priority-1/2 crate) applies the full §3 checklist including cross-crate checks. Group B runs all §2 static analysis patterns plus mechanical pattern searches and storage lifecycle scanning. Group D reviews toolkit code with the mandatory 7-item checklist. All groups dispatch concurrently. Consolidation uses structured merge with mandatory elevation table."
 problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while the static analysis agent catches mechanical patterns across the full scope.
@@ -35,7 +35,7 @@ rules[21]:
   - "HYBRID WAVE DISPATCH (v4.6): Wave 1 keeps individual agents for the top-3 priority crates plus Group B and D. Wave 2 SHOULD combine remaining crates into fewer agents (e.g., runtime + upgrade as one agent, all primitives as one agent) rather than dispatching one agent per minor crate. Combined Wave 2 agents have broader cross-cutting context that catches Low-severity findings across crate boundaries. Always include weights.rs in supplementary files for pallet agents and model.rs for ledger agents."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
-steps[11]:
+steps[12]:
   - id: dispatch-wave-1
     name: "Dispatch Wave 1 — Highest-Priority Group A + Group B + Group D"
     required: true
@@ -46,6 +46,11 @@ steps[11]:
     required: true
     skill: dispatch-sub-agents
     description: "After Wave 1 returns, dispatch remaining Group A agents (runtime, mainchain-follower primitives, upgrade pallet). This dispatch is MANDATORY — skipping Wave 2 is a HARD STOP violation."
+  - id: verify-checklist-prompt-coverage
+    name: "Verify Checklist-to-Prompt Coverage (v4.7)"
+    required: true
+    skill: verify-sub-agent-output
+    description: "Before collecting results, the orchestrator verifies that every numbered §3 checklist item (§3.1 through §3.14) appears in at least one dispatched agent's prompt. Produce a coverage matrix: | §3 Item | Agent(s) Prompted | Covered? |. Any item with Covered?=No requires either: (a) adding the item to a follow-up agent dispatch, or (b) the orchestrator performing the check directly during structured-merge. This gate prevents the situation where a checklist item exists in the template but no agent is explicitly tasked with evaluating it."
   - id: verify-dispatch-completeness
     name: "Verify Dispatch Completeness (HARD STOP)"
     required: true

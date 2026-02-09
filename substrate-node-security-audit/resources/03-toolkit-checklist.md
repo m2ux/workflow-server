@@ -43,6 +43,18 @@ fn spend(&mut self) -> Vec<Spend> {
 }
 ```
 
+**Wallet spend deep-check (v4.7 — validated false-PASS):**
+
+For EVERY wallet function named `spend`, `do_spend`, or `speculative_spend`:
+1. Identify the state object modified during spend computation (e.g., `dust_local_state`)
+2. Trace whether the modified state is WRITTEN BACK to `self` or only returned as a value
+3. Check for TWO separate state aspects:
+   - (a) The **spent-UTXO tracker** (e.g., `spent_utxos`, `nullifiers`) — is this extended?
+   - (b) The **underlying local state** (e.g., `dust_local_state`, `coin_state`) — is this updated?
+4. A function that extends the spent-UTXO tracker (a) but does NOT update the underlying local state (b) will cause subsequent spend calls to select already-spent outputs from the stale state.
+
+In Session 17, the D agent marked DustWallet::spend as PASS on Item 2 because `spent_utxos` is extended. However, `dust_local_state` is NOT updated — the clone-and-modify pattern in `do_spend` modifies a local clone that is discarded on return. This is a false PASS.
+
 ### 3. Mutex Poisoning Risk
 
 For every `Mutex::lock()` followed by `.expect()` or `.unwrap()`:

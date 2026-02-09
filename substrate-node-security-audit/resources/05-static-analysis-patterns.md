@@ -59,6 +59,14 @@ std::fs::read  |  read_to_end  |  take_while  |  filter_map.*ok  |  without_stor
 PgPool  |  PgSslMode  |  max_connections  |  PgConnectOptions
 ```
 
+### Database TLS Configuration (v4.7)
+
+```
+PgPoolOptions  |  PgConnectOptions  |  ssl_mode  |  SslMode
+```
+
+**Triage:** For each `PgPoolOptions::new()` hit, trace the builder chain. If no `.ssl_mode(...)` call appears before `.connect()` or `.build()`, this is a finding (default is `Prefer`, which permits downgrade).
+
 ### Information Leaks — Credentials
 
 ```
@@ -211,6 +219,21 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** Error format strings do not embed `host`, `port`, or database name fields.
 - **FAIL if:** An error type's Display/Debug formats connection details that would be visible in logs or RPC responses. Even when credentials are masked (`***:***`), exposing host/port/db names aids reconnaissance.
 - **Note:** This is a pattern-presence bug — the fix is to redact or omit topology details from error messages while preserving them in structured (non-Display) fields for debugging.
+
+### Check 15: Database Connection TLS Enforcement (v4.7)
+
+- **Search:** `PgPoolOptions::new()`, `PgConnectOptions::new()`, `PgPool::connect(` in ALL in-scope paths
+- **Verify:** For EACH pool/connection construction site, trace whether `.ssl_mode(SslMode::Require)` or `.ssl_mode(SslMode::VerifyFull)` is explicitly called. If no `.ssl_mode()` call exists, the default is `Prefer`, which allows silent downgrade to plaintext.
+- **FAIL if:** Any production (non-test) database connection is established without explicit TLS enforcement. `Prefer` mode is insufficient — it allows a network attacker to strip TLS via downgrade.
+- **Note (v4.7):** In Sessions 16 and 17, the grep pattern for `PgSslMode` found hits in the indexer (out of scope) but missed that the node's `get_connection` function at `primitives/mainchain-follower/src/data_source/mod.rs` uses `PgPoolOptions::new()` without any `.ssl_mode()` call, defaulting to `Prefer`. The check must trace the DEFAULT behavior, not just explicit mode settings.
+
+### Check 16: RuntimeExecutor Host Function Feature Divergence (v4.7)
+
+- **Search:** `HostFunctions`, `RuntimeExecutor`, `ExtendedHostFunctions`, `WasmExecutor` in service initialization files (typically `node/src/service.rs`)
+- **Verify:** Are there multiple type definitions for host functions gated by different features (e.g., `#[cfg(feature = "runtime-benchmarks")]`)? If the feature adds or removes host functions, nodes compiled with different features will have different Wasm execution environments.
+- **FAIL if:** Different feature flags produce different `HostFunctions` type aliases that are used in the `RuntimeExecutor` or `WasmExecutor` construction. A Wasm module calling a host function present in one build but absent in another will trap, causing block import failure.
+- **Relationship to Genesis Divergence:** This is a SEPARATE finding from feature-gated genesis digests (Check 5 / §3.5). Genesis divergence produces different genesis hashes; host function divergence produces different Wasm execution environments. Both cause consensus failure between heterogeneous builds, but through different mechanisms.
+- **Note (v4.7):** In Session 17, Issue #13 identified the `#[cfg(experimental)]` genesis digest divergence but did not trace the `#[cfg(feature = "runtime-benchmarks")]` gate on host function includes at `service.rs:181-194`. These are two independent consensus-divergence vectors from feature flags.
 
 ---
 

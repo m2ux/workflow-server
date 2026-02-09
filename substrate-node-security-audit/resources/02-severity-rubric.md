@@ -82,3 +82,16 @@ AI agents rate `unwrap()`/`expect()` panics triggered by configuration, chain sp
 3. **Node startup is not a recovery-safe context.** A panic during startup prevents the node from starting at all. Unlike a runtime panic (which Substrate can sometimes recover from), a startup panic causes a crash loop with no self-healing path.
 
 **Rule of thumb:** If the trigger condition can occur without an attacker (routine ops, config errors, standard DB maintenance), the Feasibility is at least F=3 regardless of whether an attacker *could also* trigger it.
+
+### Under-Rating Operational Hazards (v4.7 — new pattern)
+
+AI agents assess Feasibility based on whether an ATTACKER can trigger the condition, underweighting that the condition occurs ROUTINELY under normal operation. Apply these calibration anchors:
+
+| Finding Pattern | Incorrect F Assessment | Correct F | Why |
+|-----------------|----------------------|-----------|-----|
+| Shared connection pool (N conns, RPC + consensus) | F=2 ("requires sustained load") | **F=3** ("single RPC burst during block production") | A burst of 5 concurrent RPC queries during the 6-second block window is routine, not exotic. If N <= consumer count, starvation is probabilistic, not theoretical. |
+| Incomplete Ord implementation in consensus-sorted collection | F=2 ("requires specific data pattern") | **F=3** ("occurs when two items share the compared field") | In a blockchain processing thousands of items per block, field collisions are statistically expected, not exotic. |
+| Config struct missing mathematical invariant | F=2 ("requires config error") | **F=3** ("config errors are operational hazards") | Config files are distributed artifacts — CI, manual edits, version mismatches, and genesis ceremonies routinely produce non-obvious errors. A missing `epoch % slot == 0` check is not an attack; it's a configuration bug that causes a consensus split. |
+| Startup panic on malformed chain spec property | F=2 ("requires crafted input") | **F=3** ("chain specs from CI/distribution channels") | Same as config errors above. |
+
+**Rule of thumb (v4.7):** If the finding involves a SHARED RESOURCE with concurrent consumers, or a SORTED COLLECTION in consensus, or a CONFIGURATION VALUE without invariant enforcement, Feasibility is AT LEAST F=3 regardless of whether an attacker needs to trigger it. These conditions occur under normal operation.
