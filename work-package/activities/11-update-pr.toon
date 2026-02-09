@@ -13,12 +13,12 @@ skills:
     - code-review
 required: true
 estimatedTime: 10-15m
-notes[1]:
+rules[1]:
   - "Push commits, update description, mark ready for review"
 modeOverrides:
   review:
     description: "Generate and post consolidated PR review comments with findings from all review stages."
-    notes[4]:
+    rules[4]:
       - Generate consolidated review summary from all review stages
       - Post PR review comments using GitHub PR review API (gh pr review)
       - "Use structured format: Summary → Code Review → Test Review → Doc Review → Recommendations"

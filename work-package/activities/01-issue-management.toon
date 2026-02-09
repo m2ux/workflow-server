@@ -18,7 +18,7 @@ skills:
     - artifact-management
 required: true
 estimatedTime: 10-20m
-notes[5]:
+rules[5]:
   - "Key principle: Issues define problems, not solutions. Describe what needs to be solved and why."
   - "Every work package should be linked to a GitHub or Jira issue for traceability"
   - "Issues should be clear to someone without prior context"
@@ -27,7 +27,7 @@ notes[5]:
 modeOverrides:
   review:
     description: "Capture PR reference and extract associated Jira ticket. Skip branch/PR creation."
-    notes[3]:
+    rules[3]:
       - Detect review mode from user request patterns
       - Capture PR URL/number and extract associated Jira ticket from PR body or commits
       - Skip branch/PR creation - use existing PR from review target

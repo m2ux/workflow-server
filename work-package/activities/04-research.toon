@@ -13,7 +13,7 @@ skills:
     - assumptions-review
 required: false
 estimatedTime: 20-45m
-notes[4]:
+rules[4]:
   - "Multiple sources should be consulted for robust findings"
   - "Patterns should be validated across documents"
   - "Clear mapping to work package needs is essential"

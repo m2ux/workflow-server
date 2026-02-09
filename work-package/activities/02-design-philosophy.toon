@@ -14,7 +14,7 @@ skills:
     - assumptions-review
 required: true
 estimatedTime: 10-20m
-notes[6]:
+rules[6]:
   - "Design philosophy determines the path through the workflow"
   - "Simple bug fixes with clear scope may skip elicitation and research"
   - "Complex features typically require full elicitation and research"
@@ -24,7 +24,7 @@ notes[6]:
 modeOverrides:
   review:
     description: "Assess ticket completeness and determine workflow path. Always skip elicitation."
-    notes[3]:
+    rules[3]:
       - Always skip elicitation - requirements come solely from the ticket
       - Assess ticket completeness using Jira Issue Creation Guide checklist
       - Research may still be needed based on complexity assessment

@@ -15,7 +15,7 @@ skills:
   supporting[2]:
     - state-management
     - artifact-management
-notes[3]:
+rules[3]:
   - "Key insight: A well-ended workflow leaves a clear trail for future reference and ensures nothing is left incomplete"
   - "Never end a workflow with incomplete required activities or unanswered blocking checkpoints"
   - "Document any deferred or out-of-scope items before completing"

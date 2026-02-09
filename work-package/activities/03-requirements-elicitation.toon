@@ -14,7 +14,7 @@ skills:
     - assumptions-review
 required: false
 estimatedTime: 15-30m
-notes[6]:
+rules[6]:
   - "Core principle: Conversation, not interrogation - discover what user actually needs"
   - "Stakeholder input first: User should discuss with key stakeholders before agent elicitation"
   - "One question per turn - never present multiple questions in a single message"

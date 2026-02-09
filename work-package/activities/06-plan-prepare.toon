@@ -15,7 +15,7 @@ skills:
     - assumptions-review
 required: true
 estimatedTime: 20-45m
-notes[1]:
+rules[1]:
   - "Design and planning decisions often involve significant assumptions that should be documented before implementation"
 steps[8]:
   - id: apply-design

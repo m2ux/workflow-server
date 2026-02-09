@@ -13,7 +13,7 @@ skills:
     - assumptions-review
 required: true
 estimatedTime: 1-4h
-notes[5]:
+rules[5]:
   - "After each task, explicitly identify and review assumptions made during implementation"
   - "Assumptions should be elevated - make implicit decisions explicit for validation"
   - "Present assumptions one at a time for focused review"

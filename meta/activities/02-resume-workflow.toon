@@ -15,7 +15,7 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
-notes[5]:
+rules[5]:
   - "Minimum requirement: User must identify the workflow and provide context"
   - "Key insight: Successful resumption requires understanding both workflow progress AND context of previous decisions"
   - "Always verify state with user before resuming - reconstructed state may be incomplete"
