@@ -1,36 +1,33 @@
 # Security Audit Workflow
 
-> Multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, multi-agent deep review, exhaustive panic sweep, hard-gate adversarial verification, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports.
+> Multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, workflow-directed multi-agent deep review, adversarial verification, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports.
 
 ## Overview
 
 This workflow guides the complete lifecycle of a security audit:
 
-1. **Scope Setup** — Confirm target, checkout at commit, run dependency scanning, generate panic inventory, create planning folder, verify file assignment completeness
-2. **Reconnaissance** — Map architecture, identify crates, trust boundaries, consensus paths, build function registry
-3. **Primary Audit** — Multi-agent dispatch: crate-level deep review (Group A with cross-layer deferral), static analysis (Group B), cross-cutting traces including pagination loop tracer (Group C), toolkit review (Group D), utility catch-up (Group E)
-4. **Exhaustive Panic Sweep** — Mechanical triage of every unwrap/expect/panic site by reachability, with late-file re-read
-5. **Adversarial Verification** (hard gate) — Decompose and independently verify every PASS item using anti-anchoring protocol (no access to findings or severity)
-6. **Report Generation** — Consolidate all phases, apply severity scoring with calibration cross-check, verify extended coverage gate, produce report
-7. **Ensemble Pass** (optional) — Second-model run on priority-1/2 components, union-merge with primary results
-8. **Gap Analysis** (optional) — Compare against a professional audit report for benchmarking and improvement
+1. **Scope Setup** — Confirm target, checkout at commit, run dependency scanning, create planning folder
+2. **Reconnaissance** — Map architecture, identify crates, trust boundaries, consensus paths, build function registry, assign agent groups
+3. **Primary Audit** — Concurrent workflow-directed multi-agent dispatch: crate-level deep review (Group A), static analysis and mechanical checks (Group B), toolkit review (Group D). Each sub-agent follows a dedicated workflow activity via the workflow-server MCP.
+4. **Adversarial Verification** — Decompose and independently verify every PASS item from agent scratchpads
+5. **Report Generation** — Consolidate all phases, apply severity scoring with calibration cross-check, verify coverage gate, produce report
+6. **Ensemble Pass** (optional) — Second-model run on priority-1/2 components, union-merge with primary results
+7. **Gap Analysis** (optional) — Compare against a professional audit report for benchmarking and improvement
 
 **Key characteristics:**
-- Sequential flow with hard gates (adversarial phase must complete before reporting)
-- Multi-agent execution with 5 agent groups (crate review, static analysis, cross-cutting traces, toolkit, utility)
-- 8 cross-cutting trace agents including pagination loop tracer and 3-layer timestamp/input validation tracers
-- Cross-layer check deferral: crate-level agents defer multi-crate checks to Group C specialists
-- Exhaustive panic sweep phase with pre-generated inventory
-- Anti-anchoring adversarial verification (no findings/severity shared with verifier)
-- Extended coverage gate (file read + panic sweep + late-file re-read + scope completeness)
+- Fully automated sequential flow — no user checkpoints (phase gates via exitActions)
+- Workflow-directed sub-agents: each sub-agent bootstraps the workflow-server MCP, loads its assigned activity (`sub-crate-review`, `sub-static-analysis`, `sub-toolkit-review`), and follows step-by-step execution with verifiable outputs
+- Sub-agent structured output conforming to resource 04 (sub-agent-output-schema) for mechanical validation
+- 3 concurrent agent groups (A, B, D) with cross-crate supplementary files for Group A
+- Cross-function invariant comparison and zero-hit pattern auditing
 - Impact x Feasibility severity scoring with calibration cross-check
-- Based on the Substrate Node Security Audit Template
-- Group C tracer completion gates (hard gates — all 8 tracer tables must be verified before Wave 2)
-- Scratchpad-to-report elevation verification with mandatory cross-check table
-- Severity calibration bias correction (infrastructure under-rating, operator-error over-rating)
-- Ordered state-write enumeration for flush checks (prevents first-positive-signal false PASS)
+- Contamination prevention — reference report quarantined until gap-analysis phase
+- Structured merge table with mandatory elevation verification
+- §3 checklist completeness verification
+- Storage lifecycle pairing scan
+- Per-field event trace tables and struct diff tables
 - Two-level input validation protocol (structural + semantic)
-- Per-field event trace completion gates (prevents single-field generalization)
+- Based on the Substrate Node Security Audit Template
 
 ---
 
@@ -68,8 +65,7 @@ graph TD
     Start([Start]) --> SS[scope-setup]
     SS --> REC[reconnaissance]
     REC --> PA[primary-audit]
-    PA --> PS[panic-sweep]
-    PS --> AV[adversarial-verification<br/>HARD GATE]
+    PA --> AV[adversarial-verification]
     AV --> RG[report-generation]
     RG --> DEC1{ensemble enabled?}
     DEC1 -->|yes| EP[ensemble-pass]
@@ -91,7 +87,7 @@ graph LR
         MERGE[Consolidation]
     end
 
-    subgraph groupA["Group A: Crate Review (cross-layer deferred)"]
+    subgraph groupA["Group A: Crate Review (workflow-directed)"]
         A1[Pallet Agent 1]
         A2[Pallet Agent 2]
         A3[Ledger Agent]
@@ -99,27 +95,12 @@ graph LR
         A5[Primitives Agent]
     end
 
-    subgraph groupB[Group B: Static Analysis]
-        B1[Pattern Agent]
+    subgraph groupB["Group B: Static Analysis (workflow-directed)"]
+        B1[Pattern + Mechanical Agent]
     end
 
-    subgraph groupC[Group C: Cross-Cutting Traces]
-        C1[Pool Tracer]
-        C2[Genesis Tracer]
-        C3[Inherent Tracer]
-        C4[Ord Verifier]
-        C5["Timestamp Tracer (3-layer)"]
-        C6["Validation Tracer (3-layer)"]
-        C7[Struct Diff]
-        C8["Pagination Loop Tracer ★"]
-    end
-
-    subgraph groupD[Group D: Toolkit]
+    subgraph groupD["Group D: Toolkit (workflow-directed, MANDATORY)"]
         D1[Toolkit Agent]
-    end
-
-    subgraph groupE["Group E: Utility + Catch-up ★"]
-        E1[Utility Agent]
     end
 
     RECON --> A1
@@ -128,16 +109,7 @@ graph LR
     RECON --> A4
     RECON --> A5
     RECON --> B1
-    RECON --> C1
-    RECON --> C2
-    RECON --> C3
-    RECON --> C4
-    RECON --> C5
-    RECON --> C6
-    RECON --> C7
-    RECON --> C8
     RECON --> D1
-    RECON --> E1
 
     A1 --> MERGE
     A2 --> MERGE
@@ -145,19 +117,22 @@ graph LR
     A4 --> MERGE
     A5 --> MERGE
     B1 --> MERGE
-    C1 --> MERGE
-    C2 --> MERGE
-    C3 --> MERGE
-    C4 --> MERGE
-    C5 --> MERGE
-    C6 --> MERGE
-    C7 --> MERGE
-    C8 --> MERGE
     D1 --> MERGE
-    E1 --> MERGE
 ```
 
-> Group C tracers have hard-gate completion tables that must be verified before Wave 2 dispatch. Missing tables trigger automatic re-dispatch.
+> All groups dispatch concurrently. Each sub-agent follows a dedicated workflow activity via the workflow-server MCP and returns structured output conforming to the sub-agent output schema.
+
+### Workflow-Directed Sub-Agent Dispatch
+
+Each sub-agent's Task prompt includes workflow-server bootstrap instructions:
+
+> *"You have access to the workflow-server MCP tools. Before starting, call `get_rules()` then call `get_workflow_activity({ workflow_id: "substrate-node-security-audit", activity_id: "<activity-id>" })`. Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04 (sub-agent-output-schema)."*
+
+| Group | Activity | Steps | Key Outputs |
+|-------|----------|-------|-------------|
+| A (per crate) | `sub-crate-review` | 8 steps: read files → function registry → invariant extraction → §3 checklist → mandatory tables → cross-function comparison → completeness verification → structured output | Findings, checklist coverage, per-field trace tables, struct diffs, cross-layer matrices |
+| B (1 agent) | `sub-static-analysis` | Step-by-step §2 pattern execution with zero-hit auditing and storage lifecycle pairing | Pattern hits, storage pairing table, zero-hit pattern list |
+| D (1 agent) | `sub-toolkit-review` | Per-function 7-item checklist application across all toolkit files | Function × checklist matrix, coverage attestation, findings |
 
 ---
 
@@ -170,21 +145,15 @@ graph LR
 **Primary Skill:** `audit-execution`
 **Supporting Skill:** `artifact-management`
 
-**Checkpoints:**
-1. Target Confirmation: "Audit target: {submodule} @ {commit}. Proceed?"
-2. Setup Complete: "Planning folder created, dependency scan {status}. Proceed to reconnaissance?"
-
-**Artifacts:** `START-HERE.md`
+**Artifacts:** `START-HERE.md`, `file-inventory.txt`, `cargo-audit-output.txt`
 
 ---
 
 ### 2. Reconnaissance
 
-**Purpose:** Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry (template §1.2).
+**Purpose:** Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry (template §1.2). Assign crates to sub-agent groups with cross-crate supplement mappings.
 
 **Primary Skill:** `audit-execution`
-
-**Checkpoint:** "Architecture mapped: {N} crates, {M} functions in registry. Proceed to primary audit?"
 
 **Artifacts:** `README.md` (scope and architecture summary)
 
@@ -192,88 +161,56 @@ graph LR
 
 ### 3. Primary Audit
 
-**Purpose:** Execute the multi-agent audit. Dispatches 5 agent groups in parallel with cross-layer deferral protocol.
+**Purpose:** Execute the multi-agent audit. Dispatches 3 agent groups concurrently with workflow-directed execution. Each sub-agent follows its assigned workflow activity.
 
 **Primary Skill:** `audit-execution`
 
 **Agent Groups:**
 
-| Group | Agents | Scope | Checklist |
-|-------|--------|-------|-----------|
-| A | 1 per priority-1/2 crate | Full crate file read + §3 checklist + invariant extraction. **Cross-layer checks deferred to Group C** (pagination, timestamps, pools, inherent symmetry) | Template §3 + §5.15 |
-| B | 1 | All §2 grep patterns across full in-scope dirs | Template §2 |
-| C | 8 trace agents | Cross-boundary issues (pools, genesis, inherents, ordering, timestamps with 3-layer matrix, validation with 3-layer matrix, struct diffs, **pagination loop tracing**) | Template §3.2, §3.4, §3.5, §3.10 |
-| D | 1 | ledger/helpers/ | Toolkit minimum checklist (resource 03) |
-| E | 1 | util/toolkit/, util/upgrader/, unassigned files | Toolkit checklist + §2.7 file reads + §3.9 RNG |
+| Group | Agents | Activity | Scope |
+|-------|--------|----------|-------|
+| A | 1 per priority-1/2 crate | `sub-crate-review` | Full crate file read + §3 checklist + invariant extraction + cross-function comparison. Cross-crate checks via supplementary files. |
+| B | 1 | `sub-static-analysis` | All §2 grep patterns + mechanical checks + storage lifecycle pairing across full in-scope dirs |
+| D | 1 (MANDATORY) | `sub-toolkit-review` | ledger/helpers/ and util/toolkit/ with 7-item mandatory checklist applied per-function |
 
-**Group C Completion Gate (HARD GATE):**
-After Wave 1 collection, the orchestrator MUST verify that all 8 Group C tracers produced their mandatory output tables (pool isolation, pagination loop, timestamp source, struct diff, input validation, Ord/PartialOrd, inherent symmetry, genesis consistency). Missing tables trigger re-dispatch.
-
-**Checkpoint:** "Primary audit complete. {N} findings, {M} PASS items pending verification. All Group C tables verified. Proceed?"
+**Consolidation:** After all agents return, the orchestrator performs structured merge (flat table of all findings), dedup-and-map (assign report finding numbers), and §3 checklist completeness verification.
 
 ---
 
-### 4. Exhaustive Panic Sweep
+### 4. Adversarial Verification
 
-**Purpose:** Mechanically triage every `unwrap()`/`expect()`/`panic!` site using the pre-generated panic inventory from Phase 0. Perform late-file re-reads on the last 150 lines of every >400-line file.
-
-**Primary Skill:** `audit-execution`
-
-**Steps:**
-1. Receive panic inventory from Phase 0 (grep output)
-2. Triage each site by reachability (hook/inherent → High, startup → Medium, toolkit → Low)
-3. Verify whether each unwrap can fail under valid configurations
-4. Late-file re-read: re-scan last 150 lines of every >400-line file for panic paths
-5. Produce panic findings table
-
-**Checkpoint:** "{N} panic sites triaged, {M} findings generated. Proceed to adversarial verification?"
-
----
-
-### 5. Adversarial Verification (HARD GATE)
-
-**Purpose:** Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. The agent's role is to **refute**, not confirm. This is a **hard gate** — the workflow must not proceed without it.
+**Purpose:** Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. The agent's role is to **refute**, not confirm.
 
 **Primary Skill:** `audit-execution`
-
-**Anti-anchoring protocol:** The adversarial agent receives ONLY the PASS items, cited evidence, and source files. It does NOT receive findings, severity assessments, or conclusions from the primary audit.
 
 **Steps:**
 1. Extract PASS items from all scratchpads (§3.1-§3.4, §3.6, §3.10, §3.14)
-2. Decompose each PASS into 3-7 constituent properties
-3. For §3.3 PASS items: mandatory per-field decomposition (utxos, call_addresses, deploy_addresses, maintain_addresses, claim_rewards)
-4. For §3.2/§3.10 PASS items: verify at all three layers (data source, IDP, pallet)
-5. Search for DISCONFIRMING evidence first; only mark CONFIRMED after all properties verified
-6. Output: CONFIRMED / REFUTED / INSUFFICIENT
-
-**Checkpoint:** "{N} confirmed, {M} refuted, {K} insufficient. Proceed to report?"
+2. Decompose each PASS into constituent properties
+3. Enumerate multi-site properties (per-field for events, per-layer for pagination/timestamps)
+4. Verify each property independently — output CONFIRMED / REFUTED / INSUFFICIENT
 
 ---
 
-### 6. Report Generation
+### 5. Report Generation
 
-**Purpose:** Consolidate all findings from primary audit, panic sweep, and adversarial verification. Apply severity scoring with calibration cross-check. Verify extended coverage gate. Produce final report.
+**Purpose:** Consolidate all findings from primary audit and adversarial verification. Apply severity scoring with calibration cross-check. Verify coverage gate. Produce final report.
 
 **Primary Skill:** `audit-execution`
 **Supporting Skill:** `severity-scoring`
 
 **Steps:**
-1. Merge primary + panic sweep + adversarial findings
-2. Deduplicate by root cause
-3. Apply Impact x Feasibility severity scoring (resource 02)
-4. Run severity calibration cross-check (I+F < 6 = not Critical, I+F < 5 = not High)
-5. Apply severity bias correction: re-evaluate infrastructure findings for under-rating and operator-error panics for over-rating
-6. Verify extended coverage gate (§5.14): (a) file-read coverage, (b) panic sweep on consensus files, (c) late-file re-reads on >400-line files, (d) all IN_SCOPE files assigned
-7. Verify scratchpad elevation (HARD GATE): produce elevation verification table cross-checking every agent finding against the consolidated report
-8. Write `01-audit-report.md`
-
-**Checkpoint:** "Report generated: {N} findings. Coverage: {status}. Finalize?"
+1. Integrate adversarial results into structured merge table
+2. Apply Impact × Feasibility severity scoring (resource 02)
+3. Run severity calibration cross-check against calibration examples
+4. Verify coverage gate (§5.14): every >200-line file read, all IN_SCOPE files assigned
+5. Verify elevation completeness via structured merge table
+6. Write `01-audit-report.md`
 
 **Artifacts:** `01-audit-report.md`
 
 ---
 
-### 7. Ensemble Pass (Optional)
+### 6. Ensemble Pass (Optional)
 
 **Purpose:** Run the template a second time with a different model configuration on priority-1/2 components. Union-merge with primary results.
 
@@ -286,7 +223,7 @@ After Wave 1 collection, the orchestrator MUST verify that all 8 Group C tracers
 
 ---
 
-### 8. Gap Analysis (Optional)
+### 7. Gap Analysis (Optional)
 
 **Purpose:** Compare the AI audit report against a professional reference report. Produce finding-by-finding mapping, identify gaps, analyze severity calibration, and provide root cause analysis.
 
@@ -296,12 +233,25 @@ After Wave 1 collection, the orchestrator MUST verify that all 8 Group C tracers
 
 ---
 
+### Sub-Agent Activities
+
+These activities are dispatched by the orchestrator during the primary-audit phase. They do not appear in the main workflow transition graph.
+
+| Activity | Used By | Description |
+|----------|---------|-------------|
+| `sub-crate-review` | Group A | 8-step structured crate review: file reading → function registry → invariant extraction → §3 checklist → mandatory tables → cross-function comparison → completeness verification → structured output |
+| `sub-static-analysis` | Group B | Step-by-step §2 pattern execution with zero-hit auditing and storage lifecycle pairing |
+| `sub-toolkit-review` | Group D | Per-function 7-item checklist application across all toolkit files with function × checklist matrix |
+
+---
+
 ## Skills
 
 | Skill | Capability | Used By |
 |-------|------------|---------|
-| `audit-execution` | Core audit execution patterns, agent dispatch, tool usage | All activities |
-| `severity-scoring` | Impact x Feasibility severity rubric with calibration examples | report-generation, ensemble-pass |
+| `audit-execution` | Core audit execution patterns, agent dispatch, tool usage | All orchestrator activities |
+| `severity-scoring` | Impact × Feasibility severity rubric with calibration examples | report-generation, ensemble-pass |
+| `sub-agent-execution` | Sub-agent workflow bootstrap, step-by-step execution, structured output generation | Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) |
 
 ---
 
@@ -313,6 +263,7 @@ After Wave 1 collection, the orchestrator MUST verify that all 8 Group C tracers
 | `01-audit-template-reference.md` | Pointer to the audit prompt template with section summary |
 | `02-severity-rubric.md` | Detailed severity scoring guide with calibration examples |
 | `03-toolkit-checklist.md` | Mandatory 7-item toolkit minimum checklist |
+| `04-sub-agent-output-schema.md` | Structured output schema for sub-agent results, with field requirements per agent group and orchestrator validation rules |
 
 ---
 
@@ -331,7 +282,7 @@ After Wave 1 collection, the orchestrator MUST verify that all 8 Group C tracers
 | `reconnaissance_complete` | boolean | Phase 1a gate |
 | `primary_audit_complete` | boolean | Phase 1b gate |
 | `panic_sweep_complete` | boolean | Phase 1.5 gate |
-| `adversarial_complete` | boolean | Phase 2 gate (HARD — must complete) |
+| `adversarial_complete` | boolean | Phase 2 gate |
 | `report_complete` | boolean | Phase 3 gate |
 
 ---
@@ -341,10 +292,8 @@ After Wave 1 collection, the orchestrator MUST verify that all 8 Group C tracers
 | Phase | Artifact | Description |
 |-------|----------|-------------|
 | Setup | `START-HERE.md` | Session overview and navigation |
+| Setup | `cargo-audit-output.txt` | Dependency scan results (if tools available) |
+| Setup | `file-inventory.txt` | Source files sorted by line count |
 | Reconnaissance | `README.md` | Scope, methodology, crate inventory |
 | Report | `01-audit-report.md` | Full audit report with numbered findings |
 | Gap Analysis | `02-gap-analysis.md` | Comparison against reference report |
-| Setup | `cargo-audit-output.txt` | Dependency scan results (if tools available) |
-| Setup | `file-inventory.txt` | Source files sorted by line count |
-| Setup | `panic-inventory.txt` | All unwrap/expect/panic sites for sweep |
-| Panic Sweep | `panic-sweep-findings.md` | Triaged panic sites with severity |

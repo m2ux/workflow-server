@@ -1,0 +1,45 @@
+id: sub-toolkit-review
+version: 1.0.0
+name: "Sub-Agent: Toolkit Per-Function Review"
+description: "Workflow for Group D sub-agent. Executes a 4-step structured toolkit review that forces per-function iteration across the mandatory 7-item checklist. The agent must produce a function x checklist matrix entry for every function, preventing the skimming behavior that caused 0% detection rates on AM, AO, AQ across 8 prior sessions."
+problem: "Toolkit review agents read files but skim functions with benign-looking names. The 7-item checklist exists but is applied to representative functions, not exhaustively. Three findings (AM, AO, AQ) had 0% detection rate across 8+ sessions despite the checklist containing exact descriptions of the bug patterns."
+recognition[3]:
+  - toolkit review
+  - group d sub-agent
+  - per-function checklist
+skills:
+  primary: sub-agent-execution
+required: false
+estimatedTime: 20-30m
+
+notes[4]:
+  - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
+  - "The sub-agent receives context variables: toolkit_paths (ledger/helpers/, util/toolkit/), toolkit_checklist (resource 03)"
+  - "The per-function x checklist matrix in step 2 is the key mechanism — it prevents skimming by requiring an entry for every combination"
+  - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
+steps[4]:
+  - id: enumerate-functions
+    name: Enumerate All Functions
+    required: true
+    description: "Read every .rs file in ledger/helpers/src/ and util/toolkit/src/. For each file, enumerate EVERY function (public, private, trait impl, standalone). Include: function name, file path, line number, visibility (pub/private), whether it modifies state (self.xxx = ..., state.xxx = ...), whether it returns Result or (). REQUIRED OUTPUT: Function enumeration table. Format: | File | Function | Line | Visibility | Modifies State? | Returns Result? | Every function must appear in this table — verify the count matches the actual function count per file."
+  - id: apply-checklist-per-function
+    name: Apply 7-Item Checklist Per Function
+    required: true
+    description: "For EACH function in the enumeration table, evaluate ALL 7 toolkit checklist items (from resource 03). The 7 items are: (1) State modification on failure — is modification conditional on success? (2) State mutation completeness — is modified state written back to self? (3) Mutex poisoning risk — does expect/unwrap execute under lock? (4) Unbounded file I/O — is there a size limit before read? (5) Unchecked arithmetic on financial values — is it checked_*/saturating_*? (6) Silent error consumption — should the error be propagated? (7) Wallet constructor validation — does role match wallet type? Not every item applies to every function — mark N/A where the item is structurally inapplicable (e.g., item 7 only applies to wallet constructors). But the N/A MUST be explicit. REQUIRED OUTPUT: Per-function checklist matrix. Format: | Function | File:Line | Item 1 | Item 2 | Item 3 | Item 4 | Item 5 | Item 6 | Item 7 | Findings |"
+  - id: verify-function-coverage
+    name: Verify Function Coverage
+    required: true
+    description: "Count functions in the enumeration table (step 1) vs functions in the checklist matrix (step 2). Every function in the enumeration must have a row in the matrix. List any functions that appear in the enumeration but not in the matrix — these are coverage gaps. REQUIRED OUTPUT: Coverage attestation. Format: Total functions: N. Functions reviewed: M. Coverage: M/N (X%). Gaps: [list of unreviewed functions, if any]."
+  - id: format-output
+    name: Format Structured Output
+    required: true
+    description: "Compile all findings from the per-function checklist matrix into the structured output format defined in resource 04 (sub-agent-output-schema). Every cell in the matrix that is FAIL becomes a finding. Include: agent_id, activity_followed ('sub-toolkit-review'), steps_completed, findings (structured list), mandatory_tables (function enumeration table, per-function checklist matrix, coverage attestation), and reconnaissance_leads. REQUIRED OUTPUT: Structured JSON conforming to the output schema."
+outcome[3]:
+  - Every function in toolkit crates enumerated and reviewed against all 7 checklist items
+  - Per-function x checklist matrix produced with no gaps
+  - Function coverage verified at 100%
+context_to_preserve[4]:
+  - findings - Structured findings list from all FAIL cells in the matrix
+  - function_enumeration - Complete function list with metadata
+  - checklist_matrix - Per-function x per-item matrix
+  - coverage_attestation - Coverage percentage and gap list

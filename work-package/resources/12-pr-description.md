@@ -47,7 +47,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary of the change and key benefit]
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [ADR](link-to-adr)  🧪 [Test Plan](link-to-test-plan)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](link-to-start-here)  🧪 [Test Plan](link-to-test-plan)
 
 ---
 
@@ -88,7 +88,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary of the proposed work]
 
 
-🎫 [Ticket](link)  📐 [ADR](branch-link)
+🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)
 
 ---
 
@@ -140,7 +140,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary with key benefit/metric achieved]
 
 
-🎫 [Ticket](link)  📐 [ADR](branch-link)  🧪 [Test Plan](branch-link)
+🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)  🧪 [Test Plan](branch-link)
 
 ---
 
@@ -211,22 +211,25 @@ This PR adds some improvements to search.
 - Include quantifiable impact when available
 - Keep to 1-2 sentences maximum
 
-### Ticket, ADR, and Test Plan Links
+### Ticket, ADR, Engineering, and Test Plan Links
 
 Always link to related artifacts on the same line for easy scanning:
 
 ```markdown
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [ADR](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/{BRANCH_NAME}/docs/decisions/adr-hybrid-search.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/{BRANCH_NAME}/docs/tests/test-plan-hybrid-search.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/START-HERE.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/{BRANCH_NAME}/docs/tests/test-plan-hybrid-search.md)
 ```
 
 **When to include each link:**
 - **Ticket** - Always include if work is tracked in a ticket
-- **ADR** - Include for architectural decisions (see [Architecture Review Guide](15-architecture-review.md))
+- **Engineering** - Always include; links to the START-HERE.md in the engineering artifacts planning folder for the work package. This provides reviewers access to design philosophy, planning, and review documents.
+- **ADR** - Include for architectural decisions committed to the target repo (see [Architecture Review Guide](15-architecture-review.md))
 - **Test Plan** - Include when formal test documentation exists (see [Test Plan Creation Guide](11-test-plan.md))
 
 **Important:** Link to ADRs and test plans on the *feature branch*, not main:
 - ✅ `https://github.com/OWNER/REPO/blob/feat/hybrid-search/docs/decisions/adr-hybrid-search.md`
 - ❌ `docs/decisions/adr-hybrid-search.md` (resolves to main, which won't have the file yet)
+
+**Note:** Engineering links point to the engineering artifacts repository (not the target repo), typically on `main` since artifacts are committed there directly.
 
 ### Motivation
 
@@ -365,7 +368,7 @@ When creating a PR with just the ADR (before implementation):
 [1-2 sentence summary of the proposed work]
 
 
-🎫 [Ticket](link)  📐 [ADR](branch-link)
+🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)
 
 ---
 
@@ -419,7 +422,7 @@ Update the description to reflect completed work:
 [1-2 sentence summary with key benefit/metric achieved]
 
 
-🎫 [Ticket](link)  📐 [ADR](branch-link)  🧪 [Test Plan](branch-link)
+🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)  🧪 [Test Plan](branch-link)
 
 ---
 
@@ -518,7 +521,7 @@ gh pr ready
 Implement content-aware chunking that preserves semantic boundaries, reducing retrieval errors by 40% on the evaluation dataset.
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [ADR](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/decisions/adr-content-chunking.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/tests/test-plan-content-chunking.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/START-HERE.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/tests/test-plan-content-chunking.md)
 ```
 
 ### Good Motivation Section
