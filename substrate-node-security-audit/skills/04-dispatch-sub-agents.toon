@@ -33,14 +33,14 @@ protocol:
       description: "If more waves remain, dispatch the next wave (repeat steps 3-4). Otherwise, return all collected results to the orchestrator."
     - id: verify-dispatch-completeness
       name: Verify Dispatch Completeness
-      description: "After all waves complete, compare the agent_roster (input) against the dispatched agent list. Every agent in the roster must have been dispatched and returned a result (success or failure). Produce a dispatch manifest table: agent_id, assigned_crate, dispatched (yes/no), returned (yes/no), status. If any agent was NOT dispatched, flag as INCOMPLETE and return the manifest to the orchestrator for remediation. Set agents_dispatched count. This step enforces the v4.4 dispatch completeness gate."
+      description: "After all waves complete, compare the agent_roster (input) against the dispatched agent list. Every agent in the roster must have been dispatched and returned a result (success or failure). Produce a dispatch manifest table: agent_id, assigned_crate, dispatched (yes/no), returned (yes/no), status. If any agent was NOT dispatched, flag as INCOMPLETE and return the manifest to the orchestrator for remediation. Set agents_dispatched count. This step enforces the dispatch completeness gate."
 
 output:
   description: "Collected results from all dispatched sub-agents."
   components[3]:
     - "Per-agent structured output (conforming to the output schema resource)"
     - "Dispatch summary: agents dispatched, waves used, failures encountered"
-    - "Dispatch manifest: per-agent table with assigned/dispatched/returned status (v4.4)"
+    - "Dispatch manifest: per-agent table with assigned/dispatched/returned status"
 
 tools:
   task:

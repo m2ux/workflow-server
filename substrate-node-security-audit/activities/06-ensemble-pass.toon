@@ -18,19 +18,19 @@ rules[9]:
   - "Scope the second pass to priority-1/2 components only to control cost"
   - "Use a different model or temperature if available; same model with different system prompt is acceptable"
   - "The merge strategy is union: include all findings from both runs, flag consensus vs single-source"
-  - "EXECUTION VERIFICATION (v4.4): The ensemble pass MUST dispatch at least one sub-agent that independently applies the §3 checklist to priority-1/2 crates. Declaring the ensemble complete without dispatching any sub-agents violates this activity. The execute-second-pass step is the core of this activity — it is not optional."
-  - "ARTIFACT REQUIREMENT (v4.4): The execute-second-pass step MUST produce a second-pass-findings artifact (MD or JSON) in the planning folder. This artifact is the verification mechanism — if it does not exist when the activity exits, the ensemble was not executed. The orchestrator checks for this artifact during the update-report step."
-  - "CONTEXT CONSTRAINT HANDLING (v4.4): If context window pressure prevents executing a full second pass, the orchestrator MUST: (a) explicitly acknowledge the constraint, (b) scope the second pass to the top 3-5 files by priority rather than skipping entirely, and (c) produce the artifact even if the scope is reduced. A reduced-scope ensemble is always preferable to a skipped ensemble."
+  - "EXECUTION VERIFICATION: The ensemble pass MUST dispatch at least one sub-agent that independently applies the §3 checklist to priority-1/2 crates. Declaring the ensemble complete without dispatching any sub-agents violates this activity. The execute-second-pass step is the core of this activity — it is not optional."
+  - "ARTIFACT REQUIREMENT: The execute-second-pass step MUST produce a second-pass-findings artifact (MD or JSON) in the planning folder. This artifact is the verification mechanism — if it does not exist when the activity exits, the ensemble was not executed. The orchestrator checks for this artifact during the update-report step."
+  - "CONTEXT CONSTRAINT HANDLING: If context window pressure prevents executing a full second pass, the orchestrator MUST: (a) explicitly acknowledge the constraint, (b) scope the second pass to the top 3-5 files by priority rather than skipping entirely, and (c) produce the artifact even if the scope is reduced. A reduced-scope ensemble is always preferable to a skipped ensemble."
   - "TARGETED BLIND-SPOT VERIFICATION: The ensemble agent checks universal items (1-4) plus target-specific items from resource 06 (target-profile) FIRST before general review: (1) §3.1 weight accounting — verify non-zero on_finalize weight; (2) §3.3 event filtering — trace EVERY event field independently on partial success; (3) §3.2 pagination counter — trace first-iteration behavior; (4) §2.10 serialization pairing — produce the mandatory size/serialize pairing table. Target-specific items (see target profile) cover additional checks validated as high false-PASS rate. Each item produces CONFIRMED/REFUTED/INSUFFICIENT verdict."
   - "ENSEMBLE SUPPLEMENTARY FILES: The ensemble agent receives supplementary files per the target profile's ensemble file assignment table. These files ensure blind-spot items can be mechanically verified."
 steps[5]:
   - id: configure-ensemble
     name: Configure Ensemble Run
-    description: "Determine the scope (priority-1/2 components only), model configuration, and any prompt variations for the second pass. Include the targeted blind-spot checklist and mandatory supplementary files (weights.rs, model.rs, api/mod.rs) in the agent prompt."
+    description: "Scope the second pass to priority-1/2 components. Include blind-spot checklist and supplementary files per target profile."
   - id: verify-blind-spots
-    name: "Verify Known Blind Spots (v4.6)"
+    name: "Verify Known Blind Spots"
     required: true
-    description: "The ensemble agent applies universal blind-spot items (1-4) plus target-specific items from the target profile. Universal: (1) weights.rs on_finalize non-zero? (2) export_events handles all event types? Event fields filtered on partial success? (3) Pagination counter first-iteration behavior. (4) Serialization size/serialize pairing table. Target-specific items per profile. Each produces CONFIRMED/REFUTED/INSUFFICIENT verdict. REFUTED items become findings."
+    description: "Apply universal blind-spot items (1-4) plus target-specific items from the target profile. Each produces CONFIRMED/REFUTED/INSUFFICIENT verdict."
   - id: execute-second-pass
     name: Execute Second Pass
     description: "Run the audit template against priority-1/2 components. The second pass follows the same §3 checklist and §5 execution requirements."
@@ -42,7 +42,7 @@ steps[5]:
     description: "Merge second-pass findings with the primary report using union strategy."
   - id: update-report
     name: Update Report
-    description: "Update 01-audit-report.md with ensemble results. Add a section noting which findings are consensus (both runs) vs single-source (one run only)."
+    description: "Update 01-audit-report.md with ensemble results. Classify findings as consensus vs single-source."
 decisions[1]:
   - id: next-phase
     name: Post-Ensemble Decision
@@ -82,4 +82,4 @@ artifacts[1]:
   - id: second-pass-findings
     name: second-pass-findings.md
     location: planning
-    description: "Raw findings from the second-pass audit run. Existence of this file verifies the ensemble was actually executed. Must contain at least one sub-agent dispatch result."
+    description: "Second-pass findings artifact. Existence verifies ensemble was executed; must include at least one sub-agent result."

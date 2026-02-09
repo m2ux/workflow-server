@@ -43,7 +43,7 @@ steps[12]:
     skill: dispatch-sub-agents
     description: "After Wave 1 returns, dispatch remaining Group A agents per target profile. MANDATORY — skipping is a HARD STOP."
   - id: verify-checklist-prompt-coverage
-    name: "Verify Checklist-to-Prompt Coverage (v4.7)"
+    name: "Verify Checklist-to-Prompt Coverage"
     required: true
     skill: verify-sub-agent-output
     description: "Verify every §3 checklist item (§3.1–§3.14) appears in at least one agent's prompt. Dispatch follow-up for uncovered items."
@@ -72,10 +72,10 @@ steps[12]:
     skill: verify-sub-agent-output
     description: "Verify the node agent traced all genesis state construction sites. Re-dispatch if incomplete."
   - id: extract-table-derived-findings
-    name: "Extract Findings from Mandatory Tables (v4.6)"
+    name: "Extract Findings from Mandatory Tables"
     required: true
     skill: verify-sub-agent-output
-    description: "Scan mandatory tables for FAIL/DIFF/Missing/No cells. Auto-extract each as a finding. Verify event construction site coverage spans all event-producing paths."
+    description: "Scan mandatory tables for FAIL/DIFF/Missing/No cells; auto-extract as findings. Verify event construction site coverage per verify-sub-agent-output skill."
   - id: structured-merge
     name: Structured Merge
     skill: merge-findings

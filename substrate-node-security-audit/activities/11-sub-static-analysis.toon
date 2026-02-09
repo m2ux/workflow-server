@@ -55,7 +55,7 @@ steps[6]:
   - id: aggregate-findings
     name: Aggregate Hits Into Distinct Findings
     required: true
-    description: "Consolidate individual grep hits and mechanical check results into distinct findings using the aggregation rules in resource 05 (static-analysis-patterns)."
+    description: "Aggregate hits into distinct findings per resource 05 aggregation rules."
   - id: format-output
     name: Format Structured Output
     required: true

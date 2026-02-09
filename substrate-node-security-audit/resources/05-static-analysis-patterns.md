@@ -53,7 +53,7 @@ as i128  |  as u32  |  as i32  |  as u64  |  as usize  |  as u128
 std::fs::read  |  read_to_end  |  take_while  |  filter_map.*ok  |  without_storage_info  |  subscribe  |  into_rpc
 ```
 
-### Database Connection Security (v4.7 — merged)
+### Database Connection Security
 
 ```
 PgPool  |  PgPoolOptions  |  PgSslMode  |  max_connections  |  PgConnectOptions  |  ssl_mode  |  SslMode
@@ -77,7 +77,7 @@ host  |  port  |  database  |  db_name  |  connection_string
 
 **Triage:** For each hit in an error type's `Display` or `Debug` impl, verify whether the field value could expose deployment topology (internal hostnames, port numbers, database names) in logs or RPC error responses. Error types that format connection details aid reconnaissance.
 
-### File I/O Safety (v4.6)
+### File I/O Safety
 
 ```
 std::fs::read  |  std::fs::read_to_string  |  read_to_end  |  File::open  |  BufReader::new
@@ -124,7 +124,7 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** Error logging or propagation exists for dropped errors.
 - **FAIL if:** Errors are silently discarded with no log or return path.
 
-### Check 3: Serialization Size/Method Pairing (v4.7 — absorbs former Checks 8, 12)
+### Check 3: Serialization Size/Method Pairing
 
 - **Search:** `Vec::with_capacity` near serialization code in ALL in-scope files, including two-line patterns with intermediate variables. **MUST include** ledger internal API files and serialization directories (see target profile for paths). Zero hits in the ledger directory is a POSSIBLE FALSE NEGATIVE.
 - **Verify (MANDATORY PAIRING TABLE):** For EVERY `Vec::with_capacity(size_variable)` near serialization code:
@@ -161,7 +161,7 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** For each call site, determine whether the timestamp is used in a context involving cross-chain data (e.g., bridge observations, mainchain events, external chain payloads).
 - **FAIL if:** The local chain's author-controlled timestamp is used for cross-chain event attribution.
 
-### Check 8: (Retired — merged into Check 3 in v4.7)
+### Check 8: (Retired — merged into Check 3)
 
 ### Check 9: Mock Data Source Toggle
 
@@ -178,7 +178,7 @@ Each check extends the grep patterns above with verification logic that goes bey
   3. Determine blast radius — is the output visible to other nodes or observers?
 - **FAIL if:** Output affects transaction context, block context, or any value visible to other nodes.
 - **Note:** Listing a SmallRng grep hit without tracing to the usage context is insufficient. The triage step is what distinguishes a benign test helper from a predictable block hash.
-- **TOOLKIT SCOPE (v4.5):** SmallRng in toolkit code (ledger/helpers/, util/toolkit/) MUST be triaged when the RNG output is used in transaction construction, block context generation, or any value that enters the on-chain transaction pool. Dismissing toolkit SmallRng as "not production consensus" misses the case where the output of `SmallRng::seed_from_u64(parent_block_hash_seed)` in `context.rs` feeds `TransactionWithContext::new`, which constructs transactions submitted to the network. Predictable parent block hashes allow observers to reconstruct the randomness used in transaction construction.
+- **TOOLKIT SCOPE:** SmallRng in toolkit code (ledger/helpers/, util/toolkit/) MUST be triaged when the RNG output is used in transaction construction, block context generation, or any value that enters the on-chain transaction pool. Dismissing toolkit SmallRng as "not production consensus" misses the case where the output of `SmallRng::seed_from_u64(parent_block_hash_seed)` in `context.rs` feeds `TransactionWithContext::new`, which constructs transactions submitted to the network. Predictable parent block hashes allow observers to reconstruct the randomness used in transaction construction.
 
 ### Check 11: Empty-vs-Absent Query Pattern
 
@@ -187,9 +187,9 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **FAIL if:** `None` is converted to `Ok(empty)` — callers cannot distinguish missing entities from valid empty state.
 - **Note:** This is a pattern-absence bug that is invisible to callers: the function returns `Ok` in both "exists but empty" and "does not exist" cases.
 
-### Check 12: (Retired — merged into Check 3 in v4.7)
+### Check 12: (Retired — merged into Check 3)
 
-### Check 13: Universal File I/O Safety (v4.6)
+### Check 13: Universal File I/O Safety
 
 - **Search:** `std::fs::read`, `read_to_end`, `read_to_string`, `File::open` in ALL in-scope paths (not limited to toolkit code)
 - **Verify:** For each file-reading site: (a) the path is checked with `is_file()` or equivalent before opening; (b) a size limit is enforced before allocation (`metadata().len() < MAX`); (c) the path origin is validated (not user-controlled without sanitization).
@@ -203,20 +203,20 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **FAIL if:** An error type's Display/Debug formats connection details that would be visible in logs or RPC responses. Even when credentials are masked (`***:***`), exposing host/port/db names aids reconnaissance.
 - **Note:** This is a pattern-presence bug — the fix is to redact or omit topology details from error messages while preserving them in structured (non-Display) fields for debugging.
 
-### Check 15: Database Connection TLS Enforcement (v4.7)
+### Check 15: Database Connection TLS Enforcement
 
 - **Search:** `PgPoolOptions::new()`, `PgConnectOptions::new()`, `PgPool::connect(` in ALL in-scope paths
 - **Verify:** For EACH pool/connection construction site, trace whether `.ssl_mode(SslMode::Require)` or `.ssl_mode(SslMode::VerifyFull)` is explicitly called. If no `.ssl_mode()` call exists, the default is `Prefer`, which allows silent downgrade to plaintext.
 - **FAIL if:** Any production (non-test) database connection is established without explicit TLS enforcement. `Prefer` mode is insufficient — it allows a network attacker to strip TLS via downgrade.
-- **Note (v4.7):** In Sessions 16 and 17, the grep pattern for `PgSslMode` found hits in the indexer (out of scope) but missed that the node's `get_connection` function at `primitives/mainchain-follower/src/data_source/mod.rs` uses `PgPoolOptions::new()` without any `.ssl_mode()` call, defaulting to `Prefer`. The check must trace the DEFAULT behavior, not just explicit mode settings.
+- **Note:** In Sessions 16 and 17, the grep pattern for `PgSslMode` found hits in the indexer (out of scope) but missed that the node's `get_connection` function at `primitives/mainchain-follower/src/data_source/mod.rs` uses `PgPoolOptions::new()` without any `.ssl_mode()` call, defaulting to `Prefer`. The check must trace the DEFAULT behavior, not just explicit mode settings.
 
-### Check 16: RuntimeExecutor Host Function Feature Divergence (v4.7)
+### Check 16: RuntimeExecutor Host Function Feature Divergence
 
 - **Search:** `HostFunctions`, `RuntimeExecutor`, `ExtendedHostFunctions`, `WasmExecutor` in service initialization files (typically `node/src/service.rs`)
 - **Verify:** Are there multiple type definitions for host functions gated by different features (e.g., `#[cfg(feature = "runtime-benchmarks")]`)? If the feature adds or removes host functions, nodes compiled with different features will have different Wasm execution environments.
 - **FAIL if:** Different feature flags produce different `HostFunctions` type aliases that are used in the `RuntimeExecutor` or `WasmExecutor` construction. A Wasm module calling a host function present in one build but absent in another will trap, causing block import failure.
 - **Relationship to Genesis Divergence:** This is a SEPARATE finding from feature-gated genesis digests (Check 5 / §3.5). Genesis divergence produces different genesis hashes; host function divergence produces different Wasm execution environments. Both cause consensus failure between heterogeneous builds, but through different mechanisms.
-- **Note (v4.7):** In Session 17, Issue #13 identified the `#[cfg(experimental)]` genesis digest divergence but did not trace the `#[cfg(feature = "runtime-benchmarks")]` gate on host function includes at `service.rs:181-194`. These are two independent consensus-divergence vectors from feature flags.
+- **Note:** In Session 17, Issue #13 identified the `#[cfg(experimental)]` genesis digest divergence but did not trace the `#[cfg(feature = "runtime-benchmarks")]` gate on host function includes at `service.rs:181-194`. These are two independent consensus-divergence vectors from feature flags.
 
 ---
 

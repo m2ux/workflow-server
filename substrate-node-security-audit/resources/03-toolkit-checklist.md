@@ -43,7 +43,7 @@ fn spend(&mut self) -> Vec<Spend> {
 }
 ```
 
-**Wallet spend deep-check (v4.7 — validated false-PASS):**
+**Wallet spend deep-check:**
 
 For EVERY wallet function named `spend`, `do_spend`, or `speculative_spend`:
 1. Identify the state object modified during spend computation (e.g., `dust_local_state`)

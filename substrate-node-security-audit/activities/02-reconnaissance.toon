@@ -50,7 +50,7 @@ steps[10]:
     skill: map-codebase
     skill_args:
       output_format: "| Struct | File | Fields | Constructor Validates Invariants? |"
-    description: "Enumerate consensus-critical configuration structs per the target profile. Check constructor invariant validation. Record gaps as reconnaissance leads."
+    description: "Per target profile: enumerate consensus-critical config structs, check constructor invariants, record gaps as leads."
   - id: identify-pallet-hooks
     name: Identify Pallet Hooks
     skill: map-codebase
