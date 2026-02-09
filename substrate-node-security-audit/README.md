@@ -22,8 +22,9 @@ This workflow guides the complete lifecycle of a security audit:
 - Wave-based agent dispatch to work within platform concurrency limits
 - Verification gates between agent collection and finding consolidation
 - The orchestrator coordinates and dispatches — sub-agents perform deep crate-level review
-- Impact × Feasibility severity scoring with resource-backed calibration examples
+- Impact × Feasibility severity scoring with target-profile-backed calibration examples
 - Contamination prevention — reference report quarantined until gap-analysis phase
+- Target profile (resource 06) separates target-specific configuration from core workflow rules
 
 ---
 
@@ -84,7 +85,7 @@ The primary audit dispatches specialized agent groups in waves, collects their s
 |-------|--------|----------|-------|
 | A | 1 per priority-1/2 crate (~6 agents) | `sub-crate-review` | Full crate file read, §3 checklist, invariant extraction, cross-function comparison |
 | B | 1 | `sub-static-analysis` | All §2 grep patterns, mechanical checks, storage lifecycle pairing |
-| D | 1 | `sub-toolkit-review` | `ledger/helpers/` and `util/toolkit/` with 7-item checklist applied per-function |
+| D | 1 | `sub-toolkit-review` | Toolkit crates (see target profile) with 8-item checklist applied per-function |
 
 ### Dispatch and Consolidation
 
@@ -92,9 +93,9 @@ The primary audit dispatches specialized agent groups in waves, collects their s
 graph LR
     REC[Reconnaissance<br/>agent assignments] --> FORK1(( ))
 
-    FORK1 --> A1["A1: NTO Pallet"]
-    FORK1 --> A2["A2: Midnight + Ledger"]
-    FORK1 --> A3["A3: Node Binary"]
+    FORK1 --> A1["A1: Priority-1 crate"]
+    FORK1 --> A2["A2: Priority-1 crate"]
+    FORK1 --> A3["A3: Priority-1 crate"]
     FORK1 --> B["B: Static Analysis"]
     FORK1 --> D["D: Toolkit Review"]
 
@@ -106,13 +107,11 @@ graph LR
 
     JOIN1 --> FORK2(( ))
 
-    FORK2 --> A4["A4: Runtime"]
-    FORK2 --> A5["A5: MC-Follower"]
-    FORK2 --> A6["A6: Upgrade Pallets"]
+    FORK2 --> A4["A4: Combined P2"]
+    FORK2 --> A5["A5: Combined P2"]
 
     A4 --> JOIN2(( ))
     A5 --> JOIN2
-    A6 --> JOIN2
 
     JOIN2 --> VER["Verification Gates"]
     VER --> MERGE["Structured Merge<br/>Dedup + Map<br/>§3 Completeness"]
@@ -124,7 +123,7 @@ graph LR
     style VER fill:#e6553a,stroke:#c44,color:#fff
 ```
 
-Wave 1 covers the highest-priority crates (Group A), static analysis (Group B), and toolkit review (Group D). Wave 2 covers remaining Group A crates. Both waves complete before verification begins.
+Wave 1 covers the highest-priority crates (Group A), static analysis (Group B), and toolkit review (Group D). Wave 2 combines remaining crates into fewer agents per the target profile. Both waves complete before verification begins.
 
 ### Verification Gates
 
@@ -249,7 +248,7 @@ Execute the multi-agent audit via wave-based dispatch. Verify agent output compl
 
 **Skill:** `execute-audit`
 
-**Steps:** dispatch-wave-1 → dispatch-wave-2 → verify-dispatch-completeness → collect-all → verify-coverage-gate → verify-mandatory-tables → verify-storageinit-trace → structured-merge → dedup-and-map → verify-checklist-completeness
+**Steps:** dispatch-wave-1 → dispatch-wave-2 → verify-checklist-prompt-coverage → verify-dispatch-completeness → collect-all → verify-coverage-gate → verify-mandatory-tables → verify-storageinit-trace → extract-table-derived-findings → structured-merge → dedup-and-map → verify-checklist-completeness
 
 ---
 
@@ -308,7 +307,7 @@ These activities are dispatched by the orchestrator during the primary-audit pha
 |----------|---------|-------------|
 | `sub-crate-review` | Group A | 8-step structured crate review: file reading → function registry → invariant extraction → §3 checklist → analysis tables → cross-function comparison → completeness verification → structured output |
 | `sub-static-analysis` | Group B | 6-step structured static analysis with catalog-based pattern execution, zero-hit auditing, storage lifecycle pairing, and mechanical checks |
-| `sub-toolkit-review` | Group D | Per-function 7-item checklist application across all toolkit files with function × checklist matrix |
+| `sub-toolkit-review` | Group D | Per-function 8-item checklist application across all toolkit files with function × checklist matrix |
 
 ---
 
@@ -357,9 +356,10 @@ Resources contain detailed reference content loaded on demand by skills.
 | `00` | `start-here.md` | Quick start guide and workflow overview | Orchestrator bootstrap |
 | `01` | `audit-template-reference.md` | Audit prompt template summary | Orchestrator setup |
 | `02` | `severity-rubric.md` | Impact/Feasibility scales and severity mapping | `score-severity` skill |
-| `03` | `toolkit-checklist.md` | 7-item toolkit minimum checklist | `execute-sub-agent` (toolkit review) |
+| `03` | `toolkit-checklist.md` | 8-item toolkit minimum checklist | `execute-sub-agent` (toolkit review) |
 | `04` | `sub-agent-output-schema.md` | Structured output schema with per-group requirements | `execute-sub-agent` (all) |
 | `05` | `static-analysis-patterns.md` | Grep patterns, mechanical checks, storage lifecycle patterns | `search-pattern-catalog` |
+| `06` | `target-profile.md` | Target-specific crate assignments, file paths, calibration data, ensemble blind-spots | Orchestrator setup, `score-severity`, ensemble |
 
 ---
 
@@ -379,7 +379,6 @@ Resources contain detailed reference content loaded on demand by skills.
 | `cargo_audit_available` | boolean | Whether cargo audit ran successfully |
 | `reconnaissance_complete` | boolean | Phase 1a gate |
 | `primary_audit_complete` | boolean | Phase 1b gate |
-| `panic_sweep_complete` | boolean | Phase 1.5 gate |
 | `adversarial_complete` | boolean | Phase 2 gate |
 | `report_complete` | boolean | Phase 3 gate |
 | `agents_assigned` | number | Agents assigned during reconnaissance |
