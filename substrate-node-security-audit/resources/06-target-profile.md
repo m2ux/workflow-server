@@ -98,15 +98,3 @@ The following calibration examples are derived from a professional security audi
 | Incomplete Ord in consensus-sorted collection | 4 | 3 | 3.5 | **High** | Field collisions statistically expected at blockchain volumes. |
 | Config struct missing mathematical invariant | 4 | 3 | 3.5 | **High** | Config errors are operational hazards, not exotic attacks. |
 
----
-
-## Rule Retirement Log (v4.7)
-
-Rules retired or merged at this version:
-
-| Retired Rule | Version Added | Superseded By | Rationale |
-|-------------|--------------|--------------|-----------|
-| INHERENT ASYMMETRY CLASSIFICATION | v4.4 | VERIFIER RECOMPUTATION REQUIREMENT (v4.7) | v4.7 rule is strictly more specific |
-| CROSS-CHAIN TIMESTAMP SCOPE (primary-audit) | v4.4 | TIMESTAMP SOURCE DEFAULT-FAIL (sub-crate-review v4.7) | Consolidated to 2 locations |
-| Check 8: Preallocation Deep Scan | v4.2 | Merged into Check 3 | Redundant scope variant |
-| Check 12: Serialization Mismatch Deep Scan | v4.3 | Merged into Check 3 | Redundant scope variant |
