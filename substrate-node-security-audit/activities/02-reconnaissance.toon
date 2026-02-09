@@ -81,11 +81,12 @@ outcome[5]:
   - Consensus-critical paths identified
   - Function registry built for priority-1 and priority-2 crates
   - Agent groups assigned with cross-crate supplement mappings
-context_to_preserve[5]:
+context_to_preserve[6]:
   - crate_map - Classification of all crates by type and priority
   - function_registry - Registry of critical functions per crate
   - trust_boundaries - List of identified trust boundaries
   - agent_assignments - Crate-to-agent-group assignments with cross-crate supplement files noted
+  - agents_assigned - Total count of agents in the assignment roster (used by dispatch completeness gate)
   - large_files - List of .rs files >200 lines sorted by size
 artifacts[1]:
   - id: readme

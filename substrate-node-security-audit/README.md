@@ -20,28 +20,17 @@ This workflow guides the complete lifecycle of a security audit:
 - Fully automated sequential flow — no user checkpoints (phase gates via exitActions)
 - **Goal → Activity → Skill → Tools** ontology: activities define step skeletons with activity-level rules; skills define tool orchestration and protocols; resources contain detailed reference content (progressive disclosure)
 - Workflow-directed sub-agents: each sub-agent bootstraps the workflow-server MCP, loads its assigned activity and the `execute-sub-agent` skill, which follows activity steps sequentially with verifiable outputs
-- **Composable skill architecture** — 15 single-responsibility skills (v4.3): orchestrator skills (`execute-audit`, `dispatch-sub-agents`, `verify-sub-agent-output`, `merge-findings`), analysis skills (`apply-checklist`, `build-function-registry`, `extract-invariants`, `scan-storage-lifecycle`, `decompose-safety-claims`, `map-codebase`), and sub-agent skills (`execute-sub-agent`, `search-pattern-catalog`)
-- **Wave-based Group A dispatch** — agents dispatched in waves of 3–4 when the platform limits concurrency; each wave includes at least one Group A crate-level agent (v4.2)
-- **Coverage gate hard stop** — report generation blocked until every >200-line file in priority-1/2 crates is confirmed read by at least one sub-agent (v4.2)
-- **Mandatory output verification** — orchestrator validates that each Group A agent produced required tables (§3.3 per-field trace, §3.5 StorageInit enumeration, cross-function invariant comparison) before consolidation (v4.2)
-- **Orchestrator role discipline** — the orchestrator coordinates and dispatches but does not perform crate-level review itself (v4.2)
-- **Mechanical pattern coverage** — Group B checks must cover ledger internal API files; zero hits on serialization checks in the ledger directory is a possible false negative (v4.3)
+- **Composable skill architecture** — 15 single-responsibility skills: orchestrator skills (`execute-audit`, `dispatch-sub-agents`, `verify-sub-agent-output`, `merge-findings`), analysis skills (`apply-checklist`, `build-function-registry`, `extract-invariants`, `scan-storage-lifecycle`, `decompose-safety-claims`, `map-codebase`), and sub-agent skills (`execute-sub-agent`, `search-pattern-catalog`)
+- **Wave-based Group A dispatch** — agents dispatched in waves of 3–4 when the platform limits concurrency; each wave includes at least one Group A crate-level agent
+- **Coverage gate hard stop** — report generation blocked until every >200-line file in priority-1/2 crates is confirmed read by at least one sub-agent
+- **Mandatory output verification** — orchestrator validates that each Group A agent produced required tables (§3.3 per-field trace, §3.5 StorageInit enumeration, cross-function invariant comparison) before consolidation
+- **Orchestrator role discipline** — the orchestrator coordinates and dispatches but does not perform crate-level review itself
+- **Mechanical pattern coverage** — Group B checks must cover ledger internal API files; zero hits on serialization checks in the ledger directory is a possible false negative
 - Impact x Feasibility severity scoring via `score-severity` skill with resource-backed calibration examples
 - Contamination prevention — reference report quarantined until gap-analysis phase
 - Structured merge table with mandatory elevation verification
 - §3 checklist completeness verification with gap-filling follow-up
 - Based on the Substrate Node Security Audit Template
-
-### Validated Performance
-
-| Session | Version | Agents | LA Overlap | Critical Coverage |
-|---------|---------|--------|-----------|-------------------|
-| S06 | v4.0 | 8 (6A+1B+1D) | 55% | 1/3 (33%) |
-| S08 | v4.0 | 8 | ~65% | 2/3 (67%) |
-| S11 | v4.0 | 8 (6A+1B+1D) | **93%** | 3/3 (100%) |
-| S12 | v4.1 | 3 (0A+1B+1D) | 82% | 3/3 (100%) |
-
-The v4.2 changes address the S12 regression (0 Group A agents caused an 11pp drop). S11's 93% overlap with the Least Authority professional audit represents the current validated ceiling. The v4.3 changes target the 3 remaining gaps (LA-AA, LA-AD, LA-AQ) identified in S13's 93% overlap validation.
 
 ---
 
@@ -137,7 +126,7 @@ graph TD
 
 > Wave 1 covers the 3 highest-priority crates plus static analysis. Wave 2 covers remaining crates plus toolkit. The orchestrator waits for each wave to return before dispatching the next. All sub-agents follow dedicated workflow activities via the workflow-server MCP using the `execute-sub-agent` skill.
 
-### Verification Gates (v4.2)
+### Verification Gates
 
 Between agent collection and consolidation, the orchestrator runs three verification gates. These are hard stops — the audit does not proceed to structured merge with failures.
 
@@ -147,7 +136,7 @@ Between agent collection and consolidation, the orchestrator runs three verifica
 | **Mandatory Tables** | Each Group A agent produced: §3 checklist table, per-field event trace table (§3.3 if applicable), cross-function invariant table. Group D produced: function enumeration table, per-function checklist matrix, coverage attestation. | Dispatch targeted follow-up for missing tables |
 | **StorageInit Trace** | The node agent (A3) enumerated every `StorageInit` construction site covering both online and offline subcommand paths | Dispatch targeted follow-up for §3.5 |
 
-These gates were added in v4.2 after validated regression analysis showed that skipping them caused an 11pp coverage drop (Session 12: 82% vs Session 11: 93%).
+These gates are hard stops — skipping them risks significant coverage regression.
 
 ### Sub-Agent Activity Flows
 
@@ -166,7 +155,7 @@ graph LR
     CR7 --> CR8[format-output]
 ```
 
-#### `sub-static-analysis` (Group B — single agent, v1.3.0)
+#### `sub-static-analysis` (Group B — single agent)
 
 ```mermaid
 graph LR
@@ -177,9 +166,9 @@ graph LR
     SA5 --> SA6[format-output]
 ```
 
-v1.3.0: Uses the `search-pattern-catalog` supporting skill for catalog-based pattern execution. Mechanical checks include preallocation mismatch, mock data source toggle, SmallRng/block-hash-derived randomness search. v4.3 requires ledger internal API coverage for serialization checks.
+Uses the `search-pattern-catalog` supporting skill for catalog-based pattern execution. Mechanical checks include preallocation mismatch, mock data source toggle, SmallRng/block-hash-derived randomness search. Ledger internal API coverage is required for serialization checks.
 
-#### `sub-toolkit-review` (Group D — single agent, mandatory, v1.1.0)
+#### `sub-toolkit-review` (Group D — single agent, mandatory)
 
 ```mermaid
 graph LR
@@ -188,7 +177,7 @@ graph LR
     TK3 --> TK4[format-output]
 ```
 
-v1.1.0 strengthens output requirements: the orchestrator rejects prose summaries lacking the three required structured tables (function enumeration, checklist matrix, coverage attestation). Includes function count cross-verification and mandatory subdirectory coverage.
+The orchestrator rejects prose summaries lacking the three required structured tables (function enumeration, checklist matrix, coverage attestation). Includes function count cross-verification and mandatory subdirectory coverage.
 
 ### Sub-Agent Ontology: Activity → Skill → Resources
 
@@ -231,7 +220,7 @@ graph TD
 
 ## Activities
 
-### 1. Scope Setup (v2.0.0)
+### 1. Scope Setup
 
 **Purpose:** Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder.
 
@@ -244,7 +233,7 @@ graph TD
 
 ---
 
-### 2. Reconnaissance (v2.0.0)
+### 2. Reconnaissance
 
 **Purpose:** Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry (template §1.2). Assign crates to sub-agent groups with cross-crate supplement mappings.
 
@@ -256,7 +245,7 @@ graph TD
 
 ---
 
-### 3. Primary Audit (v4.0.0)
+### 3. Primary Audit
 
 **Purpose:** Execute the multi-agent audit via wave-based dispatch. Includes hard-gate verification steps before consolidation.
 
@@ -281,11 +270,11 @@ graph TD
 8. `dedup-and-map` — Assign report finding numbers
 9. `verify-checklist-completeness` — §3 coverage matrix with gap-filling follow-up
 
-**Consolidation:** Steps 4–6 are verification gates added in v4.2. They run between agent collection and the structured merge. Any failure triggers targeted follow-up agent dispatch before proceeding.
+**Consolidation:** Steps 4–6 are verification gates that run between agent collection and the structured merge. Any failure triggers targeted follow-up agent dispatch before proceeding.
 
 ---
 
-### 4. Adversarial Verification (v2.0.0)
+### 4. Adversarial Verification
 
 **Purpose:** Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. The agent's role is to **refute**, not confirm.
 
@@ -300,14 +289,14 @@ graph TD
 
 ---
 
-### 5. Report Generation (v3.1.0)
+### 5. Report Generation
 
 **Purpose:** Consolidate all findings from primary audit and adversarial verification. Apply severity scoring with calibration cross-check. Verify coverage gate (blocking). Produce final report.
 
 **Primary Skill:** `execute-audit`
 **Supporting Skill:** `score-severity`
 
-**Blocking entry condition (v4.2):** This activity must not begin unless the coverage gate passed during primary-audit. If `coverage_report` shows any unread files, return to primary-audit and dispatch follow-up agents first.
+**Blocking entry condition:** This activity must not begin unless the coverage gate passed during primary-audit. If `coverage_report` shows any unread files, return to primary-audit and dispatch follow-up agents first.
 
 **Steps (6):**
 1. Integrate adversarial results into structured merge table
@@ -321,7 +310,7 @@ graph TD
 
 ---
 
-### 6. Ensemble Pass (v2.0.0, Optional)
+### 6. Ensemble Pass (Optional)
 
 **Purpose:** Run the template a second time with a different model configuration on priority-1/2 components. Union-merge with primary results.
 
@@ -334,7 +323,7 @@ graph TD
 
 ---
 
-### 7. Gap Analysis (v2.0.0, Optional)
+### 7. Gap Analysis (Optional)
 
 **Purpose:** Compare the AI audit report against a professional reference report. Produce finding-by-finding mapping, identify gaps, analyze severity calibration, and provide root cause analysis.
 
@@ -348,11 +337,11 @@ graph TD
 
 These activities are dispatched by the orchestrator during the primary-audit phase. They do not appear in the main workflow transition graph.
 
-| Activity | Version | Used By | Description |
-|----------|---------|---------|-------------|
-| `sub-crate-review` | 1.0.0 | Group A | 8-step structured crate review: file reading → function registry → invariant extraction → §3 checklist → mandatory tables → cross-function comparison → completeness verification → structured output |
-| `sub-static-analysis` | 1.3.0 | Group B | 6-step structured static analysis with catalog-based pattern execution via `search-pattern-catalog` skill, zero-hit auditing, storage lifecycle pairing, and mechanical checks (preallocation mismatch, mock toggle, SmallRng). v4.3 requires ledger internal API coverage. |
-| `sub-toolkit-review` | 1.1.0 | Group D | Per-function 7-item checklist application across all toolkit files with function × checklist matrix. Output format strictly enforced — prose without structured tables is rejected (v1.1.0) |
+| Activity | Used By | Description |
+|----------|---------|-------------|
+| `sub-crate-review` | Group A | 8-step structured crate review: file reading → function registry → invariant extraction → §3 checklist → mandatory tables → cross-function comparison → completeness verification → structured output |
+| `sub-static-analysis` | Group B | 6-step structured static analysis with catalog-based pattern execution via `search-pattern-catalog` skill, zero-hit auditing, storage lifecycle pairing, and mechanical checks (preallocation mismatch, mock toggle, SmallRng). Requires ledger internal API coverage. |
+| `sub-toolkit-review` | Group D | Per-function 7-item checklist application across all toolkit files with function × checklist matrix. Output format strictly enforced — prose without structured tables is rejected. |
 
 ---
 
@@ -362,33 +351,33 @@ Skills define tool orchestration, protocols, and composable capabilities. They a
 
 ### Orchestrator Skills
 
-| Skill | Version | Capability | Used By |
-|-------|---------|------------|---------|
-| `execute-audit` | 3.0.0 | Orchestrator-level audit execution: 5-phase execution pattern, agent dispatch coordination, tool usage, consolidation | All orchestrator activities (scope-setup through gap-analysis) |
-| `score-severity` | 1.0.0 | Impact × Feasibility severity scoring with 14 calibration examples and bias correction | report-generation, ensemble-pass |
-| `dispatch-sub-agents` | 1.0.0 | Compose sub-agent Task prompts with workflow-server bootstrap instructions, context variables, and supplementary files; dispatch concurrently within platform limits | primary-audit (wave dispatch) |
-| `verify-sub-agent-output` | 1.0.0 | Validate sub-agent results against structural completeness requirements, check coverage gates and mandatory tables, flag or re-dispatch on failure | primary-audit (verification gates) |
-| `merge-findings` | 1.0.0 | Concatenate finding lists from multiple sources into a canonical flat table, deduplicate by root cause, assign report finding numbers, verify elevation completeness | primary-audit (consolidation), ensemble-pass (union-merge) |
-| `compare-finding-sets` | 1.0.0 | Finding-by-finding mapping between two finding sets, classify matches/partials/gaps, analyze severity calibration differences, root cause analysis | gap-analysis |
+| Skill | Capability | Used By |
+|-------|------------|---------|
+| `execute-audit` | Orchestrator-level audit execution: 5-phase execution pattern, agent dispatch coordination, tool usage, consolidation | All orchestrator activities (scope-setup through gap-analysis) |
+| `score-severity` | Impact × Feasibility severity scoring with calibration examples and bias correction | report-generation, ensemble-pass |
+| `dispatch-sub-agents` | Compose sub-agent Task prompts with workflow-server bootstrap instructions, context variables, and supplementary files; dispatch concurrently within platform limits | primary-audit (wave dispatch) |
+| `verify-sub-agent-output` | Validate sub-agent results against structural completeness requirements, check coverage gates and mandatory tables, flag or re-dispatch on failure | primary-audit (verification gates) |
+| `merge-findings` | Concatenate finding lists from multiple sources into a canonical flat table, deduplicate by root cause, assign report finding numbers, verify elevation completeness | primary-audit (consolidation), ensemble-pass (union-merge) |
+| `compare-finding-sets` | Finding-by-finding mapping between two finding sets, classify matches/partials/gaps, analyze severity calibration differences, root cause analysis | gap-analysis |
 
 ### Analysis Skills (Composable)
 
-| Skill | Version | Capability | Used By |
-|-------|---------|------------|---------|
-| `apply-checklist` | 1.0.0 | Iterate items against checklist entries, produce verdict matrix, verify completeness. Handles §3 checklist and toolkit checklist. | primary-audit, sub-crate-review, sub-toolkit-review |
-| `build-function-registry` | 1.0.0 | Enumerate all functions by type (hooks, extrinsics, public fns, storage, events) and assign priority classifications | reconnaissance, sub-crate-review |
-| `extract-invariants` | 1.0.0 | Enumerate preconditions, postconditions, cross-function invariants, and data source invariants for priority functions | sub-crate-review |
-| `scan-storage-lifecycle` | 1.0.0 | Find all storage map insert/remove sites, verify pairing, check capacity enforcement, optional invariant consistency | sub-static-analysis |
-| `decompose-safety-claims` | 1.0.0 | Decompose PASS verdicts into constituent properties, enumerate all instances, produce decomposition table for independent verification | adversarial-verification |
-| `map-codebase` | 1.0.0 | Enumerate, classify, and trace components to build a structured architectural map (component inventory, trust boundaries, critical paths, data flows) | reconnaissance |
-| `setup-audit-target` | 1.0.0 | Extract and validate target codebase at a specific revision, run dependency scanning, generate file inventory | scope-setup |
-| `search-pattern-catalog` | 1.0.0 | Execute every pattern in a catalog section against a codebase scope, apply per-pattern triage, classify zero-hit patterns | sub-static-analysis (supporting skill) |
+| Skill | Capability | Used By |
+|-------|------------|---------|
+| `apply-checklist` | Iterate items against checklist entries, produce verdict matrix, verify completeness. Handles §3 checklist and toolkit checklist. | primary-audit, sub-crate-review, sub-toolkit-review |
+| `build-function-registry` | Enumerate all functions by type (hooks, extrinsics, public fns, storage, events) and assign priority classifications | reconnaissance, sub-crate-review |
+| `extract-invariants` | Enumerate preconditions, postconditions, cross-function invariants, and data source invariants for priority functions | sub-crate-review |
+| `scan-storage-lifecycle` | Find all storage map insert/remove sites, verify pairing, check capacity enforcement, optional invariant consistency | sub-static-analysis |
+| `decompose-safety-claims` | Decompose PASS verdicts into constituent properties, enumerate all instances, produce decomposition table for independent verification | adversarial-verification |
+| `map-codebase` | Enumerate, classify, and trace components to build a structured architectural map (component inventory, trust boundaries, critical paths, data flows) | reconnaissance |
+| `setup-audit-target` | Extract and validate target codebase at a specific revision, run dependency scanning, generate file inventory | scope-setup |
+| `search-pattern-catalog` | Execute every pattern in a catalog section against a codebase scope, apply per-pattern triage, classify zero-hit patterns | sub-static-analysis (supporting skill) |
 
 ### Sub-Agent Skills
 
-| Skill | Version | Capability | Used By |
-|-------|---------|------------|---------|
-| `execute-sub-agent` | 1.0.0 | Bootstrap workflow-server, load assigned activity, follow steps sequentially, return structured output with self-verification | All sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) |
+| Skill | Capability | Used By |
+|-------|------------|---------|
+| `execute-sub-agent` | Bootstrap workflow-server, load assigned activity, follow steps sequentially, return structured output with self-verification | All sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) |
 
 > **Note:** There is a duplicate skill file `03-pattern-catalog-search.toon` alongside `03-search-pattern-catalog.toon`. Both have identical content. The canonical name is `search-pattern-catalog`.
 
@@ -442,77 +431,6 @@ Resources contain detailed reference content loaded on demand by skills. Activit
 | Report | `01-audit-report.md` | Full audit report with numbered findings |
 | Gap Analysis | `02-gap-analysis.md` | Comparison against reference report |
 
----
 
-## Changelog
 
-### v4.3.0 (2026-02-09) — Skill Decomposition and Schema Alignment
-
-**Skill architecture refactored** from 3 monolithic skills to 15 composable single-responsibility skills:
-- **Orchestrator skills (6):** `execute-audit`, `score-severity`, `dispatch-sub-agents`, `verify-sub-agent-output`, `merge-findings`, `compare-finding-sets`
-- **Analysis skills (8):** `apply-checklist`, `build-function-registry`, `extract-invariants`, `scan-storage-lifecycle`, `decompose-safety-claims`, `map-codebase`, `setup-audit-target`, `search-pattern-catalog`
-- **Sub-agent skills (1):** `execute-sub-agent`
-
-**Schema alignment:**
-- Activity `notes` field renamed to `rules` across all activities — aligns with workflow-level `rules` field and makes the imperative nature explicit
-- `modeOverrides` and `modes` added to the Zod schema (previously only in JSON schema)
-- `artifactLocations` now accepts string shorthand in addition to full object form
-
-**Activity version bumps:**
-- scope-setup: 1.0.0 → 2.0.0
-- reconnaissance: 1.0.0 → 2.0.0
-- adversarial-verification: 1.0.0 → 2.0.0
-- ensemble-pass: 1.0.0 → 2.0.0
-- gap-analysis: 1.0.0 → 2.0.0
-- sub-static-analysis: 1.1.0 → 1.3.0
-
-**Mechanical pattern coverage (v4.3 workflow rule):**
-- Group B checks #8/#12 must cover ledger internal API files (`ledger/src/versions/*/api/*.rs`)
-- Check #11 must cover all state query functions
-- Check #10 must trace each SmallRng hit to its usage context
-- Targets 3 remaining gaps from S13 validation (LA-AA, LA-AD, LA-AQ)
-
-**Variables added:**
-- `in_scope` — space-separated list of crate/module paths to audit
-- `out_of_scope` — space-separated list of exclusions
-
-### v4.2.0 (2026-02-09) — Regression Countermeasures
-
-Addresses the 11pp coverage regression identified in Session 12 vs Session 11 (82% → 93% overlap with Least Authority reference report). Root cause: Session 12 dispatched 0 Group A agents, the orchestrator performed crate-level review itself, and the coverage gate was not enforced.
-
-**New workflow rules (4):**
-- Orchestrator role discipline — orchestrator coordinates, does not perform crate-level review
-- Coverage gate hard stop — report generation blocked until all >200-line files confirmed read
-- Wave-based Group A dispatch — agents dispatched in waves when platform limits concurrency
-- Mandatory output verification — structured tables required from all Group A and D agents
-
-**Primary audit restructured (3.0.0 → 4.0.0):**
-- Wave dispatch replaces single concurrent dispatch (dispatch-wave-1 + dispatch-wave-2)
-- 3 new verification gate steps between collection and merge (coverage, tables, StorageInit)
-- 5 new activity-level rules documenting each gate's validation requirements and failure actions
-
-**Report generation (3.0.0 → 3.1.0):**
-- Blocking entry condition — coverage gate must pass before report begins
-- Mandatory table verification added
-
-**Sub-static-analysis (1.0.0 → 1.1.0):**
-- +3 mechanical checks: preallocation mismatch, mock data source toggle, SmallRng/block-hash RNG
-
-**Sub-toolkit-review (1.0.0 → 1.1.0):**
-- Output format strictly enforced — prose without tables rejected
-- Function count cross-verification via grep
-- Subdirectory inclusion requirement
-
-**Audit prompt template:**
-- +§2.10 Serialization Pre-Allocation Mismatch (mechanical search)
-- +§2.11 Mock Data Source Toggle Detection (mechanical search)
-- §3.3 hard-gate annotation (per-field trace table verified by orchestrator)
-- §3.5 hard-gate annotation (StorageInit construction site enumeration table)
-
-### v4.1.0 (2026-02-09) — Sub-Agent Workflow Activities
-
-Added dedicated workflow activities for sub-agents (sub-crate-review, sub-static-analysis, sub-toolkit-review) with step-by-step execution, required outputs, and structured output schema.
-
-### v4.0.0 (2026-02-08) — Multi-Agent Orchestration
-
-Initial multi-agent architecture with Groups A, B, D. Structured merge table, severity calibration, contamination prevention.
+See [CHANGELOG.md](CHANGELOG.md) for version history.
