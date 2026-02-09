@@ -16,17 +16,13 @@ This workflow guides the complete lifecycle of a security audit:
 
 **Key characteristics:**
 - Fully automated sequential flow — no user checkpoints (phase gates via exitActions)
-- Workflow-directed sub-agents: each sub-agent bootstraps the workflow-server MCP, loads its assigned activity (`sub-crate-review`, `sub-static-analysis`, `sub-toolkit-review`), and follows step-by-step execution with verifiable outputs
-- Sub-agent structured output conforming to resource 04 (sub-agent-output-schema) for mechanical validation
-- 3 concurrent agent groups (A, B, D) with cross-crate supplementary files for Group A
-- Cross-function invariant comparison and zero-hit pattern auditing
-- Impact x Feasibility severity scoring with calibration cross-check
+- **Goal → Activity → Skill → Tools** ontology: activities define step skeletons, skills define tool orchestration and resource loading, resources contain detailed content (progressive disclosure)
+- Workflow-directed sub-agents: each sub-agent bootstraps the workflow-server MCP, loads its assigned activity and the `sub-agent-execution` skill, which maps activity steps to resources loaded on demand
+- 3 concurrent agent groups (A, B, D) dispatched in parallel
+- Impact x Feasibility severity scoring via `severity-scoring` skill with resource-backed calibration examples
 - Contamination prevention — reference report quarantined until gap-analysis phase
 - Structured merge table with mandatory elevation verification
-- §3 checklist completeness verification
-- Storage lifecycle pairing scan
-- Per-field event trace tables and struct diff tables
-- Two-level input validation protocol (structural + semantic)
+- §3 checklist completeness verification with gap-filling follow-up
 - Based on the Substrate Node Security Audit Template
 
 ---
@@ -124,15 +120,13 @@ graph LR
 
 ### Workflow-Directed Sub-Agent Dispatch
 
-Each sub-agent's Task prompt includes workflow-server bootstrap instructions:
+Each sub-agent is instructed to bootstrap the workflow-server, load its assigned activity and the `sub-agent-execution` skill. The skill's `resource_map` directs which resources to load for each activity's steps — sub-agents never need to know resource indices directly.
 
-> *"You have access to the workflow-server MCP tools. Before starting, call `get_rules()` then call `get_workflow_activity({ workflow_id: "substrate-node-security-audit", activity_id: "<activity-id>" })`. Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04 (sub-agent-output-schema)."*
-
-| Group | Activity | Steps | Key Outputs |
-|-------|----------|-------|-------------|
-| A (per crate) | `sub-crate-review` | 8 steps: read files → function registry → invariant extraction → §3 checklist → mandatory tables → cross-function comparison → completeness verification → structured output | Findings, checklist coverage, per-field trace tables, struct diffs, cross-layer matrices |
-| B (1 agent) | `sub-static-analysis` | Step-by-step §2 pattern execution with zero-hit auditing and storage lifecycle pairing | Pattern hits, storage pairing table, zero-hit pattern list |
-| D (1 agent) | `sub-toolkit-review` | Per-function 7-item checklist application across all toolkit files | Function × checklist matrix, coverage attestation, findings |
+| Group | Activity | Skill | Steps | Key Outputs |
+|-------|----------|-------|-------|-------------|
+| A (per crate) | `sub-crate-review` | `sub-agent-execution` | 8 steps: read files → function registry → invariant extraction → §3 checklist → mandatory tables → cross-function comparison → completeness → output | Findings, checklist coverage, mandatory tables |
+| B (1 agent) | `sub-static-analysis` | `sub-agent-execution` | 6 steps: §2 patterns → mechanical checks → storage lifecycle → zero-hit audit → aggregation → output | Pattern hits, storage pairing table, zero-hit patterns |
+| D (1 agent) | `sub-toolkit-review` | `sub-agent-execution` | 4 steps: enumerate functions → per-function checklist → coverage verification → output | Function × checklist matrix, coverage attestation |
 
 ---
 
@@ -247,23 +241,37 @@ These activities are dispatched by the orchestrator during the primary-audit pha
 
 ## Skills
 
-| Skill | Capability | Used By |
-|-------|------------|---------|
-| `audit-execution` | Core audit execution patterns, agent dispatch, tool usage | All orchestrator activities |
-| `severity-scoring` | Impact × Feasibility severity rubric with calibration examples | report-generation, ensemble-pass |
-| `sub-agent-execution` | Sub-agent workflow bootstrap, step-by-step execution, structured output generation | Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) |
+Skills define tool orchestration, state management, and resource loading strategies. They reference resources for detailed content (progressive disclosure).
+
+| Skill | Capability | Resources Used | Used By |
+|-------|------------|----------------|---------|
+| `audit-execution` | Orchestrator-level audit execution: agent dispatch, tool usage, consolidation | `05` (agent-dispatch-config), `06` (merge-table-schema) | All orchestrator activities |
+| `severity-scoring` | Impact × Feasibility severity scoring procedure with bias correction | `02` (severity-rubric), `13` (calibration-examples) | report-generation, ensemble-pass |
+| `sub-agent-execution` | Sub-agent workflow bootstrap, step-by-step execution with resource loading, structured output | `04` (output-schema) + activity-specific resources via `resource_map` | Sub-agent activities |
+
+### Sub-Agent Execution — Resource Map
+
+The `sub-agent-execution` skill owns a `resource_map` that defines which resources each sub-agent activity needs. Activities define *what* to produce; the skill defines *which resources to load*; resources contain *the content*.
+
+| Activity | Resources Loaded by Skill |
+|----------|--------------------------|
+| `sub-crate-review` | `04` (output schema), `07` (table formats), `08` (invariant guide), `09` (analysis tables) |
+| `sub-static-analysis` | `04` (output schema), `10` (storage lifecycle guide), `11` (static analysis patterns) |
+| `sub-toolkit-review` | `03` (toolkit checklist), `04` (output schema) |
 
 ---
 
 ## Resources
 
-| Resource | Purpose |
-|----------|---------|
-| `00-start-here.md` | Quick start guide and workflow overview |
-| `01-audit-template-reference.md` | Pointer to the audit prompt template with section summary |
-| `02-severity-rubric.md` | Detailed severity scoring guide with calibration examples |
-| `03-toolkit-checklist.md` | Mandatory 7-item toolkit minimum checklist |
-| `04-sub-agent-output-schema.md` | Structured output schema for sub-agent results, with field requirements per agent group and orchestrator validation rules |
+Resources contain detailed reference content loaded on demand by skills. Activities never reference resources directly.
+
+| Index | Resource | Content | Loaded By |
+|-------|----------|---------|-----------|
+| `00` | `start-here.md` | Quick start guide and workflow overview | Orchestrator bootstrap |
+| `01` | `audit-template-reference.md` | Pointer to the audit prompt template with section summary | Orchestrator setup |
+| `02` | `severity-rubric.md` | Impact/Feasibility scales, severity mapping table | `severity-scoring` skill |
+| `03` | `toolkit-checklist.md` | Mandatory 7-item toolkit minimum checklist | `sub-agent-execution` skill (for `sub-toolkit-review`) |
+| `04` | `sub-agent-output-schema.md` | Structured JSON output schema with per-group field requirements and validation rules | `sub-agent-execution` skill (all activities) |
 
 ---
 
