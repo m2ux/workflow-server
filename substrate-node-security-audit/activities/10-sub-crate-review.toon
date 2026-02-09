@@ -1,5 +1,5 @@
 id: sub-crate-review
-version: 1.0.0
+version: 1.1.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Workflow for Group A sub-agents. Executes an 8-step structured crate review with verifiable outputs at each stage. Each step defines a REQUIRED OUTPUT that must be produced before proceeding. The sub-agent loads this activity via get_workflow_activity and follows it sequentially."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
@@ -12,12 +12,13 @@ skills:
 required: false
 estimatedTime: 20-40m
 
-rules[5]:
+rules[6]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: crate_path, checklist_sections, function_registry, supplementary_files, in_scope, out_of_scope"
   - "Every step defines a REQUIRED OUTPUT. The agent must produce this output before proceeding to the next step."
   - "Steps 5 and 6 contain self-verification requirements — the agent must list what it produced and what it marked N/A"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
+  - "§3.4 CONFIGURATION INVARIANT CHECK (v4.5): For every consensus-critical configuration struct identified during reconnaissance (e.g., CreateInherentDataConfig, ScSlotConfig, MainchainEpochConfig), verify that the constructor validates mathematical invariants. Missing invariant validation is a finding when the struct feeds inherent data creation or epoch boundary calculation. 'No validation but works in practice' is not a valid PASS — the check is whether a malicious or misconfigured value would be rejected at construction time."
 steps[8]:
   - id: read-all-files
     name: Read All Crate Files

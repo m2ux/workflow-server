@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 2.0.0
+version: 2.1.0
 name: Reconnaissance
 description: "Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. This is §1.2 of the audit template. Fully automated — no user checkpoints."
 problem: The agent needs a complete mental model of the system before detailed review can begin.
@@ -11,15 +11,16 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 15-30m
-rules[5]:
+rules[6]:
   - "Explicitly list EVERY pallet and primitive crate — do not summarize or group"
   - "Map which crates are runtime (Wasm), native (node binary), shared primitives, or off-chain tooling"
   - "Identify trust boundaries: RPC, inherent data, chain specs, config files, databases, file system, native/Wasm boundary"
   - "Build the function registry for ALL priority-1 and priority-2 crates (§1.2 step 8)"
   - "Sort .rs files by line count — the top 10 files MUST be in the registry and read during review (§5.14)"
+  - "CONFIGURATION INVARIANT ENUMERATION (v4.5): Enumerate every struct used in ProposalCIDP and VerifierCIDP constructors (e.g., CreateInherentDataConfig, ScSlotConfig, MainchainEpochConfig). Check whether constructors validate mathematical invariants. Missing validation is a reconnaissance lead assigned to the node agent."
 entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2)
-steps[9]:
+steps[10]:
   - id: identify-crates
     name: Identify All Crates
     skill: map-codebase
@@ -44,6 +45,12 @@ steps[9]:
     skill_args:
       output_format: "Critical path inventory"
     description: "Map all consensus-critical code paths."
+  - id: identify-config-structs
+    name: Identify Consensus Configuration Structs
+    skill: map-codebase
+    skill_args:
+      output_format: "| Struct | File | Fields | Constructor Validates Invariants? |"
+    description: "Enumerate every struct that aggregates consensus-critical off-chain parameters (slot duration, epoch length, block window size, capacity limits). For each, check whether the constructor validates mathematical invariants (e.g., epoch_duration % slot_duration == 0, slot_duration > 0). Record structs with missing invariant validation as reconnaissance leads."
   - id: identify-pallet-hooks
     name: Identify Pallet Hooks
     skill: map-codebase

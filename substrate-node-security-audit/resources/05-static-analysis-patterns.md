@@ -59,12 +59,21 @@ std::fs::read  |  read_to_end  |  take_while  |  filter_map.*ok  |  without_stor
 PgPool  |  PgSslMode  |  max_connections  |  PgConnectOptions
 ```
 
-### Information Leaks
+### Information Leaks — Credentials
 
 ```
-password  |  secret  |  credential
+password  |  secret  |  credential  |  private_key  |  api_key
 ```
 (in error, log, or Display contexts)
+
+### Information Leaks — Topology
+
+```
+host  |  port  |  database  |  db_name  |  connection_string
+```
+(in error Display/Debug implementations and thiserror format strings only — not in config constructors or connection builders)
+
+**Triage:** For each hit in an error type's `Display` or `Debug` impl, verify whether the field value could expose deployment topology (internal hostnames, port numbers, database names) in logs or RPC error responses. Error types that format connection details aid reconnaissance.
 
 ### Serialization Pre-Allocation Mismatch
 
@@ -151,13 +160,14 @@ Each check extends the grep patterns above with verification logic that goes bey
 
 ### Check 10: SmallRng Security-Context Triage
 
-- **Search:** `SmallRng`, `thread_rng`, `parent_block_hash` as RNG seeds in non-test code
+- **Search:** `SmallRng`, `thread_rng`, `parent_block_hash` as RNG seeds in ALL non-test code, **including toolkit and helper crates**
 - **For each SmallRng hit, MANDATORY triage:**
   1. Identify the seed source (constant, thread_rng, entropy)
   2. Trace what the RNG output is used for (block hash, nonce, key, test data)
   3. Determine blast radius — is the output visible to other nodes or observers?
 - **FAIL if:** Output affects transaction context, block context, or any value visible to other nodes.
 - **Note:** Listing a SmallRng grep hit without tracing to the usage context is insufficient. The triage step is what distinguishes a benign test helper from a predictable block hash.
+- **TOOLKIT SCOPE (v4.5):** SmallRng in toolkit code (ledger/helpers/, util/toolkit/) MUST be triaged when the RNG output is used in transaction construction, block context generation, or any value that enters the on-chain transaction pool. Dismissing toolkit SmallRng as "not production consensus" misses the case where the output of `SmallRng::seed_from_u64(parent_block_hash_seed)` in `context.rs` feeds `TransactionWithContext::new`, which constructs transactions submitted to the network. Predictable parent block hashes allow observers to reconstruct the randomness used in transaction construction.
 
 ### Check 11: Empty-vs-Absent Query Pattern
 
@@ -172,6 +182,13 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** The capacity estimation function matches the serialization method. Trace intermediate variables.
 - **FAIL if:** Mismatch between estimation and serialization. Zero hits is a POSSIBLE FALSE NEGATIVE — flag for manual review.
 - **Note:** This check overlaps with Check 8 but is scoped specifically to the directory where serialization buffer mismatches are most likely to occur.
+
+### Check 13: Error Type Topology Leakage
+
+- **Search:** `impl Display` and `#[error(` in files containing `Connection`, `Pool`, `Postgres`, `Database`
+- **Verify:** Error format strings do not embed `host`, `port`, or database name fields.
+- **FAIL if:** An error type's Display/Debug formats connection details that would be visible in logs or RPC responses.
+- **Note:** This is a pattern-presence bug — the fix is to redact or omit topology details from error messages while preserving them in structured (non-Display) fields for debugging.
 
 ---
 
