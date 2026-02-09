@@ -2,7 +2,7 @@ id: adversarial-verification
 version: 2.0.0
 name: Adversarial Verification
 description: "Verify every PASS item from the primary audit scratchpads by decomposing each claim into constituent properties, enumerating all fields/sites, and independently verifying each one. The agent's role is to REFUTE, not confirm. Fully automated — no user checkpoints."
-problem: AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. In validated sessions, this consistently causes Medium/High findings to be missed as false PASSes.
+problem: AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. This consistently causes Medium/High findings to be missed as false PASSes.
 recognition[3]:
   - verify audit findings
   - adversarial review
@@ -13,7 +13,7 @@ required: true
 estimatedTime: 30-60m
 notes[6]:
   - "This agent's role is to REFUTE safety claims, not confirm them"
-  - "Focus on §3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these have the highest false-PASS rates"
+  - "Focus on §3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these checks are most susceptible to false PASSes"
   - "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? Are call_addresses filtered? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."
   - "A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'"
   - "Output CONFIRMED only when ALL decomposed properties are verified with code citations"

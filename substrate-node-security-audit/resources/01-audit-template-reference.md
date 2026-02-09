@@ -10,7 +10,7 @@ The audit prompt template is located at:
 
 ## Version
 
-Template v3 (revised 2026-02-08) — includes strategies from cross-session gap analysis across 8 sessions:
+The template includes the following key strategies:
 
 1. **Severity scoring rubric** (§4) — Impact x Feasibility matrix replaces intuitive assignment
 2. **Mandatory struct diff** (§3.3) — field-by-field event vs storage struct comparison table
@@ -22,7 +22,7 @@ Template v3 (revised 2026-02-08) — includes strategies from cross-session gap 
 
 ## Workflow v3 Additions
 
-The workflow v3.0.0 adds structural improvements based on gap analysis:
+The workflow adds the following structural improvements:
 
 8. **Two-wave agent dispatch** — Wave 1 (priority-1 + B + C), Wave 2 (priority-2 + D + E)
 9. **Group E mechanical verification** — dedicated agent for historically-missed pattern searches (impl Ord completeness, take_while truncation, buffer preallocation, RPC fan-out, StorageInit consistency)
