@@ -1,23 +1,24 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 3.1.0
+version: 4.0.0
 title: Security Audit Workflow
-description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, two-wave multi-agent deep review (Groups A-E) with cross-layer deferral, anti-anchoring adversarial verification, severity-calibrated reporting with cross-check, optional ensemble passes, and gap analysis against professional audit reports. Features Group C tracer hard-gate completion tables, ordered state-write enumeration for flush checks, two-level input validation protocol, severity calibration bias correction, scratchpad-to-report elevation cross-check with verification table, and per-field event trace completion gates."
+description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent multi-agent deep review (Groups A, B, D) with cross-crate supplementary files, adversarial verification, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Features §3 checklist completeness verification, storage lifecycle pairing scan, mechanical consolidation format, and per-field event trace tables."
 author: m2ux
 tags[3]:
   - security
   - audit
   - workflow
-rules[9]:
+rules[10]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
   - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions. The agent proceeds through all phases autonomously."
   - "The audit prompt template defines the checklist — the workflow defines the execution phases"
-  - "Severity scoring MUST use the Impact x Feasibility rubric, not intuitive assignment"
+  - "Severity scoring MUST use the Impact x Feasibility rubric with calibration example comparison, not intuitive assignment"
   - "Every PASS in the scratchpad MUST cite specific code — bare PASSes are invalid"
-  - "Every FAIL in the scratchpad MUST be elevated to a numbered finding in the report"
+  - "Every agent finding MUST appear in the structured merge table and map to a report finding number — the merge table is the elevation verification"
   - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
-  - "CONTAMINATION PREVENTION (CRITICAL): A reference report (professional audit) must NEVER be loaded, read, opened, fetched, searched, queried via concept-rag, or discussed before Phase 5 (gap-analysis). This includes: (1) the reference PDF/document itself, (2) any prior gap analysis files from earlier audit sessions (e.g., 02-gap-analysis-vs-least-authority.md), (3) any file whose name or content reveals professional audit findings. Loading ANY of these before the report is finalized biases the audit by populating context with known issues. The reference_report_path is recorded at scope-setup but NOT loaded until gap-analysis. If the user mentions a reference report in their initial request, acknowledge it, record the path, and defer loading to Phase 5."
+  - "CONTAMINATION PREVENTION: A reference report (professional audit) must NEVER be loaded, read, opened, fetched, searched, queried, or discussed before Phase 5 (gap-analysis). The reference_report_path is recorded at scope-setup but NOT loaded until gap-analysis. If the user mentions a reference report in their initial request, acknowledge it, record the path, and defer loading to Phase 5. This rule also applies to prior gap analysis files from earlier audit sessions."
+  - "TOOLKIT DEPTH LIMITATION: Findings in ledger/helpers/ and util/toolkit/ at the per-function level (e.g., AM, AO, AQ patterns) have a 0% single-pass detection rate across 9+ validated sessions despite targeted countermeasures. To reliably detect these, enable ensemble_enabled=true for a second independent audit pass with union-merge."
 variables[15]:
   - name: target_submodule
     type: string

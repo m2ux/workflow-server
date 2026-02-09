@@ -11,13 +11,12 @@ skills:
   primary: audit-execution
 required: true
 estimatedTime: 30-60m
-notes[6]:
+notes[5]:
   - "This agent's role is to REFUTE safety claims, not confirm them"
   - "Focus on §3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these checks are most susceptible to false PASSes"
   - "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? Are call_addresses filtered? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."
   - "A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'"
   - "Output CONFIRMED only when ALL decomposed properties are verified with code citations"
-  - "CONTAMINATION GUARD: DO NOT read, open, fetch, or query any reference audit report or prior gap analysis. The adversarial agent must verify PASS claims using ONLY the source code — never by checking whether a professional auditor found the same issue."
 entryActions[1]{action,message}:
   log,Starting adversarial verification of PASS items
 steps[5]:

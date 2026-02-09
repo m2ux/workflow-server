@@ -14,14 +14,12 @@ skills:
     - artifact-management
 required: true
 estimatedTime: 5-15m
-notes[7]:
+notes[5]:
   - "The target submodule MUST be specified in the initial request — if not provided, fail with an error describing the required format"
   - "The target commit MUST be specified or default to the submodule's current HEAD"
   - "The submodule must be checked out at the exact target commit before any analysis"
   - "cargo audit and cargo deny are best-effort — the fallback in §2.2 handles unavailability"
   - "The planning folder naming pattern must match existing audit folders (YYYY-MM-DD-NN-{name})"
-  - "CONTAMINATION GUARD: If the user mentions a reference report (e.g., a professional audit PDF), acknowledge it but DO NOT read, open, fetch, search, or query the file. Record the file path in reference_report_path and set has_reference_report=true for use in Phase 5. The reference report is structurally quarantined until the gap-analysis activity."
-  - "CONTAMINATION GUARD: DO NOT read any prior gap analysis documents, prior audit session findings, or any file whose name contains 'gap-analysis', 'least-authority', or references a professional audit report. These contain the answers the workflow is trying to independently discover."
 entryActions[1]{action,message}:
   log,Starting security audit scope setup
 steps[8]:
