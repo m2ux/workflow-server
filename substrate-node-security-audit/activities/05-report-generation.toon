@@ -21,7 +21,7 @@ notes[5]:
   - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation. The reference_report_path was recorded at scope-setup but must NOT be loaded until gap-analysis."
 entryActions[1]{action,message}:
   log,Starting report generation — consolidating findings from all phases
-steps[7]:
+steps[8]:
   - id: merge-findings
     name: Merge All Findings
     description: "Combine primary audit findings, adversarial verification refutations, and any trace agent findings into a single list."
@@ -35,12 +35,16 @@ steps[7]:
   - id: severity-crosscheck
     name: Severity Cross-Check
     description: "For each finding with Impact >= 3 (node availability or consensus impact), re-evaluate Feasibility from the attacker's perspective: what is the minimum capability needed to trigger this condition? If the answer is 'any network participant' or 'any RPC client', Feasibility is at least 3. If the condition occurs under normal operation (pruning, routine block production), Feasibility is 4. Compare against calibration examples in the severity-scoring skill."
+  - id: severity-bias-correction
+    name: Apply Severity Calibration Bias Correction
+    description: "Apply the two systematic bias corrections identified across 8 validated sessions: (1) UNDER-RATING CHECK: For every finding rated Medium that affects a consensus-critical data path through infrastructure (database connections, pool sharing, config invariants, SSL/TLS), re-evaluate whether F should be >= 3 (infrastructure routinely accessible to operators/pipelines). If so, the finding is High. (2) OVER-RATING CHECK: For every finding rated High that is triggered only by operator-provided invalid configuration (malformed chain spec, unsupported keystore type, InMemory database in production), re-evaluate whether F should be 2 (requires privileged misconfiguration). If so, the finding is Medium."
   - id: coverage-gate
     name: Verify Coverage Gate
     description: "Check that every .rs file >200 lines in priority-1/2 crates was read by at least one agent (§5.14). If any file was missed, flag as a coverage gap in the report."
   - id: scratchpad-elevation
-    name: Verify Scratchpad Elevation
-    description: "Check that every FAIL item from every scratchpad has a corresponding numbered finding (§5.12). Promote any orphaned FAILs."
+    name: "Verify Scratchpad Elevation (HARD GATE)"
+    required: true
+    description: "HARD GATE — Cross-check ALL agent outputs for elevation completeness. (1) For every FAIL item in every scratchpad, verify it has a corresponding numbered finding (§5.12). Promote any orphaned FAILs. (2) For every finding identified by ANY sub-agent (Group A-E), verify it appears in the consolidated finding list. Agent findings that were identified but not numbered represent scratchpad elevation failures — the single most common process error (observed in 5/8 validated sessions, causing 1-3 Medium-severity misses per session). (3) Produce an elevation verification table: | Agent | Agent Finding | In Report? | Finding # | — for every finding from every agent. Any 'No' entry must be resolved (either promoted or explicitly merged into another finding with justification)."
   - id: write-report
     name: Write Final Report
     description: "Produce 01-audit-report.md in the planning folder. Include: executive summary, crate inventory, all numbered findings with severity scores, severity distribution table, methodology notes, and coverage gate results."

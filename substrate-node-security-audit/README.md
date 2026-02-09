@@ -24,7 +24,13 @@ This workflow guides the complete lifecycle of a security audit:
 - Anti-anchoring adversarial verification (no findings/severity shared with verifier)
 - Extended coverage gate (file read + panic sweep + late-file re-read + scope completeness)
 - Impact x Feasibility severity scoring with calibration cross-check
-- Based on the Substrate Node Security Audit Template v3 (iteratively improved via gap analysis against professional audit benchmarks)
+- Based on the Substrate Node Security Audit Template v3.1 (iteratively improved via gap analysis against professional audit benchmarks across 8 validated sessions)
+- Group C tracer completion gates (hard gates — all 8 tracer tables must be verified before Wave 2)
+- Scratchpad-to-report elevation verification with mandatory cross-check table
+- Severity calibration bias correction (infrastructure under-rating, operator-error over-rating)
+- Ordered state-write enumeration for flush checks (prevents first-positive-signal false PASS)
+- Two-level input validation protocol (structural + semantic)
+- Per-field event trace completion gates (prevents single-field generalization)
 
 ---
 
@@ -152,6 +158,8 @@ graph LR
 ```
 
 > ★ New in v3: Pagination Loop Tracer addresses the Critical pagination counter gap; Group E covers `util/toolkit/`, `util/upgrader/`, and unassigned files.
+>
+> ★ New in v3.1: All Group C tracers now have hard-gate completion tables that must be verified before Wave 2 dispatch. Missing tables trigger automatic re-dispatch.
 
 ---
 
@@ -200,7 +208,10 @@ graph LR
 | D | 1 | ledger/helpers/ | Toolkit minimum checklist (resource 03) |
 | E | 1 | util/toolkit/, util/upgrader/, unassigned files | Toolkit checklist + §2.7 file reads + §3.9 RNG |
 
-**Checkpoint:** "Primary audit complete. {N} findings, {M} PASS items pending verification. Proceed?"
+**Group C Completion Gate (HARD GATE — new in v3.1):**
+After Wave 1 collection, the orchestrator MUST verify that all 8 Group C tracers produced their mandatory output tables (pool isolation, pagination loop, timestamp source, struct diff, input validation, Ord/PartialOrd, inherent symmetry, genesis consistency). Missing tables trigger re-dispatch. This gate addresses the 59% → 75% efficacy gap observed across 8 validated sessions.
+
+**Checkpoint:** "Primary audit complete. {N} findings, {M} PASS items pending verification. All Group C tables verified. Proceed?"
 
 ---
 
@@ -253,9 +264,10 @@ graph LR
 2. Deduplicate by root cause
 3. Apply Impact x Feasibility severity scoring (resource 02)
 4. Run severity calibration cross-check (I+F < 6 = not Critical, I+F < 5 = not High)
-5. Verify extended coverage gate (§5.14): (a) file-read coverage, (b) panic sweep on consensus files, (c) late-file re-reads on >400-line files, (d) all IN_SCOPE files assigned
-6. Verify scratchpad elevation (§5.12)
-7. Write `01-audit-report.md`
+5. Apply severity bias correction (new in v3.1): re-evaluate infrastructure findings for under-rating and operator-error panics for over-rating
+6. Verify extended coverage gate (§5.14): (a) file-read coverage, (b) panic sweep on consensus files, (c) late-file re-reads on >400-line files, (d) all IN_SCOPE files assigned
+7. Verify scratchpad elevation (HARD GATE — strengthened in v3.1): produce elevation verification table cross-checking every agent finding against the consolidated report
+8. Write `01-audit-report.md`
 
 **Checkpoint:** "Report generated: {N} findings. Coverage: {status}. Finalize?"
 

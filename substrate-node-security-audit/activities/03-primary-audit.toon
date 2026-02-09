@@ -25,7 +25,7 @@ notes[11]:
   - "CONTAMINATION GUARD: DO NOT read, open, fetch, or query any reference audit report, prior gap analysis, or professional audit findings. Sub-agent prompts MUST NOT include content from reference reports. All findings must be independently derived from the source code."
 entryActions[1]{action,message}:
   log,Starting primary audit — two-wave multi-agent dispatch
-steps[10]:
+steps[11]:
   - id: dispatch-wave-1-group-a
     name: "Wave 1: Dispatch Group A — Priority-1 Crate Deep Review"
     description: "Spawn one sub-agent per priority-1 crate. Each receives: crate path, the relevant §3 checklist sections from the audit prompt template (template_path), function registry entries, invariant extraction requirement (§5.15), in_scope/out_of_scope paths, ANTI-ANCHORING instructions, and COMPLETION GATE requirement. The orchestrator MUST include the template's §3 checklist content and §5 execution requirements in each sub-agent's prompt — sub-agents do not load the template themselves."
@@ -38,6 +38,10 @@ steps[10]:
   - id: collect-wave-1
     name: Collect Wave 1 Results
     description: "Wait for all Wave 1 sub-agents to return. Collect findings lists and scratchpads. Identify any coverage gaps in priority-1 crates."
+  - id: verify-group-c-completion-gates
+    name: "Verify Group C Tracer Completion Gates (HARD GATE)"
+    required: true
+    description: "HARD GATE: Verify that EVERY Group C tracer produced its mandatory output table. Check: (1) connection pool tracer → pool creation/clone/consumer table, (2) pagination loop tracer → three-layer variable/iteration/termination table, (3) timestamp source tracer → three-layer origin/propagation/consumption table, (4) struct diff agent → per-pallet event-vs-storage field table, (5) input validation tracer → per-input-type two-level structural/semantic table, (6) Ord/PartialOrd verifier → per-impl field coverage table, (7) inherent symmetry tracer → side-by-side provider tuple comparison, (8) genesis consistency tracer → StorageInit construction site table. If ANY table is missing, re-dispatch the tracer before proceeding. A missing table is a coverage gap — the audit cannot proceed to Wave 2 without all 8 tables. In 8 validated sessions, the delta between 59% and 75% overlap was entirely explained by whether these tracers executed and produced tables."
   - id: dispatch-wave-2-group-a
     name: "Wave 2: Dispatch Group A — Priority-2 Crate Deep Review"
     description: "Spawn sub-agents for remaining priority-2 crates not covered in Wave 1. Apply the same ANTI-ANCHORING and COMPLETION GATE requirements."
