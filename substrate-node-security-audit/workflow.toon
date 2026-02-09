@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.6.0
+version: 4.7.0
 title: Security Audit Workflow
 description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, and per-function toolkit matrices."
 author: m2ux
@@ -8,7 +8,7 @@ tags[3]:
   - security
   - audit
   - workflow
-rules[22]:
+rules[24]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
   - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions. The agent proceeds through all phases autonomously."
@@ -30,7 +30,9 @@ rules[22]:
   - "MANDATORY TABLE AUTO-ELEVATION (v4.6): After collecting Group A results and before structured-merge, the orchestrator scans every mandatory table for cells marked FAIL, DIFF, Missing, or No. Each such cell is automatically promoted to the merge table as a finding. The sub-agent is NOT responsible for elevation — the orchestrator is."
   - "DEFENSE-IN-DEPTH VALIDATION (v4.6): For §3.6 input validation, a PASS requires evidence of validation at the consumption layer (pallet), not just the production layer (data source/IDP). Pallet-level validation or typed wrappers guaranteeing validity are required."
   - "MANDATORY WEIGHTS.RS READ (v4.6): For every pallet with on_initialize/on_finalize hooks, the reviewing sub-agent MUST read weights.rs. The §3.1 check is INVALID without reading the WeightInfo implementation. The orchestrator MUST include weights.rs in supplementary files for pallet agents."
-  - "ENSEMBLE TARGETED BLIND-SPOTS (v4.6): The ensemble pass agent must verify historically high false-PASS items FIRST: (1) §3.1 weight accounting via weights.rs, (2) §3.3 event filtering across ALL event construction sites, (3) §3.2 pagination first-iteration behavior, (4) §2.10 serialization function-name pairing table."
+  - "ENSEMBLE TARGETED BLIND-SPOTS (v4.7): The ensemble pass agent must verify historically high false-PASS items FIRST: (1) §3.1 weight accounting via weights.rs, (2) §3.3 event filtering across ALL event construction sites, (3) §3.2 pagination first-iteration behavior, (4) §2.10 serialization function-name pairing table, (5) §3.10 timestamp source in cross-chain pallets, (6) §3.4 VerifierCIDP recomputation, (7) §3.14 system transaction type exhaustiveness, (8) Check 15 SSL/TLS mode, (9) Check 16 host function feature divergence."
+  - "CROSS-CHAIN TIMESTAMP DEFAULT-FAIL (v4.7): Any pallet identified during reconnaissance as processing external-chain data (native token observation, bridge, mainchain follower) has a DEFAULT-FAIL on the §3.10 timestamp check. The reviewing agent must produce evidence that pallet_timestamp is NOT used for cross-chain event attribution to achieve PASS. This rule overrides the general §3.10 assessment framework for cross-chain pallets specifically. The orchestrator MUST verify this during mandatory table checking — if the cross-chain pallet agent marks §3.10 as PASS, the orchestrator requires the specific evidence string before accepting."
+  - "CHECKLIST-TO-PROMPT COVERAGE GATE (v4.7): The orchestrator MUST verify that every numbered §3 checklist item (§3.1 through §3.14, including sub-items like §3.14's system transaction type exhaustiveness check) is explicitly represented in at least one dispatched sub-agent's context. A checklist item that exists in the audit template but is not reinforced in any agent's dispatch prompt has a high probability of being skipped. This gate catches the pattern observed in Session 17 where §3.14's system transaction type exhaustiveness was in the template but absent from the A2 agent's prompt."
 variables[18]:
   - name: target_submodule
     type: string
