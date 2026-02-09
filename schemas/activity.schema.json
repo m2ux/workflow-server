@@ -392,12 +392,12 @@
           "pattern": "^\\d+(-\\d+)?\\s*(m|min|h|hr|hours?|d|days?)?$",
           "description": "Estimated time to complete (e.g., '10-20m', '1h')"
         },
-        "notes": {
+        "rules": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Additional notes or caveats"
+          "description": "Activity-level rules and constraints that agents must follow"
         },
         "modeOverrides": {
           "type": "object",
@@ -409,12 +409,12 @@
                 "type": "string",
                 "description": "Mode-specific activity description"
               },
-              "notes": {
+              "rules": {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Mode-specific notes"
+                "description": "Mode-specific rules and constraints"
               },
               "steps": {
                 "type": "array",
