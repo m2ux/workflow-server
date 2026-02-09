@@ -1,0 +1,63 @@
+id: sub-crate-review
+version: 1.0.0
+name: "Sub-Agent: Crate Deep Review"
+description: "Workflow for Group A sub-agents. Executes an 8-step structured crate review with verifiable outputs at each stage. Each step defines a REQUIRED OUTPUT that must be produced before proceeding. The sub-agent loads this activity via get_workflow_activity and follows it sequentially."
+problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
+recognition[3]:
+  - crate deep review
+  - group a sub-agent
+  - checklist review
+skills:
+  primary: sub-agent-execution
+required: false
+estimatedTime: 20-40m
+
+notes[5]:
+  - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
+  - "The sub-agent receives context variables: crate_path, checklist_sections, function_registry, supplementary_files, in_scope, out_of_scope"
+  - "Every step defines a REQUIRED OUTPUT. The agent must produce this output before proceeding to the next step."
+  - "Steps 5 and 6 contain self-verification requirements — the agent must list what it produced and what it marked N/A"
+  - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
+steps[8]:
+  - id: read-all-files
+    name: Read All Crate Files
+    required: true
+    description: "Read every .rs file in the assigned crate path, including files in subdirectories (versions/, common/, api/, internal/, impl/). Also read any supplementary cross-crate files provided by the orchestrator. REQUIRED OUTPUT: A file manifest listing every file read with its line count. Format: | File | Lines | Read? |"
+  - id: build-function-registry
+    name: Build Function Registry
+    required: true
+    description: "For every file read, enumerate: (1) pallet hooks (on_initialize, on_finalize, on_idle, offchain_worker), (2) ProvideInherent methods (create_inherent, check_inherent, is_inherent_required), (3) #[pallet::call] extrinsics, (4) public functions and trait implementations, (5) StorageMap/StorageValue/StorageDoubleMap declarations, (6) event types (Event enum variants). REQUIRED OUTPUT: A function registry table. Format: | Function | File:Line | Type (hook/extrinsic/public/storage/event) | Priority |"
+  - id: extract-invariants
+    name: Extract Invariants for Priority-1 Functions
+    required: true
+    description: "For each priority-1 function in the registry, list: (a) Preconditions — what must be true about inputs (e.g., cursor must be monotonic, address must be valid Fr element); (b) Postconditions — what must be true after execution (e.g., storage write followed by flush, insert paired with future remove); (c) Cross-function invariants — what must hold between this function and its inverse (e.g., handle_create inserts → handle_spend must remove); (d) Data source invariants — what must be true about external data consumed (e.g., timestamps from Cardano must use Cardano block time). REQUIRED OUTPUT: An invariant table. Format: | Function | Invariant | Expected Enforcement | Found? | Evidence |"
+  - id: apply-checklist
+    name: Apply §3 Checklist Items
+    required: true
+    description: "For EACH numbered §3 checklist item (§3.1 through §3.14), evaluate applicability to this crate and produce a verdict: PASS (with code citation), FAIL (becomes a finding), or NA (with justification). Every PASS must cite specific code — bare PASSes are invalid. REQUIRED OUTPUT: A checklist evaluation table with one row per §3 item. Format: | §3 Item | Verdict | Evidence/Citation | Finding ID (if FAIL) |"
+  - id: produce-required-tables
+    name: Produce Mandatory Analysis Tables
+    required: true
+    description: "Generate the following tables where applicable to this crate. For each table, either produce it or state 'N/A — [reason]' with a specific justification. (1) Per-field event trace table (§3.3): For every event constructor involving partial success, trace each collection field to its population source and determine whether it filters by outcome. (2) Struct diff table (§3.3): For every pallet that emits events with associated storage types, compare event fields vs storage fields. (3) Cross-layer verification matrix (§3.2, §3.10): For pagination and timestamp checks, produce the three-layer table (data source / IDP / pallet). Use supplementary cross-crate files provided by the orchestrator. (4) Two-level input validation table (§3.6): For each external input type, verify both structural (Level 1) and semantic (Level 2) validation. REQUIRED OUTPUT: Self-verification list: | Table | Produced? | Location/Justification |"
+  - id: cross-function-comparison
+    name: Cross-Function Invariant Comparison
+    required: true
+    description: "For each StorageMap/StorageDoubleMap in this crate: (1) list every function that calls insert()/push()/append() on it; (2) list every function that calls remove()/take() on it; (3) for each insert caller, verify there is a corresponding remove caller on the inverse lifecycle event; (4) for pairs of functions that operate on the same storage (e.g., handle_create and handle_redemption_create), verify they maintain the same invariants — if one inserts into UtxoOwners, the other should too under the same conditions. REQUIRED OUTPUT: A cross-function invariant table. Format: | StorageMap | insert() Callers | remove() Callers | Paired? | Cross-function Consistent? |"
+  - id: verify-completeness
+    name: Verify Completeness
+    required: true
+    description: "Self-verification step. (1) Check that every §3 item in the checklist evaluation table has a verdict — list any gaps. (2) Check that every FAIL has a corresponding finding ID. (3) Check that every mandatory table in step 5 has either been produced or has an N/A justification. (4) Check that the cross-function comparison covered every StorageMap in the crate. REQUIRED OUTPUT: Completeness attestation listing any gaps found and whether they were resolved."
+  - id: format-output
+    name: Format Structured Output
+    required: true
+    description: "Compile all findings, tables, and coverage data into the structured output format defined in resource 04 (sub-agent-output-schema). The output must include: agent_id, activity_followed ('sub-crate-review'), steps_completed (list of all 8 step IDs), findings (structured list), checklist_coverage (per-§3-item verdicts), mandatory_tables (all produced tables or null with justification), and reconnaissance_leads (observations that are not formal findings but should be reviewed by the orchestrator). REQUIRED OUTPUT: Structured JSON conforming to the output schema."
+outcome[4]:
+  - Every .rs file in the crate read and registered
+  - Every §3 checklist item evaluated with evidence
+  - Mandatory analysis tables produced or explicitly justified as N/A
+  - Cross-function invariants verified for all StorageMap operations
+context_to_preserve[4]:
+  - findings - Structured findings list
+  - checklist_coverage - Per-item verdicts
+  - mandatory_tables - All produced tables
+  - reconnaissance_leads - Observations for orchestrator review

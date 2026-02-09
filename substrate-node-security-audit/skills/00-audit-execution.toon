@@ -53,17 +53,15 @@ tools:
     usage: Use generalPurpose for deep review agents; explore for quick searches
 
 agent_dispatch:
+  workflow_directed: true
+  description: "Sub-agents are directed to follow workflow activities via the workflow-server MCP. Each sub-agent bootstraps the workflow-server, loads its assigned activity, and follows the activity's steps sequentially with verifiable outputs."
+  bootstrap_instruction: "Each sub-agent's Task prompt MUST include: 'You have access to the workflow-server MCP tools. Before starting, call get_rules() then call get_workflow_activity({ workflow_id: \"substrate-node-security-audit\", activity_id: \"<activity-id>\" }). Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04 (sub-agent-output-schema).'"
   group_a:
     description: Crate-level deep review agents
     count: One per priority-1/2 crate
-    receives: "Crate path, relevant §3 checklist sections from the template, function registry entries, invariant extraction requirement, in_scope/out_of_scope paths, supplementary cross-crate files for cross-boundary checks"
-    must_do[6]:
-      - "Load the audit template content provided by the orchestrator (sub-agents do NOT load the template independently)"
-      - Read every .rs file in the crate including large submodules
-      - Perform invariant extraction for every priority-1 function (§5.15)
-      - "Apply every applicable §3 check with evidence-based PASS/FAIL/NA — no deferral markers, all checks are this agent's responsibility"
-      - "For checks requiring cross-crate context (§3.2 pagination, §3.4 inherent symmetry, §3.8 pool isolation, §3.10 timestamp source), use the supplementary files provided by the orchestrator"
-      - "Return structured findings list with fields: id, file, line, title, severity, checklist_item, evidence"
+    activity: sub-crate-review
+    skill: sub-agent-execution
+    receives: "Crate path, relevant §3 checklist sections from the template, function registry entries, in_scope/out_of_scope paths, supplementary cross-crate files"
     cross_crate_supplements:
       - "NTO pallet agent: include primitives/mainchain-follower/src/data_source/mod.rs, primitives/mainchain-follower/src/idp.rs, primitives/mainchain-follower/src/types.rs"
       - "Node agent: include node/src/inherent_data.rs, node/src/main_chain_follower.rs, node/src/rpc.rs"
@@ -71,22 +69,16 @@ agent_dispatch:
   group_b:
     description: Static analysis and mechanical checks agent
     count: 1
-    receives: "Full in-scope directory set, all §2 grep patterns, mechanical check patterns, storage lifecycle scan instructions"
-    must_do[5]:
-      - "Run every §2 pattern against ALL in-scope directories"
-      - "Run mechanical pattern searches: impl Ord/PartialOrd completeness, take_while/filter_map truncation, Vec::with_capacity size mismatches, StorageInit construction sites, RPC subscription fan-out, pallet_timestamp in cross-chain contexts"
-      - "Run storage lifecycle pairing: for every StorageMap/StorageDoubleMap insert() call, identify the corresponding remove()/take() call. Produce a pairing table. Flag unpaired inserts as finding leads."
-      - "Return categorized hits with triage by reachability, plus storage lifecycle pairing table"
-      - "Return structured findings list with fields: id, file, line, title, severity, checklist_item, evidence"
+    activity: sub-static-analysis
+    skill: sub-agent-execution
+    receives: "Full in-scope directory set, all §2 grep patterns from the template"
   group_d:
     description: Toolkit review agent
     count: 1
     mandatory: true
+    activity: sub-toolkit-review
+    skill: sub-agent-execution
     receives: "ledger/helpers/ and util/toolkit/ paths, toolkit minimum checklist (resource 03)"
-    must_do[3]:
-      - Read all toolkit .rs files
-      - Apply the 7-item mandatory toolkit checklist to every function — not just representative functions
-      - "Return structured findings list with fields: id, file, line, title, severity, checklist_item, evidence"
 
 state:
   track[6]:
