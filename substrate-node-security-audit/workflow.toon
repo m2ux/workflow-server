@@ -8,32 +8,28 @@ tags[3]:
   - security
   - audit
   - workflow
-rules[24]:
+rules[20]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
-  - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions. The agent proceeds through all phases autonomously."
+  - "PREREQUISITE: Load resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
+  - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions."
   - "The audit prompt template defines the checklist — the workflow defines the execution phases"
-  - "Severity scoring MUST use the Impact x Feasibility rubric with calibration example comparison, not intuitive assignment"
+  - "Severity scoring MUST use the Impact x Feasibility rubric with calibration examples from the target profile, not intuitive assignment"
   - "Every PASS in the scratchpad MUST cite specific code — bare PASSes are invalid"
-  - "Every agent finding MUST appear in the structured merge table and map to a report finding number — the merge table is the elevation verification"
+  - "Every agent finding MUST appear in the structured merge table and map to a report finding number"
   - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
-  - "CONTAMINATION PREVENTION: A reference report (professional audit) must NEVER be loaded, read, opened, fetched, searched, queried, or discussed before Phase 5 (gap-analysis). The reference_report_path is recorded at scope-setup but NOT loaded until gap-analysis. If the user mentions a reference report in their initial request, acknowledge it, record the path, and defer loading to Phase 5. This rule also applies to prior gap analysis files from earlier audit sessions."
-  - "TOOLKIT DEPTH LIMITATION: Findings in ledger/helpers/ and util/toolkit/ at the per-function level (e.g., AM, AO, AQ patterns) have a 0% single-pass detection rate across 9+ validated sessions despite targeted countermeasures. To reliably detect these, enable ensemble_enabled=true for a second independent audit pass with union-merge."
-  - "MECHANICAL PATTERN COVERAGE (v4.3): Group B mechanical checks #8 (serialization mismatch) and #12 (serialization deep scan) MUST cover ledger internal API files (ledger/src/versions/*/api/*.rs). Check #11 (empty-vs-absent) MUST cover all state query functions. Check #10 (SmallRng) MUST trace each hit to its usage context (block hash, nonce, key). Zero hits on serialization checks in the ledger directory is a POSSIBLE FALSE NEGATIVE."
-  - "ORCHESTRATOR ROLE DISCIPLINE: The orchestrator MAY read files during reconnaissance (§1.2) to build the crate map and function registry. The orchestrator MUST NOT apply §3 checklist items, produce trace tables, or record findings from its own file reads. These are Group A responsibilities. If the orchestrator discovers a potential issue during reconnaissance, it records it as a 'reconnaissance lead' and assigns it to the relevant Group A agent for verification. Violating this rule by performing crate-level review as the orchestrator instead of dispatching Group A agents is the primary cause of coverage regression."
-  - "COVERAGE GATE IS A HARD STOP: The report-generation phase MUST NOT begin until every .rs file >200 lines in priority-1/2 crates has been read by at least one sub-agent. If the coverage gate fails after primary-audit, the orchestrator MUST dispatch targeted follow-up agents to read uncovered files BEFORE proceeding. Deferring unread files to the ensemble pass is not acceptable — the ensemble pass is for depth, not for primary coverage."
-  - "WAVE-BASED GROUP A DISPATCH: When the platform limits concurrent sub-agents (e.g., max 4), dispatch Group A agents in waves. Wave 1: highest-priority crates (NTO pallet, midnight pallet + ledger, node binary) plus Group B. Wave 2: remaining crates (runtime, mainchain-follower primitives, upgrade pallet) plus Group D. The orchestrator waits for Wave 1 to return before dispatching Wave 2. Each wave MUST include at least one Group A agent. Dispatching only Groups B and D without any Group A agents violates the workflow architecture."
-  - "MANDATORY OUTPUT VERIFICATION: After collecting sub-agent results, the orchestrator MUST verify that each Group A agent produced the required tables from sub-crate-review steps 4-6: (a) §3 checklist evaluation table, (b) per-field event trace table (§3.3) or explicit N/A, (c) cross-function invariant table, (d) cross-layer verification matrix for pagination and timestamp checks. If any required table is missing, dispatch a targeted follow-up agent for that specific check. Prose summaries without structured tables are insufficient."
-  - "DISPATCH COMPLETENESS GATE (v4.4): Every crate assigned to a Group A agent during reconnaissance MUST have a corresponding dispatched sub-agent that returns structured output. Reconnaissance sub-agents and orchestrator file reads do NOT satisfy this requirement — only §3-applying Group A sub-agents count. If agents_dispatched < agents_assigned after all waves complete, this is a HARD STOP. The orchestrator must dispatch the missing agents before proceeding to structured-merge. Skipping Wave 2 and using reconnaissance data as a substitute causes significant coverage regression. Group D dispatch is equally mandatory — reconnaissance data about toolkit code does not substitute for the per-function checklist matrix."
-  - "ENSEMBLE EXECUTION VERIFICATION (v4.4): When ensemble_enabled=true, the ensemble-pass activity MUST produce a verifiable artifact (second-pass-findings.md or second-pass-findings.json) in the planning folder. Declaring the ensemble phase complete without running an independent second audit pass violates the workflow. The artifact's existence is the verification mechanism."
-  - "CONFIGURATION INVARIANT COVERAGE (v4.5): The reconnaissance phase must enumerate consensus-critical configuration structs (e.g., CreateInherentDataConfig, ScSlotConfig, MainchainEpochConfig) and verify constructor invariant validation. The §3.4 consensus symmetry check applies to both inherent provider tuples AND the configuration objects that feed them. Missing constructor validation of mathematical invariants (e.g., epoch_duration % slot_duration == 0) is a finding."
-  - "MANDATORY TABLE AUTO-ELEVATION (v4.6): After collecting Group A results and before structured-merge, the orchestrator scans every mandatory table for cells marked FAIL, DIFF, Missing, or No. Each such cell is automatically promoted to the merge table as a finding. The sub-agent is NOT responsible for elevation — the orchestrator is."
-  - "DEFENSE-IN-DEPTH VALIDATION (v4.6): For §3.6 input validation, a PASS requires evidence of validation at the consumption layer (pallet), not just the production layer (data source/IDP). Pallet-level validation or typed wrappers guaranteeing validity are required."
-  - "MANDATORY WEIGHTS.RS READ (v4.6): For every pallet with on_initialize/on_finalize hooks, the reviewing sub-agent MUST read weights.rs. The §3.1 check is INVALID without reading the WeightInfo implementation. The orchestrator MUST include weights.rs in supplementary files for pallet agents."
-  - "ENSEMBLE TARGETED BLIND-SPOTS (v4.7): The ensemble pass agent must verify historically high false-PASS items FIRST: (1) §3.1 weight accounting via weights.rs, (2) §3.3 event filtering across ALL event construction sites, (3) §3.2 pagination first-iteration behavior, (4) §2.10 serialization function-name pairing table, (5) §3.10 timestamp source in cross-chain pallets, (6) §3.4 VerifierCIDP recomputation, (7) §3.14 system transaction type exhaustiveness, (8) Check 15 SSL/TLS mode, (9) Check 16 host function feature divergence."
-  - "CROSS-CHAIN TIMESTAMP DEFAULT-FAIL (v4.7): Any pallet identified during reconnaissance as processing external-chain data (native token observation, bridge, mainchain follower) has a DEFAULT-FAIL on the §3.10 timestamp check. The reviewing agent must produce evidence that pallet_timestamp is NOT used for cross-chain event attribution to achieve PASS. This rule overrides the general §3.10 assessment framework for cross-chain pallets specifically. The orchestrator MUST verify this during mandatory table checking — if the cross-chain pallet agent marks §3.10 as PASS, the orchestrator requires the specific evidence string before accepting."
-  - "CHECKLIST-TO-PROMPT COVERAGE GATE (v4.7): The orchestrator MUST verify that every numbered §3 checklist item (§3.1 through §3.14, including sub-items like §3.14's system transaction type exhaustiveness check) is explicitly represented in at least one dispatched sub-agent's context. A checklist item that exists in the audit template but is not reinforced in any agent's dispatch prompt has a high probability of being skipped. This gate catches the pattern observed in Session 17 where §3.14's system transaction type exhaustiveness was in the template but absent from the A2 agent's prompt."
-variables[18]:
+  - "CONTAMINATION PREVENTION: A reference report must NEVER be loaded or discussed before Phase 5 (gap-analysis). Record the path at scope-setup; defer loading."
+  - "TOOLKIT DEPTH LIMITATION: Per-function toolkit findings have low single-pass detection rates. Enable ensemble_enabled=true for reliable detection."
+  - "ORCHESTRATOR ROLE DISCIPLINE: The orchestrator coordinates but MUST NOT apply §3 checklist items or produce trace tables. Potential issues from reconnaissance are recorded as leads and assigned to Group A agents."
+  - "COVERAGE GATE IS A HARD STOP: Report generation MUST NOT begin until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent."
+  - "WAVE-BASED GROUP A DISPATCH: Dispatch agents in waves per the target profile assignments. Each wave MUST include at least one Group A agent. The orchestrator waits for each wave before dispatching the next."
+  - "DISPATCH COMPLETENESS GATE: agents_dispatched MUST equal agents_assigned. Reconnaissance data does NOT substitute for §3-applying sub-agents. This is a HARD STOP."
+  - "MANDATORY TABLE AUTO-ELEVATION: The orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes each to a finding. The sub-agent is NOT responsible for elevation."
+  - "DEFENSE-IN-DEPTH VALIDATION: For §3.6 input validation, PASS requires evidence at the consumption layer (pallet), not just the production layer."
+  - "MANDATORY WEIGHTS.RS READ: For every pallet with hooks, the sub-agent MUST read weights.rs. The orchestrator includes it in supplementary files."
+  - "ENSEMBLE TARGETED BLIND-SPOTS: The ensemble agent verifies items 1-4 (universal) plus target-specific items from the target profile FIRST, before general review."
+  - "CHECKLIST-TO-PROMPT COVERAGE GATE: The orchestrator verifies every §3 checklist item (§3.1-§3.14) is explicitly represented in at least one dispatched agent's context."
+variables[17]:
   - name: target_submodule
     type: string
     description: "Path to the submodule being audited (e.g., midnight-node)"
@@ -75,10 +71,6 @@ variables[18]:
   - name: primary_audit_complete
     type: boolean
     description: "Phase 1b gate — primary audit finished"
-    defaultValue: false
-  - name: panic_sweep_complete
-    type: boolean
-    description: "Phase 1.5 gate — exhaustive panic sweep finished"
     defaultValue: false
   - name: adversarial_complete
     type: boolean
