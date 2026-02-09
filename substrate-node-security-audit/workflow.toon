@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.5.0
+version: 4.6.0
 title: Security Audit Workflow
 description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, and per-function toolkit matrices."
 author: m2ux
@@ -8,7 +8,7 @@ tags[3]:
   - security
   - audit
   - workflow
-rules[18]:
+rules[22]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
   - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions. The agent proceeds through all phases autonomously."
@@ -27,6 +27,10 @@ rules[18]:
   - "DISPATCH COMPLETENESS GATE (v4.4): Every crate assigned to a Group A agent during reconnaissance MUST have a corresponding dispatched sub-agent that returns structured output. Reconnaissance sub-agents and orchestrator file reads do NOT satisfy this requirement — only §3-applying Group A sub-agents count. If agents_dispatched < agents_assigned after all waves complete, this is a HARD STOP. The orchestrator must dispatch the missing agents before proceeding to structured-merge. Skipping Wave 2 and using reconnaissance data as a substitute causes significant coverage regression. Group D dispatch is equally mandatory — reconnaissance data about toolkit code does not substitute for the per-function checklist matrix."
   - "ENSEMBLE EXECUTION VERIFICATION (v4.4): When ensemble_enabled=true, the ensemble-pass activity MUST produce a verifiable artifact (second-pass-findings.md or second-pass-findings.json) in the planning folder. Declaring the ensemble phase complete without running an independent second audit pass violates the workflow. The artifact's existence is the verification mechanism."
   - "CONFIGURATION INVARIANT COVERAGE (v4.5): The reconnaissance phase must enumerate consensus-critical configuration structs (e.g., CreateInherentDataConfig, ScSlotConfig, MainchainEpochConfig) and verify constructor invariant validation. The §3.4 consensus symmetry check applies to both inherent provider tuples AND the configuration objects that feed them. Missing constructor validation of mathematical invariants (e.g., epoch_duration % slot_duration == 0) is a finding."
+  - "MANDATORY TABLE AUTO-ELEVATION (v4.6): After collecting Group A results and before structured-merge, the orchestrator scans every mandatory table for cells marked FAIL, DIFF, Missing, or No. Each such cell is automatically promoted to the merge table as a finding. The sub-agent is NOT responsible for elevation — the orchestrator is."
+  - "DEFENSE-IN-DEPTH VALIDATION (v4.6): For §3.6 input validation, a PASS requires evidence of validation at the consumption layer (pallet), not just the production layer (data source/IDP). Pallet-level validation or typed wrappers guaranteeing validity are required."
+  - "MANDATORY WEIGHTS.RS READ (v4.6): For every pallet with on_initialize/on_finalize hooks, the reviewing sub-agent MUST read weights.rs. The §3.1 check is INVALID without reading the WeightInfo implementation. The orchestrator MUST include weights.rs in supplementary files for pallet agents."
+  - "ENSEMBLE TARGETED BLIND-SPOTS (v4.6): The ensemble pass agent must verify historically high false-PASS items FIRST: (1) §3.1 weight accounting via weights.rs, (2) §3.3 event filtering across ALL event construction sites, (3) §3.2 pagination first-iteration behavior, (4) §2.10 serialization function-name pairing table."
 variables[18]:
   - name: target_submodule
     type: string

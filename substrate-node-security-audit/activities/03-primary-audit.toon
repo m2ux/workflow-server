@@ -1,5 +1,5 @@
 id: primary-audit
-version: 4.5.0
+version: 4.6.0
 name: Primary Audit
 description: "Execute the multi-agent audit using the template via concurrent dispatch. Group A (one agent per priority-1/2 crate) applies the full §3 checklist including cross-crate checks. Group B runs all §2 static analysis patterns plus mechanical pattern searches and storage lifecycle scanning. Group D reviews toolkit code with the mandatory 7-item checklist. All groups dispatch concurrently. Consolidation uses structured merge with mandatory elevation table."
 problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while the static analysis agent catches mechanical patterns across the full scope.
@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 60-120m
-rules[18]:
+rules[21]:
   - "The orchestrator coordinates but does NOT perform manual review itself — reading files during reconnaissance to build the crate map is permitted, but applying §3 checklist items or producing trace tables is Group A work"
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "For cross-crate checks (§3.2 pagination, §3.4 inherent symmetry, §3.8 pool isolation, §3.10 timestamp source), the orchestrator includes supplementary files from other crates in the Group A agent's prompt"
@@ -30,9 +30,12 @@ rules[18]:
   - "CROSS-CHAIN TIMESTAMP SCOPE (v4.4): The §3.10 cross-chain timestamp check MUST be applied to any pallet that processes inherent data from an external chain. This explicitly includes the NTO pallet (which processes Cardano observations). The reviewing agent must search for literal 'pallet_timestamp' usage and verify the timestamp is not used as the event timestamp for cross-chain payloads."
   - "INHERENT ASYMMETRY CLASSIFICATION (v4.4): Every inherent provider present in the proposer tuple but absent from the verifier tuple MUST be classified as a finding UNLESS the reviewing agent cites specific runtime check_inherent code that provides equivalent validation through a different mechanism. 'Intentional by design' is not a valid PASS justification without citing the compensation code path."
   - "CONFIGURATION INVARIANT SCOPE (v4.5): The §3.4 consensus symmetry check applies to both (a) inherent provider tuples (proposer vs verifier) and (b) off-chain configuration structs that feed inherent data creation. The node agent (A3) must trace every struct used in ProposalCIDP and VerifierCIDP constructors and verify invariant validation at construction time. Missing constructor validation of mathematical invariants (e.g., epoch_duration % slot_duration == 0) is a finding."
+  - "MANDATORY TABLE AUTO-ELEVATION (v4.6): After collecting Group A results and before structured-merge, the orchestrator scans every mandatory table (§3.3 event-vs-storage diff, §3.6 two-level validation, §3.2 storage lifecycle pairing) for any cell marked FAIL, DIFF, Missing, or No. Each such cell is AUTOMATICALLY promoted to the merge table as a finding with severity TBD. The sub-agent is NOT responsible for elevation — the orchestrator is. This closes the scratchpad-to-report elevation failure pattern where agents produce correct tables but fail to promote gaps to findings."
+  - "EVENT CONSTRUCTION SITE VERIFICATION (v4.6): For every pallet that calls deposit_event() with data derived from transaction results, the orchestrator verifies that the Group A agent's §3.3 per-field trace table covers ALL event construction sites — specifically the apply_transaction result mapping in the ledger and the export_events function in model.rs, not just the NTO pallet's events. If the trace table covers only one event construction site when multiple exist, dispatch a targeted follow-up agent for §3.3 on the uncovered file."
+  - "HYBRID WAVE DISPATCH (v4.6): Wave 1 keeps individual agents for the top-3 priority crates plus Group B and D. Wave 2 SHOULD combine remaining crates into fewer agents (e.g., runtime + upgrade as one agent, all primitives as one agent) rather than dispatching one agent per minor crate. Combined Wave 2 agents have broader cross-cutting context that catches Low-severity findings across crate boundaries. Always include weights.rs in supplementary files for pallet agents and model.rs for ledger agents."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
-steps[10]:
+steps[11]:
   - id: dispatch-wave-1
     name: "Dispatch Wave 1 — Highest-Priority Group A + Group B + Group D"
     required: true
@@ -67,12 +70,17 @@ steps[10]:
     required: true
     skill: verify-sub-agent-output
     description: "Verify the node agent traced all genesis state construction sites. Re-dispatch if incomplete."
+  - id: extract-table-derived-findings
+    name: "Extract Findings from Mandatory Tables (v4.6)"
+    required: true
+    skill: verify-sub-agent-output
+    description: "Scan all mandatory tables (§3.3 event-vs-storage diff, §3.6 two-level validation, §3.2 storage lifecycle pairing) for FAIL/DIFF/Missing cells. Each gap cell is automatically extracted as a finding for inclusion in the merge table. Also verify that event construction site coverage spans ALL event-producing paths (NTO, midnight pallet, model.rs export_events), not just one."
   - id: structured-merge
     name: Structured Merge
     skill: merge-findings
     skill_args:
       merge_strategy: structured-merge
-    description: "Concatenate all agent finding lists into a canonical flat table."
+    description: "Concatenate all agent finding lists AND table-derived findings from extract-table-derived-findings into a canonical flat table."
   - id: dedup-and-map
     name: Deduplicate and Map to Report Findings
     skill: merge-findings

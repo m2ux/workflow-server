@@ -1,5 +1,5 @@
 id: verify-sub-agent-output
-version: 1.1.0
+version: 1.2.0
 capability: "Validate that sub-agent results meet structural completeness requirements, check coverage gates and mandatory output tables, and flag or re-dispatch on failure"
 
 description: "A reusable verification skill for multi-agent workflows. After collecting sub-agent results, this skill defines how to check that each agent's output contains all required tables, covers all expected files, and meets structural completeness criteria. Missing outputs are flagged for targeted re-dispatch."
@@ -39,9 +39,15 @@ protocol:
     - id: check-cross-chain-timestamp
       name: Verify Cross-Chain Timestamp Checks (v4.4)
       description: "For every Group A agent reviewing a pallet that processes inherent data from an external chain (specifically: NTO pallet, any bridge pallet), verify the agent's output includes a cross-layer timestamp verification matrix with explicit per-layer verdicts. If the agent marked §3.10 as PASS without producing this matrix, flag for re-dispatch."
+    - id: extract-table-findings
+      name: Extract Findings from Mandatory Tables (v4.6)
+      description: "Scan every mandatory table produced by Group A agents (§3.3 event-vs-storage diff, §3.6 two-level validation, §3.2 storage lifecycle pairing) for cells marked FAIL, DIFF, Missing, No, or any semantic gap (e.g., a field present in storage but absent from the event). Each such cell is automatically extracted as a table-derived finding with fields: source_table, cell_description, agent_id, severity=TBD. These extracted findings are passed to the merge-findings skill during structured-merge. The sub-agent who produced the table is NOT responsible for elevation — the orchestrator is. This step removes the elevation decision from the sub-agent context where it competes with other findings for attention."
+    - id: verify-event-construction-site
+      name: Verify Event Construction Site Coverage (v4.6)
+      description: "For every pallet that calls deposit_event() with data derived from transaction results (specifically: the midnight pallet apply_transaction → event construction path), verify that the Group A agent's §3.3 per-field trace table covers the CORRECT event construction site — not just the NTO pallet events but also the ledger's apply_transaction result mapping and runtime model.rs export_events. If the trace table covers only one event construction site when multiple exist, dispatch a targeted follow-up agent for §3.3 on the uncovered file (typically ledger/src/versions/common/mod.rs or runtime/src/model.rs)."
     - id: produce-verification-report
       name: Produce Verification Report
-      description: "Output a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status. For each gap, recommend a targeted follow-up dispatch."
+      description: "Output a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status, table-derived findings from extract-table-findings step, event construction site coverage status. For each gap, recommend a targeted follow-up dispatch."
 
 output:
   description: "Verification report with gap list and re-dispatch recommendations."

@@ -75,6 +75,16 @@ host  |  port  |  database  |  db_name  |  connection_string
 
 **Triage:** For each hit in an error type's `Display` or `Debug` impl, verify whether the field value could expose deployment topology (internal hostnames, port numbers, database names) in logs or RPC error responses. Error types that format connection details aid reconnaissance.
 
+### File I/O Safety (v4.6)
+
+```
+std::fs::read  |  std::fs::read_to_string  |  read_to_end  |  File::open  |  BufReader::new
+```
+
+**Scope:** ALL in-scope paths — not limited to toolkit code. Node configuration loaders, chain spec readers, and genesis file parsers are equally at risk.
+
+**Triage:** For each hit, verify: (a) `is_file()` check before read, (b) size limit before allocation, (c) path cannot resolve to device file, FIFO, or symlink to `/dev/zero`.
+
 ### Serialization Pre-Allocation Mismatch
 
 ```
@@ -114,12 +124,17 @@ Each check extends the grep patterns above with verification logic that goes bey
 
 ### Check 3: Serialization Size/Method Pairing
 
-- **Search:** `Vec::with_capacity(serialized_size`
-- **Verify:** The corresponding serialization call uses the matching size function:
-  - `serialized_size` pairs with `serialize`
-  - `tagged_serialized_size` pairs with `tagged_serialize`
-  - A cross-pairing causes under-allocation and heap reallocation.
-- **FAIL if:** A `serialized_size` preallocation is followed by `tagged_serialize`, or vice versa.
+- **Search:** `Vec::with_capacity` near serialization code (including two-line patterns with intermediate variables)
+- **Verify (MANDATORY PAIRING TABLE v4.6):** For EVERY `Vec::with_capacity(size_variable)` near serialization code:
+  1. Identify the SIZE FUNCTION that computed `size_variable` (trace backward to the assignment)
+  2. Identify the SERIALIZE FUNCTION called after the allocation (trace forward to the write)
+  3. Compare the two function names character by character:
+     - `serialized_size` must pair with `serialize`
+     - `tagged_serialized_size` must pair with `tagged_serialize`
+     - Any cross-pairing → FINDING
+  4. Produce a mandatory pairing table: `| Site | Size Function | Serialize Function | Match? |`
+- **FAIL if:** A `serialized_size` preallocation is followed by `tagged_serialize`, or vice versa. "Correct pre-allocation" without the pairing table is an INVALID PASS.
+- **Note (v4.6):** In Session 16, the agent found the pattern in a two-line form (`let size = serialized_size(value); Vec::with_capacity(size)`) and concluded "correct" without comparing the function names. The pairing table makes function-name comparison mechanical rather than incidental.
 
 ### Check 4: Subscription Fan-Out Limits
 
@@ -183,11 +198,18 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **FAIL if:** Mismatch between estimation and serialization. Zero hits is a POSSIBLE FALSE NEGATIVE — flag for manual review.
 - **Note:** This check overlaps with Check 8 but is scoped specifically to the directory where serialization buffer mismatches are most likely to occur.
 
-### Check 13: Error Type Topology Leakage
+### Check 13: Universal File I/O Safety (v4.6)
+
+- **Search:** `std::fs::read`, `read_to_end`, `read_to_string`, `File::open` in ALL in-scope paths (not limited to toolkit code)
+- **Verify:** For each file-reading site: (a) the path is checked with `is_file()` or equivalent before opening; (b) a size limit is enforced before allocation (`metadata().len() < MAX`); (c) the path origin is validated (not user-controlled without sanitization).
+- **FAIL if:** Any file read occurs without type check AND size limit. Paths from CLI arguments, config files, or chain spec properties are highest priority.
+- **Note:** In Session 16, `Cfg::load_spec` was missed because file I/O safety was treated as a toolkit-only concern. Configuration loaders read arbitrary paths from environment or CLI — they must be checked universally.
+
+### Check 14: Error Type Topology Leakage
 
 - **Search:** `impl Display` and `#[error(` in files containing `Connection`, `Pool`, `Postgres`, `Database`
 - **Verify:** Error format strings do not embed `host`, `port`, or database name fields.
-- **FAIL if:** An error type's Display/Debug formats connection details that would be visible in logs or RPC responses.
+- **FAIL if:** An error type's Display/Debug formats connection details that would be visible in logs or RPC responses. Even when credentials are masked (`***:***`), exposing host/port/db names aids reconnaissance.
 - **Note:** This is a pattern-presence bug — the fix is to redact or omit topology details from error messages while preserving them in structured (non-Display) fields for debugging.
 
 ---
