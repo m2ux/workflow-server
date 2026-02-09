@@ -46,52 +46,18 @@ Every finding must include:
 
 ## Calibration Examples
 
-These examples are derived from validated audit sessions benchmarked against professional audit reports:
-
-| Finding | I | F | Avg | Severity | Key Insight |
-|---------|---|---|-----|----------|-------------|
-| Shared connection pool (5 conns, RPC + consensus) | 4 | 3 | 3.5 | **Critical** | When pool size < consumer count AND RPC consumers share the pool, RPC access (F=3) can exhaust all connections. LA rates Critical. Do not downgrade based on "contention is probabilistic." |
-| Mock data source via env var toggle | 4 | 2 | 3.0 | **Medium** | Requires config control — not Critical |
-| Parent header `unwrap()` in inherent creation | 3 | 4 | 3.5 | **High** | Pruning/reorgs trigger passively — not Low |
-| Feature-gated genesis digest divergence | 4 | 2 | 3.0 | **Medium** | Heterogeneous builds unlikely — not Critical |
-| Fixed-seed RNG 0x42 in treasury minting | 4 | 3 | 3.5 | **High** | Seed is public constant, observation is trivial |
-| Chain spec `unwrap()` on malformed properties | 3 | 3 | 3.0 | **Medium** | Attacker controls config file |
-| Startup panic on chain spec `unwrap()` (pruning/CI) | 3 | 3 | 3.0 | **Medium** | Config file control is routine — CI pipelines, manual edits, distribution channels all produce malformed specs. F >= 3 when any non-attacker path triggers the condition. |
-| Panic on missing parent header (pruning) | 3 | 4 | 3.5 | **High** | Database pruning and reorgs are normal operation — F=4, not F=2. The trigger does not require an attacker. |
+Target-specific calibration examples are in **resource 06 (target-profile)**. Load the target profile during scope-setup and use its severity benchmark table as calibration anchors. If your scoring diverges by 2+ levels from the benchmark, re-evaluate.
 
 ## Common Calibration Errors
 
 ### Over-Rating (AI agent tendency)
 - Rating config toggles as Critical based on worst-case impact, ignoring that exploitation requires privileged access (F=2)
 - Rating feature-flag divergence as Critical when heterogeneous builds are operationally unlikely (F=2)
-- **Toolkit/helper code blast radius (v4.5):** Findings in `ledger/helpers/` and `util/toolkit/` affect local tooling only (wallets, CLI, deployers) unless the toolkit output enters on-chain state. Impact ceiling is I=2 for most toolkit findings. Only elevate to I=3 if the toolkit produces artifacts (transactions, genesis state, signed messages) consumed by the production node. Group D's per-function matrix may produce many FAIL cells — aggregate them by blast radius, not by raw count.
+- **Toolkit/helper code blast radius:** Findings in off-chain tooling (helpers, CLI, deployers) affect local state only unless the output enters on-chain state. Impact ceiling is I=2 for most toolkit findings. Elevate to I=3 only when the toolkit produces artifacts (transactions, genesis state, signed messages) consumed by the production node.
 
 ### Under-Rating (AI agent tendency)
 - Rating RPC-accessible DoS as Medium when exploitation requires only public network access (F=3)
 - Rating availability crashes as Low when the trigger condition occurs under normal operation (F=4)
-- **Connection pool starvation (v4.5):** When `max_connections < number_of_concurrent_consumers` AND at least one consumer is RPC-accessible (F=3), the finding is **at minimum High**. If pool exhaustion blocks consensus-critical paths (inherent data creation, authority selection), it is **Critical**. Do not assess feasibility as "requires sustained load" (F=2) — a single burst of concurrent RPC requests during block production is sufficient.
-
-### Under-Rating Configuration-Triggered Panics (AI agent tendency)
-
-AI agents rate `unwrap()`/`expect()` panics triggered by configuration, chain spec, or database state as Low (F=1-2, "requires config file control or DB corruption"). Professional auditors consistently rate these as Medium or High because:
-
-1. **Chain spec distribution is not privileged.** Chain specs are shared files — CI artifacts, manual edits, operator distribution channels, and genesis ceremony tooling all produce chain specs. A malformed spec is not an exotic attack; it is a routine operational hazard. **F >= 3.**
-
-2. **Database inconsistency is normal operation.** Pruning, reorgs, and incomplete sync are standard conditions, not attacks. A panic triggered by a missing parent header occurs during routine block production after pruning. **F = 4.**
-
-3. **Node startup is not a recovery-safe context.** A panic during startup prevents the node from starting at all. Unlike a runtime panic (which Substrate can sometimes recover from), a startup panic causes a crash loop with no self-healing path.
-
-**Rule of thumb:** If the trigger condition can occur without an attacker (routine ops, config errors, standard DB maintenance), the Feasibility is at least F=3 regardless of whether an attacker *could also* trigger it.
-
-### Under-Rating Operational Hazards (v4.7 — new pattern)
-
-AI agents assess Feasibility based on whether an ATTACKER can trigger the condition, underweighting that the condition occurs ROUTINELY under normal operation. Apply these calibration anchors:
-
-| Finding Pattern | Incorrect F Assessment | Correct F | Why |
-|-----------------|----------------------|-----------|-----|
-| Shared connection pool (N conns, RPC + consensus) | F=2 ("requires sustained load") | **F=3** ("single RPC burst during block production") | A burst of 5 concurrent RPC queries during the 6-second block window is routine, not exotic. If N <= consumer count, starvation is probabilistic, not theoretical. |
-| Incomplete Ord implementation in consensus-sorted collection | F=2 ("requires specific data pattern") | **F=3** ("occurs when two items share the compared field") | In a blockchain processing thousands of items per block, field collisions are statistically expected, not exotic. |
-| Config struct missing mathematical invariant | F=2 ("requires config error") | **F=3** ("config errors are operational hazards") | Config files are distributed artifacts — CI, manual edits, version mismatches, and genesis ceremonies routinely produce non-obvious errors. A missing `epoch % slot == 0` check is not an attack; it's a configuration bug that causes a consensus split. |
-| Startup panic on malformed chain spec property | F=2 ("requires crafted input") | **F=3** ("chain specs from CI/distribution channels") | Same as config errors above. |
-
-**Rule of thumb (v4.7):** If the finding involves a SHARED RESOURCE with concurrent consumers, or a SORTED COLLECTION in consensus, or a CONFIGURATION VALUE without invariant enforcement, Feasibility is AT LEAST F=3 regardless of whether an attacker needs to trigger it. These conditions occur under normal operation.
+- **Connection pool starvation:** When `max_connections < number_of_concurrent_consumers` AND at least one consumer is RPC-accessible (F=3), the finding is **at minimum High**. If pool exhaustion blocks consensus-critical paths, it is **Critical**.
+- **Configuration-triggered panics:** Chain spec distribution is not privileged (CI, manual edits, distribution channels). Database inconsistency is normal operation (pruning, reorgs, incomplete sync). Node startup panics cause crash loops with no self-healing. **F >= 3** when the trigger can occur without an attacker.
+- **Operational hazards:** If the finding involves a SHARED RESOURCE with concurrent consumers, a SORTED COLLECTION in consensus, or a CONFIGURATION VALUE without invariant enforcement, Feasibility is AT LEAST F=3. These conditions occur under normal operation, not only under attack.

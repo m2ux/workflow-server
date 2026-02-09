@@ -2,6 +2,50 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.7.0 (2026-02-09) — Quality Refactoring, Target Profiles, Rule Retirement
+
+Addresses 6 gaps from Session 17 gap analysis plus quality improvements from workflow review.
+
+**Structural changes:**
+- NEW resource 06 (target-profile): Target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items factored out of core workflow rules
+- Rule retirement process established: superseded rules removed at each version bump (see target profile retirement log)
+- Calibration examples moved from resource 02 to target profile — core severity rubric is now target-agnostic
+- Session-specific narratives removed from rule text — rules contain only directives and verification criteria
+
+**Rules compressed and consolidated (24 → 20 workflow rules, 21 → 17 primary-audit rules):**
+- Removed: `panic_sweep_complete` variable (vestigial)
+- Retired: INHERENT ASYMMETRY CLASSIFICATION (v4.4, superseded by v4.7 VERIFIER RECOMPUTATION)
+- Retired: CROSS-CHAIN TIMESTAMP SCOPE (v4.4, consolidated into sub-crate-review DEFAULT-FAIL)
+- Merged: MECHANICAL PATTERN COVERAGE (v4.3) scope clauses absorbed into Check 3 and target profile
+
+**Resource changes:**
+- resource 02: Calibration examples → profile reference; under-rating guidance consolidated
+- resource 03: +Item 8 (RNG triage) — fixes checklist count mismatch (activity said 8, resource had 7)
+- resource 05: Check 8 and Check 12 merged into Check 3; DB grep patterns merged into one; +Check 15 SSL/TLS; +Check 16 Wasm host functions
+- resource 06 (NEW): Target profile for midnight-node
+
+**Activity changes:**
+- workflow.toon (4.6.0 → 4.7.0): 24 → 20 rules, 18 → 17 variables
+- primary-audit (4.6.0 → 4.7.0): 21 → 17 rules, +1 step (checklist-to-prompt coverage gate)
+- sub-crate-review (1.2.0 → 1.3.0): Session narratives compressed, rules unchanged in count
+- ensemble-pass (2.2.0 → 2.3.0): Blind-spot list references target profile; supplementary files from profile
+
+**Rule retirement process (Q10):**
+At each version bump, review all rules for superseded content. If a newer rule is strictly more specific than an older rule on the same check, retire the older rule with an entry in the target profile's retirement log. Target: keep total rule count (workflow + primary-audit + sub-crate-review) below 50.
+
+**Session 17 regression fixes (from v4.7.0 initial commit):**
+- R1: Check 15 (SSL/TLS enforcement)
+- R2: Timestamp source default-FAIL for cross-chain pallets
+- R3: VerifierCIDP recomputation requirement
+- R4: System transaction type exhaustiveness check
+- R5: Check 16 (Wasm host function feature divergence)
+- R6: Wallet spend deep-check in resource 03
+- R7: Ensemble blind-spot list expanded (4 universal + target-specific)
+- R8: Severity calibration anchors for operational hazards (in target profile)
+- R9: Checklist-to-prompt coverage gate
+
+---
+
 ## v4.6.0 (2026-02-09) — Session 16 Regression Countermeasures and Blind-Spot Targeting
 
 Addresses 4 regressions from Session 16 vs Session 15 (82% → 89% LA match rate regression on Low-severity findings) while preserving Session 16's improvements in severity calibration (all Critical findings correctly rated). Also adds ensemble blind-spot targeting based on validated false-PASS patterns.

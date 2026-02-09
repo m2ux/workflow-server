@@ -53,19 +53,13 @@ as i128  |  as u32  |  as i32  |  as u64  |  as usize  |  as u128
 std::fs::read  |  read_to_end  |  take_while  |  filter_map.*ok  |  without_storage_info  |  subscribe  |  into_rpc
 ```
 
-### Connection Security
+### Database Connection Security (v4.7 — merged)
 
 ```
-PgPool  |  PgSslMode  |  max_connections  |  PgConnectOptions
+PgPool  |  PgPoolOptions  |  PgSslMode  |  max_connections  |  PgConnectOptions  |  ssl_mode  |  SslMode
 ```
 
-### Database TLS Configuration (v4.7)
-
-```
-PgPoolOptions  |  PgConnectOptions  |  ssl_mode  |  SslMode
-```
-
-**Triage:** For each `PgPoolOptions::new()` hit, trace the builder chain. If no `.ssl_mode(...)` call appears before `.connect()` or `.build()`, this is a finding (default is `Prefer`, which permits downgrade).
+**Triage:** (a) For `max_connections` hits, verify pool size >= number of concurrent consumers sharing the pool. (b) For `PgPoolOptions::new()` hits, trace the builder chain — if no `.ssl_mode(...)` call appears before `.connect()`, the default is `Prefer` (permits TLS downgrade). Both are findings.
 
 ### Information Leaks — Credentials
 
@@ -130,10 +124,10 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** Error logging or propagation exists for dropped errors.
 - **FAIL if:** Errors are silently discarded with no log or return path.
 
-### Check 3: Serialization Size/Method Pairing
+### Check 3: Serialization Size/Method Pairing (v4.7 — absorbs former Checks 8, 12)
 
-- **Search:** `Vec::with_capacity` near serialization code (including two-line patterns with intermediate variables)
-- **Verify (MANDATORY PAIRING TABLE v4.6):** For EVERY `Vec::with_capacity(size_variable)` near serialization code:
+- **Search:** `Vec::with_capacity` near serialization code in ALL in-scope files, including two-line patterns with intermediate variables. **MUST include** ledger internal API files and serialization directories (see target profile for paths). Zero hits in the ledger directory is a POSSIBLE FALSE NEGATIVE.
+- **Verify (MANDATORY PAIRING TABLE):** For EVERY `Vec::with_capacity(size_variable)` near serialization code:
   1. Identify the SIZE FUNCTION that computed `size_variable` (trace backward to the assignment)
   2. Identify the SERIALIZE FUNCTION called after the allocation (trace forward to the write)
   3. Compare the two function names character by character:
@@ -142,7 +136,6 @@ Each check extends the grep patterns above with verification logic that goes bey
      - Any cross-pairing → FINDING
   4. Produce a mandatory pairing table: `| Site | Size Function | Serialize Function | Match? |`
 - **FAIL if:** A `serialized_size` preallocation is followed by `tagged_serialize`, or vice versa. "Correct pre-allocation" without the pairing table is an INVALID PASS.
-- **Note (v4.6):** In Session 16, the agent found the pattern in a two-line form (`let size = serialized_size(value); Vec::with_capacity(size)`) and concluded "correct" without comparing the function names. The pairing table makes function-name comparison mechanical rather than incidental.
 
 ### Check 4: Subscription Fan-Out Limits
 
@@ -168,12 +161,7 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** For each call site, determine whether the timestamp is used in a context involving cross-chain data (e.g., bridge observations, mainchain events, external chain payloads).
 - **FAIL if:** The local chain's author-controlled timestamp is used for cross-chain event attribution.
 
-### Check 8: Preallocation Mismatch (Deep Scan)
-
-- **Search:** `Vec::with_capacity(serialized_size` across ALL files, **with mandatory coverage of internal API and transaction-handling submodules** (e.g., `ledger/src/versions/*/api/*.rs`)
-- **Verify:** The capacity function matches the subsequent serialization call. If an intermediate variable is used, trace it to its definition.
-- **FAIL if:** Mismatch detected, OR zero hits across the ledger/serialization directory (flag as POSSIBLE FALSE NEGATIVE for manual review follow-up).
-- **Note:** This pattern typically lives in internal transaction construction code, not the public API surface. Searches scoped only to top-level modules miss it.
+### Check 8: (Retired — merged into Check 3 in v4.7)
 
 ### Check 9: Mock Data Source Toggle
 
@@ -199,12 +187,7 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **FAIL if:** `None` is converted to `Ok(empty)` — callers cannot distinguish missing entities from valid empty state.
 - **Note:** This is a pattern-absence bug that is invisible to callers: the function returns `Ok` in both "exists but empty" and "does not exist" cases.
 
-### Check 12: Serialization Mismatch Deep Scan
-
-- **Search:** Every `Vec::with_capacity` call in the ledger/serialization directory
-- **Verify:** The capacity estimation function matches the serialization method. Trace intermediate variables.
-- **FAIL if:** Mismatch between estimation and serialization. Zero hits is a POSSIBLE FALSE NEGATIVE — flag for manual review.
-- **Note:** This check overlaps with Check 8 but is scoped specifically to the directory where serialization buffer mismatches are most likely to occur.
+### Check 12: (Retired — merged into Check 3 in v4.7)
 
 ### Check 13: Universal File I/O Safety (v4.6)
 

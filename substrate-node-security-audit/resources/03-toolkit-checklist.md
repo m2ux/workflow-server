@@ -119,6 +119,19 @@ For every wallet constructor (`from_path`, `from_seed`):
 - [ ] `DustWallet::from_path` should reject non-`Role::Dust` paths
 - [ ] Invalid roles produce noncanonical wallet material that breaks recovery
 
+### 8. RNG Security-Context Triage
+
+For every `SmallRng` or fixed-seed `StdRng` in toolkit code:
+
+- [ ] Trace the RNG output to its usage site
+- [ ] If the output is used in transaction construction (`TransactionWithContext`, `BlockContext`, `parent_block_hash`), it is a **FAIL** regardless of whether the code is "test infrastructure"
+- [ ] If the output enters the on-chain transaction pool or is visible to other nodes, it is a **FAIL**
+- [ ] Toolkit RNG that only affects local display, logging, or file naming is N/A
+
+**Specific checks:**
+- `TransactionWithContext::new`: does `SmallRng::seed_from_u64(parent_block_hash_seed)` produce a predictable block hash that enters transaction construction?
+- Genesis generators: is `StdRng::from_seed(seed)` used for nonce generation in transactions that become on-chain state?
+
 ## Expected Findings
 
 Applying this checklist to a typical Substrate node's toolkit code consistently surfaces Low-severity findings covering state management, arithmetic safety, and file I/O bounds.
