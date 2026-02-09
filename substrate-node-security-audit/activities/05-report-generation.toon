@@ -1,5 +1,5 @@
 id: report-generation
-version: 3.1.0
+version: 3.2.0
 name: Report Generation
 description: "Consolidate all findings from primary audit and adversarial verification into a final report. Uses the structured merge table from primary-audit as the canonical finding inventory. Apply severity scoring rubric with cross-check against calibration examples, verify coverage gate, and produce the deliverable audit report. Fully automated — no user checkpoints."
 problem: Findings from multiple agents and phases must be severity-calibrated and formatted into a cohesive report with coverage verification. The structured merge table from primary-audit ensures no findings are lost.
@@ -9,8 +9,9 @@ recognition[3]:
   - finalize report
 skills:
   primary: execute-audit
-  supporting[1]:
+  supporting[2]:
     - score-severity
+    - write-report
 required: true
 estimatedTime: 20-40m
 rules[6]:
@@ -48,7 +49,8 @@ steps[6]:
     description: "Verify every row in the merge table has a report finding number. Promote any unmapped rows."
   - id: write-report
     name: Write Final Report
-    description: "Produce 01-audit-report.md in the planning folder. Include: executive summary, crate inventory, all numbered findings with severity scores (I and F with justifications), severity distribution table, methodology notes, coverage gate results, and elevation summary."
+    skill: write-report
+    description: "Produce 01-audit-report.md per the write-report skill structure."
 decisions[1]:
   - id: next-phase
     name: Next Phase Decision
