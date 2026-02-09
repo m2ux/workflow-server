@@ -1,7 +1,7 @@
 id: primary-audit
 version: 4.7.0
 name: Primary Audit
-description: "Execute the multi-agent audit using the template via concurrent dispatch. Group A (one agent per priority-1/2 crate) applies the full §3 checklist including cross-crate checks. Group B runs all §2 static analysis patterns plus mechanical pattern searches and storage lifecycle scanning. Group D reviews toolkit code with the mandatory 7-item checklist. All groups dispatch concurrently. Consolidation uses structured merge with mandatory elevation table."
+description: "Multi-agent audit via wave-based concurrent dispatch. Group A applies §3 checklist per crate. Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function. Consolidation uses structured merge with mandatory elevation."
 problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while the static analysis agent catches mechanical patterns across the full scope.
 recognition[3]:
   - run primary audit
@@ -36,22 +36,22 @@ steps[12]:
     name: "Dispatch Wave 1 — Highest-Priority Group A + Group B + Group D"
     required: true
     skill: dispatch-sub-agents
-    description: "Dispatch the highest-priority agents concurrently: Group A for top-priority crates (NTO pallet, midnight pallet + ledger, node binary), Group B for static analysis, AND Group D for toolkit review. Group D moves to Wave 1 (v4.4) to ensure toolkit review is never deferred."
+    description: "Dispatch Wave 1 agents per target profile: highest-priority Group A + Group B + Group D."
   - id: dispatch-wave-2
     name: "Dispatch Wave 2 — Remaining Group A (MANDATORY)"
     required: true
     skill: dispatch-sub-agents
-    description: "After Wave 1 returns, dispatch remaining Group A agents (runtime, mainchain-follower primitives, upgrade pallet). This dispatch is MANDATORY — skipping Wave 2 is a HARD STOP violation."
+    description: "After Wave 1 returns, dispatch remaining Group A agents per target profile. MANDATORY — skipping is a HARD STOP."
   - id: verify-checklist-prompt-coverage
     name: "Verify Checklist-to-Prompt Coverage (v4.7)"
     required: true
     skill: verify-sub-agent-output
-    description: "Before collecting results, the orchestrator verifies that every numbered §3 checklist item (§3.1 through §3.14) appears in at least one dispatched agent's prompt. Produce a coverage matrix: | §3 Item | Agent(s) Prompted | Covered? |. Any item with Covered?=No requires either: (a) adding the item to a follow-up agent dispatch, or (b) the orchestrator performing the check directly during structured-merge. This gate prevents the situation where a checklist item exists in the template but no agent is explicitly tasked with evaluating it."
+    description: "Verify every §3 checklist item (§3.1–§3.14) appears in at least one agent's prompt. Dispatch follow-up for uncovered items."
   - id: verify-dispatch-completeness
     name: "Verify Dispatch Completeness (HARD STOP)"
     required: true
     skill: verify-sub-agent-output
-    description: "Compare agents_dispatched against agents_assigned from reconnaissance. Every crate in the agent_assignments must have a corresponding dispatched sub-agent. If any assigned agent was not dispatched (e.g., Wave 2 was skipped), this is a HARD STOP — dispatch the missing agents before proceeding."
+    description: "Compare agents_dispatched against agents_assigned. Dispatch missing agents before proceeding. HARD STOP."
   - id: collect-all
     name: Collect All Results
     description: "Wait for all sub-agents from both waves to return. Collect structured finding lists from each agent."
@@ -75,7 +75,7 @@ steps[12]:
     name: "Extract Findings from Mandatory Tables (v4.6)"
     required: true
     skill: verify-sub-agent-output
-    description: "Scan all mandatory tables (§3.3 event-vs-storage diff, §3.6 two-level validation, §3.2 storage lifecycle pairing) for FAIL/DIFF/Missing cells. Each gap cell is automatically extracted as a finding for inclusion in the merge table. Also verify that event construction site coverage spans ALL event-producing paths (NTO, midnight pallet, model.rs export_events), not just one."
+    description: "Scan mandatory tables for FAIL/DIFF/Missing/No cells. Auto-extract each as a finding. Verify event construction site coverage spans all event-producing paths."
   - id: structured-merge
     name: Structured Merge
     skill: merge-findings
