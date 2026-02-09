@@ -80,10 +80,12 @@ graph TD
 graph LR
     subgraph orchestrator[Orchestrator]
         RECON[Reconnaissance]
-        MERGE[Consolidation]
+        MERGE[Structured Merge]
+        DEDUP[Dedup + Map]
+        CHECK["§3 Completeness"]
     end
 
-    subgraph groupA["Group A: Crate Review (workflow-directed)"]
+    subgraph groupA["Group A: sub-crate-review"]
         A1[Pallet Agent 1]
         A2[Pallet Agent 2]
         A3[Ledger Agent]
@@ -91,21 +93,21 @@ graph LR
         A5[Primitives Agent]
     end
 
-    subgraph groupB["Group B: Static Analysis (workflow-directed)"]
-        B1[Pattern + Mechanical Agent]
+    subgraph groupB["Group B: sub-static-analysis"]
+        B1[Static Analysis Agent]
     end
 
-    subgraph groupD["Group D: Toolkit (workflow-directed, MANDATORY)"]
+    subgraph groupD["Group D: sub-toolkit-review"]
         D1[Toolkit Agent]
     end
 
-    RECON --> A1
-    RECON --> A2
-    RECON --> A3
-    RECON --> A4
-    RECON --> A5
-    RECON --> B1
-    RECON --> D1
+    RECON -->|concurrent| A1
+    RECON -->|concurrent| A2
+    RECON -->|concurrent| A3
+    RECON -->|concurrent| A4
+    RECON -->|concurrent| A5
+    RECON -->|concurrent| B1
+    RECON -->|concurrent| D1
 
     A1 --> MERGE
     A2 --> MERGE
@@ -114,19 +116,83 @@ graph LR
     A5 --> MERGE
     B1 --> MERGE
     D1 --> MERGE
+    MERGE --> DEDUP --> CHECK
 ```
 
-> All groups dispatch concurrently. Each sub-agent follows a dedicated workflow activity via the workflow-server MCP and returns structured output conforming to the sub-agent output schema.
+> All groups dispatch concurrently. Each sub-agent follows a dedicated workflow activity via the workflow-server MCP using the `sub-agent-execution` skill.
 
-### Workflow-Directed Sub-Agent Dispatch
+### Sub-Agent Activity Flows
 
-Each sub-agent is instructed to bootstrap the workflow-server, load its assigned activity and the `sub-agent-execution` skill. The skill's `resource_map` directs which resources to load for each activity's steps — sub-agents never need to know resource indices directly.
+Each sub-agent bootstraps the workflow-server, loads its assigned activity and the `sub-agent-execution` skill. The skill's `resource_map` directs which resources to load — sub-agents never reference resource indices directly.
 
-| Group | Activity | Skill | Steps | Key Outputs |
-|-------|----------|-------|-------|-------------|
-| A (per crate) | `sub-crate-review` | `sub-agent-execution` | 8 steps: read files → function registry → invariant extraction → §3 checklist → mandatory tables → cross-function comparison → completeness → output | Findings, checklist coverage, mandatory tables |
-| B (1 agent) | `sub-static-analysis` | `sub-agent-execution` | 6 steps: §2 patterns → mechanical checks → storage lifecycle → zero-hit audit → aggregation → output | Pattern hits, storage pairing table, zero-hit patterns |
-| D (1 agent) | `sub-toolkit-review` | `sub-agent-execution` | 4 steps: enumerate functions → per-function checklist → coverage verification → output | Function × checklist matrix, coverage attestation |
+#### `sub-crate-review` (Group A — one per crate)
+
+```mermaid
+graph LR
+    CR1[read-all-files] --> CR2[build-function-registry]
+    CR2 --> CR3[extract-invariants]
+    CR3 --> CR4[apply-checklist]
+    CR4 --> CR5[produce-required-tables]
+    CR5 --> CR6[cross-function-comparison]
+    CR6 --> CR7[verify-completeness]
+    CR7 --> CR8[format-output]
+```
+
+#### `sub-static-analysis` (Group B — single agent)
+
+```mermaid
+graph LR
+    SA1["run-section2-patterns"] --> SA2[run-mechanical-checks]
+    SA2 --> SA3[run-storage-lifecycle-scan]
+    SA3 --> SA4[produce-zero-hit-audit]
+    SA4 --> SA5[aggregate-findings]
+    SA5 --> SA6[format-output]
+```
+
+#### `sub-toolkit-review` (Group D — single agent, mandatory)
+
+```mermaid
+graph LR
+    TK1[enumerate-functions] --> TK2[apply-checklist-per-function]
+    TK2 --> TK3[verify-function-coverage]
+    TK3 --> TK4[format-output]
+```
+
+### Sub-Agent Ontology: Activity → Skill → Resources
+
+```mermaid
+graph TD
+    subgraph activity [Activity defines WHAT]
+        STEPS["Step skeleton: id + name"]
+    end
+    subgraph skill ["Skill defines HOW (sub-agent-execution)"]
+        BOOT[Bootstrap protocol]
+        RMAP["resource_map: activity → resources"]
+        EXEC[Step execution protocol]
+        VERIFY[Self-verification checks]
+    end
+    subgraph resources [Resources define WITH WHAT]
+        R04["04: output-schema"]
+        R07["07: table-formats"]
+        R08["08: invariant-guide"]
+        R11["11: static-analysis-patterns"]
+        R03["03: toolkit-checklist"]
+    end
+    STEPS -->|"skills.primary"| BOOT
+    BOOT --> RMAP
+    RMAP -->|"get_resource()"| R04
+    RMAP -->|"get_resource()"| R07
+    RMAP -->|"get_resource()"| R08
+    RMAP -->|"get_resource()"| R11
+    RMAP -->|"get_resource()"| R03
+    EXEC -->|produces| VERIFY
+```
+
+| Group | Activity | Skill | Resources Loaded | Key Outputs |
+|-------|----------|-------|-----------------|-------------|
+| A (per crate) | `sub-crate-review` | `sub-agent-execution` | 04, 07, 08, 09 | Findings, checklist coverage, mandatory tables |
+| B (1 agent) | `sub-static-analysis` | `sub-agent-execution` | 04, 10, 11 | Pattern hits, storage pairing, zero-hit audit |
+| D (1 agent) | `sub-toolkit-review` | `sub-agent-execution` | 03, 04 | Function x checklist matrix, coverage attestation |
 
 ---
 
