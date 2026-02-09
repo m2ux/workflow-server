@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 60-120m
-notes[13]:
+rules[13]:
   - "The orchestrator coordinates but does NOT perform manual review itself — reading files during reconnaissance to build the crate map is permitted, but applying §3 checklist items or producing trace tables is Group A work"
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "For cross-crate checks (§3.2 pagination, §3.4 inherent symmetry, §3.8 pool isolation, §3.10 timestamp source), the orchestrator includes supplementary files from other crates in the Group A agent's prompt"

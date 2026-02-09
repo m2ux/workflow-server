@@ -2,7 +2,7 @@
 
 ## Overview
 
-This workflow orchestrates a multi-phase AI security audit of a Substrate-based blockchain node codebase. It follows the Substrate Node Security Audit Template v3 with two-wave multi-agent execution, exhaustive panic sweep, hard-gate adversarial verification with anti-anchoring, and optional ensemble passes. Iteratively improved via gap analysis against professional audit benchmarks.
+This workflow orchestrates a multi-phase AI security audit of a Substrate-based blockchain node codebase. It follows the Substrate Node Security Audit Template with wave-based multi-agent execution (Groups A, B, D), hard-gate adversarial verification, composable skill architecture, and optional ensemble passes. Iteratively improved via gap analysis against professional audit benchmarks.
 
 ## Prerequisites
 
@@ -18,13 +18,12 @@ The workflow will guide you through:
 
 | Phase | Activity | Purpose |
 |-------|----------|---------|
-| 0 | Scope Setup | Confirm target, checkout, cargo audit, panic inventory, file assignment check |
-| 1a | Reconnaissance | Map architecture, build function registry |
-| 1b | Primary Audit | Multi-agent dispatch (Groups A-E with cross-layer deferral) |
-| 1.5 | Panic Sweep | Exhaustive triage of every unwrap/expect/panic + late-file re-reads |
-| 2 | Adversarial Verification | Hard-gate: decompose PASS items with anti-anchoring protocol |
-| 3 | Report Generation | Consolidate all phases, severity calibration cross-check, extended coverage gate |
-| 4 | Ensemble Pass | Optional second-model run + merge |
+| 0 | Scope Setup | Confirm target, checkout, cargo audit, file inventory |
+| 1a | Reconnaissance | Map architecture, build function registry, assign agent groups |
+| 1b | Primary Audit | Wave-based multi-agent dispatch (Groups A, B, D) with verification gates |
+| 2 | Adversarial Verification | Decompose PASS items, independently verify each property |
+| 3 | Report Generation | Consolidate all phases, severity calibration cross-check, coverage gate |
+| 4 | Ensemble Pass | Optional second-model run + union-merge |
 | 5 | Gap Analysis | Optional comparison against professional audit report |
 
 ## Key Artifacts Produced
@@ -33,7 +32,7 @@ The workflow will guide you through:
 |----------|-------------|
 | `START-HERE.md` | Session overview with target, commit, methodology |
 | `README.md` | Audit scope, crate inventory, architecture summary |
-| `panic-inventory.txt` | Pre-generated unwrap/expect/panic site inventory |
+| `file-inventory.txt` | Source files sorted by line count |
 | `01-audit-report.md` | Full report with numbered findings and severity scores |
 | `02-gap-analysis.md` | Comparison against reference report (if provided) |
 

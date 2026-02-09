@@ -1,0 +1,72 @@
+id: pattern-catalog-search
+version: 1.0.0
+capability: "Execute every pattern in a catalog section against a codebase scope, apply per-pattern triage or verification criteria, classify zero-hit patterns, and produce structured results"
+
+description: "A reusable skill for systematic pattern-based searching. Given a pattern catalog (loaded from a resource) and a codebase scope, this skill defines the procedure for iterating patterns, executing searches, applying triage criteria, handling zero-hit results, and formatting output. It separates the execution protocol (this skill) from the pattern definitions (the resource) and the step sequencing (the activity)."
+
+inputs:
+  resource_id:
+    description: "Resource containing the pattern catalog (e.g., '05-static-analysis-patterns')"
+    required: true
+  catalog_section:
+    description: "Section within the resource to execute (e.g., 'Grep Patterns', 'Mechanical Checks')"
+    required: true
+  scope:
+    description: "Codebase paths to search against"
+    required: true
+  exclusions:
+    description: "Paths or file patterns to exclude (e.g., test, mock, bench files)"
+    required: false
+
+protocol:
+  description: "The execution procedure for catalog-based pattern searching."
+  steps[6]:
+    - id: load-catalog
+      name: Load Pattern Catalog
+      description: "Fetch the resource by ID and locate the specified catalog section. Parse every pattern entry in the section. Each entry defines a search string and, optionally, triage criteria or verification steps."
+    - id: iterate-patterns
+      name: Iterate Every Pattern
+      description: "Process every pattern in the section sequentially. No patterns may be skipped. If a pattern is inapplicable to the target codebase (e.g., a Substrate-specific pattern against a non-Substrate codebase), record it with an explicit N/A justification rather than omitting it."
+    - id: execute-search
+      name: Execute Search or Verification
+      description: "For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the scope. Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number."
+    - id: triage-hits
+      name: Apply Triage or Verification Criteria
+      description: "For each hit, apply the triage or pass/fail criteria defined in the resource entry for that pattern. Grep patterns typically use reachability-based triage (Critical/High/Medium/Informational). Verification patterns use PASS/FAIL based on the verification procedure. Record the triage result alongside each hit."
+    - id: classify-zero-hits
+      name: Classify Zero-Hit Patterns
+      description: "For every pattern that returned zero results, determine: (a) TRUE NEGATIVE — the pattern genuinely does not exist in the codebase, with a justification citing the codebase's architecture or technology choices; or (b) POSSIBLE FALSE NEGATIVE — the pattern may exist but was not caught (e.g., obfuscated by intermediate variables, different naming convention, or the search scope missed a relevant directory). Flag false negatives for manual review follow-up."
+    - id: format-results
+      name: Format Structured Results
+      description: "Produce a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this skill. Include zero-hit verdicts as a separate section or integrated into the main table."
+
+output:
+  description: "A structured results table and zero-hit verdicts."
+  components[2]:
+    - "Results table: one row per hit, with fields determined by the invoking activity step (typically: category/check ID, pattern, file:line, hit content, triage/verdict)"
+    - "Zero-hit verdicts: one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification"
+
+tools:
+  grep:
+    when: "Executing grep-based patterns from the catalog"
+    params: "pattern, scope, exclusions"
+    returns: "Matching lines with file paths and line numbers"
+  read_file:
+    when: "Verification-based patterns that require reading code context beyond the grep hit (e.g., tracing a variable to its definition, verifying field completeness in an Ord implementation)"
+    params: "file_path, offset, limit"
+    returns: "File contents for manual verification"
+  shell:
+    when: "Executing search patterns that require shell commands (e.g., find + wc for file enumeration, complex regex that exceed grep tool capabilities)"
+    params: "command"
+    returns: "Command output"
+
+errors:
+  resource_not_found:
+    cause: "The specified resource ID does not exist in the workflow"
+    recovery: "List available resources and report the error to the orchestrator"
+  section_not_found:
+    cause: "The specified catalog section does not exist in the resource"
+    recovery: "List available sections in the resource and report the mismatch"
+  scope_empty:
+    cause: "No files match the scope and exclusion criteria"
+    recovery: "Report that the scope produced zero files; verify scope paths are correct"

@@ -14,7 +14,7 @@ skills:
 required: false
 estimatedTime: 15-30m
 
-notes[4]:
+rules[4]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: in_scope paths, out_of_scope exclusions, and resource 05 (static-analysis-patterns)"
   - "Steps 1 and 2 delegate to the search-pattern-catalog skill, which defines the execution protocol for catalog-based searching"

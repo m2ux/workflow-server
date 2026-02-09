@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: false
 estimatedTime: 30-60m
-notes[5]:
+rules[5]:
   - "This activity is OPTIONAL — only runs when has_reference_report is true"
   - "CRITICAL: The reference report must NOT have been loaded, read, or discussed before this phase. Loading it earlier contaminates the audit. The reference_report_path was recorded at scope-setup but quarantined until now."
   - "The reference report must target the same commit for valid comparison"
