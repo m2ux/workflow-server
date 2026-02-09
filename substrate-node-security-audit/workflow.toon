@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.3.0
+version: 4.4.0
 title: Security Audit Workflow
 description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, and per-function toolkit matrices."
 author: m2ux
@@ -8,7 +8,7 @@ tags[3]:
   - security
   - audit
   - workflow
-rules[15]:
+rules[17]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
   - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions. The agent proceeds through all phases autonomously."
@@ -24,7 +24,9 @@ rules[15]:
   - "COVERAGE GATE IS A HARD STOP: The report-generation phase MUST NOT begin until every .rs file >200 lines in priority-1/2 crates has been read by at least one sub-agent. If the coverage gate fails after primary-audit, the orchestrator MUST dispatch targeted follow-up agents to read uncovered files BEFORE proceeding. Deferring unread files to the ensemble pass is not acceptable — the ensemble pass is for depth, not for primary coverage."
   - "WAVE-BASED GROUP A DISPATCH: When the platform limits concurrent sub-agents (e.g., max 4), dispatch Group A agents in waves. Wave 1: highest-priority crates (NTO pallet, midnight pallet + ledger, node binary) plus Group B. Wave 2: remaining crates (runtime, mainchain-follower primitives, upgrade pallet) plus Group D. The orchestrator waits for Wave 1 to return before dispatching Wave 2. Each wave MUST include at least one Group A agent. Dispatching only Groups B and D without any Group A agents violates the workflow architecture."
   - "MANDATORY OUTPUT VERIFICATION: After collecting sub-agent results, the orchestrator MUST verify that each Group A agent produced the required tables from sub-crate-review steps 4-6: (a) §3 checklist evaluation table, (b) per-field event trace table (§3.3) or explicit N/A, (c) cross-function invariant table, (d) cross-layer verification matrix for pagination and timestamp checks. If any required table is missing, dispatch a targeted follow-up agent for that specific check. Prose summaries without structured tables are insufficient."
-variables[15]:
+  - "DISPATCH COMPLETENESS GATE (v4.4 — validated S12, S14): Every crate assigned to a Group A agent during reconnaissance MUST have a corresponding dispatched sub-agent that returns structured output. Reconnaissance sub-agents and orchestrator file reads do NOT satisfy this requirement — only §3-applying Group A sub-agents count. If agents_dispatched < agents_assigned after all waves complete, this is a HARD STOP. The orchestrator must dispatch the missing agents before proceeding to structured-merge. Skipping Wave 2 and using reconnaissance data as a substitute caused 11pp regression in S12 (93%→82%) and 19pp regression in S14 (93%→74%). Group D dispatch is equally mandatory — reconnaissance data about toolkit code does not substitute for the per-function checklist matrix."
+  - "ENSEMBLE EXECUTION VERIFICATION (v4.4): When ensemble_enabled=true, the ensemble-pass activity MUST produce a verifiable artifact (second-pass-findings.md or second-pass-findings.json) in the planning folder. Declaring the ensemble phase complete without running an independent second audit pass violates the workflow. The artifact's existence is the verification mechanism."
+variables[18]:
   - name: target_submodule
     type: string
     description: "Path to the submodule being audited (e.g., midnight-node)"
@@ -78,5 +80,17 @@ variables[15]:
   - name: report_complete
     type: boolean
     description: "Phase 3 gate — report generation finished"
+    defaultValue: false
+  - name: agents_assigned
+    type: number
+    description: "Count of Group A/B/D agents assigned during reconnaissance"
+    defaultValue: 0
+  - name: agents_dispatched
+    type: number
+    description: "Count of Group A/B/D agents actually dispatched across all waves"
+    defaultValue: 0
+  - name: dispatch_complete
+    type: boolean
+    description: "Phase 1b dispatch gate — all assigned agents dispatched and returned"
     defaultValue: false
 initialActivity: scope-setup

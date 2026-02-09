@@ -1,5 +1,5 @@
 id: verify-sub-agent-output
-version: 1.0.0
+version: 1.1.0
 capability: "Validate that sub-agent results meet structural completeness requirements, check coverage gates and mandatory output tables, and flag or re-dispatch on failure"
 
 description: "A reusable verification skill for multi-agent workflows. After collecting sub-agent results, this skill defines how to check that each agent's output contains all required tables, covers all expected files, and meets structural completeness criteria. Missing outputs are flagged for targeted re-dispatch."
@@ -14,34 +14,50 @@ inputs:
   file_inventory:
     description: "List of files that must be covered (for coverage gate verification)"
     required: false
+  dispatch_manifest:
+    description: "Dispatch manifest from the dispatch-sub-agents skill showing assigned vs dispatched agents (v4.4)"
+    required: false
+  agent_assignments:
+    description: "Crate-to-agent-group assignments from reconnaissance (v4.4)"
+    required: false
 
 protocol:
   description: "The verification procedure for sub-agent output validation."
-  steps[4]:
+  steps[6]:
+    - id: check-dispatch-completeness
+      name: Verify Dispatch Completeness (v4.4)
+      description: "If a dispatch_manifest is provided, verify every agent in the agent_assignments was dispatched and returned. Produce a dispatch status table: crate, assigned_group, agent_dispatched (yes/no), structured_output_received (yes/no). If any assigned agent was not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — the orchestrator must dispatch missing agents before proceeding."
     - id: check-coverage-gate
-      name: Verify File Coverage
-      description: "For each .rs file exceeding 200 lines in priority-1/2 crates, check whether at least one agent's output references it (via file manifest or grep hits). Produce a coverage table: file, lines, read-by-agent, status. Flag any UNREAD files. This is a HARD STOP — the workflow must not proceed with unread files."
+      name: Verify File Coverage (§3-Agent Distinction)
+      description: "For each .rs file exceeding 200 lines in priority-1/2 crates, check whether at least one §3-APPLYING GROUP A SUB-AGENT's output references it (via file manifest, findings, or checklist coverage). Files read ONLY during reconnaissance (by the orchestrator or reconnaissance sub-agents) do NOT satisfy the coverage gate. Produce a coverage table: file, lines, read-by-agent, agent_type (group-a/recon/none), status (COVERED/RECON-ONLY/UNREAD). Flag any file with status RECON-ONLY or UNREAD. This is a HARD STOP."
     - id: check-mandatory-tables
       name: Verify Mandatory Output Tables
-      description: "For each agent, check that every required table exists in the agent's result. Required tables include: (a) §3 checklist evaluation table for crate-review agents; (b) per-field event trace table for pallet agents whose crate has deposit_event() with partial-success paths — a PASS on §3.3 without this table is INVALID; (c) cross-function invariant table; (d) cross-layer verification matrix for agents with cross-crate supplements; (e) StorageInit construction site enumeration from the node agent covering both online (run_node/new_full) and offline (check-block, export-state, revert, import-blocks) subcommand paths; (f) function enumeration table, per-function checklist matrix, and coverage attestation from the toolkit review agent. If any required table is missing or was replaced with prose, flag the agent and table for re-dispatch."
+      description: "For each agent, check that every required table exists in the agent's result. Required tables include: (a) §3 checklist evaluation table for crate-review agents; (b) per-field event trace table AND event-vs-storage struct diff table for pallet agents whose crate has deposit_event() with partial-success paths — a PASS on §3.3 without BOTH tables is INVALID; (c) cross-function invariant table; (d) cross-layer verification matrix for agents with cross-crate supplements; (e) StorageInit construction site enumeration from the node agent covering both online and offline subcommand paths PLUS genesis header digest construction (feature-gated digest items); (f) function enumeration table, per-function checklist matrix, and coverage attestation from the toolkit review agent. If any required table is missing or was replaced with prose, flag the agent and table for re-dispatch."
     - id: check-structural-completeness
       name: Verify Structural Completeness
       description: "Check that each agent's steps_completed list matches the activity definition. Check that every FAIL verdict has a corresponding finding entry. Check that every mandatory_tables field is populated or null with justification."
+    - id: check-cross-chain-timestamp
+      name: Verify Cross-Chain Timestamp Checks (v4.4)
+      description: "For every Group A agent reviewing a pallet that processes inherent data from an external chain (specifically: NTO pallet, any bridge pallet), verify the agent's output includes a cross-layer timestamp verification matrix with explicit per-layer verdicts. If the agent marked §3.10 as PASS without producing this matrix, flag for re-dispatch."
     - id: produce-verification-report
       name: Produce Verification Report
-      description: "Output a structured report listing: all coverage gaps (files not read), all missing tables (agent + table ID), all structural issues. For each gap, recommend a targeted follow-up dispatch."
+      description: "Output a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status. For each gap, recommend a targeted follow-up dispatch."
 
 output:
   description: "Verification report with gap list and re-dispatch recommendations."
-  components[3]:
-    - "Coverage table: file, lines, agent, PASS/UNREAD"
+  components[4]:
+    - "Dispatch manifest: crate, assigned_group, dispatched, returned, status (v4.4)"
+    - "Coverage table: file, lines, agent, agent_type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD"
     - "Missing tables list: agent_id, table_id, reason"
     - "Re-dispatch recommendations: agent_id, scope, specific check to perform"
 
 errors:
+  dispatch_incomplete:
+    cause: "One or more assigned agents were not dispatched"
+    recovery: "HARD STOP — dispatch missing agents before proceeding to structured-merge"
   coverage_gate_failure:
-    cause: "One or more files were not read by any agent"
-    recovery: "Dispatch targeted follow-up agents for unread files before proceeding"
+    cause: "One or more files were read only during reconnaissance, not by §3-applying agents"
+    recovery: "Dispatch targeted Group A follow-up agents for RECON-ONLY files before proceeding"
   missing_mandatory_table:
     cause: "An agent returned prose instead of a required structured table"
     recovery: "Re-dispatch the agent with explicit output format instructions"

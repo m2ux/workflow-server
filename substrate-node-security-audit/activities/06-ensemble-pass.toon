@@ -1,5 +1,5 @@
 id: ensemble-pass
-version: 2.0.0
+version: 2.1.0
 name: Ensemble Pass
 description: "Optional second-model audit run on priority-1/2 components. Merges findings with the primary report using union-with-consensus-severity strategy. Fully automated — no user checkpoints."
 problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures findings that are non-deterministically detected in any single run, improving overall coverage.
@@ -13,11 +13,14 @@ skills:
     - score-severity
 required: false
 estimatedTime: 60-90m
-rules[4]:
+rules[7]:
   - "This activity is OPTIONAL — only runs when ensemble_enabled is true"
   - "Scope the second pass to priority-1/2 components only to control cost"
   - "Use a different model or temperature if available; same model with different system prompt is acceptable"
   - "The merge strategy is union: include all findings from both runs, flag consensus vs single-source"
+  - "EXECUTION VERIFICATION (v4.4): The ensemble pass MUST dispatch at least one sub-agent that independently applies the §3 checklist to priority-1/2 crates. Declaring the ensemble complete without dispatching any sub-agents violates this activity. The execute-second-pass step is the core of this activity — it is not optional."
+  - "ARTIFACT REQUIREMENT (v4.4): The execute-second-pass step MUST produce a second-pass-findings artifact (MD or JSON) in the planning folder. This artifact is the verification mechanism — if it does not exist when the activity exits, the ensemble was not executed. The orchestrator checks for this artifact during the update-report step."
+  - "CONTEXT CONSTRAINT HANDLING (v4.4): If context window pressure prevents executing a full second pass, the orchestrator MUST: (a) explicitly acknowledge the constraint, (b) scope the second pass to the top 3-5 files by priority rather than skipping entirely, and (c) produce the artifact even if the scope is reduced. A reduced-scope ensemble is always preferable to a skipped ensemble."
 steps[4]:
   - id: configure-ensemble
     name: Configure Ensemble Run
@@ -69,3 +72,8 @@ context_to_preserve[3]:
   - consensus_findings - Findings confirmed by both runs
   - single_source_findings - Findings from only one run
   - escalated_findings - PASSes in primary that became FAILs in ensemble
+artifacts[1]:
+  - id: second-pass-findings
+    name: second-pass-findings.md
+    location: planning
+    description: "Raw findings from the second-pass audit run. Existence of this file verifies the ensemble was actually executed. Must contain at least one sub-agent dispatch result."
