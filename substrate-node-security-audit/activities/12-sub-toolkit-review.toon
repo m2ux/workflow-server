@@ -1,8 +1,8 @@
 id: sub-toolkit-review
-version: 1.1.0
+version: 1.2.0
 name: "Sub-Agent: Toolkit Per-Function Review"
-description: "Workflow for Group D sub-agent. Executes a 4-step structured toolkit review that forces per-function iteration across the mandatory 7-item checklist. The agent must produce a function x checklist matrix entry for every function, preventing the skimming behavior that caused 0% detection rates on AM, AO, AQ across 8 prior sessions."
-problem: "Toolkit review agents read files but skim functions with benign-looking names. The 7-item checklist exists but is applied to representative functions, not exhaustively. Three findings (AM, AO, AQ) had 0% detection rate across 8+ sessions despite the checklist containing exact descriptions of the bug patterns."
+description: "Workflow for Group D sub-agent. Executes a 4-step structured toolkit review that forces per-function iteration across the mandatory 8-item checklist (items 1-7 from resource 03, item 8 RNG triage added in v4.5). The agent must produce a function x checklist matrix entry for every function, preventing the skimming behavior observed when agents apply the checklist to representative functions rather than exhaustively."
+problem: "Toolkit review agents read files but skim functions with benign-looking names. The 8-item checklist exists but is applied to representative functions, not exhaustively. Per-function bugs in save_intents_to_file, DustWallet::spend, and TransactionWithContext::new are consistently missed when the checklist is applied selectively rather than to every function."
 recognition[3]:
   - toolkit review
   - group d sub-agent
@@ -12,14 +12,16 @@ skills:
 required: false
 estimatedTime: 20-30m
 
-rules[7]:
+rules[9]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: toolkit_paths (ledger/helpers/, util/toolkit/), toolkit_checklist (resource 03)"
   - "The per-function x checklist matrix in step 2 is the key mechanism — it prevents skimming by requiring an entry for every combination"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
-  - "OUTPUT FORMAT IS NON-NEGOTIABLE: The orchestrator will reject prose summaries that lack the three required structured tables (function enumeration, checklist matrix, coverage attestation). If the agent returns a narrative summary with only 2-3 highlighted findings instead of the full matrix, the orchestrator will re-dispatch. This is the validated failure mode: S12's Group D returned 2 findings in prose form, missing LA-AM (save_intents_to_file) and LA-AP (IntentCustom::build) that S11's Group D found via exhaustive enumeration."
+  - "OUTPUT FORMAT IS NON-NEGOTIABLE: The orchestrator will reject prose summaries that lack the three required structured tables (function enumeration, checklist matrix, coverage attestation). If the agent returns a narrative summary with only 2-3 highlighted findings instead of the full matrix, the orchestrator will re-dispatch. Prose summaries consistently miss per-function bugs (e.g., save_intents_to_file, IntentCustom::build) that exhaustive enumeration catches."
   - "FUNCTION COUNT VERIFICATION: After producing the enumeration table, the agent must independently count functions per file using grep or equivalent ('fn ' pattern) and compare against the table row count. A discrepancy > 10% indicates skimming and requires re-enumeration of the affected file."
   - "INCLUDE SUBDIRECTORIES: The toolkit paths include nested modules (ledger/helpers/src/wallet/, ledger/helpers/src/contract/, util/toolkit/src/tx_generator/, util/toolkit/src/commands/). Every .rs file in every subdirectory must be enumerated. A common failure mode is reading only the top-level lib.rs and missing wallet/dust.rs, wallet/hd.rs, contract/call.rs etc."
+  - "TOOLKIT RNG TRIAGE (v4.5): For every SmallRng or fixed-seed StdRng in toolkit code, the agent MUST trace the RNG output to its usage site. If the output is used in transaction construction (TransactionWithContext, BlockContext, parent_block_hash), it is a FAIL regardless of whether the code is 'test infrastructure.' This is item 8 in the toolkit checklist matrix."
+  - "SEVERITY CEILING (v4.5): Toolkit findings that affect only local wallet state, CLI output, or offline tooling workflows have I <= 2 (Local impact). Elevate to I=3 only when the toolkit produces artifacts (serialized transactions, genesis state, signed messages) that are subsequently consumed by the production node or submitted to the network. The per-function matrix may produce many FAIL cells — the orchestrator must apply blast-radius triage during structured-merge, not accept Group D severity assessments at face value."
 steps[4]:
   - id: enumerate-functions
     name: Enumerate All Functions
@@ -29,13 +31,13 @@ steps[4]:
       output_format: "| File | Function | Line | Visibility | Modifies State? | Returns Result? |"
     description: "Enumerate every function in the toolkit scope as the item set for checklist application."
   - id: apply-checklist-per-function
-    name: Apply 7-Item Checklist Per Function
+    name: Apply 8-Item Checklist Per Function
     required: true
     skill: apply-checklist
     skill_args:
       checklist_source: resource 03 (toolkit-checklist)
-      output_format: "| Function | File:Line | Item 1 | ... | Item 7 | Findings |"
-    description: "Evaluate every function against all toolkit checklist items. Mark N/A where structurally inapplicable."
+      output_format: "| Function | File:Line | Item 1 | ... | Item 8 | Findings |"
+    description: "Evaluate every function against all 8 toolkit checklist items (items 1-7 from resource 03, item 8 RNG triage from v4.5). Mark N/A where structurally inapplicable."
   - id: verify-function-coverage
     name: Verify Function Coverage
     required: true
@@ -49,7 +51,7 @@ steps[4]:
     skill: execute-sub-agent
     description: "Format all findings and tables as structured output. Every FAIL cell in the matrix becomes a finding."
 outcome[3]:
-  - Every function in toolkit crates enumerated and reviewed against all 7 checklist items
+  - Every function in toolkit crates enumerated and reviewed against all 8 checklist items
   - Per-function x checklist matrix produced with no gaps
   - Function coverage verified at 100%
 context_to_preserve[4]:
