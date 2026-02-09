@@ -49,11 +49,11 @@ steps[8]:
     description: "Generate sorted file inventory by line count."
   - id: create-planning-folder
     name: Create Planning Folder
-    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-NN-{submodule}-security-audit/ with START-HERE.md and README.md. Use artifact-management skill for folder naming."
+    description: "Create planning folder with START-HERE.md and README.md per artifact-management skill."
     skill: artifact-management
   - id: load-template
     name: Load Audit Template
-    description: "Read the audit prompt template from template_path. Confirm it is accessible and note the template version."
+    description: "Confirm audit prompt template is accessible at template_path."
 transitions[1]{to,isDefault}:
   reconnaissance,true
 exitActions[1]{action,message}:

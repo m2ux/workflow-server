@@ -1,0 +1,27 @@
+id: write-gap-analysis
+version: 1.0.0
+capability: Produce the gap analysis report comparing AI audit findings against a professional reference report
+
+report_structure:
+  artifact: 02-gap-analysis.md
+  location: planning folder
+
+  sections[6]:
+    - id: summary
+      description: "Metrics table: total findings each side, matched, partial, gaps, AI-only, overlap rate"
+    - id: finding-mapping
+      description: "Table mapping every reference finding to the closest AI finding. Classify as matched, partial, or gap."
+    - id: gap-list
+      description: "Each gap with root cause analysis: why was it missed (missing check, reasoning error, scope limitation)?"
+    - id: severity-calibration
+      description: "Table of severity deltas for matched findings. Identify over-rating and under-rating patterns."
+    - id: ai-only-findings
+      description: "Findings in the AI report not present in the reference. Assess whether novel or out-of-scope for reference."
+    - id: recommendations
+      description: "Workflow improvement suggestions derived from gap root causes"
+
+flow[4]:
+  - 1. Load reference report from reference_report_path (first and only time)
+  - 2. Extract reference finding list with severities and affected files
+  - 3. Map, classify, and analyze per the sections above
+  - 4. Write the artifact

@@ -15,7 +15,7 @@ When auditing a different Substrate node, replace this profile with target-appro
 - **B:** Static analysis (all in-scope)
 - **D:** Toolkit (`ledger/helpers/`, `util/toolkit/`, `util/upgrader/`)
 
-### Wave 2 — Remaining Crates (Combined per v4.6 Hybrid Dispatch)
+### Wave 2 — Remaining Crates (Hybrid Dispatch)
 - **A4:** Runtime + upgrade + version (`runtime/`, `pallets/upgrade/`, `pallets/version/`)
 - **A5:** All primitives (`primitives/`)
 

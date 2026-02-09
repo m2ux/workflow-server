@@ -1,5 +1,5 @@
 id: gap-analysis
-version: 2.0.0
+version: 2.1.0
 name: Gap Analysis
 description: "Compare the AI audit report against a professional reference report. Produce a finding-by-finding mapping, identify gaps, analyze severity calibration differences, and provide root cause analysis for missed findings. Fully automated — no user checkpoints."
 problem: Without comparison against a professional benchmark, the AI audit's coverage and calibration cannot be assessed. Gap analysis identifies structural blind spots and informs template improvements.
@@ -9,6 +9,9 @@ recognition[3]:
   - benchmark against professional report
 skills:
   primary: execute-audit
+  supporting[2]:
+    - compare-finding-sets
+    - write-gap-analysis
 required: false
 estimatedTime: 30-60m
 rules[5]:
@@ -22,7 +25,8 @@ entryActions[1]{action,message}:
 steps[6]:
   - id: load-reference
     name: Load Reference Report
-    description: "Read the professional audit report from reference_report_path (recorded during scope-setup, quarantined until now). Extract the finding list with severities, descriptions, and affected files. This is the first and only time the reference report enters the agent's context."
+    skill: write-gap-analysis
+    description: "Load reference report from reference_report_path. Extract finding list."
   - id: map-findings
     name: Map Findings
     skill: compare-finding-sets
@@ -49,7 +53,8 @@ steps[6]:
     description: "Determine structural causes for each gap cluster."
   - id: write-gap-analysis
     name: Write Gap Analysis Report
-    description: "Produce 02-gap-analysis.md in the planning folder. Include: summary table, finding-by-finding mapping, gap list with root causes, severity calibration analysis, and recommendations for workflow improvement."
+    skill: write-gap-analysis
+    description: "Produce 02-gap-analysis.md per the write-gap-analysis skill structure."
 transitions[0]:
 exitActions[1]{action,message}:
   log,Gap analysis complete — audit workflow finished

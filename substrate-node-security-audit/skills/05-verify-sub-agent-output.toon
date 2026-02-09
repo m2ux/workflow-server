@@ -15,17 +15,17 @@ inputs:
     description: "List of files that must be covered (for coverage gate verification)"
     required: false
   dispatch_manifest:
-    description: "Dispatch manifest from the dispatch-sub-agents skill showing assigned vs dispatched agents (v4.4)"
+    description: "Dispatch manifest from the dispatch-sub-agents skill showing assigned vs dispatched agents"
     required: false
   agent_assignments:
-    description: "Crate-to-agent-group assignments from reconnaissance (v4.4)"
+    description: "Crate-to-agent-group assignments from reconnaissance"
     required: false
 
 protocol:
   description: "The verification procedure for sub-agent output validation."
   steps[6]:
     - id: check-dispatch-completeness
-      name: Verify Dispatch Completeness (v4.4)
+      name: Verify Dispatch Completeness
       description: "If a dispatch_manifest is provided, verify every agent in the agent_assignments was dispatched and returned. Produce a dispatch status table: crate, assigned_group, agent_dispatched (yes/no), structured_output_received (yes/no). If any assigned agent was not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — the orchestrator must dispatch missing agents before proceeding."
     - id: check-coverage-gate
       name: Verify File Coverage (§3-Agent Distinction)
@@ -37,13 +37,13 @@ protocol:
       name: Verify Structural Completeness
       description: "Check that each agent's steps_completed list matches the activity definition. Check that every FAIL verdict has a corresponding finding entry. Check that every mandatory_tables field is populated or null with justification."
     - id: check-cross-chain-timestamp
-      name: Verify Cross-Chain Timestamp Checks (v4.4)
+      name: Verify Cross-Chain Timestamp Checks
       description: "For every Group A agent reviewing a pallet that processes inherent data from an external chain (specifically: NTO pallet, any bridge pallet), verify the agent's output includes a cross-layer timestamp verification matrix with explicit per-layer verdicts. If the agent marked §3.10 as PASS without producing this matrix, flag for re-dispatch."
     - id: extract-table-findings
-      name: Extract Findings from Mandatory Tables (v4.6)
+      name: Extract Findings from Mandatory Tables
       description: "Scan every mandatory table produced by Group A agents (§3.3 event-vs-storage diff, §3.6 two-level validation, §3.2 storage lifecycle pairing) for cells marked FAIL, DIFF, Missing, No, or any semantic gap (e.g., a field present in storage but absent from the event). Each such cell is automatically extracted as a table-derived finding with fields: source_table, cell_description, agent_id, severity=TBD. These extracted findings are passed to the merge-findings skill during structured-merge. The sub-agent who produced the table is NOT responsible for elevation — the orchestrator is. This step removes the elevation decision from the sub-agent context where it competes with other findings for attention."
     - id: verify-event-construction-site
-      name: Verify Event Construction Site Coverage (v4.6)
+      name: Verify Event Construction Site Coverage
       description: "For every pallet that calls deposit_event() with data derived from transaction results (specifically: the midnight pallet apply_transaction → event construction path), verify that the Group A agent's §3.3 per-field trace table covers the CORRECT event construction site — not just the NTO pallet events but also the ledger's apply_transaction result mapping and runtime model.rs export_events. If the trace table covers only one event construction site when multiple exist, dispatch a targeted follow-up agent for §3.3 on the uncovered file (typically ledger/src/versions/common/mod.rs or runtime/src/model.rs)."
     - id: produce-verification-report
       name: Produce Verification Report
@@ -52,7 +52,7 @@ protocol:
 output:
   description: "Verification report with gap list and re-dispatch recommendations."
   components[4]:
-    - "Dispatch manifest: crate, assigned_group, dispatched, returned, status (v4.4)"
+    - "Dispatch manifest: crate, assigned_group, dispatched, returned, status"
     - "Coverage table: file, lines, agent, agent_type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD"
     - "Missing tables list: agent_id, table_id, reason"
     - "Re-dispatch recommendations: agent_id, scope, specific check to perform"

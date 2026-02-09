@@ -31,7 +31,7 @@ steps[8]:
     required: true
     skill_args:
       output_format: "| File | Lines | Read? |"
-    description: "Read every .rs file in the assigned crate path, including subdirectories and supplementary cross-crate files."
+    description: "Read all .rs files in crate path and supplementary files per target profile."
   - id: build-function-registry
     name: Build Function Registry
     required: true
@@ -55,7 +55,7 @@ steps[8]:
     skill: apply-checklist
     skill_args:
       output_format: "| Table | Produced? | Justification |"
-    description: "Produce structured analysis tables required as evidence, or state N/A with justification."
+    description: "Produce required evidence tables per apply-checklist skill, or N/A with justification."
   - id: cross-function-comparison
     name: Cross-Function Invariant Comparison
     required: true
