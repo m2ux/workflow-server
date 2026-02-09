@@ -11,13 +11,12 @@ skills:
   primary: audit-execution
 required: true
 estimatedTime: 15-30m
-notes[6]:
+notes[5]:
   - "Explicitly list EVERY pallet and primitive crate — do not summarize or group"
   - "Map which crates are runtime (Wasm), native (node binary), shared primitives, or off-chain tooling"
   - "Identify trust boundaries: RPC, inherent data, chain specs, config files, databases, file system, native/Wasm boundary"
   - "Build the function registry for ALL priority-1 and priority-2 crates (§1.2 step 8)"
   - "Sort .rs files by line count — the top 10 files MUST be in the registry and read during review (§5.14)"
-  - "CONTAMINATION GUARD: DO NOT read, open, fetch, or query any reference audit report, prior gap analysis, or file containing professional audit findings. These are quarantined until Phase 5 (gap-analysis). DO NOT read files from prior audit sessions (e.g., 02-gap-analysis-vs-least-authority.md) — they reveal the findings this workflow must independently discover."
 entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2)
 steps[9]:
@@ -47,7 +46,7 @@ steps[9]:
     description: "For every priority-1 and priority-2 crate, enumerate critical functions per §1.2 step 8. Include pallet hooks, ProvideInherent methods, extrinsics, service functions, data source functions, and startup handlers."
   - id: assign-agent-groups
     name: Assign Agent Groups
-    description: "Based on the crate map, assign crates to sub-agent groups for Phase 1b: Group A (crate-level deep review), Group B (static analysis), Group C (cross-cutting traces), Group D (toolkit review), Group E (mechanical checklist verification). Organize into Wave 1 (priority-1 + B + C) and Wave 2 (priority-2 + D + E)."
+    description: "Based on the crate map, assign crates to sub-agent groups for Phase 1b: Group A (crate-level deep review, one per priority-1/2 crate), Group B (static analysis + mechanical checks + storage lifecycle scan), Group D (toolkit review). For Group A agents that handle cross-crate checks, note which supplementary files from other crates must be included in their prompts. All groups dispatch concurrently — no wave separation."
 transitions[1]{to,isDefault}:
   primary-audit,true
 exitActions[2]{action,message}:
@@ -58,12 +57,12 @@ outcome[5]:
   - Trust boundaries mapped
   - Consensus-critical paths identified
   - Function registry built for priority-1 and priority-2 crates
-  - Agent groups assigned for two-wave multi-agent dispatch
+  - Agent groups assigned with cross-crate supplement mappings
 context_to_preserve[5]:
   - crate_map - Classification of all crates by type and priority
   - function_registry - Registry of critical functions per crate
   - trust_boundaries - List of identified trust boundaries
-  - agent_assignments - Crate-to-agent-group assignments with wave allocation
+  - agent_assignments - Crate-to-agent-group assignments with cross-crate supplement files noted
   - large_files - List of .rs files >200 lines sorted by size
 artifacts[1]:
   - id: readme

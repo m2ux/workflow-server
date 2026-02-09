@@ -1,6 +1,6 @@
 id: audit-execution
-version: 2.0.0
-capability: Execute security audit phases with consistent tool usage, two-wave multi-agent coordination, and mandatory checklist completion
+version: 3.0.0
+capability: Execute security audit phases with consistent tool usage, concurrent multi-agent coordination, and §3 checklist completeness verification
 
 execution_pattern:
   setup[4]:
@@ -13,25 +13,22 @@ execution_pattern:
     - Classify crates by type (runtime, native, shared, tooling)
     - Identify trust boundaries and consensus paths
     - Build function registry for priority-1/2 crates
-    - Generate file inventory sorted by line count and assign two-wave agent groups
-  primary_audit[6]:
-    - "Wave 1: Dispatch Group A agents (one per priority-1 crate) with §3 checklist, anti-anchoring, and completion gate"
-    - "Wave 1: Dispatch Group B agent for §2 static analysis across full scope"
-    - "Wave 1: Dispatch Group C agents for cross-cutting traces (pools, genesis, inherents, ordering, timestamps, validation, struct diffs, pagination)"
-    - "Wave 2: Dispatch Group A agents (one per priority-2 crate) with §3 checklist, anti-anchoring, and completion gate"
-    - "Wave 2: Dispatch Group D agent for toolkit review with minimum checklist (MANDATORY)"
-    - "Wave 2: Dispatch Group E agent for mechanical checklist verification (MANDATORY)"
+    - Generate file inventory sorted by line count and assign agent groups (A, B, D)
+  primary_audit[4]:
+    - "Dispatch Group A agents (one per priority-1/2 crate) concurrently with §3 checklist and cross-crate supplementary files"
+    - "Dispatch Group B agent for §2 static analysis, mechanical pattern checks, and storage lifecycle pairing across full scope"
+    - "Dispatch Group D agent for toolkit review with minimum checklist (MANDATORY)"
+    - "Collect all results, structured-merge into flat table, dedup-and-map to report findings, verify §3 completeness"
   adversarial[4]:
     - Extract all PASS items from agent scratchpads
     - Decompose each PASS into constituent properties
     - Enumerate all fields/sites for multi-instance properties
     - Verify each property independently — output CONFIRMED/REFUTED/INSUFFICIENT
-  consolidation[5]:
-    - Merge findings from all agents and phases
-    - Deduplicate by root cause
-    - Apply severity scoring rubric (Impact x Feasibility)
-    - Severity cross-check for findings with Impact >= 3
+  consolidation[4]:
+    - Integrate adversarial results into structured merge table
+    - Apply severity scoring rubric (Impact x Feasibility) with calibration example cross-check
     - Verify coverage gate (§5.14)
+    - Verify elevation completeness via merge table mapping
 
 tools:
   read_file:
@@ -40,7 +37,7 @@ tools:
     returns: File contents
     usage: Read every .rs file in assigned crate; prioritize files >200 lines
   grep:
-    when: Running §2 static analysis patterns
+    when: Running §2 static analysis patterns and mechanical checks
     params: pattern, scope, exclusions
     returns: Matching lines with file paths and line numbers
     usage: Run against FULL in-scope directory set, not selectively
@@ -50,7 +47,7 @@ tools:
     returns: Command output
     usage: Capture and save output to planning folder
   task:
-    when: Dispatching sub-agents for crate-level review or trace analysis
+    when: Dispatching sub-agents for crate-level review or analysis
     params: description, prompt, subagent_type
     returns: Sub-agent findings and scratchpad
     usage: Use generalPurpose for deep review agents; explore for quick searches
@@ -59,68 +56,46 @@ agent_dispatch:
   group_a:
     description: Crate-level deep review agents
     count: One per priority-1/2 crate
-    wave: "Priority-1 in Wave 1, priority-2 in Wave 2"
-    receives: "Crate path, relevant §3 checklist sections from the template, function registry entries, invariant extraction requirement, in_scope/out_of_scope paths"
-    must_do[7]:
+    receives: "Crate path, relevant §3 checklist sections from the template, function registry entries, invariant extraction requirement, in_scope/out_of_scope paths, supplementary cross-crate files for cross-boundary checks"
+    must_do[6]:
       - "Load the audit template content provided by the orchestrator (sub-agents do NOT load the template independently)"
       - Read every .rs file in the crate including large submodules
       - Perform invariant extraction for every priority-1 function (§5.15)
-      - Apply every applicable §3 check with evidence-based PASS/FAIL/NA
-      - "ANTI-ANCHORING: When checking multi-field properties, check EVERY field independently. Produce a per-field table."
-      - "COMPLETION GATE: Before returning, verify PASS/FAIL/NA for EVERY numbered checklist item. List unevaluated items."
-      - Return structured findings and completed scratchpad
+      - "Apply every applicable §3 check with evidence-based PASS/FAIL/NA — no deferral markers, all checks are this agent's responsibility"
+      - "For checks requiring cross-crate context (§3.2 pagination, §3.4 inherent symmetry, §3.8 pool isolation, §3.10 timestamp source), use the supplementary files provided by the orchestrator"
+      - "Return structured findings list with fields: id, file, line, title, severity, checklist_item, evidence"
+    cross_crate_supplements:
+      - "NTO pallet agent: include primitives/mainchain-follower/src/data_source/mod.rs, primitives/mainchain-follower/src/idp.rs, primitives/mainchain-follower/src/types.rs"
+      - "Node agent: include node/src/inherent_data.rs, node/src/main_chain_follower.rs, node/src/rpc.rs"
+      - "Ledger agent: include ledger/src/versions/common/api/*.rs"
   group_b:
-    description: Static analysis agent
+    description: Static analysis and mechanical checks agent
     count: 1
-    wave: Wave 1
-    receives: "Full in-scope directory set, all §2 grep patterns"
-    must_do[2]:
-      - Run every §2 pattern against ALL in-scope directories
-      - Return categorized hits with triage by reachability
-  group_c:
-    description: Cross-cutting trace agents
-    count: 5-8 depending on codebase
-    wave: Wave 1
-    traces[8]:
-      - Connection pool tracer — pool creation to all consumers via .clone()
-      - Genesis consistency tracer — StorageInit across all code paths
-      - Inherent symmetry tracer — proposer vs verifier tuple field-by-field
-      - "Ord/PartialOrd completeness verifier — every impl Ord checked for full field coverage in cmp()"
-      - Timestamp source tracer — layer-by-layer clock verification
-      - Input validation tracer — entry-to-consumption validation chain
-      - Struct diff agent — event struct vs storage struct field comparison
-      - Pagination loop tracer — counter initialization, termination, and end-position across all layers
+    receives: "Full in-scope directory set, all §2 grep patterns, mechanical check patterns, storage lifecycle scan instructions"
+    must_do[5]:
+      - "Run every §2 pattern against ALL in-scope directories"
+      - "Run mechanical pattern searches: impl Ord/PartialOrd completeness, take_while/filter_map truncation, Vec::with_capacity size mismatches, StorageInit construction sites, RPC subscription fan-out, pallet_timestamp in cross-chain contexts"
+      - "Run storage lifecycle pairing: for every StorageMap/StorageDoubleMap insert() call, identify the corresponding remove()/take() call. Produce a pairing table. Flag unpaired inserts as finding leads."
+      - "Return categorized hits with triage by reachability, plus storage lifecycle pairing table"
+      - "Return structured findings list with fields: id, file, line, title, severity, checklist_item, evidence"
   group_d:
     description: Toolkit review agent
     count: 1
-    wave: Wave 2
     mandatory: true
     receives: "ledger/helpers/ and util/toolkit/ paths, toolkit minimum checklist (resource 03)"
-    must_do[2]:
+    must_do[3]:
       - Read all toolkit .rs files
-      - Apply the 7-item mandatory toolkit checklist
-  group_e:
-    description: Mechanical checklist verification agent
-    count: 1
-    wave: Wave 2
-    mandatory: true
-    receives: "All §2 grep patterns historically missed, plus mechanical §3 checks"
-    must_do[6]:
-      - "Search every impl Ord/PartialOrd and verify all struct fields are included in cmp()"
-      - "Search for take_while(Result::is_ok) and filter_map(Result::ok) patterns"
-      - "Search for Vec::with_capacity(serialized_size) vs tagged_serialized_size mismatches"
-      - "Search for subscribe/notification_service/justification_stream for fan-out limits"
-      - "Enumerate every StorageInit construction site and verify genesis source consistency"
-      - "Return PASS/FAIL per pattern with line citations"
+      - Apply the 7-item mandatory toolkit checklist to every function — not just representative functions
+      - "Return structured findings list with fields: id, file, line, title, severity, checklist_item, evidence"
 
 state:
   track[6]:
     - current_phase - Which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
-    - agent_status - Status of dispatched sub-agents across both waves
+    - agent_status - Status of dispatched sub-agents
     - findings_count - Running count of identified findings
     - pass_count - Running count of PASS items in scratchpads
     - coverage_files - List of files read by agents
-    - scratchpad_items - Collected PASS/FAIL/NA items from all agents
+    - checklist_coverage - §3 coverage matrix showing per-item evaluation status
 
 errors:
   submodule_not_found:

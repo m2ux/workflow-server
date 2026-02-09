@@ -1,8 +1,8 @@
 id: report-generation
-version: 2.0.0
+version: 3.0.0
 name: Report Generation
-description: "Consolidate all findings from primary audit and adversarial verification into a final report. Apply severity scoring rubric with cross-check, verify coverage gate, deduplicate, and produce the deliverable audit report. Fully automated — no user checkpoints."
-problem: Findings from multiple agents and phases must be merged, deduplicated, severity-calibrated, and formatted into a cohesive report with coverage verification.
+description: "Consolidate all findings from primary audit and adversarial verification into a final report. Uses the structured merge table from primary-audit as the canonical finding inventory. Apply severity scoring rubric with cross-check against calibration examples, verify coverage gate, and produce the deliverable audit report. Fully automated — no user checkpoints."
+problem: Findings from multiple agents and phases must be severity-calibrated and formatted into a cohesive report with coverage verification. The structured merge table from primary-audit ensures no findings are lost.
 recognition[3]:
   - generate audit report
   - consolidate findings
@@ -13,41 +13,33 @@ skills:
     - severity-scoring
 required: true
 estimatedTime: 20-40m
-notes[5]:
-  - "Every FAIL in every scratchpad MUST have a corresponding numbered finding (§5.12)"
-  - "Severity MUST use the Impact x Feasibility rubric (resource 02) — not intuitive assignment"
+notes[4]:
+  - "The structured merge table from primary-audit is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
+  - "Severity MUST use the Impact x Feasibility rubric — compare each finding against the calibration examples in the severity-scoring skill before finalizing"
   - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
-  - "Cross-reference findings from different agents to create coherent multi-facet findings"
-  - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation. The reference_report_path was recorded at scope-setup but must NOT be loaded until gap-analysis."
+  - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation."
 entryActions[1]{action,message}:
   log,Starting report generation — consolidating findings from all phases
-steps[8]:
-  - id: merge-findings
-    name: Merge All Findings
-    description: "Combine primary audit findings, adversarial verification refutations, and any trace agent findings into a single list."
-  - id: deduplicate
-    name: Deduplicate Findings
-    description: "Identify findings that describe the same root cause from different agents. Cross-reference (e.g., insert-without-remove from one agent + write-before-validate from another = one coherent finding with two facets)."
+steps[6]:
+  - id: integrate-adversarial-results
+    name: Integrate Adversarial Verification Results
+    description: "Add any REFUTED items from adversarial verification as new rows in the structured merge table. Update the elevation mapping for affected findings."
   - id: apply-severity
     name: Apply Severity Scoring
-    description: "For each finding, compute Impact (1-4) and Feasibility (1-4) scores with one-sentence justifications. Map average to severity per the rubric. Use severity-scoring skill."
+    description: "For each finding in the merge table, compute Impact (1-4) and Feasibility (1-4) scores with one-sentence justifications. Map average to severity per the rubric. Compare each finding against the calibration examples in the severity-scoring skill — if the finding is similar to a calibration example, use the example's severity as a baseline."
     skill: severity-scoring
   - id: severity-crosscheck
-    name: Severity Cross-Check
-    description: "For each finding with Impact >= 3 (node availability or consensus impact), re-evaluate Feasibility from the attacker's perspective: what is the minimum capability needed to trigger this condition? If the answer is 'any network participant' or 'any RPC client', Feasibility is at least 3. If the condition occurs under normal operation (pruning, routine block production), Feasibility is 4. Compare against calibration examples in the severity-scoring skill."
-  - id: severity-bias-correction
-    name: Apply Severity Calibration Bias Correction
-    description: "Apply two systematic bias corrections: (1) UNDER-RATING CHECK: For every finding rated Medium that affects a consensus-critical data path through infrastructure (database connections, pool sharing, config invariants, SSL/TLS), re-evaluate whether F should be >= 3 (infrastructure routinely accessible to operators/pipelines). If so, the finding is High. (2) OVER-RATING CHECK: For every finding rated High that is triggered only by operator-provided invalid configuration (malformed chain spec, unsupported keystore type, InMemory database in production), re-evaluate whether F should be 2 (requires privileged misconfiguration). If so, the finding is Medium."
+    name: Severity Cross-Check Against Calibration Examples
+    description: "For each finding with Impact >= 3, re-evaluate Feasibility from the attacker's perspective by comparing against the calibration examples table. Specifically: (1) Connection pool / infrastructure findings affecting consensus paths through routinely-accessible systems: F >= 3. (2) Panics triggered only by operator-provided invalid configuration: F = 2. (3) Conditions occurring under normal operation (pruning, routine block production): F = 4. Adjust severity if the calibration comparison indicates a mismatch."
   - id: coverage-gate
     name: Verify Coverage Gate
     description: "Check that every .rs file >200 lines in priority-1/2 crates was read by at least one agent (§5.14). If any file was missed, flag as a coverage gap in the report."
-  - id: scratchpad-elevation
-    name: "Verify Scratchpad Elevation (HARD GATE)"
-    required: true
-    description: "HARD GATE — Cross-check ALL agent outputs for elevation completeness. (1) For every FAIL item in every scratchpad, verify it has a corresponding numbered finding (§5.12). Promote any orphaned FAILs. (2) For every finding identified by ANY sub-agent (Group A-E), verify it appears in the consolidated finding list. Agent findings that were identified but not numbered represent scratchpad elevation failures — a common process error that causes Medium-severity misses. (3) Produce an elevation verification table: | Agent | Agent Finding | In Report? | Finding # | — for every finding from every agent. Any 'No' entry must be resolved (either promoted or explicitly merged into another finding with justification)."
+  - id: verify-elevation-completeness
+    name: Verify Elevation Completeness
+    description: "Review the structured merge table. Every row must have a report finding number. Count rows marked 'merged' and verify each has a justification. Count total findings. If any row lacks a mapping, promote it now. Output the final elevation summary: total agent findings, total report findings, merged count, promoted count."
   - id: write-report
     name: Write Final Report
-    description: "Produce 01-audit-report.md in the planning folder. Include: executive summary, crate inventory, all numbered findings with severity scores, severity distribution table, methodology notes, and coverage gate results."
+    description: "Produce 01-audit-report.md in the planning folder. Include: executive summary, crate inventory, all numbered findings with severity scores (I and F with justifications), severity distribution table, methodology notes, coverage gate results, and elevation summary."
 decisions[1]:
   - id: next-phase
     name: Next Phase Decision
@@ -91,9 +83,9 @@ exitActions[2]{action,message}:
   log,Report generation complete — audit report finalized
   set,report_complete=true
 outcome[4]:
-  - All findings merged and deduplicated
-  - Severity scored using Impact x Feasibility rubric with cross-check
+  - All findings severity-scored using Impact x Feasibility rubric with calibration cross-check
   - Coverage gate verified
+  - Elevation completeness verified via structured merge table
   - Final audit report produced
 context_to_preserve[3]:
   - final_findings - Complete list of numbered findings with severity
