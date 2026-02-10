@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 2.3.0
+version: 2.4.0
 name: Reconnaissance
 description: "Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. This is §1.2 of the audit template. Fully automated — no user checkpoints."
 problem: The agent needs a complete mental model of the system before detailed review can begin.
@@ -20,7 +20,7 @@ rules[6]:
   - "Enumerate consensus-critical configuration structs per the target profile. Record missing constructor invariant validation as reconnaissance leads assigned to the node agent."
 entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2)
-steps[12]:
+steps[13]:
   - id: identify-crates
     name: Identify All Crates
     skill: map-codebase
@@ -73,10 +73,14 @@ steps[12]:
     name: Build Function Registry
     skill: build-function-registry
     description: "Enumerate critical functions for all priority-1/2 crates."
+  - id: dispatch-architectural-analysis
+    name: Dispatch Architectural Analysis Sub-Agent
+    skill: dispatch-sub-agents
+    description: "Dispatch a sub-agent following the sub-architectural-analysis activity. Receives crate_map, file_inventory, trust_boundaries, consensus_paths, pallet_hooks, config_structs. Returns interaction_model, privilege_map, candidate_points, emergent_domains."
   - id: map-vulnerability-domains
     name: Map Vulnerability Domains
     skill: map-vulnerability-domains
-    description: "For each §3 category, identify which codebase patterns trigger it and where. Produces a domain map partitioned by crate for sub-agent distribution."
+    description: "Bind architectural analysis artifacts to §3 verification procedures. Produces a domain map partitioned by crate for sub-agent distribution."
   - id: assign-agent-groups
     name: Assign Agent Groups
     skill: dispatch-sub-agents
@@ -90,19 +94,21 @@ transitions[1]{to,isDefault}:
 exitActions[2]{action,message}:
   log,Reconnaissance complete — architecture mapped and function registry built
   set,reconnaissance_complete=true
-outcome[5]:
+outcome[6]:
   - All crates explicitly identified and classified
   - Trust boundaries mapped
   - Consensus-critical paths identified
   - Function registry built for priority-1 and priority-2 crates
-  - Agent groups assigned with cross-crate supplement mappings
-context_to_preserve[8]:
+  - Security architecture analyzed — interaction model, privilege map, candidate points, emergent domains
+  - Agent groups assigned with domain map entries and cross-crate supplement mappings
+context_to_preserve[9]:
   - crate_map - Classification of all crates by type and priority
   - function_registry - Registry of critical functions per crate
   - trust_boundaries - List of identified trust boundaries
   - agent_assignments - Crate-to-agent-group assignments with cross-crate supplement files noted
   - agents_assigned - Total count of agents in the assignment roster (used by dispatch completeness gate)
   - large_files - List of .rs files >200 lines sorted by size
+  - architectural_analysis - Component interaction model, privilege map, candidate points, emergent domains (from sub-agent)
   - vulnerability_domain_map - Per-class list of codebase locations triggering each §3 category, partitioned by crate
   - leads_routing - Per-lead table mapping each reconnaissance observation to its assigned sub-agent
 artifacts[1]:
