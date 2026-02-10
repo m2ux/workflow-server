@@ -1,5 +1,5 @@
 id: sub-static-analysis
-version: 1.3.0
+version: 1.5.0
 name: "Sub-Agent: Static Analysis and Mechanical Checks"
 description: "Executes a 6-step structured static analysis with mandatory zero-hit audit and finding aggregation. Each step defines a REQUIRED OUTPUT that must be produced before proceeding."
 problem: "Static analysis agents return individual grep hits without aggregation (multiple panics in the same pallet stay as separate results) and silently pass on patterns with zero hits (e.g., RPC fan-out). This activity forces aggregation and zero-hit verification."
@@ -14,11 +14,12 @@ skills:
 required: false
 estimatedTime: 15-30m
 
-rules[4]:
+rules[5]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: in_scope paths, out_of_scope exclusions, and resource 05 (static-analysis-patterns)"
   - "Steps 1 and 2 delegate to the search-pattern-catalog skill, which defines the execution protocol for catalog-based searching"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
+  - "CONSENSUS-FILE ELEVATION FLOOR: Any pattern hit in a file classified as priority-1 in the crate map MUST be elevated to at minimum a Low-severity finding during aggregation. Hits in these files are not suppressed during zero-hit triage or aggregation."
 steps[6]:
   - id: run-grep-patterns
     name: Run All Grep Patterns

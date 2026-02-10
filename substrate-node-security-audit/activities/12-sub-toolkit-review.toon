@@ -2,7 +2,7 @@ id: sub-toolkit-review
 version: 1.2.0
 name: "Sub-Agent: Toolkit Per-Function Review"
 description: "Workflow for Group D sub-agent. Executes a 4-step structured toolkit review that forces per-function iteration across the mandatory 8-item checklist (items 1-7 from resource 03, item 8 RNG triage). The agent must produce a function x checklist matrix entry for every function, preventing the skimming behavior observed when agents apply the checklist to representative functions rather than exhaustively."
-problem: "Toolkit review agents read files but skim functions with benign-looking names. The 8-item checklist exists but is applied to representative functions, not exhaustively. Per-function bugs in save_intents_to_file, DustWallet::spend, and TransactionWithContext::new are consistently missed when the checklist is applied selectively rather than to every function."
+problem: "Toolkit review agents read files but skim functions with benign-looking names. The 8-item checklist exists but is applied to representative functions, not exhaustively. Per-function state management, arithmetic, and I/O bugs are consistently missed when the checklist is applied selectively rather than to every function."
 recognition[3]:
   - toolkit review
   - group d sub-agent
@@ -14,13 +14,13 @@ estimatedTime: 20-30m
 
 rules[9]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
-  - "The sub-agent receives context variables: toolkit_paths (ledger/helpers/, util/toolkit/), toolkit_checklist (resource 03)"
+  - "The sub-agent receives context variables: toolkit_paths (from target profile), toolkit_checklist (resource 03), target_focus_items (from target profile, if available)"
   - "The per-function x checklist matrix in step 2 is the key mechanism — it prevents skimming by requiring an entry for every combination"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
-  - "OUTPUT FORMAT IS NON-NEGOTIABLE: The orchestrator will reject prose summaries that lack the three required structured tables (function enumeration, checklist matrix, coverage attestation). If the agent returns a narrative summary with only 2-3 highlighted findings instead of the full matrix, the orchestrator will re-dispatch. Prose summaries consistently miss per-function bugs (e.g., save_intents_to_file, IntentCustom::build) that exhaustive enumeration catches."
+  - "OUTPUT FORMAT IS NON-NEGOTIABLE: The orchestrator will reject prose summaries that lack the three required structured tables (function enumeration, checklist matrix, coverage attestation). If the agent returns a narrative summary instead of the full matrix, the orchestrator will re-dispatch."
   - "FUNCTION COUNT VERIFICATION: After producing the enumeration table, the agent must independently count functions per file using grep or equivalent ('fn ' pattern) and compare against the table row count. A discrepancy > 10% indicates skimming and requires re-enumeration of the affected file."
-  - "INCLUDE SUBDIRECTORIES: The toolkit paths include nested modules (ledger/helpers/src/wallet/, ledger/helpers/src/contract/, util/toolkit/src/tx_generator/, util/toolkit/src/commands/). Every .rs file in every subdirectory must be enumerated. A common failure mode is reading only the top-level lib.rs and missing wallet/dust.rs, wallet/hd.rs, contract/call.rs etc."
-  - "TOOLKIT RNG TRIAGE: For every SmallRng or fixed-seed StdRng in toolkit code, the agent MUST trace the RNG output to its usage site. If the output is used in transaction construction (TransactionWithContext, BlockContext, parent_block_hash), it is a FAIL regardless of whether the code is 'test infrastructure.' This is item 8 in the toolkit checklist matrix."
+  - "INCLUDE SUBDIRECTORIES: The toolkit paths include nested modules. Every .rs file in every subdirectory must be enumerated. A common failure mode is reading only the top-level lib.rs and missing submodule files."
+  - "TOOLKIT RNG TRIAGE: For every SmallRng or fixed-seed StdRng in toolkit code, the agent MUST trace the RNG output to its usage site. If the output is used in transaction construction or any value that enters the on-chain transaction pool, it is a FAIL regardless of whether the code is 'test infrastructure.' This is item 8 in the toolkit checklist matrix."
   - "SEVERITY CEILING: Toolkit findings that affect only local wallet state, CLI output, or offline tooling workflows have I <= 2 (Local impact). Elevate to I=3 only when the toolkit produces artifacts (serialized transactions, genesis state, signed messages) that are subsequently consumed by the production node or submitted to the network. The per-function matrix may produce many FAIL cells — the orchestrator must apply blast-radius triage during structured-merge, not accept Group D severity assessments at face value."
 steps[4]:
   - id: enumerate-functions

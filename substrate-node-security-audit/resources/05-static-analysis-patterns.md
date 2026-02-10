@@ -126,7 +126,7 @@ Each check extends the grep patterns above with verification logic that goes bey
 
 ### Check 3: Serialization Size/Method Pairing
 
-- **Search:** `Vec::with_capacity` near serialization code in ALL in-scope files, including two-line patterns with intermediate variables. **MUST include** ledger internal API files and serialization directories (see target profile for paths). Zero hits in the ledger directory is a POSSIBLE FALSE NEGATIVE.
+- **Search:** `Vec::with_capacity` near serialization code in ALL in-scope files, including two-line patterns with intermediate variables. Include serialization directories listed in the target profile. Zero hits in directories known to contain serialization code is a POSSIBLE FALSE NEGATIVE.
 - **Verify (MANDATORY PAIRING TABLE):** For EVERY `Vec::with_capacity(size_variable)` near serialization code:
   1. Identify the SIZE FUNCTION that computed `size_variable` (trace backward to the assignment)
   2. Identify the SERIALIZE FUNCTION called after the allocation (trace forward to the write)
@@ -178,7 +178,7 @@ Each check extends the grep patterns above with verification logic that goes bey
   3. Determine blast radius — is the output visible to other nodes or observers?
 - **FAIL if:** Output affects transaction context, block context, or any value visible to other nodes.
 - **Note:** Listing a SmallRng grep hit without tracing to the usage context is insufficient. The triage step is what distinguishes a benign test helper from a predictable block hash.
-- **TOOLKIT SCOPE:** SmallRng in toolkit code (ledger/helpers/, util/toolkit/) MUST be triaged when the RNG output is used in transaction construction, block context generation, or any value that enters the on-chain transaction pool. Dismissing toolkit SmallRng as "not production consensus" misses the case where the output of `SmallRng::seed_from_u64(parent_block_hash_seed)` in `context.rs` feeds `TransactionWithContext::new`, which constructs transactions submitted to the network. Predictable parent block hashes allow observers to reconstruct the randomness used in transaction construction.
+- **TOOLKIT SCOPE:** SmallRng in toolkit code MUST be triaged when the RNG output is used in transaction construction, block context generation, or any value that enters the on-chain transaction pool. Dismissing toolkit SmallRng as "not production consensus" misses cases where toolkit-generated values feed transaction construction paths.
 
 ### Check 11: Empty-vs-Absent Query Pattern
 
@@ -194,7 +194,7 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Search:** `std::fs::read`, `read_to_end`, `read_to_string`, `File::open` in ALL in-scope paths (not limited to toolkit code)
 - **Verify:** For each file-reading site: (a) the path is checked with `is_file()` or equivalent before opening; (b) a size limit is enforced before allocation (`metadata().len() < MAX`); (c) the path origin is validated (not user-controlled without sanitization).
 - **FAIL if:** Any file read occurs without type check AND size limit. Paths from CLI arguments, config files, or chain spec properties are highest priority.
-- **Note:** In Session 16, `Cfg::load_spec` was missed because file I/O safety was treated as a toolkit-only concern. Configuration loaders read arbitrary paths from environment or CLI — they must be checked universally.
+- **Note:** Configuration loaders read arbitrary paths from environment or CLI — file I/O safety must be checked universally, not limited to toolkit code.
 
 ### Check 14: Error Type Topology Leakage
 
@@ -208,15 +208,15 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Search:** `PgPoolOptions::new()`, `PgConnectOptions::new()`, `PgPool::connect(` in ALL in-scope paths
 - **Verify:** For EACH pool/connection construction site, trace whether `.ssl_mode(SslMode::Require)` or `.ssl_mode(SslMode::VerifyFull)` is explicitly called. If no `.ssl_mode()` call exists, the default is `Prefer`, which allows silent downgrade to plaintext.
 - **FAIL if:** Any production (non-test) database connection is established without explicit TLS enforcement. `Prefer` mode is insufficient — it allows a network attacker to strip TLS via downgrade.
-- **Note:** In Sessions 16 and 17, the grep pattern for `PgSslMode` found hits in the indexer (out of scope) but missed that the node's `get_connection` function at `primitives/mainchain-follower/src/data_source/mod.rs` uses `PgPoolOptions::new()` without any `.ssl_mode()` call, defaulting to `Prefer`. The check must trace the DEFAULT behavior, not just explicit mode settings.
+- **Note:** The check must trace the DEFAULT behavior, not just explicit mode settings. A `PgPoolOptions::new()` without any `.ssl_mode()` call defaults to `Prefer`, which allows silent downgrade.
 
 ### Check 16: RuntimeExecutor Host Function Feature Divergence
 
-- **Search:** `HostFunctions`, `RuntimeExecutor`, `ExtendedHostFunctions`, `WasmExecutor` in service initialization files (typically `node/src/service.rs`)
+- **Search:** `HostFunctions`, `RuntimeExecutor`, `ExtendedHostFunctions`, `WasmExecutor` in service initialization files
 - **Verify:** Are there multiple type definitions for host functions gated by different features (e.g., `#[cfg(feature = "runtime-benchmarks")]`)? If the feature adds or removes host functions, nodes compiled with different features will have different Wasm execution environments.
 - **FAIL if:** Different feature flags produce different `HostFunctions` type aliases that are used in the `RuntimeExecutor` or `WasmExecutor` construction. A Wasm module calling a host function present in one build but absent in another will trap, causing block import failure.
 - **Relationship to Genesis Divergence:** This is a SEPARATE finding from feature-gated genesis digests (Check 5 / §3.5). Genesis divergence produces different genesis hashes; host function divergence produces different Wasm execution environments. Both cause consensus failure between heterogeneous builds, but through different mechanisms.
-- **Note:** In Session 17, Issue #13 identified the `#[cfg(experimental)]` genesis digest divergence but did not trace the `#[cfg(feature = "runtime-benchmarks")]` gate on host function includes at `service.rs:181-194`. These are two independent consensus-divergence vectors from feature flags.
+- **Note:** Feature-gated genesis digests and feature-gated host functions are two independent consensus-divergence vectors from feature flags. Both must be checked separately.
 
 ---
 

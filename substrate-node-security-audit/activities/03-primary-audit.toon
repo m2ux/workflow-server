@@ -1,5 +1,5 @@
 id: primary-audit
-version: 4.7.0
+version: 4.9.0
 name: Primary Audit
 description: "Multi-agent audit via wave-based concurrent dispatch. Group A applies §3 checklist per crate. Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function. Consolidation uses structured merge with mandatory elevation."
 problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while the static analysis agent catches mechanical patterns across the full scope.
@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 60-120m
-rules[17]:
+rules[18]:
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "For cross-crate checks (§3.2, §3.4, §3.8, §3.10), the orchestrator includes supplementary files per the target profile"
   - "Group B runs ALL §2 grep patterns and mechanical checks against the full in-scope directory set"
@@ -26,9 +26,10 @@ rules[17]:
   - "§3.5 STORAGEINIT VERIFICATION: The node agent must produce a StorageInit construction site enumeration covering online and offline subcommand paths, plus genesis HEADER construction."
   - "GROUP D OUTPUT VALIDATION: Verify function enumeration table, per-function checklist matrix, and coverage attestation. Re-dispatch if absent."
   - "MANDATORY TABLE AUTO-ELEVATION: Orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes to findings before structured-merge."
-  - "EVENT CONSTRUCTION SITE VERIFICATION: Verify §3.3 trace tables cover ALL event construction sites (ledger apply_transaction, model.rs export_events, pallet events). Dispatch follow-up for uncovered sites."
-  - "CONFIGURATION INVARIANT SCOPE: §3.4 applies to both inherent provider tuples AND off-chain configuration structs. Verify constructor invariant validation per the target profile's configuration struct list."
-  - "HYBRID WAVE DISPATCH: Wave 2 SHOULD combine remaining crates into fewer agents. Include weights.rs for pallet agents and model.rs for ledger agents per the target profile supplementary file assignments."
+  - "EVENT CONSTRUCTION SITE VERIFICATION: Verify §3.3 trace tables cover ALL event construction sites identified in the vulnerability domain map. Dispatch follow-up for uncovered sites."
+  - "CONFIGURATION INVARIANT SCOPE: §3.4 applies to both inherent provider tuples AND off-chain configuration structs identified in the vulnerability domain map."
+  - "HYBRID WAVE DISPATCH: Wave 2 SHOULD combine remaining crates into fewer agents. Include supplementary files per the target profile."
+  - "RECONNAISSANCE LEAD INCLUSION: Every lead in the leads_routing table from reconnaissance MUST appear in the corresponding agent's prompt. An unrouted lead that matches an agent's scope is a dispatch defect."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
 steps[12]:

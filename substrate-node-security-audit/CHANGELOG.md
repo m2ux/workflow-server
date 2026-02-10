@@ -2,6 +2,93 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.9.0 (2026-02-09) — Overfitting Remediation, Vulnerability Domain Mapping
+
+Addresses structural overfitting identified in the S18 overfitting analysis. Replaces 22 target-specific rule references with domain-map-driven generics, removes 11 session statistics from rules/skills/resources, and relocates midnight-specific content to the target profile.
+
+**Architectural change — Vulnerability Domain Mapping:**
+- NEW skill `map-vulnerability-domains` (17-map-vulnerability-domains.toon): Maps generic §3 vulnerability classes to specific codebase locations using reconnaissance data. Sub-agents receive dynamically derived domain map entries instead of hardcoded target-specific rules.
+- NEW reconnaissance step `map-vulnerability-domains`: Invoked after function registry, before agent assignment. Produces a per-crate partition of vulnerability targets.
+- Sub-crate-review rules now reference "§3.X targets in the vulnerability domain map" instead of naming specific functions or files.
+
+**Generalization (Tier 1+3 — 7 rules rewritten):**
+- sub-crate-review: VERIFIER RECOMPUTATION → ASYMMETRIC PROVIDER VERIFICATION (generic)
+- sub-crate-review: SYSTEM TRANSACTION TYPE EXHAUSTIVENESS → TYPE DISPATCH EXHAUSTIVENESS (generic)
+- sub-crate-review: §3.1 FLUSH ORDERING → generalized, example removed
+- sub-crate-review: SUPPLEMENTARY FILE BUDGET → target profile reference only
+- sub-static-analysis: CONSENSUS-FILE ELEVATION FLOOR → references crate map priority, not file names
+- sub-toolkit-review: problem statement, OUTPUT FORMAT, INCLUDE SUBDIRECTORIES, RNG TRIAGE → target symbols removed
+- primary-audit: EVENT CONSTRUCTION SITE, CONFIGURATION INVARIANT, HYBRID WAVE → domain map references
+
+**Session statistics removed (Tier 2 — 6 locations):**
+- verify-sub-agent-output: removed "LA-P missed in 10/14 sessions"
+- verify-sub-agent-output: mandatory tables and event site steps generalized
+- resource 05: Check 13 note, Check 15 note, Check 16 note — session references removed
+
+**Resource changes:**
+- resource 03 (toolkit checklist): Generalized — all "Specific checks" blocks with midnight function names removed. Generic class definitions, anti-patterns, and verification procedures retained. Deep-check for spend/consume functions generalized from wallet-specific to any resource-consumption pattern.
+- resource 05 (static analysis): Session statistics removed from Check 10 (TOOLKIT SCOPE), Check 13, Check 15, Check 16. Target file paths replaced with target profile references.
+- resource 06 (target profile): +Toolkit Focus Items section (absorbs 11 specific checks from resource 03); +Vulnerability Domain Hints section (pre-identified targets to seed domain mapping)
+
+**Severity rule:**
+- Calibration comparison now conditional on benchmark table availability
+- Fallback guidance for targets without professional audit benchmarks
+
+**Activity version bumps:**
+- reconnaissance: 2.2.0 → 2.3.0 (+1 step, +1 context variable)
+- primary-audit: 4.8.0 → 4.9.0 (3 rules generalized)
+- sub-crate-review: 1.5.0 → 1.6.0 (4 rules generalized, +1 context variable)
+- sub-static-analysis: 1.4.0 → 1.5.0 (1 rule generalized)
+- sub-toolkit-review: 1.2.0 (unchanged version, 4 rules cleaned)
+
+**Skill version bumps:**
+- verify-sub-agent-output: 1.3.0 (2 steps generalized)
+- map-vulnerability-domains: 1.0.0 (NEW)
+
+**Overfitting metrics (before → after):**
+- Target-symbol references in core activities/skills: 22 → 3 (retained: into_rpc, deposit_event, StorageMap — Substrate-universal patterns)
+- Session statistics in rules/descriptions: 11 → 0
+- Midnight-specific function names in generic resources: 12 → 0 (relocated to target profile)
+
+---
+
+## v4.8.0 (2026-02-09) — Elevation Reliability, Lead Routing, Calibration Enforcement
+
+Addresses 4 persistent regression patterns identified across Sessions 05–18 regression analysis (S18: 91% overlap, 4 gaps).
+
+**Root causes targeted:**
+- Table-derived finding elevation failure (LA-P missed in 10/14 sessions despite appearing in struct diff tables)
+- Reconnaissance lead routing failure (LA-Y missed in S18 despite 83% historical detection rate)
+- Static analysis hit suppression in consensus files (LA-W, LA-AF under-elevated)
+- Severity under-rating for operational hazards (~1 level below LA calibration)
+
+**Activity changes:**
+- reconnaissance (2.1.0 → 2.2.0): +1 step (route-reconnaissance-leads), +1 context variable (leads_routing)
+- primary-audit (4.7.0 → 4.8.0): +1 rule (RECONNAISSANCE LEAD INCLUSION)
+- sub-crate-review (1.4.0 → 1.5.0): +1 rule (RPC SUBSCRIPTION LIMIT VERIFICATION)
+- sub-static-analysis (1.3.0 → 1.4.0): +1 rule (CONSENSUS-FILE ELEVATION FLOOR)
+
+**Skill changes:**
+- verify-sub-agent-output (1.2.0 → 1.3.0): extract-table-findings step rewritten as deterministic cell-level scan with keyword match protocol
+
+**Workflow rule changes:**
+- Severity scoring rule strengthened with DIVERGENCE GATE: >=2 level divergence from calibration benchmark triggers mandatory recalculation
+
+**Resource changes:**
+- target-profile (resource 06): Node agent supplementary files expanded to include `node/src/rpc.rs` for subscription limit verification
+
+**Regression targets:**
+
+| Gap | LA ID | Root Cause | Fix |
+|-----|-------|-----------|-----|
+| Table elevation failure | LA-P | Orchestrator skips table cells | Deterministic cell-level scan in verify skill |
+| Recon lead lost | LA-Y | Pattern noted but not routed to agent | Explicit leads routing step + inclusion rule |
+| RPC fan-out missed | LA-W | No dedicated subscription check | Sub-crate-review rule + RPC supplementary file |
+| Hits not elevated | LA-AF | Low hits in consensus files suppressed | Consensus-file elevation floor in static analysis |
+| Severity under-rating | LA-F,G,J,L | F=2 for config hazards | Divergence gate forces benchmark floor |
+
+---
+
 ## v4.7.0 (2026-02-09) — Quality Refactoring, Target Profiles, Rule Retirement
 
 Addresses 6 gaps from Session 17 gap analysis plus quality improvements from workflow review.
