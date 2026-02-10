@@ -1,5 +1,5 @@
 id: sub-architectural-analysis
-version: 1.0.0
+version: 1.2.0
 name: "Sub-Agent: Security Architecture Analysis"
 description: "Dispatched during reconnaissance to produce a security-oriented architectural decomposition. The sub-agent receives the crate map, file inventory, and trust boundary list, then reasons about component interactions, trust relationships, privilege boundaries, and candidate points. Output is three structured artifacts consumed by the domain mapping step."
 problem: "The orchestrator's reconnaissance produces an asset inventory (what exists) but not a security model (what could go wrong and why). Vulnerability domain mapping needs architectural properties — component interactions, trust assumptions, privilege models — that require dedicated reasoning, not mechanical enumeration. Without this step, domain mapping falls back to pattern-matching against a predefined checklist rather than deriving applicable vulnerability classes from the system's structure."
@@ -27,7 +27,7 @@ steps[4]:
   - id: build-privilege-map
     name: Build Privilege and Authority Map
     required: true
-    description: "For each state-modifying operation category (block production, inherent injection, extrinsic dispatch, genesis construction, configuration loading, external data ingestion), document: (a) what authority is required, (b) where that authority is verified in code, (c) what happens if verification is absent, bypassable, or inconsistent across code paths. Pay attention to operations that appear to require authority but are actually unrestricted (e.g., inherent data controlled by block author, config values from unvalidated files)."
+    description: "For each state-modifying operation category (block production, inherent injection, extrinsic dispatch, genesis construction, configuration loading, external data ingestion), document: (a) what authority is required, (b) where that authority is verified in code, (c) what happens if verification is absent, bypassable, or inconsistent across code paths. Pay attention to operations that appear to require authority but are actually unrestricted (e.g., inherent data controlled by block author, config values from unvalidated files). Additionally, enumerate runtime configuration constants (parameter_types!, Config trait associated types) that affect security boundaries — existential deposits, maximum block weight, session lengths, pool sizes. For each, document the configured value, whether it is appropriate for the threat model, and whether it can be changed post-genesis."
   - id: identify-candidate-points
     name: Identify Candidate Points
     required: true
@@ -35,7 +35,7 @@ steps[4]:
   - id: identify-emergent-domains
     name: Identify Emergent Vulnerability Domains
     required: true
-    description: "From the interaction model and privilege map, identify vulnerability domains that do NOT map to any existing §3 checklist item. These are security-relevant architectural properties that emerge from the specific system's structure. For each, document: the property, why it matters, which components are involved, and a suggested verification approach. These become ad-hoc review assignments for Group A agents, supplementing the §3 checklist."
+    description: "From the interaction model and privilege map, identify vulnerability domains that do NOT map to any existing §3 checklist item. Use resource 07 (vulnerability pattern vocabulary) as a recognition aid for known cross-project patterns. For each domain, document: the property, why it matters, which components are involved, and a suggested verification approach. These become ad-hoc review assignments for Group A agents, supplementing the §3 checklist."
 
 outcome[4]:
   - Component interaction model with trust assumptions and required security properties
