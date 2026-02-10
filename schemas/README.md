@@ -1265,6 +1265,7 @@ The skill schema (`skill.schema.json`) defines agent capabilities for workflow e
 | `matching` | object | Goal-to-activity matching strategies |
 | `state` | object | State structure and update patterns |
 | `interpretation` | object | How to interpret workflow constructs |
+| `rules` | string[] | Skill-level rules and constraints agents must follow when executing this skill |
 | `errors` | object | Error definitions and recovery strategies |
 
 ### Execution Pattern

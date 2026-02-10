@@ -118,6 +118,7 @@ export const SkillSchema = z.object({
   status_values: z.record(z.string()).optional(),
   interpretation: InterpretationSchema.optional(),
   resumption: ResumptionSchema.optional(),
+  rules: z.array(z.string()).optional().describe('Skill-level rules and constraints that agents must follow when executing this skill'),
   errors: z.record(ErrorDefinitionSchema).optional(),
 }).passthrough();
 export type Skill = z.infer<typeof SkillSchema>;

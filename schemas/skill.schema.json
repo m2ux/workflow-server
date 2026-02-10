@@ -382,6 +382,11 @@
         "resumption": {
           "$ref": "#/definitions/resumption"
         },
+        "rules": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skill-level rules and constraints that agents must follow when executing this skill"
+        },
         "errors": {
           "type": "object",
           "additionalProperties": {
