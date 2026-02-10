@@ -4,43 +4,36 @@ capability: "Extract, validate, and initialize a target codebase at a specific r
 
 description: "A reusable skill for initializing an audit or review session against a specific codebase revision. Defines the procedure for extracting target parameters from user input or workflow variables, applying defaults and validation, checking out the codebase at the target revision, running dependency scans with fallback handling, and generating file inventories."
 
-inputs:
-  user_request:
-    description: "The user's initial request or workflow variables containing target specification"
+inputs[2]:
+  - id: user-request
+    description: "Target specification (component, revision, scope)."
     required: true
-  workspace_root:
+  - id: workspace-root
     description: "Path to the repository root"
     required: true
 
 protocol:
-  description: "The target initialization procedure."
-  steps[6]:
-    - id: extract-target
-      name: Extract Target Component
-      description: "Extract the target component (submodule, crate, directory) from the user's request or workflow variables. If not specified, fail with a descriptive error listing available targets."
-    - id: extract-revision
-      name: Extract Target Revision
-      description: "Extract the git commit hash or branch from the request. If not specified, default to the component's current HEAD. Record the exact revision for reproducibility."
-    - id: extract-reference
-      name: Extract Optional Reference Inputs
-      description: "If the user specified any reference documents (e.g., professional audit reports, prior reviews), record their paths without loading or reading them. Set corresponding workflow variables for later phases."
-    - id: checkout-revision
-      name: Checkout at Target Revision
-      description: "Fetch and checkout the target component at the specified revision. Verify the checkout succeeded by confirming the HEAD matches the expected revision."
-    - id: scan-dependencies
-      name: Scan Dependencies
-      description: "Attempt to run dependency scanning tools (e.g., cargo audit, cargo deny, npm audit). Save outputs to the planning folder. If tools are unavailable, extract the dependency manifest (e.g., Cargo.lock, package-lock.json) and set a flag indicating manual inspection is needed."
-    - id: generate-inventory
-      name: Generate File Inventory
-      description: "Produce a sorted file inventory listing all source files with line counts, largest first. Save to the planning folder."
+  extract-target[1]:
+    - Extract the target component (submodule, crate, directory) from the user's request or workflow variables. If not specified, fail with a descriptive error listing available targets.
+  extract-revision[1]:
+    - Extract the git commit hash or branch from the request. If not specified, default to the component's current HEAD. Record the exact revision for reproducibility.
+  extract-reference[1]:
+    - If the user specified any reference documents (e.g., professional audit reports, prior reviews), record their paths without loading or reading them. Set corresponding workflow variables for later phases.
+  checkout-revision[1]:
+    - Fetch and checkout the target component at the specified revision. Verify the checkout succeeded by confirming the HEAD matches the expected revision.
+  scan-dependencies[1]:
+    - Attempt to run dependency scanning tools (e.g., cargo audit, cargo deny, npm audit). Save outputs to the planning folder. If tools are unavailable, extract the dependency manifest (e.g., Cargo.lock, package-lock.json) and set a flag indicating manual inspection is needed.
+  generate-inventory[1]:
+    - Produce a sorted file inventory listing all source files with line counts, largest first. Save to the planning folder.
 
-output:
-  description: "Initialized target ready for analysis."
-  components[4]:
-    - "Confirmed target component and revision"
-    - "Dependency scan results or fallback manifest"
-    - "File inventory sorted by size"
-    - "Reference document paths (if any, quarantined for later phases)"
+output[1]:
+  - id: audit-target
+    description: "Initialized target ready for analysis."
+    components:
+      confirmed_target: "Confirmed target component and revision"
+      dependency_scan_results: "Dependency scan results or fallback manifest"
+      file_inventory: "File inventory sorted by size"
+      reference_document_paths: "Reference document paths (if any, quarantined for later phases)"
 
 tools:
   shell:

@@ -4,47 +4,40 @@ capability: "Execute every pattern in a catalog section against a codebase scope
 
 description: "A reusable skill for systematic pattern-based searching. Given a pattern catalog (loaded from a resource) and a codebase scope, this skill defines the procedure for iterating patterns, executing searches, applying triage criteria, handling zero-hit results, and formatting output. It separates the execution protocol (this skill) from the pattern definitions (the resource) and the step sequencing (the activity)."
 
-inputs:
-  resource_id:
+inputs[4]:
+  - id: resource-id
     description: "Resource containing the pattern catalog (e.g., '05-static-analysis-patterns')"
     required: true
-  catalog_section:
+  - id: catalog-section
     description: "Section within the resource to execute (e.g., 'Grep Patterns', 'Mechanical Checks')"
     required: true
-  scope:
+  - id: scope
     description: "Codebase paths to search against"
     required: true
-  exclusions:
+  - id: exclusions
     description: "Paths or file patterns to exclude (e.g., test, mock, bench files)"
     required: false
 
 protocol:
-  description: "The execution procedure for catalog-based pattern searching."
-  steps[6]:
-    - id: load-catalog
-      name: Load Pattern Catalog
-      description: "Fetch the resource by ID and locate the specified catalog section. Parse every pattern entry in the section. Each entry defines a search string and, optionally, triage criteria or verification steps."
-    - id: iterate-patterns
-      name: Iterate Every Pattern
-      description: "Process every pattern in the section sequentially. No patterns may be skipped. If a pattern is inapplicable to the target codebase (e.g., a Substrate-specific pattern against a non-Substrate codebase), record it with an explicit N/A justification rather than omitting it."
-    - id: execute-search
-      name: Execute Search or Verification
-      description: "For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the scope. Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number."
-    - id: triage-hits
-      name: Apply Triage or Verification Criteria
-      description: "For each hit, apply the triage or pass/fail criteria defined in the resource entry for that pattern. Grep patterns typically use reachability-based triage (Critical/High/Medium/Informational). Verification patterns use PASS/FAIL based on the verification procedure. Record the triage result alongside each hit."
-    - id: classify-zero-hits
-      name: Classify Zero-Hit Patterns
-      description: "For every pattern that returned zero results, determine: (a) TRUE NEGATIVE — the pattern genuinely does not exist in the codebase, with a justification citing the codebase's architecture or technology choices; or (b) POSSIBLE FALSE NEGATIVE — the pattern may exist but was not caught (e.g., obfuscated by intermediate variables, different naming convention, or the search scope missed a relevant directory). Flag false negatives for manual review follow-up."
-    - id: format-results
-      name: Format Structured Results
-      description: "Produce a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this skill. Include zero-hit verdicts as a separate section or integrated into the main table."
+  load-catalog[1]:
+    - Fetch the resource by ID and locate the specified catalog section. Parse every pattern entry in the section. Each entry defines a search string and, optionally, triage criteria or verification steps.
+  iterate-patterns[1]:
+    - Process every pattern in the section sequentially. No patterns may be skipped. If a pattern is inapplicable to the target codebase (e.g., a Substrate-specific pattern against a non-Substrate codebase), record it with an explicit N/A justification rather than omitting it.
+  execute-search[1]:
+    - "For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the scope. Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number."
+  triage-hits[1]:
+    - "For each hit, apply the triage or pass/fail criteria defined in the resource entry for that pattern. Grep patterns typically use reachability-based triage (Critical/High/Medium/Informational). Verification patterns use PASS/FAIL based on the verification procedure. Record the triage result alongside each hit."
+  classify-zero-hits[1]:
+    - "For every pattern that returned zero results, determine: (a) TRUE NEGATIVE — the pattern genuinely does not exist in the codebase, with a justification citing the codebase's architecture or technology choices; or (b) POSSIBLE FALSE NEGATIVE — the pattern may exist but was not caught (e.g., obfuscated by intermediate variables, different naming convention, or the search scope missed a relevant directory). Flag false negatives for manual review follow-up."
+  format-results[1]:
+    - Produce a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this skill. Include zero-hit verdicts as a separate section or integrated into the main table.
 
-output:
-  description: "A structured results table and zero-hit verdicts."
-  components[2]:
-    - "Results table: one row per hit, with fields determined by the invoking activity step (typically: category/check ID, pattern, file:line, hit content, triage/verdict)"
-    - "Zero-hit verdicts: one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification"
+output[1]:
+  - id: pattern-results
+    description: "A structured results table and zero-hit verdicts."
+    components:
+      results_table: "one row per hit, with fields determined by the invoking activity step (typically: category/check ID, pattern, file:line, hit content, triage/verdict)"
+      zero_hit_verdicts: "one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification"
 
 tools:
   grep:

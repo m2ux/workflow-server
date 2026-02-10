@@ -2,7 +2,10 @@ id: execute-audit
 version: 3.0.0
 capability: Execute security audit phases with consistent tool usage, concurrent multi-agent coordination, and §3 checklist completeness verification
 
-execution_pattern:
+resources[1]:
+  - "04"
+
+protocol:
   setup[4]:
     - Extract target submodule and commit from initial request — fail if not specified
     - Checkout submodule at target commit
@@ -15,10 +18,10 @@ execution_pattern:
     - Build function registry for priority-1/2 crates
     - Generate file inventory sorted by line count and assign agent groups (A, B, D)
   primary_audit[4]:
-    - "Dispatch Group A agents (one per priority-1/2 crate) concurrently with §3 checklist and cross-crate supplementary files"
-    - "Dispatch Group B agent for §2 static analysis, mechanical pattern checks, and storage lifecycle pairing across full scope"
-    - "Dispatch Group D agent for toolkit review with minimum checklist (MANDATORY)"
-    - "Collect all results, structured-merge into flat table, dedup-and-map to report findings, verify §3 completeness"
+    - Dispatch Group A agents (one per priority-1/2 crate) concurrently with §3 checklist and cross-crate supplementary files
+    - Dispatch Group B agent for §2 static analysis, mechanical pattern checks, and storage lifecycle pairing across full scope
+    - Dispatch Group D agent for toolkit review with minimum checklist (MANDATORY)
+    - Collect all results, structured-merge into flat table, dedup-and-map to report findings, verify §3 completeness
   adversarial[4]:
     - Extract all PASS items from agent scratchpads
     - Decompose each PASS into constituent properties
@@ -51,34 +54,6 @@ tools:
     params: description, prompt, subagent_type
     returns: Sub-agent findings and scratchpad
     usage: Use generalPurpose for deep review agents; explore for quick searches
-
-agent_dispatch:
-  workflow_directed: true
-  description: "Sub-agents are directed to follow workflow activities via the workflow-server MCP. Each sub-agent bootstraps the workflow-server, loads its assigned activity, and follows the activity's steps sequentially with verifiable outputs."
-  bootstrap_instruction: "Each sub-agent's Task prompt MUST include: 'You have access to the workflow-server MCP tools. Before starting, call get_rules() then call get_workflow_activity({ workflow_id: \"substrate-node-security-audit\", activity_id: \"<activity-id>\" }). Follow the activity steps sequentially. Each step defines a REQUIRED OUTPUT — produce it before proceeding. Return your final output conforming to resource 04 (sub-agent-output-schema).'"
-  group_a:
-    description: Crate-level deep review agents
-    count: One per priority-1/2 crate
-    activity: sub-crate-review
-    skill: execute-sub-agent
-    receives: "Crate path, relevant §3 checklist sections from the template, function registry entries, in_scope/out_of_scope paths, supplementary cross-crate files"
-    cross_crate_supplements:
-      - "NTO pallet agent: include primitives/mainchain-follower/src/data_source/mod.rs, primitives/mainchain-follower/src/idp.rs, primitives/mainchain-follower/src/types.rs"
-      - "Node agent: include node/src/inherent_data.rs, node/src/main_chain_follower.rs, node/src/rpc.rs"
-      - "Ledger agent: include ledger/src/versions/common/api/*.rs"
-  group_b:
-    description: Static analysis and mechanical checks agent
-    count: 1
-    activity: sub-static-analysis
-    skill: execute-sub-agent
-    receives: "Full in-scope directory set, all §2 grep patterns from the template"
-  group_d:
-    description: Toolkit review agent
-    count: 1
-    mandatory: true
-    activity: sub-toolkit-review
-    skill: execute-sub-agent
-    receives: "ledger/helpers/ and util/toolkit/ paths, toolkit minimum checklist (resource 03)"
 
 state:
   track[6]:

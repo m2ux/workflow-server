@@ -4,39 +4,34 @@ capability: "Concatenate finding lists from multiple sources into a canonical fl
 
 description: "A reusable skill for consolidating findings from multiple agents or audit passes. Supports three merge strategies: structured-merge (concatenate and dedup), integration (add new items to existing table), and union-merge (combine two independent runs with consensus flagging). The flat table produced is the canonical finding inventory for reporting."
 
-inputs:
-  finding_sources:
+inputs[3]:
+  - id: finding-sources
     description: "One or more structured finding lists to merge"
     required: true
-  existing_table:
+  - id: existing-table
     description: "An existing merge table to extend (for integration mode)"
     required: false
-  merge_strategy:
+  - id: merge-strategy
     description: "One of: structured-merge (concat + dedup), integrate (add to existing), union-merge (two-run consensus)"
     required: true
 
 protocol:
-  description: "The merge procedure for finding consolidation."
-  steps[4]:
-    - id: concatenate
-      name: Concatenate Finding Lists
-      description: "Combine all finding sources into a single flat table. Every agent finding becomes a row with fields: agent_id, finding_id, file, line, title, severity, checklist_item, evidence. No agent output is discarded."
-    - id: deduplicate
-      name: Deduplicate by Root Cause
-      description: "For each row, identify whether another row describes the same root cause. Rows with the same root cause receive the same report finding number with a note: 'merged: same root cause as Finding X — [justification]'. Every row must have a mapping — unmapped rows are automatically promoted to new findings."
-    - id: apply-strategy
-      name: Apply Merge Strategy
-      description: "For structured-merge: assign sequential report finding numbers. For integrate: add new rows and update the elevation mapping. For union-merge: classify each finding as consensus (present in both runs), single-source (one run only), or escalated (PASS in primary, FAIL in secondary)."
-    - id: verify-completeness
-      name: Verify Elevation Completeness
-      description: "Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Output the elevation summary."
+  concatenate[1]:
+    - "Combine all finding sources into a single flat table. Every agent finding becomes a row with fields: agent_id, finding_id, file, line, title, severity, checklist_item, evidence. No agent output is discarded."
+  deduplicate[1]:
+    - "For each row, identify whether another row describes the same root cause. Rows with the same root cause receive the same report finding number with a note: 'merged: same root cause as Finding X — [justification]'. Every row must have a mapping — unmapped rows are automatically promoted to new findings."
+  apply-strategy[1]:
+    - "For structured-merge: assign sequential report finding numbers. For integrate: add new rows and update the elevation mapping. For union-merge: classify each finding as consensus (present in both runs), single-source (one run only), or escalated (PASS in primary, FAIL in secondary)."
+  verify-completeness[1]:
+    - Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Output the elevation summary.
 
-output:
-  description: "Canonical finding flat table with elevation mapping and summary."
-  components[3]:
-    - "Flat table: one row per agent finding with report finding number and merge status"
-    - "Elevation summary: total agent findings, total report findings, merged count, promoted count"
-    - "For union-merge: consensus/single-source/escalated classification per finding"
+output[1]:
+  - id: merge-table
+    description: "Canonical finding flat table with elevation mapping and summary."
+    components:
+      flat_table: "one row per agent finding with report finding number and merge status"
+      elevation_summary: "total agent findings, total report findings, merged count, promoted count"
+      union_merge_classification: "for union-merge: consensus/single-source/escalated classification per finding"
 
 errors:
   unmapped_finding:
