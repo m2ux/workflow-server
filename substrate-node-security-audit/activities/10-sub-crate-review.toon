@@ -1,5 +1,5 @@
 id: sub-crate-review
-version: 1.6.0
+version: 1.7.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Workflow for Group A sub-agents. Executes an 8-step structured crate review with verifiable outputs at each stage. Each step defines a REQUIRED OUTPUT that must be produced before proceeding. The sub-agent loads this activity via get_workflow_activity and follows it sequentially."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
@@ -12,19 +12,13 @@ skills:
 required: false
 estimatedTime: 20-40m
 
-rules[14]:
+rules[8]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: crate_path, checklist_sections, function_registry, supplementary_files, vulnerability_domain_entries, in_scope, out_of_scope"
   - "Every step defines a REQUIRED OUTPUT. The agent must produce this output before proceeding."
   - "Steps 5 and 6 contain self-verification requirements — the agent must list what it produced and what it marked N/A"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
-  - "§3.4 CONFIGURATION INVARIANT CHECK: For every consensus-critical configuration struct (see target profile), verify the constructor validates mathematical invariants. 'No validation but works in practice' is not a valid PASS."
-  - "DEFENSE-IN-DEPTH VALIDATION: For §3.6 input validation, PASS requires evidence at the CONSUMPTION layer (pallet), not just the PRODUCTION layer. Raw bytes/strings without typed wrappers are FAIL with severity reduced by 1 level."
-  - "MANDATORY WEIGHTS.RS READ: For every pallet with hooks, the sub-agent MUST read the WeightInfo implementation file. The 5 sub-actions (read return value, read body, trace chain, estimate work, check amplification) are REQUIRED outputs. §3.1 is INCOMPLETE without reading weights.rs."
   - "SUPPLEMENTARY FILE BUDGET: The orchestrator includes supplementary files per the target profile for cross-crate verification."
-  - "TIMESTAMP SOURCE DEFAULT-FAIL: For pallets processing external-chain inherent data (see target profile cross-chain pallets list), pallet_timestamp usage in cross-chain event/payload construction is DEFAULT FAIL. Agent must prove usage is local-only to override. 'Design choice' is NOT a valid PASS when event content derives from external chain observations."
-  - "ASYMMETRIC PROVIDER VERIFICATION: For every §3.4 target in the vulnerability domain map, each type in the producer set but absent from the consumer set is FAIL UNLESS the agent cites a specific code path where the consumer independently recomputes the value. Invalid PASS justifications: 'value in digest', 'by design', 'framework handles it'. Valid PASS requires citing recomputation code with file:line."
-  - "TYPE DISPATCH EXHAUSTIVENESS: For every §3.14 target in the vulnerability domain map, verify exhaustive matching on typed enum dispatchers over external data. Wildcard arms that accept-and-process unknown types are FAIL."
   - "FLUSH ORDERING VERIFICATION: For every §3.1 target in the vulnerability domain map, enumerate ALL state-modifying operations in execution order (including conditional paths). The flush/commit call must occur AFTER the last state-modifying operation. A flush followed by additional writes is FAIL. Finding one flush call alone is NOT sufficient — verify nothing writes after it."
   - "RPC SUBSCRIPTION LIMIT VERIFICATION: For every into_rpc() registration site, verify explicit per-connection or global subscriber limits. 'Framework handles it' is not a valid PASS."
 steps[8]:

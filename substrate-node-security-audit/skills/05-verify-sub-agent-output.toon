@@ -23,7 +23,7 @@ inputs:
 
 protocol:
   description: "The verification procedure for sub-agent output validation."
-  steps[6]:
+  steps[8]:
     - id: check-dispatch-completeness
       name: Verify Dispatch Completeness
       description: "If a dispatch_manifest is provided, verify every agent in the agent_assignments was dispatched and returned. Produce a dispatch status table: crate, assigned_group, agent_dispatched (yes/no), structured_output_received (yes/no). If any assigned agent was not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — the orchestrator must dispatch missing agents before proceeding."

@@ -1,6 +1,9 @@
 id: score-severity
-version: 1.0.0
+version: 1.1.0
 capability: Compute finding severity using the Impact x Feasibility rubric with calibrated examples
+
+rules[1]:
+  - "Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration examples in this skill (and target profile if present) before finalizing. Do not assign severity intuitively."
 
 scoring_rubric:
   impact:

@@ -1,5 +1,5 @@
 id: apply-checklist
-version: 1.1.0
+version: 1.2.0
 capability: "Given a checklist (from a resource) and a set of items (functions, crate components, code paths), iterate every item against every checklist entry, produce a verdict matrix, and verify completeness"
 
 description: "A reusable skill for systematic checklist application. The checklist content comes from a resource; the item set comes from a prior enumeration step. This skill defines the iteration protocol, verdict types (PASS/FAIL/NA), evidence requirements, and completeness verification. It prevents skimming by requiring an explicit entry for every item x checklist combination."
