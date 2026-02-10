@@ -1,9 +1,9 @@
 (* =========================================================================
-   TOON v3 Activity Grammar
+   Activity Grammar
    Version: 3.0.0
    Date:    2026-02-10
 
-   Formal EBNF grammar for TOON v3 activity files. Defines the syntax for
+   Formal EBNF grammar for activity files. Defines the syntax for
    deterministic flow composition over independent primitives (steps,
    decisions, loops).
 

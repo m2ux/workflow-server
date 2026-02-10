@@ -1,17 +1,17 @@
 /**
- * TOON v3 Semantic Constraints
+ * Activity Semantic Constraints
  * Version: 3.0.0
  * Date:    2026-02-10
  *
  * Alloy specification defining structural and semantic constraints for
- * TOON v3 activity files. Covers provenance, symbol uniqueness, flow
- * structure, loop behavior, decision validation, terminal semantics,
- * and variable scoping.
+ * activity files. Covers provenance, symbol uniqueness, flow structure,
+ * loop behavior, decision validation, terminal semantics, and variable
+ * scoping.
  *
  * Reference: .engineering/artifacts/planning/2026-02-10-toon-v3-schema-specification/
  */
 
-module toon_v3
+module activity
 
 -- ===================================================================
 -- Signatures
