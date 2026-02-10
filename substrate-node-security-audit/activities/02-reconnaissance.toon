@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 2.1.0
+version: 2.3.0
 name: Reconnaissance
 description: "Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. This is §1.2 of the audit template. Fully automated — no user checkpoints."
 problem: The agent needs a complete mental model of the system before detailed review can begin.
@@ -20,7 +20,7 @@ rules[6]:
   - "Enumerate consensus-critical configuration structs per the target profile. Record missing constructor invariant validation as reconnaissance leads assigned to the node agent."
 entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2)
-steps[10]:
+steps[12]:
   - id: identify-crates
     name: Identify All Crates
     skill: map-codebase
@@ -73,10 +73,18 @@ steps[10]:
     name: Build Function Registry
     skill: build-function-registry
     description: "Enumerate critical functions for all priority-1/2 crates."
+  - id: map-vulnerability-domains
+    name: Map Vulnerability Domains
+    skill: map-vulnerability-domains
+    description: "For each §3 category, identify which codebase patterns trigger it and where. Produces a domain map partitioned by crate for sub-agent distribution."
   - id: assign-agent-groups
     name: Assign Agent Groups
     skill: dispatch-sub-agents
     description: "Assign crates to sub-agent groups and identify cross-crate supplementary files."
+  - id: route-reconnaissance-leads
+    name: Route Reconnaissance Leads to Agents
+    skill: dispatch-sub-agents
+    description: "Produce a leads-to-agent routing table. Every pattern, potential issue, or observation noted during reconnaissance steps MUST be explicitly assigned to a specific sub-agent ID. Unrouted leads are lost."
 transitions[1]{to,isDefault}:
   primary-audit,true
 exitActions[2]{action,message}:
@@ -88,13 +96,15 @@ outcome[5]:
   - Consensus-critical paths identified
   - Function registry built for priority-1 and priority-2 crates
   - Agent groups assigned with cross-crate supplement mappings
-context_to_preserve[6]:
+context_to_preserve[8]:
   - crate_map - Classification of all crates by type and priority
   - function_registry - Registry of critical functions per crate
   - trust_boundaries - List of identified trust boundaries
   - agent_assignments - Crate-to-agent-group assignments with cross-crate supplement files noted
   - agents_assigned - Total count of agents in the assignment roster (used by dispatch completeness gate)
   - large_files - List of .rs files >200 lines sorted by size
+  - vulnerability_domain_map - Per-class list of codebase locations triggering each §3 category, partitioned by crate
+  - leads_routing - Per-lead table mapping each reconnaissance observation to its assigned sub-agent
 artifacts[1]:
   - id: readme
     name: README.md

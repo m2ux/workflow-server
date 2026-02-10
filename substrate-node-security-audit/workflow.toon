@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.7.0
+version: 4.9.0
 title: Security Audit Workflow
 description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, and per-function toolkit matrices."
 author: m2ux
@@ -14,7 +14,7 @@ rules[20]:
   - "PREREQUISITE: Load resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
   - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions."
   - "The audit prompt template defines the checklist — the workflow defines the execution phases"
-  - "Severity scoring MUST use the Impact x Feasibility rubric with calibration examples from the target profile, not intuitive assignment"
+  - "Severity scoring MUST use the Impact x Feasibility rubric, not intuitive assignment. CALIBRATION: If the target profile includes a severity benchmark table, use it as calibration anchors. DIVERGENCE GATE: If a finding diverges by >=2 levels from a matching benchmark, the benchmark severity is the floor. If no benchmark table exists, apply the rubric's common calibration error guidance (operational hazards: F>=3 when the trigger occurs without an attacker; shared resources with external consumers: F>=3)."
   - "Every PASS in the scratchpad MUST cite specific code — bare PASSes are invalid"
   - "Every agent finding MUST appear in the structured merge table and map to a report finding number"
   - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
