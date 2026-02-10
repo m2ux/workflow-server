@@ -1,0 +1,129 @@
+(* =========================================================================
+   TOON v3 Activity Grammar
+   Version: 3.0.0
+   Date:    2026-02-10
+
+   Formal EBNF grammar for TOON v3 activity files. Defines the syntax for
+   deterministic flow composition over independent primitives (steps,
+   decisions, loops).
+
+   Reference: .engineering/artifacts/planning/2026-02-10-toon-v3-schema-specification/
+   ========================================================================= *)
+
+(* ===== Top-level structure ===== *)
+
+Activity        ::= Header InputsDecl? Primitives Flows
+
+Header          ::= 'id:' Id NEWLINE
+                     'version:' Version NEWLINE
+                     'description:' STRING NEWLINE
+
+InputsDecl      ::= 'inputs:' IdList NEWLINE
+
+Primitives      ::= Steps? Decisions? Loops?
+
+(* ===== Steps ===== *)
+(* A step is a unit of work. Trivial steps have no skill binding.
+   Non-trivial steps reference a skill by ID; the skill definition
+   (separate file) declares inputs, outputs, and rules.
+   Input resolution is implicit via the scoping chain. *)
+
+Steps           ::= 'steps:' NEWLINE StepDef+
+StepDef         ::= INDENT Id ':' NEWLINE StepBody
+StepBody        ::= INDENT2 'description:' STRING NEWLINE
+                     SkillRef?
+
+SkillRef        ::= INDENT2 'skill:' Id NEWLINE
+
+(* ===== Decisions ===== *)
+(* A decision is a branch point. Three forms:
+   - Interactive: has message, branches are user options
+   - Variable:    multi-way match on a named variable
+   - Condition:   boolean algebra with true/false branches
+
+   Branches rejoin after the decision unless they contain a terminal
+   instruction (break, activity:). Empty branches are pass-through.
+   Branchless interactive decisions are acknowledgment gates.
+   Self-reference creates retry loops. *)
+
+Decisions       ::= 'decisions:' NEWLINE DecisionDef+
+DecisionDef     ::= INDENT Id ':' NEWLINE DecisionBody
+
+DecisionBody    ::= InteractiveBody
+                   | VariableBody
+                   | ConditionBody
+
+InteractiveBody ::= INDENT2 'message:' STRING NEWLINE
+                     Branch*
+
+VariableBody    ::= INDENT2 'variable:' Id NEWLINE
+                     VarBranch+
+                     DefaultBranch?
+
+ConditionBody   ::= INDENT2 'condition:' BoolExpr NEWLINE
+                     INDENT3 'true:' NEWLINE FlowFragment
+                     (INDENT3 'false:' NEWLINE FlowFragment)?
+
+Branch          ::= INDENT2 Id ':' NEWLINE FlowFragment?
+VarBranch       ::= INDENT3 Id ':' NEWLINE FlowFragment?
+DefaultBranch   ::= INDENT3 'default:' NEWLINE FlowFragment
+
+(* ===== Loops ===== *)
+(* Only forEach is supported. While-like behavior is achieved through
+   decision self-reference. break exits the innermost enclosing loop. *)
+
+Loops           ::= 'loops:' NEWLINE LoopDef+
+LoopDef         ::= INDENT Id ':' NEWLINE LoopBody
+LoopBody        ::= INDENT2 'type: forEach' NEWLINE
+                     INDENT2 'variable:' Id NEWLINE
+                     INDENT2 'over:' Id NEWLINE
+                     (INDENT2 'maxIterations:' NUMBER NEWLINE)?
+                     INDENT2 'flow:' Id NEWLINE
+
+(* ===== Flows ===== *)
+(* Flows compose primitives into deterministic sequences.
+   Every activity must have a 'main' flow (entry point).
+   Additional named flows are referenced by loops or decision branches. *)
+
+Flows           ::= 'flows:' NEWLINE FlowDef+
+FlowDef         ::= INDENT Id ':' NEWLINE FlowItems
+FlowItems       ::= (INDENT2 FlowItem NEWLINE)+
+
+FlowItem        ::= '- step:' Id
+                   | '- decision:' Id
+                   | '- loop:' Id
+                   | '- flow:' Id
+                   | '- message:' STRING
+                   | '- activity:' Id
+                   | '- break'
+
+FlowFragment    ::= (INDENT FlowItem NEWLINE)+
+
+(* ===== Boolean algebra ===== *)
+(* Used in condition-form decisions. Operators: ==, !=, &&, ||, !
+   Parentheses for grouping. Operates on variables resolved via
+   the scoping chain. *)
+
+BoolExpr        ::= BoolOr
+BoolOr          ::= BoolAnd ('||' BoolAnd)*
+BoolAnd         ::= BoolUnary ('&&' BoolUnary)*
+BoolUnary       ::= '!' BoolUnary
+                   | '(' BoolExpr ')'
+                   | Comparison
+Comparison      ::= Id ('==' | '!=') Value
+
+(* ===== Terminals ===== *)
+
+Value           ::= STRING | 'true' | 'false' | 'null' | NUMBER
+Id              ::= LETTER_LC (LETTER_LC | DIGIT | '-')*
+QualifiedId     ::= DIGIT+ '.' Id '.' Id
+IdList          ::= (Id | QualifiedId) (',' (Id | QualifiedId))*
+Version         ::= DIGIT+ '.' DIGIT+ '.' DIGIT+
+STRING          ::= '"' [^"]* '"'
+NUMBER          ::= DIGIT+
+NEWLINE         ::= '\n'
+INDENT          ::= '  '
+INDENT2         ::= '    '
+INDENT3         ::= '      '
+LETTER_LC       ::= [a-z]
+DIGIT           ::= [0-9]
