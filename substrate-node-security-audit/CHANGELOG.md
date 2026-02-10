@@ -2,6 +2,49 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.12.0 (2026-02-10) — Cross-Project Vulnerability Pattern Integration
+
+Integrates 12 new vulnerability patterns (V1-V10, V13, V16) derived from cross-project analysis of 20 professional Substrate audit reports (Trail of Bits, SlowMist, Hacken, Halborn, Veridise, SRLabs, Zellic, Quantstamp, Code4Arena, CoinFabrik, Oak Security). Patterns split into two tracks by detection mode.
+
+**Track 1 — Mechanical checks (resource 05, executed by Group B):**
+- +Check 19: Ignored Balance Primitive Return Values (V2) — `unreserve`/`slash` return values discarded
+- +Check 20: Unbounded Vec in Extrinsic Parameters (V3) — `Vec<T>` instead of `BoundedVec`
+- +Check 21: Unit-Type Trait Silencing in Runtime Config (V5) — `type X = ()` disabling security mechanisms
+- +Check 22: Dangerous Semantic Defaults on Storage Lookup (V7) — zero-timestamp, wrong-decimal defaults
+- +Check 23: Silent Error Swallowing in Hook Financial Ops (V8) — `if let Ok` without `else` on Currency ops
+- +Check 24: Narrowing Type Casts Without Bounds Check (V16) — `as u8`/`as u32` truncation
+
+**Track 2 — Reasoning patterns (new resource 07, consumed by architectural analysis sub-agent):**
+- NEW resource 07 (vulnerability-pattern-vocabulary.md): 6 named patterns (V1, V4, V6, V9, V10, V13) with trigger conditions and FINDING criteria, consumed during emergent domain identification
+
+**Activity changes:**
+- sub-architectural-analysis (1.1.0 → 1.2.0): identify-emergent-domains step references resource 07
+
+**Design rationale:**
+- Mechanical patterns (grep-detectable) go in resource 05 with full Search/Verify/FAIL structure — Group B needs this to produce hits
+- Reasoning patterns (require data-flow tracing or cross-function comparison) go in a sparse vocabulary resource — the architectural sub-agent needs recognition aids, not grep strings
+- Zero impact on Group A, Group D, or orchestrator context
+
+---
+
+## v4.11.0 (2026-02-10) — External Security Pattern Integration
+
+Integrates 3 of 8 gaps identified from cross-project security pattern analysis (SRLabs, MixBytes, SlowMist, CoinFabrik Scout Substrate Dataset — 20 audited projects, 14 sources). The remaining 5 gaps are either already covered by the architectural analysis sub-agent, out of scope, or inapplicable.
+
+**Resource changes:**
+- resource 05 (static analysis patterns): +Check 17 (Storage Deposit Enforcement), +Check 18 (External Data Freshness Validation)
+
+**Activity changes:**
+- sub-architectural-analysis (1.0.0 → 1.1.0): build-privilege-map step extended to enumerate runtime configuration constants affecting security boundaries
+
+**Integration rationale:**
+- Check 17 addresses the second most common Substrate audit finding category (SRLabs #5: missing storage deposits). Mechanical, executed by Group B, zero impact on other agents.
+- Check 18 addresses a cross-project pattern (Trail of Bits / Parallel: oracle timestamp silently discarded). Mechanical, executed by Group B.
+- Runtime config surface review (SRLabs #2) folded into the existing privilege map step — no new step, no new rule.
+- Gaps 2 (transactional), 3 (RPC security), 5 (P2P), 6 (chain extensions), 8 (admin immutability) deferred: covered by architectural analysis, out of scope, or inapplicable.
+
+---
+
 ## v4.10.0 (2026-02-10) — Architectural Analysis Sub-Agent
 
 Introduces a dedicated security architecture analysis sub-agent dispatched during reconnaissance. Separates architectural reasoning (sub-agent) from mechanical domain binding (skill), following the orchestrator role discipline principle.

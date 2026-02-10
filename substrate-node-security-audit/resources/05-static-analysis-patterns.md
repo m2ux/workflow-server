@@ -218,6 +218,55 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Relationship to Genesis Divergence:** This is a SEPARATE finding from feature-gated genesis digests (Check 5 / §3.5). Genesis divergence produces different genesis hashes; host function divergence produces different Wasm execution environments. Both cause consensus failure between heterogeneous builds, but through different mechanisms.
 - **Note:** Feature-gated genesis digests and feature-gated host functions are two independent consensus-divergence vectors from feature flags. Both must be checked separately.
 
+### Check 17: Storage Deposit Enforcement
+
+- **Search:** `::insert(`, `::append(`, `::mutate(` in pallet source files (not runtime config)
+- **Verify:** For each storage write site in a user-callable extrinsic (not hooks, not root-only), verify a storage deposit (`T::Currency::reserve`, `T::NativeBalance::hold`, or custom deposit mechanism) is charged proportional to the data stored.
+- **FAIL if:** A user-callable extrinsic writes to storage without charging a deposit. Dust account and state-growth DoS vectors arise from free storage writes.
+- **Scope:** Pallet extrinsics only. Hook writes (`on_initialize`, `on_finalize`) and root-only administrative calls are excluded.
+
+### Check 18: External Data Freshness Validation
+
+- **Search:** Functions that return tuples containing a timestamp or `updated_at` field alongside a value (price, rate, state). Typical patterns: `get_price`, `get_rate`, `fetch_data`, oracle trait implementations.
+- **Verify:** The timestamp component is consumed by the caller (compared against current time, checked for staleness).
+- **FAIL if:** The timestamp is destructured away (`let (value, _) = ...`) or the variable is assigned but never read. Stale external data (oracle prices, exchange rates) used without freshness checks can produce incorrect valuations.
+
+### Check 19: Ignored Balance Primitive Return Values
+
+- **Search:** `T::Currency::unreserve(`, `T::Currency::slash(`, `T::Currency::repatriate_reserved(` in all pallet source files
+- **Verify:** The return value is assigned to a variable AND that variable is subsequently checked or used. `unreserve` returns the amount that could NOT be unreserved (not a `Result`); `slash` returns the unslashable amount.
+- **FAIL if:** The return value is discarded (no `let x =` assignment) or assigned to `_`. Also FAIL if `if let Ok(...) = Currency::deposit_into_existing(...)` has no `else` clause in hook code (`on_initialize`, `on_finalize`).
+
+### Check 20: Unbounded Vec in Extrinsic Parameters
+
+- **Search:** `Vec<` in any `#[pallet::call]` function signature, and `Vec<` in `#[pallet::event]` definitions
+- **Verify:** The Vec is either replaced with `BoundedVec<T, MaxLen>`, or an explicit length check (`ensure!(vec.len() <= MAX, ...)`) occurs before any iteration or storage write.
+- **FAIL if:** A user-callable extrinsic accepts an unbounded `Vec<T>` parameter without a length guard. Root-only extrinsics are lower priority but should still be bounded.
+
+### Check 21: Unit-Type Trait Silencing in Runtime Config
+
+- **Search:** `type\s+\w+\s*=\s*\(\)` and `NoPriceFor`, `NoFilter`, `NoFee` in runtime configuration files
+- **Verify:** For each match, determine whether the associated type controls a security-relevant mechanism (fee collection, call filtering, weight metering, message pricing). `()` implementations of non-security traits (e.g., `type Event = ()` in test mocks) are acceptable.
+- **FAIL if:** A security-critical associated type is set to `()` or a known no-op type in a production runtime configuration.
+
+### Check 22: Dangerous Semantic Defaults on Storage Lookup
+
+- **Search:** `unwrap_or(0`, `unwrap_or_default()`, `value_or_default` on storage reads where the value represents a timestamp, decimal precision, exchange rate, or price
+- **Verify:** The default value is semantically valid for the domain. Zero is not a valid timestamp (epoch 1970). Default decimal precision may not match the actual asset.
+- **FAIL if:** A storage lookup returns a domain-invalid default that is subsequently used in calculations (division, multiplication, time comparison) without an explicit initialization check.
+
+### Check 23: Silent Error Swallowing in Hook Financial Operations
+
+- **Search:** `if let Ok` in `on_initialize`, `on_finalize`, `on_idle` functions, specifically on `Currency::deposit`, `Currency::transfer`, `Currency::withdraw`, or `mint` operations
+- **Verify:** The `else` branch either emits an event, increments an error counter, or is explicitly documented as intentionally silent.
+- **FAIL if:** A financial operation in a hook uses `if let Ok(...)` with no `else` clause. The inverse of the panic-path problem: silent failure drops funds or rewards without any observable signal.
+
+### Check 24: Narrowing Type Casts Without Bounds Check
+
+- **Search:** `as u8`, `as u16`, `as u32` (excluding test files), and `.as_usize()` on U256/U128 types
+- **Verify:** The source value is bounded before the cast (e.g., `ensure!(val <= u32::MAX as u128, ...)`) or the cast uses `try_into()` with error handling.
+- **FAIL if:** An explicit `as` narrowing cast is performed without a preceding bounds check. Clippy lint `cast_possible_truncation` catches many of these.
+
 ---
 
 ## Aggregation Rules
