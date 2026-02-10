@@ -1238,7 +1238,6 @@ The skill schema (`skill.schema.json`) defines agent capabilities for workflow e
   "id": "workflow-execution",
   "version": "2.0.0",
   "capability": "Execute workflows from start to completion with consistent tool usage",
-  "execution_pattern": {},
   "tools": {},
   "state": {},
   "errors": {}
@@ -1259,37 +1258,32 @@ The skill schema (`skill.schema.json`) defines agent capabilities for workflow e
 |----------|------|-------------|
 | `description` | string | Detailed skill description |
 | `architecture` | object | Architectural principles and layers |
-| `execution_pattern` | object | Tool call sequences for different stages |
 | `tools` | object | Tool definitions and usage patterns |
 | `flow` | string[] | Ordered execution steps |
 | `matching` | object | Goal-to-activity matching strategies |
 | `state` | object | State structure and update patterns |
 | `interpretation` | object | How to interpret workflow constructs |
-| `rules` | string[] | Skill-level rules and constraints agents must follow when executing this skill |
+| `rules` | object | Flat name-value pairs: each key is a rule name (e.g. configuration-invariant); each value is a single rule string. |
 | `errors` | object | Error definitions and recovery strategies |
+| `inputs` | array | Inputs the skill expects from context: array of items. Each item has **id** (required; hyphen-delimited), optional **description**, **required**, **default**. When a protocol step uses an existing artifact (e.g. loads from a path), the skill MUST declare one or more associated input entries. Mirrors output structure. |
+| `protocol` | object | Phase-keyed steps only: each key is a step/phase id (e.g. `load-checklist[1]`), value is an array of imperative bullet strings. No `description` in protocol (use skill-level description). |
+| `output` | array | What the skill produces: array of output items. Each item has **id** (required; generic hyphen-delimited identifier, not a filename), optional **description**, optional **components** (named object), and optional **artifact** (when present: **name** = filename to use when persisting, e.g. `01-audit-report.md`). |
+| `resources` | string[] | Resource indices or IDs this skill depends on (e.g. "02", "04", "08") |
 
-### Execution Pattern
+### Protocol
 
-Defines the sequence of tool calls for different execution stages:
+Optional structured procedure: step/phase keys only (no `description` in protocol; use the skill-level `description`). Each key is a step identifier (TOON array keys use a `[N]` suffix, e.g. `load-checklist[1]`); each value is an array of imperative bullet strings for that step.
 
 ```json
 {
-  "execution_pattern": {
-    "start": ["list_workflows", "get_workflow", "list_workflow_resources"],
-    "per_activity": ["get_workflow_activity", "get_checkpoint", "get_resource"],
-    "transitions": ["validate_transition"]
+  "protocol": {
+    "load-checklist[1]": ["Read the checklist from the resource.", "Verify version matches workflow."],
+    "execute-step[1]": ["Run the step logic.", "Record outcome."]
   }
 }
 ```
 
-| Field | Purpose |
-|-------|---------|
-| `start` | Tools to call at workflow start |
-| `bootstrap` | Initial bootstrap tools |
-| `per_activity` | Tools to call for each activity |
-| `skill_loading` | Tools for loading skills |
-| `discovery` | Tools for resource discovery |
-| `transitions` | Tools for activity transitions |
+Bullets that contain a colon in the text must be quoted in TOON so the parser treats them as a single string.
 
 ### Tool Definitions
 

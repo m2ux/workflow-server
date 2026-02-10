@@ -292,6 +292,77 @@
       },
       "additionalProperties": true
     },
+    "inputItemDefinition": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining skills." },
+        "description": { "type": "string", "description": "Human-readable description of this input" },
+        "required": { "type": "boolean", "description": "Whether this input must be supplied" },
+        "default": { "description": "Default value when not supplied" }
+      },
+      "required": [ "id" ],
+      "additionalProperties": true,
+      "description": "Single input entry: id (required, hyphen-delimited), optional description, required, and default"
+    },
+    "protocolStep": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "inputsDefinition": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/inputItemDefinition" },
+      "description": "Inputs the skill expects from context: array of named items (mirrors output structure for deterministic binding). When a protocol step uses an existing artifact (e.g. loads from a path or file), the skill MUST declare one or more associated input entries that supply that artifact or path."
+    },
+    "protocolDefinition": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Ordered list of imperative bullets for this step or phase."
+      },
+      "description": "Phase- or step-keyed procedure: each key is the step/phase name; each value is an ordered array of imperative bullets. Skill-level description is at the skill root, not in protocol."
+    },
+    "rulesDefinition": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "description": "Rule text for this rule name." },
+      "description": "Flat name-value pairs: each key is a rule name (e.g. configuration-invariant); each value is a single rule string."
+    },
+    "outputComponentsDefinition": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Named output components: each key is a component id, value is the spec or description for that component (mirrors inputs structure)"
+    },
+    "outputArtifact": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Artifact filename when this output is persisted (e.g. 01-audit-report.md)." }
+      },
+      "required": [ "name" ],
+      "additionalProperties": true,
+      "description": "Optional. When present, defines the artifact name to create when persisting this output."
+    },
+    "outputItemDefinition": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename." },
+        "description": { "type": "string", "description": "Human-readable description of this output" },
+        "components": { "$ref": "#/definitions/outputComponentsDefinition" },
+        "artifact": { "$ref": "#/definitions/outputArtifact", "description": "Optional. When populated, specifies the artifact name to create when persisting this output." }
+      },
+      "required": [ "id" ],
+      "additionalProperties": true,
+      "description": "Single output entry: id (required, generic hyphen-delimited), optional description, components, and artifact (for persistence)"
+    },
+    "outputDefinition": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/outputItemDefinition" },
+      "description": "What the skill produces: one or more named outputs, each with optional name, description, and components"
+    },
     "skill": {
       "type": "object",
       "properties": {
@@ -314,9 +385,6 @@
         },
         "architecture": {
           "$ref": "#/definitions/architecture"
-        },
-        "execution_pattern": {
-          "$ref": "#/definitions/executionPattern"
         },
         "tools": {
           "type": "object",
@@ -383,9 +451,7 @@
           "$ref": "#/definitions/resumption"
         },
         "rules": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Skill-level rules and constraints that agents must follow when executing this skill"
+          "$ref": "#/definitions/rulesDefinition"
         },
         "errors": {
           "type": "object",
@@ -393,6 +459,14 @@
             "$ref": "#/definitions/errorDefinition"
           },
           "description": "Error definitions and recovery strategies"
+        },
+        "inputs": { "$ref": "#/definitions/inputsDefinition" },
+        "protocol": { "$ref": "#/definitions/protocolDefinition" },
+        "output": { "$ref": "#/definitions/outputDefinition" },
+        "resources": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Resource indices or IDs this skill depends on (e.g. 02, 04, 08)"
         }
       },
       "required": ["id", "version", "capability"],

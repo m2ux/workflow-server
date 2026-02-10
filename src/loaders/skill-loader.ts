@@ -5,6 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logInfo } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
+import type { Skill } from '../schema/skill.schema.js';
 
 /** The meta workflow contains universal skills */
 const META_WORKFLOW_ID = 'meta';
@@ -38,31 +39,6 @@ async function findSkillFile(skillDir: string, skillId: string): Promise<string 
   } catch {
     return null;
   }
-}
-
-export interface Skill {
-  id: string;
-  version: string;
-  capability: string;
-  execution_pattern: {
-    start: string[];
-    per_activity: string[];
-    transitions: string[];
-  };
-  tools: Record<string, {
-    when: string;
-    returns: string;
-    preserve?: string[];
-    next?: string;
-    action?: string;
-  }>;
-  state: {
-    track: string[];
-    initialize: string;
-    update_on: Record<string, string>;
-  };
-  interpretation: Record<string, string>;
-  errors: Record<string, { cause: string; recovery: string }>;
 }
 
 /** Get the universal skills directory (meta workflow skills/) */

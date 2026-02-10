@@ -96,13 +96,57 @@ export const ResumptionSchema = z.object({
 }).passthrough();
 export type Resumption = z.infer<typeof ResumptionSchema>;
 
+export const InputItemDefinitionSchema = z.object({
+  id: z.string().describe('Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining skills.'),
+  description: z.string().optional().describe('Human-readable description of this input'),
+  required: z.boolean().optional().describe('Whether this input must be supplied'),
+  default: z.unknown().optional().describe('Default value when not supplied'),
+}).passthrough();
+export type InputItemDefinition = z.infer<typeof InputItemDefinitionSchema>;
+
+export const ProtocolStepSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+}).passthrough();
+export type ProtocolStep = z.infer<typeof ProtocolStepSchema>;
+
+export const InputsDefinitionSchema = z.array(InputItemDefinitionSchema).describe('Inputs the skill expects from context: array of named items (mirrors output structure for deterministic binding)');
+export type InputsDefinition = z.infer<typeof InputsDefinitionSchema>;
+
+/** Phase- or step-keyed procedure: each key is the step/phase name; each value is an ordered array of imperative bullets. No description in protocol — use the skill-level description. */
+export const ProtocolDefinitionSchema = z.object({}).catchall(z.array(z.string()).describe('Ordered list of imperative bullets for this step or phase.'));
+export type ProtocolDefinition = z.infer<typeof ProtocolDefinitionSchema>;
+
+/** Flat name-value rules: each key is a rule name; each value is a single rule string. */
+export const RulesDefinitionSchema = z.record(z.string().describe('Rule text for this rule name.'));
+export type RulesDefinition = z.infer<typeof RulesDefinitionSchema>;
+
+export const OutputComponentsDefinitionSchema = z.record(z.string()).describe('Named output components: each key is a component id, value is the spec or description for that component');
+export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefinitionSchema>;
+
+export const OutputArtifactSchema = z.object({
+  name: z.string().describe('Artifact filename when this output is persisted (e.g. 01-audit-report.md).'),
+}).passthrough();
+export type OutputArtifact = z.infer<typeof OutputArtifactSchema>;
+
+export const OutputItemDefinitionSchema = z.object({
+  id: z.string().describe('Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename.'),
+  description: z.string().optional().describe('Human-readable description of this output'),
+  components: OutputComponentsDefinitionSchema.optional(),
+  artifact: OutputArtifactSchema.optional().describe('Optional. When populated, specifies the artifact name to create when persisting this output.'),
+}).passthrough();
+export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
+
+export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the skill produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
+export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
+
 export const SkillSchema = z.object({
   id: z.string(),
   version: SemanticVersionSchema,
   capability: z.string(),
   description: z.string().optional(),
   architecture: ArchitectureSchema.optional(),
-  execution_pattern: ExecutionPatternSchema.optional(),
   tools: z.record(ToolDefinitionSchema).optional(),
   flow: z.array(z.string()).optional(),
   matching: MatchingSchema.optional(),
@@ -118,8 +162,12 @@ export const SkillSchema = z.object({
   status_values: z.record(z.string()).optional(),
   interpretation: InterpretationSchema.optional(),
   resumption: ResumptionSchema.optional(),
-  rules: z.array(z.string()).optional().describe('Skill-level rules and constraints that agents must follow when executing this skill'),
+  rules: RulesDefinitionSchema.optional(),
   errors: z.record(ErrorDefinitionSchema).optional(),
+  inputs: InputsDefinitionSchema.optional(),
+  protocol: ProtocolDefinitionSchema.optional(),
+  output: OutputDefinitionSchema.optional(),
+  resources: z.array(z.string()).optional().describe('Resource indices or IDs this skill depends on (e.g. 02, 04, 08)'),
 }).passthrough();
 export type Skill = z.infer<typeof SkillSchema>;
 
