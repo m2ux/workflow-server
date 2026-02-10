@@ -2,6 +2,34 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.10.0 (2026-02-10) — Architectural Analysis Sub-Agent
+
+Introduces a dedicated security architecture analysis sub-agent dispatched during reconnaissance. Separates architectural reasoning (sub-agent) from mechanical domain binding (skill), following the orchestrator role discipline principle.
+
+**Architectural change — Security Architecture Sub-Agent:**
+- NEW activity `sub-architectural-analysis` (13-sub-architectural-analysis.toon): A sub-agent dispatched during reconnaissance that performs security-oriented architectural decomposition. Receives the crate map, file inventory, and trust boundaries; returns four structured artifacts:
+  1. **Component Interaction Model** — per-component-pair data flows, trust assumptions, and required security properties
+  2. **Privilege and Authority Map** — per-operation authority requirements and verification points
+  3. **Candidate Point List** — ranked locations where code complexity concentrates (Dowd methodology)
+  4. **Emergent Vulnerability Domains** — security-relevant properties that don't map to any §3 checklist item
+
+- REFACTORED skill `map-vulnerability-domains` (1.0.0 → 2.0.0): Now a mechanical binding step that connects architectural artifacts to §3 verification procedures. No longer performs reasoning — consumes the sub-agent's output. New input: `emergent_domains` for ad-hoc review assignments beyond §3.
+
+**Reconnaissance changes (2.3.0 → 2.4.0):**
+- +1 step: `dispatch-architectural-analysis` — dispatched after function registry, before domain mapping
+- +1 context variable: `architectural_analysis`
+- +1 outcome: security architecture analyzed
+- Domain mapping step description updated to reflect binding (not reasoning) role
+
+**Design rationale:**
+- The orchestrator's role is coordination, not security reasoning (ORCHESTRATOR ROLE DISCIPLINE rule)
+- Architectural analysis benefits from a dedicated context window focused on security reasoning over component interactions
+- The sub-agent can be dispatched after crate identification completes, running while the function registry is being built
+- The output is structured artifacts consumed downstream — same pattern as Group A sub-agents producing findings for the merge step
+- Emergent domains extend coverage beyond the finite §3 checklist, addressing a structural limitation of checklist-driven review
+
+---
+
 ## v4.9.0 (2026-02-09) — Overfitting Remediation, Vulnerability Domain Mapping
 
 Addresses structural overfitting identified in the S18 overfitting analysis. Replaces 22 target-specific rule references with domain-map-driven generics, removes 11 session statistics from rules/skills/resources, and relocates midnight-specific content to the target profile.

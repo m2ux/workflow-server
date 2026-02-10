@@ -1,0 +1,50 @@
+id: sub-architectural-analysis
+version: 1.0.0
+name: "Sub-Agent: Security Architecture Analysis"
+description: "Dispatched during reconnaissance to produce a security-oriented architectural decomposition. The sub-agent receives the crate map, file inventory, and trust boundary list, then reasons about component interactions, trust relationships, privilege boundaries, and candidate points. Output is three structured artifacts consumed by the domain mapping step."
+problem: "The orchestrator's reconnaissance produces an asset inventory (what exists) but not a security model (what could go wrong and why). Vulnerability domain mapping needs architectural properties — component interactions, trust assumptions, privilege models — that require dedicated reasoning, not mechanical enumeration. Without this step, domain mapping falls back to pattern-matching against a predefined checklist rather than deriving applicable vulnerability classes from the system's structure."
+recognition[3]:
+  - security architecture analysis
+  - threat model construction
+  - architectural decomposition
+skills:
+  primary: execute-sub-agent
+required: false
+estimatedTime: 10-20m
+
+rules[5]:
+  - "This activity is dispatched by the orchestrator during reconnaissance — it does NOT appear in the main workflow transition graph"
+  - "The sub-agent receives context variables: crate_map, file_inventory, trust_boundaries, consensus_paths, pallet_hooks, config_structs (all from prior reconnaissance steps)"
+  - "The sub-agent MUST read the top 5 files by line count to inform architectural reasoning — analysis based solely on the crate map without reading code produces superficial output"
+  - "Every component interaction in the model must cite at least one code-level observation (function call, type dependency, shared resource). Interactions inferred from naming conventions alone are insufficient."
+  - "The output is consumed by the map-vulnerability-domains skill. Candidate points feed sub-agent prioritization. Emergent domains feed ad-hoc review assignments."
+
+steps[4]:
+  - id: build-interaction-model
+    name: Build Component Interaction Model
+    required: true
+    description: "For each pair of interacting components (crates, modules, or subsystems), document: (a) what data flows between them and in which direction, (b) what trust assumptions exist at the boundary (does the consumer validate input from the producer?), (c) what security property must hold for the interaction to be safe (e.g., 'cursor must advance monotonically', 'pool must not be exhaustible by external consumers'). Focus on cross-crate interactions — intra-crate interactions are covered by Group A agents."
+  - id: build-privilege-map
+    name: Build Privilege and Authority Map
+    required: true
+    description: "For each state-modifying operation category (block production, inherent injection, extrinsic dispatch, genesis construction, configuration loading, external data ingestion), document: (a) what authority is required, (b) where that authority is verified in code, (c) what happens if verification is absent, bypassable, or inconsistent across code paths. Pay attention to operations that appear to require authority but are actually unrestricted (e.g., inherent data controlled by block author, config values from unvalidated files)."
+  - id: identify-candidate-points
+    name: Identify Candidate Points
+    required: true
+    description: "Identify locations where code complexity concentrates and bugs cluster. Candidate points include: functions with multiple lock acquisitions, nested match on external/deserialized data, unsafe blocks, error-handling switch points (match on Result/Option with mixed propagation), codec deserialization sites, and functions that bridge architectural layers (host API calls, FFI boundaries, RPC-to-storage paths). Rank by estimated security relevance: a candidate point at a trust boundary outranks one in internal logic."
+  - id: identify-emergent-domains
+    name: Identify Emergent Vulnerability Domains
+    required: true
+    description: "From the interaction model and privilege map, identify vulnerability domains that do NOT map to any existing §3 checklist item. These are security-relevant architectural properties that emerge from the specific system's structure. For each, document: the property, why it matters, which components are involved, and a suggested verification approach. These become ad-hoc review assignments for Group A agents, supplementing the §3 checklist."
+
+outcome[4]:
+  - Component interaction model with trust assumptions and required security properties
+  - Privilege and authority map with verification points
+  - Ranked candidate point list for sub-agent prioritization
+  - Emergent vulnerability domains not covered by §3 checklist
+
+context_to_preserve[4]:
+  - interaction_model - Per-component-pair security property requirements
+  - privilege_map - Per-operation authority requirements and verification points
+  - candidate_points - Ranked list of high-complexity security-relevant code locations
+  - emergent_domains - Vulnerability domains derived from architecture that extend beyond §3
