@@ -2,44 +2,47 @@ id: execute-sub-agent
 version: 1.0.0
 capability: "Bootstrap the workflow-server, load an assigned activity, follow its steps sequentially, and return structured output"
 
-description: "This skill defines how a sub-agent (dispatched by the orchestrator during primary-audit) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. It replaces free-form prompt instructions with structured workflow execution."
+description: "This skill defines how a sub-agent (dispatched by the orchestrator during primary-audit) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the Task prompt."
 
-bootstrap:
-  description: "The sub-agent must bootstrap the workflow-server before starting its review."
-  steps[2]:
-    - "Call get_rules() to load agent behavioral guidelines"
+resources[1]:
+  - "04"
+
+protocol:
+  bootstrap-get-rules[1]:
+    - Call get_rules() to load agent behavioral guidelines
+  bootstrap-get-activity[1]:
     - "Call get_workflow_activity({ workflow_id: 'substrate-node-security-audit', activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps"
-  note: "The orchestrator passes the activity_id and context variables in the sub-agent's Task prompt. The sub-agent does NOT need to discover the workflow — it is told which activity to execute."
+  exec-read-steps[1]:
+    - Read the activity's steps array in order
+  exec-per-step-description[1]:
+    - For each step, read the description field to understand what is required
+  exec-produce-output[1]:
+    - Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step
+  exec-na-justification[1]:
+    - If a step cannot be completed (e.g., no StorageMaps in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip
+  exec-track-completed[1]:
+    - Track which steps have been completed in a steps_completed list
+  verify-steps-match[1]:
+    - steps_completed matches the activity's step IDs — no steps omitted
+  verify-fail-has-finding[1]:
+    - Every FAIL in checklist_coverage has a corresponding finding in the findings list
+  verify-mandatory-tables[1]:
+    - Every mandatory_tables entry is either populated or null with justification
+  verify-json-complete[1]:
+    - The output JSON is well-formed and contains all required_fields
 
-execution:
-  description: "Process each activity step sequentially."
-  protocol[5]:
-    - "Read the activity's steps array in order"
-    - "For each step, read the description field to understand what is required"
-    - "Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step"
-    - "If a step cannot be completed (e.g., no StorageMaps in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip"
-    - "Track which steps have been completed in a steps_completed list"
-
-output:
-  description: "The sub-agent must return structured JSON conforming to the output schema (resource 04)."
-  required_fields[7]:
-    - "agent_id — identifier for this agent instance (e.g., 'group-a-nto', 'group-b', 'group-d')"
-    - "activity_followed — the activity ID executed (e.g., 'sub-crate-review')"
-    - "steps_completed — list of step IDs completed (must match activity definition)"
-    - "steps_skipped — list of step IDs skipped with reasons (should be empty)"
-    - "findings — structured list of findings with required fields per finding"
-    - "checklist_coverage — per-§3-item verdicts (for crate review) or per-pattern results (for static analysis)"
-    - "mandatory_tables — all tables produced by the activity's steps, or null with justification"
-  optional_fields[1]:
-    - "reconnaissance_leads — observations that are not formal findings but should be reviewed by the orchestrator for potential elevation"
-
-self_verification:
-  description: "Before returning, the sub-agent verifies its own output completeness."
-  checks[4]:
-    - "steps_completed matches the activity's step IDs — no steps omitted"
-    - "Every FAIL in checklist_coverage has a corresponding finding in the findings list"
-    - "Every mandatory_tables entry is either populated or null with justification"
-    - "The output JSON is well-formed and contains all required_fields"
+output[1]:
+  - id: sub-agent-output
+    description: "Structured JSON conforming to resource 04 (sub-agent-output-schema)."
+    components:
+      agent_id: "identifier for this agent instance (e.g., 'group-a-nto', 'group-b', 'group-d')"
+      activity_followed: "the activity ID executed (e.g., 'sub-crate-review')"
+      steps_completed: "list of step IDs completed (must match activity definition)"
+      steps_skipped: "list of step IDs skipped with reasons (should be empty)"
+      findings: "structured list of findings with required fields per finding"
+      checklist_coverage: "per-§3-item verdicts (for crate review) or per-pattern results (for static analysis)"
+      mandatory_tables: "all tables produced by the activity's steps, or null with justification"
+      reconnaissance_leads: "observations not formal findings but for orchestrator review (optional)"
 
 errors:
   step_cannot_complete:

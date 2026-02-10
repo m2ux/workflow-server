@@ -4,46 +4,38 @@ capability: "Enumerate, classify, and trace components of a codebase to build a 
 
 description: "A reusable skill for codebase reconnaissance. Defines the enumeration protocol (what to enumerate), classification categories (how to categorize), and tracing techniques (how to map data flows and boundaries). Produces structured inventories that serve as inputs for agent assignment, function registry building, and checklist application."
 
-inputs:
-  workspace_root:
+inputs[3]:
+  - id: workspace-root
     description: "Path to the workspace Cargo.toml or equivalent project manifest"
     required: true
-  in_scope:
+  - id: in-scope
     description: "Paths to include in the analysis"
     required: true
-  out_of_scope:
+  - id: out-of-scope
     description: "Paths to exclude"
     required: false
 
 protocol:
-  description: "The codebase mapping procedure."
-  steps[7]:
-    - id: enumerate-components
-      name: Enumerate All Components
-      description: "Read the workspace manifest and enumerate every crate, module, or package. List each component explicitly by name — do not summarize or group."
-    - id: classify-components
-      name: Classify Components
-      description: "Assign each component to an architectural category. Standard categories for Substrate codebases: runtime (on-chain/Wasm), native (node binary), shared primitives, off-chain tooling. Assign priority: 1 (consensus-critical), 2 (important), 3 (lower risk), 4 (utility/docs)."
-    - id: identify-boundaries
-      name: Identify Trust Boundaries
-      description: "Enumerate every point where data enters the system from external sources or crosses an architectural boundary. Standard boundary types: RPC, inherent data, configuration files, databases, file system, native/Wasm interface, network protocol."
-    - id: identify-critical-paths
-      name: Identify Critical Paths
-      description: "Map the paths through the codebase that are consensus-critical: block production, block verification, inherent data creation and validation, genesis initialization, state transitions."
-    - id: enumerate-hooks
-      name: Enumerate Framework Hooks
-      description: "For every component that implements framework hooks (e.g., pallet hooks in Substrate: on_initialize, on_finalize, on_idle, offchain_worker), list which hooks exist and which are absent."
-    - id: trace-data-flows
-      name: Trace Data Flows
-      description: "Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites."
-    - id: identify-safety-overrides
-      name: Identify Safety Boundary Overrides
-      description: "Search for patterns that override language or framework safety analysis (e.g., unsafe impl Send/Sync in Rust, #[allow] attributes on safety lints). Each occurrence requires manual verification of the overridden invariant."
+  enumerate-components[1]:
+    - Read the workspace manifest and enumerate every crate, module, or package. List each component explicitly by name — do not summarize or group.
+  classify-components[1]:
+    - "Assign each component to an architectural category. Standard categories for Substrate codebases: runtime (on-chain/Wasm), native (node binary), shared primitives, off-chain tooling. Assign priority: 1 (consensus-critical), 2 (important), 3 (lower risk), 4 (utility/docs)."
+  identify-boundaries[1]:
+    - "Enumerate every point where data enters the system from external sources or crosses an architectural boundary. Standard boundary types: RPC, inherent data, configuration files, databases, file system, native/Wasm interface, network protocol."
+  identify-critical-paths[1]:
+    - "Map the paths through the codebase that are consensus-critical: block production, block verification, inherent data creation and validation, genesis initialization, state transitions."
+  enumerate-hooks[1]:
+    - "For every component that implements framework hooks (e.g., pallet hooks in Substrate: on_initialize, on_finalize, on_idle, offchain_worker), list which hooks exist and which are absent."
+  trace-data-flows[1]:
+    - "Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites."
+  identify-safety-overrides[1]:
+    - "Search for patterns that override language or framework safety analysis (e.g., unsafe impl Send/Sync in Rust, #[allow] attributes on safety lints). Each occurrence requires manual verification of the overridden invariant."
 
-output:
-  description: "Structured codebase map."
-  components[4]:
-    - "Component inventory: every crate/module with classification and priority"
-    - "Trust boundary map: every entry point with boundary type"
-    - "Critical path map: consensus-relevant code paths"
-    - "Data flow traces: forward and backward traces for priority-1 paths"
+output[1]:
+  - id: codebase-map
+    description: "Structured codebase map."
+    components:
+      component_inventory: "every crate/module with classification and priority"
+      trust_boundary_map: "every entry point with boundary type"
+      critical_path_map: "consensus-relevant code paths"
+      data_flow_traces: "forward and backward traces for priority-1 paths"

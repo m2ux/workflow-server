@@ -1,40 +1,29 @@
 id: write-report
-version: 1.0.0
+version: 1.1.0
 capability: Produce the final audit report artifact from the scored and elevation-verified merge table
 
-report_structure:
-  artifact: 01-audit-report.md
-  location: planning folder
+output[1]:
+  - id: audit-report
+    description: "Final audit report. Each finding uses the format below. When persisted, use artifact name."
+    artifact:
+      name: 01-audit-report.md
+    components:
+      executive_summary: "Severity distribution table, top findings summary, methodology overview"
+    methodology: "Phases executed, agent count, template version, ensemble status"
+      crate_inventory: "Table of all in-scope crates with classification, priority, and reviewing agent"
+      findings: "All numbered findings. Each: title, severity (I and F with one-sentence justifications), category, affected files with line numbers, description, suggested remediation"
+      severity_distribution: "Summary table: Critical/High/Medium/Low/Informational counts"
+      coverage_gate: "Pass/fail status, list of top files by line count with reviewing agent attribution"
+      elevation_summary: "Count of table-derived findings auto-elevated, adversarial refutations integrated"
+      dependency_scan: "cargo audit results if available"
+      finding_block_format: "### Issue {number}: {title} | **Severity:** {level} (I={impact}, F={feasibility}, avg={average}) | **Impact:** {impact} — {justification} | **Feasibility:** {feasibility} — {justification} | **Category:** {category} | **Affected Files:** {file}#{lines} | {description}"
 
-  sections[8]:
-    - id: executive-summary
-      description: "Severity distribution table, top findings summary, methodology overview"
-    - id: methodology
-      description: "Phases executed, agent count, template version, ensemble status"
-    - id: crate-inventory
-      description: "Table of all in-scope crates with classification, priority, and reviewing agent"
-    - id: findings
-      description: "All numbered findings from the merge table. Each finding includes: title, severity (I and F with one-sentence justifications), category, affected files with line numbers, description, and suggested remediation"
-    - id: severity-distribution
-      description: "Summary table: Critical/High/Medium/Low/Informational counts"
-    - id: coverage-gate
-      description: "Pass/fail status, list of top files by line count with reviewing agent attribution"
-    - id: elevation-summary
-      description: "Count of table-derived findings auto-elevated, count of adversarial refutations integrated"
-    - id: dependency-scan
-      description: "cargo audit results if available"
-
-finding_format: |
-  ### Issue {number}: {title}
-  **Severity:** {level} (I={impact}, F={feasibility}, avg={average})
-  **Impact:** {impact} — {justification}
-  **Feasibility:** {feasibility} — {justification}
-  **Category:** {category}
-  **Affected Files:** {file}#{lines}
-  {description}
-
-flow[4]:
-  - 1. Verify all merge table rows have severity scores and finding numbers
-  - 2. Organize findings by severity (Critical first, then High, Medium, Low)
-  - 3. Write each section per the structure above
-  - 4. Verify the finding count in the executive summary matches the findings section
+protocol:
+  verify-merge-table[1]:
+    - Verify all merge table rows have severity scores and finding numbers
+  organize-by-severity[1]:
+    - Organize findings by severity (Critical first, then High, Medium, Low)
+  write-sections[1]:
+    - Write each section per the structure above
+  verify-count:
+    - Verify the finding count in the executive summary matches the findings section

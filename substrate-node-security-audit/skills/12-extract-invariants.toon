@@ -4,25 +4,22 @@ capability: "For a set of priority functions, enumerate preconditions, postcondi
 
 description: "A reusable analysis skill for formal invariant extraction from source code. For each function in a priority set, identifies four categories of invariants that must hold for correctness. The resulting table serves as the basis for checklist application and cross-function comparison."
 
-inputs:
-  function_registry:
+inputs[2]:
+  - id: function-registry
     description: "Registry of priority functions to analyze (from build-function-registry skill output)"
     required: true
-  source_files:
+  - id: source-files
     description: "Source files containing the functions"
     required: true
 
 protocol:
-  description: "The invariant extraction procedure."
-  steps[2]:
-    - id: extract-per-function
-      name: Extract Invariants Per Function
-      description: "For each priority-1 function, enumerate: (a) Preconditions — what must be true about inputs; (b) Postconditions — what must be true after execution; (c) Cross-function invariants — what must hold between this function and its inverse; (d) Data source invariants — what must be true about external data consumed."
-    - id: produce-table
-      name: Produce Invariant Table
-      description: "Output a structured table: | Function | Invariant | Category (pre/post/cross/data) | Expected Enforcement | Found? | Evidence |"
+  extract-per-function[1]:
+    - "For each priority-1 function, enumerate: (a) Preconditions — what must be true about inputs; (b) Postconditions — what must be true after execution; (c) Cross-function invariants — what must hold between this function and its inverse; (d) Data source invariants — what must be true about external data consumed."
+  produce-table[1]:
+    - "Output a structured table: | Function | Invariant | Category (pre/post/cross/data) | Expected Enforcement | Found? | Evidence |"
 
-output:
-  description: "Structured invariant table."
-  components[1]:
-    - "Invariant table: one row per function-invariant pair with category, expected enforcement, and evidence"
+output[1]:
+  - id: invariant-table
+    description: "Structured invariant table."
+    components:
+      invariant_table: "one row per function-invariant pair with category, expected enforcement, and evidence"

@@ -4,58 +4,52 @@ capability: "Validate that sub-agent results meet structural completeness requir
 
 description: "A reusable verification skill for multi-agent workflows. After collecting sub-agent results, this skill defines how to check that each agent's output contains all required tables, covers all expected files, and meets structural completeness criteria. Missing outputs are flagged for targeted re-dispatch."
 
-inputs:
-  agent_results:
+resources[1]:
+  - "04"
+
+inputs[5]:
+  - id: agent-results
     description: "Collected structured outputs from sub-agents"
     required: true
-  expected_outputs:
+  - id: expected-outputs
     description: "Per-agent list of required tables, coverage criteria, and completeness checks"
     required: true
-  file_inventory:
+  - id: file-inventory
     description: "List of files that must be covered (for coverage gate verification)"
     required: false
-  dispatch_manifest:
+  - id: dispatch-manifest
     description: "Dispatch manifest from the dispatch-sub-agents skill showing assigned vs dispatched agents"
     required: false
-  agent_assignments:
+  - id: agent-assignments
     description: "Crate-to-agent-group assignments from reconnaissance"
     required: false
 
 protocol:
-  description: "The verification procedure for sub-agent output validation."
-  steps[8]:
-    - id: check-dispatch-completeness
-      name: Verify Dispatch Completeness
-      description: "If a dispatch_manifest is provided, verify every agent in the agent_assignments was dispatched and returned. Produce a dispatch status table: crate, assigned_group, agent_dispatched (yes/no), structured_output_received (yes/no). If any assigned agent was not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — the orchestrator must dispatch missing agents before proceeding."
-    - id: check-coverage-gate
-      name: Verify File Coverage (§3-Agent Distinction)
-      description: "For each .rs file exceeding 200 lines in priority-1/2 crates, check whether at least one §3-APPLYING GROUP A SUB-AGENT's output references it (via file manifest, findings, or checklist coverage). Files read ONLY during reconnaissance (by the orchestrator or reconnaissance sub-agents) do NOT satisfy the coverage gate. Produce a coverage table: file, lines, read-by-agent, agent_type (group-a/recon/none), status (COVERED/RECON-ONLY/UNREAD). Flag any file with status RECON-ONLY or UNREAD. This is a HARD STOP."
-    - id: check-mandatory-tables
-      name: Verify Mandatory Output Tables
-      description: "For each agent, check that every required table exists in the agent's result. Required tables are determined by the agent's vulnerability domain map entries: (a) §3 checklist evaluation table for all crate-review agents; (b) per-field event trace table AND event-vs-storage struct diff table for agents with §3.3 domain entries; (c) cross-function invariant table for agents with §3.2 domain entries; (d) cross-layer verification matrix for agents with cross-crate domain entries (§3.2 pagination, §3.10 timestamp); (e) genesis construction site enumeration for agents with §3.5 domain entries; (f) function enumeration table, per-function checklist matrix, and coverage attestation from the toolkit review agent. If any required table is missing or was replaced with prose, flag the agent and table for re-dispatch."
-    - id: check-structural-completeness
-      name: Verify Structural Completeness
-      description: "Check that each agent's steps_completed list matches the activity definition. Check that every FAIL verdict has a corresponding finding entry. Check that every mandatory_tables field is populated or null with justification."
-    - id: check-cross-chain-timestamp
-      name: Verify Cross-Chain Timestamp Checks
-      description: "For every Group A agent reviewing a pallet that processes inherent data from an external chain (specifically: NTO pallet, any bridge pallet), verify the agent's output includes a cross-layer timestamp verification matrix with explicit per-layer verdicts. If the agent marked §3.10 as PASS without producing this matrix, flag for re-dispatch."
-    - id: extract-table-findings
-      name: Extract Findings from Mandatory Tables
-      description: "DETERMINISTIC CELL-LEVEL SCAN: Iterate every row in every mandatory table from every agent. For each cell, apply keyword match: FAIL, DIFF, Missing, No, absent, not validated, unconditional, no guard, no check, unpaired. Each matching cell becomes a table-derived finding (source_table, cell_description, agent_id, severity=TBD). The orchestrator MUST NOT apply judgment to skip cells — all matches are extracted. Deduplication occurs later in merge-findings."
-    - id: verify-event-construction-site
-      name: Verify Event Construction Site Coverage
-      description: "For every pallet that calls deposit_event() with data derived from transaction results, verify that the Group A agent's §3.3 per-field trace table covers ALL event construction sites identified in the vulnerability domain map. If the trace table covers only one site when multiple exist, dispatch a targeted follow-up agent for the uncovered sites."
-    - id: produce-verification-report
-      name: Produce Verification Report
-      description: "Output a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status, table-derived findings from extract-table-findings step, event construction site coverage status. For each gap, recommend a targeted follow-up dispatch."
+  check-dispatch-completeness[1]:
+    - "If a dispatch_manifest is provided, verify every agent in the agent_assignments was dispatched and returned. Produce a dispatch status table: crate, assigned_group, agent_dispatched (yes/no), structured_output_received (yes/no). If any assigned agent was not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — the orchestrator must dispatch missing agents before proceeding."
+  check-coverage-gate[1]:
+    - "For each .rs file exceeding 200 lines in priority-1/2 crates, check whether at least one §3-APPLYING GROUP A SUB-AGENT's output references it (via file manifest, findings, or checklist coverage). Files read ONLY during reconnaissance (by the orchestrator or reconnaissance sub-agents) do NOT satisfy the coverage gate. Produce a coverage table: file, lines, read-by-agent, agent_type (group-a/recon/none), status (COVERED/RECON-ONLY/UNREAD). Flag any file with status RECON-ONLY or UNREAD. This is a HARD STOP."
+  check-mandatory-tables[1]:
+    - "For each agent, check that every required table exists in the agent's result. Required tables are determined by the agent's vulnerability domain map entries: (a) §3 checklist evaluation table for all crate-review agents; (b) per-field event trace table AND event-vs-storage struct diff table for agents with §3.3 domain entries; (c) cross-function invariant table for agents with §3.2 domain entries; (d) cross-layer verification matrix for agents with cross-crate domain entries (§3.2 pagination, §3.10 timestamp); (e) genesis construction site enumeration for agents with §3.5 domain entries; (f) function enumeration table, per-function checklist matrix, and coverage attestation from the toolkit review agent. If any required table is missing or was replaced with prose, flag the agent and table for re-dispatch."
+  check-structural-completeness[1]:
+    - Check that each agent's steps_completed list matches the activity definition. Check that every FAIL verdict has a corresponding finding entry. Check that every mandatory_tables field is populated or null with justification.
+  check-cross-chain-timestamp[1]:
+    - "For every Group A agent reviewing a pallet that processes inherent data from an external chain (specifically: NTO pallet, any bridge pallet), verify the agent's output includes a cross-layer timestamp verification matrix with explicit per-layer verdicts. If the agent marked §3.10 as PASS without producing this matrix, flag for re-dispatch."
+  extract-table-findings[1]:
+    - "DETERMINISTIC CELL-LEVEL SCAN: Iterate every row in every mandatory table from every agent. For each cell, apply keyword match: FAIL, DIFF, Missing, No, absent, not validated, unconditional, no guard, no check, unpaired. Each matching cell becomes a table-derived finding (source_table, cell_description, agent_id, severity=TBD). The orchestrator MUST NOT apply judgment to skip cells — all matches are extracted. Deduplication occurs later in merge-findings."
+  verify-event-construction-site[1]:
+    - For every pallet that calls deposit_event() with data derived from transaction results, verify that the Group A agent's §3.3 per-field trace table covers ALL event construction sites identified in the vulnerability domain map. If the trace table covers only one site when multiple exist, dispatch a targeted follow-up agent for the uncovered sites.
+  produce-verification-report[1]:
+    - "Output a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status, table-derived findings from extract-table-findings step, event construction site coverage status. For each gap, recommend a targeted follow-up dispatch."
 
-output:
-  description: "Verification report with gap list and re-dispatch recommendations."
-  components[4]:
-    - "Dispatch manifest: crate, assigned_group, dispatched, returned, status"
-    - "Coverage table: file, lines, agent, agent_type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD"
-    - "Missing tables list: agent_id, table_id, reason"
-    - "Re-dispatch recommendations: agent_id, scope, specific check to perform"
+output[1]:
+  - id: verification-report
+    description: "Verification report with gap list and re-dispatch recommendations."
+    components:
+      dispatch_manifest: "crate, assigned_group, dispatched, returned, status"
+      coverage_table: "file, lines, agent, agent_type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD"
+      missing_tables_list: "agent_id, table_id, reason"
+      redispatch_recommendations: "agent_id, scope, specific check to perform"
 
 errors:
   dispatch_incomplete:

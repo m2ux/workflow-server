@@ -4,33 +4,28 @@ capability: "For every storage map in a given scope, find all insert and remove 
 
 description: "A reusable skill for auditing storage lifecycle completeness in Substrate-based codebases. Finds all insert/push/append sites and all remove/take sites for each StorageMap, pairs them, flags unpaired inserts as finding leads, and checks capacity enforcement at insertion points. Optionally extends to cross-function invariant comparison (verifying that paired functions maintain the same storage invariants)."
 
-inputs:
-  scope:
+inputs[2]:
+  - id: scope
     description: "Directory scope to scan (a single crate for per-crate review, or full in-scope paths for global scan)"
     required: true
-  verify_invariants:
+  - id: verify-invariants
     description: "Whether to perform cross-function invariant comparison (e.g., do paired insert/remove functions maintain the same conditions?)"
     required: false
     default: false
 
 protocol:
-  description: "The storage lifecycle scanning procedure."
-  steps[4]:
-    - id: find-storage-declarations
-      name: Find Storage Declarations
-      description: "Enumerate every StorageMap, StorageDoubleMap, and StorageNMap in the scope."
-    - id: find-mutation-sites
-      name: Find Insert and Remove Sites
-      description: "For each storage map: find every insert()/push()/append() call site and every remove()/take() call site."
-    - id: verify-pairing
-      name: Verify Insert/Remove Pairing
-      description: "For each insert site, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each storage map with inserts, check if declared capacity constants are enforced at the insertion point."
-    - id: verify-invariants
-      name: Verify Cross-Function Invariants (optional)
-      description: "If verify_invariants is true: for pairs of functions that operate on the same storage (e.g., handle_create and handle_redemption_create), verify they maintain the same invariants — if one inserts, the other should too under the same conditions."
+  find-storage-declarations[1]:
+    - Enumerate every StorageMap, StorageDoubleMap, and StorageNMap in the scope.
+  find-mutation-sites[1]:
+    - "For each storage map: find every insert()/push()/append() call site and every remove()/take() call site."
+  verify-pairing[1]:
+    - For each insert site, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each storage map with inserts, check if declared capacity constants are enforced at the insertion point.
+  verify-invariants[1]:
+    - "If verify_invariants is true: for pairs of functions that operate on the same storage (e.g., handle_create and handle_redemption_create), verify they maintain the same invariants — if one inserts, the other should too under the same conditions."
 
-output:
-  description: "Storage lifecycle pairing table with optional invariant comparison."
-  components[2]:
-    - "Pairing table: | StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
-    - "Invariant table (optional): | StorageMap | insert() Callers | remove() Callers | Paired? | Cross-function Consistent? |"
+output[1]:
+  - id: storage-lifecycle
+    description: "Storage lifecycle pairing table with optional invariant comparison."
+    components:
+      pairing_table: "| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
+      invariant_table: "| StorageMap | insert() Callers | remove() Callers | Paired? | Cross-function Consistent? | (optional)"

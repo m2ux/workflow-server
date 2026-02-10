@@ -4,39 +4,34 @@ capability: "Take a safety claim (PASS verdict), enumerate the constituent prope
 
 description: "A reusable adversarial analysis skill. When a review produces a PASS verdict on a multi-faceted check, this skill decomposes the claim into independent properties, enumerates every instance/field/site that must satisfy each property, and produces a structured table for independent verification. The goal is to refute, not confirm."
 
-inputs:
-  pass_items:
+inputs[2]:
+  - id: pass-items
     description: "List of PASS verdicts to decompose, each with the claim text, cited evidence, and checklist reference"
     required: true
-  source_files:
+  - id: source-files
     description: "Code files to read for independent verification"
     required: true
 
-rules[5]:
-  - "This skill's role is to REFUTE safety claims, not confirm them."
-  - "Focus on §3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these checks are most susceptible to false PASSes."
-  - "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? call_addresses? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."
-  - "A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'."
-  - "Output CONFIRMED only when ALL decomposed properties are verified with code citations."
+rules:
+  refute-role: "Refute safety claims, not confirm them."
+  focus-domains: "§3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these checks are most susceptible to false PASSes."
+  events-filtered-decompose: "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? call_addresses? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."
+  cursor-guard: "A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'."
+  confirmed-only-verified: "CONFIRMED only when ALL decomposed properties are verified with code citations."
 
 protocol:
-  description: "The adversarial decomposition procedure."
-  steps[4]:
-    - id: extract-and-filter
-      name: Extract and Filter PASS Items
-      description: "Collect all PASS verdicts from agent results. Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. These items are most susceptible to first-positive-signal false PASSes."
-    - id: decompose-claims
-      name: Decompose Claims Into Properties
-      description: "For each PASS item, enumerate the specific independent properties the PASS requires to be true. A claim like 'events are filtered for failed segments' decomposes into N properties — one per event field type (e.g., UTXOs, call_addresses, deploy_addresses, maintain_addresses, claim_rewards)."
-    - id: enumerate-instances
-      name: Enumerate All Instances Per Property
-      description: "For every property involving multiple fields, sites, or instances, enumerate ALL of them. A single-instance verification is insufficient. Produce a table: | Property | Instance | Verified? | Evidence |"
-    - id: verify-independently
-      name: Verify Each Property Independently
-      description: "For each decomposed property, read the cited code location and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine)."
+  extract-and-filter[1]:
+    - "Collect all PASS verdicts from agent results. Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. These items are most susceptible to first-positive-signal false PASSes."
+  decompose-claims[1]:
+    - For each PASS item, enumerate the specific independent properties the PASS requires to be true. A claim like 'events are filtered for failed segments' decomposes into N properties — one per event field type (e.g., UTXOs, call_addresses, deploy_addresses, maintain_addresses, claim_rewards).
+  enumerate-instances[1]:
+    - "For every property involving multiple fields, sites, or instances, enumerate ALL of them. A single-instance verification is insufficient. Produce a table: | Property | Instance | Verified? | Evidence |"
+  verify-independently[1]:
+    - For each decomposed property, read the cited code location and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).
 
-output:
-  description: "Decomposition table with per-instance verification results."
-  components[2]:
-    - "Decomposition table: | PASS Item | Property | Instance | Verified? | Evidence |"
-    - "Verdict summary: CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count"
+output[1]:
+  - id: decomposition-results
+    description: "Decomposition table with per-instance verification results."
+    components:
+      decomposition_table: "| PASS Item | Property | Instance | Verified? | Evidence |"
+      verdict_summary: "CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count"

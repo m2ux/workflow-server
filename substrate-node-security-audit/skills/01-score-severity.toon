@@ -1,173 +1,30 @@
 id: score-severity
-version: 1.1.0
+version: 1.2.0
 capability: Compute finding severity using the Impact x Feasibility rubric with calibrated examples
 
-rules[1]:
-  - "Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration examples in this skill (and target profile if present) before finalizing. Do not assign severity intuitively."
+description: "Use resource 02 (severity rubric) for the two dimensions and required output format. Use resource 08 (severity calibration) for full rubric scales, calibration examples, severity crosscheck procedure, and bias correction. Use resource 06 (target profile) when present for target-specific benchmarks."
 
-scoring_rubric:
-  impact:
-    description: How severe is the consequence if exploited?
-    scale[4]:
-      - score: 1
-        label: Informational
-        definition: "No direct security impact — code quality, documentation, style"
-      - score: 2
-        label: Low
-        definition: "Affects local tooling or off-chain state only (wallets, CLI, deployers)"
-      - score: 3
-        label: Medium
-        definition: "Affects node availability, correctness, or data integrity"
-      - score: 4
-        label: Critical
-        definition: "Affects consensus integrity, enables fund loss, or halts the network"
-  feasibility:
-    description: How easy is it for an attacker to trigger the condition?
-    scale[4]:
-      - score: 1
-        label: Unlikely
-        definition: "Requires physical access, highly unlikely conditions, or multiple independent failures"
-      - score: 2
-        label: Privileged
-        definition: "Requires privileged access (root, validator key, config file control, operator action)"
-      - score: 3
-        label: Network
-        definition: "Requires only network access (RPC, p2p, public endpoint)"
-      - score: 4
-        label: Passive
-        definition: "Occurs under normal operation, passive conditions, or routine network activity"
-  severity_mapping:
-    description: "Severity = map((Impact + Feasibility) / 2)"
-    scale[5]:
-      - range: "1.0-1.5"
-        severity: Informational
-      - range: "2.0-2.5"
-        severity: Low
-      - range: "3.0"
-        severity: Medium
-      - range: "3.5"
-        severity: High
-      - range: "4.0"
-        severity: Critical
+resources[3]:
+  - "02"
+  - "06"
+  - "08"
 
-calibration_examples:
-  description: "From validated audit sessions benchmarked against professional audits. Use these examples as lookup references when scoring — if a finding resembles a calibration example, use the example's severity as a baseline."
-  examples[14]:
-    - finding: "Connection pool shared (5 conns) between RPC and consensus"
-      impact: 4
-      impact_reason: "Consensus starvation blocks block production"
-      feasibility: 3
-      feasibility_reason: "Requires only RPC access, routinely available"
-      severity: High
-      note: "Not Medium — RPC access is routine, no special attacker capability needed"
-    - finding: "Mock data source toggled by environment variable"
-      impact: 4
-      impact_reason: "All consensus data sources replaced with attacker-controlled mocks"
-      feasibility: 2
-      feasibility_reason: "Requires config file control and node restart"
-      severity: Medium
-      note: "Not Critical — requires privileged access to configuration"
-    - finding: "unwrap() on parent header in inherent data creation"
-      impact: 3
-      impact_reason: "Crashes the essential block production task, killing the node"
-      feasibility: 4
-      feasibility_reason: "Database pruning or reorgs trigger without an active attacker"
-      severity: High
-      note: "Not Low — occurs under normal operation conditions"
-    - finding: "Feature-gated genesis digest divergence"
-      impact: 4
-      impact_reason: "Different genesis hash prevents peer-to-peer sync"
-      feasibility: 2
-      feasibility_reason: "Requires heterogeneous build configurations across operators"
-      severity: Medium
-      note: "Not Critical — requires heterogeneous builds which are operationally unlikely"
-    - finding: "Fixed-seed RNG (0x42) in treasury minting"
-      impact: 4
-      impact_reason: "Predictable nonces enable output collisions and replay"
-      feasibility: 3
-      feasibility_reason: "Seed is a public constant, no privileges needed to observe"
-      severity: High
-      note: "Impact is consensus-level but feasibility needs observation capability"
-    - finding: "Chain spec unwrap() panics on malformed properties"
-      impact: 3
-      impact_reason: "Node crashes on startup, preventing availability"
-      feasibility: 3
-      feasibility_reason: "Attacker controls chain spec file via distribution channel"
-      severity: Medium
-      note: "Availability impact but requires attacker-controlled config"
-    - finding: "Event emission includes failed operations on partial success"
-      impact: 2
-      impact_reason: "Downstream indexers/DApps record incorrect operation status — off-chain data integrity"
-      feasibility: 3
-      feasibility_reason: "Any network participant can submit a partially-failing transaction"
-      severity: Low
-      note: "If downstream indexers trigger financial actions based on these events, impact rises to 3 (Medium). Default to Low unless downstream event consumers are known."
-    - finding: "SSL mode defaults to Prefer (plaintext downgrade)"
-      impact: 3
-      impact_reason: "MITM on db-sync connection could falsify mainchain observation data feeding consensus inherents"
-      feasibility: 3
-      feasibility_reason: "Requires network-level MITM position between node and db-sync database"
-      severity: Medium
-      note: "Severity depends on deployment topology — same-host connections are lower risk than cross-network connections. Rate High if database traffic crosses untrusted networks."
-    - finding: "i64 to u128 cast on token quantity from database"
-      impact: 4
-      impact_reason: "Negative DB value wraps to astronomically large token amount — unbounded minting"
-      feasibility: 2
-      feasibility_reason: "Requires write access to the db-sync PostgreSQL database"
-      severity: Medium
-      note: "Despite Critical impact, Feasibility is constrained to DB access. Rate High if db-sync is shared infrastructure or has weak access controls."
-    - finding: "Unbounded UtxoOwners state growth via missing removal on spend"
-      impact: 3
-      impact_reason: "Storage grows without bound, increasing state size and query time"
-      feasibility: 4
-      feasibility_reason: "Occurs under normal operation — every UTXO create without corresponding spend cleanup"
-      severity: High
-      note: "Storage lifecycle finding — look for every insert() without a corresponding remove(). Not Low despite being a storage leak — it affects node availability over time."
-    - finding: "Divergent StorageInit in subcommand paths"
-      impact: 4
-      impact_reason: "Subcommands initialize ledger with wrong genesis, corrupting state if run against production"
-      feasibility: 2
-      feasibility_reason: "Requires running a subcommand (check-block, revert, export) against production"
-      severity: High
-      note: "Not Medium — professional auditors rate genesis consistency findings High because subcommands are routine operational tools."
-    - finding: "Startup panic via unchecked chain spec properties"
-      impact: 3
-      impact_reason: "Node crashes on startup, preventing availability"
-      feasibility: 3
-      feasibility_reason: "Attacker controls chain spec file via distribution channel or compromised config"
-      severity: High
-      note: "Not Medium — chain spec distribution is a realistic attack vector in multi-operator deployments."
-    - finding: "Pagination counter off-by-one in UTXO capacity enforcement"
-      impact: 4
-      impact_reason: "UTXOs permanently skipped when capacity exceeded — consensus-affecting data loss"
-      feasibility: 4
-      feasibility_reason: "Occurs under normal operation when Cardano transaction volume exceeds capacity"
-      severity: Critical
-      note: "Not High — this is the single most impactful finding in professional audits. Data loss is permanent and affects consensus state."
-    - finding: "Incomplete Ord implementation on consensus-relevant struct"
-      impact: 4
-      impact_reason: "Nondeterministic sort ordering causes different nodes to process different UTXO subsets"
-      feasibility: 4
-      feasibility_reason: "Occurs on any block with multiple UTXOs from the same transaction"
-      severity: High
-      note: "Not Medium — consensus-relevant ordering bugs have cascading effects on state consistency."
+rules:
+  rubric-required: "Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration examples in resource 08 (and target profile if present) before finalizing. Do not assign severity intuitively."
+  connection-pool-feasibility: "Connection pool and infrastructure findings affecting consensus paths through routinely-accessible systems (RPC, p2p): Feasibility >= 3"
+  panics-config-feasibility: "Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility = 2"
+  normal-operation-feasibility: "Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility = 4"
+  under-rating: "Infrastructure and availability findings (pool sharing, SSL, genesis consistency, panics under normal operation) are systematically under-rated. Use calibration examples in resource 08."
+  over-rating: "Configuration/toggle findings (mock data source, feature flags, InMemory keystore) are systematically over-rated. Use calibration examples in resource 08."
 
-flow[5]:
-  - 1. For each finding, determine the Impact score (1-4) with a one-sentence justification
-  - 2. Determine the Feasibility score (1-4) with a one-sentence justification
-  - 3. Compute average and map to severity using the scale
-  - 4. Compare against calibration examples to verify the rating makes sense
-  - 5. For each finding with Impact >= 3, apply the severity crosscheck (see below)
-
-severity_crosscheck:
-  description: "Re-evaluate Feasibility from the attacker's perspective for all High/Critical findings."
-  threshold_rules[3]:
-    - "Connection pool and infrastructure findings affecting consensus paths through routinely-accessible systems (RPC, p2p): Feasibility >= 3"
-    - "Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility = 2"
-    - "Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility = 4"
-  procedure: "For each finding rated Critical or High, verify: (1) Is the affected code reachable from the production node binary? (2) What is the minimum privilege level to trigger? No privileges → F >= 3; Config file → F = 2; Validator key → F = 1. (3) Does the finding affect consensus or just availability? Consensus → I = 4; Availability → I = 3; Off-chain → I <= 2. If I + F < 6, not Critical. If I + F < 5, not High."
-
-bias_correction:
-  description: "Correct these biases by comparing against the calibration examples above — do not rely on narrative rules."
-  under_rating_pattern: "Infrastructure findings (pool sharing, SSL, genesis consistency, config invariants) and availability findings (panics under normal operation) are systematically under-rated. Compare against calibration examples for connection pool, chain spec panic, parent header panic, and StorageInit divergence."
-  over_rating_pattern: "Configuration/toggle findings (mock data source, feature flags, InMemory keystore) are systematically over-rated. Compare against calibration examples for mock data source and feature-gated genesis."
+protocol:
+  determine-impact[1]:
+    - For each finding, determine the Impact score (1-4) with a one-sentence justification
+  determine-feasibility[1]:
+    - Determine the Feasibility score (1-4) with a one-sentence justification
+  map-to-severity[1]:
+    - Compute average and map to severity using the scale (resource 02/08)
+  compare-calibration[1]:
+    - Compare against calibration examples (resource 08) to verify the rating makes sense
+  apply-crosscheck[1]:
+    - For each finding with Impact >= 3, apply the severity crosscheck procedure in resource 08

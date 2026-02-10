@@ -4,54 +4,51 @@ capability: "Given a checklist (from a resource) and a set of items (functions, 
 
 description: "A reusable skill for systematic checklist application. The checklist content comes from a resource; the item set comes from a prior enumeration step. This skill defines the iteration protocol, verdict types (PASS/FAIL/NA), evidence requirements, and completeness verification. It prevents skimming by requiring an explicit entry for every item x checklist combination."
 
-inputs:
-  checklist_source:
+inputs[3]:
+  - id: checklist-source
     description: "Resource containing the checklist entries (e.g., resource 03 for toolkit, audit template §3 for crate review)"
     required: true
-  item_set:
+  - id: item-set
     description: "The enumerated items to evaluate against the checklist (e.g., function list, crate components, code paths)"
     required: true
-  scope_files:
+  - id: scope-files
     description: "Source files to read for evidence gathering"
     required: true
 
-rules[10]:
-  - "§3.4 CONFIGURATION INVARIANT CHECK: For every consensus-critical configuration struct (see target profile), verify the constructor validates mathematical invariants. 'No validation but works in practice' is not a valid PASS."
-  - "DEFENSE-IN-DEPTH VALIDATION: For §3.6 input validation, PASS requires evidence at the CONSUMPTION layer (pallet), not just the PRODUCTION layer. Raw bytes/strings without typed wrappers are FAIL with severity reduced by 1 level."
-  - "MANDATORY WEIGHTS.RS READ: For every pallet with hooks, the sub-agent MUST read the WeightInfo implementation file (weights.rs). The 5 sub-actions (read return value, read body, trace chain, estimate work, check amplification) are REQUIRED outputs. §3.1 is INCOMPLETE without reading weights.rs."
-  - "TIMESTAMP SOURCE DEFAULT-FAIL: For pallets processing external-chain inherent data (see target profile cross-chain pallets list), pallet_timestamp usage in cross-chain event/payload construction is DEFAULT FAIL. Agent must prove usage is local-only to override. 'Design choice' is NOT a valid PASS when event content derives from external chain observations."
-  - "VERIFIER RECOMPUTATION REQUIREMENT: For §3.4, every type in the proposer tuple but absent from the verifier tuple is FAIL UNLESS the agent cites a specific code path where the verifier independently recomputes the value from its own data source. Invalid PASS justifications: 'value in digest', 'by design', 'framework handles it', 'extracted from header'. Valid PASS requires: 'verifier recomputes X at [file:line] from its own [source]'."
-  - "SYSTEM TRANSACTION TYPE EXHAUSTIVENESS: When reviewing the ledger crate, check for wildcard _ => match arms in apply_system_transaction. Wildcard arms allowing unknown types to be applied to state = FAIL."
-  - "When checklist is resource 03 (toolkit): OUTPUT FORMAT IS NON-NEGOTIABLE. Produce the three required structured tables (function enumeration, checklist matrix, coverage attestation). Prose summaries that lack the full matrix will be rejected; every FAIL cell becomes a finding."
-  - "When checklist is resource 03 (toolkit): FUNCTION COUNT VERIFICATION. After producing the enumeration table, independently count functions per file (e.g. grep 'fn ') and compare against the table row count. A discrepancy > 10% indicates skimming and requires re-enumeration."
-  - "When checklist is resource 03 (toolkit): INCLUDE SUBDIRECTORIES. Every .rs file in every subdirectory of the toolkit paths must be enumerated. Do not read only top-level lib.rs."
-  - "When checklist is resource 03 (toolkit): TOOLKIT RNG TRIAGE — For every SmallRng or fixed-seed StdRng, trace the RNG output to its usage site. If the output is used in transaction construction (TransactionWithContext, BlockContext, parent_block_hash), it is a FAIL regardless of 'test infrastructure.' SEVERITY CEILING: Findings affecting only local wallet state, CLI output, or offline tooling have I <= 2. Elevate to I=3 only when the toolkit produces artifacts consumed by the production node or submitted to the network."
+resources[1]:
+  - "03"
+
+rules:
+  configuration-invariant: "For §3.4, every consensus-critical configuration struct (see target profile): verify the constructor validates mathematical invariants. 'No validation but works in practice' is not a valid PASS."
+  defense-in-depth: "For §3.6 input validation, PASS requires evidence at the CONSUMPTION layer (pallet), not just the PRODUCTION layer. Raw bytes/strings without typed wrappers are FAIL with severity reduced by 1 level."
+  mandatory-weights: "For every pallet with hooks, the sub-agent MUST read the WeightInfo implementation file (weights.rs). The 5 sub-actions (read return value, read body, trace chain, estimate work, check amplification) are REQUIRED outputs. §3.1 is INCOMPLETE without reading weights.rs."
+  timestamp-source: "For pallets processing external-chain inherent data (see target profile cross-chain pallets list), pallet_timestamp usage in cross-chain event/payload construction is DEFAULT FAIL. Agent must prove usage is local-only to override. 'Design choice' is NOT a valid PASS when event content derives from external chain observations."
+  verifier-recomputation: "For §3.4, every type in the proposer tuple but absent from the verifier tuple is FAIL UNLESS the agent cites a specific code path where the verifier independently recomputes the value from its own data source. Invalid PASS justifications: 'value in digest', 'by design', 'framework handles it', 'extracted from header'. Valid PASS requires: 'verifier recomputes X at [file:line] from its own [source]'."
+  system-transaction-exhaustiveness: "When reviewing the ledger crate, check for wildcard _ => match arms in apply_system_transaction. Wildcard arms allowing unknown types to be applied to state = FAIL."
+  toolkit-output-format: "When checklist is resource 03 (toolkit): produce the three required structured tables (function enumeration, checklist matrix, coverage attestation). Prose summaries that lack the full matrix will be rejected; every FAIL cell becomes a finding."
+  toolkit-function-count: "When checklist is resource 03 (toolkit): after producing the enumeration table, independently count functions per file (e.g. grep 'fn ') and compare against the table row count. A discrepancy > 10% indicates skimming and requires re-enumeration."
+  toolkit-subdirectories: "When checklist is resource 03 (toolkit): every .rs file in every subdirectory of the toolkit paths must be enumerated. Do not read only top-level lib.rs."
+  toolkit-rng-triage: "When checklist is resource 03 (toolkit): for every SmallRng or fixed-seed StdRng, trace the RNG output to its usage site. If the output is used in transaction construction (TransactionWithContext, BlockContext, parent_block_hash), it is a FAIL regardless of 'test infrastructure.' SEVERITY CEILING: Findings affecting only local wallet state, CLI output, or offline tooling have I <= 2. Elevate to I=3 only when the toolkit produces artifacts consumed by the production node or submitted to the network."
 
 protocol:
-  description: "The procedure for systematic checklist application."
-  steps[5]:
-    - id: load-checklist
-      name: Load Checklist
-      description: "Fetch the checklist from the specified resource. Parse every numbered entry. Identify which entries apply universally and which apply conditionally (e.g., 'only for wallet constructors', 'only for pallets with events')."
-    - id: iterate-items
-      name: Iterate Items Against Checklist
-      description: "For EACH item in the item set, evaluate EVERY checklist entry. Produce a verdict for each combination: PASS (with code citation — bare PASSes are invalid), FAIL (becomes a finding), or NA (with explicit justification for why the entry is structurally inapplicable). Every NA must be explicit — silent omission is not permitted."
-    - id: produce-tables
-      name: Produce Required Analysis Tables
-      description: "Where the checklist specifies that certain entries require structured tables as evidence, produce those tables or state 'N/A — [reason]' with a specific justification. Standard required tables for crate-level review: (1) Per-field event trace table — for every event constructor with partial success, trace each collection field to its population source and whether it filters by outcome; a PASS on the event emission checklist item without this table is INVALID for pallets with deposit_event() and partial-success paths. (2) Struct diff table — event vs storage field-by-field comparison. (3) Cross-layer verification matrix — data source / IDP / pallet for pagination and timestamp checks. (4) Two-level input validation table — structural (Level 1) and semantic (Level 2) per external input type. (5) Weight accounting table — for every pallet with on_initialize/on_finalize, read the WeightInfo implementation file (weights.rs) and record: hook name, WeightInfo function, return value, estimated actual work, verdict. A PASS on §3.1 without this table is INVALID. (6) Defense-in-depth validation — for §3.6 input validation entries, the two-level table must show validation at BOTH the production layer (data source) AND the consumption layer (pallet). A PASS citing only upstream validation without a type-safety guarantee at the consumption layer is a defense-in-depth gap (severity reduced by 1 level from missing validation)."
-    - id: verify-matrix-completeness
-      name: Verify Matrix Completeness
-      description: "Count items in the item set vs rows in the verdict matrix. Every item must have a row. Count checklist entries vs columns. Every entry must have a verdict per item. List any gaps and resolve them."
-    - id: produce-verdict-matrix
-      name: Produce Verdict Matrix
-      description: "Output the complete item x checklist verdict matrix in the format specified by the activity step that invoked this skill."
+  load-checklist[1]:
+    - "Fetch the checklist from the specified resource. Parse every numbered entry. Identify which entries apply universally and which apply conditionally (e.g., 'only for wallet constructors', 'only for pallets with events')."
+  iterate-items[1]:
+    - "For EACH item in the item set, evaluate EVERY checklist entry. Produce a verdict for each combination: PASS (with code citation — bare PASSes are invalid), FAIL (becomes a finding), or NA (with explicit justification for why the entry is structurally inapplicable). Every NA must be explicit — silent omission is not permitted."
+  produce-tables[1]:
+    - "Where the checklist specifies that certain entries require structured tables as evidence, produce those tables or state 'N/A — [reason]' with a specific justification. Standard required tables for crate-level review: (1) Per-field event trace table — for every event constructor with partial success, trace each collection field to its population source and whether it filters by outcome; a PASS on the event emission checklist item without this table is INVALID for pallets with deposit_event() and partial-success paths. (2) Struct diff table — event vs storage field-by-field comparison. (3) Cross-layer verification matrix — data source / IDP / pallet for pagination and timestamp checks. (4) Two-level input validation table — structural (Level 1) and semantic (Level 2) per external input type. (5) Weight accounting table — for every pallet with on_initialize/on_finalize, read the WeightInfo implementation file (weights.rs) and record: hook name, WeightInfo function, return value, estimated actual work, verdict. A PASS on §3.1 without this table is INVALID. (6) Defense-in-depth validation — for §3.6 input validation entries, the two-level table must show validation at BOTH the production layer (data source) AND the consumption layer (pallet). A PASS citing only upstream validation without a type-safety guarantee at the consumption layer is a defense-in-depth gap (severity reduced by 1 level from missing validation)."
+  verify-matrix-completeness[1]:
+    - Count items in the item set vs rows in the verdict matrix. Every item must have a row. Count checklist entries vs columns. Every entry must have a verdict per item. List any gaps and resolve them.
+  produce-verdict-matrix[1]:
+    - Output the complete item x checklist verdict matrix in the format specified by the activity step that invoked this skill.
 
-output:
-  description: "Complete verdict matrix and coverage attestation."
-  components[3]:
-    - "Verdict matrix: one row per item, one column per checklist entry, each cell is PASS/FAIL/NA with evidence"
-    - "Required analysis tables: any structured tables mandated by specific checklist entries"
-    - "Coverage attestation: total items, total reviewed, coverage percentage, gaps list"
+output[1]:
+  - id: verdict-matrix
+    description: "Complete verdict matrix and coverage attestation."
+    components:
+      verdict_matrix: "one row per item, one column per checklist entry, each cell is PASS/FAIL/NA with evidence"
+      required_analysis_tables: "any structured tables mandated by specific checklist entries"
+      coverage_attestation: "total items, total reviewed, coverage percentage, gaps list"
 
 errors:
   bare_pass:
