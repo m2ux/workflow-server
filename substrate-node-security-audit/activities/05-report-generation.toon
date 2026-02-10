@@ -1,5 +1,5 @@
 id: report-generation
-version: 3.2.0
+version: 3.3.0
 name: Report Generation
 description: "Consolidate all findings from primary audit and adversarial verification into a final report. Uses the structured merge table from primary-audit as the canonical finding inventory. Apply severity scoring rubric with cross-check against calibration examples, verify coverage gate, and produce the deliverable audit report. Fully automated — no user checkpoints."
 problem: Findings from multiple agents and phases must be severity-calibrated and formatted into a cohesive report with coverage verification. The structured merge table from primary-audit ensures no findings are lost.
@@ -14,9 +14,8 @@ skills:
     - write-report
 required: true
 estimatedTime: 20-40m
-rules[6]:
+rules[5]:
   - "The structured merge table from primary-audit is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
-  - "Severity MUST use the Impact x Feasibility rubric — compare each finding against the calibration examples in the score-severity skill before finalizing"
   - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
   - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation."
   - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless the coverage gate was verified during primary-audit (verify-coverage-gate step). If coverage_report shows any UNREAD files, return to primary-audit and dispatch follow-up agents. Proceeding to report generation with unread files is the primary cause of coverage regression."

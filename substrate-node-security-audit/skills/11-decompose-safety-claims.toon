@@ -1,5 +1,5 @@
 id: decompose-safety-claims
-version: 1.0.0
+version: 1.1.0
 capability: "Take a safety claim (PASS verdict), enumerate the constituent properties it asserts, enumerate all instances that must hold, and produce a decomposition table for independent verification"
 
 description: "A reusable adversarial analysis skill. When a review produces a PASS verdict on a multi-faceted check, this skill decomposes the claim into independent properties, enumerates every instance/field/site that must satisfy each property, and produces a structured table for independent verification. The goal is to refute, not confirm."
@@ -11,6 +11,13 @@ inputs:
   source_files:
     description: "Code files to read for independent verification"
     required: true
+
+rules[5]:
+  - "This skill's role is to REFUTE safety claims, not confirm them."
+  - "Focus on §3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these checks are most susceptible to false PASSes."
+  - "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? call_addresses? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."
+  - "A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'."
+  - "Output CONFIRMED only when ALL decomposed properties are verified with code citations."
 
 protocol:
   description: "The adversarial decomposition procedure."
