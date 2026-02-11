@@ -35,7 +35,7 @@ steps[7]:
     required: true
   - id: elevate-observations
     name: "Elevate Security-Relevant Observations"
-    description: "Review every reconnaissance_leads and additional_observations entry from all agent outputs. For each observation describing: (a) divergent code paths, (b) missing validation, (c) error-path state persistence, (d) silent error consumption, (e) any security-relevant behavior — either confirm it is captured by an existing finding in the flat table, or add it as a new finding row. Produce an observation disposition table: | Agent | Observation | Disposition | Finding Ref |."
+    description: "Review every reconnaissance_leads and additional_observations entry from all agent outputs, PLUS every emergent_domains entry from s-architectural-analysis.json and every leads entry from r-reconnaissance-data.json. The S agent's emergent domains are architectural vulnerability hypotheses that may not have been verified by any primary agent — each MUST be dispositioned as 'captured by F-X', 'elevated to F-Y', or 'not applicable with justification'. For each observation describing: (a) divergent code paths, (b) missing validation, (c) error-path state persistence, (d) silent error consumption, (e) trust boundary amplification, (f) any security-relevant behavior — either confirm it is captured by an existing finding in the flat table, or add it as a new finding row. Produce an observation disposition table: | Source | Agent | Observation | Disposition | Finding Ref |."
     skill: merge-findings
     required: true
   - id: deduplicate-by-root-cause
