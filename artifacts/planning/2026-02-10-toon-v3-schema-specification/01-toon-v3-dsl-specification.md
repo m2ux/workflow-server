@@ -10,9 +10,13 @@
 
 ## 1. Overview and Design Rationale
 
+### Purpose
+
+Compose is a domain-specific language for defining workflow definitions that AI agents interpret and execute. Workflow definitions reside in the `workflows` branch and describe structured sequences of operations — from multi-step engineering tasks to security audits to code reviews. The fundamental purpose of Compose is to provide a **deterministic landscape** for agents to navigate: given the same workflow definition and the same state, any conforming agent must follow the same execution path. This eliminates ambiguity in workflow interpretation and makes agent behavior predictable, auditable, and reproducible.
+
 ### Scope
 
-The Compose DSL defines the grammar and semantic constraints for the four workflow primitives:
+Compose defines the grammar and semantic constraints for the four workflow primitives:
 
 | Primitive | Description | Compose Status |
 |-----------|-------------|----------------|
@@ -29,7 +33,7 @@ The prior activity schema declared primitives — steps, checkpoints, conditions
 
 ### Design Goal
 
-Introduce **flows** as a composition layer that orders primitives into deterministic sequences — like a flowchart — while keeping primitives independently defined and referenceable. Reduce the primitive type count and eliminate redundancy.
+Introduce **flows** as a composition layer that orders primitives into deterministic sequences — like a flowchart — while keeping primitives independently defined and referenceable. Reduce the primitive type count and eliminate redundancy. The result is a language where the execution path through an activity is explicit in the file itself, not reconstructed by the agent at interpretation time.
 
 ### Changes from Prior Schema
 
