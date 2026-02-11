@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.12.0
+version: 4.13.0
 title: Security Audit Workflow
 description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, and per-function toolkit matrices."
 author: m2ux
@@ -8,7 +8,7 @@ tags[3]:
   - security
   - audit
   - workflow
-rules[20]:
+rules[22]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
   - "PREREQUISITE: Load resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
@@ -29,6 +29,8 @@ rules[20]:
   - "MANDATORY WEIGHTS.RS READ: For every pallet with hooks, the sub-agent MUST read weights.rs. The orchestrator includes it in supplementary files."
   - "ENSEMBLE TARGETED BLIND-SPOTS: The ensemble agent verifies items 1-4 (universal) plus target-specific items from the target profile FIRST, before general review."
   - "CHECKLIST-TO-PROMPT COVERAGE GATE: The orchestrator verifies every §3 checklist item (§3.1-§3.14) is explicitly represented in at least one dispatched agent's context."
+  - "CONFIGURATION-VARIANT PANIC TRIAGE: For every expect()/unwrap() on an Option derived from configuration or runtime state, the reviewing agent MUST enumerate ALL valid configuration variants and check whether any variant produces None. Specifically: DatabaseConfig::InMemory causes path() to return None; development/test presets may omit optional fields; pruning/archive modes may produce missing headers. An unwrap that panics on any valid configuration is a finding regardless of the 'default' configuration."
+  - "GENESIS PARSING PATH COVERAGE: The node agent MUST trace ALL genesis data parsing paths — not only StorageInit construction but also genesis extrinsics decoding, genesis header construction, and chain spec property parsing. Iteration patterns that stop at the first invalid element (take_while, early-return on error, filter_map) silently truncate remaining data. Each parsing path must be verified for silent truncation independently."
 variables[17]:
   - name: target_submodule
     type: string

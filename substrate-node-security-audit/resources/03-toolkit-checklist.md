@@ -45,6 +45,7 @@ For EVERY function that selects and consumes resources (spend, allocate, claim, 
 1. Identify the state object modified during the selection computation
 2. Trace whether the modified state is WRITTEN BACK to `self` or only returned as a value
 3. Verify both the tracker state (a) and the underlying canonical state (b) are updated
+4. **CRITICAL — Do not confuse tracker correctness with canonical-state correctness.** A function may correctly update a spent-UTXO tracker (preventing double-spend) while leaving the underlying canonical state (`dust_local_state`, `ledger_state`, balance cache) stale. Both aspects must be independently verified. If the tracker is correct but the canonical state is not written back, this is STILL a finding (stale reads on subsequent calls). **Validated gap (Session 19):** `DustWallet::spend`/`do_spend` correctly updates the spent-UTXO tracker, but the underlying `dust_local_state` is not written back after `do_spend()` modifies a clone. The Group D agent assessed the pattern as intentional based on the tracker correctness alone, producing a false PASS. The canonical-state divergence was flagged by the professional audit as a Low finding.
 
 ### 3. Mutex Poisoning Risk
 

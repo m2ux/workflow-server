@@ -2,6 +2,47 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.13.0 (2026-02-10) — Session 19 Gap Analysis Remediation
+
+Addresses 4 gap categories identified in Session 19 gap analysis (95.5% overlap with Least Authority professional audit, 2 gaps, 2 partial matches). Changes close the specific detection paths that caused each miss.
+
+**Gap 1 — Configuration-variant panic (Issue X: DB path panic on InMemory config):**
+- +workflow rule: CONFIGURATION-VARIANT PANIC TRIAGE — agents must enumerate all valid config variants for each expect()/unwrap() on config-derived Options
+- +primary-audit step: `verify-config-variant-triage` — orchestrator verifies node agent produced configuration-variant triage table
+- +sub-crate-review rule: CONFIGURATION-VARIANT PANIC TRIAGE with mandatory triage table format
+- +resource 05: Check 25 (Configuration-Variant Panic Triage) — mechanical check with enumeration protocol
+- +verify-sub-agent-output: `check-config-variant-triage` protocol step
+
+**Gap 2 — Genesis parsing path coverage (Issue Y: extrinsics truncation):**
+- +workflow rule: GENESIS PARSING PATH COVERAGE — node agent must trace ALL genesis data parsing paths, not just StorageInit
+- +primary-audit step: `verify-genesis-parsing-coverage` — orchestrator verifies all 4 genesis parsing paths traced
+- +primary-audit rule: GENESIS PARSING PATH ENUMERATION
+- +resource 05: Check 26 (Genesis Data Parsing Truncation) — mechanical check for silent truncation
+- +verify-sub-agent-output: `check-genesis-parsing-coverage` protocol step
+
+**Partial match — Error-path storage persistence (Issue I: UtxoOwners orphan on event construction failure):**
+- +primary-audit rule: ERROR-PATH STORAGE PERSISTENCE
+- +sub-crate-review rule: ERROR-PATH STORAGE PERSISTENCE with mandatory table format
+- +apply-checklist rule: `error-path-storage-persistence` with insert→fallible-op→revert verification protocol
+- +verify-sub-agent-output: `check-error-path-persistence` protocol step
+
+**Partial match — Canonical-state writeback in toolkit (Issue AO: DustWallet stale state):**
+- +resource 03 (toolkit checklist): strengthened item 2 with explicit canonical-state vs tracker-state distinction and validated gap note
+- +apply-checklist rule: `toolkit-canonical-state-writeback` — PASS on tracker alone is insufficient
+
+**Target profile updates (resource 06):**
+- +4 severity calibration benchmarks (DB path panic, genesis truncation, canonical-state writeback, error-path persistence)
+- +4 ensemble blind-spot items (#12-#15) for the new gap patterns
+
+**Version bumps:**
+- workflow.toon: 4.12.0 → 4.13.0
+- primary-audit: 4.9.0 → 4.10.0
+- sub-crate-review: 1.7.0 → 1.8.0
+- verify-sub-agent-output: 1.3.0 → 1.4.0
+- apply-checklist: 1.2.0 → 1.3.0
+
+---
+
 ## v4.12.0 (2026-02-10) — Cross-Project Vulnerability Pattern Integration
 
 Integrates 12 new vulnerability patterns (V1-V10, V13, V16) derived from cross-project analysis of 20 professional Substrate audit reports (Trail of Bits, SlowMist, Hacken, Halborn, Veridise, SRLabs, Zellic, Quantstamp, Code4Arena, CoinFabrik, Oak Security). Patterns split into two tracks by detection mode.

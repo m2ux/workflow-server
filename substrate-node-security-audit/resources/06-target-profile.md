@@ -79,6 +79,10 @@ In addition to the 4 universal blind-spot items (§3.1 weight, §3.3 event filte
 | 9 | Check 16: Host function divergence | Search feature-gated `HostFunctions` type aliases in service init | `node/src/service.rs` |
 | 10 | §3.1 flush ordering | Enumerate ALL writes in `on_finalize` in execution order. Verify `flush_storage()` runs after the last state-modifying operation. Specifically: does `mint_coins` execute after `flush_storage`? | `pallets/midnight/src/lib.rs` |
 | 11 | §3.6 absent-entity query semantics | For `get_contract_state` and `get_unclaimed_amount`, verify that a non-existent entity returns `Err(...)`, not `Ok(default)`. `None` mapped to `Ok(empty)` is FAIL. | `ledger/src/versions/common/mod.rs` |
+| 12 | Check 25: Config-variant panic | For each `expect()`/`unwrap()` on `Option` from config/database accessor in `service.rs`, check: does `DatabaseConfig::InMemory` cause `.path()` to return `None`? | `node/src/service.rs` |
+| 13 | Check 26: Genesis extrinsics truncation | Trace genesis extrinsics decoding from chain spec properties. Does the parsing stop at the first invalid element? Produce path enumeration table. | `node/src/service.rs`, `node/src/command.rs` |
+| 14 | Error-path storage persistence | For `UtxoOwners::insert` in `handle_create`: if `construct_cnight_generates_dust_event` fails and handler returns `None`, does the insert persist? | `pallets/native-token-observation/src/lib.rs` |
+| 15 | Toolkit item 2: canonical-state writeback | In `DustWallet::spend`/`do_spend`, verify `dust_local_state` is written back to `self` after `do_spend()` — not just the spent-UTXO tracker | `ledger/helpers/src/wallet/dust.rs` |
 
 ---
 
@@ -135,4 +139,8 @@ The following calibration examples are derived from a professional security audi
 | Shared connection pool (N conns, RPC + consensus) | 4 | 3 | 3.5 | **Critical** | Single RPC burst during block production is routine. |
 | Incomplete Ord in consensus-sorted collection | 4 | 3 | 3.5 | **High** | Field collisions statistically expected at blockchain volumes. |
 | Config struct missing mathematical invariant | 4 | 3 | 3.5 | **High** | Config errors are operational hazards, not exotic attacks. |
+| Panic on DB path when InMemory config used | 3 | 3 | 3.0 | **Medium** | InMemory is a valid, supported config mode; crash occurs on every startup attempt with this config. F >= 3. |
+| Genesis extrinsics parsing truncation on malformed input | 3 | 3 | 3.0 | **Medium** | Chain spec distribution is not privileged; malformed prefix alters extrinsics root. F >= 3. |
+| DustWallet canonical state not written back after spend | 2 | 2 | 2.0 | **Low** | Requires incorrect wallet API usage sequence; affects local state only. |
+| Storage insert persists on downstream event construction failure | 3 | 3 | 3.0 | **Medium** | Orphaned entries accumulate; trigger is external chain data which is not attacker-controlled. |
 
