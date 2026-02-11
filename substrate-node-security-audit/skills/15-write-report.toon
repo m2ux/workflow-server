@@ -16,7 +16,8 @@ output[1]:
       coverage_gate: "Pass/fail status, list of top files by line count with reviewing agent attribution"
       elevation_summary: "Count of table-derived findings auto-elevated, adversarial refutations integrated"
       dependency_scan: "cargo audit results if available"
-      finding_block_format: "### Issue {number}: {title} | **Severity:** {level} (I={impact}, F={feasibility}, avg={average}) | **Impact:** {impact} — {justification} | **Feasibility:** {feasibility} — {justification} | **Category:** {category} | **Affected Files:** {file}#{lines} | {description}"
+      finding_block_format: "### Issue {number}: {title}\n\n**Impact:** {impact} — {justification}\n\n**Feasibility:** {feasibility} — {justification}\n\n**Severity:** {level} (I={impact}, F={feasibility}, avg={average})\n\n**Category:** {category}\n\n**Affected Files:** {file}#{lines}\n\n{description}"
+      finding_block_note: "Each field MUST be separated by a blank line (double newline) so that markdown renders them as distinct paragraphs. Single newlines between fields will collapse into a single paragraph."
 
 protocol:
   verify-merge-table[1]:
