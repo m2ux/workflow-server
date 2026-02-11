@@ -12,12 +12,13 @@ skills:
 required: false
 estimatedTime: 20-40m
 
-rules[10]:
+rules[11]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
-  - "The sub-agent receives context variables: crate_path, checklist_sections, function_registry, supplementary_files, vulnerability_domain_entries, in_scope, out_of_scope"
+  - "The sub-agent receives context variables: crate_path, checklist_sections, function_registry, supplementary_files, vulnerability_domain_entries, in_scope, out_of_scope, planning_folder_path"
   - "Every step defines a REQUIRED OUTPUT. The agent must produce this output before proceeding."
   - "Steps 5 and 6 contain self-verification requirements — the agent must list what it produced and what it marked N/A"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
+  - "FILE OUTPUT: The sub-agent MUST write its complete structured output as a JSON file to the planning folder: {planning_folder_path}/group-a-{agent_id}.json. This file is the canonical source for the merge agent (M) and the auditable record of the agent's work. The orchestrator's context is not a reliable store — the file is."
   - "SUPPLEMENTARY FILE BUDGET: The orchestrator includes supplementary files per the target profile for cross-crate verification."
   - "FLUSH ORDERING VERIFICATION: For every §3.1 target in the vulnerability domain map, enumerate ALL state-modifying operations in execution order (including conditional paths). The flush/commit call must occur AFTER the last state-modifying operation. A flush followed by additional writes is FAIL. Finding one flush call alone is NOT sufficient — verify nothing writes after it."
   - "RPC SUBSCRIPTION LIMIT VERIFICATION: For every into_rpc() registration site, verify explicit per-connection or global subscriber limits. 'Framework handles it' is not a valid PASS."
