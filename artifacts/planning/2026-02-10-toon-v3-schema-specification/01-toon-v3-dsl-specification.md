@@ -27,17 +27,9 @@ Compose defines the grammar and semantic constraints for the four workflow primi
 
 This specification fully defines the Compose grammar and constraints for **activities**. The workflow, skill, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Compose variants are designed.
 
-### Problem
-
-The prior activity schema declared primitives — steps, checkpoints, conditions, loops, decisions — as independent top-level blocks with no explicit composition. The executing agent must reconstruct the sequential flow by correlating step IDs with checkpoint IDs, inferring which loops nest inside which steps, and following `transitionTo` edges scattered across decisions and checkpoints. This makes workflow execution non-deterministic: two agents reading the same activity file may infer different execution orders.
-
 ### Design Goal
 
-Introduce **flows** as a composition layer that orders primitives into deterministic sequences — like a flowchart — while keeping primitives independently defined and referenceable. Reduce the primitive type count and eliminate redundancy. The result is a language where the execution path through an activity is explicit in the file itself, not reconstructed by the agent at interpretation time.
-
-### Changes from Prior Schema
-
-See [02-changes-from-prior-schema.md](02-changes-from-prior-schema.md) for the full comparison table and design decisions.
+Three primitives — **steps**, **decisions**, and **loops** — are composed into deterministic sequences via **flows**. Each primitive is independently defined and referenceable. Flows order them like a flowchart: the execution path through an activity is explicit in the file itself, not reconstructed by the agent at interpretation time.
 
 ---
 
@@ -681,13 +673,9 @@ fun resolve[name: Id, context: FlowContext]: lone Value {
 
 ---
 
-## 5. Design Decisions
-
-See [02-changes-from-prior-schema.md](02-changes-from-prior-schema.md#design-decisions) for the full table of 12 design decisions with rationale.
-
 ---
 
-## 6. Complete Example
+## 5. Complete Example
 
 Full `requirements-elicitation` activity rewritten in Compose, annotated with constraint references.
 
@@ -841,7 +829,7 @@ flows:
 
 ---
 
-## 7. Validation Rules Checklist
+## 6. Validation Rules Checklist
 
 Machine-interpretable rules derived from the Alloy constraints in Section 4. Each rule has an ID, severity, description, and the Alloy fact it implements.
 
