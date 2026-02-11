@@ -1,0 +1,73 @@
+id: sub-structured-merge
+version: 1.0.0
+name: "Sub-Agent: Structured Merge"
+description: "Dispatched after agent output persistence and verification to perform the structured merge, deduplication, severity scoring, reconciliation, and observation elevation in a fresh context window. This agent exists because the orchestrator's context is saturated by the time merge is needed — inline merge is the primary cause of finding regression across audit runs."
+problem: "The orchestrator accumulates 75-115K tokens of context (workflow definitions, reconnaissance data, 8 agent prompts, 8 agent outputs) before reaching the merge step. Performing the merge inline causes findings to be displaced from attention by sheer volume. Cross-run analysis shows 6-8 findings per run are produced by agents but dropped during inline merge. A dedicated merge agent with a clean context (~45K tokens: finding data + scoring rules) eliminates this structural failure mode."
+recognition[3]:
+  - merge findings
+  - structured merge
+  - reconcile finding counts
+skills:
+  primary: merge-findings
+required: false
+estimatedTime: 10-15m
+
+rules[7]:
+  - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
+  - "The sub-agent receives: all persisted agent output JSON files (from planning folder), severity rubric (resource 02), calibration benchmark table (from resource 06 target-profile), §3.10 DEFAULT-FAIL rule text, observation elevation rules"
+  - "The merge agent does NOT read source code or apply the §3 checklist — it operates exclusively on agent outputs"
+  - "Every agent finding MUST appear in the merge table as either a unique finding or an explicitly deduplicated entry with justification. Zero findings may be silently dropped."
+  - "The reconciliation table is the primary validation artifact — Unaccounted MUST equal zero for every agent"
+  - "Severity scoring MUST cross-check EVERY finding (not just High/Critical) against the calibration benchmark table. The divergence gate (>=2 levels) applies bidirectionally: over-scoring AND under-scoring are both flagged."
+  - "UNCONDITIONAL DEFECT FEASIBILITY FLOOR: If agent evidence describes a defect that triggers on every invocation of the affected code path (deadlock, always-panicking unwrap, guaranteed overflow), Feasibility is at minimum F=3 (reachable from external input) or F=4 (normal operation). The words 'unconditional', 'every invocation', 'guaranteed', or 'deterministic' in evidence are signals to apply this floor."
+
+steps[7]:
+  - id: load-agent-outputs
+    name: "Load All Agent Output Files"
+    description: "Read all persisted agent output JSON files from the planning folder. Count total findings per agent. This count is the 'Findings Submitted' column in the reconciliation table."
+    skill: merge-findings
+    required: true
+  - id: concatenate-findings
+    name: "Concatenate Into Flat Table"
+    description: "Combine all agent finding arrays into a single flat table. Every agent finding becomes a row with fields: agent_id, finding_id, file, line, title, severity, impact, impact_reason, feasibility, feasibility_reason, checklist_item, evidence. No agent output is discarded at this step."
+    skill: merge-findings
+    required: true
+  - id: elevate-observations
+    name: "Elevate Security-Relevant Observations"
+    description: "Review every reconnaissance_leads and additional_observations entry from all agent outputs. For each observation describing: (a) divergent code paths, (b) missing validation, (c) error-path state persistence, (d) silent error consumption, (e) any security-relevant behavior — either confirm it is captured by an existing finding in the flat table, or add it as a new finding row. Produce an observation disposition table: | Agent | Observation | Disposition | Finding Ref |."
+    skill: merge-findings
+    required: true
+  - id: deduplicate-by-root-cause
+    name: "Deduplicate by Root Cause"
+    description: "For each row, identify whether another row describes the same root cause (same file + same line range + same checklist item). Rows with the same root cause receive the same report finding number with justification. Every dedup decision MUST have explicit justification — implicit dedup is forbidden."
+    skill: merge-findings
+    required: true
+  - id: apply-severity-with-calibration
+    name: "Apply Severity Scoring with Bidirectional Calibration"
+    description: "Score every finding using the severity rubric (resource 02). For EVERY finding (not just High/Critical), search the calibration benchmark table for a matching pattern. If a match exists: (a) divergence >= 1 level — flag for review, (b) divergence >= 2 levels — the benchmark severity is the FLOOR. Apply the unconditional defect feasibility floor. Produce a calibration cross-check table: | Finding | Our Score | Benchmark Match | Benchmark Score | Delta | Action |."
+    skill: merge-findings
+    required: true
+  - id: produce-reconciliation-table
+    name: "Produce Finding Count Reconciliation Table"
+    description: "For each agent, compute: Findings Submitted (from step 1), In Merge Table (unique findings from this agent), Explicitly Deduplicated (findings merged with justification), Elevated from Observations (new findings from step 3), Unaccounted (Submitted - In Table - Deduplicated). Unaccounted MUST equal zero for every agent."
+    skill: merge-findings
+    required: true
+  - id: format-merge-output
+    name: "Format Merge Output"
+    description: "Return the complete merge table (flat table with report finding numbers), reconciliation table, calibration cross-check table, observation disposition table, and elevation summary. This is the canonical input for report-generation."
+    skill: merge-findings
+    required: true
+
+outcome[5]:
+  - All agent findings accounted for in reconciliation table (zero Unaccounted)
+  - All security-relevant observations elevated or explicitly mapped to existing findings
+  - All findings severity-scored with bidirectional calibration cross-check
+  - Canonical merge table produced with report finding numbers
+  - Deduplication justified for every merged row
+
+context_to_preserve[5]:
+  - merge_table - Canonical flat table with report finding numbers and merge status
+  - reconciliation_table - Per-agent finding count reconciliation
+  - calibration_crosscheck - Per-finding calibration comparison with delta and action
+  - observation_dispositions - Per-observation table with disposition and finding reference
+  - elevation_summary - Total agent findings, total report findings, merged count, promoted count, elevated count

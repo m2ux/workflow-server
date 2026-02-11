@@ -1,5 +1,5 @@
 id: execute-audit
-version: 3.0.0
+version: 3.1.0
 capability: Execute security audit phases with consistent tool usage, concurrent multi-agent coordination, and §3 checklist completeness verification
 
 resources[1]:
@@ -17,22 +17,25 @@ protocol:
     - Identify trust boundaries and consensus paths
     - Build function registry for priority-1/2 crates
     - Generate file inventory sorted by line count and assign agent groups (A, B, D)
-  primary_audit[5]:
-    - Dispatch all primary agents (A1-A6, B, D) concurrently with §3 checklist, cross-crate supplementary files, and toolkit minimum checklist
-    - Collect all results from primary agents
+  primary_audit[7]:
+    - Dispatch all primary agents (A1-A6, B, D) concurrently with §3 checklist, cross-crate supplementary files, toolkit minimum checklist, and relevant calibration benchmarks
+    - Collect all results from primary agents and persist each agent's full output as JSON in the planning folder
     - Dispatch verification sub-agent (V) to validate output completeness against target profile, act on gap report, extract table-derived findings
     - Re-dispatch targeted follow-up agents for any gaps identified by the verification agent
-    - Structured-merge all findings (primary + follow-up + table-derived) into flat table, dedup-and-map to report findings, verify §3 completeness
+    - Dispatch merge sub-agent (M) to perform structured merge, dedup, severity scoring with bidirectional calibration, reconciliation, and observation elevation in a fresh context window
+    - Validate M's reconciliation table — Unaccounted must equal zero (HARD STOP)
+    - Verify §3 checklist completeness from M's output
   adversarial[4]:
     - Extract all PASS items from agent scratchpads
     - Decompose each PASS into constituent properties
     - Enumerate all fields/sites for multi-instance properties
     - Verify each property independently — output CONFIRMED/REFUTED/INSUFFICIENT
-  consolidation[4]:
-    - Integrate adversarial results into structured merge table
-    - Apply severity scoring rubric (Impact x Feasibility) with calibration example cross-check
+  consolidation[5]:
+    - Integrate adversarial results into structured merge table (from M's output)
+    - Apply bidirectional severity scoring rubric (Impact x Feasibility) with calibration example cross-check against ALL findings, not just High/Critical
     - Verify coverage gate (§5.14)
     - Verify elevation completeness via merge table mapping
+    - Include reconciliation table in report as auditable evidence of zero finding loss
 
 tools:
   read_file:
