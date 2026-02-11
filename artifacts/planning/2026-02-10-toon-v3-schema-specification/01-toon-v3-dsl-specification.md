@@ -33,9 +33,19 @@ Three primitives — **steps**, **decisions**, and **loops** — are composed in
 
 ---
 
-## 2. Primitives
+## 2. Workflow
 
-### 2.1 Steps
+TBD — Compose grammar and constraints for the workflow primitive (top-level container: metadata, variables, activity sequencing) are not yet defined. See `schemas/workflow.schema.json` for the current legacy schema.
+
+---
+
+## 3. Activity
+
+The activity is the primary execution unit. It defines steps, decisions, and loops as independent primitives, then composes them into deterministic sequences via flows.
+
+### 3.1 Primitives
+
+#### 3.1.1 Steps
 
 A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps declare a `skill:` reference — just the skill ID, nothing more.
 
@@ -90,7 +100,7 @@ steps:
     # issue-number resolves from activity 01 — skill qualifies as 01.create-issue.issue-number
 ```
 
-### 2.2 Decisions
+#### 3.1.2 Decisions
 
 A decision is a branch point. It evaluates state and routes execution to one of several branches. Two forms exist:
 
@@ -216,7 +226,7 @@ decisions:
         - activity: implementation-analysis
 ```
 
-### 2.3 Loops
+#### 3.1.3 Loops
 
 A loop iterates a named flow over a collection. Only `forEach` is supported. While-like behavior is achieved through decision self-reference (see Section 2.2).
 
@@ -267,7 +277,7 @@ loops:
     flow: domain-body
 ```
 
-### 2.4 Flows
+#### 3.1.4 Flows
 
 A flow is a named, ordered sequence of primitive references. Flows are the composition layer — they stitch steps, decisions, loops, messages, and other flows into a deterministic execution order.
 
@@ -341,9 +351,9 @@ flows:
 
 ---
 
-## 3. EBNF Grammar
+### 3.2 EBNF Grammar
 
-Complete formal grammar for a Compose activity file.
+Complete formal grammar for a Compose activity file. See also `grammar/activity.ebnf`.
 
 ```ebnf
 (* ===== Top-level structure ===== *)
@@ -446,9 +456,11 @@ DIGIT           ::= [0-9]
 
 ---
 
-## 4. Semantic Constraints (Alloy-style)
+### 3.3 Semantic Constraints (Alloy-style)
 
-### 4.1 Signatures
+See also `constraints/activity.als`.
+
+#### 3.3.1 Signatures
 
 ```alloy
 sig Activity {
@@ -525,7 +537,7 @@ sig ActivityTransition extends FlowItem { ref: one Id }
 sig Break extends FlowItem {}
 ```
 
-### 4.2 Structural Constraints
+#### 3.3.2 Structural Constraints
 
 ```alloy
 -- PROV-001: Every required skill input resolves from the scoping chain
@@ -565,7 +577,7 @@ fact FlowUniqueness {
 }
 ```
 
-### 4.3 Flow Constraints
+#### 3.3.3 Flow Constraints
 
 ```alloy
 -- FLOW-001: Every activity has a main flow
@@ -588,7 +600,7 @@ fact FlowRefValid {
 }
 ```
 
-### 4.4 Loop Constraints
+#### 3.3.4 Loop Constraints
 
 ```alloy
 -- LOOP-001: Loop flow references an existing flow
@@ -608,7 +620,7 @@ fact BreakInnermost {
 }
 ```
 
-### 4.5 Decision Constraints
+#### 3.3.5 Decision Constraints
 
 ```alloy
 -- DEC-001: Variable decisions should have a default branch (WARN, not ERROR)
@@ -637,7 +649,7 @@ fact ProgrammaticForm {
 }
 ```
 
-### 4.6 Terminal Constraints
+#### 3.3.6 Terminal Constraints
 
 ```alloy
 -- TERM-001: activity: is valid anywhere and terminates activity scope
@@ -653,7 +665,7 @@ pred branchRejoins[b: Branch] {
 }
 ```
 
-### 4.7 Variable Scoping
+#### 3.3.7 Variable Scoping
 
 Resolution order (innermost to outermost):
 
@@ -671,13 +683,9 @@ fun resolve[name: Id, context: FlowContext]: lone Value {
 }
 ```
 
----
+### 3.4 Complete Example
 
----
-
-## 5. Complete Example
-
-Full `requirements-elicitation` activity rewritten in Compose, annotated with constraint references.
+Full `requirements-elicitation` activity in Compose, annotated with constraint references.
 
 ```
 id: requirements-elicitation
@@ -827,11 +835,9 @@ flows:
     - decision: domain-complete
 ```
 
----
+### 3.5 Validation Rules
 
-## 6. Validation Rules Checklist
-
-Machine-interpretable rules derived from the Alloy constraints in Section 4. Each rule has an ID, severity, description, and the Alloy fact it implements.
+Machine-interpretable rules derived from the Alloy constraints. Each rule has an ID, severity, description, and the Alloy fact it implements.
 
 ### Provenance
 
@@ -887,3 +893,15 @@ Machine-interpretable rules derived from the Alloy constraints in Section 4. Eac
 |------|----------|-------------|-----------|
 | `SCOPE-001` | INFO | Resolution order: local flow > loop variable > activity > workflow | `resolve` |
 | `SCOPE-002` | ERROR | Boolean algebra expressions must reference resolvable variable names | — |
+
+---
+
+## 4. Skill
+
+TBD — Compose grammar and constraints for the skill primitive (agent capability: inputs, outputs, rules, protocol, tools) are not yet defined. See `schemas/skill.schema.json` for the current legacy schema.
+
+---
+
+## 5. Resource
+
+TBD — Compose grammar and constraints for the resource primitive (reference material: documentation, templates, guides) are not yet defined.
