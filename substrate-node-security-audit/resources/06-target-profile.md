@@ -11,13 +11,17 @@ When auditing a different Substrate node, replace this profile with target-appro
 ### Wave 1 — Highest-Priority Crates + Groups B and D
 - **A1:** NTO pallet (`pallets/native-token-observation/`)
 - **A2:** Midnight pallet + ledger (`pallets/midnight/`, `pallets/midnight-system/`, `ledger/`)
-- **A3:** Node binary (`node/`)
+- **A3:** Node startup + config (`node/src/service.rs`, `node/src/command.rs`, `node/src/cfg/`, `node/src/chain_spec/`)
+- **A4:** Node consensus + network (`node/src/inherent_data.rs`, `node/src/main_chain_follower.rs`, `node/src/rpc.rs`, `node/src/extensions.rs`, `node/src/payload.rs`, `node/src/benchmarking.rs`, `node/src/main.rs`, `node/src/lib.rs`, `node/src/sidechain_params_cmd.rs`)
 - **B:** Static analysis (all in-scope)
 - **D:** Toolkit (`ledger/helpers/`, `util/toolkit/`, `util/upgrader/`)
 
 ### Wave 2 — Remaining Crates (Hybrid Dispatch)
-- **A4:** Runtime + upgrade + version (`runtime/`, `pallets/upgrade/`, `pallets/version/`)
-- **A5:** All primitives (`primitives/`)
+- **A5:** Runtime + governance (`runtime/`, `pallets/version/`, `pallets/system-parameters/`, `pallets/federated-authority/`, `pallets/federated-authority-observation/`)
+- **A6:** All primitives (`primitives/`)
+
+### Post-Collection — Verification
+- **V:** Output verification agent (receives all agent outputs, target profile, file inventory, dispatch manifest)
 
 ---
 
@@ -27,8 +31,56 @@ When auditing a different Substrate node, replace this profile with target-appro
 |-------|-------------------|
 | Pallet agents (A1, A2) | `pallets/midnight/src/weights.rs`, `runtime/src/model.rs` |
 | Ledger agent (A2) | `runtime/src/model.rs` |
-| Node agent (A3) | `node/src/inherent_data.rs` (ProposalCIDP vs VerifierCIDP comparison), `node/src/rpc.rs` (RPC subscription limit verification) |
+| Node startup agent (A3) | `node/src/inherent_data.rs` (CreateInherentDataConfig struct for invariant validation) |
+| Node consensus agent (A4) | `node/src/service.rs` (service initialization context for inherent provider tracing), `node/src/rpc.rs` (RPC subscription limit verification) |
 | Ensemble agent | All of the above, plus `primitives/mainchain-follower/src/data_source/mod.rs`, `pallets/midnight-system/src/lib.rs` |
+
+---
+
+## Node Agent Scope Split
+
+The node binary covers three distinct security surfaces. To avoid prompt saturation, it is split into two agents with focused responsibilities:
+
+### A3 — Startup + Config
+
+**Files:** `service.rs`, `command.rs`, `cfg/**`, `chain_spec/**`
+
+**Primary checks:**
+- Config struct invariant validation (§3.4 extended to off-chain config) — verify every struct in the "Consensus-Critical Configuration Structs" table below
+- Genesis construction paths (§3.5) — online vs offline divergence, StorageInit construction sites
+- Panic triage (Check 25) — configuration-variant triage table for all expect()/unwrap() in service.rs and command.rs
+- Genesis parsing truncation (Check 26) — trace all genesis extrinsic decoding paths for silent truncation
+- Feature-gated divergence (Check 16) — HostFunctions type aliases gated by features
+
+### A4 — Consensus + Network
+
+**Files:** `inherent_data.rs`, `main_chain_follower.rs`, `rpc.rs`, `extensions.rs`, `payload.rs`, remaining `node/src/*.rs`
+
+**Primary checks:**
+- ProposalCIDP vs VerifierCIDP asymmetry (§3.4) — field-by-field comparison, recomputation citations
+- Parent header safety — expect_header reachability under pruning/reorg
+- Data source pool sizing (§3.8) — pool construction, consumer count, contention analysis
+- RPC subscription limits (Check 6) — per-connection caps in create_full
+- SSL/TLS enforcement (Check 15) — trace PgPoolOptions builder chain for .ssl_mode()
+- Mock data source toggle (Check 9) — runtime vs compile-time guard
+
+---
+
+## Verification Agent (V)
+
+Dispatched after all primary agents return. Receives all collected agent outputs and mechanically validates completeness against the target profile and workflow requirements.
+
+**Inputs:** All agent structured outputs, target profile, file inventory, vulnerability domain map, dispatch manifest.
+
+**Checks:**
+1. Dispatch completeness — every assigned agent dispatched and returned
+2. Coverage gate — every >200-line file in priority-1/2 crates read by a §3-applying agent
+3. Mandatory table presence — per-field event trace, struct diff, config-variant triage, genesis parsing paths, storage lifecycle pairing, toolkit matrix
+4. Target profile config struct coverage — every struct in the table below appears in at least one agent's output
+5. Table-derived finding extraction — mechanical scan of all mandatory tables for FAIL/DIFF/Missing/No cells
+6. Error-path persistence audit — every StorageMap::insert site has an error-path assessment
+
+**Output:** Gap report with re-dispatch recommendations, table-derived findings, coverage attestation.
 
 ---
 
@@ -79,8 +131,8 @@ In addition to the 4 universal blind-spot items (§3.1 weight, §3.3 event filte
 | 9 | Check 16: Host function divergence | Search feature-gated `HostFunctions` type aliases in service init | `node/src/service.rs` |
 | 10 | §3.1 flush ordering | Enumerate ALL writes in `on_finalize` in execution order. Verify `flush_storage()` runs after the last state-modifying operation. Specifically: does `mint_coins` execute after `flush_storage`? | `pallets/midnight/src/lib.rs` |
 | 11 | §3.6 absent-entity query semantics | For `get_contract_state` and `get_unclaimed_amount`, verify that a non-existent entity returns `Err(...)`, not `Ok(default)`. `None` mapped to `Ok(empty)` is FAIL. | `ledger/src/versions/common/mod.rs` |
-| 12 | Check 25: Config-variant panic | For each `expect()`/`unwrap()` on `Option` from config/database accessor in `service.rs`, check: does `DatabaseConfig::InMemory` cause `.path()` to return `None`? | `node/src/service.rs` |
-| 13 | Check 26: Genesis extrinsics truncation | Trace genesis extrinsics decoding from chain spec properties. Does the parsing stop at the first invalid element? Produce path enumeration table. | `node/src/service.rs`, `node/src/command.rs` |
+| 12 | Check 25: Config-variant panic | For each `expect()`/`unwrap()` on `Option` from config/database accessor in `service.rs`, check: does `DatabaseConfig::InMemory` cause `.path()` to return `None`? | `node/src/service.rs` (A3 scope) |
+| 13 | Check 26: Genesis extrinsics truncation | Trace genesis extrinsics decoding from chain spec properties. Does the parsing stop at the first invalid element? Produce path enumeration table. | `node/src/service.rs`, `node/src/command.rs` (A3 scope) |
 | 14 | Error-path storage persistence | For `UtxoOwners::insert` in `handle_create`: if `construct_cnight_generates_dust_event` fails and handler returns `None`, does the insert persist? | `pallets/native-token-observation/src/lib.rs` |
 | 15 | Toolkit item 2: canonical-state writeback | In `DustWallet::spend`/`do_spend`, verify `dust_local_state` is written back to `self` after `do_spend()` — not just the spent-UTXO tracker | `ledger/helpers/src/wallet/dust.rs` |
 

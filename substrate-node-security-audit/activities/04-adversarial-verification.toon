@@ -1,8 +1,8 @@
 id: adversarial-verification
-version: 2.1.0
+version: 2.2.0
 name: Adversarial Verification
-description: "Verify every PASS item from the primary audit scratchpads by decomposing each claim into constituent properties, enumerating all fields/sites, and independently verifying each one. The agent's role is to REFUTE, not confirm. Fully automated — no user checkpoints."
-problem: AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. This consistently causes Medium/High findings to be missed as false PASSes.
+description: "Verify every PASS item from the primary audit scratchpads by decomposing each claim into constituent properties, enumerating all fields/sites, and independently verifying each one. The agent's role is to REFUTE, not confirm. PASS item selection is informed by the verification agent's gap report — areas flagged as potentially incomplete are automatically elevated to the adversarial queue. Fully automated — no user checkpoints."
+problem: "AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. This consistently causes Medium/High findings to be missed as false PASSes. Additionally, adversarial PASS selection based solely on severity potential misses areas where primary agents produced structurally incomplete outputs."
 recognition[3]:
   - verify audit findings
   - adversarial review
@@ -11,17 +11,22 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 30-60m
-rules[1]:
+rules[2]:
   - "Apply the decompose-safety-claims skill rules for adversarial verification."
+  - "VERIFICATION-INFORMED TARGETING: If a verification_report is available from the primary-audit phase, read the gap report before selecting PASS items. Every PASS item in a §3 category flagged by the verification agent as having incomplete coverage, missing tables, or unmet target profile obligations is automatically added to the adversarial queue regardless of severity estimate. This ensures adversarial effort is directed at areas with the highest false-PASS risk."
 entryActions[1]{action,message}:
   log,Starting adversarial verification of PASS items
-steps[5]:
+steps[6]:
+  - id: seed-from-verification-report
+    name: Seed PASS Queue from Verification Report
+    skill: decompose-safety-claims
+    description: "If a verification_report is available, read the gap report. For each §3 category with incomplete coverage, missing tables, or unmet target profile obligations, identify the corresponding PASS items from agent outputs and add them to the adversarial queue. These items are pre-seeded before the standard severity-based filtering."
   - id: extract-pass-items
     name: Extract PASS Items
     skill: decompose-safety-claims
     skill_args:
       output_format: "Filtered PASS list with checklist references"
-    description: "Collect and filter PASS items for adversarial verification."
+    description: "Collect and filter PASS items for adversarial verification. Merge pre-seeded items from verification report with severity-filtered items. Deduplicate by checklist reference."
   - id: decompose-claims
     name: Decompose PASS Claims
     skill: decompose-safety-claims

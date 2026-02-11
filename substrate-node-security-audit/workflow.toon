@@ -1,14 +1,14 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.13.0
+version: 4.14.0
 title: Security Audit Workflow
-description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, and per-function toolkit matrices."
+description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D, V) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification informed by verification agent gap reports, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review, sub-output-verification) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, per-function toolkit matrices, and mechanical output validation."
 author: m2ux
 tags[3]:
   - security
   - audit
   - workflow
-rules[22]:
+rules[24]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
   - "PREREQUISITE: Load resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
@@ -30,8 +30,10 @@ rules[22]:
   - "ENSEMBLE TARGETED BLIND-SPOTS: The ensemble agent verifies items 1-4 (universal) plus target-specific items from the target profile FIRST, before general review."
   - "CHECKLIST-TO-PROMPT COVERAGE GATE: The orchestrator verifies every §3 checklist item (§3.1-§3.14) is explicitly represented in at least one dispatched agent's context."
   - "CONFIGURATION-VARIANT PANIC TRIAGE: For every expect()/unwrap() on an Option derived from configuration or runtime state, the reviewing agent MUST enumerate ALL valid configuration variants and check whether any variant produces None. Specifically: DatabaseConfig::InMemory causes path() to return None; development/test presets may omit optional fields; pruning/archive modes may produce missing headers. An unwrap that panics on any valid configuration is a finding regardless of the 'default' configuration."
-  - "GENESIS PARSING PATH COVERAGE: The node agent MUST trace ALL genesis data parsing paths — not only StorageInit construction but also genesis extrinsics decoding, genesis header construction, and chain spec property parsing. Iteration patterns that stop at the first invalid element (take_while, early-return on error, filter_map) silently truncate remaining data. Each parsing path must be verified for silent truncation independently."
-variables[17]:
+  - "GENESIS PARSING PATH COVERAGE: The node startup agent (A3) MUST trace ALL genesis data parsing paths — not only StorageInit construction but also genesis extrinsics decoding, genesis header construction, and chain spec property parsing. Iteration patterns that stop at the first invalid element (take_while, early-return on error, filter_map) silently truncate remaining data. Each parsing path must be verified for silent truncation independently."
+  - "NODE BINARY SCOPE SPLIT: The node binary is split into A3 (startup/config) and A4 (consensus/network) per the target profile. This addresses prompt saturation that historically caused config struct invariant validation and consensus-path panic checks to be deprioritized."
+  - "VERIFICATION AGENT GATE: After collecting all primary agent results, the orchestrator MUST dispatch a verification sub-agent (V) following the sub-output-verification activity. The verification agent's gap report drives targeted re-dispatch before structured merge. The gap report also informs adversarial PASS item selection."
+variables[18]:
   - name: target_submodule
     type: string
     description: "Path to the submodule being audited (e.g., midnight-node)"
@@ -93,5 +95,9 @@ variables[17]:
   - name: dispatch_complete
     type: boolean
     description: "Phase 1b dispatch gate — all assigned agents dispatched and returned"
+    defaultValue: false
+  - name: verification_complete
+    type: boolean
+    description: "Phase 1b verification gate — verification sub-agent (V) dispatched and gap report processed"
     defaultValue: false
 initialActivity: scope-setup
