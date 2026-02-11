@@ -1,8 +1,10 @@
 # Compose DSL Specification
 
-**Version**: 3.0.0
-**Date**: 2026-02-10
-**Status**: Draft
+| | |
+|---|---|
+| **Version** | 1.0.0 |
+| **Date** | 2026-02-10 |
+| **Status** | Draft |
 
 ---
 
