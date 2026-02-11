@@ -1,10 +1,10 @@
 # Changes from Prior Schema
 
-This document captures the differences between the prior activity schema and Compose, along with the design decisions that drove each change.
+This document captures the differences between the prior activity schema and Orchestra, along with the design decisions that drove each change.
 
 ## Summary of Changes
 
-| Aspect | Prior | Compose |
+| Aspect | Prior | Orchestra |
 |--------|-------|---------|
 | Primitive types | 5 (steps, checkpoints, conditions, loops, decisions) | 3 (steps, decisions, loops) |
 | Composition | Implicit (agent-inferred) | Explicit (`flows:` block) |
@@ -17,7 +17,7 @@ This document captures the differences between the prior activity schema and Com
 
 ## Design Decisions
 
-Each edge case encountered during schema design was resolved through a structured decision process. These decisions define the behavioral semantics of the Compose activity language.
+Each edge case encountered during schema design was resolved through a structured decision process. These decisions define the behavioral semantics of the Orchestra activity language.
 
 | # | Edge Case | Decision | Rationale |
 |---|-----------|----------|-----------|

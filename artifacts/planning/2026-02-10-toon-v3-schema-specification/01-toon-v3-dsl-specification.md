@@ -1,4 +1,4 @@
-# Compose DSL Specification
+# Orchestra DSL Specification
 
 | | |
 |---|---|
@@ -12,20 +12,20 @@
 
 ### Purpose
 
-Compose is a domain-specific language for defining workflow definitions that AI agents interpret and execute. Workflow definitions reside in the `workflows` branch and describe structured sequences of operations — from multi-step engineering tasks to security audits to code reviews. The fundamental purpose of Compose is to provide a **deterministic landscape** for agents to navigate: given the same workflow definition and the same state, any conforming agent must follow the same execution path. This eliminates ambiguity in workflow interpretation and makes agent behavior predictable, auditable, and reproducible.
+Orchestra is a domain-specific language for defining workflow definitions that AI agents interpret and execute. Workflow definitions reside in the `workflows` branch and describe structured sequences of operations — from multi-step engineering tasks to security audits to code reviews. The fundamental purpose of Orchestra is to provide a **deterministic landscape** for agents to navigate: given the same workflow definition and the same state, any conforming agent must follow the same execution path. This eliminates ambiguity in workflow interpretation and makes agent behavior predictable, auditable, and reproducible.
 
 ### Scope
 
-Compose defines the grammar and semantic constraints for the four workflow primitives:
+Orchestra defines the grammar and semantic constraints for the four workflow primitives:
 
-| Primitive | Description | Compose Status |
+| Primitive | Description | Orchestra Status |
 |-----------|-------------|----------------|
-| **Workflow** | Top-level container: metadata, variables, activity sequencing | Legacy — Compose variant TBD |
+| **Workflow** | Top-level container: metadata, variables, activity sequencing | Legacy — Orchestra variant TBD |
 | **Activity** | Execution unit: steps, decisions, loops composed into flows | **Defined in this specification** |
-| **Skill** | Agent capability: inputs, outputs, rules, protocol, tools | Legacy — Compose variant TBD |
-| **Resource** | Reference material: documentation, templates, guides | Legacy — Compose variant TBD |
+| **Skill** | Agent capability: inputs, outputs, rules, protocol, tools | Legacy — Orchestra variant TBD |
+| **Resource** | Reference material: documentation, templates, guides | Legacy — Orchestra variant TBD |
 
-This specification fully defines the Compose grammar and constraints for **activities**. The workflow, skill, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Compose variants are designed.
+This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, skill, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Orchestra variants are designed.
 
 ### Design Goal
 
@@ -35,7 +35,7 @@ Three primitives — **steps**, **decisions**, and **loops** — are composed in
 
 ## 2. Workflow
 
-TBD — Compose grammar and constraints for the workflow primitive (top-level container: metadata, variables, activity sequencing) are not yet defined. See `schemas/workflow.schema.json` for the current legacy schema.
+TBD — Orchestra grammar and constraints for the workflow primitive (top-level container: metadata, variables, activity sequencing) are not yet defined. See `schemas/workflow.schema.json` for the current legacy schema.
 
 ---
 
@@ -353,7 +353,7 @@ flows:
 
 ### 3.2 EBNF Grammar
 
-Complete formal grammar for a Compose activity file. See also `grammar/activity.ebnf`.
+Complete formal grammar for a Orchestra activity file. See also `grammar/activity.ebnf`.
 
 ```ebnf
 (* ===== Top-level structure ===== *)
@@ -685,7 +685,7 @@ fun resolve[name: Id, context: FlowContext]: lone Value {
 
 ### 3.4 Complete Example
 
-Full `requirements-elicitation` activity in Compose, annotated with constraint references.
+Full `requirements-elicitation` activity in Orchestra, annotated with constraint references.
 
 ```
 id: requirements-elicitation
@@ -898,10 +898,10 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 
 ## 4. Skill
 
-TBD — Compose grammar and constraints for the skill primitive (agent capability: inputs, outputs, rules, protocol, tools) are not yet defined. See `schemas/skill.schema.json` for the current legacy schema.
+TBD — Orchestra grammar and constraints for the skill primitive (agent capability: inputs, outputs, rules, protocol, tools) are not yet defined. See `schemas/skill.schema.json` for the current legacy schema.
 
 ---
 
 ## 5. Resource
 
-TBD — Compose grammar and constraints for the resource primitive (reference material: documentation, templates, guides) are not yet defined.
+TBD — Orchestra grammar and constraints for the resource primitive (reference material: documentation, templates, guides) are not yet defined.
