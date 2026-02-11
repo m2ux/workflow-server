@@ -1,8 +1,8 @@
 id: primary-audit
-version: 4.10.0
+version: 4.11.0
 name: Primary Audit
-description: "Multi-agent audit via wave-based concurrent dispatch. Group A applies §3 checklist per crate. Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function. Consolidation uses structured merge with mandatory elevation."
-problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while the static analysis agent catches mechanical patterns across the full scope.
+description: "Multi-agent audit via wave-based concurrent dispatch. Group A applies §3 checklist per crate (node binary split into A3 startup/config + A4 consensus/network). Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function. A dedicated verification sub-agent (V) validates output completeness before structured merge."
+problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to verify agent outputs. Multi-agent orchestration with a dedicated verification agent provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window, (c) targeted re-dispatch for gaps before findings are merged."
 recognition[3]:
   - run primary audit
   - dispatch audit agents
@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 60-120m
-rules[21]:
+rules[23]:
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "For cross-crate checks (§3.2, §3.4, §3.8, §3.10), the orchestrator includes supplementary files per the target profile"
   - "Group B runs ALL §2 grep patterns and mechanical checks against the full in-scope directory set"
@@ -23,29 +23,31 @@ rules[21]:
   - "WAVE 2 IS MANDATORY: Proceeding without dispatching Wave 2 is a HARD STOP. If context constraints prevent it, document the incomplete state and flag the report as INCOMPLETE."
   - "COVERAGE GATE: Every .rs file >200 lines in priority-1/2 crates must be read by a §3-applying sub-agent. Files read only during reconnaissance do not count."
   - "§3.3 TRACE TABLE VERIFICATION: Pallet agents with deposit_event() partial-success paths must produce BOTH the per-field event trace table AND the event-vs-storage struct diff table."
-  - "§3.5 STORAGEINIT VERIFICATION: The node agent must produce a StorageInit construction site enumeration covering online and offline subcommand paths, plus genesis HEADER construction."
+  - "§3.5 STORAGEINIT VERIFICATION: The node startup agent (A3) must produce a StorageInit construction site enumeration covering online and offline subcommand paths, plus genesis HEADER construction."
   - "GROUP D OUTPUT VALIDATION: Verify function enumeration table, per-function checklist matrix, and coverage attestation. Re-dispatch if absent."
   - "MANDATORY TABLE AUTO-ELEVATION: Orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes to findings before structured-merge."
   - "EVENT CONSTRUCTION SITE VERIFICATION: Verify §3.3 trace tables cover ALL event construction sites identified in the vulnerability domain map. Dispatch follow-up for uncovered sites."
   - "CONFIGURATION INVARIANT SCOPE: §3.4 applies to both inherent provider tuples AND off-chain configuration structs identified in the vulnerability domain map."
   - "HYBRID WAVE DISPATCH: Wave 2 SHOULD combine remaining crates into fewer agents. Include supplementary files per the target profile."
   - "RECONNAISSANCE LEAD INCLUSION: Every lead in the leads_routing table from reconnaissance MUST appear in the corresponding agent's prompt. An unrouted lead that matches an agent's scope is a dispatch defect."
-  - "CONFIGURATION-VARIANT PANIC TRIAGE: The node agent's prompt MUST include the instruction to enumerate ALL valid DatabaseConfig/StorageConfig variants for each expect()/unwrap() on config-derived Option values. The orchestrator verifies the agent's output includes a configuration-variant triage table for service initialization code. Re-dispatch if absent."
-  - "GENESIS PARSING PATH ENUMERATION: The node agent MUST enumerate ALL genesis data parsing paths (StorageInit, genesis extrinsics, genesis header, chain spec properties) and verify each for silent truncation patterns. The StorageInit construction site table from §3.5 is necessary but NOT sufficient — extrinsics parsing and header construction are separate paths that must be traced independently."
+  - "CONFIGURATION-VARIANT PANIC TRIAGE: The node startup agent's (A3) prompt MUST include the instruction to enumerate ALL valid DatabaseConfig/StorageConfig variants for each expect()/unwrap() on config-derived Option values. The verification agent (V) checks for the configuration-variant triage table; if absent, the orchestrator re-dispatches."
+  - "GENESIS PARSING PATH ENUMERATION: The node startup agent (A3) MUST enumerate ALL genesis data parsing paths (StorageInit, genesis extrinsics, genesis header, chain spec properties) and verify each for silent truncation patterns. The StorageInit construction site table from §3.5 is necessary but NOT sufficient — extrinsics parsing and header construction are separate paths that must be traced independently."
+  - "NODE BINARY SCOPE SPLIT: The node binary is split into A3 (startup/config: service.rs, command.rs, cfg/, chain_spec/) and A4 (consensus/network: inherent_data.rs, main_chain_follower.rs, rpc.rs, remaining node/src/). See target profile for detailed scope and check assignments."
+  - "VERIFICATION AGENT DISPATCH: After collecting all primary agent results, dispatch the verification sub-agent (V) following the sub-output-verification activity. The verification agent mechanically validates output completeness against the target profile. The orchestrator acts on the gap report before proceeding to structured merge."
   - "ERROR-PATH STORAGE PERSISTENCE: For every StorageMap::insert() followed by a fallible operation (host API call, serialization, event construction), the Group A agent MUST verify that a failed fallible operation either (a) reverts the insert or (b) the insert is intentionally unconditional with documented justification. An insert that persists when the subsequent operation fails and the handler returns None/Err is a finding — the storage entry becomes orphaned."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
-steps[14]:
+steps[12]:
   - id: dispatch-wave-1
-    name: "Dispatch Wave 1 — Highest-Priority Group A + Group B + Group D"
+    name: "Dispatch Wave 1 — Highest-Priority Group A + Groups B and D"
     required: true
     skill: dispatch-sub-agents
-    description: "Dispatch Wave 1 agents per target profile: highest-priority Group A + Group B + Group D."
+    description: "Dispatch Wave 1 agents per target profile: A1, A2, A3, A4, B, D concurrently."
   - id: dispatch-wave-2
     name: "Dispatch Wave 2 — Remaining Group A (MANDATORY)"
     required: true
     skill: dispatch-sub-agents
-    description: "After Wave 1 returns, dispatch remaining Group A agents per target profile. MANDATORY — skipping is a HARD STOP."
+    description: "After Wave 1 returns, dispatch remaining Group A agents per target profile: A5, A6. MANDATORY — skipping is a HARD STOP."
   - id: verify-checklist-prompt-coverage
     name: "Verify Checklist-to-Prompt Coverage"
     required: true
@@ -60,50 +62,37 @@ steps[14]:
     name: Collect All Results
     description: "Wait for all sub-agents from both waves to return. Collect structured finding lists from each agent."
     required: true
-  - id: verify-coverage-gate
-    name: "Verify Coverage Gate (HARD STOP)"
+  - id: dispatch-verification-agent
+    name: "Dispatch Verification Sub-Agent (V)"
     required: true
-    skill: verify-sub-agent-output
-    description: "Verify every large file in priority-1/2 crates was read by at least one agent. Dispatch follow-up for gaps."
-  - id: verify-mandatory-tables
-    name: "Verify Mandatory Output Tables"
+    skill: dispatch-sub-agents
+    description: "Dispatch the verification sub-agent following the sub-output-verification activity. The agent receives all collected agent outputs, the target profile, file inventory, vulnerability domain map, and dispatch manifest. It mechanically validates output completeness and produces a gap report with re-dispatch recommendations and table-derived findings."
+  - id: act-on-gap-report
+    name: "Act on Verification Gap Report"
     required: true
-    skill: verify-sub-agent-output
-    description: "Verify each agent produced all required structured tables. Re-dispatch for any missing table."
-  - id: verify-storageinit-trace
-    name: "Verify StorageInit Construction Site Trace"
-    required: true
-    skill: verify-sub-agent-output
-    description: "Verify the node agent traced all genesis state construction sites. Re-dispatch if incomplete."
+    description: "Read the verification agent's gap report. For each re-dispatch recommendation, dispatch a targeted follow-up agent with the specific scope and check identified. Collect follow-up results. If no gaps were found, proceed directly to structured merge."
   - id: extract-table-derived-findings
-    name: "Extract Findings from Mandatory Tables"
+    name: "Extract Table-Derived Findings"
     required: true
-    skill: verify-sub-agent-output
-    description: "Scan mandatory tables for FAIL/DIFF/Missing/No cells; auto-extract as findings. Verify event construction site coverage per verify-sub-agent-output skill."
-  - id: verify-config-variant-triage
-    name: "Verify Configuration-Variant Panic Triage"
-    required: true
-    skill: verify-sub-agent-output
-    description: "Verify the node agent's output includes a configuration-variant triage table mapping each expect()/unwrap() in service initialization to all valid config modes (InMemory, OnDisk, pruned, archive). Re-dispatch if absent."
-  - id: verify-genesis-parsing-coverage
-    name: "Verify Genesis Parsing Path Coverage"
-    required: true
-    skill: verify-sub-agent-output
-    description: "Verify the node agent traced ALL genesis data parsing paths: (1) StorageInit construction sites, (2) genesis extrinsics decoding, (3) genesis header construction, (4) chain spec property parsing. Each must be checked for silent truncation. Re-dispatch for any untraced path."
+    description: "Incorporate the table-derived findings produced by the verification agent into the finding sources for structured merge. These are mechanically extracted from mandatory table cells and supplement the primary agent findings."
   - id: structured-merge
     name: Structured Merge
     skill: merge-findings
     skill_args:
       merge_strategy: structured-merge
-    description: "Concatenate all agent finding lists AND table-derived findings from extract-table-derived-findings into a canonical flat table."
+    description: "Concatenate all agent finding lists (primary + follow-up + table-derived) into a canonical flat table."
   - id: dedup-and-map
     name: Deduplicate and Map to Report Findings
     skill: merge-findings
     description: "Assign report finding numbers. Deduplicate by root cause with justification."
   - id: verify-checklist-completeness
-    name: Verify §3 Checklist Completeness
+    name: "Verify §3 Checklist Completeness"
     skill: verify-sub-agent-output
     description: "Produce a checklist coverage matrix. Dispatch follow-up for any unevaluated items."
+  - id: preserve-verification-report
+    name: "Preserve Verification Report for Adversarial Phase"
+    required: true
+    description: "Store the verification agent's gap report in context for consumption by the adversarial verification phase. Areas flagged as potentially incomplete inform PASS item selection."
 transitions[1]{to,isDefault}:
   adversarial-verification,true
 exitActions[2]{action,message}:
@@ -114,10 +103,11 @@ outcome[4]:
   - Static analysis patterns and mechanical checks run against full in-scope directories
   - Storage lifecycle pairing table produced (insert/remove completeness)
   - Toolkit code reviewed with mandatory minimum checklist (Group D)
-context_to_preserve[6]:
+context_to_preserve[7]:
   - merged_findings - Flat table of all agent findings with elevation mapping
   - scratchpad_passes - All PASS items with cited evidence for adversarial verification
   - checklist_coverage - §3 coverage matrix showing per-item evaluation status
   - coverage_report - Files read by each §3-applying agent and checklist completion status
   - dispatch_manifest - agents_assigned vs agents_dispatched with per-crate status
   - "dispatch_complete - true when all assigned agents have been dispatched and returned"
+  - "verification_report - Gap report from verification sub-agent (V) including coverage attestation, missing tables, unmet target profile obligations, and re-dispatch outcomes. Consumed by adversarial verification for PASS item targeting."

@@ -1,0 +1,75 @@
+id: sub-output-verification
+version: 1.0.0
+name: "Sub-Agent: Output Verification"
+description: "Dispatched after primary agent collection to mechanically validate that all agent outputs meet structural completeness requirements, coverage gates, and target profile obligations. Produces a gap report with re-dispatch recommendations and extracts table-derived findings. Runs in a dedicated context window to avoid orchestrator verification shallowness."
+problem: "The orchestrator executes 10+ verification protocols inline after composing prompts for 8+ agents and collecting their outputs. By this point the orchestrator's context window is saturated and verification becomes shallow — mandatory tables are assumed present, coverage gates are loosely checked, and target profile obligations are not mechanically verified. This produces inconsistent finding counts across runs on the same codebase."
+recognition[3]:
+  - verify agent outputs
+  - output verification
+  - check completeness
+skills:
+  primary: verify-sub-agent-output
+required: false
+estimatedTime: 10-20m
+
+rules[6]:
+  - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
+  - "The sub-agent receives context variables: all collected agent outputs (structured JSON), target profile (resource 06), file inventory, vulnerability domain map, dispatch manifest"
+  - "Every verification protocol in the verify-sub-agent-output skill MUST be executed mechanically — no protocol may be skipped or summarized"
+  - "The gap report MUST list specific re-dispatch recommendations with agent ID, file scope, and the specific check to perform"
+  - "Table-derived findings are extracted mechanically: every FAIL/DIFF/Missing/No cell in every mandatory table becomes a finding candidate"
+  - "The verification agent does NOT apply the §3 checklist or read source code — it validates that primary agents did so, based on their structured outputs"
+
+steps[8]:
+  - id: check-dispatch-completeness
+    name: Verify Dispatch Completeness
+    description: "Compare the dispatch manifest against agent assignments from the target profile. Every assigned agent must have dispatched and returned a structured output. Produce a dispatch status table."
+    skill: verify-sub-agent-output
+    required: true
+  - id: check-coverage-gate
+    name: Verify Coverage Gate
+    description: "For every .rs file >200 lines in priority-1/2 crates (from file inventory), verify at least one Group A agent's output references it. Files read only during reconnaissance do not satisfy the gate. Produce a coverage table with COVERED/RECON-ONLY/UNREAD status."
+    skill: verify-sub-agent-output
+    required: true
+  - id: check-mandatory-tables
+    name: Verify Mandatory Output Tables
+    description: "For each agent, verify all required tables are present in structured output: (a) §3 checklist evaluation for Group A agents, (b) per-field event trace and struct diff for agents with §3.3 domain entries, (c) storage lifecycle pairing for Group B, (d) function checklist matrix and coverage attestation for Group D, (e) config-variant triage table for node startup agent (A3), (f) genesis parsing path enumeration for node startup agent (A3). A table replaced with prose or absent entirely is flagged."
+    skill: verify-sub-agent-output
+    required: true
+  - id: check-target-profile-obligations
+    name: Verify Target Profile Obligations
+    description: "For every entry in the target profile's Consensus-Critical Configuration Structs table, verify that at least one agent's output addresses the struct and its required invariants. For every Vulnerability Domain Hint, verify the corresponding §3 item was evaluated by the assigned agent. Produce an obligation coverage table."
+    skill: verify-sub-agent-output
+    required: true
+  - id: extract-table-derived-findings
+    name: Extract Table-Derived Findings
+    description: "Iterate every row in every mandatory table from every agent. For each cell, apply keyword match: FAIL, DIFF, Missing, No, absent, not validated, unconditional, no guard, no check, unpaired. Each matching cell becomes a table-derived finding with source_table, cell_description, agent_id."
+    skill: verify-sub-agent-output
+    required: true
+  - id: check-error-path-persistence
+    name: Verify Error-Path Persistence Audit
+    description: "For each Group A pallet agent, verify that every StorageMap::insert() site in the agent's output has been checked for error-path persistence. Flag any insert site without an error-path assessment."
+    skill: verify-sub-agent-output
+    required: true
+  - id: produce-gap-report
+    name: Produce Gap Report
+    description: "Compile all gaps into a structured report: dispatch gaps, coverage gaps, missing tables, unmet target profile obligations, unaudited error paths. For each gap, produce a specific re-dispatch recommendation: agent_id (or 'new'), file scope, check to perform."
+    skill: verify-sub-agent-output
+    required: true
+  - id: format-output
+    name: Format Verification Output
+    description: "Return the gap report and table-derived findings as structured output for the orchestrator."
+    skill: verify-sub-agent-output
+    required: true
+
+outcome[4]:
+  - Dispatch completeness verified against target profile
+  - Coverage gate verified for all priority-1/2 files
+  - All mandatory tables verified as present or flagged for re-dispatch
+  - Table-derived findings extracted mechanically from all agent tables
+
+context_to_preserve[4]:
+  - gap_report - Structured gap report with re-dispatch recommendations
+  - table_derived_findings - Mechanically extracted findings from mandatory table cells
+  - coverage_attestation - Per-file coverage status table
+  - obligation_coverage - Target profile obligation status table

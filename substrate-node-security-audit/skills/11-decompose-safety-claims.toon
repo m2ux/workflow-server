@@ -1,16 +1,19 @@
 id: decompose-safety-claims
-version: 1.1.0
-capability: "Take a safety claim (PASS verdict), enumerate the constituent properties it asserts, enumerate all instances that must hold, and produce a decomposition table for independent verification"
+version: 1.2.0
+capability: "Take a safety claim (PASS verdict), enumerate the constituent properties it asserts, enumerate all instances that must hold, and produce a decomposition table for independent verification. Optionally informed by a verification gap report to target areas with incomplete primary coverage."
 
-description: "A reusable adversarial analysis skill. When a review produces a PASS verdict on a multi-faceted check, this skill decomposes the claim into independent properties, enumerates every instance/field/site that must satisfy each property, and produces a structured table for independent verification. The goal is to refute, not confirm."
+description: "A reusable adversarial analysis skill. When a review produces a PASS verdict on a multi-faceted check, this skill decomposes the claim into independent properties, enumerates every instance/field/site that must satisfy each property, and produces a structured table for independent verification. The goal is to refute, not confirm. When a verification gap report is provided, PASS items in flagged areas are automatically included regardless of severity estimate."
 
-inputs[2]:
+inputs[3]:
   - id: pass-items
     description: "List of PASS verdicts to decompose, each with the claim text, cited evidence, and checklist reference"
     required: true
   - id: source-files
     description: "Code files to read for independent verification"
     required: true
+  - id: verification-gaps
+    description: "Gap report from the verification sub-agent (V). Lists §3 categories with incomplete coverage, missing tables, or unmet target profile obligations. PASS items in flagged categories are auto-included in the adversarial queue."
+    required: false
 
 rules:
   refute-role: "Refute safety claims, not confirm them."
@@ -20,8 +23,10 @@ rules:
   confirmed-only-verified: "CONFIRMED only when ALL decomposed properties are verified with code citations."
 
 protocol:
+  seed-from-gaps[1]:
+    - "If verification-gaps input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet target profile obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the adversarial queue regardless of severity estimate — the verification gap indicates higher false-PASS risk."
   extract-and-filter[1]:
-    - "Collect all PASS verdicts from agent results. Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. These items are most susceptible to first-positive-signal false PASSes."
+    - "Collect all PASS verdicts from agent results. Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. Merge with any pre-seeded items from verification gaps. Deduplicate by checklist reference."
   decompose-claims[1]:
     - For each PASS item, enumerate the specific independent properties the PASS requires to be true. A claim like 'events are filtered for failed segments' decomposes into N properties — one per event field type (e.g., UTXOs, call_addresses, deploy_addresses, maintain_addresses, claim_rewards).
   enumerate-instances[1]:

@@ -18,10 +18,11 @@ This workflow guides the complete lifecycle of a security audit:
 - Fully automated sequential flow with phase gates
 - **Goal → Activity → Skill → Tools** ontology with progressive disclosure
 - Workflow-directed sub-agents that bootstrap the workflow-server, load assigned activities, and follow steps sequentially with verifiable outputs
-- Composable skill architecture — 15 single-responsibility skills across orchestrator, analysis, and sub-agent tiers
-- Wave-based agent dispatch to work within platform concurrency limits
-- Verification gates between agent collection and finding consolidation
+- Composable skill architecture — 18 single-responsibility skills across orchestrator, analysis, and sub-agent tiers
+- Wave-based agent dispatch with concurrent execution within each wave
+- Dedicated verification sub-agent (V) validates output completeness in a fresh context window before finding merge
 - The orchestrator coordinates and dispatches — sub-agents perform deep crate-level review
+- Node binary scope split (A3 startup/config + A4 consensus/network) to prevent prompt saturation on the largest single-agent scope
 - Impact × Feasibility severity scoring with target-profile-backed calibration examples
 - Contamination prevention — reference report quarantined until gap-analysis phase
 - Target profile (resource 06) separates target-specific configuration from core workflow rules
@@ -83,58 +84,58 @@ The primary audit dispatches specialized agent groups in waves, collects their s
 
 | Group | Agents | Activity | Scope |
 |-------|--------|----------|-------|
-| A | 1 per priority-1/2 crate (~6 agents) | `sub-crate-review` | Full crate file read, §3 checklist, invariant extraction, cross-function comparison |
+| A | 1 per priority-1/2 scope (~6 agents) | `sub-crate-review` | Full crate file read, §3 checklist, invariant extraction, cross-function comparison. Node binary is split into A3 (startup/config) and A4 (consensus/network) to avoid prompt saturation. |
 | B | 1 | `sub-static-analysis` | All §2 grep patterns, mechanical checks, storage lifecycle pairing |
 | D | 1 | `sub-toolkit-review` | Toolkit crates (see target profile) with 8-item checklist applied per-function |
+| V | 1 | `sub-output-verification` | Mechanical validation of all agent outputs against target profile, coverage gates, and mandatory table requirements. Dispatched after collection, before merge. |
 
 ### Dispatch and Consolidation
 
 ```mermaid
 graph LR
-    REC[Reconnaissance<br/>agent assignments] --> FORK1(( ))
+    REC[Reconnaissance] --> FORK1(( ))
 
-    FORK1 --> A1["A1: Priority-1 crate"]
-    FORK1 --> A2["A2: Priority-1 crate"]
-    FORK1 --> A3["A3: Priority-1 crate"]
+    FORK1 --> A1["A1: NTO pallet"]
+    FORK1 --> A2["A2: Midnight + ledger"]
+    FORK1 --> A3["A3: Node startup"]
+    FORK1 --> A4["A4: Node consensus"]
     FORK1 --> B["B: Static Analysis"]
     FORK1 --> D["D: Toolkit Review"]
 
     A1 --> JOIN1(( ))
     A2 --> JOIN1
     A3 --> JOIN1
+    A4 --> JOIN1
     B --> JOIN1
     D --> JOIN1
 
     JOIN1 --> FORK2(( ))
 
-    FORK2 --> A4["A4: Combined P2"]
-    FORK2 --> A5["A5: Combined P2"]
+    FORK2 --> A5["A5: Runtime + governance"]
+    FORK2 --> A6["A6: Primitives"]
 
-    A4 --> JOIN2(( ))
-    A5 --> JOIN2
+    A5 --> JOIN2(( ))
+    A6 --> JOIN2
 
-    JOIN2 --> VER["Verification Gates"]
-    VER --> MERGE["Structured Merge<br/>Dedup + Map<br/>§3 Completeness"]
-
-    style FORK1 fill:#333,stroke:#666,color:#333
-    style JOIN1 fill:#333,stroke:#666,color:#333
-    style FORK2 fill:#333,stroke:#666,color:#333
-    style JOIN2 fill:#333,stroke:#666,color:#333
-    style VER fill:#e6553a,stroke:#c44,color:#fff
+    JOIN2 --> V["V: Verification Agent"]
+    V --> REDISPATCH["Re-dispatch for gaps"]
+    REDISPATCH --> MERGE["Structured Merge"]
 ```
 
-Wave 1 covers the highest-priority crates (Group A), static analysis (Group B), and toolkit review (Group D). Wave 2 combines remaining crates into fewer agents per the target profile. Both waves complete before verification begins.
+Wave 1 covers the highest-priority crates (Group A: A1-A4), static analysis (Group B), and toolkit review (Group D). Wave 2 covers remaining crates (A5, A6). After all agents return, the verification sub-agent (V) mechanically validates output completeness and produces a gap report. The orchestrator re-dispatches targeted follow-up agents for any gaps before proceeding to structured merge.
 
 ### Verification Gates
 
-Between agent collection and consolidation, the orchestrator runs verification checks. Any failure triggers targeted follow-up agent dispatch before proceeding.
+After agent collection, a dedicated verification sub-agent (V) runs all verification checks in a fresh context window. This prevents the orchestrator's context saturation from causing shallow verification — the primary source of cross-run inconsistency. Any failure triggers targeted follow-up agent dispatch before proceeding.
 
 | Gate | What It Checks | On Failure |
 |------|---------------|------------|
 | **Dispatch Completeness** | Every crate assigned during reconnaissance has a corresponding dispatched agent | Dispatch missing agents |
 | **File Coverage** | Every `.rs` file >200 lines in priority-1/2 crates was read by a checklist-applying Group A agent | Dispatch targeted follow-up agents |
-| **Output Tables** | Each Group A agent produced required analysis tables; Group D produced function × checklist matrix | Re-dispatch with explicit format instructions |
-| **StorageInit Trace** | The node agent enumerated all genesis state construction sites and genesis header construction | Dispatch targeted follow-up |
+| **Output Tables** | Each Group A agent produced required analysis tables; Group D produced function x checklist matrix | Re-dispatch with explicit format instructions |
+| **Target Profile Obligations** | Every config struct, domain hint, and check assignment in the target profile appears in at least one agent's output | Dispatch targeted follow-up |
+| **Error-Path Persistence** | Every StorageMap::insert site has an error-path assessment in the reviewing agent's output | Flag for follow-up |
+| **Table-Derived Findings** | Mechanical scan of all mandatory tables for FAIL/DIFF/Missing/No cells | Auto-extract as findings |
 
 ### Sub-Agent Activity Flows
 
@@ -212,7 +213,8 @@ graph TD
 |-------|----------|--------------|-------------------|-----------|-------------|
 | A | `sub-crate-review` | `execute-sub-agent` | — | Output schema | Findings, checklist coverage, analysis tables |
 | B | `sub-static-analysis` | `execute-sub-agent` | `search-pattern-catalog` | Output schema, static analysis patterns | Pattern hits, storage pairing, zero-hit audit |
-| D | `sub-toolkit-review` | `execute-sub-agent` | — | Toolkit checklist, output schema | Function × checklist matrix, coverage attestation |
+| D | `sub-toolkit-review` | `execute-sub-agent` | — | Toolkit checklist, output schema | Function x checklist matrix, coverage attestation |
+| V | `sub-output-verification` | `verify-sub-agent-output` | — | Target profile, output schema | Gap report, table-derived findings, coverage attestation |
 
 ---
 
@@ -236,7 +238,7 @@ Map the codebase architecture, identify all crates, trust boundaries, consensus 
 
 **Skill:** `execute-audit`
 
-**Steps:** identify-crates → map-architecture → identify-trust-boundaries → identify-consensus-paths → identify-pallet-hooks → map-data-flows → check-send-sync → build-function-registry → assign-agent-groups
+**Steps:** identify-crates -> map-architecture -> identify-trust-boundaries -> identify-consensus-paths -> identify-config-structs -> identify-pallet-hooks -> map-data-flows -> check-send-sync -> build-function-registry -> dispatch-architectural-analysis -> map-vulnerability-domains -> assign-agent-groups -> route-reconnaissance-leads
 
 **Artifacts:** `README.md` (scope and architecture summary)
 
@@ -244,21 +246,21 @@ Map the codebase architecture, identify all crates, trust boundaries, consensus 
 
 ### 3. Primary Audit
 
-Execute the multi-agent audit via wave-based dispatch. Verify agent output completeness and file coverage before consolidating findings.
+Execute the multi-agent audit via wave-based dispatch. After collecting results, dispatch a dedicated verification sub-agent (V) to mechanically validate output completeness. Act on the gap report before consolidating findings.
 
 **Skill:** `execute-audit`
 
-**Steps:** dispatch-wave-1 → dispatch-wave-2 → verify-checklist-prompt-coverage → verify-dispatch-completeness → collect-all → verify-coverage-gate → verify-mandatory-tables → verify-storageinit-trace → extract-table-derived-findings → structured-merge → dedup-and-map → verify-checklist-completeness
+**Steps:** dispatch-wave-1 -> dispatch-wave-2 -> verify-checklist-prompt-coverage -> verify-dispatch-completeness -> collect-all -> **dispatch-verification-agent** -> **act-on-gap-report** -> extract-table-derived-findings -> structured-merge -> dedup-and-map -> verify-checklist-completeness -> preserve-verification-report
 
 ---
 
 ### 4. Adversarial Verification
 
-Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. The agent's role is to refute, not confirm.
+Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. PASS item selection is informed by the verification agent's gap report — areas flagged as potentially incomplete are automatically elevated to the adversarial queue. The agent's role is to refute, not confirm.
 
 **Skill:** `execute-audit`
 
-**Steps:** extract-pass-items → decompose-claims → field-enumeration → verify-properties → compile-results
+**Steps:** **seed-from-verification-report** -> extract-pass-items -> decompose-claims -> field-enumeration -> verify-properties -> compile-results
 
 ---
 
@@ -305,9 +307,10 @@ These activities are dispatched by the orchestrator during the primary-audit pha
 
 | Activity | Used By | Description |
 |----------|---------|-------------|
-| `sub-crate-review` | Group A | 8-step structured crate review: file reading → function registry → invariant extraction → §3 checklist → analysis tables → cross-function comparison → completeness verification → structured output |
+| `sub-crate-review` | Group A | 8-step structured crate review: file reading -> function registry -> invariant extraction -> §3 checklist -> analysis tables -> cross-function comparison -> completeness verification -> structured output |
 | `sub-static-analysis` | Group B | 6-step structured static analysis with catalog-based pattern execution, zero-hit auditing, storage lifecycle pairing, and mechanical checks |
-| `sub-toolkit-review` | Group D | Per-function 8-item checklist application across all toolkit files with function × checklist matrix |
+| `sub-toolkit-review` | Group D | Per-function 8-item checklist application across all toolkit files with function x checklist matrix |
+| `sub-output-verification` | V | 8-step mechanical output validation: dispatch completeness -> coverage gate -> mandatory tables -> target profile obligations -> table-derived findings -> error-path persistence -> gap report -> format output |
 
 ---
 
@@ -325,6 +328,9 @@ Skills define tool orchestration, protocols, and composable capabilities.
 | `verify-sub-agent-output` | Validate structural completeness, file coverage, output tables | primary-audit |
 | `merge-findings` | Concatenate finding lists, deduplicate by root cause, assign finding numbers | primary-audit, ensemble-pass |
 | `compare-finding-sets` | Finding-by-finding mapping, classify matches/gaps, severity calibration analysis | gap-analysis |
+| `write-report` | Structure and format the final audit report | report-generation |
+| `write-gap-analysis` | Structure and format the gap analysis report | gap-analysis |
+| `map-vulnerability-domains` | Bind architectural analysis to §3 verification procedures, partitioned by crate | reconnaissance |
 
 ### Analysis Skills
 
@@ -359,7 +365,9 @@ Resources contain detailed reference content loaded on demand by skills.
 | `03` | `toolkit-checklist.md` | 8-item toolkit minimum checklist | `execute-sub-agent` (toolkit review) |
 | `04` | `sub-agent-output-schema.md` | Structured output schema with per-group requirements | `execute-sub-agent` (all) |
 | `05` | `static-analysis-patterns.md` | Grep patterns, mechanical checks, storage lifecycle patterns | `search-pattern-catalog` |
-| `06` | `target-profile.md` | Target-specific crate assignments, file paths, calibration data, ensemble blind-spots | Orchestrator setup, `score-severity`, ensemble |
+| `06` | `target-profile.md` | Target-specific crate assignments, file paths, node agent scope split, verification agent spec, calibration data, ensemble blind-spots | Orchestrator setup, `score-severity`, ensemble, `sub-output-verification` |
+| `07` | `vulnerability-pattern-vocabulary.md` | Known cross-project vulnerability patterns for architectural analysis | `sub-architectural-analysis` |
+| `08` | `severity-calibration.md` | Calibration examples for severity scoring | `score-severity` |
 
 ---
 
@@ -384,6 +392,7 @@ Resources contain detailed reference content loaded on demand by skills.
 | `agents_assigned` | number | Agents assigned during reconnaissance |
 | `agents_dispatched` | number | Agents dispatched across all waves |
 | `dispatch_complete` | boolean | All assigned agents dispatched and returned |
+| `verification_complete` | boolean | Verification sub-agent dispatched and gap report processed |
 
 ---
 
