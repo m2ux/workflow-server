@@ -113,29 +113,28 @@ sections[12]:
   - id: engineering-artifacts
     title: Engineering Artifacts Management
     priority: high
-    overview: Engineering artifacts (planning documents, ADRs, reviews) are stored in '.engineering' which is a git submodule tracking an orphan branch. The submodule has its own git context and commits must be made within the submodule, then the parent repo's reference updated.
+    overview: "Engineering artifacts (planning documents, ADRs, reviews) are stored in '.engineering/', which is a regular tracked directory in the parent repo — NOT a submodule. However, '.engineering/workflows/' and '.engineering/history/' ARE submodules with their own repos. Read .engineering/AGENTS.md for the complete git structure diagram and commit instructions."
     critical[2]:
       - "BEFORE committing engineering artifacts, ALWAYS read and follow .engineering/AGENTS.md"
-      - "The AGENTS.md file contains project-specific guidelines for artifact management"
+      - "The AGENTS.md file contains the definitive git structure diagram showing what is a submodule vs a regular directory"
     rules[5]:
       - "At the end of each activity, check for new or modified engineering artifacts"
-      - "If artifacts were created or updated, commit them within the .engineering submodule"
-      - "After committing to the submodule, update the parent repo's submodule reference"
-      - "The .engineering folder has its own git context separate from the host project"
-      - "Use 'cd .engineering && git ...' or 'git -C .engineering ...' to operate on the submodule"
-    submoduleWorkflow[4]:
-      - "The .engineering folder is a submodule - local paths match git-tracked paths directly"
-      - "Changes in .engineering are committed to the submodule's own branch (e.g., 'engineering')"
-      - "After pushing submodule changes, update parent: 'git add .engineering && git commit'"
-      - "The parent repo tracks a specific commit SHA of the submodule"
-    workflowIntegration[4]:
-      - "After completing an activity, check git status in the .engineering submodule"
-      - "Read .engineering/AGENTS.md for any project-specific commit guidelines"
-      - "If changes exist, stage and commit with a descriptive message referencing the work package"
-      - "Push submodule changes, then update and push the parent repo's reference"
-    commonPaths[2]:
-      - ".engineering/ - Submodule tracking orphan 'engineering' branch"
-      - ".engineering/history/ - Nested submodule for AI conversation artifacts"
+      - "Files in .engineering/artifacts/, .engineering/AGENTS.md, .engineering/scripts/ are regular files — commit them directly in the parent repo"
+      - "Files in .engineering/workflows/ are in a SUBMODULE — commit inside the submodule first, push, then update the parent's submodule pointer"
+      - "Files in .engineering/history/ are in a SUBMODULE — same two-step commit as workflows"
+      - "To identify whether a path is a submodule: run 'git ls-tree HEAD <path>' — 160000 means submodule, 040000 means regular directory"
+    submoduleCommitWorkflow[4]:
+      - "Step 1: cd .engineering/workflows && git add <files> && git commit && git push origin workflows"
+      - "Step 2: cd <repo-root> && git add .engineering/workflows && git commit -m 'chore: update workflows submodule' && git push"
+      - "If you skip Step 2, the parent still points to the old submodule commit"
+      - "If you skip Step 1's push, the parent points to a commit that does not exist on the remote"
+    regularFileCommitWorkflow[2]:
+      - "For .engineering/artifacts/ and other non-submodule paths: git add .engineering/artifacts/<file> && git commit && git push"
+      - "These are regular files in the parent repo — no two-step submodule workflow needed"
+    commonPaths[3]:
+      - ".engineering/ — Regular directory in parent repo (NOT a submodule)"
+      - ".engineering/workflows/ — Submodule: m2ux/workflow-server.git, branch: workflows"
+      - ".engineering/history/ — Submodule: m2ux/ai-metadata.git, branch: midnight-platform-eng"
   - id: github-cli
     title: GitHub CLI Usage
     priority: high
