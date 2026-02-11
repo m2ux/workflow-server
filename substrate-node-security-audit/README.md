@@ -19,7 +19,7 @@ This workflow guides the complete lifecycle of a security audit:
 - **Goal → Activity → Skill → Tools** ontology with progressive disclosure
 - Workflow-directed sub-agents that bootstrap the workflow-server, load assigned activities, and follow steps sequentially with verifiable outputs
 - Composable skill architecture — 18 single-responsibility skills across orchestrator, analysis, and sub-agent tiers
-- Wave-based agent dispatch with concurrent execution within each wave
+- Single-batch concurrent dispatch of all primary agents (A1-A6, B, D)
 - Dedicated verification sub-agent (V) validates output completeness in a fresh context window before finding merge
 - The orchestrator coordinates and dispatches — sub-agents perform deep crate-level review
 - Node binary scope split (A3 startup/config + A4 consensus/network) to prevent prompt saturation on the largest single-agent scope
@@ -76,9 +76,9 @@ graph TD
 
 ---
 
-## Primary Audit — Wave-Based Agent Dispatch
+## Primary Audit — Concurrent Agent Dispatch
 
-The primary audit dispatches specialized agent groups in waves, collects their structured output, runs verification gates, and consolidates findings. When the platform limits concurrent sub-agents, agents are partitioned into waves that execute sequentially while agents within each wave run concurrently.
+The primary audit dispatches all specialized agent groups concurrently in a single batch, collects their structured output, runs a dedicated verification sub-agent, and consolidates findings.
 
 ### Agent Groups
 
@@ -93,36 +93,32 @@ The primary audit dispatches specialized agent groups in waves, collects their s
 
 ```mermaid
 graph LR
-    REC[Reconnaissance] --> FORK1(( ))
+    REC[Reconnaissance] --> FORK(( ))
 
-    FORK1 --> A1["A1: NTO pallet"]
-    FORK1 --> A2["A2: Midnight + ledger"]
-    FORK1 --> A3["A3: Node startup"]
-    FORK1 --> A4["A4: Node consensus"]
-    FORK1 --> B["B: Static Analysis"]
-    FORK1 --> D["D: Toolkit Review"]
+    FORK --> A1["A1: NTO pallet"]
+    FORK --> A2["A2: Midnight + ledger"]
+    FORK --> A3["A3: Node startup"]
+    FORK --> A4["A4: Node consensus"]
+    FORK --> A5["A5: Runtime + governance"]
+    FORK --> A6["A6: Primitives"]
+    FORK --> B["B: Static Analysis"]
+    FORK --> D["D: Toolkit Review"]
 
-    A1 --> JOIN1(( ))
-    A2 --> JOIN1
-    A3 --> JOIN1
-    A4 --> JOIN1
-    B --> JOIN1
-    D --> JOIN1
+    A1 --> JOIN(( ))
+    A2 --> JOIN
+    A3 --> JOIN
+    A4 --> JOIN
+    A5 --> JOIN
+    A6 --> JOIN
+    B --> JOIN
+    D --> JOIN
 
-    JOIN1 --> FORK2(( ))
-
-    FORK2 --> A5["A5: Runtime + governance"]
-    FORK2 --> A6["A6: Primitives"]
-
-    A5 --> JOIN2(( ))
-    A6 --> JOIN2
-
-    JOIN2 --> V["V: Verification Agent"]
+    JOIN --> V["V: Verification Agent"]
     V --> REDISPATCH["Re-dispatch for gaps"]
     REDISPATCH --> MERGE["Structured Merge"]
 ```
 
-Wave 1 covers the highest-priority crates (Group A: A1-A4), static analysis (Group B), and toolkit review (Group D). Wave 2 covers remaining crates (A5, A6). After all agents return, the verification sub-agent (V) mechanically validates output completeness and produces a gap report. The orchestrator re-dispatches targeted follow-up agents for any gaps before proceeding to structured merge.
+All 8 primary agents dispatch concurrently. After all agents return, the verification sub-agent (V) mechanically validates output completeness and produces a gap report. The orchestrator re-dispatches targeted follow-up agents for any gaps before proceeding to structured merge.
 
 ### Verification Gates
 
@@ -250,7 +246,7 @@ Execute the multi-agent audit via wave-based dispatch. After collecting results,
 
 **Skill:** `execute-audit`
 
-**Steps:** dispatch-wave-1 -> dispatch-wave-2 -> verify-checklist-prompt-coverage -> verify-dispatch-completeness -> collect-all -> **dispatch-verification-agent** -> **act-on-gap-report** -> extract-table-derived-findings -> structured-merge -> dedup-and-map -> verify-checklist-completeness -> preserve-verification-report
+**Steps:** dispatch-all-agents -> verify-checklist-prompt-coverage -> verify-dispatch-completeness -> collect-all -> **dispatch-verification-agent** -> **act-on-gap-report** -> extract-table-derived-findings -> structured-merge -> dedup-and-map -> verify-checklist-completeness -> preserve-verification-report
 
 ---
 

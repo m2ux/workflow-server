@@ -6,19 +6,19 @@ When auditing a different Substrate node, replace this profile with target-appro
 
 ---
 
-## Wave Dispatch Assignments
+## Agent Dispatch Assignments
 
-### Wave 1 — Highest-Priority Crates + Groups B and D
+All primary agents dispatch concurrently in a single batch. The verification agent dispatches after collection.
+
+### Primary Agents (concurrent)
 - **A1:** NTO pallet (`pallets/native-token-observation/`)
 - **A2:** Midnight pallet + ledger (`pallets/midnight/`, `pallets/midnight-system/`, `ledger/`)
 - **A3:** Node startup + config (`node/src/service.rs`, `node/src/command.rs`, `node/src/cfg/`, `node/src/chain_spec/`)
 - **A4:** Node consensus + network (`node/src/inherent_data.rs`, `node/src/main_chain_follower.rs`, `node/src/rpc.rs`, `node/src/extensions.rs`, `node/src/payload.rs`, `node/src/benchmarking.rs`, `node/src/main.rs`, `node/src/lib.rs`, `node/src/sidechain_params_cmd.rs`)
-- **B:** Static analysis (all in-scope)
-- **D:** Toolkit (`ledger/helpers/`, `util/toolkit/`, `util/upgrader/`)
-
-### Wave 2 — Remaining Crates (Hybrid Dispatch)
 - **A5:** Runtime + governance (`runtime/`, `pallets/version/`, `pallets/system-parameters/`, `pallets/federated-authority/`, `pallets/federated-authority-observation/`)
 - **A6:** All primitives (`primitives/`)
+- **B:** Static analysis (all in-scope)
+- **D:** Toolkit (`ledger/helpers/`, `util/toolkit/`, `util/upgrader/`)
 
 ### Post-Collection — Verification
 - **V:** Output verification agent (receives all agent outputs, target profile, file inventory, dispatch manifest)
