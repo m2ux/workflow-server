@@ -220,7 +220,7 @@ graph TD
 
 Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder.
 
-**Skills:** `execute-audit`, `artifact-management`
+**Skills:** `execute-audit`, `setup-audit-target`
 
 **Steps:** confirm-target → confirm-commit → record-reference → checkout-submodule → run-cargo-audit → create-file-inventory → create-planning-folder → load-template
 
@@ -299,14 +299,15 @@ Compare the AI audit report against a professional reference report. Produce fin
 
 ### Sub-Agent Activities
 
-These activities are dispatched by the orchestrator during the primary-audit phase. They do not appear in the main workflow transition graph.
+These activities are dispatched by the orchestrator during reconnaissance or primary-audit. They do not appear in the main workflow transition graph.
 
-| Activity | Used By | Description |
-|----------|---------|-------------|
-| `sub-crate-review` | Group A | 8-step structured crate review: file reading -> function registry -> invariant extraction -> §3 checklist -> analysis tables -> cross-function comparison -> completeness verification -> structured output |
-| `sub-static-analysis` | Group B | 6-step structured static analysis with catalog-based pattern execution, zero-hit auditing, storage lifecycle pairing, and mechanical checks |
-| `sub-toolkit-review` | Group D | Per-function 8-item checklist application across all toolkit files with function x checklist matrix |
-| `sub-output-verification` | V | 8-step mechanical output validation: dispatch completeness -> coverage gate -> mandatory tables -> target profile obligations -> table-derived findings -> error-path persistence -> gap report -> format output |
+| Activity | Used By | Phase | Description |
+|----------|---------|-------|-------------|
+| `sub-architectural-analysis` | Orchestrator | Reconnaissance | Security-oriented architectural decomposition: interaction model, privilege map, candidate points, emergent vulnerability domains |
+| `sub-crate-review` | Group A | Primary Audit | 8-step structured crate review: file reading -> function registry -> invariant extraction -> §3 checklist -> analysis tables -> cross-function comparison -> completeness verification -> structured output |
+| `sub-static-analysis` | Group B | Primary Audit | 6-step structured static analysis with catalog-based pattern execution, zero-hit auditing, storage lifecycle pairing, and mechanical checks |
+| `sub-toolkit-review` | Group D | Primary Audit | Per-function 8-item checklist application across all toolkit files with function x checklist matrix |
+| `sub-output-verification` | V | Primary Audit | 8-step mechanical output validation: dispatch completeness -> coverage gate -> mandatory tables -> target profile obligations -> table-derived findings -> error-path persistence -> gap report -> format output |
 
 ---
 

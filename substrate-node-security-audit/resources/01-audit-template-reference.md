@@ -25,7 +25,7 @@ The template includes the following key strategies:
 The workflow adds the following structural improvements:
 
 8. **Concurrent agent dispatch** — All primary agents (A1-A6, B, D) dispatch simultaneously, with dedicated verification agent (V) post-collection
-9. **Group E mechanical verification** — dedicated agent for historically-missed pattern searches (impl Ord completeness, take_while truncation, buffer preallocation, RPC fan-out, StorageInit consistency)
+9. **Group B mechanical verification** — static analysis agent runs historically-missed pattern searches (impl Ord completeness, take_while truncation, buffer preallocation, RPC fan-out, StorageInit consistency) via resource 05
 10. **Anti-anchoring instructions** — Group A agents must verify ALL fields/sites independently, not just the first matching instance
 11. **Checklist completion gate** — Group A agents must produce PASS/FAIL/NA for every numbered item
 12. **Field-enumeration step** — adversarial verification enumerates all instances before verifying
@@ -37,7 +37,7 @@ The workflow adds the following structural improvements:
 | Section | Purpose | When Used |
 |---------|---------|-----------|
 | §1 Audit Setup | Scope, reconnaissance, ingestion | Phase 0-1a |
-| §2 Static Analysis | Grep-based pattern detection | Phase 1b (Group B + E agents) |
+| §2 Static Analysis | Grep-based pattern detection | Phase 1b (Group B agent) |
 | §3 Manual Review | Per-component checklist | Phase 1b (Group A agents) |
 | §4 Reporting | Finding format, severity rubric | Phase 3 |
 | §5 Execution Strategy | Multi-agent protocol, requirements, limitations | All phases |
@@ -50,7 +50,7 @@ The template is the **checklist** — this workflow is the **execution framework
 - Adversarial verification with field-enumeration as a separate phase
 - Severity calibration via the skill rubric with cross-check
 - Ensemble and gap analysis orchestration
-- Mechanical verification of historically-missed patterns (Group E)
+- Mechanical verification of historically-missed patterns (Group B via resource 05)
 
 The template handles:
 - What to look for (§2 patterns, §3 checklists)

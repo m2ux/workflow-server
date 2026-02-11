@@ -59,15 +59,13 @@ decisions[1]:
       - id: complete
         label: Audit complete
         isDefault: true
-transitions[2]:
+transitions[1]:
   - to: gap-analysis
     condition:
       type: simple
       variable: has_reference_report
       operator: ==
       value: true
-  - to: gap-analysis
-    isDefault: true
 exitActions[1]{action,message}:
   log,Ensemble pass complete — findings merged with primary report
 outcome[3]:

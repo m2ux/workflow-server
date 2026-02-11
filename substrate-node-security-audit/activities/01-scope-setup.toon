@@ -10,8 +10,6 @@ recognition[4]:
   - security audit setup
 skills:
   primary: execute-audit
-  supporting[1]:
-    - artifact-management
 required: true
 estimatedTime: 5-15m
 rules[5]:
@@ -49,8 +47,7 @@ steps[8]:
     description: "Generate sorted file inventory by line count."
   - id: create-planning-folder
     name: Create Planning Folder
-    description: "Create planning folder with START-HERE.md and README.md per artifact-management skill."
-    skill: artifact-management
+    description: "Create planning folder with START-HERE.md following the naming pattern YYYY-MM-DD-NN-{submodule}-security-audit."
   - id: load-template
     name: Load Audit Template
     description: "Confirm audit prompt template is accessible at template_path."
