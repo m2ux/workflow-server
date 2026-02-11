@@ -18,7 +18,7 @@ protocol:
     - Build function registry for priority-1/2 crates
     - Generate file inventory sorted by line count and assign agent groups (A, B, D)
   primary_audit[7]:
-    - Dispatch all primary agents (A1-A6, B, D) concurrently with §3 checklist, cross-crate supplementary files, toolkit minimum checklist, and relevant calibration benchmarks
+    - Dispatch all primary agents (A1-A7, B, D1, D2) concurrently with §3 checklist, cross-crate supplementary files, toolkit minimum checklist, and relevant calibration benchmarks
     - Collect all results from primary agents and persist each agent's full output as JSON in the planning folder
     - Dispatch verification sub-agent (V) to validate output completeness against target profile, act on gap report, extract table-derived findings
     - Re-dispatch targeted follow-up agents for any gaps identified by the verification agent

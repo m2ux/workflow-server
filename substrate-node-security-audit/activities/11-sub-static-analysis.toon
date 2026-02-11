@@ -14,12 +14,13 @@ skills:
 required: false
 estimatedTime: 15-30m
 
-rules[5]:
+rules[6]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
-  - "The sub-agent receives context variables: in_scope paths, out_of_scope exclusions, and resource 05 (static-analysis-patterns)"
+  - "The sub-agent receives context variables: in_scope paths, out_of_scope exclusions, resource 05 (static-analysis-patterns), and planning_folder_path"
   - "Steps 1 and 2 delegate to the search-pattern-catalog skill, which defines the execution protocol for catalog-based searching"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
   - "CONSENSUS-FILE ELEVATION FLOOR: Any pattern hit in a file classified as priority-1 in the crate map MUST be elevated to at minimum a Low-severity finding during aggregation. Hits in these files are not suppressed during zero-hit triage or aggregation."
+  - "FILE OUTPUT: The sub-agent MUST write its complete structured output as a JSON file to the planning folder: {planning_folder_path}/group-b-static-analysis.json. This file is the canonical source for the merge agent (M) and the auditable record of the agent's work."
 steps[6]:
   - id: run-grep-patterns
     name: Run All Grep Patterns

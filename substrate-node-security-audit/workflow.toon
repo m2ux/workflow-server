@@ -22,7 +22,7 @@ rules[27]:
   - "TOOLKIT DEPTH LIMITATION: Per-function toolkit findings have low single-pass detection rates. Enable ensemble_enabled=true for reliable detection."
   - "ORCHESTRATOR ROLE DISCIPLINE: The orchestrator coordinates but MUST NOT apply §3 checklist items or produce trace tables. Potential issues from reconnaissance are recorded as leads and assigned to Group A agents."
   - "COVERAGE GATE IS A HARD STOP: Report generation MUST NOT begin until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent."
-  - "CONCURRENT DISPATCH: All primary agents (A1-A6, B, D) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
+  - "CONCURRENT DISPATCH: All primary agents (A1-A7, B, D1, D2) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
   - "DISPATCH COMPLETENESS GATE: agents_dispatched MUST equal agents_assigned. Reconnaissance data does NOT substitute for §3-applying sub-agents. This is a HARD STOP."
   - "MANDATORY TABLE AUTO-ELEVATION: The orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes each to a finding. The sub-agent is NOT responsible for elevation."
   - "DEFENSE-IN-DEPTH VALIDATION: For §3.6 input validation, PASS requires evidence at the consumption layer (pallet), not just the production layer."

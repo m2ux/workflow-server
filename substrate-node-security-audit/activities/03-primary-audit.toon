@@ -1,7 +1,7 @@
 id: primary-audit
 version: 4.16.0
 name: Primary Audit
-description: "Multi-agent audit via single-batch concurrent dispatch. All primary agents (A1-A6, B, D) dispatch simultaneously. Group A applies §3 checklist per crate (node binary split into A3 startup/config + A4 consensus/network). Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function. A dedicated verification sub-agent (V) validates output completeness. A dedicated merge sub-agent (M) performs the structured merge in a fresh context window to prevent finding loss from orchestrator context saturation."
+description: "Multi-agent audit via single-batch concurrent dispatch. All primary agents (A1-A7, B, D1, D2) dispatch simultaneously. Group A applies §3 checklist per crate (node binary split into A3 startup/config + A4 consensus/network; runtime and governance split into A5 runtime + A7 governance). Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function (D1: ledger helpers, D2: toolkit + upgrader). A dedicated verification sub-agent (V) validates output completeness. A dedicated merge sub-agent (M) performs the structured merge in a fresh context window to prevent finding loss from orchestrator context saturation."
 problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to merge and verify agent outputs. Multi-agent orchestration with dedicated verification (V) and merge (M) agents provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window (V), (c) finding-lossless merge in a fresh context window (M), (d) targeted re-dispatch for gaps before findings are merged."
 recognition[3]:
   - run primary audit
@@ -19,7 +19,7 @@ rules[28]:
   - "Every agent must return findings as a structured list with fields: id, file, line, title, severity, checklist_item, evidence"
   - "Invariant extraction (§5.15) is mandatory for every priority-1 function before applying the §3 checklist"
   - "CONTAMINATION GUARD: Sub-agent prompts MUST NOT include content from reference reports. All findings independently derived."
-  - "CONCURRENT DISPATCH: All primary agents (A1-A6, B, D) dispatch simultaneously in a single batch per the target profile. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
+  - "CONCURRENT DISPATCH: All primary agents (A1-A7, B, D1, D2) dispatch simultaneously in a single batch per the target profile. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
   - "COVERAGE GATE: Every .rs file >200 lines in priority-1/2 crates must be read by a §3-applying sub-agent. Files read only during reconnaissance do not count. The target profile's File Coverage Obligations table is the authoritative assignment list."
   - "§3.3 TRACE TABLE VERIFICATION: Pallet agents with deposit_event() partial-success paths must produce BOTH the per-field event trace table AND the event-vs-storage struct diff table."
   - "§3.5 STORAGEINIT VERIFICATION: The node startup agent (A3) must produce a StorageInit construction site enumeration covering online and offline subcommand paths, plus genesis HEADER construction."
@@ -34,7 +34,7 @@ rules[28]:
   - "NODE BINARY SCOPE SPLIT: The node binary is split into A3 (startup/config: service.rs, command.rs, cfg/, chain_spec/) and A4 (consensus/network: inherent_data.rs, main_chain_follower.rs, rpc.rs, remaining node/src/). See target profile for detailed scope and check assignments."
   - "VERIFICATION AGENT DISPATCH: After collecting all primary agent results, the orchestrator MUST dispatch a verification sub-agent (V) following the sub-output-verification activity. The verification agent mechanically validates output completeness against the target profile. The orchestrator acts on the gap report before proceeding to structured merge. The orchestrator MUST NOT self-certify verification — the verification_complete variable MUST be set by V's output, not by the orchestrator."
   - "ERROR-PATH STORAGE PERSISTENCE: For every StorageMap::insert() followed by a fallible operation (host API call, serialization, event construction), the Group A agent MUST verify that a failed fallible operation either (a) reverts the insert or (b) the insert is intentionally unconditional with documented justification. An insert that persists when the subsequent operation fails and the handler returns None/Err is a finding — the storage entry becomes orphaned."
-  - "AGENT OUTPUT PERSISTENCE: After collecting all agent results, the orchestrator MUST persist each agent's full structured output as a JSON file in the planning folder BEFORE any merge or verification step. File names: group-a-{scope}.json, group-b-static-analysis.json, group-d-toolkit-review.json. These files are the canonical inputs for the merge agent (M)."
+  - "AGENT OUTPUT PERSISTENCE: Every sub-agent MUST write its own structured output as a JSON file to the planning folder (per its activity's FILE OUTPUT rule). The orchestrator verifies all expected files exist in the planning folder BEFORE dispatching V or M. If any file is missing, the orchestrator re-dispatches the agent with the file output instruction. File names: group-a-{agent_id}.json, group-b-static-analysis.json, group-d-{agent_id}.json. These files are the canonical inputs for V and M."
   - "MERGE AGENT DISPATCH: The structured merge and dedup-and-map steps MUST be performed by a dedicated merge sub-agent (M) following the sub-structured-merge activity — NOT inline by the orchestrator. M operates in a fresh context window receiving only the persisted agent output files and scoring resources. The orchestrator's context is saturated at this point; inline merge is the primary cause of finding regression across runs."
   - "FINDING COUNT RECONCILIATION GATE: After structured merge, the merge agent (M) MUST produce a reconciliation table: | Agent | Findings Submitted | In Merge Table | Explicitly Deduplicated | Unaccounted |. Unaccounted MUST equal zero. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
   - "OBSERVATION ELEVATION GATE: The merge agent (M) reviews every reconnaissance_leads and additional_observations entry from all agent outputs. For each observation that describes a security-relevant code behavior, M MUST either: (a) confirm it is captured by an existing finding, or (b) elevate it to a new finding with severity scoring. Observations describing divergent code paths, missing validation, or error-path state persistence are ALWAYS security-relevant and must be elevated."
@@ -47,7 +47,7 @@ steps[14]:
     name: "Dispatch All Primary Agents"
     required: true
     skill: dispatch-sub-agents
-    description: "Dispatch all primary agents concurrently in a single batch per the target profile: A1, A2, A3, A4, A5, A6, B, D. Every assigned agent MUST be dispatched."
+    description: "Dispatch all primary agents concurrently in a single batch per the target profile: A1, A2, A3, A4, A5, A6, A7, B, D1, D2. Every assigned agent MUST be dispatched."
   - id: verify-checklist-prompt-coverage
     name: "Verify Checklist-to-Prompt Coverage"
     required: true
@@ -62,10 +62,10 @@ steps[14]:
     name: Collect All Results
     description: "Wait for all primary sub-agents to return. Collect structured finding lists from each agent."
     required: true
-  - id: persist-agent-outputs
-    name: "Persist Agent Outputs to Planning Folder"
+  - id: verify-agent-output-files
+    name: "Verify Agent Output Files Exist in Planning Folder"
     required: true
-    description: "Write each agent's full structured output as a JSON file in the planning folder: group-a-{scope}.json, group-b-static-analysis.json, group-d-toolkit-review.json, etc. These files are the canonical inputs for V and M. This step MUST complete before any verification or merge step begins."
+    description: "Each sub-agent writes its own output file per its activity's FILE OUTPUT rule. The orchestrator verifies all expected JSON files exist in the planning folder: one per dispatched agent (group-a-*.json, group-b-*.json, group-d-*.json). If any file is missing, re-dispatch the agent with explicit file output instruction. This step MUST complete before V or M are dispatched."
   - id: dispatch-verification-agent
     name: "Dispatch Verification Sub-Agent (V)"
     required: true
