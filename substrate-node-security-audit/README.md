@@ -1,6 +1,6 @@
 # Security Audit Workflow
 
-> Multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, wave-based multi-agent deep review, adversarial verification, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports.
+> Multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent multi-agent deep review with dedicated output verification, adversarial verification informed by gap analysis, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports.
 
 ## Overview
 
@@ -8,7 +8,7 @@ This workflow guides the complete lifecycle of a security audit:
 
 1. **Scope Setup** — Confirm target, checkout at commit, run dependency scanning, create planning folder
 2. **Reconnaissance** — Map architecture, identify crates, trust boundaries, consensus paths, build function registry, assign agent groups
-3. **Primary Audit** — Wave-based concurrent dispatch of specialized agent groups against the codebase, followed by verification gates and finding consolidation
+3. **Primary Audit** — Concurrent dispatch of all specialized agent groups, verification sub-agent validates output completeness, finding consolidation
 4. **Adversarial Verification** — Decompose and independently verify every PASS item from agent scratchpads
 5. **Report Generation** — Consolidate all phases, apply severity scoring with calibration cross-check, produce report
 6. **Ensemble Pass** (optional) — Second-model run on priority-1/2 components, union-merge with primary results
@@ -242,7 +242,7 @@ Map the codebase architecture, identify all crates, trust boundaries, consensus 
 
 ### 3. Primary Audit
 
-Execute the multi-agent audit via wave-based dispatch. After collecting results, dispatch a dedicated verification sub-agent (V) to mechanically validate output completeness. Act on the gap report before consolidating findings.
+Dispatch all primary agents concurrently. After collecting results, dispatch a dedicated verification sub-agent (V) to mechanically validate output completeness. Act on the gap report before consolidating findings.
 
 **Skill:** `execute-audit`
 
@@ -386,7 +386,7 @@ Resources contain detailed reference content loaded on demand by skills.
 | `adversarial_complete` | boolean | Phase 2 gate |
 | `report_complete` | boolean | Phase 3 gate |
 | `agents_assigned` | number | Agents assigned during reconnaissance |
-| `agents_dispatched` | number | Agents dispatched across all waves |
+| `agents_dispatched` | number | Agents actually dispatched |
 | `dispatch_complete` | boolean | All assigned agents dispatched and returned |
 | `verification_complete` | boolean | Verification sub-agent dispatched and gap report processed |
 
