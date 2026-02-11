@@ -2,7 +2,7 @@
 id: substrate-node-security-audit
 version: 4.16.0
 title: Security Audit Workflow
-description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D, V, M) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification informed by verification agent gap reports, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review, sub-output-verification, sub-structured-merge) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, per-function toolkit matrices, mechanical output validation, and finding-lossless merge with reconciliation."
+description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. The orchestrator coordinates but does not analyze — all codebase analysis is delegated to sub-agents (R, S, A1-A7, B, D1, D2, V, M), each following a dedicated workflow activity. Sub-agents write structured output to JSON files in the planning folder using the {designator}-{scope}.json naming convention. The orchestrator reads files, dispatches agents, and performs coordination-only tasks (domain mapping, agent assignment, lead routing). Phases: reconnaissance (R+S), concurrent primary audit (A1-A7+B+D1+D2), verification (V), merge (M), adversarial verification, severity-calibrated reporting, optional ensemble, and gap analysis."
 author: m2ux
 tags[3]:
   - security

@@ -17,7 +17,7 @@ rules[5]:
   - "The sub-agent receives context variables: toolkit_paths (from target profile), toolkit_checklist (resource 03), target_focus_items (from target profile, if available), planning_folder_path"
   - "The per-function x checklist matrix in step 2 is the key mechanism — it prevents skimming by requiring an entry for every combination"
   - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
-  - "FILE OUTPUT: The sub-agent MUST write its complete structured output as a JSON file to the planning folder: {planning_folder_path}/group-d-{agent_id}.json (e.g., group-d-ledger-helpers.json or group-d-toolkit.json). This file is the canonical source for the merge agent (M)."
+  - "FILE OUTPUT: The sub-agent MUST write its complete structured output as a JSON file to the planning folder: {planning_folder_path}/{agent_designator}-{scope}.json (e.g., d1-ledger-helpers.json, d2-toolkit.json). The agent designator is the single-letter-plus-number ID assigned by the target profile. This file is the canonical source for the merge agent (M)."
 steps[4]:
   - id: enumerate-functions
     name: Enumerate All Functions

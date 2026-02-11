@@ -18,7 +18,7 @@ rules[6]:
   - "The sub-agent MUST read the top 5 files by line count to inform architectural reasoning — analysis based solely on the crate map without reading code produces superficial output"
   - "Every component interaction in the model must cite at least one code-level observation (function call, type dependency, shared resource). Interactions inferred from naming conventions alone are insufficient."
   - "The output is consumed by the map-vulnerability-domains skill. Candidate points feed sub-agent prioritization. Emergent domains feed ad-hoc review assignments."
-  - "FILE OUTPUT: The sub-agent MUST write its complete output (interaction model, privilege map, candidate points, emergent domains) as a JSON file to the planning folder: {planning_folder_path}/architectural-analysis.json. This file is the auditable record of the architectural decomposition and feeds downstream domain mapping."
+  - "FILE OUTPUT: The sub-agent MUST write its complete output (interaction model, privilege map, candidate points, emergent domains) as a JSON file to the planning folder: {planning_folder_path}/s-architectural-analysis.json. The 's' designator identifies this as the Security architecture agent. This file feeds downstream domain mapping."
 
 steps[4]:
   - id: build-interaction-model
