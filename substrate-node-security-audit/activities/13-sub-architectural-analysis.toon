@@ -12,12 +12,13 @@ skills:
 required: false
 estimatedTime: 10-20m
 
-rules[5]:
+rules[6]:
   - "This activity is dispatched by the orchestrator during reconnaissance — it does NOT appear in the main workflow transition graph"
-  - "The sub-agent receives context variables: crate_map, file_inventory, trust_boundaries, consensus_paths, pallet_hooks, config_structs (all from prior reconnaissance steps)"
+  - "The sub-agent receives context variables: crate_map, file_inventory, trust_boundaries, consensus_paths, pallet_hooks, config_structs (all from prior reconnaissance steps), planning_folder_path"
   - "The sub-agent MUST read the top 5 files by line count to inform architectural reasoning — analysis based solely on the crate map without reading code produces superficial output"
   - "Every component interaction in the model must cite at least one code-level observation (function call, type dependency, shared resource). Interactions inferred from naming conventions alone are insufficient."
   - "The output is consumed by the map-vulnerability-domains skill. Candidate points feed sub-agent prioritization. Emergent domains feed ad-hoc review assignments."
+  - "FILE OUTPUT: The sub-agent MUST write its complete output (interaction model, privilege map, candidate points, emergent domains) as a JSON file to the planning folder: {planning_folder_path}/architectural-analysis.json. This file is the auditable record of the architectural decomposition and feeds downstream domain mapping."
 
 steps[4]:
   - id: build-interaction-model
