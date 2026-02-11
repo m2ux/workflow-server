@@ -90,7 +90,7 @@ variables[18]:
     defaultValue: 0
   - name: agents_dispatched
     type: number
-    description: "Count of Group A/B/D agents actually dispatched across all waves"
+    description: "Count of Group A/B/D agents actually dispatched"
     defaultValue: 0
   - name: dispatch_complete
     type: boolean

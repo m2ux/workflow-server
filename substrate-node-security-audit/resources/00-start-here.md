@@ -2,7 +2,7 @@
 
 ## Overview
 
-This workflow orchestrates a multi-phase AI security audit of a Substrate-based blockchain node codebase. It follows the Substrate Node Security Audit Template with wave-based multi-agent execution (Groups A, B, D), hard-gate adversarial verification, composable skill architecture, and optional ensemble passes. Iteratively improved via gap analysis against professional audit benchmarks.
+This workflow orchestrates a multi-phase AI security audit of a Substrate-based blockchain node codebase. It follows the Substrate Node Security Audit Template with concurrent multi-agent execution (Groups A, B, D, V), dedicated output verification, adversarial verification informed by gap reports, composable skill architecture, and optional ensemble passes. Iteratively improved via gap analysis against professional audit benchmarks.
 
 ## Prerequisites
 
@@ -20,7 +20,7 @@ The workflow will guide you through:
 |-------|----------|---------|
 | 0 | Scope Setup | Confirm target, checkout, cargo audit, file inventory |
 | 1a | Reconnaissance | Map architecture, build function registry, assign agent groups |
-| 1b | Primary Audit | Wave-based multi-agent dispatch (Groups A, B, D) with verification gates |
+| 1b | Primary Audit | Concurrent multi-agent dispatch (Groups A, B, D) + verification agent (V) |
 | 2 | Adversarial Verification | Decompose PASS items, independently verify each property |
 | 3 | Report Generation | Consolidate all phases, severity calibration cross-check, coverage gate |
 | 4 | Ensemble Pass | Optional second-model run + union-merge |
