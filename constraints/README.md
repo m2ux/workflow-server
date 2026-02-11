@@ -1,6 +1,10 @@
 # Constraints
 
-Formal semantic constraints for workflow definition files, expressed in [Alloy](https://alloytools.org/) notation.
+Formal semantic constraints for workflow definition files, expressed in Alloy notation.
+
+## About Alloy
+
+[Alloy](https://alloytools.org/) is a lightweight formal modeling language developed at MIT by Daniel Jackson. It describes structures as sets and relations, and expresses constraints as first-order logic predicates over those relations. What distinguishes Alloy from general-purpose specification languages is its built-in analyzer: given a model, the Alloy Analyzer can automatically search for instances that satisfy the constraints or counterexamples that violate them — without requiring manual proofs. This makes it practical for finding structural bugs in designs early. The notation used here follows Alloy conventions (`sig` for signatures/types, `fact` for invariants, `pred` for named predicates, `fun` for functions) but is intended primarily as a readable formal specification. A future validator can implement these constraints directly in TypeScript.
 
 ## Files
 
