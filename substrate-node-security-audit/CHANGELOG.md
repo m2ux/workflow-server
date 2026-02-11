@@ -2,6 +2,46 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.14.0 (2026-02-11) — Supplementary Vulnerability Pattern Integration (Reports 21–22)
+
+Integrates 3 new vulnerability patterns (V31–V33) and 1 pattern extension (V4) derived from analysis of 2 additional SlowMist audit reports for Substrate-based projects (Fusotao, Litentry-node). Also reinforces 3 existing patterns (V3, V15, V16) with new source evidence.
+
+**Source reports:**
+- 21-fusotao-slowmist.md — Fusotao (Substrate/Octopus, off-chain DEX verification), SlowMist, April 2022
+- 22-litentry-slowmist.md — Litentry-node account-linker module (Substrate pallet), SlowMist, January 2021
+
+**Track 1 — New mechanical checks (resource 05, executed by Group B):**
+- +Check 27: Hardcoded Trivial Weight on Extrinsics (V32) — literal weight constants below 10,000 on user-callable extrinsics enable block-filling DoS
+- +Check 28: Unbounded Temporal Parameter (V33) — future-pointing block number/timestamp parameters without maximum offset allow indefinite signature validity, permanent locks
+- +Check 29: Missing `#[transactional]` on Multi-Write Storage Operations (V31) — `decl_module!` pallets and hook paths without transactional wrapping allow partial state corruption
+- +Check 30: RPC Method Access Control / DenyUnsafe Gating — custom RPC handlers exposing sensitive operations (signing, key management) without `DenyUnsafe` guard
+- +Check 31: Event Emission Fidelity / False Top-Up Prevention — financial events emitted before state finalization, with incorrect amounts, or on reverting error paths
+
+**Track 1a — SlowMist Blockchain Common Vulnerability List cross-reference (resource 05):**
+- Checks 30–31 derived from code-level mapping of the [SlowMist Blockchain Common Vulnerability List](https://github.com/slowmist/Cryptocurrency-Security-Audit-Guide/blob/main/Blockchain-Common-Vulnerability-List.md)
+- Check 30 maps the "Ethereum Black Valentine's Day" RPC attack class to Substrate's `DenyUnsafe` mechanism
+- Check 31 maps the "False Top-Up Attack" class to Substrate's event emission model
+- Remaining 20+ items in the SlowMist list are protocol/network/infrastructure-level (consensus attacks, P2P topology, BGP hijack, etc.) — not detectable by code-level audit; documented as out-of-scope in planning artifact
+
+**Track 2 — Pattern extension (resource 07, consumed by architectural analysis sub-agent):**
+- V4 extended: "Immutable Erroneous State" variant — entity-creation extrinsics with no corresponding update/correction/removal mechanism
+
+**Pattern reinforcements (frequency evidence, no structural change):**
+- V3 (Unbounded Vec): +2 sources (Fusotao/SlowMist, Litentry/SlowMist) → 4 total independent sources
+- V15 (Cross-Chain Replay): +1 source (Litentry/SlowMist) → 2 total, cross-auditor validated
+- V16 (Narrowing Type Casts): +1 source (Litentry/SlowMist) → 3 total
+
+**Not integrated (with rationale):**
+- Fusotao N2 (saturating vs checked on weights): standard Substrate practice, not a vulnerability
+- Fusotao N4 (DoS via transaction volume): application-specific economic tuning
+- Fusotao N6 (low registration threshold): application-specific economic parameter
+- Litentry 4.3 (SmallVec CVE): covered by existing `cargo audit` / `cargo-geiger` methodology insight
+- Litentry (discarded caller identity): design-intentional for account-linking use case
+
+**Planning artifact:** `.engineering/artifacts/planning/2026-02-11-25-vulnerability-pattern-update/`
+
+---
+
 ## v4.13.0 (2026-02-10) — Session 19 Gap Analysis Remediation
 
 Addresses 4 gap categories identified in Session 19 gap analysis (95.5% overlap with Least Authority professional audit, 2 gaps, 2 partial matches). Changes close the specific detection paths that caused each miss.
