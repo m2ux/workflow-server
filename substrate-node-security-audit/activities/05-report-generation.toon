@@ -18,7 +18,7 @@ rules[5]:
   - "The structured merge table from primary-audit is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
   - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
   - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation."
-  - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless the coverage gate was verified during primary-audit (verify-coverage-gate step). If coverage_report shows any UNREAD files, return to primary-audit and dispatch follow-up agents. Proceeding to report generation with unread files is the primary cause of coverage regression."
+  - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless the coverage gate was verified by the verification sub-agent (V) during primary-audit. If coverage_report shows any UNREAD files, return to primary-audit and dispatch follow-up agents. Proceeding to report generation with unread files is the primary cause of coverage regression."
   - "MANDATORY TABLE VERIFICATION: Before writing the report, verify that the following mandatory tables were produced during primary-audit: (a) §3.3 per-field event trace tables for all pallet agents, (b) §3.5 StorageInit construction site enumeration from the node startup agent (A3), (c) Group D per-function checklist matrix. Missing tables indicate incomplete review and MUST be resolved before the report is finalized."
 entryActions[1]{action,message}:
   log,Starting report generation — consolidating findings from all phases
@@ -74,7 +74,7 @@ decisions[1]:
       - id: complete
         label: Audit complete
         isDefault: true
-transitions[3]:
+transitions[2]:
   - to: ensemble-pass
     condition:
       type: simple
@@ -87,8 +87,6 @@ transitions[3]:
       variable: has_reference_report
       operator: ==
       value: true
-  - to: gap-analysis
-    isDefault: true
 exitActions[2]{action,message}:
   log,Report generation complete — audit report finalized
   set,report_complete=true

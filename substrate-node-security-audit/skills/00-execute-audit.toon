@@ -17,11 +17,12 @@ protocol:
     - Identify trust boundaries and consensus paths
     - Build function registry for priority-1/2 crates
     - Generate file inventory sorted by line count and assign agent groups (A, B, D)
-  primary_audit[4]:
-    - Dispatch Group A agents (one per priority-1/2 crate) concurrently with §3 checklist and cross-crate supplementary files
-    - Dispatch Group B agent for §2 static analysis, mechanical pattern checks, and storage lifecycle pairing across full scope
-    - Dispatch Group D agent for toolkit review with minimum checklist (MANDATORY)
-    - Collect all results, structured-merge into flat table, dedup-and-map to report findings, verify §3 completeness
+  primary_audit[5]:
+    - Dispatch all primary agents (A1-A6, B, D) concurrently with §3 checklist, cross-crate supplementary files, and toolkit minimum checklist
+    - Collect all results from primary agents
+    - Dispatch verification sub-agent (V) to validate output completeness against target profile, act on gap report, extract table-derived findings
+    - Re-dispatch targeted follow-up agents for any gaps identified by the verification agent
+    - Structured-merge all findings (primary + follow-up + table-derived) into flat table, dedup-and-map to report findings, verify §3 completeness
   adversarial[4]:
     - Extract all PASS items from agent scratchpads
     - Decompose each PASS into constituent properties
