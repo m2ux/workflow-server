@@ -214,6 +214,10 @@ In addition to the 4 universal blind-spot items (§3.1 weight, §3.3 event filte
 | 13 | Check 26: Genesis extrinsics truncation | Trace genesis extrinsics decoding from chain spec properties. Does the parsing stop at the first invalid element? Produce path enumeration table. | `node/src/service.rs`, `node/src/command.rs` (A3 scope) |
 | 14 | Error-path storage persistence | For `UtxoOwners::insert` in `handle_create`: if `construct_cnight_generates_dust_event` fails and handler returns `None`, does the insert persist? | `pallets/native-token-observation/src/lib.rs` |
 | 15 | Toolkit item 2: canonical-state writeback | In `DustWallet::spend`/`do_spend`, verify `dust_local_state` is written back to `self` after `do_spend()` — not just the spent-UTXO tracker | `ledger/helpers/src/wallet/dust.rs` |
+| 16 | §3.6 D-parameter zero-value committee collapse | In `update_d_parameter` (A7 scope) and `select_authorities_optionally_overriding` (runtime), verify that `(0, 0)` is rejected. If no `ensure!(num_registered > 0 \|\| num_permissioned > 0, ...)` guard exists, this is FAIL. | `pallets/system-parameters/src/lib.rs`, `runtime/src/lib.rs` |
+| 17 | TxPause governance self-lock | Verify `WhitelistedCalls` is not `Nothing` (unit type), or that governance-critical calls (`Council`, `TechnicalCommittee`, `FederatedAuthority`) are explicitly whitelisted. `WhitelistedCalls = Nothing` with no escape hatch is FAIL. | `runtime/src/lib.rs` (TxPause config) |
+| 18 | Inherent data decoding expect() in consensus path | For every `.expect()` on `data.get_data::<T>()` in `create_inherent` and `check_inherent` implementations across all pallets, verify the call returns `Result` instead of panicking. Inherent decoding runs on every block; a panic halts the chain. | `pallets/cnight-observation/src/lib.rs` (`get_data_from_inherent_data`) |
+| 19 | Pallet genesis initialize_state validation | For `pallet-midnight`'s `initialize_state`, verify `state_key` non-emptiness and `network_id` format are validated before use. A `//todo add checks` comment without corresponding validation is FAIL. | `pallets/midnight/src/lib.rs` |
 
 ---
 
@@ -250,6 +254,7 @@ Pre-identified vulnerability domain targets for this codebase. The `map-vulnerab
 | §3.5 Genesis divergence | `node/src/command.rs` | Online uses chain_spec properties, offline uses `UndeployedNetwork.genesis_state()` |
 | §3.8 Shared pool | `primitives/mainchain-follower/src/data_source/mod.rs` | 5-connection pool shared across 7+ consumers |
 | §3.14 Wildcard dispatch | `ledger/src/versions/common/mod.rs` get_system_tx_type | `_ => "unknown"` on SystemTransaction match |
+| §3.6 Input validation | `pallets/system-parameters/src/lib.rs` update_d_parameter | `(0, 0)` accepted without guard; feeds `select_authorities_optionally_overriding` which may produce empty committee |
 
 ---
 
@@ -274,4 +279,6 @@ The following calibration examples are derived from a professional security audi
 | Genesis extrinsics parsing truncation on malformed input | 3 | 3 | 3.0 | **Medium** | Chain spec distribution is not privileged; malformed prefix alters extrinsics root. F >= 3. |
 | DustWallet canonical state not written back after spend | 2 | 2 | 2.0 | **Low** | Requires incorrect wallet API usage sequence; affects local state only. |
 | Storage insert persists on downstream event construction failure | 3 | 3 | 3.0 | **Medium** | Orphaned entries accumulate; trigger is external chain data which is not attacker-controlled. |
+| D-parameter accepts zero-value producing empty committee | 4 | 1 | 2.5 | **Medium** | Requires unanimous governance action, but consequence is chain halt. F=1 because exploitation requires compromising all governance bodies. |
+| Inherent data expect() panic in create_inherent/check_inherent | 3 | 4 | 3.5 | **High** | Runs on every block production/validation cycle. Malformed inherent data from data source causes simultaneous panic across all validators. |
 

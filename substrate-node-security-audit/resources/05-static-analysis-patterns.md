@@ -342,6 +342,17 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **FAIL if:** (a) A financial event is emitted before the corresponding state transition is finalized, (b) the event amount diverges from the actual state change, or (c) an event is emitted on a path where subsequent failure does not revert the event. External systems (exchanges, indexers, bridges) rely on events as the source of truth for crediting funds — a misleading event enables false deposit attacks.
 - **Relationship to V8 and V31:** V8 (Silent Error Swallowing) covers the case where financial operations fail silently with no event. Check 31 covers the inverse: events that fire when they shouldn't, or with incorrect amounts. Check 29 (Missing `#[transactional]`) is related — non-transactional extrinsics can emit events that persist despite later failure.
 
+### Check 32: Inherent Data Decoding Panic Paths
+
+- **Search:** `.expect(` and `.unwrap()` inside `create_inherent`, `check_inherent`, `is_inherent_required`, and any helper functions called exclusively from those entry points (e.g., `get_data_from_inherent_data`). Search in all pallet source files that implement `ProvideInherent` or `CheckInherents`.
+- **Verify:** For EACH hit:
+  1. Identify whether the expect/unwrap is on a `get_data::<T>()` call that decodes inherent data from the block
+  2. Determine whether the function is called during block production (`create_inherent`), block verification (`check_inherent`), or both
+  3. Verify whether a panic at this site would halt all validators simultaneously (deterministic panic on the same block data)
+- **FAIL if:** Any `.expect()` or `.unwrap()` exists on an inherent data decoding call (`get_data`, `decode`, `from_bytes`) in a `create_inherent`, `check_inherent`, or `is_inherent_required` implementation. These functions run on every block — a panic halts the chain with no recovery path.
+- **Rationale:** Inherent data is provided by the node's native side and decoded in the runtime. If the native side produces malformed data (data source corruption, version mismatch, serialization bug), every validator running the same code panics simultaneously. Unlike extrinsic panics (caught by Substrate's dispatch layer), inherent hook panics are unrecoverable.
+- **Relationship to Check 25:** Check 25 covers configuration-variant panics in service startup. Check 32 covers inherent-data-variant panics in the runtime's per-block consensus path. Both are panic-path checks but at different architectural layers (native startup vs runtime hooks).
+
 ---
 
 ## Aggregation Rules
