@@ -1,4 +1,4 @@
-# TOON v3 DSL Specification
+# Compose DSL Specification
 
 **Version**: 3.0.0
 **Date**: 2026-02-10
@@ -10,16 +10,16 @@
 
 ### Problem
 
-TOON v2 activities declare primitives — steps, checkpoints, conditions, loops, decisions — as independent top-level blocks with no explicit composition. The executing agent must reconstruct the sequential flow by correlating step IDs with checkpoint IDs, inferring which loops nest inside which steps, and following `transitionTo` edges scattered across decisions and checkpoints. This makes workflow execution non-deterministic: two agents reading the same activity file may infer different execution orders.
+The prior schema declared primitives — steps, checkpoints, conditions, loops, decisions — as independent top-level blocks with no explicit composition. The executing agent must reconstruct the sequential flow by correlating step IDs with checkpoint IDs, inferring which loops nest inside which steps, and following `transitionTo` edges scattered across decisions and checkpoints. This makes workflow execution non-deterministic: two agents reading the same activity file may infer different execution orders.
 
 ### Design Goal
 
 Introduce **flows** as a composition layer that orders primitives into deterministic sequences — like a flowchart — while keeping primitives independently defined and referenceable. Reduce the primitive type count and eliminate redundancy.
 
-### Changes from v2
+### Changes from Prior Schema
 
-| Aspect | v2 | v3 |
-|--------|----|----|
+| Aspect | Prior | Compose |
+|--------|-------|---------|
 | Primitive types | 5 (steps, checkpoints, conditions, loops, decisions) | 3 (steps, decisions, loops) |
 | Composition | Implicit (agent-inferred) | Explicit (`flows:` block) |
 | Checkpoints | Separate primitive | Merged into decisions (`message:` field) |
@@ -341,7 +341,7 @@ flows:
 
 ## 3. EBNF Grammar
 
-Complete formal grammar for a TOON v3 activity file.
+Complete formal grammar for a Compose activity file.
 
 ```ebnf
 (* ===== Top-level structure ===== *)
@@ -692,7 +692,7 @@ fun resolve[name: Id, context: FlowContext]: lone Value {
 
 ## 6. Complete Example
 
-Full `requirements-elicitation` activity rewritten in TOON v3, annotated with constraint references.
+Full `requirements-elicitation` activity rewritten in Compose, annotated with constraint references.
 
 ```
 id: requirements-elicitation
