@@ -24,7 +24,7 @@ The template includes the following key strategies:
 
 The workflow adds the following structural improvements:
 
-8. **Two-wave agent dispatch** — Wave 1 (priority-1 + B + C), Wave 2 (priority-2 + D + E)
+8. **Concurrent agent dispatch** — All primary agents (A1-A6, B, D) dispatch simultaneously, with dedicated verification agent (V) post-collection
 9. **Group E mechanical verification** — dedicated agent for historically-missed pattern searches (impl Ord completeness, take_while truncation, buffer preallocation, RPC fan-out, StorageInit consistency)
 10. **Anti-anchoring instructions** — Group A agents must verify ALL fields/sites independently, not just the first matching instance
 11. **Checklist completion gate** — Group A agents must produce PASS/FAIL/NA for every numbered item
@@ -46,7 +46,7 @@ The workflow adds the following structural improvements:
 
 The template is the **checklist** — this workflow is the **execution framework**. The workflow handles:
 - Phase sequencing and automatic transitions (no checkpoints)
-- Two-wave agent dispatch and result collection
+- Concurrent agent dispatch and result collection with verification agent
 - Adversarial verification with field-enumeration as a separate phase
 - Severity calibration via the skill rubric with cross-check
 - Ensemble and gap analysis orchestration

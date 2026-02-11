@@ -1,6 +1,6 @@
 # Target Profile: midnight-node
 
-This profile contains target-specific configuration for auditing the midnight-node codebase. The core workflow rules are target-agnostic; this profile provides the crate-specific file paths, struct names, wave assignments, and calibration data that vary per target.
+This profile contains target-specific configuration for auditing the midnight-node codebase. The core workflow rules are target-agnostic; this profile provides the crate-specific agent assignments, file paths, struct names, calibration data, and ensemble blind-spot items that vary per target.
 
 When auditing a different Substrate node, replace this profile with target-appropriate values.
 
