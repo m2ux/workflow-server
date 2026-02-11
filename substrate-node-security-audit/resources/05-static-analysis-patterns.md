@@ -294,6 +294,54 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Validated gap (Session 19):** Genesis extrinsics parsing in `service.rs` uses an iteration pattern that stops at the first invalid element, silently dropping all remaining extrinsics. The node agent found the StorageInit divergence (§3.5) but did not trace the extrinsics parsing path separately because the §2.7 check for `take_while(Result::is_ok)` only matched iterator-adapter patterns, not the specific truncation mechanism used here.
 - **Scope:** Node service files and command handlers only. This is NOT a general-purpose check — it targets the specific genesis initialization codepaths.
 
+### Check 27: Hardcoded Trivial Weight on Extrinsics
+
+- **Search:** `#[weight = `, `#[pallet::weight(` followed by a numeric literal (not a function call) in all pallet source files
+- **Verify:** For each extrinsic declaration, determine whether the weight is (a) a benchmarked weight function reference (`T::WeightInfo::function_name()`), or (b) a constant accompanied by documentation justifying the value (e.g., root-only extrinsics with inherent rate limiting).
+- **FAIL if:** A user-callable extrinsic (`ensure_signed`) has a hardcoded weight literal below 10,000. This enables near-free block filling — an attacker can submit thousands of these extrinsics at negligible cost.
+- **Relationship to Check 25:** Check 25 examines `weights.rs` for zero-weight benchmarks. Check 27 catches the case where no weight function is referenced at all — the weight is a literal constant in the extrinsic attribute, invisible to `weights.rs` analysis.
+- **Note:** `decl_module!`-era pallets commonly use `#[weight = N]` syntax. The newer `#[pallet::weight(...)]` syntax can also contain literals. Both must be checked.
+
+### Check 28: Unbounded Temporal Parameter (No Maximum Offset)
+
+- **Search:** Extrinsic parameters representing future block numbers or timestamps. Typical names: `expiring_block_number`, `deadline`, `valid_until`, `lock_until`, `unlock_at`, `end_block`, `expiry`. Search for `BlockNumber` or `T::BlockNumber` in extrinsic signatures, and keyword patterns `expir`, `deadline`, `valid_until`, `lock_until`, `unlock_at` in pallet source files.
+- **Verify:** For each future-pointing temporal parameter, verify that an upper bound is enforced: `ensure!(param <= current + MAX_OFFSET, ...)` where `MAX_OFFSET` is a runtime constant.
+- **FAIL if:** No maximum offset check exists. An unbounded expiration means leaked signatures never expire, pending operations never time out, and locked assets remain locked indefinitely. The MAX_OFFSET should be a configurable runtime constant, not a hardcoded value.
+- **Relationship to V18:** V18 (Deferred Action Precondition Gap) covers missing validation on scheduled actions generally. Check 28 targets the specific temporal-bound case — even if the deferred action is otherwise valid, an unbounded expiration window is itself a vulnerability.
+
+### Check 29: Missing `#[transactional]` on Multi-Write Storage Operations
+
+- **Search:** `decl_module!` in pallet source files. If found, the pallet uses pre-frame-v2 syntax where extrinsics are NOT automatically transactional. Then search for storage-writing helper functions (`try_mutate`, `::insert(`, `::mutate(`, `::put(`) that are called from extrinsics or hooks.
+- **Verify:** For each `decl_module!` pallet:
+  1. Identify all helper functions that write to storage
+  2. Trace callers — is the helper called from an extrinsic or hook?
+  3. Verify the helper or its caller has `#[transactional]` or uses `with_transaction`
+  4. For `#[pallet::call]` pallets (frame v2+): extrinsics are auto-transactional, but helper functions called from hooks (`on_initialize`, `on_finalize`, `on_idle`) are NOT — these must still be checked
+- **FAIL if:** A storage-writing helper function is reachable from a path where subsequent failure would leave partial state. Specifically: `decl_module!` extrinsics calling storage-writing helpers without `#[transactional]`, or any hook path calling storage-writing helpers without transactional wrapping.
+- **Scope:** `decl_module!` pallets are the primary surface. For `#[pallet::call]` pallets, only hook paths need checking (extrinsic paths are auto-wrapped).
+
+### Check 30: RPC Method Access Control (DenyUnsafe Gating)
+
+- **Search:** `into_rpc()` registration sites in node service and RPC module files, and custom RPC handler implementations. Search for `DenyUnsafe`, `RpcMethods`, `unsafe`, `author`, `key`, `sign`, `rotate_keys`, `insert_key`, `submit_extrinsic` in RPC-related files.
+- **Verify:** For each custom RPC handler registered via `into_rpc()`:
+  1. Identify whether the method performs a sensitive operation (key management, signing, transaction submission, state mutation)
+  2. Verify sensitive methods check `DenyUnsafe` and return an error when called in `Safe` mode
+  3. Verify the node's default RPC method exposure is `Safe` (not `Unsafe`) — check CLI argument defaults and service configuration
+- **FAIL if:** A custom RPC method that performs signing, key insertion, key rotation, or unsolicited transaction submission does not gate on `DenyUnsafe`. Also FAIL if the node defaults to `--rpc-methods=Unsafe` or if there is no `DenyUnsafe` check anywhere in custom RPC code that exposes sensitive operations.
+- **Rationale:** An externally-accessible RPC interface exposing unsafe methods allows remote attackers to extract keys, sign arbitrary payloads, or drain funds from node-controlled accounts. This is the code-level manifestation of the "Ethereum Black Valentine's Day" attack class (SlowMist). Substrate's framework provides the `DenyUnsafe` guard, but custom RPC extensions must opt in explicitly.
+- **Note:** Standard Substrate RPC modules (`system`, `chain`, `state`) are gated by the framework. This check targets **custom** RPC handlers added by the project.
+
+### Check 31: Event Emission Fidelity (False Top-Up Prevention)
+
+- **Search:** `deposit_event(`, `Self::deposit_event(`, `Event::` in all pallet source files, focusing on extrinsics and hooks that involve balance transfers, token minting, deposits, or withdrawals.
+- **Verify:** For each event emission site involving a financial operation (transfer, mint, burn, deposit, withdraw, claim):
+  1. Verify the event is emitted AFTER the state transition completes successfully — not before, and not in a branch that can still fail
+  2. Verify the amount in the event matches the actual state change (fees deducted, rounding applied, partial fills reflected)
+  3. Verify no event is emitted on error paths that revert state (in `decl_module!` pallets without `#[transactional]`, an event emitted before a later failure persists even though the intent failed)
+  4. For hooks (`on_initialize`/`on_finalize`): verify events are emitted only for operations that actually succeeded, not optimistically
+- **FAIL if:** (a) A financial event is emitted before the corresponding state transition is finalized, (b) the event amount diverges from the actual state change, or (c) an event is emitted on a path where subsequent failure does not revert the event. External systems (exchanges, indexers, bridges) rely on events as the source of truth for crediting funds — a misleading event enables false deposit attacks.
+- **Relationship to V8 and V31:** V8 (Silent Error Swallowing) covers the case where financial operations fail silently with no event. Check 31 covers the inverse: events that fire when they shouldn't, or with incorrect amounts. Check 29 (Missing `#[transactional]`) is related — non-transactional extrinsics can emit events that persist despite later failure.
+
 ---
 
 ## Aggregation Rules
