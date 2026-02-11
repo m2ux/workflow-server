@@ -1,5 +1,5 @@
 id: sub-crate-review
-version: 1.7.0
+version: 1.8.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Workflow for Group A sub-agents. Executes an 8-step structured crate review with verifiable outputs at each stage. Each step defines a REQUIRED OUTPUT that must be produced before proceeding. The sub-agent loads this activity via get_workflow_activity and follows it sequentially."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
@@ -12,7 +12,7 @@ skills:
 required: false
 estimatedTime: 20-40m
 
-rules[8]:
+rules[10]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives context variables: crate_path, checklist_sections, function_registry, supplementary_files, vulnerability_domain_entries, in_scope, out_of_scope"
   - "Every step defines a REQUIRED OUTPUT. The agent must produce this output before proceeding."
@@ -21,6 +21,8 @@ rules[8]:
   - "SUPPLEMENTARY FILE BUDGET: The orchestrator includes supplementary files per the target profile for cross-crate verification."
   - "FLUSH ORDERING VERIFICATION: For every §3.1 target in the vulnerability domain map, enumerate ALL state-modifying operations in execution order (including conditional paths). The flush/commit call must occur AFTER the last state-modifying operation. A flush followed by additional writes is FAIL. Finding one flush call alone is NOT sufficient — verify nothing writes after it."
   - "RPC SUBSCRIPTION LIMIT VERIFICATION: For every into_rpc() registration site, verify explicit per-connection or global subscriber limits. 'Framework handles it' is not a valid PASS."
+  - "CONFIGURATION-VARIANT PANIC TRIAGE: For every expect()/unwrap() on an Option derived from configuration, runtime state, or database queries, enumerate ALL valid configuration variants (InMemory/OnDisk, pruned/archive, development/production presets). An unwrap that panics on any valid variant is a finding. Produce a configuration-variant triage table: | Site | Option Source | Variant that produces None | Severity |. This is MANDATORY for the node binary agent."
+  - "ERROR-PATH STORAGE PERSISTENCE: For every StorageMap::insert() that is followed by a fallible operation (host API call, event construction, serialization) before the handler returns, verify that a failed operation either reverts the insert or the persistence is intentionally unconditional. An insert that persists when the subsequent operation fails and the handler returns None is a finding — the storage entry becomes orphaned without a lifecycle cleanup path."
 steps[8]:
   - id: read-all-files
     name: Read All Crate Files

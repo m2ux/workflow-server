@@ -1,5 +1,5 @@
 id: primary-audit
-version: 4.9.0
+version: 4.10.0
 name: Primary Audit
 description: "Multi-agent audit via wave-based concurrent dispatch. Group A applies §3 checklist per crate. Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function. Consolidation uses structured merge with mandatory elevation."
 problem: A single agent cannot achieve sufficient depth across all crates. Multi-agent orchestration provides dedicated context windows per crate while the static analysis agent catches mechanical patterns across the full scope.
@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 60-120m
-rules[18]:
+rules[21]:
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "For cross-crate checks (§3.2, §3.4, §3.8, §3.10), the orchestrator includes supplementary files per the target profile"
   - "Group B runs ALL §2 grep patterns and mechanical checks against the full in-scope directory set"
@@ -30,9 +30,12 @@ rules[18]:
   - "CONFIGURATION INVARIANT SCOPE: §3.4 applies to both inherent provider tuples AND off-chain configuration structs identified in the vulnerability domain map."
   - "HYBRID WAVE DISPATCH: Wave 2 SHOULD combine remaining crates into fewer agents. Include supplementary files per the target profile."
   - "RECONNAISSANCE LEAD INCLUSION: Every lead in the leads_routing table from reconnaissance MUST appear in the corresponding agent's prompt. An unrouted lead that matches an agent's scope is a dispatch defect."
+  - "CONFIGURATION-VARIANT PANIC TRIAGE: The node agent's prompt MUST include the instruction to enumerate ALL valid DatabaseConfig/StorageConfig variants for each expect()/unwrap() on config-derived Option values. The orchestrator verifies the agent's output includes a configuration-variant triage table for service initialization code. Re-dispatch if absent."
+  - "GENESIS PARSING PATH ENUMERATION: The node agent MUST enumerate ALL genesis data parsing paths (StorageInit, genesis extrinsics, genesis header, chain spec properties) and verify each for silent truncation patterns. The StorageInit construction site table from §3.5 is necessary but NOT sufficient — extrinsics parsing and header construction are separate paths that must be traced independently."
+  - "ERROR-PATH STORAGE PERSISTENCE: For every StorageMap::insert() followed by a fallible operation (host API call, serialization, event construction), the Group A agent MUST verify that a failed fallible operation either (a) reverts the insert or (b) the insert is intentionally unconditional with documented justification. An insert that persists when the subsequent operation fails and the handler returns None/Err is a finding — the storage entry becomes orphaned."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
-steps[12]:
+steps[14]:
   - id: dispatch-wave-1
     name: "Dispatch Wave 1 — Highest-Priority Group A + Group B + Group D"
     required: true
@@ -77,6 +80,16 @@ steps[12]:
     required: true
     skill: verify-sub-agent-output
     description: "Scan mandatory tables for FAIL/DIFF/Missing/No cells; auto-extract as findings. Verify event construction site coverage per verify-sub-agent-output skill."
+  - id: verify-config-variant-triage
+    name: "Verify Configuration-Variant Panic Triage"
+    required: true
+    skill: verify-sub-agent-output
+    description: "Verify the node agent's output includes a configuration-variant triage table mapping each expect()/unwrap() in service initialization to all valid config modes (InMemory, OnDisk, pruned, archive). Re-dispatch if absent."
+  - id: verify-genesis-parsing-coverage
+    name: "Verify Genesis Parsing Path Coverage"
+    required: true
+    skill: verify-sub-agent-output
+    description: "Verify the node agent traced ALL genesis data parsing paths: (1) StorageInit construction sites, (2) genesis extrinsics decoding, (3) genesis header construction, (4) chain spec property parsing. Each must be checked for silent truncation. Re-dispatch for any untraced path."
   - id: structured-merge
     name: Structured Merge
     skill: merge-findings

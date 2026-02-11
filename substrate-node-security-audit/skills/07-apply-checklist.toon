@@ -1,5 +1,5 @@
 id: apply-checklist
-version: 1.2.0
+version: 1.3.0
 capability: "Given a checklist (from a resource) and a set of items (functions, crate components, code paths), iterate every item against every checklist entry, produce a verdict matrix, and verify completeness"
 
 description: "A reusable skill for systematic checklist application. The checklist content comes from a resource; the item set comes from a prior enumeration step. This skill defines the iteration protocol, verdict types (PASS/FAIL/NA), evidence requirements, and completeness verification. It prevents skimming by requiring an explicit entry for every item x checklist combination."
@@ -29,6 +29,8 @@ rules:
   toolkit-function-count: "When checklist is resource 03 (toolkit): after producing the enumeration table, independently count functions per file (e.g. grep 'fn ') and compare against the table row count. A discrepancy > 10% indicates skimming and requires re-enumeration."
   toolkit-subdirectories: "When checklist is resource 03 (toolkit): every .rs file in every subdirectory of the toolkit paths must be enumerated. Do not read only top-level lib.rs."
   toolkit-rng-triage: "When checklist is resource 03 (toolkit): for every SmallRng or fixed-seed StdRng, trace the RNG output to its usage site. If the output is used in transaction construction (TransactionWithContext, BlockContext, parent_block_hash), it is a FAIL regardless of 'test infrastructure.' SEVERITY CEILING: Findings affecting only local wallet state, CLI output, or offline tooling have I <= 2. Elevate to I=3 only when the toolkit produces artifacts consumed by the production node or submitted to the network."
+  error-path-storage-persistence: "For §3.2 storage lifecycle checks, every StorageMap::insert() must be evaluated for error-path persistence: if the code following the insert contains a fallible operation (host API call, event construction, serialization, external query) and the error path causes the handler to return None/Err WITHOUT reverting the insert, the storage entry becomes orphaned. This is a SEPARATE finding from the general insert/remove lifecycle pairing. The insert may have a corresponding remove() on the normal lifecycle path AND still be vulnerable to orphan persistence on error paths. Produce a table: | Insert Site | Subsequent Fallible Op | Error Path Reverts Insert? | Finding? |"
+  toolkit-canonical-state-writeback: "When checklist is resource 03 (toolkit) item 2: a PASS on tracker-state correctness does NOT extend to canonical-state correctness. The agent must independently verify BOTH: (a) the tracking/index state (e.g., spent_utxos set) is updated, AND (b) the underlying canonical state (e.g., dust_local_state, ledger_state) is written back to self. If the tracker prevents double-operations but the canonical state remains stale, this is a finding — subsequent reads return outdated values."
 
 protocol:
   load-checklist[1]:

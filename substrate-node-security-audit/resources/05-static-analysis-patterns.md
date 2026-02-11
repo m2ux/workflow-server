@@ -267,6 +267,33 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** The source value is bounded before the cast (e.g., `ensure!(val <= u32::MAX as u128, ...)`) or the cast uses `try_into()` with error handling.
 - **FAIL if:** An explicit `as` narrowing cast is performed without a preceding bounds check. Clippy lint `cast_possible_truncation` catches many of these.
 
+### Check 25: Configuration-Variant Panic Triage
+
+- **Search:** `expect(`, `unwrap()` in service initialization files (`service.rs`, `command.rs`, `main.rs`) — specifically on `Option` values returned by config/database/storage accessor methods (`.path()`, `.get()`, `.header()`, `.properties()`)
+- **Verify:** For EACH hit, enumerate all valid configuration variants that could produce `None`:
+  - `DatabaseConfig::InMemory` → `.path()` returns `None`
+  - Development presets → optional fields may be absent
+  - Pruned database → old headers may be missing
+  - First-run / empty state → genesis-dependent values may not exist
+- **Produce a mandatory triage table:**
+
+  | Site | Option Source | Config Variant Producing None | Reachable? | Severity |
+  |------|-------------|-------------------------------|------------|----------|
+
+- **FAIL if:** Any valid (non-test, non-impossible) configuration variant produces `None` at the unwrap site. "Works with default config" is NOT a valid PASS — all supported configurations must be checked.
+- **Validated gap (Session 19):** `database_source.path().expect("db path available")` in `service.rs` panics when `DatabaseConfig::InMemory` is used. The node agent read the file but did not triage `expect()` calls against configuration variants because the panic was in infrastructure setup code, not consensus paths. This check makes configuration-variant triage mechanical.
+
+### Check 26: Genesis Data Parsing Truncation
+
+- **Search:** All code paths that parse genesis data in service or command files. Specifically: (a) genesis extrinsics decoding from chain spec properties, (b) genesis header construction, (c) chain spec property extraction, (d) StorageInit construction. Search for patterns: `take_while`, `filter_map`, `map_while`, early `break` or `continue` in parsing loops, `.ok()` on decode results inside iterators.
+- **Verify:** For EACH genesis parsing path:
+  1. Trace the iteration/decoding pattern
+  2. Determine what happens when ONE element is malformed — does the parser stop, skip, or error?
+  3. If the parser stops or skips silently, determine whether subsequent valid elements are lost
+- **FAIL if:** A malformed element causes silent truncation of remaining valid elements. The genesis block's extrinsics root and state root depend on ALL elements; truncation alters these hashes and can cause consensus divergence between nodes that receive different chain spec versions.
+- **Validated gap (Session 19):** Genesis extrinsics parsing in `service.rs` uses an iteration pattern that stops at the first invalid element, silently dropping all remaining extrinsics. The node agent found the StorageInit divergence (§3.5) but did not trace the extrinsics parsing path separately because the §2.7 check for `take_while(Result::is_ok)` only matched iterator-adapter patterns, not the specific truncation mechanism used here.
+- **Scope:** Node service files and command handlers only. This is NOT a general-purpose check — it targets the specific genesis initialization codepaths.
+
 ---
 
 ## Aggregation Rules

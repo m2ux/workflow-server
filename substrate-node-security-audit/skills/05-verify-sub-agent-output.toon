@@ -1,5 +1,5 @@
 id: verify-sub-agent-output
-version: 1.3.0
+version: 1.4.0
 capability: "Validate that sub-agent results meet structural completeness requirements, check coverage gates and mandatory output tables, and flag or re-dispatch on failure"
 
 description: "A reusable verification skill for multi-agent workflows. After collecting sub-agent results, this skill defines how to check that each agent's output contains all required tables, covers all expected files, and meets structural completeness criteria. Missing outputs are flagged for targeted re-dispatch."
@@ -39,6 +39,12 @@ protocol:
     - "DETERMINISTIC CELL-LEVEL SCAN: Iterate every row in every mandatory table from every agent. For each cell, apply keyword match: FAIL, DIFF, Missing, No, absent, not validated, unconditional, no guard, no check, unpaired. Each matching cell becomes a table-derived finding (source_table, cell_description, agent_id, severity=TBD). The orchestrator MUST NOT apply judgment to skip cells — all matches are extracted. Deduplication occurs later in merge-findings."
   verify-event-construction-site[1]:
     - For every pallet that calls deposit_event() with data derived from transaction results, verify that the Group A agent's §3.3 per-field trace table covers ALL event construction sites identified in the vulnerability domain map. If the trace table covers only one site when multiple exist, dispatch a targeted follow-up agent for the uncovered sites.
+  check-config-variant-triage[1]:
+    - "For the node binary agent (A3 or equivalent), verify its output includes a configuration-variant triage table that maps each expect()/unwrap() in service initialization code to all valid configuration modes (InMemory, OnDisk, pruned, archive, development). If the table is absent or covers fewer than 80% of expect()/unwrap() sites in service.rs and command.rs, flag for re-dispatch with explicit Check 25 instructions."
+  check-genesis-parsing-coverage[1]:
+    - "For the node binary agent (A3 or equivalent), verify its output traces ALL four genesis data parsing paths: (1) StorageInit construction sites (existing §3.5 check), (2) genesis extrinsics decoding from chain spec properties, (3) genesis header construction (including feature-gated digest items), (4) chain spec property extraction (JSON parsing of genesis_state, genesis_block, etc.). Each path must have a truncation-safety verdict. If any path is untraced, flag for re-dispatch with explicit Check 26 instructions."
+  check-error-path-persistence[1]:
+    - "For each Group A pallet agent, verify that every StorageMap::insert() site identified in the agent's storage lifecycle pairing table has been checked for error-path persistence: does a subsequent fallible operation (host API call, event construction, serialization) exist on the same code path? If so, does the error path revert the insert? If the agent's output does not address error-path persistence for any insert site, flag for follow-up. This specifically targets the pattern where insert() persists but the handler returns None on a downstream failure."
   produce-verification-report[1]:
     - "Output a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status, table-derived findings from extract-table-findings step, event construction site coverage status. For each gap, recommend a targeted follow-up dispatch."
 
