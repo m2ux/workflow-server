@@ -113,7 +113,7 @@ sections[12]:
   - id: engineering-artifacts
     title: Engineering Artifacts Management
     priority: high
-    overview: "Engineering artifacts (planning documents, ADRs, reviews) are stored in '.engineering/', which is a regular tracked directory in the parent repo — NOT a submodule. However, '.engineering/workflows/' and '.engineering/history/' ARE submodules with their own repos. Read .engineering/AGENTS.md for the complete git structure diagram and commit instructions."
+    overview: "Engineering artifacts (planning documents, ADRs, reviews) are stored in '.engineering/'. Read .engineering/AGENTS.md for the complete git structure diagram and commit instructions."
     critical[2]:
       - "BEFORE committing engineering artifacts, ALWAYS read and follow .engineering/AGENTS.md"
       - "The AGENTS.md file contains the definitive git structure diagram showing what is a submodule vs a regular directory"
