@@ -8,9 +8,14 @@ Extended Backus-Naur Form (EBNF) is a notation for formally describing the synta
 
 ## Files
 
-| File | Defines | Format |
+The Compose DSL covers four workflow primitives. Activity is defined; the others are TBD.
+
+| File | Defines | Status |
 |------|---------|--------|
-| `activity.ebnf` | Activity file syntax — steps, decisions, loops, flows, boolean algebra | [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form) |
+| `activity.ebnf` | Activity file syntax — steps, decisions, loops, flows, boolean algebra | Defined |
+| `workflow.ebnf` | Workflow file syntax — metadata, variables, activity sequencing | TBD |
+| `skill.ebnf` | Skill file syntax — inputs, outputs, rules, protocol, tools | TBD |
+| `resource.ebnf` | Resource file syntax — documentation, templates, guides | TBD |
 
 ## Relationship to Other Artifacts
 

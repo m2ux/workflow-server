@@ -8,9 +8,14 @@ Formal semantic constraints for workflow definition files, expressed in Alloy no
 
 ## Files
 
-| File | Covers | Format |
+The Compose DSL covers four workflow primitives. Activity constraints are defined; the others are TBD.
+
+| File | Covers | Status |
 |------|--------|--------|
-| `activity.als` | Provenance, symbol uniqueness, flow structure, loop behavior, decision validation, terminal semantics, variable scoping | [Alloy](https://alloytools.org/about.html) |
+| `activity.als` | Provenance, symbol uniqueness, flow structure, loop behavior, decision validation, terminal semantics, variable scoping | Defined |
+| `workflow.als` | Workflow-level constraints — activity ordering, variable declarations, transition validity | TBD |
+| `skill.als` | Skill constraints — input/output declarations, protocol structure, rule validity | TBD |
+| `resource.als` | Resource constraints — reference integrity, template structure | TBD |
 
 ## Relationship to Other Artifacts
 
