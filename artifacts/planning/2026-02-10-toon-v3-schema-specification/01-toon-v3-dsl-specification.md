@@ -8,9 +8,22 @@
 
 ## 1. Overview and Design Rationale
 
+### Scope
+
+The Compose DSL defines the grammar and semantic constraints for the four workflow primitives:
+
+| Primitive | Description | Compose Status |
+|-----------|-------------|----------------|
+| **Workflow** | Top-level container: metadata, variables, activity sequencing | Legacy — Compose variant TBD |
+| **Activity** | Execution unit: steps, decisions, loops composed into flows | **Defined in this specification** |
+| **Skill** | Agent capability: inputs, outputs, rules, protocol, tools | Legacy — Compose variant TBD |
+| **Resource** | Reference material: documentation, templates, guides | Legacy — Compose variant TBD |
+
+This specification fully defines the Compose grammar and constraints for **activities**. The workflow, skill, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Compose variants are designed.
+
 ### Problem
 
-The prior schema declared primitives — steps, checkpoints, conditions, loops, decisions — as independent top-level blocks with no explicit composition. The executing agent must reconstruct the sequential flow by correlating step IDs with checkpoint IDs, inferring which loops nest inside which steps, and following `transitionTo` edges scattered across decisions and checkpoints. This makes workflow execution non-deterministic: two agents reading the same activity file may infer different execution orders.
+The prior activity schema declared primitives — steps, checkpoints, conditions, loops, decisions — as independent top-level blocks with no explicit composition. The executing agent must reconstruct the sequential flow by correlating step IDs with checkpoint IDs, inferring which loops nest inside which steps, and following `transitionTo` edges scattered across decisions and checkpoints. This makes workflow execution non-deterministic: two agents reading the same activity file may infer different execution orders.
 
 ### Design Goal
 
