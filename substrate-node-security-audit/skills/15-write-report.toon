@@ -1,5 +1,5 @@
 id: write-report
-version: 1.1.0
+version: 1.2.0
 capability: Produce the final audit report artifact from the scored and elevation-verified merge table
 
 output[1]:
@@ -8,6 +8,7 @@ output[1]:
     artifact:
       name: 01-audit-report.md
     components:
+      header_table: "The report MUST begin with a markdown table containing: Target, Commit, Date (YYYY-MM-DD HH:MM UTC), Workflow version, Agents (using single-letter designators: R, S, A1-A7, B, D1, D2, V, M), and Ensemble status. This table is separated from the Executive Summary by a horizontal rule (---). Example: | Field | Value |\\n|-------|-------|\\n| Date | 2026-02-11 13:19 UTC |"
       executive_summary: "Severity distribution table, top findings summary, methodology overview"
     methodology: "Phases executed, agent count, template version, ensemble status"
       crate_inventory: "Table of all in-scope crates with classification, priority, and reviewing agent"
