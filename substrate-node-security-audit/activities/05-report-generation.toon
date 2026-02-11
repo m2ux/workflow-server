@@ -1,5 +1,5 @@
 id: report-generation
-version: 3.3.0
+version: 3.4.0
 name: Report Generation
 description: "Consolidate all findings from primary audit and adversarial verification into a final report. Uses the structured merge table from primary-audit as the canonical finding inventory. Apply severity scoring rubric with cross-check against calibration examples, verify coverage gate, and produce the deliverable audit report. Fully automated — no user checkpoints."
 problem: Findings from multiple agents and phases must be severity-calibrated and formatted into a cohesive report with coverage verification. The structured merge table from primary-audit ensures no findings are lost.
@@ -14,12 +14,14 @@ skills:
     - write-report
 required: true
 estimatedTime: 20-40m
-rules[5]:
-  - "The structured merge table from primary-audit is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
+rules[7]:
+  - "The structured merge table from the merge agent (M) is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
   - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
   - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation."
-  - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless the coverage gate was verified by the verification sub-agent (V) during primary-audit. If coverage_report shows any UNREAD files, return to primary-audit and dispatch follow-up agents. Proceeding to report generation with unread files is the primary cause of coverage regression."
+  - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless: (a) the coverage gate was verified by the verification sub-agent (V) during primary-audit (verification_complete=true, set by V not orchestrator), AND (b) the reconciliation gate passed with zero Unaccounted findings (validated by M). If either condition is unmet, return to primary-audit."
   - "MANDATORY TABLE VERIFICATION: Before writing the report, verify that the following mandatory tables were produced during primary-audit: (a) §3.3 per-field event trace tables for all pallet agents, (b) §3.5 StorageInit construction site enumeration from the node startup agent (A3), (c) Group D per-function checklist matrix. Missing tables indicate incomplete review and MUST be resolved before the report is finalized."
+  - "BIDIRECTIONAL CALIBRATION: The severity-crosscheck step MUST evaluate ALL findings against the calibration benchmark table, not just High/Critical. Under-scoring (finding scored below benchmark by >= 2 levels) is treated the same as over-scoring — the benchmark severity is the floor."
+  - "RECONCILIATION TABLE IN REPORT: The final report MUST include the reconciliation table from M as an appendix or methodology section. This provides auditable evidence that all agent findings were accounted for."
 entryActions[1]{action,message}:
   log,Starting report generation — consolidating findings from all phases
 steps[6]:
@@ -34,9 +36,9 @@ steps[6]:
     skill: score-severity
     description: "Score every finding in the merge table using the severity rubric and calibration examples."
   - id: severity-crosscheck
-    name: Severity Cross-Check Against Calibration Examples
+    name: Bidirectional Severity Cross-Check Against Calibration Examples
     skill: score-severity
-    description: "Re-evaluate all High/Critical findings against the bias-correction protocol."
+    description: "Re-evaluate ALL findings (not just High/Critical) against the calibration benchmark table. For every finding, search for a matching benchmark pattern. If divergence >= 1 level, flag for review. If divergence >= 2 levels, the benchmark severity is the floor. This catches both over-rating AND under-rating. The merge agent (M) performs initial calibration; this step verifies M's scoring after adversarial results are integrated."
   - id: coverage-gate
     name: "Verify Coverage Gate (BLOCKING)"
     required: true

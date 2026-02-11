@@ -25,6 +25,77 @@ All primary agents dispatch concurrently in a single batch. The verification age
 
 ---
 
+## File Coverage Obligations
+
+Every .rs file > 200 lines in priority-1/2 crates MUST be assigned to a specific agent. The verification agent (V) checks this table against agent outputs. Any file not referenced in at least one agent's output is a coverage gap requiring re-dispatch.
+
+| File | Lines | Agent | Notes |
+|------|-------|-------|-------|
+| `runtime/src/lib.rs` | 1825 | A5 | Runtime config, parameter_types!, all pallet Config impls |
+| `ledger/src/versions/common/mod.rs` | 922 | A2 | Core ledger bridge, caching, system tx dispatch |
+| `node/src/command.rs` | 867 | A3 | CLI handlers, genesis state extraction, keystore init |
+| `node/src/service.rs` | 807 | A3 | Service init, genesis block builder, StorageInit |
+| `util/toolkit/src/genesis_generator.rs` | 767 | D | Genesis generation tooling |
+| `ledger/src/host_api/mod.rs` | 642 | A2 | Host function implementations |
+| `util/toolkit/src/tx_generator/builder/mod.rs` | 605 | D | Transaction builder |
+| `util/toolkit/src/fetcher/fetch_storage/redb_backend.rs` | 603 | D | Storage fetcher |
+| `pallets/cnight-observation/src/lib.rs` | 589 | A1 | NTO pallet core |
+| `ledger/helpers/src/versions/common/types.rs` | 588 | D | Helper types, SmallRng usage |
+| `pallets/midnight/src/lib.rs` | 565 | A2 | Midnight pallet, hooks, state management |
+| `util/toolkit/src/fetcher/fetch_storage/postgres_backend.rs` | 562 | D | PG storage backend |
+| `node/src/cfg/mod.rs` | 559 | A3 | Config loading, ChainSpecCfg validation |
+| `pallets/federated-authority-observation/src/lib.rs` | 555 | A5 | FA observation, membership reset |
+| `primitives/mainchain-follower/src/data_source/cnight_observation.rs` | 546 | A6 | PG queries, pagination, type casts |
+| `ledger/helpers/src/versions/common/transaction.rs` | 527 | D | Transaction helpers, save_intents_to_file |
+| `util/toolkit/src/fetcher/wallet_state_cache.rs` | 509 | D | Wallet state caching |
+| `ledger/src/versions/common/api/transaction.rs` | 499 | A2 | Ledger transaction API |
+| `primitives/mainchain-follower/src/data_source/candidates_data_source/db_model.rs` | 487 | A6 | Candidate DB model |
+| `util/toolkit/src/commands/generate_intent.rs` | 452 | D | Intent generation |
+| `util/toolkit/src/tx_generator/builder/builders/batches.rs` | 450 | D | Batch builders |
+| `pallets/federated-authority/src/lib.rs` | 425 | A5 | Governance motions |
+| `pallets/federated-authority-observation/src/weights.rs` | 410 | A5 | Weight benchmarks |
+| `primitives/cnight-observation/src/lib.rs` | 406 | A6 | Observation types, Ord impls |
+| `ledger/helpers/src/versions/common/context.rs` | 397 | D | LedgerContext, wallet mutex, deadlock site |
+| `primitives/mainchain-follower/src/data_source/candidates_data_source/mod.rs` | 379 | A6 | Candidate data source |
+| `pallets/federated-authority/src/weights.rs` | 378 | A5 | Weight benchmarks |
+| `util/toolkit/src/toolkit_js/mod.rs` | 376 | D | JS bindings |
+| `node/src/main_chain_follower.rs` | 375 | A4 | Data source wiring, pool configs |
+| `node/src/chain_spec/mod.rs` | 372 | A3 | Chain spec construction, genesis config |
+| `ledger/src/versions/common/api/ledger.rs` | 370 | A2 | Ledger query API |
+| `util/toolkit/src/commands/root_call.rs` | 363 | D | Root call commands |
+| `ledger/src/versions/common/types.rs` | 345 | A2 | Ledger types, error codes |
+| `util/toolkit/src/tx_generator/source.rs` | 336 | D | TX generator source |
+| `node/src/inherent_data.rs` | 331 | A4 | CIDP structs, inherent providers |
+| `util/upgrader/src/lib.rs` | 320 | D | Network upgrader |
+| `runtime/src/currency.rs` | 320 | A5 | CurrencyWaiver impl |
+| `ledger/helpers/src/versions/common/mod.rs` | 316 | D | Helper module root |
+| `util/toolkit/src/tx_generator/builder/builders/contract_maintenance.rs` | 314 | D | Contract maintenance |
+| `util/toolkit/src/sender.rs` | 314 | D | Transaction sender |
+| `pallets/midnight/rpc/src/lib.rs` | 313 | A2 | Midnight RPC |
+| `pallets/cnight-observation/src/config.rs` | 306 | A1 | NTO config, genesis validation |
+| `node/src/metrics_push.rs` | 301 | A4 | Metrics push |
+| `util/toolkit/src/fetcher.rs` | 301 | D | Fetcher module root |
+| `primitives/ledger/src/lib.rs` | 298 | A6 | Ledger primitive types |
+| `ledger/src/common/types.rs` | 289 | A2 | Common ledger types |
+| `util/toolkit/src/tx_generator/builder/builders/single_tx.rs` | 288 | D | Single TX builder |
+| `util/toolkit/src/commands/update_ledger_parameters.rs` | 286 | D | Ledger parameter updates |
+| `util/aiken-deployer/src/main.rs` | 283 | D | Aiken deployer |
+| `util/toolkit/src/fetcher/fetch_storage.rs` | 274 | D | Fetch storage module |
+| `primitives/mainchain-follower/src/data_source/federated_authority_observation.rs` | 273 | A6 | FA observation data source |
+| `primitives/federated-authority-observation/src/lib.rs` | 271 | A6 | FA observation primitives |
+| `util/toolkit/src/cli.rs` | 265 | D | CLI argument parsing |
+| `util/toolkit/src/toolkit_js/encoded_zswap_local_state.rs` | 264 | D | Encoded state types |
+| `node/src/cli.rs` | 261 | A3 | Node CLI definition |
+| `ledger/helpers/src/versions/common/intent.rs` | 261 | D | Intent helpers |
+| `util/toolkit/src/fetcher/compute_task.rs` | 260 | D | Compute task (filter_map site) |
+| `pallets/system-parameters/rpc/src/lib.rs` | 260 | A5 | System parameters RPC |
+| `node/src/rpc.rs` | 218 | A4 | RPC module registration |
+| `runtime/src/session_manager.rs` | 118 | A5 | Authority rotation, session hooks |
+| `runtime/src/beefy.rs` | 188 | A5 | BEEFY configuration |
+| `runtime/src/check_call_filter.rs` | ~50 | A5 | SignedExtra call filter |
+
+---
+
 ## Supplementary File Assignments
 
 | Agent | Supplementary Files |
