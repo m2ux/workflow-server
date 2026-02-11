@@ -1,8 +1,8 @@
 id: reconnaissance
-version: 2.4.0
+version: 3.0.0
 name: Reconnaissance
-description: "Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. This is §1.2 of the audit template. Fully automated — no user checkpoints."
-problem: The agent needs a complete mental model of the system before detailed review can begin.
+description: "Orchestrate codebase reconnaissance by dispatching a dedicated sub-agent (R) for crate analysis and function registry building, then an architectural analysis sub-agent (Arch) for security decomposition. The orchestrator reads their file outputs and performs the coordination-only steps: vulnerability domain mapping, agent group assignment, and reconnaissance lead routing. The orchestrator does NOT read source files or build registries — all analysis is delegated."
+problem: "The orchestrator previously performed 9 inline reconnaissance steps (reading source files, scanning crates, building registries), consuming 10-15K tokens of context before primary agent dispatch. This reduced the orchestrator's effective context budget for its actual role: coordinating 10+ sub-agents across 6 workflow phases. Delegating analysis to sub-agents keeps the orchestrator's context clean for coordination."
 recognition[3]:
   - map architecture
   - codebase reconnaissance
@@ -11,107 +11,84 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 15-30m
-rules[6]:
-  - "Explicitly list EVERY pallet and primitive crate — do not summarize or group"
-  - "Map which crates are runtime (Wasm), native (node binary), shared primitives, or off-chain tooling"
-  - "Identify trust boundaries: RPC, inherent data, chain specs, config files, databases, file system, native/Wasm boundary"
-  - "Build the function registry for ALL priority-1 and priority-2 crates (§1.2 step 8)"
-  - "Sort .rs files by line count — the top 10 files MUST be in the registry and read during review (§5.14)"
-  - "Enumerate consensus-critical configuration structs per the target profile. Record missing constructor invariant validation as reconnaissance leads assigned to the node startup agent (A3)."
+rules[5]:
+  - "ORCHESTRATOR ROLE: The orchestrator dispatches sub-agents and reads their file outputs. It does NOT read source code, scan directories, or build registries during reconnaissance."
+  - "RECONNAISSANCE SUB-AGENT (R): Dispatched first. Performs crate identification, architecture mapping, trust boundary analysis, consensus path identification, config struct enumeration, pallet hook discovery, data flow tracing, safety override checks, and function registry construction. Writes output to files in the planning folder."
+  - "ARCHITECTURAL ANALYSIS SUB-AGENT (Arch): Dispatched after R completes. Receives R's file outputs. Produces interaction model, privilege map, candidate points, and emergent vulnerability domains. Writes output to planning folder."
+  - "DOMAIN MAPPING AND AGENT ASSIGNMENT: After both sub-agents complete and their output files are verified, the orchestrator performs vulnerability domain mapping, agent group assignment, and lead routing. These are coordination tasks that require the target profile and agent roster — they stay with the orchestrator."
+  - "All sub-agent outputs MUST be persisted as files in the planning folder before the orchestrator reads them. The orchestrator reads files, not sub-agent return values, to avoid context accumulation from large outputs."
 entryActions[1]{action,message}:
-  log,Starting codebase reconnaissance (§1.2)
-steps[13]:
-  - id: identify-crates
-    name: Identify All Crates
-    skill: map-codebase
-    skill_args:
-      output_format: "Explicit crate list — no summarization"
-    description: "Enumerate every crate in the workspace."
-  - id: map-architecture
-    name: Map Architecture
-    skill: map-codebase
-    skill_args:
-      output_format: "Crate classification table with category and priority"
-    description: "Classify each crate by architectural category and priority."
-  - id: identify-trust-boundaries
-    name: Identify Trust Boundaries
-    skill: map-codebase
-    skill_args:
-      output_format: "Trust boundary map with entry point types"
-    description: "Enumerate all trust boundary entry points."
-  - id: identify-consensus-paths
-    name: Identify Consensus Paths
-    skill: map-codebase
-    skill_args:
-      output_format: "Critical path inventory"
-    description: "Map all consensus-critical code paths."
-  - id: identify-config-structs
-    name: Identify Consensus Configuration Structs
-    skill: map-codebase
-    skill_args:
-      output_format: "| Struct | File | Fields | Constructor Validates Invariants? |"
-    description: "Per target profile: enumerate consensus-critical config structs, check constructor invariants, record gaps as leads."
-  - id: identify-pallet-hooks
-    name: Identify Pallet Hooks
-    skill: map-codebase
-    skill_args:
-      output_format: "Hook presence/absence table per pallet"
-    description: "Enumerate framework hooks for every pallet."
-  - id: map-data-flows
-    name: Map Data Flows
-    skill: map-codebase
-    skill_args:
-      output_format: "Forward and backward data flow traces"
-    description: "Trace data flows through priority-1 paths."
-  - id: check-send-sync
-    name: Check Safety Boundary Overrides
-    skill: map-codebase
-    skill_args:
-      output_format: "Override inventory with verification status"
-    description: "Identify all safety analysis overrides for priority review."
-  - id: build-function-registry
-    name: Build Function Registry
-    skill: build-function-registry
-    description: "Enumerate critical functions for all priority-1/2 crates."
-  - id: dispatch-architectural-analysis
-    name: Dispatch Architectural Analysis Sub-Agent
+  log,Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
+steps[7]:
+  - id: dispatch-reconnaissance-agent
+    name: "Dispatch Reconnaissance Sub-Agent (R)"
+    required: true
     skill: dispatch-sub-agents
-    description: "Dispatch a sub-agent following the sub-architectural-analysis activity. Receives crate_map, file_inventory, trust_boundaries, consensus_paths, pallet_hooks, config_structs. Returns interaction_model, privilege_map, candidate_points, emergent_domains."
+    description: "Dispatch the reconnaissance sub-agent following the sub-reconnaissance activity. R receives: target_submodule, target_commit, in_scope, out_of_scope, planning_folder_path, target profile (resource 06). R writes crate-map.json, function-registry.json, and reconnaissance-data.json to the planning folder."
+  - id: verify-reconnaissance-files
+    name: "Verify Reconnaissance Output Files"
+    required: true
+    description: "Verify that R produced all required output files in the planning folder: crate-map.json, function-registry.json, reconnaissance-data.json. If any file is missing, re-dispatch R with the specific missing output."
+  - id: dispatch-architectural-analysis
+    name: "Dispatch Architectural Analysis Sub-Agent (Arch)"
+    required: true
+    skill: dispatch-sub-agents
+    description: "Dispatch a sub-agent following the sub-architectural-analysis activity. Receives R's output files from the planning folder (crate-map.json, reconnaissance-data.json) plus the file inventory. Writes architectural-analysis.json to the planning folder."
+  - id: verify-architectural-analysis-file
+    name: "Verify Architectural Analysis Output File"
+    required: true
+    description: "Verify that Arch produced architectural-analysis.json in the planning folder. If missing, re-dispatch."
   - id: map-vulnerability-domains
     name: Map Vulnerability Domains
     skill: map-vulnerability-domains
-    description: "Bind architectural analysis artifacts to §3 verification procedures. Produces a domain map partitioned by crate for sub-agent distribution."
+    description: "Read crate-map.json, reconnaissance-data.json, and architectural-analysis.json from the planning folder. Bind architectural analysis artifacts to §3 verification procedures. Produces a domain map partitioned by crate for sub-agent distribution. This is a coordination task — the orchestrator uses the target profile's vulnerability domain hints as seeds."
   - id: assign-agent-groups
     name: Assign Agent Groups
     skill: dispatch-sub-agents
-    description: "Assign crates to sub-agent groups and identify cross-crate supplementary files."
+    description: "Read the crate map and target profile. Assign crates to sub-agent groups per the target profile's Agent Dispatch Assignments and File Coverage Obligations tables. Identify cross-crate supplementary files."
   - id: route-reconnaissance-leads
     name: Route Reconnaissance Leads to Agents
     skill: dispatch-sub-agents
-    description: "Produce a leads-to-agent routing table. Every pattern, potential issue, or observation noted during reconnaissance steps MUST be explicitly assigned to a specific sub-agent ID. Unrouted leads are lost."
+    description: "Read reconnaissance-data.json for leads. Produce a leads-to-agent routing table. Every pattern, potential issue, or observation noted by R MUST be explicitly assigned to a specific sub-agent ID. Unrouted leads are lost."
 transitions[1]{to,isDefault}:
   primary-audit,true
 exitActions[2]{action,message}:
   log,Reconnaissance complete — architecture mapped and function registry built
   set,reconnaissance_complete=true
 outcome[6]:
-  - All crates explicitly identified and classified
-  - Trust boundaries mapped
-  - Consensus-critical paths identified
-  - Function registry built for priority-1 and priority-2 crates
-  - Security architecture analyzed — interaction model, privilege map, candidate points, emergent domains
+  - All crates explicitly identified and classified (crate-map.json)
+  - Trust boundaries mapped (reconnaissance-data.json)
+  - Consensus-critical paths identified (reconnaissance-data.json)
+  - Function registry built for priority-1 and priority-2 crates (function-registry.json)
+  - Security architecture analyzed — interaction model, privilege map, candidate points, emergent domains (architectural-analysis.json)
   - Agent groups assigned with domain map entries and cross-crate supplement mappings
 context_to_preserve[9]:
-  - crate_map - Classification of all crates by type and priority
-  - function_registry - Registry of critical functions per crate
-  - trust_boundaries - List of identified trust boundaries
+  - crate_map - Read from crate-map.json
+  - function_registry - Read from function-registry.json
+  - trust_boundaries - Read from reconnaissance-data.json
   - agent_assignments - Crate-to-agent-group assignments with cross-crate supplement files noted
   - agents_assigned - Total count of agents in the assignment roster (used by dispatch completeness gate)
-  - large_files - List of .rs files >200 lines sorted by size
-  - architectural_analysis - Component interaction model, privilege map, candidate points, emergent domains (from sub-agent)
+  - large_files - Read from reconnaissance-data.json
+  - architectural_analysis - Read from architectural-analysis.json
   - vulnerability_domain_map - Per-class list of codebase locations triggering each §3 category, partitioned by crate
   - leads_routing - Per-lead table mapping each reconnaissance observation to its assigned sub-agent
-artifacts[1]:
+artifacts[5]:
+  - id: crate-map
+    name: crate-map.json
+    location: planning
+    description: "Crate classification by type, priority, and architectural category (produced by R)"
+  - id: function-registry
+    name: function-registry.json
+    location: planning
+    description: "Registry of critical functions per priority-1/2 crate (produced by R)"
+  - id: reconnaissance-data
+    name: reconnaissance-data.json
+    location: planning
+    description: "Trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides, large files, leads (produced by R)"
+  - id: architectural-analysis
+    name: architectural-analysis.json
+    location: planning
+    description: "Interaction model, privilege map, candidate points, emergent domains (produced by Arch)"
   - id: readme
     name: README.md
     location: planning

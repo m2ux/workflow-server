@@ -12,11 +12,11 @@ protocol:
     - Run cargo audit / cargo deny or fallback to manual dependency inspection
     - Create planning folder and initialize artifacts
   reconnaissance[5]:
-    - Read workspace Cargo.toml and list all crates
-    - Classify crates by type (runtime, native, shared, tooling)
-    - Identify trust boundaries and consensus paths
-    - Build function registry for priority-1/2 crates
-    - Generate file inventory sorted by line count and assign agent groups (A, B, D)
+    - Dispatch reconnaissance sub-agent (R) to identify crates, map architecture, build function registry, and write output files to planning folder
+    - Dispatch architectural analysis sub-agent (Arch) with R's output files to produce security decomposition
+    - Read R and Arch output files from planning folder (orchestrator does NOT read source code)
+    - Map vulnerability domains by binding architectural analysis to §3 verification procedures
+    - Assign agent groups per target profile and route reconnaissance leads to specific agents
   primary_audit[7]:
     - Dispatch all primary agents (A1-A7, B, D1, D2) concurrently with §3 checklist, cross-crate supplementary files, toolkit minimum checklist, and relevant calibration benchmarks
     - Collect all results from primary agents and persist each agent's full output as JSON in the planning folder

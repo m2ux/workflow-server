@@ -1,0 +1,84 @@
+id: sub-reconnaissance
+version: 1.0.0
+name: "Sub-Agent: Codebase Reconnaissance"
+description: "Dispatched at the start of reconnaissance to perform the codebase analysis that the orchestrator previously did inline. The sub-agent reads workspace manifests, scans all source files, classifies crates, identifies trust boundaries and consensus paths, enumerates pallet hooks and config structs, traces data flows, checks safety boundary overrides, and builds the function registry. All outputs are written to files in the planning folder, eliminating the context accumulation that previously saturated the orchestrator before primary audit even began."
+problem: "The orchestrator previously performed 9 heavy reconnaissance steps inline — reading Cargo.toml, scanning hundreds of source files, building crate maps and function registries. This consumed 10-15K tokens of context before primary agent dispatch, reducing the orchestrator's effective budget for coordination tasks. Since the orchestrator's role is coordination (dispatch, verify, route), the analysis work should be delegated to a sub-agent with a dedicated context window."
+recognition[3]:
+  - codebase reconnaissance
+  - map architecture
+  - build function registry
+skills:
+  primary: map-codebase
+  supporting[2]:
+    - build-function-registry
+    - extract-invariants
+required: false
+estimatedTime: 10-20m
+
+rules[8]:
+  - "This activity is dispatched by the orchestrator during reconnaissance — it does NOT appear in the main workflow transition graph"
+  - "The sub-agent receives context variables: target_submodule, target_commit, in_scope, out_of_scope, planning_folder_path, and the target profile (resource 06) for config struct enumeration and file coverage obligations"
+  - "Explicitly list EVERY pallet and primitive crate — do not summarize or group"
+  - "Map which crates are runtime (Wasm), native (node binary), shared primitives, or off-chain tooling"
+  - "Build the function registry for ALL priority-1 and priority-2 crates (§1.2 step 8)"
+  - "Sort .rs files by line count — the top 10 files MUST be in the registry"
+  - "Enumerate consensus-critical configuration structs per the target profile. Record missing constructor invariant validation as reconnaissance leads."
+  - "FILE OUTPUT: The sub-agent MUST write all outputs as JSON files to the planning folder. Required files: {planning_folder_path}/crate-map.json (crate classification), {planning_folder_path}/function-registry.json (function registry), {planning_folder_path}/reconnaissance-data.json (trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides, large files list, reconnaissance leads). These files are consumed by the architectural analysis sub-agent, the orchestrator's domain mapping step, and the verification agent (V)."
+
+steps[9]:
+  - id: identify-crates
+    name: Identify All Crates
+    required: true
+    skill: map-codebase
+    description: "Read workspace Cargo.toml and enumerate every crate. Classify each by architectural category (runtime, native, shared primitives, off-chain tooling) and priority (1=consensus-critical, 2=trust-boundary, 3=tooling)."
+  - id: identify-trust-boundaries
+    name: Identify Trust Boundaries
+    required: true
+    skill: map-codebase
+    description: "Enumerate all trust boundary entry points: RPC, inherent data, chain specs, config files, databases, file system, native/Wasm boundary."
+  - id: identify-consensus-paths
+    name: Identify Consensus Paths
+    required: true
+    skill: map-codebase
+    description: "Map all consensus-critical code paths: block production, block verification, inherent data creation/validation, genesis initialization, authority selection."
+  - id: identify-config-structs
+    name: Identify Consensus Configuration Structs
+    required: true
+    skill: map-codebase
+    description: "Per target profile: enumerate consensus-critical config structs, check constructor invariants, record gaps as reconnaissance leads."
+  - id: identify-pallet-hooks
+    name: Identify Pallet Hooks
+    required: true
+    skill: map-codebase
+    description: "Enumerate framework hooks (on_initialize, on_finalize, on_idle, offchain_worker) for every pallet."
+  - id: map-data-flows
+    name: Map Data Flows
+    required: true
+    skill: map-codebase
+    description: "Trace data flows through priority-1 paths using forward tracing (entry to sink) and backward tracing (sensitive op to source)."
+  - id: check-send-sync
+    name: Check Safety Boundary Overrides
+    required: true
+    skill: map-codebase
+    description: "Identify all unsafe impl Send/Sync and other safety analysis overrides for priority review."
+  - id: build-function-registry
+    name: Build Function Registry
+    required: true
+    skill: build-function-registry
+    description: "Enumerate critical functions for all priority-1/2 crates. For each pallet: hooks, ProvideInherent methods, extrinsics, internal handlers. For service modules: initialization functions, subcommand handlers. For data source crates: primary data-fetching functions, pagination logic."
+  - id: write-output-files
+    name: Write Output Files to Planning Folder
+    required: true
+    description: "Write crate-map.json, function-registry.json, and reconnaissance-data.json to the planning folder. These files are the canonical inputs for the architectural analysis sub-agent and the orchestrator's domain mapping step."
+
+outcome[5]:
+  - All crates explicitly identified and classified in crate-map.json
+  - Trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides documented in reconnaissance-data.json
+  - Function registry built for priority-1/2 crates in function-registry.json
+  - .rs files sorted by line count with top files flagged for registry inclusion
+  - Reconnaissance leads recorded for downstream agent assignment
+
+context_to_preserve[3]:
+  - crate_map_file - Path to crate-map.json in planning folder
+  - function_registry_file - Path to function-registry.json in planning folder
+  - reconnaissance_data_file - Path to reconnaissance-data.json in planning folder
