@@ -19,8 +19,9 @@ This workflow guides the complete lifecycle of a security audit:
 - **Goal → Activity → Skill → Tools** ontology with progressive disclosure
 - Workflow-directed sub-agents that bootstrap the workflow-server, load assigned activities, and follow steps sequentially with verifiable outputs
 - Composable skill architecture — 18 single-responsibility skills across orchestrator, analysis, and sub-agent tiers
-- Single-batch concurrent dispatch of all primary agents (A1-A6, B, D)
+- Single-batch concurrent dispatch of all primary agents (A1-A7, B, D1, D2)
 - Dedicated verification sub-agent (V) validates output completeness in a fresh context window before finding merge
+- Dedicated merge sub-agent (M) performs structured merge, deduplication, severity scoring, and reconciliation in a fresh context window to prevent finding regression from orchestrator context saturation
 - The orchestrator coordinates and dispatches — sub-agents perform deep crate-level review
 - Node binary scope split (A3 startup/config + A4 consensus/network) to prevent prompt saturation on the largest single-agent scope
 - Impact × Feasibility severity scoring with target-profile-backed calibration examples
@@ -78,16 +79,17 @@ graph TD
 
 ## Primary Audit — Concurrent Agent Dispatch
 
-The primary audit dispatches all specialized agent groups concurrently in a single batch, collects their structured output, runs a dedicated verification sub-agent, and consolidates findings.
+The primary audit dispatches all specialized agent groups concurrently in a single batch, collects their structured output, runs a dedicated verification sub-agent (V), acts on the gap report, then dispatches a dedicated merge sub-agent (M) to perform structured merge and reconciliation.
 
 ### Agent Groups
 
 | Group | Agents | Activity | Scope |
 |-------|--------|----------|-------|
-| A | 1 per priority-1/2 scope (~6 agents) | `sub-crate-review` | Full crate file read, §3 checklist, invariant extraction, cross-function comparison. Node binary is split into A3 (startup/config) and A4 (consensus/network) to avoid prompt saturation. |
+| A | 1 per priority-1/2 scope (~7 agents: A1-A7) | `sub-crate-review` | Full crate file read, §3 checklist, invariant extraction, cross-function comparison. Node binary is split into A3 (startup/config) and A4 (consensus/network); runtime and governance are split into A5 (runtime) and A7 (governance pallets). |
 | B | 1 | `sub-static-analysis` | All §2 grep patterns, mechanical checks, storage lifecycle pairing |
-| D | 1 | `sub-toolkit-review` | Toolkit crates (see target profile) with 8-item checklist applied per-function |
+| D | 2 (D1, D2) | `sub-toolkit-review` | D1: ledger helpers (wallet, transaction, context). D2: toolkit, upgrader, aiken crates. 8-item checklist applied per-function. |
 | V | 1 | `sub-output-verification` | Mechanical validation of all agent outputs against target profile, coverage gates, and mandatory table requirements. Dispatched after collection, before merge. |
+| M | 1 | `sub-structured-merge` | Finding-lossless merge with deduplication, severity scoring, bidirectional calibration, reconciliation, and observation elevation. Dispatched in a fresh context window after V. |
 
 ### Dispatch and Consolidation
 
@@ -99,10 +101,12 @@ graph LR
     FORK --> A2["A2: Midnight + ledger"]
     FORK --> A3["A3: Node startup"]
     FORK --> A4["A4: Node consensus"]
-    FORK --> A5["A5: Runtime + governance"]
+    FORK --> A5["A5: Runtime"]
     FORK --> A6["A6: Primitives"]
+    FORK --> A7["A7: Governance"]
     FORK --> B["B: Static Analysis"]
-    FORK --> D["D: Toolkit Review"]
+    FORK --> D1["D1: Ledger Helpers"]
+    FORK --> D2["D2: Toolkit"]
 
     A1 --> JOIN(( ))
     A2 --> JOIN
@@ -110,15 +114,18 @@ graph LR
     A4 --> JOIN
     A5 --> JOIN
     A6 --> JOIN
+    A7 --> JOIN
     B --> JOIN
-    D --> JOIN
+    D1 --> JOIN
+    D2 --> JOIN
 
     JOIN --> V["V: Verification Agent"]
     V --> REDISPATCH["Re-dispatch for gaps"]
-    REDISPATCH --> MERGE["Structured Merge"]
+    REDISPATCH --> M["M: Merge Agent"]
+    M --> RECONCILE["Reconciliation Gate"]
 ```
 
-All 8 primary agents dispatch concurrently. After all agents return, the verification sub-agent (V) mechanically validates output completeness and produces a gap report. The orchestrator re-dispatches targeted follow-up agents for any gaps before proceeding to structured merge.
+All 10 primary agents (A1-A7, B, D1, D2) dispatch concurrently. After all agents return and persist their output files, the verification sub-agent (V) mechanically validates output completeness and produces a gap report. The orchestrator re-dispatches targeted follow-up agents for any gaps. The merge sub-agent (M) then performs structured merge, deduplication, severity scoring with bidirectional calibration, and produces a reconciliation table where Unaccounted must equal zero for every agent (HARD STOP).
 
 ### Verification Gates
 
@@ -126,12 +133,14 @@ After agent collection, a dedicated verification sub-agent (V) runs all verifica
 
 | Gate | What It Checks | On Failure |
 |------|---------------|------------|
+| **Agent Output Files** | Every dispatched agent's JSON output file exists in the planning folder | Re-dispatch missing agent |
 | **Dispatch Completeness** | Every crate assigned during reconnaissance has a corresponding dispatched agent | Dispatch missing agents |
 | **File Coverage** | Every `.rs` file >200 lines in priority-1/2 crates was read by a checklist-applying Group A agent | Dispatch targeted follow-up agents |
 | **Output Tables** | Each Group A agent produced required analysis tables; Group D produced function x checklist matrix | Re-dispatch with explicit format instructions |
 | **Target Profile Obligations** | Every config struct, domain hint, and check assignment in the target profile appears in at least one agent's output | Dispatch targeted follow-up |
 | **Error-Path Persistence** | Every StorageMap::insert site has an error-path assessment in the reviewing agent's output | Flag for follow-up |
 | **Table-Derived Findings** | Mechanical scan of all mandatory tables for FAIL/DIFF/Missing/No cells | Auto-extract as findings |
+| **Finding Count Reconciliation** | M's reconciliation table has Unaccounted == 0 for every agent | Re-dispatch M (HARD STOP) |
 
 ### Sub-Agent Activity Flows
 
@@ -211,6 +220,7 @@ graph TD
 | B | `sub-static-analysis` | `execute-sub-agent` | `search-pattern-catalog` | Output schema, static analysis patterns | Pattern hits, storage pairing, zero-hit audit |
 | D | `sub-toolkit-review` | `execute-sub-agent` | — | Toolkit checklist, output schema | Function x checklist matrix, coverage attestation |
 | V | `sub-output-verification` | `verify-sub-agent-output` | — | Target profile, output schema | Gap report, table-derived findings, coverage attestation |
+| M | `sub-structured-merge` | `merge-findings` | — | Severity rubric, target profile (calibration benchmarks) | Merge table, reconciliation table, calibration cross-check, observation dispositions |
 
 ---
 
@@ -246,7 +256,7 @@ Dispatch all primary agents concurrently. After collecting results, dispatch a d
 
 **Skill:** `execute-audit`
 
-**Steps:** dispatch-all-agents -> verify-checklist-prompt-coverage -> verify-dispatch-completeness -> collect-all -> **dispatch-verification-agent** -> **act-on-gap-report** -> extract-table-derived-findings -> structured-merge -> dedup-and-map -> verify-checklist-completeness -> preserve-verification-report
+**Steps:** dispatch-all-agents -> verify-checklist-prompt-coverage -> verify-dispatch-completeness -> collect-all -> verify-agent-output-files -> **dispatch-verification-agent** -> **act-on-gap-report** -> extract-table-derived-findings -> **dispatch-merge-agent** -> **validate-reconciliation** -> verify-checklist-completeness -> preserve-verification-report -> preserve-merge-output
 
 ---
 
@@ -308,6 +318,7 @@ These activities are dispatched by the orchestrator during reconnaissance or pri
 | `sub-static-analysis` | Group B | Primary Audit | 6-step structured static analysis with catalog-based pattern execution, zero-hit auditing, storage lifecycle pairing, and mechanical checks |
 | `sub-toolkit-review` | Group D | Primary Audit | Per-function 8-item checklist application across all toolkit files with function x checklist matrix |
 | `sub-output-verification` | V | Primary Audit | 8-step mechanical output validation: dispatch completeness -> coverage gate -> mandatory tables -> target profile obligations -> table-derived findings -> error-path persistence -> gap report -> format output |
+| `sub-structured-merge` | M | Primary Audit | 7-step finding-lossless merge: load agent outputs -> concatenate flat table -> elevate observations -> deduplicate by root cause -> apply severity with bidirectional calibration -> produce reconciliation table -> format merge output |
 
 ---
 
@@ -389,7 +400,8 @@ Resources contain detailed reference content loaded on demand by skills.
 | `agents_assigned` | number | Agents assigned during reconnaissance |
 | `agents_dispatched` | number | Agents actually dispatched |
 | `dispatch_complete` | boolean | All assigned agents dispatched and returned |
-| `verification_complete` | boolean | Verification sub-agent dispatched and gap report processed |
+| `verification_complete` | boolean | Verification sub-agent (V) dispatched and gap report processed. Must be set by V, not orchestrator. |
+| `merge_complete` | boolean | Merge sub-agent (M) dispatched, reconciliation table produced with zero Unaccounted. |
 
 ---
 
@@ -401,6 +413,12 @@ Resources contain detailed reference content loaded on demand by skills.
 | Setup | `cargo-audit-output.txt` | Dependency scan results (if tools available) |
 | Setup | `file-inventory.txt` | Source files sorted by line count |
 | Reconnaissance | `README.md` | Scope, methodology, crate inventory |
+| Primary Audit | `group-a-*.json` | Group A agent structured outputs (one per crate scope) |
+| Primary Audit | `group-b-static-analysis.json` | Group B static analysis output |
+| Primary Audit | `group-d-*.json` | Group D toolkit review outputs |
+| Primary Audit | `verification-report.json` | V agent gap report and table-derived findings |
+| Primary Audit | `merge-output.json` | M agent merge table, reconciliation, calibration cross-check |
+| Adversarial | `adversarial-verification.json` | PASS item decomposition and verdicts |
 | Report | `01-audit-report.md` | Full audit report with numbered findings |
 | Ensemble | `second-pass-findings.md` | Raw findings from second-pass run |
 | Gap Analysis | `02-gap-analysis.md` | Comparison against reference report |
