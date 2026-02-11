@@ -140,6 +140,16 @@ Complete the work package and clean up
 
 The agent matches your request to the appropriate activity and guides you through the structured phases.
 
+## Engineering layout
+
+The `.engineering/` directory holds engineering artifacts and workflow-related assets.
+
+### Directory structure
+
+- `artifacts/planning/` — Work package plans and specifications
+- `history/` — Project history and change logs
+- `scripts/` — Utility scripts
+
 ## 📜 License
 
 MIT License - see [LICENSE](LICENSE) for details.
