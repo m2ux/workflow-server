@@ -183,45 +183,6 @@ graph LR
 
 Produces three structured tables: function enumeration, function × checklist matrix, and coverage attestation.
 
-### Sub-Agent Ontology
-
-```mermaid
-graph TD
-    subgraph activity ["Activity — defines WHAT"]
-        STEPS["Step skeleton"]
-        RULES["Constraints"]
-    end
-    subgraph skill ["Skill — defines HOW"]
-        BOOT[Bootstrap protocol]
-        EXEC[Step execution]
-        VERIFY[Self-verification]
-    end
-    subgraph supporting ["Supporting skills"]
-        SPC["search-pattern-catalog"]
-    end
-    subgraph resources ["Resources — defines WITH WHAT"]
-        R04["Output schema"]
-        R05["Static analysis patterns"]
-        R03["Toolkit checklist"]
-    end
-    STEPS -->|"skills.primary"| BOOT
-    RULES -->|"constraints"| EXEC
-    BOOT --> EXEC
-    EXEC -->|"get_resource()"| R04
-    EXEC -->|"get_resource()"| R05
-    EXEC -->|"get_resource()"| R03
-    EXEC -->|"skills.supporting"| SPC
-    EXEC --> VERIFY
-```
-
-| Group | Activity | Primary Skill | Supporting Skills | Resources | Key Outputs |
-|-------|----------|--------------|-------------------|-----------|-------------|
-| A | `sub-crate-review` | `execute-sub-agent` | — | Output schema | Findings, checklist coverage, analysis tables |
-| B | `sub-static-analysis` | `execute-sub-agent` | `search-pattern-catalog` | Output schema, static analysis patterns | Pattern hits, storage pairing, zero-hit audit |
-| D | `sub-toolkit-review` | `execute-sub-agent` | — | Toolkit checklist, output schema | Function x checklist matrix, coverage attestation |
-| V | `sub-output-verification` | `verify-sub-agent-output` | — | Target profile, output schema | Gap report, table-derived findings, coverage attestation |
-| M | `sub-structured-merge` | `merge-findings` | — | Severity rubric, target profile (calibration benchmarks) | Merge table, reconciliation table, calibration cross-check, observation dispositions |
-
 ---
 
 ## Activities
