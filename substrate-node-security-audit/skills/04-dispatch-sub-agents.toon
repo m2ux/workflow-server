@@ -1,38 +1,30 @@
 id: dispatch-sub-agents
-version: 1.1.0
-capability: "Compose sub-agent Task prompts with workflow-server bootstrap instructions, context variables, and supplementary files; dispatch concurrently within platform limits"
+version: 1.2.0
+capability: "Compose sub-agent Task prompts with workflow-server bootstrap instructions, context variables, and supplementary files; dispatch all agents concurrently"
 
-description: "Defines the procedure for dispatching sub-agents during a multi-agent orchestrated workflow. The orchestrator provides the agent roster (IDs, activities, context); this skill defines how to compose the Task prompt, include bootstrap instructions, attach context variables and cross-scope supplementary files, and manage concurrent dispatch within platform constraints."
+description: "Defines the procedure for dispatching sub-agents during a multi-agent orchestrated workflow. The orchestrator provides the agent roster (IDs, activities, context); this skill defines how to compose the Task prompt, include bootstrap instructions, attach context variables and cross-scope supplementary files, and dispatch all agents concurrently in a single batch."
 
-inputs[2]:
+inputs[1]:
   - id: agent-roster
     description: "List of agents to dispatch, each with: agent_id, activity_id, context variables (e.g., crate_path, checklist_sections, function_registry), supplementary files"
     required: true
-  - id: platform-limit
-    description: "Maximum concurrent sub-agents the platform supports (e.g., 4)"
-    required: false
-    default: 4
 
 protocol:
   compose-prompts[1]:
     - "For each agent in the roster, build a Task prompt containing: (1) workflow-server bootstrap instructions — 'call get_rules() then call get_workflow_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the output schema resource.'"
-  partition-waves[1]:
-    - If the roster exceeds the platform limit, partition agents into waves of at most platform_limit agents each. Each wave must include at least one deep-review agent (not only support agents). Dispatch the highest-priority agents in wave 1.
-  dispatch-wave[1]:
-    - Submit all agents in the current wave as concurrent Task calls. Each Task call uses the composed prompt from step 1.
-  collect-wave[1]:
-    - Wait for all agents in the current wave to return. Collect structured output from each. If any agent fails or times out, record the failure and proceed with available results.
-  advance-or-complete[1]:
-    - If more waves remain, dispatch the next wave (repeat steps 3-4). Otherwise, return all collected results to the orchestrator.
+  dispatch-all[1]:
+    - "Submit all agents in the roster as concurrent Task calls in a single batch. Each Task call uses the composed prompt from step 1."
+  collect-all[1]:
+    - "Wait for all agents to return. Collect structured output from each. If any agent fails or times out, record the failure and proceed with available results."
   verify-dispatch-completeness[1]:
-    - "After all waves complete, compare the agent_roster (input) against the dispatched agent list. Every agent in the roster must have been dispatched and returned a result (success or failure). Produce a dispatch manifest table: agent_id, assigned_crate, dispatched (yes/no), returned (yes/no), status. If any agent was NOT dispatched, flag as INCOMPLETE and return the manifest to the orchestrator for remediation. Set agents_dispatched count. This step enforces the dispatch completeness gate."
+    - "Compare the agent_roster (input) against the dispatched agent list. Every agent in the roster must have been dispatched and returned a result (success or failure). Produce a dispatch manifest table: agent_id, assigned_crate, dispatched (yes/no), returned (yes/no), status. If any agent was NOT dispatched, flag as INCOMPLETE and return the manifest to the orchestrator for remediation. Set agents_dispatched count. This step enforces the dispatch completeness gate."
 
 output[1]:
   - id: dispatch-results
     description: "Collected results from all dispatched sub-agents."
     components:
       per_agent_output: "Per-agent structured output (conforming to the output schema resource)"
-      dispatch_summary: "agents dispatched, waves used, failures encountered"
+      dispatch_summary: "agents dispatched, failures encountered"
       dispatch_manifest: "per-agent table with assigned/dispatched/returned status"
 
 tools:
@@ -45,9 +37,6 @@ errors:
   agent_timeout:
     cause: "Sub-agent did not return within expected time"
     recovery: "Record timeout; proceed with available results; orchestrator decides whether to re-dispatch"
-  platform_limit_exceeded:
-    cause: "Attempted to dispatch more agents than the platform supports"
-    recovery: "Partition into waves automatically"
   incomplete_dispatch:
-    cause: "One or more agents in the roster were not dispatched (e.g., Wave 2 skipped due to context pressure)"
-    recovery: "Return INCOMPLETE status with the dispatch manifest. The orchestrator MUST dispatch the missing agents in a follow-up wave or flag the audit as incomplete. Do NOT proceed to structured-merge with missing agents."
+    cause: "One or more agents in the roster were not dispatched (e.g., skipped due to context pressure)"
+    recovery: "Return INCOMPLETE status with the dispatch manifest. The orchestrator MUST dispatch the missing agents in a follow-up or flag the audit as incomplete. Do NOT proceed to structured-merge with missing agents."
