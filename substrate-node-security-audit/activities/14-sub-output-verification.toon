@@ -19,7 +19,7 @@ rules[7]:
   - "The gap report MUST list specific re-dispatch recommendations with agent ID, file scope, and the specific check to perform"
   - "Table-derived findings are extracted mechanically: every FAIL/DIFF/Missing/No cell in every mandatory table becomes a finding candidate"
   - "The verification agent does NOT apply the §3 checklist or read source code — it validates that primary agents did so, based on their structured outputs"
-  - "FILE OUTPUT: The verification agent MUST write its gap report and table-derived findings as a JSON file to the planning folder: {planning_folder_path}/verification-report.json. This file is consumed by the merge agent (M) and the adversarial verification phase."
+  - "FILE OUTPUT: The verification agent MUST write its gap report and table-derived findings as a JSON file to the planning folder: {planning_folder_path}/v-verification.json. The 'v' designator identifies this as the Verification agent. This file is consumed by the merge agent (M) and the adversarial verification phase."
 
 steps[8]:
   - id: check-dispatch-completeness

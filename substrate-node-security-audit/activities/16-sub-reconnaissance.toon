@@ -23,7 +23,7 @@ rules[8]:
   - "Build the function registry for ALL priority-1 and priority-2 crates (§1.2 step 8)"
   - "Sort .rs files by line count — the top 10 files MUST be in the registry"
   - "Enumerate consensus-critical configuration structs per the target profile. Record missing constructor invariant validation as reconnaissance leads."
-  - "FILE OUTPUT: The sub-agent MUST write all outputs as JSON files to the planning folder. Required files: {planning_folder_path}/crate-map.json (crate classification), {planning_folder_path}/function-registry.json (function registry), {planning_folder_path}/reconnaissance-data.json (trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides, large files list, reconnaissance leads). These files are consumed by the architectural analysis sub-agent, the orchestrator's domain mapping step, and the verification agent (V)."
+  - "FILE OUTPUT: The sub-agent MUST write all outputs as JSON files to the planning folder. The 'r' designator identifies this as the Reconnaissance agent. Required files: {planning_folder_path}/r-crate-map.json (crate classification), {planning_folder_path}/r-function-registry.json (function registry), {planning_folder_path}/r-reconnaissance-data.json (trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides, large files list, reconnaissance leads). These files are consumed by S, the orchestrator's domain mapping step, and V."
 
 steps[9]:
   - id: identify-crates
@@ -69,7 +69,7 @@ steps[9]:
   - id: write-output-files
     name: Write Output Files to Planning Folder
     required: true
-    description: "Write crate-map.json, function-registry.json, and reconnaissance-data.json to the planning folder. These files are the canonical inputs for the architectural analysis sub-agent and the orchestrator's domain mapping step."
+    description: "Write r-crate-map.json, r-function-registry.json, and r-reconnaissance-data.json to the planning folder. These files are the canonical inputs for the S agent and the orchestrator's domain mapping step."
 
 outcome[5]:
   - All crates explicitly identified and classified in crate-map.json
@@ -79,6 +79,6 @@ outcome[5]:
   - Reconnaissance leads recorded for downstream agent assignment
 
 context_to_preserve[3]:
-  - crate_map_file - Path to crate-map.json in planning folder
-  - function_registry_file - Path to function-registry.json in planning folder
-  - reconnaissance_data_file - Path to reconnaissance-data.json in planning folder
+  - crate_map_file - Path to r-crate-map.json in planning folder
+  - function_registry_file - Path to r-function-registry.json in planning folder
+  - reconnaissance_data_file - Path to r-reconnaissance-data.json in planning folder

@@ -16,7 +16,7 @@ rules[8]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
   - "The sub-agent receives: all persisted agent output JSON files (from planning folder), severity rubric (resource 02), calibration benchmark table (from resource 06 target-profile), §3.10 DEFAULT-FAIL rule text, observation elevation rules, planning_folder_path"
   - "The merge agent does NOT read source code or apply the §3 checklist — it operates exclusively on agent outputs"
-  - "FILE OUTPUT: The merge agent MUST write its complete output (merge table, reconciliation table, calibration cross-check, observation dispositions, elevation summary) as a JSON file to the planning folder: {planning_folder_path}/merge-output.json. This file is the canonical input for report-generation."
+  - "FILE OUTPUT: The merge agent MUST write its complete output (merge table, reconciliation table, calibration cross-check, observation dispositions, elevation summary) as a JSON file to the planning folder: {planning_folder_path}/m-merge.json. The 'm' designator identifies this as the Merge agent. This file is the canonical input for report-generation."
   - "Every agent finding MUST appear in the merge table as either a unique finding or an explicitly deduplicated entry with justification. Zero findings may be silently dropped."
   - "The reconciliation table is the primary validation artifact — Unaccounted MUST equal zero for every agent"
   - "Severity scoring MUST cross-check EVERY finding (not just High/Critical) against the calibration benchmark table. The divergence gate (>=2 levels) applies bidirectionally: over-scoring AND under-scoring are both flagged."

@@ -22,9 +22,13 @@ All primary agents dispatch concurrently in a single batch. The verification age
 - **D1:** Ledger helpers (`ledger/helpers/`) — wallet, transaction, context; security-sensitive canonical state, mutex, SmallRng
 - **D2:** Toolkit + upgrader (`util/toolkit/`, `util/upgrader/`, `util/aiken-deployer/`, `util/aiken-contracts-lib/`) — CLI tooling, genesis generation, fetcher
 
+### Reconnaissance (sequential)
+- **R:** Reconnaissance agent (crate analysis, function registry, trust boundaries — writes r-*.json files)
+- **S:** Security architecture agent (interaction model, privilege map, candidate points — writes s-architectural-analysis.json)
+
 ### Post-Collection
-- **V:** Output verification agent (receives all agent outputs, target profile, file inventory, dispatch manifest)
-- **M:** Merge agent (receives all persisted agent output files, severity rubric, calibration benchmarks)
+- **V:** Output verification agent (reads all {designator}-*.json files, target profile, file inventory — writes v-verification.json)
+- **M:** Merge agent (reads all agent output files, severity rubric, calibration benchmarks — writes m-merge.json)
 
 ---
 
