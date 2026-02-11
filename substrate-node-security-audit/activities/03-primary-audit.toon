@@ -1,7 +1,7 @@
 id: primary-audit
-version: 4.11.0
+version: 4.12.0
 name: Primary Audit
-description: "Multi-agent audit via wave-based concurrent dispatch. Group A applies §3 checklist per crate (node binary split into A3 startup/config + A4 consensus/network). Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function. A dedicated verification sub-agent (V) validates output completeness before structured merge."
+description: "Multi-agent audit via single-batch concurrent dispatch. All primary agents (A1-A6, B, D) dispatch simultaneously. Group A applies §3 checklist per crate (node binary split into A3 startup/config + A4 consensus/network). Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function. A dedicated verification sub-agent (V) validates output completeness before structured merge."
 problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to verify agent outputs. Multi-agent orchestration with a dedicated verification agent provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window, (c) targeted re-dispatch for gaps before findings are merged."
 recognition[3]:
   - run primary audit
@@ -11,7 +11,7 @@ skills:
   primary: execute-audit
 required: true
 estimatedTime: 60-120m
-rules[23]:
+rules[22]:
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "For cross-crate checks (§3.2, §3.4, §3.8, §3.10), the orchestrator includes supplementary files per the target profile"
   - "Group B runs ALL §2 grep patterns and mechanical checks against the full in-scope directory set"
@@ -19,8 +19,7 @@ rules[23]:
   - "Every agent must return findings as a structured list with fields: id, file, line, title, severity, checklist_item, evidence"
   - "Invariant extraction (§5.15) is mandatory for every priority-1 function before applying the §3 checklist"
   - "CONTAMINATION GUARD: Sub-agent prompts MUST NOT include content from reference reports. All findings independently derived."
-  - "WAVE DISPATCH: Dispatch agents per the target profile wave assignments. Wave 1 includes highest-priority Group A + B + D. Wave 2 includes remaining Group A. Wait for each wave before dispatching the next."
-  - "WAVE 2 IS MANDATORY: Proceeding without dispatching Wave 2 is a HARD STOP. If context constraints prevent it, document the incomplete state and flag the report as INCOMPLETE."
+  - "CONCURRENT DISPATCH: All primary agents (A1-A6, B, D) dispatch simultaneously in a single batch per the target profile. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
   - "COVERAGE GATE: Every .rs file >200 lines in priority-1/2 crates must be read by a §3-applying sub-agent. Files read only during reconnaissance do not count."
   - "§3.3 TRACE TABLE VERIFICATION: Pallet agents with deposit_event() partial-success paths must produce BOTH the per-field event trace table AND the event-vs-storage struct diff table."
   - "§3.5 STORAGEINIT VERIFICATION: The node startup agent (A3) must produce a StorageInit construction site enumeration covering online and offline subcommand paths, plus genesis HEADER construction."
@@ -28,7 +27,7 @@ rules[23]:
   - "MANDATORY TABLE AUTO-ELEVATION: Orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes to findings before structured-merge."
   - "EVENT CONSTRUCTION SITE VERIFICATION: Verify §3.3 trace tables cover ALL event construction sites identified in the vulnerability domain map. Dispatch follow-up for uncovered sites."
   - "CONFIGURATION INVARIANT SCOPE: §3.4 applies to both inherent provider tuples AND off-chain configuration structs identified in the vulnerability domain map."
-  - "HYBRID WAVE DISPATCH: Wave 2 SHOULD combine remaining crates into fewer agents. Include supplementary files per the target profile."
+  - "SUPPLEMENTARY FILES: Include cross-crate supplementary files per the target profile for each agent."
   - "RECONNAISSANCE LEAD INCLUSION: Every lead in the leads_routing table from reconnaissance MUST appear in the corresponding agent's prompt. An unrouted lead that matches an agent's scope is a dispatch defect."
   - "CONFIGURATION-VARIANT PANIC TRIAGE: The node startup agent's (A3) prompt MUST include the instruction to enumerate ALL valid DatabaseConfig/StorageConfig variants for each expect()/unwrap() on config-derived Option values. The verification agent (V) checks for the configuration-variant triage table; if absent, the orchestrator re-dispatches."
   - "GENESIS PARSING PATH ENUMERATION: The node startup agent (A3) MUST enumerate ALL genesis data parsing paths (StorageInit, genesis extrinsics, genesis header, chain spec properties) and verify each for silent truncation patterns. The StorageInit construction site table from §3.5 is necessary but NOT sufficient — extrinsics parsing and header construction are separate paths that must be traced independently."
@@ -37,17 +36,12 @@ rules[23]:
   - "ERROR-PATH STORAGE PERSISTENCE: For every StorageMap::insert() followed by a fallible operation (host API call, serialization, event construction), the Group A agent MUST verify that a failed fallible operation either (a) reverts the insert or (b) the insert is intentionally unconditional with documented justification. An insert that persists when the subsequent operation fails and the handler returns None/Err is a finding — the storage entry becomes orphaned."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
-steps[12]:
-  - id: dispatch-wave-1
-    name: "Dispatch Wave 1 — Highest-Priority Group A + Groups B and D"
+steps[11]:
+  - id: dispatch-all-agents
+    name: "Dispatch All Primary Agents"
     required: true
     skill: dispatch-sub-agents
-    description: "Dispatch Wave 1 agents per target profile: A1, A2, A3, A4, B, D concurrently."
-  - id: dispatch-wave-2
-    name: "Dispatch Wave 2 — Remaining Group A (MANDATORY)"
-    required: true
-    skill: dispatch-sub-agents
-    description: "After Wave 1 returns, dispatch remaining Group A agents per target profile: A5, A6. MANDATORY — skipping is a HARD STOP."
+    description: "Dispatch all primary agents concurrently in a single batch per the target profile: A1, A2, A3, A4, A5, A6, B, D. Every assigned agent MUST be dispatched."
   - id: verify-checklist-prompt-coverage
     name: "Verify Checklist-to-Prompt Coverage"
     required: true
@@ -60,7 +54,7 @@ steps[12]:
     description: "Compare agents_dispatched against agents_assigned. Dispatch missing agents before proceeding. HARD STOP."
   - id: collect-all
     name: Collect All Results
-    description: "Wait for all sub-agents from both waves to return. Collect structured finding lists from each agent."
+    description: "Wait for all primary sub-agents to return. Collect structured finding lists from each agent."
     required: true
   - id: dispatch-verification-agent
     name: "Dispatch Verification Sub-Agent (V)"

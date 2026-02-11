@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.14.0
+version: 4.15.0
 title: Security Audit Workflow
 description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent workflow-directed multi-agent deep review (Groups A, B, D, V) where each sub-agent follows a dedicated workflow activity via the workflow-server MCP, adversarial verification informed by verification agent gap reports, severity-calibrated reporting with structured merge table and calibration example cross-check, optional ensemble passes, and gap analysis against professional audit reports. Sub-agent activities (sub-crate-review, sub-static-analysis, sub-toolkit-review, sub-output-verification) define step-by-step execution with verifiable outputs, cross-function invariant comparison, zero-hit pattern auditing, per-function toolkit matrices, and mechanical output validation."
 author: m2ux
@@ -22,7 +22,7 @@ rules[24]:
   - "TOOLKIT DEPTH LIMITATION: Per-function toolkit findings have low single-pass detection rates. Enable ensemble_enabled=true for reliable detection."
   - "ORCHESTRATOR ROLE DISCIPLINE: The orchestrator coordinates but MUST NOT apply §3 checklist items or produce trace tables. Potential issues from reconnaissance are recorded as leads and assigned to Group A agents."
   - "COVERAGE GATE IS A HARD STOP: Report generation MUST NOT begin until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent."
-  - "WAVE-BASED GROUP A DISPATCH: Dispatch agents in waves per the target profile assignments. Each wave MUST include at least one Group A agent. The orchestrator waits for each wave before dispatching the next."
+  - "CONCURRENT DISPATCH: All primary agents (A1-A6, B, D) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
   - "DISPATCH COMPLETENESS GATE: agents_dispatched MUST equal agents_assigned. Reconnaissance data does NOT substitute for §3-applying sub-agents. This is a HARD STOP."
   - "MANDATORY TABLE AUTO-ELEVATION: The orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes each to a finding. The sub-agent is NOT responsible for elevation."
   - "DEFENSE-IN-DEPTH VALIDATION: For §3.6 input validation, PASS requires evidence at the consumption layer (pallet), not just the production layer."
