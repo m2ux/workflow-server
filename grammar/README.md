@@ -8,7 +8,7 @@ Extended Backus-Naur Form (EBNF) is a notation for formally describing the synta
 
 ## Files
 
-The Compose DSL covers four workflow primitives. Activity is defined; the others are TBD.
+The Orchestra DSL covers four workflow primitives. Activity is defined; the others are TBD.
 
 | File | Defines | Status |
 |------|---------|--------|

@@ -8,7 +8,7 @@ Formal semantic constraints for workflow definition files, expressed in Alloy no
 
 ## Files
 
-The Compose DSL covers four workflow primitives. Activity constraints are defined; the others are TBD.
+The Orchestra DSL covers four workflow primitives. Activity constraints are defined; the others are TBD.
 
 | File | Covers | Status |
 |------|--------|--------|
