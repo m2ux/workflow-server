@@ -115,14 +115,20 @@ checkpoints[5]:
         description: No longer an issue, move to next
   - id: code-review
     name: Code Review Checkpoint
-    message: "Code review complete. Here are the findings. Are they confirmed?"
-    options[2]:
-      - id: confirmed
-        label: Findings confirmed
-        description: Code review findings are accurate
-      - id: revise
-        label: Needs revision
-        description: Review needs additional analysis
+    message: "Code review complete. Here are the findings by severity. Which would you like to address?"
+    options[3]:
+      - id: acceptable
+        label: Code quality acceptable
+        description: Findings noted but no changes needed before proceeding
+      - id: fix-findings
+        label: Fix findings before proceeding
+        description: Address code review findings now
+        effect:
+          setVariable:
+            needs_code_fixes: true
+      - id: defer-findings
+        label: Defer findings
+        description: Note findings for future but proceed now
   - id: test-quality
     name: Test Quality Checkpoint
     message: "Test suite review complete. Here are the findings on test quality, coverage, and potential improvements."
