@@ -2,11 +2,11 @@ id: manage-git
 version: 1.0.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 
-description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE the target submodule directory (target_submodule_path), not in the parent repo. Branches and PRs are created against the submodule's upstream."
+description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE target_path. Branches and PRs are created against the target's upstream."
 
 inputs[4]:
-  - id: target-submodule-path
-    description: "Path to the target submodule directory. All git commands run from this directory."
+  - id: target-path
+    description: "Path to the target directory. All git commands run from this directory."
     required: true
   - id: issue-number
     description: "Issue identifier (GitHub #N or Jira KEY-N)"
@@ -20,8 +20,8 @@ inputs[4]:
 
 protocol:
   create-branch[3]:
-    - "cd into target_submodule_path before any git operations"
-    - Create feature branch from the submodule's default branch (main/master)
+    - "cd into target_path before any git operations"
+    - Create feature branch from the default branch (main/master)
     - Use naming convention type/issue-number-short-description
   create-pr[3]:
     - Create draft PR linked to issue using gh pr create
@@ -44,7 +44,7 @@ output[1]:
       pr_url: "URL to the PR"
 
 rules:
-  submodule-scope: "ALL git operations (branch, commit, push, PR) MUST be performed inside the target submodule directory. Branches and PRs are against the submodule's upstream, not the parent repo."
+  target-scope: "ALL git operations (branch, commit, push, PR) MUST be performed inside target_path. Branches and PRs are against the target directory's upstream."
   naming-convention: "Branch naming: type/issue-number-short-description (e.g., fix/PM-21781-storage-root-panic)"
   draft-first: "Always create PRs as draft — mark ready only after implementation and review"
   link-to-issue: "PR title and body must reference the associated issue number"

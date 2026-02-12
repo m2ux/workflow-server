@@ -40,9 +40,9 @@ modes[1]:
       needs_elicitation: false
     resource: resources/24-review-mode.md
 variables[50]:
-  - name: target_submodule_path
+  - name: target_path
     type: string
-    description: "Path to the target submodule (e.g., midnight-node, midnight-ledger). All git operations (branch, PR) are performed inside this directory."
+    description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory."
     required: true
   - name: planning_folder_path
     type: string
