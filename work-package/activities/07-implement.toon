@@ -46,11 +46,10 @@ loops[2]:
         name: Update assumptions log
         description: "Runs after assumption-review-cycle completes. Record outcomes in assumptions log."
   - id: assumption-review-cycle
-    name: Assumption Review Cycle
+    name: "Assumption Review Cycle — review each assumption one at a time"
     type: forEach
     variable: current_assumption
     over: task_assumptions
-    description: "Review each assumption one at a time"
     steps[2]:
       - id: present-assumption
         name: Present assumption

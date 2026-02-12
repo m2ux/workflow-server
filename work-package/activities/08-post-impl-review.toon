@@ -37,27 +37,22 @@ artifacts[5]:
     name: "{NN}-change-block-index.md"
     location: planning
     description: "Indexed table of all change blocks (git diff hunks) for cross-reference during manual review"
-    required: true
   - id: manual-diff-review-report
     name: "{NN}-manual-diff-review.md"
     location: planning
     description: "Manual diff review report with indexed findings from user's side-by-side review"
-    required: true
   - id: code-review-report
     name: "{NN}-code-review.md"
     location: planning
     description: "Code review report documenting findings by severity"
-    required: true
   - id: test-suite-review-report
     name: "{NN}-test-suite-review.md"
     location: planning
     description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations"
-    required: true
   - id: architecture-summary
     name: "{NN}-architecture-summary.md"
     location: planning
     description: "High-level architecture summary with Mermaid C4 diagrams for management stakeholders"
-    required: false
 steps[4]:
   - id: manual-diff-review
     name: Manual Diff Review

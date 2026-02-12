@@ -32,18 +32,7 @@ artifacts[4]:
   - id: adr
     name: "NNNN-{decision-title}.md"
     location: .engineering/artifacts/adr
-    description: "Architecture Decision Record for moderate or complex implementations"
-    condition:
-      type: or
-      conditions[2]:
-        - type: simple
-          variable: complexity
-          operator: ==
-          value: moderate
-        - type: simple
-          variable: complexity
-          operator: ==
-          value: complex
+    description: "Architecture Decision Record for moderate or complex implementations. Produced by create-adr step (conditional on complexity)."
   - id: complete-document
     name: COMPLETE.md
     location: planning

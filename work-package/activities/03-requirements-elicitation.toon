@@ -47,7 +47,6 @@ artifacts[1]:
   - id: requirements-document
     name: requirements-elicitation.md
     location: planning
-    template: elicitation-output
 loops[1]:
   - id: domain-iteration
     name: Question Domain Iteration
