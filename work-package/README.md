@@ -23,53 +23,11 @@ This workflow guides the complete lifecycle of a single work package through twe
 | 11 | **Submit for Review** | yes | Push PR, mark ready, handle reviewer feedback |
 | 12 | **Complete** | yes | Finalize documentation, create ADR, conduct retrospective |
 
-**Key statistics:**
-
-| Metric | Count |
-|--------|-------|
-| Activities | 12 |
-| Skills | 22 |
-| Checkpoints | 40 |
-| Variables | 49 |
-| Loops | 4 |
-| Feedback loops | 4 |
-
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
 - **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (22 skills) and protocol flow diagrams.
 - **Resources:** See [resources/README.md](resources/README.md) for the resource index (25 resources).
-
----
-
-## Review Mode
-
-This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. When activated, the workflow adapts its behavior using the formal `modes` and `modeOverrides` schema constructs.
-
-**Activation:** Detected from user intent patterns such as "start review work package", "review PR #123", or "review existing implementation". Sets `is_review_mode = true`.
-
-**Skipped activities:** Requirements Elicitation (03) and Implement (07) are always skipped in review mode. Elicitation is unnecessary because requirements come solely from the associated ticket. Implementation is skipped because the code already exists.
-
-**Behavioral overrides per activity:**
-
-| Activity | Override |
-|----------|----------|
-| Start Work Package (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
-| Design Philosophy (02) | Assess ticket completeness; always skip elicitation |
-| Implementation Analysis (05) | Checkout base branch to analyze pre-change state; document expected changes |
-| Post-Implementation Review (08) | Compare PR changes against expected changes from analysis |
-| Validate (09) | Document failures as findings; do not fix |
-| Strategic Review (10) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
-| Submit for Review (11) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
-| Complete (12) | Skip ADR and documentation steps; retrospective only |
-
-**Review mode flow:**
-
-```
-start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → post-impl-review → validate → strategic-review → submit-for-review → END
-```
-
-**See [REVIEW-MODE.md](REVIEW-MODE.md) for complete documentation.**
 
 ---
 
@@ -256,6 +214,37 @@ The workflow declares 49 variables that drive control flow, store checkpoint sta
 | `flagged_block_indices` | array | Change block indices flagged by user during diff review |
 
 See `workflow.toon` for the complete variable declarations with default values.
+
+---
+
+## Review Mode
+
+This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. When activated, the workflow adapts its behavior using the formal `modes` and `modeOverrides` schema constructs.
+
+**Activation:** Detected from user intent patterns such as "start review work package", "review PR #123", or "review existing implementation". Sets `is_review_mode = true`.
+
+**Skipped activities:** Requirements Elicitation (03) and Implement (07) are always skipped in review mode. Elicitation is unnecessary because requirements come solely from the associated ticket. Implementation is skipped because the code already exists.
+
+**Behavioral overrides per activity:**
+
+| Activity | Override |
+|----------|----------|
+| Start Work Package (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
+| Design Philosophy (02) | Assess ticket completeness; always skip elicitation |
+| Implementation Analysis (05) | Checkout base branch to analyze pre-change state; document expected changes |
+| Post-Implementation Review (08) | Compare PR changes against expected changes from analysis |
+| Validate (09) | Document failures as findings; do not fix |
+| Strategic Review (10) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
+| Submit for Review (11) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
+| Complete (12) | Skip ADR and documentation steps; retrospective only |
+
+**Review mode flow:**
+
+```
+start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → post-impl-review → validate → strategic-review → submit-for-review → END
+```
+
+**See [REVIEW-MODE.md](REVIEW-MODE.md) for complete documentation.**
 
 ---
 
