@@ -209,31 +209,24 @@
     },
     "interpretation": {
       "type": "object",
-      "description": "Guidance for how to interpret workflow constructs when executing this skill",
       "properties": {
         "transitions": {
-          "type": "string",
-          "description": "How to handle transitions between activities"
+          "type": "string"
         },
         "checkpoints": {
-          "type": "string",
-          "description": "How to handle checkpoints (blocking user decision points)"
+          "type": "string"
         },
         "decisions": {
-          "type": "string",
-          "description": "How to evaluate and follow decision branches"
+          "type": "string"
         },
         "loops": {
-          "type": "string",
-          "description": "How to execute loop constructs"
+          "type": "string"
         },
         "resources": {
-          "type": "string",
-          "description": "How to load and use workflow resources"
+          "type": "string"
         },
         "templates": {
-          "type": "string",
-          "description": "How to apply output templates"
+          "type": "string"
         }
       },
       "additionalProperties": true
@@ -255,56 +248,46 @@
     },
     "initialization": {
       "type": "object",
-      "description": "How to initialize state when this skill begins execution",
       "properties": {
         "trigger": {
-          "type": "string",
-          "description": "Event or condition that triggers initialization"
+          "type": "string"
         },
         "state": {
           "type": "object",
-          "additionalProperties": true,
-          "description": "Initial state values to set"
+          "additionalProperties": true
         }
       },
       "additionalProperties": true
     },
     "updatePattern": {
       "type": "object",
-      "description": "Pattern for updating state during skill execution",
       "properties": {
         "trigger": {
-          "type": "string",
-          "description": "Event that triggers the state update"
+          "type": "string"
         },
         "actions": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "description": "Ordered actions to perform when triggered"
+          }
         }
       },
       "additionalProperties": true
     },
     "resumption": {
       "type": "object",
-      "description": "How to resume this skill after interruption (e.g., session restart)",
       "properties": {
         "description": {
-          "type": "string",
-          "description": "Overview of the resumption strategy"
+          "type": "string"
         },
         "steps": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "description": "Ordered steps to perform when resuming"
+          }
         },
         "note": {
-          "type": "string",
-          "description": "Additional guidance for resumption"
+          "type": "string"
         }
       },
       "additionalProperties": true
