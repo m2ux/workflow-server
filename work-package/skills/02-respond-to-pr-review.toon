@@ -1,4 +1,4 @@
-id: pr-review-response
+id: respond-to-pr-review
 version: 2.0.0
 capability: Analyze and respond to PR review comments systematically
 

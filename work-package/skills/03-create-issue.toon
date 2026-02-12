@@ -1,27 +1,21 @@
-id: issue-management
-version: 2.0.0
-capability: Manage issue lifecycle — verify, create, and link issues across GitHub and Jira platforms
+id: create-issue
+version: 3.0.0
+capability: Create a GitHub or Jira issue with appropriate type, labels, and metadata
 
-description: "This skill serves the start-work-package activity. It handles: auto-detecting project type (check Cargo.toml for Substrate deps); checking for existing issues in user context; creating issues in GitHub (via gh CLI) or Jira (via Atlassian MCP tools); creating feature branches; creating draft PRs; initializing planning folders. Platform-specific issue creation is routed by the issue_platform variable set at the platform-selection checkpoint."
+description: "Atomic issue creation capability. Routes to GitHub (gh CLI) or Jira (Atlassian MCP) based on the issue_platform variable. Handles platform-specific details: label/type mapping, project selection, assignee lookup. Branch/PR creation and planning folder initialization are handled by manage-git and manage-artifacts skills respectively."
 
 inputs[3]:
   - id: issue-platform
     description: "Selected platform for issue creation (github or jira). Set by platform-selection checkpoint."
-    required: false
+    required: true
   - id: issue-type
     description: "Type of issue (feature, bug, task, enhancement, epic). Set by issue-type-selection checkpoint."
-    required: false
+    required: true
   - id: target-submodule
     description: "Target submodule for the work package (e.g., midnight-node, midnight-ledger)"
     required: true
 
 protocol:
-  detect-project-type[2]:
-    - Check Cargo.toml for Substrate dependencies (sp-*, frame-*, pallet-*)
-    - Set project_type to rust-substrate if found, otherwise other
-  check-existing-issue[2]:
-    - Verify whether an issue has been specified by user or in context
-    - Check for GitHub #N or Jira KEY-N references
   create-github-issue[4]:
     - "Runs when issue_platform is github. Load resource 03 for guidance."
     - Gather title, description, and acceptance criteria from user context
@@ -33,25 +27,13 @@ protocol:
     - List available projects for user selection, then resolve available issue types for the selected project
     - Gather summary, description, and acceptance criteria. Resolve assignee account ID if specified.
     - Create the issue with mapped type per jira-type-mapping rule. Capture issue_number and issue_url.
-  create-branch[2]:
-    - Create feature branch from main/master with naming convention per naming-convention rule in git-workflow skill
-    - Verify branch was created and checked out
-  create-pr[2]:
-    - Create draft PR linked to issue. Title must reference issue number.
-    - Verify PR was created and capture pr_number
-  initialize-planning[2]:
-    - Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/
-    - Derive initiative-name from issue title
 
 output[1]:
-  - id: issue-and-pr-context
-    description: "Issue verified or created, branch and PR ready, planning folder initialized"
+  - id: created-issue
+    description: "Issue created on the selected platform"
     components:
-      issue_number: "Associated issue number (GitHub #N or Jira KEY-N)"
-      issue_url: "URL to the issue"
-      branch_name: "Feature branch name"
-      pr_number: "Draft PR number"
-      planning_folder_path: "Path to planning artifacts folder"
+      issue_number: "Issue number (GitHub #N or Jira KEY-N)"
+      issue_url: "URL to the created issue"
       jira_cloud_id: "Atlassian cloud ID for subsequent Jira operations (Jira only)"
 
 rules:
@@ -69,7 +51,7 @@ resources[2]:
 
 tools:
   get_resource:
-    when: Starting create-github-issue or create-jira-issue step
+    when: Starting issue creation
     params: "workflow_id: work-package, index: 03 (GitHub) or 04 (Jira)"
     returns: Issue creation guidelines and templates
     next: "gh_issue_create (GitHub) or getAccessibleAtlassianResources (Jira)"
@@ -83,16 +65,6 @@ tools:
     when: Verifying GitHub issue was created correctly
     params: "gh issue view <number>"
     returns: Issue details for verification
-  gh_pr_create:
-    when: Creating draft PR linked to issue
-    params: "gh pr create --draft --title <title> --body <body>"
-    returns: PR number and URL
-    action: Capture pr_number
-  git_checkout:
-    when: Creating feature branch
-    params: "git checkout -b type/issue-number-short-description"
-    returns: Confirmation of branch creation
-    next: gh_pr_create
   getAccessibleAtlassianResources:
     when: First step of Jira issue creation
     params: none
@@ -129,6 +101,3 @@ errors:
   jira_api_error:
     cause: Atlassian API call failed (auth, permissions, or invalid request)
     recovery: Verify cloudId and project access; check Jira issue type and required fields
-  gh_issue_verify_failed:
-    cause: Issue created but verification via gh issue view failed
-    recovery: Check issue number and retry verification

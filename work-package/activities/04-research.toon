@@ -8,9 +8,9 @@ recognition[3]:
   - knowledge base research
   - research patterns
 skills:
-  primary: knowledge-research
+  primary: research-knowledge-base
   supporting[1]:
-    - assumptions-review
+    - review-assumptions
 required: false
 estimatedTime: 20-45m
 rules[1]:

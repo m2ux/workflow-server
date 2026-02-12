@@ -1,4 +1,4 @@
-id: validation
+id: validate-build
 version: 1.0.0
 capability: Validate implementation through test execution, build verification, and lint checking
 

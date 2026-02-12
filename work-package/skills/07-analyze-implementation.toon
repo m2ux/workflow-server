@@ -1,4 +1,4 @@
-id: implementation-analysis
+id: analyze-implementation
 version: 1.0.0
 capability: Analyze current implementation to understand effectiveness, establish baselines, and identify improvement opportunities
 

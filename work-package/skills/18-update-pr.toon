@@ -1,4 +1,4 @@
-id: pr-management
+id: update-pr
 version: 1.0.0
 capability: Update PR with final implementation details and mark ready for review
 

@@ -8,11 +8,11 @@ recognition[3]:
   - post implementation review
   - quality review
 skills:
-  primary: manual-diff-review
+  primary: review-diff
   supporting[3]:
-    - code-review
-    - test-review
-    - architecture-summary
+    - review-code
+    - review-test-suite
+    - summarize-architecture
 required: true
 estimatedTime: 30-60m
 rules[7]:
@@ -62,22 +62,22 @@ steps[4]:
   - id: manual-diff-review
     name: Manual Diff Review
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
-    skill: manual-diff-review
+    skill: review-diff
     required: true
   - id: code-review
     name: Code Review
     description: "Perform comprehensive code review of all implementation changes. Create {NN}-code-review.md report."
-    skill: code-review
+    skill: review-code
     required: true
   - id: test-suite-review
     name: Test Suite Review
     description: "Review test quality and create {NN}-test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
-    skill: test-review
+    skill: review-test-suite
     required: true
   - id: architecture-summary
     name: Architecture Summary
     description: "Create {NN}-architecture-summary.md with Mermaid C4 diagrams showing changes. Optional but recommended for significant changes."
-    skill: architecture-summary
+    skill: summarize-architecture
     required: false
 checkpoints[5]:
   - id: file-index-table
@@ -189,17 +189,17 @@ loops[1]:
       - id: re-manual-diff-review
         name: Re-run Manual Diff Review
         description: "Present updated file index to user for manual diff review of the fix changes."
-        skill: manual-diff-review
+        skill: review-diff
         required: true
       - id: re-code-review
         name: Re-run Code Review
         description: "Re-run code review on the updated diff. Only required if needs_code_fixes triggered this iteration."
-        skill: code-review
+        skill: review-code
         required: true
       - id: re-test-suite-review
         name: Re-run Test Suite Review
         description: "Re-run test suite review on the updated tests. Only required if needs_test_improvements triggered this iteration."
-        skill: test-review
+        skill: review-test-suite
         required: true
 transitions[1]{to,isDefault}:
   validate,true

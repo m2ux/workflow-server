@@ -1,4 +1,4 @@
-id: manual-diff-review
+id: review-diff
 version: 1.0.0
 capability: Conduct structured manual diff review using external side-by-side diff tool with indexed block references
 

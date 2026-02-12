@@ -11,10 +11,10 @@ recognition[6]:
   - new issue
   - create github issue
 skills:
-  primary: issue-management
+  primary: create-issue
   supporting[2]:
-    - git-workflow
-    - artifact-management
+    - manage-git
+    - manage-artifacts
 required: true
 estimatedTime: 10-20m
 rules[1]:
@@ -85,7 +85,7 @@ steps[9]:
   - id: create-issue
     name: Create Issue
     description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
-    skill: issue-management
+    skill: create-issue
     condition:
       type: simple
       variable: needs_issue_creation
@@ -116,7 +116,7 @@ steps[9]:
   - id: initialize-planning-folder
     name: Initialize Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title."
-    skill: artifact-management
+    skill: manage-artifacts
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"

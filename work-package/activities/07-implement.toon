@@ -8,9 +8,11 @@ recognition[3]:
   - start implementation
   - execute plan
 skills:
-  primary: implementation
-  supporting[1]:
-    - assumptions-review
+  primary: implement-task
+  supporting[3]:
+    - review-assumptions
+    - validate-build
+    - manage-git
 required: true
 estimatedTime: 1-4h
 rules[2]:
