@@ -2,9 +2,9 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-## Skills (24)
+## Skills (22 workflow-specific + 2 universal)
 
-The workflow uses 24 skills organized by capability. Skills are referenced by activities through `primary` and `supporting` roles. The primary skill defines the main competency for the activity; supporting skills provide supplementary capabilities invoked within the activity flow. Skills 22-23 define the orchestrator/worker execution model.
+The workflow uses 22 workflow-specific skills organized by capability, plus 2 universal orchestration skills from `meta/skills/`. Skills are referenced by activities through `primary` and `supporting` roles.
 
 | # | Skill ID | Capability | Used By |
 |---|----------|------------|---------|
@@ -30,8 +30,9 @@ The workflow uses 24 skills organized by capability. Skills are referenced by ac
 | 19 | `conduct-retrospective` | Workflow retrospective and lessons learned capture | Complete |
 | 20 | `summarize-architecture` | Architecture summary with UML-style diagrams for stakeholders | Post-Implementation Review, Strategic Review |
 | 21 | `create-adr` | Architecture Decision Record creation for significant decisions | Complete |
-| 22 | `orchestrate-workflow` | Orchestrate workflow execution using a persistent worker sub-agent | Orchestrator agent |
-| 23 | `execute-activity` | Bootstrap and execute a single workflow activity as a worker sub-agent | Worker agent |
+
+
+> Skills `orchestrate-workflow` and `execute-activity` are **universal skills** in [meta/skills/](../../meta/skills/) — they apply to all workflows using the orchestrator/worker pattern.
 
 ---
 
