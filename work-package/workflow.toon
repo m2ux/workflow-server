@@ -39,7 +39,11 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[49]:
+variables[50]:
+  - name: target_submodule_path
+    type: string
+    description: "Path to the target submodule (e.g., midnight-node, midnight-ledger). All git operations (branch, PR) are performed inside this directory."
+    required: true
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}"
