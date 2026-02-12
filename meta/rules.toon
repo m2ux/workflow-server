@@ -3,7 +3,7 @@ version: 1.0.0
 title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
-sections[12]:
+sections[13]:
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical
@@ -164,3 +164,13 @@ sections[12]:
       - Add a context document explaining the task and scope
       - Mention 2-4 key files that are most relevant
       - Let the agent search for the rest using semantic search
+  - id: orchestration
+    title: Orchestrator-Worker Execution Model
+    priority: critical
+    rules[6]:
+      - "Workflows that define an orchestrator/worker execution model MUST be executed using two sub-agents: an orchestrator and a persistent worker"
+      - "The orchestrator loads the workflow via get_workflow (receiving the schema preamble), manages transitions, evaluates conditions, and tracks state. It MUST NOT execute activity steps, write code, review code, or produce artifacts."
+      - "The worker self-bootstraps each activity from get_workflow_activity and get_skill, executes steps, handles checkpoints with the user, and reports structured results (variables_changed, checkpoints_responded, artifacts_produced, steps_completed) back to the orchestrator."
+      - "The worker MUST be resumed (not re-created) for each successive activity using the Task tool's resume parameter. This preserves accumulated codebase understanding and implementation context across the entire workflow."
+      - "All git operations (branch, commit, push, PR) MUST be performed inside the target_path directory specified by the workflow, not in the parent repo."
+      - "Check workflow.rules for the EXECUTION MODEL rule to determine whether a workflow uses this pattern. If absent, execute the workflow directly without the orchestrator/worker split."
