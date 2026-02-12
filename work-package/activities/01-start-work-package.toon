@@ -260,6 +260,7 @@ checkpoints[8]:
             issue_cancelled: true
   - id: pr-creation
     name: PR Creation Checkpoint
+    prerequisite: "Only present when issue_cancelled is false"
     message: "Issue confirmed. Proceed to create feature branch and draft PR?"
     options[2]:
       - id: proceed

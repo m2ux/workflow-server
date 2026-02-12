@@ -32,7 +32,7 @@ modeOverrides:
     context_to_preserve[2]:
       - validation_failures - List of failures documented as findings
       - test_coverage_assessment - Evaluation of test sufficiency
-steps[4]:
+steps[5]:
   - id: run-tests
     name: Run all tests
     description: "Execute unit, integration, e2e tests. Observe and record results."
@@ -42,6 +42,18 @@ steps[4]:
   - id: check-lint
     name: Check for linter errors
     description: "Run linter. Observe and record results."
+  - id: evaluate-results
+    name: Evaluate validation results
+    description: "Set has_failures to true if any test, build, or lint check failed. Set validation_passed to true if all checks passed."
+    actions[2]:
+      - action: set
+        target: has_failures
+        value: true
+        message: "Set to true if any test/build/lint failure was observed; false otherwise"
+      - action: set
+        target: validation_passed
+        value: true
+        message: "Set to true if all checks passed; false otherwise"
   - id: fix-failures
     name: Fix any failures
     description: "Analyze root cause of test/build/lint failures, fix, and re-run. Repeat until all pass."

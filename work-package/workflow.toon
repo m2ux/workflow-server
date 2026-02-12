@@ -37,7 +37,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[43]:
+variables[49]:
   # --- Core identifiers ---
   - name: planning_folder_path
     type: string
@@ -90,6 +90,7 @@ variables[43]:
   - name: validation_passed
     type: boolean
     description: Whether validation phase passed
+    defaultValue: false
   - name: has_failures
     type: boolean
     description: Whether test/build/lint failures were detected during validation
@@ -97,6 +98,7 @@ variables[43]:
   - name: review_passed
     type: boolean
     description: Whether strategic review passed
+    defaultValue: false
   - name: needs_code_fixes
     type: boolean
     description: Whether code review findings require fixes before proceeding
@@ -121,6 +123,14 @@ variables[43]:
   - name: on_feature_branch
     type: boolean
     description: Whether already on a feature branch (not main/master)
+    defaultValue: false
+  - name: pr_exists
+    type: boolean
+    description: Whether a PR already exists for the current branch
+    defaultValue: false
+  - name: review_pr_captured
+    type: boolean
+    description: Whether the PR reference has been captured in review mode
     defaultValue: false
   - name: use_existing_branch
     type: boolean
@@ -202,6 +212,17 @@ variables[43]:
     type: boolean
     description: Whether review summary was posted to PR (review mode)
     defaultValue: false
+  # --- Post-impl review state ---
+  - name: flagged_block_indices
+    type: array
+    description: "List of change block indices flagged by user during manual diff review"
+  # --- Loop collection variables (runtime, populated by steps) ---
+  - name: question_domains
+    type: array
+    description: "Question domains for requirements elicitation iteration"
+  - name: task_assumptions
+    type: array
+    description: "Assumptions collected during current task for review iteration"
   # --- Loop iteration variables (runtime, no default) ---
   - name: current_task
     type: object
