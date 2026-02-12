@@ -33,7 +33,7 @@ This workflow guides the complete lifecycle of a single work package through twe
 
 ## Execution Model
 
-This workflow uses an **orchestrator/worker two-agent pattern**, following the approach established by the `substrate-node-security-audit` workflow.
+This workflow uses an **orchestrator/worker two-agent pattern**.
 
 ```mermaid
 sequenceDiagram
