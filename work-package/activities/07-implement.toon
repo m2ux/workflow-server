@@ -13,12 +13,9 @@ skills:
     - assumptions-review
 required: true
 estimatedTime: 1-4h
-rules[5]:
+rules[2]:
   - "After each task, explicitly identify and review assumptions made during implementation"
-  - "Assumptions should be elevated - make implicit decisions explicit for validation"
-  - "Present assumptions one at a time for focused review"
-  - "Update assumptions log AFTER the assumption review checkpoint - record user responses and outcomes"
-  - "For Rust projects, follow TDD best practices from 23-tdd-concepts-rust.md when writing tests (Red-Green-Refactor, FIRST principles, test doubles, boundary testing)"
+  - "Update assumptions log AFTER the assumption review checkpoint — record user responses and outcomes"
 artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
@@ -45,8 +42,7 @@ loops[2]:
         description: "Identify all assumptions made during this task"
       - id: update-assumptions-log
         name: Update assumptions log
-        description: "After assumption review checkpoint, record outcomes in assumptions log"
-        triggeredAfter: assumption-review-cycle
+        description: "Runs after assumption-review-cycle completes. Record outcomes in assumptions log."
   - id: assumption-review-cycle
     name: Assumption Review Cycle
     type: forEach

@@ -13,11 +13,8 @@ skills:
     - assumptions-review
 required: false
 estimatedTime: 20-45m
-rules[4]:
-  - "Multiple sources should be consulted for robust findings"
-  - "Patterns should be validated across documents"
-  - "Clear mapping to work package needs is essential"
-  - "Assumptions about pattern applicability and synthesis should be documented"
+rules[1]:
+  - "Research protocol and domain rules are in the knowledge-research skill"
 steps[6]:
   - id: kb-research
     name: Knowledge base research

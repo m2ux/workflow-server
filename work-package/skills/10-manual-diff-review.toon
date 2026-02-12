@@ -1,0 +1,88 @@
+id: manual-diff-review
+version: 1.0.0
+capability: Conduct structured manual diff review using external side-by-side diff tool with indexed block references
+
+description: "This skill serves the post-impl-review activity. It handles: running git pull to ensure branch is up to date; parsing git diff to extract list of changed files and hunks; creating file index table (Row | Path | File) with review time estimate (30 sec/change); writing index to {NN}-change-block-index.md; presenting index to user for external diff tool review; collecting flagged row numbers from user; conducting interview for each flagged block (asking what the issue is); creating {NN}-manual-diff-review.md report with all findings."
+
+inputs[2]:
+  - id: branch_name
+    description: "Feature branch name containing changes to review"
+    required: true
+  - id: planning_folder_path
+    description: "Path to planning folder for artifact output"
+    required: true
+
+protocol:
+  sync-branch[2]:
+    - Run git pull to ensure branch is up to date
+    - Resolve merge conflicts before proceeding if any
+  parse-diff[3]:
+    - Parse git diff to extract list of changed files and hunks
+    - Assign row index to each change block
+    - Estimate review time (30 sec per change)
+  create-index[4]:
+    - "Create file index table with columns: Row | Path | File"
+    - Include review time estimate in index
+    - Write index to {NN}-change-block-index.md in planning folder
+    - Always generate index before asking user to review
+  present-index[2]:
+    - Present index to user for external diff tool review
+    - User identifies issues in their external diff tool; agent does not pre-judge
+  collect-flagged[1]:
+    - Collect flagged row numbers from user
+  interview-blocks[3]:
+    - Conduct focused interview for each flagged block
+    - Ask what the issue is and record the response
+    - If user marks block as critical blocker, set has_critical_blocker=true
+  create-report[2]:
+    - Create {NN}-manual-diff-review.md report with all findings
+    - Include flagged rows, interview responses, and severity
+
+output[2]:
+  - id: change-block-index
+    description: "Index of changed blocks for external diff review"
+    artifact:
+      name: "{NN}-change-block-index.md"
+    components:
+      index_table: "Row | Path | File with review time estimate"
+      change_count: "Total number of change blocks"
+  - id: manual-diff-review-report
+    description: "Manual diff review findings from user-flagged blocks"
+    artifact:
+      name: "{NN}-manual-diff-review.md"
+    components:
+      findings: "Per-block issues with interview responses"
+      has_critical_blocker: "True if any block marked as critical blocker"
+
+rules:
+  index-first: "Always generate the change block index before asking user to review — they need the reference numbers"
+  user-drives-review: "The user identifies issues in their external diff tool — agent does not pre-judge changes"
+  interview-each-block: "For each flagged block, conduct a focused interview asking what the issue is and recording the response"
+  critical-blockers: "If user marks a block as critical blocker, set has_critical_blocker=true for downstream handling"
+
+resources[1]:
+  - "22"
+
+tools:
+  shell:
+    when: Git operations
+    params: "git pull, git diff"
+    usage: Sync branch and extract diff for parsing
+  get_resource:
+    when: Loading manual diff review guidance
+    params: "workflow_id: work-package, index: 22"
+    returns: Manual diff review guide
+  write_file:
+    when: Creating change block index and review report
+    usage: Persist {NN}-change-block-index.md and {NN}-manual-diff-review.md
+  read_file:
+    when: Reading diff output or existing artifacts
+    usage: Examine parsed diff content
+
+errors:
+  no_diff:
+    cause: No changes found in diff
+    recovery: Verify correct branch and commit range
+  merge_conflict:
+    cause: Git pull reveals conflicts
+    recovery: Resolve conflicts before proceeding

@@ -1,0 +1,81 @@
+id: knowledge-research
+version: 1.0.0
+capability: Research knowledge base and external sources to discover best practices, patterns, and resources
+
+description: "This skill serves the research activity. It handles: searching the concept-rag knowledge base for relevant patterns using MCP tools; performing web research for current information and documentation; synthesizing findings and connecting them to requirements; creating kb-research.md artifact."
+
+inputs[2]:
+  - id: requirements
+    description: "Elicited requirements from the elicitation activity"
+    required: true
+  - id: problem_statement
+    description: "Problem statement from design philosophy"
+    required: true
+
+protocol:
+  load-resources[2]:
+    - Load resource 07 (knowledge-base-research) and 08 (web-research) for guidance
+    - Review requirements and problem_statement for research focus
+  search-knowledge-base[3]:
+    - Query concept-rag using broad_chunks_search, concept_search, catalog_search
+    - Find patterns, best practices, and relevant documentation
+    - Validate patterns across multiple documents
+  perform-web-research[3]:
+    - Use WebSearch for current information and documentation
+    - Cross-reference multiple sources for robustness
+    - Note publication dates and source freshness
+  synthesize-findings[3]:
+    - Connect kb and web findings to work package requirements
+    - Map applicable patterns to specific needs
+    - Document assumptions about pattern applicability
+  create-research-artifact[2]:
+    - Create kb-research.md artifact in planning folder
+    - Include kb_findings, web_findings, synthesis, applicable_patterns, risks
+
+output[1]:
+  - id: research-document
+    description: "Knowledge base and web research synthesis for the work package"
+    artifact:
+      name: "kb-research.md"
+    components:
+      kb_findings: "Findings from concept-rag knowledge base"
+      web_findings: "Findings from web research"
+      synthesis: "Synthesized connection to requirements"
+      applicable_patterns: "Patterns validated and mapped to needs"
+      risks: "Risks, gaps, or assumptions documented"
+
+rules:
+  multiple-sources: "Multiple sources should be consulted for robust findings"
+  validate-patterns: "Patterns should be validated across documents"
+  map-to-needs: "Clear mapping to work package needs is essential"
+  document-assumptions: "Assumptions about pattern applicability and synthesis should be documented"
+
+resources[2]:
+  - "07"
+  - "08"
+
+tools:
+  broad_chunks_search:
+    when: Searching for specific content across document chunks
+    usage: Hybrid search for phrases, keywords, technical terms across all documents
+  concept_search:
+    when: Finding conceptually-tagged content on a topic
+    usage: Search by concept (e.g., innovation, leadership) with synonym expansion
+  catalog_search:
+    when: Discovering relevant documents by title or topic
+    usage: Find documents before drilling into chunks
+  WebSearch:
+    when: Needing current information not in knowledge base
+    usage: Search web for documentation, best practices, recent updates
+  get_resource:
+    when: Loading research guidance
+    params: "workflow_id: work-package, index: 07 or 08"
+    returns: Knowledge-base and web research guidance documents
+
+errors:
+  no_kb_results:
+    cause: Knowledge base has no relevant content
+    recovery: Rely on web research and note gap in findings
+  stale_findings:
+    cause: Web results may be outdated
+    recovery: Cross-reference multiple sources and note dates in artifact

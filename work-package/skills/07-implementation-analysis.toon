@@ -1,0 +1,79 @@
+id: implementation-analysis
+version: 1.0.0
+capability: Analyze current implementation to understand effectiveness, establish baselines, and identify improvement opportunities
+
+description: "This skill serves the implementation-analysis activity. It handles: reviewing how the feature/component is currently implemented (location, usage, dependencies, architecture); evaluating effectiveness via logs, metrics, tests, issues, comments; establishing quantitative baseline metrics (performance, quality, usage, reliability); documenting how each metric was measured for reproducibility; creating implementation-analysis.md artifact."
+
+inputs[3]:
+  - id: requirements
+    description: "Elicited requirements from the elicitation activity"
+    required: true
+  - id: problem_statement
+    description: "Problem statement from design philosophy"
+    required: true
+  - id: target_submodule
+    description: "Target submodule for the work package (e.g., midnight-node, midnight-ledger)"
+    required: true
+
+protocol:
+  load-guidance[2]:
+    - Load resource 06 (implementation-analysis) for full guidance
+    - Review requirements and problem_statement for analysis scope
+  locate-implementation[3]:
+    - Identify where the feature/component is implemented (files, modules, entry points)
+    - Map usage, dependencies, and architecture
+    - Document current structure and integration points
+  evaluate-effectiveness[3]:
+    - Review logs, metrics, tests, issues, and code comments
+    - Assess current effectiveness and pain points
+    - Identify evidence of problems or improvement areas
+  establish-baselines[4]:
+    - Establish quantitative baseline metrics (performance, quality, usage, reliability)
+    - Document how each metric was measured for reproducibility
+    - Record current values before any changes
+    - Link baseline metrics to success criteria from requirements
+  identify-gaps[3]:
+    - Link gaps to measurable success criteria from requirements
+    - Document assumptions about current behavior
+    - Create implementation-analysis.md artifact
+
+output[1]:
+  - id: analysis-document
+    description: "Current implementation analysis with baselines and improvement opportunities"
+    artifact:
+      name: "implementation-analysis.md"
+    components:
+      current_state: "Location, usage, dependencies, architecture"
+      baseline_metrics: "Quantitative baselines with measurement methods"
+      gaps: "Identified gaps linked to success criteria"
+      success_criteria: "Measurable criteria for improvement"
+
+rules:
+  measure-before-improve: "You can't improve what you don't measure — establish quantitative baselines"
+  reproducible-metrics: "Document how each metric was measured for reproducibility"
+  link-gaps-to-criteria: "Gaps should be linked to measurable success criteria"
+  document-assumptions: "Assumptions about current behavior and gaps should be documented"
+
+resources[1]:
+  - "06"
+
+tools:
+  read_file:
+    when: Examining implementation files and test output
+    usage: Read source code, logs, configuration files
+  grep:
+    when: Searching for patterns across codebase
+    usage: Find usage, dependencies, related code
+  shell:
+    when: Running existing tests or benchmarks
+    params: "cargo test, cargo bench, or project-specific commands"
+    usage: Execute tests and benchmarks to establish baseline metrics
+  get_resource:
+    when: Loading implementation analysis guidance
+    params: "workflow_id: work-package, index: 06"
+    returns: Full implementation analysis guide
+
+errors:
+  no_existing_impl:
+    cause: No current implementation exists (new feature)
+    recovery: Document baseline as N/A and focus on expected metrics for success criteria

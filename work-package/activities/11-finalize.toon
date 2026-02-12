@@ -20,7 +20,7 @@ steps[4]:
     description: Add hyperlinks to test source locations
   - id: create-complete
     name: Create completion document
-    skill: completion
+    skill: documentation
   - id: ensure-docs
     name: Ensure inline documentation on public APIs
     description: Verify public APIs have documentation

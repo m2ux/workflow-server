@@ -1,0 +1,61 @@
+id: validation
+version: 1.0.0
+capability: Validate implementation through test execution, build verification, and lint checking
+
+description: "Runs the full validation suite: unit/integration/e2e tests, build verification, and linter checks. Analyzes failures, applies fixes, and re-runs until all pass. Provides observable results — does not ask user about test/build outcomes."
+
+inputs[2]:
+  - id: project_type
+    description: "Project type (rust-substrate, other) — determines commands"
+    required: true
+  - id: target_submodule
+    description: "Target submodule path (e.g., midnight-node, midnight-ledger)"
+    required: true
+
+protocol:
+  run-tests[3]:
+    - Execute unit, integration, and e2e tests
+    - Observe and record results
+    - Do not ask user about test outcomes — results are observable
+  verify-build[2]:
+    - Run build command
+    - Observe and record result
+  check-lint[2]:
+    - Run linter
+    - Observe and record results
+  fix-failures[4]:
+    - If any check failed — analyze root cause
+    - Apply fix
+    - Re-run failed check
+    - Repeat until all pass
+
+output[1]:
+  - id: validation-results
+    description: "Validation outcomes from tests, build, and lint"
+    components:
+      test_results: "Test execution results (pass/fail, output)"
+      build_status: "Build success or failure"
+      lint_results: "Linter output and any issues"
+      validation_passed: "Boolean — all checks passed"
+
+rules:
+  observable-results: "Test pass/fail, build success, lint errors are observable — do not ask user about these"
+  fix-and-rerun: "If failures occur, analyze root cause, fix, and re-run until all pass"
+  no-duplicate-review: "Test suite quality was already reviewed in post-impl-review — this activity validates execution only"
+
+tools:
+  shell:
+    when: Running tests, build, and linter
+    params: "cargo test, cargo build, cargo clippy, npm test, npm run build — based on project type"
+    usage: Execute validation commands in target submodule
+  read_file:
+    when: Analyzing failure output
+    usage: Parse error messages and stack traces for root cause
+
+errors:
+  persistent_failure:
+    cause: Tests fail repeatedly after fixes
+    recovery: Present analysis to user for guidance
+  build_environment:
+    cause: Missing dependencies or toolchain issues
+    recovery: Check project setup instructions

@@ -14,11 +14,8 @@ skills:
     - assumptions-review
 required: true
 estimatedTime: 10-20m
-rules[4]:
-  - "You can't improve what you don't measure - establish quantitative baselines"
-  - "Document how each metric was measured for reproducibility"
-  - "Gaps should be linked to measurable success criteria"
-  - "Assumptions about current behavior and gaps should be documented"
+rules[1]:
+  - "Analysis protocol and domain rules are in the implementation-analysis skill"
 modeOverrides:
   review:
     description: "Analyze the pre-change baseline state from the base branch to establish reference for PR evaluation."

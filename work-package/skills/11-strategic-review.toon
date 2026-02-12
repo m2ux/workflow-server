@@ -1,0 +1,95 @@
+id: strategic-review
+version: 1.0.0
+capability: Review implementation to ensure changes are minimal, focused, and free of investigation artifacts
+
+description: "This skill serves the strategic-review activity. It handles: examining all changes in the PR for scope and relevance; identifying investigation artifacts (extra logging, debug messages, temporary workarounds); detecting over-engineering (generic abstractions for specific problems, unused config options); checking for orphaned infrastructure (commented-out code, unused utilities, duplicate functionality); documenting findings in {NN}-strategic-review-{n}.md; applying cleanup (removing identified artifacts) when approved; creating {NN}-architecture-summary.md with UML-style diagrams for stakeholders."
+
+inputs[3]:
+  - id: branch_name
+    description: "Feature branch containing implementation changes"
+    required: true
+  - id: planning_folder_path
+    description: "Path to planning folder for artifact output"
+    required: true
+  - id: pr_number
+    description: "Pull request number for scope reference"
+    required: true
+
+protocol:
+  load-guidance[2]:
+    - Load resource 18 (strategic-review) and 15 (architecture-review) for guidance
+    - Examine all changes in the PR using git diff and git log
+  examine-scope[3]:
+    - Review changes for scope and relevance to work package
+    - Document any changes unrelated to requirements as scope creep
+    - Flag scope creep for user decision if found
+  identify-artifacts[4]:
+    - "Look for investigation artifacts: extra logging, debug messages, temporary workarounds"
+    - "Look for over-engineering: generic abstractions for specific problems, unused config options"
+    - "Look for orphaned infrastructure: commented-out code, unused utilities, duplicate functionality"
+    - "Goal is minimal, focused changes — every line justified by requirements"
+  document-findings[3]:
+    - Document all findings in {NN}-strategic-review-{n}.md
+    - "Categorize by type: investigation artifacts, over-engineering, orphaned infrastructure"
+    - If all changes justified, document clean review result
+  apply-cleanup[2]:
+    - Apply cleanup (removing identified artifacts) when user approves
+    - Use edit tool for cleanup modifications
+  create-architecture-summary[2]:
+    - Create {NN}-architecture-summary.md with UML-style diagrams
+    - Target stakeholder communication
+
+output[2]:
+  - id: strategic-review-doc
+    description: "Strategic review findings and recommendations"
+    artifact:
+      name: "{NN}-strategic-review-{n}.md"
+    components:
+      investigation_artifacts: "Extra logging, debug, temporary workarounds found"
+      over_engineering: "Generic abstractions, unused config options"
+      orphaned_infrastructure: "Commented code, unused utilities, duplicates"
+      scope_assessment: "Scope creep or minimal-focus assessment"
+  - id: architecture-summary-doc
+    description: "Architecture summary with diagrams for stakeholders"
+    artifact:
+      name: "{NN}-architecture-summary.md"
+    components:
+      uml_diagrams: "UML-style diagrams of implementation"
+      summary: "High-level architecture description"
+
+rules:
+  investigation-artifacts: "Look for investigation artifacts: extra logging, debug messages, temporary workarounds"
+  over-engineering: "Watch for over-engineering: generic abstractions for specific problems, unused config options"
+  orphaned-infrastructure: "Check for orphaned infrastructure: commented-out code, unused utilities, duplicate functionality"
+  minimal-changes: "The goal is minimal, focused changes — every line in the PR should be justified by the requirements"
+
+resources[2]:
+  - "18"
+  - "15"
+
+tools:
+  shell:
+    when: Examining PR changes
+    params: "git diff, git log"
+    usage: Extract changed files and commit history
+  read_file:
+    when: Reviewing changed file contents
+    usage: Examine implementation for scope and artifacts
+  grep:
+    when: Searching for patterns (logging, debug, TODO, commented code)
+    usage: Find investigation artifacts and orphaned code
+  edit:
+    when: Applying cleanup after user approval
+    usage: Remove identified artifacts from codebase
+  get_resource:
+    when: Loading strategic review and architecture guidance
+    params: "workflow_id: work-package, index: 18 or 15"
+    returns: Strategic review and architecture review guides
+
+errors:
+  scope_creep:
+    cause: PR contains changes unrelated to the work package
+    recovery: Document and flag for user decision
+  no_cleanup_needed:
+    cause: All changes are justified
+    recovery: Document clean review result

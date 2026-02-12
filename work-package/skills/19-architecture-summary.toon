@@ -1,0 +1,78 @@
+id: architecture-summary
+version: 1.0.0
+capability: Create high-level architecture summary with diagrams for management stakeholders
+
+description: "Produces a stakeholder-facing architecture summary document with Mermaid C4 diagrams (system context, container, component) and sequence diagrams for key flows affected by the changes. Intended for non-technical stakeholders who need to understand the impact and scope of changes."
+
+inputs[3]:
+  - id: changed_files
+    description: "List of files changed in the implementation"
+    required: true
+  - id: planning_folder_path
+    description: "Path to planning folder for context"
+    required: true
+  - id: design_philosophy_doc
+    description: "Design philosophy with scope and rationale"
+    required: false
+
+protocol:
+  identify-scope[3]:
+    - Determine which architectural components are affected by the changes
+    - Map changed files to modules and subsystems
+    - Identify external interactions and boundaries
+  create-context-diagram[3]:
+    - Create Mermaid system context diagram
+    - Show the system and its external interactions
+    - Use C4 system context notation
+  create-package-diagram[3]:
+    - If module structure is affected, create package diagram
+    - Show internal organization and boundaries
+    - Use Mermaid syntax
+  create-sequence-diagrams[3]:
+    - For key flows affected by changes, create sequence diagrams
+    - Show interactions between components
+    - Use Mermaid sequence diagram syntax
+  write-summary[4]:
+    - Create {NN}-architecture-summary.md in planning folder
+    - Combine diagrams with narrative explanation
+    - Focus on impact, scope, and risk
+
+output[1]:
+  - id: architecture-summary
+    description: "Stakeholder-facing architecture summary with diagrams"
+    artifact:
+      name: "{NN}-architecture-summary.md"
+    components:
+      system_context_diagram: "Mermaid system context diagram"
+      package_diagram: "Package or container diagram when applicable"
+      sequence_diagrams: "Sequence diagrams for key flows"
+      narrative: "Narrative explanation of impact and scope"
+
+resources[2]:
+  - "15"
+  - "19"
+
+rules:
+  stakeholder-audience: "Write for management stakeholders — focus on impact, scope, and risk, not implementation details"
+  diagrams-required: "Every summary must include at least a system context diagram — other diagrams as warranted by change scope"
+  mermaid-format: "Use Mermaid diagram syntax for all diagrams — ensures they render in GitHub and Confluence"
+
+tools:
+  read_file:
+    when: Understanding changed files and module structure
+    usage: Parse source and design docs
+  get_resource:
+    when: Loading architecture guidance
+    params: "workflow_id: work-package, index: 15 or 19"
+    returns: Architecture review and summary resources
+  write_file:
+    when: Creating architecture-summary.md
+    usage: Write summary document
+  grep:
+    when: Understanding module structure and dependencies
+    usage: Map modules, imports, and boundaries
+
+errors:
+  no_significant_changes:
+    cause: Changes are too minor for architectural summary
+    recovery: Create minimal summary noting low architectural impact

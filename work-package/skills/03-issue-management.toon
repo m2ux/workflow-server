@@ -1,0 +1,134 @@
+id: issue-management
+version: 2.0.0
+capability: Manage issue lifecycle — verify, create, and link issues across GitHub and Jira platforms
+
+description: "This skill serves the start-work-package activity. It handles: auto-detecting project type (check Cargo.toml for Substrate deps); checking for existing issues in user context; creating issues in GitHub (via gh CLI) or Jira (via Atlassian MCP tools); creating feature branches; creating draft PRs; initializing planning folders. Platform-specific issue creation is routed by the issue_platform variable set at the platform-selection checkpoint."
+
+inputs[3]:
+  - id: issue-platform
+    description: "Selected platform for issue creation (github or jira). Set by platform-selection checkpoint."
+    required: false
+  - id: issue-type
+    description: "Type of issue (feature, bug, task, enhancement, epic). Set by issue-type-selection checkpoint."
+    required: false
+  - id: target-submodule
+    description: "Target submodule for the work package (e.g., midnight-node, midnight-ledger)"
+    required: true
+
+protocol:
+  detect-project-type[2]:
+    - Check Cargo.toml for Substrate dependencies (sp-*, frame-*, pallet-*)
+    - Set project_type to rust-substrate if found, otherwise other
+  check-existing-issue[2]:
+    - Verify whether an issue has been specified by user or in context
+    - Check for GitHub #N or Jira KEY-N references
+  create-github-issue[4]:
+    - "Runs when issue_platform is github. Load resource 03 for guidance."
+    - Gather title, description, and acceptance criteria from user context
+    - Map issue_type to GitHub labels per github-label-mapping rule
+    - Create the issue, then verify creation succeeded. Capture issue_number and issue_url.
+  create-jira-issue[5]:
+    - "Runs when issue_platform is jira. Load resource 04 for guidance."
+    - Obtain Atlassian cloud ID and preserve as jira_cloud_id
+    - List available projects for user selection, then resolve available issue types for the selected project
+    - Gather summary, description, and acceptance criteria. Resolve assignee account ID if specified.
+    - Create the issue with mapped type per jira-type-mapping rule. Capture issue_number and issue_url.
+  create-branch[2]:
+    - Create feature branch from main/master with naming convention per naming-convention rule in git-workflow skill
+    - Verify branch was created and checked out
+  create-pr[2]:
+    - Create draft PR linked to issue. Title must reference issue number.
+    - Verify PR was created and capture pr_number
+  initialize-planning[2]:
+    - Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/
+    - Derive initiative-name from issue title
+
+output[1]:
+  - id: issue-and-pr-context
+    description: "Issue verified or created, branch and PR ready, planning folder initialized"
+    components:
+      issue_number: "Associated issue number (GitHub #N or Jira KEY-N)"
+      issue_url: "URL to the issue"
+      branch_name: "Feature branch name"
+      pr_number: "Draft PR number"
+      planning_folder_path: "Path to planning artifacts folder"
+      jira_cloud_id: "Atlassian cloud ID for subsequent Jira operations (Jira only)"
+
+rules:
+  issues-define-problems: "Issues define problems, not solutions. Describe what needs to be solved and why."
+  acceptance-criteria: "Acceptance criteria must be observable and testable"
+  no-implementation-details: "No implementation details in issues — those belong in planning docs and PRs"
+  traceability: "Every work package should be linked to a GitHub or Jira issue for traceability"
+  clarity: "Issues should be clear to someone without prior context"
+  jira-type-mapping: "Jira issue type mapping: feature->Story, bug->Bug, task->Task, enhancement->Story, epic->Epic"
+  github-label-mapping: "GitHub label mapping: feature->enhancement, bug->bug, task->chore, enhancement->enhancement"
+
+resources[2]:
+  - "03"
+  - "04"
+
+tools:
+  get_resource:
+    when: Starting create-github-issue or create-jira-issue step
+    params: "workflow_id: work-package, index: 03 (GitHub) or 04 (Jira)"
+    returns: Issue creation guidelines and templates
+    next: "gh_issue_create (GitHub) or getAccessibleAtlassianResources (Jira)"
+  gh_issue_create:
+    when: Creating a GitHub issue
+    params: "gh issue create --title <title> --body <body> [--label <label>] [--assignee <user>] [--milestone <name>] [--project <name>]"
+    returns: Issue number and URL
+    next: gh_issue_view
+    action: Capture issue_number and issue_url from output
+  gh_issue_view:
+    when: Verifying GitHub issue was created correctly
+    params: "gh issue view <number>"
+    returns: Issue details for verification
+  gh_pr_create:
+    when: Creating draft PR linked to issue
+    params: "gh pr create --draft --title <title> --body <body>"
+    returns: PR number and URL
+    action: Capture pr_number
+  git_checkout:
+    when: Creating feature branch
+    params: "git checkout -b type/issue-number-short-description"
+    returns: Confirmation of branch creation
+    next: gh_pr_create
+  getAccessibleAtlassianResources:
+    when: First step of Jira issue creation
+    params: none
+    returns: cloudId for Atlassian API calls
+    action: Preserve cloudId as jira_cloud_id
+    next: getVisibleJiraProjects
+  getVisibleJiraProjects:
+    when: User needs to select Jira project
+    params: "cloudId, action: create"
+    returns: List of available Jira projects
+    next: getJiraProjectIssueTypesMetadata
+  getJiraProjectIssueTypesMetadata:
+    when: Resolving available issue types for selected project
+    params: "cloudId, projectIdOrKey"
+    returns: Available issue types for the project
+    next: createJiraIssue
+  createJiraIssue:
+    when: Creating issue in Jira
+    params: "cloudId, projectKey, issueTypeName, summary, description"
+    returns: Created issue key and URL
+    action: Capture issue_number and issue_url from response
+  lookupJiraAccountId:
+    when: Assignee specified for Jira issue
+    params: "cloudId, searchString"
+    returns: Jira account ID for assignee field
+
+errors:
+  no_platform_selected:
+    cause: User did not select GitHub or Jira for issue creation
+    recovery: Present platform selection checkpoint and wait for selection
+  gh_cli_error:
+    cause: gh CLI command failed (auth, permissions, or network)
+    recovery: Verify gh auth status and repository access; retry or prompt user to create issue manually
+  jira_api_error:
+    cause: Atlassian API call failed (auth, permissions, or invalid request)
+    recovery: Verify cloudId and project access; check Jira issue type and required fields
+  gh_issue_verify_failed:
+    cause: Issue created but verification via gh issue view failed
+    recovery: Check issue number and retry verification

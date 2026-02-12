@@ -14,13 +14,8 @@ skills:
     - assumptions-review
 required: false
 estimatedTime: 15-30m
-rules[6]:
-  - "Core principle: Conversation, not interrogation - discover what user actually needs"
-  - "Stakeholder input first: User should discuss with key stakeholders before agent elicitation"
-  - "One question per turn - never present multiple questions in a single message"
-  - "Skip option always available - user can say 'skip' to move to next question"
-  - "Adapt based on responses - skip irrelevant follow-ups, probe deeper when needed"
-  - "Assumptions about requirement interpretation should be documented and reviewed"
+rules[1]:
+  - "Elicitation protocol and domain rules are in the requirements-elicitation skill"
 steps[7]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion
@@ -33,12 +28,8 @@ steps[7]:
     description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
   - id: post-assumptions-to-jira
     name: Post assumptions to Jira
-    description: "Prepare assumptions as Jira comment, get user approval, then post to ticket. Only runs if issue_platform is jira."
-    condition:
-      type: simple
-      variable: issue_platform
-      operator: ==
-      value: jira
+    description: "Prepare assumptions as Jira comment, get user approval, then post to ticket. Only runs when issue_platform is jira."
+    required: false
   - id: await-stakeholder-response
     name: Await stakeholder response
     description: "Wait for stakeholders to review the Jira comment. User returns with stakeholder feedback or indicates further discussion is needed."
@@ -121,12 +112,8 @@ checkpoints[5]:
             elicitation_complete: true
   - id: jira-comment-review
     name: Jira Comment Review Checkpoint
+    prerequisite: "Only present when issue_platform is jira"
     message: "Here's the requirements and assumptions summary prepared as a Jira comment for stakeholder review. Review the content before posting."
-    condition:
-      type: simple
-      variable: issue_platform
-      operator: ==
-      value: jira
     blocking: true
     options[3]:
       - id: post-comment

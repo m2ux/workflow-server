@@ -14,7 +14,7 @@ skills:
 required: true
 estimatedTime: 10-15m
 rules[1]:
-  - "Push commits, update description, mark ready for review"
+  - "PR update protocol and domain rules are in the pr-management skill"
 modeOverrides:
   review:
     description: "Generate and post consolidated PR review comments with findings from all review stages."

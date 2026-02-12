@@ -9,14 +9,13 @@ recognition[3]:
   - prepare for implementation
 skills:
   primary: planning
-  supporting[3]:
+  supporting[2]:
     - design-framework
-    - test-planning
     - assumptions-review
 required: true
 estimatedTime: 20-45m
 rules[1]:
-  - "Design and planning decisions often involve significant assumptions that should be documented before implementation"
+  - "Planning protocol and domain rules are in the planning skill"
 steps[8]:
   - id: apply-design
     name: Apply design framework

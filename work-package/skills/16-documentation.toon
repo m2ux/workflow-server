@@ -1,0 +1,82 @@
+id: documentation
+version: 1.0.0
+capability: Finalize documentation — update ADRs, complete test plans, create completion document, ensure API documentation
+
+description: "Handles the finalization of all documentation after implementation is complete. Updates ADR status, adds source links to test plans, creates a COMPLETE.md summary document, and verifies public APIs have inline documentation."
+
+inputs[4]:
+  - id: planning_folder_path
+    description: "Path to planning folder containing test plan and artifacts"
+    required: true
+  - id: adr_path
+    description: "Path to ADR if one was created for this work package"
+    required: false
+  - id: test_plan_path
+    description: "Path to test plan artifact"
+    required: true
+  - id: pr_number
+    description: "PR number for cross-referencing"
+    required: true
+
+protocol:
+  update-adr[2]:
+    - If ADR exists at adr_path, update status to Accepted
+    - Record implementation outcome and any deviations
+  finalize-test-plan[3]:
+    - Load test plan from test_plan_path
+    - Add hyperlinks to actual test source file locations
+    - Ensure each test case references its source file and line
+  create-completion-doc[4]:
+    - Create COMPLETE.md in planning folder
+    - Summarize what was delivered
+    - Document what was tested and test coverage
+    - List deferred items and known limitations
+  ensure-api-docs[3]:
+    - Identify public APIs in changed code
+    - Verify each has inline documentation (doc comments)
+    - Add missing doc comments where absent
+
+output[1]:
+  - id: completion-document
+    description: "Summary of delivered work, test coverage, and deferred items"
+    artifact:
+      name: "COMPLETE.md"
+    components:
+      deliverables: "What was implemented"
+      test_coverage: "What was tested and where"
+      deferred: "Items deferred to future work"
+      limitations: "Known limitations and caveats"
+
+resources[1]:
+  - "21"
+
+rules:
+  source-links: "Test plan must include hyperlinks to actual test source locations — not just test names"
+  completion-summary: "COMPLETE.md summarizes deliverables, test coverage, deferred items, and known limitations"
+  api-docs-required: "Public APIs must have inline documentation — verify and add missing doc comments"
+
+tools:
+  get_resource:
+    when: Loading complete-wp guidance
+    params: "workflow_id: work-package, index: 21"
+    returns: Complete work package resource
+  read_file:
+    when: Loading test plan, ADR, or source files
+    usage: Read artifacts and source for documentation
+  write_file:
+    when: Creating COMPLETE.md, updating ADR or test plan
+    usage: Write documentation artifacts
+  grep:
+    when: Finding public API definitions
+    usage: Locate pub fn, pub struct, pub enum definitions
+  shell:
+    when: Verifying doc coverage in codebase
+    usage: Run cargo doc or similar to check documentation
+
+errors:
+  no_adr:
+    cause: No ADR was created for this work package
+    recovery: Skip ADR finalization and proceed with other steps
+  missing_test_plan:
+    cause: Test plan not found at expected path
+    recovery: Check planning folder for alternative names
