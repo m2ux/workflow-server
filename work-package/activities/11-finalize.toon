@@ -14,7 +14,18 @@ estimatedTime: 15-30m
 steps[4]:
   - id: update-adr
     name: Update ADR status to Accepted
-    description: If ADR exists
+    description: "Update ADR status from Proposed to Accepted (ADR was created in post-implementation)."
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: moderate
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: complex
   - id: finalize-test-plan
     name: Finalize test plan with source links
     description: Add hyperlinks to test source locations

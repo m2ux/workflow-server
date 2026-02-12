@@ -44,8 +44,12 @@ steps[4]:
     description: "Run linter. Observe and record results."
   - id: fix-failures
     name: Fix any failures
-    description: "If tests/build/lint fail, analyze root cause, fix, and re-run. Repeat until all pass. Only runs when has_failures is true."
-    required: false
+    description: "Analyze root cause of test/build/lint failures, fix, and re-run. Repeat until all pass."
+    condition:
+      type: simple
+      variable: has_failures
+      operator: ==
+      value: true
 transitions[1]{to,isDefault}:
   strategic-review,true
 outcome[2]:
