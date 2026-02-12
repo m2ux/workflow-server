@@ -3,8 +3,6 @@ export interface ServerConfig {
   schemasDir: string;
   serverName: string;
   serverVersion: string;
-  /** Schema preamble prepended to get_workflow responses. Built at startup. */
-  schemaPreamble?: string;
 }
 
 export function loadConfig(): ServerConfig {

@@ -46,10 +46,6 @@
           "type": "string",
           "description": "Skill ID to apply for this step"
         },
-        "condition": {
-          "$ref": "condition.schema.json",
-          "description": "Condition that must be true for this step to execute. If false, the step is skipped."
-        },
         "required": {
           "type": "boolean",
           "default": true
@@ -300,36 +296,6 @@
       "required": ["workflow"],
       "additionalProperties": false
     },
-    "artifact": {
-      "type": "object",
-      "description": "An artifact produced or updated by this activity",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for this artifact within the activity"
-        },
-        "name": {
-          "type": "string",
-          "description": "Artifact filename without activity prefix. The activity's artifactPrefix is prepended at write time (e.g., name 'code-review.md' with artifactPrefix '08' produces '08-code-review.md'). May contain other template variables (e.g., '{n}' for iteration count, '{decision-title}' for ADR naming)."
-        },
-        "location": {
-          "type": "string",
-          "description": "Key into workflow.artifactLocations (e.g., 'planning', 'reviews', 'adr') or an explicit path"
-        },
-        "description": {
-          "type": "string",
-          "description": "What this artifact contains and its purpose"
-        },
-        "action": {
-          "type": "string",
-          "enum": ["create", "update"],
-          "default": "create",
-          "description": "Whether this activity creates a new artifact or updates an existing one"
-        }
-      },
-      "required": ["id", "name"],
-      "additionalProperties": false
-    },
     "skills": {
       "type": "object",
       "properties": {
@@ -410,17 +376,6 @@
             "$ref": "#/definitions/loop"
           },
           "description": "Iteration constructs"
-        },
-        "artifactPrefix": {
-          "type": "string",
-          "description": "Numeric prefix prepended to all artifact filenames produced by this activity (e.g., '08'). Skills produce artifacts with bare names (e.g., 'code-review.md'); the activity prepends this prefix at write time (e.g., '08-code-review.md')."
-        },
-        "artifacts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/artifact"
-          },
-          "description": "Artifacts produced or updated by this activity. Filenames in artifact.name are prepended with artifactPrefix when present. Location keys reference workflow.artifactLocations."
         },
         "transitions": {
           "type": "array",

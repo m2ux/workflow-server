@@ -1,12 +1,11 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "state",
-  "description": "Runtime workflow execution state. Tracks current position, completed work, user responses, variable values, and execution history. Supports nested workflow relationships.",
+  "description": "Workflow state schema - tracks activity execution with nested workflow support",
   "$ref": "#/definitions/state",
   "definitions": {
     "parentWorkflowRef": {
       "type": "object",
-      "description": "Reference to the parent workflow that triggered this one",
       "properties": {
         "workflowId": {
           "type": "string",
@@ -14,25 +13,22 @@
         },
         "activityId": {
           "type": "string",
-          "description": "Activity in the parent workflow that triggered this one"
+          "description": "Activity that triggered this workflow"
         },
         "passedContext": {
           "type": "object",
           "additionalProperties": {},
-          "description": "Context variables passed from the parent workflow"
+          "description": "Context passed from parent"
         },
         "returnTo": {
           "type": "object",
-          "description": "Where to resume in the parent workflow after this one completes",
           "properties": {
             "activityId": {
-              "type": "string",
-              "description": "Activity ID to return to in the parent workflow"
+              "type": "string"
             },
             "stepIndex": {
               "type": "integer",
-              "minimum": 1,
-              "description": "Step index to resume at within the return activity (1-based)"
+              "minimum": 1
             }
           },
           "required": ["activityId"],
@@ -44,29 +40,24 @@
     },
     "triggeredWorkflowRef": {
       "type": "object",
-      "description": "Reference to a child workflow triggered from this one",
       "properties": {
         "workflowId": {
           "type": "string",
-          "description": "ID of the triggered child workflow"
+          "description": "ID of the triggered workflow"
         },
         "triggeredAt": {
           "type": "string",
-          "format": "date-time",
-          "description": "Timestamp when the child workflow was triggered"
+          "format": "date-time"
         },
         "triggeredFrom": {
           "type": "object",
-          "description": "Location in this workflow where the trigger occurred",
           "properties": {
             "activityId": {
-              "type": "string",
-              "description": "Activity that contains the trigger"
+              "type": "string"
             },
             "stepIndex": {
               "type": "integer",
-              "minimum": 1,
-              "description": "Step index that triggered the child workflow (1-based)"
+              "minimum": 1
             }
           },
           "required": ["activityId"],
@@ -74,13 +65,11 @@
         },
         "status": {
           "type": "string",
-          "enum": ["running", "completed", "aborted", "error"],
-          "description": "Current status of the triggered child workflow"
+          "enum": ["running", "completed", "aborted", "error"]
         },
         "returnedContext": {
           "type": "object",
-          "additionalProperties": {},
-          "description": "Context variables returned by the child workflow after completion"
+          "additionalProperties": {}
         }
       },
       "required": ["workflowId", "triggeredAt", "triggeredFrom", "status"],
@@ -95,7 +84,7 @@
         },
         "workflowVersion": {
           "type": "string",
-          "description": "Version of the workflow definition"
+          "description": "Version of the workflow"
         },
         "stateVersion": {
           "type": "integer",
@@ -105,27 +94,24 @@
         },
         "startedAt": {
           "type": "string",
-          "format": "date-time",
-          "description": "Timestamp when workflow execution started"
+          "format": "date-time"
         },
         "updatedAt": {
           "type": "string",
-          "format": "date-time",
-          "description": "Timestamp of the most recent state change"
+          "format": "date-time"
         },
         "completedAt": {
           "type": "string",
-          "format": "date-time",
-          "description": "Timestamp when workflow completed (only present when status is completed)"
+          "format": "date-time"
         },
         "currentActivity": {
           "type": "string",
-          "description": "ID of the activity currently being executed"
+          "description": "Current activity ID"
         },
         "currentStep": {
           "type": "integer",
           "minimum": 1,
-          "description": "Index of the current step within the current activity (1-based)"
+          "description": "Current step index within current activity (1-based)"
         },
         "completedActivities": {
           "type": "array",
@@ -133,7 +119,7 @@
             "type": "string"
           },
           "default": [],
-          "description": "Activity IDs that have been completed in execution order"
+          "description": "Array of completed activity IDs"
         },
         "skippedActivities": {
           "type": "array",
@@ -141,7 +127,7 @@
             "type": "string"
           },
           "default": [],
-          "description": "Activity IDs that were skipped (via checkpoint effects or mode skipActivities)"
+          "description": "Array of skipped activity IDs"
         },
         "completedSteps": {
           "type": "object",
@@ -153,80 +139,74 @@
             }
           },
           "default": {},
-          "description": "Map of activity ID to array of completed step indices (1-based) within that activity"
+          "description": "Map of activity ID to array of completed step indices"
         },
         "checkpointResponses": {
           "type": "object",
-          "description": "User responses to checkpoints. Key format: 'activityId-checkpointId'",
           "additionalProperties": {
             "type": "object",
             "properties": {
               "optionId": {
                 "type": "string",
-                "description": "ID of the option the user selected"
+                "description": "ID of the selected option"
               },
               "respondedAt": {
                 "type": "string",
-                "format": "date-time",
-                "description": "Timestamp when the user responded"
+                "format": "date-time"
               },
               "effects": {
                 "type": "object",
-                "description": "Side effects that were applied when the user selected this option",
                 "properties": {
                   "variablesSet": {
                     "type": "object",
-                    "additionalProperties": {},
-                    "description": "Variables that were set as a result of the selection"
+                    "additionalProperties": {}
                   },
                   "transitionedTo": {
                     "type": "string",
-                    "description": "Activity ID that was transitioned to as a result"
+                    "description": "Activity ID transitioned to"
                   },
                   "activitiesSkipped": {
                     "type": "array",
                     "items": {
                       "type": "string"
-                    },
-                    "description": "Activity IDs that were skipped as a result"
+                    }
                   }
                 },
                 "additionalProperties": false
               }
             },
             "required": ["optionId", "respondedAt"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Key is 'activityId-checkpointId' (e.g., 'review-approve')"
           },
           "default": {}
         },
         "decisionOutcomes": {
           "type": "object",
-          "description": "Outcomes of automated decisions. Key format: 'activityId-decisionId'",
           "additionalProperties": {
             "type": "object",
             "properties": {
               "branchId": {
                 "type": "string",
-                "description": "ID of the branch that was taken"
+                "description": "ID of the branch taken"
               },
               "decidedAt": {
                 "type": "string",
-                "format": "date-time",
-                "description": "Timestamp when the decision was evaluated"
+                "format": "date-time"
               },
               "transitionedTo": {
                 "type": "string",
-                "description": "Activity ID that was transitioned to"
+                "description": "Activity ID transitioned to"
               }
             },
             "required": ["branchId", "decidedAt", "transitionedTo"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Key is 'activityId-decisionId'"
           },
           "default": {}
         },
         "activeLoops": {
           "type": "array",
-          "description": "Currently executing loops (stack — innermost loop is last)",
           "items": {
             "type": "object",
             "properties": {
@@ -236,25 +216,20 @@
               },
               "loopId": {
                 "type": "string",
-                "description": "ID of the loop construct"
+                "description": "ID of the loop"
               },
               "currentIteration": {
                 "type": "integer",
-                "minimum": 0,
-                "description": "Current iteration number (0-based)"
+                "minimum": 0
               },
               "totalItems": {
                 "type": "integer",
-                "minimum": 0,
-                "description": "Total items in the collection (forEach only)"
+                "minimum": 0
               },
-              "currentItem": {
-                "description": "Current item value from the collection being iterated"
-              },
+              "currentItem": {},
               "startedAt": {
                 "type": "string",
-                "format": "date-time",
-                "description": "Timestamp when the loop started"
+                "format": "date-time"
               }
             },
             "required": ["activityId", "loopId", "currentIteration", "startedAt"],
@@ -265,19 +240,16 @@
         "variables": {
           "type": "object",
           "additionalProperties": {},
-          "default": {},
-          "description": "Current values of all workflow variables (set by defaults, checkpoint effects, or set actions)"
+          "default": {}
         },
         "history": {
           "type": "array",
-          "description": "Chronological log of all execution events",
           "items": {
             "type": "object",
             "properties": {
               "timestamp": {
                 "type": "string",
-                "format": "date-time",
-                "description": "When this event occurred"
+                "format": "date-time"
               },
               "type": {
                 "type": "string",
@@ -303,46 +275,41 @@
                   "loop_break",
                   "variable_set",
                   "error"
-                ],
-                "description": "Event type categorizing what happened"
+                ]
               },
               "activity": {
                 "type": "string",
-                "description": "Activity ID where the event occurred"
+                "description": "Activity ID"
               },
               "step": {
                 "type": "integer",
                 "minimum": 1,
-                "description": "Step index where the event occurred (1-based)"
+                "description": "Step index within activity"
               },
               "checkpoint": {
                 "type": "string",
-                "description": "Checkpoint ID (for checkpoint events)"
+                "description": "Checkpoint ID"
               },
               "decision": {
                 "type": "string",
-                "description": "Decision ID (for decision events)"
+                "description": "Decision ID"
               },
               "loop": {
                 "type": "string",
-                "description": "Loop ID (for loop events)"
+                "description": "Loop ID"
               },
               "data": {
                 "type": "object",
-                "additionalProperties": {},
-                "description": "Additional event-specific data (e.g., variable values set, branch taken)"
+                "additionalProperties": {}
               },
               "error": {
                 "type": "object",
-                "description": "Error details (for error events)",
                 "properties": {
                   "message": {
-                    "type": "string",
-                    "description": "Human-readable error message"
+                    "type": "string"
                   },
                   "code": {
-                    "type": "string",
-                    "description": "Machine-readable error code"
+                    "type": "string"
                   }
                 },
                 "required": ["message"],
@@ -357,12 +324,11 @@
         "status": {
           "type": "string",
           "enum": ["running", "paused", "suspended", "completed", "aborted", "error"],
-          "default": "running",
-          "description": "Current workflow status: running (active), paused (awaiting user input at checkpoint), suspended (waiting for triggered child workflow), completed (finished successfully), aborted (cancelled), error (failed)"
+          "default": "running"
         },
         "parentWorkflow": {
           "$ref": "#/definitions/parentWorkflowRef",
-          "description": "Reference to parent workflow if this was triggered by another workflow's activity"
+          "description": "Reference to parent workflow if this was triggered"
         },
         "triggeredWorkflows": {
           "type": "array",
@@ -370,19 +336,16 @@
             "$ref": "#/definitions/triggeredWorkflowRef"
           },
           "default": [],
-          "description": "Child workflows triggered from this workflow"
+          "description": "Child workflows triggered from this one"
         },
         "lastError": {
           "type": "object",
-          "description": "Most recent error encountered during execution",
           "properties": {
             "message": {
-              "type": "string",
-              "description": "Human-readable error message"
+              "type": "string"
             },
             "code": {
-              "type": "string",
-              "description": "Machine-readable error code"
+              "type": "string"
             },
             "activity": {
               "type": "string",
@@ -391,12 +354,11 @@
             "step": {
               "type": "integer",
               "minimum": 1,
-              "description": "Step index where error occurred (1-based)"
+              "description": "Step index where error occurred"
             },
             "timestamp": {
               "type": "string",
-              "format": "date-time",
-              "description": "When the error occurred"
+              "format": "date-time"
             }
           },
           "required": ["message", "timestamp"],
