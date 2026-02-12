@@ -15,7 +15,7 @@ skills:
     - conduct-retrospective
 required: true
 estimatedTime: 30-60m
-artifactPrefix: "12"
+artifactPrefix: "13"
 rules[1]:
   - "Documentation finalization, ADR creation, and retrospective protocols are in the respective skills"
 modeOverrides:

@@ -11,7 +11,7 @@ skills:
   primary: review-strategy
 required: true
 estimatedTime: 15-30m
-artifactPrefix: "10"
+artifactPrefix: "11"
 rules[1]:
   - "Review protocol and domain rules are in the strategic-review skill"
 modeOverrides:
