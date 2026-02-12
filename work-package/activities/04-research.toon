@@ -13,6 +13,7 @@ skills:
     - review-assumptions
 required: false
 estimatedTime: 20-45m
+artifactPrefix: "04"
 rules[1]:
   - "Research protocol and domain rules are in the knowledge-research skill"
 steps[6]:

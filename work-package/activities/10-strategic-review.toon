@@ -11,6 +11,7 @@ skills:
   primary: review-strategy
 required: true
 estimatedTime: 15-30m
+artifactPrefix: "10"
 rules[1]:
   - "Review protocol and domain rules are in the strategic-review skill"
 modeOverrides:
@@ -32,11 +33,11 @@ modeOverrides:
       - strategic_review_severity - Overall severity assessment of findings
 artifacts[2]:
   - id: strategic-review-doc
-    name: "{NN}-strategic-review-{n}.md"
+    name: "strategic-review-{n}.md"
     location: planning
     description: "Documents review findings, identified artifacts, and cleanup actions. NN follows artifact numbering sequence, n increments on successive reviews."
   - id: architecture-summary-doc
-    name: "{NN}-architecture-summary.md"
+    name: "architecture-summary.md"
     location: planning
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
 steps[5]:
@@ -48,13 +49,13 @@ steps[5]:
     description: "Find investigation artifacts, over-engineering, orphaned infrastructure"
   - id: document-findings
     name: Document findings
-    description: "Create {NN}-strategic-review-{n}.md with items that should be removed or simplified"
+    description: "Create strategic-review-{n}.md with items that should be removed or simplified"
   - id: apply-cleanup
     name: Apply cleanup
     description: "If cleanup needed, remove identified artifacts and update review document with actions taken"
   - id: create-architecture-summary
     name: Create architecture summary
-    description: "Create {NN}-architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
+    description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
 checkpoints[2]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
@@ -132,8 +133,8 @@ transitions[2]:
 outcome[4]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
-  - Review findings documented in {NN}-strategic-review-{n}.md
-  - Architecture summary created in {NN}-architecture-summary.md for stakeholder communication
+  - Review findings documented in strategic-review-{n}.md
+  - Architecture summary created in architecture-summary.md for stakeholder communication
 context_to_preserve[3]:
   - review_findings - Findings from strategic review
   - review_passed - Whether review passed
