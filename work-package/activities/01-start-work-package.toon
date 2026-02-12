@@ -84,23 +84,35 @@ steps[9]:
     description: Verify whether an issue has been specified by user or in context
   - id: create-issue
     name: Create Issue
-    description: "If needed, create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform. Only runs when needs_issue_creation is true."
+    description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
     skill: issue-management
-    required: false
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: ==
+      value: true
   - id: check-branch
     name: Check Current Branch
     description: "Check if already on a feature branch (not main/master). Run 'git branch --show-current' and compare against main/master."
   - id: create-branch
     name: Create Feature Branch
-    description: "Create feature branch from main/master with naming convention: type/issue-number-short-description. Only runs when use_existing_branch is false."
-    required: false
+    description: "Create feature branch from main/master with naming convention: type/issue-number-short-description."
+    condition:
+      type: simple
+      variable: use_existing_branch
+      operator: ==
+      value: false
   - id: check-pr
     name: Check for Existing PR
     description: "Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' to detect existing PRs."
   - id: create-pr
     name: Create Draft PR
-    description: "Create draft PR linked to issue. PR title should reference issue number. Only runs when use_existing_pr is false."
-    required: false
+    description: "Create draft PR linked to issue. PR title should reference issue number."
+    condition:
+      type: simple
+      variable: use_existing_pr
+      operator: ==
+      value: false
   - id: initialize-planning-folder
     name: Initialize Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title."

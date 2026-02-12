@@ -28,8 +28,12 @@ steps[7]:
     description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
   - id: post-assumptions-to-jira
     name: Post assumptions to Jira
-    description: "Prepare assumptions as Jira comment, get user approval, then post to ticket. Only runs when issue_platform is jira."
-    required: false
+    description: "Prepare assumptions as Jira comment, get user approval, then post to ticket."
+    condition:
+      type: simple
+      variable: issue_platform
+      operator: ==
+      value: jira
   - id: await-stakeholder-response
     name: Await stakeholder response
     description: "Wait for stakeholders to review the Jira comment. User returns with stakeholder feedback or indicates further discussion is needed."
@@ -172,14 +176,14 @@ transitions[2]:
   - to: research
     condition:
       type: simple
-      variable: requirements_confirmed
+      variable: elicitation_complete
       operator: ==
       value: true
     isDefault: true
   - to: requirements-elicitation
     condition:
       type: simple
-      variable: requirements_confirmed
+      variable: elicitation_complete
       operator: ==
       value: false
 outcome[5]:
