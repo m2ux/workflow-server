@@ -23,17 +23,6 @@ This workflow guides the complete lifecycle of a single work package through twe
 | 11 | **Submit for Review** | yes | Push PR, mark ready, handle reviewer feedback |
 | 12 | **Complete** | yes | Finalize documentation, create ADR, conduct retrospective |
 
-**Key statistics:**
-
-| Metric | Count |
-|--------|-------|
-| Activities | 12 |
-| Skills | 22 |
-| Checkpoints | 40 |
-| Variables | 49 |
-| Loops | 4 |
-| Feedback loops | 4 |
-
 ---
 
 ## Review Mode
