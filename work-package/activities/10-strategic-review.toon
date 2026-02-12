@@ -111,7 +111,7 @@ decisions[1]:
     branches[2]:
       - id: pass
         label: Pass - Changes are minimal and focused
-        transitionTo: complete
+        transitionTo: submit-for-review
         condition:
           type: simple
           variable: review_passed
@@ -122,7 +122,7 @@ decisions[1]:
         transitionTo: plan-prepare
         isDefault: true
 transitions[2]:
-  - to: complete
+  - to: submit-for-review
     condition:
       type: simple
       variable: review_passed
