@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.3.0
+version: 1.4.0
 name: Post-Implementation Review
 description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
 problem: User needs to review implementation quality before validation
@@ -15,7 +15,7 @@ skills:
     - architecture-summary
 required: true
 estimatedTime: 30-60m
-rules[9]:
+rules[7]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
   - "All three automated reviews (code, test suite, architecture) should be completed"
@@ -23,8 +23,6 @@ rules[9]:
   - "ENTRY: Run git pull to ensure branch is up to date before evaluating diffs"
   - "ENTRY: Parse git diff to extract list of changed files"
   - "ENTRY: Create file index table (Row | Path | File) with review time estimate (30 sec/change), write to {NN}-change-block-index.md"
-  - "LOOP-BACK: When code review or test review findings are fixed (needs_code_fixes or needs_test_improvements), loop back to manual-diff-review step with regenerated file index reflecting the new changes"
-  - "LOOP-BACK: The loop-back regenerates the change block index, re-presents it for manual diff review, then re-runs only the review that triggered the loop (code-review or test-suite-review)"
 modeOverrides:
   review:
     description: "Compare PR changes against expected changes from implementation analysis. Document findings for PR author."
@@ -124,11 +122,10 @@ checkpoints[5]:
         description: Findings noted but no changes needed before proceeding
       - id: fix-findings
         label: Fix findings before proceeding
-        description: Address code review findings now, then loop back for manual diff review of changes
+        description: Address code review findings now
         effect:
           setVariable:
             needs_code_fixes: true
-          loopBack: manual-diff-review
       - id: defer-findings
         label: Defer findings
         description: Note findings for future but proceed now
@@ -141,11 +138,10 @@ checkpoints[5]:
         description: Tests adequately cover the implementation
       - id: improve-tests
         label: Improve tests before proceeding
-        description: Test gaps should be addressed now, then loop back for manual diff review of changes
+        description: Test gaps should be addressed now
         effect:
           setVariable:
             needs_test_improvements: true
-          loopBack: manual-diff-review
       - id: defer-improvements
         label: Defer test improvements
         description: Note improvements for future but proceed now
@@ -162,6 +158,50 @@ checkpoints[5]:
         effect:
           setVariable:
             skip_architecture_summary: true
+loops[1]:
+  - id: review-fix-cycle
+    name: Review-Fix Cycle
+    type: doWhile
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: needs_code_fixes
+          operator: "=="
+          value: true
+        - type: simple
+          variable: needs_test_improvements
+          operator: "=="
+          value: true
+    maxIterations: 3
+    steps:
+      - id: apply-fixes
+        name: Apply Fixes
+        description: "Implement the code review findings (needs_code_fixes) and/or test improvements (needs_test_improvements) selected by the user. Commit changes."
+        required: true
+      - id: reset-fix-flags
+        name: Reset Fix Flags
+        description: "Reset needs_code_fixes and needs_test_improvements to false before re-review."
+        required: true
+      - id: regenerate-index
+        name: Regenerate Change Block Index
+        description: "Re-parse git diff and regenerate {NN}-change-block-index.md reflecting the new changes."
+        required: true
+      - id: re-manual-diff-review
+        name: Re-run Manual Diff Review
+        description: "Present updated file index to user for manual diff review of the fix changes."
+        skill: manual-diff-review
+        required: true
+      - id: re-code-review
+        name: Re-run Code Review
+        description: "Re-run code review on the updated diff. Only required if needs_code_fixes triggered this iteration."
+        skill: code-review
+        required: true
+      - id: re-test-suite-review
+        name: Re-run Test Suite Review
+        description: "Re-run test suite review on the updated tests. Only required if needs_test_improvements triggered this iteration."
+        skill: test-review
+        required: true
 transitions[1]{to,isDefault}:
   validate,true
 outcome[5]:
