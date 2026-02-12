@@ -12,7 +12,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     withAuditLog('get_workflow', async ({ workflow_id }) => {
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
+      const content: Array<{ type: 'text'; text: string }> = [];
+      if (config.schemaPreamble) {
+        content.push({ type: 'text', text: config.schemaPreamble });
+      }
+      content.push({ type: 'text', text: JSON.stringify(result.value, null, 2) });
+      return { content };
     }));
 
   server.tool('validate_transition', 'Validate if a transition between activities is allowed',

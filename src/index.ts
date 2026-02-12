@@ -2,6 +2,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { createServer } from './server.js';
 import { loadConfig } from './config.js';
 import { logInfo, logError } from './logging.js';
+import { buildSchemaPreamble } from './loaders/schema-preamble.js';
 
 export * from './schema/workflow.schema.js';
 export * from './schema/state.schema.js';
@@ -11,10 +12,12 @@ export * from './types/state.js';
 export { createServer } from './server.js';
 export { loadConfig } from './config.js';
 export type { ServerConfig } from './config.js';
+export { buildSchemaPreamble } from './loaders/schema-preamble.js';
 
 async function main(): Promise<void> {
   try {
     const config = loadConfig();
+    config.schemaPreamble = await buildSchemaPreamble(config.schemasDir);
     logInfo('Starting MCP Workflow Server', { workflowDir: config.workflowDir });
     const server = createServer(config);
     await server.connect(new StdioServerTransport());
