@@ -46,6 +46,10 @@
           "type": "string",
           "description": "Skill ID to apply for this step"
         },
+        "condition": {
+          "$ref": "condition.schema.json",
+          "description": "Condition that must be true for this step to execute. If false, the step is skipped."
+        },
         "required": {
           "type": "boolean",
           "default": true
