@@ -31,6 +31,64 @@ This workflow guides the complete lifecycle of a single work package through twe
 
 ---
 
+## Workflow Flow
+
+```mermaid
+graph TD
+    startNode(["Start"]) --> SWP["01 start-work-package"]
+    SWP --> DP["02 design-philosophy"]
+
+    DP --> PATH{"workflow path?"}
+    PATH -->|"full"| REL["03 requirements-elicitation"]
+    PATH -->|"elicit-only"| REL
+    PATH -->|"research-only"| RS
+    PATH -->|"direct"| PP
+
+    REL --> RS["04 research"]
+    RS --> IA["05 implementation-analysis"]
+    IA --> PP["06 plan-prepare"]
+
+    PP --> IMP["07 implement"]
+    IMP --> PIR["08 post-impl-review"]
+    PIR --> BLK{"critical blocker?"}
+    BLK -->|"yes"| IMP
+    BLK -->|"no"| VAL["09 validate"]
+
+    VAL --> SR["10 strategic-review"]
+
+    SR --> SRD{"review passed?"}
+    SRD -->|"yes"| SFR["11 submit-for-review"]
+    SRD -->|"rework"| PP
+
+    SFR --> RVD{"review outcome?"}
+    RVD -->|"approved/minor"| COMP["12 complete"]
+    RVD -->|"significant changes"| PP
+
+    COMP --> doneNode(["End"])
+```
+
+---
+
+## Activities Summary
+
+| # | Activity | Primary Skill | Supporting Skills | Checkpoints | artifactPrefix |
+|---|----------|--------------|-------------------|-------------|----------------|
+| 01 | Start Work Package | `create-issue` | `manage-git`, `manage-artifacts` | 8 | — |
+| 02 | Design Philosophy | `classify-problem` | `review-assumptions` | 4 | `02` |
+| 03 | Requirements Elicitation | `elicit-requirements` | `manage-artifacts`, `review-assumptions` | 5 | `03` |
+| 04 | Research | `research-knowledge-base` | `review-assumptions` | 4 | `04` |
+| 05 | Implementation Analysis | `analyze-implementation` | `manage-artifacts`, `review-assumptions` | 2 | `05` |
+| 06 | Plan & Prepare | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan` | 4 | `06` |
+| 07 | Implement | `implement-task` | `review-assumptions`, `validate-build`, `manage-git` | 2 | `07` |
+| 08 | Post-Impl Review | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture` | 5 | `08` |
+| 09 | Validate | `validate-build` | — | 0 | — |
+| 10 | Strategic Review | `review-strategy` | — | 2 | `10` |
+| 11 | Submit for Review | `update-pr` | `respond-to-pr-review` | 3 | — |
+| 12 | Complete | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 1 | `12` |
+
+See [activities/README.md](activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
+
+---
 ## Execution Model
 
 This workflow uses an **orchestrator/worker two-agent pattern**.
@@ -111,65 +169,6 @@ start-work-package → design-philosophy → [research →] implementation-analy
 ```
 
 **See [REVIEW-MODE.md](REVIEW-MODE.md) for complete documentation.**
-
----
-
-## Workflow Flow
-
-```mermaid
-graph TD
-    startNode(["Start"]) --> SWP["01 start-work-package"]
-    SWP --> DP["02 design-philosophy"]
-
-    DP --> PATH{"workflow path?"}
-    PATH -->|"full"| REL["03 requirements-elicitation"]
-    PATH -->|"elicit-only"| REL
-    PATH -->|"research-only"| RS
-    PATH -->|"direct"| PP
-
-    REL --> RS["04 research"]
-    RS --> IA["05 implementation-analysis"]
-    IA --> PP["06 plan-prepare"]
-
-    PP --> IMP["07 implement"]
-    IMP --> PIR["08 post-impl-review"]
-    PIR --> BLK{"critical blocker?"}
-    BLK -->|"yes"| IMP
-    BLK -->|"no"| VAL["09 validate"]
-
-    VAL --> SR["10 strategic-review"]
-
-    SR --> SRD{"review passed?"}
-    SRD -->|"yes"| SFR["11 submit-for-review"]
-    SRD -->|"rework"| PP
-
-    SFR --> RVD{"review outcome?"}
-    RVD -->|"approved/minor"| COMP["12 complete"]
-    RVD -->|"significant changes"| PP
-
-    COMP --> doneNode(["End"])
-```
-
----
-
-## Activities Summary
-
-| # | Activity | Primary Skill | Supporting Skills | Checkpoints | artifactPrefix |
-|---|----------|--------------|-------------------|-------------|----------------|
-| 01 | Start Work Package | `create-issue` | `manage-git`, `manage-artifacts` | 8 | — |
-| 02 | Design Philosophy | `classify-problem` | `review-assumptions` | 4 | `02` |
-| 03 | Requirements Elicitation | `elicit-requirements` | `manage-artifacts`, `review-assumptions` | 5 | `03` |
-| 04 | Research | `research-knowledge-base` | `review-assumptions` | 4 | `04` |
-| 05 | Implementation Analysis | `analyze-implementation` | `manage-artifacts`, `review-assumptions` | 2 | `05` |
-| 06 | Plan & Prepare | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan` | 4 | `06` |
-| 07 | Implement | `implement-task` | `review-assumptions`, `validate-build`, `manage-git` | 2 | `07` |
-| 08 | Post-Impl Review | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture` | 5 | `08` |
-| 09 | Validate | `validate-build` | — | 0 | — |
-| 10 | Strategic Review | `review-strategy` | — | 2 | `10` |
-| 11 | Submit for Review | `update-pr` | `respond-to-pr-review` | 3 | — |
-| 12 | Complete | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 1 | `12` |
-
-See [activities/README.md](activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
 
 ---
 
