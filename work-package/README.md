@@ -26,8 +26,91 @@ This workflow guides the complete lifecycle of a single work package through twe
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (22 skills) and protocol flow diagrams.
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (24 skills) and protocol flow diagrams.
 - **Resources:** See [resources/README.md](resources/README.md) for the resource index (25 resources).
+
+---
+
+## Execution Model
+
+This workflow uses an **orchestrator/worker two-agent pattern**, following the approach established by the `substrate-node-security-audit` workflow.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Caller as CallingAgent
+    participant Orch as Orchestrator
+    participant Worker as Worker
+
+    User->>Caller: "start work package for midnight-node"
+    Caller->>Orch: "Task(orchestrate-workflow)"
+
+    Note over Orch: get_workflow -> schema preamble + definition
+    Note over Orch: Initialize state, detect mode
+
+    Orch->>Worker: "Task(activity: start-work-package, state)"
+    Worker->>User: Checkpoints
+    User->>Worker: Responses
+    Worker-->>Orch: Result + variable changes
+
+    Note over Orch: Evaluate transitions
+
+    Orch->>Worker: "Task(resume, activity: design-philosophy, state)"
+    Worker->>User: Checkpoints
+    User->>Worker: Responses
+    Worker-->>Orch: Result + variable changes
+
+    Note over Orch: Continue for all activities...
+```
+
+**Orchestrator** (skill: `orchestrate-workflow`):
+- Loads the workflow definition via `get_workflow` (receives schema preamble with all five JSON Schemas)
+- Initializes state variables, detects mode
+- Dispatches activities to the worker one at a time
+- Evaluates transition conditions between activities
+- Manages rework loops (transitions back to earlier activities)
+- MUST NOT execute steps, write code, or produce artifacts
+
+**Worker** (skill: `execute-activity`):
+- Self-bootstraps from `get_workflow_activity` and `get_skill`
+- Executes activity steps sequentially using the skill protocol
+- Handles all checkpoints and user interaction directly
+- Produces artifacts with `artifactPrefix` convention
+- Reports structured results (variable changes, checkpoints, artifacts, steps completed)
+- **Persists across activities** via Task `resume` — preserves codebase understanding, file locations, and implementation decisions
+
+This separation prevents context saturation in the orchestrator (which stays lean managing flow) while the worker accumulates rich domain context across the entire workflow.
+
+---
+
+## Review Mode
+
+This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. When activated, the workflow adapts its behavior using the formal `modes` and `modeOverrides` schema constructs.
+
+**Activation:** Detected from user intent patterns such as "start review work package", "review PR #123", or "review existing implementation". Sets `is_review_mode = true`.
+
+**Skipped activities:** Requirements Elicitation (03) and Implement (07) are always skipped in review mode. Elicitation is unnecessary because requirements come solely from the associated ticket. Implementation is skipped because the code already exists.
+
+**Behavioral overrides per activity:**
+
+| Activity | Override |
+|----------|----------|
+| Start Work Package (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
+| Design Philosophy (02) | Assess ticket completeness; always skip elicitation |
+| Implementation Analysis (05) | Checkout base branch to analyze pre-change state; document expected changes |
+| Post-Implementation Review (08) | Compare PR changes against expected changes from analysis |
+| Validate (09) | Document failures as findings; do not fix |
+| Strategic Review (10) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
+| Submit for Review (11) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
+| Complete (12) | Skip ADR and documentation steps; retrospective only |
+
+**Review mode flow:**
+
+```
+start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → post-impl-review → validate → strategic-review → submit-for-review → END
+```
+
+**See [REVIEW-MODE.md](REVIEW-MODE.md) for complete documentation.**
 
 ---
 
@@ -214,37 +297,6 @@ The workflow declares 49 variables that drive control flow, store checkpoint sta
 | `flagged_block_indices` | array | Change block indices flagged by user during diff review |
 
 See `workflow.toon` for the complete variable declarations with default values.
-
----
-
-## Review Mode
-
-This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. When activated, the workflow adapts its behavior using the formal `modes` and `modeOverrides` schema constructs.
-
-**Activation:** Detected from user intent patterns such as "start review work package", "review PR #123", or "review existing implementation". Sets `is_review_mode = true`.
-
-**Skipped activities:** Requirements Elicitation (03) and Implement (07) are always skipped in review mode. Elicitation is unnecessary because requirements come solely from the associated ticket. Implementation is skipped because the code already exists.
-
-**Behavioral overrides per activity:**
-
-| Activity | Override |
-|----------|----------|
-| Start Work Package (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
-| Design Philosophy (02) | Assess ticket completeness; always skip elicitation |
-| Implementation Analysis (05) | Checkout base branch to analyze pre-change state; document expected changes |
-| Post-Implementation Review (08) | Compare PR changes against expected changes from analysis |
-| Validate (09) | Document failures as findings; do not fix |
-| Strategic Review (10) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
-| Submit for Review (11) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
-| Complete (12) | Skip ADR and documentation steps; retrospective only |
-
-**Review mode flow:**
-
-```
-start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → post-impl-review → validate → strategic-review → submit-for-review → END
-```
-
-**See [REVIEW-MODE.md](REVIEW-MODE.md) for complete documentation.**
 
 ---
 

@@ -1,0 +1,94 @@
+id: orchestrate-workflow
+version: 1.0.0
+capability: Orchestrate work-package workflow execution using a persistent worker sub-agent
+
+description: "Coordination-only skill for the orchestrator agent. Loads the workflow definition (with schema preamble), initializes state, then dispatches activities sequentially to a persistent worker sub-agent. The orchestrator evaluates transition conditions between activities, manages state variables, and handles rework loops. It MUST NOT execute activity steps, write code, review code, or produce artifacts — all domain work is delegated to the worker."
+
+inputs[2]:
+  - id: workflow-id
+    description: "Workflow to orchestrate (e.g., 'work-package')"
+    required: true
+  - id: user-request
+    description: "The user's initial request, used to detect mode and extract target submodule"
+    required: true
+
+protocol:
+  load-workflow[3]:
+    - "Call get_workflow({ workflow_id }) to receive the schema preamble and workflow definition"
+    - "Extract initialActivity, variables (with defaults), rules, modes, and artifactLocations"
+    - "Read and internalize the schema preamble — you must understand workflow, activity, skill, condition, and state schemas to orchestrate correctly"
+  initialize-state[4]:
+    - Set all workflow variables to their declared defaultValue
+    - "Detect mode from user request (e.g., 'review PR' activates review mode: set is_review_mode=true, apply mode defaults)"
+    - "Identify the target submodule from user request or prompt user to specify one"
+    - "Set current_activity to initialActivity"
+  dispatch-activity[5]:
+    - "Call get_workflow_activity({ workflow_id, activity_id: current_activity }) to load the activity definition"
+    - "Compose the worker prompt: include activity_id, workflow_id, current state variables, planning_folder_path, and bootstrap instructions"
+    - "Bootstrap instructions for worker: call get_rules(), then get_workflow_activity(), then get_skill() for primary skill, then execute steps sequentially"
+    - "For first dispatch: use Task tool with subagent_type=generalPurpose. For subsequent dispatches: use Task tool with resume=worker_agent_id to preserve context"
+    - "Include in prompt: 'Report back with structured result: variables_changed, checkpoints_responded, artifacts_produced, steps_completed'"
+  process-result[3]:
+    - "Read worker output: extract variables_changed, checkpoints_responded, artifacts_produced"
+    - "Update state: apply all variable changes reported by the worker"
+    - "Record completed activity in completedActivities list"
+  evaluate-transition[4]:
+    - "Load the current activity's transitions array"
+    - "Evaluate each transition's condition against current state variables using the condition schema (simple, and, or, not)"
+    - "Select the first transition whose condition evaluates to true, or the default transition (isDefault=true)"
+    - "If no transition matches and no default exists, the workflow is complete (terminal activity)"
+  advance-or-complete[3]:
+    - "If next activity determined: set current_activity to the transition target, go to dispatch-activity"
+    - "If workflow complete: log completion via exitActions, report final state to calling agent"
+    - "If rework loop detected (transition back to earlier activity): note the loop, resume worker with the earlier activity"
+
+output[1]:
+  - id: workflow-result
+    description: "Final workflow execution result"
+    components:
+      completed_activities: "Ordered list of activities completed"
+      final_state: "Final values of all workflow variables"
+      artifacts_produced: "All artifacts produced across all activities"
+      rework_loops: "Any rework loops that occurred (activity transitions backward)"
+
+rules:
+  no-domain-work: "The orchestrator coordinates but MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
+  schema-aware: "The orchestrator MUST understand workflow, activity, skill, condition, and state schemas to correctly evaluate transitions, conditions, and state. The schema preamble from get_workflow provides this."
+  worker-persistence: "The orchestrator MUST resume the same worker agent for each activity using the Task resume parameter. This preserves accumulated codebase understanding, file locations, and implementation decisions across the entire workflow."
+  state-tracking: "The orchestrator tracks all variable changes reported by the worker and evaluates transition conditions based on current state. Variables not reported as changed retain their current values."
+  checkpoint-delegation: "Checkpoints are handled by the worker, which interacts directly with the user. The orchestrator does not present checkpoints or collect user input during activity execution."
+  mode-awareness: "If review mode is active, the orchestrator applies mode.skipActivities (skip the listed activities entirely) and passes is_review_mode=true to the worker so it can apply modeOverrides."
+  transition-evaluation: "Transitions are evaluated in order. The first transition whose condition is true is taken. If no condition matches, the default transition (isDefault=true) is taken. If no transitions exist, the activity is terminal."
+  rework-handling: "When a transition points to an earlier activity (rework loop), the orchestrator resumes the worker with the earlier activity. The worker's preserved context helps it understand what changed since it last executed that activity."
+
+tools:
+  get_workflow:
+    when: "Once at workflow start"
+    params: "workflow_id"
+    returns: "Schema preamble + workflow definition (variables, rules, modes, initialActivity)"
+    action: "Cache the workflow definition and schema context for the entire execution"
+  get_workflow_activity:
+    when: "Before dispatching each activity to the worker"
+    params: "workflow_id, activity_id"
+    returns: "Activity definition (steps, checkpoints, transitions, skills)"
+    action: "Include in worker prompt for self-bootstrap; also read transitions for post-activity evaluation"
+  task:
+    when: "Dispatching or resuming the worker sub-agent"
+    params: "description, prompt, subagent_type (generalPurpose), resume (worker_agent_id after first dispatch)"
+    returns: "Worker output: variables_changed, checkpoints_responded, artifacts_produced, steps_completed"
+    action: "First call creates worker and captures agent_id. Subsequent calls use resume=agent_id."
+    usage: "Use generalPurpose subagent_type. Always include full state context in the prompt."
+
+errors:
+  worker_timeout:
+    cause: "Worker sub-agent did not return within expected time"
+    recovery: "Check terminal output for the worker. Resume the agent if it's still running. If stuck, create a new worker and re-dispatch the current activity."
+  transition_ambiguous:
+    cause: "Multiple transition conditions evaluate to true"
+    recovery: "Take the first matching transition (transitions are ordered). Log a warning about ambiguous conditions."
+  worker_incomplete:
+    cause: "Worker reports fewer steps_completed than the activity defines"
+    recovery: "Resume the worker with instructions to complete remaining steps. Do not advance to next activity until all required steps are done."
+  state_desync:
+    cause: "Worker reports variable changes that conflict with orchestrator state"
+    recovery: "Worker-reported values take precedence (worker has the ground truth from user interaction). Update orchestrator state accordingly."

@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: work-package
-version: 3.1.0
+version: 3.2.0
 title: Work Package Implementation Workflow
 description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
 author: m2ux
@@ -8,7 +8,7 @@ tags[3]:
   - implementation
   - engineering
   - workflow
-rules[9]:
+rules[11]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - Agents must NOT proceed past checkpoints without user confirmation
   - "Ask, don't assume - Clarify requirements before acting"
@@ -18,6 +18,8 @@ rules[9]:
   - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
   - "Never reference gitignored artifacts in PRs, issues, or ADRs - planning artifacts are local-only"
   - "Artifacts in 'planning' and 'reviews' locations are gitignored"
+  - "EXECUTION MODEL: This workflow uses an orchestrator/worker two-agent pattern. The orchestrator (skill: orchestrate-workflow) loads the workflow, manages transitions, and tracks state. A persistent worker sub-agent (skill: execute-activity) executes activities and handles user interaction. The worker is resumed across activities to preserve context."
+  - "ORCHESTRATOR DISCIPLINE: The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. It coordinates only. All domain work is delegated to the worker sub-agent."
 artifactLocations:
   planning: "{planning_folder_path}"
   reviews: ".engineering/artifacts/reviews"
