@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.2.0
+version: 2.3.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution."
 problem: User needs to ensure changes are minimal and focused
@@ -60,23 +60,32 @@ steps[5]:
 checkpoints[2]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
-    message: "Here are the strategic review findings. Do you agree with these observations?"
-    options[3]:
-      - id: confirmed
-        label: Findings confirmed
-        description: Agree with the identified items
+    message: "Here are the strategic review findings. Which would you like to address?"
+    options[4]:
+      - id: fix-findings
+        label: Fix findings before proceeding
+        description: Address strategic review findings now
         effect:
           setVariable:
-            findings_confirmed: true
-      - id: disagree
-        label: Disagree with findings
-        description: Some items should not be removed
+            needs_strategic_fixes: true
+      - id: acceptable
+        label: All acceptable
+        description: Findings noted but no changes needed
+        effect:
+          setVariable:
+            review_passed: true
+      - id: defer-findings
+        label: Defer findings
+        description: Note findings for future but proceed now
+        effect:
+          setVariable:
+            review_passed: true
       - id: more-review
         label: Need more review
         description: Additional areas need examination
   - id: review-result
     name: Strategic Review Result Checkpoint
-    message: "Based on the review, what action should be taken?"
+    message: "Strategic review complete. Overall assessment?"
     options[3]:
       - id: pass
         label: Review passed
