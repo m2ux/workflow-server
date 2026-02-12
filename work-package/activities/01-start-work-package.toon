@@ -76,15 +76,15 @@ modeOverrides:
 entryActions[1]{action,message}:
   log,Starting issue management
 steps[11]:
-  - id: resolve-target-submodule
-    name: Resolve Target Submodule
-    description: "Identify the target submodule from user request or context. Set target_submodule_path. All git operations (branch, PR) will be performed INSIDE this submodule directory, not the parent repo. If not specified, prompt the user."
-  - id: initialize-submodule
-    name: Initialize Target Submodule
-    description: "cd into target_submodule_path. Fetch origin and checkout the default branch (main/master). Pull latest. This ensures the submodule is at HEAD before creating a feature branch."
+  - id: resolve-target
+    name: Resolve Target Directory
+    description: "Identify the target directory from user request or context. Set target_path. This may be a submodule, standalone repo, or monorepo subdirectory. All git operations (branch, PR) will be performed inside this directory. If not specified, prompt the user."
+  - id: initialize-target
+    name: Initialize Target Directory
+    description: "cd into target_path. Fetch origin and checkout the default branch (main/master). Pull latest. This ensures the target is at HEAD before creating a feature branch."
   - id: detect-project-type
     name: Detect Project Type
-    description: "Auto-detect project type inside target submodule: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
+    description: "Auto-detect project type inside target_path: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
   - id: check-issue
     name: Check for Existing Issue
     description: Verify whether an issue has been specified by user or in context
@@ -99,10 +99,10 @@ steps[11]:
       value: true
   - id: check-branch
     name: Check Current Branch
-    description: "INSIDE the target submodule directory: Check if already on a feature branch (not main/master). Run 'git branch --show-current' and compare against main/master."
+    description: "INSIDE target_path: Check if already on a feature branch (not main/master). Run 'git branch --show-current' and compare against main/master."
   - id: create-branch
     name: Create Feature Branch
-    description: "INSIDE the target submodule directory: Create feature branch from the submodule's default branch with naming convention: type/issue-number-short-description. The branch is created in the submodule repo, NOT the parent."
+    description: "INSIDE target_path: Create feature branch from the default branch with naming convention: type/issue-number-short-description."
     condition:
       type: simple
       variable: use_existing_branch
@@ -110,10 +110,10 @@ steps[11]:
       value: false
   - id: check-pr
     name: Check for Existing PR
-    description: "INSIDE the target submodule directory: Check if PR already exists for current branch against the submodule's upstream. Run 'gh pr list --head <branch-name>' from the submodule directory."
+    description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path."
   - id: create-pr
     name: Create Draft PR
-    description: "INSIDE the target submodule directory: Create draft PR in the submodule's upstream repo, linked to issue. PR title should reference issue number. The PR is against the submodule's default branch, NOT the parent repo."
+    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch."
     condition:
       type: simple
       variable: use_existing_pr
