@@ -159,7 +159,7 @@ loops[1]:
     type: doWhile
     condition:
       type: or
-      conditions:
+      conditions[2]:
         - type: simple
           variable: needs_code_fixes
           operator: "=="
@@ -169,7 +169,7 @@ loops[1]:
           operator: "=="
           value: true
     maxIterations: 3
-    steps:
+    steps[6]:
       - id: apply-fixes
         name: Apply Fixes
         description: "Implement the code review findings (needs_code_fixes) and/or test improvements (needs_test_improvements) selected by the user. Commit changes."

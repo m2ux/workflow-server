@@ -40,7 +40,6 @@ modes[1]:
       needs_elicitation: false
     resource: resources/24-review-mode.md
 variables[49]:
-  # --- Core identifiers ---
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}"
@@ -59,7 +58,6 @@ variables[49]:
   - name: project_type
     type: string
     description: "Detected project type (rust-substrate|other). Set by detect-project-type step."
-  # --- Mode ---
   - name: is_review_mode
     type: boolean
     description: "Whether review mode is active (set by mode detection)"
@@ -67,7 +65,6 @@ variables[49]:
   - name: review_pr_url
     type: string
     description: "URL of the PR being reviewed (review mode only)"
-  # --- Control flow: design-philosophy path decisions ---
   - name: needs_elicitation
     type: boolean
     description: Whether requirements elicitation is needed
@@ -83,12 +80,10 @@ variables[49]:
   - name: complexity
     type: string
     description: "Problem complexity assessed during design-philosophy (simple|moderate|complex). Drives ADR creation."
-  # --- Control flow: elicitation ---
   - name: elicitation_complete
     type: boolean
     description: Whether requirements elicitation is finished
     defaultValue: false
-  # --- Control flow: validation and review ---
   - name: validation_passed
     type: boolean
     description: Whether validation phase passed
@@ -113,7 +108,6 @@ variables[49]:
     type: boolean
     description: Whether PR review feedback requires returning to planning
     defaultValue: false
-  # --- start-work-package checkpoint state ---
   - name: needs_issue_creation
     type: boolean
     description: Whether a new issue needs to be created
@@ -157,7 +151,6 @@ variables[49]:
   - name: issue_type
     type: string
     description: "Type of issue (feature|bug|task|enhancement|epic)"
-  # --- Elicitation checkpoint state ---
   - name: has_stakeholder_input
     type: boolean
     description: Whether stakeholder discussion transcript was provided
@@ -182,12 +175,10 @@ variables[49]:
     type: boolean
     description: Whether Jira ticket needs refactoring based on completeness assessment
     defaultValue: false
-  # --- Implementation checkpoint state ---
   - name: skip_assumption_review
     type: boolean
     description: Whether to skip assumption review after task completion
     defaultValue: false
-  # --- Post-impl review checkpoint state ---
   - name: has_flagged_blocks
     type: boolean
     description: Whether user flagged any change blocks during manual diff review
@@ -200,7 +191,6 @@ variables[49]:
     type: boolean
     description: Whether to skip architecture summary creation
     defaultValue: false
-  # --- Strategic review checkpoint state ---
   - name: needs_strategic_fixes
     type: boolean
     description: Whether strategic review findings require fixes
@@ -209,23 +199,19 @@ variables[49]:
     type: boolean
     description: Whether minor cleanup is needed from strategic review
     defaultValue: false
-  # --- Update PR checkpoint state ---
   - name: review_posted
     type: boolean
     description: Whether review summary was posted to PR (review mode)
     defaultValue: false
-  # --- Post-impl review state ---
   - name: flagged_block_indices
     type: array
     description: "List of change block indices flagged by user during manual diff review"
-  # --- Loop collection variables (runtime, populated by steps) ---
   - name: question_domains
     type: array
     description: "Question domains for requirements elicitation iteration"
   - name: task_assumptions
     type: array
     description: "Assumptions collected during current task for review iteration"
-  # --- Loop iteration variables (runtime, no default) ---
   - name: current_task
     type: object
     description: "Current task during implementation loop (from plan.tasks)"
