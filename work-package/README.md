@@ -1,12 +1,12 @@
 # Work Package Implementation Workflow
 
-> v3.2.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.3.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
 ## Overview
 
-This workflow guides the complete lifecycle of a single work package through twelve activities, each with defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
+This workflow guides the complete lifecycle of a single work package through thirteen activities, each with defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
@@ -16,12 +16,13 @@ This workflow guides the complete lifecycle of a single work package through twe
 | 04 | [**Research**](activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
 | 05 | [**Implementation Analysis**](activities/README.md#05-implementation-analysis) | yes | Understand current state, establish baselines |
 | 06 | [**Plan & Prepare**](activities/README.md#06-plan--prepare) | yes | Create implementation and test plans |
-| 07 | [**Implement**](activities/README.md#07-implement) | yes | Execute tasks with implement-test-commit cycles |
-| 08 | [**Post-Implementation Review**](activities/README.md#08-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
-| 09 | [**Validate**](activities/README.md#09-validate) | yes | Run tests, build, and lint checks |
-| 10 | [**Strategic Review**](activities/README.md#10-strategic-review) | yes | Ensure minimal, focused changes |
-| 11 | [**Submit for Review**](activities/README.md#11-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
-| 12 | [**Complete**](activities/README.md#12-complete) | yes | Finalize documentation, create ADR, conduct retrospective |
+| 07 | [**Assumptions Review**](activities/README.md#07-assumptions-review) | optional | Post assumptions to issue tracker for stakeholder review |
+| 08 | [**Implement**](activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
+| 09 | [**Post-Implementation Review**](activities/README.md#09-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
+| 10 | [**Validate**](activities/README.md#10-validate) | yes | Run tests, build, and lint checks |
+| 11 | [**Strategic Review**](activities/README.md#11-strategic-review) | yes | Ensure minimal, focused changes |
+| 12 | [**Submit for Review**](activities/README.md#12-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
+| 13 | [**Complete**](activities/README.md#13-complete) | yes | Finalize documentation, create ADR, conduct retrospective |
 
 **Detailed documentation:**
 
@@ -48,20 +49,21 @@ graph TD
     RS --> IA["05 implementation-analysis"]
     IA --> PP["06 plan-prepare"]
 
-    PP --> IMP["07 implement"]
-    IMP --> PIR["08 post-impl-review"]
+    PP --> AR["07 assumptions-review"]
+    AR --> IMP["08 implement"]
+    IMP --> PIR["09 post-impl-review"]
     PIR --> BLK{"critical blocker?"}
     BLK -->|"yes"| IMP
-    BLK -->|"no"| VAL["09 validate"]
+    BLK -->|"no"| VAL["10 validate"]
 
-    VAL --> SR["10 strategic-review"]
+    VAL --> SR["11 strategic-review"]
 
     SR --> SRD{"review passed?"}
-    SRD -->|"yes"| SFR["11 submit-for-review"]
+    SRD -->|"yes"| SFR["12 submit-for-review"]
     SRD -->|"rework"| PP
 
     SFR --> RVD{"review outcome?"}
-    RVD -->|"approved/minor"| COMP["12 complete"]
+    RVD -->|"approved/minor"| COMP["13 complete"]
     RVD -->|"significant changes"| PP
 
     COMP --> doneNode(["End"])
@@ -75,16 +77,17 @@ graph TD
 |---|----------|--------------|-------------------|-------------|----------------|
 | 01 | [Start Work Package](activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts` | 8 | — |
 | 02 | [Design Philosophy](activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions` | 4 | `02` |
-| 03 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions` | 5 | `03` |
+| 03 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions` | 3 | `03` |
 | 04 | [Research](activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions` | 4 | `04` |
 | 05 | [Implementation Analysis](activities/README.md#05-implementation-analysis) | `analyze-implementation` | `manage-artifacts`, `review-assumptions` | 2 | `05` |
 | 06 | [Plan & Prepare](activities/README.md#06-plan--prepare) | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan` | 4 | `06` |
-| 07 | [Implement](activities/README.md#07-implement) | `implement-task` | `review-assumptions`, `validate-build`, `manage-git` | 2 | `07` |
-| 08 | [Post-Impl Review](activities/README.md#08-post-implementation-review) | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture` | 5 | `08` |
-| 09 | [Validate](activities/README.md#09-validate) | `validate-build` | — | 0 | — |
-| 10 | [Strategic Review](activities/README.md#10-strategic-review) | `review-strategy` | — | 2 | `10` |
-| 11 | [Submit for Review](activities/README.md#11-submit-for-review) | `update-pr` | `respond-to-pr-review` | 3 | — |
-| 12 | [Complete](activities/README.md#12-complete) | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 1 | `12` |
+| 07 | [Assumptions Review](activities/README.md#07-assumptions-review) | `review-assumptions` | `manage-artifacts` | 2 | `07` |
+| 08 | [Implement](activities/README.md#08-implement) | `implement-task` | `review-assumptions`, `validate-build`, `manage-git` | 2 | `08` |
+| 09 | [Post-Impl Review](activities/README.md#09-post-implementation-review) | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture` | 5 | `09` |
+| 10 | [Validate](activities/README.md#10-validate) | `validate-build` | — | 0 | — |
+| 11 | [Strategic Review](activities/README.md#11-strategic-review) | `review-strategy` | — | 2 | `11` |
+| 12 | [Submit for Review](activities/README.md#12-submit-for-review) | `update-pr` | `respond-to-pr-review` | 3 | — |
+| 13 | [Complete](activities/README.md#13-complete) | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 1 | `13` |
 
 See [activities/README.md](activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
 
@@ -147,7 +150,7 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 
 **Activation:** Detected from user intent patterns such as "start review work package", "review PR #123", or "review existing implementation". Sets `is_review_mode = true`.
 
-**Skipped activities:** Requirements Elicitation (03) and Implement (07) are always skipped in review mode. Elicitation is unnecessary because requirements come solely from the associated ticket. Implementation is skipped because the code already exists.
+**Skipped activities:** Requirements Elicitation (03) and Implement (08) are always skipped in review mode. Elicitation is unnecessary because requirements come solely from the associated ticket. Implementation is skipped because the code already exists.
 
 **Behavioral overrides per activity:**
 
@@ -156,16 +159,16 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 | [Start Work Package](activities/README.md#01-start-work-package) (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
 | [Design Philosophy](activities/README.md#02-design-philosophy) (02) | Assess ticket completeness; always skip elicitation |
 | [Implementation Analysis](activities/README.md#05-implementation-analysis) (05) | Checkout base branch to analyze pre-change state; document expected changes |
-| [Post-Implementation Review](activities/README.md#08-post-implementation-review) (08) | Compare PR changes against expected changes from analysis |
-| [Validate](activities/README.md#09-validate) (09) | Document failures as findings; do not fix |
-| [Strategic Review](activities/README.md#10-strategic-review) (10) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
-| [Submit for Review](activities/README.md#11-submit-for-review) (11) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
-| [Complete](activities/README.md#12-complete) (12) | Skip ADR and documentation steps; retrospective only |
+| [Post-Implementation Review](activities/README.md#09-post-implementation-review) (09) | Compare PR changes against expected changes from analysis |
+| [Validate](activities/README.md#10-validate) (10) | Document failures as findings; do not fix |
+| [Strategic Review](activities/README.md#11-strategic-review) (11) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
+| [Submit for Review](activities/README.md#12-submit-for-review) (12) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
+| [Complete](activities/README.md#13-complete) (13) | Skip ADR and documentation steps; retrospective only |
 
 **Review mode flow:**
 
 ```
-start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → post-impl-review → validate → strategic-review → submit-for-review → END
+start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → assumptions-review → post-impl-review → validate → strategic-review → submit-for-review → END
 ```
 
 **See [REVIEW-MODE.md](REVIEW-MODE.md) for complete documentation.**
@@ -186,11 +189,11 @@ Each review and documentation activity declares an `artifactPrefix` matching its
 
 | Activity | Prefix | Bare Name | Final Name |
 |----------|--------|-----------|------------|
-| [Post-Implementation Review](activities/README.md#08-post-implementation-review) | `08` | `code-review.md` | `08-code-review.md` |
-| [Post-Implementation Review](activities/README.md#08-post-implementation-review) | `08` | `test-suite-review.md` | `08-test-suite-review.md` |
-| [Strategic Review](activities/README.md#10-strategic-review) | `10` | `strategic-review-1.md` | `10-strategic-review-1.md` |
-| [Strategic Review](activities/README.md#10-strategic-review) | `10` | `architecture-summary.md` | `10-architecture-summary.md` |
-| [Complete](activities/README.md#12-complete) | `12` | `COMPLETE.md` | `12-COMPLETE.md` |
+| [Post-Implementation Review](activities/README.md#09-post-implementation-review) | `09` | `code-review.md` | `09-code-review.md` |
+| [Post-Implementation Review](activities/README.md#09-post-implementation-review) | `09` | `test-suite-review.md` | `09-test-suite-review.md` |
+| [Strategic Review](activities/README.md#11-strategic-review) | `11` | `strategic-review-1.md` | `11-strategic-review-1.md` |
+| [Strategic Review](activities/README.md#11-strategic-review) | `11` | `architecture-summary.md` | `11-architecture-summary.md` |
+| [Complete](activities/README.md#13-complete) | `13` | `COMPLETE.md` | `13-COMPLETE.md` |
 
 This convention ensures artifacts are naturally sorted by workflow phase when listed in the planning folder.
 
@@ -202,24 +205,24 @@ The workflow contains four feedback loops that enable iterative quality improvem
 
 | From | To | Condition | Purpose |
 |------|----|-----------|---------|
-| [Post-Implementation Review](activities/README.md#08-post-implementation-review) (08) | [Implement](activities/README.md#07-implement) (07) | `has_critical_blocker == true` | Critical blocker found during review requires code fix before proceeding |
-| [Strategic Review](activities/README.md#10-strategic-review) (10) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `review_passed == false` | Significant rework needed — changes are not minimal or focused |
-| [Submit for Review](activities/README.md#11-submit-for-review) (11) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `review_requires_changes == true` | Reviewer requested significant changes requiring re-planning |
+| [Post-Implementation Review](activities/README.md#09-post-implementation-review) (09) | [Implement](activities/README.md#08-implement) (08) | `has_critical_blocker == true` | Critical blocker found during review requires code fix before proceeding |
+| [Strategic Review](activities/README.md#11-strategic-review) (11) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `review_passed == false` | Significant rework needed — changes are not minimal or focused |
+| [Submit for Review](activities/README.md#12-submit-for-review) (12) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `review_requires_changes == true` | Reviewer requested significant changes requiring re-planning |
 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) (03) | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) (03) | `elicitation_complete == false` | Elicitation incomplete — self-loop for further stakeholder discussion |
 
 ```mermaid
 graph LR
-    postImplReview["08 Post-Impl Review"] -->|"critical blocker"| implement["07 Implement"]
-    strategicReview["10 Strategic Review"] -->|"rework needed"| planPrepare["06 Plan and Prepare"]
-    submitReview["11 Submit for Review"] -->|"significant changes"| planPrepare
+    postImplReview["09 Post-Impl Review"] -->|"critical blocker"| implement["08 Implement"]
+    strategicReview["11 Strategic Review"] -->|"rework needed"| planPrepare["06 Plan and Prepare"]
+    submitReview["12 Submit for Review"] -->|"significant changes"| planPrepare
     reqElicit["03 Requirements Elicitation"] -->|"incomplete"| reqElicit
 ```
 
 ---
 
-## Variables (49)
+## Variables (50)
 
-The workflow declares 49 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
+The workflow declares 50 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
 
 ### Core Identifiers
 
@@ -335,10 +338,11 @@ The following rules are declared at the workflow level and apply to all activiti
 | [04 Research](activities/README.md#04-research-optional) | 20-45 min |
 | [05 Implementation Analysis](activities/README.md#05-implementation-analysis) | 10-20 min |
 | [06 Plan & Prepare](activities/README.md#06-plan--prepare) | 20-45 min |
-| [07 Implement](activities/README.md#07-implement) | 1-4 hours |
-| [08 Post-Implementation Review](activities/README.md#08-post-implementation-review) | 15-30 min |
-| [09 Validate](activities/README.md#09-validate) | 15-30 min |
-| [10 Strategic Review](activities/README.md#10-strategic-review) | 15-30 min |
-| [11 Submit for Review](activities/README.md#11-submit-for-review) | 10-15 min |
-| [12 Complete](activities/README.md#12-complete) | 30-60 min |
-| **Total (full workflow)** | **~4-9 hours** |
+| [07 Assumptions Review](activities/README.md#07-assumptions-review) | 10-20 min |
+| [08 Implement](activities/README.md#08-implement) | 1-4 hours |
+| [09 Post-Implementation Review](activities/README.md#09-post-implementation-review) | 15-30 min |
+| [10 Validate](activities/README.md#10-validate) | 15-30 min |
+| [11 Strategic Review](activities/README.md#11-strategic-review) | 15-30 min |
+| [12 Submit for Review](activities/README.md#12-submit-for-review) | 10-15 min |
+| [13 Complete](activities/README.md#13-complete) | 30-60 min |
+| **Total (full workflow)** | **~4-10 hours** |

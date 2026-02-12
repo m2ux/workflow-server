@@ -1,0 +1,101 @@
+id: assumptions-review
+version: 1.0.0
+name: Assumptions Review
+description: "Post accumulated assumptions to the issue tracker for stakeholder review, await feedback, and iterate until stakeholders approve. Supports both Jira and GitHub issue platforms."
+problem: Stakeholders need to review and validate assumptions before implementation begins
+recognition[3]:
+  - review assumptions with stakeholders
+  - post assumptions for review
+  - stakeholder assumptions review
+skills:
+  primary: review-assumptions
+  supporting[1]:
+    - manage-artifacts
+required: false
+estimatedTime: 10-20m
+artifactPrefix: "07"
+rules[2]:
+  - "Compile assumptions from ALL prior phases (design, requirements, research, analysis, planning) into a single summary for stakeholder review"
+  - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
+steps[4]:
+  - id: prepare-assumptions-summary
+    name: Prepare assumptions summary
+    description: "Compile all accumulated assumptions from prior phases into a comment suitable for posting to the issue tracker. Include assumption type, statement, rationale, and alternatives for each."
+  - id: post-assumptions-comment
+    name: Post assumptions comment
+    description: "Post the prepared assumptions summary as a comment on the issue tracker ticket. Uses Jira API or GitHub CLI depending on issue_platform."
+    condition:
+      type: simple
+      variable: issue_platform
+      operator: exists
+  - id: await-stakeholder-response
+    name: Await stakeholder response
+    description: "Wait for stakeholders to review the posted comment. User returns with stakeholder feedback or indicates approval."
+  - id: update-assumptions-log
+    name: Update assumptions log
+    description: "Update assumptions log with stakeholder review outcomes and any feedback received."
+artifacts[1]:
+  - id: assumptions-log
+    name: assumptions-log.md
+    location: planning
+    description: "Assumptions log updated with stakeholder review outcomes"
+    action: update
+checkpoints[2]:
+  - id: comment-review
+    name: Assumptions Comment Review
+    prerequisite: "Only present when issue_platform is set"
+    message: "Here are the accumulated assumptions prepared as a comment for stakeholder review on the {issue_platform} ticket. Review the content before posting."
+    blocking: true
+    options[3]:
+      - id: post-comment
+        label: Post to issue tracker
+        description: Post this comment to the ticket for stakeholder review
+        effect:
+          setVariable:
+            post_jira_comment: true
+      - id: edit-comment
+        label: Edit comment
+        description: Modify the comment content before posting
+      - id: skip-posting
+        label: Skip posting
+        description: Do not post assumptions to the issue tracker
+        effect:
+          setVariable:
+            post_jira_comment: false
+  - id: stakeholder-response
+    name: Stakeholder Response Checkpoint
+    message: "The assumptions have been posted for stakeholder review. Once stakeholders have reviewed, provide their feedback here."
+    blocking: true
+    options[3]:
+      - id: stakeholder-comment
+        label: Stakeholder commented
+        description: Provide the stakeholder's comment or feedback for review
+        effect:
+          setVariable:
+            has_stakeholder_comment: true
+      - id: stakeholders-approved
+        label: Stakeholders approved
+        description: No issues raised, proceed to implementation
+        effect:
+          setVariable:
+            stakeholder_review_complete: true
+      - id: further-discussion
+        label: Further discussion needed
+        description: Stakeholder feedback requires revision and re-posting
+        effect:
+          setVariable:
+            needs_further_discussion: true
+          transitionTo: prepare-assumptions-summary
+transitions[1]{to,isDefault}:
+  implement,true
+outcome[3]:
+  - Assumptions posted to issue tracker for stakeholder review
+  - Stakeholder feedback incorporated into assumptions log
+  - Assumptions validated before implementation begins
+context_to_preserve[6]:
+  - assumptions_comment_body - Prepared comment content for issue tracker
+  - post_jira_comment - Whether to post assumptions comment
+  - has_stakeholder_comment - Whether stakeholder provided feedback
+  - stakeholder_comment - Content of stakeholder's response
+  - stakeholder_review_complete - Whether stakeholder review is complete
+  - needs_further_discussion - Whether further discussion is needed

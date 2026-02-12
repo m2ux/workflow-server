@@ -15,7 +15,7 @@ skills:
     - manage-git
 required: true
 estimatedTime: 1-4h
-artifactPrefix: "07"
+artifactPrefix: "08"
 rules[2]:
   - "After each task, explicitly identify and review assumptions made during implementation"
   - "Update assumptions log AFTER the assumption review checkpoint — record user responses and outcomes"

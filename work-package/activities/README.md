@@ -151,7 +151,7 @@ graph TD
 
 ### 03. Requirements Elicitation (optional)
 
-**Purpose:** Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it. Includes a stakeholder discussion phase, sequential question-domain iteration, Jira comment posting for stakeholder review, and awaiting stakeholder response.
+**Purpose:** Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it. Includes a stakeholder discussion phase and sequential question-domain iteration.
 
 **Skills:**
 
@@ -166,19 +166,15 @@ graph TD
 1. **stakeholder-discussion** — Prompt user to initiate discussion with key stakeholders. User provides transcript or summary.
 2. **elicit-requirements** — Iterate through question domains, asking one question at a time. Use stakeholder transcript as context.
 3. **collect-assumptions** — Identify assumptions made when interpreting user responses.
-4. **post-assumptions-to-jira** — Prepare assumptions as Jira comment, get user approval, then post to ticket (if `issue_platform` is Jira).
-5. **await-stakeholder-response** — Wait for stakeholders to review the Jira comment. User returns with feedback.
-6. **create-document** — Create requirements document using elicitation output template.
-7. **update-assumptions-log** — Add requirements-phase assumptions to the assumptions log.
+4. **create-document** — Create requirements document using elicitation output template.
+5. **update-assumptions-log** — Add requirements-phase assumptions to the assumptions log.
 
-**Checkpoints (5):**
+**Checkpoints (3):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `stakeholder-transcript` | Provide or skip stakeholder discussion transcript | yes |
 | `domain-complete` | Continue to next domain, revisit, or finish early | yes |
-| `jira-comment-review` | Review and approve Jira comment before posting | yes |
-| `stakeholder-response` | Provide stakeholder feedback or confirm approval | yes |
 | `document-review` | Confirm requirements document, proceed to research | yes |
 
 **Loops:** `domain-iteration` — forEach over `question_domains` (max 5 iterations). Each iteration asks one question and records the response.
@@ -187,8 +183,8 @@ graph TD
 
 | Condition | Target |
 |-----------|--------|
-| `requirements_confirmed == true` (default) | research |
-| `requirements_confirmed == false` | requirements-elicitation (self-loop) |
+| `elicitation_complete == true` (default) | research |
+| `elicitation_complete == false` | requirements-elicitation (self-loop) |
 
 **Artifacts:** `requirements-elicitation.md` (in planning folder).
 
@@ -205,17 +201,7 @@ graph TD
     cpDomain -->|"revisit"| askQuestion
     cpDomain -->|"finish early"| collectAssumptions
 
-    collectAssumptions["Collect assumptions"] --> cpJira{"jira-comment-review checkpoint"}
-    cpJira -->|"post to Jira"| postComment["Post comment to Jira"]
-    cpJira -->|"edit comment"| collectAssumptions
-    cpJira -->|"skip posting"| createDoc
-
-    postComment --> cpResponse{"stakeholder-response checkpoint"}
-    cpResponse -->|"stakeholder commented"| processComment["Process feedback"]
-    cpResponse -->|"approved"| createDoc
-    cpResponse -->|"further discussion"| cpStakeholder
-
-    processComment --> createDoc["Create requirements document"]
+    collectAssumptions["Collect assumptions"] --> createDoc["Create requirements document"]
     createDoc --> updateLog["Update assumptions log"]
     updateLog --> cpDocReview{"document-review checkpoint"}
     cpDocReview -->|"proceed"| exitNode(["research"])
@@ -366,7 +352,7 @@ graph TD
 | `ready-implement` | Confirm readiness to implement | yes |
 | `assumptions-log-final` | Final review of accumulated assumptions before implementation | yes |
 
-**Transitions:** Default to `implement`.
+**Transitions:** Default to `assumptions-review`.
 
 **Artifacts:** `work-package-plan.md`, `test-plan.md` (both in planning folder).
 
@@ -390,14 +376,65 @@ graph TD
     cpReady -->|"ready"| cpFinal{"assumptions-log-final checkpoint"}
     cpReady -->|"not ready"| applyDesign
 
-    cpFinal -->|"acceptable"| exitNode(["implement"])
+    cpFinal -->|"acceptable"| exitNode(["assumptions-review"])
     cpFinal -->|"revisit"| collectAssumptions
     cpFinal -->|"document concerns"| exitNode
 ```
 
 ---
 
-### 07. Implement
+### 07. Assumptions Review
+
+**Purpose:** Post accumulated assumptions from all prior phases (design, requirements, research, analysis, planning) to the issue tracker for stakeholder review. Supports both Jira and GitHub platforms. Awaits stakeholder feedback and iterates if further discussion is needed.
+
+**Skills:**
+
+| Role | Skill ID |
+|------|----------|
+| primary | `review-assumptions` |
+| supporting | `manage-artifacts` |
+
+**Steps:**
+
+1. **prepare-assumptions-summary** — Compile all accumulated assumptions from prior phases into an issue comment.
+2. **post-assumptions-comment** — Post comment to issue tracker (conditional on `issue_platform` being set).
+3. **await-stakeholder-response** — Wait for stakeholder feedback on posted comment.
+4. **update-assumptions-log** — Update assumptions log with stakeholder review outcomes.
+
+**Checkpoints (2):**
+
+| Checkpoint | Purpose | Blocking |
+|------------|---------|----------|
+| `comment-review` | Review prepared comment before posting to issue tracker | yes |
+| `stakeholder-response` | Provide stakeholder feedback or confirm approval | yes |
+
+**Transitions:** Default to `implement`.
+
+**Artifacts:** `assumptions-log.md` (update, in planning folder).
+
+```mermaid
+graph TD
+    entryNode(["Entry"]) --> prepSummary["Prepare assumptions summary"]
+    prepSummary --> checkPlatform{"issue_platform set?"}
+    checkPlatform -->|"jira or github"| cpComment{"comment-review checkpoint"}
+    checkPlatform -->|"no platform"| updateLog["Update assumptions log"]
+
+    cpComment -->|"post comment"| postComment["Post to issue tracker"]
+    cpComment -->|"edit comment"| prepSummary
+    cpComment -->|"skip posting"| updateLog
+
+    postComment --> cpResponse{"stakeholder-response checkpoint"}
+    cpResponse -->|"approved"| updateLog
+    cpResponse -->|"commented"| incorporateFeedback["Incorporate feedback"]
+    cpResponse -->|"further discussion"| prepSummary
+    incorporateFeedback --> prepSummary
+
+    updateLog --> exitNode(["implement"])
+```
+
+---
+
+### 08. Implement
 
 **Purpose:** Execute the implementation plan task by task. Each task follows a cycle of implement, test, commit, review assumptions, checkpoint. Contains two nested loops: the task implementation cycle and the assumption review cycle within each task.
 
@@ -464,11 +501,11 @@ graph TD
 
 ---
 
-### 08. Post-Implementation Review
+### 09. Post-Implementation Review
 
 **Purpose:** Review implementation quality through manual diff review, code review, test suite review, and architecture summary. Includes a blocker gate: if a critical blocker is found, transitions back to implement for remediation.
 
-**Artifact prefix:** `08`
+**Artifact prefix:** `09`
 
 **Skills:**
 
@@ -498,15 +535,15 @@ graph TD
 
 **Decision:** `blocker-gate` — If `has_critical_blocker == true`, transition back to `implement`. Otherwise proceed to `validate`.
 
-**Artifacts (prefixed with `08-`):**
+**Artifacts (prefixed with `09-`):**
 
 | Artifact | Description |
 |----------|-------------|
-| `08-change-block-index.md` | Indexed table of all changed blocks in the diff |
-| `08-manual-diff-review.md` | Manual diff review findings from interview process |
-| `08-code-review.md` | Comprehensive code review document |
-| `08-test-suite-review.md` | Test suite quality assessment |
-| `08-architecture-summary.md` | High-level architecture summary with diagrams |
+| `09-change-block-index.md` | Indexed table of all changed blocks in the diff |
+| `09-manual-diff-review.md` | Manual diff review findings from interview process |
+| `09-code-review.md` | Comprehensive code review document |
+| `09-test-suite-review.md` | Test suite quality assessment |
+| `09-architecture-summary.md` | High-level architecture summary with diagrams |
 
 ```mermaid
 graph TD
@@ -533,7 +570,7 @@ graph TD
 
 ---
 
-### 09. Validate
+### 10. Validate
 
 **Purpose:** Validate the implementation through testing, build verification, and lint checking. If failures are found, analyze root cause, fix, and re-run until all pass. In review mode: documents failures as review findings and does not attempt fixes.
 
@@ -567,11 +604,11 @@ graph TD
 
 ---
 
-### 10. Strategic Review
+### 11. Strategic Review
 
 **Purpose:** Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. Creates strategic review document and architecture summary. In review mode: documents cleanup recommendations without applying them.
 
-**Artifact prefix:** `10`
+**Artifact prefix:** `11`
 
 **Skills:**
 
@@ -583,9 +620,9 @@ graph TD
 
 1. **diff-review** — Examine all changes in the PR for scope and relevance.
 2. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure.
-3. **document-findings** — Create `10-strategic-review-{n}.md` with items that should be removed or simplified.
+3. **document-findings** — Create `11-strategic-review-{n}.md` with items that should be removed or simplified.
 4. **apply-cleanup** — If cleanup needed, remove identified artifacts and update review document. (Skipped in review mode.)
-5. **create-architecture-summary** — Create `10-architecture-summary.md` using the architecture summary resource template.
+5. **create-architecture-summary** — Create `11-architecture-summary.md` using the architecture summary resource template.
 
 **Checkpoints (2):**
 
@@ -596,12 +633,12 @@ graph TD
 
 **Decision:** `review-result` — If `review_passed == true`, transition to `submit-for-review`. Otherwise loop back to `plan-prepare`.
 
-**Artifacts (prefixed with `10-`):**
+**Artifacts (prefixed with `11-`):**
 
 | Artifact | Description |
 |----------|-------------|
-| `10-strategic-review-{n}.md` | Review findings, identified artifacts, cleanup actions. `{n}` increments on successive reviews. |
-| `10-architecture-summary.md` | High-level architecture summary with UML-style diagrams |
+| `11-strategic-review-{n}.md` | Review findings, identified artifacts, cleanup actions. `{n}` increments on successive reviews. |
+| `11-architecture-summary.md` | High-level architecture summary with UML-style diagrams |
 
 ```mermaid
 graph TD
@@ -622,7 +659,7 @@ graph TD
 
 ---
 
-### 11. Submit for Review
+### 12. Submit for Review
 
 **Purpose:** Push PR, update description with implementation details, mark ready for review, then await reviewer feedback. If significant changes are requested, loop back to plan-prepare. In review mode: consolidates all review findings and posts structured PR review comments, then ends the workflow.
 
@@ -677,11 +714,11 @@ graph TD
 
 ---
 
-### 12. Complete
+### 13. Complete
 
 **Purpose:** Final activity — create Architecture Decision Record (if moderate or complex implementation), finalize documentation, conduct retrospective, capture session history, update status, and select next work package. In review mode: ends after retrospective.
 
-**Artifact prefix:** `12`
+**Artifact prefix:** `13`
 
 **Skills:**
 

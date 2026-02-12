@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.4.0
+version: 2.5.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it.
 problem: User needs to clarify and capture requirements before implementation
@@ -17,7 +17,7 @@ estimatedTime: 15-30m
 artifactPrefix: "03"
 rules[1]:
   - "Elicitation protocol and domain rules are in the requirements-elicitation skill"
-steps[7]:
+steps[5]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion
     description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
@@ -27,17 +27,6 @@ steps[7]:
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
-  - id: post-assumptions-to-jira
-    name: Post assumptions to Jira
-    description: "Prepare assumptions as Jira comment, get user approval, then post to ticket."
-    condition:
-      type: simple
-      variable: issue_platform
-      operator: ==
-      value: jira
-  - id: await-stakeholder-response
-    name: Await stakeholder response
-    description: "Wait for stakeholders to review the Jira comment. User returns with stakeholder feedback or indicates further discussion is needed."
   - id: create-document
     name: Create requirements document
     description: "Create requirements document using elicitation output template"
@@ -78,9 +67,9 @@ decisions[1]:
         transitionTo: next-domain
       - id: done
         label: User said done with questions
-        transitionTo: jira-comment-review
+        transitionTo: collect-assumptions
         isDefault: false
-checkpoints[5]:
+checkpoints[3]:
   - id: stakeholder-transcript
     name: Stakeholder Discussion Checkpoint
     message: "Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here."
@@ -114,51 +103,6 @@ checkpoints[5]:
         effect:
           setVariable:
             elicitation_complete: true
-  - id: jira-comment-review
-    name: Jira Comment Review Checkpoint
-    prerequisite: "Only present when issue_platform is jira"
-    message: "Here's the requirements and assumptions summary prepared as a Jira comment for stakeholder review. Review the content before posting."
-    blocking: true
-    options[3]:
-      - id: post-comment
-        label: Post to Jira
-        description: Add this comment to the Jira ticket
-        effect:
-          setVariable:
-            post_jira_comment: true
-      - id: edit-comment
-        label: Edit comment
-        description: Modify the comment content before posting
-      - id: skip-comment
-        label: Skip posting
-        description: Do not post assumptions to Jira
-        effect:
-          setVariable:
-            post_jira_comment: false
-  - id: stakeholder-response
-    name: Stakeholder Response Checkpoint
-    message: "The assumptions have been posted to Jira for stakeholder review. Once stakeholders have reviewed, provide their feedback here."
-    blocking: true
-    options[3]:
-      - id: stakeholder-comment
-        label: Stakeholder commented
-        description: Provide the stakeholder's comment or feedback for review
-        effect:
-          setVariable:
-            has_stakeholder_comment: true
-      - id: stakeholders-approved
-        label: Stakeholders approved
-        description: No issues raised, proceed to create document
-        effect:
-          setVariable:
-            stakeholder_review_complete: true
-      - id: further-discussion
-        label: Further discussion needed
-        description: Stakeholder feedback requires additional discussion
-        effect:
-          setVariable:
-            needs_further_discussion: true
-          transitionTo: stakeholder-discussion
   - id: document-review
     name: Document Review Checkpoint
     message: "Requirements document created. Ready to proceed to Research?"
@@ -186,13 +130,11 @@ transitions[2]:
       variable: elicitation_complete
       operator: ==
       value: false
-outcome[5]:
+outcome[3]:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods
-  - Assumptions posted to Jira and reviewed by stakeholders (if Jira issue)
-  - Stakeholder feedback incorporated into requirements
   - Requirements document created in planning folder
-context_to_preserve[12]:
+context_to_preserve[7]:
   - stakeholder_transcript - Transcript or summary from stakeholder discussion
   - has_stakeholder_input - Whether stakeholder discussion was provided
   - requirements - Captured requirements list
@@ -200,8 +142,3 @@ context_to_preserve[12]:
   - planning_folder_path - Path to planning artifacts folder
   - elicitation_log - Record of questions asked and responses
   - scope_boundaries - In/out scope definitions
-  - jira_comment_body - Prepared comment content for Jira
-  - post_jira_comment - Whether to post assumptions to Jira
-  - has_stakeholder_comment - Whether stakeholder provided feedback comment
-  - stakeholder_comment - Content of stakeholder's response to Jira comment
-  - stakeholder_review_complete - Whether stakeholder review is complete

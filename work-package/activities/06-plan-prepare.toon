@@ -1,5 +1,5 @@
 id: plan-prepare
-version: 1.1.0
+version: 1.2.0
 name: Plan & Prepare
 description: "Design the approach, create the work package plan, and prepare for implementation."
 problem: User needs to plan the implementation approach
@@ -90,7 +90,7 @@ checkpoints[4]:
         label: Document concerns and proceed
         description: Note concerns in the log but continue to implementation
 transitions[1]{to,isDefault}:
-  implement,true
+  assumptions-review,true
 outcome[3]:
   - Implementation plan created
   - Test plan created
