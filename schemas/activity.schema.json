@@ -310,7 +310,7 @@
         },
         "name": {
           "type": "string",
-          "description": "Artifact filename. May contain template variables (e.g., '{NN}-code-review.md', 'NNNN-{decision-title}.md')."
+          "description": "Artifact filename without activity prefix. The activity's artifactPrefix is prepended at write time (e.g., name 'code-review.md' with artifactPrefix '08' produces '08-code-review.md'). May contain other template variables (e.g., '{n}' for iteration count, '{decision-title}' for ADR naming)."
         },
         "location": {
           "type": "string",
@@ -411,12 +411,16 @@
           },
           "description": "Iteration constructs"
         },
+        "artifactPrefix": {
+          "type": "string",
+          "description": "Numeric prefix prepended to all artifact filenames produced by this activity (e.g., '08'). Skills produce artifacts with bare names (e.g., 'code-review.md'); the activity prepends this prefix at write time (e.g., '08-code-review.md')."
+        },
         "artifacts": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/artifact"
           },
-          "description": "Artifacts produced or updated by this activity. Location keys reference workflow.artifactLocations."
+          "description": "Artifacts produced or updated by this activity. Filenames in artifact.name are prepended with artifactPrefix when present. Location keys reference workflow.artifactLocations."
         },
         "transitions": {
           "type": "array",
