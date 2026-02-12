@@ -1,0 +1,113 @@
+id: execute-activity
+version: 1.0.0
+capability: Bootstrap and execute a single workflow activity as a worker sub-agent
+
+description: "Worker bootstrap skill for the persistent sub-agent. When dispatched by the orchestrator, the worker self-loads the activity definition and primary skill from the workflow-server, executes steps sequentially, handles checkpoints with the user, produces artifacts, and reports structured results back to the orchestrator. The worker persists across activities (via Task resume) to preserve accumulated codebase understanding and implementation context."
+
+inputs[3]:
+  - id: activity-id
+    description: "ID of the activity to execute (provided by orchestrator)"
+    required: true
+  - id: workflow-id
+    description: "Workflow ID for workflow-server calls (e.g., 'work-package')"
+    required: true
+  - id: state-variables
+    description: "Current workflow state variables from the orchestrator"
+    required: true
+
+protocol:
+  bootstrap-rules[1]:
+    - "Call get_rules() to load agent behavioral guidelines. Follow these rules throughout execution."
+  bootstrap-activity[2]:
+    - "Call get_workflow_activity({ workflow_id, activity_id }) to load the activity definition"
+    - "Extract steps, checkpoints, skills (primary + supporting), loops, decisions, transitions, modeOverrides, and artifactPrefix"
+  bootstrap-skill[2]:
+    - "Call get_skill({ skill_id: activity.skills.primary, workflow_id }) to load the primary skill definition"
+    - "Read the skill protocol, rules, tools, inputs, and output definitions. These guide HOW to execute the activity steps."
+  check-mode[2]:
+    - "If is_review_mode is true in state variables, apply the activity's modeOverrides: use override description, apply override rules, add override steps, skip steps listed in skipSteps"
+    - "If the activity is listed in the workflow's mode.skipActivities, report back immediately with a skip result"
+  execute-steps[4]:
+    - "Execute each step in the activity's steps array sequentially"
+    - "For each step with a skill reference (step.skill), load that skill via get_skill and follow its protocol"
+    - "For steps with a condition, evaluate the condition against current state variables. Skip the step if the condition is false."
+    - "Track completed steps in a steps_completed list"
+  handle-checkpoints[3]:
+    - "When reaching a checkpoint in the activity flow, present the checkpoint message to the user using the AskQuestion tool or direct prompt"
+    - "Collect the user's selected option and apply its effects: setVariable changes, transitionTo overrides, skipActivities"
+    - "Record the checkpoint response: checkpoint_id, selected_option_id, effects_applied"
+  execute-loops[3]:
+    - "For forEach loops: iterate over the named collection, executing loop steps for each item"
+    - "For doWhile loops: execute loop steps, then evaluate the condition. Repeat while condition is true, up to maxIterations."
+    - "Track loop iterations and current item for state reporting"
+  produce-artifacts[2]:
+    - "Write artifacts to the planning folder using the activity's artifactPrefix convention"
+    - "Record each artifact produced: id, name, path"
+  report-completion[3]:
+    - "Compile structured result for the orchestrator"
+    - "Include: variables_changed (all variable mutations from checkpoint effects and step actions), checkpoints_responded (checkpoint_id + selected_option for each), artifacts_produced (id + path for each), steps_completed (list of step IDs)"
+    - "If a checkpoint effect includes transitionTo, include transition_override in the result"
+
+output[1]:
+  - id: activity-result
+    description: "Structured execution result reported to the orchestrator"
+    components:
+      variables_changed: "Map of variable names to new values (only variables that changed)"
+      checkpoints_responded: "Array of checkpoint responses with option IDs and effects"
+      artifacts_produced: "Array of artifacts with IDs and file paths"
+      steps_completed: "Array of completed step IDs"
+      transition_override: "Activity ID to transition to (if a checkpoint effect specified transitionTo)"
+
+rules:
+  self-bootstrap: "Always load activity and skill definitions from the workflow-server via get_workflow_activity and get_skill. Do not rely on the orchestrator prompt for step-level details — the workflow-server is the source of truth."
+  report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the variables_changed result. The orchestrator depends on this for transition evaluation."
+  preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities when the orchestrator resumes this agent. Use this context to inform subsequent activities."
+  complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
+  checkpoint-user-interaction: "Present checkpoints directly to the user. Collect their choice. Apply the selected option's effects. Report the response back to the orchestrator."
+  artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
+
+tools:
+  get_rules:
+    when: "First action on initial dispatch (not needed on resume — rules persist in context)"
+    returns: "Agent behavioral guidelines"
+  get_workflow_activity:
+    when: "After receiving activity_id from orchestrator"
+    params: "workflow_id, activity_id"
+    returns: "Activity definition with steps, checkpoints, skills, transitions"
+  get_skill:
+    when: "After loading activity, for the primary skill and any step-level skill references"
+    params: "skill_id, workflow_id"
+    returns: "Skill definition with protocol, tools, rules, inputs, output"
+  get_resource:
+    when: "When a skill references resources by index"
+    params: "workflow_id, index"
+    returns: "Resource content (templates, guidance, checklists)"
+  read_file:
+    when: "Reading source code, artifacts, or planning documents"
+    usage: "Examine codebase, load prior artifacts, review plans"
+  edit:
+    when: "Modifying source code during implementation"
+    usage: "Apply code changes as directed by the skill protocol"
+  shell:
+    when: "Running tests, builds, git operations, CLI commands"
+    usage: "Execute cargo test, cargo build, git commit, gh CLI, etc."
+  grep:
+    when: "Searching codebase for patterns"
+    usage: "Find relevant code, check consistency, locate usages"
+  write_file:
+    when: "Creating planning artifacts"
+    usage: "Write artifacts to planning folder with artifactPrefix"
+
+errors:
+  activity_not_found:
+    cause: "get_workflow_activity returned error for the given activity_id"
+    recovery: "Report error to orchestrator. Check activity_id spelling against workflow definition."
+  skill_not_found:
+    cause: "get_skill returned error for the activity's primary skill"
+    recovery: "Report error to orchestrator. Check skill ID in the activity's skills.primary field."
+  step_failure:
+    cause: "A step could not be completed (e.g., test failure, build error)"
+    recovery: "Attempt to fix the issue per the skill's error handling. If unresolvable, report the failure in steps_completed with the error details."
+  checkpoint_skipped:
+    cause: "A checkpoint's prerequisite condition was not met"
+    recovery: "Skip the checkpoint and note it in the result. The orchestrator will handle any state implications."
