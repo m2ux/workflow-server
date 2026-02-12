@@ -300,6 +300,36 @@
       "required": ["workflow"],
       "additionalProperties": false
     },
+    "artifact": {
+      "type": "object",
+      "description": "An artifact produced or updated by this activity",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this artifact within the activity"
+        },
+        "name": {
+          "type": "string",
+          "description": "Artifact filename. May contain template variables (e.g., '{NN}-code-review.md', 'NNNN-{decision-title}.md')."
+        },
+        "location": {
+          "type": "string",
+          "description": "Key into workflow.artifactLocations (e.g., 'planning', 'reviews', 'adr') or an explicit path"
+        },
+        "description": {
+          "type": "string",
+          "description": "What this artifact contains and its purpose"
+        },
+        "action": {
+          "type": "string",
+          "enum": ["create", "update"],
+          "default": "create",
+          "description": "Whether this activity creates a new artifact or updates an existing one"
+        }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
     "skills": {
       "type": "object",
       "properties": {
@@ -380,6 +410,13 @@
             "$ref": "#/definitions/loop"
           },
           "description": "Iteration constructs"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/artifact"
+          },
+          "description": "Artifacts produced or updated by this activity. Location keys reference workflow.artifactLocations."
         },
         "transitions": {
           "type": "array",
