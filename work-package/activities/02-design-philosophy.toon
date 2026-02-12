@@ -107,6 +107,7 @@ checkpoints[4]:
         description: Complex feature requiring requirements discovery and research
         effect:
           setVariable:
+            complexity: complex
             needs_elicitation: true
             needs_research: true
             skip_to_planning: false
@@ -115,6 +116,7 @@ checkpoints[4]:
         description: Requirements unclear but domain is well-understood
         effect:
           setVariable:
+            complexity: moderate
             needs_elicitation: true
             needs_research: false
             skip_to_planning: false
@@ -123,6 +125,7 @@ checkpoints[4]:
         description: Requirements clear but need to research best practices
         effect:
           setVariable:
+            complexity: moderate
             needs_elicitation: false
             needs_research: true
             skip_to_planning: false
@@ -131,6 +134,7 @@ checkpoints[4]:
         description: Simple, well-defined issue - proceed directly to planning
         effect:
           setVariable:
+            complexity: simple
             needs_elicitation: false
             needs_research: false
             skip_to_planning: true

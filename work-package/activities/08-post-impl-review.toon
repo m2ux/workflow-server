@@ -196,8 +196,31 @@ loops[1]:
         description: "Re-run test suite review on the updated tests. Only required if needs_test_improvements triggered this iteration."
         skill: review-test-suite
         required: true
-transitions[1]{to,isDefault}:
-  validate,true
+decisions[1]:
+  - id: blocker-gate
+    name: Critical Blocker Gate
+    description: "If a critical blocker was found during manual diff review, return to implementation to fix it before proceeding to validation."
+    branches[2]:
+      - id: has-blocker
+        label: Critical blocker found — return to implement
+        condition:
+          type: simple
+          variable: has_critical_blocker
+          operator: ==
+          value: true
+        transitionTo: implement
+      - id: no-blocker
+        label: No critical blockers — proceed to validate
+        isDefault: true
+transitions[2]:
+  - to: implement
+    condition:
+      type: simple
+      variable: has_critical_blocker
+      operator: ==
+      value: true
+  - to: validate
+    isDefault: true
 outcome[5]:
   - Manual diff review completed with indexed block table and interview findings
   - Manual diff review report created ({NN}-manual-diff-review.md)
