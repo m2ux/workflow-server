@@ -26,7 +26,7 @@ modeOverrides:
         description: "Document recommended cleanup actions as review feedback. Do NOT apply changes."
     skipSteps[1]:
       - apply-cleanup
-    transitionOverride: update-pr
+    transitionOverride: submit-for-review
     context_to_preserve[2]:
       - cleanup_recommendations - Cleanup suggestions for PR author
       - strategic_review_severity - Overall severity assessment of findings
@@ -110,7 +110,7 @@ decisions[1]:
     branches[2]:
       - id: pass
         label: Pass - Changes are minimal and focused
-        transitionTo: finalize
+        transitionTo: complete
         condition:
           type: simple
           variable: review_passed
@@ -121,7 +121,7 @@ decisions[1]:
         transitionTo: plan-prepare
         isDefault: true
 transitions[2]:
-  - to: finalize
+  - to: complete
     condition:
       type: simple
       variable: review_passed
