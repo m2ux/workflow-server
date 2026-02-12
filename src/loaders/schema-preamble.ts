@@ -4,7 +4,7 @@ import { readAllSchemas } from './schema-loader.js';
 import { logInfo, logWarn } from '../logging.js';
 
 /**
- * Build a schema preamble string: header + workflow/activity/skill JSON Schemas.
+ * Build a schema preamble string: header + all JSON Schemas (workflow, activity, skill, condition, state).
  * Called once at startup and cached on ServerConfig.
  * Returns empty string if all sources are missing (graceful fallback).
  */
@@ -30,6 +30,8 @@ export async function buildSchemaPreamble(schemasDir: string): Promise<string> {
     '## workflow.schema.json\n```json\n' + JSON.stringify(schemas.workflow, null, 2) + '\n```',
     '## activity.schema.json\n```json\n' + JSON.stringify(schemas.activity, null, 2) + '\n```',
     '## skill.schema.json\n```json\n' + JSON.stringify(schemas.skill, null, 2) + '\n```',
+    '## condition.schema.json\n```json\n' + JSON.stringify(schemas.condition, null, 2) + '\n```',
+    '## state.schema.json\n```json\n' + JSON.stringify(schemas.state, null, 2) + '\n```',
   ].filter(Boolean);
 
   const preamble = sections.join('\n\n');
