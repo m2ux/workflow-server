@@ -14,6 +14,7 @@ skills:
     - review-assumptions
 required: false
 estimatedTime: 15-30m
+artifactPrefix: "03"
 rules[1]:
   - "Elicitation protocol and domain rules are in the requirements-elicitation skill"
 steps[7]:

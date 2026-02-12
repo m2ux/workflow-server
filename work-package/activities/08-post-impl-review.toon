@@ -15,6 +15,7 @@ skills:
     - summarize-architecture
 required: true
 estimatedTime: 30-60m
+artifactPrefix: "08"
 rules[7]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
@@ -22,7 +23,7 @@ rules[7]:
   - "Adoption workflows must still complete quality reviews"
   - "ENTRY: Run git pull to ensure branch is up to date before evaluating diffs"
   - "ENTRY: Parse git diff to extract list of changed files"
-  - "ENTRY: Create file index table (Row | Path | File) with review time estimate (30 sec/change), write to {NN}-change-block-index.md"
+  - "ENTRY: Create file index table (Row | Path | File) with review time estimate (30 sec/change), write to change-block-index.md"
 modeOverrides:
   review:
     description: "Compare PR changes against expected changes from implementation analysis. Document findings for PR author."
@@ -34,23 +35,23 @@ entryActions[1]{action,message}:
   log,Starting post-implementation review
 artifacts[5]:
   - id: change-block-index
-    name: "{NN}-change-block-index.md"
+    name: "change-block-index.md"
     location: planning
     description: "Indexed table of all change blocks (git diff hunks) for cross-reference during manual review"
   - id: manual-diff-review-report
-    name: "{NN}-manual-diff-review.md"
+    name: "manual-diff-review.md"
     location: planning
     description: "Manual diff review report with indexed findings from user's side-by-side review"
   - id: code-review-report
-    name: "{NN}-code-review.md"
+    name: "code-review.md"
     location: planning
     description: "Code review report documenting findings by severity"
   - id: test-suite-review-report
-    name: "{NN}-test-suite-review.md"
+    name: "test-suite-review.md"
     location: planning
     description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations"
   - id: architecture-summary
-    name: "{NN}-architecture-summary.md"
+    name: "architecture-summary.md"
     location: planning
     description: "High-level architecture summary with Mermaid C4 diagrams for management stakeholders"
 steps[4]:
@@ -61,17 +62,17 @@ steps[4]:
     required: true
   - id: code-review
     name: Code Review
-    description: "Perform comprehensive code review of all implementation changes. Create {NN}-code-review.md report."
+    description: "Perform comprehensive code review of all implementation changes. Create code-review.md report."
     skill: review-code
     required: true
   - id: test-suite-review
     name: Test Suite Review
-    description: "Review test quality and create {NN}-test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
+    description: "Review test quality and create test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
     skill: review-test-suite
     required: true
   - id: architecture-summary
     name: Architecture Summary
-    description: "Create {NN}-architecture-summary.md with Mermaid C4 diagrams showing changes. Optional but recommended for significant changes."
+    description: "Create architecture-summary.md with Mermaid C4 diagrams showing changes. Optional but recommended for significant changes."
     skill: summarize-architecture
     required: false
 checkpoints[5]:
@@ -179,7 +180,7 @@ loops[1]:
         required: true
       - id: regenerate-index
         name: Regenerate Change Block Index
-        description: "Re-parse git diff and regenerate {NN}-change-block-index.md reflecting the new changes."
+        description: "Re-parse git diff and regenerate change-block-index.md reflecting the new changes."
         required: true
       - id: re-manual-diff-review
         name: Re-run Manual Diff Review
@@ -223,12 +224,12 @@ transitions[2]:
     isDefault: true
 outcome[5]:
   - Manual diff review completed with indexed block table and interview findings
-  - Manual diff review report created ({NN}-manual-diff-review.md)
+  - Manual diff review report created (manual-diff-review.md)
   - Code review complete with documented findings
   - Test suite quality reviewed
   - Architecture summary created (if applicable)
 context_to_preserve[9]:
-  - change_block_index_path - Path to {NN}-change-block-index.md file
+  - change_block_index_path - Path to change-block-index.md file
   - change_block_data - Parsed hunk data for interview loop
   - flagged_block_indices - List of indices flagged by user during review
   - manual_review_findings - Interview responses for each flagged block
