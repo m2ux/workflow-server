@@ -1,4 +1,4 @@
-id: git-workflow
+id: manage-git
 version: 1.0.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 

@@ -1,4 +1,4 @@
-id: strategic-review
+id: review-strategy
 version: 1.0.0
 capability: Review implementation to ensure changes are minimal, focused, and free of investigation artifacts
 

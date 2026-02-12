@@ -8,10 +8,10 @@ recognition[3]:
   - analyze current state
   - implementation analysis
 skills:
-  primary: implementation-analysis
+  primary: analyze-implementation
   supporting[2]:
-    - artifact-management
-    - assumptions-review
+    - manage-artifacts
+    - review-assumptions
 required: true
 estimatedTime: 10-20m
 rules[1]:

@@ -1,0 +1,68 @@
+id: conduct-retrospective
+version: 2.0.0
+capability: Conduct workflow retrospective to capture lessons learned and prepare for next work package
+
+description: "Reflects on the completed work package: what went well, what could improve, and lessons for future sessions. Also handles session history capture, status updates, and next work package selection. ADR creation is handled by the separate create-adr skill; PR review response is handled by respond-to-pr-review."
+
+inputs[2]:
+  - id: planning-folder-path
+    description: "Path to planning folder for context"
+    required: true
+  - id: pr-number
+    description: "PR number for status checking"
+    required: true
+
+protocol:
+  capture-history[2]:
+    - If metadata repository exists, capture session history
+    - History is private — never committed to the repository
+  conduct-retrospective[4]:
+    - Conduct retrospective — what went well, what could improve, lessons learned
+    - Skip if trivial session
+    - Load resource 20 for retrospective guidance
+    - Create workflow-retrospective.md artifact in planning folder
+  update-status[2]:
+    - After PR merged, update work package plan status
+    - Record final outcome in planning artifacts
+  select-next[2]:
+    - Identify next work package if applicable
+    - Prepare context for transition
+
+output[1]:
+  - id: retrospective-document
+    description: "Workflow retrospective with lessons learned"
+    artifact:
+      name: "workflow-retrospective.md"
+    components:
+      what_worked: "What went well"
+      improvements: "What could improve"
+      lessons_learned: "Lessons for future sessions"
+
+rules:
+  retrospective-honest: "Retrospective should be honest about what worked and what didn't — avoid generic positive statements"
+  history-private: "Session history is private metadata — never committed to the repository"
+  skip-if-trivial: "Skip retrospective for trivial sessions that don't warrant reflection"
+
+resources[1]:
+  - "20"
+
+tools:
+  get_resource:
+    when: Loading workflow-retrospective guidance
+    params: "workflow_id: work-package, index: 20"
+    returns: Workflow retrospective resource
+  write_file:
+    when: Creating retrospective document
+    usage: Write artifact to planning folder
+  read_file:
+    when: Loading planning artifacts for reflection
+    usage: Review what was planned vs what was delivered
+  shell:
+    when: Checking PR merge status
+    params: "gh pr view {pr_number}"
+    usage: Verify PR has been merged
+
+errors:
+  pr_not_merged:
+    cause: PR has not been merged yet
+    recovery: Wait for merge or check if review feedback needs addressing first

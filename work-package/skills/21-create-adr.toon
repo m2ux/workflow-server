@@ -1,0 +1,65 @@
+id: create-adr
+version: 1.0.0
+capability: Create Architecture Decision Record for moderate or complex implementations
+
+description: "Produces an ADR at .engineering/artifacts/adr/ documenting the architectural decision, rationale, alternatives considered, and consequences. Triggered for moderate or complex implementations based on the complexity variable set during design-philosophy."
+
+inputs[3]:
+  - id: complexity
+    description: "Problem complexity from design-philosophy (simple|moderate|complex)"
+    required: true
+  - id: design-philosophy-doc
+    description: "Design philosophy artifact with rationale and alternatives"
+    required: true
+  - id: planning-folder-path
+    description: "Path to planning folder for context"
+    required: false
+
+protocol:
+  determine-number[2]:
+    - Scan .engineering/artifacts/adr/ for existing ADR files
+    - Determine next sequential NNNN number
+  gather-context[3]:
+    - Read design philosophy document for decision rationale
+    - Review implementation analysis and plan for architectural choices
+    - Identify alternatives that were considered and rejected
+  write-adr[3]:
+    - Create NNNN-{decision-title}.md at .engineering/artifacts/adr/
+    - Use standard ADR format (Title, Status, Context, Decision, Consequences)
+    - Set status to Proposed (finalize activity updates to Accepted)
+
+output[1]:
+  - id: adr-document
+    description: "Architecture Decision Record"
+    artifact:
+      name: "NNNN-{decision-title}.md"
+    components:
+      context: "Problem context and forces"
+      decision: "The architectural decision made"
+      rationale: "Why this decision over alternatives"
+      consequences: "Expected positive and negative consequences"
+
+rules:
+  complexity-gate: "Only create ADRs for moderate or complex implementations — simple changes do not warrant ADRs"
+  alternatives-required: "Every ADR must document at least one alternative that was considered"
+  status-proposed: "New ADRs are created with status Proposed — the finalize activity updates to Accepted"
+
+tools:
+  read_file:
+    when: Reading design philosophy and existing ADR files
+    usage: Gather context and determine next ADR number
+  write_file:
+    when: Creating the ADR file
+    usage: Write to .engineering/artifacts/adr/
+  shell:
+    when: Listing existing ADR files for numbering
+    params: "ls .engineering/artifacts/adr/"
+    returns: Existing ADR filenames for sequential numbering
+
+errors:
+  adr_numbering:
+    cause: Cannot determine next ADR number
+    recovery: Scan .engineering/artifacts/adr/ for existing files and use next available number
+  missing_design_philosophy:
+    cause: Design philosophy document not found
+    recovery: Check planning folder path and prompt user to locate the artifact

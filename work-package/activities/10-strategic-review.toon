@@ -8,7 +8,7 @@ recognition[3]:
   - review changes
   - review implementation
 skills:
-  primary: strategic-review
+  primary: review-strategy
 required: true
 estimatedTime: 15-30m
 rules[1]:

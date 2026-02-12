@@ -8,9 +8,10 @@ recognition[3]:
   - workflow complete
   - finish work package
 skills:
-  primary: retrospective
-  supporting[1]:
-    - pr-review-response
+  primary: conduct-retrospective
+  supporting[2]:
+    - respond-to-pr-review
+    - create-adr
 required: true
 estimatedTime: 30-60m
 artifacts[3]:
@@ -60,7 +61,7 @@ steps[7]:
   - id: process-review-comments
     name: Process Review Comments
     description: Analyze and respond to PR review feedback using the PR Review Response Guide
-    skill: pr-review-response
+    skill: respond-to-pr-review
   - id: capture-history
     name: Capture session history
     description: "If metadata repository exists - private, never committed"

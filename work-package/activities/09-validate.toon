@@ -8,7 +8,7 @@ recognition[3]:
   - run tests
   - verify build
 skills:
-  primary: validation
+  primary: validate-build
 required: true
 estimatedTime: 15-30m
 rules[1]:

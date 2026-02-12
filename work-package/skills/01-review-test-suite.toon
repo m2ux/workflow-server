@@ -1,4 +1,4 @@
-id: test-review
+id: review-test-suite
 version: 2.0.0
 capability: Review test suite quality, coverage, and identify anti-patterns
 

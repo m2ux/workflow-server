@@ -8,9 +8,9 @@ recognition[3]:
   - mark pr ready
   - finalize pr
 skills:
-  primary: pr-management
+  primary: update-pr
   supporting[1]:
-    - code-review
+    - review-code
 required: true
 estimatedTime: 10-15m
 rules[1]:

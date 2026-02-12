@@ -8,10 +8,10 @@ recognition[3]:
   - clarify requirements
   - gather requirements
 skills:
-  primary: requirements-elicitation
+  primary: elicit-requirements
   supporting[2]:
-    - artifact-management
-    - assumptions-review
+    - manage-artifacts
+    - review-assumptions
 required: false
 estimatedTime: 15-30m
 rules[1]:

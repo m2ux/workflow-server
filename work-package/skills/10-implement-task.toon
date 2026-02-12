@@ -1,0 +1,64 @@
+id: implement-task
+version: 2.0.0
+capability: Implement a single task from the work package plan by writing code changes
+
+description: "Atomic code implementation capability. Reads a task from the plan, understands the context (affected files, dependencies, requirements), and writes the code changes. Testing, committing, and assumption review are handled by other skills (validate-build, manage-git, review-assumptions) orchestrated by the activity's loop."
+
+inputs[2]:
+  - id: current-task
+    description: "The task to implement from the plan (provided by the activity loop iterator)"
+    required: true
+  - id: test-plan
+    description: "Test plan with strategy and acceptance criteria for guidance"
+    required: false
+
+protocol:
+  understand-context[3]:
+    - Read the task description and requirements from the plan
+    - Identify affected files, dependencies, and related code
+    - Review test plan for acceptance criteria relevant to this task
+  write-code[3]:
+    - Implement the code changes for this task
+    - Follow existing code patterns and conventions in the target codebase
+    - For Rust projects, follow TDD approach per resource 23
+  verify-locally[2]:
+    - Verify the change compiles and basic tests pass
+    - Check for obvious regressions in affected code
+
+output[1]:
+  - id: task-implementation
+    description: "Code changes for a single task"
+    components:
+      files_changed: "List of files modified"
+      approach_summary: "Brief description of the implementation approach"
+
+rules:
+  tdd-cycle: "For Rust projects, follow TDD best practices from resource 23 — Red-Green-Refactor, FIRST principles, test doubles, boundary testing"
+  follow-conventions: "Follow existing code patterns and conventions in the target codebase — do not introduce new styles"
+  single-task-focus: "Implement exactly one task — do not scope-creep into adjacent tasks"
+
+resources[1]:
+  - "23"
+
+tools:
+  read_file:
+    when: Reading plan tasks, source files, and test plan
+    usage: Understand context and examine existing code
+  edit:
+    when: Making code modifications
+    usage: Apply implementation changes to source files
+  grep:
+    when: Searching for patterns across codebase
+    usage: Find relevant code, usages, and dependencies
+  shell:
+    when: Running quick compilation checks
+    params: "cargo check, cargo build"
+    usage: Verify changes compile before handing off to test/commit
+
+errors:
+  compilation_failure:
+    cause: Code changes do not compile
+    recovery: Review error messages, fix issues, and retry
+  unclear_task:
+    cause: Task description is ambiguous or missing context
+    recovery: Review plan document and ask user for clarification

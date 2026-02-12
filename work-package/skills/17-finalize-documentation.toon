@@ -1,4 +1,4 @@
-id: documentation
+id: finalize-documentation
 version: 1.0.0
 capability: Finalize documentation — update ADRs, complete test plans, create completion document, ensure API documentation
 

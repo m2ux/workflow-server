@@ -1,0 +1,63 @@
+id: create-test-plan
+version: 1.0.0
+capability: Create test strategy and test plan with cases and acceptance criteria
+
+description: "Define what to test, how to test it, and what constitutes passing. Produces test-plan.md linking acceptance criteria to requirements and success criteria."
+
+inputs[2]:
+  - id: requirements
+    description: "Elicited requirements with success criteria"
+    required: true
+  - id: plan-tasks
+    description: "Task breakdown from create-plan skill"
+    required: true
+
+protocol:
+  load-guidance[1]:
+    - Load resource 11 (test-plan) for test plan template and guidance
+  define-strategy[3]:
+    - Define test strategy for the work package (unit, integration, e2e)
+    - Identify which requirements need which types of tests
+    - Determine test infrastructure needs (fixtures, mocks, test doubles)
+  create-test-cases[3]:
+    - Create specific test cases for each requirement
+    - Include boundary conditions, error paths, and edge cases
+    - Link each test case to its requirement and acceptance criterion
+  write-artifact[2]:
+    - Create test-plan.md artifact in planning folder
+    - Structure with strategy, test cases, and acceptance criteria matrix
+
+output[1]:
+  - id: test-plan-document
+    description: "Test strategy and acceptance criteria"
+    artifact:
+      name: "test-plan.md"
+    components:
+      test_strategy: "What to test, how, and pass criteria"
+      test_cases: "Specific test cases linked to requirements"
+      acceptance_matrix: "Requirements-to-tests traceability"
+
+rules:
+  strategy-before-cases: "Define overall test strategy before writing individual test cases"
+  link-to-requirements: "Every test case must trace to a requirement or acceptance criterion"
+  cover-error-paths: "Test plans must include error paths, boundaries, and edge cases — not just happy paths"
+
+resources[1]:
+  - "11"
+
+tools:
+  get_resource:
+    when: Loading test plan guidance
+    params: "workflow_id: work-package, index: 11"
+    returns: Test plan template and guidance
+  read_file:
+    when: Reading requirements and plan artifacts
+    usage: Load inputs for test case design
+  write_file:
+    when: Creating test-plan.md
+    usage: Write test plan artifact to planning folder
+
+errors:
+  no_requirements:
+    cause: Requirements not available
+    recovery: Prompt user to complete elicitation before test planning

@@ -8,10 +8,11 @@ recognition[3]:
   - create plan
   - prepare for implementation
 skills:
-  primary: planning
-  supporting[2]:
-    - design-framework
-    - assumptions-review
+  primary: create-plan
+  supporting[3]:
+    - classify-problem
+    - create-test-plan
+    - review-assumptions
 required: true
 estimatedTime: 20-45m
 rules[1]:

@@ -1,20 +1,20 @@
-id: planning
-version: 1.0.0
-capability: Design approach, create work package plan with task breakdown, and prepare test plan
+id: create-plan
+version: 2.0.0
+capability: Create work package plan with task breakdown, dependencies, and ordering
 
-description: "This skill serves the plan-prepare activity. It handles: applying design framework to structure the implementation approach; creating work-package-plan.md with task breakdown, dependencies, and ordering; creating test-plan.md with test strategy, cases, and acceptance criteria; syncing feature branch with main; updating PR description with planning information; breaking plan into actionable TODO tasks."
+description: "Design the implementation approach and produce work-package-plan.md. Applies design framework to structure the approach, breaks work into atomic tasks with explicit dependencies, and documents design decisions and assumptions. Test plan creation is handled by the separate create-test-plan skill."
 
 inputs[4]:
-  - id: design_philosophy
+  - id: design-philosophy
     description: "Design philosophy artifact with problem classification and workflow path"
     required: true
   - id: requirements
     description: "Elicited requirements from elicitation activity"
     required: true
-  - id: analysis_findings
+  - id: analysis-findings
     description: "Implementation analysis findings (baselines, gaps)"
     required: false
-  - id: research_findings
+  - id: research-findings
     description: "Research findings from knowledge base and web"
     required: false
 
@@ -22,34 +22,23 @@ protocol:
   verify-inputs[2]:
     - Verify design_philosophy and requirements are available
     - Confirm prerequisite activities completed before proceeding
-  load-resources[2]:
-    - Load resource 10 (wp-plan) and 11 (test-plan) for guidance
+  load-guidance[2]:
+    - Load resource 10 (wp-plan) for plan template and guidance
     - Review design_philosophy, requirements, analysis_findings, research_findings
   apply-design-framework[4]:
     - Apply design framework to structure implementation approach
     - Document assumptions in planning decisions
     - Break work into atomic tasks with explicit dependencies
     - Define task ordering — never assume ordering is obvious
-  create-work-package-plan[3]:
+  write-plan[3]:
     - Create work-package-plan.md artifact in planning folder
     - Include task breakdown, dependencies, ordering
     - Document design decisions and assumptions
-  create-test-plan[4]:
-    - Define test strategy before implementation
-    - Specify what to test, how, and what constitutes passing
-    - Create test-plan.md artifact with test cases and acceptance criteria
-    - Link acceptance criteria to requirements and success criteria
-  sync-branch[2]:
-    - Sync feature branch with main
-    - Resolve merge conflicts if any
-  update-pr[2]:
-    - Update PR description with planning information
-    - Link to work-package-plan.md and test-plan.md
   create-todos[2]:
     - Break plan into actionable TODO tasks for implementation
     - Ensure each task is atomic (implementable, testable, committable independently)
 
-output[2]:
+output[1]:
   - id: plan-document
     description: "Work package plan with task breakdown and dependencies"
     artifact:
@@ -57,39 +46,26 @@ output[2]:
     components:
       tasks: "Atomic tasks with explicit dependencies and ordering"
       design_decisions: "Approach and rationale with documented assumptions"
-  - id: test-plan-document
-    description: "Test strategy and acceptance criteria"
-    artifact:
-      name: "test-plan.md"
-    components:
-      test_strategy: "What to test, how, and pass criteria"
-      test_cases: "Specific test cases and acceptance criteria"
 
 rules:
   assumptions-documented: "Design and planning decisions often involve significant assumptions that should be documented before implementation"
   tasks-atomic: "Break work into atomic tasks that can each be implemented, tested, and committed independently"
   dependencies-explicit: "Task dependencies must be explicitly documented — never assume ordering is obvious"
-  test-strategy-first: "Define test strategy before implementation — what to test, how, and what constitutes passing"
 
-resources[2]:
+resources[1]:
   - "10"
-  - "11"
 
 tools:
   get_resource:
     when: Loading planning guidance
-    params: "workflow_id: work-package, index: 10 or 11"
-    returns: WP plan and test plan resource documents
-  shell:
-    when: Git operations (sync branch, merge)
-    params: "git fetch, git merge, git pull"
-    usage: Sync feature branch with main
+    params: "workflow_id: work-package, index: 10"
+    returns: WP plan resource document
   read_file:
     when: Reviewing design philosophy, requirements, analysis, research artifacts
     usage: Load prerequisite inputs
   write_file:
-    when: Creating work-package-plan.md and test-plan.md
-    usage: Write planning artifacts
+    when: Creating work-package-plan.md
+    usage: Write planning artifact
 
 errors:
   missing_inputs:

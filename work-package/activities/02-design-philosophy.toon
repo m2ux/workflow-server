@@ -9,9 +9,9 @@ recognition[4]:
   - understand problem
   - determine approach
 skills:
-  primary: design-framework
+  primary: classify-problem
   supporting[1]:
-    - assumptions-review
+    - review-assumptions
 required: true
 estimatedTime: 10-20m
 rules[4]:
