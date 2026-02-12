@@ -2,22 +2,26 @@ id: manage-git
 version: 1.0.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 
-description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. Provides the standard protocol for feature branch creation, draft PR setup, commit pushing, and marking PRs ready for review."
+description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE the target submodule directory (target_submodule_path), not in the parent repo. Branches and PRs are created against the submodule's upstream."
 
-inputs[3]:
-  - id: issue_number
+inputs[4]:
+  - id: target-submodule-path
+    description: "Path to the target submodule directory. All git commands run from this directory."
+    required: true
+  - id: issue-number
     description: "Issue identifier (GitHub #N or Jira KEY-N)"
     required: true
-  - id: issue_platform
+  - id: issue-platform
     description: "Platform where issue lives (github or jira)"
     required: true
-  - id: branch_name
+  - id: branch-name
     description: "Optional — for existing branches"
     required: false
 
 protocol:
-  create-branch[2]:
-    - Create feature branch from main/master
+  create-branch[3]:
+    - "cd into target_submodule_path before any git operations"
+    - Create feature branch from the submodule's default branch (main/master)
     - Use naming convention type/issue-number-short-description
   create-pr[3]:
     - Create draft PR linked to issue using gh pr create
@@ -40,6 +44,7 @@ output[1]:
       pr_url: "URL to the PR"
 
 rules:
+  submodule-scope: "ALL git operations (branch, commit, push, PR) MUST be performed inside the target submodule directory. Branches and PRs are against the submodule's upstream, not the parent repo."
   naming-convention: "Branch naming: type/issue-number-short-description (e.g., fix/PM-21781-storage-root-panic)"
   draft-first: "Always create PRs as draft — mark ready only after implementation and review"
   link-to-issue: "PR title and body must reference the associated issue number"
