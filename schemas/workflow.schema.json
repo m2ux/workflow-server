@@ -8,19 +8,25 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Variable name used to reference this value in conditions, checkpoints, and templates"
         },
         "type": {
           "type": "string",
-          "enum": ["string", "number", "boolean", "array", "object"]
+          "enum": ["string", "number", "boolean", "array", "object"],
+          "description": "Data type of the variable"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "Human-readable description of this variable's purpose"
         },
-        "defaultValue": {},
+        "defaultValue": {
+          "description": "Initial value assigned when workflow starts"
+        },
         "required": {
           "type": "boolean",
-          "default": false
+          "default": false,
+          "description": "Whether this variable must be set before workflow execution"
         }
       },
       "required": ["name", "type"],
@@ -118,20 +124,22 @@
           "description": "Detailed workflow description"
         },
         "author": {
-          "type": "string"
+          "type": "string",
+          "description": "Creator of the workflow"
         },
         "tags": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "Categorization labels for discovery and filtering"
         },
         "rules": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Rules that govern workflow execution"
+          "description": "Rules that govern workflow execution. Agents MUST follow these rules throughout all activities."
         },
         "variables": {
           "type": "array",

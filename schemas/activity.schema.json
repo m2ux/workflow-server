@@ -9,15 +9,20 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["log", "validate", "set", "emit"]
+          "enum": ["log", "validate", "set", "emit"],
+          "description": "Action type: log (record message), validate (check a condition), set (assign a variable), emit (signal an event)"
         },
         "target": {
-          "type": "string"
+          "type": "string",
+          "description": "Target of the action (e.g., variable name for set, condition for validate)"
         },
         "message": {
-          "type": "string"
+          "type": "string",
+          "description": "Message content for log actions or validation failure messages"
         },
-        "value": {}
+        "value": {
+          "description": "Value to assign (set) or emit"
+        }
       },
       "required": ["action"],
       "additionalProperties": false
@@ -57,22 +62,28 @@
     },
     "checkpointOption": {
       "type": "object",
+      "description": "A selectable choice within a checkpoint",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for this option"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "description": "Short label displayed to the user"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "Detailed explanation of what this option does"
         },
         "effect": {
           "type": "object",
+          "description": "Side effects triggered when the user selects this option",
           "properties": {
             "setVariable": {
               "type": "object",
-              "additionalProperties": {}
+              "additionalProperties": {},
+              "description": "Variables to set when this option is selected (key-value pairs)"
             },
             "transitionTo": {
               "type": "string",
@@ -94,36 +105,42 @@
     },
     "checkpoint": {
       "type": "object",
+      "description": "A blocking decision point that pauses execution and requires user input before continuing",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for this checkpoint within the activity"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Human-readable checkpoint name"
         },
         "message": {
           "type": "string",
-          "description": "Message to present to user at checkpoint"
+          "description": "Question or prompt to present to the user at this checkpoint"
         },
         "prerequisite": {
           "type": "string",
-          "description": "Action to complete before presenting checkpoint"
+          "description": "Condition that must be true before presenting this checkpoint to the user. If not met, skip the checkpoint."
         },
         "options": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/checkpointOption"
           },
-          "minItems": 1
+          "minItems": 1,
+          "description": "Available choices for the user. Each option may trigger variable changes, transitions, or activity skips via its effect."
         },
         "required": {
           "type": "boolean",
-          "default": true
+          "default": true,
+          "description": "Whether this checkpoint must be answered before proceeding"
         },
         "blocking": {
           "type": "boolean",
           "const": true,
-          "default": true
+          "default": true,
+          "description": "Always true. Checkpoints pause workflow execution until the user responds."
         }
       },
       "required": ["id", "name", "message", "options"],
@@ -131,12 +148,15 @@
     },
     "decisionBranch": {
       "type": "object",
+      "description": "A conditional path within a decision point",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for this branch"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "description": "Human-readable description of when this branch is taken"
         },
         "condition": {
           "$ref": "condition.schema.json"
@@ -155,15 +175,19 @@
     },
     "decision": {
       "type": "object",
+      "description": "An automated branching point that evaluates conditions without user input (unlike checkpoints which require user choice)",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for this decision"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Human-readable decision name"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "What is being decided"
         },
         "branches": {
           "type": "array",
@@ -178,33 +202,42 @@
     },
     "loop": {
       "type": "object",
+      "description": "An iteration construct that repeats steps or activities. forEach iterates over a collection; while/doWhile repeat on a condition.",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for this loop"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Human-readable loop name"
         },
         "type": {
           "type": "string",
-          "enum": ["forEach", "while", "doWhile"]
+          "enum": ["forEach", "while", "doWhile"],
+          "description": "Loop type: forEach (iterate over collection), while (check condition before each iteration), doWhile (execute then check condition)"
         },
         "variable": {
-          "type": "string"
+          "type": "string",
+          "description": "Name of the iteration variable that holds the current item (forEach) or loop counter"
         },
         "over": {
-          "type": "string"
+          "type": "string",
+          "description": "Collection or variable name to iterate over (forEach only, e.g., 'plan.tasks')"
         },
         "condition": {
-          "$ref": "condition.schema.json"
+          "$ref": "condition.schema.json",
+          "description": "Condition evaluated each iteration (while/doWhile only)"
         },
         "maxIterations": {
           "type": "integer",
           "exclusiveMinimum": 0,
-          "default": 100
+          "default": 100,
+          "description": "Safety limit to prevent infinite loops"
         },
         "breakCondition": {
-          "$ref": "condition.schema.json"
+          "$ref": "condition.schema.json",
+          "description": "If true, exit the loop early regardless of the main condition"
         },
         "steps": {
           "type": "array",
@@ -313,7 +346,8 @@
           "description": "Patterns to match user intent to this activity"
         },
         "skills": {
-          "$ref": "#/definitions/skills"
+          "$ref": "#/definitions/skills",
+          "description": "Skill references. Load the primary skill via get_skill to get execution protocol, tool guidance, and rules."
         },
         "steps": {
           "type": "array",
@@ -397,7 +431,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Activity-level rules and constraints that agents must follow"
+          "description": "Activity-level rules and constraints that agents MUST follow during this activity. Domain-specific rules are on the skill; sequencing rules are here."
         },
         "modeOverrides": {
           "type": "object",
