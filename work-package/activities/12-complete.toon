@@ -1,0 +1,136 @@
+id: complete
+version: 1.0.0
+name: Complete Work Package
+description: "After PR is merged, wrap up the work package: create ADR (if applicable), finalize documentation, conduct retrospective, update status, and prepare for next work package."
+problem: User needs to finalize all documentation and close out the work package after PR merge
+recognition[4]:
+  - complete work package
+  - finalize documentation
+  - workflow complete
+  - finish work package
+skills:
+  primary: finalize-documentation
+  supporting[2]:
+    - create-adr
+    - conduct-retrospective
+required: true
+estimatedTime: 30-60m
+rules[1]:
+  - "Documentation finalization, ADR creation, and retrospective protocols are in the respective skills"
+modeOverrides:
+  review:
+    description: "In review mode, only conduct retrospective. Skip ADR creation and documentation finalization."
+    skipSteps[5]:
+      - create-adr
+      - update-adr-status
+      - finalize-test-plan
+      - create-complete-doc
+      - ensure-docs
+    context_to_preserve[1]:
+      - retrospective_notes - Notes from retrospective
+artifacts[4]:
+  - id: adr
+    name: "NNNN-{decision-title}.md"
+    location: .engineering/artifacts/adr
+    description: "Architecture Decision Record for moderate or complex implementations"
+    condition:
+      type: or
+      conditions[2]:
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: moderate
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: complex
+  - id: complete-document
+    name: COMPLETE.md
+    location: planning
+    description: "Completion summary documenting deliverables, test coverage, and deferred items"
+  - id: retrospective
+    name: workflow-retrospective.md
+    location: planning
+    description: "Workflow retrospective notes"
+  - id: review-analysis
+    name: "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md"
+    location: reviews
+    description: "PR review analysis document"
+steps[9]:
+  - id: create-adr
+    name: Create Architecture Decision Record
+    description: "Create ADR at .engineering/artifacts/adr/ documenting the architectural decision, rationale, and alternatives."
+    skill: create-adr
+    condition:
+      type: or
+      conditions[2]:
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: moderate
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: complex
+  - id: update-adr-status
+    name: Update ADR status to Accepted
+    description: "Update ADR status from Proposed to Accepted."
+    condition:
+      type: or
+      conditions[2]:
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: moderate
+        - type: simple
+          variable: complexity
+          operator: ==
+          value: complex
+  - id: finalize-test-plan
+    name: Finalize test plan with source links
+    description: "Add hyperlinks to actual test source file locations in the test plan."
+  - id: create-complete-doc
+    name: Create completion document
+    description: "Create COMPLETE.md summarizing deliverables, test coverage, deferred items, and known limitations."
+    skill: finalize-documentation
+  - id: ensure-docs
+    name: Ensure inline documentation on public APIs
+    description: "Verify public APIs have inline documentation — add missing doc comments."
+  - id: capture-history
+    name: Capture session history
+    description: "If metadata repository exists, capture session history. Private — never committed."
+  - id: retrospective
+    name: Workflow retrospective
+    description: "Conduct retrospective: what went well, what could improve, lessons learned. Skip if trivial session."
+    skill: conduct-retrospective
+  - id: update-status
+    name: Update work package plan status
+    description: "After PR merged, update work package plan status to reflect completion."
+  - id: select-next
+    name: Select next work package
+    description: "Identify and select next work package if applicable. Prepare context for transition."
+checkpoints[1]:
+  - id: retrospective-review
+    name: Retrospective Review Checkpoint
+    message: "Retrospective complete. Ready to close out the work package?"
+    options[2]:
+      - id: close-out
+        label: Close out work package
+        description: Finalize and move to next work package
+      - id: revisit
+        label: Revisit something
+        description: Need to address an outstanding item before closing
+exitActions[1]{action,message}:
+  log,Work package workflow complete
+outcome[5]:
+  - ADR created and accepted (if moderate/complex)
+  - Documentation finalized (test plan, COMPLETE.md, API docs)
+  - Retrospective completed with lessons learned
+  - Work package status updated
+  - Ready for next work package
+context_to_preserve[5]:
+  - session_history - Session history captured
+  - retrospective_notes - Notes from retrospective
+  - adr_status - ADR status (if applicable)
+  - documentation_status - Documentation completion status
+  - review_analysis_path - Path to review analysis document
