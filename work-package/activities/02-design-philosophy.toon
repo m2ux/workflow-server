@@ -14,13 +14,11 @@ skills:
     - assumptions-review
 required: true
 estimatedTime: 10-20m
-rules[6]:
+rules[4]:
   - "Design philosophy determines the path through the workflow"
   - "Simple bug fixes with clear scope may skip elicitation and research"
   - "Complex features typically require full elicitation and research"
   - "Problem classification informs all subsequent activities"
-  - "For simple changes, lightweight application is acceptable"
-  - "Create assumptions log here - first activity that makes decisions requiring assumptions"
 modeOverrides:
   review:
     description: "Assess ticket completeness and determine workflow path. Always skip elicitation."

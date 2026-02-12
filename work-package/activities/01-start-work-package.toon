@@ -1,8 +1,8 @@
-id: issue-management
-version: 2.2.0
-name: Issue Management
-description: "Verify or create an issue, then create feature branch and PR. Issues define the problem space and provide traceability from requirements through implementation."
-problem: User needs to establish issue tracking and PR for a work package
+id: start-work-package
+version: 3.0.0
+name: Start Work Package
+description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR, and create planning folder. Establishes traceability from requirements through implementation."
+problem: User needs to initialize a work package with issue tracking, branch, and PR
 recognition[6]:
   - start work package
   - verify issue
@@ -12,18 +12,13 @@ recognition[6]:
   - create github issue
 skills:
   primary: issue-management
-  supporting[3]:
+  supporting[2]:
     - git-workflow
-    - pr-creation
     - artifact-management
 required: true
 estimatedTime: 10-20m
-rules[5]:
-  - "Key principle: Issues define problems, not solutions. Describe what needs to be solved and why."
-  - "Every work package should be linked to a GitHub or Jira issue for traceability"
-  - "Issues should be clear to someone without prior context"
-  - "Acceptance criteria must be observable and testable"
-  - "No implementation details in issues - those belong in planning docs and PRs"
+rules[1]:
+  - "Domain rules for issue authoring are in the issue-management skill — load skill for guidance"
 modeOverrides:
   review:
     description: "Capture PR reference and extract associated Jira ticket. Skip branch/PR creation."
@@ -89,34 +84,23 @@ steps[9]:
     description: Verify whether an issue has been specified by user or in context
   - id: create-issue
     name: Create Issue
-    description: "If needed, create issue in selected platform (GitHub or Jira)"
-    condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
+    description: "If needed, create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform. Only runs when needs_issue_creation is true."
+    skill: issue-management
+    required: false
   - id: check-branch
     name: Check Current Branch
     description: "Check if already on a feature branch (not main/master). Run 'git branch --show-current' and compare against main/master."
   - id: create-branch
     name: Create Feature Branch
-    description: "Create feature branch from main/master with naming convention: type/issue-number-short-description"
-    condition:
-      type: simple
-      variable: use_existing_branch
-      operator: ==
-      value: false
+    description: "Create feature branch from main/master with naming convention: type/issue-number-short-description. Only runs when use_existing_branch is false."
+    required: false
   - id: check-pr
     name: Check for Existing PR
     description: "Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' to detect existing PRs."
   - id: create-pr
     name: Create Draft PR
-    description: "Create draft PR linked to issue. PR title should reference issue number."
-    condition:
-      type: simple
-      variable: use_existing_pr
-      operator: ==
-      value: false
+    description: "Create draft PR linked to issue. PR title should reference issue number. Only runs when use_existing_pr is false."
+    required: false
   - id: initialize-planning-folder
     name: Initialize Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title."
@@ -146,12 +130,8 @@ checkpoints[8]:
             issue_skipped: true
   - id: branch-check
     name: Branch Check Checkpoint
+    prerequisite: "Only present when on_feature_branch is true"
     message: "You're currently on branch '{current_branch}'. Would you like to use this branch or create a new one?"
-    condition:
-      type: simple
-      variable: on_feature_branch
-      operator: ==
-      value: true
     options[2]:
       - id: use-existing
         label: Use existing branch
@@ -167,12 +147,8 @@ checkpoints[8]:
             use_existing_branch: false
   - id: pr-check
     name: PR Check Checkpoint
+    prerequisite: "Only present when pr_exists is true"
     message: "Found existing PR #{existing_pr_number} for this branch. Would you like to use it or create a new one?"
-    condition:
-      type: simple
-      variable: pr_exists
-      operator: ==
-      value: true
     options[2]:
       - id: use-existing
         label: Use existing PR
@@ -189,12 +165,8 @@ checkpoints[8]:
             use_existing_pr: false
   - id: platform-selection
     name: Platform Selection Checkpoint
+    prerequisite: "Only present when needs_issue_creation is true"
     message: "Which platform should I create this issue in?"
-    condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
     options[2]:
       - id: github
         label: GitHub
@@ -210,12 +182,8 @@ checkpoints[8]:
             issue_platform: jira
   - id: jira-project-selection
     name: Jira Project Selection Checkpoint
+    prerequisite: "Only present when issue_platform is jira"
     message: "Which Jira project should I create this issue in?"
-    condition:
-      type: simple
-      variable: issue_platform
-      operator: ==
-      value: jira
     options[2]:
       - id: select
         label: Select from list
@@ -225,12 +193,8 @@ checkpoints[8]:
         description: Provide a specific project key
   - id: issue-type-selection
     name: Issue Type Selection Checkpoint
+    prerequisite: "Only present when needs_issue_creation is true"
     message: "What type of issue is this?"
-    condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
     options[5]:
       - id: feature
         label: Feature / Story
@@ -264,12 +228,8 @@ checkpoints[8]:
             issue_type: epic
   - id: issue-review
     name: Issue Review Checkpoint
+    prerequisite: "Only present when needs_issue_creation is true"
     message: "Here's the drafted issue. Does this look correct?"
-    condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
     options[3]:
       - id: create
         label: Create issue
@@ -299,27 +259,6 @@ checkpoints[8]:
         effect:
           setVariable:
             pr_skipped: true
-decisions[1]:
-  - id: platform-flow
-    name: Platform Flow Decision
-    description: Route to appropriate platform-specific issue creation activity
-    branches[2]:
-      - id: github-flow
-        label: GitHub issue creation
-        condition:
-          type: simple
-          variable: issue_platform
-          operator: ==
-          value: github
-        transitionTo: github-issue-creation
-      - id: jira-flow
-        label: Jira issue creation
-        condition:
-          type: simple
-          variable: issue_platform
-          operator: ==
-          value: jira
-        transitionTo: jira-issue-creation
 transitions[1]{to,isDefault}:
   design-philosophy,true
 exitActions[1]{action,message}:
@@ -329,7 +268,7 @@ outcome[4]:
   - Feature branch created from main
   - Draft PR created and linked to issue
   - Planning folder initialized
-context_to_preserve[12]:
+context_to_preserve[13]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
   - issue_platform - github or jira
   - issue_type - Type of issue (feature, bug, task, enhancement, epic)
@@ -342,3 +281,4 @@ context_to_preserve[12]:
   - use_existing_branch - Whether to use the existing branch
   - pr_exists - Whether a PR already exists for the branch
   - use_existing_pr - Whether to use the existing PR
+  - jira_cloud_id - Atlassian cloud ID for subsequent Jira operations

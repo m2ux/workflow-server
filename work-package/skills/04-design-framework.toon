@@ -1,0 +1,76 @@
+id: design-framework
+version: 1.0.0
+capability: Apply structured design framework to classify problems, assess complexity, and determine workflow path
+
+description: "This skill serves the design-philosophy activity. It handles: creating clear problem statements with system understanding, impact, success criteria, constraints; classifying problem type (specific problem with cause known/unknown, inventive goal for improvement/prevention); assessing complexity (simple, moderate, complex); determining workflow path based on complexity: full (elicitation+research), elicitation-only, research-only, or direct-to-planning; creating the design-philosophy.md artifact."
+
+inputs[2]:
+  - id: issue_details
+    description: "Summary, description, and context from the linked issue"
+    required: true
+  - id: problem_context
+    description: "Additional context about the problem from user or prior activities"
+    required: false
+
+protocol:
+  load-framework[2]:
+    - Load resource 09 (design-framework) for full guidance
+    - Review issue_details and problem_context
+  define-problem[4]:
+    - Create clear problem statement with system understanding
+    - Document impact assessment
+    - Define success criteria and constraints
+    - Ensure problem is understandable without prior context
+  classify-problem[3]:
+    - Determine if specific problem (cause known/unknown) or inventive goal (improvement/prevention)
+    - "Assess complexity as simple, moderate, or complex"
+    - Document classification rationale
+  determine-path[3]:
+    - "Map complexity to workflow path (full, elicitation-only, research-only, or direct-to-planning)"
+    - Document path rationale
+    - Set needs_elicitation, needs_research, skip_to_planning accordingly
+  document-philosophy[2]:
+    - Create design-philosophy.md artifact in planning folder
+    - Include problem statement, classification, complexity, workflow path rationale
+  create-assumptions-log[2]:
+    - Identify assumptions made during problem classification and path selection
+    - Create assumptions-log.md artifact with initial assumptions
+
+output[2]:
+  - id: design-philosophy-doc
+    description: "Records problem classification, design rationale, and workflow path decisions"
+    artifact:
+      name: "design-philosophy.md"
+    components:
+      problem_statement: "Clear problem definition with system understanding"
+      problem_type: "Specific problem or inventive goal"
+      complexity: "simple, moderate, or complex"
+      workflow_path: "Determined path and rationale"
+  - id: assumptions-log
+    description: "Log of assumptions made during design philosophy"
+    artifact:
+      name: "assumptions-log.md"
+    components:
+      assumptions: "Assumptions with categories: Problem Interpretation, Complexity Assessment, Workflow Path"
+
+rules:
+  path-determines-workflow: "Design philosophy determines the path through the workflow — all subsequent activities depend on this classification"
+  lightweight-for-simple: "For simple changes, lightweight application is acceptable — not every bug fix needs full elicitation"
+  assumptions-first: "Create assumptions log here — first activity that makes decisions requiring assumptions"
+
+resources[1]:
+  - "09"
+
+tools:
+  get_resource:
+    when: Loading design framework guidance
+    params: "workflow_id: work-package, index: 09"
+    returns: Design framework guide with classification and path determination criteria
+  read_file:
+    when: Reviewing issue content or Cargo.toml for project context
+    usage: Examine files for problem context and project type
+
+errors:
+  unclear_problem:
+    cause: Problem statement too vague
+    recovery: Ask user for more context — clarify system understanding, impact, or success criteria

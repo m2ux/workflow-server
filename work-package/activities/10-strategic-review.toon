@@ -11,10 +11,8 @@ skills:
   primary: strategic-review
 required: true
 estimatedTime: 15-30m
-rules[3]:
-  - "Look for investigation artifacts: extra logging, debug messages, temporary workarounds"
-  - "Watch for over-engineering: generic abstractions for specific problems, unused config options"
-  - "Check for orphaned infrastructure: commented-out code, unused utilities, duplicate functionality"
+rules[1]:
+  - "Review protocol and domain rules are in the strategic-review skill"
 modeOverrides:
   review:
     description: "Evaluate as though code were newly written. Document findings as feedback for PR author."

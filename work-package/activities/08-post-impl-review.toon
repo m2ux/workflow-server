@@ -96,10 +96,9 @@ checkpoints[5]:
         description: All changes look good, proceed with automated reviews
   - id: block-interview
     name: Block Interview Checkpoint
+    prerequisite: "Repeats for each entry in flagged_block_indices"
     message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. What's the issue with this change?"
     blocking: true
-    repeats: true
-    repeatOver: flagged_block_indices
     options[3]:
       - id: issue-recorded
         label: Issue recorded - continue

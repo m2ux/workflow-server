@@ -1,24 +1,54 @@
 id: code-review
-version: 1.0.0
+version: 2.0.0
 capability: Perform comprehensive Rust/Substrate code review following established patterns
-applicability:
-  project_type: rust-substrate
-  description: Only applies to Rust+Substrate projects
-execution_pattern:
-  start[2]:
-    - Load code-review resource for full guidance
-    - Review all implementation changes since work package started
-  per_file[3]:
-    - Apply architecture and design patterns review
-    - Check error handling and safety
-    - Verify Substrate-specific patterns
-  completion[2]:
-    - Document findings in review notes
-    - Summarize critical issues for checkpoint
+
+description: "Review all implementation changes for architecture adherence, error handling, safety, and Substrate-specific patterns. Produces a severity-rated findings report."
+
+inputs[2]:
+  - id: changed-files
+    description: "List of files changed in the work package (from git diff)"
+    required: true
+  - id: project-type
+    description: "Detected project type (rust-substrate or other)"
+    required: false
+    default: other
+
+protocol:
+  load-guidance[2]:
+    - Load resource 16 (rust-substrate-code-review) for full review criteria
+    - Identify all files changed since work package started using git diff
+  review-files[3]:
+    - Review each changed file against architecture and design patterns
+    - Check error handling, safety, and unwrap/expect usage
+    - Verify Substrate-specific patterns (weights, storage, hooks, extrinsics)
+  document-findings[2]:
+    - Document each finding with severity (critical, high, medium, low, informational)
+    - Create {NN}-code-review.md report in planning folder
+  present-summary[1]:
+    - Summarize critical and high findings for checkpoint presentation
+
+output[1]:
+  - id: code-review-report
+    description: "Code review report documenting findings by severity"
+    artifact:
+      name: "{NN}-code-review.md"
+    components:
+      findings: "All findings with severity, affected file, line numbers, and description"
+      summary: "Counts by severity level and top issues"
+
+rules:
+  architecture-first: "Evaluate architecture and design pattern adherence before low-level details"
+  evidence-required: "Every finding must cite specific code with file path and line numbers"
+  severity-consistency: "Apply severity levels consistently — critical for security/data loss, high for correctness, medium for maintainability, low for style"
+  substrate-awareness: "For rust-substrate projects, check weight annotations, storage migrations, hook implementations, and extrinsic validation"
+
+resources[1]:
+  - "16"
+
 tools:
   get_resource:
     when: Starting code review
-    params: "resource_id: code-review, workflow_id: work-package"
+    params: "workflow_id: work-package, index: 16"
     returns: Full code review guidance document
     usage: Reference for review criteria and patterns
   read_file:
@@ -27,26 +57,11 @@ tools:
   grep:
     when: Searching for patterns across codebase
     usage: Find related code, check consistency
-resource: code-review
-state:
-  track[3]:
-    - files_reviewed
-    - findings
-    - severity_counts
-  initialize: "Empty findings list, zero counts"
-  update_on:
-    file_complete: "Add file to files_reviewed, append findings"
-    issue_found: "Increment severity count, add to findings"
-flow[5]:
-  - 1. Call get_resource to load review guidance
-  - 2. Identify all files changed in work package
-  - 3. Review each file following guidance criteria
-  - 4. Document findings with severity levels
-  - 5. Present summary at checkpoint
+
 errors:
   no_changes:
     cause: No implementation changes found
     recovery: Verify correct branch and commit range
   resource_not_found:
     cause: Code review resource missing
-    recovery: Check resources folder for 15-rust-substrate-code-review.md
+    recovery: Check resources folder for 16-rust-substrate-code-review.md

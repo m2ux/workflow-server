@@ -1,0 +1,73 @@
+id: requirements-elicitation
+version: 1.0.0
+capability: Discover and clarify requirements through structured sequential conversation
+
+description: "This skill serves the requirements-elicitation activity. It handles: prompting user for stakeholder discussion transcript; iterating through question domains one question at a time; recording responses and adapting follow-up questions; preparing assumptions as Jira comments for stakeholder review; awaiting and incorporating stakeholder feedback; creating requirements-elicitation.md artifact."
+
+inputs[3]:
+  - id: stakeholder_transcript
+    description: "Transcript or summary from user's discussion with key stakeholders"
+    required: false
+  - id: issue_platform
+    description: "Platform where issue lives (github or jira) — determines if assumptions go to Jira"
+    required: true
+  - id: issue_number
+    description: "Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)"
+    required: true
+
+protocol:
+  prompt-transcript[2]:
+    - Prompt user for stakeholder discussion transcript before elicitation
+    - Offer skip option with note about limitation
+  iterate-domains[4]:
+    - Load resource 05 (requirements-elicitation) for question domains
+    - Iterate through domains one question at a time
+    - Record responses and adapt follow-up based on answers
+    - Skip irrelevant follow-ups; probe deeper when needed
+  collect-assumptions[2]:
+    - Identify assumptions from requirement interpretation
+    - "Categorize by Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria"
+  post-assumptions-jira[2]:
+    - Prepare assumptions as Jira comment for stakeholder review
+    - Post to ticket using addCommentToJiraIssue (only when issue_platform is jira)
+  await-feedback[2]:
+    - Await stakeholder response on Jira comment
+    - Incorporate feedback into requirements document
+  create-document[2]:
+    - Create requirements-elicitation.md artifact in planning folder
+    - Include elicited requirements, success criteria, scope boundaries, and assumptions
+
+output[1]:
+  - id: requirements-document
+    description: "Elicited requirements with success criteria and scope"
+    artifact:
+      name: "requirements-elicitation.md"
+    components:
+      requirements: "Captured requirements list"
+      success_criteria: "Defined success criteria with verification methods"
+      scope_boundaries: "In/out scope definitions"
+      assumptions: "Documented assumptions from elicitation"
+
+rules:
+  conversation-not-interrogation: "Core principle: Conversation, not interrogation — discover what user actually needs"
+  one-question-per-turn: "One question per turn — never present multiple questions in a single message"
+  skip-always-available: "Skip option always available — user can say 'skip' to move to next question"
+  adapt-to-responses: "Adapt based on responses — skip irrelevant follow-ups, probe deeper when needed"
+  stakeholder-first: "Stakeholder input first: User should discuss with key stakeholders before agent elicitation"
+
+resources[1]:
+  - "05"
+
+tools:
+  get_resource:
+    when: Loading elicitation question domains and templates
+    params: "workflow_id: work-package, index: 05"
+    returns: Requirements elicitation guidance and question domains
+  addCommentToJiraIssue:
+    when: Posting assumptions for stakeholder review
+    usage: Add assumptions summary as Jira comment for stakeholder feedback
+
+errors:
+  no_stakeholder_input:
+    cause: User skipped stakeholder discussion
+    recovery: Note limitation and proceed with agent-led elicitation

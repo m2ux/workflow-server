@@ -1,0 +1,59 @@
+id: artifact-management
+version: 1.0.0
+capability: Manage planning artifacts — create folders, maintain numbering sequences, and organize documents
+
+description: "Handles the creation and organization of planning artifacts in the .engineering/artifacts/planning/ directory. Manages the YYYY-MM-DD-{initiative-name} folder convention, sequential artifact numbering ({NN}-filename.md), and ensures artifacts are properly organized."
+
+inputs[2]:
+  - id: planning_folder_path
+    description: "Path to planning folder (or parent for creation)"
+    required: false
+  - id: issue_title
+    description: "Issue title for deriving initiative name"
+    required: true
+
+protocol:
+  create-folder[2]:
+    - Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/
+    - Derive initiative-name from issue title (slugified)
+  manage-numbering[3]:
+    - Maintain sequential NN numbering across all artifacts in the folder
+    - Scan existing files to determine next available number
+    - Assign next number to new artifacts
+  write-artifact[3]:
+    - Write artifact content to the correct path with proper numbering
+    - Use format {NN}-filename.md
+    - Preserve existing artifacts when adding new ones
+
+output[1]:
+  - id: planning-folder
+    description: "Planning folder created or verified with artifact index"
+    components:
+      folder_path: "Full path to planning folder"
+      artifact_index: "Map of NN to artifact filenames"
+
+rules:
+  naming-convention: "Planning folder follows YYYY-MM-DD-{initiative-name} naming convention"
+  sequential-numbering: "Artifacts use {NN} sequential numbering — scan existing files to determine next available number"
+  gitignored: "Planning artifacts are gitignored — never reference them in PRs, issues, or ADRs"
+  local-only: "Artifacts in 'planning' and 'reviews' locations are local-only working documents"
+
+tools:
+  shell:
+    when: Creating directory, listing files for numbering
+    params: "mkdir, ls"
+    usage: mkdir for folder creation, ls to scan existing artifacts
+  write_file:
+    when: Writing artifact content
+    usage: Write artifacts to numbered paths
+  read_file:
+    when: Loading existing artifacts or verifying content
+    usage: Read artifact files for context
+
+errors:
+  folder_exists:
+    cause: Planning folder already exists
+    recovery: Use existing folder and continue numbering from highest NN
+  permission_error:
+    cause: Cannot create directory
+    recovery: Check path and permissions

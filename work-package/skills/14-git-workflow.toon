@@ -1,0 +1,63 @@
+id: git-workflow
+version: 1.0.0
+capability: Manage git operations — branching, PR lifecycle, and branch synchronization
+
+description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. Provides the standard protocol for feature branch creation, draft PR setup, commit pushing, and marking PRs ready for review."
+
+inputs[3]:
+  - id: issue_number
+    description: "Issue identifier (GitHub #N or Jira KEY-N)"
+    required: true
+  - id: issue_platform
+    description: "Platform where issue lives (github or jira)"
+    required: true
+  - id: branch_name
+    description: "Optional — for existing branches"
+    required: false
+
+protocol:
+  create-branch[2]:
+    - Create feature branch from main/master
+    - Use naming convention type/issue-number-short-description
+  create-pr[3]:
+    - Create draft PR linked to issue using gh pr create
+    - Ensure PR title and body reference issue number
+    - Keep PR as draft until implementation and review complete
+  sync-branch[3]:
+    - Fetch and rebase/merge from main to keep branch current
+    - Resolve merge conflicts if any
+    - Sync before pushing to avoid conflicts
+  push-commits[2]:
+    - Push all local commits to remote
+    - Verify push succeeded
+
+output[1]:
+  - id: branch-and-pr
+    description: "Branch created or used, PR created or updated"
+    components:
+      branch_name: "Feature branch name"
+      pr_number: "PR number"
+      pr_url: "URL to the PR"
+
+rules:
+  naming-convention: "Branch naming: type/issue-number-short-description (e.g., fix/PM-21781-storage-root-panic)"
+  draft-first: "Always create PRs as draft — mark ready only after implementation and review"
+  link-to-issue: "PR title and body must reference the associated issue number"
+  sync-before-push: "Sync with main before pushing to avoid merge conflicts"
+
+tools:
+  shell:
+    when: Git operations and gh CLI
+    params: "git checkout, git branch, git push, git pull, git rebase, gh pr create, gh pr edit, gh pr ready"
+    usage: Full git workflow including branch creation, sync, push, and PR lifecycle
+
+errors:
+  branch_exists:
+    cause: Branch already exists
+    recovery: Ask user whether to use existing or create new
+  merge_conflict:
+    cause: Conflict when syncing with main
+    recovery: Resolve conflicts interactively
+  pr_exists:
+    cause: PR already exists for this branch
+    recovery: Use existing PR

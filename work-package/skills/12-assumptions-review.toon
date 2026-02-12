@@ -1,0 +1,56 @@
+id: assumptions-review
+version: 1.0.0
+capability: Collect, classify, and review assumptions made during workflow activities
+
+description: "Cross-cutting skill used by multiple activities (design-philosophy, requirements-elicitation, research, implementation-analysis, plan-prepare, implement) to systematically identify, document, and validate assumptions. Each activity generates assumptions in different categories; this skill provides the standard protocol for collection, presentation, and recording."
+
+inputs[2]:
+  - id: activity_context
+    description: "Which activity is generating assumptions"
+    required: true
+  - id: existing_assumptions_log
+    description: "Path to assumptions-log.md if it exists"
+    required: false
+
+protocol:
+  collect-assumptions[2]:
+    - Identify all implicit decisions and assumptions made
+    - Classify by category appropriate to the activity
+  present-for-review[4]:
+    - Present assumptions one at a time with type, statement, rationale, and alternatives
+    - Include type, statement, rationale, and alternatives for each
+    - Await user response before proceeding to next
+    - Do not batch assumptions — one at a time only
+  record-outcomes[3]:
+    - Mark each as confirmed, corrected, or needs-discussion
+    - Update assumptions-log.md with outcomes and user responses
+    - Preserve all assumptions and their resolution status
+
+output[1]:
+  - id: updated-assumptions-log
+    description: "Assumptions log updated with review outcomes — grows across activities"
+    artifact:
+      name: "assumptions-log.md"
+      action: "update"
+    components:
+      assumptions: "All assumptions with type, statement, rationale, alternatives"
+      outcomes: "Per-assumption resolution: confirmed, corrected, or needs-discussion"
+
+rules:
+  elevate-implicit: "Make implicit decisions explicit — assumptions should be elevated for validation"
+  one-at-a-time: "Present assumptions one at a time for focused review"
+  update-after-review: "Update assumptions log AFTER the review checkpoint — record user responses and outcomes"
+  categorize-per-activity: "Use categories appropriate to the current activity phase"
+
+tools:
+  read_file:
+    when: Loading existing assumptions log
+    usage: Read assumptions-log.md to load prior assumptions
+  write_file:
+    when: Recording outcomes and updating assumptions log
+    usage: Update assumptions-log.md after review checkpoint
+
+errors:
+  no_assumptions:
+    cause: No significant assumptions identified
+    recovery: Explicitly confirm with user that no assumptions were made

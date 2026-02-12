@@ -1,0 +1,63 @@
+id: pr-management
+version: 1.0.0
+capability: Update PR with final implementation details and mark ready for review
+
+description: "Handles the final PR lifecycle stages — pushing all commits, updating the PR description with implementation details, and marking the PR ready for review. In review mode, generates and posts consolidated PR review comments instead."
+
+inputs[3]:
+  - id: pr_number
+    description: "PR number to update"
+    required: true
+  - id: branch_name
+    description: "Branch name for push operations"
+    required: true
+  - id: planning_folder_path
+    description: "Path to planning folder for implementation summary context"
+    required: true
+
+protocol:
+  push-commits[3]:
+    - Push all local commits to remote branch
+    - Verify push succeeded
+    - Do not update PR until push completes
+  update-description[4]:
+    - Load resource 12 (pr-description) for template and structure
+    - Update PR description with implementation summary
+    - Include test coverage summary
+    - Document key decisions and trade-offs
+  mark-ready[2]:
+    - Mark PR ready for review using gh pr ready
+    - Ensure description is finalized before marking ready
+
+output[1]:
+  - id: updated-pr
+    description: "PR updated and marked ready for review"
+    components:
+      pr_url: "URL to the PR"
+      pr_status: "Status after update (e.g., ready for review)"
+
+resources[1]:
+  - "12"
+
+rules:
+  push-before-update: "Push all commits before updating PR description — description should reflect final state"
+  description-template: "Use resource 12 for PR description template and structure"
+  ready-last: "Mark PR ready for review only after description is finalized"
+
+tools:
+  shell:
+    when: Git push, gh pr edit, gh pr ready, gh pr view
+    params: "git push, gh pr edit --body, gh pr ready"
+    usage: Push commits and manage PR via gh CLI
+  get_resource:
+    when: Loading PR description template
+    params: "workflow_id: work-package, index: 12"
+    returns: PR description resource
+
+errors:
+  push_failed:
+    cause: Remote branch has diverged
+    recovery: Pull and rebase before pushing
+  pr_not_found:
+    cause: PR number does not exist
+    recovery: Verify PR number and check gh auth

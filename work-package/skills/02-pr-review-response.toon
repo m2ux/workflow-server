@@ -1,59 +1,70 @@
 id: pr-review-response
-version: 1.0.0
+version: 2.0.0
 capability: Analyze and respond to PR review comments systematically
-execution_pattern:
-  start[2]:
-    - Load pr-review-response resource for full guidance
-    - Fetch all review comments from PR
-  analysis[3]:
-    - Categorize comments by type and severity
-    - Identify actionable items vs discussions
-    - Prioritize based on reviewer and impact
-  response[3]:
-    - Address each comment systematically
-    - Implement required changes
-    - Document responses and resolutions
-  completion[2]:
-    - Update PR with responses
-    - Determine if re-review needed
+
+description: "Process PR review feedback by categorizing comments, prioritizing by impact, implementing changes, and posting responses. Determines whether re-review or re-planning is needed."
+
+inputs[2]:
+  - id: pr-number
+    description: "Pull request number"
+    required: true
+  - id: review-comments
+    description: "Review comments fetched from PR"
+    required: true
+
+protocol:
+  fetch-comments[2]:
+    - Load resource 19 (pr-review-response) for full response guidance
+    - Fetch all review comments from PR using gh API
+  categorize[3]:
+    - Categorize comments by type (required change, suggestion, question, nit)
+    - Identify actionable items vs discussion points
+    - Prioritize by reviewer authority and impact
+  address-comments[3]:
+    - Address each required change with a code fix and commit
+    - Respond to questions and suggestions in PR comment thread
+    - Document which comments require re-planning vs inline fixes
+  update-pr[2]:
+    - Push all fix commits to the PR branch
+    - Post response summary to PR
+  assess-outcome[1]:
+    - Determine if re-review is needed (significant changes) or minor fixes suffice
+
+output[1]:
+  - id: review-analysis
+    description: "PR review analysis document"
+    artifact:
+      name: "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md"
+    components:
+      comment_summary: "Categorized comment list with dispositions"
+      changes_made: "List of changes implemented in response"
+      requires_replan: "Whether significant changes require returning to planning"
+
+rules:
+  respond-to-all: "Every review comment must receive a response — acknowledged, implemented, or discussed"
+  prioritize-required: "Address required changes before suggestions and nits"
+  commit-per-concern: "Group related fixes into logical commits, not one giant commit"
+  no-silent-disagreement: "If disagreeing with a reviewer, explain reasoning explicitly"
+
+resources[1]:
+  - "19"
+
 tools:
-  get_resource:
-    when: Starting review response process
-    params: "resource_id: pr-review-response, workflow_id: work-package"
-    returns: Full PR review response guidance
-    usage: Reference for response strategy
   shell:
-    when: Fetching PR comments via gh CLI
-    usage: "gh api repos/{owner}/{repo}/pulls/{number}/comments"
+    when: Fetching PR comments and posting responses
+    params: "gh api repos/{owner}/{repo}/pulls/{number}/comments"
+    usage: Fetch comments, post responses, push commits
+  read_file:
+    when: Reviewing code referenced by comments
+    usage: Understand context of review feedback
   edit:
     when: Implementing requested changes
     usage: Make code modifications
-  shell:
-    when: Responding to comments
-    usage: "gh pr comment or API calls"
-resource: pr-review-response
-state:
-  track[4]:
-    - comments_received
-    - comments_addressed
-    - changes_made
-    - requires_replan
-  initialize: "Empty comment lists, requires_replan false"
-  update_on:
-    comment_processed: "Move from received to addressed"
-    change_implemented: "Add to changes_made"
-    significant_change: "Set requires_replan true"
-flow[6]:
-  - 1. Call get_resource to load response guidance
-  - 2. Fetch all review comments from PR
-  - 3. Categorize and prioritize comments
-  - 4. Address each comment following guidance
-  - 5. Update PR with responses
-  - 6. Present outcome at checkpoint (approved/minor/significant)
+
 errors:
   no_comments:
     cause: No review comments found
-    recovery: Verify PR has been reviewed, check comment visibility
+    recovery: Verify PR has been reviewed and check comment visibility
   api_error:
     cause: GitHub API error fetching comments
     recovery: Check authentication and PR access
