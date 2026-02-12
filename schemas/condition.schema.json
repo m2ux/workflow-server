@@ -1,20 +1,23 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "condition",
-  "description": "Condition expression schema",
+  "description": "Condition expressions for controlling transitions, decisions, and loops. Supports simple comparisons and composable boolean logic (and, or, not).",
   "$ref": "#/definitions/condition",
   "definitions": {
     "condition": {
       "anyOf": [
         {
           "type": "object",
+          "description": "Simple condition: compare a workflow variable to a value using an operator",
           "properties": {
             "type": {
               "type": "string",
-              "const": "simple"
+              "const": "simple",
+              "description": "Condition type: simple comparison"
             },
             "variable": {
-              "type": "string"
+              "type": "string",
+              "description": "Name of the workflow variable to evaluate"
             },
             "operator": {
               "type": "string",
@@ -27,7 +30,8 @@
                 "<=",
                 "exists",
                 "notExists"
-              ]
+              ],
+              "description": "Comparison operator. 'exists'/'notExists' check whether the variable is defined (value field is ignored for these)."
             },
             "value": {
               "type": [
@@ -35,7 +39,8 @@
                 "number",
                 "boolean",
                 "null"
-              ]
+              ],
+              "description": "Value to compare against. Not required for exists/notExists operators."
             }
           },
           "required": [
@@ -47,15 +52,18 @@
         },
         {
           "type": "object",
+          "description": "AND condition: all sub-conditions must be true",
           "properties": {
             "type": {
               "type": "string",
-              "const": "and"
+              "const": "and",
+              "description": "Condition type: logical AND"
             },
             "conditions": {
               "type": "array",
               "items": {},
-              "minItems": 2
+              "minItems": 2,
+              "description": "Array of conditions that must ALL evaluate to true"
             }
           },
           "required": [
@@ -66,15 +74,18 @@
         },
         {
           "type": "object",
+          "description": "OR condition: at least one sub-condition must be true",
           "properties": {
             "type": {
               "type": "string",
-              "const": "or"
+              "const": "or",
+              "description": "Condition type: logical OR"
             },
             "conditions": {
               "type": "array",
               "items": {},
-              "minItems": 2
+              "minItems": 2,
+              "description": "Array of conditions where at least ONE must evaluate to true"
             }
           },
           "required": [
@@ -85,12 +96,16 @@
         },
         {
           "type": "object",
+          "description": "NOT condition: negates a single sub-condition",
           "properties": {
             "type": {
               "type": "string",
-              "const": "not"
+              "const": "not",
+              "description": "Condition type: logical NOT"
             },
-            "condition": {}
+            "condition": {
+              "description": "The condition to negate"
+            }
           },
           "required": [
             "type",
