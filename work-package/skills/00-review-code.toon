@@ -23,7 +23,7 @@ protocol:
     - Verify Substrate-specific patterns (weights, storage, hooks, extrinsics)
   document-findings[2]:
     - Document each finding with severity (critical, high, medium, low, informational)
-    - Create {NN}-code-review.md report in planning folder
+    - Create code-review.md report in planning folder
   present-summary[1]:
     - Summarize critical and high findings for checkpoint presentation
 
@@ -31,7 +31,7 @@ output[1]:
   - id: code-review-report
     description: "Code review report documenting findings by severity"
     artifact:
-      name: "{NN}-code-review.md"
+      name: "code-review.md"
     components:
       findings: "All findings with severity, affected file, line numbers, and description"
       summary: "Counts by severity level and top issues"

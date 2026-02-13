@@ -298,9 +298,9 @@ Review mode creates the same planning artifacts as standard mode, but with revie
 | `design-philosophy.md` | Problem classification | + Ticket completeness assessment |
 | `implementation-analysis.md` | Current state | **Pre-change** baseline state |
 | `wp-plan.md` | Implementation tasks | Retrospective plan (reference only) |
-| `{NN}-code-review.md` | Review findings | Same format, external PR focus |
-| `{NN}-test-suite-review.md` | Test quality | Same format, document gaps |
-| `{NN}-strategic-review.md` | Cleanup applied | Cleanup **recommendations** |
+| `code-review.md` | Review findings | Same format, external PR focus |
+| `test-suite-review.md` | Test quality | Same format, document gaps |
+| `strategic-review.md` | Cleanup applied | Cleanup **recommendations** |
 
 ---
 

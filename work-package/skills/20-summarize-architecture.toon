@@ -33,7 +33,7 @@ protocol:
     - Show interactions between components
     - Use Mermaid sequence diagram syntax
   write-summary[4]:
-    - Create {NN}-architecture-summary.md in planning folder
+    - Create architecture-summary.md in planning folder
     - Combine diagrams with narrative explanation
     - Focus on impact, scope, and risk
 
@@ -41,7 +41,7 @@ output[1]:
   - id: architecture-summary
     description: "Stakeholder-facing architecture summary with diagrams"
     artifact:
-      name: "{NN}-architecture-summary.md"
+      name: "architecture-summary.md"
     components:
       system_context_diagram: "Mermaid system context diagram"
       package_diagram: "Package or container diagram when applicable"

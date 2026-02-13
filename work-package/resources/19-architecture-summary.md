@@ -255,7 +255,7 @@ flowchart LR
 
 ## Architecture Summary Artifact Template
 
-Create `{NN}-architecture-summary-{n}.md` in the planning folder using this template (NN follows artifact sequence, n increments on successive versions):
+Create `architecture-summary-{n}.md` in the planning folder using this template (the activity's `artifactPrefix` is prepended at write time; n increments on successive versions):
 
 ```markdown
 # Architecture Summary

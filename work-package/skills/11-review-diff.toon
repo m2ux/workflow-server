@@ -2,7 +2,7 @@ id: review-diff
 version: 1.0.0
 capability: Conduct structured manual diff review using external side-by-side diff tool with indexed block references
 
-description: "This skill serves the post-impl-review activity. It handles: running git pull to ensure branch is up to date; parsing git diff to extract list of changed files and hunks; creating file index table (Row | Path | File) with review time estimate (30 sec/change); writing index to {NN}-change-block-index.md; presenting index to user for external diff tool review; collecting flagged row numbers from user; conducting interview for each flagged block (asking what the issue is); creating {NN}-manual-diff-review.md report with all findings."
+description: "This skill serves the post-impl-review activity. It handles: running git pull to ensure branch is up to date; parsing git diff to extract list of changed files and hunks; creating file index table (Row | Path | File) with review time estimate (30 sec/change); writing index to change-block-index.md; presenting index to user for external diff tool review; collecting flagged row numbers from user; conducting interview for each flagged block (asking what the issue is); creating manual-diff-review.md report with all findings."
 
 inputs[2]:
   - id: branch_name
@@ -23,7 +23,7 @@ protocol:
   create-index[4]:
     - "Create file index table with columns: Row | Path | File"
     - Include review time estimate in index
-    - Write index to {NN}-change-block-index.md in planning folder
+    - Write index to change-block-index.md in planning folder
     - Always generate index before asking user to review
   present-index[2]:
     - Present index to user for external diff tool review
@@ -35,21 +35,21 @@ protocol:
     - Ask what the issue is and record the response
     - If user marks block as critical blocker, set has_critical_blocker=true
   create-report[2]:
-    - Create {NN}-manual-diff-review.md report with all findings
+    - Create manual-diff-review.md report with all findings
     - Include flagged rows, interview responses, and severity
 
 output[2]:
   - id: change-block-index
     description: "Index of changed blocks for external diff review"
     artifact:
-      name: "{NN}-change-block-index.md"
+      name: "change-block-index.md"
     components:
       index_table: "Row | Path | File with review time estimate"
       change_count: "Total number of change blocks"
   - id: manual-diff-review-report
     description: "Manual diff review findings from user-flagged blocks"
     artifact:
-      name: "{NN}-manual-diff-review.md"
+      name: "manual-diff-review.md"
     components:
       findings: "Per-block issues with interview responses"
       has_critical_blocker: "True if any block marked as critical blocker"
@@ -74,7 +74,7 @@ tools:
     returns: Manual diff review guide
   write_file:
     when: Creating change block index and review report
-    usage: Persist {NN}-change-block-index.md and {NN}-manual-diff-review.md
+    usage: Persist change-block-index.md and manual-diff-review.md
   read_file:
     when: Reading diff output or existing artifacts
     usage: Examine parsed diff content

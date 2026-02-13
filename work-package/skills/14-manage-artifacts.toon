@@ -1,8 +1,8 @@
 id: manage-artifacts
-version: 1.0.0
-capability: Manage planning artifacts — create folders, maintain numbering sequences, and organize documents
+version: 2.0.0
+capability: Manage planning artifacts — create folders, enforce activity-based artifact prefixing, and organize documents
 
-description: "Handles the creation and organization of planning artifacts in the .engineering/artifacts/planning/ directory. Manages the YYYY-MM-DD-{initiative-name} folder convention, sequential artifact numbering ({NN}-filename.md), and ensures artifacts are properly organized."
+description: "Handles the creation and organization of planning artifacts in the .engineering/artifacts/planning/ directory. Manages the YYYY-MM-DD-{initiative-name} folder convention, activity-based artifact prefixing ({artifactPrefix}-filename.md), and ensures artifacts are properly organized."
 
 inputs[2]:
   - id: planning_folder_path
@@ -16,36 +16,36 @@ protocol:
   create-folder[2]:
     - Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/
     - Derive initiative-name from issue title (slugified)
-  manage-numbering[3]:
-    - Maintain sequential NN numbering across all artifacts in the folder
-    - Scan existing files to determine next available number
-    - Assign next number to new artifacts
+  apply-prefix[3]:
+    - Read the current activity's artifactPrefix value from the activity definition
+    - Prepend {artifactPrefix}- to each bare artifact filename at write time
+    - "Example: activity with artifactPrefix '09' writing 'code-review.md' produces '09-code-review.md'"
   write-artifact[3]:
-    - Write artifact content to the correct path with proper numbering
-    - Use format {NN}-filename.md
+    - Write artifact content to the correct path with activity prefix applied
+    - "Use format {artifactPrefix}-filename.md where artifactPrefix comes from the producing activity"
     - Preserve existing artifacts when adding new ones
 
 output[1]:
   - id: planning-folder
-    description: "Planning folder created or verified with artifact index"
+    description: "Planning folder created or verified with artifacts organized by activity prefix"
     components:
       folder_path: "Full path to planning folder"
-      artifact_index: "Map of NN to artifact filenames"
+      artifact_index: "Map of activity prefix to artifact filenames"
 
 rules:
   naming-convention: "Planning folder follows YYYY-MM-DD-{initiative-name} naming convention"
-  sequential-numbering: "Artifacts use {NN} sequential numbering — scan existing files to determine next available number"
+  activity-prefix: "Artifact filenames are prefixed with the producing activity's artifactPrefix value. Skills declare bare names (e.g., 'code-review.md'); the prefix is applied at write time (e.g., '09-code-review.md'). This groups artifacts by activity and sorts them in workflow order."
   gitignored: "Planning artifacts are gitignored — never reference them in PRs, issues, or ADRs"
   local-only: "Artifacts in 'planning' and 'reviews' locations are local-only working documents"
 
 tools:
   shell:
-    when: Creating directory, listing files for numbering
+    when: Creating directory, listing files
     params: "mkdir, ls"
-    usage: mkdir for folder creation, ls to scan existing artifacts
+    usage: mkdir for folder creation, ls to verify existing artifacts
   write_file:
     when: Writing artifact content
-    usage: Write artifacts to numbered paths
+    usage: Write artifacts to prefixed paths
   read_file:
     when: Loading existing artifacts or verifying content
     usage: Read artifact files for context
@@ -53,7 +53,7 @@ tools:
 errors:
   folder_exists:
     cause: Planning folder already exists
-    recovery: Use existing folder and continue numbering from highest NN
+    recovery: Use existing folder and continue with activity-based prefixing
   permission_error:
     cause: Cannot create directory
     recovery: Check path and permissions

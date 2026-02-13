@@ -340,7 +340,7 @@ For EACH test function:
 
 **After completing the review, generate a markdown report:**
 
-1. **Create report artifact** at `planning/{NN}-test-suite-review-{n}.md` (NN follows artifact sequence, n increments on successive reviews)
+1. **Create report artifact** at `planning/test-suite-review-{n}.md` (the activity's `artifactPrefix` is prepended at write time; n increments on successive reviews)
 2. **Include complete review content** with all sections
 3. **Use professional markdown formatting**
 4. **Add review metadata** (reviewer, timestamp, scope)
