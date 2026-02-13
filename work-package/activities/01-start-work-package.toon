@@ -81,7 +81,7 @@ entryActions[1]{action,message}:
 steps[11]:
   - id: resolve-target
     name: Resolve Target Directory
-    description: "Identify target_path from user request context. If not identifiable and the repository contains submodules, parse .gitmodules and present the target-submodule-selection checkpoint. All git operations (branch, PR) will be performed inside the selected directory."
+    description: "Read target_path from state variables (set during workflow initialization). Verify the directory exists. All git operations (branch, PR) will be performed inside this directory."
   - id: initialize-target
     name: Initialize Target Directory
     description: "cd into target_path. Fetch origin and checkout the default branch (main/master). Pull latest. This ensures the target is at HEAD before creating a feature branch."
@@ -129,15 +129,7 @@ steps[11]:
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"
-checkpoints[9]:
-  - id: target-submodule-selection
-    name: Target Submodule Selection
-    prerequisite: "Only present when target_path is not set and the repository contains submodules"
-    message: "Which submodule should this workflow target?"
-    options[1]:
-      - id: dynamic
-        label: "Populated from .gitmodules"
-    blocking: true
+checkpoints[8]:
   - id: issue-verification
     name: Issue Verification Checkpoint
     message: "I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?"
