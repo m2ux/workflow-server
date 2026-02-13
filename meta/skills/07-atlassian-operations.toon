@@ -54,6 +54,7 @@ output[1]:
       result_summary: "Brief summary of the operation outcome"
 
 rules:
+  no-eager-calls: "NEVER call Atlassian tools during workflow bootstrap. Even if the user's request contains a Jira URL or issue key, do NOT call getAccessibleAtlassianResources, getJiraIssue, or any other Atlassian tool until the workflow is fully loaded, state is initialized, and the worker has been dispatched to an activity that lists atlassian-operations as a supporting skill. The Jira URL is context to be preserved and acted on later — not a trigger for immediate API calls."
   cloud-id-first: "ALWAYS call getAccessibleAtlassianResources before any other Atlassian tool. Every product tool requires the cloudId parameter."
   search-paradigm: "Use Rovo 'search' for natural-language queries across Jira and Confluence. Use searchJiraIssuesUsingJql when the user provides JQL or needs precise field-level filtering. Use searchConfluenceUsingCql when the user provides CQL or needs structured Confluence queries."
   metadata-before-create: "Before creating a Jira issue, resolve the project key and issue type name. Call getVisibleJiraProjects and getJiraProjectIssueTypesMetadata to discover valid values. Do not guess issue type names."
