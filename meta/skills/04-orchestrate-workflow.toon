@@ -17,10 +17,9 @@ protocol:
     - "Call get_workflow({ workflow_id }) to receive the schema preamble and workflow definition"
     - "Extract initialActivity, variables (with defaults), rules, modes, and artifactLocations"
     - "Read and internalize the schema preamble — you must understand workflow, activity, skill, condition, and state schemas to orchestrate correctly"
-  initialize-state[4]:
+  initialize-state[3]:
     - Set all workflow variables to their declared defaultValue
     - "Detect mode from user request (e.g., 'review PR' activates review mode: set is_review_mode=true, apply mode defaults)"
-    - "Identify the target submodule from user request. If not identifiable, the start-workflow activity's target-submodule-selection checkpoint will handle it — do not prompt informally."
     - "Set current_activity to initialActivity"
   dispatch-activity[5]:
     - "Call get_workflow_activity({ workflow_id, activity_id: current_activity }) to load the activity definition"
@@ -59,7 +58,7 @@ output[1]:
       rework_loops: "Any rework loops that occurred (activity transitions backward)"
 
 rules:
-  no-domain-work: "The orchestrator coordinates but MUST NOT execute activity steps, write code, review code, produce artifacts, or call domain-specific tools (Atlassian MCP, GitHub CLI issue/PR operations). Even if the user's request contains a Jira URL or GitHub issue reference, the orchestrator must NOT resolve it — pass the reference as context to the worker, which will handle it during the appropriate activity step. All domain work is delegated to the worker. Exception: committing and pushing engineering artifacts after each activity is an orchestration responsibility."
+  no-domain-work: "The orchestrator coordinates but MUST NOT execute activity steps, write code, review code, produce artifacts, or call domain-specific tools. All domain work is delegated to the worker. Exception: committing and pushing engineering artifacts after each activity is an orchestration responsibility."
   artifact-commits: "After every completed activity, the orchestrator MUST check for and commit any new or modified engineering artifacts before evaluating transitions. This ensures artifacts are persisted incrementally and not deferred to workflow end. BEFORE committing, ALWAYS read .engineering/AGENTS.md for the definitive git structure and commit instructions."
   schema-aware: "The orchestrator MUST understand workflow, activity, skill, condition, and state schemas to correctly evaluate transitions, conditions, and state. The schema preamble from get_workflow provides this."
   worker-persistence: "The orchestrator MUST resume the same worker agent for each activity using the Task resume parameter. This preserves accumulated codebase understanding, file locations, and implementation decisions across the entire workflow."

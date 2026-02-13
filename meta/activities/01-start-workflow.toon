@@ -14,7 +14,7 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
-steps[10]:
+steps[9]:
   - id: select-workflow
     name: Select workflow
     description: If workflow not specified, call list_workflows to show options
@@ -27,9 +27,6 @@ steps[10]:
   - id: apply-rules
     name: Apply rules
     description: Read and apply workflow rules
-  - id: resolve-target-submodule
-    name: Resolve target submodule
-    description: "Identify the target submodule from user request context. If not identifiable, discover available submodules by parsing .gitmodules and present the target-submodule-selection checkpoint."
   - id: discover-resources
     name: Discover resources
     description: Call list_workflow_resources to discover available resources
@@ -45,16 +42,6 @@ steps[10]:
   - id: prepare-checkpoints
     name: Prepare checkpoints
     description: If activity has checkpoints, prepare to present when reached
-checkpoints[1]:
-  - id: target-submodule-selection
-    name: Target Submodule Selection
-    prerequisite: "Only present when target_path is not set and the repository contains submodules"
-    message: "Which submodule should this workflow target?"
-    options[1]:
-      - id: dynamic
-        label: "Dynamically populated from .gitmodules"
-        description: "The agent discovers submodules from .gitmodules and populates each as a selectable checkpoint option"
-    blocking: true
 outcome[4]:
   - Workflow is selected and loaded
   - Initial state is created with correct initial activity
