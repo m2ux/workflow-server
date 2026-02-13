@@ -125,7 +125,7 @@ This ensures PRs are clean, reviewable, and contain only intentional changes.
 
 ## Strategic Review Artifact Template
 
-Create `{NN}-strategic-review-{n}.md` in the planning folder using this template (NN follows artifact sequence, n increments on successive reviews):
+Create `strategic-review-{n}.md` in the planning folder using this template (the activity's `artifactPrefix` is prepended at write time; n increments on successive reviews):
 
 ```markdown
 # Strategic Review

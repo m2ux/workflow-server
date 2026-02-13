@@ -22,7 +22,7 @@ protocol:
     - Review assertion quality and error message clarity
   document-findings[2]:
     - Document findings with severity and recommendations
-    - Create {NN}-test-suite-review.md report in planning folder
+    - Create test-suite-review.md report in planning folder
   present-summary[1]:
     - Summarize coverage gaps and critical issues for checkpoint
 
@@ -30,7 +30,7 @@ output[1]:
   - id: test-suite-review-report
     description: "Test suite review report documenting quality assessment"
     artifact:
-      name: "{NN}-test-suite-review.md"
+      name: "test-suite-review.md"
     components:
       coverage_assessment: "Coverage analysis relative to changes"
       anti_patterns: "Anti-patterns found with locations"

@@ -14,8 +14,8 @@ version: 1.0.0
 Manual diff review enables focused human review of implementation changes before automated analysis. The process generates an indexed reference table, allowing users to review changes in their preferred diff tool and report findings by reference number.
 
 The review process produces:
-1. **File Index Table** (`{NN}-change-block-index.md`) - Reference table for cross-checking during review
-2. **Manual Diff Review Report** (`{NN}-manual-diff-review.md`) - Structured findings from user interview
+1. **File Index Table** (`change-block-index.md`) - Reference table for cross-checking during review
+2. **Manual Diff Review Report** (`manual-diff-review.md`) - Structured findings from user interview
 
 ---
 
