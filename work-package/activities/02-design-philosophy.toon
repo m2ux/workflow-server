@@ -37,7 +37,7 @@ modeOverrides:
     checkpoints[1]:
       - id: ticket-completeness
         name: Ticket Completeness Checkpoint
-        message: "I've assessed the associated ticket. Here are any gaps found. Would you like to refactor the ticket?"
+        message: "Would you like to refactor the ticket based on the gaps found?"
         options[3]:
           - id: refactor-ticket
             label: Refactor ticket
@@ -144,7 +144,7 @@ checkpoints[4]:
             skip_to_planning: true
   - id: design-philosophy-doc
     name: Design Philosophy Document Checkpoint
-    message: "Design philosophy document created. Does it accurately capture the problem, classification, and workflow rationale?"
+    message: "Does the design philosophy accurately capture the problem, classification, and workflow rationale?"
     options[2]:
       - id: confirmed
         label: Content reviewed
@@ -154,7 +154,7 @@ checkpoints[4]:
         description: Some aspects need correction
   - id: assumptions-review
     name: Design Philosophy Assumptions Checkpoint
-    message: "Here are the assumptions made during problem classification and path selection. Are they correct?"
+    message: "Are the design philosophy assumptions correct?"
     options[3]:
       - id: confirmed
         label: Assumptions confirmed

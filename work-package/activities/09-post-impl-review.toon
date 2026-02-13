@@ -110,7 +110,7 @@ checkpoints[5]:
         description: No longer an issue, move to next
   - id: code-review
     name: Code Review Checkpoint
-    message: "Code review complete. Here are the findings by severity. Which would you like to address?"
+    message: "Which code review findings would you like to address?"
     options[3]:
       - id: acceptable
         label: Code quality acceptable
@@ -126,7 +126,7 @@ checkpoints[5]:
         description: Note findings for future but proceed now
   - id: test-quality
     name: Test Quality Checkpoint
-    message: "Test suite review complete. Here are the findings on test quality, coverage, and potential improvements."
+    message: "How should test quality findings be handled?"
     options[3]:
       - id: acceptable
         label: Test quality acceptable

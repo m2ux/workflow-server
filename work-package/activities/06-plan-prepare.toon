@@ -59,7 +59,7 @@ checkpoints[4]:
       revise,Revise approach
   - id: assumptions-review
     name: Planning Assumptions Checkpoint
-    message: "Here are the assumptions made during planning. Are they correct?"
+    message: "Are the planning assumptions correct?"
     options[3]:
       - id: confirmed
         label: Assumptions confirmed

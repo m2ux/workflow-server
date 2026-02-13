@@ -59,7 +59,7 @@ steps[5]:
 checkpoints[2]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
-    message: "Here are the strategic review findings. Which would you like to address?"
+    message: "Which strategic review findings would you like to address?"
     options[4]:
       - id: fix-findings
         label: Fix findings before proceeding

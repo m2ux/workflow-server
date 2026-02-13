@@ -77,7 +77,7 @@ checkpoints[2]:
         description: Additional areas need investigation
   - id: assumptions-review
     name: Analysis Assumptions Checkpoint
-    message: "Here are the assumptions made during implementation analysis. Are they correct?"
+    message: "Are the implementation analysis assumptions correct?"
     options[3]:
       - id: confirmed
         label: Assumptions confirmed
