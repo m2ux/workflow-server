@@ -118,7 +118,7 @@ sections[13]:
       - "BEFORE committing engineering artifacts, ALWAYS read and follow .engineering/AGENTS.md"
       - "The AGENTS.md file contains the definitive git structure diagram showing what is a submodule vs a regular directory"
     rules[5]:
-      - "At the end of each activity, check for new or modified engineering artifacts"
+      - "The orchestrator MUST commit and push engineering artifacts after each completed activity, before evaluating transitions to the next activity"
       - "Files in .engineering/artifacts/, .engineering/AGENTS.md, .engineering/scripts/ are regular files — commit them directly in the parent repo"
       - "Files in .engineering/workflows/ are in a SUBMODULE — commit inside the submodule first, push, then update the parent's submodule pointer"
       - "Files in .engineering/history/ are in a SUBMODULE — same two-step commit as workflows"
