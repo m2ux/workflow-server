@@ -90,11 +90,8 @@ describe('skill-loader', () => {
         expect(skill.tools['get_checkpoint']).toBeDefined();
         expect(skill.tools['validate_transition']).toBeDefined();
         
-        // Check state management
+        // Check state reference (structure now in state.schema.json, behavior in state-management skill)
         expect(skill.state).toBeDefined();
-        expect(skill.state.structure).toBeDefined();
-        expect(skill.state.structure.currentActivity).toBeDefined();
-        expect(skill.state.structure.completedActivities).toBeDefined();
         
         // Check interpretation
         expect(skill.interpretation).toBeDefined();
