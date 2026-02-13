@@ -15,15 +15,16 @@ skills:
 required: false
 estimatedTime: 10-20m
 artifactPrefix: "07"
-rules[4]:
+rules[5]:
   - "Compile the implementation plan summary AND assumptions from ALL prior phases (design, requirements, research, analysis, planning) into a single comment for stakeholder review"
-  - "Assumptions appear as bulleted lists (Confirmed and Open) after the Constraints section — read work-package-plan.md for the plan and assumptions-log.md for the assumptions"
+  - "Assumptions appear as a flat bulleted list after the Constraints section — read work-package-plan.md for the plan and assumptions-log.md for the assumptions"
   - "Comment format: use bullets, numbered lists, and short sections — not paragraphs. Optimize for low cognitive load and fast scanning. Every line should be independently parseable."
   - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
+  - "Tag the issue reporter in the comment using their Jira @mention or GitHub @username so they are notified for review"
 steps[4]:
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
-    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Assumptions' — flat bulleted list of all assumptions (statement only, no category or status), (6) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and status labels — every line should be scannable."
+    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Proposed Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Assumptions' — flat bulleted list of all assumptions (statement only, no category or status), (6) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and status labels — every line should be scannable."
     actions[1]:
       - action: message
         message: "**Proposed comment for {issue_number}:**\n\n{compiled_comment}"
