@@ -26,7 +26,7 @@
         "required": {
           "type": "boolean",
           "default": false,
-          "description": "Whether this variable must be set before workflow execution"
+          "description": "Whether this variable must be set during workflow execution"
         }
       },
       "required": ["name", "type"],

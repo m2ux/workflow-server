@@ -40,7 +40,7 @@ describe('activity-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('start-workflow');
-        expect(result.value.version).toBe('3.0.0');
+        expect(result.value.version).toBe('4.0.0');
         expect(result.value.name).toBeDefined();
         expect(result.value.problem).toBeDefined();
       }
