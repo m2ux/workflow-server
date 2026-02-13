@@ -9,8 +9,8 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["log", "validate", "set", "emit"],
-          "description": "Action type: log (record message), validate (check a condition), set (assign a variable), emit (signal an event)"
+          "enum": ["log", "validate", "set", "emit", "message"],
+          "description": "Action type: log (record message), validate (check a condition), set (assign a variable), emit (signal an event), message (display markdown content to the user)"
         },
         "target": {
           "type": "string",

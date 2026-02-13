@@ -13,7 +13,7 @@ export type SkillsReference = z.infer<typeof SkillsReferenceSchema>;
 
 // Action schema
 export const ActionSchema = z.object({
-  action: z.enum(['log', 'validate', 'set', 'emit']),
+  action: z.enum(['log', 'validate', 'set', 'emit', 'message']),
   target: z.string().optional(),
   message: z.string().optional(),
   value: z.unknown().optional(),
