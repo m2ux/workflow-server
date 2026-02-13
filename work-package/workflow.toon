@@ -42,8 +42,7 @@ modes[1]:
 variables[51]:
   - name: target_path
     type: string
-    description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory."
-    required: true
+    description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}"
