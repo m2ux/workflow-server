@@ -61,9 +61,9 @@ describe('mcp-server integration', () => {
       const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
       expect(workflow.id).toBe('work-package');
-      expect(workflow.version).toBe('2.3.0');
-      expect(workflow.activities).toHaveLength(12);
-      expect(workflow.initialActivity).toBe('issue-management');
+      expect(workflow.version).toBe('3.3.0');
+      expect(workflow.activities).toHaveLength(13);
+      expect(workflow.initialActivity).toBe('start-work-package');
     });
 
     it('should return error for non-existent workflow', async () => {
@@ -81,13 +81,13 @@ describe('mcp-server integration', () => {
     it('should get specific activity from workflow', async () => {
       const result = await client.callTool({
         name: 'get_workflow_activity',
-        arguments: { workflow_id: 'work-package', activity_id: 'issue-management' },
+        arguments: { workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       
       const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       
-      expect(activity.id).toBe('issue-management');
-      expect(activity.name).toBe('Issue Management');
+      expect(activity.id).toBe('start-work-package');
+      expect(activity.name).toBe('Start Work Package');
       expect(activity.checkpoints).toBeDefined();
       expect(activity.checkpoints.length).toBeGreaterThan(0);
     });
@@ -109,7 +109,7 @@ describe('mcp-server integration', () => {
         name: 'get_checkpoint',
         arguments: {
           workflow_id: 'work-package',
-          activity_id: 'issue-management',
+          activity_id: 'start-work-package',
           checkpoint_id: 'issue-verification',
         },
       });
@@ -129,7 +129,7 @@ describe('mcp-server integration', () => {
         name: 'validate_transition',
         arguments: {
           workflow_id: 'work-package',
-          from_activity: 'issue-management',
+          from_activity: 'start-work-package',
           to_activity: 'design-philosophy',
         },
       });
@@ -143,8 +143,8 @@ describe('mcp-server integration', () => {
         name: 'validate_transition',
         arguments: {
           workflow_id: 'work-package',
-          from_activity: 'issue-management',
-          to_activity: 'post-implementation',
+          from_activity: 'start-work-package',
+          to_activity: 'complete',
         },
       });
       

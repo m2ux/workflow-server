@@ -33,7 +33,7 @@ describe('workflow-loader', () => {
       
       expect(workPackage).toBeDefined();
       expect(workPackage?.title).toBe('Work Package Implementation Workflow');
-      expect(workPackage?.version).toBe('2.3.0');
+      expect(workPackage?.version).toBe('3.3.0');
     });
   });
 
@@ -44,8 +44,8 @@ describe('workflow-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('work-package');
-        expect(result.value.activities.length).toBe(12);
-        expect(result.value.initialActivity).toBe('issue-management');
+        expect(result.value.activities.length).toBe(13);
+        expect(result.value.initialActivity).toBe('start-work-package');
       }
     });
 
@@ -64,10 +64,10 @@ describe('workflow-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         // Check for activities with different features
-        const issueManagement = result.value.activities.find(a => a.id === 'issue-management');
-        expect(issueManagement?.checkpoints?.length).toBeGreaterThan(0);
-        expect(issueManagement?.steps?.length).toBeGreaterThan(0);
-        expect(issueManagement?.transitions?.length).toBeGreaterThan(0);
+        const startWorkPackage = result.value.activities.find(a => a.id === 'start-work-package');
+        expect(startWorkPackage?.checkpoints?.length).toBeGreaterThan(0);
+        expect(startWorkPackage?.steps?.length).toBeGreaterThan(0);
+        expect(startWorkPackage?.transitions?.length).toBeGreaterThan(0);
         
         const implement = result.value.activities.find(a => a.id === 'implement');
         expect(implement?.loops?.length).toBeGreaterThan(0);
@@ -88,9 +88,9 @@ describe('workflow-loader', () => {
     it('should get existing activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const activity = getActivity(workflow.value, 'issue-management');
+        const activity = getActivity(workflow.value, 'start-work-package');
         expect(activity).toBeDefined();
-        expect(activity?.name).toBe('Issue Management');
+        expect(activity?.name).toBe('Start Work Package');
       }
     });
 
@@ -113,7 +113,7 @@ describe('workflow-loader', () => {
     it('should get existing checkpoint', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const checkpoint = getCheckpoint(workflow.value, 'issue-management', 'issue-verification');
+        const checkpoint = getCheckpoint(workflow.value, 'start-work-package', 'issue-verification');
         expect(checkpoint).toBeDefined();
         expect(checkpoint?.name).toBe('Issue Verification Checkpoint');
         expect(checkpoint?.options.length).toBeGreaterThan(0);
@@ -123,7 +123,7 @@ describe('workflow-loader', () => {
     it('should return undefined for non-existent checkpoint', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const checkpoint = getCheckpoint(workflow.value, 'issue-management', 'non-existent');
+        const checkpoint = getCheckpoint(workflow.value, 'start-work-package', 'non-existent');
         expect(checkpoint).toBeUndefined();
       }
     });
@@ -139,7 +139,7 @@ describe('workflow-loader', () => {
     it('should get valid transitions from activity with single transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const transitions = getValidTransitions(workflow.value, 'issue-management');
+        const transitions = getValidTransitions(workflow.value, 'start-work-package');
         expect(transitions).toContain('design-philosophy');
       }
     });
@@ -148,7 +148,7 @@ describe('workflow-loader', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
         const transitions = getValidTransitions(workflow.value, 'strategic-review');
-        expect(transitions).toContain('finalize');
+        expect(transitions).toContain('submit-for-review');
         expect(transitions).toContain('plan-prepare');
       }
     });
@@ -172,7 +172,7 @@ describe('workflow-loader', () => {
     it('should validate allowed transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'issue-management', 'design-philosophy');
+        const result = validateTransition(workflow.value, 'start-work-package', 'design-philosophy');
         expect(result.valid).toBe(true);
         expect(result.reason).toBeUndefined();
       }
@@ -181,7 +181,7 @@ describe('workflow-loader', () => {
     it('should reject invalid transition', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'issue-management', 'post-implementation');
+        const result = validateTransition(workflow.value, 'start-work-package', 'complete');
         expect(result.valid).toBe(false);
         expect(result.reason).toContain('No valid transition');
       }
@@ -199,7 +199,7 @@ describe('workflow-loader', () => {
     it('should reject transition to non-existent activity', () => {
       expect(workflow.success).toBe(true);
       if (workflow.success) {
-        const result = validateTransition(workflow.value, 'issue-management', 'non-existent');
+        const result = validateTransition(workflow.value, 'start-work-package', 'non-existent');
         expect(result.valid).toBe(false);
         expect(result.reason).toContain('Target activity not found');
       }
