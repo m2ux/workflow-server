@@ -34,15 +34,15 @@ steps[8]:
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add planning-phase assumptions to the assumptions log"
+  - id: create-todos
+    name: Create TODO list from plan
+    description: "Break down plan into actionable tasks and add to assumptions log for review"
   - id: sync-branch
     name: Sync feature branch with main
     description: Ensure feature branch is up to date with main
   - id: update-pr
     name: Update PR description
     description: Update PR with planning information
-  - id: create-todos
-    name: Create TODO list from plan
-    description: Break down plan into actionable tasks
 artifacts[2]:
   - id: plan-document
     name: work-package-plan.md
@@ -50,7 +50,7 @@ artifacts[2]:
   - id: test-plan-document
     name: test-plan.md
     location: planning
-checkpoints[4]:
+checkpoints[3]:
   - id: approach-confirmed
     name: Approach Checkpoint
     message: Approach confirmed?
@@ -70,12 +70,6 @@ checkpoints[4]:
       - id: skip
         label: No significant assumptions
         description: No planning assumptions worth documenting
-  - id: ready-implement
-    name: Ready to Implement Checkpoint
-    message: Ready to implement?
-    options[2]{id,label}:
-      ready,Ready to implement
-      not-ready,"Not ready, need more preparation"
   - id: assumptions-log-final
     name: Final Assumptions Review
     message: "Before implementation: the assumptions log contains all assumptions from design, requirements, research, analysis, and planning phases. Do these meet expectations?"
