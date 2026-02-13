@@ -27,13 +27,14 @@ protocol:
   check-mode[2]:
     - "If is_review_mode is true in state variables, apply the activity's modeOverrides: use override description, apply override rules, add override steps, skip steps listed in skipSteps"
     - "If the activity is listed in the workflow's mode.skipActivities, report back immediately with a skip result"
-  execute-steps[4]:
+  execute-steps[5]:
     - "Execute each step in the activity's steps array sequentially"
     - "For each step with a skill reference (step.skill), load that skill via get_skill and follow its protocol"
     - "For steps with a condition, evaluate the condition against current state variables. Skip the step if the condition is false."
+    - "For actions with type 'message', output the message content to the user as markdown. This displays information (such as artifact links) before a checkpoint."
     - "Track completed steps in a steps_completed list"
   handle-checkpoints[4]:
-    - "When reaching a checkpoint in the activity flow, present it as an interactive selection dialogue. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. If the checkpoint references an artifact that was just produced, include a clickable markdown link to the file path in the question text."
+    - "When reaching a checkpoint in the activity flow, present it as an interactive selection dialogue. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables."
     - "If a checkpoint has a prerequisite field, evaluate it against current state variables. If the prerequisite is not met, skip the checkpoint entirely."
     - "Collect the user's selected option and apply its effects: setVariable changes, transitionTo overrides, skipActivities"
     - "Record the checkpoint response: checkpoint_id, selected_option_id, effects_applied"
@@ -65,7 +66,6 @@ rules:
   preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities when the orchestrator resumes this agent. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
   checkpoint-user-interaction: "All checkpoints MUST be presented as interactive selection dialogues — checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. Collect the user's choice, apply effects, and report back to the orchestrator."
-  artifact-before-checkpoint: "When a checkpoint follows artifact creation, write the artifact to disk FIRST. Before presenting the checkpoint, output a short message with clickable markdown links to the created artifacts (use relative paths, not absolute). Keep the checkpoint message itself brief — do not inline artifact content or file paths in the checkpoint question."
   artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
 
 tools:

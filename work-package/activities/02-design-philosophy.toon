@@ -82,6 +82,9 @@ steps[6]:
   - id: document-philosophy
     name: Document Design Philosophy
     description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
+    actions[1]:
+      - action: message
+        message: "Created: [design-philosophy.md]({planning_folder_path}/01-design-philosophy.md)"
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during problem classification and path selection. Categories: Problem Interpretation, Complexity Assessment, Workflow Path."
