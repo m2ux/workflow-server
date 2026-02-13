@@ -33,7 +33,7 @@ protocol:
     - "For steps with a condition, evaluate the condition against current state variables. Skip the step if the condition is false."
     - "Track completed steps in a steps_completed list"
   handle-checkpoints[4]:
-    - "When reaching a checkpoint in the activity flow, present it as an interactive selection dialogue. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables."
+    - "When reaching a checkpoint in the activity flow, present it as an interactive selection dialogue. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. If the checkpoint references an artifact that was just produced, include a clickable markdown link to the file path in the question text."
     - "If a checkpoint has a prerequisite field, evaluate it against current state variables. If the prerequisite is not met, skip the checkpoint entirely."
     - "Collect the user's selected option and apply its effects: setVariable changes, transitionTo overrides, skipActivities"
     - "Record the checkpoint response: checkpoint_id, selected_option_id, effects_applied"
