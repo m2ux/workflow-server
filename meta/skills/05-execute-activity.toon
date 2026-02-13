@@ -65,7 +65,7 @@ rules:
   preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities when the orchestrator resumes this agent. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
   checkpoint-user-interaction: "All checkpoints MUST be presented as interactive selection dialogues — checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. Collect the user's choice, apply effects, and report back to the orchestrator."
-  artifact-before-checkpoint: "When a checkpoint follows artifact creation, write the artifact to disk FIRST, then present the checkpoint with a clickable markdown link to the file. Never inline artifact content in checkpoint messages — the file is the record of truth."
+  artifact-before-checkpoint: "When a checkpoint follows artifact creation, write the artifact to disk FIRST. Before presenting the checkpoint, output a short message with clickable markdown links to the created artifacts (use relative paths, not absolute). Keep the checkpoint message itself brief — do not inline artifact content or file paths in the checkpoint question."
   artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
 
 tools:
