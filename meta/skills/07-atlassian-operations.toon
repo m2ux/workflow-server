@@ -1,0 +1,187 @@
+id: atlassian-operations
+version: 1.0.0
+capability: Perform common Atlassian Jira and Confluence operations via the Atlassian MCP server
+
+description: "This skill guides agents through the correct sequence of Atlassian MCP tool calls for common operations. Most Atlassian tools require a cloudId obtained from getAccessibleAtlassianResources. Agents must resolve this prerequisite before calling any product-specific tool. The skill covers Jira issue lifecycle (search, create, update, transition, comment), Confluence page lifecycle (search, create, update, comment), and cross-product operations (Rovo search, fetch by ARI). It also documents the two search paradigms: Rovo natural-language search versus structured JQL/CQL queries."
+
+inputs[2]:
+  - id: operation-type
+    description: "The Atlassian operation to perform (e.g., create-jira-issue, search-confluence, update-page)"
+    required: true
+  - id: operation-context
+    description: "Context for the operation: project key, issue key, space ID, page ID, search query, etc."
+    required: true
+
+protocol:
+  resolve-cloud-id[3]:
+    - "Call getAccessibleAtlassianResources to obtain the list of accessible Atlassian cloud sites"
+    - "Extract the cloudId (UUID) for the target site. If multiple sites are returned, ask the user which site to use."
+    - "Cache the cloudId for subsequent tool calls in the same session. Every Jira, Confluence, and Compass tool requires this parameter."
+  identify-operation[4]:
+    - "Match the user request to one of the operation patterns: jira-search, jira-create, jira-update, jira-transition, jira-comment, confluence-search, confluence-create, confluence-update, confluence-comment, rovo-search, rovo-fetch"
+    - "For search operations, determine whether to use Rovo natural-language search (the 'search' tool) or structured query search (searchJiraIssuesUsingJql / searchConfluenceUsingCql). Use Rovo search for broad natural-language queries; use JQL/CQL for precise filtering."
+    - "For create operations, gather the required metadata first (project key, issue type, space ID) before calling the create tool"
+    - "For update and transition operations, verify the target entity exists and retrieve its current state before modifying"
+  execute-jira-operations[6]:
+    - "Search: Use searchJiraIssuesUsingJql with a JQL query string and the fields array to control which fields are returned. Common fields: summary, description, status, issuetype, priority, assignee, created, updated, labels."
+    - "Create: First call getVisibleJiraProjects to list projects, then getJiraProjectIssueTypesMetadata to get issue types for the project, optionally getJiraIssueTypeMetaWithFields for field metadata. Then call createJiraIssue with projectKey, issueTypeName, summary, and optional description and additional_fields."
+    - "Update: Call editJiraIssue with the issueIdOrKey and a fields object containing only the fields to change."
+    - "Transition: First call getTransitionsForJiraIssue to get available transitions and their IDs, then call transitionJiraIssue with the transition object containing the selected transition ID."
+    - "Comment: Call addCommentToJiraIssue with the issueIdOrKey and commentBody in Markdown format."
+    - "Worklog: Call addWorklogToJiraIssue with issueIdOrKey and timeSpent (e.g., '2h', '30m', '4d')."
+  execute-confluence-operations[6]:
+    - "Search: Use searchConfluenceUsingCql with a CQL query string. Common CQL patterns: 'title ~ \"keyword\" AND type = page', 'space = SPACEKEY AND label = \"label\"', 'ancestor = pageId'."
+    - "Create: Call createConfluencePage with cloudId, spaceId, body (Markdown), contentFormat set to 'markdown', and optional title and parentId."
+    - "Update: Call updateConfluencePage with cloudId, pageId, body (Markdown), and optional title. The body replaces the entire page content."
+    - "Read: Call getConfluencePage with cloudId, pageId, and contentFormat set to 'markdown' to receive the page body as Markdown."
+    - "Navigate: Call getConfluenceSpaces to list spaces, getPagesInConfluenceSpace to list pages in a space, getConfluencePageDescendants to list child pages."
+    - "Comment: Use createConfluenceFooterComment for page-level comments or createConfluenceInlineComment for text-selection comments. Both accept Markdown body."
+  execute-cross-product-operations[3]:
+    - "Rovo search: Call the 'search' tool with a natural-language query. This searches across both Jira and Confluence. Use this as the default for broad or exploratory queries. Do NOT use this when the user explicitly mentions JQL or CQL."
+    - "Fetch by ARI: Call the 'fetch' tool with an Atlassian Resource Identifier (ARI) from search results. ARIs follow the format 'ari:cloud:jira:cloudId:issue/10107' or 'ari:cloud:confluence:cloudId:page/123456789'. Use this to retrieve full details of items found via Rovo search."
+    - "User info: Call atlassianUserInfo to get the current user's account ID, useful for JQL queries like 'assignee = currentUser()' or for setting the assignee on new issues."
+  verify-result[2]:
+    - "After mutating operations (create, update, transition), verify the result by fetching the entity to confirm the change was applied"
+    - "Report the outcome to the user with relevant identifiers (issue key, page ID, URL if available)"
+
+output[1]:
+  - id: operation-result
+    description: "Result of the Atlassian operation with entity identifiers and confirmation"
+    components:
+      entity_type: "The type of entity operated on (issue, page, comment, space)"
+      entity_id: "The identifier of the entity (issue key, page ID)"
+      operation: "The operation performed (created, updated, transitioned, searched)"
+      result_summary: "Brief summary of the operation outcome"
+
+rules:
+  cloud-id-first: "ALWAYS call getAccessibleAtlassianResources before any other Atlassian tool. Every product tool requires the cloudId parameter."
+  search-paradigm: "Use Rovo 'search' for natural-language queries across Jira and Confluence. Use searchJiraIssuesUsingJql when the user provides JQL or needs precise field-level filtering. Use searchConfluenceUsingCql when the user provides CQL or needs structured Confluence queries."
+  metadata-before-create: "Before creating a Jira issue, resolve the project key and issue type name. Call getVisibleJiraProjects and getJiraProjectIssueTypesMetadata to discover valid values. Do not guess issue type names."
+  transitions-before-transition: "Before transitioning a Jira issue, call getTransitionsForJiraIssue to discover which transitions are available from the current status. Use the transition ID from the result, not a guessed value."
+  content-format: "When creating or updating Confluence pages, set contentFormat to 'markdown'. When reading pages, set contentFormat to 'markdown' to receive Markdown rather than ADF."
+  account-id-for-users: "Jira user fields (assignee, reporter) require account IDs, not display names. Use lookupJiraAccountId to resolve a name or email to an account ID before setting user fields."
+  pagination: "Many list and search tools support pagination via cursor or startAt/maxResults. Check response metadata for pagination tokens and iterate if the full result set is needed."
+  no-graphql-mutations: "Avoid gh CLI commands that mutate PRs/issues via GraphQL (e.g., gh pr edit) as they fail due to Projects Classic deprecation. Use the REST API endpoints instead."
+
+tools:
+  getAccessibleAtlassianResources:
+    when: "First call in any Atlassian operation session to obtain cloudId"
+    returns: "Array of accessible Atlassian cloud sites with cloudId UUIDs"
+    next: "Any product-specific tool that requires cloudId"
+  atlassianUserInfo:
+    when: "Need the current user's account ID for JQL or field assignment"
+    returns: "Current user details including account ID"
+  search:
+    when: "Broad natural-language search across Jira and Confluence (not JQL/CQL)"
+    params: "query: natural-language search string"
+    returns: "Search results with ARIs that can be passed to fetch"
+  fetch:
+    when: "Retrieving full details of a Jira issue or Confluence page by ARI"
+    params: "id: Atlassian Resource Identifier (ARI) from search results"
+    returns: "Full entity details (issue fields, page content)"
+  searchJiraIssuesUsingJql:
+    when: "Precise Jira search with field-level filtering"
+    params: "cloudId, jql: JQL query string, fields: array of field names, maxResults: number"
+    returns: "Matching Jira issues with requested fields"
+  getVisibleJiraProjects:
+    when: "Discovering available projects before creating issues"
+    params: "cloudId, optional searchString for filtering"
+    returns: "Array of projects with keys, names, and issue types"
+  getJiraProjectIssueTypesMetadata:
+    when: "Discovering issue types for a project before creating issues"
+    params: "cloudId, projectIdOrKey"
+    returns: "Array of issue types with IDs and names"
+  getJiraIssueTypeMetaWithFields:
+    when: "Discovering required and optional fields for an issue type"
+    params: "cloudId, projectIdOrKey, issueTypeId"
+    returns: "Field metadata including required fields and allowed values"
+  createJiraIssue:
+    when: "Creating a new Jira issue after resolving project and issue type"
+    params: "cloudId, projectKey, issueTypeName, summary, optional description and additional_fields"
+    returns: "Created issue with key and ID"
+  editJiraIssue:
+    when: "Updating fields on an existing issue"
+    params: "cloudId, issueIdOrKey, fields object"
+    returns: "Confirmation of update"
+  getJiraIssue:
+    when: "Reading a single issue by key or ID"
+    params: "cloudId, issueIdOrKey"
+    returns: "Full issue details with all fields"
+  getTransitionsForJiraIssue:
+    when: "Discovering available status transitions before transitioning"
+    params: "cloudId, issueIdOrKey"
+    returns: "Array of available transitions with IDs and target statuses"
+  transitionJiraIssue:
+    when: "Changing the status of a Jira issue"
+    params: "cloudId, issueIdOrKey, transition object with ID"
+    returns: "Confirmation of transition"
+  addCommentToJiraIssue:
+    when: "Adding a comment to a Jira issue"
+    params: "cloudId, issueIdOrKey, commentBody in Markdown"
+    returns: "Created comment"
+  lookupJiraAccountId:
+    when: "Resolving a user name or email to an account ID"
+    params: "cloudId, searchString"
+    returns: "Matching user accounts with account IDs"
+  searchConfluenceUsingCql:
+    when: "Structured Confluence search using CQL syntax"
+    params: "cloudId, cql: CQL query string, optional limit and cursor"
+    returns: "Matching Confluence content"
+  createConfluencePage:
+    when: "Creating a new Confluence page"
+    params: "cloudId, spaceId, body in Markdown, contentFormat: 'markdown', optional title and parentId"
+    returns: "Created page with ID"
+  updateConfluencePage:
+    when: "Updating an existing Confluence page"
+    params: "cloudId, pageId, body in Markdown, optional title"
+    returns: "Updated page"
+  getConfluencePage:
+    when: "Reading a page by ID"
+    params: "cloudId, pageId, contentFormat: 'markdown'"
+    returns: "Page content as Markdown with metadata"
+  getConfluenceSpaces:
+    when: "Listing available Confluence spaces"
+    params: "cloudId, optional filters (keys, type, status, labels)"
+    returns: "Array of spaces with IDs and keys"
+  getPagesInConfluenceSpace:
+    when: "Listing pages in a specific space"
+    params: "cloudId, spaceId, optional title filter and sort"
+    returns: "Array of pages in the space"
+  getConfluencePageDescendants:
+    when: "Listing child pages under a parent"
+    params: "cloudId, pageId, optional depth and limit"
+    returns: "Array of descendant pages"
+  createConfluenceFooterComment:
+    when: "Adding a page-level comment"
+    params: "cloudId, pageId, body in Markdown"
+    returns: "Created comment"
+  createConfluenceInlineComment:
+    when: "Adding an inline comment on specific text"
+    params: "cloudId, pageId, body in Markdown, inlineCommentProperties with textSelection"
+    returns: "Created inline comment"
+
+errors:
+  missing_cloud_id:
+    cause: "A product tool was called without first resolving the cloudId"
+    recovery: "Call getAccessibleAtlassianResources to obtain the cloudId, then retry the original operation"
+  invalid_issue_type:
+    cause: "createJiraIssue was called with an issue type name that does not exist in the target project"
+    recovery: "Call getJiraProjectIssueTypesMetadata to discover valid issue type names for the project"
+  transition_not_available:
+    cause: "transitionJiraIssue was called with a transition ID not available from the current issue status"
+    recovery: "Call getTransitionsForJiraIssue to get the list of currently available transitions"
+  user_not_found:
+    cause: "lookupJiraAccountId returned no results for the search string"
+    recovery: "Try a broader search term or ask the user for the exact name or email"
+  cql_syntax_error:
+    cause: "searchConfluenceUsingCql received a malformed CQL query"
+    recovery: "Verify CQL syntax. Common patterns: 'title ~ \"keyword\"', 'space = KEY', 'type = page', 'label = \"name\"'. Combine with AND/OR."
+  page_not_found:
+    cause: "getConfluencePage or updateConfluencePage received an invalid pageId"
+    recovery: "Use searchConfluenceUsingCql or getPagesInConfluenceSpace to find the correct page ID"
+  permission_denied:
+    cause: "The authenticated user lacks permission for the requested operation"
+    recovery: "Verify the user has the required Jira/Confluence permissions. Check project roles and space permissions."
+  stale_content:
+    cause: "updateConfluencePage failed because the page was modified by another user"
+    recovery: "Re-read the page with getConfluencePage to get the latest version, then retry the update"
