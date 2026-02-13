@@ -23,7 +23,7 @@ rules[4]:
 steps[4]:
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
-    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Confirmed assumptions' — bulleted list (no category column, statement only), (6) '### Open assumptions' — bulleted list (no category column, statement only), (7) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and category labels — every line should be scannable."
+    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Assumptions' — flat bulleted list of all assumptions (statement only, no category or status), (6) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and status labels — every line should be scannable."
     actions[1]:
       - action: message
         message: "**Proposed comment for {issue_number}:**\n\n{compiled_comment}"
