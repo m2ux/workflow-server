@@ -2,7 +2,7 @@ id: create-issue
 version: 3.0.0
 capability: Create a GitHub or Jira issue with appropriate type, labels, and metadata
 
-description: "Atomic issue creation capability. Routes to GitHub (gh CLI) or Jira (Atlassian MCP) based on the issue_platform variable. Handles platform-specific details: label/type mapping, project selection, assignee lookup. Branch/PR creation and planning folder initialization are handled by manage-git and manage-artifacts skills respectively."
+description: "Atomic issue creation and verification capability. Routes to GitHub (gh CLI) or Jira (Atlassian MCP) based on the issue_platform variable. Handles platform-specific details: label/type mapping, project selection, assignee lookup. For Jira operations, cloudId MUST be resolved via getAccessibleAtlassianResources before any other Jira tool call — see the atlassian-operations universal skill for the full prerequisite protocol. Branch/PR creation and planning folder initialization are handled by manage-git and manage-artifacts skills respectively."
 
 inputs[3]:
   - id: issue-platform
@@ -16,14 +16,19 @@ inputs[3]:
     required: true
 
 protocol:
+  verify-existing-issue[4]:
+    - "Runs when user provides an existing issue key. Detect the platform from key format: '#N' or bare number → GitHub, 'PROJ-N' → Jira. Set issue_platform."
+    - "For GitHub: run 'gh issue view <number>' to confirm the issue exists. Capture issue_number and issue_url."
+    - "For Jira: call getAccessibleAtlassianResources FIRST to obtain cloudId, preserve as jira_cloud_id. THEN call getJiraIssue with cloudId and the issue key. Do NOT call getJiraIssue before cloudId is resolved."
+    - "Capture issue_number and issue_url from the verification result. Set needs_issue_creation to false."
   create-github-issue[4]:
-    - "Runs when issue_platform is github. Load resource 03 for guidance."
+    - "Runs when issue_platform is github and needs_issue_creation is true. Load resource 03 for guidance."
     - Gather title, description, and acceptance criteria from user context
     - Map issue_type to GitHub labels per github-label-mapping rule
     - Create the issue, then verify creation succeeded. Capture issue_number and issue_url.
   create-jira-issue[5]:
-    - "Runs when issue_platform is jira. Load resource 04 for guidance."
-    - Obtain Atlassian cloud ID and preserve as jira_cloud_id
+    - "Runs when issue_platform is jira and needs_issue_creation is true. Load resource 04 for guidance."
+    - "Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as jira_cloud_id. This MUST be the first Jira tool call."
     - List available projects for user selection, then resolve available issue types for the selected project
     - Gather summary, description, and acceptance criteria. Resolve assignee account ID if specified.
     - Create the issue with mapped type per jira-type-mapping rule. Capture issue_number and issue_url.

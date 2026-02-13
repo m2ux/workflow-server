@@ -18,8 +18,10 @@ skills:
     - atlassian-operations
 required: true
 estimatedTime: 10-20m
-rules[1]:
+rules[3]:
   - "Domain rules for issue authoring are in the issue-management skill — load skill for guidance"
+  - "PREREQUISITE: Before calling ANY Jira tool (getJiraIssue, searchJiraIssuesUsingJql, etc.), the agent MUST first call getAccessibleAtlassianResources to obtain the cloudId. Load the atlassian-operations supporting skill for the full protocol."
+  - "ISSUE VERIFICATION ORDER: When the user provides a Jira issue key, do NOT immediately call getJiraIssue. First detect the platform from the key format, then resolve cloudId, then verify the issue. The check-issue step description contains the full protocol."
 modeOverrides:
   review:
     description: "Capture PR reference and extract associated Jira ticket. Skip branch/PR creation."
@@ -88,7 +90,7 @@ steps[11]:
     description: "Auto-detect project type inside target_path: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
   - id: check-issue
     name: Check for Existing Issue
-    description: Verify whether an issue has been specified by user or in context
+    description: "Check whether the user provided an issue key or URL. (1) If no issue reference found, present the issue-verification checkpoint and stop — do NOT call any Jira or GitHub tools. (2) If an issue key is provided, detect the platform from the key format: '#N' or bare number → GitHub, 'PROJ-N' → Jira. Set issue_platform accordingly. (3) For Jira verification: load the atlassian-operations supporting skill, call getAccessibleAtlassianResources FIRST to obtain cloudId, THEN call getJiraIssue to verify the issue exists. Capture issue_number and issue_url. (4) For GitHub verification: run 'gh issue view <number>' to verify. Capture issue_number and issue_url."
   - id: create-issue
     name: Create Issue
     description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
