@@ -53,7 +53,7 @@ checkpoints[1]:
     options[1]:
       - id: dynamic
         label: "Dynamically populated from .gitmodules"
-        description: "The agent discovers submodules from .gitmodules and presents each as a selectable option via AskQuestion"
+        description: "The agent discovers submodules from .gitmodules and populates each as a selectable checkpoint option"
     blocking: true
 outcome[4]:
   - Workflow is selected and loaded
