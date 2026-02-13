@@ -39,7 +39,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[50]:
+variables[51]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory."
@@ -177,7 +177,6 @@ variables[50]:
   - name: needs_plan_revision
     type: boolean
     description: "Whether stakeholder feedback requires returning to plan-prepare for significant approach revision"
-    defaultValue: false
     defaultValue: false
   - name: ticket_refactor_needed
     type: boolean
