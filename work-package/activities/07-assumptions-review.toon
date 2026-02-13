@@ -14,14 +14,15 @@ skills:
 required: false
 estimatedTime: 10-20m
 artifactPrefix: "07"
-rules[3]:
+rules[4]:
   - "Compile the implementation plan summary AND assumptions from ALL prior phases (design, requirements, research, analysis, planning) into a single comment for stakeholder review"
   - "Plan summary appears ABOVE assumptions in the posted comment — read work-package-plan.md for the plan and assumptions-log.md for the assumptions"
+  - "Comment format: use bullets, numbered lists, and short sections — not paragraphs. Optimize for low cognitive load and fast scanning. Every line should be independently parseable."
   - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
 steps[4]:
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
-    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment: plan summary first (objective, design decisions, task breakdown, scope exclusions), then assumptions grouped by status (confirmed vs open). Include issue references."
+    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Test strategy' — bulleted list. Then assumptions: '## Assumptions' with confirmed and open groups in tables. Keep each section to 2-5 items. Avoid prose — every line should be scannable."
   - id: post-comment
     name: Post comment to issue tracker
     description: "Post the prepared comment on the issue tracker ticket. Uses Jira addCommentToJiraIssue or GitHub gh CLI depending on issue_platform."
