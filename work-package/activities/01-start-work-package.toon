@@ -81,7 +81,7 @@ entryActions[1]{action,message}:
 steps[11]:
   - id: resolve-target
     name: Resolve Target Directory
-    description: "Identify the target directory from user request or context. Set target_path. This may be a submodule, standalone repo, or monorepo subdirectory. All git operations (branch, PR) will be performed inside this directory. If not specified, prompt the user."
+    description: "Read target_path from state variables (set by the orchestrator during workflow initialization via the target-submodule-selection checkpoint). Verify the directory exists. All git operations (branch, PR) will be performed inside this directory."
   - id: initialize-target
     name: Initialize Target Directory
     description: "cd into target_path. Fetch origin and checkout the default branch (main/master). Pull latest. This ensures the target is at HEAD before creating a feature branch."

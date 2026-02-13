@@ -29,7 +29,7 @@ protocol:
   create-jira-issue[5]:
     - "Runs when issue_platform is jira and needs_issue_creation is true. Load resource 04 for guidance."
     - "Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as jira_cloud_id. This MUST be the first Jira tool call."
-    - List available projects for user selection, then resolve available issue types for the selected project
+    - "List available projects via getVisibleJiraProjects, then present the jira-project-selection checkpoint (defined on the activity) for user selection. Resolve available issue types for the selected project."
     - Gather summary, description, and acceptance criteria. Resolve assignee account ID if specified.
     - Create the issue with mapped type per jira-type-mapping rule. Capture issue_number and issue_url.
 

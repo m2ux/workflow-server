@@ -15,7 +15,7 @@ inputs[2]:
 protocol:
   resolve-cloud-id[3]:
     - "Call getAccessibleAtlassianResources to obtain the list of accessible Atlassian cloud sites"
-    - "Extract the cloudId (UUID) for the target site. If multiple sites are returned, ask the user which site to use."
+    - "Extract the cloudId (UUID) for the target site. If multiple sites are returned, present them via the calling activity's checkpoint mechanism (the activity should define a site-selection checkpoint with options populated from the API response)."
     - "Cache the cloudId for subsequent tool calls in the same session. Every Jira, Confluence, and Compass tool requires this parameter."
   identify-operation[4]:
     - "Match the user request to one of the operation patterns: jira-search, jira-create, jira-update, jira-transition, jira-comment, confluence-search, confluence-create, confluence-update, confluence-comment, rovo-search, rovo-fetch"
