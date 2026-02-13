@@ -44,7 +44,7 @@ tools:
     when: User decision required at checkpoint
     params: workflow_id, activity_id, checkpoint_id
     returns: Checkpoint options and their effects
-    action: "Present options using AskQuestion tool; apply selected effect"
+    action: Present checkpoint to user as interactive selection; apply selected effect
   validate_transition:
     when: Moving between activities
     params: workflow_id, from_activity, to_activity
@@ -69,53 +69,10 @@ tools:
     params: workflow_id, index
     returns: Template content with placeholders
     usage: Fill template placeholders with context-specific values
-state:
-  format: Activity IDs for current position, step indices within activities
-  structure:
-    workflowId: string
-    workflowVersion: string
-    stateVersion: integer
-    startedAt: datetime
-    updatedAt: datetime
-    completedAt: datetime (when finished)
-    currentActivity: string (activity ID)
-    currentStep: integer (1-based within activity)
-    completedActivities: string[] (activity IDs)
-    skippedActivities: string[] (activity IDs)
-    completedSteps: "Record<activityId, stepIndex[]>"
-    checkpointResponses: "Record<'activity-checkpoint', Response>"
-    decisionOutcomes: "Record<'activity-decision', Outcome>"
-    activeLoops: LoopState[]
-    variables: "Record<string, any>"
-    history: HistoryEntry[]
-    status: "enum: running, paused, completed, aborted, error"
-  initialize: "On get_workflow, set currentActivity to initialActivity, currentStep: 1, status: 'running'"
-  update_on:
-    activity_transition: "Add previous activity ID to completedActivities; set currentActivity to new ID; reset currentStep to 1"
-    step_completion: "Add step index to completedSteps[currentActivity]; increment currentStep"
-    checkpoint_response: "Record response keyed by 'activity-checkpoint'; apply effects"
-    decision_outcome: "Record outcome keyed by 'activity-decision'; apply transitionTo"
-    variable_change: Update variables object
-    workflow_trigger: "Set status to suspended; record position; initialize child workflow with parentWorkflow ref"
-    workflow_return: "Resume from returnTo position; merge returnedContext; set status to running"
-  checkpoint_response_format:
-    key: "'activity-checkpoint' (e.g., 'issue-management-1' for activity, checkpoint 1)"
-    value:
-      optionId: string
-      respondedAt: datetime
-      effects:
-        variablesSet: "Record<string, any>"
-        transitionedTo: string (activity ID)
-        activitiesSkipped: string[]
-  decision_outcome_format:
-    key: "'activity-decision' (e.g., 'validate-1' for activity, decision 1)"
-    value:
-      branchId: string
-      decidedAt: datetime
-      transitionedTo: string (activity ID)
+state: "Structure defined in state.schema.json. Initialization and update patterns defined in the state-management skill."
 interpretation:
   transitions: Evaluate conditions against state.variables; take matching transition or default
-  checkpoints: "Present checkpoints using the AskQuestion tool. Map checkpoint.message to the question prompt and checkpoint.options to selectable choices (option.id → id, option.label → label). Never present checkpoint options as plain text or tables. Apply effect from selected option."
+  checkpoints: "Present checkpoints as interactive selection dialogues. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. Apply effect from selected option."
   decisions: Evaluate branch conditions; take first matching branch or default
   loops: "For forEach: iterate over collection; For while: check condition before each iteration"
   resources: Reference resources when activity steps are unclear or user requests help
