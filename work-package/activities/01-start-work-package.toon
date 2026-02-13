@@ -12,9 +12,10 @@ recognition[6]:
   - create github issue
 skills:
   primary: create-issue
-  supporting[2]:
+  supporting[3]:
     - manage-git
     - manage-artifacts
+    - atlassian-operations
 required: true
 estimatedTime: 10-20m
 rules[1]:

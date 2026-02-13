@@ -9,8 +9,9 @@ recognition[3]:
   - stakeholder assumptions review
 skills:
   primary: review-assumptions
-  supporting[1]:
+  supporting[2]:
     - manage-artifacts
+    - atlassian-operations
 required: false
 estimatedTime: 10-20m
 artifactPrefix: "07"

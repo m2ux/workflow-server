@@ -189,6 +189,7 @@ The Meta workflow defines universal skills used by all workflows:
 | `workflow-execution` | Execute workflows | Follows schema patterns for workflow execution |
 | `state-management` | Manage workflow state | Handles state across sessions |
 | `artifact-management` | Manage planning artifacts | Ensures artifacts are created in correct folder structure |
+| `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
 
 ---
 
