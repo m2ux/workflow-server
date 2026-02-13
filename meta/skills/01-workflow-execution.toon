@@ -44,7 +44,7 @@ tools:
     when: User decision required at checkpoint
     params: workflow_id, activity_id, checkpoint_id
     returns: Checkpoint options and their effects
-    action: Present options to user; apply selected effect
+    action: "Present options using AskQuestion tool; apply selected effect"
   validate_transition:
     when: Moving between activities
     params: workflow_id, from_activity, to_activity
@@ -115,7 +115,7 @@ state:
       transitionedTo: string (activity ID)
 interpretation:
   transitions: Evaluate conditions against state.variables; take matching transition or default
-  checkpoints: Present message and options to user; apply effect from selected option
+  checkpoints: "Present checkpoints using the AskQuestion tool. Map checkpoint.message to the question prompt and checkpoint.options to selectable choices (option.id → id, option.label → label). Never present checkpoint options as plain text or tables. Apply effect from selected option."
   decisions: Evaluate branch conditions; take first matching branch or default
   loops: "For forEach: iterate over collection; For while: check condition before each iteration"
   resources: Reference resources when activity steps are unclear or user requests help
