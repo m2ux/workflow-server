@@ -3,7 +3,7 @@ version: 1.0.0
 title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
-sections[13]:
+sections[14]:
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical
@@ -174,3 +174,11 @@ sections[13]:
       - "The worker MUST be resumed (not re-created) for each successive activity using the Task tool's resume parameter. This preserves accumulated codebase understanding and implementation context across the entire workflow."
       - "All git operations (branch, commit, push, PR) MUST be performed inside the target_path directory specified by the workflow, not in the parent repo."
       - "Check workflow.rules for the EXECUTION MODEL rule to determine whether a workflow uses this pattern. If absent, execute the workflow directly without the orchestrator/worker split."
+  - id: atlassian-tool-discipline
+    title: Atlassian MCP Tool Discipline
+    priority: critical
+    rules[4]:
+      - "NEVER call Atlassian MCP tools (getAccessibleAtlassianResources, getJiraIssue, searchJiraIssuesUsingJql, createJiraIssue, or any other Atlassian tool) during workflow bootstrap. Even if the user's request contains a Jira URL or issue key, treat it as context to be preserved — not a trigger for immediate API calls."
+      - "Atlassian tools may ONLY be called from within a workflow activity that lists atlassian-operations as a supporting skill. The workflow must be fully loaded, state initialized, and the worker dispatched before any Atlassian tool is invoked."
+      - "When an Atlassian tool IS called, getAccessibleAtlassianResources MUST be the first call to obtain the cloudId. Every subsequent Atlassian tool requires this cloudId parameter."
+      - "The orchestrator MUST NOT call Atlassian tools. All Atlassian operations are domain work delegated to the worker sub-agent during activity execution."
