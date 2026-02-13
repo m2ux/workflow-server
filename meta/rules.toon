@@ -10,7 +10,7 @@ sections[14]:
     rules[3]:
       - "CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics"
       - Execute workflow activities in the defined sequence unless transitions explicitly allow alternatives
-      - Honor all checkpoints and await user confirmation before proceeding
+      - Honor all defined checkpoints and await user confirmation at each one
   - id: code-modification
     title: Code Modification Boundaries
     priority: critical
