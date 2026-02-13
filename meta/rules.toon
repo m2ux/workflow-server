@@ -3,7 +3,7 @@ version: 1.0.0
 title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
-sections[13]:
+sections[14]:
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical
