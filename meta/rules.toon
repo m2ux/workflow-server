@@ -174,3 +174,10 @@ sections[13]:
       - "The worker MUST be resumed (not re-created) for each successive activity using the Task tool's resume parameter. This preserves accumulated codebase understanding and implementation context across the entire workflow."
       - "All git operations (branch, commit, push, PR) MUST be performed inside the target_path directory specified by the workflow, not in the parent repo."
       - "Check workflow.rules for the EXECUTION MODEL rule to determine whether a workflow uses this pattern. If absent, execute the workflow directly without the orchestrator/worker split."
+  - id: domain-tool-discipline
+    title: Domain Tool Discipline
+    priority: critical
+    rules[3]:
+      - "NEVER call domain-specific tools during workflow bootstrap. URLs, issue keys, or other references in the user's request are context to be preserved — not triggers for immediate API calls."
+      - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability. The workflow must be fully loaded, state initialized, and the worker dispatched before any domain tool is invoked."
+      - "The orchestrator MUST NOT call domain-specific tools. All domain operations are delegated to the worker sub-agent during activity execution."
