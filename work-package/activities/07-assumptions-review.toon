@@ -26,7 +26,7 @@ steps[4]:
     description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Test strategy' — bulleted list. Then assumptions: '## Assumptions' with confirmed and open groups in tables. Keep each section to 2-5 items. Avoid prose — every line should be scannable."
     actions[1]:
       - action: message
-        message: "Display the compiled comment to the user so they can review it before the posting checkpoint."
+        message: "**Proposed comment for {issue_number}:**\n\n{compiled_comment}"
   - id: post-comment
     name: Post comment to issue tracker
     description: "Post the prepared comment on the issue tracker ticket. Uses Jira addCommentToJiraIssue or GitHub gh CLI depending on issue_platform."
