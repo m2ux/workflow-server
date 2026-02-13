@@ -144,7 +144,7 @@ checkpoints[4]:
     message: "Design philosophy document created. Does it accurately capture the problem, classification, and workflow rationale?"
     options[2]:
       - id: confirmed
-        label: Document confirmed
+        label: Content reviewed
         description: The design philosophy is accurately documented
       - id: revise
         label: Revise document
