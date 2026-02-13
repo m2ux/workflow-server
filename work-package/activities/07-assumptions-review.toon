@@ -15,12 +15,11 @@ skills:
 required: false
 estimatedTime: 10-20m
 artifactPrefix: "07"
-rules[5]:
+rules[4]:
   - "Compile the implementation plan summary AND assumptions from ALL prior phases (design, requirements, research, analysis, planning) into a single comment for stakeholder review"
   - "Assumptions appear as a flat bulleted list after the Constraints section — read work-package-plan.md for the plan and assumptions-log.md for the assumptions"
   - "Comment format: use bullets, numbered lists, and short sections — not paragraphs. Optimize for low cognitive load and fast scanning. Every line should be independently parseable."
   - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
-  - "Tag the issue reporter in the comment using their Jira @mention or GitHub @username so they are notified for review"
 steps[4]:
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
