@@ -42,7 +42,7 @@ steps[8]:
     description: Ensure feature branch is up to date with main
   - id: update-pr
     name: Update PR description
-    description: Update PR with planning information
+    description: "Update PR description with planning information. Load resource 12 (pr-description) for the PR description template — use the 'Initial' template and populate with planning details (summary, motivation, planned changes, checklist, fork strategy)."
 artifacts[2]:
   - id: plan-document
     name: work-package-plan.md
