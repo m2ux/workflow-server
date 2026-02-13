@@ -42,7 +42,7 @@ artifacts[1]:
 checkpoints[4]:
   - id: kb-insights
     name: Knowledge Base Insights Checkpoint
-    message: "Here are the key insights from the knowledge base. Do these look relevant?"
+    message: "Do the knowledge base insights look relevant?"
     options[3]:
       - id: confirmed
         label: Insights confirmed
@@ -55,7 +55,7 @@ checkpoints[4]:
         description: Research should focus on different areas
   - id: web-research-confirmed
     name: Web Research Checkpoint
-    message: "Here are the web research findings. Are they confirmed?"
+    message: "Are the web research findings confirmed?"
     options[2]:
       - id: confirmed
         label: Findings confirmed
@@ -65,7 +65,7 @@ checkpoints[4]:
         description: Additional web research needed
   - id: assumptions-review
     name: Research Assumptions Checkpoint
-    message: "Here are the assumptions made during research synthesis. Are they correct?"
+    message: "Are the research assumptions correct?"
     options[3]:
       - id: confirmed
         label: Assumptions confirmed

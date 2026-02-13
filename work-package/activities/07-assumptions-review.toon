@@ -47,7 +47,7 @@ checkpoints[3]:
   - id: comment-review
     name: Plan and Assumptions Comment Review
     prerequisite: "Only present when issue_platform is set"
-    message: "Here is the implementation plan summary and accumulated assumptions prepared as a comment for stakeholder review on the {issue_platform} ticket. Review the content before posting."
+    message: "Post this comment to the {issue_platform} ticket for stakeholder review?"
     blocking: true
     options[3]:
       - id: post-comment

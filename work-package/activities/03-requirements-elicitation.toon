@@ -105,7 +105,7 @@ checkpoints[3]:
             elicitation_complete: true
   - id: document-review
     name: Document Review Checkpoint
-    message: "Requirements document created. Ready to proceed to Research?"
+    message: "Ready to proceed to Research?"
     options[2]:
       - id: proceed
         label: Proceed to Research
