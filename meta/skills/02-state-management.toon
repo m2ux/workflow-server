@@ -1,51 +1,15 @@
 id: state-management
-version: 2.0.0
+version: 3.0.0
 capability: Manage workflow execution state using activity IDs and step indices
-description: |
-  Provides the state schema and patterns for tracking workflow execution progress.
-  State uses activity IDs for current position and step indices within activities.
-
-state_structure:
-  workflowId: string
-  workflowVersion: string
-  stateVersion: integer (incremented on each change)
-  startedAt: datetime
-  updatedAt: datetime
-  completedAt: datetime (when finished)
-  currentActivity: string (activity ID)
-  currentStep: integer (1-based within activity)
-  completedActivities: string[] (activity IDs)
-  skippedActivities: string[] (activity IDs)
-  completedSteps: "Record<activityId, stepIndex[]>"
-  checkpointResponses: "Record<'activity-checkpoint', Response>"
-  decisionOutcomes: "Record<'activity-decision', Outcome>"
-  activeLoops: LoopState[]
-  variables: "Record<string, any>"
-  history: HistoryEntry[]
-  status: "enum: running, paused, completed, aborted, error, suspended"
-  parentWorkflow: ParentWorkflowRef (null if root workflow)
-  triggeredWorkflows: TriggeredWorkflowRef[] (child workflows triggered from this one)
-
-parent_workflow_structure:
-  workflowId: string (parent workflow ID)
-  activityId: string (activity that triggered this workflow)
-  passedContext: "Record<string, any>" (context passed from parent)
-  returnTo: "{ activityId: string, stepIndex: number }" (where to resume in parent)
-
-triggered_workflow_structure:
-  workflowId: string (child workflow ID)
-  triggeredAt: datetime
-  triggeredFrom: "{ activityId: string, stepIndex: number }"
-  status: "enum: running, completed, aborted"
-  returnedContext: "Record<string, any>" (context returned on completion)
+description: "Behavioral patterns for initializing, updating, and resuming workflow state. State structure and field definitions are in state.schema.json — this skill defines HOW to use the schema at runtime."
 
 format:
   description: State uses activity IDs for navigation, step indices within activities
   examples:
-    currentActivity: "'issue-management' (activity ID from workflow)"
+    currentActivity: "'start-work-package' (activity ID from workflow)"
     currentStep: "1 (1-based index within activity)"
-    completedActivities: "['issue-management', 'requirements-elicitation']"
-    completedSteps: "{'issue-management': [1], 'requirements-elicitation': [1, 2, 3]}"
+    completedActivities: "['start-work-package', 'design-philosophy']"
+    completedSteps: "{'start-work-package': [1], 'design-philosophy': [1, 2, 3]}"
 
 initialization:
   trigger: On workflow start (get_workflow)
@@ -119,74 +83,6 @@ update_patterns:
       - Resume at returnTo position (activity and step)
       - Merge returnedContext into parent variables if needed
       - Add history entry with type workflow_returned
-
-checkpoint_response_format:
-  key: "'activity-checkpoint' (e.g., 'issue-management-1' for activity, checkpoint 1)"
-  value:
-    optionId: string
-    respondedAt: datetime
-    effects:
-      variablesSet: "Record<string, any>"
-      transitionedTo: string (activity ID)
-      activitiesSkipped: string[]
-  note: checkpointId is implicit in the key, not stored redundantly
-
-decision_outcome_format:
-  key: "'activity-decision' (e.g., 'validate-1' for activity, decision 1)"
-  value:
-    branchId: string
-    decidedAt: datetime
-    transitionedTo: string (activity ID)
-  note: decisionId is implicit in the key, not stored redundantly
-
-history_event_types:
-  workflow:
-    - workflow_started
-    - workflow_completed
-    - workflow_aborted
-    - workflow_triggered
-    - workflow_returned
-    - workflow_suspended
-  activity:
-    - activity_entered
-    - activity_exited
-    - activity_skipped
-  step:
-    - step_started
-    - step_completed
-  checkpoint:
-    - checkpoint_reached
-    - checkpoint_response
-  decision:
-    - decision_reached
-    - decision_branch_taken
-  loop:
-    - loop_started
-    - loop_iteration
-    - loop_completed
-    - loop_break
-  other:
-    - variable_set
-    - error
-
-history_entry_format:
-  timestamp: datetime
-  type: "one of history_event_types"
-  activity: string (activity ID)
-  step: integer (step index, optional)
-  checkpoint: integer (checkpoint index, optional)
-  decision: integer (decision index, optional)
-  loop: integer (loop index, optional)
-  data: "Record<string, any> (optional additional data)"
-  error: "{ message: string, code?: string } (for error events)"
-
-status_values:
-  running: Workflow actively executing
-  paused: Awaiting user input (checkpoint)
-  suspended: Waiting for triggered child workflow to complete
-  completed: Workflow finished successfully
-  aborted: Workflow was cancelled
-  error: Workflow encountered an error
 
 resumption:
   description: To resume a workflow from persisted state
