@@ -339,17 +339,16 @@ graph TD
 3. **create-test-plan** — Create test plan document.
 4. **collect-assumptions** — Identify assumptions made during planning.
 5. **update-assumptions-log** — Add planning-phase assumptions to the assumptions log.
-6. **sync-branch** — Ensure feature branch is up to date with `main`.
-7. **update-pr** — Update PR with planning information.
-8. **create-todos** — Break down plan into actionable TODO tasks.
+6. **create-todos** — Break down plan into actionable tasks and add to assumptions log for review.
+7. **sync-branch** — Ensure feature branch is up to date with `main`.
+8. **update-pr** — Update PR with planning information.
 
-**Checkpoints (4):**
+**Checkpoints (3):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `approach-confirmed` | Confirm implementation approach | yes |
 | `assumptions-review` | Review planning assumptions | yes |
-| `ready-implement` | Confirm readiness to implement | yes |
 | `assumptions-log-final` | Final review of accumulated assumptions before implementation | yes |
 
 **Transitions:** Default to `assumptions-review`.
@@ -366,15 +365,13 @@ graph TD
 
     createTestPlan --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> updateLog["Update assumptions log"]
-    updateLog --> cpAssumptions{"assumptions-review checkpoint"}
+    updateLog --> createTodos["Create TODO list from plan"]
+    createTodos --> cpAssumptions{"assumptions-review checkpoint"}
     cpAssumptions -->|"confirmed"| syncBranch["Sync branch with main"]
     cpAssumptions -->|"corrections"| collectAssumptions
 
     syncBranch --> updatePR["Update PR description"]
-    updatePR --> createTodos["Create TODO list from plan"]
-    createTodos --> cpReady{"ready-implement checkpoint"}
-    cpReady -->|"ready"| cpFinal{"assumptions-log-final checkpoint"}
-    cpReady -->|"not ready"| applyDesign
+    updatePR --> cpFinal{"assumptions-log-final checkpoint"}
 
     cpFinal -->|"acceptable"| exitNode(["assumptions-review"])
     cpFinal -->|"revisit"| collectAssumptions
