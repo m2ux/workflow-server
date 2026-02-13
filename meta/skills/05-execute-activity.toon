@@ -69,6 +69,11 @@ rules:
   artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
 
 tools:
+  AskQuestion:
+    when: "Presenting checkpoints to the user"
+    params: "questions: array of {id, prompt (from checkpoint.message), options (from checkpoint.options mapped to {id, label})}"
+    returns: "User's selected option ID"
+    usage: "ALL checkpoints MUST use this tool. Map checkpoint.message to prompt, checkpoint.options to selectable choices."
   get_rules:
     when: "First action on initial dispatch (not needed on resume — rules persist in context)"
     returns: "Agent behavioral guidelines"
