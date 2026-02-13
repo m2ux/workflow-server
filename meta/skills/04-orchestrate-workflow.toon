@@ -67,6 +67,7 @@ rules:
   mode-awareness: "If review mode is active, the orchestrator applies mode.skipActivities (skip the listed activities entirely) and passes is_review_mode=true to the worker so it can apply modeOverrides."
   transition-evaluation: "Transitions are evaluated in order. The first transition whose condition is true is taken. If no condition matches, the default transition (isDefault=true) is taken. If no transitions exist, the activity is terminal."
   rework-handling: "When a transition points to an earlier activity (rework loop), the orchestrator resumes the worker with the earlier activity. The worker's preserved context helps it understand what changed since it last executed that activity."
+  no-premature-transition-inference: "The orchestrator MUST NOT state, imply, or frame commentary around which activity follows the current one until the activity is complete and transitions have been formally evaluated against the transition table. Checkpoint names and messages are user-facing labels defined by the workflow author — they do not encode transition logic."
 
 tools:
   get_workflow:
