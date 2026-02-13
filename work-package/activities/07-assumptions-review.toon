@@ -1,7 +1,7 @@
 id: assumptions-review
-version: 1.0.0
+version: 1.1.0
 name: Assumptions Review
-description: "Post accumulated assumptions to the issue tracker for stakeholder review, await feedback, and iterate until stakeholders approve. Supports both Jira and GitHub issue platforms."
+description: "Post implementation plan summary and accumulated assumptions to the issue tracker for stakeholder review, await feedback, and iterate until stakeholders approve. Plan content appears above assumptions in the posted comment. Supports both Jira and GitHub issue platforms."
 problem: Stakeholders need to review and validate assumptions before implementation begins
 recognition[3]:
   - review assumptions with stakeholders
@@ -14,16 +14,17 @@ skills:
 required: false
 estimatedTime: 10-20m
 artifactPrefix: "07"
-rules[2]:
-  - "Compile assumptions from ALL prior phases (design, requirements, research, analysis, planning) into a single summary for stakeholder review"
+rules[3]:
+  - "Compile the implementation plan summary AND assumptions from ALL prior phases (design, requirements, research, analysis, planning) into a single comment for stakeholder review"
+  - "Plan summary appears ABOVE assumptions in the posted comment — read work-package-plan.md for the plan and assumptions-log.md for the assumptions"
   - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
 steps[4]:
-  - id: prepare-assumptions-summary
-    name: Prepare assumptions summary
-    description: "Compile all accumulated assumptions from prior phases into a comment suitable for posting to the issue tracker. Include assumption type, statement, rationale, and alternatives for each."
-  - id: post-assumptions-comment
-    name: Post assumptions comment
-    description: "Post the prepared assumptions summary as a comment on the issue tracker ticket. Uses Jira API or GitHub CLI depending on issue_platform."
+  - id: prepare-plan-and-assumptions-comment
+    name: Prepare plan and assumptions comment
+    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment: plan summary first (objective, design decisions, task breakdown, scope exclusions), then assumptions grouped by status (confirmed vs open). Include issue references."
+  - id: post-comment
+    name: Post comment to issue tracker
+    description: "Post the prepared comment on the issue tracker ticket. Uses Jira addCommentToJiraIssue or GitHub gh CLI depending on issue_platform."
     condition:
       type: simple
       variable: issue_platform
@@ -40,11 +41,11 @@ artifacts[1]:
     location: planning
     description: "Assumptions log updated with stakeholder review outcomes"
     action: update
-checkpoints[2]:
+checkpoints[3]:
   - id: comment-review
-    name: Assumptions Comment Review
+    name: Plan and Assumptions Comment Review
     prerequisite: "Only present when issue_platform is set"
-    message: "Here are the accumulated assumptions prepared as a comment for stakeholder review on the {issue_platform} ticket. Review the content before posting."
+    message: "Here is the implementation plan summary and accumulated assumptions prepared as a comment for stakeholder review on the {issue_platform} ticket. Review the content before posting."
     blocking: true
     options[3]:
       - id: post-comment
@@ -58,44 +59,70 @@ checkpoints[2]:
         description: Modify the comment content before posting
       - id: skip-posting
         label: Skip posting
-        description: Do not post assumptions to the issue tracker
+        description: Do not post to issue tracker, proceed directly
         effect:
           setVariable:
             post_jira_comment: false
   - id: stakeholder-response
     name: Stakeholder Response Checkpoint
-    message: "The assumptions have been posted for stakeholder review. Once stakeholders have reviewed, provide their feedback here."
+    message: "The plan and assumptions have been posted for stakeholder review. Once stakeholders have reviewed, provide their feedback here."
     blocking: true
-    options[3]:
-      - id: stakeholder-comment
+    options[2]:
+      - id: stakeholders-approved
+        label: Stakeholders approved
+        description: "No issues raised, proceed to implementation"
+        effect:
+          setVariable:
+            stakeholder_review_complete: true
+      - id: stakeholder-commented
         label: Stakeholder commented
         description: Provide the stakeholder's comment or feedback for review
         effect:
           setVariable:
             has_stakeholder_comment: true
-      - id: stakeholders-approved
-        label: Stakeholders approved
-        description: No issues raised, proceed to implementation
-        effect:
-          setVariable:
-            stakeholder_review_complete: true
-      - id: further-discussion
-        label: Further discussion needed
-        description: Stakeholder feedback requires revision and re-posting
+  - id: feedback-triage
+    name: Feedback Triage Checkpoint
+    prerequisite: "Only present when has_stakeholder_comment is true"
+    message: "Based on the stakeholder feedback, what level of revision is needed?"
+    blocking: true
+    options[2]:
+      - id: minor-corrections
+        label: Minor corrections to assumptions
+        description: "Update assumptions based on feedback and re-post — loops back to prepare the comment again"
         effect:
           setVariable:
             needs_further_discussion: true
-          transitionTo: prepare-assumptions-summary
-transitions[1]{to,isDefault}:
-  implement,true
-outcome[3]:
-  - Assumptions posted to issue tracker for stakeholder review
+      - id: plan-revision-needed
+        label: Significant plan revision needed
+        description: "Stakeholder feedback indicates the approach needs substantial changes — return to plan-prepare"
+        effect:
+          setVariable:
+            needs_plan_revision: true
+transitions[3]:
+  - to: plan-prepare
+    condition:
+      type: simple
+      variable: needs_plan_revision
+      operator: "=="
+      value: true
+  - to: assumptions-review
+    condition:
+      type: simple
+      variable: needs_further_discussion
+      operator: "=="
+      value: true
+  - to: implement
+    isDefault: true
+outcome[4]:
+  - Plan summary and assumptions posted to issue tracker for stakeholder review
   - Stakeholder feedback incorporated into assumptions log
   - Assumptions validated before implementation begins
-context_to_preserve[6]:
+  - Stakeholder-directed revisions completed via feedback loop
+context_to_preserve[7]:
   - assumptions_comment_body - Prepared comment content for issue tracker
   - post_jira_comment - Whether to post assumptions comment
   - has_stakeholder_comment - Whether stakeholder provided feedback
   - stakeholder_comment - Content of stakeholder's response
   - stakeholder_review_complete - Whether stakeholder review is complete
   - needs_further_discussion - Whether further discussion is needed
+  - needs_plan_revision - Whether significant plan revision is needed
