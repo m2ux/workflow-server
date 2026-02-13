@@ -20,7 +20,7 @@ protocol:
   initialize-state[4]:
     - Set all workflow variables to their declared defaultValue
     - "Detect mode from user request (e.g., 'review PR' activates review mode: set is_review_mode=true, apply mode defaults)"
-    - "Identify the target submodule from user request or prompt user to specify one"
+    - "Identify the target submodule from user request. If not identifiable, the start-workflow activity's target-submodule-selection checkpoint will handle it — do not prompt informally."
     - "Set current_activity to initialActivity"
   dispatch-activity[5]:
     - "Call get_workflow_activity({ workflow_id, activity_id: current_activity }) to load the activity definition"

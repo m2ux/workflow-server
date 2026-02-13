@@ -32,8 +32,9 @@ protocol:
     - "For each step with a skill reference (step.skill), load that skill via get_skill and follow its protocol"
     - "For steps with a condition, evaluate the condition against current state variables. Skip the step if the condition is false."
     - "Track completed steps in a steps_completed list"
-  handle-checkpoints[3]:
-    - "When reaching a checkpoint in the activity flow, present the checkpoint message to the user using the AskQuestion tool or direct prompt"
+  handle-checkpoints[4]:
+    - "When reaching a checkpoint in the activity flow, present it using the AskQuestion tool. Map the checkpoint directly: checkpoint.message becomes the question prompt, each checkpoint.options entry becomes an AskQuestion option (option.id → id, option.label → label). Never present checkpoint options as plain text."
+    - "If a checkpoint has a prerequisite field, evaluate it against current state variables. If the prerequisite is not met, skip the checkpoint entirely."
     - "Collect the user's selected option and apply its effects: setVariable changes, transitionTo overrides, skipActivities"
     - "Record the checkpoint response: checkpoint_id, selected_option_id, effects_applied"
   execute-loops[3]:
@@ -63,7 +64,7 @@ rules:
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the variables_changed result. The orchestrator depends on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities when the orchestrator resumes this agent. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
-  checkpoint-user-interaction: "Present checkpoints directly to the user. Collect their choice. Apply the selected option's effects. Report the response back to the orchestrator."
+  checkpoint-user-interaction: "All checkpoints MUST be presented using the AskQuestion tool. The checkpoint schema maps directly: message → prompt, options → selectable choices. Never present checkpoint options as plain text or bulleted lists. Collect the user's choice, apply effects, and report back to the orchestrator."
   artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
 
 tools:
