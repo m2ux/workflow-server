@@ -50,7 +50,10 @@ graph TD
     IA --> PP["06 plan-prepare"]
 
     PP --> AR["07 assumptions-review"]
-    AR --> IMP["08 implement"]
+    AR --> ARD{"stakeholder feedback?"}
+    ARD -->|"approved"| IMP["08 implement"]
+    ARD -->|"minor corrections"| AR
+    ARD -->|"significant revision"| PP
     IMP --> PIR["09 post-impl-review"]
     PIR --> BLK{"critical blocker?"}
     BLK -->|"yes"| IMP
