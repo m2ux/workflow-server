@@ -116,7 +116,7 @@ steps[11]:
     description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path."
   - id: create-pr
     name: Create Draft PR
-    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch."
+    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch. Load resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet."
     condition:
       type: simple
       variable: use_existing_pr
