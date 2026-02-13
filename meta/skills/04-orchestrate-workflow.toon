@@ -32,6 +32,13 @@ protocol:
     - "Read worker output: extract variables_changed, checkpoints_responded, artifacts_produced"
     - "Update state: apply all variable changes reported by the worker"
     - "Record completed activity in completedActivities list"
+  commit-artifacts[6]:
+    - "After processing the worker result, check for new or modified engineering artifacts in the parent repo"
+    - "Run 'git status --porcelain .engineering/artifacts/' to detect uncommitted changes"
+    - "If changes exist, read .engineering/AGENTS.md for the definitive git structure diagram and commit instructions — this file is the authoritative source for determining which paths are regular directories vs submodules and how each should be committed"
+    - "Follow the commit procedures from .engineering/AGENTS.md: regular files (in .engineering/artifacts/) commit directly in the parent repo; submodule paths (.engineering/workflows/, .engineering/history/) require a two-step commit-and-push"
+    - "Commit with conventional message format: 'docs(<workflow-id>): <activity-id> artifacts' and push to remote"
+    - "If no changes detected, skip this phase silently — not every activity produces artifacts"
   evaluate-transition[4]:
     - "Load the current activity's transitions array"
     - "Evaluate each transition's condition against current state variables using the condition schema (simple, and, or, not)"
@@ -52,7 +59,8 @@ output[1]:
       rework_loops: "Any rework loops that occurred (activity transitions backward)"
 
 rules:
-  no-domain-work: "The orchestrator coordinates but MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
+  no-domain-work: "The orchestrator coordinates but MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker. Exception: committing and pushing engineering artifacts after each activity is an orchestration responsibility."
+  artifact-commits: "After every completed activity, the orchestrator MUST check for and commit any new or modified engineering artifacts before evaluating transitions. This ensures artifacts are persisted incrementally and not deferred to workflow end. BEFORE committing, ALWAYS read .engineering/AGENTS.md for the definitive git structure and commit instructions."
   schema-aware: "The orchestrator MUST understand workflow, activity, skill, condition, and state schemas to correctly evaluate transitions, conditions, and state. The schema preamble from get_workflow provides this."
   worker-persistence: "The orchestrator MUST resume the same worker agent for each activity using the Task resume parameter. This preserves accumulated codebase understanding, file locations, and implementation decisions across the entire workflow."
   state-tracking: "The orchestrator tracks all variable changes reported by the worker and evaluates transition conditions based on current state. Variables not reported as changed retain their current values."
@@ -78,6 +86,11 @@ tools:
     returns: "Worker output: variables_changed, checkpoints_responded, artifacts_produced, steps_completed"
     action: "First call creates worker and captures agent_id. Subsequent calls use resume=agent_id."
     usage: "Use generalPurpose subagent_type. Always include full state context in the prompt."
+  shell:
+    when: "Committing and pushing engineering artifacts after each completed activity"
+    params: "git commands (status, add, commit, push)"
+    returns: "Command output"
+    action: "Detect changes in .engineering/artifacts/, commit following engineering-artifacts rules, and push to remote"
 
 errors:
   worker_timeout:
