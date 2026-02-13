@@ -31,10 +31,10 @@ protocol:
     - "Execute each step in the activity's steps array sequentially"
     - "For each step with a skill reference (step.skill), load that skill via get_skill and follow its protocol"
     - "For steps with a condition, evaluate the condition against current state variables. Skip the step if the condition is false."
-    - "For actions with type 'message', output the message content to the user as markdown. This displays information (such as artifact links) before a checkpoint."
+    - "For actions with type 'message', output the message content to the user as markdown."
     - "Track completed steps in a steps_completed list"
   handle-checkpoints[4]:
-    - "When reaching a checkpoint in the activity flow, present it as an interactive selection dialogue. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables."
+    - "Checkpoints MUST be presented as a separate interactive selection dialogue — never render checkpoint options as plain text or numbered lists. The checkpoint is a distinct tool call, not part of a text message."
     - "If a checkpoint has a prerequisite field, evaluate it against current state variables. If the prerequisite is not met, skip the checkpoint entirely."
     - "Collect the user's selected option and apply its effects: setVariable changes, transitionTo overrides, skipActivities"
     - "Record the checkpoint response: checkpoint_id, selected_option_id, effects_applied"
