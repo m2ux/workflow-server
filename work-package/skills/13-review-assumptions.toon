@@ -16,11 +16,12 @@ protocol:
   collect-assumptions[2]:
     - Identify all implicit decisions and assumptions made
     - Classify by category appropriate to the activity
-  present-for-review[4]:
-    - Present assumptions one at a time with type, statement, rationale, and alternatives
-    - Include type, statement, rationale, and alternatives for each
-    - Await user response before proceeding to next
-    - Do not batch assumptions — one at a time only
+  write-assumptions[2]:
+    - Write collected assumptions to assumptions-log.md with type, statement, rationale, and alternatives for each
+    - The file is the record of truth — do not duplicate assumption content in checkpoint messages
+  present-for-review[2]:
+    - Present the checkpoint with a clickable markdown link to assumptions-log.md so the user can review the content
+    - Do not inline assumption content in the checkpoint message — the file link is sufficient
   record-outcomes[3]:
     - Mark each as confirmed, corrected, or needs-discussion
     - Update assumptions-log.md with outcomes and user responses
