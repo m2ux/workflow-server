@@ -62,7 +62,7 @@ describe('mcp-server integration', () => {
       
       expect(workflow.id).toBe('work-package');
       expect(workflow.version).toBe('3.3.0');
-      expect(workflow.activities).toHaveLength(13);
+      expect(workflow.activities).toHaveLength(14);
       expect(workflow.initialActivity).toBe('start-work-package');
     });
 

@@ -51,11 +51,48 @@ function getWorkflowSkillDir(workflowDir: string, workflowId: string): string {
   return join(workflowDir, workflowId, 'skills');
 }
 
+/** Find all workflows that have a skills folder */
+async function findWorkflowsWithSkills(workflowDir: string): Promise<string[]> {
+  if (!existsSync(workflowDir)) return [];
+
+  try {
+    const entries = await readdir(workflowDir, { withFileTypes: true });
+    const workflowIds: string[] = [];
+
+    for (const entry of entries) {
+      if (entry.isDirectory() && entry.name !== META_WORKFLOW_ID) {
+        const skillDir = getWorkflowSkillDir(workflowDir, entry.name);
+        if (existsSync(skillDir)) {
+          workflowIds.push(entry.name);
+        }
+      }
+    }
+
+    return workflowIds;
+  } catch {
+    return [];
+  }
+}
+
+/** Try to load a skill from a specific directory, returning the parsed Skill or null */
+async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | null> {
+  const filePath = await findSkillFile(skillDir, skillId);
+  if (!filePath) return null;
+
+  try {
+    const content = await readFile(filePath, 'utf-8');
+    return decodeToon<Skill>(content);
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Read a skill by ID, with workflow context.
+ * Read a skill by ID, with optional workflow context.
  * Resolution order:
  * 1. If workflowId provided: check {workflowDir}/{workflowId}/skills/NN-{skillId}.toon
- * 2. Fallback to universal: check {workflowDir}/meta/skills/NN-{skillId}.toon
+ * 2. Universal: check {workflowDir}/meta/skills/NN-{skillId}.toon
+ * 3. If no workflowId: search all workflow skill directories
  */
 export async function readSkill(
   skillId: string, 
@@ -64,33 +101,29 @@ export async function readSkill(
 ): Promise<Result<Skill, SkillNotFoundError>> {
   // Try workflow-specific skill first
   if (workflowId && workflowId !== META_WORKFLOW_ID) {
-    const workflowSkillDir = getWorkflowSkillDir(workflowDir, workflowId);
-    const workflowFilePath = await findSkillFile(workflowSkillDir, skillId);
-    
-    if (workflowFilePath) {
-      try {
-        const content = await readFile(workflowFilePath, 'utf-8');
-        const skill = decodeToon<Skill>(content);
-        logInfo('Skill loaded (workflow-specific)', { id: skillId, workflowId, path: workflowFilePath });
-        return ok(skill);
-      } catch {
-        // Fall through to universal
-      }
+    const skill = await tryLoadSkill(getWorkflowSkillDir(workflowDir, workflowId), skillId);
+    if (skill) {
+      logInfo('Skill loaded (workflow-specific)', { id: skillId, workflowId });
+      return ok(skill);
     }
   }
   
   // Try universal skill (from meta workflow)
-  const universalDir = getUniversalSkillDir(workflowDir);
-  const universalFilePath = await findSkillFile(universalDir, skillId);
+  const universalSkill = await tryLoadSkill(getUniversalSkillDir(workflowDir), skillId);
+  if (universalSkill) {
+    logInfo('Skill loaded (universal)', { id: skillId });
+    return ok(universalSkill);
+  }
   
-  if (universalFilePath) {
-    try {
-      const content = await readFile(universalFilePath, 'utf-8');
-      const skill = decodeToon<Skill>(content);
-      logInfo('Skill loaded (universal)', { id: skillId, path: universalFilePath });
-      return ok(skill);
-    } catch {
-      return err(new SkillNotFoundError(skillId));
+  // If no workflowId was specified, search all workflow skill directories
+  if (!workflowId) {
+    const workflowIds = await findWorkflowsWithSkills(workflowDir);
+    for (const wfId of workflowIds) {
+      const skill = await tryLoadSkill(getWorkflowSkillDir(workflowDir, wfId), skillId);
+      if (skill) {
+        logInfo('Skill loaded (cross-workflow search)', { id: skillId, foundIn: wfId });
+        return ok(skill);
+      }
     }
   }
   

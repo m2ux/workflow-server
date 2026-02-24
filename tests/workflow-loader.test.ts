@@ -44,7 +44,7 @@ describe('workflow-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('work-package');
-        expect(result.value.activities.length).toBe(13);
+        expect(result.value.activities.length).toBe(14);
         expect(result.value.initialActivity).toBe('start-work-package');
       }
     });
