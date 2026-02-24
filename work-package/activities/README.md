@@ -99,12 +99,13 @@ graph TD
 5. **collect-assumptions** — Identify assumptions made during problem classification and path selection.
 6. **create-assumptions-log** — Create the assumptions log with initial assumptions from this activity.
 
-**Checkpoints (4):**
+**Checkpoints (5):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `problem-classified` | Confirm problem type and complexity assessment | yes |
 | `workflow-path` | Select workflow path: full, elicit-only, research-only, or direct | yes |
+| `comprehension-check` | Offer codebase comprehension step (recommended for unfamiliar codebases) | yes |
 | `design-philosophy-doc` | Confirm design philosophy document is accurate | yes |
 | `assumptions-review` | Review assumptions from classification and path selection | yes |
 
@@ -112,9 +113,10 @@ graph TD
 
 | Condition | Target |
 |-----------|--------|
-| `needs_elicitation == true` | requirements-elicitation |
-| `needs_elicitation == false AND needs_research == true` | research |
-| `skip_to_planning == true` (default) | plan-prepare |
+| `needs_comprehension == true` | codebase-comprehension |
+| `needs_comprehension == false AND needs_elicitation == true` | requirements-elicitation |
+| `needs_comprehension == false AND needs_elicitation == false AND needs_research == true` | research |
+| `needs_comprehension == false AND skip_to_planning == true` (default) | plan-prepare |
 
 **Artifacts:** `design-philosophy.md`, `assumptions-log.md` (both in planning folder).
 
@@ -128,10 +130,14 @@ graph TD
     cpClassified -->|"revise"| classifyProblem
 
     determinePath --> cpPath{"workflow-path checkpoint"}
-    cpPath -->|"full workflow"| docPhilosophy["Document design philosophy"]
-    cpPath -->|"elicit-only"| docPhilosophy
-    cpPath -->|"research-only"| docPhilosophy
-    cpPath -->|"direct to planning"| docPhilosophy
+    cpPath -->|"full workflow"| cpComprehension
+    cpPath -->|"elicit-only"| cpComprehension
+    cpPath -->|"research-only"| cpComprehension
+    cpPath -->|"direct to planning"| cpComprehension
+
+    cpComprehension{"comprehension-check checkpoint"}
+    cpComprehension -->|"build understanding"| docPhilosophy["Document design philosophy"]
+    cpComprehension -->|"skip"| docPhilosophy
 
     docPhilosophy --> cpDoc{"design-philosophy-doc checkpoint"}
     cpDoc -->|"confirmed"| collectAssumptions["Collect assumptions"]
@@ -141,6 +147,84 @@ graph TD
     createLog --> cpAssumptions{"assumptions-review checkpoint"}
     cpAssumptions -->|"confirmed"| pathBranch{"Selected path?"}
     cpAssumptions -->|"corrections"| collectAssumptions
+
+    pathBranch -->|"comprehension"| exitComprehension(["codebase-comprehension"])
+    pathBranch -->|"needs elicitation"| exitElicit(["requirements-elicitation"])
+    pathBranch -->|"needs research"| exitResearch(["research"])
+    pathBranch -->|"direct"| exitPlan(["plan-prepare"])
+```
+
+---
+
+### Codebase Comprehension (optional)
+
+**Purpose:** Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in `.engineering/artifacts/comprehension/` that grow across successive tasks, forming a reusable knowledge base. Recommended when maintaining unfamiliar codebases.
+
+**Skills:**
+
+| Role | Skill ID |
+|------|----------|
+| primary | `build-comprehension` |
+| supporting | `manage-artifacts` |
+
+**Steps:**
+
+1. **check-existing-artifacts** — Search `.engineering/artifacts/comprehension/` for existing artifacts related to this codebase area.
+2. **recommend-existing** — Present relevant existing comprehension artifacts to the user. Summarize coverage and suggest reviewing them.
+3. **architecture-survey** — Top-down survey: project structure, key modules, dependency graph, entry points, design patterns. Uses hypothesis-driven approach.
+4. **key-abstractions** — Identify core types, traits, interfaces, data structures, error handling, and state management. Document domain meaning.
+5. **design-rationale** — Infer likely rationale for significant design choices. Document as hypotheses for user validation.
+6. **domain-concept-mapping** — Map technical constructs to domain concepts. Create glossary of domain-specific terminology.
+7. **create-comprehension-artifact** — Write/augment artifact to `.engineering/artifacts/comprehension/{codebase-area}.md`.
+8. **deep-dive-loop** — Interactive loop: present areas for deeper exploration, perform targeted analysis, append to artifact.
+
+**Checkpoints (3):**
+
+| Checkpoint | Purpose | Blocking |
+|------------|---------|----------|
+| `existing-artifacts-review` | Show existing artifacts, ask if user wants to review them first (conditional) | yes |
+| `architecture-confirmed` | Confirm architecture survey and key abstractions are correct | yes |
+| `comprehension-sufficient` | Confirm understanding is sufficient or select area for deeper exploration | yes |
+
+**Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration explores a selected area, performs targeted analysis, and updates the artifact.
+
+**Transitions:**
+
+| Condition | Target |
+|-----------|--------|
+| `needs_elicitation == true` | requirements-elicitation |
+| `needs_elicitation == false AND needs_research == true` | research |
+| `skip_to_planning == true` (default) | plan-prepare |
+
+**Artifacts:** `{codebase-area}.md` (in comprehension folder — persistent, not gitignored).
+
+```mermaid
+graph TD
+    entryNode(["Entry"]) --> checkExisting["Check existing comprehension artifacts"]
+    checkExisting --> hasExisting{"Related artifacts found?"}
+    hasExisting -->|"yes"| cpExisting{"existing-artifacts-review checkpoint"}
+    hasExisting -->|"no"| archSurvey
+
+    cpExisting -->|"review existing"| reviewArtifacts["Review existing artifacts"]
+    cpExisting -->|"proceed fresh"| archSurvey
+    reviewArtifacts --> archSurvey
+
+    archSurvey["Architecture survey"] --> keyAbstractions["Key abstractions & data model"]
+    keyAbstractions --> designRationale["Design rationale mapping"]
+    designRationale --> domainMapping["Domain concept mapping"]
+    domainMapping --> cpArch{"architecture-confirmed checkpoint"}
+    cpArch -->|"confirmed"| createArtifact["Create/augment comprehension artifact"]
+    cpArch -->|"corrections"| archSurvey
+    cpArch -->|"more depth"| deepDive
+
+    createArtifact --> cpSufficient{"comprehension-sufficient checkpoint"}
+    cpSufficient -->|"sufficient"| pathBranch{"Selected path?"}
+    cpSufficient -->|"dive deeper"| deepDive["Deep-dive: select area"]
+    cpSufficient -->|"different area"| deepDive
+
+    deepDive --> targetedAnalysis["Targeted analysis"]
+    targetedAnalysis --> updateArtifact["Update comprehension artifact"]
+    updateArtifact --> cpSufficient
 
     pathBranch -->|"needs elicitation"| exitElicit(["requirements-elicitation"])
     pathBranch -->|"needs research"| exitResearch(["research"])
