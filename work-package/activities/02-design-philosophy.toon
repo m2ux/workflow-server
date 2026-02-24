@@ -91,7 +91,7 @@ steps[6]:
   - id: create-assumptions-log
     name: Create assumptions log
     description: "Create the assumptions log with initial assumptions from this activity."
-checkpoints[4]:
+checkpoints[5]:
   - id: problem-classified
     name: Problem Classification Checkpoint
     message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Does this assessment look correct?"
@@ -142,6 +142,22 @@ checkpoints[4]:
             needs_elicitation: false
             needs_research: false
             skip_to_planning: true
+  - id: comprehension-check
+    name: Codebase Comprehension Checkpoint
+    message: "This task involves changes to the codebase. Would you like to build or refresh your understanding of the relevant code areas first? This is recommended when working on unfamiliar codebases."
+    options[2]:
+      - id: build-comprehension
+        label: Build codebase understanding
+        description: "Analyze the codebase to build a mental model before making design decisions (creates persistent knowledge artifact)"
+        effect:
+          setVariable:
+            needs_comprehension: true
+      - id: skip-comprehension
+        label: Skip - already familiar
+        description: "Proceed without comprehension step (familiar with this codebase area)"
+        effect:
+          setVariable:
+            needs_comprehension: false
   - id: design-philosophy-doc
     name: Design Philosophy Document Checkpoint
     message: "Does the design philosophy accurately capture the problem, classification, and workflow rationale?"
@@ -165,17 +181,33 @@ checkpoints[4]:
       - id: skip
         label: No significant assumptions
         description: No assumptions worth documenting
-transitions[3]:
-  - to: requirements-elicitation
+transitions[4]:
+  - to: codebase-comprehension
     condition:
       type: simple
-      variable: needs_elicitation
+      variable: needs_comprehension
       operator: ==
       value: true
-  - to: research
+  - to: requirements-elicitation
     condition:
       type: and
       conditions[2]:
+        - type: simple
+          variable: needs_comprehension
+          operator: ==
+          value: false
+        - type: simple
+          variable: needs_elicitation
+          operator: ==
+          value: true
+  - to: research
+    condition:
+      type: and
+      conditions[3]:
+        - type: simple
+          variable: needs_comprehension
+          operator: ==
+          value: false
         - type: simple
           variable: needs_elicitation
           operator: ==
@@ -186,10 +218,16 @@ transitions[3]:
           value: true
   - to: plan-prepare
     condition:
-      type: simple
-      variable: skip_to_planning
-      operator: ==
-      value: true
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: needs_comprehension
+          operator: ==
+          value: false
+        - type: simple
+          variable: skip_to_planning
+          operator: ==
+          value: true
     isDefault: true
 outcome[5]:
   - Problem clearly defined and classified
@@ -197,10 +235,11 @@ outcome[5]:
   - Workflow path determined
   - Design philosophy documented in artifact
   - Ready for next activity based on problem nature
-context_to_preserve[7]:
+context_to_preserve[8]:
   - problem_statement - Clear problem definition
   - problem_type - Specific problem or inventive goal
   - complexity - simple, moderate, or complex
+  - needs_comprehension - Whether codebase comprehension step is needed
   - needs_elicitation - Whether requirements elicitation is needed
   - needs_research - Whether research is needed
   - skip_to_planning - Whether to skip directly to planning
