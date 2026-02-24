@@ -90,20 +90,32 @@ checkpoints[3]:
     prerequisite: "Only present when has_stakeholder_comment is true"
     message: "Based on the stakeholder feedback, what level of revision is needed?"
     blocking: true
-    options[2]:
+    options[3]:
       - id: minor-corrections
         label: Minor corrections to assumptions
         description: "Update assumptions based on feedback and re-post — loops back to prepare the comment again"
         effect:
           setVariable:
             needs_further_discussion: true
+      - id: needs-comprehension
+        label: Deeper codebase understanding needed
+        description: "Stakeholder feedback reveals gaps in codebase understanding — return to comprehension to deepen knowledge before revising the plan"
+        effect:
+          setVariable:
+            needs_comprehension: true
       - id: plan-revision-needed
         label: Significant plan revision needed
         description: "Stakeholder feedback indicates the approach needs substantial changes — return to plan-prepare"
         effect:
           setVariable:
             needs_plan_revision: true
-transitions[3]:
+transitions[4]:
+  - to: codebase-comprehension
+    condition:
+      type: simple
+      variable: needs_comprehension
+      operator: "=="
+      value: true
   - to: plan-prepare
     condition:
       type: simple

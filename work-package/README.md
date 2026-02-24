@@ -210,11 +210,12 @@ This convention ensures artifacts are naturally sorted by workflow phase when li
 
 ## Feedback Loops
 
-The workflow contains six feedback loops that enable iterative quality improvement. Each loop is triggered by a checkpoint or decision gate.
+The workflow contains seven feedback loops that enable iterative quality improvement. Each loop is triggered by a checkpoint or decision gate.
 
 | From | To | Condition | Purpose |
 |------|----|-----------|---------|
 | [Assumptions Review](activities/README.md#07-assumptions-review) (07) | [Assumptions Review](activities/README.md#07-assumptions-review) (07) | `needs_further_discussion == true` | Minor corrections — re-prepare and re-post plan and assumptions comment |
+| [Assumptions Review](activities/README.md#07-assumptions-review) (07) | [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) (14) | `needs_comprehension == true` | Stakeholder feedback reveals codebase understanding gaps — deepen comprehension before revising plan |
 | [Assumptions Review](activities/README.md#07-assumptions-review) (07) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `needs_plan_revision == true` | Stakeholder feedback requires significant approach revision |
 | [Post-Implementation Review](activities/README.md#09-post-implementation-review) (09) | [Implement](activities/README.md#08-implement) (08) | `has_critical_blocker == true` | Critical blocker found during review requires code fix before proceeding |
 | [Strategic Review](activities/README.md#11-strategic-review) (11) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `review_passed == false` | Significant rework needed — changes are not minimal or focused |
@@ -224,7 +225,9 @@ The workflow contains six feedback loops that enable iterative quality improveme
 ```mermaid
 graph LR
     assumptionsReview["07 Assumptions Review"] -->|"minor corrections"| assumptionsReview
+    assumptionsReview -->|"needs comprehension"| codebaseComprehension["14 Codebase Comprehension"]
     assumptionsReview -->|"significant revision"| planPrepare["06 Plan and Prepare"]
+    codebaseComprehension -->|"comprehension complete"| planPrepare
     postImplReview["09 Post-Impl Review"] -->|"critical blocker"| implement["08 Implement"]
     strategicReview["11 Strategic Review"] -->|"rework needed"| planPrepare
     submitReview["12 Submit for Review"] -->|"significant changes"| planPrepare
