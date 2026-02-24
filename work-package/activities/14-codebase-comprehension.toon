@@ -15,12 +15,13 @@ skills:
     - manage-artifacts
 required: false
 estimatedTime: 20-45m
-rules[5]:
+rules[6]:
   - "Comprehension artifacts are persistent — they live in .engineering/artifacts/comprehension/ and are reused across work packages"
   - "Always check for existing comprehension artifacts before creating new ones"
   - "Augment existing artifacts with new details rather than duplicating content"
   - "The deep-dive loop continues until the user confirms sufficient understanding"
   - "Knowledge should be structured hierarchically: architecture → modules → abstractions → design rationale"
+  - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after each deep-dive iteration"
 steps[8]:
   - id: check-existing-artifacts
     name: Check Existing Comprehension Artifacts
@@ -42,7 +43,7 @@ steps[8]:
     description: "Map technical constructs to domain concepts: what does each module or subsystem accomplish in business/domain terms? Create a glossary of domain-specific terminology found in the codebase."
   - id: create-comprehension-artifact
     name: Create or Augment Comprehension Artifact
-    description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary."
+    description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary. Initialize an empty 'Open Questions' section (markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section) between Domain Concept Mapping and Deep-Dive Sections."
     actions[1]:
       - action: message
         message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name})"
@@ -105,16 +106,19 @@ loops[1]:
       operator: ==
       value: true
     description: "Loop where each iteration explores a specific area of the codebase in more detail. Continues until user selects 'sufficient' at the comprehension-sufficient checkpoint, which sets needs_comprehension to false."
-    steps[3]:
+    steps[4]:
       - id: select-area
         name: Select deep-dive area
-        description: "Present candidate areas for deeper exploration based on what has been surveyed. Include areas likely to be relevant to the current work package's problem statement."
+        description: "Present the current 'Open Questions' table from the comprehension artifact. User selects which questions to investigate, or proposes new areas. If no open questions exist yet, present candidate areas based on the architecture survey and problem relevance."
       - id: targeted-analysis
         name: Perform targeted analysis
         description: "Dive into the selected area: trace data flows, examine implementation details, identify edge cases, document internal design decisions and their implications."
       - id: update-artifact
         name: Update comprehension artifact
         description: "Append deep-dive findings to the comprehension artifact under a dedicated section for this area."
+      - id: revise-open-questions
+        name: Revise open questions
+        description: "Review findings from this iteration against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. Present the revised table to the user as context for the sufficiency checkpoint."
 transitions[3]:
   - to: requirements-elicitation
     condition:

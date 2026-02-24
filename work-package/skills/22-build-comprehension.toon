@@ -39,15 +39,21 @@ protocol:
     - "Map technical modules to domain concepts: what real-world problem does each subsystem solve?"
     - "Build a glossary of domain-specific terms found in code, comments, and documentation"
     - "Connect domain concepts to the problem statement to highlight relevant areas"
-  artifact-management[4]:
+  artifact-management[5]:
     - "Artifact naming: {codebase-area-name}.md in .engineering/artifacts/comprehension/"
     - "Derive codebase-area-name from the target project or subsystem name (slugified)"
     - "When augmenting: add new sections, update existing sections with deeper detail, preserve prior content"
     - "Include metadata header: date, work-package reference, coverage scope, related artifacts"
+    - "Include an 'Open Questions' section (markdown table) between Domain Concept Mapping and Deep-Dive Sections — this section is maintained by the question-management protocol"
   deep-dive[3]:
     - "Present candidate areas based on architecture survey and problem relevance"
     - "For selected area: trace data flows, examine implementation details, document edge cases"
     - "Append findings as dedicated subsections in the comprehension artifact"
+  question-management[4]:
+    - "The 'Open Questions' section is a markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section"
+    - "After each deep-dive iteration, mark resolved questions as 'Resolved' with a one-line summary and cross-reference to the deep-dive section that answered them"
+    - "Add new questions discovered during investigation with status 'Open' — questions naturally emerge from tracing data flows, examining edge cases, and reading adjacent code"
+    - "Below the table, maintain a 'Remaining follow-up items (out of scope)' list for questions identified but explicitly out of scope for the current work package"
 
 output[1]:
   - id: comprehension-artifact
@@ -68,6 +74,7 @@ rules:
   progressive-depth: "Start broad (architecture) and deepen progressively — let the user guide where to invest comprehension effort"
   relevance-focus: "Prioritize areas relevant to the current problem statement while still building broadly useful knowledge"
   cross-reference: "Cross-reference related comprehension artifacts and note dependencies between codebase areas"
+  question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
 
 resources[1]:
   - "25"
