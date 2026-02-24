@@ -126,12 +126,15 @@ async function readActivityFromWorkflow(
     logInfo('Activity loaded', { id: activityId, workflowId, path: filePath });
     
     // Add next_action guidance for the primary skill
+    const skillParams: Record<string, string> = { skill_id: activity.skills.primary };
+    if (workflowId) skillParams['workflow_id'] = workflowId;
+    
     const activityWithGuidance: ActivityWithGuidance = {
       ...activity,
       workflowId,
       next_action: {
         tool: 'get_skill',
-        parameters: { skill_id: activity.skills.primary },
+        parameters: skillParams,
       },
     };
     
@@ -232,6 +235,9 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       const activity = result.value;
       
       // Build activity entry for index
+      const indexSkillParams: Record<string, string> = { skill_id: activity.skills.primary };
+      if (entry.workflowId) indexSkillParams['workflow_id'] = entry.workflowId;
+      
       const activityEntry: ActivityIndex['activities'][number] = {
         id: activity.id,
         workflowId: entry.workflowId,
@@ -239,7 +245,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
         primary_skill: activity.skills.primary,
         next_action: {
           tool: 'get_skill',
-          parameters: { skill_id: activity.skills.primary },
+          parameters: indexSkillParams,
         },
       };
       
