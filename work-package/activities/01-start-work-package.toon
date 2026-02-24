@@ -78,7 +78,7 @@ modeOverrides:
       - review_base_branch - Base branch of PR being reviewed
 entryActions[1]{action,message}:
   log,Starting issue management
-steps[11]:
+steps[12]:
   - id: resolve-target
     name: Resolve Target Directory
     description: "Read target_path from state variables (set during workflow initialization). Verify the directory exists. All git operations (branch, PR) will be performed inside this directory."
@@ -99,6 +99,14 @@ steps[11]:
       type: simple
       variable: needs_issue_creation
       operator: ==
+      value: true
+  - id: activate-issue
+    name: Activate Issue
+    description: "Transition the issue to 'In Progress' and assign it to the current user. (1) For Jira: call atlassianUserInfo to get the current user's account ID, then call editJiraIssue to set the assignee field to { accountId: <current_user_account_id> }. Next, call getTransitionsForJiraIssue to discover available transitions, find the one targeting 'In Progress' (or equivalent active status), and call transitionJiraIssue with that transition ID. (2) For GitHub: run 'gh issue edit <number> --add-assignee @me' to self-assign. Skip transition for GitHub (no built-in status workflow). (3) If the issue is already in progress or already assigned, skip the respective operation silently."
+    condition:
+      type: simple
+      variable: issue_skipped
+      operator: "!="
       value: true
   - id: check-branch
     name: Check Current Branch
@@ -285,16 +293,18 @@ transitions[1]{to,isDefault}:
   design-philosophy,true
 exitActions[1]{action,message}:
   log,"Issue management complete - issue verified/created, PR ready"
-outcome[4]:
+outcome[5]:
   - Issue exists or is created in appropriate platform
+  - Issue transitioned to In Progress and assigned to current user
   - Feature branch created from main
   - Draft PR created and linked to issue
   - Planning folder initialized
-context_to_preserve[13]:
+context_to_preserve[14]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
   - issue_platform - github or jira
   - issue_type - Type of issue (feature, bug, task, enhancement, epic)
   - issue_url - URL to the issue
+  - issue_assignee_account_id - Account ID of the assigned user (Jira)
   - branch_name - Feature branch name
   - pr_number - Draft PR number (new or existing)
   - project_type - Detected project type (rust-substrate or other)
