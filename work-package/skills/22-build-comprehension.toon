@@ -1,0 +1,109 @@
+id: build-comprehension
+version: 1.0.0
+capability: Build or augment codebase comprehension through progressive analysis and persistent knowledge artifacts
+
+description: "This skill serves the codebase-comprehension activity. It handles: discovering existing comprehension artifacts and recommending them; performing hierarchical codebase analysis (architecture → modules → abstractions → design rationale); creating and augmenting persistent comprehension artifacts in .engineering/artifacts/comprehension/; facilitating user-driven deep-dive exploration into specific areas."
+
+inputs[3]:
+  - id: problem_statement
+    description: "Problem statement from design philosophy — focuses the comprehension on relevant areas"
+    required: true
+  - id: target_path
+    description: "Path to the target codebase directory"
+    required: true
+  - id: project_type
+    description: "Detected project type (rust-substrate|other)"
+    required: false
+
+protocol:
+  discover-existing[3]:
+    - List contents of .engineering/artifacts/comprehension/ directory
+    - Match existing artifacts by project name, module name, or domain terms from problem_statement
+    - Summarize relevant artifacts with coverage scope and last-updated date
+  architecture-survey[5]:
+    - "Top-down survey: start with project root structure, build system, entry points"
+    - "Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs"
+    - "Map dependency relationships between modules (imports, trait implementations, cross-module calls)"
+    - "Identify overarching patterns: layered architecture, event-driven, actor model, plugin system, etc."
+    - "Form architecture hypotheses and verify by sampling implementation files"
+  abstractions-analysis[4]:
+    - "Identify core types, traits/interfaces, and data structures that form the domain model"
+    - "Document type hierarchies, trait bounds, and generic constraints"
+    - "Map error handling strategy: error types, Result patterns, error propagation"
+    - "Document state management approach: where state lives, how it flows, mutation patterns"
+  design-rationale[3]:
+    - "For each significant design choice, infer the likely rationale from context clues: comments, naming, structure, constraints"
+    - "Identify trade-offs: what does this design optimize for? what does it sacrifice?"
+    - "Frame rationale as hypotheses for user validation — not assertions"
+  domain-mapping[3]:
+    - "Map technical modules to domain concepts: what real-world problem does each subsystem solve?"
+    - "Build a glossary of domain-specific terms found in code, comments, and documentation"
+    - "Connect domain concepts to the problem statement to highlight relevant areas"
+  artifact-management[4]:
+    - "Artifact naming: {codebase-area-name}.md in .engineering/artifacts/comprehension/"
+    - "Derive codebase-area-name from the target project or subsystem name (slugified)"
+    - "When augmenting: add new sections, update existing sections with deeper detail, preserve prior content"
+    - "Include metadata header: date, work-package reference, coverage scope, related artifacts"
+  deep-dive[3]:
+    - "Present candidate areas based on architecture survey and problem relevance"
+    - "For selected area: trace data flows, examine implementation details, document edge cases"
+    - "Append findings as dedicated subsections in the comprehension artifact"
+
+output[1]:
+  - id: comprehension-artifact
+    description: "Persistent comprehension artifact covering the relevant codebase area"
+    artifact:
+      name: "{codebase-area}.md"
+    components:
+      architecture_overview: "Module structure, dependencies, and design patterns"
+      key_abstractions: "Core types, traits, data structures with domain context"
+      design_rationale: "Inferred rationale for significant design choices"
+      domain_glossary: "Mapping of domain terms to technical constructs"
+      deep_dives: "Targeted exploration sections added during user-driven loop"
+
+rules:
+  persistent-artifacts: "Comprehension artifacts persist across work packages — they are cumulative knowledge, not disposable planning documents"
+  augment-not-replace: "When existing artifacts cover the same area, augment them with new sections and deeper detail rather than replacing"
+  hypothesis-framing: "Frame design rationale as hypotheses for user validation — the goal is to enable the user to qualify assumptions, not to assert correctness"
+  progressive-depth: "Start broad (architecture) and deepen progressively — let the user guide where to invest comprehension effort"
+  relevance-focus: "Prioritize areas relevant to the current problem statement while still building broadly useful knowledge"
+  cross-reference: "Cross-reference related comprehension artifacts and note dependencies between codebase areas"
+
+resources[1]:
+  - "25"
+
+tools:
+  read_file:
+    when: Examining source code, project configuration, existing artifacts
+    usage: Read source files, Cargo.toml, module declarations, existing comprehension artifacts
+  grep:
+    when: Searching for patterns, types, traits, module usage across codebase
+    usage: Find type definitions, trait implementations, cross-module references, domain terms
+  glob:
+    when: Discovering project structure and file layout
+    usage: Map directory structure, find module files, locate test files
+  shell:
+    when: Running dependency analysis, git history inspection
+    params: "cargo tree, git log, git shortlog"
+    usage: Dependency graphs, change history for understanding evolution
+  write_file:
+    when: Creating or updating comprehension artifacts
+    usage: Write to .engineering/artifacts/comprehension/
+  semantic_search:
+    when: Finding code by meaning when exact terms are unknown
+    usage: Explore unfamiliar areas by describing what you're looking for
+  get_resource:
+    when: Loading comprehension guidance and artifact template
+    params: "workflow_id: work-package, index: 25"
+    returns: Comprehension artifact template and technique guide
+
+errors:
+  no_existing_artifacts:
+    cause: No comprehension artifacts exist yet for this codebase
+    recovery: Proceed with fresh analysis — this is the first comprehension pass
+  large_codebase:
+    cause: Codebase is too large for exhaustive analysis
+    recovery: Focus on areas relevant to the problem statement and note unexplored areas for future passes
+  unfamiliar_patterns:
+    cause: Codebase uses patterns or frameworks the agent is unfamiliar with
+    recovery: Use web research to understand framework conventions, then document findings

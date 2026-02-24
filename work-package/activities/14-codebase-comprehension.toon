@@ -1,0 +1,155 @@
+id: codebase-comprehension
+version: 1.0.0
+name: Codebase Comprehension
+description: "Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in .engineering/artifacts/comprehension/ that grow across successive tasks, forming a reusable knowledge base."
+problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
+recognition[5]:
+  - build codebase understanding
+  - understand the codebase
+  - code comprehension
+  - learn the codebase
+  - familiarize with code
+skills:
+  primary: build-comprehension
+  supporting[1]:
+    - manage-artifacts
+required: false
+estimatedTime: 20-45m
+rules[5]:
+  - "Comprehension artifacts are persistent — they live in .engineering/artifacts/comprehension/ and are reused across work packages"
+  - "Always check for existing comprehension artifacts before creating new ones"
+  - "Augment existing artifacts with new details rather than duplicating content"
+  - "The deep-dive loop continues until the user confirms sufficient understanding"
+  - "Knowledge should be structured hierarchically: architecture → modules → abstractions → design rationale"
+steps[8]:
+  - id: check-existing-artifacts
+    name: Check Existing Comprehension Artifacts
+    description: "Search .engineering/artifacts/comprehension/ for existing artifacts related to this codebase area. Match by project name, module names, or domain concepts from the problem statement."
+  - id: recommend-existing
+    name: Recommend Existing Artifacts
+    description: "Present any relevant existing comprehension artifacts to the user. Summarize what each covers and suggest reviewing them as a starting point. If none exist, note this and proceed to fresh analysis."
+  - id: architecture-survey
+    name: Architecture Survey
+    description: "Perform a top-down survey of the codebase: project structure, key modules and their responsibilities, dependency graph between modules, entry points, and overarching design patterns (e.g., layered architecture, event-driven, actor model). Use a hypothesis-driven approach — form initial hypotheses about structure and verify them by examining code."
+  - id: key-abstractions
+    name: Key Abstractions and Data Model
+    description: "Identify core types, traits, interfaces, data structures, error handling patterns, and state management approaches. Document what each key abstraction represents in domain terms and how abstractions relate to each other."
+  - id: design-rationale
+    name: Design Rationale Mapping
+    description: "For each significant design choice observed (patterns used, architecture decisions, abstraction boundaries), infer the likely rationale — why was it built this way? What constraints or trade-offs does this design address? Document these as 'design rationale hypotheses' that the user can validate."
+  - id: domain-concept-mapping
+    name: Domain Concept Mapping
+    description: "Map technical constructs to domain concepts: what does each module or subsystem accomplish in business/domain terms? Create a glossary of domain-specific terminology found in the codebase."
+  - id: create-comprehension-artifact
+    name: Create or Augment Comprehension Artifact
+    description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary."
+    actions[1]:
+      - action: message
+        message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name})"
+  - id: deep-dive-loop
+    name: Deep-Dive Exploration
+    description: "Enter interactive loop: present areas available for deeper exploration (specific modules, patterns, data flows, error handling, etc.) and ask the user which area they want to understand better. For each selection, perform targeted analysis and append findings to the comprehension artifact."
+artifacts[1]:
+  - id: comprehension-artifact
+    name: "{codebase-area}.md"
+    location: comprehension
+    description: "Persistent knowledge artifact covering architecture, abstractions, design rationale, and domain mapping for a codebase area. Augmented across successive work packages."
+checkpoints[3]:
+  - id: existing-artifacts-review
+    name: Existing Artifacts Review Checkpoint
+    message: "I found existing comprehension artifacts related to this codebase area. Would you like to review them before proceeding?"
+    prerequisite: "Only present when existing related artifacts are found"
+    options[2]:
+      - id: review-existing
+        label: Review existing artifacts
+        description: "Read through existing comprehension artifacts for this area before building new understanding"
+      - id: proceed-fresh
+        label: Proceed to fresh analysis
+        description: "Skip review and build understanding from scratch (existing artifacts will still be augmented)"
+  - id: architecture-confirmed
+    name: Architecture Survey Checkpoint
+    message: "Here is my understanding of the codebase architecture, key abstractions, and design rationale. Does this look correct?"
+    options[3]:
+      - id: confirmed
+        label: Understanding confirmed
+        description: "The architectural survey accurately represents the codebase"
+      - id: corrections
+        label: Some corrections needed
+        description: "Parts of the survey need adjustment"
+      - id: more-depth
+        label: Need more depth
+        description: "The survey is too shallow — analyze specific areas more thoroughly"
+  - id: comprehension-sufficient
+    name: Comprehension Sufficiency Checkpoint
+    message: "Do you feel you have sufficient understanding of the codebase to evaluate design choices in later activities, or would you like to dive deeper into a specific area?"
+    options[3]:
+      - id: sufficient
+        label: Understanding sufficient
+        description: "I have enough context to evaluate design assumptions — proceed"
+        effect:
+          setVariable:
+            needs_comprehension: false
+      - id: dive-deeper
+        label: Dive deeper
+        description: "I want to explore a specific area in more detail"
+      - id: different-area
+        label: Explore a different area
+        description: "Shift focus to a different part of the codebase"
+loops[1]:
+  - id: deep-dive-iteration
+    name: Deep-Dive Iteration
+    type: while
+    condition:
+      type: simple
+      variable: needs_comprehension
+      operator: ==
+      value: true
+    description: "Loop where each iteration explores a specific area of the codebase in more detail. Continues until user selects 'sufficient' at the comprehension-sufficient checkpoint, which sets needs_comprehension to false."
+    steps[3]:
+      - id: select-area
+        name: Select deep-dive area
+        description: "Present candidate areas for deeper exploration based on what has been surveyed. Include areas likely to be relevant to the current work package's problem statement."
+      - id: targeted-analysis
+        name: Perform targeted analysis
+        description: "Dive into the selected area: trace data flows, examine implementation details, identify edge cases, document internal design decisions and their implications."
+      - id: update-artifact
+        name: Update comprehension artifact
+        description: "Append deep-dive findings to the comprehension artifact under a dedicated section for this area."
+transitions[3]:
+  - to: requirements-elicitation
+    condition:
+      type: simple
+      variable: needs_elicitation
+      operator: ==
+      value: true
+  - to: research
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: needs_elicitation
+          operator: ==
+          value: false
+        - type: simple
+          variable: needs_research
+          operator: ==
+          value: true
+  - to: plan-prepare
+    condition:
+      type: simple
+      variable: skip_to_planning
+      operator: ==
+      value: true
+    isDefault: true
+outcome[5]:
+  - Mental model of codebase architecture established
+  - Key abstractions and design rationale documented
+  - Domain concepts mapped to technical constructs
+  - Persistent comprehension artifact created or augmented
+  - User confident to evaluate design assumptions in subsequent activities
+context_to_preserve[5]:
+  - comprehension_artifact_path - Path to the created/updated comprehension artifact
+  - architecture_overview - High-level architecture summary
+  - key_abstractions - Core types, traits, and interfaces identified
+  - design_rationale_hypotheses - Inferred rationale for major design choices
+  - domain_glossary - Mapping of domain terms to technical constructs
