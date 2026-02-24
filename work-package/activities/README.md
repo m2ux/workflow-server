@@ -482,14 +482,22 @@ graph TD
 3. **await-stakeholder-response** — Wait for stakeholder feedback on posted comment.
 4. **update-assumptions-log** — Update assumptions log with stakeholder review outcomes.
 
-**Checkpoints (2):**
+**Checkpoints (3):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `comment-review` | Review prepared comment before posting to issue tracker | yes |
 | `stakeholder-response` | Provide stakeholder feedback or confirm approval | yes |
+| `feedback-triage` | Determine level of revision needed based on stakeholder feedback | yes |
 
-**Transitions:** Default to `implement`.
+**Transitions:**
+
+| Condition | Target |
+|-----------|--------|
+| `needs_comprehension == true` | codebase-comprehension |
+| `needs_plan_revision == true` | plan-prepare |
+| `needs_further_discussion == true` | assumptions-review (self-loop) |
+| default | implement |
 
 **Artifacts:** `assumptions-log.md` (update, in planning folder).
 
@@ -506,9 +514,11 @@ graph TD
 
     postComment --> cpResponse{"stakeholder-response checkpoint"}
     cpResponse -->|"approved"| updateLog
-    cpResponse -->|"commented"| incorporateFeedback["Incorporate feedback"]
-    cpResponse -->|"further discussion"| prepSummary
-    incorporateFeedback --> prepSummary
+    cpResponse -->|"commented"| cpTriage{"feedback-triage checkpoint"}
+
+    cpTriage -->|"minor corrections"| prepSummary
+    cpTriage -->|"needs comprehension"| exitComprehension(["codebase-comprehension"])
+    cpTriage -->|"plan revision"| exitPlan(["plan-prepare"])
 
     updateLog --> exitNode(["implement"])
 ```
