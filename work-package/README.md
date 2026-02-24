@@ -6,12 +6,13 @@
 
 ## Overview
 
-This workflow guides the complete lifecycle of a single work package through thirteen activities, each with defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
+This workflow guides the complete lifecycle of a single work package through fourteen activities, each with defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
 | 01 | [**Start Work Package**](activities/README.md#01-start-work-package) | yes | Verify/create issue, set up branch, PR, and planning folder |
 | 02 | [**Design Philosophy**](activities/README.md#02-design-philosophy) | yes | Classify problem, assess complexity, determine workflow path |
+| — | [**Codebase Comprehension**](activities/README.md#codebase-comprehension-optional) | optional | Build/augment mental model of unfamiliar codebase via persistent knowledge artifacts |
 | 03 | [**Requirements Elicitation**](activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
 | 04 | [**Research**](activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
 | 05 | [**Implementation Analysis**](activities/README.md#05-implementation-analysis) | yes | Understand current state, establish baselines |
@@ -27,8 +28,8 @@ This workflow guides the complete lifecycle of a single work package through thi
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (24 skills) and protocol flow diagrams.
-- **Resources:** See [resources/README.md](resources/README.md) for the resource index (25 resources).
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (25 skills) and protocol flow diagrams.
+- **Resources:** See [resources/README.md](resources/README.md) for the resource index (26 resources).
 
 ---
 
@@ -39,7 +40,11 @@ graph TD
     startNode(["Start"]) --> SWP["01 start-work-package"]
     SWP --> DP["02 design-philosophy"]
 
-    DP --> PATH{"workflow path?"}
+    DP --> COMP_CHK{"needs comprehension?"}
+    COMP_CHK -->|"yes"| CC["codebase-comprehension"]
+    COMP_CHK -->|"no"| PATH
+
+    CC --> PATH{"workflow path?"}
     PATH -->|"full"| REL["03 requirements-elicitation"]
     PATH -->|"elicit-only"| REL
     PATH -->|"research-only"| RS
@@ -79,7 +84,8 @@ graph TD
 | # | Activity | Primary Skill | Supporting Skills | Checkpoints | artifactPrefix |
 |---|----------|--------------|-------------------|-------------|----------------|
 | 01 | [Start Work Package](activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts` | 8 | — |
-| 02 | [Design Philosophy](activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions` | 4 | `02` |
+| 02 | [Design Philosophy](activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions` | 5 | `02` |
+| — | [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `manage-artifacts` | 3 | — |
 | 03 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions` | 3 | `03` |
 | 04 | [Research](activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions` | 4 | `04` |
 | 05 | [Implementation Analysis](activities/README.md#05-implementation-analysis) | `analyze-implementation` | `manage-artifacts`, `review-assumptions` | 2 | `05` |
@@ -227,9 +233,9 @@ graph LR
 
 ---
 
-## Variables (51)
+## Variables (52)
 
-The workflow declares 50 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
+The workflow declares 52 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
 
 ### Core Identifiers
 
@@ -256,6 +262,7 @@ The workflow declares 50 variables that drive control flow, store checkpoint sta
 | Variable | Type | Description |
 |----------|------|-------------|
 | `complexity` | string | Problem complexity: simple, moderate, or complex. Drives ADR creation. |
+| `needs_comprehension` | boolean | Whether codebase comprehension step is needed (default: `false`) |
 | `needs_elicitation` | boolean | Whether requirements elicitation is needed (default: `false`) |
 | `needs_research` | boolean | Whether research activity is needed (default: `false`) |
 | `skip_to_planning` | boolean | Whether to skip directly to plan-prepare (default: `false`) |
@@ -333,6 +340,7 @@ The following rules are declared at the workflow level and apply to all activiti
 | `planning` | `{planning_folder_path}` | yes | Work package planning documents and review artifacts |
 | `reviews` | `.engineering/artifacts/reviews` | yes | PR review analysis documents |
 | `adr` | `.engineering/artifacts/adr` | no | Architecture Decision Records |
+| `comprehension` | `.engineering/artifacts/comprehension` | no | Persistent codebase knowledge artifacts (cumulative across work packages) |
 
 ---
 
@@ -342,6 +350,7 @@ The following rules are declared at the workflow level and apply to all activiti
 |----------|---------------|
 | [01 Start Work Package](activities/README.md#01-start-work-package) | 10-20 min |
 | [02 Design Philosophy](activities/README.md#02-design-philosophy) | 10-20 min |
+| [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) | 20-45 min |
 | [03 Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | 15-30 min |
 | [04 Research](activities/README.md#04-research-optional) | 20-45 min |
 | [05 Implementation Analysis](activities/README.md#05-implementation-analysis) | 10-20 min |

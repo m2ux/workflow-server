@@ -2,9 +2,9 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-## Skills (22 workflow-specific + 2 universal)
+## Skills (23 workflow-specific + 2 universal)
 
-The workflow uses 22 workflow-specific skills organized by capability, plus 2 universal orchestration skills from `meta/skills/`. Skills are referenced by activities through `primary` and `supporting` roles.
+The workflow uses 23 workflow-specific skills organized by capability, plus 2 universal orchestration skills from `meta/skills/`. Skills are referenced by activities through `primary` and `supporting` roles.
 
 | # | Skill ID | Capability | Used By |
 |---|----------|------------|---------|
@@ -30,6 +30,7 @@ The workflow uses 22 workflow-specific skills organized by capability, plus 2 un
 | 19 | `conduct-retrospective` | Workflow retrospective and lessons learned capture | Complete |
 | 20 | `summarize-architecture` | Architecture summary with UML-style diagrams for stakeholders | Post-Implementation Review, Strategic Review |
 | 21 | `create-adr` | Architecture Decision Record creation for significant decisions | Complete |
+| 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
 
 
 > Skills `orchestrate-workflow` and `execute-activity` are **universal skills** in [meta/skills/](../../meta/skills/) — they apply to all workflows using the orchestrator/worker pattern.

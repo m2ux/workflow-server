@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 25 resources that provide templates, guidance, and reference material for skills and activities.
+The workflow includes 26 resources that provide templates, guidance, and reference material for skills and activities.
 
 | # | Resource ID | Title | Purpose |
 |---|-------------|-------|---------|
@@ -31,3 +31,4 @@ The workflow includes 25 resources that provide templates, guidance, and referen
 | 22 | `manual-diff-review` | Manual Diff Review | Manual diff review protocol with interview loop format |
 | 23 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | 24 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
+| 25 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature |
