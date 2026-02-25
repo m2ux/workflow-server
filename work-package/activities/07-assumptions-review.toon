@@ -136,9 +136,18 @@ outcome[4]:
   - Stakeholder-directed revisions completed via feedback loop
 modeOverrides:
   review:
-    description: "In review mode, the comment heading changes to '## Proposed Review Plan' and the scope summary reflects the PR under review. The comment structure is otherwise identical."
-    rules[1]:
-      - "Use '## Proposed Review Plan' as the heading instead of '## Proposed Implementation Plan'. The comment body follows the same structure (What, Tasks, Constraints, Assumptions, Test strategy) but framed as a review plan for the PR, not an implementation plan."
+    description: "In review mode, skip the Jira/GitHub comment posting and stakeholder feedback loop entirely. The review plan is for the reviewer's own use — posting it to the PR author's ticket is inappropriate."
+    skipSteps[3]:
+      - post-comment
+      - await-stakeholder-response
+      - update-assumptions-log
+    skipCheckpoints[3]:
+      - comment-review
+      - stakeholder-response
+      - feedback-triage
+    rules[2]:
+      - "Do NOT post to the issue tracker in review mode — the review plan is internal to the reviewer"
+      - "Set stakeholder_review_complete=true and proceed directly to the next activity"
 context_to_preserve[7]:
   - assumptions_comment_body - Prepared comment content for issue tracker
   - post_jira_comment - Whether to post assumptions comment
