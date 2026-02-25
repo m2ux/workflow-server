@@ -20,11 +20,11 @@ rules[5]:
   - "Assumptions appear as a flat bulleted list after the Constraints section — read work-package-plan.md for the plan and assumptions-log.md for the assumptions"
   - "Comment format: use bullets, numbered lists, and short sections — not paragraphs. Optimize for low cognitive load and fast scanning. Every line should be independently parseable."
   - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
-  - "The compiled comment body MUST be included as context in the comment-review checkpoint yield — the user must see the comment before deciding whether to post, edit, or skip"
+  - "The compiled comment body is generated content that the user must evaluate — per the CHECKPOINT YIELD RULE, it must be in the yield context"
 steps[4]:
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
-    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Proposed Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Assumptions' — flat bulleted list of all assumptions (statement only, no category or status), (6) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and status labels — every line should be scannable. The compiled comment is surfaced to the user via the comment-review checkpoint preContext — do NOT rely on action:message for delivery."
+    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Proposed Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Assumptions' — flat bulleted list of all assumptions (statement only, no category or status), (6) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and status labels — every line should be scannable. Per the CHECKPOINT YIELD RULE, the compiled comment must be included in the checkpoint yield context — do NOT rely on action:message for delivery."
   - id: post-comment
     name: Post comment to issue tracker
     description: "Post the prepared comment on the issue tracker ticket. Uses Jira addCommentToJiraIssue or GitHub gh CLI depending on issue_platform."
@@ -48,7 +48,6 @@ checkpoints[3]:
   - id: comment-review
     name: Plan and Assumptions Comment Review
     prerequisite: "Only present when issue_platform is set"
-    preContext: "Before yielding this checkpoint, the worker MUST include the full compiled comment body as context in the yield. The user needs to read the comment to decide whether to post, edit, or skip."
     message: "Post this comment to the {issue_platform} ticket for stakeholder review?"
     blocking: true
     options[3]:

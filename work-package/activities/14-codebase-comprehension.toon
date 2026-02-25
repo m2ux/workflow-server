@@ -22,7 +22,7 @@ rules[7]:
   - "The deep-dive loop continues until the user confirms sufficient understanding"
   - "Knowledge should be structured hierarchically: architecture → modules → abstractions → design rationale"
   - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after each deep-dive iteration"
-  - "The current Open Questions table MUST be presented to the user as context before every comprehension-sufficient checkpoint yield — this is what informs the user's decision to dive deeper or proceed"
+  - "The Open Questions table is generated content the user must evaluate at the comprehension-sufficient checkpoint — per the CHECKPOINT YIELD RULE, it must be in the yield context"
 steps[8]:
   - id: check-existing-artifacts
     name: Check Existing Comprehension Artifacts
@@ -83,7 +83,6 @@ checkpoints[3]:
         description: "The survey is too shallow — analyze specific areas more thoroughly"
   - id: comprehension-sufficient
     name: Comprehension Sufficiency Checkpoint
-    preContext: "Before yielding this checkpoint, the worker MUST present the current 'Open Questions' table from the comprehension artifact as a message. This gives the user the information needed to decide whether to dive deeper or proceed."
     message: "Given the open questions above, do you feel you have sufficient understanding of the codebase to evaluate design choices in later activities, or would you like to dive deeper into a specific area?"
     options[3]:
       - id: sufficient
