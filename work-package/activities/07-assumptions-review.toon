@@ -15,11 +15,12 @@ skills:
 required: false
 estimatedTime: 10-20m
 artifactPrefix: "07"
-rules[4]:
+rules[5]:
   - "Compile the implementation plan summary AND assumptions from ALL prior phases (design, requirements, research, analysis, planning) into a single comment for stakeholder review"
   - "Assumptions appear as a flat bulleted list after the Constraints section — read work-package-plan.md for the plan and assumptions-log.md for the assumptions"
   - "Comment format: use bullets, numbered lists, and short sections — not paragraphs. Optimize for low cognitive load and fast scanning. Every line should be independently parseable."
   - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
+  - "The compiled comment body MUST be included as context in the comment-review checkpoint yield — the user must see the comment before deciding whether to post, edit, or skip"
 steps[4]:
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
@@ -50,6 +51,7 @@ checkpoints[3]:
   - id: comment-review
     name: Plan and Assumptions Comment Review
     prerequisite: "Only present when issue_platform is set"
+    preContext: "Before yielding this checkpoint, the worker MUST include the full compiled comment body as context in the yield. The user needs to read the comment to decide whether to post, edit, or skip."
     message: "Post this comment to the {issue_platform} ticket for stakeholder review?"
     blocking: true
     options[3]:
