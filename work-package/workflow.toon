@@ -77,9 +77,9 @@ variables[52]:
     type: boolean
     description: Whether research phase is needed
     defaultValue: false
-  - name: skip_to_planning
+  - name: skip_optional_activities
     type: boolean
-    description: Whether to skip elicitation and research and go directly to planning
+    description: Whether to skip optional discovery activities (elicitation and research)
     defaultValue: false
   - name: needs_comprehension
     type: boolean

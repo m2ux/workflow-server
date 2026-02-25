@@ -268,7 +268,7 @@ The workflow declares 52 variables that drive control flow, store checkpoint sta
 | `needs_comprehension` | boolean | Whether codebase comprehension step is needed (default: `false`) |
 | `needs_elicitation` | boolean | Whether requirements elicitation is needed (default: `false`) |
 | `needs_research` | boolean | Whether research activity is needed (default: `false`) |
-| `skip_to_planning` | boolean | Whether to skip directly to plan-prepare (default: `false`) |
+| `skip_optional_activities` | boolean | Whether to skip optional discovery activities (default: `false`) |
 | `elicitation_complete` | boolean | Whether elicitation is finished (default: `false`) |
 | `validation_passed` | boolean | Whether validation phase passed (default: `false`) |
 | `has_failures` | boolean | Whether validation detected failures (default: `false`) |

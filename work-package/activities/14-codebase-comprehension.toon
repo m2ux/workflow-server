@@ -141,7 +141,7 @@ transitions[3]:
   - to: plan-prepare
     condition:
       type: simple
-      variable: skip_to_planning
+      variable: skip_optional_activities
       operator: ==
       value: true
     isDefault: true

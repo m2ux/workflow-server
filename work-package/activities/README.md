@@ -116,7 +116,7 @@ graph TD
 | `needs_comprehension == true` | codebase-comprehension |
 | `needs_comprehension == false AND needs_elicitation == true` | requirements-elicitation |
 | `needs_comprehension == false AND needs_elicitation == false AND needs_research == true` | research |
-| `needs_comprehension == false AND skip_to_planning == true` (default) | plan-prepare |
+| `needs_comprehension == false AND skip_optional_activities == true` (default) | plan-prepare |
 
 **Artifacts:** `design-philosophy.md`, `assumptions-log.md` (both in planning folder).
 
@@ -133,7 +133,7 @@ graph TD
     cpPath -->|"full workflow"| cpComprehension
     cpPath -->|"elicit-only"| cpComprehension
     cpPath -->|"research-only"| cpComprehension
-    cpPath -->|"direct to planning"| cpComprehension
+    cpPath -->|"skip optional"| cpComprehension
 
     cpComprehension{"comprehension-check checkpoint"}
     cpComprehension -->|"build understanding"| docPhilosophy["Document design philosophy"]
@@ -194,7 +194,7 @@ graph TD
 |-----------|--------|
 | `needs_elicitation == true` | requirements-elicitation |
 | `needs_elicitation == false AND needs_research == true` | research |
-| `skip_to_planning == true` (default) | plan-prepare |
+| `skip_optional_activities == true` (default) | plan-prepare |
 
 **Artifacts:** `{codebase-area}.md` (in comprehension folder — persistent, not gitignored).
 
