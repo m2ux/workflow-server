@@ -114,7 +114,7 @@ checkpoints[5]:
             complexity: complex
             needs_elicitation: true
             needs_research: true
-            skip_to_planning: false
+            skip_optional_activities: false
       - id: elicitation-only
         label: Elicitation only (skip research)
         description: Requirements unclear but domain is well-understood
@@ -123,7 +123,7 @@ checkpoints[5]:
             complexity: moderate
             needs_elicitation: true
             needs_research: false
-            skip_to_planning: false
+            skip_optional_activities: false
       - id: research-only
         label: Research only (skip elicitation)
         description: Requirements clear but need to research best practices
@@ -132,16 +132,16 @@ checkpoints[5]:
             complexity: moderate
             needs_elicitation: false
             needs_research: true
-            skip_to_planning: false
-      - id: direct-to-planning
-        label: Direct to planning (skip both)
-        description: Simple, well-defined issue - proceed directly to planning
+            skip_optional_activities: false
+      - id: skip-optional
+        label: Skip optional activities
+        description: Well-defined issue — no additional discovery needed
         effect:
           setVariable:
             complexity: simple
             needs_elicitation: false
             needs_research: false
-            skip_to_planning: true
+            skip_optional_activities: true
   - id: comprehension-check
     name: Codebase Comprehension Checkpoint
     message: "This task involves changes to the codebase. Would you like to build or refresh your understanding of the relevant code areas first? This is recommended when working on unfamiliar codebases."
@@ -225,7 +225,7 @@ transitions[4]:
           operator: ==
           value: false
         - type: simple
-          variable: skip_to_planning
+          variable: skip_optional_activities
           operator: ==
           value: true
     isDefault: true
@@ -242,5 +242,5 @@ context_to_preserve[8]:
   - needs_comprehension - Whether codebase comprehension step is needed
   - needs_elicitation - Whether requirements elicitation is needed
   - needs_research - Whether research is needed
-  - skip_to_planning - Whether to skip directly to planning
+  - skip_optional_activities - Whether to skip optional discovery activities
   - design_philosophy_doc - Path to design philosophy artifact
