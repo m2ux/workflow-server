@@ -15,13 +15,14 @@ skills:
     - manage-artifacts
 required: false
 estimatedTime: 20-45m
-rules[6]:
+rules[7]:
   - "Comprehension artifacts are persistent — they live in .engineering/artifacts/comprehension/ and are reused across work packages"
   - "Always check for existing comprehension artifacts before creating new ones"
   - "Augment existing artifacts with new details rather than duplicating content"
   - "The deep-dive loop continues until the user confirms sufficient understanding"
   - "Knowledge should be structured hierarchically: architecture → modules → abstractions → design rationale"
   - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after each deep-dive iteration"
+  - "The current Open Questions table MUST be presented to the user as context before every comprehension-sufficient checkpoint yield — this is what informs the user's decision to dive deeper or proceed"
 steps[8]:
   - id: check-existing-artifacts
     name: Check Existing Comprehension Artifacts
@@ -43,7 +44,7 @@ steps[8]:
     description: "Map technical constructs to domain concepts: what does each module or subsystem accomplish in business/domain terms? Create a glossary of domain-specific terminology found in the codebase."
   - id: create-comprehension-artifact
     name: Create or Augment Comprehension Artifact
-    description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary. Initialize an empty 'Open Questions' section (markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section) between Domain Concept Mapping and Deep-Dive Sections."
+    description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary. Initialize the 'Open Questions' section (markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section) between Domain Concept Mapping and Deep-Dive Sections. Populate it with questions and gaps identified during the architecture survey — do not leave it empty."
     actions[1]:
       - action: message
         message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name})"
@@ -82,7 +83,8 @@ checkpoints[3]:
         description: "The survey is too shallow — analyze specific areas more thoroughly"
   - id: comprehension-sufficient
     name: Comprehension Sufficiency Checkpoint
-    message: "Do you feel you have sufficient understanding of the codebase to evaluate design choices in later activities, or would you like to dive deeper into a specific area?"
+    preContext: "Before yielding this checkpoint, the worker MUST present the current 'Open Questions' table from the comprehension artifact as a message. This gives the user the information needed to decide whether to dive deeper or proceed."
+    message: "Given the open questions above, do you feel you have sufficient understanding of the codebase to evaluate design choices in later activities, or would you like to dive deeper into a specific area?"
     options[3]:
       - id: sufficient
         label: Understanding sufficient
