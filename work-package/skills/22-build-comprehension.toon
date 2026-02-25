@@ -75,6 +75,7 @@ rules:
   relevance-focus: "Prioritize areas relevant to the current problem statement while still building broadly useful knowledge"
   cross-reference: "Cross-reference related comprehension artifacts and note dependencies between codebase areas"
   question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
+  open-questions-before-yield: "The current Open Questions table MUST be included as context in every comprehension-sufficient checkpoint yield. The user needs to see what remains unresolved to decide whether to dive deeper or proceed."
 
 resources[1]:
   - "25"
