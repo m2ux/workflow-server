@@ -24,10 +24,7 @@ rules[5]:
 steps[4]:
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
-    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Proposed Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Assumptions' — flat bulleted list of all assumptions (statement only, no category or status), (6) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and status labels — every line should be scannable."
-    actions[1]:
-      - action: message
-        message: "**Proposed comment for {issue_number}:**\n\n{compiled_comment}"
+    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Proposed Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Assumptions' — flat bulleted list of all assumptions (statement only, no category or status), (6) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and status labels — every line should be scannable. The compiled comment is surfaced to the user via the comment-review checkpoint preContext — do NOT rely on action:message for delivery."
   - id: post-comment
     name: Post comment to issue tracker
     description: "Post the prepared comment on the issue tracker ticket. Uses Jira addCommentToJiraIssue or GitHub gh CLI depending on issue_platform."
@@ -137,6 +134,11 @@ outcome[4]:
   - Stakeholder feedback incorporated into assumptions log
   - Assumptions validated before implementation begins
   - Stakeholder-directed revisions completed via feedback loop
+modeOverrides:
+  review:
+    description: "In review mode, the comment heading changes to '## Proposed Review Plan' and the scope summary reflects the PR under review. The comment structure is otherwise identical."
+    rules[1]:
+      - "Use '## Proposed Review Plan' as the heading instead of '## Proposed Implementation Plan'. The comment body follows the same structure (What, Tasks, Constraints, Assumptions, Test strategy) but framed as a review plan for the PR, not an implementation plan."
 context_to_preserve[7]:
   - assumptions_comment_body - Prepared comment content for issue tracker
   - post_jira_comment - Whether to post assumptions comment
