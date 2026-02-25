@@ -1,5 +1,5 @@
 id: orchestrate-workflow
-version: 1.0.0
+version: 2.0.0
 capability: Orchestrate work-package workflow execution using a persistent worker sub-agent
 
 description: "Coordination-only skill for the orchestrator agent. Loads the workflow definition (with schema preamble), initializes state, then dispatches activities sequentially to a persistent worker sub-agent. The orchestrator evaluates transition conditions between activities, manages state variables, and handles rework loops. It MUST NOT execute activity steps, write code, review code, or produce artifacts — all domain work is delegated to the worker."
@@ -26,11 +26,20 @@ protocol:
     - "Compose the worker prompt: include activity_id, workflow_id, current state variables, planning_folder_path, and bootstrap instructions"
     - "Bootstrap instructions for worker: call get_rules(), then get_workflow_activity(), then get_skill() for primary skill, then execute steps sequentially"
     - "For first dispatch: use Task tool with subagent_type=generalPurpose. For subsequent dispatches: use Task tool with resume=worker_agent_id to preserve context"
-    - "Include in prompt: 'Report back with structured result: variables_changed, checkpoints_responded, artifacts_produced, steps_completed'"
-  process-result[3]:
-    - "Read worker output: extract variables_changed, checkpoints_responded, artifacts_produced"
-    - "Update state: apply all variable changes reported by the worker"
-    - "Record completed activity in completedActivities list"
+    - "Include in prompt: 'Report back with structured result: result_type (activity_complete or checkpoint_pending), variables_changed, checkpoints_responded, artifacts_produced, steps_completed'"
+  process-result[4]:
+    - "Read worker output: check result_type field"
+    - "If result_type is 'checkpoint_pending': go to handle-checkpoint-yield"
+    - "If result_type is 'activity_complete': extract variables_changed, checkpoints_responded, artifacts_produced"
+    - "Update state: apply all variable changes reported by the worker. Record completed activity in completedActivities list."
+  handle-checkpoint-yield[7]:
+    - "Worker has yielded a blocking checkpoint. Extract checkpoint_id, checkpoint_message, checkpoint_options from the worker result."
+    - "Apply any partial_variables_changed from the worker to orchestrator state before presenting the checkpoint."
+    - "Present context BEFORE the question: if the worker result includes contextual information (steps_completed_so_far, artifacts_produced_so_far, findings, summaries, or any prose), output it as a text message to the user first. This gives the user the information they need to make an informed decision."
+    - "Keep AskQuestion focused: the AskQuestion call must contain ONLY the checkpoint question (checkpoint_message) and its options (checkpoint_options). Do NOT bundle contextual prose, status updates, findings, or explanations into the AskQuestion prompt. The user has already seen the context in the preceding message."
+    - "Present the checkpoint to the user using AskQuestion: map checkpoint_message to prompt, checkpoint_options to selectable choices with {id, label}."
+    - "Resume the worker using Task resume, passing the checkpoint_response: { checkpoint_id, selected_option_id, effects_applied (from the selected option's effect) }."
+    - "The resumed worker may yield again for the next checkpoint (go back to process-result) or return activity_complete."
   commit-artifacts[6]:
     - "After processing the worker result, check for new or modified engineering artifacts in the parent repo"
     - "Run 'git status --porcelain .engineering/artifacts/' to detect uncommitted changes"
@@ -63,7 +72,7 @@ rules:
   schema-aware: "The orchestrator MUST understand workflow, activity, skill, condition, and state schemas to correctly evaluate transitions, conditions, and state. The schema preamble from get_workflow provides this."
   worker-persistence: "The orchestrator MUST resume the same worker agent for each activity using the Task resume parameter. This preserves accumulated codebase understanding, file locations, and implementation decisions across the entire workflow."
   state-tracking: "The orchestrator tracks all variable changes reported by the worker and evaluates transition conditions based on current state. Variables not reported as changed retain their current values."
-  checkpoint-delegation: "Checkpoints are handled by the worker, which interacts directly with the user. The orchestrator does not present checkpoints or collect user input during activity execution."
+  checkpoint-presentation: "When the worker yields a checkpoint_pending result, the orchestrator presents it to the user via AskQuestion, collects the response, and resumes the worker with the selected option and its effects. The orchestrator is the user-interaction boundary for checkpoints."
   mode-awareness: "If review mode is active, the orchestrator applies mode.skipActivities (skip the listed activities entirely) and passes is_review_mode=true to the worker so it can apply modeOverrides."
   transition-evaluation: "Transitions are evaluated in order. The first transition whose condition is true is taken. If no condition matches, the default transition (isDefault=true) is taken. If no transitions exist, the activity is terminal."
   rework-handling: "When a transition points to an earlier activity (rework loop), the orchestrator resumes the worker with the earlier activity. The worker's preserved context helps it understand what changed since it last executed that activity."
@@ -83,9 +92,14 @@ tools:
   task:
     when: "Dispatching or resuming the worker sub-agent"
     params: "description, prompt, subagent_type (generalPurpose), resume (worker_agent_id after first dispatch)"
-    returns: "Worker output: variables_changed, checkpoints_responded, artifacts_produced, steps_completed"
+    returns: "Worker output with result_type: 'activity_complete' (final) or 'checkpoint_pending' (yield at checkpoint)"
     action: "First call creates worker and captures agent_id. Subsequent calls use resume=agent_id."
-    usage: "Use generalPurpose subagent_type. Always include full state context in the prompt."
+    usage: "Use generalPurpose subagent_type. Always include full state context in the prompt. When resuming after a checkpoint yield, include checkpoint_response in the prompt."
+  AskQuestion:
+    when: "Presenting a yielded checkpoint to the user"
+    params: "questions: array of {id, prompt (from checkpoint_message), options (from checkpoint_options mapped to {id, label})}"
+    returns: "User's selected option ID"
+    usage: "Map checkpoint_pending result fields to AskQuestion parameters. Apply the selected option's effect before resuming the worker."
   shell:
     when: "Committing and pushing engineering artifacts after each completed activity"
     params: "git commands (status, add, commit, push)"

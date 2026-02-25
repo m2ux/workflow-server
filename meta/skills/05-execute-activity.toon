@@ -1,18 +1,18 @@
 id: execute-activity
-version: 1.0.0
-capability: Bootstrap and execute a single workflow activity as a worker sub-agent
+version: 2.0.0
+capability: Bootstrap and execute a single workflow activity
 
-description: "Worker bootstrap skill for the persistent sub-agent. When dispatched by the orchestrator, the worker self-loads the activity definition and primary skill from the workflow-server, executes steps sequentially, handles checkpoints with the user, produces artifacts, and reports structured results back to the orchestrator. The worker persists across activities (via Task resume) to preserve accumulated codebase understanding and implementation context."
+description: "Activity execution skill. Self-loads the activity definition and primary skill from the workflow-server, executes steps sequentially, yields at blocking checkpoints, produces artifacts, and reports structured results. Persists across activities (via Task resume) to preserve accumulated codebase understanding and implementation context."
 
 inputs[3]:
   - id: activity-id
-    description: "ID of the activity to execute (provided by orchestrator)"
+    description: "ID of the activity to execute"
     required: true
   - id: workflow-id
     description: "Workflow ID for workflow-server calls (e.g., 'work-package')"
     required: true
   - id: state-variables
-    description: "Current workflow state variables from the orchestrator"
+    description: "Current workflow state variables"
     required: true
 
 protocol:
@@ -33,11 +33,12 @@ protocol:
     - "For steps with a condition, evaluate the condition against current state variables. Skip the step if the condition is false."
     - "For actions with type 'message', output the message content to the user as markdown."
     - "Track completed steps in a steps_completed list"
-  handle-checkpoints[4]:
-    - "Checkpoints MUST be presented as a separate interactive selection dialogue — never render checkpoint options as plain text or numbered lists. The checkpoint is a distinct tool call, not part of a text message."
-    - "If a checkpoint has a prerequisite field, evaluate it against current state variables. If the prerequisite is not met, skip the checkpoint entirely."
-    - "Collect the user's selected option and apply its effects: setVariable changes, transitionTo overrides, skipActivities"
-    - "Record the checkpoint response: checkpoint_id, selected_option_id, effects_applied"
+  yield-checkpoint[5]:
+    - "When a blocking checkpoint is reached, STOP execution and yield."
+    - "If a checkpoint has a prerequisite field, evaluate it against current state variables. If the prerequisite is not met, skip the checkpoint entirely — do not yield."
+    - "Return a checkpoint_pending result: { result_type: 'checkpoint_pending', checkpoint_id, checkpoint_message, checkpoint_options, steps_completed_so_far, partial_variables_changed, artifacts_produced_so_far }."
+    - "On resume with a checkpoint_response: extract selected_option_id and effects_applied. Apply the effects (setVariable, transitionTo, skipActivities) to local state. Continue executing remaining steps from where execution paused."
+    - "NEVER auto-resolve a blocking checkpoint. If the checkpoint cannot be presented, yield it."
   execute-loops[3]:
     - "For forEach loops: iterate over the named collection, executing loop steps for each item"
     - "For doWhile loops: execute loop steps, then evaluate the condition. Repeat while condition is true, up to maxIterations."
@@ -46,39 +47,45 @@ protocol:
     - "Write artifacts to the planning folder using the activity's artifactPrefix convention"
     - "Record each artifact produced: id, name, path"
   report-completion[3]:
-    - "Compile structured result for the orchestrator"
+    - "Compile structured result with result_type: 'activity_complete'"
     - "Include: variables_changed (all variable mutations from checkpoint effects and step actions), checkpoints_responded (checkpoint_id + selected_option for each), artifacts_produced (id + path for each), steps_completed (list of step IDs)"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
 
-output[1]:
-  - id: activity-result
-    description: "Structured execution result reported to the orchestrator"
+output[2]:
+  - id: activity-complete
+    description: "Final result when all steps and checkpoints are done"
     components:
+      result_type: "activity_complete"
       variables_changed: "Map of variable names to new values (only variables that changed)"
       checkpoints_responded: "Array of checkpoint responses with option IDs and effects"
       artifacts_produced: "Array of artifacts with IDs and file paths"
       steps_completed: "Array of completed step IDs"
       transition_override: "Activity ID to transition to (if a checkpoint effect specified transitionTo)"
+  - id: checkpoint-pending
+    description: "Intermediate result when a blocking checkpoint is reached — execution is paused"
+    components:
+      result_type: "checkpoint_pending"
+      checkpoint_id: "ID of the blocking checkpoint"
+      checkpoint_message: "The checkpoint prompt text"
+      checkpoint_options: "Array of options with id, label, description, effect"
+      steps_completed_so_far: "Steps completed before this checkpoint"
+      partial_variables_changed: "Any variables changed by steps before this checkpoint"
+      artifacts_produced_so_far: "Any artifacts produced before this checkpoint"
 
 rules:
-  self-bootstrap: "Always load activity and skill definitions from the workflow-server via get_workflow_activity and get_skill. Do not rely on the orchestrator prompt for step-level details — the workflow-server is the source of truth."
-  report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the variables_changed result. The orchestrator depends on this for transition evaluation."
-  preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities when the orchestrator resumes this agent. Use this context to inform subsequent activities."
+  self-bootstrap: "Always load activity and skill definitions from the workflow-server via get_workflow_activity and get_skill. The workflow-server is the source of truth for step-level details."
+  report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
+  preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities via resume. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
-  checkpoint-user-interaction: "All checkpoints MUST be presented as interactive selection dialogues — checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. Collect the user's choice, apply effects, and report back to the orchestrator."
+  checkpoint-yield: "All blocking checkpoints MUST cause execution to yield. NEVER auto-resolve a blocking checkpoint. Return the checkpoint details in a checkpoint_pending result and pause until resumed with a checkpoint_response."
   artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
 
 tools:
-  AskQuestion:
-    when: "Presenting checkpoints to the user"
-    params: "questions: array of {id, prompt (from checkpoint.message), options (from checkpoint.options mapped to {id, label})}"
-    returns: "User's selected option ID"
-    usage: "ALL checkpoints MUST use this tool. Map checkpoint.message to prompt, checkpoint.options to selectable choices."
   get_rules:
     when: "First action on initial dispatch (not needed on resume — rules persist in context)"
     returns: "Agent behavioral guidelines"
   get_workflow_activity:
-    when: "After receiving activity_id from orchestrator"
+    when: "After receiving activity_id"
     params: "workflow_id, activity_id"
     returns: "Activity definition with steps, checkpoints, skills, transitions"
   get_skill:
@@ -108,13 +115,13 @@ tools:
 errors:
   activity_not_found:
     cause: "get_workflow_activity returned error for the given activity_id"
-    recovery: "Report error to orchestrator. Check activity_id spelling against workflow definition."
+    recovery: "Report error in result. Check activity_id spelling against workflow definition."
   skill_not_found:
     cause: "get_skill returned error for the activity's primary skill"
-    recovery: "Report error to orchestrator. Check skill ID in the activity's skills.primary field."
+    recovery: "Report error in result. Check skill ID in the activity's skills.primary field."
   step_failure:
     cause: "A step could not be completed (e.g., test failure, build error)"
     recovery: "Attempt to fix the issue per the skill's error handling. If unresolvable, report the failure in steps_completed with the error details."
   checkpoint_skipped:
     cause: "A checkpoint's prerequisite condition was not met"
-    recovery: "Skip the checkpoint and note it in the result. The orchestrator will handle any state implications."
+    recovery: "Skip the checkpoint silently and note it in the result."

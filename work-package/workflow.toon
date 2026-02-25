@@ -18,7 +18,7 @@ rules[11]:
   - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
   - "Never reference gitignored artifacts in PRs, issues, or ADRs - planning artifacts are local-only"
   - "Artifacts in 'planning' and 'reviews' locations are gitignored"
-  - "EXECUTION MODEL: This workflow uses an orchestrator/worker two-agent pattern. The orchestrator (skill: orchestrate-workflow) loads the workflow, manages transitions, and tracks state. A persistent worker sub-agent (skill: execute-activity) executes activities and handles user interaction. The worker is resumed across activities to preserve context."
+  - "EXECUTION MODEL: This workflow uses an orchestrator/worker two-agent pattern. The orchestrator (skill: orchestrate-workflow) loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: execute-activity) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user via AskQuestion, then resumes the worker with the response. The worker is resumed across activities to preserve context."
   - "ORCHESTRATOR DISCIPLINE: The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. It coordinates only. All domain work is delegated to the worker sub-agent."
 artifactLocations:
   planning: "{planning_folder_path}"
