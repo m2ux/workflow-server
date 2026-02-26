@@ -93,6 +93,40 @@ Not all areas require equal depth. Use hotspot analysis and problem relevance to
 - **Medium depth**: Modules adjacent to the change area and temporal coupling partners get abstraction-level understanding
 - **Deep dive**: Hotspots and the specific subsystem being modified get full comprehension including design rationale, effect sketches, and characterization
 
+### 9. Data Flow Tracing and Operational Context
+
+Structural comprehension (architecture, abstractions, design rationale) answers "what exists" but not "how data moves through the system" or "what happens when things go wrong at runtime." These gaps are particularly dangerous when the work package adds validation or guard logic — understanding only the consumer side of a data flow can lead to guards that reject legitimate data, or assertions that assume invariants the producer doesn't guarantee.
+
+#### Data Flow Tracing
+
+For each function or code path the work package will modify, trace the data flow end-to-end before proposing any design:
+
+- **Upstream**: Where does the input data originate? Identify the producer — the code that constructs the values this function receives. Read the producer's implementation, not just the consumer's expectations. If the producer is in a different module, crate, or service, that is precisely where comprehension must extend.
+- **Transformations**: What happens to the data between production and consumption? Are there intermediate steps that filter, aggregate, clamp, or reformat the data?
+- **Downstream**: Where does the output go? Who reads the values this function writes? How do downstream consumers react to different output states?
+- **Invariant alignment**: What invariants does the producer guarantee? What invariants does the consumer assume? If the consumer plans to add a validation (e.g., an `ensure!` guard), verify that the producer can always satisfy it. A consumer-side assertion for an invariant the producer doesn't enforce creates a failure mode where legitimate data is rejected.
+
+The most common comprehension failure is staying inside the module being modified. If the work package touches function F in module M, but F's inputs come from module P, the comprehension must include P — otherwise, the agent proposes guards that are structurally correct within M but operationally wrong because P can produce values that violate them.
+
+#### Operational Context and Failure Modes
+
+Static code reading reveals structure. Operational analysis reveals behavior — especially failure behavior. For the code path being modified:
+
+- **Execution context**: What dispatch class, thread model, or execution priority does this code run under? In Substrate, a `Mandatory` dispatch that returns an error causes the block to be rejected. In a consensus system where all nodes process the same inputs, a rejected block means every node rejects it — the network halts. Understanding the execution context determines whether an error is a local retry, a skipped item, or a system-wide halt.
+- **Error propagation**: Trace what happens when this code returns an error. Is the error caught and handled? Does it propagate to a transaction boundary with rollback? Does it surface to the user? Does it halt processing? For inherent extrinsics, check `IsFatalError` — if all variants return `true`, every error is fatal.
+- **Operational scenarios**: Consider conditions beyond the steady-state happy path:
+  - **Startup and genesis**: What are the initial values? Does the first invocation produce data that looks different from subsequent ones? A guard that assumes "previous value is meaningful" may fail on the first block after genesis when the previous value is a zero/default.
+  - **Recovery after downtime**: If the system was offline and external state advanced significantly, what happens on the first invocation after restart? A bounded-advance guard may reject the catch-up jump.
+  - **External system timing**: How frequently is this code invoked relative to external state changes it depends on? If the code runs every 6 seconds but the external system updates every 20 seconds, the same external state will be observed across multiple invocations — equal inputs are the common case, not an edge case.
+  - **Reorganization and rollback**: If an external chain (e.g., Cardano) reorganizes, what values does the data provider produce? Can the same numeric position appear with a different hash?
+- **Consensus implications**: For consensus-critical code, if every node receives the same input from the same data provider, then every node will hit the same error. A guard that rejects "invalid" data in this context doesn't protect the system — it halts it. The principle: any assertion in a consensus-critical consumer must be matched by enforcement in the producer. If the producer doesn't guarantee the invariant, the consumer must handle violations without halting.
+
+#### Integrating These Techniques
+
+Data flow tracing and operational analysis are not separate activities performed at the end — they should be woven into the architecture survey and deep-dive steps. When examining a module's key abstractions, ask "where does this data come from?" When documenting design rationale, ask "what happens if this fails?" When mapping domain concepts, ask "what is the timing relationship between this system and its dependencies?"
+
+The comprehension artifact's Open Questions section should include questions in these categories. Questions like "Does the producer enforce the window bound?" or "What happens at genesis when the previous position is zero?" are exactly the kind of questions that prevent guards from becoming halt vectors.
+
 ## Recommended Execution Sequence
 
 Combine the techniques above in this recommended order during the activity:
@@ -100,9 +134,10 @@ Combine the techniques above in this recommended order during the activity:
 1. **Orientation** (Reverse Engineering Patterns): Read All the Code in One Hour, Skim the Documentation, examine build system
 2. **Evidence Gathering** (Code Forensics): Run hotspot analysis, temporal coupling, and knowledge map generation against the git history
 3. **Structural Analysis** (Code Reading + Hierarchical Decomposition): Map architecture, identify key abstractions, trace dependency graphs
-4. **Design Recovery** (Design Rationale + Legacy Code): Infer rationale, identify seams, sketch effects, document persistent data model
-5. **Domain Mapping**: Connect technical constructs to domain concepts, build glossary
-6. **Deep-Dive Loop**: Use forensic evidence (hotspots, coupling) plus problem relevance to prioritize deep-dive areas
+4. **Data Flow and Operational Analysis** (Data Flow Tracing + Operational Context): For the specific code path the work package targets, trace data upstream to the producer and downstream to consumers. Identify the execution context, error propagation path, and operational scenarios (genesis, recovery, timing, reorg). Verify that any invariants the work package plans to enforce are guaranteed by the data producer.
+5. **Design Recovery** (Design Rationale + Legacy Code): Infer rationale, identify seams, sketch effects, document persistent data model
+6. **Domain Mapping**: Connect technical constructs to domain concepts, build glossary
+7. **Deep-Dive Loop**: Use forensic evidence (hotspots, coupling) plus problem relevance to prioritize deep-dive areas
 
 ## Knowledge Base References
 
@@ -175,6 +210,28 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 
 ### {Decision Area N}
 [Same structure for each significant design choice]
+
+## Data Flow and Operational Context
+
+### Data Flow Map
+[For each function the work package modifies: producer → transformations → consumer]
+[Document which module produces the input data, what invariants the producer guarantees]
+
+### Invariant Alignment
+| Invariant | Producer Enforces? | Consumer Assumes? | Gap? |
+|-----------|-------------------|-------------------|------|
+| [invariant] | [yes/no — cite code] | [yes/no] | [description of gap if any] |
+
+### Execution Context
+[Dispatch class, error propagation path, failure consequences]
+
+### Operational Scenarios
+| Scenario | Effect on This Code Path | Risk |
+|----------|------------------------|------|
+| Genesis / first invocation | [what happens] | [severity] |
+| Recovery after downtime | [what happens] | [severity] |
+| External system timing mismatch | [what happens] | [severity] |
+| External chain reorganization | [what happens] | [severity] |
 
 ## Domain Concept Mapping
 
