@@ -341,7 +341,7 @@ Update `COMPLETE.md` at these points:
 | Document | Relationship |
 |----------|--------------|
 | Work package plan artifact | Original plan; COMPLETE records what actually happened |
-| `START-HERE.md` | Update status to Complete after COMPLETE.md created |
+| `README.md` | Update status to Complete after COMPLETE.md created |
 | ADR | Design decisions in COMPLETE.md may warrant formal ADRs |
 | PR Description | COMPLETE.md provides content for PR description |
 
@@ -362,6 +362,6 @@ This guide supports the finalization stage of work package implementation:
 
 - [Work Package Implementation Workflow](../work-package.md)
 - [Work Package Plan](10-wp-plan.md)
-- [Work Package START-HERE](00-start-here.md)
+- [Work Package README Guide](01-readme.md)
 - [Architecture Review Guide](15-architecture-review.md)
 - [PR Description Guide](12-pr-description.md)

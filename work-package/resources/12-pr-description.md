@@ -216,12 +216,12 @@ This PR adds some improvements to search.
 Always link to related artifacts on the same line for easy scanning:
 
 ```markdown
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/START-HERE.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/{BRANCH_NAME}/docs/tests/test-plan-hybrid-search.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/{BRANCH_NAME}/docs/tests/test-plan-hybrid-search.md)
 ```
 
 **When to include each link:**
 - **Ticket** - Always include if work is tracked in a ticket
-- **Engineering** - Always include; links to the START-HERE.md in the engineering artifacts planning folder for the work package. This provides reviewers access to design philosophy, planning, and review documents.
+- **Engineering** - Always include; links to the README.md in the engineering artifacts planning folder for the work package. This provides reviewers access to design philosophy, planning, and review documents.
 - **ADR** - Include for architectural decisions committed to the target repo (see [Architecture Review Guide](15-architecture-review.md))
 - **Test Plan** - Include when formal test documentation exists (see [Test Plan Creation Guide](11-test-plan.md))
 
@@ -521,7 +521,7 @@ gh pr ready
 Implement content-aware chunking that preserves semantic boundaries, reducing retrieval errors by 40% on the evaluation dataset.
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/START-HERE.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/tests/test-plan-content-chunking.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/tests/test-plan-content-chunking.md)
 ```
 
 ### Good Motivation Section
