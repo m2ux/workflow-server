@@ -19,11 +19,13 @@ rules[1]:
 modeOverrides:
   review:
     description: "Generate and post consolidated PR review comments with findings from all review stages, then await reviewer response."
-    rules[4]:
+    rules[6]:
       - Generate consolidated review summary from all review stages
       - Post PR review comments using GitHub PR review API (gh pr review)
       - "Use structured format: Summary → Code Review → Test Review → Doc Review → Recommendations"
       - Include severity ratings and actionable items for PR author
+      - "Section titles for Code Review Findings and Test Review Findings must be hyperlinks to the corresponding engineering artifact reports (code-review.md, test-suite-review.md) in the planning folder"
+      - "Reviewers field must list each contributing agent role (Code Review Agent, Test Suite Review Agent, Validation Agent, Strategic Review Agent) with each name hyperlinked to its workflow .toon file"
     steps[4]:
       - id: consolidate-review-findings
         name: Consolidate Review Findings
