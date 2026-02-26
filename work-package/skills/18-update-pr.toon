@@ -36,23 +36,25 @@ output[1]:
       pr_url: "URL to the PR"
       pr_status: "Status after update (e.g., ready for review)"
 
-resources[1]:
+resources[2]:
   - "12"
+  - "24"
 
 rules:
   push-before-update: "Push all commits before updating PR description — description should reflect final state"
   description-template: "Use resource 12 for PR description template and structure"
+  review-mode-template: "In review mode, load resource 24 for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there."
   ready-last: "Mark PR ready for review only after description is finalized"
 
 tools:
   shell:
-    when: Git push, gh pr edit, gh pr ready, gh pr view
-    params: "git push, gh pr edit --body, gh pr ready"
+    when: Git push, gh pr edit, gh pr ready, gh pr view, gh pr review
+    params: "git push, gh pr edit --body, gh pr ready, gh pr review --comment --body-file"
     usage: Push commits and manage PR via gh CLI
   get_resource:
-    when: Loading PR description template
-    params: "workflow_id: work-package, index: 12"
-    returns: PR description resource
+    when: Loading PR description template (standard mode) or review comment template (review mode)
+    params: "workflow_id: work-package, index: 12 (standard) or index: 24 (review mode)"
+    returns: PR description resource or review mode resource
 
 errors:
   push_failed:

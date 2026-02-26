@@ -32,7 +32,7 @@ modeOverrides:
         description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
       - id: generate-review-summary
         name: Generate Review Summary
-        description: "Create structured review summary. Use format from 24-review-mode.md."
+        description: "Load resource 24 (review-mode) via get_resource. Create structured review summary using the Consolidated Review Format template defined in that resource."
       - id: present-summary-to-user
         name: Present Summary to User
         description: "Show the review summary for confirmation before posting."
