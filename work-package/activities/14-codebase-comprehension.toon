@@ -15,15 +15,16 @@ skills:
     - manage-artifacts
 required: false
 estimatedTime: 20-45m
-rules[7]:
+rules[8]:
   - "Comprehension artifacts are persistent — they live in .engineering/artifacts/comprehension/ and are reused across work packages"
   - "Always check for existing comprehension artifacts before creating new ones"
   - "Augment existing artifacts with new details rather than duplicating content"
-  - "The deep-dive loop continues until the user confirms sufficient understanding"
+  - "The initial deep-dive is mandatory and always performed — it attempts to resolve every open question from the first pass without user selection"
+  - "The optional deep-dive loop continues until the user confirms sufficient understanding"
   - "Knowledge should be structured hierarchically: architecture → modules → abstractions → design rationale"
-  - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after each deep-dive iteration"
+  - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after the initial deep-dive and after each subsequent deep-dive iteration"
   - "The Open Questions table is generated content the user must evaluate at the comprehension-sufficient checkpoint — per the CHECKPOINT YIELD RULE, it must be in the yield context"
-steps[8]:
+steps[11]:
   - id: check-existing-artifacts
     name: Check Existing Comprehension Artifacts
     description: "Search .engineering/artifacts/comprehension/ for existing artifacts related to this codebase area. Match by project name, module names, or domain concepts from the problem statement."
@@ -48,9 +49,18 @@ steps[8]:
     actions[1]:
       - action: message
         message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name})"
+  - id: initial-deep-dive
+    name: Initial Deep-Dive (Mandatory)
+    description: "Systematically investigate every open question identified during the first pass (architecture survey, key abstractions, design rationale, domain mapping). This step is always performed — do not skip it and do not ask the user to select areas. For each open question, trace relevant data flows, examine implementation details, and resolve the question through targeted code analysis."
+  - id: update-artifact-initial
+    name: Update Artifact with Initial Deep-Dive Findings
+    description: "Append the initial deep-dive findings to the comprehension artifact under a dedicated 'Initial Deep-Dive' section, organized by the open question each finding addresses."
+  - id: revise-initial-questions
+    name: Revise Open Questions after Initial Deep-Dive
+    description: "Review findings from the initial deep-dive against the 'Open Questions' section. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. Present the revised open questions table to the user as context for the comprehension-sufficient checkpoint."
   - id: deep-dive-loop
-    name: Deep-Dive Exploration
-    description: "Enter interactive loop: present areas available for deeper exploration (specific modules, patterns, data flows, error handling, etc.) and ask the user which area they want to understand better. For each selection, perform targeted analysis and append findings to the comprehension artifact."
+    name: Further Deep-Dive Exploration (Optional)
+    description: "If the user requests further exploration at the comprehension-sufficient checkpoint, enter interactive loop: present remaining open questions and areas available for deeper exploration (specific modules, patterns, data flows, error handling, etc.) and ask the user which area they want to understand better. For each selection, perform targeted analysis and append findings to the comprehension artifact."
 artifacts[1]:
   - id: comprehension-artifact
     name: "{codebase-area}.md"
