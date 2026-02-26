@@ -1,6 +1,6 @@
 ---
 id: review-mode
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Review Mode Guide
@@ -177,22 +177,26 @@ Based on ticket [PM-XXXXX] requirements:
 
 The final review comment combines findings from all review stages.
 
-**Artifact linking:** Section titles for review findings must be hyperlinks to the corresponding engineering artifact reports in the planning folder. Construct links using the engineering artifacts base URL:
+**Reports list:** The header includes a `Reports` field listing the engineering artifact reports with hyperlinks. Construct links using the engineering artifacts base URL:
 
 ```
 https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/
 ```
 
-| Section | Artifact |
-|---------|----------|
-| Code Review Findings | `code-review.md` |
-| Test Review Findings | `test-suite-review.md` |
+| Report Name | Artifact |
+|-------------|----------|
+| Code Review | `code-review.md` |
+| Test Suite Review | `test-suite-review.md` |
 
-**Reviewers list:** The `Reviewers` field must list each agent role that contributed findings, with each name hyperlinked to the workflow `.toon` file that defines that role. Construct links using the workflow base URL:
+Section titles (e.g., `### Code Review Findings`) must NOT be hyperlinks — the report links live in the header instead.
+
+**Reviewers list:** The `Reviewers` field must list each agent role that contributed findings, with each name hyperlinked to the workflow `.toon` file that defines that role. The workflow definitions live in a separate repository (submodule), so construct links using the workflow repo base URL — not the engineering repo's submodule path, which does not resolve on GitHub:
 
 ```
-https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workflows/work-package/
+https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/
 ```
+
+Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`).
 
 | Agent Role | Toon File |
 |------------|-----------|
@@ -201,11 +205,26 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workf
 | Validation Agent | `activities/10-validate.toon` |
 | Strategic Review Agent | `activities/11-strategic-review.toon` |
 
+**Table format:** All review tables only include non-passing findings — do not list passing or positive items. The `#` column value is a hyperlink to the pertinent artifact or symbol (file path and line for code review, test method for test review, document URL for documentation, CI run URL for validation, branch/commit for hygiene). Every table must include a `Severity` column. Every `#` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification.
+
+**Action Items:** A separate Action Items section at the end consolidates all actionable findings from every table into prioritized tiers with interactive checkboxes. Every non-passing finding from every table must appear as a checklist item. Cross-reference findings using section prefixes to avoid GitHub auto-linking `#N` as issue references:
+
+| Section | Prefix |
+|---------|--------|
+| Code Review Findings | CR |
+| Test Review Findings | TR |
+| Documentation Review | DR |
+| Validation Findings | VF |
+| Branch Hygiene | BH |
+
+Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Review finding 3.
+
 ```markdown
 ## PR Review Summary
 
-**PR**: #XXX - [Title]
+**PR**: #XXX - Title
 **Reviewers**: [Code Review Agent]({workflow_base}/skills/00-review-code.toon) · [Test Suite Review Agent]({workflow_base}/skills/01-review-test-suite.toon) · [Validation Agent]({workflow_base}/activities/10-validate.toon) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.toon)
+**Reports**: [Code Review]({artifacts_base}/code-review.md) · [Test Suite Review]({artifacts_base}/test-suite-review.md)
 **Date**: YYYY-MM-DD
 
 ### Executive Summary
@@ -216,45 +235,44 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workf
 
 ---
 
-### [Code Review Findings](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/code-review.md)
+### Code Review Findings
 
-| # | Severity | Category | Finding |
-|---|----------|----------|---------|
-| 1 | High | Error Handling | Missing null check |
-| 2 | Medium | Performance | N+1 query pattern |
+| # | Finding | Severity |
+|---|---------|----------|
+| [1](src/file.rs#L42) | Missing null check in handler | High |
+| [2](src/handler.rs#L78) | N+1 query pattern in loop | Medium |
 
 <details>
 <summary>Finding Details</summary>
 
-#### 1. Missing null check (High)
-**Location**: `src/file.rs:42`
-**Issue**: [Description]
+#### CR-1. Missing null check (High)
+[Description]
+**Suggestion**: [Recommendation]
+
+#### CR-2. N+1 query pattern (Medium)
+[Description]
 **Suggestion**: [Recommendation]
 
 </details>
 
 ---
 
-### [Test Review Findings](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/test-suite-review.md)
+### Test Review Findings
 
-**Coverage**: [N] unit tests for [M] lines of implementation.
-
-| # | Gap | Severity | Recommendation |
-|---|-----|----------|----------------|
-| 1 | Missing edge case coverage | Medium | Add tests for [scenarios] |
-| 2 | No error path tests | High | Add tests for failure modes |
+| # | Gap | Severity |
+|---|-----|----------|
+| [1](tests/module_test.rs) | Missing edge case coverage | Medium |
+| [2](tests/module_test.rs) | No error path tests | High |
 
 <details>
 <summary>Finding Details</summary>
 
-#### 1. Missing edge case coverage (Medium)
-**Affected area**: [Module/component]
-**Gap**: [Description of what is not covered]
+#### TR-1. Missing edge case coverage (Medium)
+[Description of what is not covered]
 **Suggestion**: [Specific test to add]
 
-#### 2. No error path tests (High)
-**Affected area**: [Module/component]
-**Gap**: [Description of missing error handling tests]
+#### TR-2. No error path tests (High)
+[Description of missing error handling tests]
 **Suggestion**: [Specific test to add]
 
 </details>
@@ -263,35 +281,31 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workf
 
 ### Documentation Review
 
-| # | Document | Status | Notes |
-|---|----------|--------|-------|
-| 1 | README.md | ✅ Current | No updates needed |
-| 2 | Change file | ❌ Missing | Required for release notes |
+| # | Gap | Severity |
+|---|-----|----------|
+| [1](CHANGES.md) | Change file missing | High |
 
 <details>
 <summary>Finding Details</summary>
 
-#### 2. Change file missing (High)
-**Document**: [Path or expected location]
-**Issue**: [Why it is needed]
+#### DR-1. Change file missing (High)
+[Why it is needed]
 **Suggestion**: [What to include]
 
 </details>
 
 ---
 
-### Validation Results
+### Validation Findings
 
-| # | Check | Status | Notes |
-|---|-------|--------|-------|
-| 1 | Tests | ✅ Pass | All 42 tests passed |
-| 2 | Build | ✅ Pass | Clean build |
-| 3 | Lint | ⚠️ Warning | 3 clippy warnings (non-blocking) |
+| # | Check | Severity |
+|---|-------|----------|
+| [1](ci-run-url) | Lint — 3 clippy warnings | Warning |
 
 <details>
 <summary>Finding Details</summary>
 
-#### 3. Lint warnings (Warning)
+#### VF-1. Lint warnings (Warning)
 **Tool**: clippy
 **Findings**: [List specific warnings]
 **Suggestion**: [Fix command or manual resolution]
@@ -302,17 +316,15 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workf
 
 ### Branch Hygiene
 
-| # | Item | Status | Recommendation |
-|---|------|--------|----------------|
-| 1 | Branch freshness | ⚠️ Behind main | Rebase before merge |
-| 2 | Commit history | ✅ Clean | No issues |
-| 3 | Scope focus | ✅ Clean | All changes directly justified |
+| # | Item | Severity |
+|---|------|----------|
+| 1 | Branch freshness — behind main | Warning |
 
 <details>
 <summary>Finding Details</summary>
 
-#### 1. Branch freshness (Warning)
-**Issue**: [Description of how far behind, conflicting deps, etc.]
+#### BH-1. Branch freshness (Warning)
+[Description of how far behind, conflicting deps, etc.]
 **Suggestion**: [Rebase or merge instructions]
 
 </details>
@@ -322,19 +334,19 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workf
 ### Action Items
 
 **Must Address (Blocking)**:
-- [ ] Add error handling for [specific case]
-- [ ] Add missing test coverage for [scenario]
+- [ ] Add error handling for [specific case] (CR-1)
+- [ ] Add missing test coverage for [scenario] (TR-2)
 
 **Should Address (Recommended)**:
-- [x] Validate fallback during detection
-- [ ] Consider refactoring [component] for clarity
+- [ ] Add release notes entry (DR-1)
+- [ ] Rebase before merge (BH-1)
 
 **Could Address (Suggested)**:
-- [ ] Extract parsing logic from IO for unit testability
-- [x] Consider CLI support for parity with existing tooling
+- [ ] Batch query outside loop (CR-2)
+- [ ] Add tests for [scenarios] (TR-1)
 
 **Nice to Have (Optional)**:
-- [ ] Add docstring to public function
+- [ ] Run `cargo clippy --fix` to clear warnings (VF-1)
 ```
 
 ### Severity Definitions
