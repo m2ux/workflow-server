@@ -175,13 +175,37 @@ Based on ticket [PM-XXXXX] requirements:
 
 ### Consolidated Review Format
 
-The final review comment combines findings from all review stages:
+The final review comment combines findings from all review stages.
+
+**Artifact linking:** Section titles for review findings must be hyperlinks to the corresponding engineering artifact reports in the planning folder. Construct links using the engineering artifacts base URL:
+
+```
+https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/
+```
+
+| Section | Artifact |
+|---------|----------|
+| Code Review Findings | `code-review.md` |
+| Test Review Findings | `test-suite-review.md` |
+
+**Reviewers list:** The `Reviewers` field must list each agent role that contributed findings, with each name hyperlinked to the workflow `.toon` file that defines that role. Construct links using the workflow base URL:
+
+```
+https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workflows/work-package/
+```
+
+| Agent Role | Toon File |
+|------------|-----------|
+| Code Review Agent | `skills/00-review-code.toon` |
+| Test Suite Review Agent | `skills/01-review-test-suite.toon` |
+| Validation Agent | `activities/10-validate.toon` |
+| Strategic Review Agent | `activities/11-strategic-review.toon` |
 
 ```markdown
 ## PR Review Summary
 
 **PR**: #XXX - [Title]
-**Reviewer**: [Workflow-based review]
+**Reviewers**: [Code Review Agent]({workflow_base}/skills/00-review-code.toon) · [Test Suite Review Agent]({workflow_base}/skills/01-review-test-suite.toon) · [Validation Agent]({workflow_base}/activities/10-validate.toon) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.toon)
 **Date**: YYYY-MM-DD
 
 ### Executive Summary
@@ -192,7 +216,7 @@ The final review comment combines findings from all review stages:
 
 ---
 
-### Code Review Findings
+### [Code Review Findings](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/code-review.md)
 
 | # | Severity | Category | Finding | Location |
 |---|----------|----------|---------|----------|
@@ -211,7 +235,7 @@ The final review comment combines findings from all review stages:
 
 ---
 
-### Test Review Findings
+### [Test Review Findings](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/test-suite-review.md)
 
 | Gap | Severity | Recommendation |
 |-----|----------|----------------|
