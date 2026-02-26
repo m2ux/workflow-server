@@ -1,17 +1,17 @@
 ---
-id: start-here
-version: 1.0.0
+id: readme
+version: 2.0.0
 ---
 
-# Work Package START-HERE Guide
+# Work Package README Guide
 
-**Purpose:** Guidelines for creating the `START-HERE.md` executive summary document for work package planning folders.
+**Purpose:** Guidelines for creating the `README.md` entry-point document for work package planning folders.
 
 ---
 
 ## Overview
 
-The `START-HERE.md` file serves as the entry point and executive summary for a work package. It provides:
+The `README.md` file serves as the entry point and executive summary for a work package. Git hosting platforms render it automatically when browsing the folder, making it the natural landing page. It provides:
 - Quick orientation for anyone joining the work
 - High-level status and progress tracking
 - Navigation to detailed planning documents
@@ -22,7 +22,7 @@ The `START-HERE.md` file serves as the entry point and executive summary for a w
 
 ## When to Create
 
-**Always create the START-HERE artifact when:**
+**Always create the README artifact when:**
 - Creating a new work package planning folder
 - Work package has multiple tasks or activities
 - Multiple people may work on or review the work
@@ -89,15 +89,48 @@ The `START-HERE.md` file serves as the entry point and executive summary for a w
 
 ---
 
-## 📚 Document Navigation
+## 📚 Artifact Index
 
-| Document | Description |
-|----------|-------------|
-| **[START-HERE.md](START-HERE.md)** | 👈 You are here |
-| [README.md](README.md) | Quick navigation |
-| Work package plan | Implementation details |
-| KB research | Knowledge base research |
-| Implementation analysis | Implementation analysis |
+This section is the primary navigation for the planning folder. It lists every artifact the work-package workflow may produce, grouped by phase. Link each artifact as it is created; mark unproduced artifacts with "—" in the Status column.
+
+### Planning Phase
+
+| # | Artifact | Filename | Activity | Status |
+|---|----------|----------|----------|--------|
+| — | **README** | [README.md](README.md) | start-work-package | 👈 You are here |
+| 01 | Design Philosophy | [design-philosophy.md](01-design-philosophy.md) | design-philosophy | ⬚ Pending |
+| 01 | Assumptions Log | [assumptions-log.md](01-assumptions-log.md) | design-philosophy (created), updated throughout | ⬚ Pending |
+| 02 | Requirements Elicitation | [requirements-elicitation.md](02-requirements-elicitation.md) | requirements-elicitation | ⬚ Pending *(optional)* |
+| 02 | Research | [kb-research.md](02-research.md) | research | ⬚ Pending |
+| 03 | Implementation Analysis | [implementation-analysis.md](03-implementation-analysis.md) | implementation-analysis | ⬚ Pending |
+| 04 | Work Package Plan | [work-package-plan.md](04-work-package-plan.md) | plan-prepare | ⬚ Pending |
+| 05 | Test Plan | [test-plan.md](05-test-plan.md) | plan-prepare | ⬚ Pending |
+
+### Review Phase
+
+| # | Artifact | Filename | Activity | Status |
+|---|----------|----------|----------|--------|
+| 06 | Change Block Index | [change-block-index.md](06-change-block-index.md) | post-impl-review | ⬚ Pending |
+| 07 | Manual Diff Review | [manual-diff-review.md](07-manual-diff-review.md) | post-impl-review | ⬚ Pending |
+| 08 | Code Review | [code-review.md](08-code-review.md) | post-impl-review | ⬚ Pending |
+| 09 | Test Suite Review | [test-suite-review.md](09-test-suite-review.md) | post-impl-review | ⬚ Pending |
+| 10 | Architecture Summary | [architecture-summary.md](10-architecture-summary.md) | post-impl-review / strategic-review | ⬚ Pending |
+| 11 | Strategic Review | [strategic-review.md](11-strategic-review.md) | strategic-review | ⬚ Pending |
+
+### Completion Phase
+
+| # | Artifact | Filename | Activity | Status |
+|---|----------|----------|----------|--------|
+| 12 | Completion Summary | [COMPLETE.md](12-COMPLETE.md) | complete | ⬚ Pending |
+| 13 | Workflow Retrospective | [workflow-retrospective.md](13-workflow-retrospective.md) | complete | ⬚ Pending |
+
+### External Artifacts (outside planning folder)
+
+| Artifact | Location | Activity | Status |
+|----------|----------|----------|--------|
+| Comprehension Artifact | `.engineering/artifacts/comprehension/{area}.md` | codebase-comprehension *(optional)* | ⬚ Pending |
+| ADR | `.engineering/artifacts/adr/NNNN-{title}.md` | complete *(conditional on complexity)* | ⬚ Pending |
+| PR Review Analysis | `.engineering/artifacts/reviews/{date}-pr{n}-review-analysis.md` | complete *(review mode)* | ⬚ Pending |
 
 ---
 
@@ -169,9 +202,9 @@ List measurable, verifiable criteria:
 - [ ] Tests work
 ```
 
-### Document Navigation
+### Artifact Index
 
-Always include links to all documents in the planning folder. Update this table when adding new documents.
+The Artifact Index replaces a simple document navigation table. It lists every artifact the workflow may produce, grouped by phase (Planning, Review, Completion, External). Each entry has a numbered prefix, the canonical filename from the workflow definition, the activity that produces it, and a status indicator. Update the status column as artifacts are created. Mark optional or conditional artifacts accordingly. Always link to the actual file using relative paths.
 
 ---
 
@@ -198,7 +231,7 @@ Update the status field as work progresses:
 
 ---
 
-## Updating START-HERE.md
+## Updating README.md
 
 Update this document at these points:
 
@@ -217,7 +250,7 @@ Update this document at these points:
 - [ ] Progress table reflects current state
 - [ ] Timeline has realistic estimates
 - [ ] Success criteria are measurable
-- [ ] Document navigation links all planning docs
+- [ ] Artifact index lists all produced artifacts with working links
 
 ---
 
@@ -225,7 +258,7 @@ Update this document at these points:
 
 This guide supports work package planning:
 
-1. **Create planning folder** → Create START-HERE.md first
+1. **Create planning folder** → Create README.md first
 2. **Complete planning** → Update status to Ready
 3. **During implementation** → Update progress after each task
 4. **After completion** → Update status to Complete
@@ -235,5 +268,4 @@ This guide supports work package planning:
 ## Related Guides
 
 - [Work Package Implementation Workflow](../workflow.toon)
-- [Work Package README](02-readme.md)
 - [Work Packages Workflow](../../work-packages/workflow.toon)

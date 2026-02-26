@@ -372,7 +372,7 @@ Document blockers and mitigation strategies:
 
 | Document | Relationship |
 |----------|--------------|
-| `START-HERE.md` | High-level summary; plan provides details |
+| `README.md` | High-level summary and artifact index; plan provides details |
 | `README.md` | Navigation; links to this plan |
 | KB research artifact | Source for key findings; plan summarizes |
 | Implementation analysis artifact | Source for baselines; plan summarizes |
@@ -394,8 +394,7 @@ This guide supports work package planning:
 ## Related Guides
 
 - [Work Package Implementation Workflow](../work-package.md)
-- [Work Package START-HERE](00-start-here.md)
-- [Work Package README](02-readme.md)
+- [Work Package README Guide](01-readme.md)
 - [Knowledge Base Research Guide](07-knowledge-base-research.md)
 - [Implementation Analysis Guide](06-implementation-analysis.md)
 - [Architecture Review Guide](15-architecture-review.md)

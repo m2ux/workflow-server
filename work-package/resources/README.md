@@ -6,8 +6,7 @@ The workflow includes 26 resources that provide templates, guidance, and referen
 
 | # | Resource ID | Title | Purpose |
 |---|-------------|-------|---------|
-| 00 | `start-here` | Start Here | Entry point instructions for the workflow |
-| 02 | `readme` | Readme | This document |
+| 01 | `readme` | README Guide | Entry point and artifact index template for planning folders |
 | 03 | `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
 | 04 | `jira-issue-creation` | Jira Issue Creation | Guide for creating Jira issues with proper field mapping |
 | 05 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
