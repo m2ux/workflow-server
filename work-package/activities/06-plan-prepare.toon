@@ -46,7 +46,7 @@ steps[9]:
   - id: present-solution-overview
     name: Present Solution Overview
     description: "Synthesize and present a plain-language solution overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the solution does and how it addresses the problem. The second paragraph should explain how the fix works at a high level — what changes are made and what guarantees they provide. Do not use jargon without explanation. Base the overview on the work package plan, test plan, and design decisions made during this activity."
-    actions:
+    actions[1]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
 artifacts[2]:
