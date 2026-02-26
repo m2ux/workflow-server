@@ -218,10 +218,10 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workf
 
 ### [Code Review Findings](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/code-review.md)
 
-| # | Severity | Category | Finding | Location |
-|---|----------|----------|---------|----------|
-| 1 | High | Error Handling | Missing null check | `file.rs:42` |
-| 2 | Medium | Performance | N+1 query pattern | `handler.rs:78-92` |
+| # | Severity | Category | Finding |
+|---|----------|----------|---------|
+| 1 | High | Error Handling | Missing null check |
+| 2 | Medium | Performance | N+1 query pattern |
 
 <details>
 <summary>Finding Details</summary>
@@ -237,29 +237,85 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workf
 
 ### [Test Review Findings](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/test-suite-review.md)
 
-| Gap | Severity | Recommendation |
-|-----|----------|----------------|
-| Missing edge case coverage | Medium | Add tests for [scenarios] |
-| No error path tests | High | Add tests for failure modes |
+**Coverage**: [N] unit tests for [M] lines of implementation.
+
+| # | Gap | Severity | Recommendation |
+|---|-----|----------|----------------|
+| 1 | Missing edge case coverage | Medium | Add tests for [scenarios] |
+| 2 | No error path tests | High | Add tests for failure modes |
+
+<details>
+<summary>Finding Details</summary>
+
+#### 1. Missing edge case coverage (Medium)
+**Affected area**: [Module/component]
+**Gap**: [Description of what is not covered]
+**Suggestion**: [Specific test to add]
+
+#### 2. No error path tests (High)
+**Affected area**: [Module/component]
+**Gap**: [Description of missing error handling tests]
+**Suggestion**: [Specific test to add]
+
+</details>
 
 ---
 
 ### Documentation Review
 
-| Document | Status | Notes |
-|----------|--------|-------|
-| README.md | ✅ Current | No updates needed |
-| Change file | ❌ Missing | Required for release notes |
+| # | Document | Status | Notes |
+|---|----------|--------|-------|
+| 1 | README.md | ✅ Current | No updates needed |
+| 2 | Change file | ❌ Missing | Required for release notes |
+
+<details>
+<summary>Finding Details</summary>
+
+#### 2. Change file missing (High)
+**Document**: [Path or expected location]
+**Issue**: [Why it is needed]
+**Suggestion**: [What to include]
+
+</details>
 
 ---
 
 ### Validation Results
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| Tests | ✅ Pass | All 42 tests passed |
-| Build | ✅ Pass | Clean build |
-| Lint | ⚠️ Warning | 3 clippy warnings (non-blocking) |
+| # | Check | Status | Notes |
+|---|-------|--------|-------|
+| 1 | Tests | ✅ Pass | All 42 tests passed |
+| 2 | Build | ✅ Pass | Clean build |
+| 3 | Lint | ⚠️ Warning | 3 clippy warnings (non-blocking) |
+
+<details>
+<summary>Finding Details</summary>
+
+#### 3. Lint warnings (Warning)
+**Tool**: clippy
+**Findings**: [List specific warnings]
+**Suggestion**: [Fix command or manual resolution]
+
+</details>
+
+---
+
+### Branch Hygiene
+
+| # | Item | Status | Recommendation |
+|---|------|--------|----------------|
+| 1 | Branch freshness | ⚠️ Behind main | Rebase before merge |
+| 2 | Commit history | ✅ Clean | No issues |
+| 3 | Scope focus | ✅ Clean | All changes directly justified |
+
+<details>
+<summary>Finding Details</summary>
+
+#### 1. Branch freshness (Warning)
+**Issue**: [Description of how far behind, conflicting deps, etc.]
+**Suggestion**: [Rebase or merge instructions]
+
+</details>
 
 ---
 
@@ -270,8 +326,12 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/workf
 - [ ] Add missing test coverage for [scenario]
 
 **Should Address (Recommended)**:
+- [x] Validate fallback during detection
 - [ ] Consider refactoring [component] for clarity
-- [ ] Update change file with release notes
+
+**Could Address (Suggested)**:
+- [ ] Extract parsing logic from IO for unit testability
+- [x] Consider CLI support for parity with existing tooling
 
 **Nice to Have (Optional)**:
 - [ ] Add docstring to public function
