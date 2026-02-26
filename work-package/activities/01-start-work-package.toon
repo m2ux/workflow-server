@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.0.0
+version: 3.1.0
 name: Start Work Package
 description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR, and create planning folder. Establishes traceability from requirements through implementation."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -78,7 +78,7 @@ modeOverrides:
       - review_base_branch - Base branch of PR being reviewed
 entryActions[1]{action,message}:
   log,Starting issue management
-steps[12]:
+steps[13]:
   - id: resolve-target
     name: Resolve Target Directory
     description: "Read target_path from state variables (set during workflow initialization). Verify the directory exists. All git operations (branch, PR) will be performed inside this directory."
@@ -137,6 +137,12 @@ steps[12]:
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"
+  - id: present-problem-overview
+    name: Present Problem Overview
+    description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity."
+    actions:
+      - action: message
+        message: "**Problem Overview** (plain-language summary for stakeholder reference)"
 checkpoints[8]:
   - id: issue-verification
     name: Issue Verification Checkpoint
