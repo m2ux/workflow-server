@@ -103,22 +103,6 @@ The `README.md` file serves as the entry point and executive summary for a work 
 
 ---
 
-## 🎯 Success Criteria
-
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] All tests passing
-
----
-
-## ⚠️ Constraints
-
-- **Security:** [Severity and source]
-- **Compatibility:** [Backward compatibility requirements]
-- **Performance:** [Performance impact assessment]
-
----
-
 **Status:** Ready for implementation
 ```
 
@@ -181,25 +165,6 @@ Optional activities that were skipped should be omitted from the table entirely 
 
 Consolidate all external references (Jira, PR, branch, affected files, comprehension artifacts) into a single Links table. This replaces scattered inline references throughout the document.
 
-### Success Criteria
-
-List measurable, verifiable criteria:
-
-**Good:**
-```markdown
-- [ ] Search P95 latency < 200ms (baseline: 487ms)
-- [ ] Non-zero result rate > 90% (baseline: 64%)
-- [ ] All 25 unit tests passing
-```
-
-**Bad:**
-```markdown
-- [ ] Search is faster
-- [ ] Tests work
-```
-
-Use `[x]` to mark criteria as met when the work package is complete.
-
 ---
 
 ## Status Transitions
@@ -231,7 +196,7 @@ Update this document at these points:
 
 1. **After planning complete** — Update status to Ready, fill in Progress table
 2. **After each task** — Update Progress table statuses
-3. **After completion** — Update status to Complete, check off success criteria, add Revised date
+3. **After completion** — Update status to Complete, add Revised date
 4. **When blocked** — Update status, add notes
 
 ---
@@ -245,7 +210,6 @@ Update this document at these points:
 - [ ] Progress table has Description column filled in
 - [ ] Links table has all external references
 - [ ] Timeline has realistic estimates
-- [ ] Success criteria are measurable
 
 ---
 
