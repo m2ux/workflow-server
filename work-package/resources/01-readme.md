@@ -133,13 +133,13 @@ Use status indicators consistently:
 | ❌ Blocked | Cannot proceed |
 | ⊘ Cancelled | No longer needed |
 
-The # column contains the artifact's numbered prefix (matching the filename). Items without a standalone artifact use "—". The Description column provides a brief (3-8 word) summary of what the artifact covers. The Estimate column gives the expected agentic time for each item — adjust the template defaults to match the specific work package's complexity.
+The # column contains the artifact's numbered prefix, matching the producing activity (all artifacts from the same activity share the same number). Items without a standalone artifact use "—". The Description column provides a brief (3-8 word) summary of what the artifact covers. The Estimate column gives the expected agentic time for each item — adjust the template defaults to match the specific work package's complexity.
 
 Optional activities that were skipped should be omitted from the table entirely — only list items that were or will be produced.
 
 ### Links Table
 
-Consolidate all external references (Jira, PR, branch, affected files, comprehension artifacts) into a single Links table. This replaces scattered inline references throughout the document.
+Consolidate external references (Jira ticket, parent epic, PR) into a single Links table. Artifact links belong in the Progress table, not here.
 
 ---
 
@@ -183,9 +183,9 @@ Update this document at these points:
 - [ ] Status field is current
 - [ ] Executive summary is 2-3 sentences
 - [ ] Progress table items are hyperlinked to artifacts
-- [ ] Progress table has Description column filled in
-- [ ] Links table has all external references
-- [ ] Timeline has realistic estimates
+- [ ] Progress table has Description and Estimate columns filled in
+- [ ] Links table has Jira ticket and PR references
+- [ ] Artifact numbers match producing activity
 
 ---
 
