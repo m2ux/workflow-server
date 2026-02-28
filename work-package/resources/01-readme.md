@@ -75,8 +75,6 @@ The `README.md` file serves as the entry point and executive summary for a work 
 | Jira Ticket | [PROJ-N](https://shielded.atlassian.net/browse/PROJ-N) |
 | Parent Epic | [PROJ-N](https://shielded.atlassian.net/browse/PROJ-N) — [Epic title] |
 | PR | [#N](https://github.com/midnightntwrk/midnight-node/pull/N) |
-| Branch | `type/PROJ-N-short-description` |
-| Affected file(s) | `path/to/file.rs` |
 | Comprehension artifact | [area-name.md](../../comprehension/area-name.md) *(if created)* |
 
 ---
