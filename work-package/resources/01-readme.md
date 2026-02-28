@@ -50,21 +50,21 @@ The `README.md` file serves as the entry point and executive summary for a work 
 
 ## 📊 Progress
 
-| # | Item | Description | Status |
-|---|------|-------------|--------|
-| 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | ⬚ Pending |
-| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | ⬚ Pending |
-| 04 | [Work package plan](04-work-package-plan.md) | Implementation tasks, estimates, dependencies | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | ⬚ Pending |
-| — | Implementation | Code changes per plan | ⬚ Pending |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | ⬚ Pending |
-| 08 | [Code review](08-code-review.md) | Automated code quality review | ⬚ Pending |
-| 09 | [Test suite review](09-test-suite-review.md) | Test quality and coverage assessment | ⬚ Pending |
-| 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | ⬚ Pending |
-| — | Validation | Build, test, lint verification | ⬚ Pending |
-| — | PR review | External review feedback cycle | ⬚ Pending |
-| 12 | [Completion summary](12-COMPLETE.md) | Deliverables, decisions, lessons learned | ⬚ Pending |
-| 13 | [Workflow retrospective](13-workflow-retrospective.md) | Process improvement recommendations | ⬚ Pending |
+| # | Item | Description | Estimate | Status |
+|---|------|-------------|----------|--------|
+| 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
+| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
+| 04 | [Work package plan](04-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
+| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
+| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
+| 08 | [Code review](08-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
+| 09 | [Test suite review](09-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| 12 | [Completion summary](12-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
+| 13 | [Workflow retrospective](13-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
 
 ---
 
@@ -155,7 +155,7 @@ Use status indicators consistently:
 | ❌ Blocked | Cannot proceed |
 | ⊘ Cancelled | No longer needed |
 
-The # column contains the artifact's numbered prefix (matching the filename). Items without a standalone artifact use "—". The Description column provides a brief (3-8 word) summary of what the artifact covers.
+The # column contains the artifact's numbered prefix (matching the filename). Items without a standalone artifact use "—". The Description column provides a brief (3-8 word) summary of what the artifact covers. The Estimate column gives the expected agentic time for each item — adjust the template defaults to match the specific work package's complexity.
 
 Optional activities that were skipped should be omitted from the table entirely — only list items that were or will be produced.
 
