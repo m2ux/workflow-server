@@ -1,0 +1,55 @@
+id: dispatch-scanners
+version: 1.0.0
+capability: Compose and dispatch per-submodule scanner sub-agents and coordination agents (V, M)
+
+description: "Handles the composition and concurrent dispatch of scanner sub-agents for the CI/CD pipeline security audit. Each scanner agent receives its assigned submodule path, workflow file list, reconnaissance data, and the injection pattern catalog. Also dispatches the verification (V) and merge (M) coordination agents after scanner collection."
+
+inputs[2]:
+  - id: scanner-assignments
+    description: "Agent-to-submodule mapping from reconnaissance"
+    required: true
+  - id: reconnaissance-data
+    description: "Per-workflow classification data from reconnaissance"
+    required: true
+
+protocol:
+  compose-scanner-prompts[3]:
+    - For each assigned scanner, build a context payload with submodule path, workflow file list, and relevant reconnaissance data
+    - Include resource 01 (pattern catalog) reference for the scanner to load
+    - Specify the sub-workflow-scan activity as the execution activity
+  dispatch-scanners[2]:
+    - Dispatch all scanner agents concurrently in a single batch
+    - Record dispatch status and agent IDs for collection
+  collect-results[2]:
+    - Wait for all scanners to return
+    - Verify each scanner produced a valid output file (s{n}-{submodule}.json)
+  dispatch-verification[2]:
+    - After all scanners return, compose V agent context with all scanner output paths and the workflow file inventory
+    - Dispatch V agent following the sub-verification activity
+  dispatch-merge[2]:
+    - After verification, compose M agent context with all scanner outputs and verification report
+    - Dispatch M agent following the sub-merge activity
+
+output[1]:
+  - id: dispatch-status
+    description: "Dispatch and collection status for all agents"
+    components:
+      scanners_dispatched: "Count of dispatched scanner agents"
+      scanners_returned: "Count of returned scanner agents"
+      verification_dispatched: "Whether V was dispatched"
+      merge_dispatched: "Whether M was dispatched"
+
+rules:
+  concurrent-dispatch: "All scanner agents MUST be dispatched in a single batch"
+  completeness-check: "Verify scanners_dispatched equals scanners_assigned before proceeding"
+  sequential-coordination: "V dispatches after scanners; M dispatches after V"
+
+tools:
+  task:
+    when: Dispatching sub-agents
+    usage: "Use Task tool with subagent_type generalPurpose for each scanner, V, and M agent"
+  read_file:
+    when: Loading scanner output files for verification and merge agent context
+  get_resource:
+    when: Loading pattern catalog for scanner context
+    params: "workflow_id: cicd-pipeline-security-audit, index: 01"

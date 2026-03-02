@@ -1,0 +1,53 @@
+id: verify-scan-output
+version: 1.0.0
+capability: Verify scan completeness across all scanner outputs and produce gap report
+
+description: "Verification skill for the CI/CD pipeline security audit. Cross-references scanner outputs against the workflow file inventory and pattern catalog to ensure complete coverage. Identifies gaps (unscanned files, skipped patterns, malformed output) and produces a gap report to drive targeted re-scan."
+
+inputs[3]:
+  - id: scanner-outputs
+    description: "Paths to all s{n}-{submodule}.json output files"
+    required: true
+  - id: workflow-inventory
+    description: "Complete workflow file inventory from scope-setup"
+    required: true
+  - id: output-schema
+    description: "Expected scanner output schema from resource 04"
+    required: true
+
+protocol:
+  validate-structure[2]:
+    - Load each scanner output JSON
+    - Validate against the output schema — flag malformed or missing fields
+  verify-file-coverage[2]:
+    - Build set of all scanned files across all scanner outputs
+    - Diff against the workflow file inventory — identify unscanned files
+  verify-pattern-coverage[2]:
+    - For each scanner output, check the coverage section for all seven patterns (P1-P7)
+    - Flag any scanner that reports incomplete pattern application
+  produce-gap-report[2]:
+    - Compile all gaps into verification-report.json
+    - Set verification_complete=true only if zero gaps found
+
+output[1]:
+  - id: verification-report
+    description: "Scan completeness verification with gaps and re-scan recommendations"
+    components:
+      file_coverage: "Scanned vs total files"
+      pattern_coverage: "Per-scanner pattern application status"
+      gaps: "List of unscanned files or skipped patterns"
+      recommendation: "Re-scan targets if gaps exist"
+
+rules:
+  zero-gaps-required: "verification_complete is only set when file and pattern coverage are both 100%"
+  schema-validation: "Malformed outputs count as gaps"
+
+resources[1]:
+  - "04"
+
+tools:
+  read_file:
+    when: Loading scanner output JSON files
+  get_resource:
+    when: Loading output schema for validation
+    params: "workflow_id: cicd-pipeline-security-audit, index: 04"

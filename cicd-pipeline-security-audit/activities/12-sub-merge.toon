@@ -1,0 +1,53 @@
+id: sub-merge
+version: 1.0.0
+name: Finding Merge
+description: "Merge sub-agent activity: load all scanner outputs, deduplicate findings, apply cross-pattern correlation for compound vulnerabilities, and produce the unified finding set with reconciliation table. Fully automated."
+problem: Findings from multiple per-submodule scanners must be deduplicated, correlated across patterns, and reconciled into a single canonical finding set before severity scoring.
+recognition[2]:
+  - merge findings
+  - consolidate scan results
+skills:
+  primary: merge-scan-findings
+required: true
+estimatedTime: 5-15m
+rules[5]:
+  - "Every finding from every scanner MUST appear in the merged output or be explicitly marked as a duplicate of another finding"
+  - "CROSS-PATTERN CORRELATION: When multiple patterns detect aspects of the same vulnerability chain (e.g., P2 + P1 + P4 on the same workflow), merge into a single compound finding with elevated severity"
+  - "DEDUPLICATION: Findings on the same workflow file, same line, same pattern are duplicates. Keep the finding with the most complete evidence."
+  - "RECONCILIATION TABLE: Produce a table mapping every scanner finding to its merged finding number. Unaccounted MUST equal zero."
+  - "Observations (findings without a clear source-to-sink flow) are preserved separately and included in the report as informational items"
+entryActions[1]{action,message}:
+  log,Starting finding merge and reconciliation
+steps[5]:
+  - id: load-scanner-outputs
+    name: Load All Scanner Outputs
+    description: "Load every s{n}-{submodule}.json from the planning folder."
+  - id: deduplicate
+    name: Deduplicate Findings
+    description: "Identify and merge duplicate findings (same file, same line, same pattern). Keep the most complete evidence."
+  - id: correlate-patterns
+    name: Cross-Pattern Correlation
+    description: "Identify compound vulnerability chains where multiple patterns converge on the same workflow. Merge into compound findings with elevated severity notes."
+  - id: build-reconciliation
+    name: Build Reconciliation Table
+    description: "Map every scanner finding (by scanner ID and finding number) to its merged finding number. Verify Unaccounted equals zero."
+  - id: write-merged-output
+    name: Write Merged Output
+    description: "Produce merged-findings.json with the unified finding set, reconciliation table, and observation list."
+transitions[0]:
+exitActions[1]{action,message}:
+  log,Finding merge complete — reconciliation table produced with zero Unaccounted
+outcome[4]:
+  - All scanner findings loaded and processed
+  - Duplicates identified and merged
+  - Compound vulnerability chains correlated
+  - Reconciliation table produced with zero Unaccounted
+artifacts[2]:
+  - id: merged-findings
+    name: merged-findings.json
+    location: planning
+    description: "Unified finding set after deduplication and cross-pattern correlation"
+  - id: reconciliation-table
+    name: reconciliation-table.json
+    location: planning
+    description: "Per-scanner finding mapping showing how each scanner finding maps to a merged finding"

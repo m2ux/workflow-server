@@ -1,0 +1,61 @@
+id: sub-workflow-scan
+version: 1.0.0
+name: Per-Submodule Workflow Scan
+description: "Scanner sub-agent activity: apply all seven detection patterns (P1-P7) to every GitHub Actions workflow file in the assigned submodule. Produces structured JSON output with findings, evidence, and source-to-sink mappings."
+problem: Each submodule's workflow files must be systematically scanned for expression injection, Pwn Request patterns, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, and dangerous execution patterns.
+recognition[2]:
+  - scan submodule workflows
+  - run detection patterns
+skills:
+  primary: scan-injection-patterns
+required: true
+estimatedTime: 10-20m
+rules[7]:
+  - "The scanner MUST apply ALL seven patterns (P1-P7) to every workflow file in the assigned submodule"
+  - "Every finding MUST include: pattern ID, source (attacker-controlled input), sink (execution point), affected file path, affected line numbers, and evidence (the vulnerable code snippet)"
+  - "Load resource 01 (injection pattern catalog) before beginning scan — it contains grep patterns, untrusted context variables, and real-world examples"
+  - "For P2 (Pwn Request), the scanner must trace the full chain: trigger → checkout → execution. A pull_request_target trigger alone is not a finding; it becomes one when combined with fork code checkout and execution."
+  - "For P1 (expression injection), the scanner must distinguish between safe and unsafe contexts. Expressions in if: conditions are safe. Expressions interpolated into run: blocks, action inputs that flow to shell, or script contents are unsafe."
+  - "For P6 (AI config poisoning), check whether AI config files in the submodule are listed in CODEOWNERS. If no CODEOWNERS exists, flag all AI config files."
+  - "Output MUST be written to s{n}-{submodule}.json in the planning folder, following the schema in resource 04"
+entryActions[1]{action,message}:
+  log,Starting per-submodule workflow scan
+steps[9]:
+  - id: load-patterns
+    name: Load Detection Pattern Catalog
+    description: "Load resource 01 (injection pattern catalog) for grep patterns, untrusted context variable lists, and detection heuristics."
+  - id: scan-expression-injection
+    name: "P1: Scan for Expression Injection"
+    description: "Search all workflow files for ${{ }} expressions in run: blocks. Cross-reference against the untrusted context variable list. Flag any expression that interpolates attacker-controllable values into shell commands."
+  - id: scan-pwn-request
+    name: "P2: Scan for Pwn Request Pattern"
+    description: "Identify workflows triggered by pull_request_target. For each, check whether the workflow checks out the PR head SHA or head.ref, then executes code from that checkout. Trace the full trigger → checkout → execution chain."
+  - id: scan-comment-triggers
+    name: "P3: Scan for Comment Trigger Abuse"
+    description: "Identify workflows triggered by issue_comment or pull_request_review_comment. Check whether they verify author_association (MEMBER, OWNER, COLLABORATOR) before executing privileged operations."
+  - id: scan-permissions
+    name: "P4: Scan for Excessive Permissions"
+    description: "Extract permission declarations at workflow, job, and step levels. Flag workflows with contents: write, pull-requests: write, or no explicit permissions (which default to broad access in some configurations)."
+  - id: scan-fork-execution
+    name: "P5: Scan for Fork Code Execution"
+    description: "Identify workflows that checkout fork/PR code and then execute it (run, build, test, go run, npm run, cargo run, python, etc.). Applies to pull_request_target and workflows that checkout github.event.pull_request.head.sha."
+  - id: scan-ai-config
+    name: "P6: Scan for AI Config Poisoning Surface"
+    description: "Check whether AI config files (CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/) exist and whether they are protected by CODEOWNERS with mandatory review. Check if any workflow loads these files as trusted context."
+  - id: scan-dangerous-patterns
+    name: "P7: Scan for Dangerous Execution Patterns"
+    description: "Search workflows and referenced scripts for curl|bash, eval, base64 decode + execute, dynamic script generation, and similar dangerous execution patterns."
+  - id: write-output
+    name: Write Scanner Output
+    description: "Produce s{n}-{submodule}.json with all findings, observations, coverage data, and per-file scan status."
+transitions[0]:
+exitActions[1]{action,message}:
+  log,Per-submodule scan complete — findings written to output file
+outcome[3]:
+  - All seven detection patterns applied to every workflow file
+  - Findings documented with source-to-sink evidence
+  - Structured output written to planning folder
+context_to_preserve[3]:
+  - findings_count - Number of findings in this submodule
+  - files_scanned - Number of workflow files scanned
+  - patterns_applied - Confirmation that all seven patterns were applied

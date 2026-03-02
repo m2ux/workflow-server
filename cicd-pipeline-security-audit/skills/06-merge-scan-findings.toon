@@ -1,0 +1,46 @@
+id: merge-scan-findings
+version: 1.0.0
+capability: Merge, deduplicate, and correlate findings from multiple scanner agents into a unified finding set
+
+description: "Merge skill for the CI/CD pipeline security audit. Loads all scanner outputs, deduplicates findings (same file, same line, same pattern), identifies compound vulnerability chains (multiple patterns converging on one workflow), and produces a reconciled unified finding set. The reconciliation table maps every scanner finding to its merged counterpart."
+
+inputs[1]:
+  - id: scanner-outputs
+    description: "Paths to all s{n}-{submodule}.json output files"
+    required: true
+
+protocol:
+  load-all-outputs[1]:
+    - Load every scanner output JSON and extract the findings array
+  deduplicate[3]:
+    - Group findings by (file_path, line_range, pattern_id)
+    - For duplicates, keep the finding with the most complete evidence
+    - Record duplicate mappings for reconciliation
+  cross-pattern-correlation[3]:
+    - Group remaining findings by workflow file
+    - Identify compound chains where multiple patterns affect the same workflow
+    - Create compound findings that capture the full attack chain (e.g., P2+P1+P4 = Pwn Request with expression injection and excessive permissions)
+  reconcile[2]:
+    - Build reconciliation table mapping every original scanner finding to its merged finding number
+    - Verify Unaccounted equals zero for every scanner
+  write-output[1]:
+    - Produce merged-findings.json and reconciliation-table.json
+
+output[2]:
+  - id: merged-findings
+    description: "Unified finding set"
+    components:
+      findings: "Deduplicated and correlated findings"
+      compounds: "Compound vulnerability chains"
+      observations: "Informational items without clear source-to-sink flow"
+  - id: reconciliation
+    description: "Per-scanner finding mapping to merged findings"
+
+rules:
+  zero-unaccounted: "Every scanner finding must map to a merged finding or be marked duplicate"
+  compound-preservation: "Compound chains must preserve all constituent pattern evidence"
+  observation-retention: "Observations are preserved even if they don't rise to finding level"
+
+tools:
+  read_file:
+    when: Loading scanner output JSON files

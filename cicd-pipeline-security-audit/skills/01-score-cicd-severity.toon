@@ -1,0 +1,44 @@
+id: score-cicd-severity
+version: 1.0.0
+capability: Score CI/CD pipeline vulnerabilities using Impact x Exploitability rubric calibrated against real-world attack campaigns
+
+description: "Apply severity scoring to CI/CD pipeline findings. Uses a two-dimensional rubric: Impact (what damage can result) x Exploitability (how easily an attacker can trigger it). Calibrated against the hackerbot-claw campaign outcomes where a Pwn Request chain led to full repository takeover (Critical) and expression injection led to code execution (High)."
+
+inputs[1]:
+  - id: findings
+    description: "List of findings from the merge agent, each with pattern ID, source, sink, and evidence"
+    required: true
+
+protocol:
+  load-rubric[1]:
+    - Load resource 02 (cicd-severity-rubric) for the Impact x Exploitability matrix
+  score-individual[3]:
+    - For each finding, assess Impact tier (T1-T4) based on worst-case outcome
+    - For each finding, assess Exploitability tier (E1-E4) based on attacker prerequisites
+    - Map (Impact, Exploitability) to severity level using the rubric matrix
+  score-compound[2]:
+    - Identify compound findings (multiple patterns on same workflow)
+    - Apply compound severity elevation rules from the rubric
+  calibrate[2]:
+    - Cross-check severity assignments against campaign calibration anchors
+    - Adjust any finding that diverges by >= 2 levels from a matching anchor
+
+output[1]:
+  - id: scored-findings
+    description: "Findings with severity levels and scoring rationale"
+    components:
+      severity_distribution: "Count by severity level"
+      scoring_rationale: "Per-finding Impact and Exploitability assessment"
+
+rules:
+  evidence-based: "Every severity assignment must cite the specific Impact and Exploitability factors"
+  compound-elevation: "Compound vulnerabilities receive the higher of: individual max severity, or one level above individual max"
+  campaign-calibration: "Severity must be consistent with known campaign outcomes"
+
+resources[1]:
+  - "02"
+
+tools:
+  get_resource:
+    when: Loading severity rubric
+    params: "workflow_id: cicd-pipeline-security-audit, index: 02"

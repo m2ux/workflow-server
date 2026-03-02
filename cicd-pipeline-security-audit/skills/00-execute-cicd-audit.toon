@@ -1,0 +1,71 @@
+id: execute-cicd-audit
+version: 1.0.0
+capability: Orchestrate CI/CD pipeline security audit from scope setup through report generation
+
+description: "Top-level orchestration skill for the CI/CD pipeline security audit workflow. Defines the phase sequence, agent dispatch model, and coordination responsibilities. The orchestrator loads this skill and uses it to drive activity transitions, dispatch scanner sub-agents, and enforce phase gates. The orchestrator coordinates only — all detection and analysis is delegated to sub-agents."
+
+inputs[2]:
+  - id: target-submodules
+    description: "Comma-separated submodule paths or 'all'"
+    required: true
+  - id: planning-folder
+    description: "Path to the planning folder for artifacts"
+    required: true
+
+protocol:
+  phase-1-setup[3]:
+    - Confirm target submodules exist and contain .github/workflows/
+    - Discover all workflow files (.yml and .yaml) across targets
+    - Create planning folder with START-HERE.md
+  phase-2-reconnaissance[3]:
+    - Classify all workflows by trigger type
+    - Map permission scopes and checkout patterns
+    - Assign scanner agents (one per submodule)
+  phase-3-primary-scan[4]:
+    - Dispatch all scanner agents concurrently
+    - Collect scanner outputs and verify dispatch completeness
+    - Dispatch verification agent (V) — check coverage
+    - Dispatch merge agent (M) — deduplicate and reconcile
+  phase-4-report[3]:
+    - Apply severity scoring using Impact x Exploitability rubric
+    - Verify coverage gate
+    - Produce final audit report with remediation guidance
+
+output[1]:
+  - id: audit-report
+    description: "Complete CI/CD security audit report"
+    components:
+      findings: "All findings with pattern ID, severity, source, sink, remediation"
+      coverage: "Workflow file coverage verification"
+      methodology: "Audit methodology and pattern catalog version"
+
+rules:
+  orchestrator-discipline: "Coordinate only — never analyze workflow files directly"
+  phase-gates: "Enforce exitAction gates before advancing phases"
+  dispatch-completeness: "Verify all assigned agents were dispatched before proceeding"
+
+tools:
+  get_workflow:
+    when: Loading workflow definition at audit start
+    params: "workflow_id: cicd-pipeline-security-audit"
+  get_workflow_activity:
+    when: Loading each activity for execution
+    params: "workflow_id, activity_id"
+  get_resource:
+    when: Loading resources for sub-agent context
+    params: "workflow_id: cicd-pipeline-security-audit, index"
+  shell:
+    when: "Discovering workflow files, checking submodule paths"
+  read_file:
+    when: "Loading scanner output JSON files"
+
+errors:
+  no_targets:
+    cause: "No target submodules specified or found"
+    recovery: "Fail with error listing available submodules"
+  dispatch_incomplete:
+    cause: "Not all assigned scanners were dispatched"
+    recovery: "HARD STOP — re-dispatch missing agents"
+  reconciliation_failed:
+    cause: "Merge agent reported Unaccounted > 0"
+    recovery: "HARD STOP — investigate missing findings"
