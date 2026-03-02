@@ -1,7 +1,7 @@
 id: implement
-version: 2.3.0
+version: 2.4.0
 name: Implement Tasks
-description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task and reviewed collectively after all tasks are complete."
+description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task, reconciled through code analysis after all tasks complete, and only unresolvable assumptions are presented to the user."
 problem: User needs to implement the planned tasks
 recognition[3]:
   - implement tasks
@@ -9,16 +9,18 @@ recognition[3]:
   - execute plan
 skills:
   primary: implement-task
-  supporting[3]:
+  supporting[4]:
     - review-assumptions
+    - reconcile-assumptions
     - validate-build
     - manage-git
 required: true
 estimatedTime: 1-4h
 artifactPrefix: "08"
-rules[2]:
-  - "Execute all tasks sequentially without interrupting for per-task assumption review — assumptions are collected during each task and reviewed collectively at the end"
-  - "Update assumptions log once after all tasks are complete with the full set of implementation assumptions"
+rules[3]:
+  - "Execute all tasks sequentially without interrupting for per-task assumption review — assumptions are collected during each task and reconciled collectively at the end"
+  - "After all tasks complete, reconcile assumptions through code analysis before presenting to the user — only stakeholder-dependent assumptions require user input"
+  - "Update assumptions log once after reconciliation with the full set of implementation assumptions and their resolutions"
 artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
@@ -27,7 +29,7 @@ artifacts[1]:
     action: update
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
-loops[1]:
+loops[2]:
   - id: task-cycle
     name: Task Implementation Cycle
     type: forEach
@@ -43,17 +45,40 @@ loops[1]:
       - id: collect-assumptions
         name: Collect assumptions
         description: "Identify all assumptions made during this task. Accumulate — do not review yet."
-steps[2]:
-  - id: review-all-assumptions
-    name: Review accumulated assumptions
-    description: "After all tasks are complete, compile assumptions from all tasks. Present the full list for review. Update assumptions log with outcomes."
+  - id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    type: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    description: "Iterates until all code-resolvable assumptions are resolved. Each cycle analyzes resolvable assumptions, updates the log with evidence-based resolutions, captures newly surfaced assumptions, and reclassifies. Exits when no open assumption can be further reduced through code examination."
+    steps[3]:
+      - id: targeted-analysis
+        name: Analyze code-resolvable assumptions
+        description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+      - id: update-assumptions-and-artifact
+        name: Update assumptions log and comprehension artifact
+        description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+      - id: reclassify-resolvability
+        name: Reclassify open assumptions
+        description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+steps[3]:
+  - id: reconcile-assumptions
+    name: Reconcile assumptions
+    description: "Classify all accumulated implementation assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    skill: reconcile-assumptions
+  - id: review-remaining-assumptions
+    name: Review remaining assumptions
+    description: "After reconciliation, compile the remaining stakeholder-dependent assumptions (if any) for user review. If all assumptions were resolved through code analysis, note this and present the summary."
   - id: update-assumptions-log
     name: Update assumptions log
-    description: "Record all implementation assumptions and review outcomes in the assumptions log."
+    description: "Record all implementation assumptions, reconciliation outcomes, and user review responses in the assumptions log."
 checkpoints[1]:
   - id: implementation-assumptions-review
     name: Implementation Assumptions Review
-    message: "All tasks are complete. Here are the assumptions made during implementation. Are these correct?"
+    message: "All tasks are complete. Code-resolvable assumptions have been verified through targeted analysis. The remaining assumptions (if any) require your input. Does this look correct?"
     options[3]:
       - id: all-confirmed
         label: All assumptions confirmed
