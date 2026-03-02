@@ -1,7 +1,7 @@
 id: implement
-version: 2.2.0
+version: 2.3.0
 name: Implement Tasks
-description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit → review assumptions → checkpoint."
+description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task and reviewed collectively after all tasks are complete."
 problem: User needs to implement the planned tasks
 recognition[3]:
   - implement tasks
@@ -17,8 +17,8 @@ required: true
 estimatedTime: 1-4h
 artifactPrefix: "08"
 rules[2]:
-  - "After each task, explicitly identify and review assumptions made during implementation"
-  - "Update assumptions log AFTER the assumption review checkpoint — record user responses and outcomes"
+  - "Execute all tasks sequentially without interrupting for per-task assumption review — assumptions are collected during each task and reviewed collectively at the end"
+  - "Update assumptions log once after all tasks are complete with the full set of implementation assumptions"
 artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
@@ -27,13 +27,13 @@ artifacts[1]:
     action: update
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
-loops[2]:
+loops[1]:
   - id: task-cycle
     name: Task Implementation Cycle
     type: forEach
     variable: current_task
     over: plan.tasks
-    steps[5]:
+    steps[4]:
       - id: implement-task
         name: Implement task
       - id: run-tests
@@ -42,49 +42,31 @@ loops[2]:
         name: Commit changes
       - id: collect-assumptions
         name: Collect assumptions
-        description: "Identify all assumptions made during this task"
-      - id: update-assumptions-log
-        name: Update assumptions log
-        description: "Runs after assumption-review-cycle completes. Record outcomes in assumptions log."
-  - id: assumption-review-cycle
-    name: "Assumption Review Cycle — review each assumption one at a time"
-    type: forEach
-    variable: current_assumption
-    over: task_assumptions
-    steps[2]:
-      - id: present-assumption
-        name: Present assumption
-        description: "Show assumption type, statement, rationale, and alternatives"
-      - id: record-response
-        name: Record response
-        description: "Mark as confirmed or record correction needed"
-checkpoints[2]:
-  - id: task-complete
-    name: Task Complete Checkpoint
-    message: "Task '{current_task}' implemented and tests passing. Ready to review assumptions?"
-    options[2]:
-      - id: review
-        label: Review assumptions
-        description: Proceed to assumption review
-      - id: skip
-        label: No assumptions to review
-        description: No significant assumptions were made
+        description: "Identify all assumptions made during this task. Accumulate — do not review yet."
+steps[2]:
+  - id: review-all-assumptions
+    name: Review accumulated assumptions
+    description: "After all tasks are complete, compile assumptions from all tasks. Present the full list for review. Update assumptions log with outcomes."
+  - id: update-assumptions-log
+    name: Update assumptions log
+    description: "Record all implementation assumptions and review outcomes in the assumptions log."
+checkpoints[1]:
+  - id: implementation-assumptions-review
+    name: Implementation Assumptions Review
+    message: "All tasks are complete. Here are the assumptions made during implementation. Are these correct?"
+    options[3]:
+      - id: all-confirmed
+        label: All assumptions confirmed
+        description: All implementation assumptions are correct
+      - id: some-corrections
+        label: Some need correction
+        description: One or more assumptions need adjustment
+      - id: no-assumptions
+        label: No significant assumptions
+        description: No assumptions worth documenting
         effect:
           setVariable:
             skip_assumption_review: true
-  - id: assumption-review
-    name: Assumption Review Checkpoint
-    message: "Review this assumption. Is the current choice correct?"
-    options[3]:
-      - id: confirmed
-        label: Confirmed
-        description: Current choice is correct
-      - id: alternative
-        label: Select alternative
-        description: Choose a different approach
-      - id: discuss
-        label: Need to discuss
-        description: Requires further clarification
 transitions[1]{to,isDefault}:
   post-impl-review,true
 outcome[2]:
