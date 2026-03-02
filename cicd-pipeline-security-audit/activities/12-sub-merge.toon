@@ -7,10 +7,13 @@ recognition[2]:
   - merge findings
   - consolidate scan results
 skills:
-  primary: merge-scan-findings
-required: true
+  primary: execute-sub-agent
+  supporting[1]:
+    - merge-scan-findings
+required: false
 estimatedTime: 5-15m
-rules[5]:
+rules[6]:
+  - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"
   - "Every finding from every scanner MUST appear in the merged output or be explicitly marked as a duplicate of another finding"
   - "CROSS-PATTERN CORRELATION: When multiple patterns detect aspects of the same vulnerability chain (e.g., P2 + P1 + P4 on the same workflow), merge into a single compound finding with elevated severity"
   - "DEDUPLICATION: Findings on the same workflow file, same line, same pattern are duplicates. Keep the finding with the most complete evidence."
@@ -21,19 +24,24 @@ entryActions[1]{action,message}:
 steps[5]:
   - id: load-scanner-outputs
     name: Load All Scanner Outputs
+    skill: merge-scan-findings
     description: "Load every s{n}-{submodule}.json from the planning folder."
   - id: deduplicate
     name: Deduplicate Findings
+    skill: merge-scan-findings
     description: "Identify and merge duplicate findings (same file, same line, same pattern). Keep the most complete evidence."
   - id: correlate-patterns
     name: Cross-Pattern Correlation
+    skill: merge-scan-findings
     description: "Identify compound vulnerability chains where multiple patterns converge on the same workflow. Merge into compound findings with elevated severity notes."
   - id: build-reconciliation
     name: Build Reconciliation Table
+    skill: merge-scan-findings
     description: "Map every scanner finding (by scanner ID and finding number) to its merged finding number. Verify Unaccounted equals zero."
   - id: write-merged-output
     name: Write Merged Output
-    description: "Produce merged-findings.json with the unified finding set, reconciliation table, and observation list."
+    skill: execute-sub-agent
+    description: "Produce merged-findings.json with the unified finding set, reconciliation table, and observation list. Output format must conform to the merge schema."
 transitions[0]:
 exitActions[1]{action,message}:
   log,Finding merge complete — reconciliation table produced with zero Unaccounted

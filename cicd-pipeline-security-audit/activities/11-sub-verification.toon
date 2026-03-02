@@ -7,10 +7,13 @@ recognition[2]:
   - verify scan results
   - check scan completeness
 skills:
-  primary: verify-scan-output
-required: true
+  primary: execute-sub-agent
+  supporting[1]:
+    - verify-scan-output
+required: false
 estimatedTime: 5-10m
-rules[4]:
+rules[5]:
+  - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"
   - "Every workflow file discovered during scope-setup MUST appear as scanned in at least one scanner output"
   - "Every scanner output MUST confirm all seven patterns (P1-P7) were applied"
   - "Malformed or incomplete scanner outputs MUST be flagged for re-dispatch"
@@ -20,15 +23,19 @@ entryActions[1]{action,message}:
 steps[4]:
   - id: load-scanner-outputs
     name: Load All Scanner Outputs
+    skill: verify-scan-output
     description: "Load every s{n}-{submodule}.json from the planning folder. Validate each against the output schema (resource 04)."
   - id: verify-file-coverage
     name: Verify File Coverage
+    skill: verify-scan-output
     description: "Cross-reference scanned files against the workflow file inventory from scope-setup. Identify any unscanned files."
   - id: verify-pattern-coverage
     name: Verify Pattern Coverage
+    skill: verify-scan-output
     description: "For each scanner output, confirm all seven detection patterns were applied. Flag any scanner that skipped a pattern."
   - id: produce-gap-report
     name: Produce Gap Report
+    skill: verify-scan-output
     description: "Write verification-report.json with coverage status, gaps identified, and re-scan recommendations. Set verification_complete if no gaps found."
 transitions[0]:
 exitActions[1]{action,message}:
