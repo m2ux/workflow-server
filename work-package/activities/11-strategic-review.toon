@@ -56,7 +56,7 @@ steps[5]:
   - id: create-architecture-summary
     name: Create architecture summary
     description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
-checkpoints[2]:
+checkpoints[1]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
     message: "Which strategic review findings would you like to address?"
@@ -82,28 +82,6 @@ checkpoints[2]:
       - id: more-review
         label: Need more review
         description: Additional areas need examination
-  - id: review-result
-    name: Strategic Review Result Checkpoint
-    message: "Strategic review complete. Overall assessment?"
-    options[3]:
-      - id: pass
-        label: Review passed
-        description: Changes are minimal and focused - proceed to finalize
-        effect:
-          setVariable:
-            review_passed: true
-      - id: cleanup
-        label: Minor cleanup needed
-        description: Remove identified artifacts then proceed
-        effect:
-          setVariable:
-            needs_cleanup: true
-      - id: rework
-        label: Significant rework needed
-        description: Return to planning to address issues
-        effect:
-          setVariable:
-            review_passed: false
 decisions[1]:
   - id: review-result
     name: Strategic Review Decision
