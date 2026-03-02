@@ -61,7 +61,7 @@ The `README.md` file serves as the entry point and executive summary for a work 
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | [Comprehension artifact](../../comprehension/{area}.md) | Persistent codebase knowledge *(optional)* | 20-45m | ⬚ Pending |
+| — | [Comprehension artifact](../../comprehension/{area}.md) | Persistent codebase knowledge | 20-45m | ⬚ Pending |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
