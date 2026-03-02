@@ -41,7 +41,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[52]:
+variables[53]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -190,6 +190,10 @@ variables[52]:
   - name: skip_assumption_review
     type: boolean
     description: Whether to skip assumption review after task completion
+    defaultValue: false
+  - name: has_resolvable_assumptions
+    type: boolean
+    description: "Whether code-resolvable assumptions exist that can be validated through targeted analysis. Drives the assumption reconciliation loop."
     defaultValue: false
   - name: has_flagged_blocks
     type: boolean

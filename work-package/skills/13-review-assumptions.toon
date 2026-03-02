@@ -19,9 +19,10 @@ protocol:
   write-assumptions[2]:
     - Write collected assumptions to assumptions-log.md with type, statement, rationale, and alternatives for each
     - The file is the record of truth — do not duplicate assumption content in checkpoint messages
-  present-for-review[2]:
+  present-for-review[3]:
     - Present the checkpoint with a clickable markdown link to assumptions-log.md so the user can review the content
     - Do not inline assumption content in the checkpoint message — the file link is sufficient
+    - "If the reconcile-assumptions skill has run, only non-code-resolvable assumptions will be open. Frame the review accordingly — the user is validating stakeholder-dependent assumptions, not performing triage of the full set."
   record-outcomes[3]:
     - Mark each as confirmed, corrected, or needs-discussion
     - Update assumptions-log.md with outcomes and user responses
