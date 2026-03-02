@@ -12,7 +12,7 @@ skills:
   supporting[2]:
     - manage-artifacts
     - atlassian-operations
-required: false
+required: true
 estimatedTime: 10-20m
 artifactPrefix: "07"
 rules[5]:

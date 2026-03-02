@@ -17,7 +17,7 @@ This workflow guides the complete lifecycle of a single work package through fou
 | 04 | [**Research**](activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
 | 05 | [**Implementation Analysis**](activities/README.md#05-implementation-analysis) | yes | Understand current state, establish baselines |
 | 06 | [**Plan & Prepare**](activities/README.md#06-plan--prepare) | yes | Create implementation and test plans |
-| 07 | [**Assumptions Review**](activities/README.md#07-assumptions-review) | optional | Post plan summary and assumptions to issue tracker for stakeholder review |
+| 07 | [**Assumptions Review**](activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
 | 08 | [**Implement**](activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
 | 09 | [**Post-Implementation Review**](activities/README.md#09-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
 | 10 | [**Validate**](activities/README.md#10-validate) | yes | Run tests, build, and lint checks |
