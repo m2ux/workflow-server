@@ -1,0 +1,75 @@
+id: execute-sub-agent
+version: 1.0.0
+capability: "Bootstrap the workflow-server, load an assigned activity, follow its steps sequentially, and return structured output"
+
+description: "This skill defines how a sub-agent (dispatched by the orchestrator during primary-scan) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the Task prompt."
+
+resources[1]:
+  - "04"
+
+protocol:
+  bootstrap-get-rules[1]:
+    - Call get_rules() to load agent behavioral guidelines
+  bootstrap-get-activity[1]:
+    - "Call get_workflow_activity({ workflow_id: 'cicd-pipeline-security-audit', activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps"
+  exec-read-steps[1]:
+    - Read the activity's steps array in order
+  exec-per-step-description[1]:
+    - For each step, read the description field to understand what is required
+  exec-load-step-skill[1]:
+    - "If a step references a skill (step.skill), call get_skill({ skill_id, workflow_id: 'cicd-pipeline-security-audit' }) and follow its protocol for that step"
+  exec-produce-output[1]:
+    - Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step
+  exec-na-justification[1]:
+    - If a step cannot be completed (e.g., no workflow files found for a pattern), record an explicit N/A with justification — do not silently skip
+  exec-track-completed[1]:
+    - Track which steps have been completed in a steps_completed list
+  verify-steps-match[1]:
+    - steps_completed matches the activity's step IDs — no steps omitted
+  verify-json-complete[1]:
+    - The output JSON is well-formed and contains all required fields per the output schema (resource 04)
+
+output[1]:
+  - id: sub-agent-output
+    description: "Structured JSON conforming to resource 04 (sub-agent-output-schema)."
+    components:
+      scanner_id: "identifier for this agent instance (e.g., 'S1', 'S2', 'V', 'M')"
+      activity_followed: "the activity ID executed (e.g., 'sub-workflow-scan', 'sub-verification', 'sub-merge')"
+      steps_completed: "list of step IDs completed (must match activity definition)"
+      steps_skipped: "list of step IDs skipped with reasons (should be empty)"
+      findings: "structured list of findings with required fields per finding"
+      coverage: "per-file, per-pattern scan confirmation"
+
+errors:
+  step_cannot_complete:
+    cause: "A step requires data or context that is unavailable"
+    recovery: "Record the step as completed with output 'INCOMPLETE — [reason]'. Continue to next step. Flag in the self-verification."
+  activity_not_found:
+    cause: "get_workflow_activity returns an error"
+    recovery: "Fall back to the prompt instructions provided by the orchestrator. Note in output that activity was not loaded."
+  workflow_server_unavailable:
+    cause: "MCP tool calls fail"
+    recovery: "Fall back to the prompt instructions. Note in output that workflow-server was not available."
+
+tools:
+  get_rules:
+    when: "Bootstrap — first call"
+    returns: "Agent behavioral guidelines"
+  get_workflow_activity:
+    when: "Bootstrap — second call"
+    params: "workflow_id: cicd-pipeline-security-audit, activity_id"
+    returns: "Activity definition with steps, rules, outcome"
+  get_skill:
+    when: "Loading step-level skill references"
+    params: "skill_id, workflow_id: cicd-pipeline-security-audit"
+    returns: "Skill definition with protocol, tools, rules"
+  get_resource:
+    when: "Loading the output schema or pattern catalog"
+    params: "workflow_id: cicd-pipeline-security-audit, index"
+    returns: "Resource content (markdown)"
+  read_file:
+    when: "Reading workflow YAML files, scripts, CODEOWNERS"
+  grep:
+    when: "Searching for injection patterns across workflow files"
+  shell:
+    when: "Running multi-file pattern searches, file enumeration"

@@ -7,10 +7,13 @@ recognition[2]:
   - scan submodule workflows
   - run detection patterns
 skills:
-  primary: scan-injection-patterns
-required: true
+  primary: execute-sub-agent
+  supporting[1]:
+    - scan-injection-patterns
+required: false
 estimatedTime: 10-20m
-rules[7]:
+rules[8]:
+  - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"
   - "The scanner MUST apply ALL seven patterns (P1-P7) to every workflow file in the assigned submodule"
   - "Every finding MUST include: pattern ID, source (attacker-controlled input), sink (execution point), affected file path, affected line numbers, and evidence (the vulnerable code snippet)"
   - "Load resource 01 (injection pattern catalog) before beginning scan — it contains grep patterns, untrusted context variables, and real-world examples"
@@ -23,31 +26,40 @@ entryActions[1]{action,message}:
 steps[9]:
   - id: load-patterns
     name: Load Detection Pattern Catalog
+    skill: scan-injection-patterns
     description: "Load resource 01 (injection pattern catalog) for grep patterns, untrusted context variable lists, and detection heuristics."
   - id: scan-expression-injection
     name: "P1: Scan for Expression Injection"
+    skill: scan-injection-patterns
     description: "Search all workflow files for ${{ }} expressions in run: blocks. Cross-reference against the untrusted context variable list. Flag any expression that interpolates attacker-controllable values into shell commands."
   - id: scan-pwn-request
     name: "P2: Scan for Pwn Request Pattern"
+    skill: scan-injection-patterns
     description: "Identify workflows triggered by pull_request_target. For each, check whether the workflow checks out the PR head SHA or head.ref, then executes code from that checkout. Trace the full trigger → checkout → execution chain."
   - id: scan-comment-triggers
     name: "P3: Scan for Comment Trigger Abuse"
+    skill: scan-injection-patterns
     description: "Identify workflows triggered by issue_comment or pull_request_review_comment. Check whether they verify author_association (MEMBER, OWNER, COLLABORATOR) before executing privileged operations."
   - id: scan-permissions
     name: "P4: Scan for Excessive Permissions"
+    skill: scan-injection-patterns
     description: "Extract permission declarations at workflow, job, and step levels. Flag workflows with contents: write, pull-requests: write, or no explicit permissions (which default to broad access in some configurations)."
   - id: scan-fork-execution
     name: "P5: Scan for Fork Code Execution"
+    skill: scan-injection-patterns
     description: "Identify workflows that checkout fork/PR code and then execute it (run, build, test, go run, npm run, cargo run, python, etc.). Applies to pull_request_target and workflows that checkout github.event.pull_request.head.sha."
   - id: scan-ai-config
     name: "P6: Scan for AI Config Poisoning Surface"
+    skill: scan-injection-patterns
     description: "Check whether AI config files (CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/) exist and whether they are protected by CODEOWNERS with mandatory review. Check if any workflow loads these files as trusted context."
   - id: scan-dangerous-patterns
     name: "P7: Scan for Dangerous Execution Patterns"
+    skill: scan-injection-patterns
     description: "Search workflows and referenced scripts for curl|bash, eval, base64 decode + execute, dynamic script generation, and similar dangerous execution patterns."
   - id: write-output
     name: Write Scanner Output
-    description: "Produce s{n}-{submodule}.json with all findings, observations, coverage data, and per-file scan status."
+    skill: execute-sub-agent
+    description: "Produce s{n}-{submodule}.json with all findings, observations, coverage data, and per-file scan status. Output MUST conform to the schema in resource 04."
 transitions[0]:
 exitActions[1]{action,message}:
   log,Per-submodule scan complete — findings written to output file

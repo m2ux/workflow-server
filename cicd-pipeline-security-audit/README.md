@@ -74,7 +74,8 @@ cicd-pipeline-security-audit/
 │   ├── 04-dispatch-scanners.toon          # Agent dispatch + collection
 │   ├── 05-verify-scan-output.toon         # Coverage verification
 │   ├── 06-merge-scan-findings.toon        # Dedup + reconciliation
-│   └── 07-write-cicd-report.toon          # Report generation
+│   ├── 07-write-cicd-report.toon          # Report generation
+│   └── 08-execute-sub-agent.toon          # Sub-agent bootstrap + structured output
 └── resources/
     ├── 00-start-here.md                   # Quick reference
     ├── 01-injection-pattern-catalog.md    # Pattern signatures + examples
@@ -102,16 +103,17 @@ cicd-pipeline-security-audit/
 
 ## Skills
 
-| # | Skill | Capability |
-|---|-------|------------|
-| 00 | execute-cicd-audit | Orchestrate audit phases |
-| 01 | score-cicd-severity | Impact x Exploitability severity scoring |
-| 02 | inventory-workflows | Workflow file discovery + classification |
-| 03 | scan-injection-patterns | 7-pattern detection (P1-P7) |
-| 04 | dispatch-scanners | Sub-agent dispatch + collection |
-| 05 | verify-scan-output | Coverage verification |
-| 06 | merge-scan-findings | Dedup + reconciliation |
-| 07 | write-cicd-report | Report generation |
+| # | Skill | Capability | Used By |
+|---|-------|------------|---------|
+| 00 | execute-cicd-audit | Orchestrate audit phases | All main activities (01-04) |
+| 01 | score-cicd-severity | Impact x Exploitability severity scoring | Report Generation |
+| 02 | inventory-workflows | Workflow file discovery + classification | Scope Setup, Reconnaissance |
+| 03 | scan-injection-patterns | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
+| 04 | dispatch-scanners | Sub-agent dispatch + collection | Primary Scan |
+| 05 | verify-scan-output | Coverage verification | Sub-agent V (step-level), Report Generation |
+| 06 | merge-scan-findings | Dedup + reconciliation | Sub-agent M (step-level) |
+| 07 | write-cicd-report | Report generation | Report Generation |
+| 08 | execute-sub-agent | Sub-agent bootstrap + structured output | Sub-agents S1-Sn, V, M (primary) |
 
 ## Resources
 

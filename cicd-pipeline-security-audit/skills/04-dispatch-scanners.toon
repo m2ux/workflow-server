@@ -13,22 +13,18 @@ inputs[2]:
     required: true
 
 protocol:
-  compose-scanner-prompts[3]:
-    - For each assigned scanner, build a context payload with submodule path, workflow file list, and relevant reconnaissance data
-    - Include resource 01 (pattern catalog) reference for the scanner to load
-    - Specify the sub-workflow-scan activity as the execution activity
-  dispatch-scanners[2]:
-    - Dispatch all scanner agents concurrently in a single batch
-    - Record dispatch status and agent IDs for collection
-  collect-results[2]:
-    - Wait for all scanners to return
-    - Verify each scanner produced a valid output file (s{n}-{submodule}.json)
-  dispatch-verification[2]:
-    - After all scanners return, compose V agent context with all scanner output paths and the workflow file inventory
-    - Dispatch V agent following the sub-verification activity
-  dispatch-merge[2]:
-    - After verification, compose M agent context with all scanner outputs and verification report
-    - Dispatch M agent following the sub-merge activity
+  compose-scanner-prompts[1]:
+    - "For each agent in the roster, build a Task prompt containing: (1) workflow-server bootstrap instructions — 'call get_rules() then call get_workflow_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: <assigned-activity-id> }), follow the activity steps sequentially'; (2) context variables — submodule path, workflow file list, scanner designator (S1-Sn), planning_folder_path, reconnaissance data for the assigned submodule; (3) output format requirement — 'write structured output to s{n}-{submodule}.json conforming to the output schema in resource 04'"
+  dispatch-scanners[1]:
+    - "Submit all scanner agents in the roster as concurrent Task calls in a single batch. Each Task call uses subagent_type=generalPurpose with the composed prompt from step 1."
+  collect-results[1]:
+    - "Wait for all scanners to return. Collect structured output from each. If any scanner fails or times out, record the failure and proceed with available results."
+  verify-dispatch-completeness[1]:
+    - "Compare the scanner roster (input) against the dispatched scanner list. Every scanner in the roster must have been dispatched and returned a result. Produce a dispatch manifest table: scanner_id, assigned_submodule, dispatched (yes/no), returned (yes/no), status. If any scanner was NOT dispatched, flag as INCOMPLETE and return the manifest for re-dispatch. Set scanners_dispatched count."
+  dispatch-verification[1]:
+    - "After all scanners return and dispatch completeness verified, compose V agent context with: all scanner output file paths, the workflow file inventory from scope-setup, and bootstrap instructions — 'call get_rules() then call get_workflow_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: sub-verification })'. Dispatch V agent with subagent_type=generalPurpose."
+  dispatch-merge[1]:
+    - "After V returns, compose M agent context with: all scanner output file paths, the verification report, severity rubric (resource 02), and bootstrap instructions — 'call get_rules() then call get_workflow_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: sub-merge })'. Dispatch M agent with subagent_type=generalPurpose."
 
 output[1]:
   - id: dispatch-status
