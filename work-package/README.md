@@ -12,7 +12,7 @@ This workflow guides the complete lifecycle of a single work package through fou
 |---|----------|----------|-------------|
 | 01 | [**Start Work Package**](activities/README.md#01-start-work-package) | yes | Verify/create issue, set up branch, PR, and planning folder |
 | 02 | [**Design Philosophy**](activities/README.md#02-design-philosophy) | yes | Classify problem, assess complexity, determine workflow path |
-| 14 | [**Codebase Comprehension**](activities/README.md#codebase-comprehension-optional) | optional | Build/augment mental model of unfamiliar codebase via persistent knowledge artifacts |
+| 14 | [**Codebase Comprehension**](activities/README.md#codebase-comprehension) | yes | Build/augment mental model of codebase via persistent knowledge artifacts |
 | 03 | [**Requirements Elicitation**](activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
 | 04 | [**Research**](activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
 | 05 | [**Implementation Analysis**](activities/README.md#05-implementation-analysis) | yes | Understand current state, establish baselines |

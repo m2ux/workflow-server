@@ -105,7 +105,6 @@ graph TD
 |------------|---------|----------|
 | `problem-classified` | Confirm problem type and complexity assessment | yes |
 | `workflow-path` | Select workflow path: full, elicit-only, research-only, or direct | yes |
-| `comprehension-check` | Offer codebase comprehension step (recommended for unfamiliar codebases) | yes |
 | `design-philosophy-doc` | Confirm design philosophy document is accurate | yes |
 | `assumptions-review` | Review assumptions from classification and path selection | yes |
 
@@ -113,10 +112,9 @@ graph TD
 
 | Condition | Target |
 |-----------|--------|
-| `needs_comprehension == true` | codebase-comprehension |
-| `needs_comprehension == false AND needs_elicitation == true` | requirements-elicitation |
-| `needs_comprehension == false AND needs_elicitation == false AND needs_research == true` | research |
-| `needs_comprehension == false AND skip_optional_activities == true` (default) | plan-prepare |
+| default | codebase-comprehension |
+
+Codebase comprehension is mandatory — the activity always transitions to codebase-comprehension. Subsequent routing (to elicitation, research, or plan-prepare) is handled by codebase-comprehension's own transitions.
 
 **Artifacts:** `design-philosophy.md`, `assumptions-log.md` (both in planning folder).
 
@@ -130,35 +128,26 @@ graph TD
     cpClassified -->|"revise"| classifyProblem
 
     determinePath --> cpPath{"workflow-path checkpoint"}
-    cpPath -->|"full workflow"| cpComprehension
-    cpPath -->|"elicit-only"| cpComprehension
-    cpPath -->|"research-only"| cpComprehension
-    cpPath -->|"skip optional"| cpComprehension
+    cpPath -->|"full workflow"| docPhilosophy
+    cpPath -->|"elicit-only"| docPhilosophy
+    cpPath -->|"research-only"| docPhilosophy
+    cpPath -->|"skip optional"| docPhilosophy
 
-    cpComprehension{"comprehension-check checkpoint"}
-    cpComprehension -->|"build understanding"| docPhilosophy["Document design philosophy"]
-    cpComprehension -->|"skip"| docPhilosophy
-
-    docPhilosophy --> cpDoc{"design-philosophy-doc checkpoint"}
+    docPhilosophy["Document design philosophy"] --> cpDoc{"design-philosophy-doc checkpoint"}
     cpDoc -->|"confirmed"| collectAssumptions["Collect assumptions"]
     cpDoc -->|"revise"| docPhilosophy
 
     collectAssumptions --> createLog["Create assumptions log"]
     createLog --> cpAssumptions{"assumptions-review checkpoint"}
-    cpAssumptions -->|"confirmed"| pathBranch{"Selected path?"}
+    cpAssumptions -->|"confirmed"| exitComprehension(["codebase-comprehension"])
     cpAssumptions -->|"corrections"| collectAssumptions
-
-    pathBranch -->|"comprehension"| exitComprehension(["codebase-comprehension"])
-    pathBranch -->|"needs elicitation"| exitElicit(["requirements-elicitation"])
-    pathBranch -->|"needs research"| exitResearch(["research"])
-    pathBranch -->|"direct"| exitPlan(["plan-prepare"])
 ```
 
 ---
 
-### Codebase Comprehension (optional)
+### Codebase Comprehension
 
-**Purpose:** Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in `.engineering/artifacts/comprehension/` that grow across successive tasks, forming a reusable knowledge base. Recommended when maintaining unfamiliar codebases.
+**Purpose:** Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in `.engineering/artifacts/comprehension/` that grow across successive tasks, forming a reusable knowledge base. Always runs after design-philosophy.
 
 **Skills:**
 

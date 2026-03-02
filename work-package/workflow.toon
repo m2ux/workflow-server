@@ -84,8 +84,8 @@ variables[53]:
     defaultValue: false
   - name: needs_comprehension
     type: boolean
-    description: Whether codebase comprehension step is needed (recommended for unfamiliar codebases)
-    defaultValue: false
+    description: Whether codebase comprehension is needed. Always true after design-philosophy (comprehension is mandatory). May be re-set to true by assumptions-review if stakeholder feedback requires deeper understanding.
+    defaultValue: true
   - name: complexity
     type: string
     description: "Problem complexity assessed during design-philosophy (simple|moderate|complex). Drives ADR creation."

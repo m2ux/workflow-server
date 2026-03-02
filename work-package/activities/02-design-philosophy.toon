@@ -79,7 +79,7 @@ steps[7]:
     description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
   - id: determine-path
     name: Determine Workflow Path
-    description: "Based on problem complexity and clarity, determine which optional activities are needed."
+    description: "Based on problem complexity and clarity, determine which optional activities are needed. Always set needs_comprehension to true — codebase comprehension is mandatory before planning."
   - id: document-philosophy
     name: Document Design Philosophy
     description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
@@ -167,22 +167,6 @@ checkpoints[4]:
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
-  - id: comprehension-check
-    name: Codebase Comprehension Checkpoint
-    message: "This task involves changes to the codebase. Would you like to build or refresh your understanding of the relevant code areas first? This is recommended when working on unfamiliar codebases."
-    options[2]:
-      - id: build-comprehension
-        label: Build codebase understanding
-        description: "Analyze the codebase to build a mental model before making design decisions (creates persistent knowledge artifact)"
-        effect:
-          setVariable:
-            needs_comprehension: true
-      - id: skip-comprehension
-        label: Skip - already familiar
-        description: "Proceed without comprehension step (familiar with this codebase area)"
-        effect:
-          setVariable:
-            needs_comprehension: false
   - id: design-philosophy-doc
     name: Design Philosophy Document Checkpoint
     message: "Does the design philosophy accurately capture the problem, classification, and workflow rationale?"
@@ -193,53 +177,21 @@ checkpoints[4]:
       - id: revise
         label: Revise document
         description: Some aspects need correction
-transitions[4]:
+  - id: assumptions-review
+    name: Design Philosophy Assumptions Checkpoint
+    message: "Are the design philosophy assumptions correct?"
+    options[3]:
+      - id: confirmed
+        label: Assumptions confirmed
+        description: All assumptions are correct
+      - id: corrections
+        label: Some need correction
+        description: One or more assumptions need adjustment
+      - id: skip
+        label: No significant assumptions
+        description: No assumptions worth documenting
+transitions[1]:
   - to: codebase-comprehension
-    condition:
-      type: simple
-      variable: needs_comprehension
-      operator: ==
-      value: true
-  - to: requirements-elicitation
-    condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: needs_comprehension
-          operator: ==
-          value: false
-        - type: simple
-          variable: needs_elicitation
-          operator: ==
-          value: true
-  - to: research
-    condition:
-      type: and
-      conditions[3]:
-        - type: simple
-          variable: needs_comprehension
-          operator: ==
-          value: false
-        - type: simple
-          variable: needs_elicitation
-          operator: ==
-          value: false
-        - type: simple
-          variable: needs_research
-          operator: ==
-          value: true
-  - to: plan-prepare
-    condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: needs_comprehension
-          operator: ==
-          value: false
-        - type: simple
-          variable: skip_optional_activities
-          operator: ==
-          value: true
     isDefault: true
 outcome[5]:
   - Problem clearly defined and classified
@@ -247,11 +199,10 @@ outcome[5]:
   - Workflow path determined
   - Design philosophy documented in artifact
   - Ready for next activity based on problem nature
-context_to_preserve[8]:
+context_to_preserve[7]:
   - problem_statement - Clear problem definition
   - problem_type - Specific problem or inventive goal
   - complexity - simple, moderate, or complex
-  - needs_comprehension - Whether codebase comprehension step is needed
   - needs_elicitation - Whether requirements elicitation is needed
   - needs_research - Whether research is needed
   - skip_optional_activities - Whether to skip optional discovery activities
