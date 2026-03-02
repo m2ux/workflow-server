@@ -1,0 +1,94 @@
+id: reconcile-assumptions
+version: 1.0.0
+capability: Iteratively resolve code-analyzable assumptions through targeted codebase analysis until only stakeholder-dependent assumptions remain
+
+description: "Cross-cutting skill that closes the gap between assumption collection and user review. After an activity collects assumptions, this skill classifies each as code-resolvable or not, runs targeted analysis on the resolvable ones, captures newly surfaced assumptions, and repeats until convergence — the point where no open assumptions can be further reduced through code examination. The user then reviews only the irreducible set."
+
+inputs[3]:
+  - id: assumptions_log_path
+    description: "Path to the current assumptions-log.md"
+    required: true
+  - id: target_path
+    description: "Path to the codebase to analyze"
+    required: true
+  - id: comprehension_artifact_path
+    description: "Path to existing comprehension artifact to augment with findings. If absent, findings are recorded only in the assumptions log."
+    required: false
+
+protocol:
+  classify-resolvability[4]:
+    - "Read all open assumptions from assumptions-log.md"
+    - "For each, determine whether targeted code analysis could validate or invalidate it"
+    - "Code-resolvable: assumptions about code behavior, data flows, type structures, API contracts, test coverage, implementation details, library behavior, ordering guarantees, error handling paths"
+    - "Not code-resolvable: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external system behavior"
+  targeted-analysis[4]:
+    - "For each code-resolvable assumption, perform focused investigation: trace relevant code paths, examine implementations, diff between versions, compare behavior"
+    - "Record evidence with file paths and line numbers for every finding"
+    - "Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)"
+    - "Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies"
+  update-assumptions[3]:
+    - "Update assumptions-log.md: mark resolved assumptions with finding, evidence, and resolution status"
+    - "Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)"
+    - "Maintain a running count: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable"
+  check-convergence[3]:
+    - "Re-classify all open assumptions after the analysis pass"
+    - "If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set has_resolvable_assumptions to true"
+    - "If no open assumptions are code-resolvable, convergence is reached — set has_resolvable_assumptions to false"
+  update-comprehension-artifact[3]:
+    - "If a comprehension artifact exists, append findings as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')"
+    - "Update the Open Questions table in the comprehension artifact with any questions resolved or surfaced during reconciliation"
+    - "If no comprehension artifact exists, skip this phase — findings are preserved in the assumptions log"
+
+output[1]:
+  - id: reconciled-assumptions
+    description: "Assumptions log with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining"
+    artifact:
+      name: "assumptions-log.md"
+      action: "update"
+    components:
+      resolution_counts: "Total, validated, invalidated, partially validated, open (with reason for each open item)"
+      convergence_iterations: "Number of classify-analyze cycles performed before convergence"
+      newly_surfaced: "Count of assumptions discovered during analysis that were not in the original set"
+
+rules:
+  convergence-required: "The loop MUST continue until no code-resolvable assumptions remain. Do not ask the user to select which assumptions to analyze — analyze all code-resolvable ones in each iteration."
+  evidence-based: "Every resolution MUST cite file paths and code evidence. A resolution without evidence is not a resolution."
+  new-assumptions-captured: "Assumptions surfaced during analysis MUST be captured, classified, and resolved if code-resolvable — within the same convergence loop, not deferred."
+  comprehension-augmented: "When a comprehension artifact exists, findings MUST be appended to it for traceability. Reconciliation findings are a form of targeted comprehension."
+  no-user-interaction: "The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result at the activity's assumptions checkpoint."
+  classification-transparency: "When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis."
+
+tools:
+  read_file:
+    when: Examining source code, assumptions log, comprehension artifact
+    usage: Read source files to trace assumptions to evidence
+  grep:
+    when: Searching for specific patterns, types, function calls referenced in assumptions
+    usage: Find implementations, test coverage, usage patterns
+  glob:
+    when: Discovering test files, module structure, configuration files
+    usage: Locate test suites, find related source files
+  shell:
+    when: Read-only git operations for history and diff analysis
+    params: "git log, git diff, git show, git tag"
+    usage: Compare behavior across versions, trace when changes were introduced
+  write_file:
+    when: Updating assumptions log and comprehension artifact with findings
+    usage: Write resolved assumptions and deep-dive sections
+  semantic_search:
+    when: Finding code by meaning when tracing assumptions about behavior
+    usage: Locate relevant code when exact symbols are unknown
+
+resources[1]:
+  - "26"
+
+errors:
+  no_open_assumptions:
+    cause: No open assumptions exist in the assumptions log
+    recovery: Skip reconciliation — nothing to resolve. Set has_resolvable_assumptions to false.
+  all_non_resolvable:
+    cause: All open assumptions are classified as not code-resolvable
+    recovery: Convergence is immediate — set has_resolvable_assumptions to false and proceed to user review.
+  analysis_inconclusive:
+    cause: Code analysis cannot definitively validate or invalidate an assumption
+    recovery: Mark as Partially Validated with the evidence gathered and reasoning for inconclusiveness. Reclassify as not-code-resolvable if further code analysis would not help.

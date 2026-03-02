@@ -9,16 +9,17 @@ recognition[3]:
   - prepare for implementation
 skills:
   primary: create-plan
-  supporting[3]:
+  supporting[4]:
     - classify-problem
     - create-test-plan
     - review-assumptions
+    - reconcile-assumptions
 required: true
 estimatedTime: 20-45m
 artifactPrefix: "06"
 rules[1]:
   - "Planning protocol and domain rules are in the planning skill"
-steps[9]:
+steps[10]:
   - id: apply-design
     name: Apply design framework
     description: Use design framework skill to structure the approach
@@ -34,6 +35,10 @@ steps[9]:
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add planning-phase assumptions to the assumptions log"
+  - id: reconcile-assumptions
+    name: Reconcile assumptions
+    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    skill: reconcile-assumptions
   - id: create-todos
     name: Create TODO list from plan
     description: "Break down plan into actionable tasks and add to assumptions log for review"
@@ -49,6 +54,26 @@ steps[9]:
     actions[1]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
+loops[1]:
+  - id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    type: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    description: "Iterates until all code-resolvable assumptions are resolved. Each cycle analyzes resolvable assumptions, updates the log with evidence-based resolutions, captures newly surfaced assumptions, and reclassifies. Exits when no open assumption can be further reduced through code examination."
+    steps[3]:
+      - id: targeted-analysis
+        name: Analyze code-resolvable assumptions
+        description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+      - id: update-assumptions-and-artifact
+        name: Update assumptions log and comprehension artifact
+        description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+      - id: reclassify-resolvability
+        name: Reclassify open assumptions
+        description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
 artifacts[2]:
   - id: plan-document
     name: work-package-plan.md
@@ -56,29 +81,16 @@ artifacts[2]:
   - id: test-plan-document
     name: test-plan.md
     location: planning
-checkpoints[3]:
+checkpoints[2]:
   - id: approach-confirmed
     name: Approach Checkpoint
     message: Approach confirmed?
     options[2]{id,label}:
       confirmed,Approach confirmed
       revise,Revise approach
-  - id: assumptions-review
-    name: Planning Assumptions Checkpoint
-    message: "Are the planning assumptions correct?"
-    options[3]:
-      - id: confirmed
-        label: Assumptions confirmed
-        description: All planning assumptions are correct
-      - id: corrections
-        label: Some need correction
-        description: One or more assumptions need adjustment
-      - id: skip
-        label: No significant assumptions
-        description: No planning assumptions worth documenting
   - id: assumptions-log-final
     name: Final Assumptions Review
-    message: "Before implementation: the assumptions log contains all assumptions from design, requirements, research, analysis, and planning phases. Do these meet expectations?"
+    message: "Before implementation: all code-resolvable assumptions across design, requirements, research, analysis, and planning phases have been resolved through targeted analysis. The remaining assumptions require stakeholder or operational input. Do these meet expectations?"
     options[3]:
       - id: acceptable
         label: Assumptions log is acceptable

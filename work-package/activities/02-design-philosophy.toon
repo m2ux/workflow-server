@@ -10,8 +10,9 @@ recognition[4]:
   - determine approach
 skills:
   primary: classify-problem
-  supporting[1]:
+  supporting[2]:
     - review-assumptions
+    - reconcile-assumptions
 required: true
 estimatedTime: 10-20m
 artifactPrefix: "02"
@@ -69,7 +70,7 @@ artifacts[2]:
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
-steps[6]:
+steps[7]:
   - id: define-problem
     name: Identify and Define Problem
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
@@ -91,7 +92,31 @@ steps[6]:
   - id: create-assumptions-log
     name: Create assumptions log
     description: "Create the assumptions log with initial assumptions from this activity."
-checkpoints[5]:
+  - id: reconcile-assumptions
+    name: Reconcile assumptions
+    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    skill: reconcile-assumptions
+loops[1]:
+  - id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    type: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    description: "Iterates until all code-resolvable assumptions are resolved. Each cycle analyzes resolvable assumptions, updates the log with evidence-based resolutions, captures newly surfaced assumptions, and reclassifies. Exits when no open assumption can be further reduced through code examination."
+    steps[3]:
+      - id: targeted-analysis
+        name: Analyze code-resolvable assumptions
+        description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+      - id: update-assumptions-and-artifact
+        name: Update assumptions log and comprehension artifact
+        description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+      - id: reclassify-resolvability
+        name: Reclassify open assumptions
+        description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+checkpoints[4]:
   - id: problem-classified
     name: Problem Classification Checkpoint
     message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Does this assessment look correct?"
@@ -168,19 +193,6 @@ checkpoints[5]:
       - id: revise
         label: Revise document
         description: Some aspects need correction
-  - id: assumptions-review
-    name: Design Philosophy Assumptions Checkpoint
-    message: "Are the design philosophy assumptions correct?"
-    options[3]:
-      - id: confirmed
-        label: Assumptions confirmed
-        description: All assumptions are correct
-      - id: corrections
-        label: Some need correction
-        description: One or more assumptions need adjustment
-      - id: skip
-        label: No significant assumptions
-        description: No assumptions worth documenting
 transitions[4]:
   - to: codebase-comprehension
     condition:
