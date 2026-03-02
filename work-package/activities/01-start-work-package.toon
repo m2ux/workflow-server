@@ -110,7 +110,7 @@ steps[13]:
       value: true
   - id: present-problem-overview
     name: Present Problem Overview
-    description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity."
+    description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Problem Overview' section."
     actions[1]:
       - action: message
         message: "**Problem Overview** (plain-language summary for stakeholder reference)"

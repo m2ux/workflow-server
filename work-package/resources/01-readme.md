@@ -48,6 +48,18 @@ The `README.md` file serves as the entry point and executive summary for a work 
 
 ---
 
+## Problem Overview
+
+*Populated during start-work-package activity.*
+
+---
+
+## Solution Overview
+
+*Populated during plan-prepare activity.*
+
+---
+
 ## 📊 Progress
 
 | # | Item | Description | Estimate | Status |
@@ -119,6 +131,15 @@ Implement hybrid search combining vector similarity with BM25 keyword matching t
 This work package improves search.
 ```
 
+### Problem Overview / Solution Overview
+
+Two plain-language sections written for non-technical stakeholders. Each is exactly two paragraphs.
+
+- **Problem Overview** is populated by the `present-problem-overview` step during `start-work-package`. Describes what the system currently does and why it's problematic, then the consequences.
+- **Solution Overview** is populated by the `present-solution-overview` step during `plan-prepare`. Describes what the fix does and how it works at a high level.
+
+Both sections are written to the README when their respective steps execute. The placeholder text is replaced with the generated content.
+
 ### Progress Table
 
 The Progress table is the primary navigation for the planning folder. Each Item entry is hyperlinked to the corresponding artifact file. Items that do not produce a standalone artifact (e.g., Implementation, Validation, PR review) are plain text.
@@ -182,6 +203,8 @@ Update this document at these points:
 - [ ] Title includes work package name and month/year
 - [ ] Status field is current
 - [ ] Executive summary is 2-3 sentences
+- [ ] Problem Overview is populated (two paragraphs, plain language)
+- [ ] Solution Overview is populated (two paragraphs, plain language)
 - [ ] Progress table items are hyperlinked to artifacts
 - [ ] Progress table has Description and Estimate columns filled in
 - [ ] Links table has Jira ticket and PR references
