@@ -40,11 +40,13 @@ protocol:
     - "Present the checkpoint to the user using AskQuestion: map checkpoint_message to prompt, checkpoint_options to selectable choices with {id, label}."
     - "Resume the worker using Task resume, passing the checkpoint_response: { checkpoint_id, selected_option_id, effects_applied (from the selected option's effect) }."
     - "The resumed worker may yield again for the next checkpoint (go back to process-result) or return activity_complete."
-  commit-artifacts[6]:
+  commit-artifacts[8]:
     - "After processing the worker result, check for new or modified engineering artifacts in the parent repo"
     - "Run 'git status --porcelain .engineering/artifacts/' to detect uncommitted changes"
     - "If changes exist, read .engineering/AGENTS.md for the definitive git structure diagram and commit instructions — this file is the authoritative source for determining which paths are regular directories vs submodules and how each should be committed"
     - "Follow the commit procedures from .engineering/AGENTS.md: regular files (in .engineering/artifacts/) commit directly in the parent repo; submodule paths (.engineering/workflows/, .engineering/history/) require a two-step commit-and-push"
+    - "Update the planning folder README.md progress table: mark artifacts produced by the completed activity as ✅ Complete. If the activity itself represents a progress item (e.g., Implementation, Validation), update its status too. Update the footer status line to reflect current workflow position."
+    - "Include the README.md update in the same commit as the activity artifacts"
     - "Commit with conventional message format: 'docs(<workflow-id>): <activity-id> artifacts' and push to remote"
     - "If no changes detected, skip this phase silently — not every activity produces artifacts"
   evaluate-transition[4]:
