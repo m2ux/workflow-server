@@ -1,0 +1,68 @@
+id: primary-scan
+version: 1.0.0
+name: Primary Scan
+description: "Dispatch per-submodule scanner agents concurrently, each applying all seven detection patterns (P1-P7). After all scanners return, dispatch verification (V) and merge (M) agents. Fully automated — no user checkpoints."
+problem: Each submodule's GitHub Actions workflows must be scanned for all seven vulnerability classes, findings verified for completeness, and merged into a unified finding set.
+recognition[3]:
+  - scan workflows
+  - run detection
+  - primary scan
+skills:
+  primary: execute-cicd-audit
+  supporting[2]:
+    - dispatch-scanners
+    - scan-injection-patterns
+required: true
+estimatedTime: 20-40m
+rules[8]:
+  - "CONCURRENT DISPATCH: All scanner agents (S1-Sn) MUST be dispatched simultaneously in a single batch"
+  - "DISPATCH COMPLETENESS GATE: scanners_dispatched MUST equal scanners_assigned. This is a HARD STOP."
+  - "Each scanner agent follows the sub-workflow-scan activity and applies all seven patterns (P1-P7)"
+  - "Scanner output: each agent writes s{n}-{submodule}.json to the planning folder"
+  - "After all scanners return, dispatch verification agent (V) following sub-verification activity"
+  - "After verification, dispatch merge agent (M) following sub-merge activity"
+  - "The orchestrator MUST NOT analyze workflow files directly — all detection is delegated to scanner sub-agents"
+  - "FINDING COUNT RECONCILIATION: M produces a reconciliation table. Unaccounted MUST equal zero. This is a HARD STOP."
+entryActions[1]{action,message}:
+  log,Starting primary scan — dispatching per-submodule scanner agents
+steps[5]:
+  - id: dispatch-scanners
+    name: Dispatch Scanner Agents
+    skill: dispatch-scanners
+    description: "Dispatch S1-Sn scanner agents concurrently, one per submodule. Each agent receives its submodule path, workflow file list, and reconnaissance data. Each follows the sub-workflow-scan activity."
+  - id: collect-scanner-results
+    name: Collect Scanner Results
+    description: "Wait for all scanner agents to return. Verify scanners_dispatched equals scanners_assigned. Load each s{n}-{submodule}.json output file."
+  - id: dispatch-verification
+    name: Dispatch Verification Agent
+    skill: dispatch-scanners
+    description: "Dispatch V agent following sub-verification activity. V checks scan completeness: every workflow file covered, every pattern applied."
+  - id: process-verification-gaps
+    name: Process Verification Gaps
+    description: "If V reports gaps, re-dispatch targeted scanners for uncovered files. Set verification_complete only from V's output."
+  - id: dispatch-merge
+    name: Dispatch Merge Agent
+    skill: dispatch-scanners
+    description: "Dispatch M agent following sub-merge activity. M deduplicates findings, correlates cross-pattern compounds, and produces the unified finding set."
+transitions[1]{to,isDefault}:
+  report-generation,true
+exitActions[2]{action,message}:
+  log,Primary scan complete — all findings merged and reconciled
+  set,primary_scan_complete=true
+outcome[5]:
+  - All scanner agents dispatched and returned
+  - Every workflow file scanned for all seven patterns
+  - Verification agent confirmed completeness
+  - Merge agent produced unified finding set with reconciliation
+  - Findings ready for severity scoring and report generation
+context_to_preserve[5]:
+  - scanners_dispatched - Number of scanner agents dispatched
+  - verification_complete - Whether V confirmed completeness
+  - merge_complete - Whether M completed with zero Unaccounted
+  - total_findings - Total findings after merge
+  - merged_findings_path - Path to the merged findings JSON
+artifacts[1]:
+  - id: merged-findings
+    name: merged-findings.json
+    location: planning
+    description: "Unified finding set after deduplication and cross-pattern correlation"

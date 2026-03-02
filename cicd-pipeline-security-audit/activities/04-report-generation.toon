@@ -1,0 +1,65 @@
+id: report-generation
+version: 1.0.0
+name: Report Generation
+description: "Apply severity scoring to all merged findings, verify coverage gate, and produce the final CI/CD security audit report with remediation recommendations. Fully automated — no user checkpoints."
+problem: Merged findings must be severity-scored using the Impact x Exploitability rubric, coverage verified, and formatted into a structured report with actionable remediation guidance.
+recognition[3]:
+  - generate audit report
+  - consolidate findings
+  - finalize report
+skills:
+  primary: execute-cicd-audit
+  supporting[2]:
+    - score-cicd-severity
+    - write-cicd-report
+required: true
+estimatedTime: 15-30m
+rules[5]:
+  - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless verification_complete=true AND merge_complete=true. If either is unmet, return to primary-scan."
+  - "The merged findings from M are the canonical finding inventory — every finding must appear in the report"
+  - "COVERAGE GATE: Every workflow file in scope must have been scanned. Block if any file is uncovered."
+  - "Every finding MUST include: pattern ID (P1-P7), source, sink, severity, affected workflow file, and remediation recommendation"
+  - "Remediation recommendations MUST reference the playbook in resource 03"
+entryActions[1]{action,message}:
+  log,Starting report generation — scoring findings and producing audit report
+steps[5]:
+  - id: apply-severity
+    name: Apply Severity Scoring
+    skill: score-cicd-severity
+    description: "Score every finding using the Impact x Exploitability rubric from resource 02. Apply cross-pattern correlation bonuses for compound vulnerabilities."
+  - id: severity-crosscheck
+    name: Severity Cross-Check Against Campaign Data
+    skill: score-cicd-severity
+    description: "Validate severity assignments against known campaign outcomes. A pull_request_target + fork checkout + token exfiltration chain (the Trivy pattern) is the calibration anchor for Critical severity."
+  - id: coverage-gate
+    name: "Verify Coverage Gate (BLOCKING)"
+    required: true
+    skill: verify-scan-output
+    description: "Re-verify that every workflow file in scope was scanned. Block report generation if any file is uncovered."
+  - id: attach-remediation
+    name: Attach Remediation Guidance
+    skill: write-cicd-report
+    description: "For each finding, attach specific remediation steps from resource 03. Include before/after code examples where applicable."
+  - id: write-report
+    name: Write Final Report
+    skill: write-cicd-report
+    description: "Produce 01-cicd-audit-report.md with executive summary, finding details, severity distribution, remediation roadmap, and methodology notes."
+transitions[0]:
+exitActions[2]{action,message}:
+  log,Report generation complete — CI/CD security audit report finalized
+  set,report_complete=true
+outcome[4]:
+  - All findings severity-scored using Impact x Exploitability rubric
+  - Coverage gate verified
+  - Remediation guidance attached to every finding
+  - Final audit report produced
+context_to_preserve[4]:
+  - total_findings - Total number of confirmed findings
+  - critical_findings - Number of Critical-severity findings
+  - high_findings - Number of High-severity findings
+  - report_path - Path to the final audit report
+artifacts[1]:
+  - id: audit-report
+    name: 01-cicd-audit-report.md
+    location: planning
+    description: "Complete CI/CD security audit report with findings, severity scores, remediation recommendations, and methodology"

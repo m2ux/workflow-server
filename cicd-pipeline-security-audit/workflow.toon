@@ -1,0 +1,85 @@
+"$schema": ../../schemas/workflow.schema.json
+id: cicd-pipeline-security-audit
+version: 1.0.0
+title: CI/CD Pipeline Security Audit Workflow
+description: "Fully automated multi-phase AI security audit for GitHub Actions CI/CD pipelines. Detects source-to-sink injection vulnerabilities exploited by autonomous attack agents (hackerbot-claw campaign, Feb 2026). The orchestrator coordinates but does not analyze — all workflow file analysis is delegated to per-submodule scanner sub-agents (S1-Sn), each applying seven detection patterns (P1-P7). V agent verifies scan completeness. M agent merges and deduplicates findings. Phases: scope setup, reconnaissance, concurrent primary scan (S1-Sn + V + M), severity-calibrated report generation."
+author: m2ux
+tags[3]:
+  - security
+  - cicd
+  - workflow
+rules[18]:
+  - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+  - "PREREQUISITE: At least one target submodule MUST be specified before the workflow begins. If 'all' is specified, scan every submodule that contains .github/workflows/."
+  - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions."
+  - "DETECTION SCOPE: Seven vulnerability classes derived from the hackerbot-claw campaign (P1-P7): expression injection, Pwn Request, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, dangerous execution patterns."
+  - "SOURCE-SINK MENTAL MODEL: Every finding MUST identify the source (attacker-controlled input) and the sink (privileged execution point). Findings without a clear source-to-sink flow are observations, not vulnerabilities."
+  - "ORCHESTRATOR ROLE DISCIPLINE: The orchestrator coordinates but MUST NOT analyze workflow files or produce findings. All detection is delegated to scanner sub-agents."
+  - "CONCURRENT DISPATCH: All per-submodule scanner agents (S1-Sn) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
+  - "DISPATCH COMPLETENESS GATE: scanners_dispatched MUST equal scanners_assigned. This is a HARD STOP."
+  - "COVERAGE GATE: Every .github/workflows/*.yml and .github/workflows/*.yaml file in scope MUST be scanned. Report generation blocks on incomplete coverage."
+  - "VERIFICATION AGENT GATE: After collecting all scanner results, the orchestrator MUST dispatch a verification sub-agent (V). V's gap report drives targeted re-scan before merge. The orchestrator MUST NOT self-certify verification."
+  - "MERGE AGENT GATE: After verification, the orchestrator MUST dispatch a merge sub-agent (M). M performs deduplication, cross-pattern correlation, and severity scoring. The orchestrator MUST NOT perform the merge inline."
+  - "SEVERITY SCORING: Use Impact x Exploitability rubric from resource 02. Impact factors: secret exposure, code execution scope, repository takeover potential. Exploitability factors: unauthenticated fork PR (high), comment trigger without auth check (high), requires maintainer action (low)."
+  - "CROSS-PATTERN CORRELATION: Compound vulnerabilities (e.g., pull_request_target + expression injection + excessive permissions) receive elevated severity over individual patterns."
+  - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
+  - "SCANNER OUTPUT FORMAT: Each scanner writes structured JSON to s{n}-{submodule}.json in the planning folder, following the schema in resource 04."
+  - "FINDING COUNT RECONCILIATION: M produces a reconciliation table where Unaccounted MUST equal zero for every scanner. This is a HARD STOP."
+  - "REMEDIATION GUIDANCE: Every finding in the final report MUST include a specific remediation recommendation referencing the playbook in resource 03."
+  - "AI CONFIG FILES: Detection pattern P6 covers CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/, and similar AI agent configuration files. These are high-value prompt injection targets when not protected by CODEOWNERS."
+variables[14]:
+  - name: target_submodules
+    type: string
+    description: "Comma-separated list of submodule paths to audit, or 'all' to scan every submodule with .github/workflows/"
+  - name: planning_folder_path
+    type: string
+    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-cicd-security-audit"
+  - name: workflow_file_count
+    type: number
+    description: "Total number of workflow files discovered across all target submodules"
+    defaultValue: 0
+  - name: submodule_count
+    type: number
+    description: "Number of submodules in scope"
+    defaultValue: 0
+  - name: scanners_assigned
+    type: number
+    description: "Count of per-submodule scanner agents assigned during reconnaissance"
+    defaultValue: 0
+  - name: scanners_dispatched
+    type: number
+    description: "Count of scanner agents actually dispatched and returned"
+    defaultValue: 0
+  - name: reconnaissance_complete
+    type: boolean
+    description: "Phase 2 gate — reconnaissance finished"
+    defaultValue: false
+  - name: primary_scan_complete
+    type: boolean
+    description: "Phase 3 gate — all scanners returned"
+    defaultValue: false
+  - name: verification_complete
+    type: boolean
+    description: "Phase 3 verification gate — V agent dispatched and gap report processed. MUST be set by V's output."
+    defaultValue: false
+  - name: merge_complete
+    type: boolean
+    description: "Phase 3 merge gate — M agent dispatched, reconciliation table produced with zero Unaccounted."
+    defaultValue: false
+  - name: report_complete
+    type: boolean
+    description: "Phase 4 gate — report generation finished"
+    defaultValue: false
+  - name: total_findings
+    type: number
+    description: "Total number of confirmed findings after merge"
+    defaultValue: 0
+  - name: critical_findings
+    type: number
+    description: "Number of Critical-severity findings"
+    defaultValue: 0
+  - name: high_findings
+    type: number
+    description: "Number of High-severity findings"
+    defaultValue: 0
+initialActivity: scope-setup

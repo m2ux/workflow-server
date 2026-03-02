@@ -1,0 +1,65 @@
+id: reconnaissance
+version: 1.0.0
+name: Reconnaissance
+description: "Classify all discovered workflows by trigger type, map permission scopes, identify checkout patterns, and assign per-submodule scanner agents. Fully automated — no user checkpoints."
+problem: Scanner agents need a structured inventory with trigger classification, permission mapping, and checkout pattern identification to apply detection patterns efficiently.
+recognition[3]:
+  - classify workflows
+  - reconnaissance
+  - map triggers
+skills:
+  primary: execute-cicd-audit
+  supporting[1]:
+    - inventory-workflows
+required: true
+estimatedTime: 10-20m
+rules[5]:
+  - "The orchestrator performs classification and agent assignment ONLY — it MUST NOT apply detection patterns or produce findings"
+  - "Every workflow file must be classified by its trigger types (pull_request, pull_request_target, issue_comment, workflow_dispatch, push, schedule, etc.)"
+  - "Permission scope mapping must distinguish workflow-level vs job-level vs step-level permissions"
+  - "Checkout patterns must be identified: default checkout, PR head checkout (ref: github.event.pull_request.head.sha), fork checkout"
+  - "Agent assignment: one scanner agent per submodule, designated S1 through Sn"
+entryActions[1]{action,message}:
+  log,Starting reconnaissance — classifying workflows and assigning scanner agents
+steps[5]:
+  - id: classify-triggers
+    name: Classify Workflow Triggers
+    skill: inventory-workflows
+    description: "For each workflow file, extract and classify all trigger events. Flag pull_request_target, issue_comment, and pull_request_review_comment as high-priority for scanner agents."
+  - id: map-permissions
+    name: Map Permission Scopes
+    skill: inventory-workflows
+    description: "For each workflow, extract permissions blocks at workflow, job, and step levels. Flag workflows with write permissions or no explicit permissions (which default to broad access)."
+  - id: identify-checkout-patterns
+    name: Identify Checkout Patterns
+    skill: inventory-workflows
+    description: "For each workflow, identify actions/checkout usages and their ref parameters. Flag any checkout of PR head SHA, head.ref, or fork code."
+  - id: build-reconnaissance-summary
+    name: Build Reconnaissance Summary
+    description: "Produce reconnaissance-summary.json in the planning folder with per-workflow classification data."
+  - id: assign-scanner-agents
+    name: Assign Scanner Agents
+    description: "Assign one scanner agent (S1-Sn) per submodule. Record assignment in scanner-assignments.json. Set scanners_assigned."
+transitions[1]{to,isDefault}:
+  primary-scan,true
+exitActions[2]{action,message}:
+  log,Reconnaissance complete — workflows classified and scanner agents assigned
+  set,reconnaissance_complete=true
+outcome[4]:
+  - All workflows classified by trigger type
+  - Permission scopes mapped per workflow
+  - Checkout patterns identified and flagged
+  - Scanner agents assigned (one per submodule)
+context_to_preserve[3]:
+  - scanners_assigned - Number of scanner agents assigned
+  - reconnaissance_data - Per-workflow classification summary
+  - scanner_assignments - Agent-to-submodule mapping
+artifacts[2]:
+  - id: reconnaissance-summary
+    name: reconnaissance-summary.json
+    location: planning
+    description: "Per-workflow classification data: triggers, permissions, checkout patterns"
+  - id: scanner-assignments
+    name: scanner-assignments.json
+    location: planning
+    description: "Agent-to-submodule assignment mapping"

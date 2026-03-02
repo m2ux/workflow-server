@@ -1,0 +1,53 @@
+id: inventory-workflows
+version: 1.0.0
+capability: Discover, enumerate, and classify GitHub Actions workflow files across target submodules
+
+description: "Systematic workflow file discovery and classification. Enumerates all .yml/.yaml files under .github/workflows/ in each target submodule. Classifies each workflow by trigger types, permission scopes, checkout patterns, and referenced scripts. Produces structured inventory data for scanner agent dispatch."
+
+inputs[1]:
+  - id: target-submodules
+    description: "List of submodule paths to inventory"
+    required: true
+
+protocol:
+  discover-files[2]:
+    - For each submodule, enumerate .github/workflows/*.yml and .github/workflows/*.yaml
+    - Record file path, file size, and last modified date
+  classify-triggers[2]:
+    - Parse each workflow YAML for the 'on:' block
+    - Extract and classify trigger types with their configurations
+  map-permissions[2]:
+    - Extract top-level 'permissions:' block (workflow-level defaults)
+    - Extract per-job 'permissions:' overrides
+  identify-checkouts[3]:
+    - Find all uses of actions/checkout in each workflow
+    - Extract the 'ref:' parameter value (if specified)
+    - Flag any checkout that references PR head SHA, head.ref, or merge commit
+  identify-scripts[1]:
+    - Find all 'run:' blocks and referenced script files for later P7 scanning
+
+output[1]:
+  - id: workflow-inventory
+    description: "Complete inventory of workflow files with classification data"
+    components:
+      file_list: "All workflow file paths with metadata"
+      trigger_classification: "Per-workflow trigger types"
+      permission_map: "Per-workflow permission scopes"
+      checkout_patterns: "Per-workflow checkout configurations"
+
+tools:
+  shell:
+    when: "Enumerating files with glob patterns"
+    usage: "find {submodule}/.github/workflows/ -name '*.yml' -o -name '*.yaml'"
+  read_file:
+    when: "Parsing workflow YAML files"
+  grep:
+    when: "Searching for trigger patterns, permission blocks, checkout actions"
+
+errors:
+  no_workflows:
+    cause: "Submodule has no .github/workflows/ directory"
+    recovery: "Record as zero-workflow submodule and skip for scanner assignment"
+  parse_failure:
+    cause: "Workflow file contains invalid YAML"
+    recovery: "Record parse error and flag file for manual review"
