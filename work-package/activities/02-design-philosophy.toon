@@ -116,7 +116,7 @@ loops[1]:
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
-checkpoints[4]:
+checkpoints[3]:
   - id: problem-classified
     name: Problem Classification Checkpoint
     message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Does this assessment look correct?"
@@ -177,19 +177,6 @@ checkpoints[4]:
       - id: revise
         label: Revise document
         description: Some aspects need correction
-  - id: assumptions-review
-    name: Design Philosophy Assumptions Checkpoint
-    message: "Are the design philosophy assumptions correct?"
-    options[3]:
-      - id: confirmed
-        label: Assumptions confirmed
-        description: All assumptions are correct
-      - id: corrections
-        label: Some need correction
-        description: One or more assumptions need adjustment
-      - id: skip
-        label: No significant assumptions
-        description: No assumptions worth documenting
 transitions[1]:
   - to: codebase-comprehension
     isDefault: true
