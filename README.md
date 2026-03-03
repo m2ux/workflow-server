@@ -36,6 +36,8 @@ workflows/                    # Worktree checkout
 |----------|-------------|
 | [`work-package`](work-package/) | Single work package implementation (issue → PR → merge) |
 | [`work-packages`](work-packages/) | Multi-package planning for large initiatives |
+| [`substrate-node-security-audit`](substrate-node-security-audit/) | Fully automated multi-phase AI security audit for Substrate-based node codebases |
+| [`cicd-pipeline-security-audit`](cicd-pipeline-security-audit/) | Fully automated CI/CD pipeline security audit detecting source-to-sink injection vulnerabilities in GitHub Actions |
 
 ## Universal Skills ([meta/skills/](meta/skills/))
 
@@ -45,6 +47,10 @@ workflows/                    # Worktree checkout
 | [`01-workflow-execution`](meta/skills/01-workflow-execution.toon) | Execute workflows following schema patterns |
 | [`02-state-management`](meta/skills/02-state-management.toon) | Manage workflow state across sessions |
 | [`03-artifact-management`](meta/skills/03-artifact-management.toon) | Manage planning artifact folder structure |
+| [`04-orchestrate-workflow`](meta/skills/04-orchestrate-workflow.toon) | Orchestrate workflow execution using a persistent worker sub-agent |
+| [`05-execute-activity`](meta/skills/05-execute-activity.toon) | Bootstrap and execute a single workflow activity |
+| [`06-knowledge-base-search`](meta/skills/06-knowledge-base-search.toon) | Optimise knowledge base searches via pre-indexed domain map |
+| [`07-atlassian-operations`](meta/skills/07-atlassian-operations.toon) | Perform Atlassian Jira and Confluence operations via MCP |
 
 ## Worktree Setup
 
