@@ -27,11 +27,13 @@ protocol:
     - "Bootstrap instructions for worker: call get_rules(), then get_workflow_activity(), then get_skill() for primary skill, then execute steps sequentially"
     - "For first dispatch: use Task tool with subagent_type=generalPurpose. For subsequent dispatches: use Task tool with resume=worker_agent_id to preserve context"
     - "Include in prompt: 'Report back with structured result: result_type (activity_complete or checkpoint_pending), variables_changed, checkpoints_responded, artifacts_produced, steps_completed'"
-  process-result[4]:
+  process-result[6]:
     - "Read worker output: check result_type field"
     - "If result_type is 'checkpoint_pending': go to handle-checkpoint-yield"
-    - "If result_type is 'activity_complete': extract variables_changed, checkpoints_responded, artifacts_produced"
-    - "Update state: apply all variable changes reported by the worker. Record completed activity in completedActivities list."
+    - "If result_type is 'activity_complete': extract variables_changed, checkpoints_responded, artifacts_produced, steps_completed"
+    - "VALIDATE COMPLETION: Compare the worker's steps_completed against the activity definition's required steps, and checkpoints_responded against all required blocking checkpoints. If any required step or required blocking checkpoint is missing, do NOT accept the result — resume the worker with instructions to complete the remaining steps/checkpoints. This check requires the activity definition loaded during dispatch-activity."
+    - "If validation fails, go back to dispatch-activity (resume) with the missing steps and checkpoints listed explicitly in the prompt. Do not advance."
+    - "If validation passes: update state — apply all variable changes reported by the worker. Record completed activity in completedActivities list."
   handle-checkpoint-yield[7]:
     - "Worker has yielded a blocking checkpoint. Extract checkpoint_id, checkpoint_message, checkpoint_options from the worker result."
     - "Apply any partial_variables_changed from the worker to orchestrator state before presenting the checkpoint."
