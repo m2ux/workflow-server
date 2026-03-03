@@ -138,7 +138,7 @@ steps[13]:
       value: false
   - id: initialize-planning-folder
     name: Initialize Planning Folder
-    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title."
+    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title. Load resource 01 (readme) for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text."
     skill: manage-artifacts
   - id: determine-next-activity
     name: Determine Next Activity
