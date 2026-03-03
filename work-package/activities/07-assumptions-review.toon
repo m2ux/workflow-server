@@ -1,7 +1,7 @@
 id: assumptions-review
 version: 1.1.0
 name: Assumptions Review
-description: "Post implementation plan summary and accumulated assumptions to the issue tracker for stakeholder review, await feedback, and iterate until stakeholders approve. Plan content appears above assumptions in the posted comment. Supports both Jira and GitHub issue platforms."
+description: "Post open assumptions and a link to the engineering artifacts README to the issue tracker for stakeholder review, await feedback, and iterate until stakeholders approve. The comment is minimal — full plan details live in the engineering artifacts, not the ticket. Supports both Jira and GitHub issue platforms."
 problem: Stakeholders need to review and validate assumptions before implementation begins
 recognition[3]:
   - review assumptions with stakeholders
@@ -15,16 +15,15 @@ skills:
 required: true
 estimatedTime: 10-20m
 artifactPrefix: "07"
-rules[5]:
-  - "Compile the implementation plan summary AND assumptions from ALL prior phases (design, requirements, research, analysis, planning) into a single comment for stakeholder review"
-  - "Assumptions appear as a flat bulleted list after the Constraints section — read work-package-plan.md for the plan and assumptions-log.md for the assumptions"
-  - "Comment format: use bullets, numbered lists, and short sections — not paragraphs. Optimize for low cognitive load and fast scanning. Every line should be independently parseable."
+rules[4]:
+  - "The ticket comment contains ONLY open assumptions and a link to the engineering artifacts README. Full plan details live in the engineering artifacts — do NOT duplicate them into the ticket comment."
+  - "Comment format: use bullets and short sections — not paragraphs. Optimize for low cognitive load and fast scanning."
   - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
   - "The compiled comment body is generated content that the user must evaluate — per the CHECKPOINT YIELD RULE, it must be in the yield context"
 steps[4]:
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
-    description: "Read work-package-plan.md and assumptions-log.md from the planning folder. Compile a single comment optimized for low cognitive load: use bullets and short sections, not paragraphs. Structure: (1) '## Proposed Implementation Plan' heading with bold one-line scope summary, (2) '### What' — bulleted list of changes with bold labels, (3) '### Tasks' — numbered task list, (4) '### Constraints' — bulleted list, (5) '### Open Assumptions' — flat bulleted list of ONLY open (unresolved) assumptions that require stakeholder input (statement only, no category or status). If all assumptions have been resolved through code analysis, state 'None — all assumptions were resolved through code analysis during planning.' (6) '### Test strategy' — bulleted list. Keep each section to 2-5 items. Avoid prose, tables, and status labels — every line should be scannable. Per the CHECKPOINT YIELD RULE, the compiled comment must be included in the checkpoint yield context — do NOT rely on action:message for delivery."
+    description: "Read assumptions-log.md from the planning folder. Compile a minimal comment with two sections: (1) '### Open Assumptions' — flat bulleted list of ONLY open (unresolved) assumptions that require stakeholder input (statement only, no category or status). If all assumptions have been resolved through code analysis, state 'None — all assumptions were resolved through code analysis during planning.' (2) '### Engineering Artifacts' — a single link to the planning folder README.md in the engineering repo, constructed from git remotes: `[Planning artifacts]({ENG_REPO_URL}/blob/main/{planning_folder_path}/README.md)`. Do NOT include plan summaries, task lists, constraints, or test strategy — these live in the engineering artifacts. Per the CHECKPOINT YIELD RULE, the compiled comment must be included in the checkpoint yield context — do NOT rely on action:message for delivery."
   - id: post-comment
     name: Post comment to issue tracker
     description: "Post the prepared comment on the issue tracker ticket. Uses Jira addCommentToJiraIssue or GitHub gh CLI depending on issue_platform."
