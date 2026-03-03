@@ -130,7 +130,7 @@ steps[13]:
     description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path."
   - id: create-pr
     name: Create Draft PR
-    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch. Load resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet."
+    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch. Load resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names."
     condition:
       type: simple
       variable: use_existing_pr

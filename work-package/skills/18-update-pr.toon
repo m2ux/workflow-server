@@ -45,6 +45,7 @@ rules:
   description-template: "Use resource 12 for PR description template and structure"
   review-mode-template: "In review mode, load resource 24 for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there."
   ready-last: "Mark PR ready for review only after description is finalized"
+  resolve-links-from-remotes: "NEVER guess or infer repository URLs for PR description links. ALWAYS resolve them from git remotes. The engineering repo URL is obtained from the PARENT repo (the repo containing .engineering/): run 'git -C <parent-repo-path> remote get-url origin' and strip the .git suffix. The target repo URL is obtained from the TARGET repo (where the PR lives): run 'git -C <target-path> remote get-url origin'. These are different repositories — the engineering repo owner will differ from the target repo owner."
 
 tools:
   shell:

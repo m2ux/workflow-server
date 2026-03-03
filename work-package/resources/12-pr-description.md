@@ -216,8 +216,25 @@ This PR adds some improvements to search.
 Always link to related artifacts on the same line for easy scanning:
 
 ```markdown
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/{BRANCH_NAME}/docs/tests/test-plan-hybrid-search.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering]({ENG_REPO_URL}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan]({TARGET_REPO_URL}/blob/{BRANCH_NAME}/docs/tests/test-plan.md)
 ```
+
+#### CRITICAL: Resolving Link Placeholders
+
+**NEVER guess or infer repository URLs.** Always resolve them from git remotes:
+
+```bash
+# Engineering repo URL (parent repo where .engineering/ lives):
+ENG_REPO_URL=$(git -C <parent-repo-path> remote get-url origin | sed 's/\.git$//')
+
+# Target repo URL (submodule where the PR is created):
+TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
+
+# Convert SSH URLs to HTTPS if needed:
+# git@github.com:org/repo.git → https://github.com/org/repo
+```
+
+The `ENG_REPO_URL` comes from the **parent repo** (the repo containing `.engineering/`), not the target submodule. These are different repositories with different owners.
 
 **When to include each link:**
 - **Ticket** - Always include if work is tracked in a ticket
