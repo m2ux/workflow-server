@@ -85,9 +85,9 @@ The `README.md` file serves as the entry point and executive summary for a work 
 
 | Resource | Link |
 |----------|------|
-| Jira Ticket | [PROJ-N](https://shielded.atlassian.net/browse/PROJ-N) |
-| Parent Epic | [PROJ-N](https://shielded.atlassian.net/browse/PROJ-N) — [Epic title] |
-| PR | [#N](https://github.com/midnightntwrk/midnight-node/pull/N) |
+| Jira Ticket | [PROJ-N](https://{jira_host}/browse/PROJ-N) |
+| Parent Epic | [PROJ-N](https://{jira_host}/browse/PROJ-N) — [Epic title] |
+| PR | [#N](https://{repo_host}/{org}/{repo}/pull/N) |
 
 ---
 
