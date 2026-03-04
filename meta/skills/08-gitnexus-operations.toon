@@ -2,7 +2,7 @@ id: gitnexus-operations
 version: 1.0.0
 capability: Query and navigate codebases using the GitNexus knowledge graph MCP server
 
-description: "This skill guides agents through the correct use of GitNexus MCP tools for codebase understanding, impact analysis, debugging, and refactoring. GitNexus builds a knowledge graph from source code — indexing symbols, call relationships, execution flows (processes), and functional areas (communities). Agents should use GitNexus when they need to understand how code works together (not just where text appears), trace execution flows, assess blast radius before changes, or perform safe multi-file renames. Load resource 04 (gitnexus-reference) for the full tool reference, workflows, and examples."
+description: "This skill guides agents through the correct use of GitNexus MCP tools for codebase understanding, impact analysis, debugging, and refactoring. GitNexus builds a knowledge graph from source code — indexing symbols, call relationships, execution flows (processes), and functional areas (communities). Agents should use GitNexus when they need to understand how code works together (not just where text appears), trace execution flows, assess blast radius before changes, or perform safe multi-file renames. Load resource 04 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands."
 
 inputs[2]:
   - id: task-type
@@ -13,9 +13,10 @@ inputs[2]:
     required: true
 
 protocol:
-  verify-index[2]:
+  verify-index[3]:
     - "Read gitnexus://repo/{name}/context to check index freshness and get codebase stats"
     - "If the index is stale or missing, run 'npx gitnexus analyze' in the terminal before proceeding"
+    - "Available MCP resources for navigation: gitnexus://repo/{name}/clusters (functional areas), gitnexus://repo/{name}/cluster/{clusterName} (area members), gitnexus://repo/{name}/processes (all execution flows), gitnexus://repo/{name}/process/{processName} (step-by-step trace), gitnexus://repo/{name}/schema (graph schema for Cypher)"
   select-workflow[4]:
     - "explore: Use query() to find execution flows related to a concept, then context() for symbol deep-dives, then read process resources for full traces"
     - "impact-analysis: Use impact() with direction 'upstream' to find dependents, then detect_changes() for pre-commit checks. Assess risk by depth (d=1 WILL BREAK, d=2 LIKELY AFFECTED, d=3 MAY NEED TESTING)"
@@ -44,7 +45,7 @@ rules:
   impact-before-change: "Before modifying shared code, run impact() with direction 'upstream' to understand what depends on the target"
   dry-run-renames: "ALWAYS preview renames with dry_run=true before applying. Review graph edits (high confidence) separately from text_search edits (lower confidence, review carefully)"
   detect-after-refactor: "After any refactoring operation, run detect_changes() to verify only expected files were modified"
-  resource-reference: "Load resource 04 (gitnexus-reference) for the full tool reference with detailed workflows, checklists, and examples for each task type"
+  resource-reference: "Load resource 04 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
 
 resources[1]:
   - "04"
@@ -74,6 +75,7 @@ tools:
     when: "Complex structural queries that other tools cannot answer — read gitnexus://repo/{name}/schema first"
     params: "query: Cypher query string"
     returns: "Results formatted as markdown table"
+    schema: "Nodes: File, Function, Class, Interface, Method, Community, Process. Edges via CodeRelation.type: CALLS, IMPORTS, EXTENDS, IMPLEMENTS, DEFINES, MEMBER_OF, STEP_IN_PROCESS."
   list_repos:
     when: "Discovering which repositories are indexed and available"
     params: none
