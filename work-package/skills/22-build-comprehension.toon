@@ -20,8 +20,12 @@ protocol:
     - List contents of .engineering/artifacts/comprehension/ directory
     - Match existing artifacts by project name, module name, or domain terms from problem_statement
     - Summarize relevant artifacts with coverage scope and last-updated date
-  architecture-survey[5]:
+  check-gitnexus[2]:
+    - "Check if the target codebase has a GitNexus index: read gitnexus://repo/{name}/context or call list_repos"
+    - "If indexed, prefer GitNexus tools (query, context, process traces) over grep for structural analysis throughout this skill. If not indexed or stale, fall back to grep/read/glob."
+  architecture-survey[6]:
     - "Top-down survey: start with project root structure, build system, entry points"
+    - "When GitNexus is available: use query() to discover execution flows and functional areas, read cluster resources for module groupings, and context() for dependency mapping — this yields structural understanding faster than grep"
     - "Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs"
     - "Map dependency relationships between modules (imports, trait implementations, cross-module calls)"
     - "Identify overarching patterns: layered architecture, event-driven, actor model, plugin system, etc."
@@ -45,9 +49,10 @@ protocol:
     - "When augmenting: add new sections, update existing sections with deeper detail, preserve prior content"
     - "Include metadata header: date, work-package reference, coverage scope, related artifacts"
     - "Include an 'Open Questions' section (markdown table) between Domain Concept Mapping and Deep-Dive Sections — this section is maintained by the question-management protocol"
-  deep-dive[3]:
+  deep-dive[4]:
     - "Present candidate areas based on architecture survey and problem relevance"
     - "For selected area: trace data flows, examine implementation details, document edge cases"
+    - "When GitNexus is available: use context() to trace callers/callees, read process resources for full execution traces, and use cypher() for custom call chain queries"
     - "Append findings as dedicated subsections in the comprehension artifact"
   question-management[4]:
     - "The 'Open Questions' section is a markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section"
@@ -68,6 +73,7 @@ output[1]:
       deep_dives: "Targeted exploration sections added during user-driven loop"
 
 rules:
+  prefer-gitnexus: "When the target codebase has a GitNexus index, prefer gitnexus query() and context() over grep for understanding execution flows, call relationships, module dependencies, and architecture. GitNexus finds how code works together — grep finds where text appears. Load resource meta:04 (gitnexus-reference) for tool workflows and examples."
   persistent-artifacts: "Comprehension artifacts persist across work packages — they are cumulative knowledge, not disposable planning documents"
   augment-not-replace: "When existing artifacts cover the same area, augment them with new sections and deeper detail rather than replacing"
   hypothesis-framing: "Frame design rationale as hypotheses for user validation — the goal is to enable the user to qualify assumptions, not to assert correctness"
@@ -77,15 +83,28 @@ rules:
   question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
   open-questions-before-yield: "The Open Questions table is generated content the user must evaluate — per the workflow's CHECKPOINT YIELD RULE, include it in the yield context."
 
-resources[1]:
+resources[2]:
   - "25"
+  - "meta:04"
 
 tools:
+  gitnexus_query:
+    when: "PREFERRED for architecture survey — finding execution flows, functional areas, and how code works together"
+    params: "query: concept or module name, optional goal and task_context"
+    returns: "Processes (execution flows) with symbols and file locations"
+  gitnexus_context:
+    when: "PREFERRED for abstractions and rationale — 360-degree view of callers, callees, and process participation"
+    params: "name: symbol name, optional file_path for disambiguation"
+    returns: "Categorized incoming/outgoing references, process participation"
+  gitnexus_cypher:
+    when: "Custom structural queries for call chains, dependency trees, or module relationships"
+    params: "query: Cypher query against the knowledge graph"
+    returns: "Results as markdown table"
   read_file:
     when: Examining source code, project configuration, existing artifacts
     usage: Read source files, Cargo.toml, module declarations, existing comprehension artifacts
   grep:
-    when: Searching for patterns, types, traits, module usage across codebase
+    when: "Searching for specific text patterns, string literals, or codebases without a GitNexus index. Use gitnexus query/context instead when structural relationships are needed."
     usage: Find type definitions, trait implementations, cross-module references, domain terms
   glob:
     when: Discovering project structure and file layout
