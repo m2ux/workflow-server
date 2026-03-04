@@ -15,7 +15,8 @@ skills:
     - manage-artifacts
 required: false
 estimatedTime: 20-45m
-rules[8]:
+rules[9]:
+  - "TOOL SELECTION: When a GitNexus knowledge graph index is available for the target codebase, agents MUST use GitNexus tools (query, context, cypher) as the primary means of structural analysis. Grep is a fallback for text patterns only. The build-comprehension skill defines the full protocol and references resource meta:04 (gitnexus-reference) for tool workflows and examples."
   - "Comprehension artifacts are persistent — they live in .engineering/artifacts/comprehension/ and are reused across work packages"
   - "Always check for existing comprehension artifacts before creating new ones"
   - "Augment existing artifacts with new details rather than duplicating content"
