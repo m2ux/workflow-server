@@ -16,7 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.19.30",
+    "@types/node": "^22.19.13",
     "ajv": "^8.17.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",

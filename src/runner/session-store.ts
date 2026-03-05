@@ -79,7 +79,7 @@ export class SessionStore {
     const stmt = this.requireDb().prepare(
       "SELECT * FROM sessions WHERE status IN ('creating', 'running', 'awaiting_checkpoint')",
     );
-    return stmt.all() as SessionRow[];
+    return stmt.all() as unknown as SessionRow[];
   }
 
   updateStatus(id: string, status: SessionStatus, error?: string): void {
