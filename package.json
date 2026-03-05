@@ -11,7 +11,9 @@
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "runner": "tsx src/runner/index.ts",
+    "runner:start": "node dist/runner/index.js"
   },
   "license": "MIT",
   "devDependencies": {
@@ -23,7 +25,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
+    "@slack/bolt": "^4.6.0",
     "@toon-format/toon": "^2.1.0",
+    "dotenv": "^17.3.1",
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.22.4"
   }
