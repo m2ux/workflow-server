@@ -1,58 +1,64 @@
 # Headless Slack Workflow Runner - March 2026
 
 **Created:** 2026-03-05
-**Status:** In Progress
+**Status:** Planning
 **Type:** Feature
-**Target:** workflow-server (`feat/headless-slack-runner` branch)
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
 
 ---
 
-## Executive Summary
+## 🎯 Executive Summary
 
-Add a headless workflow runner to the workflow-server project that enables Slack-driven, parallel workflow execution using Cursor's Agent Client Protocol (ACP). Each workflow run gets an isolated git worktree and its own `agent acp` process. Workflow checkpoints are bridged to Slack interactive messages, allowing users to trigger and interact with workflows without an IDE.
+Harden the headless Slack workflow runner for merge readiness by adding SQLite state persistence, structured logging with file rotation, and graceful crash recovery. This transforms the existing PoC — which already handles ACP protocol, checkpoint bridging, and worktree isolation — into an operationally reliable tool for headless workflow execution via Slack.
 
 ---
 
 ## Problem Overview
 
-The workflow-server currently runs inside a Cursor IDE session. Each active workflow occupies one IDE window, and the git working tree, agent context, and checkpoint interactions are all bound to that window. This means only one workflow can execute at a time per IDE instance, and running a second workflow requires opening another window, manually configuring the workspace, and switching between sessions to respond to checkpoints.
+The headless Slack workflow runner currently keeps all session state in an in-memory JavaScript Map, meaning any runner restart — whether intentional or due to a crash — loses all active workflow context with no way to recover. Logging goes to the console with no file output, so post-mortem debugging requires someone to have been watching the terminal. When the runner shuts down, it stops the Slack connection but leaves agent processes running and git worktrees on disk, and if the runner itself crashes, those orphaned worktrees accumulate indefinitely.
 
-This serialization bottleneck slows down work that could otherwise run in parallel — for example, two independent work packages targeting different submodules. It also ties workflow execution to the developer's desktop: workflows cannot be started, monitored, or interacted with from a phone, from Slack, or by a teammate. If the IDE window is closed or the laptop sleeps, the workflow stops.
+These gaps are acceptable for a proof-of-concept but prevent the runner from being used for real workflow execution. A developer who restarts the runner mid-workflow loses all context. A crash that happens overnight leaves no diagnostic trail. And accumulated orphaned worktrees waste disk space and can cause git confusion. Before the runner can be merged, it needs to persist state, write structured logs to files, and clean up after itself on both graceful and ungraceful shutdown.
 
 ---
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix adds three operational capabilities to the existing runner architecture. First, a SQLite database (using Node.js's built-in `node:sqlite` module, requiring no additional dependencies) stores session state — workflow ID, Slack thread coordinates, status, and timestamps — so that session records survive runner restarts. Second, all console output is replaced with the pino structured JSON logger, which writes machine-readable log entries to daily-rotating files with automatic retention management. Third, the runner now cleans up after itself: on graceful shutdown it terminates all active agent processes and removes their worktrees, and on startup it sweeps any orphaned worktrees left behind by a previous crash.
+
+These changes are layered onto the existing architecture without restructuring it. The SessionManager gains a persistence adapter that saves state at each lifecycle transition, a logger that replaces console calls with structured output, and a shutdown method that iterates active sessions. The WorktreeManager gains a sweep method that identifies stale worktrees by their distinctive prefix. Each change is independently committable and testable, and the final validation — running one complete workflow end-to-end via Slack — serves as the merge gate.
 
 ---
 
-## Progress
+## 📊 Progress
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
-| 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, approach | 15-30m | ✅ Complete |
-| 06 | [Work package plan](06-work-package-plan.md) | Architecture, implementation tasks, design decisions | 20-45m | ✅ Complete |
-| — | Implementation | `src/runner/` module (7 files), deps, config | 2-4h | ✅ Complete |
-| — | Tests | ACP client, checkpoint bridge, worktree manager (19 tests) | 30-60m | ✅ Complete |
-| — | Validation | Type-check clean, all new tests passing | 15-30m | ✅ Complete |
-| — | Live validation | Test against real Slack + Cursor ACP | 30-60m | ⬚ Pending |
-| — | PR | Submit for review | 15-30m | ⬚ Pending |
+| 02 | Design philosophy | Problem classification, design rationale | 15-30m | ✅ Complete |
+| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | ongoing | ✅ Complete |
+| 03 | [Requirements elicitation](03-requirements-elicitation.md) | Stakeholder requirements, scope, success criteria | 20-30m | ✅ Complete |
+| 04 | [Research](04-research.md) | SQLite, pino, ACP protocol, crash handling | 30-45m | ✅ Complete |
+| 05 | [Implementation analysis](05-implementation-analysis.md) | Gap analysis, baselines, success criteria | 20-30m | ✅ Complete |
+| 06 | [Implementation plan](06-implementation-plan.md) | Task breakdown, dependencies, ordering | 20-45m | ◐ In Progress |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ◐ In Progress |
+| — | Implementation | Code changes per plan (7 tasks) | 5-7h | ⬚ Pending |
+| — | Change block index | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
+| — | Code review | Automated code quality review | 10-20m | ⬚ Pending |
+| — | Test suite review | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| — | Strategic review | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | Live validation | End-to-end Slack + Cursor ACP run | 30-60m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 
 ---
 
-## Links
+## 🔗 Links
 
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#48](https://github.com/m2ux/workflow-server/issues/48) |
-| PR | [#49](https://github.com/m2ux/workflow-server/pull/49) (draft) |
-| Engineering Artifacts | [planning/2026-03-05-headless-slack-runner](https://github.com/shieldedtech/midnight-agent-eng/tree/main/.engineering/artifacts/planning/2026-03-05-headless-slack-runner) |
+| PR | [#49](https://github.com/m2ux/workflow-server/pull/49) |
 
 ---
 
-**Branch:** `feat/headless-slack-runner` in `m2ux/workflow-server`
-**Commit:** `6c054ff` feat: add headless Slack workflow runner via Cursor ACP
+**Status:** Planning
