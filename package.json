@@ -12,8 +12,7 @@
     "dev": "tsx src/index.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "runner": "tsx src/runner/index.ts",
-    "runner:start": "node dist/runner/index.js"
+    "runner": "tsx src/runner/index.ts"
   },
   "license": "MIT",
   "devDependencies": {
