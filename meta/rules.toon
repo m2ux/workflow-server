@@ -7,10 +7,11 @@ sections[14]:
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical
-    rules[3]:
+    rules[4]:
       - "CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics"
       - Execute workflow activities in the defined sequence unless transitions explicitly allow alternatives
-      - Honor all defined checkpoints and await user confirmation at each one
+      - "Honor all defined checkpoints within activities and await user confirmation at each checkpoint. Checkpoints are explicit constructs defined inside activity definitions — activity transitions are NOT checkpoints."
+      - "Activity transitions are deterministic and automatic. The orchestrator MUST NOT pause, prompt, or wait for user confirmation between activities. User interaction happens ONLY through checkpoints defined within activities."
   - id: code-modification
     title: Code Modification Boundaries
     priority: critical
@@ -24,10 +25,11 @@ sections[14]:
   - id: implementation-workflow
     title: Implementation Workflow Boundaries
     priority: critical
+    scope: "Applies to code implementation tasks within a single activity. Does NOT apply to the orchestrator's activity-to-activity transitions, which are governed by the orchestration rules."
     rules[5]:
-      - For complex implementations complete only ONE numbered task at a time
-      - Stop and ask user permission before proceeding to the next item
-      - NEVER implement multiple recommendations in a single iteration
+      - For complex implementations within an activity complete only ONE numbered task at a time
+      - Within an activity stop and ask user permission before proceeding to the next implementation item
+      - NEVER implement multiple recommendations in a single iteration within an activity
       - Provide brief summary of completed work before asking to continue
       - Break complex tasks into manageable specific steps
   - id: file-restrictions
@@ -167,13 +169,15 @@ sections[14]:
   - id: orchestration
     title: Orchestrator-Worker Execution Model
     priority: critical
-    rules[6]:
+    rules[8]:
       - "Workflows that define an orchestrator/worker execution model MUST be executed using two sub-agents: an orchestrator and a persistent worker"
       - "The orchestrator loads the workflow via get_workflow (receiving the schema preamble), manages transitions, evaluates conditions, and tracks state. It MUST NOT execute activity steps, write code, review code, or produce artifacts."
       - "The worker self-bootstraps each activity from get_workflow_activity and get_skill, executes steps, handles checkpoints with the user, and reports structured results (variables_changed, checkpoints_responded, artifacts_produced, steps_completed) back to the orchestrator."
       - "The worker MUST be resumed (not re-created) for each successive activity using the Task tool's resume parameter. This preserves accumulated codebase understanding and implementation context across the entire workflow."
       - "All git operations (branch, commit, push, PR) MUST be performed inside the target_path directory specified by the workflow, not in the parent repo."
       - "Check workflow.rules for the EXECUTION MODEL rule to determine whether a workflow uses this pattern. If absent, execute the workflow directly without the orchestrator/worker split."
+      - "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation."
+      - "USER INTERACTION BOUNDARY: The user interacts with the workflow ONLY through checkpoints defined within activities. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
   - id: domain-tool-discipline
     title: Domain Tool Discipline
     priority: critical
