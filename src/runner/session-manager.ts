@@ -2,6 +2,7 @@ import type { WebClient } from '@slack/web-api';
 import { AcpClient, type AcpSessionUpdate } from './acp-client.js';
 import { CheckpointBridge } from './checkpoint-bridge.js';
 import { createChildLogger } from './logger.js';
+import type { SessionStore } from './session-store.js';
 import { WorktreeManager, type WorktreeInfo } from './worktree-manager.js';
 import type { RunnerConfig } from './config.js';
 
@@ -49,13 +50,28 @@ export class SessionManager {
 
   private worktreeManager: WorktreeManager;
   private checkpointBridge: CheckpointBridge;
+  private store: SessionStore | undefined;
 
   constructor(
     private readonly config: RunnerConfig,
     private readonly slackClient: WebClient,
+    store?: SessionStore,
   ) {
     this.worktreeManager = new WorktreeManager(config.repo.path, config.repo.worktreeBaseDir);
     this.checkpointBridge = new CheckpointBridge(slackClient);
+    this.store = store;
+
+    if (store) {
+      const log = createChildLogger({ component: 'SessionManager' });
+      const stale = store.loadActive();
+      if (stale.length > 0) {
+        log.info({ count: stale.length, ids: stale.map((s) => s.id) },
+          'Found previously-active sessions (not re-attached)');
+        for (const row of stale) {
+          store.updateStatus(row.id, 'error', 'Stale session from previous run');
+        }
+      }
+    }
   }
 
   /**
@@ -90,6 +106,18 @@ export class SessionManager {
     this.sessions.set(id, session);
     this.threadToSession.set(`${slackChannel}:${slackThreadTs}`, id);
 
+    this.store?.save({
+      id,
+      workflowId,
+      targetSubmodule,
+      issueRef,
+      slackChannel,
+      slackThreadTs,
+      status: session.status,
+      worktreePath: undefined,
+      createdAt: session.createdAt,
+    });
+
     try {
       await this.postStatus(session, `Creating worktree for \`${targetSubmodule}\`...`);
 
@@ -97,6 +125,7 @@ export class SessionManager {
         id, 'main', targetSubmodule, this.config.mcpServers as Record<string, import('./config.js').McpServerConfig>,
       );
       session.status = 'running';
+      this.store?.updateStatus(id, 'running');
 
       const acp = new AcpClient(this.config.cursor.agentBinary, this.config.cursor.apiKey);
       session.acpClient = acp;
@@ -235,6 +264,7 @@ export class SessionManager {
   private async handleCompletion(session: WorkflowSession, result: unknown): Promise<void> {
     session.status = 'completed';
     session.completedAt = Date.now();
+    this.store?.updateStatus(session.id, 'completed');
     this.stopUpdateTimer(session);
     await this.flushPendingText(session);
 
@@ -253,6 +283,7 @@ export class SessionManager {
     session.status = 'error';
     session.error = err.message;
     session.completedAt = Date.now();
+    this.store?.updateStatus(session.id, 'error', err.message);
     this.stopUpdateTimer(session);
     await this.flushPendingText(session);
     this.checkpointBridge.cancelAll(session.slackChannel, session.slackThreadTs);

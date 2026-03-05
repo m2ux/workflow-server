@@ -30,6 +30,7 @@ const RunnerConfigSchema = z.object({
   }),
   mcpServers: z.record(McpServerConfigSchema).default({}),
   logLevel: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).optional(),
+  dbPath: z.string().optional(),
 });
 
 export type RunnerConfig = z.infer<typeof RunnerConfigSchema>;
@@ -57,6 +58,7 @@ export function loadRunnerConfig(): RunnerConfig {
     },
     mcpServers: parseMcpServers(),
     logLevel: process.env['LOG_LEVEL'] as RunnerConfig['logLevel'],
+    dbPath: process.env['DB_PATH'],
   });
 }
 
