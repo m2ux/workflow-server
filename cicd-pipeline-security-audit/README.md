@@ -86,44 +86,52 @@ cicd-pipeline-security-audit/
 
 ## Activities
 
+The sequential phases of the audit — each activity represents a distinct stage that must complete before the next begins.
+
 | # | Activity | Purpose | Skills |
 |---|----------|---------|--------|
-| 01 | Scope Setup | Discover targets, inventory workflows, create planning folder | execute-cicd-audit, inventory-workflows |
-| 02 | Reconnaissance | Classify triggers, map permissions, assign scanner agents | execute-cicd-audit, inventory-workflows |
-| 03 | Primary Scan | Dispatch S1-Sn scanners, V verification, M merge | execute-cicd-audit, dispatch-scanners, scan-injection-patterns |
-| 04 | Report Generation | Severity scoring + final report | execute-cicd-audit, score-cicd-severity, write-cicd-report |
+| [01](activities/01-scope-setup.toon) | Scope Setup | Discover targets, inventory workflows, create planning folder | execute-cicd-audit, inventory-workflows |
+| [02](activities/02-reconnaissance.toon) | Reconnaissance | Classify triggers, map permissions, assign scanner agents | execute-cicd-audit, inventory-workflows |
+| [03](activities/03-primary-scan.toon) | Primary Scan | Dispatch S1-Sn scanners, V verification, M merge | execute-cicd-audit, dispatch-scanners, scan-injection-patterns |
+| [04](activities/04-report-generation.toon) | Report Generation | Severity scoring + final report | execute-cicd-audit, score-cicd-severity, write-cicd-report |
 
 ### Sub-Agent Activities
 
+Delegated work units that run inside Phase 3 — each is executed by a dedicated sub-agent spawned by the orchestrator.
+
 | # | Activity | Agent | Purpose |
 |---|----------|-------|---------|
-| 10 | Per-Submodule Scan | S1-Sn | Apply P1-P7 to all workflow files in assigned submodule |
-| 11 | Verification | V | Verify file + pattern coverage across all scanners |
-| 12 | Finding Merge | M | Deduplicate, correlate, reconcile findings |
+| [10](activities/10-sub-workflow-scan.toon) | Per-Submodule Scan | S1-Sn | Apply P1-P7 to all workflow files in assigned submodule |
+| [11](activities/11-sub-verification.toon) | Verification | V | Verify file + pattern coverage across all scanners |
+| [12](activities/12-sub-merge.toon) | Finding Merge | M | Deduplicate, correlate, reconcile findings |
 
 ## Skills
 
+Reusable capabilities that activities invoke — each skill encapsulates a specific analytical or orchestration technique.
+
 | # | Skill | Capability | Used By |
 |---|-------|------------|---------|
-| 00 | execute-cicd-audit | Orchestrate audit phases | All main activities (01-04) |
-| 01 | score-cicd-severity | Impact x Exploitability severity scoring | Report Generation |
-| 02 | inventory-workflows | Workflow file discovery + classification | Scope Setup, Reconnaissance |
-| 03 | scan-injection-patterns | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
-| 04 | dispatch-scanners | Sub-agent dispatch + collection | Primary Scan |
-| 05 | verify-scan-output | Coverage verification | Sub-agent V (step-level), Report Generation |
-| 06 | merge-scan-findings | Dedup + reconciliation | Sub-agent M (step-level) |
-| 07 | write-cicd-report | Report generation | Report Generation |
-| 08 | execute-sub-agent | Sub-agent bootstrap + structured output | Sub-agents S1-Sn, V, M (primary) |
+| [00](skills/00-execute-cicd-audit.toon) | execute-cicd-audit | Orchestrate audit phases | All main activities (01-04) |
+| [01](skills/01-score-cicd-severity.toon) | score-cicd-severity | Impact x Exploitability severity scoring | Report Generation |
+| [02](skills/02-inventory-workflows.toon) | inventory-workflows | Workflow file discovery + classification | Scope Setup, Reconnaissance |
+| [03](skills/03-scan-injection-patterns.toon) | scan-injection-patterns | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
+| [04](skills/04-dispatch-scanners.toon) | dispatch-scanners | Sub-agent dispatch + collection | Primary Scan |
+| [05](skills/05-verify-scan-output.toon) | verify-scan-output | Coverage verification | Sub-agent V (step-level), Report Generation |
+| [06](skills/06-merge-scan-findings.toon) | merge-scan-findings | Dedup + reconciliation | Sub-agent M (step-level) |
+| [07](skills/07-write-cicd-report.toon) | write-cicd-report | Report generation | Report Generation |
+| [08](skills/08-execute-sub-agent.toon) | execute-sub-agent | Sub-agent bootstrap + structured output | Sub-agents S1-Sn, V, M (primary) |
 
 ## Resources
 
+Reference material loaded by the agent at runtime — pattern catalogs, scoring rubrics, and schemas that inform scan and reporting logic.
+
 | # | Resource | Purpose |
 |---|----------|---------|
-| 00 | Start Here | Quick reference + methodology overview |
-| 01 | Injection Pattern Catalog | Grep patterns, untrusted contexts, campaign examples |
-| 02 | CI/CD Severity Rubric | Impact x Exploitability matrix + calibration anchors |
-| 03 | Remediation Playbook | Per-pattern fix guidance with before/after examples |
-| 04 | Sub-Agent Output Schema | Scanner output JSON schema + validation rules |
+| [00](resources/00-start-here.md) | Start Here | Quick reference + methodology overview |
+| [01](resources/01-injection-pattern-catalog.md) | Injection Pattern Catalog | Grep patterns, untrusted contexts, campaign examples |
+| [02](resources/02-cicd-severity-rubric.md) | CI/CD Severity Rubric | Impact x Exploitability matrix + calibration anchors |
+| [03](resources/03-remediation-playbook.md) | Remediation Playbook | Per-pattern fix guidance with before/after examples |
+| [04](resources/04-sub-agent-output-schema.md) | Sub-Agent Output Schema | Scanner output JSON schema + validation rules |
 
 ## Variables
 
