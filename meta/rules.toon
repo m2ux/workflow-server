@@ -3,7 +3,7 @@ version: 1.0.0
 title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
-sections[14]:
+sections[15]:
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical
@@ -178,6 +178,12 @@ sections[14]:
       - "Check workflow.rules for the EXECUTION MODEL rule to determine whether a workflow uses this pattern. If absent, execute the workflow directly without the orchestrator/worker split."
       - "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation."
       - "USER INTERACTION BOUNDARY: The user interacts with the workflow ONLY through checkpoints defined within activities. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
+  - id: build-commands
+    title: Build Command Priority
+    priority: high
+    rules[2]:
+      - "CPU-intensive build commands (cargo build, cargo check, cargo test, cargo clippy, npm run build, and similar) MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority. Example: nice -n 19 cargo check -p midnight-node-ledger. This prevents build processes from starving the developers machine."
+      - "cargo fmt is exempt from nice — it is fast and should run at normal priority."
   - id: domain-tool-discipline
     title: Domain Tool Discipline
     priority: critical

@@ -66,7 +66,7 @@ tools:
     usage: Find usage, dependencies, related code
   shell:
     when: Running existing tests or benchmarks
-    params: "cargo test, cargo bench, or project-specific commands"
+    params: "nice -n 19 cargo test, nice -n 19 cargo bench, or project-specific commands"
     usage: Execute tests and benchmarks to establish baseline metrics
   get_resource:
     when: Loading implementation analysis guidance
