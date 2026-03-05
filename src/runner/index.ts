@@ -21,6 +21,7 @@ async function main(): Promise<void> {
 
   const shutdown = async () => {
     console.log('Shutting down...');
+    await sessionManager.shutdownAll();
     await app.stop();
     process.exit(0);
   };

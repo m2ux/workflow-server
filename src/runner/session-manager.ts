@@ -163,6 +163,18 @@ export class SessionManager {
     );
   }
 
+  /**
+   * Gracefully shut down all active sessions (cleanup worktrees, kill agents).
+   */
+  async shutdownAll(): Promise<void> {
+    const active = this.listActive();
+    await Promise.allSettled(
+      active.map((s) => this.cleanupSession(s)),
+    );
+    this.sessions.clear();
+    this.threadToSession.clear();
+  }
+
   // -----------------------------------------------------------------------
   // Internal
   // -----------------------------------------------------------------------
