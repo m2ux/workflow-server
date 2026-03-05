@@ -63,9 +63,9 @@ cicd-pipeline-security-audit/
 │   ├── 02-reconnaissance.toon             # Classify, map, assign agents
 │   ├── 03-primary-scan.toon               # Dispatch scanners, verify, merge
 │   ├── 04-report-generation.toon          # Severity score + report
-│   ├── 10-sub-workflow-scan.toon          # Per-submodule scan (sub-agent)
-│   ├── 11-sub-verification.toon           # Coverage verification (sub-agent)
-│   └── 12-sub-merge.toon                  # Finding merge (sub-agent)
+│   ├── 05-sub-workflow-scan.toon          # Per-submodule scan (sub-agent)
+│   ├── 06-sub-verification.toon           # Coverage verification (sub-agent)
+│   └── 07-sub-merge.toon                  # Finding merge (sub-agent)
 ├── skills/
 │   ├── 00-execute-cicd-audit.toon         # Orchestrator coordination
 │   ├── 01-score-cicd-severity.toon        # Impact x Exploitability scoring
@@ -101,9 +101,9 @@ Delegated work units that run inside Phase 3 — each is executed by a dedicated
 
 | # | Activity | Agent | Purpose |
 |---|----------|-------|---------|
-| [10](activities/10-sub-workflow-scan.toon) | Per-Submodule Scan | S1-Sn | Apply P1-P7 to all workflow files in assigned submodule |
-| [11](activities/11-sub-verification.toon) | Verification | V | Verify file + pattern coverage across all scanners |
-| [12](activities/12-sub-merge.toon) | Finding Merge | M | Deduplicate, correlate, reconcile findings |
+| [05](activities/05-sub-workflow-scan.toon) | Per-Submodule Scan | S1-Sn | Apply P1-P7 to all workflow files in assigned submodule |
+| [06](activities/06-sub-verification.toon) | Verification | V | Verify file + pattern coverage across all scanners |
+| [07](activities/07-sub-merge.toon) | Finding Merge | M | Deduplicate, correlate, reconcile findings |
 
 ## Skills
 
