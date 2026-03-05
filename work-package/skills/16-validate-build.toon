@@ -46,7 +46,7 @@ rules:
 tools:
   shell:
     when: Running tests, build, and linter
-    params: "cargo test, cargo build, cargo clippy, npm test, npm run build — based on project type"
+    params: "nice -n 19 cargo test, nice -n 19 cargo build, nice -n 19 cargo clippy, nice -n 19 npm test, nice -n 19 npm run build — based on project type"
     usage: Execute validation commands in target submodule
   read_file:
     when: Analyzing failure output

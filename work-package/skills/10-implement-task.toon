@@ -52,7 +52,7 @@ tools:
     usage: Find relevant code, usages, and dependencies
   shell:
     when: Running quick compilation checks
-    params: "cargo check, cargo build"
+    params: "nice -n 19 cargo check, nice -n 19 cargo build"
     usage: Verify changes compile before handing off to test/commit
 
 errors:
