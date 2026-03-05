@@ -89,6 +89,8 @@ export interface PromptResult {
 // ACP Client
 // ---------------------------------------------------------------------------
 
+const DEFAULT_SEND_TIMEOUT_MS = 60_000;
+
 export class AcpClient extends EventEmitter<AcpClientEvents> {
   private process: ChildProcess | null = null;
   private nextId = 1;
@@ -101,6 +103,7 @@ export class AcpClient extends EventEmitter<AcpClientEvents> {
   constructor(
     private readonly agentBinary: string,
     private readonly apiKey: string,
+    private readonly defaultTimeoutMs: number = DEFAULT_SEND_TIMEOUT_MS,
   ) {
     super();
   }
@@ -197,7 +200,7 @@ export class AcpClient extends EventEmitter<AcpClientEvents> {
     return await this.send('session/prompt', {
       sessionId: this.sessionId,
       prompt: [{ type: 'text', text }],
-    }) as PromptResult;
+    }, 0) as PromptResult; // 0 = no timeout for long-running prompts
   }
 
   /**
@@ -208,7 +211,7 @@ export class AcpClient extends EventEmitter<AcpClientEvents> {
     return await this.send('session/prompt', {
       sessionId: this.sessionId,
       prompt: [{ type: 'text', text }],
-    });
+    }, 0); // 0 = no timeout for long-running prompts
   }
 
   /**
@@ -233,10 +236,31 @@ export class AcpClient extends EventEmitter<AcpClientEvents> {
   // Internal
   // -----------------------------------------------------------------------
 
-  private send(method: string, params?: Record<string, unknown>): Promise<unknown> {
+  private send(
+    method: string,
+    params?: Record<string, unknown>,
+    timeoutMs: number = this.defaultTimeoutMs,
+  ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const id = this.nextId++;
-      this.pending.set(id, { resolve, reject });
+      let timer: ReturnType<typeof setTimeout> | undefined;
+
+      this.pending.set(id, {
+        resolve: (value) => { if (timer) clearTimeout(timer); resolve(value); },
+        reject: (err) => { if (timer) clearTimeout(timer); reject(err); },
+      });
+
+      if (timeoutMs > 0) {
+        timer = setTimeout(() => {
+          if (this.pending.has(id)) {
+            this.pending.delete(id);
+            reject(new Error(
+              `RPC request '${method}' (id=${id}) timed out after ${timeoutMs}ms`,
+            ));
+          }
+        }, timeoutMs);
+      }
+
       this.write({ jsonrpc: '2.0', id, method, params });
     });
   }

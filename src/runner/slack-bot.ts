@@ -81,6 +81,10 @@ export function createSlackApp(
 // Subcommand handlers
 // -------------------------------------------------------------------------
 
+const WORKFLOW_ID_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
+const SUBMODULE_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._\-/]*$/;
+const ISSUE_REF_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*[-#]?\d*$/;
+
 async function handleStart(
   args: string[],
   channel: string,
@@ -95,7 +99,22 @@ async function handleStart(
     return;
   }
 
+  if (!WORKFLOW_ID_PATTERN.test(workflowId)) {
+    await say('Invalid workflow ID. Use alphanumeric characters, hyphens, dots, and underscores.');
+    return;
+  }
+
+  if (!SUBMODULE_PATTERN.test(targetSubmodule)) {
+    await say('Invalid target submodule. Use alphanumeric characters, hyphens, dots, underscores, and forward slashes.');
+    return;
+  }
+
   const issueRef = args[2];
+
+  if (issueRef && !ISSUE_REF_PATTERN.test(issueRef)) {
+    await say('Invalid issue reference format.');
+    return;
+  }
 
   // Post an initial message and use its timestamp as the thread root
   const result = await say(

@@ -51,6 +51,10 @@ export class WorktreeManager {
     targetSubmodule?: string,
     mcpServers: Record<string, McpServerConfig> = {},
   ): Promise<WorktreeInfo> {
+    if (targetSubmodule) {
+      this.validateSubmodulePath(targetSubmodule);
+    }
+
     await mkdir(this.baseDir, { recursive: true });
 
     const worktreePath = path.join(this.baseDir, `wf-runner-${runId}`);
@@ -125,6 +129,21 @@ export class WorktreeManager {
     }
 
     return swept;
+  }
+
+  private validateSubmodulePath(submodule: string): void {
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9._\-/]*$/.test(submodule)) {
+      throw new Error(
+        `Invalid submodule path '${submodule}': only alphanumeric characters, dots, hyphens, underscores, and forward slashes are allowed`,
+      );
+    }
+
+    const resolved = path.resolve(this.repoPath, submodule);
+    if (!resolved.startsWith(this.repoPath + path.sep)) {
+      throw new Error(
+        `Invalid submodule path '${submodule}': resolves outside the repository root`,
+      );
+    }
   }
 
   /**

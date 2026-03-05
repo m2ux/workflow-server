@@ -43,6 +43,16 @@ export interface WorkflowSession {
 const STATUS_POST_INTERVAL_MS = 5_000;
 const MAX_SLACK_TEXT_LENGTH = 3_000;
 
+/**
+ * Tool types expected during headless operation. Mirrors the permission
+ * categories granted via AUTO_APPROVE_PERMISSIONS in worktree-manager.ts.
+ * Tools outside this set are still auto-approved (headless mode cannot
+ * prompt a human), but a warning is logged for audit visibility.
+ */
+const APPROVED_TOOL_TYPES = new Set([
+  'shell', 'read', 'write', 'edit', 'mcp', 'web_fetch',
+]);
+
 export class SessionManager {
   private sessions = new Map<string, WorkflowSession>();
   /** Reverse lookup: Slack thread → session ID */
@@ -218,9 +228,12 @@ export class SessionManager {
       );
     });
 
-    acp.on('request_permission', (requestId, _params) => {
-      // Auto-approve all permission requests in PoC.
-      // The .cursor/cli.json allowlist handles most cases; this catches stragglers.
+    acp.on('request_permission', (requestId, params) => {
+      const tool = String(params['tool'] ?? 'unknown');
+      if (!APPROVED_TOOL_TYPES.has(tool.toLowerCase())) {
+        const log = createChildLogger({ sessionId: session.id });
+        log.warn({ tool, params }, 'Auto-approving permission for unlisted tool type');
+      }
       acp.respond(requestId, {
         outcome: { outcome: 'selected', optionId: 'allow-always' },
       });
