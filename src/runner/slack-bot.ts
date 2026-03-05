@@ -1,4 +1,5 @@
 import { App, type SlackCommandMiddlewareArgs, type AllMiddlewareArgs } from '@slack/bolt';
+import { logger } from './logger.js';
 import type { SessionManager } from './session-manager.js';
 import type { RunnerConfig } from './config.js';
 
@@ -69,7 +70,7 @@ export function createSlackApp(
 
     if (!resolved) {
       // Could be a stale button click — no action needed
-      console.warn(`Unresolved checkpoint action: ${actionId} in ${channel}:${threadTs}`);
+      logger.warn({ actionId, channel, threadTs }, 'Unresolved checkpoint action');
     }
   });
 

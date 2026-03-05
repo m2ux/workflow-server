@@ -1,6 +1,7 @@
 import type { WebClient } from '@slack/web-api';
 import { AcpClient, type AcpSessionUpdate } from './acp-client.js';
 import { CheckpointBridge } from './checkpoint-bridge.js';
+import { createChildLogger } from './logger.js';
 import { WorktreeManager, type WorktreeInfo } from './worktree-manager.js';
 import type { RunnerConfig } from './config.js';
 
@@ -208,11 +209,13 @@ export class SessionManager {
     });
 
     acp.on('stderr', (text) => {
-      console.error(`[session ${session.id}] agent stderr: ${text}`);
+      const log = createChildLogger({ sessionId: session.id });
+      log.debug({ text }, 'agent stderr');
     });
 
     acp.on('error', async (err) => {
-      console.error(`[session ${session.id}] ACP error:`, err.message);
+      const log = createChildLogger({ sessionId: session.id });
+      log.error({ err: err.message }, 'ACP error');
     });
 
     acp.on('close', async (code) => {
@@ -264,7 +267,8 @@ export class SessionManager {
       try {
         await this.worktreeManager.cleanup(session.worktree);
       } catch (err) {
-        console.error(`[session ${session.id}] Worktree cleanup failed:`, err);
+        const log = createChildLogger({ sessionId: session.id });
+        log.error({ err }, 'Worktree cleanup failed');
       }
     }
   }
@@ -303,7 +307,8 @@ export class SessionManager {
         text,
       });
     } catch (err) {
-      console.error(`[session ${session.id}] Failed to post to Slack:`, err);
+      const log = createChildLogger({ sessionId: session.id });
+      log.error({ err }, 'Failed to post to Slack');
     }
   }
 

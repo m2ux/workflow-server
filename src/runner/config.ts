@@ -29,6 +29,7 @@ const RunnerConfigSchema = z.object({
     worktreeBaseDir: z.string().min(1),
   }),
   mcpServers: z.record(McpServerConfigSchema).default({}),
+  logLevel: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).optional(),
 });
 
 export type RunnerConfig = z.infer<typeof RunnerConfigSchema>;
@@ -55,6 +56,7 @@ export function loadRunnerConfig(): RunnerConfig {
       worktreeBaseDir: process.env['WORKTREE_BASE_DIR'] ?? path.join(os.homedir(), 'worktrees'),
     },
     mcpServers: parseMcpServers(),
+    logLevel: process.env['LOG_LEVEL'] as RunnerConfig['logLevel'],
   });
 }
 

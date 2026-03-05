@@ -1,26 +1,27 @@
 import 'dotenv/config';
 import { WebClient } from '@slack/web-api';
 import { loadRunnerConfig } from './config.js';
+import { logger } from './logger.js';
 import { SessionManager } from './session-manager.js';
 import { createSlackApp } from './slack-bot.js';
 
 async function main(): Promise<void> {
   const config = loadRunnerConfig();
-  console.log('Runner config loaded', {
+  logger.info({
     repo: config.repo.path,
     worktreeBase: config.repo.worktreeBaseDir,
     mcpServers: Object.keys(config.mcpServers),
-  });
+  }, 'Runner config loaded');
 
   const slackClient = new WebClient(config.slack.botToken);
   const sessionManager = new SessionManager(config, slackClient);
   const app = createSlackApp(config, sessionManager);
 
   await app.start();
-  console.log('Workflow Runner is listening (Socket Mode)');
+  logger.info('Workflow Runner is listening (Socket Mode)');
 
   const shutdown = async () => {
-    console.log('Shutting down...');
+    logger.info('Shutting down...');
     await sessionManager.shutdownAll();
     await app.stop();
     process.exit(0);
@@ -31,6 +32,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((err) => {
-  console.error('Fatal error:', err);
+  logger.fatal({ err }, 'Fatal error');
   process.exit(1);
 });
