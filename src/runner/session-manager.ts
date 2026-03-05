@@ -195,6 +195,10 @@ export class SessionManager {
       }
     });
 
+    acp.on('stderr', (text) => {
+      console.error(`[session ${session.id}] agent stderr: ${text}`);
+    });
+
     acp.on('error', async (err) => {
       console.error(`[session ${session.id}] ACP error:`, err.message);
     });

@@ -69,6 +69,7 @@ export interface AcpClientEvents {
   update: [update: AcpSessionUpdate];
   create_plan: [requestId: number, params: Record<string, unknown>];
   update_todos: [params: Record<string, unknown>];
+  stderr: [text: string];
   error: [error: Error];
   close: [code: number | null];
 }
@@ -132,7 +133,7 @@ export class AcpClient extends EventEmitter<AcpClientEvents> {
 
     this.process.stderr?.on('data', (chunk: Buffer) => {
       const text = chunk.toString().trim();
-      if (text) this.emit('error', new Error(`[agent stderr] ${text}`));
+      if (text) this.emit('stderr', text);
     });
 
     this.process.on('close', (code) => {
