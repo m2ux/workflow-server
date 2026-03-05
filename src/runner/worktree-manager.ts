@@ -53,8 +53,8 @@ export class WorktreeManager {
   ): Promise<WorktreeInfo> {
     await mkdir(this.baseDir, { recursive: true });
 
-    const worktreePath = path.join(this.baseDir, `run-${runId}`);
-    const branchName = `runner/${runId}`;
+    const worktreePath = path.join(this.baseDir, `wf-runner-${runId}`);
+    const branchName = `wf-runner/${runId}`;
 
     await exec('git', ['worktree', 'add', worktreePath, '-b', branchName, baseBranch], {
       cwd: this.repoPath,
@@ -90,6 +90,41 @@ export class WorktreeManager {
     } catch {
       // Branch may not exist if worktree creation failed partway
     }
+  }
+
+  /**
+   * Remove orphaned worktrees left over from previous runs.
+   * Returns the number of worktrees swept.
+   */
+  async sweepOrphaned(): Promise<number> {
+    const { stdout } = await exec('git', ['worktree', 'list', '--porcelain'], {
+      cwd: this.repoPath,
+    });
+
+    const worktreePaths = stdout
+      .split('\n')
+      .filter((line) => line.startsWith('worktree '))
+      .map((line) => line.slice('worktree '.length))
+      .filter((p) => path.basename(p).startsWith('wf-runner-'));
+
+    let swept = 0;
+    for (const wtPath of worktreePaths) {
+      try {
+        await exec('git', ['worktree', 'remove', wtPath, '--force'], {
+          cwd: this.repoPath,
+        });
+        swept++;
+      } catch {
+        await rm(wtPath, { recursive: true, force: true });
+        swept++;
+      }
+    }
+
+    if (swept > 0) {
+      await exec('git', ['worktree', 'prune'], { cwd: this.repoPath });
+    }
+
+    return swept;
   }
 
   /**

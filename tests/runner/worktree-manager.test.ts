@@ -35,8 +35,8 @@ describe('WorktreeManager', () => {
     const info = await manager.create('abc123', 'main', 'midnight-node', {});
 
     expect(info.runId).toBe('abc123');
-    expect(info.path).toBe('/tmp/worktrees/run-abc123');
-    expect(info.branch).toBe('runner/abc123');
+    expect(info.path).toBe('/tmp/worktrees/wf-runner-abc123');
+    expect(info.branch).toBe('wf-runner/abc123');
     expect(info.targetSubmodule).toBe('midnight-node');
 
     const calls = mockExecFile.mock.calls;
@@ -44,18 +44,18 @@ describe('WorktreeManager', () => {
     // First call: git worktree add
     expect(calls[0]![0]).toBe('git');
     expect(calls[0]![1]).toEqual(
-      ['worktree', 'add', '/tmp/worktrees/run-abc123', '-b', 'runner/abc123', 'main'],
+      ['worktree', 'add', '/tmp/worktrees/wf-runner-abc123', '-b', 'wf-runner/abc123', 'main'],
     );
     expect((calls[0]![2] as any).cwd).toBe('/repo');
 
     // Second call: git submodule update --init
     expect(calls[1]![0]).toBe('git');
     expect(calls[1]![1]).toEqual(['submodule', 'update', '--init', 'midnight-node']);
-    expect((calls[1]![2] as any).cwd).toBe('/tmp/worktrees/run-abc123');
+    expect((calls[1]![2] as any).cwd).toBe('/tmp/worktrees/wf-runner-abc123');
 
     // .cursor/cli.json was written
     expect(vi.mocked(writeFile)).toHaveBeenCalledWith(
-      '/tmp/worktrees/run-abc123/.cursor/cli.json',
+      '/tmp/worktrees/wf-runner-abc123/.cursor/cli.json',
       expect.stringContaining('permissions'),
     );
   });
@@ -70,7 +70,7 @@ describe('WorktreeManager', () => {
     });
 
     expect(vi.mocked(writeFile)).toHaveBeenCalledWith(
-      '/tmp/worktrees/run-def456/.cursor/mcp.json',
+      '/tmp/worktrees/wf-runner-def456/.cursor/mcp.json',
       expect.stringContaining('workflow-server'),
     );
   });
@@ -86,8 +86,8 @@ describe('WorktreeManager', () => {
   it('should cleanup worktree and branch', async () => {
     await manager.cleanup({
       runId: 'abc123',
-      path: '/tmp/worktrees/run-abc123',
-      branch: 'runner/abc123',
+      path: '/tmp/worktrees/wf-runner-abc123',
+      branch: 'wf-runner/abc123',
       targetSubmodule: 'midnight-node',
     });
 
@@ -96,13 +96,13 @@ describe('WorktreeManager', () => {
     // git worktree remove
     expect(calls[0]![0]).toBe('git');
     expect(calls[0]![1]).toEqual(
-      ['worktree', 'remove', '/tmp/worktrees/run-abc123', '--force'],
+      ['worktree', 'remove', '/tmp/worktrees/wf-runner-abc123', '--force'],
     );
     expect((calls[0]![2] as any).cwd).toBe('/repo');
 
     // git branch -D
     expect(calls[1]![0]).toBe('git');
-    expect(calls[1]![1]).toEqual(['branch', '-D', 'runner/abc123']);
+    expect(calls[1]![1]).toEqual(['branch', '-D', 'wf-runner/abc123']);
     expect((calls[1]![2] as any).cwd).toBe('/repo');
   });
 });

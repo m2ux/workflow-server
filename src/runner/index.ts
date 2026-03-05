@@ -5,6 +5,7 @@ import { logger } from './logger.js';
 import { SessionManager } from './session-manager.js';
 import { SessionStore } from './session-store.js';
 import { createSlackApp } from './slack-bot.js';
+import { WorktreeManager } from './worktree-manager.js';
 
 async function main(): Promise<void> {
   const config = loadRunnerConfig();
@@ -16,6 +17,12 @@ async function main(): Promise<void> {
 
   const store = new SessionStore();
   store.open(config.dbPath ?? 'data/runner.db');
+
+  const worktreeManager = new WorktreeManager(config.repo.path, config.repo.worktreeBaseDir);
+  const swept = await worktreeManager.sweepOrphaned();
+  if (swept > 0) {
+    logger.info({ swept }, 'Swept orphaned worktrees');
+  }
 
   const slackClient = new WebClient(config.slack.botToken);
   const sessionManager = new SessionManager(config, slackClient, store);
