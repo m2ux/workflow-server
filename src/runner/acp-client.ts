@@ -204,17 +204,6 @@ export class AcpClient extends EventEmitter<AcpClientEvents> {
   }
 
   /**
-   * Send a follow-up prompt to the agent.
-   */
-  async followUp(text: string): Promise<unknown> {
-    if (!this.sessionId) throw new Error('No active session');
-    return await this.send('session/prompt', {
-      sessionId: this.sessionId,
-      prompt: [{ type: 'text', text }],
-    }, 0); // 0 = no timeout for long-running prompts
-  }
-
-  /**
    * Respond to an incoming JSON-RPC request from the agent
    * (e.g. cursor/ask_question, session/request_permission).
    */
