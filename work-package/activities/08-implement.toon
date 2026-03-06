@@ -75,7 +75,18 @@ steps[3]:
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Record all implementation assumptions, reconciliation outcomes, and user review responses in the assumptions log."
-checkpoints[1]:
+checkpoints[2]:
+  - id: confirm-implementation
+    name: Confirm Implementation Start
+    message: "Planning and assumptions review complete. Ready to begin implementation of {plan.task_count} tasks. Proceed?"
+    blocking: true
+    options[2]:
+      - id: proceed
+        label: Proceed with implementation
+        description: Begin implementing the planned tasks
+      - id: revise-plan
+        label: Revise plan first
+        description: Return to plan-prepare to adjust the approach before implementing
   - id: implementation-assumptions-review
     name: Implementation Assumptions Review
     message: "All tasks complete. Assumptions reconciled. Confirming in 30s unless you intervene."
