@@ -1,6 +1,6 @@
 ---
 id: assumptions-review
-version: 3.0.0
+version: 4.0.0
 ---
 
 # Assumptions Guide
@@ -181,20 +181,40 @@ If all assumptions were resolved through code analysis, skip the judgement augme
 
 ### Per-Assumption Context Structure
 
-For each open assumption, assemble and present:
+For each open assumption, assemble and present (in this order):
 
 | Element | Description |
 |---------|-------------|
-| **Question** | The decision or judgement being asked of the user |
+| **Decision space** | The alternatives available — present these first, before stating the agent's position |
+| **Trade-off analysis** | How alternatives differ on relevant dimensions (see below) |
 | **Non-resolvability rationale** | Why the agent could not resolve this through code analysis |
 | **Technical context** | Relevant findings from reconciliation — code patterns, constraints, related implementation details |
-| **Alternatives** | Available options with trade-off analysis for each |
+| **Agent's position** | Which alternative the agent's current assumption favors, and why — presented last to reduce anchoring bias |
+| **Reversibility** | Whether this decision is easily-reversible (low-cost to change) or path-committing (high-cost to reverse) |
 
-Trade-off analysis should cover: implementation complexity, maintenance burden, consistency with existing patterns, and risk of unintended side-effects.
+**Ordering:** Present alternatives and trade-offs before the agent's position. This reduces anchoring bias — the user encounters the decision space before being influenced by the agent's framing.
+
+**Trade-off dimensions** (include only those that meaningfully differentiate alternatives for each specific assumption):
+
+| Dimension | When to include |
+|-----------|----------------|
+| Implementation complexity | Alternatives differ in effort/complexity |
+| Maintenance burden | Alternatives have different long-term maintenance profiles |
+| Consistency with existing patterns | Alternatives differ in how well they match codebase conventions |
+| Risk of unintended side-effects | Alternatives carry different risk profiles |
+| Decision reversibility | Alternatives differ in how costly they are to change later |
+| Alignment with stated requirements | Alternatives satisfy requirements to different degrees |
+| Time/effort cost | Alternatives have meaningfully different time costs |
+
+Focus on *differences* between alternatives, not uniform property lists. If two options are equivalent on a dimension, omit that dimension.
 
 ### Presentation Format
 
-Present all open assumptions together as a single structured list — not one at a time. Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping.
+Present all open assumptions together as a single structured list — not one at a time. **Order by decision impact:** assumptions whose resolution most affects the implementation approach come first.
+
+Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping.
+
+When presenting 5 or more open assumptions, **group related assumptions by theme or domain** to reduce cognitive load. Present the group heading before its assumptions so the user can orient before diving into details.
 
 Include a clickable markdown link to `assumptions-log.md` for full details and reconciliation history. Do not re-present code-resolved assumptions for confirmation.
 
@@ -210,7 +230,10 @@ Include a clickable markdown link to `assumptions-log.md` for full details and r
 
 - **Eliminates uninformed rubber-stamping** — Code-resolvable assumptions are already verified
 - **Provides decision context** — Trade-offs and alternatives enable informed choices
+- **Reduces anchoring bias** — Alternatives presented before agent's position; user forms their own view first
 - **Reduces interruptions** — Only genuinely open questions reach the user
+- **Impact-ordered presentation** — Most consequential decisions get user attention first
+- **Cognitive load management** — Grouping and reversibility flags help users allocate deliberation effort
 - **Batch presentation** — User sees the full picture, not fragmented one-at-a-time prompts
 
 ---
