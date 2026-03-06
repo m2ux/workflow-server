@@ -23,7 +23,8 @@ protocol:
     - "cd into target_path before any git operations"
     - Create feature branch from the default branch (main/master)
     - Use naming convention type/issue-number-short-description
-  create-pr[3]:
+  create-pr[4]:
+    - "Load resource 12 (pr-description) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource."
     - Create draft PR linked to issue using gh pr create
     - Ensure PR title and body reference issue number
     - Keep PR as draft until implementation and review complete
@@ -43,6 +44,9 @@ output[1]:
       pr_number: "PR number"
       pr_url: "URL to the PR"
 
+resources[1]:
+  - "12"
+
 rules:
   target-scope: "ALL git operations (branch, commit, push, PR) MUST be performed inside target_path. Branches and PRs are against the target directory's upstream."
   naming-convention: "Branch naming: type/issue-number-short-description (e.g., fix/PM-21781-storage-root-panic)"
@@ -51,6 +55,11 @@ rules:
   sync-before-push: "Sync with main before pushing to avoid merge conflicts"
 
 tools:
+  get_resource:
+    when: Before composing PR body
+    params: "workflow_id: work-package, index: 12"
+    returns: PR description template and guidelines
+    next: gh_pr_create
   shell:
     when: Git operations and gh CLI
     params: "git checkout, git branch, git push, git pull, git rebase, gh pr create, gh pr edit, gh pr ready"
