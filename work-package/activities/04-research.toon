@@ -1,5 +1,5 @@
 id: research
-version: 2.1.0
+version: 2.2.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
@@ -64,30 +64,20 @@ artifacts[1]:
   - id: research-document
     name: kb-research.md
     location: planning
-checkpoints[4]:
-  - id: kb-insights
-    name: Knowledge Base Insights Checkpoint
-    message: "Do the knowledge base insights look relevant?"
+checkpoints[2]:
+  - id: research-findings
+    name: Research Findings Checkpoint
+    message: "Here are the combined findings from knowledge base and web research. Are they relevant?"
     options[3]:
       - id: confirmed
-        label: Insights confirmed
-        description: Findings are relevant and useful
+        label: Findings confirmed
+        description: Research findings are relevant and sufficient
       - id: more-research
         label: Need more research
         description: Search for additional patterns or sources
       - id: different-focus
         label: Different focus needed
         description: Research should focus on different areas
-  - id: web-research-confirmed
-    name: Web Research Checkpoint
-    message: "Are the web research findings confirmed?"
-    options[2]:
-      - id: confirmed
-        label: Findings confirmed
-        description: Web research is complete
-      - id: more-research
-        label: Need more research
-        description: Additional web research needed
   - id: assumptions-review
     name: Research Assumptions Checkpoint
     message: "Are the research assumptions correct?"
@@ -101,16 +91,6 @@ checkpoints[4]:
       - id: skip
         label: No significant assumptions
         description: No synthesis assumptions worth documenting
-  - id: research-complete
-    name: Research Complete Checkpoint
-    message: "Research is complete. Ready to proceed to implementation analysis?"
-    options[2]:
-      - id: proceed
-        label: Proceed to implementation analysis
-        description: Research findings are sufficient
-      - id: revisit
-        label: Revisit research
-        description: Some areas need more investigation
 transitions[1]{to,isDefault}:
   implementation-analysis,true
 outcome[3]:

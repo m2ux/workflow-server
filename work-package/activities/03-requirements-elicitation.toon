@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.5.0
+version: 2.6.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it.
 problem: User needs to clarify and capture requirements before implementation
@@ -93,7 +93,7 @@ decisions[1]:
         label: User said done with questions
         transitionTo: collect-assumptions
         isDefault: false
-checkpoints[3]:
+checkpoints[2]:
   - id: stakeholder-transcript
     name: Stakeholder Discussion Checkpoint
     message: "Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here."
@@ -111,35 +111,23 @@ checkpoints[3]:
         effect:
           setVariable:
             has_stakeholder_input: false
-  - id: domain-complete
-    name: Domain Complete Checkpoint
-    message: "Domain '{current_domain}' complete. How would you like to proceed?"
+  - id: elicitation-complete
+    name: Elicitation Complete Checkpoint
+    message: "All question domains have been covered. Any domains you'd like to revisit, or is elicitation complete?"
+    blocking: true
     options[3]:
-      - id: next-domain
-        label: Continue to next domain
-        description: Move to the next question category
-      - id: revisit
-        label: Revisit this domain
-        description: Ask more questions in this category
-      - id: finish-early
-        label: Finish elicitation
-        description: I have enough information - proceed to summary
+      - id: complete
+        label: Elicitation complete
+        description: Requirements are captured — proceed to next activity
         effect:
           setVariable:
             elicitation_complete: true
-  - id: document-review
-    name: Document Review Checkpoint
-    message: "Ready to proceed to Research?"
-    options[2]:
-      - id: proceed
-        label: Proceed to Research
-        description: Requirements are complete, move to next activity
-        effect:
-          setVariable:
-            elicitation_complete: true
-      - id: revise
-        label: Revise requirements
-        description: Make adjustments to the requirements document
+      - id: revisit-domain
+        label: Revisit a domain
+        description: Ask more questions in a specific domain before finalizing
+      - id: add-requirements
+        label: Add additional requirements
+        description: Capture requirements not covered by the question domains
 transitions[2]:
   - to: research
     condition:

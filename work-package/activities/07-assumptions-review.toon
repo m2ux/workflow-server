@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 1.1.0
+version: 1.2.0
 name: Assumptions Review
 description: "Post open assumptions and a link to the engineering artifacts README to the issue tracker for stakeholder review, await feedback, and iterate until stakeholders approve. The comment is minimal — full plan details live in the engineering artifacts, not the ticket. Supports both Jira and GitHub issue platforms."
 problem: Stakeholders need to review and validate assumptions before implementation begins
@@ -47,12 +47,13 @@ checkpoints[3]:
   - id: comment-review
     name: Plan and Assumptions Comment Review
     prerequisite: "Only present when issue_platform is set"
-    message: "Post this comment to the {issue_platform} ticket for stakeholder review?"
-    blocking: true
+    message: "Posting this comment to {issue_platform} for stakeholder review. Interrupt to edit or skip."
+    blocking: false
+    defaultOption: post-comment
     options[3]:
       - id: post-comment
         label: Post to issue tracker
-        description: Post this comment to the ticket for stakeholder review
+        description: Post this comment to the ticket for stakeholder review (default — auto-posts if no interruption)
         effect:
           setVariable:
             post_jira_comment: true
