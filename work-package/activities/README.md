@@ -233,6 +233,7 @@ graph TD
 | primary | `elicit-requirements` |
 | supporting | `manage-artifacts` |
 | supporting | `review-assumptions` |
+| supporting | `reconcile-assumptions` |
 
 **Steps:**
 
@@ -241,6 +242,7 @@ graph TD
 3. **collect-assumptions** — Identify assumptions made when interpreting user responses.
 4. **create-document** — Create requirements document using elicitation output template.
 5. **update-assumptions-log** — Add requirements-phase assumptions to the assumptions log.
+6. **reconcile-assumptions** — Classify and iteratively resolve code-analyzable assumptions through targeted codebase analysis.
 
 **Checkpoints (3):**
 
@@ -250,7 +252,9 @@ graph TD
 | `domain-complete` | Continue to next domain, revisit, or finish early | yes |
 | `document-review` | Confirm requirements document, proceed to research | yes |
 
-**Loops:** `domain-iteration` — forEach over `question_domains` (max 5 iterations). Each iteration asks one question and records the response.
+**Loops:**
+- `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
+- `domain-iteration` — forEach over `question_domains` (max 5 iterations). Each iteration asks one question and records the response.
 
 **Transitions:**
 
@@ -293,6 +297,7 @@ graph TD
 |------|----------|
 | primary | `research-knowledge-base` |
 | supporting | `review-assumptions` |
+| supporting | `reconcile-assumptions` |
 
 **Steps:**
 
@@ -302,6 +307,9 @@ graph TD
 4. **collect-assumptions** — Identify assumptions made during research synthesis.
 5. **document** — Create knowledge base research document.
 6. **update-assumptions-log** — Add research-phase assumptions to the assumptions log.
+7. **reconcile-assumptions** — Classify and iteratively resolve code-analyzable assumptions through targeted codebase analysis.
+
+**Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
 
 **Checkpoints (4):**
 
@@ -352,6 +360,7 @@ graph TD
 | primary | `analyze-implementation` |
 | supporting | `manage-artifacts` |
 | supporting | `review-assumptions` |
+| supporting | `reconcile-assumptions` |
 
 **Steps:**
 
@@ -361,6 +370,9 @@ graph TD
 4. **collect-assumptions** — Identify assumptions made during analysis.
 5. **document** — Create implementation analysis document.
 6. **update-assumptions-log** — Add analysis-phase assumptions to the assumptions log.
+7. **reconcile-assumptions** — Classify and iteratively resolve code-analyzable assumptions through targeted codebase analysis.
+
+**Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
 
 **Checkpoints (2):**
 
