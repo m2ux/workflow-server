@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.4.0
+version: 1.5.0
 name: Post-Implementation Review
 description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
 problem: User needs to review implementation quality before validation
@@ -72,10 +72,10 @@ steps[4]:
     required: true
   - id: architecture-summary
     name: Architecture Summary
-    description: "Create architecture-summary.md with Mermaid C4 diagrams showing changes. Optional but recommended for significant changes."
+    description: "Auto-decide whether an architecture summary is warranted based on change surface: create architecture-summary.md only if the diff introduces new modules, changes dependency structure, or modifies public interfaces. Skip silently for minor changes, documentation, or configuration."
     skill: summarize-architecture
     required: false
-checkpoints[5]:
+checkpoints[3]:
   - id: file-index-table
     name: File Index Checkpoint
     message: "File index written to {change_block_index_path}. Please review the diff in your side-by-side app using the index for reference, then provide row numbers for any files with issues (e.g., '24, 31, 106') or 'none' if all looks good."
@@ -108,51 +108,32 @@ checkpoints[5]:
       - id: skip-block
         label: Skip this block
         description: No longer an issue, move to next
-  - id: code-review
-    name: Code Review Checkpoint
-    message: "Which code review findings would you like to address?"
-    options[3]:
-      - id: acceptable
-        label: Code quality acceptable
-        description: Findings noted but no changes needed before proceeding
-      - id: fix-findings
-        label: Fix findings before proceeding
-        description: Address code review findings now
+  - id: review-findings
+    name: Review Findings Checkpoint
+    message: "Code review and test quality reports are complete. How should the findings be handled?"
+    options[4]:
+      - id: all-acceptable
+        label: All findings acceptable
+        description: Code quality and test coverage are adequate — proceed
+      - id: fix-code
+        label: Fix code review findings
+        description: Address code review findings before proceeding
         effect:
           setVariable:
             needs_code_fixes: true
-      - id: defer-findings
-        label: Defer findings
-        description: Note findings for future but proceed now
-  - id: test-quality
-    name: Test Quality Checkpoint
-    message: "How should test quality findings be handled?"
-    options[3]:
-      - id: acceptable
-        label: Test quality acceptable
-        description: Tests adequately cover the implementation
       - id: improve-tests
-        label: Improve tests before proceeding
-        description: Test gaps should be addressed now
+        label: Improve tests
+        description: Address test coverage gaps before proceeding
         effect:
           setVariable:
             needs_test_improvements: true
-      - id: defer-improvements
-        label: Defer test improvements
-        description: Note improvements for future but proceed now
-  - id: architecture-summary
-    name: Architecture Summary Checkpoint
-    message: "Create architecture summary for management stakeholders?"
-    options[2]:
-      - id: create
-        label: Create architecture summary
-        description: Changes warrant stakeholder documentation
-      - id: skip
-        label: Skip architecture summary
-        description: Changes don't warrant management-level documentation
+      - id: fix-both
+        label: Fix code and improve tests
+        description: Address both code review and test quality findings
         effect:
           setVariable:
-            skip_architecture_summary: true
+            needs_code_fixes: true
+            needs_test_improvements: true
 loops[1]:
   - id: review-fix-cycle
     name: Review-Fix Cycle

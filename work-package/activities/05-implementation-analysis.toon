@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.3.0
+version: 2.4.0
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
@@ -90,6 +90,7 @@ checkpoints[2]:
   - id: analysis-confirmed
     name: Analysis Confirmation Checkpoint
     message: "Here's my analysis of the current implementation. Does this look correct?"
+    blocking: false
     options[3]:
       - id: confirmed
         label: Analysis confirmed

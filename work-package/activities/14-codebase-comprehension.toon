@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.0.0
+version: 1.1.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in .engineering/artifacts/comprehension/ that grow across successive tasks, forming a reusable knowledge base."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
@@ -29,9 +29,9 @@ steps[11]:
   - id: check-existing-artifacts
     name: Check Existing Comprehension Artifacts
     description: "Search .engineering/artifacts/comprehension/ for existing artifacts related to this codebase area. Match by project name, module names, or domain concepts from the problem statement."
-  - id: recommend-existing
-    name: Recommend Existing Artifacts
-    description: "Present any relevant existing comprehension artifacts to the user. Summarize what each covers and suggest reviewing them as a starting point. If none exist, note this and proceed to fresh analysis."
+  - id: review-existing
+    name: Review Existing Artifacts
+    description: "Silently review any relevant existing comprehension artifacts as baseline context. Incorporate prior knowledge into the architecture survey. If none exist, proceed to fresh analysis."
   - id: architecture-survey
     name: Architecture Survey
     description: "Perform a top-down survey of the codebase: project structure, key modules and their responsibilities, dependency graph between modules, entry points, and overarching design patterns (e.g., layered architecture, event-driven, actor model). Use a hypothesis-driven approach — form initial hypotheses about structure and verify them by examining code."
@@ -67,18 +67,7 @@ artifacts[1]:
     name: "{codebase-area}.md"
     location: comprehension
     description: "Persistent knowledge artifact covering architecture, abstractions, design rationale, and domain mapping for a codebase area. Augmented across successive work packages."
-checkpoints[3]:
-  - id: existing-artifacts-review
-    name: Existing Artifacts Review Checkpoint
-    message: "I found existing comprehension artifacts related to this codebase area. Would you like to review them before proceeding?"
-    prerequisite: "Only present when existing related artifacts are found"
-    options[2]:
-      - id: review-existing
-        label: Review existing artifacts
-        description: "Read through existing comprehension artifacts for this area before building new understanding"
-      - id: proceed-fresh
-        label: Proceed to fresh analysis
-        description: "Skip review and build understanding from scratch (existing artifacts will still be augmented)"
+checkpoints[2]:
   - id: architecture-confirmed
     name: Architecture Survey Checkpoint
     message: "Here is my understanding of the codebase architecture, key abstractions, and design rationale. Does this look correct?"

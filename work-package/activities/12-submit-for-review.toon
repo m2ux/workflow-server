@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.0.0
+version: 1.1.0
 name: Submit for Review
 description: "Push implementation, update PR, mark ready for review, then handle the review cycle. If review feedback requires significant changes, transition back to plan-prepare."
 problem: User needs to submit the PR for review and handle reviewer feedback
@@ -84,7 +84,7 @@ steps[6]:
     description: "Push all local commits to remote branch."
   - id: update-description
     name: Update PR description
-    description: "Update PR description with final implementation details."
+    description: "Update PR description with final implementation details. Apply automatically — user can edit the PR directly in GitHub/Jira if adjustments are needed."
   - id: mark-ready
     name: Mark PR ready for review
     description: "Mark the draft PR as ready for review using gh pr ready."
@@ -98,13 +98,7 @@ steps[6]:
   - id: determine-review-outcome
     name: Determine Review Outcome
     description: "Based on review feedback, determine whether changes are needed."
-checkpoints[3]:
-  - id: pr-description
-    name: PR Update Checkpoint
-    message: "PR description confirmed?"
-    options[2]{id,label}:
-      confirmed,PR description confirmed
-      revise,Revise PR description
+checkpoints[2]:
   - id: review-received
     name: Review Received Checkpoint
     message: "Has the PR received manual review feedback?"

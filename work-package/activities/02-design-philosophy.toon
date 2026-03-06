@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.3.0
+version: 1.4.0
 name: Design Philosophy
 description: "Apply structured design framework to classify the problem, determine complexity, and decide which activities to perform."
 problem: User needs to understand problem nature before deciding on workflow path
@@ -116,21 +116,14 @@ loops[1]:
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
-checkpoints[3]:
-  - id: problem-classified
-    name: Problem Classification Checkpoint
-    message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Does this assessment look correct?"
-    options[2]:
-      - id: confirmed
-        label: Classification confirmed
-        description: The problem classification is accurate
-      - id: revise
+checkpoints[1]:
+  - id: classification-and-path
+    name: Classification and Workflow Path Checkpoint
+    message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Given this classification, I recommend the following path. Which would you like?"
+    options[5]:
+      - id: revise-classification
         label: Revise classification
-        description: The classification needs adjustment
-  - id: workflow-path
-    name: Workflow Path Checkpoint
-    message: "Given the problem complexity, I recommend the following path. Which would you like?"
-    options[4]:
+        description: The problem classification needs adjustment before selecting a path
       - id: full-workflow
         label: Full workflow (elicitation + research)
         description: Complex feature requiring requirements discovery and research
@@ -167,16 +160,6 @@ checkpoints[3]:
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
-  - id: design-philosophy-doc
-    name: Design Philosophy Document Checkpoint
-    message: "Does the design philosophy accurately capture the problem, classification, and workflow rationale?"
-    options[2]:
-      - id: confirmed
-        label: Content reviewed
-        description: The design philosophy is accurately documented
-      - id: revise
-        label: Revise document
-        description: Some aspects need correction
 transitions[1]:
   - to: codebase-comprehension
     isDefault: true
