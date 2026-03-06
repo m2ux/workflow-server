@@ -1,5 +1,5 @@
 id: review-assumptions
-version: 1.0.0
+version: 2.0.0
 capability: Collect, classify, and review assumptions made during workflow activities
 
 description: "Cross-cutting skill used by multiple activities (design-philosophy, requirements-elicitation, research, implementation-analysis, plan-prepare, implement) to systematically identify, document, and validate assumptions. Each activity generates assumptions in different categories; this skill provides the standard protocol for collection, presentation, and recording."
@@ -19,10 +19,16 @@ protocol:
   write-assumptions[2]:
     - Write collected assumptions to assumptions-log.md with type, statement, rationale, and alternatives for each
     - The file is the record of truth — do not duplicate assumption content in checkpoint messages
-  present-for-review[3]:
-    - Present the checkpoint with a clickable markdown link to assumptions-log.md so the user can review the content
-    - Do not inline assumption content in the checkpoint message — the file link is sufficient
-    - "If the reconcile-assumptions skill has run, only non-code-resolvable assumptions will be open. Frame the review accordingly — the user is validating stakeholder-dependent assumptions, not performing triage of the full set."
+  format-judgement-context[4]:
+    - "For each open (non-code-resolvable) assumption, assemble structured context: (1) the question or decision being asked, (2) why the agent could not resolve it through code analysis, (3) relevant technical context discovered during reconciliation — code patterns found, constraints identified, related implementation details, (4) available alternatives with trade-off analysis for each"
+    - "Trade-off analysis should cover at minimum: implementation complexity, maintenance burden, consistency with existing patterns, and risk of unintended side-effects"
+    - "If reconciliation produced partial evidence (e.g. validated one aspect but not another), include that evidence so the user understands what is already known"
+    - "If no open assumptions remain after reconciliation, skip the judgement augmentation format and present a summary confirming all assumptions were resolved through code analysis"
+  present-for-review[4]:
+    - "Present all open assumptions together as a structured interview-style list — not one at a time. Each entry should contain the question, non-resolvability rationale, technical context, and alternatives with trade-offs as assembled by format-judgement-context."
+    - "Include a clickable markdown link to assumptions-log.md for full details and reconciliation history"
+    - "Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping. The agent has already resolved everything it can."
+    - "Do not present code-resolved assumptions for re-confirmation — they are already validated with evidence in the assumptions log"
   record-outcomes[3]:
     - Mark each as confirmed, corrected, or needs-discussion
     - Update assumptions-log.md with outcomes and user responses
@@ -40,7 +46,7 @@ output[1]:
 
 rules:
   elevate-implicit: "Make implicit decisions explicit — assumptions should be elevated for validation"
-  one-at-a-time: "Present assumptions one at a time for focused review"
+  structured-batch-presentation: "Present all open assumptions together as a structured interview-style list with judgement augmentation context (question, non-resolvability rationale, technical context, alternatives with trade-offs). Do not present assumptions one at a time."
   update-after-review: "Update assumptions log AFTER the review checkpoint — record user responses and outcomes"
   categorize-per-activity: "Use categories appropriate to the current activity phase"
   markdown-field-formatting: "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
