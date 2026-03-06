@@ -523,7 +523,7 @@ gh pr ready
 - ❌ Duplicate information available in Git history
 - ❌ Include implementation details better suited to code comments
 - ❌ Use vague language ("some improvements", "various fixes")
-- ❌ Reference gitignored planning artifacts
+- ❌ Include planning artifact content inline (link to them instead)
 - ❌ Add process attribution ("per user request", "AI suggested")
 
 ---
@@ -589,7 +589,7 @@ Before submitting a PR, verify:
 - [ ] TODO before merging updated
 
 ### Format
-- [ ] No references to gitignored paths
+- [ ] Engineering link resolves to a committed file on the remote
 - [ ] No process attribution comments
 - [ ] Links use branch URLs, not relative paths to main
 

@@ -435,7 +435,7 @@ Test IDs hyperlink directly to test implementations:
 - ❌ Use vague objectives ("test the feature")
 - ❌ Skip line numbers in hyperlinks
 - ❌ Add redundant References section (links are inline)
-- ❌ Reference gitignored planning artifacts
+- ❌ Include planning artifact content inline (link to them instead)
 - ❌ Split test cases across multiple tables (use a single unified table)
 
 ---
@@ -502,7 +502,7 @@ Before submitting a test plan, verify:
 ### Format & Style
 - [ ] Table uses fixed column widths
 - [ ] No redundant References section
-- [ ] No references to gitignored paths
+- [ ] No inline duplication of planning artifact content
 - [ ] Commands are copy-pasteable
 
 ---
