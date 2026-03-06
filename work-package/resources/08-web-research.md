@@ -175,9 +175,9 @@ Add web research findings to the existing research document:
 
 ```markdown
 ### React Server Components Patterns
-- **Source:** React Official Docs (https://react.dev/reference/rsc/server-components)
-- **Relevance:** Work package involves migrating to App Router
-- **Key Insight:** "Server Components can directly access backend resources 
+**Source:** React Official Docs (https://react.dev/reference/rsc/server-components)  
+**Relevance:** Work package involves migrating to App Router  
+**Key Insight:** "Server Components can directly access backend resources 
 without exposing credentials to the client. Use 'use server' directive for 
 server actions that mutate data."
 

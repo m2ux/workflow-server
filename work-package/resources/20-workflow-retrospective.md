@@ -125,17 +125,17 @@ Patterns worth noting for future consideration:
 ```markdown
 # Workflow Retrospective: [Work Package Name]
 
-- **Date:** YYYY-MM-DD
-- **Work Package:** [Name]
-- **PR:** #[number]
+**Date:** YYYY-MM-DD  
+**Work Package:** [Name]  
+**PR:** #[number]
 
 ---
 
 ## Session Analysis
 
-- **Total User Messages:** [count]
-- **Checkpoint Responses:** [count]
-- **Non-Checkpoint Interactions:** [count]
+**Total User Messages:** [count]  
+**Checkpoint Responses:** [count]  
+**Non-Checkpoint Interactions:** [count]
 
 ---
 

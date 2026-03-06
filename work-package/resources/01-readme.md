@@ -34,9 +34,9 @@ The `README.md` file serves as the entry point and executive summary for a work 
 ```markdown
 # [Work Package Name] - [Month Year]
 
-- **Created:** [Date]
-- **Status:** [Planning/Ready/In Progress/Complete]
-- **Type:** [Feature/Bug-Fix/Enhancement/Refactor]
+**Created:** [Date]  
+**Status:** [Planning/Ready/In Progress/Complete]  
+**Type:** [Feature/Bug-Fix/Enhancement/Refactor]
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
 

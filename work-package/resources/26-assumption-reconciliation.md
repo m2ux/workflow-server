@@ -91,21 +91,21 @@ Each open assumption includes:
 
 ### Markdown formatting rule
 
-**CRITICAL:** In standard markdown, consecutive lines that start with bold labels (e.g. `**Status:** value`) merge into a single paragraph unless separated. Each field MUST be on its own bullet line (`- **Label:** value`) or separated by a blank line. Without this, the rendered output is unreadable.
+**CRITICAL:** In standard markdown, consecutive lines that start with bold labels (e.g. `**Status:** value`) merge into a single paragraph unless each line ends with two trailing spaces. Every bold-label line MUST end with two spaces (`  `) EXCEPT the last line in its group. The trailing spaces produce a `<br>` in rendered markdown, preserving line breaks without changing the visual style.
 
-#### Correct format (bullet list)
+#### Correct format (trailing spaces — shown as ⎵⎵)
 
 ```markdown
 ### A-XX-01: Short title
-- **Status:** Validated
-- **Resolvability:** Code-analyzable
-- **Assumption:** The system uses pattern X for feature Y.
-- **Evidence:** Found in `src/module.rs:42-58` — the `handle()` function
-  dispatches through a match statement covering all variants.
-- **Risk if wrong:** Implementation would target the wrong abstraction.
+**Status:** Validated⎵⎵
+**Resolvability:** Code-analyzable⎵⎵
+**Assumption:** The system uses pattern X for feature Y.⎵⎵
+**Evidence:** Found in `src/module.rs:42-58` — the `handle()` function
+dispatches through a match statement covering all variants.⎵⎵
+**Risk if wrong:** Implementation would target the wrong abstraction.
 ```
 
-#### Incorrect format (consecutive lines without separators)
+#### Incorrect format (no trailing spaces)
 
 ```markdown
 ### A-XX-01: Short title
@@ -118,7 +118,7 @@ Each open assumption includes:
 The incorrect format renders as a single paragraph:
 > **Status:** Validated **Resolvability:** Code-analyzable **Assumption:** The system uses pattern X for feature Y. **Evidence:** Found in `src/module.rs:42-58`.
 
-This rule applies to ALL planning artifacts that use bold-label fields — assumptions logs, design philosophy documents, research documents, implementation analyses, and comprehension artifacts.
+This rule applies to ALL planning artifacts that use bold-label fields — assumptions logs, design philosophy documents, research documents, implementation analyses, and comprehension artifacts. Do NOT use bullet prefixes (`- `) for this purpose.
 
 ## Scorecard
 

@@ -260,10 +260,10 @@ Create `architecture-summary-{n}.md` in the planning folder using this template 
 ```markdown
 # Architecture Summary
 
-- **Work Package:** [Name]
-- **Issue:** #[number] - [Title]
-- **Date:** YYYY-MM-DD
-- **Author:** [Name/Agent]
+**Work Package:** [Name]  
+**Issue:** #[number] - [Title]  
+**Date:** YYYY-MM-DD  
+**Author:** [Name/Agent]
 
 ---
 

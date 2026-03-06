@@ -222,10 +222,10 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 ```markdown
 ## PR Review Summary
 
-- **PR**: #XXX - Title
-- **Reviewers**: [Code Review Agent]({workflow_base}/skills/00-review-code.toon) · [Test Suite Review Agent]({workflow_base}/skills/01-review-test-suite.toon) · [Validation Agent]({workflow_base}/activities/10-validate.toon) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.toon)
-- **Reports**: [Code Review]({artifacts_base}/code-review.md) · [Test Suite Review]({artifacts_base}/test-suite-review.md)
-- **Date**: YYYY-MM-DD
+**PR**: #XXX - Title  
+**Reviewers**: [Code Review Agent]({workflow_base}/skills/00-review-code.toon) · [Test Suite Review Agent]({workflow_base}/skills/01-review-test-suite.toon) · [Validation Agent]({workflow_base}/activities/10-validate.toon) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.toon)  
+**Reports**: [Code Review]({artifacts_base}/code-review.md) · [Test Suite Review]({artifacts_base}/test-suite-review.md)  
+**Date**: YYYY-MM-DD
 
 ### Executive Summary
 
@@ -306,9 +306,9 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 <summary>Finding Details</summary>
 
 #### VF-1. Lint warnings (Warning)
-- **Tool**: clippy
-- **Findings**: [List specific warnings]
-- **Suggestion**: [Fix command or manual resolution]
+**Tool**: clippy  
+**Findings**: [List specific warnings]  
+**Suggestion**: [Fix command or manual resolution]
 
 </details>
 

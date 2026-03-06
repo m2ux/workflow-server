@@ -130,19 +130,19 @@ Create `strategic-review-{n}.md` in the planning folder using this template (the
 ```markdown
 # Strategic Review
 
-- **Work Package:** [Name]
-- **Issue:** #[number] - [Title]
-- **Date:** YYYY-MM-DD
-- **Reviewer:** [Agent/Human]
+**Work Package:** [Name]  
+**Issue:** #[number] - [Title]  
+**Date:** YYYY-MM-DD  
+**Reviewer:** [Agent/Human]
 
 ---
 
 ## Review Scope
 
-- **Base Branch:** [main/develop]
-- **Feature Branch:** [branch-name]
-- **Files Changed:** [count]
-- **Lines Changed:** +[added] / -[removed]
+**Base Branch:** [main/develop]  
+**Feature Branch:** [branch-name]  
+**Files Changed:** [count]  
+**Lines Changed:** +[added] / -[removed]
 
 ---
 
