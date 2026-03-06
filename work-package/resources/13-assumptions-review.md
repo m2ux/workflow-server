@@ -1,6 +1,6 @@
 ---
 id: assumptions-review
-version: 2.0.0
+version: 3.0.0
 ---
 
 # Assumptions Guide
@@ -165,54 +165,53 @@ This provides context for why an assumption was made and what alternatives were 
 
 ---
 
-## Interactive Assumption Review (Interview Style)
+## Judgement Augmentation Review
 
-**Preferred approach:** Present assumptions one at a time using the activity's assumption review checkpoint, with numbered alternatives for the user to choose from.
+**Approach:** After the `reconcile-assumptions` skill has resolved all code-analyzable assumptions, present remaining open assumptions together as a structured interview-style list. Each entry provides the context needed for the user to make an informed decision.
 
-### Checkpoint Flow
+### Prerequisites
 
-Each activity has an `assumptions-review` checkpoint. During implementation, the `07-implement.toon` activity has per-task assumption checkpoints. For each assumption:
+Before presenting assumptions for user review, the `reconcile-assumptions` skill must have run to convergence. This means:
 
-1. Present the assumption type, statement, and rationale
-2. Offer alternatives including the current choice
-3. User confirms or selects alternative via checkpoint
-4. Mark assumption as confirmed or corrected
+1. All code-analyzable assumptions have been resolved through targeted codebase analysis
+2. Only stakeholder-dependent assumptions remain open
+3. Evidence from reconciliation is available for context
+
+If all assumptions were resolved through code analysis, skip the judgement augmentation format and present a summary confirming no user input is needed.
+
+### Per-Assumption Context Structure
+
+For each open assumption, assemble and present:
+
+| Element | Description |
+|---------|-------------|
+| **Question** | The decision or judgement being asked of the user |
+| **Non-resolvability rationale** | Why the agent could not resolve this through code analysis |
+| **Technical context** | Relevant findings from reconciliation — code patterns, constraints, related implementation details |
+| **Alternatives** | Available options with trade-off analysis for each |
+
+Trade-off analysis should cover: implementation complexity, maintenance burden, consistency with existing patterns, and risk of unintended side-effects.
+
+### Presentation Format
+
+Present all open assumptions together as a single structured list — not one at a time. Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping.
+
+Include a clickable markdown link to `assumptions-log.md` for full details and reconciliation history. Do not re-present code-resolved assumptions for confirmation.
 
 ### User Response Options
 
 | Response | Meaning | Agent Action |
 |----------|---------|--------------|
-| Confirmed | Current choice is correct | Mark confirmed, proceed to next |
-| Select alternative | Choose numbered option | Implement change, mark corrected |
-| Need correction | Custom alternative needed | Discuss and implement as directed |
+| All confirmed | All open assumptions are correct | Mark all confirmed, proceed |
+| Some corrections | One or more need adjustment | Apply corrections, mark corrected |
+| No significant assumptions | Nothing worth documenting | Mark as skipped, proceed |
 
 ### Benefits
 
-- **Reduces cognitive load** — User reviews one decision at a time
-- **Surfaces alternatives** — Makes implicit trade-offs explicit
-- **Enables quick confirmation** — "skip" for uncontroversial assumptions
-- **Supports informed decisions** — User sees options before choosing
-
-### When to Use Interview Style
-
-Use the interview-style approach when:
-- Multiple assumptions need review (3+)
-- Assumptions involve design trade-offs with clear alternatives
-- User prefers interactive review over batch review
-
-Use batch/table format when:
-- Few assumptions (1-2)
-- Assumptions are straightforward confirmations
-- User explicitly requests summary format
-
-### Research Context
-
-Before presenting alternatives, the agent should research:
-- Existing patterns in the codebase for similar decisions
-- SDK/framework conventions that may apply
-- Previous implementations of similar functionality
-
-Include this context when presenting alternatives to enable informed decisions.
+- **Eliminates uninformed rubber-stamping** — Code-resolvable assumptions are already verified
+- **Provides decision context** — Trade-offs and alternatives enable informed choices
+- **Reduces interruptions** — Only genuinely open questions reach the user
+- **Batch presentation** — User sees the full picture, not fragmented one-at-a-time prompts
 
 ---
 
