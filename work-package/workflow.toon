@@ -41,7 +41,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[54]:
+variables[55]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -198,6 +198,10 @@ variables[54]:
   - name: has_open_questions
     type: boolean
     description: "Whether unresolved open questions remain after the codebase comprehension deep-dive. When false, comprehension is objectively sufficient and the sufficiency checkpoint is skipped."
+    defaultValue: false
+  - name: has_open_assumptions
+    type: boolean
+    description: "Whether unresolved assumptions remain after reconciliation that require stakeholder input. When false, all assumptions were resolved through code analysis and the stakeholder-response checkpoint is skipped."
     defaultValue: false
   - name: has_flagged_blocks
     type: boolean

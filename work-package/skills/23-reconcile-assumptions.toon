@@ -30,10 +30,11 @@ protocol:
     - "Update assumptions-log.md: mark resolved assumptions with finding, evidence, and resolution status"
     - "Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)"
     - "Maintain a running count: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable"
-  check-convergence[3]:
+  check-convergence[4]:
     - "Re-classify all open assumptions after the analysis pass"
     - "If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set has_resolvable_assumptions to true"
     - "If no open assumptions are code-resolvable, convergence is reached — set has_resolvable_assumptions to false"
+    - "After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set has_open_assumptions to false. If stakeholder-dependent assumptions remain, set has_open_assumptions to true."
   update-comprehension-artifact[3]:
     - "If a comprehension artifact exists, append findings as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')"
     - "Update the Open Questions table in the comprehension artifact with any questions resolved or surfaced during reconciliation"
@@ -86,7 +87,7 @@ resources[1]:
 errors:
   no_open_assumptions:
     cause: No open assumptions exist in the assumptions log
-    recovery: Skip reconciliation — nothing to resolve. Set has_resolvable_assumptions to false.
+    recovery: Skip reconciliation — nothing to resolve. Set has_resolvable_assumptions to false and has_open_assumptions to false.
   all_non_resolvable:
     cause: All open assumptions are classified as not code-resolvable
     recovery: Convergence is immediate — set has_resolvable_assumptions to false and proceed to user review.

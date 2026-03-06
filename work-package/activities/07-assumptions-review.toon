@@ -15,12 +15,16 @@ skills:
 required: true
 estimatedTime: 10-20m
 artifactPrefix: "07"
-rules[4]:
+rules[5]:
   - "The ticket comment contains ONLY open assumptions and a link to the engineering artifacts README. Full plan details live in the engineering artifacts — do NOT duplicate them into the ticket comment."
   - "Comment format: use bullets and short sections — not paragraphs. Optimize for low cognitive load and fast scanning."
   - "Platform detection uses the issue_platform variable to determine whether to post to Jira or GitHub"
   - "The compiled comment body is generated content that the user must evaluate — per the CHECKPOINT YIELD RULE, it must be in the yield context"
-steps[4]:
+  - "AUTO-SKIP RULE: After evaluating assumptions, if has_open_assumptions is false (all resolved through code analysis), set stakeholder_review_complete to true, post the comment with auto-advance, and skip the stakeholder-response checkpoint. Do NOT block waiting for stakeholder input when there are no open questions for them to answer."
+steps[5]:
+  - id: evaluate-open-assumptions
+    name: Evaluate whether open assumptions exist
+    description: "Read assumptions-log.md and count assumptions that remain open (not resolved through code analysis). If zero open assumptions remain, set has_open_assumptions to false and stakeholder_review_complete to true — the activity will post the comment (auto-advance) but skip the blocking stakeholder-response checkpoint entirely. If open assumptions exist, set has_open_assumptions to true."
   - id: prepare-plan-and-assumptions-comment
     name: Prepare plan and assumptions comment
     description: "Read assumptions-log.md from the planning folder. Compile a minimal comment with two sections: (1) '### Open Assumptions' — flat bulleted list of ONLY open (unresolved) assumptions that require stakeholder input (statement only, no category or status). If all assumptions have been resolved through code analysis, state 'None — all assumptions were resolved through code analysis during planning.' (2) '### Engineering Artifacts' — a single link to the planning folder README.md in the engineering repo, constructed from git remotes: `[Planning artifacts]({ENG_REPO_URL}/blob/main/{planning_folder_path}/README.md)`. Do NOT include plan summaries, task lists, constraints, or test strategy — these live in the engineering artifacts. Per the CHECKPOINT YIELD RULE, the compiled comment must be included in the checkpoint yield context — do NOT rely on action:message for delivery."
@@ -69,6 +73,7 @@ checkpoints[3]:
             post_jira_comment: false
   - id: stakeholder-response
     name: Stakeholder Response Checkpoint
+    prerequisite: "Only present when has_open_assumptions is true. If all assumptions were resolved through code analysis, this checkpoint is skipped and stakeholder_review_complete is set to true automatically."
     message: "The plan and assumptions have been posted for stakeholder review. Once stakeholders have reviewed, provide their feedback here."
     blocking: true
     options[2]:
