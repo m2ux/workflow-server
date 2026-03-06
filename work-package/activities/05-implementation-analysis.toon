@@ -9,9 +9,10 @@ recognition[3]:
   - implementation analysis
 skills:
   primary: analyze-implementation
-  supporting[2]:
+  supporting[3]:
     - manage-artifacts
     - review-assumptions
+    - reconcile-assumptions
 required: true
 estimatedTime: 10-20m
 artifactPrefix: "05"
@@ -38,7 +39,7 @@ modeOverrides:
       - base_commit_sha - SHA of base branch at time of analysis
       - expected_changes - What changes should be made per requirements
       - pr_diff_summary - Summary of changes between base and PR branch
-steps[6]:
+steps[7]:
   - id: review-implementation
     name: Review implementation
     description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture."
@@ -57,6 +58,30 @@ steps[6]:
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add analysis-phase assumptions to the assumptions log"
+  - id: reconcile-assumptions
+    name: Reconcile assumptions
+    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    skill: reconcile-assumptions
+loops[1]:
+  - id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    type: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    description: "Iterates until all code-resolvable assumptions are resolved. Each cycle analyzes resolvable assumptions, updates the log with evidence-based resolutions, captures newly surfaced assumptions, and reclassifies. Exits when no open assumption can be further reduced through code examination."
+    steps[3]:
+      - id: targeted-analysis
+        name: Analyze code-resolvable assumptions
+        description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+      - id: update-assumptions-and-artifact
+        name: Update assumptions log and comprehension artifact
+        description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+      - id: reclassify-resolvability
+        name: Reclassify open assumptions
+        description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
 artifacts[1]:
   - id: analysis-document
     name: implementation-analysis.md
