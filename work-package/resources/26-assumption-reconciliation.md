@@ -73,7 +73,11 @@ After reconciliation converges, the remaining open assumptions are presented to 
 ### What reconciliation does NOT provide
 
 The `review-assumptions` skill is responsible for:
-- Assembling per-assumption trade-off analysis from the raw evidence
+- Assembling per-assumption trade-off analysis from the raw evidence, covering relevant dimensions (implementation complexity, maintenance burden, consistency, side-effect risk, reversibility, requirements alignment, time/effort cost)
+- Ordering assumptions by decision impact for presentation
+- Presenting alternatives before the agent's position to reduce anchoring bias
+- Flagging decision reversibility (easily-reversible vs. path-committing)
+- Grouping related assumptions when presenting 5+ open items
 - Formatting the interview-style presentation
 - Framing the interaction as judgement augmentation (not triage)
 
