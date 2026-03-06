@@ -195,6 +195,10 @@ variables[53]:
     type: boolean
     description: "Whether code-resolvable assumptions exist that can be validated through targeted analysis. Drives the assumption reconciliation loop."
     defaultValue: false
+  - name: has_open_questions
+    type: boolean
+    description: "Whether unresolved open questions remain after the codebase comprehension deep-dive. When false, comprehension is objectively sufficient and the sufficiency checkpoint is skipped."
+    defaultValue: false
   - name: has_flagged_blocks
     type: boolean
     description: Whether user flagged any change blocks during manual diff review

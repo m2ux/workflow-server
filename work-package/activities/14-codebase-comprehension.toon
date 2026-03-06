@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.2.0
+version: 1.3.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in .engineering/artifacts/comprehension/ that grow across successive tasks, forming a reusable knowledge base."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
@@ -21,9 +21,10 @@ rules[9]:
   - "Always check for existing comprehension artifacts before creating new ones"
   - "Augment existing artifacts with new details rather than duplicating content"
   - "The initial deep-dive is mandatory and always performed — it attempts to resolve every open question from the first pass without user selection"
-  - "The optional deep-dive loop continues until the user confirms sufficient understanding"
+  - "Comprehension is sufficient when all open questions have been resolved through code analysis. If unresolved questions remain after the initial deep-dive, present them with the 30s auto-advance pattern — the user can intervene to explore further or let it proceed."
   - "Knowledge should be structured hierarchically: architecture → modules → abstractions → design rationale"
   - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after the initial deep-dive and after each subsequent deep-dive iteration"
+  - "SUFFICIENCY RULE: After the initial deep-dive, count unresolved open questions. If zero remain, set needs_comprehension to false and skip the comprehension-sufficient checkpoint entirely — comprehension is objectively sufficient. If unresolved questions remain, present them at the checkpoint with 30s auto-advance."
   - "The Open Questions table is generated content the user must evaluate at the comprehension-sufficient checkpoint — per the CHECKPOINT YIELD RULE, it must be in the yield context"
 steps[11]:
   - id: check-existing-artifacts
@@ -58,7 +59,7 @@ steps[11]:
     description: "Append the initial deep-dive findings to the comprehension artifact under a dedicated 'Initial Deep-Dive' section, organized by the open question each finding addresses."
   - id: revise-initial-questions
     name: Revise Open Questions after Initial Deep-Dive
-    description: "Review findings from the initial deep-dive against the 'Open Questions' section. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. Present the revised open questions table to the user as context for the comprehension-sufficient checkpoint."
+    description: "Review findings from the initial deep-dive against the 'Open Questions' section. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. Then evaluate sufficiency: if all open questions are now Resolved, set has_open_questions to false and needs_comprehension to false — comprehension is complete, skip the checkpoint. If unresolved questions remain, set has_open_questions to true and present the revised table as context for the comprehension-sufficient checkpoint."
   - id: deep-dive-loop
     name: Further Deep-Dive Exploration (Optional)
     description: "If the user requests further exploration at the comprehension-sufficient checkpoint, enter interactive loop: present remaining open questions and areas available for deeper exploration (specific modules, patterns, data flows, error handling, etc.) and ask the user which area they want to understand better. For each selection, perform targeted analysis and append findings to the comprehension artifact."
@@ -86,17 +87,21 @@ checkpoints[2]:
         description: "The survey is too shallow — analyze specific areas more thoroughly"
   - id: comprehension-sufficient
     name: Comprehension Sufficiency Checkpoint
-    message: "Given the open questions above, do you feel you have sufficient understanding of the codebase to evaluate design choices in later activities, or would you like to dive deeper into a specific area?"
+    prerequisite: "Only present when has_open_questions is true. If all open questions were resolved during the initial deep-dive, this checkpoint is skipped and needs_comprehension is set to false automatically."
+    message: "Open questions remain after deep-dive (see above). Proceeding in 30s — intervene to explore further."
+    blocking: false
+    defaultOption: sufficient
+    autoAdvanceMs: 30000
     options[3]:
       - id: sufficient
         label: Understanding sufficient
-        description: "I have enough context to evaluate design assumptions — proceed"
+        description: "Accept remaining gaps and proceed (default — auto-proceeds after 30s)"
         effect:
           setVariable:
             needs_comprehension: false
       - id: dive-deeper
         label: Dive deeper
-        description: "I want to explore a specific area in more detail"
+        description: "Investigate remaining open questions in more detail"
       - id: different-area
         label: Explore a different area
         description: "Shift focus to a different part of the codebase"
@@ -122,7 +127,7 @@ loops[1]:
         description: "Append deep-dive findings to the comprehension artifact under a dedicated section for this area."
       - id: revise-open-questions
         name: Revise open questions
-        description: "Review findings from this iteration against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. Present the revised table to the user as context for the sufficiency checkpoint."
+        description: "Review findings from this iteration against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. If all questions are now Resolved, set has_open_questions to false and needs_comprehension to false — loop exits. Otherwise present the revised table as context for the sufficiency checkpoint."
 transitions[3]:
   - to: requirements-elicitation
     condition:
