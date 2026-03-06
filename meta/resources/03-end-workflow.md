@@ -16,9 +16,9 @@ Use this template when presenting the final summary:
 ```markdown
 ## Workflow Complete
 
-- **Workflow:** [Workflow Name]
-- **Started:** [Start Date]
-- **Completed:** [Completion Date]
+**Workflow:** [Workflow Name]  
+**Started:** [Start Date]  
+**Completed:** [Completion Date]
 
 ### Activities Completed
 - [List of completed activities]

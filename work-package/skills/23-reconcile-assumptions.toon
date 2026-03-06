@@ -57,7 +57,7 @@ rules:
   comprehension-augmented: "When a comprehension artifact exists, findings MUST be appended to it for traceability. Reconciliation findings are a form of targeted comprehension."
   no-user-interaction: "The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result at the activity's assumptions checkpoint."
   classification-transparency: "When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis."
-  markdown-field-formatting: "Each assumption entry field (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST be a bullet list item (`- **Label:** value`), not a bare bold line. Consecutive bold lines without bullets or blank-line separators collapse into a single paragraph in rendered markdown. See resource 26 for correct vs incorrect examples. This rule applies to ALL markdown artifacts with bold-label fields."
+  markdown-field-formatting: "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
 
 tools:
   read_file:

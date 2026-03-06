@@ -292,11 +292,11 @@ async fn test_transaction_conversion_logic() {
 ## Review Output Format
 
 ### Summary Assessment
-- **Overall Test Quality Score:** X/5 ⭐
-- **Relevance & Business Alignment:** PASS/FAIL
-- **Coverage Completeness:** PASS/FAIL
-- **Test Effectiveness:** PASS/FAIL
-- **Critical Issues Found:** X (count)
+**Overall Test Quality Score:** X/5 ⭐  
+**Relevance & Business Alignment:** PASS/FAIL  
+**Coverage Completeness:** PASS/FAIL  
+**Test Effectiveness:** PASS/FAIL  
+**Critical Issues Found:** X (count)
 
 ### Individual Test Function Analysis
 
@@ -308,10 +308,10 @@ For EACH test function:
 | `test_name_2` | ✗ Mock passthrough | Low | No real logic tested |
 
 ### Anti-Pattern Detection Summary
-- **Total Tests Analyzed:** X
-- **Tests with Anti-Patterns:** Y
-- **Most Common Anti-Pattern:** [Pattern name]
-- **Critical Anti-Pattern Issues:** [Count and list]
+**Total Tests Analyzed:** X  
+**Tests with Anti-Patterns:** Y  
+**Most Common Anti-Pattern:** [Pattern name]  
+**Critical Anti-Pattern Issues:** [Count and list]
 
 ### Test Redundancy Analysis
 
@@ -352,10 +352,10 @@ When generating a test suite review report, include a reference back to this gui
 ```markdown
 # Test Suite Review Report
 
-- **Work Package:** [Name]
-- **Issue:** #[number] - [Title]
-- **Date:** YYYY-MM-DD
-- **Author:** [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/17-test-suite-review.md) Agent
+**Work Package:** [Name]  
+**Issue:** #[number] - [Title]  
+**Date:** YYYY-MM-DD  
+**Author:** [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/17-test-suite-review.md) Agent
 
 ---
 

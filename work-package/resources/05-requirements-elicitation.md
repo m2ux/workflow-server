@@ -112,8 +112,8 @@ The five domains below cover the complete requirements space. Ask **one question
 ```markdown
 # Requirements Elicitation: [Work Package Name]
 
-- **Date:** YYYY-MM-DD
-- **Status:** ✅ Confirmed | 🔄 Pending Confirmation
+**Date:** YYYY-MM-DD  
+**Status:** ✅ Confirmed | 🔄 Pending Confirmation
 
 ---
 
