@@ -57,6 +57,30 @@ Convergence does NOT mean all assumptions are resolved. It means the remaining o
 - No newly surfaced assumption is classified as code-resolvable
 - The final open set has explicit reasons for non-resolvability
 
+## Handoff to Judgement Augmentation
+
+After reconciliation converges, the remaining open assumptions are presented to the user through the `review-assumptions` skill's judgement augmentation protocol. Reconciliation directly feeds this process:
+
+### What reconciliation provides
+
+| Element | Source |
+|---------|--------|
+| **The irreducible open set** | Assumptions classified as not-code-resolvable after convergence |
+| **Non-resolvability rationale** | The classification rationale recorded for each open assumption |
+| **Technical context** | Findings from reconciliation cycles — validated assumptions, code patterns discovered, partial evidence gathered |
+| **Alternatives context** | Constraints and patterns identified during analysis that inform the trade-off space |
+
+### What reconciliation does NOT provide
+
+The `review-assumptions` skill is responsible for:
+- Assembling per-assumption trade-off analysis from the raw evidence
+- Formatting the interview-style presentation
+- Framing the interaction as judgement augmentation (not triage)
+
+### All-resolved case
+
+If reconciliation resolves every assumption (the open set is empty after convergence), the `review-assumptions` skill skips the judgement augmentation format and presents a summary confirming that all assumptions were verified through code analysis. No user input is needed.
+
 ## Integration with Comprehension Artifacts
 
 When a comprehension artifact exists for the codebase area, reconciliation findings are appended as numbered deep-dive sections. This serves two purposes:
@@ -129,4 +153,4 @@ Total: N | Validated: N | Invalidated: N | Partially Validated: N | Open: N
 Convergence iterations: N | Newly surfaced: N
 ```
 
-This gives the user an at-a-glance view of how the assumption set evolved through reconciliation.
+This gives the user an at-a-glance view of how the assumption set evolved through reconciliation. If open assumptions remain, they proceed to judgement augmentation review. If the open count is zero, no user review is needed.
