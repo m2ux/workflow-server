@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.4.0
+version: 2.5.0
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
@@ -89,12 +89,14 @@ artifacts[1]:
 checkpoints[2]:
   - id: analysis-confirmed
     name: Analysis Confirmation Checkpoint
-    message: "Here's my analysis of the current implementation. Does this look correct?"
+    message: "Here's my analysis of the current implementation. Confirming in 30s unless you intervene."
     blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[3]:
       - id: confirmed
         label: Analysis confirmed
-        description: Proceed to determine next steps
+        description: Proceed to determine next steps (default — auto-confirms after 30s)
       - id: clarify
         label: Need clarification
         description: Some findings need discussion
@@ -103,11 +105,14 @@ checkpoints[2]:
         description: Additional areas need investigation
   - id: assumptions-review
     name: Analysis Assumptions Checkpoint
-    message: "Are the implementation analysis assumptions correct?"
+    message: "Analysis assumptions listed above. Confirming in 30s unless you intervene."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[3]:
       - id: confirmed
         label: Assumptions confirmed
-        description: All analysis assumptions are correct
+        description: All analysis assumptions are correct (default — auto-confirms after 30s)
       - id: corrections
         label: Some need correction
         description: One or more assumptions need adjustment

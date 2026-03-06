@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.5.0
+version: 1.6.0
 name: Post-Implementation Review
 description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
 problem: User needs to review implementation quality before validation
@@ -110,11 +110,14 @@ checkpoints[3]:
         description: No longer an issue, move to next
   - id: review-findings
     name: Review Findings Checkpoint
-    message: "Code review and test quality reports are complete. How should the findings be handled?"
+    message: "Code review and test quality reports complete. Accepting in 30s unless you want fixes."
+    blocking: false
+    defaultOption: all-acceptable
+    autoAdvanceMs: 30000
     options[4]:
       - id: all-acceptable
         label: All findings acceptable
-        description: Code quality and test coverage are adequate — proceed
+        description: Code quality and test coverage are adequate — proceed (default — auto-accepts after 30s)
       - id: fix-code
         label: Fix code review findings
         description: Address code review findings before proceeding

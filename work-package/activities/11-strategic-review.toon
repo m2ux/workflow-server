@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.3.0
+version: 2.4.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution."
 problem: User needs to ensure changes are minimal and focused
@@ -59,20 +59,23 @@ steps[5]:
 checkpoints[1]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
-    message: "Which strategic review findings would you like to address?"
+    message: "Strategic review complete. Accepting in 30s unless you want fixes."
+    blocking: false
+    defaultOption: acceptable
+    autoAdvanceMs: 30000
     options[4]:
+      - id: acceptable
+        label: All acceptable
+        description: Findings noted but no changes needed (default — auto-accepts after 30s)
+        effect:
+          setVariable:
+            review_passed: true
       - id: fix-findings
         label: Fix findings before proceeding
         description: Address strategic review findings now
         effect:
           setVariable:
             needs_strategic_fixes: true
-      - id: acceptable
-        label: All acceptable
-        description: Findings noted but no changes needed
-        effect:
-          setVariable:
-            review_passed: true
       - id: defer-findings
         label: Defer findings
         description: Note findings for future but proceed now

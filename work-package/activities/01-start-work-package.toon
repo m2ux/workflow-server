@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.1.0
+version: 3.2.0
 name: Start Work Package
 description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR, and create planning folder. Establishes traceability from requirements through implementation."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -264,11 +264,14 @@ checkpoints[8]:
   - id: issue-review
     name: Issue Review Checkpoint
     prerequisite: "Only present when needs_issue_creation is true"
-    message: "Here's the drafted issue. Does this look correct?"
+    message: "Here's the drafted issue. Creating in 30s unless you intervene."
+    blocking: false
+    defaultOption: create
+    autoAdvanceMs: 30000
     options[3]:
       - id: create
         label: Create issue
-        description: Proceed to create the issue
+        description: Proceed to create the issue (default — auto-creates after 30s)
         effect:
           setVariable:
             issue_approved: true

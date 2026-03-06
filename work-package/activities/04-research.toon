@@ -1,5 +1,5 @@
 id: research
-version: 2.2.0
+version: 2.3.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
@@ -67,11 +67,14 @@ artifacts[1]:
 checkpoints[2]:
   - id: research-findings
     name: Research Findings Checkpoint
-    message: "Here are the combined findings from knowledge base and web research. Are they relevant?"
+    message: "Here are the combined findings from knowledge base and web research. Proceeding in 30s unless you want changes."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[3]:
       - id: confirmed
         label: Findings confirmed
-        description: Research findings are relevant and sufficient
+        description: Research findings are relevant and sufficient (default — auto-proceeds after 30s)
       - id: more-research
         label: Need more research
         description: Search for additional patterns or sources
@@ -80,11 +83,14 @@ checkpoints[2]:
         description: Research should focus on different areas
   - id: assumptions-review
     name: Research Assumptions Checkpoint
-    message: "Are the research assumptions correct?"
+    message: "Research assumptions listed above. Confirming in 30s unless you intervene."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[3]:
       - id: confirmed
         label: Assumptions confirmed
-        description: All pattern/synthesis assumptions are correct
+        description: All pattern/synthesis assumptions are correct (default — auto-confirms after 30s)
       - id: corrections
         label: Some need correction
         description: One or more assumptions need adjustment
