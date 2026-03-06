@@ -93,9 +93,9 @@ When the PR is created with the ADR, create a **minimal placeholder** test plan.
 ```markdown
 # Test Plan: [Feature Name]
 
-**ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
-**Ticket:** [TICKET-ID](ticket-url)
-**PR:** [#NNN](pr-url)
+- **ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
+- **Ticket:** [TICKET-ID](ticket-url)
+- **PR:** [#NNN](pr-url)
 
 ---
 
@@ -141,9 +141,9 @@ After implementation is complete, update the test plan with:
 ```markdown
 # Test Plan: [Feature Name]
 
-**ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
-**Ticket:** [TICKET-ID](ticket-url)
-**PR:** [#NNN](pr-url)
+- **ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
+- **Ticket:** [TICKET-ID](ticket-url)
+- **PR:** [#NNN](pr-url)
 
 ---
 
@@ -192,9 +192,9 @@ pytest -k "test_name"       # Python
 ```markdown
 # Test Plan: [Descriptive Title]
 
-**ADR:** [Link to ADR]
-**Ticket:** [Link to ticket]
-**PR:** [Link to PR]
+- **ADR:** [Link to ADR]
+- **Ticket:** [Link to ticket]
+- **PR:** [Link to PR]
 
 ---
 
@@ -230,9 +230,9 @@ Always include links to related artifacts at the top:
 ```markdown
 # Test Plan: Feature Name
 
-**ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
-**Ticket:** [TICKET-ID](ticket-url)
-**PR:** [#NNN](pr-url)
+- **ADR:** [adr-feature-name](../architecture/adr-feature-name.md)
+- **Ticket:** [TICKET-ID](ticket-url)
+- **PR:** [#NNN](pr-url)
 ```
 
 **Tips:**

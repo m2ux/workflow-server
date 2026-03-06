@@ -352,10 +352,10 @@ When generating a test suite review report, include a reference back to this gui
 ```markdown
 # Test Suite Review Report
 
-**Work Package:** [Name]
-**Issue:** #[number] - [Title]
-**Date:** YYYY-MM-DD
-**Author:** [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/17-test-suite-review.md) Agent
+- **Work Package:** [Name]
+- **Issue:** #[number] - [Title]
+- **Date:** YYYY-MM-DD
+- **Author:** [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/17-test-suite-review.md) Agent
 
 ---
 

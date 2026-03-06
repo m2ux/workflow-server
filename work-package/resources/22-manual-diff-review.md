@@ -134,10 +134,10 @@ For each reported row number:
 ```markdown
 # Manual Diff Review Report
 
-**Work Package:** [Name]
-**Branch:** [feature-branch] vs [base-branch]
-**Date:** YYYY-MM-DD
-**Reviewer:** [Name]
+- **Work Package:** [Name]
+- **Branch:** [feature-branch] vs [base-branch]
+- **Date:** YYYY-MM-DD
+- **Reviewer:** [Name]
 
 ---
 

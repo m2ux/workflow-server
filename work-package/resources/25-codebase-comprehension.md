@@ -170,10 +170,10 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 ```markdown
 # {Codebase Area Name} — Comprehension Artifact
 
-> **Last updated**: YYYY-MM-DD
-> **Work packages**: [list of work package references that contributed]
-> **Coverage**: [brief description of what this artifact covers]
-> **Related artifacts**: [cross-references to other comprehension artifacts]
+> - **Last updated**: YYYY-MM-DD
+> - **Work packages**: [list of work package references that contributed]
+> - **Coverage**: [brief description of what this artifact covers]
+> - **Related artifacts**: [cross-references to other comprehension artifacts]
 
 ## Architecture Overview
 

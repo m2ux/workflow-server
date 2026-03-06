@@ -36,11 +36,11 @@ The `COMPLETE.md` file serves as the completion record for a work package. It pr
 ```markdown
 # Work Package: [Name] - Complete ✅
 
-**Date:** [Date Completed]
-**Type:** [Feature/Bug-Fix/Enhancement/Refactor]
-**Status:** COMPLETED
-**Branch:** [branch-name]
-**PR:** #[PR number]
+- **Date:** [Date Completed]
+- **Type:** [Feature/Bug-Fix/Enhancement/Refactor]
+- **Status:** COMPLETED
+- **Branch:** [branch-name]
+- **PR:** #[PR number]
 
 ---
 

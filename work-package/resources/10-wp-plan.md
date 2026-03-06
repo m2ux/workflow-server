@@ -37,10 +37,10 @@ The work package plan artifact serves as the detailed implementation specificati
 ```markdown
 # [Work Package Name] - Implementation Plan
 
-**Date:** [Date]
-**Priority:** [HIGH/MEDIUM/LOW]
-**Status:** [Planning/Ready/In Progress/Complete]
-**Estimated Effort:** X-Yh agentic + Zh review
+- **Date:** [Date]
+- **Priority:** [HIGH/MEDIUM/LOW]
+- **Status:** [Planning/Ready/In Progress/Complete]
+- **Estimated Effort:** X-Yh agentic + Zh review
 
 ---
 
@@ -50,8 +50,8 @@ The work package plan artifact serves as the detailed implementation specificati
 [What problem are we solving? Why does it matter?]
 
 ### Scope
-**In Scope:** [Items]
-**Out of Scope:** [Items with reasons]
+- **In Scope:** [Items]
+- **Out of Scope:** [Items with reasons]
 
 ---
 

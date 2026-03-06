@@ -270,10 +270,10 @@ This ensures the log reflects the reviewed state, not just the initially collect
 ```markdown
 # Assumptions Log
 
-**Work Package:** [Name]
-**Issue:** #[number] - [Title]
-**Created:** YYYY-MM-DD
-**Last Updated:** YYYY-MM-DD
+- **Work Package:** [Name]
+- **Issue:** #[number] - [Title]
+- **Created:** YYYY-MM-DD
+- **Last Updated:** YYYY-MM-DD
 
 ---
 
