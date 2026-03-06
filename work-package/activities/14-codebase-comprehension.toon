@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.1.0
+version: 1.2.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in .engineering/artifacts/comprehension/ that grow across successive tasks, forming a reusable knowledge base."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
@@ -70,11 +70,14 @@ artifacts[1]:
 checkpoints[2]:
   - id: architecture-confirmed
     name: Architecture Survey Checkpoint
-    message: "Here is my understanding of the codebase architecture, key abstractions, and design rationale. Does this look correct?"
+    message: "Here is my understanding of the codebase architecture, key abstractions, and design rationale. Confirming in 30s unless you intervene."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[3]:
       - id: confirmed
         label: Understanding confirmed
-        description: "The architectural survey accurately represents the codebase"
+        description: "The architectural survey accurately represents the codebase (default — auto-confirms after 30s)"
       - id: corrections
         label: Some corrections needed
         description: "Parts of the survey need adjustment"

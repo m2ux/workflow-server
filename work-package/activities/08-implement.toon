@@ -1,5 +1,5 @@
 id: implement
-version: 2.4.0
+version: 2.5.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task, reconciled through code analysis after all tasks complete, and only unresolvable assumptions are presented to the user."
 problem: User needs to implement the planned tasks
@@ -78,11 +78,14 @@ steps[3]:
 checkpoints[1]:
   - id: implementation-assumptions-review
     name: Implementation Assumptions Review
-    message: "All tasks are complete. Code-resolvable assumptions have been verified through targeted analysis. The remaining assumptions (if any) require your input. Does this look correct?"
+    message: "All tasks complete. Assumptions reconciled. Confirming in 30s unless you intervene."
+    blocking: false
+    defaultOption: all-confirmed
+    autoAdvanceMs: 30000
     options[3]:
       - id: all-confirmed
         label: All assumptions confirmed
-        description: All implementation assumptions are correct
+        description: All implementation assumptions are correct (default — auto-confirms after 30s)
       - id: some-corrections
         label: Some need correction
         description: One or more assumptions need adjustment

@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.6.0
+version: 2.7.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it.
 problem: User needs to clarify and capture requirements before implementation
@@ -113,12 +113,14 @@ checkpoints[2]:
             has_stakeholder_input: false
   - id: elicitation-complete
     name: Elicitation Complete Checkpoint
-    message: "All question domains have been covered. Any domains you'd like to revisit, or is elicitation complete?"
-    blocking: true
+    message: "All question domains have been covered. Proceeding in 30s unless you want to revisit."
+    blocking: false
+    defaultOption: complete
+    autoAdvanceMs: 30000
     options[3]:
       - id: complete
         label: Elicitation complete
-        description: Requirements are captured — proceed to next activity
+        description: Requirements are captured — proceed to next activity (default — auto-proceeds after 30s)
         effect:
           setVariable:
             elicitation_complete: true
