@@ -71,9 +71,9 @@ This workflow resumes with prior changes already in place.
 
 ### Existing Changes Summary
 
-**Branch:** `[branch-name]`
-**Commits:** [N] commits ahead of main
-**Files changed:** [N]
+- **Branch:** `[branch-name]`
+- **Commits:** [N] commits ahead of main
+- **Files changed:** [N]
 
 ### Key Changes Already Implemented
 

@@ -146,9 +146,9 @@ Store research findings in a discrete planning document:
 ```markdown
 # Knowledge Base Research - [Work Package Name]
 
-**Date:** [Date]
-**Work Package:** [Name]
-**Status:** [Draft/Complete]
+- **Date:** [Date]
+- **Work Package:** [Name]
+- **Status:** [Draft/Complete]
 
 ---
 
@@ -163,14 +163,14 @@ Store research findings in a discrete planning document:
 ## Relevant Concepts Discovered
 
 ### [Concept 1]
-**Source:** [Document name/path]
-**Relevance:** [How it applies to work package]
-**Key Insight:** [Main takeaway]
+- **Source:** [Document name/path]
+- **Relevance:** [How it applies to work package]
+- **Key Insight:** [Main takeaway]
 
 ### [Concept 2]
-**Source:** [Document name/path]
-**Relevance:** [How it applies to work package]
-**Key Insight:** [Main takeaway]
+- **Source:** [Document name/path]
+- **Relevance:** [How it applies to work package]
+- **Key Insight:** [Main takeaway]
 
 ---
 
@@ -186,14 +186,14 @@ Store research findings in a discrete planning document:
 ## Best Practices Found
 
 ### [Practice 1]
-**Source:** [Document name/path]
-**Description:** [What the practice recommends]
-**Application:** [How to apply in this work package]
+- **Source:** [Document name/path]
+- **Description:** [What the practice recommends]
+- **Application:** [How to apply in this work package]
 
 ### [Practice 2]
-**Source:** [Document name/path]
-**Description:** [What the practice recommends]
-**Application:** [How to apply in this work package]
+- **Source:** [Document name/path]
+- **Description:** [What the practice recommends]
+- **Application:** [How to apply in this work package]
 
 ---
 
@@ -261,9 +261,9 @@ Based on research findings:
 
 ```markdown
 ### Caching Strategy
-**Source:** System Design Patterns, Chapter 7
-**Relevance:** Work package requires improving API response times
-**Key Insight:** "Write-through caching provides consistency at the cost of 
+- **Source:** System Design Patterns, Chapter 7
+- **Relevance:** Work package requires improving API response times
+- **Key Insight:** "Write-through caching provides consistency at the cost of 
 write latency; write-behind improves write performance but risks data loss 
 on failure. For read-heavy workloads with tolerance for eventual consistency, 
 write-behind with periodic flush is recommended."

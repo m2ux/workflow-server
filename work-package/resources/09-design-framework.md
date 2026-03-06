@@ -235,9 +235,9 @@ Create `design-philosophy.md` in the planning folder using this template:
 ```markdown
 # Design Philosophy
 
-**Work Package:** [Name]
-**Issue:** #[number] - [Title]
-**Created:** YYYY-MM-DD
+- **Work Package:** [Name]
+- **Issue:** #[number] - [Title]
+- **Created:** YYYY-MM-DD
 
 ---
 

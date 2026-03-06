@@ -43,6 +43,7 @@ rules:
   one-at-a-time: "Present assumptions one at a time for focused review"
   update-after-review: "Update assumptions log AFTER the review checkpoint — record user responses and outcomes"
   categorize-per-activity: "Use categories appropriate to the current activity phase"
+  markdown-field-formatting: "Each assumption entry field (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST be a bullet list item (`- **Label:** value`), not a bare bold line. Consecutive bold lines without bullets or blank-line separators collapse into a single paragraph in rendered markdown. See resource 26 for correct vs incorrect examples."
 
 tools:
   read_file:
