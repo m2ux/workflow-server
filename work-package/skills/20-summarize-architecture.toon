@@ -32,7 +32,7 @@ protocol:
     - For key flows affected by changes, create sequence diagrams
     - Show interactions between components
     - Use Mermaid sequence diagram syntax
-  write-summary[4]:
+  write-summary[3]:
     - Create architecture-summary.md in planning folder
     - Combine diagrams with narrative explanation
     - Focus on impact, scope, and risk
