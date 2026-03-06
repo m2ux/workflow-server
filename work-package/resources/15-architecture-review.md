@@ -624,7 +624,7 @@ Start with plain Markdown files. Adopt tooling when:
 - ❌ Hide negative consequences
 - ❌ Include implementation details (file paths, code snippets, API signatures)
 - ❌ Confuse requirements with implementation ("ticket introduces trait X" vs "ticket requires X")
-- ❌ Reference gitignored planning artifacts
+- ❌ Include planning artifact content inline (link to them instead)
 - ❌ Add process attribution ("per user request", "AI suggested")
 
 ---
@@ -720,7 +720,7 @@ Before submitting an ADR, verify:
 
 ### Format & Compliance
 - [ ] File follows naming convention (`adr-name.md`)
-- [ ] No references to gitignored planning artifacts
+- [ ] No inline duplication of planning artifact content
 - [ ] Success criteria are measurable (if Confirmation section included)
 - [ ] Compliance mechanisms defined (if decision requires ongoing enforcement)
 

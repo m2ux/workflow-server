@@ -53,7 +53,7 @@ The issue specifies *requirements*; design work determines *implementation*.
 - May miss better approaches discovered during analysis
 
 **Where solutions belong:**
-- Planning artifacts (gitignored)
+- Planning artifacts (in the engineering repo)
 - ADRs for architectural decisions
 - PR descriptions for implementation details
 
