@@ -46,9 +46,15 @@ protocol:
   produce-artifacts[2]:
     - "Write artifacts to the planning folder using the activity's artifactPrefix convention"
     - "Record each artifact produced: id, name, path"
+  update-readme-progress[5]:
+    - "MANDATORY before returning activity_complete. Read the planning folder README.md."
+    - "In the Progress table, mark each artifact produced by this activity as '✅ Complete'. If the activity itself represents a progress row (e.g., Implementation, Validation), update that row's status too."
+    - "Update descriptive text in the Status column to reflect what was done (e.g., 'Code quality review (4/5, M1-M3 fixed)')."
+    - "Update the footer status line to reflect the current workflow position (e.g., 'Implementation complete — PR submitted for review')."
+    - "Write the updated README.md back to disk. The orchestrator will include it in the same commit as the activity's artifacts."
   report-completion[3]:
     - "Compile structured result with result_type: 'activity_complete'"
-    - "Include: variables_changed (all variable mutations from checkpoint effects and step actions), checkpoints_responded (checkpoint_id + selected_option for each), artifacts_produced (id + path for each), steps_completed (list of step IDs)"
+    - "Include: variables_changed (all variable mutations from checkpoint effects and step actions), checkpoints_responded (checkpoint_id + selected_option for each), artifacts_produced (id + path for each — include README.md if updated), steps_completed (list of step IDs)"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
 
 output[2]:
@@ -79,6 +85,7 @@ rules:
   complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
   checkpoint-yield: "All blocking checkpoints MUST cause execution to yield. NEVER auto-resolve a blocking checkpoint. Return the checkpoint details in a checkpoint_pending result and pause until resumed with a checkpoint_response."
   artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
+  readme-progress-mandatory: "The update-readme-progress phase is NOT optional. It MUST execute before report-completion. If the planning folder README.md does not exist, skip silently. If it exists, update it. Failure to update the progress table is a protocol violation — the orchestrator depends on this for incremental progress tracking."
 
 tools:
   get_rules:
