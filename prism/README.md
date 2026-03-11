@@ -57,7 +57,7 @@ graph TD
 
 ## Execution Model
 
-This workflow uses an **orchestrator with disposable workers** — distinct from the work-package pattern which uses a persistent, resumed worker.
+This workflow uses an **orchestrator with disposable workers** — distinct from workflows that use a persistent, resumed worker.
 
 ```mermaid
 sequenceDiagram
@@ -92,7 +92,7 @@ sequenceDiagram
     Orch->>User: Final synthesis + appendices
 ```
 
-**Why disposable workers?** In the work-package workflow, the persistent worker accumulates codebase understanding across activities — that context is valuable. In the prism workflow, shared context is *harmful*. The adversarial worker must treat the structural analysis as an opponent's work to defeat. If it shares generation history with the structural worker, it pulls punches. Fresh agents guarantee genuine independence.
+**Why disposable workers?** In workflows that use a persistent worker, context accumulates across activities — codebase understanding, file locations, implementation decisions. That shared context is valuable for implementation workflows. In the prism workflow, shared context is *harmful*. The adversarial worker must treat the structural analysis as an opponent's work to defeat. If it shares generation history with the structural worker, it pulls punches. Fresh agents guarantee genuine independence.
 
 **Orchestrator** (skill: `orchestrate-prism`):
 - Loads workflow, resolves target content
@@ -165,7 +165,7 @@ get_resource({ workflow_id: "prism", index: "00" })
 get_skill({ skill_id: "structural-analysis", workflow_id: "prism" })
 ```
 
-For example, the work-package workflow's `review-code` or `analyze-implementation` skills can load the L12 lens to augment their analysis with structural depth.
+For example, a code review or implementation analysis skill in another workflow can load the L12 lens to augment its analysis with structural depth.
 
 ---
 
@@ -247,12 +247,12 @@ degradation_lens = get_resource({ workflow_id: "prism", index: "10" })
 
 **What you get:** Two non-overlapping sets of structural findings. Convergent findings (discovered by both lenses) are high-confidence. Unique findings (one lens only) are the value-add of portfolio analysis.
 
-### Cross-workflow: Augmenting a work-package code review
+### Cross-workflow: Augmenting a code review skill
 
-A work-package skill like `review-code` loads the L12 lens to supplement its checklist-based review with structural depth.
+Any workflow's code review skill can load the L12 lens to supplement its checklist-based review with structural depth.
 
 ```
-# Inside a work-package skill protocol step:
+# Inside another workflow's skill protocol step:
 protocol:
   structural-analysis[3]:
     - "Load resource 00 from the prism workflow: get_resource(workflow_id: 'prism', index: '00')"
@@ -262,20 +262,20 @@ protocol:
 
 **What you get:** The standard severity-rated code review findings *plus* conservation laws and structural/fixable classification for each file. The lens finds problems that checklist reviews miss — particularly silent failures and design-level trade-offs.
 
-### Cross-workflow: Full Prism from within a work-package activity
+### Cross-workflow: Full Prism from within another workflow
 
-When maximum depth is needed (e.g., during implementation analysis), the work-package worker can act as the prism orchestrator, spawning isolated sub-agents directly.
+When maximum depth is needed (e.g., during implementation analysis or a security audit), a worker in any workflow can act as the prism orchestrator, spawning isolated sub-agents directly.
 
 ```
-# The worker follows the orchestrate-prism skill protocol:
+# The calling worker follows the orchestrate-prism skill protocol:
 # 1. Read target code
 # 2. Task(fresh agent, content + resource index 00) → capture structural output
 # 3. Task(fresh agent, content + ANALYSIS 1 + resource index 01) → capture adversarial output
 # 4. Task(fresh agent, content + ANALYSIS 1 + ANALYSIS 2 + resource index 02) → capture synthesis
-# 5. Include synthesis findings in the implementation analysis artifact
+# 5. Include synthesis findings in the parent workflow's artifact
 ```
 
-**What you get:** The self-corrected Full Prism analysis embedded within the work-package activity's artifact, with full isolation between passes even though the analysis is invoked from a parent workflow.
+**What you get:** The self-corrected Full Prism analysis embedded within the calling workflow's artifact, with full isolation between passes even though the analysis is invoked from a parent workflow.
 
 ---
 
