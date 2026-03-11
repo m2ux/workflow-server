@@ -113,32 +113,13 @@ sequenceDiagram
 
 All lens resources are accessible cross-workflow via `get_resource("prism", index)`.
 
-### Code Pipeline (3-pass Full Prism)
+| Group | Indices | Purpose |
+|-------|---------|---------|
+| Code Pipeline | `00`–`02` | 3-pass Full Prism: structural → adversarial → synthesis |
+| General Pipeline | `03`–`05` | Same operations with domain-neutral language for non-code input |
+| Portfolio Lenses | `06`–`11` | 6 independent lenses: pedagogy, claim, scarcity, rejected-paths, degradation, contract |
 
-| Index | Name | Purpose |
-|-------|------|---------|
-| `00` | L12 Structural | Primary structural analysis — conservation law, meta-law, bug table |
-| `01` | L12 Adversarial | Attack the structural analysis — wrong predictions, overclaims, underclaims |
-| `02` | L12 Synthesis | Reconcile into corrected conservation law, definitive classification |
-
-### General Pipeline (3-pass for non-code input)
-
-| Index | Name | Purpose |
-|-------|------|---------|
-| `03` | L12 General Structural | Same operations as code L12 with domain-neutral language |
-| `04` | L12 General Adversarial | Same operations as code adversarial with domain-neutral language |
-| `05` | L12 General Synthesis | Same operations as code synthesis with domain-neutral language |
-
-### Portfolio Lenses (single-pass, independent)
-
-| Index | Name | Operation | Best for |
-|-------|------|-----------|----------|
-| `06` | Pedagogy | Transfer corruption — what patterns transfer and where they break | Codebase comprehension, design review |
-| `07` | Claim | Assumption inversion — assume each embedded claim is false | Design philosophy, plan review |
-| `08` | Scarcity | Resource conservation — what the design assumes is infinite | Implementation analysis, trade-off analysis |
-| `09` | Rejected Paths | Problem migration — what rejected paths would swap | Codebase comprehension, plan review |
-| `10` | Degradation | Decay timeline — what degrades monotonically with neglect | Strategic review, maintainability |
-| `11` | Contract | Interface vs implementation — signature promises vs reality | Code review (code-only) |
+See [resources/README.md](resources/README.md) for the full resource index with descriptions, the L12 operation chain, recommended lens combinations, and cross-workflow access patterns.
 
 ---
 
