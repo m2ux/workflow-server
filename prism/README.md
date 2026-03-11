@@ -109,34 +109,6 @@ sequenceDiagram
 
 ---
 
-## Variables (9)
-
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `target_content` | string | *(required)* | Code or text to analyze — file path or inline |
-| `target_type` | string | `code` | Input domain: `code` or `general` |
-| `pipeline_mode` | string | `single` | Mode: `single`, `full-prism`, or `portfolio` |
-| `selected_lenses` | array | — | Portfolio mode: lens names to apply |
-| `analysis_focus` | string | — | Optional focus area |
-| `structural_output` | string | — | Captured output from structural pass |
-| `adversarial_output` | string | — | Captured output from adversarial pass |
-| `synthesis_output` | string | — | Captured output from synthesis pass |
-| `portfolio_outputs` | object | — | Map of lens name → output for portfolio mode |
-
----
-
-## Workflow Rules
-
-1. **ISOLATION MODEL:** Each analytical pass MUST be dispatched to a FRESH sub-agent. The adversarial pass must never share context with the structural pass.
-2. **EXECUTION MODEL:** Orchestrator with disposable workers. Workers are NOT resumed.
-3. **ORCHESTRATOR DISCIPLINE:** The orchestrator MUST NOT execute lens operations or generate analysis.
-4. **AUTOMATIC TRANSITIONS:** Passes advance without user confirmation.
-5. **OUTPUT FORWARDING:** Full text output forwarded verbatim between passes. No summarizing.
-6. **LENS LOADING:** Workers self-bootstrap by calling `get_resource`. The orchestrator provides only the resource index.
-7. **FULLY AUTOMATED:** No user checkpoints. The only interaction is the initial input.
-
----
-
 ## Examples
 
 ### Standalone: Single-pass structural analysis on a file
