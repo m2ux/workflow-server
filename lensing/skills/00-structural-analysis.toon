@@ -1,0 +1,70 @@
+id: structural-analysis
+version: 1.0.0
+capability: Apply L12 structural analysis lens to code for deep structural findings, conservation laws, and bug detection
+
+description: "Single-pass L12 structural analysis on code. Loads the L12 lens prompt and applies it to the provided code, producing a conservation law, meta-law, and severity-classified bug table. This is the foundational lensing operation — other skills build on it."
+
+inputs[2]:
+  - id: code-content
+    description: "The code to analyze. Can be a file path (agent reads it), a diff, or inline code."
+    required: true
+  - id: analysis-focus
+    description: "Optional focus area to guide the analysis (e.g., 'error handling', 'state management', 'concurrency')"
+    required: false
+
+protocol:
+  load-lens[2]:
+    - "Load resource 00 (l12-structural) from the lensing workflow: get_resource(workflow_id: 'lensing', index: '00')"
+    - The resource contains the full L12 lens prompt — a sequence of analytical operations the agent must execute step by step
+  read-target[2]:
+    - If code-content is a file path, read the file to obtain the code
+    - If an analysis-focus is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
+  execute-lens[4]:
+    - "Apply every operation in the lens prompt sequentially against the code"
+    - "Start with the falsifiable claim about the code's deepest structural problem"
+    - "Follow the construction-based reasoning chain through improvements, invariants, inversions, and conservation laws"
+    - "Conclude with the concrete bug table — every bug, edge case, and silent failure discovered at any stage"
+  format-output[3]:
+    - "Structure the output with clear section headers: Claim, Dialectic, Concealment Mechanism, Improvements, Structural Invariant, Conservation Law, Meta-Law, Bug Table"
+    - "In the Bug Table, classify each finding as fixable or structural based on whether the conservation law predicts it can be resolved"
+    - "Include file paths, line numbers, and specific function names for every finding"
+
+output[1]:
+  - id: structural-analysis
+    description: "L12 structural analysis with conservation law, meta-law, and classified bug table"
+    components:
+      conservation_law: "The named conservation law between original and inverted impossibilities"
+      meta_law: "What the conservation law itself conceals — the deeper finding"
+      bug_table: "Every concrete bug with location, severity, and fixable/structural classification"
+      concealment_mechanism: "How the code hides its real problems"
+      structural_invariant: "The property that persists through every improvement"
+
+rules:
+  execute-completely: "Every step in the lens prompt must be executed. Do not skip or summarize operations — the depth comes from the full chain."
+  construction-over-description: "Build improvements and observe what they reveal. Do not merely describe problems — construct alternatives and trace what becomes visible."
+  evidence-required: "All findings must cite specific code: file paths, function names, line ranges. Abstract claims without code evidence are not findings."
+  meta-law-specificity: "The meta-law must predict a concrete, testable consequence for this specific code. It must not generalize the conservation law to a broader category."
+
+resources[1]:
+  - "00"
+
+tools:
+  get_resource:
+    when: Loading the L12 structural analysis lens
+    params: "workflow_id: lensing, index: 00"
+    returns: "L12 lens prompt with the full sequence of analytical operations"
+    usage: "The lens prompt is the program — execute its operations against the code"
+  read_file:
+    when: Reading code files to analyze
+    usage: Obtain the code content for lens application
+  grep:
+    when: Verifying findings against the codebase
+    usage: Confirm that cited patterns exist at the claimed locations
+
+errors:
+  empty_code:
+    cause: No code content provided or file not found
+    recovery: Request the file path or code content from the caller
+  shallow_analysis:
+    cause: Analysis stays at surface level without reaching conservation law
+    recovery: "Re-execute from the structural invariant step — the depth comes from the inversion chain, not the initial claim"
