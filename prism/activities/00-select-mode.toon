@@ -1,8 +1,8 @@
 id: select-mode
-version: 1.0.0
+version: 1.1.0
 name: Select Pipeline Mode
-description: "Detect the pipeline mode from the user's request and resolve the target content. Matches intent patterns to set pipeline_mode, determines target_type from content, and ensures the output directory exists. Transitions automatically to structural-pass."
-problem: User needs the correct pipeline mode detected before analysis begins
+description: "Analyze the user's request, recommend a pipeline mode with rationale, and present the recommendation for confirmation. Resolves target content, detects target_type, and ensures the output directory exists before transitioning to structural-pass."
+problem: User needs the correct pipeline mode selected before analysis begins
 recognition[8]:
   - analyze
   - structural analysis
@@ -14,14 +14,14 @@ recognition[8]:
   - review code
 skills:
   primary: select-lens
-steps[4]:
-  - id: detect-mode
-    name: Detect Pipeline Mode
-    description: "Match the user's request against intent patterns to set pipeline_mode. Patterns: 'full prism', 'deep analysis', '3-pass', 'self-correcting', 'maximum depth' → full-prism. 'portfolio', 'multiple lenses', 'breadth', 'complementary' → portfolio. Everything else → single. If pipeline_mode was explicitly provided by the caller, use it as-is."
-    required: true
+steps[5]:
   - id: resolve-target
     name: Resolve Target Content
     description: "Determine what to analyze from the user's request. Extract the file path, directory, or inline content. Set target_content. Detect target_type: if the content is a source code file path (by extension or context), set 'code'. If it is a document, plan, or non-code text, set 'general'."
+    required: true
+  - id: recommend-mode
+    name: Recommend Pipeline Mode
+    description: "Analyze the user's request and the resolved target to recommend a pipeline_mode. Consider: (1) Explicit intent — if the user said 'deep analysis', '3-pass', 'full prism', recommend full-prism. If they said 'portfolio', 'multiple lenses', 'breadth', recommend portfolio. (2) Implicit intent — if the target is a single small file or a quick check, recommend single. If it is a critical module, security-sensitive code, or the user mentioned 'thorough' or 'comprehensive', recommend full-prism. If the user asked about trade-offs, assumptions, or maintainability, recommend portfolio with specific lenses from the select-lens goal-mapping matrix. (3) If pipeline_mode was explicitly provided by the caller, use it as-is and skip the recommendation checkpoint. Prepare a brief rationale explaining why this mode fits the request."
     required: true
   - id: resolve-output-path
     name: Resolve Output Path
@@ -29,13 +29,46 @@ steps[4]:
     required: true
   - id: extract-lenses
     name: Extract Selected Lenses
-    description: "For portfolio mode: if the user named specific lenses (e.g., 'claim and degradation'), set selected_lenses. If not, leave unset — the structural-pass activity will apply defaults."
+    description: "For portfolio mode: if the user named specific lenses (e.g., 'claim and degradation'), set selected_lenses. If not and the recommendation included specific lenses, use those. Otherwise leave unset — the structural-pass activity will apply defaults."
     required: true
     condition:
       type: simple
       variable: pipeline_mode
       operator: "=="
       value: portfolio
+  - id: summarize-configuration
+    name: Summarize Configuration
+    description: "Summarize the resolved configuration: target (file/content), target_type (code/general), pipeline_mode, selected_lenses (if portfolio), output_path. This summary is included in the checkpoint context."
+    required: true
+checkpoints[1]:
+  - id: confirm-mode
+    name: Pipeline Mode Confirmation
+    message: "Based on your request, I recommend the following analysis configuration. Would you like to proceed or adjust?"
+    prerequisite: "Only present when pipeline_mode was NOT explicitly provided by the caller. If the caller set pipeline_mode directly, skip this checkpoint."
+    options[4]:
+      - id: accept
+        label: Proceed
+        description: "Run the analysis with the recommended configuration"
+      - id: switch-single
+        label: "Single pass"
+        description: "Quick L12 structural analysis (1 pass)"
+        effect:
+          setVariable:
+            pipeline_mode: single
+      - id: switch-full-prism
+        label: "Full Prism"
+        description: "Deep self-correcting analysis (3 isolated passes)"
+        effect:
+          setVariable:
+            pipeline_mode: full-prism
+      - id: switch-portfolio
+        label: Portfolio
+        description: "Multiple complementary lenses for breadth"
+        effect:
+          setVariable:
+            pipeline_mode: portfolio
+    required: true
+    blocking: true
 transitions[1]:
   - to: structural-pass
     isDefault: true
