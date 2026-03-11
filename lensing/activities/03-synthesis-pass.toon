@@ -1,0 +1,24 @@
+id: synthesis-pass
+version: 1.0.0
+name: Synthesis Pass
+description: "Reconcile the structural analysis and adversarial challenge into a final corrected result. This worker runs in a fresh context and receives the target content plus both prior outputs. It produces the definitive conservation law, meta-law, and findings classification."
+skills:
+  primary: structural-analysis
+rules[1]:
+  - "The worker MUST load the synthesis lens (resource 02 or 05) not the structural or adversarial lens."
+steps[3]:
+  - id: load-lens
+    name: Load Synthesis Lens
+    description: "Load the synthesis lens resource: resource 02 (code) or resource 05 (general) based on target_type"
+    required: true
+  - id: execute-lens
+    name: Execute Synthesis Operations
+    description: "Apply the synthesis lens against the target content + structural output (ANALYSIS 1) + adversarial output (ANALYSIS 2). Produce the final corrected result."
+    required: true
+  - id: format-output
+    name: Format Synthesis Output
+    description: "Structure the output: refined conservation law, refined meta-law, definitive classification, deepest finding."
+    required: true
+transitions[1]:
+  - to: deliver-result
+    isDefault: true
