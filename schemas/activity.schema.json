@@ -142,9 +142,8 @@
         },
         "blocking": {
           "type": "boolean",
-          "const": true,
           "default": true,
-          "description": "Always true. Checkpoints pause workflow execution until the user responds."
+          "description": "Whether this checkpoint blocks workflow execution until the user responds. Defaults to true."
         }
       },
       "required": ["id", "name", "message", "options"],

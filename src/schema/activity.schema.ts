@@ -52,7 +52,7 @@ export const CheckpointSchema = z.object({
   prerequisite: z.string().optional().describe('Action to complete before presenting checkpoint'),
   options: z.array(CheckpointOptionSchema).min(1),
   required: z.boolean().default(true),
-  blocking: z.literal(true).default(true),
+  blocking: z.boolean().default(true),
 });
 export type Checkpoint = z.infer<typeof CheckpointSchema>;
 
