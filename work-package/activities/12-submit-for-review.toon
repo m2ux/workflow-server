@@ -78,7 +78,11 @@ modeOverrides:
       - actionable_items - List of specific items for PR author to address
 entryActions[1]{action,message}:
   log,Submitting PR for review
-steps[6]:
+steps[7]:
+  - id: verify-commit-signatures
+    name: Verify and sign commits
+    description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
+    required: true
   - id: push-commits
     name: Push all commits
     description: "Push all local commits to remote branch."
