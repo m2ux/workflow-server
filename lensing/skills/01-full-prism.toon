@@ -1,62 +1,49 @@
 id: full-prism
-version: 1.0.0
-capability: Run the 3-pass Full Prism pipeline (structural, adversarial, synthesis) for maximum-depth code analysis
+version: 2.0.0
+capability: Execute a single pass of the Full Prism pipeline within the lensing workflow's isolation model
 
-description: "Three-pass analysis pipeline that produces self-correcting structural findings. Pass 1 applies the L12 lens to produce a conservation law and bug table. Pass 2 attacks that analysis adversarially — finding wrong predictions, overclaims, and underclaims. Pass 3 synthesizes both into a corrected conservation law and definitive bug classification. Research shows the synthesis finds properties that neither pass alone could discover."
+description: "Worker-side skill for executing one pass of the 3-pass Full Prism pipeline. Each pass runs in a fresh, isolated sub-agent dispatched by the orchestrate-lensing skill. The worker receives: (1) the target content, (2) any prior pass outputs as labelled text, and (3) a resource index indicating which lens to load. The worker loads the lens via get_resource, applies it to the content, and returns the complete analysis text. For the full pipeline, see the orchestrate-lensing skill which manages dispatch and isolation."
 
-inputs[3]:
-  - id: code-content
-    description: "The code to analyze. Can be a file path (agent reads it), a diff, or inline code."
+inputs[4]:
+  - id: target-content
+    description: "The code or text to analyze (provided inline by the orchestrator)"
     required: true
-  - id: analysis-focus
-    description: "Optional focus area to guide the analysis"
+  - id: lens-resource-index
+    description: "Resource index to load from the lensing workflow (e.g., 00 for code structural, 01 for code adversarial)"
+    required: true
+  - id: prior-analysis
+    description: "Text output from prior passes, labelled as ANALYSIS 1 / ANALYSIS 2. Empty for the structural pass."
     required: false
-  - id: domain
-    description: "Whether the input is code or general text. Determines which lens set to use. Default: code"
+  - id: target-type
+    description: "Whether the input is 'code' or 'general'"
     required: false
     default: code
 
 protocol:
-  determine-lens-set[2]:
-    - "If domain is 'code' or unset, use code lenses: resources 00, 01, 02"
-    - "If domain is 'general', use general lenses: resources 03, 04, 05"
-  load-lenses[2]:
-    - "Load all three lens resources from the lensing workflow using get_resource"
-    - "Hold them for sequential application — each pass depends on the output of the previous"
-  read-target[1]:
-    - If code-content is a file path, read the file to obtain the content
-  pass-1-structural[3]:
-    - "Apply the structural lens (resource 00 or 03) to the code/input"
-    - "Execute every operation in the lens completely — do not abbreviate"
-    - "Capture the full output as ANALYSIS 1: conservation law, meta-law, and bug/issue table"
-  pass-2-adversarial[3]:
-    - "Apply the adversarial lens (resource 01 or 04) to the original code/input together with ANALYSIS 1"
-    - "Present the code first, then ANALYSIS 1 as context for the adversary"
-    - "The adversary's job is to break the analysis — find wrong predictions, overclaims, underclaims, and produce a revised table"
-  pass-3-synthesis[3]:
-    - "Apply the synthesis lens (resource 02 or 05) to the original code/input together with both ANALYSIS 1 and ANALYSIS 2"
-    - "The synthesis produces: refined conservation law, refined meta-law, definitive fixable/structural classification, and the deepest finding visible only from having both perspectives"
-    - "The synthesis output is the final deliverable"
+  load-lens[2]:
+    - "Call get_resource({ workflow_id: 'lensing', index: lens-resource-index }) to load the lens prompt"
+    - "The lens prompt is the program — it defines the exact sequence of analytical operations to execute"
+  apply-lens[3]:
+    - "Apply every operation in the lens prompt sequentially against the target content"
+    - "If prior-analysis is provided, use it as context as instructed by the lens (adversarial lenses reference 'the structural analysis'; synthesis lenses reference 'ANALYSIS 1' and 'ANALYSIS 2')"
+    - "Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain."
   format-output[2]:
-    - "Present the synthesis as the primary output"
-    - "Optionally include ANALYSIS 1 and ANALYSIS 2 as appendices for transparency"
+    - "Structure the output with clear section headers matching the lens operations"
+    - "For structural: claim, dialectic, concealment mechanism, improvements, invariant, conservation law, meta-law, findings table"
+    - "For adversarial: wrong predictions, overclaims, underclaims, revised findings table"
+    - "For synthesis: refined conservation law, refined meta-law, definitive classification, deepest finding"
 
 output[1]:
-  - id: prism-analysis
-    description: "Self-corrected structural analysis from the 3-pass pipeline"
+  - id: pass-output
+    description: "Complete analysis text from this pass"
     components:
-      refined_conservation_law: "Conservation law that survives both structural analysis and adversarial challenge"
-      refined_meta_law: "Meta-law that survives both perspectives"
-      definitive_classification: "Every bug/issue classified as fixable or structural with evidence"
-      deepest_finding: "The property visible only from having both the structural analysis and its correction"
-      pass_1_summary: "Structural analysis summary (for reference)"
-      pass_2_summary: "Adversarial findings summary (for reference)"
+      analysis_text: "The full analysis output following the lens operations"
 
 rules:
-  sequential-execution: "The three passes must run sequentially. Each pass depends on the output of the previous. Do not parallelize."
-  full-output-forwarding: "Pass the COMPLETE output of each pass to the next. Summarizing between passes loses the evidence the adversary needs."
-  adversary-independence: "In pass 2, the agent must genuinely try to break the analysis. Do not rubber-stamp — find real counter-evidence in the code."
-  synthesis-resolves-conflicts: "In pass 3, every disagreement between pass 1 and pass 2 must be resolved with evidence. Unresolved conflicts are a failure of the synthesis."
+  complete-execution: "Every step in the lens prompt must be executed. Do not skip or summarize — the depth comes from the full chain."
+  evidence-required: "All findings must cite specific code or text: file paths, function names, line ranges, specific passages."
+  no-context-leakage: "This worker runs in isolation. Do not reference conversations, prior interactions, or context beyond what was provided in the prompt."
+  lens-is-program: "The lens resource is an imperative program. Execute its operations in order, producing the output each operation requests."
 
 resources[6]:
   - "00"
@@ -68,24 +55,21 @@ resources[6]:
 
 tools:
   get_resource:
-    when: Loading lens prompts for each pass
-    params: "workflow_id: lensing, index: 00-05 (determined by domain)"
-    returns: "Lens prompt for the current pass"
-    usage: "Load sequentially — structural first, adversarial second, synthesis third"
+    when: Loading the lens prompt for this pass
+    params: "workflow_id: lensing, index: lens-resource-index (provided by orchestrator)"
+    returns: "Lens prompt text"
+    usage: "Load once, then execute every operation in the prompt"
   read_file:
-    when: Reading code files to analyze
-    usage: Obtain the code content for lens application
+    when: "Reading code files referenced in the target content (if the content references paths rather than inline code)"
+    usage: "Obtain source code for analysis"
   grep:
-    when: Verifying findings against the codebase during adversarial and synthesis passes
-    usage: Confirm or refute specific claims with evidence from the code
+    when: "Verifying findings against the codebase"
+    usage: "Confirm that cited patterns exist at the claimed locations"
 
 errors:
-  incomplete_pass:
-    cause: A pass was abbreviated or summarized instead of fully executed
-    recovery: "Re-execute the incomplete pass. The pipeline's value comes from each pass being exhaustive."
-  adversary_too_soft:
-    cause: Pass 2 agrees with pass 1 on everything
-    recovery: "Force at least one overclaim, one underclaim, and one wrong prediction. If none exist, the structural analysis is either trivial or the adversary isn't trying."
-  synthesis_avoids_conflict:
-    cause: Pass 3 restates pass 1 without integrating pass 2 corrections
-    recovery: "Re-execute synthesis with explicit instruction to address each adversarial finding by name"
+  lens_not_loaded:
+    cause: "get_resource returned an error for the given index"
+    recovery: "Report the error. Valid indices: 00-02 (code), 03-05 (general)."
+  shallow_analysis:
+    cause: "Analysis stayed at surface level without reaching conservation law"
+    recovery: "Re-execute from the structural invariant step. The depth comes from the inversion chain, not the initial claim."
