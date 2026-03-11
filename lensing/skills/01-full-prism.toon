@@ -27,7 +27,7 @@ protocol:
     - "Apply every operation in the lens prompt sequentially against the target content"
     - "If prior-analysis is provided, use it as context as instructed by the lens (adversarial lenses reference 'the structural analysis'; synthesis lenses reference 'ANALYSIS 1' and 'ANALYSIS 2')"
     - "Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain."
-  format-output[2]:
+  format-output[4]:
     - "Structure the output with clear section headers matching the lens operations"
     - "For structural: claim, dialectic, concealment mechanism, improvements, invariant, conservation law, meta-law, findings table"
     - "For adversarial: wrong predictions, overclaims, underclaims, revised findings table"
