@@ -1,10 +1,15 @@
 id: structural-pass
-version: 1.0.0
+version: 1.1.0
 name: Structural Analysis Pass
-description: "Run the primary L12 structural analysis lens against the target content. Produces a conservation law, meta-law, and classified findings table. Output is captured by the orchestrator for forwarding to subsequent passes."
+description: "Run the primary L12 structural analysis lens against the target content. Produces a conservation law, meta-law, and classified findings table. Output is written to structural-analysis.md and the path is captured by the orchestrator for forwarding to subsequent passes."
 skills:
   primary: structural-analysis
-steps[3]:
+artifacts[1]:
+  - id: structural-analysis
+    name: structural-analysis.md
+    location: analysis
+    description: "L12 structural analysis with conservation law, meta-law, and classified bug table"
+steps[4]:
   - id: load-lens
     name: Load Structural Lens
     description: "Load the appropriate L12 lens resource: resource 00 (code) or resource 03 (general) based on target_type"
@@ -13,9 +18,13 @@ steps[3]:
     name: Execute Lens Operations
     description: "Apply every operation in the lens prompt sequentially against the target content. Execute completely — do not abbreviate."
     required: true
+  - id: write-artifact
+    name: Write Analysis Artifact
+    description: "Write the complete analysis output to {output_path}/structural-analysis.md"
+    required: true
   - id: format-output
-    name: Format Analysis Output
-    description: "Structure the output with clear section headers. Include the conservation law, meta-law, and findings table."
+    name: Report Output Path
+    description: "Report structural_output_path to the orchestrator so it can be read and forwarded to subsequent passes."
     required: true
 transitions[2]:
   - to: adversarial-pass

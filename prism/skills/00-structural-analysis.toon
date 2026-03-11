@@ -1,13 +1,17 @@
 id: structural-analysis
-version: 1.0.0
+version: 1.1.0
 capability: Apply L12 structural analysis lens to code for deep structural findings, conservation laws, and bug detection
 
-description: "Single-pass L12 structural analysis on code. Loads the L12 lens prompt and applies it to the provided code, producing a conservation law, meta-law, and severity-classified bug table. This is the foundational prism operation — other skills build on it."
+description: "Single-pass L12 structural analysis on code. Loads the L12 lens prompt and applies it to the provided code, producing a conservation law, meta-law, and severity-classified bug table. Writes the result to structural-analysis.md in the output directory. This is the foundational prism operation — other skills build on it."
 
-inputs[2]:
+inputs[3]:
   - id: code-content
     description: "The code to analyze. Can be a file path (agent reads it), a diff, or inline code."
     required: true
+  - id: output-path
+    description: "Directory to write the analysis artifact. Defaults to current working directory."
+    required: false
+    default: "."
   - id: analysis-focus
     description: "Optional focus area to guide the analysis (e.g., 'error handling', 'state management', 'concurrency')"
     required: false
@@ -24,6 +28,9 @@ protocol:
     - "Start with the falsifiable claim about the code's deepest structural problem"
     - "Follow the construction-based reasoning chain through improvements, invariants, inversions, and conservation laws"
     - "Conclude with the concrete bug table — every bug, edge case, and silent failure discovered at any stage"
+  write-artifact[2]:
+    - "Write the complete analysis to {output-path}/structural-analysis.md"
+    - "Include a YAML front-matter header with target file, analysis date, and lens used (L12 structural)"
   format-output[3]:
     - "Structure the output with clear section headers: Claim, Dialectic, Concealment Mechanism, Improvements, Structural Invariant, Conservation Law, Meta-Law, Bug Table"
     - "In the Bug Table, classify each finding as fixable or structural based on whether the conservation law predicts it can be resolved"
@@ -32,6 +39,8 @@ protocol:
 output[1]:
   - id: structural-analysis
     description: "L12 structural analysis with conservation law, meta-law, and classified bug table"
+    artifact:
+      name: "structural-analysis.md"
     components:
       conservation_law: "The named conservation law between original and inverted impossibilities"
       meta_law: "What the conservation law itself conceals — the deeper finding"
@@ -44,6 +53,7 @@ rules:
   construction-over-description: "Build improvements and observe what they reveal. Do not merely describe problems — construct alternatives and trace what becomes visible."
   evidence-required: "All findings must cite specific code: file paths, function names, line ranges. Abstract claims without code evidence are not findings."
   meta-law-specificity: "The meta-law must predict a concrete, testable consequence for this specific code. It must not generalize the conservation law to a broader category."
+  persist-output: "The analysis MUST be written to the filesystem as an artifact. In-memory-only output is not acceptable — downstream passes and callers depend on reading the artifact file."
 
 resources[1]:
   - "00"
@@ -57,6 +67,10 @@ tools:
   read_file:
     when: Reading code files to analyze
     usage: Obtain the code content for lens application
+  write_file:
+    when: Writing the analysis artifact to the output directory
+    params: "path: {output-path}/structural-analysis.md"
+    usage: Persist the complete analysis as a markdown artifact
   grep:
     when: Verifying findings against the codebase
     usage: Confirm that cited patterns exist at the claimed locations
@@ -68,3 +82,6 @@ errors:
   shallow_analysis:
     cause: Analysis stays at surface level without reaching conservation law
     recovery: "Re-execute from the structural invariant step — the depth comes from the inversion chain, not the initial claim"
+  write_failed:
+    cause: Could not write artifact to the output path
+    recovery: Verify the output-path directory exists and is writable

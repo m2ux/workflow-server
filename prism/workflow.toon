@@ -1,7 +1,7 @@
 "$schema": ../../schemas/workflow.schema.json
 id: prism
-version: 1.1.0
-title: Structural Analysis Lensing Workflow
+version: 1.2.0
+title: Structural Analysis Prism Workflow
 description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence — particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports three modes: single-pass L12, 3-pass Full Prism (structural → adversarial → synthesis), and multi-lens portfolio analysis."
 author: m2ux
 tags[3]:
@@ -16,7 +16,9 @@ rules[7]:
   - "OUTPUT FORWARDING: The orchestrator captures the full text output from each pass and includes it verbatim in the next pass's prompt. Summarizing between passes loses evidence the adversary needs."
   - "LENS LOADING: Workers load lens prompts from prism workflow resources via get_resource. The orchestrator tells the worker which resource index to load — it does not load or forward the lens itself."
   - "FULLY AUTOMATED: This workflow has no user checkpoints. The only user interaction is providing the initial input (code path, text, pipeline mode)."
-variables[9]:
+artifactLocations:
+  analysis: "{output_path}"
+variables[11]:
   - name: target_content
     type: string
     description: "The code or text to analyze — either a file path or inline content"
@@ -29,22 +31,29 @@ variables[9]:
     type: string
     description: "Analysis mode: 'single' (one L12 pass), 'full-prism' (3-pass pipeline), or 'portfolio' (multiple complementary lenses)"
     defaultValue: single
+  - name: output_path
+    type: string
+    description: "Directory to write analysis artifacts. When invoked standalone, defaults to current working directory. When invoked cross-workflow, the caller sets this (e.g., a planning folder path)."
+    defaultValue: "."
   - name: selected_lenses
     type: array
     description: "For portfolio mode: array of lens names to apply (e.g., ['claim', 'degradation'])"
   - name: analysis_focus
     type: string
     description: "Optional focus area to guide the analysis"
-  - name: structural_output
+  - name: structural_output_path
     type: string
-    description: "Captured text output from the structural pass (set by orchestrator)"
-  - name: adversarial_output
+    description: "File path to the structural pass artifact (set by orchestrator after pass completes)"
+  - name: adversarial_output_path
     type: string
-    description: "Captured text output from the adversarial pass (set by orchestrator)"
-  - name: synthesis_output
+    description: "File path to the adversarial pass artifact (set by orchestrator after pass completes)"
+  - name: synthesis_output_path
     type: string
-    description: "Captured text output from the synthesis pass (set by orchestrator)"
-  - name: portfolio_outputs
+    description: "File path to the synthesis pass artifact (set by orchestrator after pass completes)"
+  - name: portfolio_output_paths
     type: object
-    description: "Map of lens name → output text for portfolio mode"
+    description: "Map of lens name → file path for portfolio mode artifacts"
+  - name: analysis_focus
+    type: string
+    description: "Optional focus area to guide the analysis"
 initialActivity: structural-pass
