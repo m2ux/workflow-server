@@ -230,7 +230,7 @@ describe('mcp-server integration', () => {
     it('should get specific resource', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { workflow_id: 'work-package', index: '00' },
+        arguments: { workflow_id: 'work-package', index: '01' },
       });
       
       // get_resource returns raw content (TOON or markdown format)
