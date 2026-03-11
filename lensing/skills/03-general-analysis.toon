@@ -1,0 +1,75 @@
+id: general-analysis
+version: 1.0.0
+capability: Apply structural lenses to non-code input — requirements, designs, plans, strategies, or any text artifact
+
+description: "Applies the general-domain L12 pipeline or portfolio lenses to non-code artifacts. The general lenses use identical operations to the code lenses but with domain-neutral language ('input' instead of 'code', 'expert review' instead of 'code review'). Use this for analyzing requirements documents, design proposals, planning artifacts, strategies, or any structured text."
+
+inputs[3]:
+  - id: input-content
+    description: "The text to analyze. Can be a file path or inline content."
+    required: true
+  - id: analysis-mode
+    description: "Which analysis to perform: 'structural' (single L12 pass), 'full-prism' (3-pass pipeline), or 'portfolio' (multiple complementary lenses). Default: structural"
+    required: false
+    default: structural
+  - id: selected-lenses
+    description: "For portfolio mode: which lenses to apply. The contract lens (11) is excluded — it is code-specific. Valid: pedagogy, claim, scarcity, rejected-paths, degradation."
+    required: false
+
+protocol:
+  determine-mode[3]:
+    - "If analysis-mode is 'structural', use single-pass general L12 (resource 03)"
+    - "If analysis-mode is 'full-prism', use the 3-pass general pipeline (resources 03, 04, 05)"
+    - "If analysis-mode is 'portfolio', select and apply general-compatible portfolio lenses (resources 06-10, excluding 11-contract)"
+  read-target[1]:
+    - If input-content is a file path, read the file to obtain the text
+  execute-structural[2]:
+    - "Load resource 03 (l12-general-structural) and apply to the input"
+    - Execute every operation completely — the depth chain is identical to code L12 but with domain-neutral framing
+  execute-full-prism[4]:
+    - "Load resources 03, 04, 05 from the lensing workflow"
+    - "Pass 1: Apply resource 03 to the input. Capture output as ANALYSIS 1."
+    - "Pass 2: Apply resource 04 to the input + ANALYSIS 1. Capture as ANALYSIS 2."
+    - "Pass 3: Apply resource 05 to the input + ANALYSIS 1 + ANALYSIS 2. This is the final output."
+  execute-portfolio[2]:
+    - "Load selected lens resources (06-10) and apply each independently"
+    - "Synthesize with cross-lens convergence/divergence summary"
+
+output[1]:
+  - id: general-analysis
+    description: "Structural analysis of non-code input"
+    components:
+      conservation_law: "The conservation law discovered in the input's problem space"
+      meta_law: "What the conservation law itself conceals"
+      issues: "Concrete failures, contradictions, blind spots, and hidden assumptions"
+      classification: "Each issue classified as changeable or structural"
+
+rules:
+  no-contract-lens: "The contract lens (resource 11) is code-specific. Do not use it for general analysis."
+  domain-neutral-language: "Use the general lens resources (03-05) not the code-specific ones (00-02). The operations are identical but the framing avoids code-specific assumptions."
+  full-execution: "Execute every operation in the lens prompt. Do not abbreviate — the analytical depth comes from the complete chain."
+
+resources[5]:
+  - "03"
+  - "04"
+  - "05"
+  - "06"
+  - "07"
+
+tools:
+  get_resource:
+    when: Loading general-domain lens prompts
+    params: "workflow_id: lensing, index: 03-10"
+    returns: "General-domain lens prompt"
+    usage: "Load the appropriate lens for the selected analysis mode"
+  read_file:
+    when: Reading input files to analyze
+    usage: Obtain the text content for lens application
+
+errors:
+  code_input_detected:
+    cause: Input appears to be source code rather than text
+    recovery: "Use the structural-analysis or full-prism skill instead — they use code-specific lenses that produce code-relevant findings (bug tables, line references)"
+  contract_lens_requested:
+    cause: The contract lens was requested for general analysis
+    recovery: "The contract lens examines function signatures vs implementations — it requires code. Choose from pedagogy, claim, scarcity, rejected-paths, or degradation instead."
