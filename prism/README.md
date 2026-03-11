@@ -123,33 +123,6 @@ See [resources/README.md](resources/README.md) for the full resource index with 
 
 ---
 
-## Skills (6)
-
-| # | Skill | Scope | Purpose |
-|---|-------|-------|---------|
-| 00 | `structural-analysis` | prism | Single-pass L12 on code — usable directly by other workflows |
-| 01 | `full-prism` | prism | Worker-side: execute one pass within the isolation model |
-| 02 | `portfolio-analysis` | prism | Run 2+ complementary portfolio lenses |
-| 03 | `general-analysis` | prism | Apply lenses to non-code input (requirements, designs, plans) |
-| 04 | `select-lens` | prism | Recommend optimal lens(es) for an analytical goal |
-| 05 | `orchestrate-prism` | prism | Dispatch isolated workers, manage the Full Prism pipeline |
-
-### Cross-Workflow Usage
-
-Other workflows reference prism skills and resources directly:
-
-```
-# Load a lens resource from another workflow's skill protocol
-get_resource({ workflow_id: "prism", index: "00" })
-
-# Load a prism skill
-get_skill({ skill_id: "structural-analysis", workflow_id: "prism" })
-```
-
-For example, a code review or implementation analysis skill in another workflow can load the L12 lens to augment its analysis with structural depth.
-
----
-
 ## Variables (9)
 
 | Variable | Type | Default | Description |
