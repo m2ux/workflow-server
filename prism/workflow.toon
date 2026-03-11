@@ -53,4 +53,4 @@ variables[10]:
   - name: portfolio_output_paths
     type: object
     description: "Map of lens name → file path for portfolio mode artifacts"
-initialActivity: structural-pass
+initialActivity: select-mode
