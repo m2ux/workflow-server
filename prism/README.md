@@ -109,20 +109,6 @@ sequenceDiagram
 
 ---
 
-## Resources (12)
-
-All lens resources are accessible cross-workflow via `get_resource("prism", index)`.
-
-| Group | Indices | Purpose |
-|-------|---------|---------|
-| Code Pipeline | `00`–`02` | 3-pass Full Prism: structural → adversarial → synthesis |
-| General Pipeline | `03`–`05` | Same operations with domain-neutral language for non-code input |
-| Portfolio Lenses | `06`–`11` | 6 independent lenses: pedagogy, claim, scarcity, rejected-paths, degradation, contract |
-
-See [resources/README.md](resources/README.md) for the full resource index with descriptions, the L12 operation chain, recommended lens combinations, and cross-workflow access patterns.
-
----
-
 ## Variables (9)
 
 | Variable | Type | Default | Description |
