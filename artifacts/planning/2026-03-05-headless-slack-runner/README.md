@@ -1,7 +1,7 @@
 # Headless Slack Workflow Runner - March 2026
 
 **Created:** 2026-03-05
-**Status:** Planning
+**Status:** Submitted for Review
 **Type:** Feature
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -39,16 +39,16 @@ These changes are layered onto the existing architecture without restructuring i
 | 03 | [Requirements elicitation](03-requirements-elicitation.md) | Stakeholder requirements, scope, success criteria | 20-30m | ✅ Complete |
 | 04 | [Research](04-research.md) | SQLite, pino, ACP protocol, crash handling | 30-45m | ✅ Complete |
 | 05 | [Implementation analysis](05-implementation-analysis.md) | Gap analysis, baselines, success criteria | 20-30m | ✅ Complete |
-| 06 | [Implementation plan](06-implementation-plan.md) | Task breakdown, dependencies, ordering | 20-45m | ◐ In Progress |
-| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ◐ In Progress |
-| — | Implementation | Code changes per plan (7 tasks) | 5-7h | ⬚ Pending |
-| — | Change block index | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| — | Code review | Automated code quality review | 10-20m | ⬚ Pending |
-| — | Test suite review | Test quality and coverage assessment | 10-20m | ⬚ Pending |
-| — | Strategic review | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| 06 | [Implementation plan](06-implementation-plan.md) | Task breakdown, dependencies, ordering | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
+| — | Implementation | Code changes per plan (7 tasks) | 5-7h | ✅ Complete |
+| — | Change block index | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| — | Code review | Automated code quality review | 10-20m | ✅ Complete |
+| — | Test suite review | Test quality and coverage assessment | 10-20m | ✅ Complete |
+| — | Strategic review | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
+| — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
 | — | Live validation | End-to-end Slack + Cursor ACP run | 30-60m | ⬚ Pending |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ◐ In Progress |
 
 ---
 
@@ -61,4 +61,4 @@ These changes are layered onto the existing architecture without restructuring i
 
 ---
 
-**Status:** Planning
+**Status:** Submitted for Review
