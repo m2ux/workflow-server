@@ -4,7 +4,7 @@
 
 ## Skills (6 workflow-specific)
 
-The lensing workflow provides 6 skills organized by role. Skills `orchestrate-lensing` and `full-prism` form the isolation pipeline. The remaining skills are usable standalone by any workflow.
+The prism workflow provides 6 skills organized by role. Skills `orchestrate-prism` and `full-prism` form the isolation pipeline. The remaining skills are usable standalone by any workflow.
 
 | # | Skill ID | Capability | Role |
 |---|----------|------------|------|
@@ -13,15 +13,15 @@ The lensing workflow provides 6 skills organized by role. Skills `orchestrate-le
 | 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses | Standalone |
 | 03 | `general-analysis` | Apply lenses to non-code input (requirements, designs, plans) | Standalone |
 | 04 | `select-lens` | Recommend optimal lens(es) for an analytical goal | Advisory |
-| 05 | `orchestrate-lensing` | Dispatch isolated workers for the Full Prism pipeline | Orchestrator |
+| 05 | `orchestrate-prism` | Dispatch isolated workers for the Full Prism pipeline | Orchestrator |
 
-> The universal skills `orchestrate-workflow` and `execute-activity` from [meta/skills/](../../meta/skills/) are **not used** by this workflow. Lensing uses its own orchestration skill (`orchestrate-lensing`) because it requires disposable (non-resumed) workers for context isolation.
+> The universal skills `orchestrate-workflow` and `execute-activity` from [meta/skills/](../../meta/skills/) are **not used** by this workflow. Lensing uses its own orchestration skill (`orchestrate-prism`) because it requires disposable (non-resumed) workers for context isolation.
 
 ---
 
 ### Skill Protocol: `structural-analysis` (00)
 
-Single-pass L12 structural analysis. Loads the L12 lens prompt and applies it to code, producing a conservation law, meta-law, and severity-classified bug table. This is the foundational lensing operation — other workflows can reference it directly.
+Single-pass L12 structural analysis. Loads the L12 lens prompt and applies it to code, producing a conservation law, meta-law, and severity-classified bug table. This is the foundational prism operation — other workflows can reference it directly.
 
 ```mermaid
 graph TD
@@ -50,7 +50,7 @@ graph TD
 
 | Step Key | Action |
 |----------|--------|
-| `load-lens` | Load resource `00` from lensing workflow via `get_resource` |
+| `load-lens` | Load resource `00` from prism workflow via `get_resource` |
 | `read-target` | Read file or accept inline code; note optional analysis focus |
 | `execute-lens` | Execute every L12 operation: claim → dialectic → concealment → improvements → invariant → inversion → conservation law → meta-law → bug table |
 | `format-output` | Structure output with section headers; classify bugs as fixable/structural |
@@ -61,7 +61,7 @@ graph TD
 
 ### Skill Protocol: `full-prism` (01)
 
-Worker-side skill for one pass of the 3-pass pipeline. Runs in a fresh isolated context dispatched by `orchestrate-lensing`. Receives target content, prior pass outputs (if any), and a resource index. Self-bootstraps by loading the lens via `get_resource`.
+Worker-side skill for one pass of the 3-pass pipeline. Runs in a fresh isolated context dispatched by `orchestrate-prism`. Receives target content, prior pass outputs (if any), and a resource index. Self-bootstraps by loading the lens via `get_resource`.
 
 ```mermaid
 graph TD
@@ -80,7 +80,7 @@ graph TD
 
 | Step Key | Action |
 |----------|--------|
-| `load-lens` | Load lens resource by index (00-05) via `get_resource("lensing", index)` |
+| `load-lens` | Load lens resource by index (00-05) via `get_resource("prism", index)` |
 | `apply-lens` | Apply lens operations to content; use prior outputs as context if provided |
 | `format-output` | Structure per pass: structural → sections + bug table; adversarial → wrong predictions + overclaims + underclaims; synthesis → refined law + definitive classification |
 
@@ -213,13 +213,13 @@ graph TD
 
 ---
 
-### Skill Protocol: `orchestrate-lensing` (05)
+### Skill Protocol: `orchestrate-prism` (05)
 
 Coordination skill that dispatches each analytical pass to a fresh, isolated sub-agent. Captures full text output from each pass and forwards it verbatim to subsequent workers. Manages the pipeline lifecycle for single, full-prism, and portfolio modes.
 
 ```mermaid
 graph TD
-    startNode(["Start"]) --> loadWorkflow["Load lensing workflow definition"]
+    startNode(["Start"]) --> loadWorkflow["Load prism workflow definition"]
     loadWorkflow --> resolveTarget{"Target is file path?"}
     resolveTarget -->|"yes"| readFile["Read file → resolved_content"]
     resolveTarget -->|"no"| useInline["Use inline text → resolved_content"]
@@ -252,7 +252,7 @@ graph TD
 
 | Step Key | Action |
 |----------|--------|
-| `load-workflow` | Load lensing workflow definition, initialize state variables |
+| `load-workflow` | Load prism workflow definition, initialize state variables |
 | `resolve-target` | Read file path or use inline content as `resolved_content` |
 | `determine-lens-indices` | Map target_type + pipeline_mode to resource indices |
 | `dispatch-structural-pass` | Create FRESH worker with content + resource index; capture output |

@@ -37,8 +37,8 @@ output[1]:
   - id: lens-recommendation
     description: "Recommended lens configuration for the analytical task"
     components:
-      skill: "The lensing skill to invoke (structural-analysis, full-prism, portfolio-analysis, or general-analysis)"
-      resources: "Resource indices from the lensing workflow"
+      skill: "The prism skill to invoke (structural-analysis, full-prism, portfolio-analysis, or general-analysis)"
+      resources: "Resource indices from the prism workflow"
       rationale: "Why this lens or combination fits the analytical goal"
       alternatives: "Other valid options with trade-off notes"
 
@@ -50,7 +50,7 @@ rules:
 tools:
   get_resource:
     when: The caller wants to verify a lens before applying it
-    params: "workflow_id: lensing, index: recommended resource index"
+    params: "workflow_id: prism, index: recommended resource index"
     returns: "The lens prompt text"
     usage: "Optional — the caller may want to inspect the lens before committing to the analysis"
 

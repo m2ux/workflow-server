@@ -1,15 +1,15 @@
 id: full-prism
 version: 2.0.0
-capability: Execute a single pass of the Full Prism pipeline within the lensing workflow's isolation model
+capability: Execute a single pass of the Full Prism pipeline within the prism workflow's isolation model
 
-description: "Worker-side skill for executing one pass of the 3-pass Full Prism pipeline. Each pass runs in a fresh, isolated sub-agent dispatched by the orchestrate-lensing skill. The worker receives: (1) the target content, (2) any prior pass outputs as labelled text, and (3) a resource index indicating which lens to load. The worker loads the lens via get_resource, applies it to the content, and returns the complete analysis text. For the full pipeline, see the orchestrate-lensing skill which manages dispatch and isolation."
+description: "Worker-side skill for executing one pass of the 3-pass Full Prism pipeline. Each pass runs in a fresh, isolated sub-agent dispatched by the orchestrate-prism skill. The worker receives: (1) the target content, (2) any prior pass outputs as labelled text, and (3) a resource index indicating which lens to load. The worker loads the lens via get_resource, applies it to the content, and returns the complete analysis text. For the full pipeline, see the orchestrate-prism skill which manages dispatch and isolation."
 
 inputs[4]:
   - id: target-content
     description: "The code or text to analyze (provided inline by the orchestrator)"
     required: true
   - id: lens-resource-index
-    description: "Resource index to load from the lensing workflow (e.g., 00 for code structural, 01 for code adversarial)"
+    description: "Resource index to load from the prism workflow (e.g., 00 for code structural, 01 for code adversarial)"
     required: true
   - id: prior-analysis
     description: "Text output from prior passes, labelled as ANALYSIS 1 / ANALYSIS 2. Empty for the structural pass."
@@ -21,7 +21,7 @@ inputs[4]:
 
 protocol:
   load-lens[2]:
-    - "Call get_resource({ workflow_id: 'lensing', index: lens-resource-index }) to load the lens prompt"
+    - "Call get_resource({ workflow_id: 'prism', index: lens-resource-index }) to load the lens prompt"
     - "The lens prompt is the program — it defines the exact sequence of analytical operations to execute"
   apply-lens[3]:
     - "Apply every operation in the lens prompt sequentially against the target content"
@@ -56,7 +56,7 @@ resources[6]:
 tools:
   get_resource:
     when: Loading the lens prompt for this pass
-    params: "workflow_id: lensing, index: lens-resource-index (provided by orchestrator)"
+    params: "workflow_id: prism, index: lens-resource-index (provided by orchestrator)"
     returns: "Lens prompt text"
     usage: "Load once, then execute every operation in the prompt"
   read_file:
