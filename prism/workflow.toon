@@ -1,20 +1,20 @@
 "$schema": ../../schemas/workflow.schema.json
-id: lensing
+id: prism
 version: 1.1.0
 title: Structural Analysis Lensing Workflow
 description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence — particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports three modes: single-pass L12, 3-pass Full Prism (structural → adversarial → synthesis), and multi-lens portfolio analysis."
 author: m2ux
 tags[3]:
   - analysis
-  - lensing
+  - prism
   - structural
 rules[7]:
-  - "ISOLATION MODEL: Each analytical pass MUST be dispatched to a FRESH sub-agent (do NOT use Task resume). The adversarial pass must never share context with the structural pass — it receives only the textual output, not the generation history. This is the core invariant of the lensing workflow."
+  - "ISOLATION MODEL: Each analytical pass MUST be dispatched to a FRESH sub-agent (do NOT use Task resume). The adversarial pass must never share context with the structural pass — it receives only the textual output, not the generation history. This is the core invariant of the prism workflow."
   - "EXECUTION MODEL: This workflow uses an orchestrator with disposable workers. The orchestrator loads the workflow, manages transitions, captures pass outputs, and forwards them as text input to subsequent passes. Workers are NOT resumed — each pass gets a new worker."
   - "ORCHESTRATOR DISCIPLINE: The orchestrator coordinates but MUST NOT execute lens operations, generate analysis, or produce findings. All analytical work is delegated to isolated workers."
   - "AUTOMATIC TRANSITIONS: After each pass completes, the orchestrator captures the output and immediately dispatches the next pass without user confirmation."
   - "OUTPUT FORWARDING: The orchestrator captures the full text output from each pass and includes it verbatim in the next pass's prompt. Summarizing between passes loses evidence the adversary needs."
-  - "LENS LOADING: Workers load lens prompts from lensing workflow resources via get_resource. The orchestrator tells the worker which resource index to load — it does not load or forward the lens itself."
+  - "LENS LOADING: Workers load lens prompts from prism workflow resources via get_resource. The orchestrator tells the worker which resource index to load — it does not load or forward the lens itself."
   - "FULLY AUTOMATED: This workflow has no user checkpoints. The only user interaction is providing the initial input (code path, text, pipeline mode)."
 variables[9]:
   - name: target_content

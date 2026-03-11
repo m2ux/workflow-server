@@ -72,7 +72,7 @@ sequenceDiagram
     Note over Orch: Load workflow, resolve target content
 
     Orch->>W1: Task(content + lens index 00)
-    W1->>W1: get_resource("lensing", "00")
+    W1->>W1: get_resource("prism", "00")
     W1->>W1: Execute L12 operations
     W1-->>Orch: structural_output (full text)
 
@@ -80,21 +80,21 @@ sequenceDiagram
 
     Orch->>W2: Task(content + structural_output as "ANALYSIS 1" + lens index 01)
     Note over W2: Fresh context — never saw W1's generation
-    W2->>W2: get_resource("lensing", "01")
+    W2->>W2: get_resource("prism", "01")
     W2->>W2: Attack ANALYSIS 1
     W2-->>Orch: adversarial_output (full text)
 
     Orch->>W3: Task(content + ANALYSIS 1 + ANALYSIS 2 + lens index 02)
-    W3->>W3: get_resource("lensing", "02")
+    W3->>W3: get_resource("prism", "02")
     W3->>W3: Synthesize corrected result
     W3-->>Orch: synthesis_output (full text)
 
     Orch->>User: Final synthesis + appendices
 ```
 
-**Why disposable workers?** In the work-package workflow, the persistent worker accumulates codebase understanding across activities — that context is valuable. In the lensing workflow, shared context is *harmful*. The adversarial worker must treat the structural analysis as an opponent's work to defeat. If it shares generation history with the structural worker, it pulls punches. Fresh agents guarantee genuine independence.
+**Why disposable workers?** In the work-package workflow, the persistent worker accumulates codebase understanding across activities — that context is valuable. In the prism workflow, shared context is *harmful*. The adversarial worker must treat the structural analysis as an opponent's work to defeat. If it shares generation history with the structural worker, it pulls punches. Fresh agents guarantee genuine independence.
 
-**Orchestrator** (skill: `orchestrate-lensing`):
+**Orchestrator** (skill: `orchestrate-prism`):
 - Loads workflow, resolves target content
 - Dispatches each pass to a **fresh** sub-agent (NEVER resumes)
 - Captures full text output from each pass
@@ -111,7 +111,7 @@ sequenceDiagram
 
 ## Resources (12)
 
-All lens resources are accessible cross-workflow via `get_resource("lensing", index)`.
+All lens resources are accessible cross-workflow via `get_resource("prism", index)`.
 
 ### Code Pipeline (3-pass Full Prism)
 
@@ -146,23 +146,23 @@ All lens resources are accessible cross-workflow via `get_resource("lensing", in
 
 | # | Skill | Scope | Purpose |
 |---|-------|-------|---------|
-| 00 | `structural-analysis` | lensing | Single-pass L12 on code — usable directly by other workflows |
-| 01 | `full-prism` | lensing | Worker-side: execute one pass within the isolation model |
-| 02 | `portfolio-analysis` | lensing | Run 2+ complementary portfolio lenses |
-| 03 | `general-analysis` | lensing | Apply lenses to non-code input (requirements, designs, plans) |
-| 04 | `select-lens` | lensing | Recommend optimal lens(es) for an analytical goal |
-| 05 | `orchestrate-lensing` | lensing | Dispatch isolated workers, manage the Full Prism pipeline |
+| 00 | `structural-analysis` | prism | Single-pass L12 on code — usable directly by other workflows |
+| 01 | `full-prism` | prism | Worker-side: execute one pass within the isolation model |
+| 02 | `portfolio-analysis` | prism | Run 2+ complementary portfolio lenses |
+| 03 | `general-analysis` | prism | Apply lenses to non-code input (requirements, designs, plans) |
+| 04 | `select-lens` | prism | Recommend optimal lens(es) for an analytical goal |
+| 05 | `orchestrate-prism` | prism | Dispatch isolated workers, manage the Full Prism pipeline |
 
 ### Cross-Workflow Usage
 
-Other workflows reference lensing skills and resources directly:
+Other workflows reference prism skills and resources directly:
 
 ```
 # Load a lens resource from another workflow's skill protocol
-get_resource({ workflow_id: "lensing", index: "00" })
+get_resource({ workflow_id: "prism", index: "00" })
 
-# Load a lensing skill
-get_skill({ skill_id: "structural-analysis", workflow_id: "lensing" })
+# Load a prism skill
+get_skill({ skill_id: "structural-analysis", workflow_id: "prism" })
 ```
 
 For example, the work-package workflow's `review-code` or `analyze-implementation` skills can load the L12 lens to augment their analysis with structural depth.
@@ -205,7 +205,7 @@ The simplest use case. An agent loads the L12 lens resource and applies it to a 
 
 ```
 # Agent loads the lens
-lens = get_resource({ workflow_id: "lensing", index: "00" })
+lens = get_resource({ workflow_id: "prism", index: "00" })
 
 # Agent reads the target file, then executes every operation
 # in the lens prompt against the code
@@ -213,15 +213,15 @@ lens = get_resource({ workflow_id: "lensing", index: "00" })
 
 **What you get:** A conservation law naming the structural trade-off the code is forced to make, a meta-law predicting what that trade-off conceals, and a bug table classifying each finding as fixable or structural.
 
-### Standalone: Full Prism pipeline via the lensing workflow
+### Standalone: Full Prism pipeline via the prism workflow
 
 Run the 3-pass self-correcting pipeline. The orchestrator dispatches three isolated agents.
 
 ```
-# Start the lensing workflow with full-prism mode
-get_workflow({ workflow_id: "lensing" })
+# Start the prism workflow with full-prism mode
+get_workflow({ workflow_id: "prism" })
 
-# The orchestrator follows the orchestrate-lensing skill:
+# The orchestrator follows the orchestrate-prism skill:
 # 1. Reads target file
 # 2. Dispatches fresh agent → structural pass (resource 00)
 # 3. Captures output, dispatches fresh agent → adversarial pass (resource 01)
@@ -237,8 +237,8 @@ Run two independent lenses to get breadth instead of depth.
 
 ```
 # Agent loads two lenses and applies each independently
-claim_lens = get_resource({ workflow_id: "lensing", index: "07" })
-degradation_lens = get_resource({ workflow_id: "lensing", index: "10" })
+claim_lens = get_resource({ workflow_id: "prism", index: "07" })
+degradation_lens = get_resource({ workflow_id: "prism", index: "10" })
 
 # Apply claim lens → discovers hidden assumptions
 # Apply degradation lens → discovers what decays with neglect
@@ -255,7 +255,7 @@ A work-package skill like `review-code` loads the L12 lens to supplement its che
 # Inside a work-package skill protocol step:
 protocol:
   structural-analysis[3]:
-    - "Load resource 00 from the lensing workflow: get_resource(workflow_id: 'lensing', index: '00')"
+    - "Load resource 00 from the prism workflow: get_resource(workflow_id: 'prism', index: '00')"
     - "Apply every operation in the lens prompt against each changed file"
     - "Append structural findings to the code review report"
 ```
@@ -264,10 +264,10 @@ protocol:
 
 ### Cross-workflow: Full Prism from within a work-package activity
 
-When maximum depth is needed (e.g., during implementation analysis), the work-package worker can act as the lensing orchestrator, spawning isolated sub-agents directly.
+When maximum depth is needed (e.g., during implementation analysis), the work-package worker can act as the prism orchestrator, spawning isolated sub-agents directly.
 
 ```
-# The worker follows the orchestrate-lensing skill protocol:
+# The worker follows the orchestrate-prism skill protocol:
 # 1. Read target code
 # 2. Task(fresh agent, content + resource index 00) → capture structural output
 # 3. Task(fresh agent, content + ANALYSIS 1 + resource index 01) → capture adversarial output

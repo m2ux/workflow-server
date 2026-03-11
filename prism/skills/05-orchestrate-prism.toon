@@ -1,8 +1,8 @@
-id: orchestrate-lensing
+id: orchestrate-prism
 version: 1.0.0
-capability: Orchestrate the lensing workflow with isolated sub-agent passes for analytical independence
+capability: Orchestrate the prism workflow with isolated sub-agent passes for analytical independence
 
-description: "Coordination skill for the lensing workflow orchestrator. Dispatches each analytical pass to a FRESH sub-agent (never resumed) to guarantee context isolation. The adversarial pass must never share generation history with the structural pass. The orchestrator captures each pass's full text output and forwards it verbatim to the next pass's worker prompt. Supports single-pass, full-prism (3-pass), and portfolio modes."
+description: "Coordination skill for the prism workflow orchestrator. Dispatches each analytical pass to a FRESH sub-agent (never resumed) to guarantee context isolation. The adversarial pass must never share generation history with the structural pass. The orchestrator captures each pass's full text output and forwards it verbatim to the next pass's worker prompt. Supports single-pass, full-prism (3-pass), and portfolio modes."
 
 inputs[5]:
   - id: target-content
@@ -25,7 +25,7 @@ inputs[5]:
 
 protocol:
   load-workflow[2]:
-    - "Call get_workflow({ workflow_id: 'lensing' }) to load the workflow definition"
+    - "Call get_workflow({ workflow_id: 'prism' }) to load the workflow definition"
     - "Initialize state variables from inputs: target_content, target_type, pipeline_mode, selected_lenses, analysis_focus"
   resolve-target[2]:
     - "If target_content is a file path, read the file and capture the full text as resolved_content"
@@ -37,7 +37,7 @@ protocol:
     - "Portfolio: pedagogy=06, claim=07, scarcity=08, rejected-paths=09, degradation=10, contract=11"
   dispatch-structural-pass[5]:
     - "Create a FRESH sub-agent using Task tool (subagent_type=generalPurpose, do NOT use resume)"
-    - "Worker prompt must include: (1) the resolved_content, (2) the lens resource index to load, (3) the workflow_id 'lensing' for get_resource calls, (4) instruction to load the lens via get_resource and execute every operation completely"
+    - "Worker prompt must include: (1) the resolved_content, (2) the lens resource index to load, (3) the workflow_id 'prism' for get_resource calls, (4) instruction to load the lens via get_resource and execute every operation completely"
     - "Worker prompt must NOT include any prior analysis — this is the first pass"
     - "Capture the worker's full text output as structural_output"
     - "If pipeline_mode is 'single', go to present-result"
@@ -63,8 +63,8 @@ protocol:
     - "For portfolio mode: present each lens output followed by a cross-lens convergence/divergence summary"
 
 output[1]:
-  - id: lensing-result
-    description: "Complete lensing analysis result"
+  - id: prism-result
+    description: "Complete prism analysis result"
     components:
       final_analysis: "The primary analysis output (structural for single, synthesis for full-prism, combined for portfolio)"
       pass_outputs: "Individual pass outputs for transparency"
@@ -80,11 +80,11 @@ rules:
 tools:
   get_workflow:
     when: Once at workflow start
-    params: "workflow_id: lensing"
+    params: "workflow_id: prism"
     returns: "Workflow definition with variables, rules, activities"
   get_workflow_activity:
     when: Before dispatching each pass
-    params: "workflow_id: lensing, activity_id: structural-pass | adversarial-pass | synthesis-pass"
+    params: "workflow_id: prism, activity_id: structural-pass | adversarial-pass | synthesis-pass"
     returns: Activity definition
   task:
     when: "Dispatching each pass to a fresh sub-agent"
@@ -96,7 +96,7 @@ tools:
     usage: Read the target file before dispatching
   get_resource:
     when: "Workers use this to load their lens — orchestrator does not call this"
-    params: "workflow_id: lensing, index: determined by target_type and pass"
+    params: "workflow_id: prism, index: determined by target_type and pass"
     returns: Lens prompt text
 
 errors:

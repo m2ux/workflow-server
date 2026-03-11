@@ -2,7 +2,7 @@ id: structural-analysis
 version: 1.0.0
 capability: Apply L12 structural analysis lens to code for deep structural findings, conservation laws, and bug detection
 
-description: "Single-pass L12 structural analysis on code. Loads the L12 lens prompt and applies it to the provided code, producing a conservation law, meta-law, and severity-classified bug table. This is the foundational lensing operation — other skills build on it."
+description: "Single-pass L12 structural analysis on code. Loads the L12 lens prompt and applies it to the provided code, producing a conservation law, meta-law, and severity-classified bug table. This is the foundational prism operation — other skills build on it."
 
 inputs[2]:
   - id: code-content
@@ -14,7 +14,7 @@ inputs[2]:
 
 protocol:
   load-lens[2]:
-    - "Load resource 00 (l12-structural) from the lensing workflow: get_resource(workflow_id: 'lensing', index: '00')"
+    - "Load resource 00 (l12-structural) from the prism workflow: get_resource(workflow_id: 'prism', index: '00')"
     - The resource contains the full L12 lens prompt — a sequence of analytical operations the agent must execute step by step
   read-target[2]:
     - If code-content is a file path, read the file to obtain the code
@@ -51,7 +51,7 @@ resources[1]:
 tools:
   get_resource:
     when: Loading the L12 structural analysis lens
-    params: "workflow_id: lensing, index: 00"
+    params: "workflow_id: prism, index: 00"
     returns: "L12 lens prompt with the full sequence of analytical operations"
     usage: "The lens prompt is the program — execute its operations against the code"
   read_file:

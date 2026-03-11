@@ -27,7 +27,7 @@ protocol:
     - "Load resource 03 (l12-general-structural) and apply to the input"
     - Execute every operation completely — the depth chain is identical to code L12 but with domain-neutral framing
   execute-full-prism[4]:
-    - "Load resources 03, 04, 05 from the lensing workflow"
+    - "Load resources 03, 04, 05 from the prism workflow"
     - "Pass 1: Apply resource 03 to the input. Capture output as ANALYSIS 1."
     - "Pass 2: Apply resource 04 to the input + ANALYSIS 1. Capture as ANALYSIS 2."
     - "Pass 3: Apply resource 05 to the input + ANALYSIS 1 + ANALYSIS 2. This is the final output."
@@ -59,7 +59,7 @@ resources[5]:
 tools:
   get_resource:
     when: Loading general-domain lens prompts
-    params: "workflow_id: lensing, index: 03-10"
+    params: "workflow_id: prism, index: 03-10"
     returns: "General-domain lens prompt"
     usage: "Load the appropriate lens for the selected analysis mode"
   read_file:

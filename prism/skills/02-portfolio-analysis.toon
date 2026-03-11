@@ -22,7 +22,7 @@ protocol:
     - "If neither is provided, default to claim + degradation (broadest complementary pair for code) or pedagogy + rejected-paths (broadest for non-code)"
     - "Lens selection guide: trade-offs → scarcity + rejected-paths. assumptions → claim + pedagogy. maintainability → degradation + contract. design rationale → pedagogy + rejected-paths. interface quality → contract + claim."
   load-lenses[1]:
-    - "Load each selected lens resource from the lensing workflow: pedagogy=06, claim=07, scarcity=08, rejected-paths=09, degradation=10, contract=11"
+    - "Load each selected lens resource from the prism workflow: pedagogy=06, claim=07, scarcity=08, rejected-paths=09, degradation=10, contract=11"
   read-target[1]:
     - If artifact-content is a file path, read the file to obtain the content
   execute-lenses[3]:
@@ -60,7 +60,7 @@ resources[6]:
 tools:
   get_resource:
     when: Loading portfolio lens prompts
-    params: "workflow_id: lensing, index: 06-11 (mapped from lens name)"
+    params: "workflow_id: prism, index: 06-11 (mapped from lens name)"
     returns: "Lens prompt for the selected portfolio lens"
     usage: "Load each selected lens and apply independently to the artifact"
   read_file:
