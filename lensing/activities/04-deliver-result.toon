@@ -1,0 +1,11 @@
+id: deliver-result
+version: 1.0.0
+name: Deliver Result
+description: "Present the final analysis to the user. For single-pass, this is the structural output. For full-prism, this is the synthesis output. For portfolio, this is the collected per-lens outputs with cross-lens synthesis."
+skills:
+  primary: select-lens
+steps[1]:
+  - id: present-result
+    name: Present Final Analysis
+    description: "Present the analysis result to the user in a clear, structured format."
+    required: true

@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: lensing
-version: 1.0.0
+version: 1.1.0
 title: Structural Analysis Lensing Workflow
 description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence — particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports three modes: single-pass L12, 3-pass Full Prism (structural → adversarial → synthesis), and multi-lens portfolio analysis."
 author: m2ux
@@ -48,92 +48,3 @@ variables[9]:
     type: object
     description: "Map of lens name → output text for portfolio mode"
 initialActivity: structural-pass
-activities[4]:
-  - id: structural-pass
-    version: 1.0.0
-    name: Structural Analysis Pass
-    description: "Run the primary L12 structural analysis lens against the target content. Produces a conservation law, meta-law, and classified findings table. Output is captured by the orchestrator for forwarding to subsequent passes."
-    skills:
-      primary: structural-analysis
-    steps[3]:
-      - id: load-lens
-        name: Load Structural Lens
-        description: "Load the appropriate L12 lens resource: resource 00 (code) or resource 03 (general) based on target_type"
-        required: true
-      - id: execute-lens
-        name: Execute Lens Operations
-        description: "Apply every operation in the lens prompt sequentially against the target content. Execute completely — do not abbreviate."
-        required: true
-      - id: format-output
-        name: Format Analysis Output
-        description: "Structure the output with clear section headers. Include the conservation law, meta-law, and findings table."
-        required: true
-    transitions[2]:
-      - to: adversarial-pass
-        condition:
-          type: simple
-          variable: pipeline_mode
-          operator: "=="
-          value: full-prism
-      - to: deliver-result
-        isDefault: true
-  - id: adversarial-pass
-    version: 1.0.0
-    name: Adversarial Analysis Pass
-    description: "Attack the structural analysis produced in the previous pass. This worker runs in a fresh context and receives only the target content plus the structural output text. It must find wrong predictions, overclaims, underclaims, and produce a revised findings table."
-    skills:
-      primary: structural-analysis
-    rules[2]:
-      - "CRITICAL: This worker has never seen the structural analysis being generated. It receives only the final text. Treat it as an opponent's work to defeat with evidence."
-      - "The worker MUST load the adversarial lens (resource 01 or 04) not the structural lens."
-    steps[3]:
-      - id: load-lens
-        name: Load Adversarial Lens
-        description: "Load the adversarial lens resource: resource 01 (code) or resource 04 (general) based on target_type"
-        required: true
-      - id: execute-lens
-        name: Execute Adversarial Operations
-        description: "Apply the adversarial lens against the target content + structural output. Find wrong predictions, overclaims, underclaims."
-        required: true
-      - id: format-output
-        name: Format Adversarial Output
-        description: "Structure the output: wrong predictions, overclaims, underclaims, revised findings table."
-        required: true
-    transitions[1]:
-      - to: synthesis-pass
-        isDefault: true
-  - id: synthesis-pass
-    version: 1.0.0
-    name: Synthesis Pass
-    description: "Reconcile the structural analysis and adversarial challenge into a final corrected result. This worker runs in a fresh context and receives the target content plus both prior outputs. It produces the definitive conservation law, meta-law, and findings classification."
-    skills:
-      primary: structural-analysis
-    rules[1]:
-      - "The worker MUST load the synthesis lens (resource 02 or 05) not the structural or adversarial lens."
-    steps[3]:
-      - id: load-lens
-        name: Load Synthesis Lens
-        description: "Load the synthesis lens resource: resource 02 (code) or resource 05 (general) based on target_type"
-        required: true
-      - id: execute-lens
-        name: Execute Synthesis Operations
-        description: "Apply the synthesis lens against the target content + structural output (ANALYSIS 1) + adversarial output (ANALYSIS 2). Produce the final corrected result."
-        required: true
-      - id: format-output
-        name: Format Synthesis Output
-        description: "Structure the output: refined conservation law, refined meta-law, definitive classification, deepest finding."
-        required: true
-    transitions[1]:
-      - to: deliver-result
-        isDefault: true
-  - id: deliver-result
-    version: 1.0.0
-    name: Deliver Result
-    description: "Present the final analysis to the user. For single-pass, this is the structural output. For full-prism, this is the synthesis output. For portfolio, this is the collected per-lens outputs with cross-lens synthesis."
-    skills:
-      primary: select-lens
-    steps[1]:
-      - id: present-result
-        name: Present Final Analysis
-        description: "Present the analysis result to the user in a clear, structured format."
-        required: true
