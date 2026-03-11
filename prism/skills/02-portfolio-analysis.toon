@@ -1,13 +1,17 @@
 id: portfolio-analysis
-version: 1.0.0
+version: 1.1.0
 capability: Apply multiple complementary portfolio lenses to produce diverse structural findings with zero overlap
 
-description: "Run two or more portfolio lenses (pedagogy, claim, scarcity, rejected-paths, degradation, contract) against the same artifact. Each lens finds genuinely different structural properties — research confirms zero overlap across 5 lenses on 3+ real codebases. The combined output provides breadth of structural understanding that no single lens achieves."
+description: "Run two or more portfolio lenses (pedagogy, claim, scarcity, rejected-paths, degradation, contract) against the same artifact. Each lens finds genuinely different structural properties — research confirms zero overlap across 5 lenses on 3+ real codebases. Each lens output is written to a separate artifact file. The combined output provides breadth of structural understanding that no single lens achieves."
 
-inputs[3]:
+inputs[4]:
   - id: artifact-content
     description: "The code or text to analyze. Can be a file path or inline content."
     required: true
+  - id: output-path
+    description: "Directory to write per-lens analysis artifacts"
+    required: false
+    default: "."
   - id: selected-lenses
     description: "Which portfolio lenses to apply. Array of lens names from: pedagogy, claim, scarcity, rejected-paths, degradation, contract. If omitted, select-lenses protocol chooses based on the analytical goal."
     required: false
@@ -29,16 +33,28 @@ protocol:
     - "Apply each lens independently to the same artifact content"
     - "Execute each lens completely — do not abbreviate the operations"
     - "Keep outputs separate and clearly labelled by lens name"
-  cross-lens-synthesis[3]:
+  write-artifacts[2]:
+    - "Write each lens output to {output-path}/portfolio-{lens-name}.md (e.g., portfolio-claim.md, portfolio-degradation.md)"
+    - "Record all artifact paths in portfolio_output_paths"
+  cross-lens-synthesis[4]:
     - "After all lenses complete, identify where findings converge (same structural property found via different operations)"
     - "Identify where findings diverge (each lens found a different property — this is expected and is the value of portfolio analysis)"
     - "Produce a summary table: finding, which lens(es) found it, convergent or unique"
+    - "Write the synthesis to {output-path}/portfolio-synthesis.md"
 
-output[1]:
-  - id: portfolio-findings
-    description: "Complementary structural findings from multiple lenses"
+output[2]:
+  - id: per-lens-artifacts
+    description: "Individual analysis artifact per lens"
+    artifact:
+      name: "portfolio-{lens-name}.md"
     components:
       per_lens_findings: "Complete findings from each lens, labelled by lens name"
+      artifact_paths: "File paths to each per-lens artifact"
+  - id: portfolio-synthesis
+    description: "Cross-lens convergence/divergence synthesis"
+    artifact:
+      name: "portfolio-synthesis.md"
+    components:
       convergent_findings: "Structural properties found by multiple lenses (high confidence)"
       unique_findings: "Properties found by only one lens (the value-add of portfolio analysis)"
       summary_table: "All findings with lens attribution and convergent/unique classification"
@@ -48,6 +64,7 @@ rules:
   minimum-two: "Always apply at least two lenses. A single portfolio lens should use the structural-analysis skill instead."
   contract-is-code-only: "The contract lens (resource 11) is code-specific — do not apply it to non-code input."
   complete-execution: "Each lens prompt must be executed fully. Abbreviating a lens defeats its purpose — the analytical depth comes from following the full operation chain."
+  persist-all: "Every lens output and the synthesis MUST be written as separate artifacts. In-memory-only output is not acceptable."
 
 resources[6]:
   - "06"
@@ -66,6 +83,10 @@ tools:
   read_file:
     when: Reading files to analyze
     usage: Obtain the artifact content for lens application
+  write_file:
+    when: Writing per-lens and synthesis artifacts
+    params: "path: {output-path}/portfolio-{lens-name}.md"
+    usage: "Persist each lens output and the cross-lens synthesis"
   grep:
     when: Verifying findings against the codebase
     usage: Confirm cited patterns and locations
@@ -77,3 +98,6 @@ errors:
   lens_not_found:
     cause: A requested lens name does not map to a known resource
     recovery: "Valid lens names are: pedagogy, claim, scarcity, rejected-paths, degradation, contract"
+  write_failed:
+    cause: Could not write artifact to the output path
+    recovery: Verify the output-path directory exists and is writable

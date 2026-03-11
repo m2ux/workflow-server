@@ -1,11 +1,15 @@
 id: deliver-result
-version: 1.0.0
+version: 1.1.0
 name: Deliver Result
-description: "Present the final analysis to the user. For single-pass, this is the structural output. For full-prism, this is the synthesis output. For portfolio, this is the collected per-lens outputs with cross-lens synthesis."
+description: "Present the final analysis to the user. For single-pass, reads structural-analysis.md. For full-prism, reads synthesis.md. For portfolio, reads all per-lens artifacts. Presents the content and reports artifact paths."
 skills:
   primary: select-lens
-steps[1]:
+steps[2]:
+  - id: read-final-artifact
+    name: Read Final Artifact
+    description: "Read the appropriate artifact: structural-analysis.md (single), synthesis.md (full-prism), or all per-lens artifacts (portfolio)."
+    required: true
   - id: present-result
     name: Present Final Analysis
-    description: "Present the analysis result to the user in a clear, structured format."
+    description: "Present the analysis result to the user in a clear, structured format. Include the artifact path(s) for reference."
     required: true

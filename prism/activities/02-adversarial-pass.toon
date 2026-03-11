@@ -1,24 +1,33 @@
 id: adversarial-pass
-version: 1.0.0
+version: 1.1.0
 name: Adversarial Analysis Pass
-description: "Attack the structural analysis produced in the previous pass. This worker runs in a fresh context and receives only the target content plus the structural output text. It must find wrong predictions, overclaims, underclaims, and produce a revised findings table."
+description: "Attack the structural analysis produced in the previous pass. This worker runs in a fresh context and receives only the target content plus the structural analysis artifact. It must find wrong predictions, overclaims, underclaims, and produce a revised findings table. Output is written to adversarial-analysis.md."
 skills:
-  primary: structural-analysis
+  primary: full-prism
+artifacts[1]:
+  - id: adversarial-analysis
+    name: adversarial-analysis.md
+    location: analysis
+    description: "Adversarial challenge: wrong predictions, overclaims, underclaims, revised findings table"
 rules[2]:
-  - "CRITICAL: This worker has never seen the structural analysis being generated. It receives only the final text. Treat it as an opponent's work to defeat with evidence."
+  - "CRITICAL: This worker has never seen the structural analysis being generated. It receives only the final text from structural-analysis.md. Treat it as an opponent's work to defeat with evidence."
   - "The worker MUST load the adversarial lens (resource 01 or 04) not the structural lens."
-steps[3]:
+steps[4]:
   - id: load-lens
     name: Load Adversarial Lens
     description: "Load the adversarial lens resource: resource 01 (code) or resource 04 (general) based on target_type"
     required: true
   - id: execute-lens
     name: Execute Adversarial Operations
-    description: "Apply the adversarial lens against the target content + structural output. Find wrong predictions, overclaims, underclaims."
+    description: "Apply the adversarial lens against the target content + structural analysis artifact content (provided as ANALYSIS 1). Find wrong predictions, overclaims, underclaims."
+    required: true
+  - id: write-artifact
+    name: Write Adversarial Artifact
+    description: "Write the complete adversarial output to {output_path}/adversarial-analysis.md"
     required: true
   - id: format-output
-    name: Format Adversarial Output
-    description: "Structure the output: wrong predictions, overclaims, underclaims, revised findings table."
+    name: Report Output Path
+    description: "Report adversarial_output_path to the orchestrator so it can be read and forwarded to the synthesis pass."
     required: true
 transitions[1]:
   - to: synthesis-pass
