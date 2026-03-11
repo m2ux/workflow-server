@@ -1,0 +1,41 @@
+id: select-mode
+version: 1.0.0
+name: Select Pipeline Mode
+description: "Detect the pipeline mode from the user's request and resolve the target content. Matches intent patterns to set pipeline_mode, determines target_type from content, and ensures the output directory exists. Transitions automatically to structural-pass."
+problem: User needs the correct pipeline mode detected before analysis begins
+recognition[8]:
+  - analyze
+  - structural analysis
+  - full prism
+  - deep analysis
+  - portfolio
+  - multiple lenses
+  - scan
+  - review code
+skills:
+  primary: select-lens
+steps[4]:
+  - id: detect-mode
+    name: Detect Pipeline Mode
+    description: "Match the user's request against intent patterns to set pipeline_mode. Patterns: 'full prism', 'deep analysis', '3-pass', 'self-correcting', 'maximum depth' → full-prism. 'portfolio', 'multiple lenses', 'breadth', 'complementary' → portfolio. Everything else → single. If pipeline_mode was explicitly provided by the caller, use it as-is."
+    required: true
+  - id: resolve-target
+    name: Resolve Target Content
+    description: "Determine what to analyze from the user's request. Extract the file path, directory, or inline content. Set target_content. Detect target_type: if the content is a source code file path (by extension or context), set 'code'. If it is a document, plan, or non-code text, set 'general'."
+    required: true
+  - id: resolve-output-path
+    name: Resolve Output Path
+    description: "If output_path was not explicitly set by the caller, default to the current working directory. Ensure the directory exists (create if needed)."
+    required: true
+  - id: extract-lenses
+    name: Extract Selected Lenses
+    description: "For portfolio mode: if the user named specific lenses (e.g., 'claim and degradation'), set selected_lenses. If not, leave unset — the structural-pass activity will apply defaults."
+    required: true
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: "=="
+      value: portfolio
+transitions[1]:
+  - to: structural-pass
+    isDefault: true
