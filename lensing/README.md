@@ -1,0 +1,197 @@
+# Structural Analysis Lensing Workflow
+
+> v1.0.0 — Apply cognitive lenses to code or text through isolated sub-agent passes. Derived from the [agi-in-md](https://github.com/m2ux/agi-in-md) research project which demonstrates that short imperative prompts ("lenses") reliably activate specific analytical operations in language models, producing structurally deeper findings than vanilla analysis.
+
+---
+
+## Overview
+
+This workflow applies structural analysis lenses to code or text in three modes. Each analytical pass runs in an **isolated sub-agent** to guarantee independence — particularly critical for the adversarial pass, which must challenge the structural analysis without being biased by having generated it.
+
+| # | Activity | Required | Description |
+|---|----------|----------|-------------|
+| 01 | **Structural Pass** | yes | L12 structural analysis — conservation law, meta-law, classified findings |
+| 02 | **Adversarial Pass** | full-prism only | Attack the structural analysis — wrong predictions, overclaims, underclaims |
+| 03 | **Synthesis Pass** | full-prism only | Reconcile both perspectives into corrected, definitive findings |
+| 04 | **Deliver Result** | yes | Present final analysis to the user |
+
+**Pipeline modes:**
+
+| Mode | Passes | When to use |
+|------|--------|-------------|
+| `single` | Structural only | Quick analysis, code review augmentation |
+| `full-prism` | Structural → Adversarial → Synthesis | Maximum depth with self-correction |
+| `portfolio` | Multiple independent lenses | Breadth — complementary structural perspectives |
+
+---
+
+## Workflow Flow
+
+```mermaid
+graph TD
+    startNode(["Start"]) --> SP["01 structural-pass"]
+
+    SP --> MODE{"pipeline_mode?"}
+    MODE -->|"full-prism"| AP["02 adversarial-pass"]
+    MODE -->|"single"| DR["04 deliver-result"]
+
+    AP --> SYN["03 synthesis-pass"]
+    SYN --> DR
+
+    DR --> doneNode(["End"])
+```
+
+---
+
+## Execution Model
+
+This workflow uses an **orchestrator with disposable workers** — distinct from the work-package pattern which uses a persistent, resumed worker.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Orch as Orchestrator
+    participant W1 as Worker 1 (Structural)
+    participant W2 as Worker 2 (Adversarial)
+    participant W3 as Worker 3 (Synthesis)
+
+    User->>Orch: "analyze src/auth.ts full-prism"
+
+    Note over Orch: Load workflow, resolve target content
+
+    Orch->>W1: Task(content + lens index 00)
+    W1->>W1: get_resource("lensing", "00")
+    W1->>W1: Execute L12 operations
+    W1-->>Orch: structural_output (full text)
+
+    Note over Orch: Capture output verbatim
+
+    Orch->>W2: Task(content + structural_output as "ANALYSIS 1" + lens index 01)
+    Note over W2: Fresh context — never saw W1's generation
+    W2->>W2: get_resource("lensing", "01")
+    W2->>W2: Attack ANALYSIS 1
+    W2-->>Orch: adversarial_output (full text)
+
+    Orch->>W3: Task(content + ANALYSIS 1 + ANALYSIS 2 + lens index 02)
+    W3->>W3: get_resource("lensing", "02")
+    W3->>W3: Synthesize corrected result
+    W3-->>Orch: synthesis_output (full text)
+
+    Orch->>User: Final synthesis + appendices
+```
+
+**Why disposable workers?** In the work-package workflow, the persistent worker accumulates codebase understanding across activities — that context is valuable. In the lensing workflow, shared context is *harmful*. The adversarial worker must treat the structural analysis as an opponent's work to defeat. If it shares generation history with the structural worker, it pulls punches. Fresh agents guarantee genuine independence.
+
+**Orchestrator** (skill: `orchestrate-lensing`):
+- Loads workflow, resolves target content
+- Dispatches each pass to a **fresh** sub-agent (NEVER resumes)
+- Captures full text output from each pass
+- Forwards prior outputs verbatim to subsequent passes
+- MUST NOT execute lens operations or generate analysis
+
+**Workers** (skill: `full-prism`):
+- Self-bootstrap by loading the lens resource via `get_resource`
+- Execute every operation in the lens prompt completely
+- Return the full analysis text
+- Run in isolation — no shared context between passes
+
+---
+
+## Resources (12)
+
+All lens resources are accessible cross-workflow via `get_resource("lensing", index)`.
+
+### Code Pipeline (3-pass Full Prism)
+
+| Index | Name | Purpose |
+|-------|------|---------|
+| `00` | L12 Structural | Primary structural analysis — conservation law, meta-law, bug table |
+| `01` | L12 Adversarial | Attack the structural analysis — wrong predictions, overclaims, underclaims |
+| `02` | L12 Synthesis | Reconcile into corrected conservation law, definitive classification |
+
+### General Pipeline (3-pass for non-code input)
+
+| Index | Name | Purpose |
+|-------|------|---------|
+| `03` | L12 General Structural | Same operations as code L12 with domain-neutral language |
+| `04` | L12 General Adversarial | Same operations as code adversarial with domain-neutral language |
+| `05` | L12 General Synthesis | Same operations as code synthesis with domain-neutral language |
+
+### Portfolio Lenses (single-pass, independent)
+
+| Index | Name | Operation | Best for |
+|-------|------|-----------|----------|
+| `06` | Pedagogy | Transfer corruption — what patterns transfer and where they break | Codebase comprehension, design review |
+| `07` | Claim | Assumption inversion — assume each embedded claim is false | Design philosophy, plan review |
+| `08` | Scarcity | Resource conservation — what the design assumes is infinite | Implementation analysis, trade-off analysis |
+| `09` | Rejected Paths | Problem migration — what rejected paths would swap | Codebase comprehension, plan review |
+| `10` | Degradation | Decay timeline — what degrades monotonically with neglect | Strategic review, maintainability |
+| `11` | Contract | Interface vs implementation — signature promises vs reality | Code review (code-only) |
+
+---
+
+## Skills (6)
+
+| # | Skill | Scope | Purpose |
+|---|-------|-------|---------|
+| 00 | `structural-analysis` | lensing | Single-pass L12 on code — usable directly by other workflows |
+| 01 | `full-prism` | lensing | Worker-side: execute one pass within the isolation model |
+| 02 | `portfolio-analysis` | lensing | Run 2+ complementary portfolio lenses |
+| 03 | `general-analysis` | lensing | Apply lenses to non-code input (requirements, designs, plans) |
+| 04 | `select-lens` | lensing | Recommend optimal lens(es) for an analytical goal |
+| 05 | `orchestrate-lensing` | lensing | Dispatch isolated workers, manage the Full Prism pipeline |
+
+### Cross-Workflow Usage
+
+Other workflows reference lensing skills and resources directly:
+
+```
+# Load a lens resource from another workflow's skill protocol
+get_resource({ workflow_id: "lensing", index: "00" })
+
+# Load a lensing skill
+get_skill({ skill_id: "structural-analysis", workflow_id: "lensing" })
+```
+
+For example, the work-package workflow's `review-code` or `analyze-implementation` skills can load the L12 lens to augment their analysis with structural depth.
+
+---
+
+## Variables (9)
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `target_content` | string | *(required)* | Code or text to analyze — file path or inline |
+| `target_type` | string | `code` | Input domain: `code` or `general` |
+| `pipeline_mode` | string | `single` | Mode: `single`, `full-prism`, or `portfolio` |
+| `selected_lenses` | array | — | Portfolio mode: lens names to apply |
+| `analysis_focus` | string | — | Optional focus area |
+| `structural_output` | string | — | Captured output from structural pass |
+| `adversarial_output` | string | — | Captured output from adversarial pass |
+| `synthesis_output` | string | — | Captured output from synthesis pass |
+| `portfolio_outputs` | object | — | Map of lens name → output for portfolio mode |
+
+---
+
+## Workflow Rules
+
+1. **ISOLATION MODEL:** Each analytical pass MUST be dispatched to a FRESH sub-agent. The adversarial pass must never share context with the structural pass.
+2. **EXECUTION MODEL:** Orchestrator with disposable workers. Workers are NOT resumed.
+3. **ORCHESTRATOR DISCIPLINE:** The orchestrator MUST NOT execute lens operations or generate analysis.
+4. **AUTOMATIC TRANSITIONS:** Passes advance without user confirmation.
+5. **OUTPUT FORWARDING:** Full text output forwarded verbatim between passes. No summarizing.
+6. **LENS LOADING:** Workers self-bootstrap by calling `get_resource`. The orchestrator provides only the resource index.
+7. **FULLY AUTOMATED:** No user checkpoints. The only interaction is the initial input.
+
+---
+
+## Background: Cognitive Lenses
+
+The lenses in this workflow are derived from the [agi-in-md](https://github.com/m2ux/agi-in-md) research project (29 rounds, 650+ experiments). Key findings:
+
+- **The prompt is the dominant variable.** Haiku + L12 lens (9.8 depth, 28 bugs) outperforms Opus vanilla (7.3 depth, 18 bugs) at 5x lower cost.
+- **Construction-based reasoning (L8+) works on all models.** Unlike meta-analysis which requires larger models, construction — building improvements and observing what they reveal — is a universal cognitive operation.
+- **5 portfolio lenses find 5 genuinely different things.** Zero overlap confirmed across 3 real codebases. Each lens activates a distinct analytical operation.
+- **The 3-pass pipeline self-corrects.** The adversarial pass finds what the structural pass conceals. The synthesis produces properties visible only from having both perspectives.
+
+The L12 pipeline encodes 12 sequential operations: falsifiable claim → three-voice dialectic → concealment mechanism → engineered improvement → diagnostic recursion → structural invariant → invariant inversion → conservation law → meta-diagnostic → meta-law → concrete findings collection.
