@@ -1,6 +1,6 @@
 # Structural Analysis Lensing Workflow
 
-> v1.0.0 — Apply cognitive lenses to code or text through isolated sub-agent passes.
+> v1.1.0 — Apply cognitive lenses to code or text through isolated sub-agent passes.
 
 ---
 
@@ -23,10 +23,16 @@ This workflow applies structural analysis lenses to code or text in three modes.
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
-| 01 | **Structural Pass** | yes | L12 structural analysis — conservation law, meta-law, classified findings |
-| 02 | **Adversarial Pass** | full-prism only | Attack the structural analysis — wrong predictions, overclaims, underclaims |
-| 03 | **Synthesis Pass** | full-prism only | Reconcile both perspectives into corrected, definitive findings |
-| 04 | **Deliver Result** | yes | Present final analysis to the user |
+| 01 | [**Structural Pass**](activities/01-structural-pass.toon) | yes | L12 structural analysis — conservation law, meta-law, classified findings |
+| 02 | [**Adversarial Pass**](activities/02-adversarial-pass.toon) | full-prism only | Attack the structural analysis — wrong predictions, overclaims, underclaims |
+| 03 | [**Synthesis Pass**](activities/03-synthesis-pass.toon) | full-prism only | Reconcile both perspectives into corrected, definitive findings |
+| 04 | [**Deliver Result**](activities/04-deliver-result.toon) | yes | Present final analysis to the user |
+
+**Detailed documentation:**
+
+- **Activities:** See [activities/](activities/) for per-activity TOON definitions with steps, rules, and transitions.
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (6 skills) and protocol flow diagrams.
+- **Resources:** See [resources/](resources/) for the 12 lens resources.
 
 **Pipeline modes:**
 
