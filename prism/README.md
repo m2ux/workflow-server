@@ -1,4 +1,4 @@
-# Structural Analysis Lensing Workflow
+# Prism Workflow
 
 > v1.1.0 — Apply cognitive lenses to code or text through isolated sub-agent passes.
 
