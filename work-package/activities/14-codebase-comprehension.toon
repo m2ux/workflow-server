@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.3.0
+version: 1.4.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in .engineering/artifacts/comprehension/ that grow across successive tasks, forming a reusable knowledge base."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
@@ -11,8 +11,9 @@ recognition[5]:
   - familiarize with code
 skills:
   primary: build-comprehension
-  supporting[1]:
+  supporting[2]:
     - manage-artifacts
+    - portfolio-analysis
 required: false
 estimatedTime: 20-45m
 rules[10]:
@@ -26,7 +27,7 @@ rules[10]:
   - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after the initial deep-dive and after each subsequent deep-dive iteration"
   - "SUFFICIENCY RULE: After the initial deep-dive, count unresolved open questions. If zero remain, set needs_comprehension to false and skip the comprehension-sufficient checkpoint entirely — comprehension is objectively sufficient. If unresolved questions remain, present them at the checkpoint with 30s auto-advance."
   - "The Open Questions table is generated content the user must evaluate at the comprehension-sufficient checkpoint — per the CHECKPOINT YIELD RULE, it must be in the yield context"
-steps[11]:
+steps[12]:
   - id: check-existing-artifacts
     name: Check Existing Comprehension Artifacts
     description: "Search .engineering/artifacts/comprehension/ for existing artifacts related to this codebase area. Match by project name, module names, or domain concepts from the problem statement."
@@ -54,9 +55,12 @@ steps[11]:
   - id: initial-deep-dive
     name: Initial Deep-Dive (Mandatory)
     description: "Systematically investigate every open question identified during the first pass (architecture survey, key abstractions, design rationale, domain mapping). This step is always performed — do not skip it and do not ask the user to select areas. For each open question, trace relevant data flows, examine implementation details, and resolve the question through targeted code analysis."
+  - id: initial-lens-pass
+    name: Apply Portfolio Lenses to Initial Deep-Dive
+    description: "Apply pedagogy (prism resource 06) and rejected-paths (prism resource 09) lenses to the key modules examined during the initial deep-dive. Pedagogy reveals where inherited patterns create silent problems; rejected-paths reveals hidden design trade-offs. Apply each lens independently. Append findings to the comprehension artifact under the 'Initial Deep-Dive' section."
   - id: update-artifact-initial
     name: Update Artifact with Initial Deep-Dive Findings
-    description: "Append the initial deep-dive findings to the comprehension artifact under a dedicated 'Initial Deep-Dive' section, organized by the open question each finding addresses."
+    description: "Append the initial deep-dive findings and portfolio lens findings to the comprehension artifact under a dedicated 'Initial Deep-Dive' section, organized by the open question each finding addresses."
   - id: revise-initial-questions
     name: Revise Open Questions after Initial Deep-Dive
     description: "Review findings from the initial deep-dive against the 'Open Questions' section. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. Then evaluate sufficiency: if all open questions are now Resolved, set has_open_questions to false and needs_comprehension to false — comprehension is complete, skip the checkpoint. If unresolved questions remain, set has_open_questions to true and present the revised table as context for the comprehension-sufficient checkpoint."
@@ -115,19 +119,22 @@ loops[1]:
       operator: ==
       value: true
     description: "Loop where each iteration explores a specific area of the codebase in more detail. Continues until user selects 'sufficient' at the comprehension-sufficient checkpoint, which sets needs_comprehension to false."
-    steps[4]:
+    steps[5]:
       - id: select-area
         name: Select deep-dive area
         description: "Present the current 'Open Questions' table from the comprehension artifact. User selects which questions to investigate, or proposes new areas. If no open questions exist yet, present candidate areas based on the architecture survey and problem relevance."
       - id: targeted-analysis
         name: Perform targeted analysis
         description: "Dive into the selected area: trace data flows, examine implementation details, identify edge cases, document internal design decisions and their implications."
+      - id: portfolio-lens-pass
+        name: Apply portfolio lenses to deep-dive area
+        description: "Load portfolio lenses from the prism workflow and apply them independently to the code under examination. Use pedagogy (get_resource workflow_id: 'prism', index: '06') to trace where inherited patterns create silent problems, and rejected-paths (get_resource workflow_id: 'prism', index: '09') to reveal what design paths were rejected and what problems they would swap. Apply each lens independently to the key files in the deep-dive area. Append per-lens findings and a cross-lens synthesis (convergent vs unique) to the comprehension artifact under the current deep-dive section."
       - id: update-artifact
         name: Update comprehension artifact
-        description: "Append deep-dive findings to the comprehension artifact under a dedicated section for this area."
+        description: "Append deep-dive findings and portfolio lens findings to the comprehension artifact under a dedicated section for this area."
       - id: revise-open-questions
         name: Revise open questions
-        description: "Review findings from this iteration against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. If all questions are now Resolved, set has_open_questions to false and needs_comprehension to false — loop exits. Otherwise present the revised table as context for the sufficiency checkpoint."
+        description: "Review findings from this iteration (including portfolio lens findings) against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation — including structural properties revealed by the lenses. Write the updated section to the artifact. If all questions are now Resolved, set has_open_questions to false and needs_comprehension to false — loop exits. Otherwise present the revised table as context for the sufficiency checkpoint."
 transitions[3]:
   - to: requirements-elicitation
     condition:
