@@ -1,13 +1,13 @@
 id: deliver-result
-version: 1.1.0
+version: 1.2.0
 name: Deliver Result
-description: "Present the final analysis to the user. For single-pass, reads structural-analysis.md. For full-prism, reads synthesis.md. For portfolio, reads all per-lens artifacts. Presents the content and reports artifact paths."
+description: "Present the final analysis to the user. Reads the appropriate artifact based on pipeline_mode: structural-analysis.md (single), synthesis.md (full-prism), or all portfolio artifacts (portfolio). Presents the content and reports artifact paths."
 skills:
-  primary: plan-analysis
+  primary: structural-analysis
 steps[2]:
   - id: read-final-artifact
     name: Read Final Artifact
-    description: "Read the appropriate artifact: structural-analysis.md (single), synthesis.md (full-prism), or all per-lens artifacts (portfolio)."
+    description: "Read the appropriate artifact based on pipeline_mode: if 'single', read {output_path}/structural-analysis.md. If 'full-prism', read {output_path}/synthesis.md. If 'portfolio', read all {output_path}/portfolio-*.md files."
     required: true
   - id: present-result
     name: Present Final Analysis
