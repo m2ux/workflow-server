@@ -1,33 +1,59 @@
 id: synthesis-pass
-version: 1.1.0
+version: 2.0.0
 name: Synthesis Pass
-description: "Reconcile the structural analysis and adversarial challenge into a final corrected result. This worker runs in a fresh context and receives the target content plus both prior analysis artifacts. Produces the definitive conservation law, meta-law, and findings classification. Output is written to synthesis.md."
+description: "Iterate over analysis_units that were assigned full-prism mode and run the synthesis lens against each unit's structural and adversarial artifacts. Each worker runs in a fresh context. Writes synthesis.md per unit."
 skills:
   primary: full-prism
 artifacts[1]:
   - id: synthesis
-    name: synthesis.md
+    name: "{unit_output_subdir}synthesis.md"
     location: analysis
-    description: "Final reconciliation: refined conservation law, refined meta-law, definitive fixable/structural classification, deepest finding"
+    description: "Final reconciliation per unit: refined conservation law, refined meta-law, definitive classification, deepest finding"
 rules[1]:
   - "The worker MUST load the synthesis lens (resource 02 or 05) not the structural or adversarial lens."
-steps[4]:
-  - id: load-lens
-    name: Load Synthesis Lens
-    description: "Load the synthesis lens resource: resource 02 (code) or resource 05 (general) based on target_type"
-    required: true
-  - id: execute-lens
-    name: Execute Synthesis Operations
-    description: "Apply the synthesis lens against the target content + structural analysis artifact (ANALYSIS 1) + adversarial analysis artifact (ANALYSIS 2). Produce the final corrected result."
-    required: true
-  - id: write-artifact
-    name: Write Synthesis Artifact
-    description: "Write the complete synthesis output to {output_path}/synthesis.md"
-    required: true
-  - id: format-output
-    name: Report Output Path
-    description: "Report synthesis_output_path to the orchestrator."
-    required: true
+loops[1]:
+  - id: synthesis-unit-cycle
+    name: Synthesis Unit Cycle
+    type: forEach
+    variable: current_unit
+    over: analysis_units
+    steps[4]:
+      - id: check-mode
+        name: Check Unit Mode
+        description: "Skip this unit if current_unit.pipeline_mode is not 'full-prism'."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: full-prism
+      - id: load-lens
+        name: Load Synthesis Lens
+        description: "Load the synthesis lens resource: resource 02 (code) or resource 05 (general) based on current_unit.target_type"
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: full-prism
+      - id: execute-lens
+        name: Execute Synthesis Operations
+        description: "Apply the synthesis lens against current_unit.target + structural-analysis.md (ANALYSIS 1) + adversarial-analysis.md (ANALYSIS 2). Produce the final corrected result."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: full-prism
+      - id: write-artifact
+        name: Write Synthesis Artifact
+        description: "Write the synthesis output to {unit_output_dir}/synthesis.md. Append path to all_artifact_paths."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: full-prism
 transitions[1]:
   - to: deliver-result
     isDefault: true
