@@ -14,7 +14,7 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
-steps[11]:
+steps[12]:
   - id: select-workflow
     name: Select workflow
     description: If workflow not specified, call list_workflows to show options
@@ -27,6 +27,9 @@ steps[11]:
   - id: apply-rules
     name: Apply rules
     description: Read and apply workflow rules
+  - id: detect-execution-model
+    name: Detect execution model
+    description: "Check the workflow rules for an EXECUTION MODEL rule. If the workflow uses an orchestrator/worker pattern, load the orchestrate-workflow skill (get_skill({ skill_id: 'orchestrate-workflow' })) and follow its protocol INLINE — the current agent becomes the orchestrator. Do NOT spawn the orchestrator as a sub-agent. Only the worker is spawned as a sub-agent. If no orchestrator/worker model is specified, continue with the standard workflow-execution flow."
   - id: discover-target
     name: Discover target
     description: "Determine whether the repository is a regular repo or a submodule monorepo. Check for a .gitmodules file. If it exists, present the repo-type checkpoint. If not, set target_path to the repository root."

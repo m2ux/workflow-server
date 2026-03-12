@@ -1,8 +1,8 @@
 id: orchestrate-workflow
-version: 2.0.0
+version: 2.1.0
 capability: Orchestrate work-package workflow execution using a persistent worker sub-agent
 
-description: "Coordination-only skill for the orchestrator agent. Loads the workflow definition (with schema preamble), initializes state, then dispatches activities sequentially to a persistent worker sub-agent. The orchestrator evaluates transition conditions between activities, manages state variables, and handles rework loops. It MUST NOT execute activity steps, write code, review code, or produce artifacts — all domain work is delegated to the worker."
+description: "Coordination-only skill executed INLINE by the top-level agent (the agent that received the user request). This skill MUST NOT be delegated to a sub-agent — the orchestrator runs at the top-level conversation so that AskQuestion calls render directly to the user. Loads the workflow definition (with schema preamble), initializes state, then dispatches activities sequentially to a persistent worker sub-agent. The orchestrator evaluates transition conditions between activities, manages state variables, and handles rework loops. It MUST NOT execute activity steps, write code, review code, or produce artifacts — all domain work is delegated to the worker."
 
 inputs[2]:
   - id: workflow-id
@@ -71,6 +71,7 @@ output[1]:
       rework_loops: "Any rework loops that occurred (activity transitions backward)"
 
 rules:
+  inline-execution: "This skill MUST be executed inline by the top-level agent — NEVER inside a sub-agent (Task tool). The orchestrator calls AskQuestion to present checkpoints to the user, and sub-agent AskQuestion calls do not surface question content (the user sees only a generic 'Allow' permission dialog). Running the orchestrator at the top level ensures checkpoint questions render properly."
   no-domain-work: "The orchestrator coordinates but MUST NOT execute activity steps, write code, review code, produce artifacts, or call domain-specific tools. All domain work is delegated to the worker. Exception: committing and pushing engineering artifacts after each activity is an orchestration responsibility."
   artifact-commits: "After every completed activity, the orchestrator MUST check for and commit any new or modified engineering artifacts before evaluating transitions. The worker is responsible for updating the README.md progress table (via its update-readme-progress phase) — the orchestrator verifies the README is staged and commits everything together. The verify-commit-gate prevents advancing without persisting outputs."
   schema-aware: "The orchestrator MUST understand workflow, activity, skill, condition, and state schemas to correctly evaluate transitions, conditions, and state. The schema preamble from get_workflow provides this."
