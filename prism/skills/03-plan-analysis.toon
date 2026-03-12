@@ -1,0 +1,162 @@
+id: plan-analysis
+version: 1.1.0
+capability: Plan an analysis strategy by detecting scope, classifying targets, and selecting lenses appropriate to each unit of work
+
+description: "Given a target and an analytical goal, produce an execution plan that maps each unit of work to a pipeline mode and lens selection. Handles five scope types: query (a question, idea, or concept — no files), file (single source file or document), module (coherent code group), codebase (repository with multiple modules), and document-set (directory of non-code artifacts). For query and file scopes, produces a direct lens recommendation. For broader scopes, surveys the structure, classifies units by role and risk, and produces a prioritised execution plan with cost estimates."
+
+inputs[6]:
+  - id: target
+    description: "What to analyze. Can be: a file path, a directory path, inline text, a question, a concept, or a topic. The skill detects the scope from the form of the input."
+    required: true
+  - id: analytical-goal
+    description: "What the caller wants to understand (e.g., 'find hidden bugs', 'assess maintainability', 'understand design trade-offs', 'security review', 'explore the implications of X', 'evaluate this strategy')"
+    required: false
+  - id: target-type
+    description: "Whether the input is 'code' or 'general'. If omitted, inferred from the target: file paths with code extensions → code, everything else → general."
+    required: false
+  - id: budget
+    description: "Analysis budget: 'quick' (minimize passes, skip low-risk), 'standard' (balanced depth and coverage), 'thorough' (full coverage, full-prism on high-risk). Default: standard"
+    required: false
+    default: standard
+  - id: depth-preference
+    description: "Override for pipeline mode when scope is query or file: 'single', 'pipeline', or 'portfolio'. Ignored for multi-unit scopes where mode is determined per-unit by risk classification."
+    required: false
+  - id: output-path
+    description: "Directory to write the analysis plan artifact. If omitted, the plan is returned but not persisted."
+    required: false
+
+protocol:
+  detect-scope[6]:
+    - "Determine the scope from the target input"
+    - "If target is a file path pointing to a single file → scope 'file'"
+    - "If target is a directory path, check for project markers (package.json, Cargo.toml, go.mod, pyproject.toml) to distinguish 'codebase' from 'module'. A directory of non-code files → 'document-set'."
+    - "If target is inline text, a question, a concept, a strategy, or any non-path input → scope 'query'. Set target-type to 'general' unless the text is clearly source code."
+    - "If target-type was not provided, infer it: code file extensions (.ts, .rs, .py, .go, .java, etc.) → 'code'. Everything else → 'general'."
+    - "Proceed to the appropriate planning path based on scope"
+  query-recommendation[4]:
+    - "For scope 'query': the target is text, not files. Select lenses from the general set (resources 03-05 + 06-10)."
+    - "Map the analytical goal to lenses: exploring implications → claim (07) + rejected-paths (09). evaluating a strategy → scarcity (08) + claim (07). understanding trade-offs → scarcity (08) + rejected-paths (09). deep structural analysis → L12-general pipeline (03-05). general exploration → L12-general single (03)."
+    - "Apply depth-preference if provided: 'single' → single best lens, 'pipeline' → full-prism (general), 'portfolio' → 2-3 complementary lenses"
+    - "Format as a single-unit plan with scope 'query' and proceed to format-plan"
+  single-unit-recommendation[4]:
+    - "For scope 'file' or 'module': map the analytical goal to lenses using the goal-mapping matrix"
+    - "Goal-mapping matrix: bug detection → L12 (00). code review → L12 (00) + contract (11). design review → claim (07) + rejected-paths (09). comprehension → pedagogy (06) + rejected-paths (09). pre-commit → L12 pipeline (00-02). planning review → L12-general (03). maintainability → degradation (10) + contract (11). assumption validation → claim (07) + scarcity (08). security review → L12 pipeline (00-02)."
+    - "Apply depth-preference if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses"
+    - "Format as a single-unit plan and proceed to format-plan"
+  survey-structure[4]:
+    - "For scope 'codebase' or 'document-set': list files and directories at the top level"
+    - "Identify module boundaries from directory layout, build system (workspaces, packages), and naming conventions"
+    - "If GitNexus is available (check via list_repos): use query() to discover functional areas and community clusters — these are better module boundaries than directory layout alone"
+    - "Record per-module: path, file count, estimated lines, primary language or content type"
+  classify-units[5]:
+    - "Categorise each module by role: api-surface, auth-security, state-persistence, business-logic, integration-external, utilities, configuration, types-definitions"
+    - "Assess risk based on role and content signals: auth/crypto/permissions/session → high. state/database/persistence → high. API surface/public interfaces → medium. business logic/domain rules → medium. utilities/helpers → low. config/constants/types → low."
+    - "If GitNexus is available: use context() to check how many callers each module has — high fan-in modules are higher risk regardless of role"
+    - "If the analytical goal targets a specific concern (e.g., 'security'), elevate all modules touching that concern to high risk"
+    - "Record per-module: role, risk (high/medium/low), classification rationale"
+  select-strategy-per-unit[4]:
+    - "Map risk to pipeline mode based on budget"
+    - "Budget 'quick': high → single L12, medium → single L12, low → skip"
+    - "Budget 'standard': high → full-prism, medium → single L12, low → portfolio (2 lenses matched to role)"
+    - "Budget 'thorough': high → full-prism, medium → full-prism, low → single L12"
+  select-lenses-per-unit[3]:
+    - "For units assigned single mode: select the single best lens from the goal-mapping matrix matched to the module's role"
+    - "For units assigned portfolio mode: select 2 complementary lenses matched to role. api-surface → contract + claim. business-logic → scarcity + rejected-paths. utilities → degradation + claim. integration → contract + scarcity."
+    - "For units assigned full-prism: no lens selection needed — the pipeline uses the L12 set (00-02 for code, 03-05 for general)"
+  plan-execution[4]:
+    - "Order units by risk: high first, then medium, then low"
+    - "Within the same risk tier, order by dependency — modules depended on by others are analyzed first (their findings inform downstream analysis)"
+    - "Identify parallelism opportunities: independent modules at the same risk level can run concurrently (up to 4)"
+    - "Calculate cost estimate: 1 dispatch per single pass, 3 per full-prism, N per portfolio (N = number of selected lenses)"
+  build-analysis-units[5]:
+    - "Build the analysis_units array — an ordered list of unit objects that the workflow iterates over"
+    - "Each unit object has: target (file path or content string), target_type (code|general), pipeline_mode (single|full-prism|portfolio), lenses (array of resource indices for portfolio, empty for single/full-prism), role (module role or 'query'), risk (high|medium|low), rationale (why this mode was selected)"
+    - "For query and file scopes: produce a single-element array"
+    - "For module scope: produce a single-element array with the module path as target"
+    - "For codebase and document-set scopes: produce one element per module, ordered by execution priority (high-risk first). Include a unit_output_subdir field derived from the module name for artifact namespacing (e.g., 'auth/', 'api/')."
+  format-plan[4]:
+    - "Produce the analysis plan as structured output"
+    - "Set the analysis_units workflow variable — this drives the iteration loop in the structural-pass activity"
+    - "If output-path is provided, write the human-readable plan to {output-path}/analysis-plan.md"
+    - "For single-unit plans, the workflow will execute a single pass through the analysis activities. For multi-unit plans, the workflow iterates over analysis_units."
+
+output[2]:
+  - id: analysis-plan
+    description: "Human-readable analysis plan artifact"
+    artifact:
+      name: "analysis-plan.md"
+    components:
+      scope: "Detected scope type (query, file, module, codebase, document-set)"
+      strategy: "Overall strategy description"
+      units_summary: "Per-unit plan summary: target, role, risk, pipeline_mode, lenses, rationale"
+      execution_order: "Prioritised and grouped execution sequence (multi-unit scopes only)"
+      parallelism: "Which units can run concurrently (multi-unit scopes only)"
+      estimated_cost: "Total sub-agent dispatches (multi-unit scopes only)"
+      skip_list: "Units below budget threshold with justification (multi-unit scopes only)"
+  - id: analysis-units
+    description: "Machine-readable ordered array of analysis unit objects — drives the workflow's iteration loop"
+    components:
+      units: "Array of { target, target_type, pipeline_mode, lenses, role, risk, rationale, unit_output_subdir }"
+
+rules:
+  goal-mapping-matrix: "Bug detection → L12 (00). Code review → L12 (00) + contract (11). Design review → claim (07) + rejected-paths (09). Comprehension → pedagogy (06) + rejected-paths (09). Pre-commit validation → L12 pipeline (00-02). Planning review → L12-general (03). Maintainability → degradation (10) + contract (11). Assumption validation → claim (07) + scarcity (08). Security review → L12 pipeline (00-02). Strategy evaluation → claim (07) + scarcity (08). Implication exploration → claim (07) + rejected-paths (09). General exploration → L12-general (03)."
+  code-vs-general: "Match target type to lens set. Code → resources 00-02 + 06-11. General (text, queries, concepts) → resources 03-05 + 06-10 (no contract)."
+  query-is-general: "A query, question, concept, or inline text input is always 'general' target-type unless it is clearly source code."
+  single-lens-default: "When no goal or depth is specified, default to L12 structural (resource 00 for code, 03 for general)."
+  budget-drives-depth: "For multi-unit scopes, the budget determines per-unit depth. The caller should not need to specify pipeline_mode for each module — the plan derives it from risk and budget."
+  skip-is-explicit: "When budget excludes low-risk modules, list them in skip_list with justification. The caller can override by re-running with budget 'thorough'."
+
+resources[12]:
+  - "00"
+  - "01"
+  - "02"
+  - "03"
+  - "04"
+  - "05"
+  - "06"
+  - "07"
+  - "08"
+  - "09"
+  - "10"
+  - "11"
+
+tools:
+  glob:
+    when: "Surveying codebase or directory structure (codebase/document-set scopes only)"
+    usage: "Discover files and directories to determine scope and module boundaries"
+  read_file:
+    when: "Reading project markers or target files"
+    usage: "Examine build configuration for workspace/package definitions; read single-file targets"
+  gitnexus_query:
+    when: "GitNexus is available — discovering functional areas and execution flows for better module classification"
+    params: "query: relevant to the analytical goal"
+    returns: "Processes ranked by relevance with symbols and file locations"
+  gitnexus_context:
+    when: "GitNexus is available — checking fan-in for risk assessment"
+    params: "name: module or symbol name"
+    returns: "Callers, callees, process participation"
+  gitnexus_list_repos:
+    when: "Checking whether GitNexus is available for the target codebase"
+    returns: "List of indexed repositories"
+  write_file:
+    when: "Writing the analysis plan artifact (only when output-path is provided)"
+    params: "path: {output-path}/analysis-plan.md"
+    usage: "Persist the plan for the orchestrator to execute"
+  get_resource:
+    when: "Caller wants to verify a lens before committing to the plan"
+    params: "workflow_id: prism, index: recommended resource index"
+    returns: "The lens prompt text"
+
+errors:
+  empty_directory:
+    cause: "Target directory contains no analyzable files"
+    recovery: "Report the empty directory. Check that the path is correct and contains source files or documents."
+  no_goal_for_codebase:
+    cause: "Codebase scope detected but no analytical goal provided — cannot classify risk meaningfully"
+    recovery: "Ask the caller for an analytical goal. Without one, default to 'bug detection' which maps all modules to L12."
+  gitnexus_unavailable:
+    cause: "GitNexus is not indexed for this codebase"
+    recovery: "Fall back to directory-based module detection and role-based risk classification. Note in the plan that fan-in analysis was not available."
+  ambiguous_target:
+    cause: "Cannot determine whether the target is a file path, directory, or query text"
+    recovery: "Check if the target exists on the filesystem. If it does, use the file/directory scope. If not, treat it as a query."
