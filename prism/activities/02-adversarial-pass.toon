@@ -1,34 +1,60 @@
 id: adversarial-pass
-version: 1.1.0
+version: 2.0.0
 name: Adversarial Analysis Pass
-description: "Attack the structural analysis produced in the previous pass. This worker runs in a fresh context and receives only the target content plus the structural analysis artifact. It must find wrong predictions, overclaims, underclaims, and produce a revised findings table. Output is written to adversarial-analysis.md."
+description: "Iterate over analysis_units that were assigned full-prism mode and run the adversarial lens against each unit's structural analysis artifact. Each worker runs in a fresh context. Writes adversarial-analysis.md per unit."
 skills:
   primary: full-prism
 artifacts[1]:
   - id: adversarial-analysis
-    name: adversarial-analysis.md
+    name: "{unit_output_subdir}adversarial-analysis.md"
     location: analysis
-    description: "Adversarial challenge: wrong predictions, overclaims, underclaims, revised findings table"
+    description: "Adversarial challenge per unit: wrong predictions, overclaims, underclaims, revised findings table"
 rules[2]:
-  - "CRITICAL: This worker has never seen the structural analysis being generated. It receives only the final text from structural-analysis.md. Treat it as an opponent's work to defeat with evidence."
+  - "CRITICAL: Each worker has never seen the structural analysis being generated. It receives only the final text from the artifact file. Treat it as an opponent's work to defeat with evidence."
   - "The worker MUST load the adversarial lens (resource 01 or 04) not the structural lens."
-steps[4]:
-  - id: load-lens
-    name: Load Adversarial Lens
-    description: "Load the adversarial lens resource: resource 01 (code) or resource 04 (general) based on target_type"
-    required: true
-  - id: execute-lens
-    name: Execute Adversarial Operations
-    description: "Apply the adversarial lens against the target content + structural analysis artifact content (provided as ANALYSIS 1). Find wrong predictions, overclaims, underclaims."
-    required: true
-  - id: write-artifact
-    name: Write Adversarial Artifact
-    description: "Write the complete adversarial output to {output_path}/adversarial-analysis.md"
-    required: true
-  - id: format-output
-    name: Report Output Path
-    description: "Report adversarial_output_path to the orchestrator so it can be read and forwarded to the synthesis pass."
-    required: true
+loops[1]:
+  - id: adversarial-unit-cycle
+    name: Adversarial Unit Cycle
+    type: forEach
+    variable: current_unit
+    over: analysis_units
+    steps[4]:
+      - id: check-mode
+        name: Check Unit Mode
+        description: "Skip this unit if current_unit.pipeline_mode is not 'full-prism'. Only full-prism units get adversarial passes."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: full-prism
+      - id: load-lens
+        name: Load Adversarial Lens
+        description: "Load the adversarial lens resource: resource 01 (code) or resource 04 (general) based on current_unit.target_type"
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: full-prism
+      - id: execute-lens
+        name: Execute Adversarial Operations
+        description: "Apply the adversarial lens against current_unit.target + the unit's structural-analysis.md artifact (provided as ANALYSIS 1). Find wrong predictions, overclaims, underclaims."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: full-prism
+      - id: write-artifact
+        name: Write Adversarial Artifact
+        description: "Write the adversarial output to {unit_output_dir}/adversarial-analysis.md. Append path to all_artifact_paths."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: full-prism
 transitions[1]:
   - to: synthesis-pass
     isDefault: true

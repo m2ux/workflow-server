@@ -68,24 +68,35 @@ protocol:
     - "Within the same risk tier, order by dependency — modules depended on by others are analyzed first (their findings inform downstream analysis)"
     - "Identify parallelism opportunities: independent modules at the same risk level can run concurrently (up to 4)"
     - "Calculate cost estimate: 1 dispatch per single pass, 3 per full-prism, N per portfolio (N = number of selected lenses)"
-  format-plan[3]:
-    - "Produce the analysis plan as structured output with per-unit recommendations"
-    - "If output-path is provided, write the plan to {output-path}/analysis-plan.md"
-    - "For query scope, the plan is a single recommendation — no execution order or cost estimate needed"
+  build-analysis-units[5]:
+    - "Build the analysis_units array — an ordered list of unit objects that the workflow iterates over"
+    - "Each unit object has: target (file path or content string), target_type (code|general), pipeline_mode (single|full-prism|portfolio), lenses (array of resource indices for portfolio, empty for single/full-prism), role (module role or 'query'), risk (high|medium|low), rationale (why this mode was selected)"
+    - "For query and file scopes: produce a single-element array"
+    - "For module scope: produce a single-element array with the module path as target"
+    - "For codebase and document-set scopes: produce one element per module, ordered by execution priority (high-risk first). Include a unit_output_subdir field derived from the module name for artifact namespacing (e.g., 'auth/', 'api/')."
+  format-plan[4]:
+    - "Produce the analysis plan as structured output"
+    - "Set the analysis_units workflow variable — this drives the iteration loop in the structural-pass activity"
+    - "If output-path is provided, write the human-readable plan to {output-path}/analysis-plan.md"
+    - "For single-unit plans, the workflow will execute a single pass through the analysis activities. For multi-unit plans, the workflow iterates over analysis_units."
 
-output[1]:
+output[2]:
   - id: analysis-plan
-    description: "Structured analysis execution plan"
+    description: "Human-readable analysis plan artifact"
     artifact:
       name: "analysis-plan.md"
     components:
       scope: "Detected scope type (query, file, module, codebase, document-set)"
       strategy: "Overall strategy description"
-      units: "Per-unit plan: target, role, risk, pipeline_mode, lenses, rationale"
+      units_summary: "Per-unit plan summary: target, role, risk, pipeline_mode, lenses, rationale"
       execution_order: "Prioritised and grouped execution sequence (multi-unit scopes only)"
       parallelism: "Which units can run concurrently (multi-unit scopes only)"
       estimated_cost: "Total sub-agent dispatches (multi-unit scopes only)"
       skip_list: "Units below budget threshold with justification (multi-unit scopes only)"
+  - id: analysis-units
+    description: "Machine-readable ordered array of analysis unit objects — drives the workflow's iteration loop"
+    components:
+      units: "Array of { target, target_type, pipeline_mode, lenses, role, risk, rationale, unit_output_subdir }"
 
 rules:
   goal-mapping-matrix: "Bug detection → L12 (00). Code review → L12 (00) + contract (11). Design review → claim (07) + rejected-paths (09). Comprehension → pedagogy (06) + rejected-paths (09). Pre-commit validation → L12 pipeline (00-02). Planning review → L12-general (03). Maintainability → degradation (10) + contract (11). Assumption validation → claim (07) + scarcity (08). Security review → L12 pipeline (00-02). Strategy evaluation → claim (07) + scarcity (08). Implication exploration → claim (07) + rejected-paths (09). General exploration → L12-general (03)."

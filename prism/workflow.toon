@@ -18,10 +18,10 @@ rules[7]:
   - "FULLY AUTOMATED: This workflow has no user checkpoints. The only user interaction is providing the initial input (code path, text, pipeline mode)."
 artifactLocations:
   analysis: "{output_path}"
-variables[10]:
-  - name: target_content
+variables[13]:
+  - name: target
     type: string
-    description: "The code or text to analyze — either a file path or inline content"
+    description: "What to analyze — a file path, directory path, inline text, question, or concept"
     required: true
   - name: target_type
     type: string
@@ -41,16 +41,25 @@ variables[10]:
   - name: analysis_focus
     type: string
     description: "Optional focus area to guide the analysis"
+  - name: analysis_units
+    type: array
+    description: "Ordered list of analysis units produced by plan-analysis. Each unit is an object with: target (file path or content), target_type (code|general), pipeline_mode (single|full-prism|portfolio), lenses (array of resource indices or lens names), role, risk, rationale. For single-unit scopes (query, file, module), this is a one-element array. For multi-unit scopes (codebase, document-set), one element per module."
+  - name: current_unit
+    type: object
+    description: "Current analysis unit during the iteration loop (from analysis_units)"
   - name: structural_output_path
     type: string
-    description: "File path to the structural pass artifact (set by orchestrator after pass completes)"
+    description: "File path to the structural pass artifact for the current unit (set by orchestrator after pass completes)"
   - name: adversarial_output_path
     type: string
-    description: "File path to the adversarial pass artifact (set by orchestrator after pass completes)"
+    description: "File path to the adversarial pass artifact for the current unit (set by orchestrator after pass completes)"
   - name: synthesis_output_path
     type: string
-    description: "File path to the synthesis pass artifact (set by orchestrator after pass completes)"
+    description: "File path to the synthesis pass artifact for the current unit (set by orchestrator after pass completes)"
   - name: portfolio_output_paths
     type: object
-    description: "Map of lens name → file path for portfolio mode artifacts"
+    description: "Map of lens name → file path for portfolio mode artifacts for the current unit"
+  - name: all_artifact_paths
+    type: array
+    description: "Accumulated list of all artifact paths across all units (appended after each unit completes)"
 initialActivity: select-mode

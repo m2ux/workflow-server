@@ -1,82 +1,91 @@
 id: structural-pass
-version: 1.3.0
+version: 2.0.0
 name: Structural Analysis Pass
-description: "Run the primary L12 structural analysis lens or portfolio lenses against the target content. In single and full-prism modes, produces a conservation law, meta-law, and classified findings table. In portfolio mode, runs multiple independent lenses for complementary structural perspectives. Output is written to the filesystem."
+description: "Iterate over analysis_units and run the appropriate analysis for each unit. For single and full-prism units, runs the L12 structural lens. For portfolio units, runs multiple independent lenses. Each iteration writes artifacts namespaced by unit. After all units complete, transitions based on whether any unit requires adversarial follow-up."
 skills:
   primary: structural-analysis
   supporting[1]:
     - portfolio-analysis
-
 artifacts[1]:
   - id: structural-analysis
-    name: structural-analysis.md
+    name: "{unit_output_subdir}structural-analysis.md"
     location: analysis
-    description: "L12 structural analysis with conservation law, meta-law, and classified bug table (single/full-prism modes). In portfolio mode, per-lens artifacts are written instead."
-steps[7]:
-  - id: load-lens
-    name: Load Structural Lens
-    description: "Load the appropriate L12 lens resource: resource 00 (code) or resource 03 (general) based on target_type"
-    required: true
-    condition:
-      type: not
-      condition:
-        type: simple
-        variable: pipeline_mode
-        operator: "=="
-        value: portfolio
-  - id: execute-lens
-    name: Execute Lens Operations
-    description: "Apply every operation in the lens prompt sequentially against the target content. Execute completely — do not abbreviate."
-    required: true
-    condition:
-      type: not
-      condition:
-        type: simple
-        variable: pipeline_mode
-        operator: "=="
-        value: portfolio
-  - id: write-structural-artifact
-    name: Write Structural Artifact
-    description: "Write the complete analysis output to {output_path}/structural-analysis.md"
-    required: true
-    condition:
-      type: not
-      condition:
-        type: simple
-        variable: pipeline_mode
-        operator: "=="
-        value: portfolio
-  - id: select-portfolio-lenses
-    name: Select Portfolio Lenses
-    description: "Use selected_lenses if provided. Otherwise default to claim + degradation (code) or pedagogy + rejected-paths (general). Load the portfolio-analysis supporting skill for the selection guide."
-    required: true
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: portfolio
-  - id: execute-portfolio
-    name: Execute Portfolio Lenses
-    description: "Apply each selected lens independently to the target content. Keep outputs separate and labelled by lens name."
-    required: true
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: portfolio
-  - id: write-portfolio-artifacts
-    name: Write Portfolio Artifacts
-    description: "Write each lens output to {output_path}/portfolio-{lens-name}.md. Write cross-lens synthesis to {output_path}/portfolio-synthesis.md."
-    required: true
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: portfolio
-  - id: report-paths
-    name: Report Output Paths
-    description: "Report structural_output_path or portfolio_output_paths to the orchestrator."
-    required: true
+    description: "L12 structural analysis per unit (single/full-prism modes). In portfolio mode, per-lens artifacts are written instead."
+loops[1]:
+  - id: unit-cycle
+    name: Analysis Unit Cycle
+    type: forEach
+    variable: current_unit
+    over: analysis_units
+    steps[8]:
+      - id: resolve-unit-output
+        name: Resolve Unit Output Directory
+        description: "Set the unit's output directory: {output_path}/{current_unit.unit_output_subdir} if unit_output_subdir is present (multi-unit), otherwise {output_path}. Create the directory if needed."
+        required: true
+      - id: load-lens
+        name: Load Structural Lens
+        description: "Load the appropriate L12 lens resource based on current_unit.target_type: resource 00 (code) or resource 03 (general)"
+        required: true
+        condition:
+          type: not
+          condition:
+            type: simple
+            variable: current_unit.pipeline_mode
+            operator: "=="
+            value: portfolio
+      - id: execute-lens
+        name: Execute Lens Operations
+        description: "Apply every operation in the lens prompt sequentially against current_unit.target. Execute completely — do not abbreviate."
+        required: true
+        condition:
+          type: not
+          condition:
+            type: simple
+            variable: current_unit.pipeline_mode
+            operator: "=="
+            value: portfolio
+      - id: write-structural-artifact
+        name: Write Structural Artifact
+        description: "Write the analysis to {unit_output_dir}/structural-analysis.md"
+        required: true
+        condition:
+          type: not
+          condition:
+            type: simple
+            variable: current_unit.pipeline_mode
+            operator: "=="
+            value: portfolio
+      - id: select-portfolio-lenses
+        name: Select Portfolio Lenses
+        description: "Use current_unit.lenses if provided. Otherwise default to claim + degradation (code) or pedagogy + rejected-paths (general). Load the portfolio-analysis supporting skill for the selection guide."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: portfolio
+      - id: execute-portfolio
+        name: Execute Portfolio Lenses
+        description: "Apply each selected lens independently to current_unit.target. Keep outputs separate and labelled by lens name."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: portfolio
+      - id: write-portfolio-artifacts
+        name: Write Portfolio Artifacts
+        description: "Write each lens output to {unit_output_dir}/portfolio-{lens-name}.md. Write cross-lens synthesis to {unit_output_dir}/portfolio-synthesis.md."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: portfolio
+      - id: report-unit-paths
+        name: Report Unit Artifact Paths
+        description: "Append the artifact paths from this unit to all_artifact_paths. Report structural_output_path or portfolio_output_paths for the current unit."
+        required: true
 transitions[2]:
   - to: adversarial-pass
     condition:
