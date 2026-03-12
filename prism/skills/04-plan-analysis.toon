@@ -1,0 +1,136 @@
+id: plan-analysis
+version: 1.0.0
+capability: Plan an analysis strategy by detecting scope, classifying targets, and selecting lenses appropriate to each unit of work
+
+description: "Given a target and an analytical goal, produce an execution plan that maps each unit of work to a pipeline mode and lens selection. Handles four scope types: file (single unit — direct lens recommendation), module (coherent code group — single recommendation), directory/codebase (multiple units — survey, classify by risk, select per-module strategy), and document-set (multiple non-code artifacts). For single-file scope, produces a direct lens recommendation. For broader scopes, surveys the structure, classifies units by role and risk, and produces a prioritised execution plan with cost estimates."
+
+inputs[5]:
+  - id: target-path
+    description: "Path to the analysis target — a file, directory, or repository root"
+    required: true
+  - id: analytical-goal
+    description: "What the caller wants to understand (e.g., 'find hidden bugs', 'assess maintainability', 'understand design trade-offs', 'security review', 'pre-merge validation')"
+    required: false
+  - id: target-type
+    description: "Whether the input is 'code' or 'general'. If omitted, detected from file extensions."
+    required: false
+  - id: budget
+    description: "Analysis budget: 'quick' (minimize passes, skip low-risk), 'standard' (balanced depth and coverage), 'thorough' (full coverage, full-prism on high-risk). Default: standard"
+    required: false
+    default: standard
+  - id: depth-preference
+    description: "Override for pipeline mode when scope is a single file: 'single', 'pipeline', or 'portfolio'. Ignored for multi-unit scopes where mode is determined per-unit by risk classification."
+    required: false
+
+protocol:
+  detect-scope[4]:
+    - "Determine the scope from target-path: file (single file path), module (directory containing related source files), codebase (repository root or top-level src directory), document-set (directory of non-code files)"
+    - "If target-path is a single file, set scope to 'file' and proceed to single-unit-recommendation"
+    - "If target-path is a directory, check for project markers (package.json, Cargo.toml, go.mod, pyproject.toml) to distinguish codebase from module. A directory without project markers inside a larger project is a module."
+    - "For document-set: if the directory contains primarily .md, .txt, .pdf, or other non-code files, set scope to 'document-set' and target-type to 'general'"
+  single-unit-recommendation[4]:
+    - "For scope 'file' or 'module': map the analytical goal to lenses using the goal-mapping matrix"
+    - "Goal-mapping matrix: bug detection → L12 (00). code review → L12 (00) + contract (11). design review → claim (07) + rejected-paths (09). comprehension → pedagogy (06) + rejected-paths (09). pre-commit → L12 pipeline (00-02). planning review → L12-general (03). maintainability → degradation (10) + contract (11). assumption validation → claim (07) + scarcity (08). security review → L12 pipeline (00-02)."
+    - "Apply depth-preference if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses"
+    - "Format as a single-unit plan and proceed to format-plan"
+  survey-structure[4]:
+    - "For scope 'codebase' or 'document-set': list files and directories at the top level"
+    - "Identify module boundaries from directory layout, build system (workspaces, packages), and naming conventions"
+    - "If GitNexus is available (check via list_repos): use query() to discover functional areas and community clusters — these are better module boundaries than directory layout alone"
+    - "Record per-module: path, file count, estimated lines, primary language or content type"
+  classify-units[5]:
+    - "Categorise each module by role: api-surface, auth-security, state-persistence, business-logic, integration-external, utilities, configuration, types-definitions"
+    - "Assess risk based on role and content signals: auth/crypto/permissions/session → high. state/database/persistence → high. API surface/public interfaces → medium. business logic/domain rules → medium. utilities/helpers → low. config/constants/types → low."
+    - "If GitNexus is available: use context() to check how many callers each module has — high fan-in modules are higher risk regardless of role"
+    - "If the analytical goal targets a specific concern (e.g., 'security'), elevate all modules touching that concern to high risk"
+    - "Record per-module: role, risk (high/medium/low), classification rationale"
+  select-strategy-per-unit[4]:
+    - "Map risk to pipeline mode based on budget"
+    - "Budget 'quick': high → single L12, medium → single L12, low → skip"
+    - "Budget 'standard': high → full-prism, medium → single L12, low → portfolio (2 lenses matched to role)"
+    - "Budget 'thorough': high → full-prism, medium → full-prism, low → single L12"
+  select-lenses-per-unit[3]:
+    - "For units assigned single mode: select the single best lens from the goal-mapping matrix matched to the module's role"
+    - "For units assigned portfolio mode: select 2 complementary lenses matched to role. api-surface → contract + claim. business-logic → scarcity + rejected-paths. utilities → degradation + claim. integration → contract + scarcity."
+    - "For units assigned full-prism: no lens selection needed — the pipeline uses the L12 set (00-02 for code, 03-05 for general)"
+  plan-execution[4]:
+    - "Order units by risk: high first, then medium, then low"
+    - "Within the same risk tier, order by dependency — modules depended on by others are analyzed first (their findings inform downstream analysis)"
+    - "Identify parallelism opportunities: independent modules at the same risk level can run concurrently (up to 4)"
+    - "Calculate cost estimate: 1 dispatch per single pass, 3 per full-prism, N per portfolio (N = number of selected lenses)"
+  format-plan[2]:
+    - "Produce the analysis plan as structured output with per-unit recommendations"
+    - "Write the plan to {output-path}/analysis-plan.md if output-path is available"
+
+output[1]:
+  - id: analysis-plan
+    description: "Structured analysis execution plan"
+    artifact:
+      name: "analysis-plan.md"
+    components:
+      scope: "Detected scope type (file, module, codebase, document-set)"
+      strategy: "Overall strategy description"
+      units: "Per-unit plan: path, role, risk, pipeline_mode, lenses, rationale"
+      execution_order: "Prioritised and grouped execution sequence"
+      parallelism: "Which units can run concurrently"
+      estimated_cost: "Total sub-agent dispatches"
+      skip_list: "Units below budget threshold with justification"
+
+rules:
+  goal-mapping-matrix: "Bug detection → L12 (00). Code review → L12 (00) + contract (11). Design review → claim (07) + rejected-paths (09). Comprehension → pedagogy (06) + rejected-paths (09). Pre-commit validation → L12 pipeline (00-02). Planning review → L12-general (03). Maintainability → degradation (10) + contract (11). Assumption validation → claim (07) + scarcity (08). Security review → L12 pipeline (00-02)."
+  code-vs-general: "Match target type to lens set. Code → resources 00-02 + 06-11. Text → resources 03-05 + 06-10 (no contract)."
+  single-lens-default: "When scope is 'file' and no goal or depth is specified, default to L12 structural (resource 00 for code, 03 for text)."
+  budget-drives-depth: "For multi-unit scopes, the budget determines per-unit depth. The caller should not need to specify pipeline_mode for each module — the plan derives it from risk and budget."
+  skip-is-explicit: "When budget excludes low-risk modules, list them in skip_list with justification. The caller can override by re-running with budget 'thorough'."
+
+resources[12]:
+  - "00"
+  - "01"
+  - "02"
+  - "03"
+  - "04"
+  - "05"
+  - "06"
+  - "07"
+  - "08"
+  - "09"
+  - "10"
+  - "11"
+
+tools:
+  glob:
+    when: "Surveying codebase or directory structure"
+    usage: "Discover files and directories to determine scope and module boundaries"
+  read_file:
+    when: "Reading project markers (package.json, Cargo.toml) to detect project type and module structure"
+    usage: "Examine build configuration for workspace/package definitions"
+  gitnexus_query:
+    when: "GitNexus is available — discovering functional areas and execution flows for better module classification"
+    params: "query: relevant to the analytical goal"
+    returns: "Processes ranked by relevance with symbols and file locations"
+  gitnexus_context:
+    when: "GitNexus is available — checking fan-in for risk assessment"
+    params: "name: module or symbol name"
+    returns: "Callers, callees, process participation"
+  gitnexus_list_repos:
+    when: "Checking whether GitNexus is available for the target codebase"
+    returns: "List of indexed repositories"
+  write_file:
+    when: "Writing the analysis plan artifact"
+    params: "path: {output-path}/analysis-plan.md"
+    usage: "Persist the plan for the orchestrator to execute"
+  get_resource:
+    when: "Caller wants to verify a lens before committing to the plan"
+    params: "workflow_id: prism, index: recommended resource index"
+    returns: "The lens prompt text"
+
+errors:
+  empty_directory:
+    cause: "Target directory contains no analyzable files"
+    recovery: "Report the empty directory. Check that the path is correct and contains source files."
+  no_goal_for_codebase:
+    cause: "Codebase scope detected but no analytical goal provided — cannot classify risk meaningfully"
+    recovery: "Ask the caller for an analytical goal. Without one, default to 'bug detection' which maps all modules to L12."
+  gitnexus_unavailable:
+    cause: "GitNexus is not indexed for this codebase"
+    recovery: "Fall back to directory-based module detection and role-based risk classification. Note in the plan that fan-in analysis was not available."
