@@ -1,12 +1,12 @@
-# Prism Workflow
+# Structural Analysis Prism Workflow
 
-> v1.1.0 — Apply cognitive lenses to code or text through isolated sub-agent passes.
+> v1.4.0 — Apply cognitive lenses to code, text, or entire codebases through isolated sub-agent passes.
 
 ---
 
 ## Overview
 
-This workflow applies structural analysis lenses to code or text in three modes. Each analytical pass runs in an **isolated sub-agent** to guarantee independence — particularly critical for the adversarial pass, which must challenge the structural analysis without being biased by having generated it.
+This workflow applies structural analysis lenses to any target — a single file, a question, a module, or an entire codebase. The `plan-analysis` skill detects the scope of the target and produces an execution plan that maps each unit of work to the appropriate analysis depth and lens selection.
 
 **Structural analysis** is the foundation. When an AI agent reviews code without specific guidance, it produces surface-level observations — the kind of feedback you would find in a generic code review. It notices style inconsistencies, missing error handling, and obvious logic errors. What it does not do is discover the *structural properties* of the code: the trade-offs the design is forced to make, the problems that persist through every attempted improvement, or the assumptions that will fail silently under conditions the author never considered. Lenses change this. Each lens is a short sequence of imperative operations (50–330 words) that directs the model through a specific analytical process. Rather than asking "what's wrong with this code?", the L12 lens instructs the model to make a falsifiable claim, attack it from three perspectives, name what the gap conceals, engineer an improvement that deepens the concealment, and trace the chain through to a conservation law. The model executes these operations as a program, and the output shifts from description to construction-based reasoning.
 
@@ -16,16 +16,17 @@ This workflow applies structural analysis lenses to code or text in three modes.
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
-| 01 | [**Structural Pass**](activities/01-structural-pass.toon) | yes | L12 structural analysis — conservation law, meta-law, classified findings |
-| 02 | [**Adversarial Pass**](activities/02-adversarial-pass.toon) | full-prism only | Attack the structural analysis — wrong predictions, overclaims, underclaims |
-| 03 | [**Synthesis Pass**](activities/03-synthesis-pass.toon) | full-prism only | Reconcile both perspectives into corrected, definitive findings |
-| 04 | [**Deliver Result**](activities/04-deliver-result.toon) | yes | Present final analysis to the user |
+| 00 | [**Plan Analysis**](activities/00-select-mode.toon) | yes | Detect scope, recommend pipeline mode, present confirmation checkpoint |
+| 01 | [**Structural Pass**](activities/01-structural-pass.toon) | yes | Iterate over analysis units — run L12 or portfolio lenses per unit |
+| 02 | [**Adversarial Pass**](activities/02-adversarial-pass.toon) | full-prism units only | Iterate over full-prism units — adversarial challenge per unit |
+| 03 | [**Synthesis Pass**](activities/03-synthesis-pass.toon) | full-prism units only | Iterate over full-prism units — reconcile into corrected findings |
+| 04 | [**Deliver Result**](activities/04-deliver-result.toon) | yes | Read and present final artifacts |
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/](activities/) for per-activity TOON definitions with steps, rules, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (6 skills) and protocol flow diagrams.
-- **Resources:** See [resources/](resources/) for the 12 lens resources.
+- **Activities:** See [activities/](activities/) for per-activity TOON definitions with steps, loops, rules, and transitions.
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (5 skills) and protocol flow diagrams.
+- **Resources:** See [resources/README.md](resources/README.md) for the 12 lens resources.
 
 **Pipeline modes:**
 
@@ -35,19 +36,35 @@ This workflow applies structural analysis lenses to code or text in three modes.
 | `full-prism` | Structural → Adversarial → Synthesis | Maximum depth with self-correction |
 | `portfolio` | Multiple independent lenses | Breadth — complementary structural perspectives |
 
+**Target scopes** (detected by `plan-analysis`):
+
+| Scope | Target | Behaviour |
+|-------|--------|-----------|
+| `query` | Question, concept, inline text | Single-unit, general lenses |
+| `file` | Single source file or document | Single-unit, code or general lenses |
+| `module` | Directory of related source files | Single-unit, code lenses |
+| `codebase` | Repository with multiple modules | Multi-unit — survey, classify, plan per-module |
+| `document-set` | Directory of non-code files | Multi-unit, general lenses |
+
+For multi-unit scopes, `plan-analysis` produces an `analysis_units` array. Each unit specifies its own `pipeline_mode` and lens selection based on the module's role and a configurable `budget` (`quick`, `standard`, `thorough`). The workflow iterates over this array, applying the appropriate analysis to each unit.
+
 ---
 
 ## Workflow Flow
 
 ```mermaid
 graph TD
-    startNode(["Start"]) --> SP["01 structural-pass"]
+    startNode(["Start"]) --> SM["00 plan-analysis"]
+    SM --> SP["01 structural-pass"]
 
-    SP --> MODE{"pipeline_mode?"}
-    MODE -->|"full-prism"| AP["02 adversarial-pass"]
-    MODE -->|"single"| DR["04 deliver-result"]
+    SP --> |"forEach unit"| SP
+    SP --> MODE{"any full-prism units?"}
+    MODE -->|"yes"| AP["02 adversarial-pass"]
+    MODE -->|"no"| DR["04 deliver-result"]
 
+    AP --> |"forEach full-prism unit"| AP
     AP --> SYN["03 synthesis-pass"]
+    SYN --> |"forEach full-prism unit"| SYN
     SYN --> DR
 
     DR --> doneNode(["End"])
@@ -63,131 +80,99 @@ This workflow uses an **orchestrator with disposable workers** — distinct from
 sequenceDiagram
     participant User
     participant Orch as Orchestrator
-    participant W1 as Worker 1 (Structural)
-    participant W2 as Worker 2 (Adversarial)
-    participant W3 as Worker 3 (Synthesis)
+    participant PA as Plan Analysis
+    participant W1 as Worker (Unit 1)
+    participant W2 as Worker (Unit 2)
+    participant WA as Worker (Adversarial)
+    participant WS as Worker (Synthesis)
 
-    User->>Orch: "analyze src/auth.ts full-prism"
+    User->>Orch: "analyze src/ thorough"
 
-    Note over Orch: Load workflow, resolve target content
+    Orch->>PA: Plan analysis (detect scope, classify modules)
+    PA-->>Orch: analysis_units [{auth: full-prism}, {api: single}, {utils: portfolio}]
+    Orch->>User: Recommendation + checkpoint
 
-    Orch->>W1: Task(content + lens index 00)
-    W1->>W1: get_resource("prism", "00")
-    W1->>W1: Execute L12 operations
-    W1-->>Orch: structural_output (full text)
+    Note over Orch: forEach unit in analysis_units
 
-    Note over Orch: Capture output verbatim
+    Orch->>W1: Task(auth/ + lens 00) → structural-analysis.md
+    Orch->>W2: Task(api/ + lens 00) → structural-analysis.md
+    Note over Orch: utils/ gets portfolio lenses (claim + degradation)
 
-    Orch->>W2: Task(content + structural_output as "ANALYSIS 1" + lens index 01)
-    Note over W2: Fresh context — never saw W1's generation
-    W2->>W2: get_resource("prism", "01")
-    W2->>W2: Attack ANALYSIS 1
-    W2-->>Orch: adversarial_output (full text)
+    Note over Orch: forEach full-prism unit
 
-    Orch->>W3: Task(content + ANALYSIS 1 + ANALYSIS 2 + lens index 02)
-    W3->>W3: get_resource("prism", "02")
-    W3->>W3: Synthesize corrected result
-    W3-->>Orch: synthesis_output (full text)
+    Orch->>WA: Task(auth/ + ANALYSIS 1 + lens 01) → adversarial-analysis.md
+    Orch->>WS: Task(auth/ + ANALYSIS 1 + ANALYSIS 2 + lens 02) → synthesis.md
 
-    Orch->>User: Final synthesis + appendices
+    Orch->>User: All artifacts + summary
 ```
 
 **Why disposable workers?** In workflows that use a persistent worker, context accumulates across activities — codebase understanding, file locations, implementation decisions. That shared context is valuable for implementation workflows. In the prism workflow, shared context is *harmful*. The adversarial worker must treat the structural analysis as an opponent's work to defeat. If it shares generation history with the structural worker, it pulls punches. Fresh agents guarantee genuine independence.
 
 **Orchestrator** (skill: `orchestrate-prism`):
-- Loads workflow, resolves target content
+- Runs `plan-analysis` to detect scope and produce `analysis_units`
 - Dispatches each pass to a **fresh** sub-agent (NEVER resumes)
-- Captures full text output from each pass
-- Forwards prior outputs verbatim to subsequent passes
+- Passes artifact paths between workers — workers read/write from the filesystem
 - MUST NOT execute lens operations or generate analysis
 
-**Workers** (skill: `full-prism`):
+**Workers** (skill: `full-prism`, `structural-analysis`, `portfolio-analysis`):
 - Self-bootstrap by loading the lens resource via `get_resource`
+- Read prior pass artifacts from the filesystem when provided
 - Execute every operation in the lens prompt completely
-- Return the full analysis text
+- Write analysis artifacts to the unit's output subdirectory
 - Run in isolation — no shared context between passes
 
 ---
 
 ## Examples
 
-### Standalone: Single-pass structural analysis on a file
-
-The simplest use case. An agent loads the L12 lens resource and applies it to a source file.
+### Single file analysis
 
 ```
-# Agent loads the lens
-lens = get_resource({ workflow_id: "prism", index: "00" })
-
-# Agent reads the target file, then executes every operation
-# in the lens prompt against the code
+# "analyze src/auth.ts"
+# plan-analysis detects: scope=file, target_type=code, recommends single
+# → 1 unit, 1 structural pass, writes structural-analysis.md
 ```
 
-**What you get:** A conservation law naming the structural trade-off the code is forced to make, a meta-law predicting what that trade-off conceals, and a bug table classifying each finding as fixable or structural.
-
-### Standalone: Full Prism pipeline via the prism workflow
-
-Run the 3-pass self-correcting pipeline. The orchestrator dispatches three isolated agents.
+### Deep analysis of a critical module
 
 ```
-# Start the prism workflow with full-prism mode
-get_workflow({ workflow_id: "prism" })
-
-# The orchestrator follows the orchestrate-prism skill:
-# 1. Reads target file
-# 2. Dispatches fresh agent → structural pass (resource 00)
-# 3. Captures output, dispatches fresh agent → adversarial pass (resource 01)
-# 4. Captures output, dispatches fresh agent → synthesis pass (resource 02)
-# 5. Presents the synthesis as the final result
+# "deep analysis of src/auth/"
+# plan-analysis detects: scope=module, recommends full-prism
+# → 1 unit, 3 passes (structural → adversarial → synthesis)
+# writes structural-analysis.md, adversarial-analysis.md, synthesis.md
 ```
 
-**What you get:** A corrected conservation law that survives adversarial challenge, a definitive fixable/structural classification for every finding, and the "deepest finding" — a property visible only from having both the structural analysis and its correction.
-
-### Standalone: Portfolio analysis with two complementary lenses
-
-Run two independent lenses to get breadth instead of depth.
+### Codebase-wide analysis
 
 ```
-# Agent loads two lenses and applies each independently
-claim_lens = get_resource({ workflow_id: "prism", index: "07" })
-degradation_lens = get_resource({ workflow_id: "prism", index: "10" })
-
-# Apply claim lens → discovers hidden assumptions
-# Apply degradation lens → discovers what decays with neglect
-# Cross-lens synthesis → identifies convergent and unique findings
+# "analyze this codebase thoroughly"
+# plan-analysis detects: scope=codebase, budget=thorough
+# → N units, each classified by role and priority
+# high-priority modules get full-prism, others get single or portfolio
+# artifacts namespaced per module: auth/synthesis.md, api/structural-analysis.md, etc.
 ```
 
-**What you get:** Two non-overlapping sets of structural findings. Convergent findings (discovered by both lenses) are high-confidence. Unique findings (one lens only) are the value-add of portfolio analysis.
-
-### Cross-workflow: Augmenting a code review skill
-
-Any workflow's code review skill can load the L12 lens to supplement its checklist-based review with structural depth.
+### Analyzing a question or strategy
 
 ```
-# Inside another workflow's skill protocol step:
-protocol:
-  structural-analysis[3]:
-    - "Load resource 00 from the prism workflow: get_resource(workflow_id: 'prism', index: '00')"
-    - "Apply every operation in the lens prompt against each changed file"
-    - "Append structural findings to the code review report"
+# "what are the trade-offs of event sourcing vs CRUD?"
+# plan-analysis detects: scope=query, target_type=general
+# → 1 unit, general lenses (claim + rejected-paths for trade-off analysis)
 ```
 
-**What you get:** The standard severity-rated code review findings *plus* conservation laws and structural/fixable classification for each file. The lens finds problems that checklist reviews miss — particularly silent failures and design-level trade-offs.
+### Cross-workflow usage
 
-### Cross-workflow: Full Prism from within another workflow
-
-When maximum depth is needed (e.g., during implementation analysis or a security audit), a worker in any workflow can act as the prism orchestrator, spawning isolated sub-agents directly.
+Any workflow's skill can invoke prism resources and skills directly:
 
 ```
-# The calling worker follows the orchestrate-prism skill protocol:
-# 1. Read target code
-# 2. Task(fresh agent, content + resource index 00) → capture structural output
-# 3. Task(fresh agent, content + ANALYSIS 1 + resource index 01) → capture adversarial output
-# 4. Task(fresh agent, content + ANALYSIS 1 + ANALYSIS 2 + resource index 02) → capture synthesis
-# 5. Include synthesis findings in the parent workflow's artifact
-```
+# Load a lens resource
+get_resource({ workflow_id: "prism", index: "00" })
 
-**What you get:** The self-corrected Full Prism analysis embedded within the calling workflow's artifact, with full isolation between passes even though the analysis is invoked from a parent workflow.
+# Load a skill
+get_skill({ skill_id: "structural-analysis", workflow_id: "prism" })
+
+# Or follow the orchestrate-prism protocol for isolated multi-pass analysis
+```
 
 ---
 
@@ -201,4 +186,3 @@ The lenses in this workflow are derived from the [agi-in-md](https://github.com/
 - **The 3-pass pipeline self-corrects.** The adversarial pass finds what the structural pass conceals. The synthesis produces properties visible only from having both perspectives.
 
 The L12 pipeline encodes 12 sequential operations: falsifiable claim → three-voice dialectic → concealment mechanism → engineered improvement → diagnostic recursion → structural invariant → invariant inversion → conservation law → meta-diagnostic → meta-law → concrete findings collection.
-
