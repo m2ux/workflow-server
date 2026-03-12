@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.6.0
+version: 1.7.0
 name: Post-Implementation Review
 description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
 problem: User needs to review implementation quality before validation
@@ -9,10 +9,11 @@ recognition[3]:
   - quality review
 skills:
   primary: review-diff
-  supporting[3]:
+  supporting[4]:
     - review-code
     - review-test-suite
     - summarize-architecture
+    - structural-analysis
 required: true
 estimatedTime: 30-60m
 artifactPrefix: "09"
@@ -33,7 +34,7 @@ modeOverrides:
       - Document findings as review comments for PR author, not fixes to apply
 entryActions[1]{action,message}:
   log,Starting post-implementation review
-artifacts[5]:
+artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"
     location: planning
@@ -54,7 +55,11 @@ artifacts[5]:
     name: "architecture-summary.md"
     location: planning
     description: "High-level architecture summary with Mermaid C4 diagrams for management stakeholders"
-steps[4]:
+  - id: structural-findings
+    name: "structural-findings.md"
+    location: planning
+    description: "Prism structural analysis findings — conservation law, meta-law, and classified bug table. For complex work packages, includes adversarial and synthesis pass artifacts."
+steps[6]:
   - id: manual-diff-review
     name: Manual Diff Review
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
@@ -65,6 +70,27 @@ steps[4]:
     description: "Perform comprehensive code review of all implementation changes. Create code-review.md report."
     skill: review-code
     required: true
+  - id: structural-analysis-inline
+    name: Structural Analysis (Single Pass)
+    description: "Load the L12 structural lens from the prism workflow (get_resource workflow_id: 'prism', index: '00') and apply it to the changed files. Produces conservation law, meta-law, and classified bug table. Write findings to structural-findings.md. This inline pass runs for simple and moderate complexity work packages."
+    skill: structural-analysis
+    required: true
+    condition:
+      type: not
+      condition:
+        type: simple
+        variable: complexity
+        operator: "=="
+        value: complex
+  - id: dispatch-prism
+    name: Structural Analysis (Full Prism)
+    description: "For complex work packages, the orchestrator dispatches a fresh prism orchestrator sub-agent following the orchestrate-prism skill (get_skill skill_id: 'orchestrate-prism', workflow_id: 'prism'). Pass target (changed files), pipeline_mode: 'full-prism', and output_path (planning folder). The prism orchestrator runs the 3-pass isolated pipeline autonomously and returns artifact paths. Capture prism_artifact_paths into workflow state."
+    required: true
+    condition:
+      type: simple
+      variable: complexity
+      operator: "=="
+      value: complex
   - id: test-suite-review
     name: Test Suite Review
     description: "Review test quality and create test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
@@ -206,13 +232,14 @@ transitions[2]:
       value: true
   - to: validate
     isDefault: true
-outcome[5]:
+outcome[6]:
   - Manual diff review completed with indexed block table and interview findings
   - Manual diff review report created (manual-diff-review.md)
   - Code review complete with documented findings
+  - Structural analysis complete (single-pass or full-prism based on complexity)
   - Test suite quality reviewed
   - Architecture summary created (if applicable)
-context_to_preserve[9]:
+context_to_preserve[10]:
   - change_block_index_path - Path to change-block-index.md file
   - change_block_data - Parsed hunk data for interview loop
   - flagged_block_indices - List of indices flagged by user during review
@@ -222,3 +249,4 @@ context_to_preserve[9]:
   - test_review_findings - Findings from test suite review
   - architecture_summary_created - Whether architecture summary was created
   - manual_diff_review_report_path - Path to generated manual diff review report
+  - prism_artifact_paths - Paths to prism structural analysis artifacts (single-pass or full-prism)

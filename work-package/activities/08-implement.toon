@@ -1,5 +1,5 @@
 id: implement
-version: 2.5.0
+version: 2.6.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task, reconciled through code analysis after all tasks complete, and only unresolvable assumptions are presented to the user."
 problem: User needs to implement the planned tasks
@@ -75,7 +75,18 @@ steps[3]:
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Record all implementation assumptions, reconciliation outcomes, and user review responses in the assumptions log."
-checkpoints[2]:
+checkpoints[4]:
+  - id: switch-model-pre-impl
+    name: Switch Model for Implementation
+    message: "Implementation requires the full model for code generation. Please switch to your preferred implementation model (e.g., Sonnet or Opus) before proceeding."
+    blocking: true
+    options[2]:
+      - id: switched
+        label: "Switched model — proceed"
+        description: Model has been switched to a higher-capability model for implementation
+      - id: continue-current
+        label: Continue with current model
+        description: Proceed with the current model without switching
   - id: confirm-implementation
     name: Confirm Implementation Start
     message: "Planning and assumptions review complete. Ready to begin implementation of {plan.task_count} tasks. Proceed?"
@@ -106,6 +117,17 @@ checkpoints[2]:
         effect:
           setVariable:
             skip_assumption_review: true
+  - id: switch-model-post-impl
+    name: Switch Model for Review
+    message: "Implementation complete. The review phases use structural lenses that perform well on lower-cost models. You may switch to Haiku to reduce costs for the remaining workflow."
+    blocking: true
+    options[2]:
+      - id: switched
+        label: "Switched model — proceed"
+        description: Model has been switched to Haiku for the review phases
+      - id: continue-current
+        label: Continue with current model
+        description: Proceed with the current model without switching
 transitions[1]{to,isDefault}:
   post-impl-review,true
 outcome[2]:
