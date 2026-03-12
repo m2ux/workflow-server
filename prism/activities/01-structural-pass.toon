@@ -6,6 +6,7 @@ skills:
   primary: structural-analysis
   supporting[1]:
     - portfolio-analysis
+
 artifacts[1]:
   - id: structural-analysis
     name: structural-analysis.md
