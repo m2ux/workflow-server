@@ -1,0 +1,61 @@
+id: select-mode
+version: 2.0.0
+name: Plan Analysis
+description: "Analyze the user's request to determine what to analyze, detect scope and target type, recommend a pipeline mode with rationale, and present the recommendation for confirmation. Delegates all planning logic to the plan-analysis skill."
+problem: User needs the analysis planned and configured before execution begins
+recognition[8]:
+  - analyze
+  - structural analysis
+  - full prism
+  - deep analysis
+  - portfolio
+  - multiple lenses
+  - scan
+  - review code
+skills:
+  primary: plan-analysis
+steps[3]:
+  - id: plan
+    name: Plan the Analysis
+    description: "Execute the plan-analysis skill protocol: detect scope from the target, classify units if multi-scope, recommend pipeline_mode and lens selection, resolve output_path."
+    required: true
+  - id: summarize
+    name: Summarize Configuration
+    description: "Present the recommended configuration: scope, target, target_type, pipeline_mode, selected_lenses (if portfolio), output_path, and rationale. This is the checkpoint context."
+    required: true
+  - id: apply-plan
+    name: Apply Plan
+    description: "After checkpoint confirmation, apply the selected pipeline_mode and any lens selections to workflow state variables."
+    required: true
+checkpoints[1]:
+  - id: confirm-mode
+    name: Pipeline Mode Confirmation
+    message: "Based on your request, I recommend the following analysis configuration. Would you like to proceed or adjust?"
+    prerequisite: "Only present when pipeline_mode was NOT explicitly provided by the caller. If the caller set pipeline_mode directly, skip this checkpoint."
+    options[4]:
+      - id: accept
+        label: Proceed
+        description: "Run the analysis with the recommended configuration"
+      - id: switch-single
+        label: "Single pass"
+        description: "Quick L12 structural analysis (1 pass)"
+        effect:
+          setVariable:
+            pipeline_mode: single
+      - id: switch-full-prism
+        label: "Full Prism"
+        description: "Deep self-correcting analysis (3 isolated passes)"
+        effect:
+          setVariable:
+            pipeline_mode: full-prism
+      - id: switch-portfolio
+        label: Portfolio
+        description: "Multiple complementary lenses for breadth"
+        effect:
+          setVariable:
+            pipeline_mode: portfolio
+    required: true
+    blocking: true
+transitions[1]:
+  - to: structural-pass
+    isDefault: true

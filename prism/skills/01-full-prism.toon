@@ -1,0 +1,100 @@
+id: full-prism
+version: 2.1.0
+capability: Execute a single pass of the Full Prism pipeline within the prism workflow's isolation model
+
+description: "Worker-side skill for executing one pass of the 3-pass Full Prism pipeline. Each pass runs in a fresh, isolated sub-agent dispatched by the orchestrate-prism skill. The worker receives: (1) the target content, (2) any prior pass artifact paths to read, and (3) a resource index indicating which lens to load. The worker loads the lens via get_resource, reads prior artifacts from the filesystem, applies the lens, writes the result artifact, and returns the artifact path."
+
+inputs[5]:
+  - id: target-content
+    description: "The code or text to analyze (provided inline by the orchestrator, or a file path to read)"
+    required: true
+  - id: lens-resource-index
+    description: "Resource index to load from the prism workflow (e.g., 00 for code structural, 01 for code adversarial)"
+    required: true
+  - id: prior-artifact-paths
+    description: "File paths to prior pass artifacts. Adversarial receives [structural-analysis.md]. Synthesis receives [structural-analysis.md, adversarial-analysis.md]. Empty for the structural pass."
+    required: false
+  - id: output-path
+    description: "Directory to write the analysis artifact"
+    required: true
+  - id: target-type
+    description: "Whether the input is 'code' or 'general'"
+    required: false
+    default: code
+
+protocol:
+  load-lens[2]:
+    - "Call get_resource({ workflow_id: 'prism', index: lens-resource-index }) to load the lens prompt"
+    - "The lens prompt is the program — it defines the exact sequence of analytical operations to execute"
+  read-prior-artifacts[2]:
+    - "If prior-artifact-paths is provided, read each artifact file from the filesystem"
+    - "Label the content: first artifact as ANALYSIS 1, second as ANALYSIS 2. These labels match what the adversarial and synthesis lenses expect."
+  apply-lens[3]:
+    - "Apply every operation in the lens prompt sequentially against the target content"
+    - "If prior artifacts were read, include them as context as instructed by the lens (adversarial lenses reference 'the structural analysis'; synthesis lenses reference 'ANALYSIS 1' and 'ANALYSIS 2')"
+    - "Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain."
+  write-artifact[3]:
+    - "Determine artifact filename from the pass type: structural-analysis.md (index 00/03), adversarial-analysis.md (index 01/04), synthesis.md (index 02/05)"
+    - "Write the complete analysis to {output-path}/{artifact-filename}"
+    - "Return the full artifact path in the output"
+  format-output[4]:
+    - "Structure the output with clear section headers matching the lens operations"
+    - "For structural: claim, dialectic, concealment mechanism, improvements, invariant, conservation law, meta-law, findings table"
+    - "For adversarial: wrong predictions, overclaims, underclaims, revised findings table"
+    - "For synthesis: refined conservation law, refined meta-law, definitive classification, deepest finding"
+
+output[1]:
+  - id: pass-artifact
+    description: "Analysis artifact written to the filesystem"
+    artifact:
+      name: "{pass-type}-analysis.md"
+    components:
+      artifact_path: "Full filesystem path to the written artifact"
+      analysis_text: "The full analysis output following the lens operations"
+
+rules:
+  complete-execution: "Every step in the lens prompt must be executed. Do not skip or summarize — the depth comes from the full chain."
+  evidence-required: "All findings must cite specific code or text: file paths, function names, line ranges, specific passages."
+  no-context-leakage: "This worker runs in isolation. Do not reference conversations, prior interactions, or context beyond what was provided in the prompt."
+  lens-is-program: "The lens resource is an imperative program. Execute its operations in order, producing the output each operation requests."
+  read-not-receive: "Prior pass output MUST be read from the filesystem via the artifact path. The orchestrator provides paths, not inline content, to keep prompts focused and artifacts as the source of truth."
+  persist-output: "The analysis MUST be written to the filesystem. Return the artifact path to the orchestrator so subsequent passes can read it."
+
+resources[6]:
+  - "00"
+  - "01"
+  - "02"
+  - "03"
+  - "04"
+  - "05"
+
+tools:
+  get_resource:
+    when: Loading the lens prompt for this pass
+    params: "workflow_id: prism, index: lens-resource-index (provided by orchestrator)"
+    returns: "Lens prompt text"
+    usage: "Load once, then execute every operation in the prompt"
+  read_file:
+    when: "Reading prior pass artifacts and target content"
+    usage: "Read structural-analysis.md and/or adversarial-analysis.md for context. Read target file if content is a path."
+  write_file:
+    when: "Writing the analysis artifact"
+    params: "path: {output-path}/{artifact-filename}"
+    usage: "Persist the analysis as a markdown artifact for downstream consumption"
+  grep:
+    when: "Verifying findings against the codebase"
+    usage: "Confirm that cited patterns exist at the claimed locations"
+
+errors:
+  lens_not_loaded:
+    cause: "get_resource returned an error for the given index"
+    recovery: "Report the error. Valid indices: 00-02 (code), 03-05 (general)."
+  prior_artifact_not_found:
+    cause: "A prior pass artifact path was provided but the file does not exist"
+    recovery: "Report the missing artifact. The orchestrator may need to re-dispatch the prior pass."
+  shallow_analysis:
+    cause: "Analysis stayed at surface level without reaching conservation law"
+    recovery: "Re-execute from the structural invariant step. The depth comes from the inversion chain, not the initial claim."
+  write_failed:
+    cause: "Could not write artifact to the output path"
+    recovery: "Verify the output-path directory exists and is writable."

@@ -1,0 +1,121 @@
+id: orchestrate-prism
+version: 1.1.0
+capability: Orchestrate the prism workflow with isolated sub-agent passes for analytical independence
+
+description: "Coordination skill for the prism workflow orchestrator. Dispatches each analytical pass to a FRESH sub-agent (never resumed) to guarantee context isolation. The adversarial pass must never share generation history with the structural pass. The orchestrator passes artifact paths between workers — each worker reads prior artifacts from the filesystem and writes its own artifact. Supports single-pass, full-prism (3-pass), and portfolio modes."
+
+inputs[5]:
+  - id: target-content
+    description: "The code or text to analyze — file path or inline content"
+    required: true
+  - id: target-type
+    description: "Whether the input is 'code' or 'general'"
+    required: false
+    default: code
+  - id: pipeline-mode
+    description: "Analysis mode: 'single', 'full-prism', or 'portfolio'"
+    required: false
+    default: single
+  - id: output-path
+    description: "Directory to write analysis artifacts. Workers write artifacts here; the orchestrator passes the path to each worker."
+    required: false
+    default: "."
+  - id: selected-lenses
+    description: "For portfolio mode: array of lens names"
+    required: false
+
+protocol:
+  load-workflow[2]:
+    - "Call get_workflow({ workflow_id: 'prism' }) to load the workflow definition"
+    - "Initialize state variables from inputs: target_content, target_type, pipeline_mode, output_path, selected_lenses"
+  resolve-target[3]:
+    - "If target_content is a file path, read the file and capture the full text as resolved_content"
+    - "If target_content is inline text, use it directly as resolved_content"
+    - "Ensure the output-path directory exists (create if needed)"
+  determine-lens-indices[4]:
+    - "Based on target_type and pipeline_mode, determine which resource indices to use"
+    - "Code structural=00, adversarial=01, synthesis=02"
+    - "General structural=03, adversarial=04, synthesis=05"
+    - "Portfolio: pedagogy=06, claim=07, scarcity=08, rejected-paths=09, degradation=10, contract=11"
+  dispatch-structural-pass[6]:
+    - "Create a FRESH sub-agent using Task tool (subagent_type=generalPurpose, do NOT use resume)"
+    - "Worker prompt must include: (1) the resolved_content, (2) the lens resource index to load, (3) the workflow_id 'prism' for get_resource calls, (4) the output-path to write its artifact, (5) instruction to load the lens via get_resource, execute every operation, and write to {output-path}/structural-analysis.md"
+    - "Worker prompt must NOT include any prior analysis — this is the first pass"
+    - "Capture the artifact path from the worker's response: structural_output_path = {output-path}/structural-analysis.md"
+    - "Verify the artifact was written by reading its first line"
+    - "If pipeline_mode is 'single', go to present-result"
+  dispatch-adversarial-pass[6]:
+    - "Create a NEW FRESH sub-agent (subagent_type=generalPurpose, do NOT resume the structural worker)"
+    - "Worker prompt must include: (1) the resolved_content, (2) structural_output_path — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the output-path, (5) instruction to write to {output-path}/adversarial-analysis.md"
+    - "CRITICAL: Do NOT include the structural analysis text inline. Pass only the file path. The worker reads the artifact from the filesystem."
+    - "CRITICAL: Do NOT include any information about how the structural analysis was generated"
+    - "Capture adversarial_output_path = {output-path}/adversarial-analysis.md"
+    - "Proceed to dispatch-synthesis-pass"
+  dispatch-synthesis-pass[5]:
+    - "Create a NEW FRESH sub-agent (subagent_type=generalPurpose, do NOT resume any prior worker)"
+    - "Worker prompt must include: (1) the resolved_content, (2) structural_output_path and adversarial_output_path — the worker reads both files, (3) the synthesis lens resource index, (4) the output-path, (5) instruction to write to {output-path}/synthesis.md"
+    - "Capture synthesis_output_path = {output-path}/synthesis.md"
+    - "Verify the artifact was written"
+    - "Proceed to present-result"
+  dispatch-portfolio-passes[5]:
+    - "For each selected lens, create a FRESH sub-agent with: the resolved_content, that lens's resource index, and the output-path"
+    - "Each worker writes to {output-path}/portfolio-{lens-name}.md"
+    - "Portfolio workers can be dispatched in parallel (up to 4 concurrent) since they are independent"
+    - "Capture all artifact paths in portfolio_output_paths keyed by lens name"
+    - "After all complete, proceed to present-result with a cross-lens synthesis"
+  present-result[4]:
+    - "For single mode: read and present structural-analysis.md"
+    - "For full-prism mode: read and present synthesis.md as the primary result. Note structural-analysis.md and adversarial-analysis.md as appendices."
+    - "For portfolio mode: present each per-lens artifact followed by a cross-lens convergence/divergence summary"
+    - "Report all artifact paths to the caller"
+
+output[1]:
+  - id: prism-result
+    description: "Complete prism analysis result with artifact paths"
+    components:
+      final_artifact_path: "Path to the primary analysis artifact (structural-analysis.md for single, synthesis.md for full-prism)"
+      all_artifact_paths: "All artifact paths produced during the pipeline"
+      pipeline_mode: "Which mode was used"
+
+rules:
+  never-resume: "NEVER use Task resume between passes. Each pass MUST be a fresh sub-agent. This is the core isolation guarantee."
+  artifact-mediated: "Pass outputs between workers via filesystem artifacts, not inline text. The orchestrator provides artifact paths; workers read and write files. This keeps prompts focused and artifacts as the source of truth."
+  no-analysis: "The orchestrator MUST NOT generate analysis, evaluate findings, or produce structural observations. It dispatches, captures paths, and presents results."
+  lens-not-forwarded: "The orchestrator tells workers which resource index to load — it does NOT load the lens resource and include it in the prompt."
+  automatic-pipeline: "The full pipeline runs without user interaction. No checkpoints, no confirmation between passes."
+  verify-artifacts: "After each pass, verify the artifact was written before dispatching the next pass."
+
+tools:
+  get_workflow:
+    when: Once at workflow start
+    params: "workflow_id: prism"
+    returns: "Workflow definition with variables, rules, activities"
+  get_workflow_activity:
+    when: Before dispatching each pass
+    params: "workflow_id: prism, activity_id: structural-pass | adversarial-pass | synthesis-pass"
+    returns: Activity definition with artifact declarations
+  task:
+    when: "Dispatching each pass to a fresh sub-agent"
+    params: "description, prompt, subagent_type: generalPurpose — NEVER use resume parameter"
+    returns: "Worker result with artifact path"
+    usage: "Each call creates a new agent. Include resolved_content + prior artifact paths + resource index + output-path in the prompt."
+  read_file:
+    when: "Resolving a file path to content, and verifying artifacts were written"
+    usage: Read the target file before dispatching; verify artifact existence after each pass
+  shell:
+    when: "Creating the output directory if it does not exist"
+    params: "mkdir -p {output-path}"
+
+errors:
+  worker_incomplete:
+    cause: "A pass worker returned without writing its artifact"
+    recovery: "Dispatch a new worker for the same pass with explicit instruction to write the artifact. Do not resume the failed worker."
+  adversary_too_soft:
+    cause: "The adversarial pass agreed with everything in the structural analysis"
+    recovery: "Dispatch a new adversarial worker with explicit instruction to find at least one wrong prediction, one overclaim, and one underclaim"
+  target_not_found:
+    cause: "File path provided but file does not exist"
+    recovery: "Report the error to the user. Do not proceed with empty content."
+  artifact_missing:
+    cause: "A prior pass artifact path was expected but the file does not exist"
+    recovery: "Re-dispatch the prior pass worker. Do not proceed to the next pass without the artifact."
