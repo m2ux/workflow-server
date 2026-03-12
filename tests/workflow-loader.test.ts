@@ -33,7 +33,7 @@ describe('workflow-loader', () => {
       
       expect(workPackage).toBeDefined();
       expect(workPackage?.title).toBe('Work Package Implementation Workflow');
-      expect(workPackage?.version).toBe('3.3.0');
+      expect(workPackage?.version).toBe('3.4.0');
     });
   });
 
