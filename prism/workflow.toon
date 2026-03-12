@@ -1,0 +1,114 @@
+workflow "prism" v1.3.0:
+  title: "Structural Analysis Prism Workflow"
+  description: """
+    Apply cognitive lenses to code or text through isolated sub-agent passes. 
+    Each pass runs in a fresh context window to guarantee analytical independence — 
+    particularly critical for the adversarial pass which must genuinely challenge 
+    the structural analysis without being biased by having generated it. 
+    Supports three modes: single-pass L12, 3-pass Full Prism 
+    (structural → adversarial → synthesis), and multi-lens portfolio analysis.
+  """
+  author: "m2ux"
+  tags: ["analysis", "prism", "structural"]
+
+  rules:
+    # Core workflow execution semantics
+    - "ISOLATION MODEL: Each analytical pass MUST be dispatched to a FRESH sub-agent (do NOT use Task resume). The adversarial pass must never share context with the structural pass — it receives only the textual output, not the generation history. This is the core invariant of the prism workflow."
+    
+    - "EXECUTION MODEL: This workflow uses an orchestrator with disposable workers. The orchestrator loads the workflow, manages transitions, captures pass outputs, and forwards them as text input to subsequent passes. Workers are NOT resumed — each pass gets a new worker."
+    
+    - "ORCHESTRATOR DISCIPLINE: The orchestrator coordinates but MUST NOT execute lens operations, generate analysis, or produce findings. All analytical work is delegated to isolated workers."
+    
+    - "AUTOMATIC TRANSITIONS: After each pass completes, the orchestrator captures the output and immediately dispatches the next pass without user confirmation."
+    
+    - "OUTPUT FORWARDING: The orchestrator captures the full text output from each pass and includes it verbatim in the next pass's prompt. Summarizing between passes loses evidence the adversary needs."
+    
+    - "LENS LOADING: Workers load lens prompts from prism workflow resources via get_resource. The orchestrator tells the worker which resource index to load — it does not load or forward the lens itself."
+    
+    - "FULLY AUTOMATED: This workflow has no user checkpoints. The only user interaction is providing the initial input (code path, text, pipeline mode)."
+    
+    # CRITICAL: File operations discipline (prevents stalls from permission deferral)
+    - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission or deferring to the user."
+    
+    - "NO PERMISSION QUESTIONS: Workers must NEVER ask 'Would you like me to save this?' or 'Can I write to this directory?' or similar permission-deferral questions. These questions create workflow stalls. Write artifacts immediately and report completion."
+    
+    - "OPERATIONAL DIRECTIVES: Orchestrators MUST include explicit 'OPERATIONAL DIRECTIVES' section in Task prompts to sub-agents. Directives specify: (a) target file paths, (b) 'Write immediately' timing requirement, (c) verification reporting format. Workers must follow these directives without deferral."
+    
+    - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '🔴 BLOCKER: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
+    
+    - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (✓ or ✗). This confirms successful completion and prevents silent write failures."
+
+  variables:
+    target:
+      type: string
+      description: "What to analyze — a file path, directory path, inline text, question, or concept"
+      required: true
+    
+    target_type:
+      type: string
+      description: "Whether the input is 'code' or 'general' (determines which lens set to use)"
+      default: "code"
+    
+    pipeline_mode:
+      type: string
+      description: "Analysis mode: 'single' (L12), 'full-prism' (3-pass), or 'portfolio' (multiple lenses)"
+      default: "single"
+    
+    output_path:
+      type: string
+      description: "Directory to write analysis artifacts"
+      default: "."
+    
+    selected_lenses:
+      type: array
+      description: "For portfolio mode: array of lens names"
+    
+    analysis_focus:
+      type: string
+      description: "Optional focus area to guide the analysis"
+    
+    analysis_units:
+      type: array
+      description: "Ordered list of analysis units (for multi-unit scopes)"
+    
+    current_unit:
+      type: object
+      description: "Current analysis unit during iteration loop"
+    
+    structural_output_path:
+      type: string
+      description: "File path to structural pass artifact for current unit"
+    
+    adversarial_output_path:
+      type: string
+      description: "File path to adversarial pass artifact for current unit"
+    
+    synthesis_output_path:
+      type: string
+      description: "File path to synthesis pass artifact for current unit"
+    
+    portfolio_output_paths:
+      type: object
+      description: "Map of lens name → file path for portfolio mode artifacts"
+    
+    all_artifact_paths:
+      type: array
+      description: "Accumulated list of all artifact paths across all units"
+
+  artifacts:
+    analysis:
+      path: "{output_path}"
+      gitignored: false
+
+  initialActivity: "select-mode"
+
+  # Activities are defined in separate activity files in ./activities/
+  # See: select-mode.toon, structural-pass.toon, adversarial-pass.toon, 
+  #      synthesis-pass.toon, deliver-result.toon
+
+transitions:
+  # Transitions are defined within activity definitions
+  # select-mode → structural-pass (automatic)
+  # structural-pass → adversarial-pass (if full-prism) or deliver-result (else)
+  # adversarial-pass → synthesis-pass (automatic)
+  # synthesis-pass → deliver-result (automatic)
