@@ -24,7 +24,9 @@ The consequence is that users lose control of their workflow at the moments that
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix adds a server-side validation step that independently checks whether the AI worker actually paused at every required decision point before the orchestrator accepts the work as complete. Today, the orchestrator relies on the worker to self-report its checkpoint interactions, and it accepts those reports without verification. The new validation tool cross-references the worker's report against the activity definition's list of required blocking checkpoints and rejects the result if any are missing — forcing the worker to go back and present the skipped decisions to the user.
+
+In addition to the server-side check, the orchestrator and worker prompt instructions are hardened to reduce the frequency of checkpoint bypasses in the first place. The orchestrator now explicitly lists which checkpoints are blocking when it dispatches work, giving the worker a clear, machine-readable inventory of where it must stop. The worker's completion output now requires explicit checkpoint coverage data, making it structurally harder to claim "done" without having yielded at the required points. Together, these three layers — server validation, orchestrator enumeration, and worker output constraints — form a defense-in-depth strategy where each layer independently reduces the risk of users being locked out of their workflow decisions.
 
 ---
 
@@ -34,14 +36,14 @@ The consequence is that users lose control of their workflow at the moments that
 |---|------|-------------|----------|--------|
 | 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | [Comprehension artifact](../../comprehension/orchestration.md) | Persistent codebase knowledge | 20-45m | ⬚ Pending |
+| — | [Comprehension artifact](../../comprehension/orchestration.md) | Persistent codebase knowledge | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
@@ -58,4 +60,4 @@ The consequence is that users lose control of their workflow at the moments that
 
 ---
 
-**Status:** Ready for planning
+**Status:** Planning complete — ready for implementation

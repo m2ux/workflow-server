@@ -1,9 +1,9 @@
 # Orchestration — Comprehension Artifact
 
-> **Last updated**: 2026-03-12
+> **Last updated**: 2026-03-12 (second pass — verified and augmented)
 > **Work packages**: [#51 Checkpoint Enforcement Reliability](../planning/2026-03-12-checkpoint-enforcement-reliability/README.md)
-> **Coverage**: Workflow server architecture, orchestrator/worker execution model, checkpoint enforcement chain, schema infrastructure
-> **Related artifacts**: None (first comprehension pass)
+> **Coverage**: Workflow server architecture, orchestrator/worker execution model, checkpoint enforcement chain, schema infrastructure, validation surface analysis
+> **Related artifacts**: [Assumptions Log](../planning/2026-03-12-checkpoint-enforcement-reliability/01-assumptions-log.md)
 
 ## Architecture Overview
 
@@ -384,6 +384,50 @@ Three design paths were implicitly rejected:
 3. **Structured prerequisite conditions**: Using `ConditionSchema` for checkpoint prerequisites instead of free-text strings. This would allow machine evaluation of prerequisites, enabling the orchestrator to programmatically determine which checkpoints are applicable. Rejected in favor of human-readable strings. The visible problem this avoids: verbose condition syntax in TOON files. The invisible problem it creates: the orchestrator cannot validate checkpoint coverage without parsing natural language.
 
 **Cross-lens synthesis**: Both lenses converge on the same structural gap: the system relies on LLM behavioral compliance for a guarantee that requires structural enforcement. The pedagogy lens reveals this as a transferred assumption from simpler tool-calling patterns. The rejected-paths lens reveals that the alternatives (state tracking, decomposition, structured conditions) were avoided for simplicity — but that simplicity has a cost that manifests as the checkpoint enforcement problem.
+
+## Validation Surface Analysis (Second Pass — 2026-03-12)
+
+This section identifies the specific code touch points relevant to implementing checkpoint enforcement, verified against all 29 source files.
+
+### Enforcement Chain Gaps
+
+The enforcement chain for checkpoint compliance has three layers, each with a specific gap:
+
+1. **Server layer** (`src/tools/workflow-tools.ts`): The `get_workflow_activity` tool returns the full activity definition including checkpoints, but provides no validation or summary of which checkpoints are blocking. There is no `validate_activity_completion` tool. The server has no session state and no middleware hooks.
+
+2. **Skill layer** (`workflows/meta/skills/`):
+   - `04-orchestrate-workflow.toon` (v2.0.0): `process-result` step 4 describes validation in prose but the orchestrator LLM has no structural mechanism to perform it. The validation instruction competes with 5 other `process-result` steps and 8 protocol phases for context budget.
+   - `05-execute-activity.toon` (v2.0.0): `yield-checkpoint` instructions are clear ("NEVER auto-resolve a blocking checkpoint") but the `report-completion` step does not require the worker to declare which blocking checkpoints were applicable and yielded at.
+
+3. **Schema layer** (`src/schema/`): The data model supports enforcement — `CheckpointSchema` has `required`/`blocking` flags, `WorkflowStateSchema` has `checkpointResponses` — but no code connects these for validation. The `evaluateCondition()` function in `condition.schema.ts` is unused for prerequisite evaluation because prerequisites are strings, not `Condition` objects.
+
+### Tool Registration Pattern (Implementation Reference)
+
+Tool registration in `server.ts` follows this pattern:
+```
+registerWorkflowTools(server, config) → server.tool(name, description, zodSchema, withAuditLog(name, handler))
+```
+
+The `withAuditLog` wrapper (in `logging.ts`) is a higher-order function that wraps each handler for audit logging. This same pattern can be used to add pre/post-validation wrappers without modifying the MCP SDK. A new tool can be registered alongside existing ones with no infrastructure changes.
+
+### Existing Helper Functions (Implementation Reference)
+
+`workflow-loader.ts` exports reusable helpers:
+- `getActivity(workflow, activityId)` → returns `Activity | undefined` — provides access to checkpoints
+- `getCheckpoint(workflow, activityId, checkpointId)` → returns `Checkpoint | undefined`
+- `getValidTransitions(workflow, fromActivityId)` → returns `string[]`
+- `validateTransition(workflow, from, to)` → returns `{ valid, reason? }`
+
+These can serve as building blocks for a `getBlockingCheckpoints()` helper without new type definitions (the `Checkpoint` type already has `required`, `blocking`, and `prerequisite` fields).
+
+### Skill Schema as Behavioral Contract
+
+`SkillSchema` (in `skill.schema.ts`) defines a behavioral contract with three enforcement-relevant components:
+- `protocol`: Step-by-step instructions (keyed phases, each with ordered bullets) — this is where yield instructions live
+- `rules`: Name-value pairs (e.g., `checkpoint-yield: "All blocking checkpoints MUST cause execution to yield"`) — these are behavioral constraints
+- `output`: Structured result definitions with named components — this defines what the worker reports back
+
+The skill's `output` definitions for `execute-activity` include both `activity-complete` and `checkpoint-pending` result types with specific component lists. However, these are descriptive, not enforced — the worker can return any shape. Adding a required `blocking_checkpoints_applicable` field to the `activity-complete` output definition would signal to the worker (via the skill contract) that it must enumerate applicable blocking checkpoints in its result.
 
 ---
 *This artifact is part of a persistent knowledge base. It is augmented across successive work packages to build cumulative codebase understanding.*
