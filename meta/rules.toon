@@ -170,14 +170,14 @@ sections[15]:
     title: Orchestrator-Worker Execution Model
     priority: critical
     rules[8]:
-      - "Workflows that define an orchestrator/worker execution model MUST be executed using two sub-agents: an orchestrator and a persistent worker"
-      - "The orchestrator loads the workflow via get_workflow (receiving the schema preamble), manages transitions, evaluates conditions, and tracks state. It MUST NOT execute activity steps, write code, review code, or produce artifacts."
-      - "The worker self-bootstraps each activity from get_workflow_activity and get_skill, executes steps, handles checkpoints with the user, and reports structured results (variables_changed, checkpoints_responded, artifacts_produced, steps_completed) back to the orchestrator."
+      - "Workflows that define an orchestrator/worker execution model MUST be executed with the receiving agent acting AS the orchestrator (inline, NOT as a sub-agent) and dispatching a persistent worker sub-agent. The orchestrator role runs at the top-level conversation so that AskQuestion calls render directly to the user. Spawning the orchestrator as a sub-agent is forbidden — sub-agent AskQuestion calls do not surface question bodies to the user, only a generic permission dialog."
+      - "The orchestrator (the top-level agent) loads the workflow via get_workflow (receiving the schema preamble), manages transitions, evaluates conditions, and tracks state. It MUST NOT execute activity steps, write code, review code, or produce artifacts."
+      - "The worker self-bootstraps each activity from get_workflow_activity and get_skill, executes steps, yields at blocking checkpoints (returning checkpoint_pending to the orchestrator), and reports structured results (variables_changed, checkpoints_responded, artifacts_produced, steps_completed) back to the orchestrator."
       - "The worker MUST be resumed (not re-created) for each successive activity using the Task tool's resume parameter. This preserves accumulated codebase understanding and implementation context across the entire workflow."
       - "All git operations (branch, commit, push, PR) MUST be performed inside the target_path directory specified by the workflow, not in the parent repo."
       - "Check workflow.rules for the EXECUTION MODEL rule to determine whether a workflow uses this pattern. If absent, execute the workflow directly without the orchestrator/worker split."
       - "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation."
-      - "USER INTERACTION BOUNDARY: The user interacts with the workflow ONLY through checkpoints defined within activities. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
+      - "USER INTERACTION BOUNDARY: The user interacts with the workflow ONLY through checkpoints defined within activities. The orchestrator presents checkpoints via AskQuestion at the top level. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
   - id: build-commands
     title: Build Command Priority
     priority: high
