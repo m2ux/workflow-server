@@ -7,7 +7,6 @@ description: "Single-pass L12 structural analysis on code. Loads the L12 lens pr
 inputs[3]:
   - id: code-content
     description: "The code to analyze. Can be a file path (agent reads it), a diff, or inline code."
-    required: true
   - id: output-path
     description: "Directory to write the analysis artifact. Defaults to current working directory."
     required: false

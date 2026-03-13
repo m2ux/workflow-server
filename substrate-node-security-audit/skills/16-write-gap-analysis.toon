@@ -5,7 +5,6 @@ capability: Produce the gap analysis report comparing AI audit findings against 
 inputs[1]:
   - id: reference-report-path
     description: "Path to the reference report artifact."
-    required: true
 
 output[1]:
   - id: gap-analysis

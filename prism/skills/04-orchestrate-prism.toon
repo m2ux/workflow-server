@@ -7,7 +7,6 @@ description: "Coordination skill for the prism workflow orchestrator. Dispatches
 inputs[5]:
   - id: target-content
     description: "The code or text to analyze — file path or inline content"
-    required: true
   - id: target-type
     description: "Whether the input is 'code' or 'general'"
     required: false

@@ -7,10 +7,8 @@ description: "Cross-cutting skill that closes the gap between assumption collect
 inputs[3]:
   - id: assumptions_log_path
     description: "Path to the current assumptions-log.md"
-    required: true
   - id: target_path
     description: "Path to the codebase to analyze"
-    required: true
   - id: comprehension_artifact_path
     description: "Path to existing comprehension artifact to augment with findings. If absent, findings are recorded only in the assumptions log."
     required: false

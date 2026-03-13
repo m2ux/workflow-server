@@ -10,7 +10,6 @@ inputs[2]:
     required: false
   - id: issue_title
     description: "Issue title for deriving initiative name"
-    required: true
 
 protocol:
   create-folder[2]:

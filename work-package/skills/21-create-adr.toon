@@ -7,10 +7,8 @@ description: "Produces an ADR at .engineering/artifacts/adr/ documenting the arc
 inputs[3]:
   - id: complexity
     description: "Problem complexity from design-philosophy (simple|moderate|complex)"
-    required: true
   - id: design-philosophy-doc
     description: "Design philosophy artifact with rationale and alternatives"
-    required: true
   - id: planning-folder-path
     description: "Path to planning folder for context"
     required: false

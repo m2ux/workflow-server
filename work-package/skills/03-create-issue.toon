@@ -7,13 +7,10 @@ description: "Atomic issue creation and verification capability. Routes to GitHu
 inputs[3]:
   - id: issue-platform
     description: "Selected platform for issue creation (github or jira). Set by platform-selection checkpoint."
-    required: true
   - id: issue-type
     description: "Type of issue (feature, bug, task, enhancement, epic). Set by issue-type-selection checkpoint."
-    required: true
   - id: target-submodule
     description: "Target submodule for the work package (e.g., midnight-node, midnight-ledger)"
-    required: true
 
 protocol:
   verify-existing-issue[4]:

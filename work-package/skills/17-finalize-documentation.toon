@@ -7,16 +7,13 @@ description: "Handles the finalization of all documentation after implementation
 inputs[4]:
   - id: planning_folder_path
     description: "Path to planning folder containing test plan and artifacts"
-    required: true
   - id: adr_path
     description: "Path to ADR if one was created for this work package"
     required: false
   - id: test_plan_path
     description: "Path to test plan artifact"
-    required: true
   - id: pr_number
     description: "PR number for cross-referencing"
-    required: true
 
 protocol:
   update-adr[2]:

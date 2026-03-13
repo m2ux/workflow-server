@@ -7,13 +7,10 @@ description: "A reusable skill for systematic pattern-based searching. Given a p
 inputs[4]:
   - id: resource-id
     description: "Resource containing the pattern catalog (e.g., '05-static-analysis-patterns')"
-    required: true
   - id: catalog-section
     description: "Section within the resource to execute (e.g., 'Grep Patterns', 'Mechanical Checks')"
-    required: true
   - id: scope
     description: "Codebase paths to search against"
-    required: true
   - id: exclusions
     description: "Paths or file patterns to exclude (e.g., test, mock, bench files)"
     required: false

@@ -7,10 +7,8 @@ description: "A reusable skill for initializing an audit or review session again
 inputs[2]:
   - id: user-request
     description: "Target specification (component, revision, scope)."
-    required: true
   - id: workspace-root
     description: "Path to the repository root"
-    required: true
 
 protocol:
   extract-target[1]:

@@ -7,10 +7,8 @@ description: "Design the implementation approach and produce work-package-plan.m
 inputs[4]:
   - id: design-philosophy
     description: "Design philosophy artifact with problem classification and workflow path"
-    required: true
   - id: requirements
     description: "Elicited requirements from elicitation activity"
-    required: true
   - id: analysis-findings
     description: "Implementation analysis findings (baselines, gaps)"
     required: false

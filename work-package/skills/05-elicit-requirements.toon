@@ -10,10 +10,8 @@ inputs[3]:
     required: false
   - id: issue_platform
     description: "Platform where issue lives (github or jira) — determines if assumptions go to Jira"
-    required: true
   - id: issue_number
     description: "Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)"
-    required: true
 
 protocol:
   prompt-transcript[2]:

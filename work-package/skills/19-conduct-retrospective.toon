@@ -7,10 +7,8 @@ description: "Reflects on the completed work package: what went well, what could
 inputs[2]:
   - id: planning-folder-path
     description: "Path to planning folder for context"
-    required: true
   - id: pr-number
     description: "PR number for status checking"
-    required: true
 
 protocol:
   capture-history[2]:

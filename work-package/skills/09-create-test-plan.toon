@@ -7,10 +7,8 @@ description: "Define what to test, how to test it, and what constitutes passing.
 inputs[2]:
   - id: requirements
     description: "Elicited requirements with success criteria"
-    required: true
   - id: plan-tasks
     description: "Task breakdown from create-plan skill"
-    required: true
 
 protocol:
   load-guidance[1]:

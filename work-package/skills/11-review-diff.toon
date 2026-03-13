@@ -7,10 +7,8 @@ description: "This skill serves the post-impl-review activity. It handles: runni
 inputs[2]:
   - id: branch_name
     description: "Feature branch name containing changes to review"
-    required: true
   - id: planning_folder_path
     description: "Path to planning folder for artifact output"
-    required: true
 
 protocol:
   sync-branch[2]:

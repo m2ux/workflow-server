@@ -7,7 +7,6 @@ description: "Systematic workflow file discovery and classification. Enumerates 
 inputs[1]:
   - id: target-submodules
     description: "List of submodule paths to inventory"
-    required: true
 
 protocol:
   discover-files[2]:

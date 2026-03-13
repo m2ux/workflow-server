@@ -7,10 +7,8 @@ description: "Runs the full validation suite: unit/integration/e2e tests, build 
 inputs[2]:
   - id: project_type
     description: "Project type (rust-substrate, other) — determines commands"
-    required: true
   - id: target_submodule
     description: "Target submodule path (e.g., midnight-node, midnight-ledger)"
-    required: true
 
 protocol:
   run-tests[3]:

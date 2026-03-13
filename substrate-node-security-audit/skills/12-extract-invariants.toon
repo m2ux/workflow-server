@@ -7,10 +7,8 @@ description: "A reusable analysis skill for formal invariant extraction from sou
 inputs[2]:
   - id: function-registry
     description: "Registry of priority functions to analyze (from build-function-registry skill output)"
-    required: true
   - id: source-files
     description: "Source files containing the functions"
-    required: true
 
 protocol:
   extract-per-function[1]:

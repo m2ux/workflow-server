@@ -7,10 +7,8 @@ description: "Top-level orchestration skill for the CI/CD pipeline security audi
 inputs[2]:
   - id: target-submodules
     description: "Comma-separated submodule paths or 'all'"
-    required: true
   - id: planning-folder
     description: "Path to the planning folder for artifacts"
-    required: true
 
 protocol:
   phase-1-setup[3]:

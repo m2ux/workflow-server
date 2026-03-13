@@ -7,10 +7,8 @@ description: "Core detection skill for the CI/CD pipeline security audit. Applie
 inputs[3]:
   - id: workflow-files
     description: "List of workflow file paths to scan"
-    required: true
   - id: reconnaissance-data
     description: "Pre-classified trigger, permission, and checkout data from reconnaissance"
-    required: true
   - id: ai-config-inventory
     description: "AI configuration files found in the submodule"
     required: false

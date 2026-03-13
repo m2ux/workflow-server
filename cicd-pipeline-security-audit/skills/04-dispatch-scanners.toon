@@ -7,10 +7,8 @@ description: "Handles the composition and concurrent dispatch of scanner sub-age
 inputs[2]:
   - id: scanner-assignments
     description: "Agent-to-submodule mapping from reconnaissance"
-    required: true
   - id: reconnaissance-data
     description: "Per-workflow classification data from reconnaissance"
-    required: true
 
 protocol:
   compose-scanner-prompts[1]:

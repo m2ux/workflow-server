@@ -7,13 +7,10 @@ description: "Activity execution skill. Self-loads the activity definition and p
 inputs[3]:
   - id: activity-id
     description: "ID of the activity to execute"
-    required: true
   - id: workflow-id
     description: "Workflow ID for workflow-server calls (e.g., 'work-package')"
-    required: true
   - id: state-variables
     description: "Current workflow state variables"
-    required: true
 
 protocol:
   bootstrap-rules[1]:

@@ -10,10 +10,8 @@ resources[1]:
 inputs[5]:
   - id: agent-results
     description: "Collected structured outputs from sub-agents"
-    required: true
   - id: expected-outputs
     description: "Per-agent list of required tables, coverage criteria, and completeness checks"
-    required: true
   - id: file-inventory
     description: "List of files that must be covered (for coverage gate verification)"
     required: false

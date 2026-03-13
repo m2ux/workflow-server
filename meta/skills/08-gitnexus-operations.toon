@@ -7,10 +7,8 @@ description: "This skill guides agents through the correct use of GitNexus MCP t
 inputs[2]:
   - id: task-type
     description: "The type of codebase task: explore, impact-analysis, debug, or refactor"
-    required: true
   - id: target
     description: "The symbol, concept, error message, or area to investigate"
-    required: true
 
 protocol:
   verify-index[3]:
