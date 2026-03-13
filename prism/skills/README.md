@@ -25,7 +25,7 @@ Single-pass L12 structural analysis. Loads the L12 lens prompt and applies it to
 
 ```mermaid
 graph TD
-    startNode(["Start"]) --> loadLens["Load L12 lens resource (00 or 03)"]
+    startNode(["Start"]) --> loadLens["Load L12 lens resource (00)"]
     loadLens --> readTarget{"Input is file path?"}
     readTarget -->|"yes"| readFile["Read file content"]
     readTarget -->|"no"| useDirect["Use inline content"]
@@ -50,7 +50,7 @@ graph TD
 
 | Step Key | Action |
 |----------|--------|
-| `load-lens` | Load resource `00` (code) or `03` (general) via `get_resource` |
+| `load-lens` | Load resource `00` via `get_resource` (works for all target types) |
 | `read-target` | Read file or accept inline code; note optional analysis focus |
 | `execute-lens` | Execute every L12 operation: claim → dialectic → concealment → improvements → invariant → inversion → conservation law → meta-law → bug table |
 | `write-artifact` | Write analysis to `{output-path}/structural-analysis.md` |
@@ -82,7 +82,7 @@ graph TD
 
 | Step Key | Action |
 |----------|--------|
-| `load-lens` | Load lens resource by index (00-05) via `get_resource("prism", index)` |
+| `load-lens` | Load lens resource by index (00-02) via `get_resource("prism", index)` |
 | `read-prior-artifacts` | Read prior pass artifacts from filesystem; label as ANALYSIS 1 / ANALYSIS 2 |
 | `apply-lens` | Apply lens operations to content; use prior artifacts as context if provided |
 | `write-artifact` | Write analysis to `{output-path}/{artifact-filename}` |
@@ -198,7 +198,7 @@ graph TD
 | Design review | claim + rejected-paths | 07, 09 |
 | Codebase comprehension | pedagogy + rejected-paths | 06, 09 |
 | Pre-commit validation | L12 pipeline | 00, 01, 02 |
-| Planning review | L12 general | 03 |
+| Planning review | L12 | 00 |
 | Maintainability assessment | degradation + contract | 10, 11 |
 | Assumption validation | claim + scarcity | 07, 08 |
 | Security review | L12 pipeline | 00, 01, 02 |

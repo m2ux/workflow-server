@@ -8,7 +8,7 @@ inputs[5]:
   - id: target-content
     description: "The code or text to analyze (provided inline by the orchestrator, or a file path to read)"
   - id: lens-resource-index
-    description: "Resource index to load from the prism workflow (e.g., 00 for code structural, 01 for code adversarial)"
+    description: "Resource index to load from the prism workflow (00 for structural, 01 for adversarial, 02 for synthesis)"
   - id: prior-artifact-paths
     description: "File paths to prior pass artifacts. Adversarial receives [structural-analysis.md]. Synthesis receives [structural-analysis.md, adversarial-analysis.md]. Empty for the structural pass."
     required: false
@@ -31,7 +31,7 @@ protocol:
     - "If prior artifacts were read, include them as context as instructed by the lens (adversarial lenses reference 'the structural analysis'; synthesis lenses reference 'ANALYSIS 1' and 'ANALYSIS 2')"
     - "Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain."
   write-artifact[3]:
-    - "Determine artifact filename from the pass type: structural-analysis.md (index 00/03), adversarial-analysis.md (index 01/04), synthesis.md (index 02/05)"
+    - "Determine artifact filename from the pass type: structural-analysis.md (index 00), adversarial-analysis.md (index 01), synthesis.md (index 02)"
     - "Write the complete analysis to {output-path}/{artifact-filename}"
     - "Return the full artifact path in the output"
   format-output[4]:
@@ -57,13 +57,10 @@ rules:
   read-not-receive: "Prior pass output MUST be read from the filesystem via the artifact path. The orchestrator provides paths, not inline content, to keep prompts focused and artifacts as the source of truth."
   persist-output: "The analysis MUST be written to the filesystem. Return the artifact path to the orchestrator so subsequent passes can read it."
 
-resources[6]:
+resources[3]:
   - "00"
   - "01"
   - "02"
-  - "03"
-  - "04"
-  - "05"
 
 tools:
   get_resource:
@@ -85,7 +82,7 @@ tools:
 errors:
   lens_not_loaded:
     cause: "get_resource returned an error for the given index"
-    recovery: "Report the error. Valid indices: 00-02 (code), 03-05 (general)."
+    recovery: "Report the error. Valid indices: 00-02 (all target types)."
   prior_artifact_not_found:
     cause: "A prior pass artifact path was provided but the file does not exist"
     recovery: "Report the missing artifact. The orchestrator may need to re-dispatch the prior pass."
