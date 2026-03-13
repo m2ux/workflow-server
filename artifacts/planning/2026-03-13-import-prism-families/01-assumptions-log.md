@@ -59,15 +59,23 @@
 | A-026 | The upstream OPTIMAL_PRISM_MODEL preferences (deep_scan→opus, rec→opus) are still valid for current model versions | Source Relevance | stakeholder-dependent | Open | Model preferences may change with new model releases. The calibration_date in prism metadata is 2026-03-11. |
 | A-027 | The synthesis input format (`## ROLE\n\n{output}`) from prism.py is compatible with how the workflow should construct synthesis context from artifact files | Pattern Applicability | code-analyzable | Validated | The behavioral_synthesis.md prompt expects labeled sections. prism.py constructs these as `## {ROLE}\n\n{output}` (lines 5210-5211). The workflow orchestrator can construct the same format by reading per-lens artifact files and prepending role labels. |
 
+## Implementation-Analysis-Phase Assumptions
+
+| ID | Assumption | Category | Resolvability | Status | Evidence |
+|----|-----------|----------|---------------|--------|----------|
+| A-028 | Adversarial-pass and synthesis-pass activities do not need modification — they filter on `pipeline_mode == "full-prism"` and naturally skip behavioral units | Current Behavior | code-analyzable | Validated | adversarial-pass.toon lines 24-26: condition `current_unit.pipeline_mode == "full-prism"`. synthesis-pass.toon lines 24-26: same condition. Behavioral units will be skipped. |
+| A-029 | The existing portfolio dispatch pattern in structural-pass (parallel up to 4) can be adapted for behavioral lens dispatch | Current Behavior | code-analyzable | Validated | structural-pass.toon lines 58-84: portfolio conditional branch dispatches independent lenses in parallel. Behavioral pipeline has the same pattern (4 independent lenses). |
+| A-030 | Resource naming convention (`{NN}-{name}.md`) accommodates hyphenated names | Current Behavior | code-analyzable | Validated | Existing resource `09-rejected-paths.md` uses hyphens. New names like `12-deep-scan.md` follow the same pattern. |
+
 ## Summary
 
 | Status | Count |
 |--------|-------|
-| Validated | 17 |
+| Validated | 20 |
 | Partially Validated | 2 |
 | Invalidated | 0 |
 | Open (stakeholder-dependent) | 7 |
-| **Total** | **27** |
+| **Total** | **30** |
 
 ### Remaining Open Assumptions
 
