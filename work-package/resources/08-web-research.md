@@ -195,18 +195,6 @@ Found some articles about React. It's a popular framework.
 
 ---
 
-## Integration with Workflow
-
-This guide supports the web research step of the research activity:
-
-1. **After KB research** → Begin web research
-2. **Search external sources** → Focus on gaps from KB research
-3. **Document findings** → Append to research document
-4. **Present checkpoint** → Get user confirmation
-5. **Proceed to planning** → Use combined findings
-
----
-
 ## Related Guides
 
 - [Knowledge Base Research Guide](07-knowledge-base-research.md)
