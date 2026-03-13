@@ -1,18 +1,26 @@
 # Structural Analysis Prism Workflow
 
-> v1.4.0 — Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence. Supports four modes: single-pass L12, 3-pass Full Prism, multi-lens portfolio, and 4+1 behavioral pipeline.
+> v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 30 lenses, isolated multi-pass pipelines.
 
 ---
 
 ## Overview
 
-The Prism Workflow dispatches analytical lenses as isolated sub-agent passes against a target (code, document, or proposal). Isolation is the core invariant — the adversarial pass receives only the textual output of the structural pass, never the generation history.
+When you ask a model to "review this code," it produces a generic, surface-level response. Prisms are short structured prompts (70–330 words) that force the model through a specific sequence of analytical operations — each one targeting a class of problem that free-form analysis reliably misses. The results are qualitatively different: conservation laws instead of style suggestions, quantified bug tables instead of vague warnings.
 
-**Use this workflow when:**
-- Performing deep structural analysis of code or text
-- Running self-correcting analysis (structural → adversarial → synthesis)
-- Applying multiple complementary lenses for breadth
-- Analyzing error resilience, performance, evolution, and API surface as a behavioral pipeline
+**Why use this workflow instead of prompting directly?**
+
+- **Depth.** Each prism encodes a multi-step reasoning chain validated across hundreds of experiments. The L12 prism, for example, forces the model through claim → dialectic → concealment → improvement → invariant → inversion → conservation law → meta-law — producing findings that a single prompt never reaches.
+- **Independence.** The full-prism pipeline runs three passes in separate context windows. The adversarial pass has never seen the structural analysis being generated — it receives only the final text. This prevents the model from defending its own prior output, producing genuine self-correction.
+- **Breadth.** Portfolio mode runs multiple lenses that each ask a fundamentally different question about the same target. Research across real codebases confirms zero overlap between lenses — each finds properties the others are structurally blind to.
+- **Reproducibility.** The same prism on the same input produces consistent analytical depth regardless of how the conversation started or what else is in context.
+
+**Use this workflow when you want to:**
+- Find bugs, design flaws, or structural problems that surface-level review misses
+- Get a second opinion that genuinely challenges a prior analysis (full-prism mode)
+- Understand how code breaks, what it costs, how it changes, and where names lie (behavioral pipeline)
+- Apply multiple complementary perspectives to the same target (portfolio mode)
+- Analyze non-code artifacts — proposals, strategies, architectures — with the same rigour
 
 ---
 
