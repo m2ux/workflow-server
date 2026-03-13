@@ -8,14 +8,6 @@
 
 When you ask a model to "review this code," it produces a generic, surface-level response. Prisms are short structured prompts (70–330 words) that force the model through a specific sequence of analytical operations — each one targeting a class of problem that free-form analysis reliably misses. The results are qualitatively different: conservation laws instead of style suggestions, quantified bug tables instead of vague warnings.
 
-Two concepts are central to the analytical output:
-
-- **Conservation Law** — a named trade-off inherent to the problem space that cannot be eliminated, only relocated. Takes the form *A × B = constant*: improving one dimension necessarily degrades the other. This gives the analysis a convergence point rather than open-ended observations, identifying the fundamental constraint governing the system under review. For example, an analysis might find that *flexibility × safety = constant* — making an API more flexible necessarily reduces type safety, and vice versa.
-
-- **Meta-Law** — discovered by applying the same diagnostic to the conservation law itself. Where the conservation law names *what* trade-off governs the system, the meta-law reveals what the conservation law conceals and predicts concrete, testable consequences the initial analysis structurally cannot see. This recursive self-diagnosis is the mechanism that separates L12-depth analysis from standard code review — it forces the model past its own analytical blind spots.
-
-Together these produce findings anchored in provable structural constraints rather than subjective opinion. The adversarial and synthesis passes in the full-prism pipeline then stress-test and reconcile these findings, catching cases where the conservation law itself is wrong or incomplete.
-
 **Why use this workflow instead of prompting directly?**
 
 - **Depth.** Each prism encodes a multi-step reasoning chain validated across hundreds of experiments. The L12 prism, for example, forces the model through claim → dialectic → concealment → improvement → invariant → inversion → conservation law → meta-law — producing findings that a single prompt never reaches.
@@ -29,6 +21,10 @@ Together these produce findings anchored in provable structural constraints rath
 - Understand how code breaks, what it costs, how it changes, and where names lie (behavioral pipeline)
 - Apply multiple complementary perspectives to the same target (portfolio mode)
 - Analyze non-code artifacts — proposals, strategies, architectures — with the same rigour
+
+## Concepts
+
+Definitions of the analytical [concepts](concept-lexicon.md) used within the Prism workflow, including: [conservation law](concept-lexicon.md#conservation-law), [meta-law](concept-lexicon.md#meta-law), [structural invariant](concept-lexicon.md#structural-invariant), [concealment mechanism](concept-lexicon.md#concealment-mechanism), and others.
 
 ---
 
