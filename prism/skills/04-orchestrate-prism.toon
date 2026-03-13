@@ -2,7 +2,7 @@ id: orchestrate-prism
 version: 1.1.0
 capability: Orchestrate the prism workflow with isolated sub-agent passes for analytical independence
 
-description: "Coordination skill for the prism workflow orchestrator. Dispatches each analytical pass to a FRESH sub-agent (never resumed) to guarantee context isolation. The adversarial pass must never share generation history with the structural pass. The orchestrator passes artifact paths between workers — each worker reads prior artifacts from the filesystem and writes its own artifact. Supports single-pass, full-prism (3-pass), and portfolio modes."
+description: "Coordination skill for the prism workflow orchestrator. Dispatches each analytical pass to a FRESH sub-agent (never resumed) to guarantee context isolation. The adversarial pass must never share generation history with the structural pass. The orchestrator passes artifact paths between workers — each worker reads prior artifacts from the filesystem and writes its own artifact. Supports single-pass, full-prism (3-pass), portfolio, and behavioral (4+1) modes."
 
 inputs[5]:
   - id: target-content
@@ -12,7 +12,7 @@ inputs[5]:
     required: false
     default: code
   - id: pipeline-mode
-    description: "Analysis mode: 'single', 'full-prism', or 'portfolio'"
+    description: "Analysis mode: 'single', 'full-prism', 'portfolio', or 'behavioral'"
     required: false
     default: single
   - id: output-path
@@ -31,11 +31,13 @@ protocol:
     - "If target_content is a file path, read the file and capture the full text as resolved_content"
     - "If target_content is inline text, use it directly as resolved_content"
     - "Ensure the output-path directory exists (create if needed)"
-  determine-lens-indices[4]:
+  determine-lens-indices[6]:
     - "Based on target_type and pipeline_mode, determine which resource indices to use"
-    - "Code structural=00, adversarial=01, synthesis=02"
-    - "General structural=03, adversarial=04, synthesis=05"
-    - "Portfolio: pedagogy=06, claim=07, scarcity=08, rejected-paths=09, degradation=10, contract=11"
+    - "L12 pipeline (all target types): structural=00, adversarial=01, synthesis=02"
+    - "Portfolio: pedagogy=06, claim=07, scarcity=08, rejected-paths=09, degradation=10, contract=11, deep-scan=12, sdl-trust=13, sdl-coupling=14, sdl-abstraction=15, rec=16, ident=17, 73w=18, error-resilience=19, optim=20, evolution=21, api-surface=22, evidence-cost=29, reachability=30, fidelity=31, state-audit=32"
+    - "Behavioral pipeline (code-only): error-resilience=19, optim=20, evolution=21, api-surface=22, behavioral-synthesis=23"
+    - "Domain-neutral variants (general targets in portfolio): error-resilience-neutral=24, api-surface-neutral=25, evolution-neutral=26"
+    - "Compressed variants (model-specific): error-resilience-compact=27, error-resilience-70w=28"
   dispatch-structural-pass[6]:
     - "Create a FRESH sub-agent using Task tool (subagent_type=generalPurpose, do NOT use resume)"
     - "Worker prompt must include: (1) the resolved_content, (2) the lens resource index to load, (3) the workflow_id 'prism' for get_resource calls, (4) the output-path to write its artifact, (5) instruction to load the lens via get_resource, execute every operation, and write to {output-path}/structural-analysis.md"
@@ -62,10 +64,24 @@ protocol:
     - "Portfolio workers can be dispatched in parallel (up to 4 concurrent) since they are independent"
     - "Capture all artifact paths in portfolio_output_paths keyed by lens name"
     - "After all complete, proceed to present-result with a cross-lens synthesis"
-  present-result[4]:
+  dispatch-behavioral-passes[6]:
+    - "For behavioral mode: dispatch 4 independent behavioral lens passes. Each is a FRESH sub-agent."
+    - "Pass 1 (ERRORS): resource 19 (error-resilience). Worker writes to {output-path}/behavioral-errors.md"
+    - "Pass 2 (COSTS): resource 20 (optim). Worker writes to {output-path}/behavioral-costs.md"
+    - "Pass 3 (CHANGES): resource 21 (evolution). Worker writes to {output-path}/behavioral-changes.md"
+    - "Pass 4 (PROMISES): resource 22 (api-surface). Worker writes to {output-path}/behavioral-promises.md"
+    - "All 4 passes are independent — they can be dispatched in parallel (up to 4 concurrent). Capture all 4 artifact paths in behavioral_output_paths."
+  dispatch-behavioral-synthesis[5]:
+    - "After all 4 behavioral passes complete, dispatch the synthesis pass to a FRESH sub-agent"
+    - "Worker prompt must include: (1) the resolved_content, (2) all 4 behavioral artifact paths with role labels (ERRORS, COSTS, CHANGES, PROMISES), (3) resource index 23 (behavioral-synthesis), (4) the output-path"
+    - "Worker reads each artifact and constructs labeled sections: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES"
+    - "Worker writes to {output-path}/behavioral-synthesis.md"
+    - "Capture behavioral_synthesis_output_path. Proceed to present-result."
+  present-result[5]:
     - "For single mode: read and present structural-analysis.md"
     - "For full-prism mode: read and present synthesis.md as the primary result. Note structural-analysis.md and adversarial-analysis.md as appendices."
     - "For portfolio mode: present each per-lens artifact followed by a cross-lens convergence/divergence summary"
+    - "For behavioral mode: read and present behavioral-synthesis.md as the primary result. Note behavioral-errors.md, behavioral-costs.md, behavioral-changes.md, behavioral-promises.md as appendices."
     - "Report all artifact paths to the caller"
 
 output[1]:
