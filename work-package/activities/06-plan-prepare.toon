@@ -16,7 +16,6 @@ skills:
     - reconcile-assumptions
 required: true
 estimatedTime: 20-45m
-artifactPrefix: "06"
 rules[1]:
   - "Planning protocol and domain rules are in the planning skill"
 steps[10]:

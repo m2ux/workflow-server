@@ -15,7 +15,6 @@ skills:
     - reconcile-assumptions
 required: true
 estimatedTime: 10-20m
-artifactPrefix: "05"
 rules[1]:
   - "Analysis protocol and domain rules are in the implementation-analysis skill"
 modeOverrides:
