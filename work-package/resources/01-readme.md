@@ -164,40 +164,6 @@ Consolidate external references (Jira ticket, parent epic, PR) into a single Lin
 
 ---
 
-## Status Transitions
-
-```
-Planning → Ready → In Progress → Complete
-              ↓
-           Blocked → In Progress
-              ↓
-           Cancelled
-```
-
-Update the status field as work progresses:
-
-| Status | When to Use |
-|--------|-------------|
-| **Planning** | Research and design in progress |
-| **Ready** | Planning complete, ready to implement |
-| **In Progress** | Implementation has started |
-| **Complete** | All tasks finished, PR merged |
-| **Blocked** | Cannot proceed (document reason) |
-| **Cancelled** | Work package abandoned |
-
----
-
-## Updating README.md
-
-Update this document at these points:
-
-1. **After planning complete** — Update status to Ready, fill in Progress table
-2. **After each task** — Update Progress table statuses
-3. **After completion** — Update status to Complete, add Revised date
-4. **When blocked** — Update status, add notes
-
----
-
 ## Quality Checklist
 
 - [ ] Title includes work package name and month/year

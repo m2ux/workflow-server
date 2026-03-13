@@ -39,6 +39,8 @@ rules:
   strategy-before-cases: "Define overall test strategy before writing individual test cases"
   link-to-requirements: "Every test case must trace to a requirement or acceptance criterion"
   cover-error-paths: "Test plans must include error paths, boundaries, and edge cases — not just happy paths"
+  lifecycle-phases: "Test plans have two phases: (1) Initial placeholder at PR creation — objectives only, no source links; (2) Finalized after implementation — hyperlinks to actual test source locations added by finalize-documentation skill."
+  skip-conditions: "Skip formal test plan for: simple bug fixes with obvious test cases, documentation-only changes, single-test changes, refactoring with existing coverage."
 
 resources[1]:
   - "11"

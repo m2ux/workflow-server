@@ -41,83 +41,6 @@ Before designing a solution, research the knowledge base using concept-rag MCP t
 
 Use concept-rag MCP tools to query the knowledge base, following the Activity → Skill → Tool model.
 
-### ⚠️ MANDATORY: Fetch Activities Resource First
-
-**At the start of any knowledge base research session, fetch the `concept-rag://activities` resource before making tool calls.**
-
-The activities resource provides:
-- **Activity matching** — Match the user's goal to an available activity
-- **Skill mapping** — Each activity links to a skill with a defined tool workflow
-- **Tool sequence** — The order and context to preserve between calls
-- **Proper answer synthesis** — How to combine results into coherent findings
-
-> **Note:** Fetch the activities resource once per research session. Follow the activity's skill throughout the session.
-
-**Communication rule:** Never narrate your search process to the user. Instead, synthesize answers directly and cite sources. The user wants findings, not a play-by-play of tool calls.
-
-### Activity-Based Research
-
-```
-User Goal → Activity (problem domain) → Skill (solution domain) → Tools
-```
-
-1. **Identify the activity** — What is the user trying to accomplish?
-2. **Follow the skill** — Each activity maps to a skill with a tool workflow
-3. **Execute tools** — Follow the skill's tool sequence
-4. **Synthesize answer** — Combine findings with citations
-
-> **Reference:** See `concept-rag://activities` for the activity index and linked skills.
-
----
-
-## Research Strategy
-
-### Step 0: Fetch Activities (MANDATORY)
-
-**Always start by fetching `concept-rag://activities`** to receive available activities:
-
-```
-Resource: concept-rag://activities
-```
-
-This returns the activity index with linked skills. Follow the matched activity's skill throughout your research session.
-
-### Step 1: Identify Activity
-
-Match the research goal to an available activity from the activities resource.
-
-### Step 2: Follow Skill Workflow
-
-Each activity maps to a skill with a defined tool workflow. The skill documentation shows:
-- Which tools to use
-- The order/iteration pattern
-- What context to preserve between calls
-- Expected output format
-
-### Step 3: Identify Key Concepts
-
-From results, note:
-- Recurring terminology
-- Referenced design patterns
-- Mentioned best practices
-- Cited sources or documents
-
-### Step 4: Extract Specific Guidance
-
-Use the skill's tools to find:
-- Implementation recommendations
-- Trade-off discussions
-- Warning signs or anti-patterns
-- Configuration guidelines
-
-### Step 5: Map to Work Package
-
-Connect findings to requirements:
-- Which patterns apply directly?
-- What modifications are needed?
-- What risks do sources mention?
-- What success metrics are suggested?
-
 ---
 
 ## Research Checklist
@@ -278,17 +201,6 @@ flush interval balances performance and durability for our use case.
 ### Caching
 We should probably use caching to make things faster.
 ```
-
----
-
-## Integration with Workflow
-
-This guide supports knowledge base research:
-
-1. **After requirements confirmed** → Begin KB research
-2. **Complete research** → Store in planning folder artifact
-3. **Present checkpoint** → Get user confirmation
-4. **Proceed to analysis** → Use findings to inform implementation analysis
 
 ---
 

@@ -70,44 +70,6 @@ modeOverrides:
 
 ---
 
-## Activating Review Mode
-
-### Detection Patterns
-
-Review mode is detected from user request patterns in the initial message:
-
-| Pattern | Example |
-|---------|---------|
-| "start review work package" | `Start a review work package for PR #123` |
-| "review pr" | `Review PR #456` |
-| "review existing implementation" | `Review the existing implementation in branch feature/xyz` |
-
-### Confirmation
-
-When review mode is detected, you'll be asked to confirm:
-
-```
-This appears to be a review of an existing PR. Is that correct?
-
-- [Yes, review existing PR] - Review mode activated
-- [No, new implementation] - Standard workflow
-```
-
-### Required Information
-
-After confirmation, provide the PR reference:
-
-```
-Please provide the PR to review (number or URL):
-
-Examples:
-- 123
-- #123
-- https://github.com/org/repo/pull/123
-```
-
----
-
 ## Workflow Adaptations
 
 ### Phase Differences

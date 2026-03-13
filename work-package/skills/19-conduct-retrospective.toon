@@ -14,11 +14,12 @@ protocol:
   capture-history[2]:
     - If metadata repository exists, capture session history
     - History is private — never committed to the repository
-  conduct-retrospective[4]:
-    - Conduct retrospective — what went well, what could improve, lessons learned
-    - Skip if trivial session
-    - Load resource 20 for retrospective guidance
-    - Create workflow-retrospective.md artifact in planning folder
+  conduct-retrospective[5]:
+    - "Count total user messages; separate checkpoint responses from non-checkpoint interactions (clarifications, corrections, process questions, frustration signals, feature requests, skip requests)"
+    - "Categorize non-checkpoint messages by signal type and map to specific workflow sections"
+    - "Identify root causes and determine pattern frequency across categories"
+    - "Formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases)"
+    - "Create workflow-retrospective.md using resource 20 template"
   update-status[2]:
     - After PR merged, update work package plan status
     - Record final outcome in planning artifacts
@@ -39,7 +40,7 @@ output[1]:
 rules:
   retrospective-honest: "Retrospective should be honest about what worked and what didn't — avoid generic positive statements"
   history-private: "Session history is private metadata — never committed to the repository"
-  skip-if-trivial: "Skip retrospective for trivial sessions that don't warrant reflection"
+  skip-if-trivial: "Skip retrospective if: only checkpoint responses occurred (no clarifications, corrections, or process questions), OR work package was trivial (<30 min, single task)."
 
 resources[1]:
   - "20"

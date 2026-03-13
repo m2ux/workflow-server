@@ -41,6 +41,7 @@ rules:
   complexity-gate: "Only create ADRs for moderate or complex implementations — simple changes do not warrant ADRs"
   alternatives-required: "Every ADR must document at least one alternative that was considered"
   status-proposed: "New ADRs are created with status Proposed — the finalize activity updates to Accepted"
+  post-implementation: "ADRs are created after all implementation tasks are complete and validation passes. They document actual architectural decisions, not planned ones. Status is set directly to Accepted since implementation is already done."
 
 tools:
   read_file:
