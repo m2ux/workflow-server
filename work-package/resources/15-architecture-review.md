@@ -92,31 +92,7 @@ Use this checklist to determine if a decision warrants an ADR:
 
 ## When to Create an ADR (Timing)
 
-**ADRs should be created AFTER implementation is complete, not before.**
-
-### Rationale
-
-Architectural decisions are not finalized until implementation is complete. During implementation, constraints are encountered that often require design changes:
-
-- Unexpected technical limitations
-- Performance characteristics that differ from expectations
-- Integration challenges with existing systems
-- Edge cases that require different approaches
-
-Creating an ADR before implementation risks documenting decisions that will change, leading to:
-- ADRs that don't reflect actual architecture
-- Confusion about whether the ADR or code is authoritative
-- Wasted effort updating ADRs during implementation
-
-### Workflow Integration
-
-ADRs are created after all implementation tasks are complete:
-
-1. Complete all implementation tasks
-2. Validate tests pass and build succeeds
-3. **Verify architectural significance** using the checklist above
-4. If significant: Create ADR documenting the **actual** architectural decisions made
-5. Set status to **Accepted** (since implementation is already complete)
+**ADRs should be created AFTER implementation is complete, not before.** Architectural decisions are not finalized until implementation constraints are encountered. Creating an ADR before implementation risks documenting decisions that will change.
 6. Commit ADR and proceed to validate activity
 
 ### Status for New ADRs

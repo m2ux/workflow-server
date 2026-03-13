@@ -361,23 +361,9 @@ Track remaining items before the PR can be merged:
 
 ---
 
-## PR Lifecycle
-
-### Draft PRs
-
-**Create PRs as drafts when:**
-- ADR needs review before implementation
-- Work is in progress
-- Seeking early feedback
-
-```bash
-# Create draft PR assigned to owner
-gh pr create --draft --assignee {GITHUB_USERNAME} --title "feat: Work Package Name" --body "..."
-```
-
 ### Initial PR (ADR-only)
 
-When creating a PR with just the ADR (before implementation):
+Template for a PR with just the ADR (before implementation):
 
 ```markdown
 ## Summary

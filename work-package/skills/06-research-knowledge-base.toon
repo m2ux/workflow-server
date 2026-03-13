@@ -14,10 +14,12 @@ protocol:
   load-resources[2]:
     - Load resource 07 (knowledge-base-research) and 08 (web-research) for guidance
     - Review requirements and problem_statement for research focus
-  search-knowledge-base[3]:
-    - Query concept-rag using broad_chunks_search, concept_search, catalog_search
-    - Find patterns, best practices, and relevant documentation
-    - Validate patterns across multiple documents
+  search-knowledge-base[5]:
+    - "Fetch concept-rag://activities resource to load activity index"
+    - Match research goal to an available activity from the index
+    - Follow the matched activity's skill workflow and tool sequence
+    - Identify key concepts, patterns, and specific guidance from results
+    - Map findings to work package requirements
   perform-web-research[3]:
     - Use WebSearch for current information and documentation
     - Cross-reference multiple sources for robustness
@@ -47,6 +49,9 @@ rules:
   validate-patterns: "Patterns should be validated across documents"
   map-to-needs: "Clear mapping to work package needs is essential"
   document-assumptions: "Assumptions about pattern applicability and synthesis should be documented"
+  fetch-activities-first: "MANDATORY: Fetch concept-rag://activities resource before making any concept-rag MCP tool calls. This provides activity matching, skill mapping, and tool sequence."
+  no-narration: "Never narrate the search process to the user. Synthesize answers directly and cite sources."
+  activity-driven: "Follow the Activity → Skill → Tool model: match research goal to a concept-rag activity, follow that activity's skill workflow, then synthesize findings."
 
 resources[2]:
   - "07"

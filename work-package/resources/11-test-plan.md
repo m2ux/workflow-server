@@ -26,23 +26,6 @@ Test plans are lightweight documents that accompany ADRs and PRs, providing stru
 
 ---
 
-## When to Write a Test Plan
-
-**Write a test plan when:**
-- Implementing a feature with multiple testable behaviors
-- Making changes that require regression testing
-- The ADR has specific "Confirmation" criteria to validate
-- Complex logic requires documented test coverage
-- Changes affect multiple components or systems
-
-**Skip a formal test plan when:**
-- Simple bug fix with obvious test case
-- Documentation-only changes
-- Single test adequately covers the change
-- Refactoring with existing test coverage
-
----
-
 ## TDD Principles for Test Design
 
 Before writing test cases, apply these TDD principles and patterns to ensure comprehensive test coverage.
@@ -68,25 +51,6 @@ When planning tests, ensure coverage across these categories:
 5. **Integration Points** - Component interactions
 
 ---
-
-## Test Plan Lifecycle
-
-Test plans evolve through two phases:
-
-### Phase 1: Initial Placeholder (At PR Creation)
-
-When the PR is created with the ADR, create a **minimal placeholder** test plan. This documents *what will be tested* without implementation details (which don't exist yet).
-
-**Initial test plan includes:**
-- Header with ADR/Ticket/PR links
-- Overview describing what will be validated
-- Planned test cases (objectives only, no source links)
-- Empty or placeholder Running Tests section
-
-**Initial test plan does NOT include:**
-- Hyperlinks to source code (tests don't exist yet)
-- Specific line numbers
-- Detailed steps (implementation-dependent)
 
 **Template:**
 
@@ -125,8 +89,6 @@ Key changes to validate:
 
 *Commands will be added after implementation.*
 ```
-
-### Phase 2: Final Test Plan (After Implementation)
 
 After implementation is complete, update the test plan with:
 - Hyperlinked Test IDs pointing to actual test locations

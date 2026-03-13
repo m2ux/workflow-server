@@ -380,17 +380,6 @@ Document blockers and mitigation strategies:
 
 ---
 
-## Integration with Workflow
-
-This guide supports work package planning:
-
-1. **After research and analysis** → Create implementation plan
-2. **During planning** → Define tasks and success criteria
-3. **Before implementation** → Verify plan is Ready status
-4. **During implementation** → Reference for task details
-
----
-
 ## Related Guides
 
 - [Work Package Implementation Workflow](../work-package.md)

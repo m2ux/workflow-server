@@ -23,14 +23,6 @@ The `COMPLETE.md` file serves as the completion record for a work package. It pr
 
 ---
 
-## When to Create
-
-**Always create `COMPLETE.md` when:**
-- Work package implementation is finished
-- All tests are passing
-- PR is ready for review
-
-
 **Template:**
 
 ```markdown
@@ -325,17 +317,6 @@ Capture insights for future work:
 
 ---
 
-## When to Update
-
-Update `COMPLETE.md` at these points:
-
-1. **After all tasks done** - Create initial document
-2. **After final testing** - Add test results
-3. **After PR created** - Add PR number
-4. **After PR merged** - Final status update
-
----
-
 ## Relationship to Other Documents
 
 | Document | Relationship |
@@ -344,17 +325,6 @@ Update `COMPLETE.md` at these points:
 | `README.md` | Update status to Complete after COMPLETE.md created |
 | ADR | Design decisions in COMPLETE.md may warrant formal ADRs |
 | PR Description | COMPLETE.md provides content for PR description |
-
----
-
-## Integration with Workflow
-
-This guide supports the finalization stage of work package implementation:
-
-1. **After implementation complete** → Create COMPLETE.md
-2. **Document actual results** → Compare to original plan
-3. **Capture decisions** → Feed into ADR if needed
-4. **After PR merged** → Final update with merged status
 
 ---
 

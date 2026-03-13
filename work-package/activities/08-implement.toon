@@ -16,10 +16,11 @@ skills:
     - manage-git
 required: true
 estimatedTime: 1-4h
-rules[3]:
+rules[4]:
   - "Execute all tasks sequentially without interrupting for per-task assumption review — assumptions are collected during each task and reconciled collectively at the end"
   - "After all tasks complete, reconcile assumptions through code analysis before presenting to the user — only stakeholder-dependent assumptions require user input"
   - "Update assumptions log once after reconciliation with the full set of implementation assumptions and their resolutions"
+  - "SYMBOL VERIFICATION: Every symbol introduced or referenced in code or documentation MUST have provenance — exists in codebase, in a declared dependency, or is newly created by the current task. Never fabricate symbols."
 artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
@@ -34,13 +35,16 @@ loops[2]:
     type: forEach
     variable: current_task
     over: plan.tasks
-    steps[4]:
+    steps[5]:
       - id: implement-task
         name: Implement task
       - id: run-tests
         name: Run tests
       - id: commit
         name: Commit changes
+      - id: self-review
+        name: Self-review
+        description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies; (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Load resource 14 for verification checklist."
       - id: collect-assumptions
         name: Collect assumptions
         description: "Identify all assumptions made during this task. Accumulate — do not review yet."
