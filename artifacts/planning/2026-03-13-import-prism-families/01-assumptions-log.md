@@ -35,21 +35,39 @@
 
 ---
 
+## Elicitation-Phase Assumptions
+
+| ID | Assumption | Category | Resolvability | Status | Evidence |
+|----|-----------|----------|---------------|--------|----------|
+| A-016 | The 9 prisms already in the workflow are content-identical to upstream and do not need re-import | Scope Boundaries | code-analyzable | Validated | diff of pedagogy.md and claim.md shows content is identical — differences are only trailing newline and YAML front-matter stripping (existing resources strip front matter, upstream files include it). No re-import needed. |
+| A-017 | 73w should be classified as SDL family despite being a compressed L12, because it functions as a standalone single-pass lens | Requirement Interpretation | stakeholder-dependent | Open | 73w is a 73-word compression of the full L12. It produces the same kind of findings (conservation law) but in a single pass. Functionally it is a standalone lens like SDL. Classification is a naming/grouping decision. |
+| A-018 | sdl_abstraction works on both code and reasoning (portfolio-eligible for general targets) unlike other SDL lenses | Requirement Interpretation | code-analyzable | Validated | sdl_abstraction.md YAML notes: "Universal: code (type leaks, exception leaks, strategy flag anti-patterns) and reasoning (conceptual frameworks that reveal their own assumptions, meta-concepts bleeding into object-level claims)." Confirmed: sdl_abstraction is portfolio-eligible for general target_type. |
+| A-019 | Behavioral pipeline artifact filenames should use descriptive names (behavioral-errors.md) rather than lens names (behavioral-error_resilience.md) | Requirement Interpretation | stakeholder-dependent | Open | Descriptive names match the synthesis lens's label expectations (ERRORS, COSTS, CHANGES, PROMISES) and are more readable. Lens names are more traceable. |
+| A-020 | No general-domain behavioral pipeline is needed — domain-neutral variants are standalone portfolio lenses | Scope Boundaries | stakeholder-dependent | Open | Behavioral pipeline is code-only due to optim having no neutral variant. Individual neutral lenses are available for portfolio mode on non-code targets. |
+| A-021 | Model sensitivity metadata is advisory guidance in skill documentation, not a runtime constraint — the workflow has no mechanism to detect or enforce model selection | Implicit Requirements | code-analyzable | Validated | The prism workflow has no model variable or model-detection mechanism. `workflow.toon` variables include target, target_type, pipeline_mode, output_path, selected_lenses, analysis_focus — no model field. Model sensitivity is documentation-only. |
+| A-022 | YAML front matter in resource files does not interfere with lens execution — models skip front matter when executing imperative prompts | Implicit Requirements | code-analyzable | Validated | The agi-in-md project uses all prisms WITH front matter via prism.py in production. All quality scores (9.0-9.8) were generated with front matter present. No interference observed across Haiku, Sonnet, and Opus. |
+| A-023 | sdl_abstraction (15) should be in the general target_type lens set alongside 73w (18) and neutral variants (24-26) | Requirement Interpretation | code-analyzable | Validated | sdl_abstraction.md notes confirm "Universal: code and reasoning." It is the only SDL lens that works on non-code targets. Added to general lens set in R5 code-vs-general rule. |
+| A-024 | The existing resources (00-11) should NOT be retroactively updated to add YAML front matter — only new resources (12-32) include it | Scope Boundaries | stakeholder-dependent | Open | Changing existing resources is out of scope per constraint. But the inconsistency (00-11 without front matter, 12-32 with) may be confusing. |
+
 ## Summary
 
 | Status | Count |
 |--------|-------|
-| Validated | 11 |
+| Validated | 16 |
 | Partially Validated | 2 |
 | Invalidated | 0 |
-| Open (stakeholder-dependent) | 1 |
-| **Total** | **15** |
+| Open (stakeholder-dependent) | 5 |
+| **Total** | **24** |
 
 ### Remaining Open Assumptions
 
-- **A-003** (stakeholder-dependent): Whether to exclude codegen.md and arc_code.md. Current recommendation: exclude — they target code generation and ARC puzzles, not structural analysis.
+- **A-003** (stakeholder-dependent): Whether to exclude codegen.md and arc_code.md. Current recommendation: exclude.
+- **A-017** (stakeholder-dependent): Whether 73w belongs in the SDL family grouping or gets its own category.
+- **A-019** (stakeholder-dependent): Behavioral artifact filename convention — descriptive (behavioral-errors.md) vs. lens-named (behavioral-error_resilience.md).
+- **A-020** (stakeholder-dependent): Confirmation that no general-domain behavioral pipeline is needed.
+- **A-024** (stakeholder-dependent): Whether existing resources (00-11) should be updated to add YAML front matter for consistency.
 
 ### Partially Validated — Stable
 
-- **A-007**: Domain-neutral behavioral pipeline is incomplete — no `optim_neutral.md` exists in the agi-in-md/prisms/ directory. Only 3 of 4 behavioral lenses have neutral variants (error_resilience_neutral, api_surface_neutral, evolution_neutral). The behavioral pipeline on non-code targets would need to either skip optim, use the code version, or defer behavioral pipeline mode for non-code targets entirely. This is a design decision, not resolvable by further code analysis.
-- **A-011**: Orchestrator can dispatch 4 parallel lenses using the existing portfolio parallel dispatch pattern (up to 4 concurrent, per orchestrate-prism.toon line 62). However, the behavioral synthesis pass needs a new dispatch protocol: it expects 4 labeled inputs (ERRORS, COSTS, CHANGES, PROMISES) mapped to specific artifact files, unlike L12 synthesis which expects 2 unlabeled prior artifacts. This is a design decision about orchestration extension, not further code-analyzable.
+- **A-007**: Domain-neutral behavioral pipeline is incomplete — no `optim_neutral.md` exists. Behavioral pipeline is code-only. Individual neutral lenses available for portfolio mode.
+- **A-011**: Orchestrator can dispatch 4 parallel lenses but needs new synthesis dispatch protocol for behavioral synthesis (4 labeled inputs).
