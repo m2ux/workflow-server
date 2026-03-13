@@ -15,7 +15,6 @@ skills:
     - reconcile-assumptions
 required: true
 estimatedTime: 10-20m
-artifactPrefix: "02"
 rules[4]:
   - "Design philosophy determines the path through the workflow"
   - "Simple bug fixes with clear scope may skip elicitation and research"
@@ -85,7 +84,7 @@ steps[7]:
     description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
     actions[1]:
       - action: message
-        message: "Created: [design-philosophy.md]({planning_folder_path}/01-design-philosophy.md)"
+        message: "Created: design-philosophy.md"
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during problem classification and path selection. Categories: Problem Interpretation, Complexity Assessment, Workflow Path."

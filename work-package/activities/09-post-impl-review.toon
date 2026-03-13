@@ -16,7 +16,6 @@ skills:
     - structural-analysis
 required: true
 estimatedTime: 30-60m
-artifactPrefix: "09"
 rules[7]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
