@@ -7,7 +7,6 @@ description: "Defines the procedure for dispatching sub-agents during a multi-ag
 inputs[1]:
   - id: agent-roster
     description: "List of agents to dispatch, each with: agent_id, activity_id, context variables (e.g., crate_path, checklist_sections, function_registry), supplementary files"
-    required: true
 
 protocol:
   compose-prompts[1]:

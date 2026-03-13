@@ -7,7 +7,6 @@ description: "Atomic code implementation capability. Reads a task from the plan,
 inputs[2]:
   - id: current-task
     description: "The task to implement from the plan (provided by the activity loop iterator)"
-    required: true
   - id: test-plan
     description: "Test plan with strategy and acceptance criteria for guidance"
     required: false

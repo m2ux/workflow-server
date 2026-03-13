@@ -7,10 +7,8 @@ description: "This skill serves the codebase-comprehension activity. It handles:
 inputs[3]:
   - id: problem_statement
     description: "Problem statement from design philosophy — focuses the comprehension on relevant areas"
-    required: true
   - id: target_path
     description: "Path to the target codebase directory"
-    required: true
   - id: project_type
     description: "Detected project type (rust-substrate|other)"
     required: false

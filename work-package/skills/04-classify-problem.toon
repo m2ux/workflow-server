@@ -7,7 +7,6 @@ description: "This skill serves the design-philosophy activity. It handles: crea
 inputs[2]:
   - id: issue_details
     description: "Summary, description, and context from the linked issue"
-    required: true
   - id: problem_context
     description: "Additional context about the problem from user or prior activities"
     required: false

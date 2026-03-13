@@ -7,13 +7,10 @@ description: "Handles git branch management, PR creation/updates via gh CLI, and
 inputs[4]:
   - id: target-path
     description: "Path to the target directory. All git commands run from this directory."
-    required: true
   - id: issue-number
     description: "Issue identifier (GitHub #N or Jira KEY-N)"
-    required: true
   - id: issue-platform
     description: "Platform where issue lives (github or jira)"
-    required: true
   - id: branch-name
     description: "Optional — for existing branches"
     required: false

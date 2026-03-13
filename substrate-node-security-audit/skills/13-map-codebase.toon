@@ -7,10 +7,8 @@ description: "A reusable skill for codebase reconnaissance. Defines the enumerat
 inputs[3]:
   - id: workspace-root
     description: "Path to the workspace Cargo.toml or equivalent project manifest"
-    required: true
   - id: in-scope
     description: "Paths to include in the analysis"
-    required: true
   - id: out-of-scope
     description: "Paths to exclude"
     required: false

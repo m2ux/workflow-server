@@ -7,7 +7,6 @@ description: "A reusable skill for enumerating functions in a Rust codebase. For
 inputs[2]:
   - id: source-files
     description: "List of .rs files to enumerate (a crate, a set of crates, or a full scope)"
-    required: true
   - id: include-subdirectories
     description: "Whether to traverse into submodules (versions/, common/, api/, internal/, impl/)"
     required: false

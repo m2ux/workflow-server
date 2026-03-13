@@ -7,7 +7,6 @@ description: "Assess test quality across the work package — coverage gaps, ant
 inputs[1]:
   - id: changed-files
     description: "List of files changed in the work package (from git diff)"
-    required: true
 
 protocol:
   load-guidance[2]:

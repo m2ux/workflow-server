@@ -7,10 +7,8 @@ description: "Produces a stakeholder-facing architecture summary document with M
 inputs[3]:
   - id: changed_files
     description: "List of files changed in the implementation"
-    required: true
   - id: planning_folder_path
     description: "Path to planning folder for context"
-    required: true
   - id: design_philosophy_doc
     description: "Design philosophy with scope and rationale"
     required: false

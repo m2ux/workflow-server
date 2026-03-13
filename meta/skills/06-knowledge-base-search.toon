@@ -7,7 +7,6 @@ description: "This skill reduces concept-rag tool calls from 3-5 exploratory cal
 inputs[2]:
   - id: search-topic
     description: "The topic or question the agent needs to find in the knowledge base"
-    required: true
   - id: domain-hint
     description: "Optional domain hint to select the correct index resource (e.g., substrate, blockchain)"
     required: false

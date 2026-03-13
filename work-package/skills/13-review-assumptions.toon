@@ -7,7 +7,6 @@ description: "Cross-cutting skill used by multiple activities (design-philosophy
 inputs[2]:
   - id: activity_context
     description: "Which activity is generating assumptions"
-    required: true
   - id: existing_assumptions_log
     description: "Path to assumptions-log.md if it exists"
     required: false

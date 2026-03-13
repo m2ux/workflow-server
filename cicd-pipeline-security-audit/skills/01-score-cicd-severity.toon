@@ -7,7 +7,6 @@ description: "Apply severity scoring to CI/CD pipeline findings. Uses a two-dime
 inputs[1]:
   - id: findings
     description: "List of findings from the merge agent, each with pattern ID, source, sink, and evidence"
-    required: true
 
 protocol:
   load-rubric[1]:

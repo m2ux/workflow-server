@@ -7,7 +7,6 @@ description: "Given a target and an analytical goal, produce an execution plan t
 inputs[6]:
   - id: target
     description: "What to analyze. Can be: a file path, a directory path, inline text, a question, a concept, or a topic. The skill detects the scope from the form of the input."
-    required: true
   - id: analytical-goal
     description: "What the caller wants to understand (e.g., 'find hidden bugs', 'assess maintainability', 'understand design trade-offs', 'security review', 'explore the implications of X', 'evaluate this strategy')"
     required: false

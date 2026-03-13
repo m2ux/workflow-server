@@ -7,13 +7,10 @@ description: "A reusable skill for systematic checklist application. The checkli
 inputs[3]:
   - id: checklist-source
     description: "Resource containing the checklist entries (e.g., resource 03 for toolkit, audit template §3 for crate review)"
-    required: true
   - id: item-set
     description: "The enumerated items to evaluate against the checklist (e.g., function list, crate components, code paths)"
-    required: true
   - id: scope-files
     description: "Source files to read for evidence gathering"
-    required: true
 
 resources[1]:
   - "03"

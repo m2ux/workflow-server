@@ -7,13 +7,10 @@ description: "This skill serves the strategic-review activity. It handles: exami
 inputs[3]:
   - id: branch_name
     description: "Feature branch containing implementation changes"
-    required: true
   - id: planning_folder_path
     description: "Path to planning folder for artifact output"
-    required: true
   - id: pr_number
     description: "Pull request number for scope reference"
-    required: true
 
 protocol:
   load-guidance[2]:

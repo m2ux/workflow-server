@@ -7,13 +7,10 @@ description: "Handles the final PR lifecycle stages — pushing all commits, upd
 inputs[3]:
   - id: pr_number
     description: "PR number to update"
-    required: true
   - id: branch_name
     description: "Branch name for push operations"
-    required: true
   - id: planning_folder_path
     description: "Path to planning folder for implementation summary context"
-    required: true
 
 protocol:
   push-commits[3]:

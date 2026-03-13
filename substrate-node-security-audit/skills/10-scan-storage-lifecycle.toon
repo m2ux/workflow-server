@@ -7,7 +7,6 @@ description: "A reusable skill for auditing storage lifecycle completeness in Su
 inputs[2]:
   - id: scope
     description: "Directory scope to scan (a single crate for per-crate review, or full in-scope paths for global scan)"
-    required: true
   - id: verify-invariants
     description: "Whether to perform cross-function invariant comparison (e.g., do paired insert/remove functions maintain the same conditions?)"
     required: false

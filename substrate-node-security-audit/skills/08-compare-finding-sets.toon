@@ -7,10 +7,8 @@ description: "A reusable skill for benchmarking one set of findings against a re
 inputs[2]:
   - id: primary-findings
     description: "The finding list to evaluate (e.g., AI audit results)"
-    required: true
   - id: reference-findings
     description: "The benchmark finding list to compare against (e.g., professional audit report)"
-    required: true
 
 protocol:
   map-findings[1]:

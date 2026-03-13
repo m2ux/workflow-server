@@ -7,10 +7,8 @@ description: "Process PR review feedback by categorizing comments, prioritizing 
 inputs[2]:
   - id: pr-number
     description: "Pull request number"
-    required: true
   - id: review-comments
     description: "Review comments fetched from PR"
-    required: true
 
 protocol:
   fetch-comments[2]:

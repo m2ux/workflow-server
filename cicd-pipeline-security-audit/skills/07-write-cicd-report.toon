@@ -7,10 +7,8 @@ description: "Report generation skill for the CI/CD pipeline security audit. For
 inputs[2]:
   - id: scored-findings
     description: "Merged findings with severity scores from the scoring skill"
-    required: true
   - id: coverage-data
     description: "Coverage verification data from the verification agent"
-    required: true
 
 protocol:
   load-remediation[1]:

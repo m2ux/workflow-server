@@ -7,10 +7,8 @@ description: "This skill guides agents through the correct sequence of Atlassian
 inputs[2]:
   - id: operation-type
     description: "The Atlassian operation to perform (e.g., create-jira-issue, search-confluence, update-page)"
-    required: true
   - id: operation-context
     description: "Context for the operation: project key, issue key, space ID, page ID, search query, etc."
-    required: true
 
 protocol:
   resolve-cloud-id[3]:

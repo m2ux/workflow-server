@@ -7,13 +7,10 @@ description: "Verification skill for the CI/CD pipeline security audit. Cross-re
 inputs[3]:
   - id: scanner-outputs
     description: "Paths to all s{n}-{submodule}.json output files"
-    required: true
   - id: workflow-inventory
     description: "Complete workflow file inventory from scope-setup"
-    required: true
   - id: output-schema
     description: "Expected scanner output schema from resource 04"
-    required: true
 
 protocol:
   validate-structure[2]:

@@ -7,7 +7,6 @@ description: "Merge skill for the CI/CD pipeline security audit. Loads all scann
 inputs[1]:
   - id: scanner-outputs
     description: "Paths to all s{n}-{submodule}.json output files"
-    required: true
 
 protocol:
   load-all-outputs[1]:
