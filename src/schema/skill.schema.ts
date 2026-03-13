@@ -99,7 +99,7 @@ export type Resumption = z.infer<typeof ResumptionSchema>;
 export const InputItemDefinitionSchema = z.object({
   id: z.string().describe('Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining skills.'),
   description: z.string().optional().describe('Human-readable description of this input'),
-  required: z.boolean().optional().describe('Whether this input must be supplied'),
+  required: z.boolean().default(true).describe('Whether this input must be supplied. Defaults to true — only set to false for optional inputs.'),
   default: z.unknown().optional().describe('Default value when not supplied'),
 }).passthrough();
 export type InputItemDefinition = z.infer<typeof InputItemDefinitionSchema>;

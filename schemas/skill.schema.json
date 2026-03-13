@@ -314,7 +314,7 @@
       "properties": {
         "id": { "type": "string", "description": "Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining skills." },
         "description": { "type": "string", "description": "Human-readable description of this input" },
-        "required": { "type": "boolean", "description": "Whether this input must be supplied" },
+        "required": { "type": "boolean", "default": true, "description": "Whether this input must be supplied. Defaults to true — only set to false for optional inputs." },
         "default": { "description": "Default value when not supplied" }
       },
       "required": [ "id" ],
