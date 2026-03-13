@@ -35,12 +35,12 @@ protocol:
   query-recommendation[4]:
     - "For scope 'query': the target is text, not files. Select lenses from the general set (resources 00-02 + 06-10 + 15 + 18 + 24-26)."
     - "Map the analytical goal to lenses: exploring implications → claim (07) + rejected-paths (09). evaluating a strategy → scarcity (08) + claim (07). understanding trade-offs → scarcity (08) + rejected-paths (09). deep structural analysis → L12 pipeline (00-02). general exploration → L12 single (00). abstraction quality → sdl-abstraction (15). error resilience → error-resilience-neutral (24). API quality → api-surface-neutral (25)."
-    - "Apply depth-preference if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses"
+    - "Apply depth-preference if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses, 'behavioral' → behavioral pipeline (19-23, code-only — reject if target_type is general)"
     - "Format as a single-unit plan with scope 'query' and proceed to format-plan"
   single-unit-recommendation[4]:
     - "For scope 'file' or 'module': map the analytical goal to lenses using the goal-mapping matrix"
     - "Goal-mapping matrix: bug detection → L12 (00) or deep-scan (12). code review → L12 (00) + contract (11). design review → claim (07) + rejected-paths (09). comprehension → pedagogy (06) + rejected-paths (09). pre-commit → L12 pipeline (00-02). planning review → L12 (00). maintainability → degradation (10) + contract (11). assumption validation → claim (07) + scarcity (08). security review → L12 pipeline (00-02) or sdl-trust (13). error handling → error-resilience (19). performance → optim (20). API quality → api-surface (22). evolution/coupling → evolution (21) or sdl-coupling (14). trust boundaries → sdl-trust (13). abstraction quality → sdl-abstraction (15). structural defects → deep-scan (12) or rec (16). identity/naming → ident (17). dead code → reachability (30). state machine → state-audit (32). contract fidelity → fidelity (31). error+cost hybrid → evidence-cost (29). comprehensive behavioral → behavioral pipeline (19-23)."
-    - "Apply depth-preference if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses"
+    - "Apply depth-preference if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses, 'behavioral' → behavioral pipeline (19-23, code-only — reject if target_type is general)"
     - "Format as a single-unit plan and proceed to format-plan"
   survey-structure[4]:
     - "For scope 'codebase' or 'document-set': list files and directories at the top level"
