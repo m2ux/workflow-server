@@ -16,6 +16,100 @@ The Prism Workflow dispatches analytical lenses as isolated sub-agent passes aga
 
 ---
 
+## Prompt Guide
+
+Each prism responds to a specific analytical question. The examples below show user prompts that reliably trigger each prism through the plan-analysis goal-mapping matrix.
+
+### Pipeline Modes
+
+| Prompt | Mode | What Runs |
+|--------|------|-----------|
+| `Analyze src/auth.ts` | Single | L12 structural (00) |
+| `Analyze src/auth.ts using the full prism` | Full Prism | Structural (00) → adversarial (01) → synthesis (02) |
+| `Run a comprehensive behavioral analysis of src/api/` | Behavioral | Error resilience (19) + optim (20) + evolution (21) + API surface (22) → synthesis (23) |
+| `Run pedagogy and rejected-paths lenses on this module` | Portfolio | Pedagogy (06) + rejected-paths (09) |
+
+### L12 Pipeline (00–02)
+
+| Prompt | Prism |
+|--------|-------|
+| `Analyze src/parser.ts` | L12 structural (00) — default for any code target |
+| `Deep structural analysis of this module` | L12 structural (00) |
+| `Pre-commit review of src/handler.rs` | L12 full pipeline (00→01→02) |
+| `Analyze this proposal using the full prism` | L12 full pipeline on general input |
+
+### Portfolio Lenses (06–11)
+
+| Prompt | Prism |
+|--------|-------|
+| `What patterns would transfer poorly if someone copied this design?` | Pedagogy (06) |
+| `What empirical assumptions does this architecture embed?` | Claim (07) |
+| `What resource scarcity does this system gamble on?` | Scarcity (08) |
+| `What rejected design paths would swap this system's problems for different ones?` | Rejected-paths (09) |
+| `How does this code degrade if no one touches it for 12 months?` | Degradation (10) |
+| `Compare what each function signature promises vs what it actually does` | Contract (11) |
+
+### Structural SDL Family (12–18)
+
+| Prompt | Prism |
+|--------|-------|
+| `Find structural bug patterns — conservation laws and information laundering` | Deep-scan (12) |
+| `Where do trust boundaries collapse? Find authority inversions` | Trust topology (13) |
+| `Find hidden temporal coupling — ordering dependencies and TOCTOU gaps` | Coupling clock (14) |
+| `Where do implementation details leak through abstraction boundaries?` | Abstraction leak (15) |
+| `What structural defects persist through every attempted fix?` | Rec (16) |
+| `Where does this code claim to be something different than it is?` | Ident (17) |
+| `Quick structural scan of src/core.ts` (Sonnet only) | 73w (18) |
+
+### Behavioral Pipeline (19–23)
+
+| Prompt | Prism |
+|--------|-------|
+| `How does error context get destroyed in this module?` | Error resilience (19) |
+| `Find hidden performance costs — what optimization data is erased at boundaries?` | Optim (20) |
+| `Trace invisible coupling — what data flows between functions without signatures?` | Evolution (21) |
+| `Where do function names lie about what the code actually does?` | API surface (22) |
+| `Run a comprehensive behavioral analysis of src/pipeline/` | Full behavioral pipeline (19–23) |
+
+### Domain-Neutral Variants (24–26)
+
+These trigger when the target is non-code (documents, proposals, strategies, reasoning).
+
+| Prompt | Prism |
+|--------|-------|
+| `How does this business process destroy diagnostic information?` | Error resilience neutral (24) |
+| `Where do the labels in this proposal lie about what it delivers?` | API surface neutral (25) |
+| `What implicit dependencies bind the components of this strategy?` | Evolution neutral (26) |
+
+### Compressed Variants (27–28)
+
+| Prompt | Prism |
+|--------|-------|
+| `Quick error resilience scan of src/handler.ts` | Error resilience compact (27) — 110w, same quality |
+| `Ultra-brief error resilience check` | Error resilience 70w (28) — 70w, Starlette 9.5 |
+
+### Hybrid and Specialized (29–32)
+
+| Prompt | Prism |
+|--------|-------|
+| `Where does skipped validation waste both safety and performance?` | Evidence cost (29) |
+| `Find dead code — functions defined but never called, stale config` | Reachability (30) |
+| `Where has documentation drifted from actual behavior?` | Fidelity (31) |
+| `Map every piece of mutable state as a state machine — find unhandled transitions` | State audit (32) |
+
+### Combinations and Portfolio Selections
+
+| Prompt | Prisms Selected |
+|--------|----------------|
+| `Security review of this module` | SDL trust (13) + error resilience (19) |
+| `Code review of src/api.ts` | L12 (00) + contract (11) |
+| `Assess maintainability of this service` | Degradation (10) + contract (11) |
+| `Design review of this architecture` | Claim (07) + rejected-paths (09) |
+| `Explore the implications of this design decision` | Claim (07) + rejected-paths (09) |
+| `What are the trade-offs in this approach?` | Scarcity (08) + rejected-paths (09) |
+
+---
+
 ## Modes
 
 | Mode | Passes | Description |
