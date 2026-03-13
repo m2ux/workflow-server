@@ -123,6 +123,13 @@ async function readActivityFromWorkflow(
     }
     
     const activity = validation.success ? validation.data : decoded;
+    
+    // Infer artifactPrefix from the activity filename index
+    const parsedFilename = parseActivityFilename(matchingFile);
+    if (parsedFilename) {
+      activity.artifactPrefix = parsedFilename.index;
+    }
+    
     logInfo('Activity loaded', { id: activityId, workflowId, path: filePath });
     
     // Add next_action guidance for the primary skill

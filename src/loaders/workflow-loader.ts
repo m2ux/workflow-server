@@ -46,13 +46,15 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
       const decoded = decodeToon<Activity>(content);
       
       const validation = safeValidateActivity(decoded);
+      let activity: Activity;
       if (!validation.success) {
         logWarn('Activity validation failed', { activityId: parsed.id, errors: validation.error.issues });
-        // Still include the activity, just with validation warning
-        activities.push(decoded);
+        activity = decoded;
       } else {
-        activities.push(validation.data);
+        activity = validation.data;
       }
+      activity.artifactPrefix = parsed.index;
+      activities.push(activity);
     } catch (error) {
       logWarn('Failed to load activity', { file, error: error instanceof Error ? error.message : 'Unknown error' });
     }

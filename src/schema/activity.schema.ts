@@ -164,7 +164,8 @@ export const ActivitySchema = z.object({
   required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
   estimatedTime: TimeEstimateSchema.describe('Estimated time to complete'),
   rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
-  artifacts: z.array(ArtifactSchema).optional().describe('Output artifacts produced by this activity'),
+  artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.toon). Server-computed — do not set in TOON files.'),
+  artifacts: z.array(ArtifactSchema).optional().describe('Output artifacts produced by this activity. Bare filenames are prefixed with artifactPrefix at write time (e.g., design-philosophy.md → 02-design-philosophy.md).'),
   
   // Mode overrides (optional)
   modeOverrides: z.record(ModeOverrideSchema).optional().describe('Mode-specific behavior overrides. Keys are mode IDs from workflow.modes'),

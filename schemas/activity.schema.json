@@ -412,14 +412,15 @@
         },
         "artifactPrefix": {
           "type": "string",
-          "description": "Numeric prefix prepended to all artifact filenames produced by this activity (e.g., '08'). Skills produce artifacts with bare names (e.g., 'code-review.md'); the activity prepends this prefix at write time (e.g., '08-code-review.md')."
+          "readOnly": true,
+          "description": "Server-computed. Numeric prefix inferred from the activity filename (e.g., '02' from '02-design-philosophy.toon'). Do not set in TOON files. Prepended to artifact filenames at write time (e.g., design-philosophy.md → 02-design-philosophy.md)."
         },
         "artifacts": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/artifact"
           },
-          "description": "Artifacts produced or updated by this activity. Filenames in artifact.name are prepended with artifactPrefix when present. Location keys reference workflow.artifactLocations."
+          "description": "Artifacts produced or updated by this activity. Bare filenames in artifact.name are prefixed with the server-computed artifactPrefix at write time. Location keys reference workflow.artifactLocations."
         },
         "transitions": {
           "type": "array",
