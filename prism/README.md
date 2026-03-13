@@ -1,4 +1,4 @@
-# Structural Analysis Prism Workflow
+# Prism Analysis Workflow
 
 > v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 30 lenses, isolated multi-pass pipelines.
 
