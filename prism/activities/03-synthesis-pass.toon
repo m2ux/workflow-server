@@ -29,7 +29,7 @@ loops[1]:
           value: full-prism
       - id: load-lens
         name: Load Synthesis Lens
-        description: "Load the synthesis lens resource: resource 02 (code) or resource 05 (general) based on current_unit.target_type"
+        description: "Load the synthesis lens resource 02 (works for all target types)"
         required: true
         condition:
           type: simple

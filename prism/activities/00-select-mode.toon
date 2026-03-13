@@ -3,7 +3,7 @@ version: 2.0.0
 name: Plan Analysis
 description: "Analyze the user's request to determine what to analyze, detect scope and target type, recommend a pipeline mode with rationale, and present the recommendation for confirmation. Delegates all planning logic to the plan-analysis skill."
 problem: User needs the analysis planned and configured before execution begins
-recognition[8]:
+recognition[11]:
   - analyze
   - structural analysis
   - full prism
@@ -12,6 +12,9 @@ recognition[8]:
   - multiple lenses
   - scan
   - review code
+  - behavioral
+  - error resilience
+  - behavioral analysis
 skills:
   primary: plan-analysis
 steps[3]:
@@ -32,7 +35,7 @@ checkpoints[1]:
     name: Pipeline Mode Confirmation
     message: "Based on your request, I recommend the following analysis configuration. Would you like to proceed or adjust?"
     prerequisite: "Only present when pipeline_mode was NOT explicitly provided by the caller. If the caller set pipeline_mode directly, skip this checkpoint."
-    options[4]:
+    options[5]:
       - id: accept
         label: Proceed
         description: "Run the analysis with the recommended configuration"
@@ -54,6 +57,12 @@ checkpoints[1]:
         effect:
           setVariable:
             pipeline_mode: portfolio
+      - id: switch-behavioral
+        label: Behavioral
+        description: "4-prism behavioral analysis (error resilience, optimization, evolution, API surface + synthesis). Code-only."
+        effect:
+          setVariable:
+            pipeline_mode: behavioral
     required: true
     blocking: true
 transitions[1]:

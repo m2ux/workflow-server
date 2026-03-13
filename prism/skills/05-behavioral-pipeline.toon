@@ -1,0 +1,93 @@
+id: behavioral-pipeline
+version: 1.0.0
+capability: Execute the behavioral pipeline — 4 independent behavioral lenses followed by a synthesis pass
+
+description: "Worker-side skill for executing the behavioral pipeline. The pipeline runs 4 independent behavioral lenses against the same target, each answering a distinct question about code behavior. The orchestrator dispatches each lens to a fresh sub-agent. After all 4 complete, a synthesis pass reads all 4 artifacts (labeled ERRORS, COSTS, CHANGES, PROMISES) and finds convergence points, blind spots, and a unified conservation law. The behavioral pipeline is code-only — do not use on general/non-code targets."
+
+inputs[4]:
+  - id: target-content
+    description: "The code to analyze (provided inline by the orchestrator, or a file path to read)"
+  - id: lens-resource-index
+    description: "Resource index for this pass: 19 (error-resilience), 20 (optim), 21 (evolution), 22 (api-surface), or 23 (behavioral-synthesis)"
+  - id: output-path
+    description: "Directory to write the analysis artifact"
+  - id: prior-artifact-paths
+    description: "For synthesis pass only: map of role labels to artifact file paths. Keys: ERRORS, COSTS, CHANGES, PROMISES. Empty for independent lens passes."
+    required: false
+
+protocol:
+  load-lens[2]:
+    - "Call get_resource({ workflow_id: 'prism', index: lens-resource-index }) to load the lens prompt"
+    - "The lens prompt is the program — execute its operations in order"
+  read-target[1]:
+    - "If target-content is a file path, read the file to obtain the code"
+  apply-independent-lens[3]:
+    - "For independent lens passes (indices 19-22): apply the lens against the target content"
+    - "Execute every operation completely — the analytical depth comes from the full chain"
+    - "Write the artifact to {output-path}/{artifact-filename} per the artifact naming convention"
+  construct-synthesis-input[3]:
+    - "For synthesis pass (index 23): read all 4 prior artifacts from prior-artifact-paths"
+    - "Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules"
+    - "The synthesis lens expects exactly these 4 labeled sections"
+  apply-synthesis-lens[2]:
+    - "Apply the behavioral_synthesis lens (index 23) against the constructed input"
+    - "Write the synthesis artifact to {output-path}/behavioral-synthesis.md"
+  write-artifact[2]:
+    - "Write the complete analysis to the artifact file"
+    - "Return the full artifact path in the output"
+
+output[1]:
+  - id: behavioral-artifact
+    description: "Behavioral analysis artifact written to the filesystem"
+    artifact:
+      name: "{artifact-filename}"
+    components:
+      artifact_path: "Full filesystem path to the written artifact"
+      role: "The role label for this pass (ERRORS, COSTS, CHANGES, PROMISES, or SYNTHESIS)"
+
+rules:
+  label-mapping: "The behavioral pipeline uses fixed role labels mapped to specific lenses: error-resilience (19) → ERRORS, optim (20) → COSTS, evolution (21) → CHANGES, api-surface (22) → PROMISES. The synthesis lens (23) expects these exact labels."
+  artifact-naming: "Independent lens artifacts use descriptive role names: behavioral-errors.md (19), behavioral-costs.md (20), behavioral-changes.md (21), behavioral-promises.md (22). Synthesis artifact: behavioral-synthesis.md (23)."
+  code-only: "The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target_type is 'general'."
+  complete-execution: "Every step in each lens prompt must be executed. Do not skip or summarize."
+  evidence-required: "All findings must cite specific code: file paths, function names, line ranges."
+  persist-output: "Every artifact MUST be written to the filesystem. Return artifact paths so subsequent passes can read them."
+  synthesis-input-format: "The synthesis input is constructed as: ## ERRORS\\n\\n{errors_content}\\n\\n---\\n\\n## COSTS\\n\\n{costs_content}\\n\\n---\\n\\n## CHANGES\\n\\n{changes_content}\\n\\n---\\n\\n## PROMISES\\n\\n{promises_content}"
+
+resources[5]:
+  - "19"
+  - "20"
+  - "21"
+  - "22"
+  - "23"
+
+tools:
+  get_resource:
+    when: Loading the behavioral lens prompt for this pass
+    params: "workflow_id: prism, index: 19-23 (provided by orchestrator)"
+    returns: "Lens prompt text"
+    usage: "Load once, then execute every operation in the prompt"
+  read_file:
+    when: "Reading target code and prior behavioral artifacts (synthesis pass)"
+    usage: "Read code files for analysis. For synthesis: read behavioral-errors.md, behavioral-costs.md, behavioral-changes.md, behavioral-promises.md"
+  write_file:
+    when: "Writing the behavioral analysis artifact"
+    params: "path: {output-path}/{artifact-filename}"
+    usage: "Persist the analysis as a markdown artifact"
+  grep:
+    when: "Verifying findings against the codebase"
+    usage: "Confirm that cited patterns exist at the claimed locations"
+
+errors:
+  lens_not_loaded:
+    cause: "get_resource returned an error for the given index"
+    recovery: "Report the error. Valid behavioral indices: 19-23."
+  prior_artifact_not_found:
+    cause: "A prior behavioral artifact path was provided but the file does not exist (synthesis pass)"
+    recovery: "Report the missing artifact. The orchestrator may need to re-dispatch the independent lens pass."
+  general_target:
+    cause: "Behavioral pipeline invoked with target_type 'general'"
+    recovery: "Report that behavioral pipeline is code-only. Recommend portfolio mode with individual neutral variant lenses (24-26) for general targets."
+  write_failed:
+    cause: "Could not write artifact to the output path"
+    recovery: "Verify the output-path directory exists and is writable."

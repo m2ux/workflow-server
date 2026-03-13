@@ -1,7 +1,7 @@
 id: prism
 version: 1.3.0
 title: Structural Analysis Prism Workflow
-description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence -- particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports three modes: single-pass L12, 3-pass Full Prism (structural -> adversarial -> synthesis), and multi-lens portfolio analysis."
+description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence -- particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports four modes: single-pass L12, 3-pass Full Prism (structural -> adversarial -> synthesis), multi-lens portfolio analysis, and 4+1 behavioral pipeline (error resilience -> optimization -> evolution -> API surface -> synthesis)."
 author: m2ux
 tags[3]:
   - analysis
@@ -22,7 +22,7 @@ rules[12]:
   - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '[BLOCKER]: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
 
-variables[13]:
+variables[15]:
   - name: target
     type: string
     description: "What to analyze -- a file path, directory path, inline text, question, or concept"
@@ -33,7 +33,7 @@ variables[13]:
     defaultValue: code
   - name: pipeline_mode
     type: string
-    description: "Analysis mode: 'single' (L12), 'full-prism' (3-pass), or 'portfolio' (multiple lenses)"
+    description: "Analysis mode: 'single' (L12), 'full-prism' (3-pass), 'portfolio' (multiple lenses), or 'behavioral' (4+1 behavioral pipeline)"
     defaultValue: single
   - name: output_path
     type: string
@@ -63,6 +63,12 @@ variables[13]:
   - name: portfolio_output_paths
     type: object
     description: "Map of lens name to file path for portfolio mode artifacts"
+  - name: behavioral_output_paths
+    type: object
+    description: "Map of role label (ERRORS, COSTS, CHANGES, PROMISES) to file path for behavioral mode artifacts"
+  - name: behavioral_synthesis_output_path
+    type: string
+    description: "File path to behavioral synthesis artifact for current unit"
   - name: all_artifact_paths
     type: array
     description: "Accumulated list of all artifact paths across all units"
