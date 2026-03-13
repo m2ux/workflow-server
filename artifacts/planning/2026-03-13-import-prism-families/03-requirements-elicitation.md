@@ -176,8 +176,9 @@ Extend the plan-analysis skill's goal-mapping matrix to route to new lenses base
 | Evidence-cost hybrid | evidence-cost (29) | single |
 
 ### Code-vs-General Rule Update
+- L12 pipeline (00-02) → used for ALL target types (code and general). Resources 03-05 deprecated.
 - Code → resources 00-02 + 06-22 + 29-32
-- General → resources 03-05 + 06-10 + 15 (sdl-abstraction, universal) + 18 (73w, Sonnet-only) + 24-26 (neutral variants)
+- General → resources 00-02 + 06-10 + 15 (sdl-abstraction, universal) + 18 (73w, Sonnet-only) + 24-26 (neutral variants)
 - Note: contract (11) remains code-only; behavioral pipeline (19-23) is code-only; SDL lenses (12-14, 16-17) are code-only; sdl-abstraction (15) and 73w (18) work on both
 
 ### Success Criteria

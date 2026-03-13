@@ -78,11 +78,20 @@
 
 | Status | Count |
 |--------|-------|
-| Validated | 22 |
+| Validated | 26 |
 | Partially Validated | 2 |
 | Invalidated | 0 |
 | Open (stakeholder-dependent) | 7 |
-| **Total** | **32** |
+| **Total** | **36** |
+
+## Stakeholder-Review-Phase Assumptions
+
+| ID | Assumption | Category | Resolvability | Status | Evidence |
+|----|-----------|----------|---------------|--------|----------|
+| A-033 | Resources 03-05 (L12 general pipeline) are dead/orphaned — upstream l12_general* files were deleted | Current Behavior | code-analyzable | Validated | `ls /home/mike/projects/vendor/agi-in-md/prisms/l12_general*` returns "No such file or directory". Git log shows commit "Remove dead l12_general* prisms". |
+| A-034 | Resources 00-02 and 06-11 are content-identical to upstream (only missing YAML front matter) | Current Behavior | code-analyzable | Validated | Direct diff of content (stripping front matter from upstream) shows identical text for all 9 resources. |
+| A-035 | Resources 03-05 are deprecated — full prism pipeline uses 00-02 for ALL target types (code and general). The upstream removed general variants because code versions work for general targets too. | Scope Boundaries | stakeholder-dependent | Validated | Stakeholder confirmed: code L12 lenses (00-02) work for both code and general targets. Upstream deleted l12_general* as unnecessary. Resources 03-05 should be removed, and skills updated to route all targets to 00-02. |
+| A-036 | Full prism pipeline uses resources 00-02 for ALL target types — the code/general distinction for L12 is unnecessary | Current Behavior | stakeholder-dependent | Validated | Stakeholder confirmed. Upstream removed general variants because they were redundant. |
 
 ### Remaining Open Assumptions
 
@@ -93,6 +102,7 @@
 - **A-024** (stakeholder-dependent): Whether existing resources (00-11) should be updated to add YAML front matter for consistency.
 - **A-025** (stakeholder-dependent): Whether behavioral pipeline follows behavioral_synthesis.md (evolution + api_surface) or prism.py (rec + ident). Recommend behavioral_synthesis.md.
 - **A-026** (stakeholder-dependent): Whether upstream Opus preferences for deep_scan and rec are still current.
+- ~~**A-035**~~: Resolved — resources 03-05 deprecated, skills use 00-02 for all target types.
 
 ### Partially Validated — Stable
 

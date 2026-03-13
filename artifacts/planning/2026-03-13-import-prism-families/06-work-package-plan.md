@@ -41,7 +41,11 @@ Import 21 new resource files from `/home/mike/projects/vendor/agi-in-md/prisms/`
 | 31 | `31-fidelity.md` | `fidelity.md` |
 | 32 | `32-state-audit.md` | `state_audit.md` |
 
-**Commit**: `feat: import 21 new prism resources (SDL, behavioral, hybrid) (#53)`
+**Deprecation**: Remove resources 03-05 (L12 general pipeline). Upstream deleted `l12_general*` — code L12 lenses (00-02) work for all target types.
+
+**Optional**: Update resources 00-02 to include YAML frontmatter from upstream source files.
+
+**Commit**: `feat: import 21 new prism resources, deprecate general L12 (03-05) (#53)`
 
 ---
 
@@ -110,10 +114,10 @@ resources: ["19","20","21","22","23"]
 | Change | Location | Detail |
 |--------|----------|--------|
 | Expand goal-mapping-matrix rule | Line 101 | Add 12 new mappings: error handling→19, performance→20, evolution/coupling→21, API quality→22, comprehensive behavioral→behavioral pipeline, trust boundaries→13, coupling/ordering→14, abstraction quality→15, fix analysis→16, naming quality→17, dead code→30, state analysis→32, contract fidelity→31, evidence-cost→29 |
-| Update code-vs-general rule | Line 102 | Code: 00-02 + 06-22 + 29-32. General: 03-05 + 06-10 + 15 + 18 + 24-26 |
+| Update code-vs-general rule | Line 102 | Code and General both use: 00-02 (L12 pipeline) + 06-10 + 15 + 18 + 24-26. Code additionally: 11-14 + 16-22 + 29-32. Remove 03-05 references. |
 | Add behavioral mode routing | Lines 57-64 (select-strategy) | Add behavioral pipeline mode for budget mappings |
 | Update build-analysis-units | Lines 71-75 | Handle pipeline_mode "behavioral" in unit construction |
-| Expand resources list | Lines 108-120 | From `["00"-"11"]` to `["00"-"32"]` |
+| Expand resources list | Lines 108-120 | From `["00"-"11"]` to `["00"-"02","06"-"32"]` (exclude deprecated 03-05) |
 | Add model sensitivity note | New rule | Note Sonnet preference for behavioral prisms, Sonnet-only for 73w (18), Opus preference for deep_scan (12) and rec (16) |
 
 ### 4b. portfolio-analysis.toon
