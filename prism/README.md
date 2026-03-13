@@ -31,16 +31,15 @@ Each prism responds to a specific analytical question. The table below shows use
 | Prompt | Scope | Prism / Mode |
 |--------|-------|-------------|
 | `Analyze src/parser.ts` | file | L12 structural (00) — default for any code target |
-| `Deep structural analysis of this module` | module | L12 structural (00) |
 | `Pre-commit review of src/handler.rs` | file | L12 full pipeline (00→01→02) |
 | `Analyze this proposal using the full prism` | text | L12 full pipeline on general input |
-| `What patterns would transfer poorly if someone copied this design?` | any | Pedagogy (06) |
-| `What empirical assumptions does this architecture embed?` | any | Claim (07) |
+| `What patterns from this design would transfer poorly to other problems?` | any | Pedagogy (06) |
+| `What hidden assumptions does this architecture embed?` | any | Claim (07) |
 | `What resource scarcity does this system gamble on?` | any | Scarcity (08) |
-| `What rejected design paths would swap this system's problems for different ones?` | any | Rejected-paths (09) |
-| `How does this code degrade if no one touches it for 12 months?` | file | Degradation (10) |
-| `Compare what each function signature promises vs what it actually does` | file | Contract (11) |
-| `Find structural bug patterns — conservation laws and information laundering` | file | Deep-scan (12) |
+| `What rejected alternatives would swap these problems for different ones?` | any | Rejected-paths (09) |
+| `How does this code decay over 12 months of neglect?` | file | Degradation (10) |
+| `What does each function's interface contract promise vs actually deliver?` | file | Contract (11) |
+| `Find conservation laws and information laundering in this code` | file | Deep-scan (12) |
 | `Where do trust boundaries collapse? Find authority inversions` | module | Trust topology (13) |
 | `Find hidden temporal coupling — ordering dependencies and TOCTOU gaps` | module | Coupling clock (14) |
 | `Where do implementation details leak through abstraction boundaries?` | module | Abstraction leak (15) |
