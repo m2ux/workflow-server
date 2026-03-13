@@ -1,11 +1,12 @@
 id: structural-pass
 version: 2.0.0
 name: Structural Analysis Pass
-description: "Iterate over analysis_units and run the appropriate analysis for each unit. For single and full-prism units, runs the L12 structural lens. For portfolio units, runs multiple independent lenses. Each iteration writes artifacts namespaced by unit. After all units complete, transitions based on whether any unit requires adversarial follow-up."
+description: "Iterate over analysis_units and run the appropriate analysis for each unit. For single and full-prism units, runs the L12 structural lens. For portfolio units, runs multiple independent lenses. For behavioral units, dispatches 4 independent behavioral lenses. Each iteration writes artifacts namespaced by unit. After all units complete, transitions based on pipeline mode."
 skills:
   primary: structural-analysis
-  supporting[1]:
+  supporting[2]:
     - portfolio-analysis
+    - behavioral-pipeline
 artifacts[1]:
   - id: structural-analysis
     name: "{unit_output_subdir}structural-analysis.md"
@@ -17,44 +18,68 @@ loops[1]:
     type: forEach
     variable: current_unit
     over: analysis_units
-    steps[8]:
+    steps[10]:
       - id: resolve-unit-output
         name: Resolve Unit Output Directory
         description: "Set the unit's output directory: {output_path}/{current_unit.unit_output_subdir} if unit_output_subdir is present (multi-unit), otherwise {output_path}. Create the directory if needed."
         required: true
       - id: load-lens
         name: Load Structural Lens
-        description: "Load the appropriate L12 lens resource based on current_unit.target_type: resource 00 (code) or resource 03 (general)"
+        description: "Load the L12 lens resource 00 (works for all target types)."
         required: true
         condition:
-          type: not
-          condition:
-            type: simple
-            variable: current_unit.pipeline_mode
-            operator: "=="
-            value: portfolio
+          type: and
+          conditions:
+            - type: not
+              condition:
+                type: simple
+                variable: current_unit.pipeline_mode
+                operator: "=="
+                value: portfolio
+            - type: not
+              condition:
+                type: simple
+                variable: current_unit.pipeline_mode
+                operator: "=="
+                value: behavioral
       - id: execute-lens
         name: Execute Lens Operations
         description: "Apply every operation in the lens prompt sequentially against current_unit.target. Execute completely — do not abbreviate."
         required: true
         condition:
-          type: not
-          condition:
-            type: simple
-            variable: current_unit.pipeline_mode
-            operator: "=="
-            value: portfolio
+          type: and
+          conditions:
+            - type: not
+              condition:
+                type: simple
+                variable: current_unit.pipeline_mode
+                operator: "=="
+                value: portfolio
+            - type: not
+              condition:
+                type: simple
+                variable: current_unit.pipeline_mode
+                operator: "=="
+                value: behavioral
       - id: write-structural-artifact
         name: Write Structural Artifact
         description: "Write the analysis to {unit_output_dir}/structural-analysis.md"
         required: true
         condition:
-          type: not
-          condition:
-            type: simple
-            variable: current_unit.pipeline_mode
-            operator: "=="
-            value: portfolio
+          type: and
+          conditions:
+            - type: not
+              condition:
+                type: simple
+                variable: current_unit.pipeline_mode
+                operator: "=="
+                value: portfolio
+            - type: not
+              condition:
+                type: simple
+                variable: current_unit.pipeline_mode
+                operator: "=="
+                value: behavioral
       - id: select-portfolio-lenses
         name: Select Portfolio Lenses
         description: "Use current_unit.lenses if provided. Otherwise default to claim + degradation (code) or pedagogy + rejected-paths (general). Load the portfolio-analysis supporting skill for the selection guide."
@@ -82,16 +107,40 @@ loops[1]:
           variable: current_unit.pipeline_mode
           operator: "=="
           value: portfolio
+      - id: dispatch-behavioral-lenses
+        name: Dispatch Behavioral Lenses
+        description: "Dispatch 4 independent behavioral lenses against current_unit.target: error-resilience (19) → behavioral-errors.md, optim (20) → behavioral-costs.md, evolution (21) → behavioral-changes.md, api-surface (22) → behavioral-promises.md. All 4 are independent and can run in parallel (up to 4 concurrent)."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: behavioral
+      - id: collect-behavioral-paths
+        name: Collect Behavioral Artifact Paths
+        description: "Capture all 4 behavioral artifact paths in behavioral_output_paths: ERRORS → {unit_output_dir}/behavioral-errors.md, COSTS → {unit_output_dir}/behavioral-costs.md, CHANGES → {unit_output_dir}/behavioral-changes.md, PROMISES → {unit_output_dir}/behavioral-promises.md."
+        required: true
+        condition:
+          type: simple
+          variable: current_unit.pipeline_mode
+          operator: "=="
+          value: behavioral
       - id: report-unit-paths
         name: Report Unit Artifact Paths
-        description: "Append the artifact paths from this unit to all_artifact_paths. Report structural_output_path or portfolio_output_paths for the current unit."
+        description: "Append the artifact paths from this unit to all_artifact_paths. Report structural_output_path, portfolio_output_paths, or behavioral_output_paths for the current unit."
         required: true
-transitions[2]:
+transitions[3]:
   - to: adversarial-pass
     condition:
       type: simple
       variable: pipeline_mode
       operator: "=="
       value: full-prism
+  - to: behavioral-synthesis-pass
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: "=="
+      value: behavioral
   - to: deliver-result
     isDefault: true
