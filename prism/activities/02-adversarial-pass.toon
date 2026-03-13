@@ -30,7 +30,7 @@ loops[1]:
           value: full-prism
       - id: load-lens
         name: Load Adversarial Lens
-        description: "Load the adversarial lens resource: resource 01 (code) or resource 04 (general) based on current_unit.target_type"
+        description: "Load the adversarial lens resource 01 (works for all target types)"
         required: true
         condition:
           type: simple

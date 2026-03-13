@@ -2,84 +2,142 @@
 
 > Part of the [Structural Analysis Prism Workflow](../README.md)
 
-The prism workflow includes 12 lens resources organized into three groups: code pipeline, general pipeline, and portfolio lenses. All resources are accessible cross-workflow via `get_resource("prism", index)`.
+The prism workflow includes 30 lens resources organized into seven families. All resources are accessible cross-workflow via `get_resource("prism", index)`.
 
-Each lens is a short imperative prompt (50–330 words) that encodes a specific sequence of analytical operations. The model executes these operations as a program — the lens determines *what kind* of analysis is performed, not how intelligent the analysis is.
+Each lens is a short imperative prompt (60–330 words) that encodes a specific sequence of analytical operations. The model executes these operations as a program — the lens determines *what kind* of analysis is performed, not how intelligent the analysis is.
 
 ---
 
-## Code Pipeline (3-pass Full Prism)
+## L12 Pipeline (3-pass Full Prism)
 
-The code pipeline runs three sequential passes with context isolation between each. Together they form the Full Prism self-correcting analysis.
+The L12 pipeline runs three sequential passes with context isolation between each. Works for **all target types** (code and general).
 
-| Index | Resource | Words | Purpose |
-|-------|----------|-------|---------|
-| `00` | [L12 Structural](00-l12-structural.md) | ~330 | Primary structural analysis — 12-step operation chain from falsifiable claim through conservation law to meta-law and classified bug table |
-| `01` | [L12 Adversarial](01-l12-adversarial.md) | ~150 | Adversarial challenge — receives the structural output and attacks it: wrong predictions, overclaims, underclaims, revised bug table |
-| `02` | [L12 Synthesis](02-l12-synthesis.md) | ~130 | Final reconciliation — receives both prior outputs and produces corrected conservation law, definitive classification, and the deepest finding |
+| Index | Resource | Words | Key Question | Purpose |
+|-------|----------|-------|-------------|---------|
+| `00` | [L12 Structural](00-l12-structural.md) | ~330 | "What code IS" | Conservation law + meta-law + classified bug table |
+| `01` | [L12 Adversarial](01-l12-adversarial.md) | ~150 | — | Challenge structural findings: wrong predictions, overclaims, underclaims |
+| `02` | [L12 Synthesis](02-l12-synthesis.md) | ~130 | — | Reconcile structural + adversarial into corrected conservation law |
 
 **Pass dependency chain:** `00` (standalone) → `01` (requires output of `00`) → `02` (requires output of both `00` and `01`)
 
-### L12 Operation Chain (resource 00)
-
-The structural lens encodes the following operations in sequence:
-
-1. Make a falsifiable claim about the code's deepest structural problem
-2. Three independent experts test the claim (defend, attack, probe assumptions)
-3. Name the gap between original and transformed claim as a diagnostic
-4. Name the concealment mechanism — how the code hides its real problems
-5. Engineer an improvement that deepens the concealment (passes code review)
-6. Name three properties visible only because of the improvement attempt
-7. Apply the diagnostic to the improvement — what does it conceal?
-8. Engineer a second improvement addressing the recreated property
-9. Name the structural invariant — persists through every improvement
-10. Invert the invariant — make the impossible trivially satisfiable
-11. Name the conservation law between original and inverted impossibilities
-12. Apply the diagnostic to the conservation law — derive the meta-law
-13. Collect every concrete bug, edge case, and silent failure with classification
-
----
-
-## General Pipeline (3-pass for non-code input)
-
-Identical operations to the code pipeline but with domain-neutral language. Use these for requirements, designs, plans, strategies, or any structured text.
-
-| Index | Resource | Words | Purpose |
-|-------|----------|-------|---------|
-| `03` | [L12 General Structural](03-l12-general-structural.md) | ~330 | Primary structural analysis with domain-neutral framing ("input" not "code", "expert review" not "code review") |
-| `04` | [L12 General Adversarial](04-l12-general-adversarial.md) | ~150 | Adversarial challenge for non-code analysis — same structure as `01` with neutral terminology |
-| `05` | [L12 General Synthesis](05-l12-general-synthesis.md) | ~130 | Final reconciliation for non-code analysis — classifies issues as "changeable" or "structural" rather than "fixable" |
-
-**When to use general vs code lenses:** If the input is source code, use resources `00`–`02`. If the input is a document, design, plan, or any non-code text, use resources `03`–`05`. The analytical operations are identical — only the framing language differs.
+> **Note:** Resources 03-05 (general L12 variants) have been removed — the code L12 lenses work for all target types.
 
 ---
 
 ## Portfolio Lenses (single-pass, independent)
 
-Six standalone lenses that each activate a distinct analytical operation. Research confirms zero overlap across 5 lenses on 3+ real codebases — each finds genuinely different structural properties.
+Six standalone lenses that each activate a distinct analytical operation. Zero overlap across 5 lenses on 3+ real codebases.
 
-| Index | Resource | Words | Operation | Best for |
-|-------|----------|-------|-----------|----------|
-| `06` | [Pedagogy](06-pedagogy.md) | ~75 | Trace every explicit choice → name rejected alternatives → design artifact by someone who internalized these patterns → trace transfer corruption | Understanding why patterns were adopted and where they silently break |
-| `07` | [Claim](07-claim.md) | ~80 | Extract every embedded empirical claim → assume each false → trace corruption → build three alternative designs inverting one claim each | Exposing hidden assumptions about timing, causality, resources, and human behavior |
-| `08` | [Scarcity](08-scarcity.md) | ~60 | Name the resource scarcity each problem exposes → design alternative with opposite scarcities → name conservation law across designs | Discovering what the design assumes will never run out |
-| `09` | [Rejected Paths](09-rejected-paths.md) | ~65 | Trace the decision enabling each problem → design artifact taking all rejected paths → name which problems migrate between visible and hidden | Revealing design trade-offs and the problems they swap |
-| `10` | [Degradation](10-degradation.md) | ~65 | Design decay timeline at 6/12/24 months → model which failures metastasize → name property that worsens monotonically with neglect | Assessing maintainability and time-dependent risk |
-| `11` | [Contract](11-contract.md) | ~80 | Read function by function: signature promise vs implementation reality → find type-dependent behavior, sentinel overloading, unvalidated data, swallowed exceptions, read-side mutation | Finding interface violations and the caller mistakes they enable |
+| Index | Resource | Words | Key Question | Best For |
+|-------|----------|-------|-------------|----------|
+| `06` | [Pedagogy](06-pedagogy.md) | ~75 | "What patterns transfer?" | Understanding why patterns were adopted and where they silently break |
+| `07` | [Claim](07-claim.md) | ~80 | "What assumptions hide?" | Exposing hidden assumptions about timing, causality, resources |
+| `08` | [Scarcity](08-scarcity.md) | ~60 | "What runs out?" | Discovering what the design assumes will never be exhausted |
+| `09` | [Rejected Paths](09-rejected-paths.md) | ~65 | "What was given up?" | Revealing design trade-offs and the problems they swap |
+| `10` | [Degradation](10-degradation.md) | ~65 | "What decays?" | Assessing maintainability and time-dependent risk |
+| `11` | [Contract](11-contract.md) | ~80 | "What promises break?" | Finding interface violations and caller mistakes (code-only) |
 
-**Note:** The contract lens (`11`) is code-specific — do not apply it to non-code input. All other portfolio lenses work on both code and text.
+---
 
-### Recommended Combinations
+## Structural SDL Family
+
+Single-pass lenses targeting specific architectural concerns. 3 concrete steps each, always single-shot on all models. Model-independent quality (Haiku ≈ Sonnet ≈ Opus at ~9.0).
+
+| Index | Resource | Words | Key Question | Target Type |
+|-------|----------|-------|-------------|-------------|
+| `12` | [Deep Scan (SDL-1)](12-deep-scan.md) | ~180 | "What structure HIDES" | code |
+| `13` | [Trust Topology (SDL-2)](13-sdl-trust.md) | ~190 | "Where AUTHORITY inverts" | code |
+| `14` | [Coupling Clock (SDL-3)](14-sdl-coupling.md) | ~200 | "When ORDER matters" | code |
+| `15` | [Abstraction Leak (SDL-4)](15-sdl-abstraction.md) | ~195 | "What LEAKS across layers" | code + general |
+| `16` | [Recursive Entailment (REC)](16-rec.md) | ~175 | "What FIXES hide" | code |
+| `17` | [Identity Displacement (SDL-5)](17-ident.md) | ~180 | "What code CLAIMS vs reality" | code |
+| `18` | [73w](18-73w.md) | ~73 | "What code IS" (compressed) | code + general (**Sonnet-only**) |
+
+> **Model note:** Deep Scan (12) and Rec (16) produce best results on Opus. 73w (18) requires Sonnet minimum — Haiku fails below this compression floor.
+
+---
+
+## Behavioral Pipeline
+
+Four independent lenses + one synthesis lens forming the behavioral pipeline. Each asks a different question about code behavior. **Code-only** (no optim_neutral variant exists).
+
+| Index | Resource | Words | Role Label | Key Question |
+|-------|----------|-------|-----------|-------------|
+| `19` | [Error Resilience (V11)](19-error-resilience.md) | ~165 | ERRORS | "How code BREAKS" |
+| `20` | [Optimization (V14)](20-optim.md) | ~120 | COSTS | "What code COSTS" |
+| `21` | [Evolution (V10)](21-evolution.md) | ~130 | CHANGES | "How code CHANGES" |
+| `22` | [API Surface (V3)](22-api-surface.md) | ~130 | PROMISES | "What code PROMISES vs does" |
+| `23` | [Behavioral Synthesis](23-behavioral-synthesis.md) | ~150 | SYNTHESIS | Convergence + blind spots + unified law |
+
+**Pipeline structure:**
+```
+19 (ERRORS) ──┐
+20 (COSTS)  ──┤  (parallel, independent)
+21 (CHANGES)──┤
+22 (PROMISES)─┘
+               │
+               ▼
+         23 (SYNTHESIS) → reads all 4 labeled outputs
+```
+
+> **Model note:** Behavioral lenses favor Sonnet (+0.5-1.3 over Haiku). Haiku quality: 8.5-9.0. Sonnet quality: 9.0-9.5.
+
+Individual behavioral lenses (19-22) are also portfolio-eligible for single-concern analysis.
+
+---
+
+## Domain-Neutral Variants
+
+Domain-neutral rewrites of behavioral lenses for non-code targets. Quality is ~0.5-1.0 lower than code-specific versions on code targets — always prefer code-specific variants when `target_type == "code"`.
+
+| Index | Resource | Words | Code-Specific Equivalent | Quality Gap |
+|-------|----------|-------|-------------------------|-------------|
+| `24` | [Error Resilience Neutral](24-error-resilience-neutral.md) | ~175 | 19 (error-resilience) | -0.5 to -1.0 |
+| `25` | [API Surface Neutral](25-api-surface-neutral.md) | ~155 | 22 (api-surface) | -0.7 to -1.0 |
+| `26` | [Evolution Neutral](26-evolution-neutral.md) | ~165 | 21 (evolution) | -0.5 to -0.7 (weakest) |
+
+> **No optim_neutral** exists — optim (20) uses strongly code-oriented vocabulary. For general performance analysis, use scarcity (08) instead.
+
+---
+
+## Compressed Variants
+
+Shorter versions of error-resilience for model optimization. Use when Haiku needs to stay single-shot on shorter prompts.
+
+| Index | Resource | Words | Full-Length Equivalent |
+|-------|----------|-------|-----------------------|
+| `27` | [Error Resilience Compact](27-error-resilience-compact.md) | ~100 | 19 (error-resilience, ~165w) |
+| `28` | [Error Resilience 70w](28-error-resilience-70w.md) | ~70 | 19 (error-resilience, ~165w) |
+
+---
+
+## Hybrid / Specialized
+
+Standalone lenses for specific analytical concerns. All are code-only and portfolio-eligible.
+
+| Index | Resource | Words | Key Question | Notes |
+|-------|----------|-------|-------------|-------|
+| `29` | [Evidence Cost](29-evidence-cost.md) | ~160 | "What validation costs?" | Hybrid of error_resilience × optim |
+| `30` | [Reachability](30-reachability.md) | ~160 | "What code is dead?" | Dead code, unreachable paths |
+| `31` | [Fidelity (SDL-9)](31-fidelity.md) | ~215 | "What documentation lies?" | Doc-code drift, stale comments |
+| `32` | [State Audit](32-state-audit.md) | ~205 | "What state breaks?" | State machine violations |
+
+---
+
+## Recommended Combinations
 
 | Analytical Goal | Lenses | Why |
 |-----------------|--------|-----|
-| Trade-off analysis | `08` (scarcity) + `09` (rejected-paths) | Scarcity finds what's assumed infinite; rejected-paths finds what the design gave up |
-| Hidden assumptions | `07` (claim) + `06` (pedagogy) | Claim inverts assumptions; pedagogy traces where inherited patterns break |
-| Maintainability | `10` (degradation) + `11` (contract) | Degradation finds time-dependent decay; contract finds interface drift |
-| Design rationale | `06` (pedagogy) + `09` (rejected-paths) | Pedagogy traces pattern inheritance; rejected-paths traces decision consequences |
-| Interface quality | `11` (contract) + `07` (claim) | Contract finds violations; claim finds the false assumptions enabling them |
-| Bug detection (single lens) | `00` (L12 structural) | Highest-impact single lens — produces conservation law + bug table |
-| Maximum depth | `00` + `01` + `02` (Full Prism pipeline) | Self-correcting 3-pass analysis |
+| Bug detection (single) | `00` (L12) | Highest-impact single lens |
+| Maximum depth | `00` + `01` + `02` (Full Prism) | Self-correcting 3-pass analysis |
+| Comprehensive behavioral | `19-23` (Behavioral pipeline) | 4-dimensional behavioral analysis + synthesis |
+| Trade-off analysis | `08` (scarcity) + `09` (rejected-paths) | Scarcity finds what's assumed infinite; rejected-paths finds what was given up |
+| Architecture review | `12` (deep-scan) + `15` (sdl-abstraction) | Conservation laws + abstraction leak detection |
+| Trust/security | `13` (sdl-trust) + `19` (error-resilience) | Authority inversions + error information destruction |
+| API quality | `22` (api-surface) + `17` (ident) | Promise-reality gap + identity displacement |
+| Coupling analysis | `14` (sdl-coupling) + `21` (evolution) | Temporal coupling + invisible handshakes |
+| Maintainability | `10` (degradation) + `11` (contract) | Time-dependent decay + interface drift |
+| Hidden assumptions | `07` (claim) + `06` (pedagogy) | Assumption inversion + transferred patterns |
 
 ---
 
@@ -88,17 +146,17 @@ Six standalone lenses that each activate a distinct analytical operation. Resear
 Any workflow can load prism resources without depending on the prism workflow's activities or orchestration:
 
 ```
-# Load a single lens
-get_resource({ workflow_id: "prism", index: "00" })
-
-# Load a portfolio lens
-get_resource({ workflow_id: "prism", index: "07" })
+get_resource({ workflow_id: "prism", index: "00" })   # L12 structural
+get_resource({ workflow_id: "prism", index: "12" })   # Deep Scan
+get_resource({ workflow_id: "prism", index: "19" })   # Error Resilience
 ```
-
-The resource content is the lens prompt text — the calling skill applies it as an analytical framework against target content.
 
 ---
 
+## Metadata
+
+New resources (12-32) include YAML front matter with calibration metadata: `calibration_date`, `model_versions`, `quality_baseline`, `origin`, and `notes`. Original resources (00-02, 06-11) do not include front matter.
+
 ## Provenance
 
-All lenses are derived from the [agi-in-md](https://github.com/m2ux/agi-in-md) research project. The L12 lens (`00`) corresponds to `lenses/l12.md`, the portfolio lenses correspond to the files in `lenses/` by name. Content is identical to the upstream source — the resources are copies with standardized naming for the workflow server's `{NN}-{name}.md` convention.
+All lenses are derived from the [agi-in-md](https://github.com/m2ux/agi-in-md) research project. Content is identical to the upstream source — the resources are copies with standardized naming for the workflow server's `{NN}-{name}.md` convention.

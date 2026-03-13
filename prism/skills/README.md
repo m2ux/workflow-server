@@ -2,17 +2,18 @@
 
 > Part of the [Structural Analysis Prism Workflow](../README.md)
 
-## Skills (5 workflow-specific)
+## Skills (6 workflow-specific)
 
-The prism workflow provides 5 skills organized by role. Skills `orchestrate-prism` and `full-prism` form the isolation pipeline. The remaining skills are usable standalone by any workflow.
+The prism workflow provides 6 skills organized by role. Skills `orchestrate-prism`, `full-prism`, and `behavioral-pipeline` form the isolation pipeline. The remaining skills are usable standalone by any workflow.
 
 | # | Skill ID | Capability | Role |
 |---|----------|------------|------|
 | 00 | `structural-analysis` | Single-pass L12 structural analysis on code | Standalone / Worker |
 | 01 | `full-prism` | Execute one isolated pass of the Full Prism pipeline | Worker |
-| 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses | Standalone |
-| 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy | Planning / Advisory |
-| 04 | `orchestrate-prism` | Dispatch isolated workers, manage the analysis pipeline | Orchestrator |
+| 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses (expanded catalog: 24 lenses) | Standalone |
+| 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy (24 goal mappings) | Planning / Advisory |
+| 04 | `orchestrate-prism` | Dispatch isolated workers, manage all pipeline modes | Orchestrator |
+| 05 | `behavioral-pipeline` | Execute a pass of the 4+1 behavioral pipeline | Worker |
 
 > The universal skills `orchestrate-workflow` and `execute-activity` from [meta/skills/](../../meta/skills/) are **not used** by this workflow. Prism uses its own orchestration skill (`orchestrate-prism`) because it requires disposable (non-resumed) workers for context isolation.
 
@@ -24,7 +25,7 @@ Single-pass L12 structural analysis. Loads the L12 lens prompt and applies it to
 
 ```mermaid
 graph TD
-    startNode(["Start"]) --> loadLens["Load L12 lens resource (00 or 03)"]
+    startNode(["Start"]) --> loadLens["Load L12 lens resource (00)"]
     loadLens --> readTarget{"Input is file path?"}
     readTarget -->|"yes"| readFile["Read file content"]
     readTarget -->|"no"| useDirect["Use inline content"]
@@ -49,7 +50,7 @@ graph TD
 
 | Step Key | Action |
 |----------|--------|
-| `load-lens` | Load resource `00` (code) or `03` (general) via `get_resource` |
+| `load-lens` | Load resource `00` via `get_resource` (works for all target types) |
 | `read-target` | Read file or accept inline code; note optional analysis focus |
 | `execute-lens` | Execute every L12 operation: claim → dialectic → concealment → improvements → invariant → inversion → conservation law → meta-law → bug table |
 | `write-artifact` | Write analysis to `{output-path}/structural-analysis.md` |
@@ -81,7 +82,7 @@ graph TD
 
 | Step Key | Action |
 |----------|--------|
-| `load-lens` | Load lens resource by index (00-05) via `get_resource("prism", index)` |
+| `load-lens` | Load lens resource by index (00-02) via `get_resource("prism", index)` |
 | `read-prior-artifacts` | Read prior pass artifacts from filesystem; label as ANALYSIS 1 / ANALYSIS 2 |
 | `apply-lens` | Apply lens operations to content; use prior artifacts as context if provided |
 | `write-artifact` | Write analysis to `{output-path}/{artifact-filename}` |
@@ -197,7 +198,7 @@ graph TD
 | Design review | claim + rejected-paths | 07, 09 |
 | Codebase comprehension | pedagogy + rejected-paths | 06, 09 |
 | Pre-commit validation | L12 pipeline | 00, 01, 02 |
-| Planning review | L12 general | 03 |
+| Planning review | L12 | 00 |
 | Maintainability assessment | degradation + contract | 10, 11 |
 | Assumption validation | claim + scarcity | 07, 08 |
 | Security review | L12 pipeline | 00, 01, 02 |
@@ -250,3 +251,32 @@ graph TD
 | `present-result` | Read and present final artifacts; report all artifact paths |
 
 **Key rules:** NEVER use Task `resume` between passes. Pass artifact paths, not inline text. Verify artifacts were written before dispatching subsequent passes.
+
+---
+
+### Skill Protocol: `behavioral-pipeline` (05)
+
+Worker-side skill for the 4+1 behavioral pipeline. Runs 4 independent behavioral lenses (each in a fresh context), then a synthesis lens that reads all 4 outputs with labeled sections. Code-only — behavioral pipeline is not available for general targets.
+
+**Label mapping:**
+
+| Resource | Index | Role Label | Artifact |
+|----------|-------|-----------|----------|
+| error-resilience | 19 | ERRORS | behavioral-errors.md |
+| optim | 20 | COSTS | behavioral-costs.md |
+| evolution | 21 | CHANGES | behavioral-changes.md |
+| api-surface | 22 | PROMISES | behavioral-promises.md |
+| behavioral-synthesis | 23 | SYNTHESIS | behavioral-synthesis.md |
+
+**Protocol steps:**
+
+| Step Key | Action |
+|----------|--------|
+| `load-lens` | Load behavioral lens by index (19-23) via `get_resource("prism", index)` |
+| `read-target` | Read target code file |
+| `apply-independent-lens` | For passes 19-22: apply lens to target, write per-role artifact |
+| `construct-synthesis-input` | For pass 23: read all 4 artifacts, construct labeled sections (## ERRORS, ## COSTS, ## CHANGES, ## PROMISES) |
+| `apply-synthesis-lens` | Apply behavioral_synthesis lens to constructed input |
+| `write-artifact` | Write output artifact |
+
+**Key rules:** Code-only (no optim_neutral exists). Label mapping is fixed — synthesis expects exactly ERRORS, COSTS, CHANGES, PROMISES. Behavioral lenses favor Sonnet (+0.5-1.3 over Haiku).
