@@ -30,7 +30,9 @@ Without these lenses, users who need coupling analysis, trust topology mapping, 
 
 ## Solution Overview
 
-*To be defined during comprehension and design activities.*
+This enhancement imports 21 new analytical lenses into the prism workflow, expanding the resource catalog from 12 to 33 lenses organized into eight families. The new lenses include the SDL structural family (which targets specific architectural concerns like trust boundaries, temporal coupling, and abstraction violations), a four-prism behavioral pipeline (which analyzes how code handles errors, manages performance, evolves over time, and fulfills its API promises), domain-neutral variants for non-code analysis, and several hybrid and specialized lenses. The behavioral pipeline introduces a new analysis mode where four independent lenses run in parallel and then feed into a synthesis lens that finds convergence points and blind spots across all four perspectives.
+
+The changes are confined to the workflow definition files — no modifications to the MCP server source code are needed. The 21 new resource files are copied from the upstream agi-in-md project with their calibration metadata preserved. The existing skill files (plan-analysis, portfolio-analysis, orchestrate-prism) are updated with expanded routing tables that map analytical goals to the appropriate new lenses, and a new behavioral-pipeline skill and behavioral-synthesis-pass activity are added to orchestrate the four-plus-one behavioral analysis sequence. All existing analysis modes (single-pass L12, three-pass Full Prism, and portfolio) continue to work exactly as before — the changes are purely additive.
 
 ## Progress
 
@@ -42,6 +44,6 @@ Without these lenses, users who need coupling analysis, trust topology mapping, 
 | Requirements Elicitation | Complete | 13 requirements (R1-R8 + AR1-AR5) covering resources, pipeline mode, routing, model sensitivity, quality metadata |
 | Research | Complete | Critical finding: behavioral pipeline composition mismatch between prism.py and behavioral_synthesis.md |
 | Implementation Analysis | Complete | 11 gaps identified, 23 files to create, 9 to modify, 4 unchanged |
-| Implementation Planning | Pending | — |
+| Plan & Prepare | Complete | 6 change blocks, 23 files to create, 9 to modify, test plan with 6 test categories |
 | Implementation | Pending | — |
 | Review | Pending | — |

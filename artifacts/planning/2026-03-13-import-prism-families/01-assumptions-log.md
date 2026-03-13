@@ -67,15 +67,22 @@
 | A-029 | The existing portfolio dispatch pattern in structural-pass (parallel up to 4) can be adapted for behavioral lens dispatch | Current Behavior | code-analyzable | Validated | structural-pass.toon lines 58-84: portfolio conditional branch dispatches independent lenses in parallel. Behavioral pipeline has the same pattern (4 independent lenses). |
 | A-030 | Resource naming convention (`{NN}-{name}.md`) accommodates hyphenated names | Current Behavior | code-analyzable | Validated | Existing resource `09-rejected-paths.md` uses hyphens. New names like `12-deep-scan.md` follow the same pattern. |
 
+## Planning-Phase Assumptions
+
+| ID | Assumption | Category | Resolvability | Status | Evidence |
+|----|-----------|----------|---------------|--------|----------|
+| A-031 | Six change blocks (CB-1 through CB-6) can each be committed independently without breaking the workflow | Task Breakdown | code-analyzable | Validated | CB-1 (resources) adds files only — no breakage. CB-2 (workflow.toon) only changes a description string. CB-3 (new skill) is additive. CB-4 (skill updates) expands existing tables. CB-5 (activities) adds conditional branches that only fire for behavioral mode. CB-6 (docs) is documentation. The MCP server loads TOON files lazily — unrecognized pipeline_mode values are ignored until the workflow is invoked with that mode. |
+| A-032 | The 6-commit strategy (one per CB) provides a clean git history without creating intermediate broken states | Task Breakdown | code-analyzable | Validated | Each CB adds functionality without removing any. Resources can exist before skills reference them. Skills can reference resources before activities invoke them. Activities can define transitions to not-yet-created activities (TOON transitions are strings, not validated at load time). |
+
 ## Summary
 
 | Status | Count |
 |--------|-------|
-| Validated | 20 |
+| Validated | 22 |
 | Partially Validated | 2 |
 | Invalidated | 0 |
 | Open (stakeholder-dependent) | 7 |
-| **Total** | **30** |
+| **Total** | **32** |
 
 ### Remaining Open Assumptions
 
