@@ -238,52 +238,6 @@ Include a clickable markdown link to `assumptions-log.md` for full details and r
 
 ---
 
-## Workflow Integration
-
-### When to Create the Log
-
-Create the assumptions log during **design-philosophy** (the first activity that makes decisions requiring assumptions). This ensures assumptions are tracked from the very beginning of the work package.
-
-### Which Activities Update the Log
-
-Each phase that involves decision-making should collect and review assumptions:
-
-| Activity | Assumption Categories |
-|----------|----------------------|
-| **02-design-philosophy** | Problem Interpretation, Complexity Assessment, Workflow Path |
-| **03-requirements-elicitation** | Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria |
-| **04-research** | Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment |
-| **05-implementation-analysis** | Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding |
-| **06-plan-prepare** | Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions |
-| **07-implement** | Behavioral, Architectural, Interface, Performance, Compatibility, Scope, Implicit Requirements |
-
-### When to Update the Log
-
-**After each activity's assumption checkpoint**, once the user has reviewed and responded to assumptions:
-
-1. Record the assumptions that were surfaced for that phase
-2. Document the user's response (confirmed, corrected, or deferred)
-3. Note any changes made as a result
-
-**During implementation**, update the log AFTER completing the assumption review for each task:
-
-1. Collect assumptions during task implementation
-2. Present assumptions at checkpoint for user review
-3. Record user responses (confirmed, corrected, deferred)
-4. **Then update the assumptions log** with outcomes
-
-This ensures the log reflects the reviewed state, not just the initially collected assumptions.
-
-### Outcome Statuses
-
-| Status | Meaning | Action |
-|--------|---------|--------|
-| ✅ Confirmed | User agreed assumption was correct | No changes needed |
-| 🔄 Corrected | User provided different direction | Document changes made |
-| ⏸️ Deferred | Decision postponed for later | Track for follow-up |
-
----
-
 ## Assumptions Log Template
 
 

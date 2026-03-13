@@ -475,27 +475,3 @@ When generating a test suite review report, include a reference back to this gui
 **Deferred Improvements:** [List any improvements noted for future work]
 ```
 
----
-
-## Post-Review Implementation Process
-
-### Step 1: Implementation Offer
-Ask the user:
-> "Test suite review complete! Would you like me to proceed with implementing the recommendations? I will work through them one at a time."
-
-### Step 2: Iterative Implementation
-**If the user agrees:**
-
-1. **Implement ONLY the first numbered item**
-2. **Transform low-value tests** into high-value logic where possible
-3. **Maintain test coverage** while improving quality
-4. **Run tests** to ensure changes work correctly
-5. **Stop and ask the user** before proceeding to next item
-
-### Important Guidelines:
-- ✅ Transform rather than remove low-value tests
-- ✅ Maintain test coverage while improving value
-- ✅ Complete one recommendation before stopping
-- ✅ Ask permission between each recommendation
-- ❌ Never implement multiple recommendations at once
-- ❌ Never simply remove tests without equivalent coverage

@@ -335,17 +335,6 @@ Define measurable targets based on baselines:
 
 ---
 
-## Integration with Workflow
-
-This guide supports implementation analysis:
-
-1. **After KB research confirmed** → Begin implementation analysis
-2. **Complete analysis** → Store in planning folder artifact
-3. **Present checkpoint** → Get user confirmation
-4. **Proceed to design** → Use baselines to inform success criteria
-
----
-
 ## Related Guides
 
 - [Work Package Implementation Workflow](../workflow.toon)

@@ -195,35 +195,9 @@ For each reported row number:
 
 ---
 
-## Integration with Automated Reviews
-
-After manual diff review completes:
-
-1. **If critical issues found:**
-   - Address findings before proceeding
-   - Re-run manual diff review if significant changes made
-
-2. **If no critical issues:**
-   - Proceed to code review (automated)
-   - Proceed to test suite review
-   - Proceed to architecture summary (if applicable)
-
-The manual diff review findings should inform and complement automated review focus areas.
-
----
-
 ## Best Practices
-
-### For Reviewers
 
 - **Use a dedicated diff tool:** VS Code, Beyond Compare, Meld, or similar
 - **Review systematically:** Top to bottom, or by logical grouping
 - **Note context:** Reference surrounding code when describing issues
 - **Be specific:** Include line numbers or code snippets in descriptions
-
-### For Facilitators (AI Agents)
-
-- **Generate clean index:** Ensure alphabetical sorting and accurate paths
-- **Present one finding at a time:** Don't rush the interview loop
-- **Capture verbatim:** Record user's exact words, don't paraphrase
-- **Compile comprehensively:** Include all findings in final report

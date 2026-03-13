@@ -127,18 +127,6 @@ Data flow tracing and operational analysis are not separate activities performed
 
 The comprehension artifact's Open Questions section should include questions in these categories. Questions like "Does the producer enforce the window bound?" or "What happens at genesis when the previous position is zero?" are exactly the kind of questions that prevent guards from becoming halt vectors.
 
-## Recommended Execution Sequence
-
-Combine the techniques above in this recommended order during the activity:
-
-1. **Orientation** (Reverse Engineering Patterns): Read All the Code in One Hour, Skim the Documentation, examine build system
-2. **Evidence Gathering** (Code Forensics): Run hotspot analysis, temporal coupling, and knowledge map generation against the git history
-3. **Structural Analysis** (Code Reading + Hierarchical Decomposition): Map architecture, identify key abstractions, trace dependency graphs
-4. **Data Flow and Operational Analysis** (Data Flow Tracing + Operational Context): For the specific code path the work package targets, trace data upstream to the producer and downstream to consumers. Identify the execution context, error propagation path, and operational scenarios (genesis, recovery, timing, reorg). Verify that any invariants the work package plans to enforce are guaranteed by the data producer.
-5. **Design Recovery** (Design Rationale + Legacy Code): Infer rationale, identify seams, sketch effects, document persistent data model
-6. **Domain Mapping**: Connect technical constructs to domain concepts, build glossary
-7. **Deep-Dive Loop**: Use forensic evidence (hotspots, coupling) plus problem relevance to prioritize deep-dive areas
-
 ## Knowledge Base References
 
 The following sources in the knowledge base are directly relevant to this activity:
@@ -150,18 +138,6 @@ The following sources in the knowledge base are directly relevant to this activi
 | *Software Design X-Rays* (Tornhill) | Behavioral code analysis; complexity trends; change coupling; fractal value analysis; architectural hotspots |
 | *Code Reading: The Open Source Perspective* (Spinellis) | Code reading strategies; program comprehension; software archaeology; build system analysis |
 | *Working Effectively with Legacy Code* (Feathers) | Seam identification; characterization tests; dependency breaking; sensing variables; effect analysis |
-
-## Discovering Existing Artifacts
-
-Before creating new knowledge, check for existing comprehension artifacts:
-
-1. List contents of `.engineering/artifacts/comprehension/`
-2. Match by project name, module names, or domain terms from the current problem statement
-3. For each relevant artifact found:
-   - Summarize its coverage scope and last-updated date
-   - Note which sections are relevant to the current task
-   - Identify gaps that should be filled during this pass
-4. Present findings to the user at the `existing-artifacts-review` checkpoint
 
 ## Artifact Template
 
@@ -252,16 +228,6 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 *This artifact is part of a persistent knowledge base. It is augmented across
 successive work packages to build cumulative codebase understanding.*
 ```
-
-## Deep-Dive Exploration
-
-During the deep-dive loop, the agent should:
-
-1. **Present candidates**: List areas available for exploration based on the architecture survey, prioritized by relevance to the current problem statement
-2. **Propose specific questions**: For each area, suggest concrete questions the user might want answered (e.g., "How does error propagation work between module X and module Y?")
-3. **Perform targeted analysis**: For the selected area, trace data flows, examine implementation details, identify edge cases, and document internal design decisions
-4. **Append to artifact**: Add findings as a dedicated subsection under "Deep-Dive Sections" with a date stamp
-5. **Check sufficiency**: Return to the `comprehension-sufficient` checkpoint — does the user have enough context, or do they want to explore further?
 
 ## Cross-Referencing
 
