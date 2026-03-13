@@ -1,0 +1,27 @@
+display_information:
+  name: Workflow Runner
+  description: Headless AI workflow execution via Cursor ACP
+  background_color: "#1a1a2e"
+
+features:
+  bot_user:
+    display_name: workflow-runner
+    always_online: true
+  slash_commands:
+    - command: /workflow
+      description: Start and manage workflow sessions
+      usage_hint: "start <workflow-id> <target> [issue-ref] | list | help"
+      should_escape: false
+
+oauth_config:
+  scopes:
+    bot:
+      - chat:write
+      - commands
+
+settings:
+  interactivity:
+    is_enabled: true
+  org_deploy_enabled: false
+  socket_mode_enabled: true
+  token_rotation_enabled: false
