@@ -51,13 +51,23 @@
 
 ## Summary
 
+## Research-Phase Assumptions
+
+| ID | Assumption | Category | Resolvability | Status | Evidence |
+|----|-----------|----------|---------------|--------|----------|
+| A-025 | The prism.py behavioral pipeline was modified after behavioral_synthesis.md was written, and behavioral_synthesis.md represents the intended design (evolution + api_surface, not rec + ident) | Source Relevance | stakeholder-dependent | Open | prism.py lines 5166-5178 show identical general/code mode prism lists (both use rec + ident), suggesting incomplete migration. behavioral_synthesis.md's Step 1 references "invisible handshakes" (evolution) and "naming lies" (api_surface) which don't match rec/ident. |
+| A-026 | The upstream OPTIMAL_PRISM_MODEL preferences (deep_scan→opus, rec→opus) are still valid for current model versions | Source Relevance | stakeholder-dependent | Open | Model preferences may change with new model releases. The calibration_date in prism metadata is 2026-03-11. |
+| A-027 | The synthesis input format (`## ROLE\n\n{output}`) from prism.py is compatible with how the workflow should construct synthesis context from artifact files | Pattern Applicability | code-analyzable | Validated | The behavioral_synthesis.md prompt expects labeled sections. prism.py constructs these as `## {ROLE}\n\n{output}` (lines 5210-5211). The workflow orchestrator can construct the same format by reading per-lens artifact files and prepending role labels. |
+
+## Summary
+
 | Status | Count |
 |--------|-------|
-| Validated | 16 |
+| Validated | 17 |
 | Partially Validated | 2 |
 | Invalidated | 0 |
-| Open (stakeholder-dependent) | 5 |
-| **Total** | **24** |
+| Open (stakeholder-dependent) | 7 |
+| **Total** | **27** |
 
 ### Remaining Open Assumptions
 
@@ -66,6 +76,8 @@
 - **A-019** (stakeholder-dependent): Behavioral artifact filename convention — descriptive (behavioral-errors.md) vs. lens-named (behavioral-error_resilience.md).
 - **A-020** (stakeholder-dependent): Confirmation that no general-domain behavioral pipeline is needed.
 - **A-024** (stakeholder-dependent): Whether existing resources (00-11) should be updated to add YAML front matter for consistency.
+- **A-025** (stakeholder-dependent): Whether behavioral pipeline follows behavioral_synthesis.md (evolution + api_surface) or prism.py (rec + ident). Recommend behavioral_synthesis.md.
+- **A-026** (stakeholder-dependent): Whether upstream Opus preferences for deep_scan and rec are still current.
 
 ### Partially Validated — Stable
 

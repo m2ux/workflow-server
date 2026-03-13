@@ -40,7 +40,7 @@ Without these lenses, users who need coupling analysis, trust topology mapping, 
 | Design Philosophy | Complete | Problem classified as inventive goal (improvement), complexity: complex, full workflow path selected |
 | Codebase Comprehension | Complete | Architecture surveyed, 8/10 questions resolved, 2 design decisions deferred to planning |
 | Requirements Elicitation | Complete | 13 requirements (R1-R8 + AR1-AR5) covering resources, pipeline mode, routing, model sensitivity, quality metadata |
-| Research | Pending | Full workflow path — research best practices |
+| Research | Complete | Critical finding: behavioral pipeline composition mismatch between prism.py and behavioral_synthesis.md |
 | Implementation Planning | Pending | — |
 | Implementation | Pending | — |
 | Review | Pending | — |
