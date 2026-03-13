@@ -361,35 +361,6 @@ For each issue, provide:
 
 ---
 
-## Post-Review Implementation Process
-
-### Step 1: Implementation Offer
-Ask the user:
-> "Review complete! Would you like me to proceed with implementing the recommendations? I will work through them one at a time, starting with Critical/High priority items."
-
-### Step 2: Iterative Implementation
-**If the user agrees to proceed:**
-
-1. **Implement ONLY the first item** from the recommendations
-2. **Apply all necessary changes** to address that recommendation completely
-3. **Ensure all comments explain current functionality**, not review changes
-4. **Test the changes** to ensure they work correctly
-5. **Stop and ask the user** before proceeding to the next item
-
-### Step 3: Continue Until Complete
-- Work through items sequentially
-- Always stop and ask permission before moving to the next item
-- Provide a brief summary of what was implemented for each item
-
-### Important Guidelines:
-- ✅ Complete one full recommendation before stopping
-- ✅ Ask permission between each recommendation
-- ✅ Make all necessary file changes for each recommendation
-- ❌ Never implement multiple recommendations in a single iteration
-- ❌ Never proceed without explicit user consent
-
----
-
 ## Reference Materials
 
 - [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/)
