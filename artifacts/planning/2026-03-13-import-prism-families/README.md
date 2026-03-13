@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | **Date** | 2026-03-13 |
-| **Status** | Planning |
+| **Status** | Complete |
 | **Issue** | [#53](https://github.com/m2ux/workflow-server/issues/53) |
 | **PR** | [#54](https://github.com/m2ux/workflow-server/pull/54) |
 | **Branch** | `enhancement/53-import-prism-families` |
