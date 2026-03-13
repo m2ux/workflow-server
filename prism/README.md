@@ -8,7 +8,8 @@ The **Prism Workflow** applies cognitive lenses to code, documents, or proposals
 
 - **Single Pass (L12):** Quick structural analysis using the L12 lens
 - **Full Prism (3-pass):** Deep self-correcting analysis (structural → adversarial → synthesis)
-- **Portfolio:** Multiple complementary lenses for breadth of analysis
+- **Portfolio:** Multiple complementary lenses for breadth of analysis (24 lenses across 7 families)
+- **Behavioral (4+1):** Four independent behavioral lenses (error resilience, optimization, evolution, API surface) + synthesis. Code-only.
 
 ## Key Properties
 
@@ -81,26 +82,32 @@ User receives:
 ## File Structure
 
 ```
-.engineering/workflows/prism/
-├── workflow.toon              # Main workflow definition with rules
-├── README.md                   # This file
+workflows/prism/
+├── workflow.toon                        # Main workflow definition (4 modes, 15 variables)
+├── README.md                            # This file
 ├── activities/
-│   ├── select-mode.toon       # Plan analysis configuration
-│   ├── structural-pass.toon   # Execute L12 structural lens
-│   ├── adversarial-pass.toon  # Execute adversarial lens
-│   ├── synthesis-pass.toon    # Execute synthesis lens
-│   └── deliver-result.toon    # Present final analysis
+│   ├── 00-select-mode.toon              # Plan analysis configuration
+│   ├── 01-structural-pass.toon          # L12, portfolio, or behavioral lens dispatch
+│   ├── 02-adversarial-pass.toon         # Adversarial lens (full-prism only)
+│   ├── 03-synthesis-pass.toon           # L12 synthesis (full-prism only)
+│   ├── 04-deliver-result.toon           # Present final analysis
+│   └── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
 ├── skills/
-│   ├── plan-analysis.toon     # Planning skill
-│   ├── structural-analysis.toon # Structural analysis skill
-│   └── full-prism.toon        # Adversarial + synthesis skills
+│   ├── 00-structural-analysis.toon      # Single-pass L12
+│   ├── 01-full-prism.toon               # Full Prism worker pass
+│   ├── 02-portfolio-analysis.toon       # Portfolio lenses (24 lenses)
+│   ├── 03-plan-analysis.toon            # Analysis planning (24 goal mappings)
+│   ├── 04-orchestrate-prism.toon        # Pipeline orchestration
+│   └── 05-behavioral-pipeline.toon      # Behavioral pipeline worker pass
 └── resources/
-    ├── 00-structural-lens-code.md
-    ├── 01-adversarial-lens-code.md
-    ├── 02-synthesis-lens-code.md
-    ├── 03-structural-lens-general.md
-    ├── 04-adversarial-lens-general.md
-    └── 05-synthesis-lens-general.md
+    ├── 00-02: L12 pipeline (structural, adversarial, synthesis)
+    ├── 06-11: Portfolio lenses (pedagogy through contract)
+    ├── 12-18: SDL structural family (deep-scan through 73w)
+    ├── 19-23: Behavioral pipeline (error-resilience through synthesis)
+    ├── 24-26: Domain-neutral variants
+    ├── 27-28: Compressed variants
+    ├── 29-32: Hybrid/specialized (evidence-cost through state-audit)
+    └── README.md (30 resources total)
 ```
 
 ## Critical Rules (In workflow.toon)

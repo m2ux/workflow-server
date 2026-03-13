@@ -2,17 +2,18 @@
 
 > Part of the [Structural Analysis Prism Workflow](../README.md)
 
-## Skills (5 workflow-specific)
+## Skills (6 workflow-specific)
 
-The prism workflow provides 5 skills organized by role. Skills `orchestrate-prism` and `full-prism` form the isolation pipeline. The remaining skills are usable standalone by any workflow.
+The prism workflow provides 6 skills organized by role. Skills `orchestrate-prism`, `full-prism`, and `behavioral-pipeline` form the isolation pipeline. The remaining skills are usable standalone by any workflow.
 
 | # | Skill ID | Capability | Role |
 |---|----------|------------|------|
 | 00 | `structural-analysis` | Single-pass L12 structural analysis on code | Standalone / Worker |
 | 01 | `full-prism` | Execute one isolated pass of the Full Prism pipeline | Worker |
-| 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses | Standalone |
-| 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy | Planning / Advisory |
-| 04 | `orchestrate-prism` | Dispatch isolated workers, manage the analysis pipeline | Orchestrator |
+| 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses (expanded catalog: 24 lenses) | Standalone |
+| 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy (24 goal mappings) | Planning / Advisory |
+| 04 | `orchestrate-prism` | Dispatch isolated workers, manage all pipeline modes | Orchestrator |
+| 05 | `behavioral-pipeline` | Execute a pass of the 4+1 behavioral pipeline | Worker |
 
 > The universal skills `orchestrate-workflow` and `execute-activity` from [meta/skills/](../../meta/skills/) are **not used** by this workflow. Prism uses its own orchestration skill (`orchestrate-prism`) because it requires disposable (non-resumed) workers for context isolation.
 
@@ -250,3 +251,32 @@ graph TD
 | `present-result` | Read and present final artifacts; report all artifact paths |
 
 **Key rules:** NEVER use Task `resume` between passes. Pass artifact paths, not inline text. Verify artifacts were written before dispatching subsequent passes.
+
+---
+
+### Skill Protocol: `behavioral-pipeline` (05)
+
+Worker-side skill for the 4+1 behavioral pipeline. Runs 4 independent behavioral lenses (each in a fresh context), then a synthesis lens that reads all 4 outputs with labeled sections. Code-only — behavioral pipeline is not available for general targets.
+
+**Label mapping:**
+
+| Resource | Index | Role Label | Artifact |
+|----------|-------|-----------|----------|
+| error-resilience | 19 | ERRORS | behavioral-errors.md |
+| optim | 20 | COSTS | behavioral-costs.md |
+| evolution | 21 | CHANGES | behavioral-changes.md |
+| api-surface | 22 | PROMISES | behavioral-promises.md |
+| behavioral-synthesis | 23 | SYNTHESIS | behavioral-synthesis.md |
+
+**Protocol steps:**
+
+| Step Key | Action |
+|----------|--------|
+| `load-lens` | Load behavioral lens by index (19-23) via `get_resource("prism", index)` |
+| `read-target` | Read target code file |
+| `apply-independent-lens` | For passes 19-22: apply lens to target, write per-role artifact |
+| `construct-synthesis-input` | For pass 23: read all 4 artifacts, construct labeled sections (## ERRORS, ## COSTS, ## CHANGES, ## PROMISES) |
+| `apply-synthesis-lens` | Apply behavioral_synthesis lens to constructed input |
+| `write-artifact` | Write output artifact |
+
+**Key rules:** Code-only (no optim_neutral exists). Label mapping is fixed — synthesis expects exactly ERRORS, COSTS, CHANGES, PROMISES. Behavioral lenses favor Sonnet (+0.5-1.3 over Haiku).
