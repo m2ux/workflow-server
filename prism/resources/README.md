@@ -159,4 +159,4 @@ New resources (12-32) include YAML front matter with calibration metadata: `cali
 
 ## Provenance
 
-All lenses are derived from the [agi-in-md](https://github.com/m2ux/agi-in-md) research project. Content is identical to the upstream source — the resources are copies with standardized naming for the workflow server's `{NN}-{name}.md` convention.
+All lenses are derived from the [agi-in-md](https://github.com/Cranot/agi-in-md) research project. Content is identical to the upstream source — the resources are copies with standardized naming for the workflow server's `{NN}-{name}.md` convention.
