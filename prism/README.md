@@ -25,53 +25,6 @@ Prisms are succicnt structured prompts (70–330 words) that force an LLM throug
 
 ---
 
-## Prompt Guide
-
-Each prism responds to a specific analytical question. The table below shows user prompts that reliably trigger each prism through the plan-analysis goal-mapping matrix.
-
-| Prompt | Scope | Prism / Mode |
-|--------|-------|-------------|
-| `Analyze src/parser.ts` | file | L12 structural (00) — default for any code target |
-| `Pre-commit review of src/handler.rs` | file | L12 full pipeline (00→01→02) |
-| `Analyze this proposal using the full prism` | text | L12 full pipeline on general input |
-| `What patterns from this design would transfer poorly to other problems?` | any | Pedagogy (06) |
-| `What hidden assumptions does this architecture embed?` | any | Claim (07) |
-| `What resource scarcity does this system gamble on?` | any | Scarcity (08) |
-| `What rejected alternatives would swap these problems for different ones?` | any | Rejected-paths (09) |
-| `How does this code decay over 12 months of neglect?` | file | Degradation (10) |
-| `What does each function's interface contract promise vs actually deliver?` | file | Contract (11) |
-| `Find conservation laws and information laundering in this code` | file | Deep-scan (12) |
-| `Where do trust boundaries collapse? Find authority inversions` | module | Trust topology (13) |
-| `Find hidden temporal coupling — ordering dependencies and TOCTOU gaps` | module | Coupling clock (14) |
-| `Where do implementation details leak through abstraction boundaries?` | module | Abstraction leak (15) |
-| `What structural defects persist through every attempted fix?` | file | Rec (16) |
-| `Where does this code claim to be something different than it is?` | file | Ident (17) |
-| `Quick structural scan of src/core.ts` | file | 73w (18) — Sonnet only |
-| `How does error context get destroyed in this module?` | module | Error resilience (19) |
-| `Find hidden performance costs — what optimization data is erased at boundaries?` | file | Optim (20) |
-| `Trace invisible coupling — what data flows between functions without signatures?` | module | Evolution (21) |
-| `Where do function names lie about what the code actually does?` | file | API surface (22) |
-| `Run a comprehensive behavioral analysis of src/pipeline/` | module | Behavioral pipeline (19→20→21→22→23) |
-| `How does this business process destroy diagnostic information?` | text | Error resilience neutral (24) |
-| `Where do the labels in this proposal lie about what it delivers?` | text | API surface neutral (25) |
-| `What implicit dependencies bind the components of this strategy?` | text | Evolution neutral (26) |
-| `Quick error resilience scan of src/handler.ts` | file | Error resilience compact (27) — 110w |
-| `Ultra-brief error resilience check` | file | Error resilience 70w (28) — 70w |
-| `Where does skipped validation waste both safety and performance?` | file | Evidence cost (29) |
-| `Find dead code — functions defined but never called, stale config` | module | Reachability (30) |
-| `Where has documentation drifted from actual behavior?` | module | Fidelity (31) |
-| `Map every piece of mutable state as a state machine — find unhandled transitions` | file | State audit (32) |
-| `Security review of this module` | module | Portfolio: trust (13) + error resilience (19) |
-| `Code review of src/api.ts` | file | Portfolio: L12 (00) + contract (11) |
-| `Assess maintainability of this service` | module | Portfolio: degradation (10) + contract (11) |
-| `Design review of this architecture` | any | Portfolio: claim (07) + rejected-paths (09) |
-| `What are the trade-offs in this approach?` | text | Portfolio: scarcity (08) + rejected-paths (09) |
-| `Run pedagogy and rejected-paths lenses on this module` | module | Portfolio: pedagogy (06) + rejected-paths (09) |
-
-Scope: **file** = single source file, **module** = directory or module (multiple files), **text** = inline text, question, or proposal (no file target), **any** = works at all scopes.
-
----
-
 ## Modes
 
 | Mode | Passes | Description |
@@ -200,25 +153,50 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 ---
 
-## Variables
+## Prompt Guide
 
-| Variable | Type | Description |
-|----------|------|-------------|
-| `target` | string | What to analyze — file path, directory, inline text, question, or concept |
-| `target_type` | string | `code` or `general` (default: `code`) |
-| `pipeline_mode` | string | `single`, `full-prism`, `portfolio`, or `behavioral` (default: `single`) |
-| `output_path` | string | Directory to write analysis artifacts (default: `.`) |
-| `selected_lenses` | array | For portfolio mode: array of lens names |
-| `analysis_focus` | string | Optional focus area to guide the analysis |
-| `analysis_units` | array | Ordered list of analysis units (for multi-unit scopes) |
-| `current_unit` | object | Current analysis unit during iteration loop |
-| `structural_output_path` | string | File path to structural pass artifact |
-| `adversarial_output_path` | string | File path to adversarial pass artifact |
-| `synthesis_output_path` | string | File path to synthesis pass artifact |
-| `portfolio_output_paths` | object | Map of lens name to file path for portfolio mode |
-| `all_artifact_paths` | array | Accumulated list of all artifact paths across units |
-| `behavioral_output_paths` | object | Map of behavioral lens name to artifact path |
-| `behavioral_synthesis_output_path` | string | File path to behavioral synthesis artifact |
+Each prism responds to a specific analytical question. The table below shows user prompts that reliably trigger each prism through the plan-analysis goal-mapping matrix.
+
+| Prompt | Scope | Prism / Mode |
+|--------|-------|-------------|
+| `Analyze src/parser.ts` | file | L12 structural (00) — default for any code target |
+| `Pre-commit review of src/handler.rs` | file | L12 full pipeline (00→01→02) |
+| `Analyze this proposal using the full prism` | text | L12 full pipeline on general input |
+| `What patterns from this design would transfer poorly to other problems?` | any | Pedagogy (06) |
+| `What hidden assumptions does this architecture embed?` | any | Claim (07) |
+| `What resource scarcity does this system gamble on?` | any | Scarcity (08) |
+| `What rejected alternatives would swap these problems for different ones?` | any | Rejected-paths (09) |
+| `How does this code decay over 12 months of neglect?` | file | Degradation (10) |
+| `What does each function's interface contract promise vs actually deliver?` | file | Contract (11) |
+| `Find conservation laws and information laundering in this code` | file | Deep-scan (12) |
+| `Where do trust boundaries collapse? Find authority inversions` | module | Trust topology (13) |
+| `Find hidden temporal coupling — ordering dependencies and TOCTOU gaps` | module | Coupling clock (14) |
+| `Where do implementation details leak through abstraction boundaries?` | module | Abstraction leak (15) |
+| `What structural defects persist through every attempted fix?` | file | Rec (16) |
+| `Where does this code claim to be something different than it is?` | file | Ident (17) |
+| `Quick structural scan of src/core.ts` | file | 73w (18) — Sonnet only |
+| `How does error context get destroyed in this module?` | module | Error resilience (19) |
+| `Find hidden performance costs — what optimization data is erased at boundaries?` | file | Optim (20) |
+| `Trace invisible coupling — what data flows between functions without signatures?` | module | Evolution (21) |
+| `Where do function names lie about what the code actually does?` | file | API surface (22) |
+| `Run a comprehensive behavioral analysis of src/pipeline/` | module | Behavioral pipeline (19→20→21→22→23) |
+| `How does this business process destroy diagnostic information?` | text | Error resilience neutral (24) |
+| `Where do the labels in this proposal lie about what it delivers?` | text | API surface neutral (25) |
+| `What implicit dependencies bind the components of this strategy?` | text | Evolution neutral (26) |
+| `Quick error resilience scan of src/handler.ts` | file | Error resilience compact (27) — 110w |
+| `Ultra-brief error resilience check` | file | Error resilience 70w (28) — 70w |
+| `Where does skipped validation waste both safety and performance?` | file | Evidence cost (29) |
+| `Find dead code — functions defined but never called, stale config` | module | Reachability (30) |
+| `Where has documentation drifted from actual behavior?` | module | Fidelity (31) |
+| `Map every piece of mutable state as a state machine — find unhandled transitions` | file | State audit (32) |
+| `Security review of this module` | module | Portfolio: trust (13) + error resilience (19) |
+| `Code review of src/api.ts` | file | Portfolio: L12 (00) + contract (11) |
+| `Assess maintainability of this service` | module | Portfolio: degradation (10) + contract (11) |
+| `Design review of this architecture` | any | Portfolio: claim (07) + rejected-paths (09) |
+| `What are the trade-offs in this approach?` | text | Portfolio: scarcity (08) + rejected-paths (09) |
+| `Run pedagogy and rejected-paths lenses on this module` | module | Portfolio: pedagogy (06) + rejected-paths (09) |
+
+Scope: **file** = single source file, **module** = directory or module (multiple files), **text** = inline text, question, or proposal (no file target), **any** = works at all scopes.
 
 ---
 
