@@ -25,17 +25,6 @@ Prisms are succicnt structured prompts (70–330 words) that force an LLM throug
 
 ---
 
-## Modes
-
-| Mode | Passes | Description |
-|------|--------|-------------|
-| **Single** | 1 | L12 structural lens — conservation law, meta-law, bug table |
-| **Full Prism** | 3 | Structural → adversarial → synthesis (self-correcting) |
-| **Portfolio** | 2+ | Multiple independent lenses for breadth (24 available) |
-| **Behavioral** | 4+1 | Error resilience + optimization + evolution + API surface → synthesis. Code-only. |
-
----
-
 ## Workflow Flow
 
 ```mermaid
@@ -55,6 +44,16 @@ graph TD
     BSP --> DR
     DR --> Done([End])
 ```
+---
+
+## Modes
+
+| Mode | Passes | Description |
+|------|--------|-------------|
+| **Single** | 1 | L12 structural lens — conservation law, meta-law, bug table |
+| **Full Prism** | 3 | Structural → adversarial → synthesis (self-correcting) |
+| **Portfolio** | 2+ | Multiple independent lenses for breadth (24 available) |
+| **Behavioral** | 4+1 | Error resilience + optimization + evolution + API surface → synthesis. Code-only. |
 
 ---
 
