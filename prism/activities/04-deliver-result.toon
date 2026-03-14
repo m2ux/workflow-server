@@ -1,15 +1,23 @@
 id: deliver-result
-version: 1.3.0
+version: 1.3.1
 name: Deliver Result
-description: "Present the final analysis to the user. Reads the appropriate artifact based on pipeline_mode: structural-analysis.md (single), synthesis.md (full-prism), portfolio artifacts (portfolio), or behavioral-synthesis.md (behavioral). Presents the content and reports artifact paths."
+description: "Present the final analysis to the user. Reads the appropriate artifact based on pipeline_mode: structural-analysis.md (single), synthesis.md (full-prism), portfolio artifacts (portfolio), or behavioral-synthesis.md (behavioral). For multi-unit scopes, compiles a consolidated report from all domain synthesis artifacts. Presents the content and reports artifact paths."
 skills:
   primary: structural-analysis
-steps[2]:
+steps[3]:
   - id: read-final-artifact
     name: Read Final Artifact
-    description: "Read the appropriate artifact based on pipeline_mode: if 'single', read {output_path}/structural-analysis.md. If 'full-prism', read {output_path}/synthesis.md. If 'portfolio', read all {output_path}/portfolio-*.md files. If 'behavioral', read {output_path}/behavioral-synthesis.md as primary result; note behavioral-errors.md, behavioral-costs.md, behavioral-changes.md, behavioral-promises.md as appendices."
+    description: "Read the appropriate artifact based on pipeline_mode: if 'single', read {output_path}/structural-analysis.md. If 'full-prism', read {output_path}/synthesis.md. If 'portfolio', read all {output_path}/portfolio-*.md files. If 'behavioral', read {output_path}/behavioral-synthesis.md as primary result; note behavioral-errors.md, behavioral-costs.md, behavioral-changes.md, behavioral-promises.md as appendices. For multi-unit scopes, read all per-unit and domain-level synthesis artifacts."
+    required: true
+  - id: format-report
+    name: Format Report with Cross-References
+    description: "Apply cross-reference formatting rules to the final report artifact before presenting to the user."
     required: true
   - id: present-result
     name: Present Final Analysis
     description: "Present the analysis result to the user in a clear, structured format. Include the artifact path(s) for reference."
     required: true
+rules[3]:
+  - "FINDING ID HYPERLINKS: Every finding ID that appears in a domain summary table (e.g., ZK-01, R-03, GOV-02) MUST be a relative markdown hyperlink to the section of the source synthesis or analysis document that contains the detailed finding. Format: [ID](relative/path/to/synthesis.md#section-anchor). The anchor must target the nearest heading that contains the finding — typically a severity heading (#critical, #high, #medium) or a unit heading (#unit-name). Plain-text finding IDs in tables are a formatting violation."
+  - "ARTIFACT PATH HYPERLINKS: Every file path in artifact reference tables (e.g., Appendix sections listing synthesis documents) MUST be a relative markdown hyperlink to the referenced file. Format: [display-path](relative/path/to/file.md). For cross-cutting documents with multiple sections, append a section anchor: [file.md §N](file.md#section-heading-anchor). Plain-text or backtick-only paths in reference tables are a formatting violation."
+  - "ANCHOR GENERATION: Section anchors follow GitHub-flavored markdown rules — lowercase, spaces replaced with hyphens, punctuation removed except hyphens. Examples: '## 3. Definitive Finding Table' becomes #3-definitive-finding-table, '### 3.1 Relay Unit' becomes #31-relay-unit, '### CRITICAL' becomes #critical. Verify anchors match actual headings in the target document."
