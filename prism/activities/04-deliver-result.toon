@@ -1,7 +1,18 @@
 id: deliver-result
-version: 1.4.0
+version: 1.5.0
 name: Deliver Result
-description: "Present the final analysis to the user. Reads the appropriate artifact based on pipeline_mode: structural-analysis.md (single), synthesis.md (full-prism), portfolio artifacts (portfolio), or behavioral-synthesis.md (behavioral). For multi-unit scopes, compiles a consolidated report from all domain synthesis artifacts. Presents the content and reports artifact paths."
+description: "Present the final analysis to the user. Reads the appropriate artifact based on pipeline_mode: structural-analysis.md (single), synthesis.md (full-prism), portfolio artifacts (portfolio), or behavioral-synthesis.md (behavioral). For multi-unit scopes, compiles a consolidated report from all domain synthesis artifacts. Presents the content and reports artifact paths. For security audits, transitions to audit-finalize for report splitting and trade-off analysis."
+transitions[2]:
+  - to: audit-finalize
+    condition:
+      type: contains
+      variable: analysis_focus
+      values:
+        - security audit
+        - security review
+        - audit
+  - to: null
+    isDefault: true
 skills:
   primary: structural-analysis
 steps[3]:
