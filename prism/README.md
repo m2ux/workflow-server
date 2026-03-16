@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 46 lenses, isolated multi-pass pipelines.
+> v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 47 lenses, isolated multi-pass pipelines.
 
 ---
 
@@ -158,7 +158,7 @@ graph TD
 
 ---
 
-## Resources (46)
+## Resources (47)
 
 Resources are indexed markdown files containing lens prompts. Each lens encodes a specific analytical operation.
 
@@ -288,5 +288,5 @@ workflows/prism/
     ├── 45–47: Writer pipeline
     ├── 48: Strategist
     ├── 49: Severity rubric
-    └── README.md (46+ resources)
+    └── README.md (47 resources)
 ```
