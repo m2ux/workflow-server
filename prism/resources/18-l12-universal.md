@@ -2,6 +2,7 @@
 calibration_date: 2026-03-11
 model_versions: ["claude-sonnet-4-6"]
 quality_baseline: 9.0
+optimal_model: sonnet
 last_quality_check: 2026-03-11
 quality_check_frequency: weekly
 degradation_alert_threshold: 0.10

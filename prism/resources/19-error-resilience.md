@@ -1,6 +1,8 @@
 ---
 name: error_resilience
 description: Error resilience prism V11 (Sonnet-designed) — search for every failure silence including implicit boundaries (coercions, defaults, null checks), trace multi-hop wrong decisions to user-visible harm, engineer opposing fixes to discover invariant. Complementary to L12+optim+evo+api_surface. 3 steps, ~165 words. Sonnet recommended (9.0+), Haiku strong (8.7-9.0).
+quality_baseline: 9.0
+optimal_model: sonnet
 type: error_resilience
 steps: 3
 words: 165

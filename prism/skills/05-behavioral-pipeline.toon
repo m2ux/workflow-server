@@ -8,7 +8,7 @@ inputs[4]:
   - id: target-content
     description: "The code to analyze (provided inline by the orchestrator, or a file path to read)"
   - id: lens-resource-index
-    description: "Resource index for this pass: 19 (error-resilience), 20 (optim), 21 (evolution), 22 (api-surface), or 23 (behavioral-synthesis)"
+    description: "Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolution), 22 (api-surface), or 23 (behavioral-synthesis)"
   - id: output-path
     description: "Directory to write the analysis artifact"
   - id: prior-artifact-paths
@@ -46,7 +46,7 @@ output[1]:
       role: "The role label for this pass (ERRORS, COSTS, CHANGES, PROMISES, or SYNTHESIS)"
 
 rules:
-  label-mapping: "The behavioral pipeline uses fixed role labels mapped to specific lenses: error-resilience (19) → ERRORS, optim (20) → COSTS, evolution (21) → CHANGES, api-surface (22) → PROMISES. The synthesis lens (23) expects these exact labels."
+  label-mapping: "The behavioral pipeline uses fixed role labels mapped to specific lenses: error-resilience (19) → ERRORS, optimize (20) → COSTS, evolution (21) → CHANGES, api-surface (22) → PROMISES. The synthesis lens (23) expects these exact labels."
   artifact-naming: "Independent lens artifacts use descriptive role names: behavioral-errors.md (19), behavioral-costs.md (20), behavioral-changes.md (21), behavioral-promises.md (22). Synthesis artifact: behavioral-synthesis.md (23)."
   code-only: "The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target_type is 'general'."
   complete-execution: "Every step in each lens prompt must be executed. Do not skip or summarize."

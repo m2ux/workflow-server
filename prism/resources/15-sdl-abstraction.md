@@ -1,7 +1,8 @@
 ---
 calibration_date: 2026-03-11
 model_versions: ["claude-haiku-4-5-20251001", "claude-sonnet-4-6"]
-quality_baseline: null
+quality_baseline: 8.5
+optimal_model: haiku
 origin: "SDL family v1 — Abstraction Leak (designed Round 35+)"
 notes: "SDL-4: Abstraction Leak Prism. 3 concrete steps, ~195w. Finds implementation details bleeding through intended boundaries, interfaces that force caller implementation-awareness, and cross-boundary coupling. Distinct from contract.md (which finds promise/implementation gap within a single function) — this finds what leaks ACROSS layers. Universal: code (type leaks, exception leaks, strategy flag anti-patterns) and reasoning (conceptual frameworks that reveal their own assumptions, meta-concepts bleeding into object-level claims). Always single-shot at ≤3 steps."
 ---

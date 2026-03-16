@@ -1,7 +1,8 @@
 ---
 calibration_date: 2026-03-11
 model_versions: ["claude-haiku-4-5-20251001", "claude-sonnet-4-6"]
-quality_baseline: null
+quality_baseline: 9.5
+optimal_model: sonnet
 origin: "SDL family — Identity Displacement (designed Round 35, Sonnet structural analysis)"
 notes: "SDL-5: Identity Displacement Lens. 3 concrete steps, ~175w. Finds interface vs implementation gaps, necessary costs disguised as defects, and intentional deviations. Complementary to SDL-1 (SDL finds bugs, IDENT finds things that look like bugs but are actually costs the system chose to pay). Draws from L9-B (identity ambiguity) and L11-B (revaluation). Universal: code (type lies, mutating reads, semantic overloading) and reasoning (claims vs evidence, stated vs actual goals). Always single-shot at ≤3 steps."
 ---
