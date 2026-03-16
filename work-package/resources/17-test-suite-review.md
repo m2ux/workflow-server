@@ -78,6 +78,8 @@ You are a **Senior Test Architect** with expertise in:
    - Misleading happy-path tests
    - Manual business logic implementation in tests
    - Validation Theater (accepts both success and failure as valid)
+   - Language/type system guarantee tests (e.g., mutex non-poisoning when ownership ensures clean drop)
+   - Derive macro output tests (e.g., testing thiserror Display strings)
 
 3. **Individual Test Evaluation**: For EACH test, evaluate:
    - Test relevance and business alignment
@@ -161,6 +163,8 @@ You are a **Senior Test Architect** with expertise in:
 - [ ] Default config hardcoded validation
 - [ ] Mock-only passthrough tests
 - [ ] Misleading test names
+- [ ] Language/type system guarantee tests (testing compiler-enforced invariants)
+- [ ] Derive macro output tests (testing thiserror, serde, etc. macro behavior)
 
 ### 5. Test Architecture & Organization
 
@@ -238,6 +242,23 @@ async fn test_functionality() {
         println!("Failed, but that's ok too"); // <- Both outcomes accepted
     }
     Ok(()) // <- Always passes
+}
+
+// Pattern 8: Language/type system guarantee tests
+#[test]
+fn test_mutex_not_poisoned_after_error() {
+    let ctx = Context::new();
+    let _ = ctx.fallible_operation(&[0xFF]); // returns Err
+    let lock = ctx.state.lock();
+    assert!(lock.is_ok()); // <- Rust ownership guarantees MutexGuard is dropped on Err return
+}
+
+// Pattern 9: Derive macro output tests
+#[test]
+fn test_error_display_messages() {
+    let err = MyError::NotFound("x".into());
+    assert!(err.to_string().contains("not found")); // <- Testing thiserror macro, not app logic
+    assert!(err.to_string().contains("x"));
 }
 ```
 
