@@ -34,7 +34,7 @@ protocol:
     - "Proceed to the appropriate planning path based on scope"
   query-recommendation[4]:
     - "For scope 'query': the target is text, not files. Select lenses from the general set (resources 00-02 + 06-10 + 15 + 18 + 24-26)."
-    - "Map the analytical goal to lenses: exploring implications → claim (07) + rejected-paths (09). evaluating a strategy → scarcity (08) + claim (07). understanding trade-offs → scarcity (08) + rejected-paths (09). deep structural analysis → L12 pipeline (00-02). general exploration → L12 single (00). abstraction quality → sdl-abstraction (15). error resilience → error-resilience-neutral (24). API quality → api-surface-neutral (25). evolution/coupling/dependencies → evolution-neutral (26). pattern transfer → pedagogy (06). hidden assumptions → claim (07). resource scarcity → scarcity (08). rejected alternatives → rejected-paths (09). decay/degradation → degradation (10)."
+    - "Map the analytical goal to lenses: exploring implications → claim (07) + rejected-paths (09). evaluating a strategy → scarcity (08) + claim (07). understanding trade-offs → scarcity (08) + rejected-paths (09). deep structural analysis → L12 pipeline (00-02). general exploration → L12 single (00). abstraction quality → sdl-abstraction (15). error resilience → error-resilience-neutral (24). API quality → api-surface-neutral (25). evolution/coupling/dependencies → evolution-neutral (26). pattern transfer → pedagogy (06). hidden assumptions → claim (07). resource scarcity → scarcity (08). rejected alternatives → rejected-paths (09). decay/degradation → degradation (10). code archaeology → archaeology (33). change resilience → cultivation (35). temporal simulation → simulation (38). confabulation detection → knowledge-audit (40). knowledge gaps → knowledge-boundary (41). epistemic typing → knowledge-typed (42). self-correcting analysis → l12g (43). maximum-trust analysis → oracle (44). README rewriting → writer (45). analysis strategy → strategist (48)."
     - "Apply depth-preference if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses, 'behavioral' → behavioral pipeline (19-23, code-only — reject if target_type is general)"
     - "Format as a single-unit plan with scope 'query' and proceed to format-plan"
   single-unit-recommendation[4]:
@@ -98,17 +98,17 @@ output[2]:
       units: "Array of { target, target_type, pipeline_mode, lenses, role, risk, rationale, unit_output_subdir }"
 
 rules:
-  goal-mapping-matrix: "Bug detection → L12 (00) or deep-scan (12). Code review → L12 (00) + contract (11). Design review → claim (07) + rejected-paths (09). Comprehension → pedagogy (06) + rejected-paths (09). Pre-commit validation → L12 pipeline (00-02). Planning review → L12 (00). Maintainability → degradation (10) + contract (11). Assumption validation → claim (07) + scarcity (08). Security review → sdl-trust (13) + error-resilience (19). Strategy evaluation → claim (07) + scarcity (08). Implication exploration → claim (07) + rejected-paths (09). General exploration → L12 (00). Error handling → error-resilience (19). Performance → optim (20). API quality → api-surface (22). Evolution/coupling → evolution (21) or sdl-coupling (14). Trust boundaries → sdl-trust (13). Abstraction quality → sdl-abstraction (15). Structural defects → deep-scan (12) or rec (16). Identity/naming → ident (17). Dead code → reachability (30). State machine → state-audit (32). Contract fidelity → fidelity (31). Error+cost hybrid → evidence-cost (29). Comprehensive behavioral → behavioral pipeline (19-23). Pattern transfer → pedagogy (06). Hidden assumptions → claim (07). Resource scarcity → scarcity (08). Rejected alternatives → rejected-paths (09). Decay/degradation → degradation (10). Interface contracts → contract (11). Quick structural scan → 73w (18, Sonnet-only). Quick error resilience → error-resilience-compact (27). Ultra-brief error resilience → error-resilience-70w (28)."
-  code-vs-general: "L12 pipeline (00-02) works for ALL target types. Code → resources 00-02 + 06-32. General (text, queries, concepts) → resources 00-02 + 06-10 + 15 (sdl-abstraction) + 18 (73w, Sonnet-only) + 24-26 (neutral variants). Contract (11) and SDL lenses (12-14, 16-17) are code-only. Behavioral pipeline (19-23) is code-only."
+  goal-mapping-matrix: "Bug detection → L12 (00) or deep-scan (12). Code review → L12 (00) + contract (11). Design review → claim (07) + rejected-paths (09). Comprehension → pedagogy (06) + rejected-paths (09). Pre-commit validation → L12 pipeline (00-02). Planning review → L12 (00). Maintainability → degradation (10) + contract (11). Assumption validation → claim (07) + scarcity (08). Security review → sdl-trust (13) + security (37). Strategy evaluation → claim (07) + scarcity (08). Implication exploration → claim (07) + rejected-paths (09). General exploration → L12 (00). Error handling → error-resilience (19). Performance → optimize (20). API quality → api-surface (22). Evolution/coupling → evolution (21) or sdl-coupling (14). Trust boundaries → sdl-trust (13). Abstraction quality → sdl-abstraction (15). Structural defects → deep-scan (12) or fix-cascade (16). Identity/naming → identity (17). Dead code → reachability (30). State machine → state-audit (32). Contract fidelity → fidelity (31). Error+cost hybrid → evidence-cost (29). Comprehensive behavioral → behavioral pipeline (19-23). Pattern transfer → pedagogy (06). Hidden assumptions → claim (07). Resource scarcity → scarcity (08). Rejected alternatives → rejected-paths (09). Decay/degradation → degradation (10). Interface contracts → contract (11). Quick structural scan → l12-universal (18, Sonnet-only). Quick error resilience → error-resilience-compact (27). Ultra-brief error resilience → error-resilience-70w (28). Code archaeology → archaeology (33). Registration gaps → audit-code (34). Change resilience → cultivation (35). Temporal fragility → sdl-simulation (36) or simulation (38). Security audit → security (37). Testability → testability (39). Confabulation detection → knowledge-audit (40). Knowledge gaps → knowledge-boundary (41). Epistemic typing → knowledge-typed (42). Self-correcting analysis → l12g (43). Maximum-trust analysis → oracle (44). README rewriting → writer pipeline (45-47). Analysis strategy → strategist (48)."
+  code-vs-general: "L12 pipeline (00-02) works for ALL target types. Code → resources 00-02 + 06-48. General (text, queries, concepts) → resources 00-02 + 06-10 + 15 (sdl-abstraction) + 18 (l12-universal, Sonnet-only) + 24-26 (neutral variants) + 33 (archaeology) + 35 (cultivation) + 38 (simulation) + 40-44 (knowledge/epistemic). Contract (11), SDL lenses (12-14, 16-17, 36), security (37), testability (39), and behavioral pipeline (19-23) are code-only."
   query-is-general: "A query, question, concept, or inline text input is always 'general' target-type unless it is clearly source code."
   single-lens-default: "When no goal or depth is specified, default to L12 structural (resource 00)."
   budget-drives-depth: "For multi-unit scopes, the budget determines per-unit depth. The caller should not need to specify pipeline_mode for each module — the plan derives it from risk and budget."
   skip-is-explicit: "When budget excludes low-risk modules, list them in skip_list with justification. The caller can override by re-running with budget 'thorough'."
-  model-sensitivity: "Behavioral lenses (19-22) produce higher quality on Sonnet (+0.5-1.3 over Haiku). Structural/SDL lenses (00, 12-17) are model-independent. 73w (18) is Sonnet-only — Haiku fails below this compression floor. Deep-scan (12) and rec (16) produce best results on Opus. Note model preferences when recommending lenses."
-  behavioral-is-code-only: "The behavioral pipeline (19-23) is code-only. optim (20) has no domain-neutral variant. For general targets needing behavioral-style analysis, recommend individual neutral variants (24-26) in portfolio mode."
+  model-sensitivity: "Behavioral lenses (19-22) produce higher quality on Sonnet (+0.5-1.3 over Haiku). Structural/SDL lenses (00, 12-17) are model-independent. l12-universal (18) is Sonnet-only — Haiku fails below this compression floor. Deep-scan (12) and fix-cascade (16) produce best results on Opus. Oracle (44), l12g (43), knowledge lenses (40-42), and archaeology (33) are Sonnet-recommended. SDL-simulation (36), security (37), testability (39), and audit-code (34) are Haiku-optimized. Note model preferences when recommending lenses."
+  behavioral-is-code-only: "The behavioral pipeline (19-23) is code-only. optimize (20) has no domain-neutral variant. For general targets needing behavioral-style analysis, recommend individual neutral variants (24-26) in portfolio mode."
   neutral-variant-routing: "When target_type is 'general' and an individual behavioral lens is recommended, prefer the neutral variant: error-resilience → 24, api-surface → 25, evolution → 26. optim has no neutral variant — use the code version (20) or omit."
 
-resources[30]:
+resources[46]:
   - "00"
   - "01"
   - "02"
@@ -139,6 +139,22 @@ resources[30]:
   - "30"
   - "31"
   - "32"
+  - "33"
+  - "34"
+  - "35"
+  - "36"
+  - "37"
+  - "38"
+  - "39"
+  - "40"
+  - "41"
+  - "42"
+  - "43"
+  - "44"
+  - "45"
+  - "46"
+  - "47"
+  - "48"
 
 tools:
   glob:
