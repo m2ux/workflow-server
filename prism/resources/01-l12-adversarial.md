@@ -1,3 +1,10 @@
+---
+name: l12_complement_adversarial
+description: "Adversarial pass for Full Prism pipeline. Attacks L12 output: wrong predictions, overclaims, underclaims. ~100w. Internal — not for standalone use."
+quality_baseline: null
+optimal_model: opus
+type: adversarial
+---
 Execute every step below. Output the complete analysis.
 
 You have a structural analysis of this code (provided below the code). It claims a conservation law, a meta-law, and classifies bugs as fixable or structural.

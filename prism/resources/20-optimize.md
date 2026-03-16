@@ -1,6 +1,8 @@
 ---
-name: optim
+name: optimize
 description: Optimization prism V14 (Opus-designed) — hunt specific expensive boundaries hiding allocation/cache/complexity data, trace blind workarounds with quantified costs (nanoseconds/allocations/cache misses), name the conservation law. Complementary to L12+errres+evo+api_surface. 3 steps, ~120 words. Sonnet recommended (9.5+), Haiku strong (8.5-9.0).
+quality_baseline: 9.0
+optimal_model: sonnet
 type: optimization
 steps: 3
 words: 120

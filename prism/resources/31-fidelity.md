@@ -1,7 +1,8 @@
 ---
 calibration_date: 2026-03-12
 model_versions: ["claude-sonnet-4-6"]
-quality_baseline: null
+quality_baseline: 8.5
+optimal_model: sonnet
 origin: "factory:analysis_fallback — cooked by prism.py --factory to fill blind spot #9 in 8-prism pipeline"
 notes: "SDL-9: Contract Fidelity Lens. 3-step, 213w. Finds documentation-code drift, help text inaccuracy, stale comments, cache key mismatches, dead config. Covers blind spots that structural prisms miss: promises to external observers (users, integrations, self). Always single-shot at ≤3 steps."
 validation_passed: true

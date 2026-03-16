@@ -5,6 +5,7 @@ type: evolution
 steps: 3
 words: 160
 domain: universal
+optimal_model: sonnet
 ---
 Execute every step below. Output the complete analysis.
 

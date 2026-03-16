@@ -1,3 +1,10 @@
+---
+name: l12_synthesis
+description: "Synthesis pass for Full Prism pipeline. Reconciles structural + adversarial analyses into refined law, meta-law, and definitive bug table. ~100w. Internal — not for standalone use."
+quality_baseline: null
+optimal_model: opus
+type: synthesis
+---
 Execute every step below. Output the complete analysis.
 
 You have TWO analyses of this code:

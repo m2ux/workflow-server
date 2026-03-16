@@ -1,7 +1,8 @@
 ---
 calibration_date: 2026-03-11
 model_versions: ["claude-haiku-4-5-20251001", "claude-sonnet-4-6"]
-quality_baseline: null
+quality_baseline: 9.0
+optimal_model: haiku
 origin: "SDL family v1 — Trust Topology (designed Round 35+)"
 notes: "SDL-2: Trust Topology Prism. 3 concrete steps, ~190w. Finds trust gradient violations, authority inversions, and boundary collapse bugs. Complementary to SDL-1 (conservation/laundering/structural), which cannot see who is authorized to do what. Universal: code (security gaps, validation ownership) and reasoning (authority chains, citation validity, claim scope). Always single-shot at ≤3 steps."
 ---

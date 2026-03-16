@@ -1,7 +1,8 @@
 ---
 calibration_date: 2026-03-12
 model_versions: ["claude-sonnet-4-6"]
-quality_baseline: null
+quality_baseline: 8.5
+optimal_model: sonnet
 origin: "factory:analysis_fallback — goal: Map every stateful workflow as a state machine. For each piece of mutable state (instance variables, file caches, sessio"
 notes: "goal-spec mode (no SDL example available). 206w, 3-step. Validate before production use."
 validation_passed: true
