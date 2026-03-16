@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 30 lenses, isolated multi-pass pipelines.
+> v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 46 lenses, isolated multi-pass pipelines.
 
 ---
 
@@ -119,18 +119,11 @@ graph TD
     SYN --> DR
 
     BSP --> DR
-    DR --> Done([End])
+    DR --> AF{"security audit?"}
+    AF -->|yes| AUD["audit-finalize"]
+    AF -->|no| Done([End])
+    AUD --> Done
 ```
----
-
-## Modes
-
-| Mode | Passes | Description |
-|------|--------|-------------|
-| **Single** | 1 | L12 structural lens — conservation law, meta-law, bug table |
-| **Full Prism** | 3 | Structural → adversarial → synthesis (self-correcting) |
-| **Portfolio** | 2+ | Multiple independent lenses for breadth (24 available) |
-| **Behavioral** | 4+1 | Error resilience + optimization + evolution + API surface → synthesis. Code-only. |
 
 ---
 
@@ -144,6 +137,7 @@ graph TD
 | 03 | **Synthesis Pass** | Reconcile structural + adversarial (full-prism only) |
 | 04 | **Deliver Result** | Present final analysis with artifact paths |
 | 05 | **Behavioral Synthesis Pass** | Synthesize 4 behavioral lens outputs (behavioral only) |
+| 06 | **Audit Finalize** | Split report, create detailed findings + trade-off analysis (security audits only) |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 
@@ -181,6 +175,7 @@ Resources are indexed markdown files containing lens prompts. Each lens encodes 
 | 40–44 | Knowledge/Epistemic | 5 | Knowledge-audit, knowledge-boundary, knowledge-typed, l12g, oracle |
 | 45–47 | Writer Pipeline | 3 | Writer, writer-critique, writer-synthesis |
 | 48 | Meta | 1 | Strategist |
+| 49 | Audit | 1 | Severity rubric (security audits) |
 
 Indices 03–05 are deprecated (upstream general L12 variants removed).
 
@@ -235,50 +230,25 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 ---
 
-## Prompt Guide
+## Variables
 
-Each prism responds to a specific analytical question. The table below shows user prompts that reliably trigger each prism through the plan-analysis goal-mapping matrix.
-
-| Prompt | Scope | Prism / Mode |
-|--------|-------|-------------|
-| `Analyze src/parser.ts` | file | L12 structural (00) — default for any code target |
-| `Pre-commit review of src/handler.rs` | file | L12 full pipeline (00→01→02) |
-| `Analyze this proposal using the full prism` | text | L12 full pipeline on general input |
-| `What patterns from this design would transfer poorly to other problems?` | any | Pedagogy (06) |
-| `What hidden assumptions does this architecture embed?` | any | Claim (07) |
-| `What resource scarcity does this system gamble on?` | any | Scarcity (08) |
-| `What rejected alternatives would swap these problems for different ones?` | any | Rejected-paths (09) |
-| `How does this code decay over 12 months of neglect?` | file | Degradation (10) |
-| `What does each function's interface contract promise vs actually deliver?` | file | Contract (11) |
-| `Find conservation laws and information laundering in this code` | file | Deep-scan (12) |
-| `Where do trust boundaries collapse? Find authority inversions` | module | Trust topology (13) |
-| `Find hidden temporal coupling — ordering dependencies and TOCTOU gaps` | module | Coupling clock (14) |
-| `Where do implementation details leak through abstraction boundaries?` | module | Abstraction leak (15) |
-| `What structural defects persist through every attempted fix?` | file | Rec (16) |
-| `Where does this code claim to be something different than it is?` | file | Ident (17) |
-| `Quick structural scan of src/core.ts` | file | 73w (18) — Sonnet only |
-| `How does error context get destroyed in this module?` | module | Error resilience (19) |
-| `Find hidden performance costs — what optimization data is erased at boundaries?` | file | Optim (20) |
-| `Trace invisible coupling — what data flows between functions without signatures?` | module | Evolution (21) |
-| `Where do function names lie about what the code actually does?` | file | API surface (22) |
-| `Run a comprehensive behavioral analysis of src/pipeline/` | module | Behavioral pipeline (19→20→21→22→23) |
-| `How does this business process destroy diagnostic information?` | text | Error resilience neutral (24) |
-| `Where do the labels in this proposal lie about what it delivers?` | text | API surface neutral (25) |
-| `What implicit dependencies bind the components of this strategy?` | text | Evolution neutral (26) |
-| `Quick error resilience scan of src/handler.ts` | file | Error resilience compact (27) — 110w |
-| `Ultra-brief error resilience check` | file | Error resilience 70w (28) — 70w |
-| `Where does skipped validation waste both safety and performance?` | file | Evidence cost (29) |
-| `Find dead code — functions defined but never called, stale config` | module | Reachability (30) |
-| `Where has documentation drifted from actual behavior?` | module | Fidelity (31) |
-| `Map every piece of mutable state as a state machine — find unhandled transitions` | file | State audit (32) |
-| `Security review of this module` | module | Portfolio: trust (13) + error resilience (19) |
-| `Code review of src/api.ts` | file | Portfolio: L12 (00) + contract (11) |
-| `Assess maintainability of this service` | module | Portfolio: degradation (10) + contract (11) |
-| `Design review of this architecture` | any | Portfolio: claim (07) + rejected-paths (09) |
-| `What are the trade-offs in this approach?` | text | Portfolio: scarcity (08) + rejected-paths (09) |
-| `Run pedagogy and rejected-paths lenses on this module` | module | Portfolio: pedagogy (06) + rejected-paths (09) |
-
-Scope: **file** = single source file, **module** = directory or module (multiple files), **text** = inline text, question, or proposal (no file target), **any** = works at all scopes.
+| Variable | Type | Description |
+|----------|------|-------------|
+| `target` | string | What to analyze — file path, directory, inline text, question, or concept |
+| `target_type` | string | `code` or `general` (default: `code`) |
+| `pipeline_mode` | string | `single`, `full-prism`, `portfolio`, or `behavioral` (default: `single`) |
+| `output_path` | string | Directory to write analysis artifacts (default: `.`) |
+| `selected_lenses` | array | For portfolio mode: array of lens names |
+| `analysis_focus` | string | Optional focus area to guide the analysis |
+| `analysis_units` | array | Ordered list of analysis units (for multi-unit scopes) |
+| `current_unit` | object | Current analysis unit during iteration loop |
+| `structural_output_path` | string | File path to structural pass artifact |
+| `adversarial_output_path` | string | File path to adversarial pass artifact |
+| `synthesis_output_path` | string | File path to synthesis pass artifact |
+| `portfolio_output_paths` | object | Map of lens name to file path for portfolio mode |
+| `all_artifact_paths` | array | Accumulated list of all artifact paths across units |
+| `behavioral_output_paths` | object | Map of behavioral lens name to artifact path |
+| `behavioral_synthesis_output_path` | string | File path to behavioral synthesis artifact |
 
 ---
 
@@ -288,18 +258,20 @@ Scope: **file** = single source file, **module** = directory or module (multiple
 workflows/prism/
 ├── workflow.toon                         # Workflow definition (4 modes, 15 variables, 12 rules)
 ├── README.md                             # This file
+├── concept-lexicon.md                    # Analytical concept definitions (30 concepts)
 ├── activities/
 │   ├── 00-select-mode.toon               # Plan analysis configuration
 │   ├── 01-structural-pass.toon           # L12, portfolio, or behavioral lens dispatch
 │   ├── 02-adversarial-pass.toon          # Adversarial lens (full-prism only)
 │   ├── 03-synthesis-pass.toon            # L12 synthesis (full-prism only)
 │   ├── 04-deliver-result.toon            # Present final analysis
-│   └── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
+│   ├── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
+│   └── 06-audit-finalize.toon            # Audit report finalization (security audits only)
 ├── skills/
 │   ├── 00-structural-analysis.toon       # Single-pass L12
 │   ├── 01-full-prism.toon               # Full Prism worker pass
-│   ├── 02-portfolio-analysis.toon        # Portfolio lenses (24 lenses)
-│   ├── 03-plan-analysis.toon             # Analysis planning (24 goal mappings)
+│   ├── 02-portfolio-analysis.toon        # Portfolio lenses (40+ lenses)
+│   ├── 03-plan-analysis.toon             # Analysis planning (46 goal mappings)
 │   ├── 04-orchestrate-prism.toon         # Pipeline orchestration
 │   ├── 05-behavioral-pipeline.toon       # Behavioral pipeline worker pass
 │   └── README.md
@@ -315,5 +287,6 @@ workflows/prism/
     ├── 40–44: Knowledge/epistemic (knowledge-audit, boundary, typed, l12g, oracle)
     ├── 45–47: Writer pipeline
     ├── 48: Strategist
-    └── README.md (46 resources)
+    ├── 49: Severity rubric
+    └── README.md (46+ resources)
 ```
