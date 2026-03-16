@@ -1,6 +1,8 @@
 ---
 name: api_surface
 description: API surface prism V3 (Opus-designed) — trace what names promise, hunt narrowing/widening/direction lies with negative examples forcing all 3 types, write exact bug code per lie, name real conservation costs. Complementary to L12+optim+errres+evo. 3 steps, ~130 words. Sonnet recommended (9.5), Haiku strong (8.7-9.0).
+quality_baseline: 9.5
+optimal_model: sonnet
 type: api_surface
 steps: 3
 words: 130

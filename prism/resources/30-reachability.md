@@ -1,7 +1,8 @@
 ---
 calibration_date: 2026-03-12
 model_versions: ["claude-sonnet-4-6"]
-quality_baseline: null
+quality_baseline: 7.5
+optimal_model: sonnet
 origin: "factory:analysis_fallback — goal: Find dead code and unreachable paths. Trace every function definition to its call sites. Find: functions defined but nev"
 notes: "goal-spec mode (no SDL example available). 162w, 3-step. Validate before production use."
 validation_passed: true

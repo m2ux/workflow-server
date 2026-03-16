@@ -4,6 +4,7 @@ description: Error resilience prism COMPACT — compressed from V11 (165w to ~11
 type: error_resilience
 steps: 3
 words: 110
+optimal_model: sonnet
 ---
 Execute every step below. Output the complete analysis.
 
