@@ -4,11 +4,13 @@ capability: Orchestrate work-package workflow execution using a persistent worke
 
 description: "Coordination-only skill executed INLINE by the top-level agent (the agent that received the user request). This skill MUST NOT be delegated to a sub-agent — the orchestrator runs at the top-level conversation so that AskQuestion calls render directly to the user. Loads the workflow definition (with schema preamble), initializes state, then dispatches activities sequentially to a persistent worker sub-agent. The orchestrator evaluates transition conditions between activities, manages state variables, and handles rework loops. It MUST NOT execute activity steps, write code, review code, or produce artifacts — all domain work is delegated to the worker."
 
-inputs[2]:
+inputs[3]:
   - id: workflow-id
     description: "Workflow to orchestrate (e.g., 'work-package')"
   - id: user-request
     description: "The user's initial request, used to detect mode and extract target submodule"
+  - id: target-path
+    description: "Path to the target directory. Must be resolved (from user request or by asking) before dispatching any activity."
 
 protocol:
   load-workflow[3]:
@@ -82,6 +84,7 @@ rules:
   no-premature-transition-inference: "The orchestrator MUST NOT state, imply, or frame commentary around which activity follows the current one until the activity is complete and transitions have been formally evaluated against the transition table. Checkpoint names and messages are user-facing labels defined by the workflow author — they do not encode transition logic."
   automatic-transition: "After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT asking the user for confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. The user interacts ONLY through defined checkpoints within activities. Any pause between activities for user confirmation is a protocol violation."
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
+  reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result. Empty checkpoints_responded on an activity with required blocking checkpoints is always a validation failure — no rationalization permitted."
 
 tools:
   get_workflow:
