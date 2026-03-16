@@ -5,6 +5,7 @@ type: api_surface
 steps: 3
 words: 180
 domain: universal
+optimal_model: sonnet
 ---
 Execute every step below. Output the complete analysis.
 

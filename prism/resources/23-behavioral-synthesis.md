@@ -1,6 +1,8 @@
 ---
 name: behavioral_synthesis
 description: Synthesis pass for 4-prism behavioral pipeline. Finds convergence points across error/cost/change/promise analyses, hunts blind spots between all four lenses, names the unified conservation law. ~150 words.
+quality_baseline: null
+optimal_model: sonnet
 type: synthesis
 steps: 3
 words: 150

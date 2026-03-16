@@ -5,6 +5,7 @@ type: error_resilience
 steps: 3
 words: 200
 domain: universal
+optimal_model: sonnet
 ---
 Execute every step below. Output the complete analysis.
 

@@ -1,7 +1,8 @@
 ---
 calibration_date: 2026-03-11
 model_versions: ["claude-haiku-4-5-20251001", "claude-sonnet-4-6"]
-quality_baseline: null
+quality_baseline: 9.0
+optimal_model: haiku
 origin: "SDL family v1 — Coupling Clock (designed Round 35+)"
 notes: "SDL-3: Coupling Clock Prism. 3 concrete steps, ~185w. Finds implicit initialization contracts, invariant windows (TOCTOU, stale decisions), and temporal ordering bugs. Complementary to SDL-1 (SDL-1 finds async state handoff = state transfer to async ops; SDL-3 finds check-then-use time gaps and ordering-dependent setup — different failure class). Universal: code (lazy init, TOCTOU, cache staleness) and reasoning (prerequisite assumptions checked once but used in changed context). Always single-shot at ≤3 steps."
 ---

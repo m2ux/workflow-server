@@ -1,6 +1,8 @@
 ---
 name: evidence_cost
 description: Evidence Cost prism (Opus-bred hybrid of ErrRes + Optim) — maps unchecked shared state with validation cost ranking, traces how skipped validation causes BOTH errors AND wasted computation, names the diagnostic conservation law (observability budget). 3 steps, ~160 words. Scored 9.0 on Starlette. Novel cross-dimensional insight neither parent finds alone.
+quality_baseline: 9.0
+optimal_model: sonnet
 type: hybrid
 parents: [error_resilience, optim]
 steps: 3

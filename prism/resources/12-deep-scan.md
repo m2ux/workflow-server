@@ -2,6 +2,7 @@
 calibration_date: 2026-03-11
 model_versions: ["claude-sonnet-4-6", "claude-haiku-4-5-20251001"]
 quality_baseline: 9.0
+optimal_model: opus
 origin: "Sonnet S3 self-generated (Round 33), validated Round 34"
 notes: "Structural Deep-Scan Lens. Sonnet-designed, Haiku-validated. Finds conservation laws + information laundering + 3 structural bug patterns. Complementary to L12 (different findings). 180w, 3 concrete steps."
 ---

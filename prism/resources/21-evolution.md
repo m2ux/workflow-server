@@ -1,6 +1,8 @@
 ---
 name: evolution
 description: Evolution prism V10 (Sonnet-designed) — trace invisible handshakes (data flowing between functions without appearing in signatures), propagate minimal poison mutations through contamination paths, map the fragility atlas. Complementary to L12+optim+errres+api_surface. 3 steps, ~130 words. Sonnet recommended (9.5+), Haiku strong (8.5-8.7).
+quality_baseline: 9.5
+optimal_model: sonnet
 type: evolution
 steps: 3
 words: 130

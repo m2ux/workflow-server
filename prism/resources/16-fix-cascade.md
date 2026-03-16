@@ -1,6 +1,8 @@
 ---
-name: rec
+name: fix_cascade
 description: Recursive Entailment Cascade prism V2 (Opus-designed) — locate deepest structural defect (repeated patches, workaround helpers, special-case branches), trace what a fix would hide (lost error paths, unobservable state transitions), iterate to find unfixable invariant. Complementary to deep_scan+sdl_trust+sdl_coupling+ident. 3 steps, ~190 words. Sonnet recommended (9.5+), Haiku strong (9.0).
+quality_baseline: 9.0
+optimal_model: opus
 type: recursive_entailment
 steps: 3
 words: 190
