@@ -47,11 +47,11 @@ Each prism responds to a specific analytical question. The table below shows use
 | `Where do trust boundaries collapse? Find authority inversions` | module | Trust topology (13) |
 | `Find hidden temporal coupling — ordering dependencies and TOCTOU gaps` | module | Coupling clock (14) |
 | `Where do implementation details leak through abstraction boundaries?` | module | Abstraction leak (15) |
-| `What structural defects persist through every attempted fix?` | file | Rec (16) |
-| `Where does this code claim to be something different than it is?` | file | Ident (17) |
-| `Quick structural scan of src/core.ts` | file | 73w (18) — Sonnet only |
+| `What structural defects persist through every attempted fix?` | file | Fix-cascade (16) |
+| `Where does this code claim to be something different than it is?` | file | Identity (17) |
+| `Quick structural scan of src/core.ts` | file | L12-universal (18) — Sonnet only |
 | `How does error context get destroyed in this module?` | module | Error resilience (19) |
-| `Find hidden performance costs — what optimization data is erased at boundaries?` | file | Optim (20) |
+| `Find hidden performance costs — what optimization data is erased at boundaries?` | file | Optimize (20) |
 | `Trace invisible coupling — what data flows between functions without signatures?` | module | Evolution (21) |
 | `Where do function names lie about what the code actually does?` | file | API surface (22) |
 | `Run a comprehensive behavioral analysis of src/pipeline/` | module | Behavioral pipeline (19→20→21→22→23) |
@@ -64,12 +64,27 @@ Each prism responds to a specific analytical question. The table below shows use
 | `Find dead code — functions defined but never called, stale config` | module | Reachability (30) |
 | `Where has documentation drifted from actual behavior?` | module | Fidelity (31) |
 | `Map every piece of mutable state as a state machine — find unhandled transitions` | file | State audit (32) |
-| `Security review of this module` | module | Portfolio: trust (13) + error resilience (19) |
+| `Dig through the structural layers — what's foundation vs accumulated sediment?` | file | Archaeology (33) |
+| `Find registration gaps — features wired but undocumented, or declared but unwired` | module | Audit-code (34) |
+| `Plant a new requirement and trace what resists the change` | file | Cultivation (35) |
+| `What breaks when a new developer joins? What becomes cargo cult?` | file | SDL-simulation (36) |
+| `Map trust entry points and trace exploit chains` | file | Security (37) |
+| `Run this code forward through 5 maintenance cycles — what calcifies?` | file | Simulation (38) |
+| `Which functions can't be unit tested? What's the isolation cost?` | file | Testability (39) |
+| `Attack this analysis for confabulated knowledge claims` | text | Knowledge-audit (40) |
+| `Classify every claim by knowledge dependency — structural vs contextual vs temporal` | text | Knowledge-boundary (41) |
+| `Type every finding with confidence, provenance, and falsifiability` | any | Knowledge-typed (42) |
+| `Self-correcting structural analysis — L12 with built-in confabulation detection` | file | L12g (43) |
+| `Maximum-trust analysis — 5-phase self-aware structural analysis, zero confabulation` | file | Oracle (44) |
+| `Rewrite this README as a high-converting developer landing page` | text | Writer (45) |
+| `Plan the optimal analysis strategy for this goal` | any | Strategist (48) |
+| `Security review of this module` | module | Portfolio: trust (13) + security (37) |
 | `Code review of src/api.ts` | file | Portfolio: L12 (00) + contract (11) |
 | `Assess maintainability of this service` | module | Portfolio: degradation (10) + contract (11) |
 | `Design review of this architecture` | any | Portfolio: claim (07) + rejected-paths (09) |
 | `What are the trade-offs in this approach?` | text | Portfolio: scarcity (08) + rejected-paths (09) |
-| `Run pedagogy and rejected-paths lenses on this module` | module | Portfolio: pedagogy (06) + rejected-paths (09) |
+| `How does this code age? Archaeology + temporal simulation` | file | Portfolio: archaeology (33) + simulation (38) |
+| `Verify this analysis has no confabulated claims` | text | Portfolio: knowledge-audit (40) + knowledge-boundary (41) |
 
 Scope: **file** = single source file, **module** = directory or module (multiple files), **text** = inline text, question, or proposal (no file target), **any** = works at all scopes.
 
@@ -81,7 +96,7 @@ Scope: **file** = single source file, **module** = directory or module (multiple
 |------|--------|-------------|
 | **Single** | 1 | L12 structural lens — conservation law, meta-law, bug table |
 | **Full Prism** | 3 | Structural → adversarial → synthesis (self-correcting) |
-| **Portfolio** | 2+ | Multiple independent lenses for breadth (24 available) |
+| **Portfolio** | 2+ | Multiple independent lenses for breadth (40+ available) |
 | **Behavioral** | 4+1 | Error resilience + optimization + evolution + API surface → synthesis. Code-only. |
 
 ---
@@ -138,7 +153,7 @@ graph TD
 
 ---
 
-## Resources (30)
+## Resources (46)
 
 Resources are indexed markdown files containing lens prompts. Each lens encodes a specific analytical operation.
 
@@ -146,11 +161,15 @@ Resources are indexed markdown files containing lens prompts. Each lens encodes 
 |-------|--------|-------|-------------|
 | 00–02 | L12 Pipeline | 3 | Structural, adversarial, synthesis (code and general) |
 | 06–11 | Portfolio | 6 | Pedagogy, claim, scarcity, rejected-paths, degradation, contract |
-| 12–18 | Structural SDL | 7 | Deep-scan, trust topology, coupling clock, abstraction leak, rec, ident, 73w |
-| 19–23 | Behavioral Pipeline | 5 | Error resilience, optim, evolution, API surface, behavioral synthesis |
+| 12–18 | Structural SDL | 7 | Deep-scan, trust topology, coupling clock, abstraction leak, fix-cascade, identity, l12-universal |
+| 19–23 | Behavioral Pipeline | 5 | Error resilience, optimize, evolution, API surface, behavioral synthesis |
 | 24–26 | Domain-Neutral | 3 | Error resilience neutral, API surface neutral, evolution neutral |
 | 27–28 | Compressed | 2 | Error resilience compact, error resilience 70w |
 | 29–32 | Hybrid/Specialized | 4 | Evidence cost, reachability, fidelity, state audit |
+| 33–39 | Analysis | 7 | Archaeology, audit-code, cultivation, sdl-simulation, security, simulation, testability |
+| 40–44 | Knowledge/Epistemic | 5 | Knowledge-audit, knowledge-boundary, knowledge-typed, l12g, oracle |
+| 45–47 | Writer Pipeline | 3 | Writer, writer-critique, writer-synthesis |
+| 48 | Meta | 1 | Strategist |
 
 Indices 03–05 are deprecated (upstream general L12 variants removed).
 
@@ -164,9 +183,11 @@ Prisms fall into two model-sensitivity categories:
 
 | Category | Prisms | Guidance |
 |----------|--------|----------|
-| **Model-Independent** | L12, SDL family (12–18), portfolio (06–11) | Equivalent quality across Haiku, Sonnet, Opus |
-| **Model-Sensitive** | Behavioral (19–22), domain-neutral (24–26) | Sonnet scores +0.5–1.3 over Haiku |
-| **Sonnet-Only** | 73w (18) | Haiku fails below 73w compression floor |
+| **Model-Independent** | L12, SDL family (12–15), portfolio (06–11) | Equivalent quality across Haiku, Sonnet, Opus |
+| **Haiku-Optimized** | sdl-simulation (36), security (37), testability (39), audit-code (34) | Designed for Haiku; works on all models |
+| **Sonnet-Recommended** | Behavioral (19–22), domain-neutral (24–26), knowledge (40–42), archaeology (33), cultivation (35), simulation (38), l12g (43), oracle (44) | Sonnet scores +0.5–1.3 over Haiku |
+| **Opus-Preferred** | Deep-scan (12), fix-cascade (16), writer-critique (46), writer-synthesis (47) | Best results on Opus |
+| **Sonnet-Only** | l12-universal (18) | Haiku fails below compression floor |
 
 Domain-neutral variants (24–26) have a ~0.5–0.7 quality gap vs code-specific versions on code targets. Plan-analysis prefers code-specific variants when `target_type` is `code`.
 
@@ -254,5 +275,9 @@ workflows/prism/
     ├── 24–26: Domain-neutral variants
     ├── 27–28: Compressed variants
     ├── 29–32: Hybrid/specialized
-    └── README.md (30 resources)
+    ├── 33–39: Analysis (archaeology, audit, cultivation, simulation, security, testability)
+    ├── 40–44: Knowledge/epistemic (knowledge-audit, boundary, typed, l12g, oracle)
+    ├── 45–47: Writer pipeline
+    ├── 48: Strategist
+    └── README.md (46 resources)
 ```
