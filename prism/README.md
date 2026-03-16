@@ -25,7 +25,7 @@
 
 ## Concepts
 
-Definitions of the analytical [concepts](concept-lexicon.md) used within the Prism workflow, including: [conservation law](concept-lexicon.md#conservation-law), [meta-law](concept-lexicon.md#meta-law), [structural invariant](concept-lexicon.md#structural-invariant), [concealment mechanism](concept-lexicon.md#concealment-mechanism), and others.
+Definitions of the analytical [concepts](concept-lexicon.md) used within the Prism workflow (49 entries), including: [conservation law](concept-lexicon.md#conservation-law), [meta-law](concept-lexicon.md#meta-law), [structural invariant](concept-lexicon.md#structural-invariant), [concealment mechanism](concept-lexicon.md#concealment-mechanism), [code geology](concept-lexicon.md#code-geology), [calcification](concept-lexicon.md#calcification), [perturbation-response](concept-lexicon.md#perturbation-response), [confabulation](concept-lexicon.md#confabulation), [epistemic typing](concept-lexicon.md#epistemic-typing), [exploit chain](concept-lexicon.md#exploit-chain), and others.
 
 ---
 
@@ -258,7 +258,7 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 workflows/prism/
 ├── workflow.toon                         # Workflow definition (4 modes, 15 variables, 12 rules)
 ├── README.md                             # This file
-├── concept-lexicon.md                    # Analytical concept definitions (30 concepts)
+├── concept-lexicon.md                    # Analytical concept definitions (49 concepts)
 ├── activities/
 │   ├── 00-select-mode.toon               # Plan analysis configuration
 │   ├── 01-structural-pass.toon           # L12, portfolio, or behavioral lens dispatch
