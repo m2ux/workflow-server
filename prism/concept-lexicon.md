@@ -14,7 +14,7 @@ A conservation law names a trade-off that is inherent to the problem being analy
 
 The practical value of a conservation law is convergence. Without one, analysis produces an open-ended list of observations with no organizing principle. With one, every finding can be classified relative to a single structural constraint: does this bug exist because of the conservation law (structural), or despite it (fixable)? This classification is what makes prism output actionable — it separates problems you can solve from problems you must manage.
 
-Conservation laws appear in different forms across the prism resources. The L12 pipeline (00) derives them through iterative improvement and inversion. The deep-scan lens (12) finds them as "conserved quantities" — complexity that cannot be eliminated, only relocated. The optim lens (20) finds them as performance trade-offs at module boundaries. The behavioral synthesis lens (23) finds a "unified law" governing all four behavioral dimensions simultaneously. Despite the varied entry points, the underlying concept is the same: a named constraint that governs the system's design space.
+Conservation laws appear in different forms across the prism resources. The L12 pipeline (00) derives them through iterative improvement and inversion. The deep-scan lens (12) finds them as "conserved quantities" — complexity that cannot be eliminated, only relocated. The optimize lens (20) finds them as performance trade-offs at module boundaries. The behavioral synthesis lens (23) finds a "unified law" governing all four behavioral dimensions simultaneously. Despite the varied entry points, the underlying concept is the same: a named constraint that governs the system's design space.
 
 A conservation law is not a universal truth — it is a claim about a specific system. The adversarial pass (01) exists precisely to test whether a proposed conservation law is genuine or merely an implementation choice that could be designed around. A law that survives adversarial challenge is a structural finding. One that doesn't was an overclaim.
 
@@ -32,7 +32,7 @@ In practice, meta-laws tend to cluster into four categories depending on the dom
 
 A structural invariant is a property that persists through every attempted improvement because it belongs to the problem space, not the implementation. If you fix a bug and the same class of problem reappears in a different location, the underlying cause is likely a structural invariant. The invariant is not a bug — it is a constraint that any solution to this problem must accommodate.
 
-The L12 pipeline discovers structural invariants through iterative improvement: engineer a fix, observe what new problem the fix creates, fix that, observe again. The property that survives all iterations is the invariant. The rec lens (16) uses the same technique in compressed form — locate the deepest defect, propose a fix, trace what diagnostic signal the fix destroys, iterate until the persistent property emerges.
+The L12 pipeline discovers structural invariants through iterative improvement: engineer a fix, observe what new problem the fix creates, fix that, observe again. The property that survives all iterations is the invariant. The fix-cascade lens (16) uses the same technique in compressed form — locate the deepest defect, propose a fix, trace what diagnostic signal the fix destroys, iterate until the persistent property emerges.
 
 Structural invariants matter because they determine the boundary between fixable and structural bugs. A bug caused by a structural invariant cannot be eliminated — only moved to a different location or traded for a different kind of failure. Recognizing this boundary early prevents teams from spending effort on fixes that will recreate the original problem elsewhere.
 
@@ -76,13 +76,13 @@ The adversarial pass (01) specifically challenges these classifications. Bugs la
 
 ### Recursive Entailment
 
-Recursive entailment is the pattern of applying a fix, observing the new problem the fix creates, applying a fix to that, and continuing until a persistent property emerges. The rec lens (16) uses this as its primary operation. It is a compressed version of the iterative improvement sequence in the L12 pipeline, focused specifically on whether a defect is fixable or structural.
+Recursive entailment is the pattern of applying a fix, observing the new problem the fix creates, applying a fix to that, and continuing until a persistent property emerges. The fix-cascade lens (16) uses this as its primary operation. It is a compressed version of the iterative improvement sequence in the L12 pipeline, focused specifically on whether a defect is fixable or structural.
 
 The key insight is that a fix that "buries the problem deeper" — making the symptom disappear while preserving the root cause — is itself a diagnostic signal. If every attempted fix recreates the same class of problem, the underlying cause is a structural invariant that must be managed rather than solved.
 
 ### Revaluation
 
-Revaluation is the recognition that what appears to be a defect is actually the cost of achieving something valuable. The ident lens (17) uses this as its final step: for each identity displacement found, ask what the displacement buys — performance, convenience, backward compatibility — and whether removing it would sacrifice something important.
+Revaluation is the recognition that what appears to be a defect is actually the cost of achieving something valuable. The identity lens (17) uses this as its final step: for each identity displacement found, ask what the displacement buys — performance, convenience, backward compatibility — and whether removing it would sacrifice something important.
 
 The universal formula is: "What looked like [DEFECT] was actually [COST] of [IMPOSSIBLE GOAL]." Necessary displacements are those where removing the apparent defect breaks something the system needs. Accidental displacements are technical debt with no compensating benefit. Distinguishing the two prevents teams from "fixing" things that are load-bearing.
 
@@ -100,7 +100,7 @@ The damage is not the error itself but the lost ability to diagnose it. When a s
 
 ### Identity Displacement
 
-Identity displacement is when an artifact is something fundamentally different from what it claims to be. The ident lens (17) targets this: functions named "get" that silently mutate state, sentinel values (like `null` or `None`) that carry different meanings in different contexts, components that serve a different purpose than their name suggests.
+Identity displacement is when an artifact is something fundamentally different from what it claims to be. The identity lens (17) targets this: functions named "get" that silently mutate state, sentinel values (like `null` or `None`) that carry different meanings in different contexts, components that serve a different purpose than their name suggests.
 
 This is distinct from a simple bug. A bug is where code fails to do what it should. Identity displacement is where code succeeds at doing something other than what its interface declares. The displacement may be intentional (a performance optimization disguised as a simple accessor) or accidental (accumulated drift between the name and the behavior). The revaluation step determines which.
 
@@ -142,7 +142,7 @@ The "poison propagation" test reveals the fragility: find the smallest mutation 
 
 ### Opacity
 
-Opacity is a boundary where implementation is hidden in a way that erases performance-critical information. The optim lens (20) focuses specifically on what performance data is lost at module boundaries: allocation patterns, cache behavior, branch predictability, memory locality, and lock contention.
+Opacity is a boundary where implementation is hidden in a way that erases performance-critical information. The optimize lens (20) focuses specifically on what performance data is lost at module boundaries: allocation patterns, cache behavior, branch predictability, memory locality, and lock contention.
 
 The consequence of opacity is blind workarounds — code that copies when it could alias, polls when it could wait, retries when it could resume, because the information needed to choose the optimal path was erased at a boundary. The lens requires costs to be stated concretely (nanoseconds, allocations, cache misses, round trips) rather than abstractly ("overhead" or "some cost"), forcing the analysis to quantify what opacity actually costs the system.
 
@@ -261,3 +261,109 @@ The pedagogy law names the constraint that gets transferred as an assumption —
 Claim inversion is the operation of extracting every empirical claim an artifact embeds — about timing, causality, resources, or human behavior — and then assuming each claim is false to trace the corruption that unfolds when the artifact meets a contradicting reality. The claim lens (07) builds three alternative designs, each inverting one claim, to reveal the original's hidden assumptions.
 
 The core impossibility the lens seeks is the goal the artifact is trying to optimize around that cannot actually be achieved. This is related to but distinct from a conservation law: the core impossibility is what the artifact pretends is possible, while the conservation law names the specific trade-off that makes it impossible.
+
+---
+
+## Archaeological and Temporal Concepts
+
+These concern the layered history of a system — how it accumulated structure over time and how that structure degrades under maintenance pressure.
+
+### Code Geology
+
+Code geology treats a codebase as stratified terrain. The archaeology lens (33) excavates five layers: the **surface** (public API and obvious structure), the **foundation** (the oldest structural decision everything else rests on), the **sediment** (layers accumulated between foundation and surface under different pressures), **fossils** (dead code, vestigial patterns, deprecated paths that remain in the code but no longer execute), and **fault lines** (where layers meet badly — conflicts between sediment and foundation that produce structural instability).
+
+The conservation law the archaeology lens derives names the quantity preserved across all geological layers. The diagnostic step applies this law to the excavation itself: what does viewing code as strata conceal about its actual structure?
+
+### Calcification
+
+Calcification is the process by which temporary solutions become permanent structure. The simulation lens (38) and sdl-simulation lens (36) both trace this phenomenon: emergency patches that become load-bearing code, workarounds that outlive the bug they worked around, and "temporary" configuration that accumulates callers until it cannot be removed without breaking them.
+
+The sdl-simulation lens models two specific cycles that drive calcification: the **new developer cycle** (assumptions violated, silent breaks, copy-paste misuse) and the **knowledge loss cycle** (original author leaves, undocumented decisions become **cargo cult** — patterns whose form is preserved but whose rationale is lost).
+
+### Temporal Fragility
+
+Temporal fragility describes what breaks under real maintenance pressure, as opposed to what breaks under hypothetical load. The simulation lens (38) runs code forward through five maintenance cycles — new developer, dependency update, author departure, usage growth, security audit — and maps which assumptions fail at each stage. The output is a **calcification map**: what is load-bearing that shouldn't be, and what temporal assumptions the code embeds about its own future.
+
+---
+
+## Registration and Audit Concepts
+
+These concern the gap between what a system declares it can do and what it actually wires up.
+
+### Registration Gap
+
+A registration gap is a feature that exists on one **declaration surface** but is missing from another. The audit-code lens (34) systematically enumerates all surfaces where features are registered — argument parsers, dispatch tables, help text, documentation, test suites — and cross-references them to find mismatches. Gaps are classified as **TRUE GAP** (feature declared but never wired to dispatch), **VISIBILITY GAP** (feature works but is not discoverable through help text or documentation), **BY-DESIGN** (surfaces intentionally differ), or **FALSE POSITIVE** (feature present under a different name or abstraction).
+
+### Surface Conflation
+
+Surface conflation is the error of treating layered registrations as flat — assuming that because a feature appears in a dispatch table, it must also appear in every other declaration surface. The audit-code lens guards against this by enforcing per-surface enumeration. The conservation law it derives — *DETECTION_BREADTH × CONTEXT_DEPTH = CONSTANT* — names the trade-off between exhaustively scanning every surface and understanding the context of each registration deeply.
+
+---
+
+## Perturbation and Testability Concepts
+
+These concern how systems respond to hypothetical changes and what prevents components from being tested in isolation.
+
+### Perturbation-Response
+
+Perturbation-response is the method of planting hypothetical requirements and observing what the system does. The cultivation lens (35) plants three types of **seed**: a *new requirement* the code doesn't handle, a *contradictory requirement* that conflicts with existing design, and a *scaling requirement* that multiplies load by 100×. For each seed, the lens traces what grows (adapts easily), what resists (fights the change), and where **battle lines** form — boundaries where parts of the code take opposing sides. The **harvest** step compares growth patterns across all three seeds to derive the structural constant governing how the code responds to change.
+
+### Isolation Cost
+
+Isolation cost is the minimal change required to make a function testable in isolation. The testability lens (39) classifies every untestable dependency — globals, singletons, file I/O, network, system time, hidden state — and categorizes the fix as **injectable** (add a parameter), **abstractable** (extract an interface), or **structural** (requires redesign). The **testability boundary** is the single design decision that creates the deepest untestable dependency chain in the system.
+
+---
+
+## Security Concepts
+
+These extend the trust gradient concept (see above) into exploit-oriented analysis.
+
+### Exploit Chain
+
+An exploit chain is a concrete path from an unchecked assumption to demonstrable damage. The security lens (37) constructs these by first building a **trust map** — every entry point where code receives external input, paired with the trust assumptions made about that input — and then tracing what happens when each assumption is violated. Chains are classified by the type of damage they enable: **injection** (input becomes code or command), **escalation** (input bypasses access control), or **corruption** (input breaks internal state).
+
+### Impact and Feasibility
+
+Impact and feasibility are the two dimensions of the severity rubric (resource 49). **Impact (I)** measures what happens if a finding is exploited, scaled by **blast radius** — the scope of damage. **Feasibility (F)** measures how easy the finding is to trigger: unconditional defects (every invocation) score F≥3, configuration-triggered issues score F=2, and attack-dependent issues score lower. Severity is computed as *avg(I, F)* mapped to Informational/Low/Medium/High/Critical. **Calibration anchors** are target-specific benchmark tables that correct for systematic AI over-rating (privileged-access findings rated Critical when the access model doesn't support it) and under-rating (RPC-accessible DoS rated Medium when it should be High).
+
+---
+
+## Epistemic Concepts
+
+These concern the reliability, verifiability, and provenance of analytical claims — particularly important when AI-generated analysis may confabulate.
+
+### Confabulation
+
+Confabulation is an analytical claim presented as fact that the model invented rather than derived from evidence. The knowledge-audit lens (40) attacks factual assertions adversarially: for each **knowledge claim** (an assertion about the external world that may be wrong), it constructs the specific **failure mode** (what would make the claim wrong) and rates the **confabulation risk** (how likely models are to confabulate this type of claim). Claims are classified as **SAFE** (verifiable from source alone) or flagged for verification.
+
+### Knowledge Boundary
+
+A knowledge boundary is the line where analysis transitions from verifiable derivation to unverifiable assertion. The knowledge-boundary lens (41) classifies every claim into one of four types: **STRUCTURAL** (derivable solely from the source material), **CONTEXTUAL** (depends on external state that changes — API behavior, deployment configuration), **TEMPORAL** (true at training time but may have expired), or **ASSUMED** (stated as fact but actually an untested assumption).
+
+Non-structural claims are grouped by **fill mechanism** — the method needed to verify them: API_DOCS, CVE_DB, COMMUNITY, BENCHMARK, MARKET, or CHANGELOG. Each mechanism carries a **staleness risk** rating indicating how fast the knowledge decays. The resulting **gap map** shows where analysis depends on unverifiable facts and what would be needed to ground them.
+
+### Epistemic Typing
+
+Epistemic typing (Knowledge\<T\>) is the practice of annotating every finding with its type, confidence, provenance, and falsifiability. The knowledge-typed lens (42) requires each finding to carry: a **claim type** (STRUCTURAL, DERIVED, MEASURED, KNOWLEDGE, or ASSUMED), a **provenance** tag (source:line, derivation, external reference, or assumption), and a **falsifiability** criterion (how to disprove the claim, or why it cannot be disproven). The **epistemic quality score** is the percentage of STRUCTURAL claims in the total output — a proxy for how much of the analysis is grounded in the source material versus imported assumptions.
+
+### Gap-Aware Analysis
+
+Gap-aware analysis (L12-G, resource 43) integrates self-auditing into the L12 pipeline itself. After completing the standard structural analysis, the model audits every claim it just made, flagging each as either **VERIFY: source:line_N** (grounded in specific source evidence), **VERIFY: derivation** (logically derived from grounded claims), **CONFABULATED** (not confident the claim is correct), or **UNVERIFIABLE** (cannot verify from source — remove from conclusions). The self-correction step revises or removes low-confidence claims before presenting results, achieving zero confabulation in a single pass rather than requiring a separate knowledge-audit pass.
+
+### Reflexive Self-Diagnosis
+
+Reflexive self-diagnosis is the operation of applying the analytical framework to its own output. The oracle lens (44) implements this as a 5-phase protocol: structural analysis, epistemic typing, self-correction, reflexive diagnosis (applying the framework to itself to find its own blind spots), and a final harvest that reports retracted claims alongside findings. This is the L13 operation — the reflexive ceiling where further recursion produces infinite regress rather than new insight.
+
+---
+
+## Strategic Analysis Concepts
+
+These concern the meta-level decisions about which prisms to apply and in what order.
+
+### Operating Point
+
+An operating point is a position on the specificity-verifiability axis where an analysis sits. The strategist lens (48) derives the conservation law *S × V = C* (Specificity × Verifiability = Constant): high-specificity findings are harder to verify from source alone, while highly verifiable findings tend to be less specific. Every prism and pipeline implicitly chooses an operating point on this axis. The strategist's role is to select the operating point that best serves the analytical goal.
+
+### Composition Non-Commutativity
+
+Prism composition is non-commutative — the order in which prisms are applied matters. L12 must come before knowledge-audit (the audit needs claims to attack). Structural analysis must precede adversarial (the adversary needs findings to challenge). The strategist lens encodes this as a constraint: certain prisms are prerequisite to others, and reordering them produces different (usually worse) results. The convergence signal — discovery of a conservation law — determines when to stop adding passes: once a law is found, additional passes add breadth (new findings at the same depth) rather than depth (deeper structural insight).
