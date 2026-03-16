@@ -1,16 +1,17 @@
 # Prism Analysis Workflow
 
-> v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 30 lenses, isolated multi-pass pipelines.
+> v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 46 lenses, isolated multi-pass pipelines.
 
 ---
 
 ## Overview
 
-When you ask a model to "review this code," it produces a generic, surface-level response. Prisms are short structured prompts (70–330 words) that force the model through a specific sequence of analytical operations — each one targeting a class of problem that free-form analysis reliably misses. The results are qualitatively different: conservation laws instead of style suggestions, quantified bug tables instead of vague warnings.
+[Prisms](https://github.com/m2ux/workflow-server/blob/workflows/prism/resources/README.md) are succinct structured prompts (70–330 words) that force an LLM through a specific sequence of analytical operations — each one targeting a class of problem that free-form analysis reliably misses. The results are qualitatively different: conservation laws instead of style suggestions, quantified bug tables instead of vague warnings.
 
 **Why use this workflow instead of prompting directly?**
 
-- **Depth.** Each prism encodes a multi-step reasoning chain validated across hundreds of experiments. The L12 prism, for example, forces the model through claim → dialectic → concealment → improvement → invariant → inversion → conservation law → meta-law — producing findings that a single prompt never reaches.
+- **Depth.** Each prism encodes a multi-step reasoning chain validated across hundreds of experiments (representing $$$$ in compute). The L12 prism, for example, forces the model through:
+```claim → dialectic → concealment → improvement → invariant → inversion → conservation law → meta-law``` — producing findings that a single prompt never reaches.
 - **Independence.** The full-prism pipeline runs three passes in separate context windows. The adversarial pass has never seen the structural analysis being generated — it receives only the final text. This prevents the model from defending its own prior output, producing genuine self-correction.
 - **Breadth.** Portfolio mode runs multiple lenses that each ask a fundamentally different question about the same target. Research across real codebases confirms zero overlap between lenses — each finds properties the others are structurally blind to.
 - **Reproducibility.** The same prism on the same input produces consistent analytical depth regardless of how the conversation started or what else is in context.
@@ -118,7 +119,10 @@ graph TD
     SYN --> DR
 
     BSP --> DR
-    DR --> Done([End])
+    DR --> AF{"security audit?"}
+    AF -->|yes| AUD["audit-finalize"]
+    AF -->|no| Done([End])
+    AUD --> Done
 ```
 
 ---
@@ -133,6 +137,7 @@ graph TD
 | 03 | **Synthesis Pass** | Reconcile structural + adversarial (full-prism only) |
 | 04 | **Deliver Result** | Present final analysis with artifact paths |
 | 05 | **Behavioral Synthesis Pass** | Synthesize 4 behavioral lens outputs (behavioral only) |
+| 06 | **Audit Finalize** | Split report, create detailed findings + trade-off analysis (security audits only) |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 
@@ -170,6 +175,7 @@ Resources are indexed markdown files containing lens prompts. Each lens encodes 
 | 40–44 | Knowledge/Epistemic | 5 | Knowledge-audit, knowledge-boundary, knowledge-typed, l12g, oracle |
 | 45–47 | Writer Pipeline | 3 | Writer, writer-critique, writer-synthesis |
 | 48 | Meta | 1 | Strategist |
+| 49 | Audit | 1 | Severity rubric (security audits) |
 
 Indices 03–05 are deprecated (upstream general L12 variants removed).
 
@@ -252,18 +258,20 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 workflows/prism/
 ├── workflow.toon                         # Workflow definition (4 modes, 15 variables, 12 rules)
 ├── README.md                             # This file
+├── concept-lexicon.md                    # Analytical concept definitions (30 concepts)
 ├── activities/
 │   ├── 00-select-mode.toon               # Plan analysis configuration
 │   ├── 01-structural-pass.toon           # L12, portfolio, or behavioral lens dispatch
 │   ├── 02-adversarial-pass.toon          # Adversarial lens (full-prism only)
 │   ├── 03-synthesis-pass.toon            # L12 synthesis (full-prism only)
 │   ├── 04-deliver-result.toon            # Present final analysis
-│   └── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
+│   ├── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
+│   └── 06-audit-finalize.toon            # Audit report finalization (security audits only)
 ├── skills/
 │   ├── 00-structural-analysis.toon       # Single-pass L12
 │   ├── 01-full-prism.toon               # Full Prism worker pass
-│   ├── 02-portfolio-analysis.toon        # Portfolio lenses (24 lenses)
-│   ├── 03-plan-analysis.toon             # Analysis planning (24 goal mappings)
+│   ├── 02-portfolio-analysis.toon        # Portfolio lenses (40+ lenses)
+│   ├── 03-plan-analysis.toon             # Analysis planning (46 goal mappings)
 │   ├── 04-orchestrate-prism.toon         # Pipeline orchestration
 │   ├── 05-behavioral-pipeline.toon       # Behavioral pipeline worker pass
 │   └── README.md
@@ -279,5 +287,6 @@ workflows/prism/
     ├── 40–44: Knowledge/epistemic (knowledge-audit, boundary, typed, l12g, oracle)
     ├── 45–47: Writer pipeline
     ├── 48: Strategist
-    └── README.md (46 resources)
+    ├── 49: Severity rubric
+    └── README.md (46+ resources)
 ```
