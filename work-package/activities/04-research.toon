@@ -80,7 +80,7 @@ checkpoints[2]:
       - id: different-focus
         label: Different focus needed
         description: Research should focus on different areas
-  - id: assumptions-review
+  - id: research-assumptions-review
     name: Research Assumptions Checkpoint
     message: "Research assumptions listed above. Confirming in 30s unless you intervene."
     blocking: false

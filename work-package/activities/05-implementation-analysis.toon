@@ -102,7 +102,7 @@ checkpoints[2]:
       - id: more-analysis
         label: More analysis needed
         description: Additional areas need investigation
-  - id: assumptions-review
+  - id: analysis-assumptions-review
     name: Analysis Assumptions Checkpoint
     message: "Analysis assumptions listed above. Confirming in 30s unless you intervene."
     blocking: false

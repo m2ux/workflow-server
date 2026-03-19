@@ -109,6 +109,8 @@ checkpoints[2]:
         description: Note concerns in the log but continue to implementation
 transitions[1]{to,isDefault}:
   assumptions-review,true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark plan artifacts as ✅ Complete and set Status to Ready.
 outcome[3]:
   - Implementation plan created
   - Test plan created
