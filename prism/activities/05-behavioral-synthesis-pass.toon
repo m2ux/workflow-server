@@ -56,5 +56,5 @@ loops[1]:
           operator: "=="
           value: behavioral
 transitions[1]:
-  - to: deliver-result
+  - to: generate-report
     isDefault: true

@@ -1,7 +1,7 @@
 id: prism
-version: 1.4.0
+version: 1.5.0
 title: Structural Analysis Prism Workflow
-description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence -- particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports four modes: single-pass L12, 3-pass Full Prism (structural -> adversarial -> synthesis), multi-lens portfolio analysis, and 4+1 behavioral pipeline (error resilience -> optimization -> evolution -> API surface -> synthesis). For security audits, includes post-processing that splits the report into summary + detailed findings and generates a design trade-off analysis from conservation laws."
+description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence -- particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports four modes: single-pass L12, 3-pass Full Prism (structural -> adversarial -> synthesis), multi-lens portfolio analysis, and 4+1 behavioral pipeline (error resilience -> optimization -> evolution -> API surface -> synthesis). After analysis passes complete, a report generation activity produces a clean REPORT.md with definitive findings stripped of methodology-specific language. For security audits, includes post-processing that splits the report into summary + detailed findings and generates a design trade-off analysis from conservation laws."
 author: m2ux
 tags[3]:
   - analysis
@@ -22,7 +22,7 @@ rules[12]:
   - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '[BLOCKER]: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
 
-variables[15]:
+variables[16]:
   - name: target
     type: string
     description: "What to analyze -- a file path, directory path, inline text, question, or concept"
@@ -72,6 +72,9 @@ variables[15]:
   - name: all_artifact_paths
     type: array
     description: "Accumulated list of all artifact paths across all units"
+  - name: report_output_path
+    type: string
+    description: "File path to the generated REPORT.md artifact"
 
 artifactLocations:
   analysis:

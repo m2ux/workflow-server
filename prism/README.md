@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v1.4.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 47 lenses, isolated multi-pass pipelines.
+> v1.5.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 47 lenses, isolated multi-pass pipelines, automated report generation.
 
 ---
 
@@ -110,15 +110,16 @@ graph TD
     SM --> SP["structural-pass"]
 
     SP --> MODE{"pipeline mode?"}
-    MODE -->|"single"| DR["deliver-result"]
-    MODE -->|"portfolio"| DR
+    MODE -->|"single"| GR["generate-report"]
+    MODE -->|"portfolio"| GR
     MODE -->|"full-prism"| AP["adversarial-pass"]
     MODE -->|"behavioral"| BSP["behavioral-synthesis-pass"]
 
     AP --> SYN["synthesis-pass"]
-    SYN --> DR
+    SYN --> GR
 
-    BSP --> DR
+    BSP --> GR
+    GR --> DR["deliver-result"]
     DR --> AF{"security audit?"}
     AF -->|yes| AUD["audit-finalize"]
     AF -->|no| Done([End])
@@ -135,9 +136,10 @@ graph TD
 | 01 | **Structural Pass** | Execute L12 structural lens, portfolio lenses, or behavioral lenses per unit |
 | 02 | **Adversarial Pass** | Challenge structural analysis (full-prism only) |
 | 03 | **Synthesis Pass** | Reconcile structural + adversarial (full-prism only) |
-| 04 | **Deliver Result** | Present final analysis with artifact paths |
+| 04 | **Deliver Result** | Present final report with artifact paths |
 | 05 | **Behavioral Synthesis Pass** | Synthesize 4 behavioral lens outputs (behavioral only) |
 | 06 | **Audit Finalize** | Split report, create detailed findings + trade-off analysis (security audits only) |
+| 07 | **Generate Report** | Produce clean REPORT.md from analysis artifacts — definitive findings only, no methodology language |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 
@@ -153,6 +155,7 @@ graph TD
 | 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy | Planning |
 | 04 | `orchestrate-prism` | Dispatch isolated workers, manage the analysis pipeline | Orchestrator |
 | 05 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | Worker |
+| 06 | `generate-report` | Produce clean final report from analysis artifacts | Worker |
 
 **Detailed documentation:** See [skills/README.md](skills/README.md) for protocol flows and skill details.
 
@@ -210,6 +213,7 @@ sequenceDiagram
     participant W1 as Worker 1 (Structural)
     participant W2 as Worker 2 (Adversarial)
     participant W3 as Worker 3 (Synthesis)
+    participant W4 as Worker 4 (Report)
 
     User->>Orch: "Analyze /path/to/code using full prism"
     Note over Orch: select-mode → full-prism
@@ -223,7 +227,10 @@ sequenceDiagram
     Orch->>W3: Task(synthesis lens, both artifacts)
     W3-->>Orch: synthesis.md
 
-    Orch->>User: All artifact paths
+    Orch->>W4: Task(generate report, all artifacts)
+    W4-->>Orch: REPORT.md
+
+    Orch->>User: REPORT.md + all artifact paths
 ```
 
 Unlike the work-package workflow (which resumes a persistent worker), the prism workflow creates a **new worker for each pass**. This is the isolation guarantee — the adversarial worker has never seen the structural analysis being generated.
@@ -249,6 +256,7 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 | `all_artifact_paths` | array | Accumulated list of all artifact paths across units |
 | `behavioral_output_paths` | object | Map of behavioral lens name to artifact path |
 | `behavioral_synthesis_output_path` | string | File path to behavioral synthesis artifact |
+| `report_output_path` | string | File path to the generated REPORT.md |
 
 ---
 
@@ -256,7 +264,7 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 ```
 workflows/prism/
-├── workflow.toon                         # Workflow definition (4 modes, 15 variables, 12 rules)
+├── workflow.toon                         # Workflow definition (4 modes, 16 variables, 12 rules)
 ├── README.md                             # This file
 ├── concept-lexicon.md                    # Analytical concept definitions (49 concepts)
 ├── activities/
@@ -264,9 +272,10 @@ workflows/prism/
 │   ├── 01-structural-pass.toon           # L12, portfolio, or behavioral lens dispatch
 │   ├── 02-adversarial-pass.toon          # Adversarial lens (full-prism only)
 │   ├── 03-synthesis-pass.toon            # L12 synthesis (full-prism only)
-│   ├── 04-deliver-result.toon            # Present final analysis
+│   ├── 04-deliver-result.toon            # Present final report
 │   ├── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
-│   └── 06-audit-finalize.toon            # Audit report finalization (security audits only)
+│   ├── 06-audit-finalize.toon            # Audit report finalization (security audits only)
+│   └── 07-generate-report.toon           # Generate clean REPORT.md from analysis artifacts
 ├── skills/
 │   ├── 00-structural-analysis.toon       # Single-pass L12
 │   ├── 01-full-prism.toon               # Full Prism worker pass
@@ -274,6 +283,7 @@ workflows/prism/
 │   ├── 03-plan-analysis.toon             # Analysis planning (46 goal mappings)
 │   ├── 04-orchestrate-prism.toon         # Pipeline orchestration
 │   ├── 05-behavioral-pipeline.toon       # Behavioral pipeline worker pass
+│   ├── 06-generate-report.toon           # Report generation from analysis artifacts
 │   └── README.md
 └── resources/
     ├── 00–02: L12 pipeline

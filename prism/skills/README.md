@@ -2,9 +2,9 @@
 
 > Part of the [Structural Analysis Prism Workflow](../README.md)
 
-## Skills (6 workflow-specific)
+## Skills (7 workflow-specific)
 
-The prism workflow provides 6 skills organized by role. Skills `orchestrate-prism`, `full-prism`, and `behavioral-pipeline` form the isolation pipeline. The remaining skills are usable standalone by any workflow.
+The prism workflow provides 7 skills organized by role. Skills `orchestrate-prism`, `full-prism`, and `behavioral-pipeline` form the isolation pipeline. `generate-report` produces the final clean output. The remaining skills are usable standalone by any workflow.
 
 | # | Skill ID | Capability | Role |
 |---|----------|------------|------|
@@ -14,6 +14,7 @@ The prism workflow provides 6 skills organized by role. Skills `orchestrate-pris
 | 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy (24 goal mappings) | Planning / Advisory |
 | 04 | `orchestrate-prism` | Dispatch isolated workers, manage all pipeline modes | Orchestrator |
 | 05 | `behavioral-pipeline` | Execute a pass of the 4+1 behavioral pipeline | Worker |
+| 06 | `generate-report` | Produce clean REPORT.md from analysis artifacts — methodology stripped | Worker |
 
 > The universal skills `orchestrate-workflow` and `execute-activity` from [meta/skills/](../../meta/skills/) are **not used** by this workflow. Prism uses its own orchestration skill (`orchestrate-prism`) because it requires disposable (non-resumed) workers for context isolation.
 
@@ -280,3 +281,52 @@ Worker-side skill for the 4+1 behavioral pipeline. Runs 4 independent behavioral
 | `write-artifact` | Write output artifact |
 
 **Key rules:** Code-only (no optim_neutral exists). Label mapping is fixed — synthesis expects exactly ERRORS, COSTS, CHANGES, PROMISES. Behavioral lenses favor Sonnet (+0.5-1.3 over Haiku).
+
+---
+
+### Skill Protocol: `generate-report` (06)
+
+Post-analysis skill that reads all artifacts produced by prior passes and generates a clean `REPORT.md` presenting only definitive findings. Strips all methodology-specific language — the reader sees conclusions, not analytical process. Works across all pipeline modes (single, full-prism, portfolio, behavioral).
+
+```mermaid
+graph TD
+    startNode(["Start"]) --> identifySource{"pipeline_mode?"}
+    identifySource -->|"single"| readStructural["Read structural-analysis.md"]
+    identifySource -->|"full-prism"| readSynthesis["Read synthesis.md (authoritative)"]
+    identifySource -->|"portfolio"| readPortfolio["Read all portfolio-*.md"]
+    identifySource -->|"behavioral"| readBehavioral["Read behavioral-synthesis.md"]
+
+    readStructural --> extract["Extract definitive findings"]
+    readSynthesis --> extract
+    readPortfolio --> extract
+    readBehavioral --> extract
+
+    extract --> strip["Strip methodology language"]
+    strip --> assignIds["Assign unified report IDs"]
+    assignIds --> compose["Compose REPORT.md"]
+    compose --> verify["Verify report integrity"]
+    verify --> endNode(["End"])
+```
+
+**Protocol steps:**
+
+| Step Key | Action |
+|----------|--------|
+| `identify-authoritative-source` | Determine which artifact(s) contain definitive findings based on pipeline_mode |
+| `read-artifacts` | Read authoritative artifacts from filesystem paths in all_artifact_paths |
+| `extract-findings` | Extract each finding with: ID, title, severity, classification, location |
+| `strip-methodology` | Remove analytical process language — no pass attribution, no dispute narratives |
+| `assign-ids` | Map source IDs to unified report IDs; use dimension prefixes if analysis_focus provides them |
+| `compose-report` | Write report: Executive Summary → Core Finding → Findings by severity → Corrections → Traceability |
+| `write-artifact` | Write to `{output-path}/REPORT.md`; verify integrity |
+
+**Authoritative source by mode:**
+
+| Mode | Authoritative Artifact | Supporting Artifacts |
+|------|----------------------|---------------------|
+| single | structural-analysis.md | — |
+| full-prism | synthesis.md | structural-analysis.md, adversarial-analysis.md (for evidence detail) |
+| portfolio | all portfolio-*.md | portfolio-synthesis.md (for cross-lens findings) |
+| behavioral | behavioral-synthesis.md | behavioral-errors/costs/changes/promises.md (for detail) |
+
+**Key rules:** Severities are inherited from the authoritative source — never reassigned. Every finding in the source must appear in the report. Every report ID must have a traceability entry mapping to source artifact and original ID.
