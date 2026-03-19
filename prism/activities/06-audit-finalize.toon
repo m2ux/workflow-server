@@ -8,7 +8,7 @@ skills:
 steps[5]:
   - id: split-report
     name: Split Report into Summary + Detailed Findings
-    description: "Read REPORT.md (produced by generate-report). Copy it to AUDIT-REPORT.md. Remove the inline detailed findings section (typically the Findings section with per-finding descriptions). Replace it with a reference line: '*Detailed write-ups for all findings organized by severity are in [DETAILED-FINDINGS.md](DETAILED-FINDINGS.md).*' Renumber all subsequent sections to fill the gap. Fix internal cross-references to old section numbers."
+    description: "Read REPORT.md (produced by generate-report). Write AUDIT-REPORT.md containing everything except the inline detailed findings section (typically the Findings section with per-finding descriptions). Replace that section with a reference line: '*Detailed write-ups for all findings organized by severity are in [DETAILED-FINDINGS.md](DETAILED-FINDINGS.md).*' Renumber all subsequent sections to fill the gap. Fix internal cross-references to old section numbers."
     required: true
   - id: create-detailed-findings
     name: Create DETAILED-FINDINGS.md
@@ -28,7 +28,7 @@ steps[5]:
     required: true
 rules[6]:
   - "ACTIVATION CONDITION: This activity ONLY runs when analysis_focus contains 'security audit', 'security review', 'audit', or similar security-focused analytical goals. For non-audit prism analyses (code review, comprehension, design review), this activity is skipped and deliver-result is the terminal activity."
-  - "REPORT SPLIT: REPORT.md (from generate-report) is copied to AUDIT-REPORT.md and then split. The summary AUDIT-REPORT.md retains domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices — everything except inline detailed findings. DETAILED-FINDINGS.md contains expanded write-ups for every finding organized by severity."
+  - "REPORT SPLIT: REPORT.md (from generate-report) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md. DETAILED-FINDINGS.md contains expanded write-ups for every finding organized by severity."
   - "DETAILED FINDING FORMAT: Every finding in DETAILED-FINDINGS.md must have exactly 5 fields: Description, Impact, Location, Recommendation, Adversarial confirmation. Source priority for extraction: (1) structural-analysis.md for original findings, (2) adversarial-analysis.md for underclaims and significant corrections, (3) portfolio documents for portfolio-source findings. The synthesis document is a mapping tool, not a content source."
   - "SEVERITY RUBRIC: All severity labels must be computed from the Impact × Feasibility rubric (resource 49). Intuitive severity assignments are a formatting violation. Toolkit/helper code carries I≤2. Config toggles carry F=2. Unconditional defects carry F≥3. The severity distribution table in the executive summary must reflect rubric-computed severities."
   - "TRADE-OFF ANALYSIS REQUIREMENTS: Each trade-off entry must have a falsifiable constraint, code-level evidence for the current operating point (citing specific finding IDs), concrete shift predictions (not abstract generalizations), and actionable design questions. Conservation laws rejected by the adversarial pass must NOT appear. Cross-domain interactions must identify emergent properties that neither individual trade-off predicts alone."
