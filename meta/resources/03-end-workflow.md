@@ -57,6 +57,10 @@ Before ending any workflow, verify:
 
 ---
 
+## Guiding Principle
+
+A well-ended workflow leaves a clear trail for future reference and ensures nothing is left incomplete. The completion summary is the authoritative record of what was accomplished, what decisions were made, and what remains.
+
 ## Completion Rules
 
 1. **Never end with incomplete required activities**

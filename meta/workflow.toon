@@ -7,6 +7,51 @@ tags[3]:
   - meta
   - bootstrap
   - workflow-management
+variables[11]:
+  - name: is_monorepo
+    type: boolean
+    description: Whether the target repository is a submodule monorepo
+    defaultValue: false
+  - name: target_path
+    type: string
+    description: Resolved target directory for git operations
+    defaultValue: "."
+  - name: entry_point_confirmed
+    type: boolean
+    description: Whether the user confirmed the resume entry point
+    defaultValue: false
+  - name: ready_to_resume
+    type: boolean
+    description: Whether the user confirmed readiness to resume workflow execution
+    defaultValue: false
+  - name: restart_workflow
+    type: boolean
+    description: Whether the user chose to restart the workflow from the beginning
+    defaultValue: false
+  - name: has_external_state
+    type: boolean
+    description: Whether the workflow has external state to assess (branches, PRs, artifacts)
+    defaultValue: false
+  - name: branch_behind_main
+    type: number
+    description: Number of commits the branch is behind main
+    defaultValue: 0
+  - name: has_conflicts
+    type: boolean
+    description: Whether the branch has merge conflicts with main
+    defaultValue: false
+  - name: abort_completion
+    type: boolean
+    description: Whether the user chose to return to workflow execution instead of ending
+    defaultValue: false
+  - name: has_outcome_gaps
+    type: boolean
+    description: Whether workflow outcomes have unsatisfied gaps
+    defaultValue: false
+  - name: workflow_completed
+    type: boolean
+    description: Whether the workflow has been finalized and closed
+    defaultValue: false
 rules[3]:
   - This workflow is the entrypoint for all workflow operations
   - Each activity is matched independently via recognition patterns in get_activities

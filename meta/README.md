@@ -48,13 +48,16 @@ graph TD
         s2([Load workflow])
         s3([Initialize state])
         s4([Apply rules])
-        s5([Discover resources])
-        s6([Load start resource])
-        s7([Get initial activity])
-        s8([Present activity])
-        s9([Prepare checkpoints])
+        s5([Detect execution model])
+        s6([Discover target])
+        s7([Read submodules])
+        s8([Discover resources])
+        s9([Load start resource])
+        s10([Get initial activity])
+        s11([Present activity])
+        s12([Prepare checkpoints])
         
-        s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9
+        s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> s11 --> s12
     end
     
     skill1((workflow-execution))
@@ -63,20 +66,23 @@ graph TD
     
     s1 -.-> skill2
     s3 -.-> skill3
-    s7 -.-> skill1
+    s10 -.-> skill1
 ```
 
 | Step | Description |
 |------|-------------|
-| Select workflow | If workflow not specified, call `list_workflows` to show options |
-| Load workflow | Call `get_workflow` to load the selected workflow |
-| Initialize state | Initialize state per state-management skill |
-| Apply rules | Read and apply workflow rules |
-| Discover resources | Call `list_workflow_resources` to discover available resources |
-| Load start resource | Call `get_resource` for index 00 (start-here resource) if available |
-| Get initial activity | Call `get_activity` for the initialActivity |
+| Select workflow | Identify target workflow from user request or present available workflows |
+| Load workflow | Load the selected workflow definition and extract metadata |
+| Initialize state | Initialize workflow state with variable defaults |
+| Apply rules | Internalize workflow-level rules for enforcement |
+| Detect execution model | Check for EXECUTION MODEL rule; load orchestrate-workflow skill if present |
+| Discover target | Check for .gitmodules to determine repository type and resolve target_path |
+| Read submodules | Parse .gitmodules for submodule selection (only when is_monorepo is true) |
+| Discover resources | Load the workflow resource index for reference |
+| Load start resource | Load the index-00 start resource if available |
+| Get initial activity | Load the activity at initialActivity to begin execution |
 | Present activity | Present first activity to user with steps and entry actions |
-| Prepare checkpoints | If activity has checkpoints, prepare to present when reached |
+| Prepare checkpoints | Identify blocking checkpoints for presentation when reached |
 
 **Outcome:**
 - Workflow is selected and loaded
@@ -189,7 +195,11 @@ The Meta workflow defines universal skills used by all workflows:
 | `workflow-execution` | Execute workflows | Follows schema patterns for workflow execution |
 | `state-management` | Manage workflow state | Handles state across sessions |
 | `artifact-management` | Manage planning artifacts | Ensures artifacts are created in correct folder structure |
+| `orchestrate-workflow` | Orchestrate workflow execution | Coordinates orchestrator/worker pattern with persistent sub-agent |
+| `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps as a worker |
+| `knowledge-base-search` | Optimise knowledge base searches | Pre-indexes domain maps before querying concept-rag |
 | `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
+| `gitnexus-operations` | Query codebases via knowledge graph | GitNexus MCP tools for impact analysis, debugging, refactoring |
 
 ---
 

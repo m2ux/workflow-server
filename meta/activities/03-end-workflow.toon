@@ -15,8 +15,7 @@ skills:
   supporting[2]:
     - state-management
     - artifact-management
-rules[3]:
-  - "Key insight: A well-ended workflow leaves a clear trail for future reference and ensures nothing is left incomplete"
+rules[2]:
   - "Never end a workflow with incomplete required activities or unanswered blocking checkpoints"
   - "Document any deferred or out-of-scope items before completing"
 steps[6]:
@@ -93,7 +92,7 @@ decisions[1]:
           variable: has_external_state
           operator: ==
           value: true
-        transitionTo: verify-external-state
+        transitionTo: verify-outcomes
       - id: no-external
         label: No external verification needed
         transitionTo: present-summary

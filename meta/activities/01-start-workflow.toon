@@ -17,25 +17,29 @@ skills:
 steps[12]:
   - id: select-workflow
     name: Select workflow
-    description: If workflow not specified, call list_workflows to show options
+    description: Identify the target workflow from user request or present available workflows
+    skill: workflow-execution
   - id: load-workflow
     name: Load workflow
-    description: Call get_workflow to load the selected workflow
+    description: Load the selected workflow definition and extract metadata, rules, modes, and variables
+    skill: workflow-execution
   - id: initialize-state
     name: Initialize state
-    description: Initialize state per state-management skill
+    description: Initialize workflow state with variable defaults and set currentActivity
+    skill: state-management
   - id: apply-rules
     name: Apply rules
-    description: Read and apply workflow rules
+    description: Internalize workflow-level rules for enforcement throughout execution
   - id: detect-execution-model
     name: Detect execution model
-    description: "Check the workflow rules for an EXECUTION MODEL rule. If the workflow uses an orchestrator/worker pattern, load the orchestrate-workflow skill (get_skill({ skill_id: 'orchestrate-workflow' })) and follow its protocol INLINE — the current agent becomes the orchestrator. Do NOT spawn the orchestrator as a sub-agent. Only the worker is spawned as a sub-agent. If no orchestrator/worker model is specified, continue with the standard workflow-execution flow."
+    description: Check workflow rules for an EXECUTION MODEL declaration and load the orchestrate-workflow skill if present
+    skill: orchestrate-workflow
   - id: discover-target
     name: Discover target
-    description: "Determine whether the repository is a regular repo or a submodule monorepo. Check for a .gitmodules file. If it exists, present the repo-type checkpoint. If not, set target_path to the repository root."
+    description: Check for .gitmodules to determine repository type and resolve target_path
   - id: read-submodules
     name: Read submodules
-    description: "Parse .gitmodules to extract submodule names and paths. Build the option list for the submodule-selection checkpoint."
+    description: Parse .gitmodules to extract submodule names and paths for the submodule-selection checkpoint
     condition:
       type: simple
       variable: is_monorepo
@@ -43,19 +47,24 @@ steps[12]:
       value: true
   - id: discover-resources
     name: Discover resources
-    description: Call list_workflow_resources to discover available resources
+    description: Load the workflow resource index for reference during execution
+    skill: workflow-execution
   - id: load-start-resource
     name: Load start resource
-    description: Call get_resource for index 00 (start-here resource) if available
+    description: Load the index-00 start resource if the workflow provides one
+    skill: workflow-execution
   - id: get-initial-activity
     name: Get initial activity
-    description: Call get_activity for the initialActivity
+    description: Load the activity at initialActivity to begin execution
+    skill: workflow-execution
   - id: present-activity
     name: Present activity
-    description: Present first activity to user with steps and any entry actions
+    description: Present the first activity to the user with steps and entry actions
+    skill: workflow-execution
   - id: prepare-checkpoints
     name: Prepare checkpoints
-    description: If activity has checkpoints, prepare to present when reached
+    description: Identify blocking checkpoints in the current activity for presentation when reached
+    skill: workflow-execution
 checkpoints[2]:
   - id: repo-type
     name: Repository Type
@@ -76,7 +85,11 @@ checkpoints[2]:
     blocking: true
   - id: submodule-selection
     name: Submodule Selection
-    prerequisite: "Only present when is_monorepo is true"
+    condition:
+      type: simple
+      variable: is_monorepo
+      operator: ==
+      value: true
     message: "Which submodule should this workflow target?"
     options[1]:
       - id: dynamic

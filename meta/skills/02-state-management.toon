@@ -8,8 +8,8 @@ format:
   examples:
     currentActivity: "'start-work-package' (activity ID from workflow)"
     currentStep: "1 (1-based index within activity)"
-    completedActivities: "['start-work-package', 'design-philosophy']"
-    completedSteps: "{'start-work-package': [1], 'design-philosophy': [1, 2, 3]}"
+    completedActivities: "list of activity IDs, e.g. start-work-package, design-philosophy"
+    completedSteps: "map of activity ID to completed step indices, e.g. start-work-package: 1; design-philosophy: 1, 2, 3"
 
 initialization:
   trigger: On workflow start (get_workflow)
