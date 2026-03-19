@@ -10,7 +10,7 @@ tags[5]:
   - workflow-review
   - design
   - governance
-rules[13]:
+rules[14]:
   - "Never use prose where a formal schema construct exists — steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, and variables must use their dedicated schema fields"
   - "Never modify schemas during workflow creation — the schema is a fixed constraint; all content must conform as-is"
   - "Present approach before implementation — show what will change, how, and in what order before modifying any file"
@@ -24,6 +24,7 @@ rules[13]:
   - "Define complete scope before execution — enumerate all files to create, modify, or remove before starting"
   - "Corrections must persist — record corrections and verify compliance at every subsequent checkpoint"
   - "Non-destructive updates — compare new content against existing content and flag any material being removed"
+  - "Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/). Root README documents the workflow overview, modes, activity sequence, variables, and file structure. Subfolder READMEs document the contents of that folder with tables and protocol details. Follow the style established by the prism workflow."
 artifactLocations:
   workflows: workflows/
 modes[2]:
