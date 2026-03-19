@@ -5,9 +5,8 @@
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI agent workflow orchestration. Create your own structured workflows that agents discover, navigate, and execute to fulfill user goals.
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI agent workflow orchestration. Create your own structured workflows that agents discover, navigate, and execute to fulfill user goals.
 
-> This project targets an agent-human pair-programming (rather than fully autonomous/vibe-coding) use case. At present it uses a single agent per workflow. Multi-agent orchestration is TBA.
 ---
 
 **[Quick Start](#-quick-start)** • **[Schema Guide](schemas/README.md)** • **[API Reference](docs/api-reference.md)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Engineering](https://github.com/m2ux/workflow-server/tree/engineering)**
