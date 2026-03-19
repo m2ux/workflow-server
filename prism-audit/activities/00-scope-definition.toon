@@ -1,0 +1,40 @@
+id: scope-definition
+version: 1.0.0
+name: Define Audit Scope
+description: "Collect the audit target, user's description of what to audit, and output path. Present the scope for confirmation before proceeding to prompt generation."
+problem: "The audit requires a confirmed target codebase, a clear description of audit goals and focus areas, and an organised output directory before analysis can begin."
+skills:
+  primary: compose-audit-prompt
+steps[4]:
+  - id: collect-inputs
+    name: Collect Audit Inputs
+    description: "Extract from the user's request: (1) target_path — the codebase or directory to audit, (2) audit_description — what to audit, any specific security concerns, domain focus areas, or known risk areas, (3) output_path — where to write audit artifacts. If output_path is not specified, derive it from the target name and current date (e.g., .engineering/artifacts/planning/YYYY-MM-DD-{target-name}-security-audit/)."
+    required: true
+  - id: validate-target
+    name: Validate Target Path
+    description: "Verify that target_path exists and contains analysable files. Check for project markers (Cargo.toml, package.json, go.mod, pyproject.toml) to confirm it is a codebase. Report the top-level structure and estimated size."
+    required: true
+  - id: summarize-scope
+    name: Summarize Audit Scope
+    description: "Present a summary of the audit scope: target codebase, detected language/framework, estimated size, user's audit description and focus areas, output directory. This becomes the checkpoint context."
+    required: true
+  - id: create-output-directory
+    name: Create Output Directory
+    description: "Create the output_path directory if it does not exist. This is where all audit artifacts will be written."
+    required: true
+checkpoints[1]:
+  - id: confirm-scope
+    name: Audit Scope Confirmation
+    message: "Please confirm the audit scope and configuration before proceeding to prompt generation."
+    options[2]:
+      - id: accept
+        label: Proceed
+        description: "Begin analysing the codebase and generating the audit prompt"
+      - id: adjust
+        label: Adjust scope
+        description: "Modify the target, description, or output path before proceeding"
+    required: true
+    blocking: true
+transitions[1]:
+  - to: prompt-generation
+    isDefault: true

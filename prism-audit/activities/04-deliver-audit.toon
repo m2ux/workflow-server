@@ -1,0 +1,24 @@
+id: deliver-audit
+version: 1.0.0
+name: Deliver Audit Results
+description: "Present the final audit deliverables to the user. Reads and summarises the three audit documents (AUDIT-REPORT.md, DETAILED-FINDINGS.md, DESIGN-TRADE-OFFS.md), reports all artifact paths, and provides a structured summary of findings by severity."
+problem: "The audit produces multiple documents across potentially multiple prism runs. The user needs a clear summary of what was produced, key metrics (finding counts by severity), and paths to all deliverables."
+skills:
+  primary: compose-audit-prompt
+steps[4]:
+  - id: read-audit-report
+    name: Read Audit Report Summary
+    description: "Read AUDIT-REPORT.md from audit_report_path. Extract the executive summary section including: total findings by severity, scope summary, core finding (if present), and top-priority remediation items."
+    required: true
+  - id: compile-metrics
+    name: Compile Audit Metrics
+    description: "From the audit report, compile: (1) finding count by severity (Critical, High, Medium, Low, Informational), (2) domain coverage (which domains were analysed), (3) number of prism runs triggered, (4) total analysis artifacts produced."
+    required: true
+  - id: present-results
+    name: Present Audit Results
+    description: "Present the audit results to the user in a structured format: (1) Audit summary with finding counts, (2) Core finding highlight (if applicable), (3) Top-priority remediation items, (4) Document index with paths to all deliverables: AUDIT-REPORT.md, DETAILED-FINDINGS.md, DESIGN-TRADE-OFFS.md, audit-prompt.md, and all underlying analysis artifacts."
+    required: true
+  - id: report-artifact-paths
+    name: Report All Artifact Paths
+    description: "List every artifact produced during the audit with its path, including: audit-prompt.md, analysis plan artifacts from prism, all per-unit analysis artifacts (structural-analysis.md, adversarial-analysis.md, synthesis.md), REPORT.md, and the three final audit deliverables."
+    required: true

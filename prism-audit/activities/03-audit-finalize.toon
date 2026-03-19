@@ -1,0 +1,55 @@
+id: audit-finalize
+version: 1.0.0
+name: Audit Report Finalization
+description: "Post-process the REPORT.md produced by the triggered prism workflow(s) into audit-specific deliverables. Splits the report into a summary document (AUDIT-REPORT.md) and a detailed findings document (DETAILED-FINDINGS.md), generates a design trade-off analysis (DESIGN-TRADE-OFFS.md) from conservation laws and meta-laws in the raw synthesis artifacts, and applies audit-specific formatting rules."
+problem: "The prism workflow produces a single clean REPORT.md with definitive findings. Security audits require three deliverables: a summary report with hyperlinked domain tables, a detailed findings document with expanded write-ups for every finding organised by severity, and a design trade-off analysis distilled from the conservation laws surfaced during the prism passes."
+skills:
+  primary: compose-audit-prompt
+steps[6]:
+  - id: locate-artifacts
+    name: Locate Analysis Artifacts
+    description: "Identify all analysis artifacts from completed prism runs: REPORT.md (from generate-report), structural-analysis.md, adversarial-analysis.md, synthesis.md (from full-prism runs), portfolio-*.md (from portfolio runs), behavioral-synthesis.md (from behavioral runs). Use completed_analyses and all_analysis_artifact_paths to locate files. For multi-scope audits, consolidate findings across all prism runs."
+    required: true
+  - id: split-report
+    name: Split Report into Summary + Detailed Findings
+    description: "Read REPORT.md. Write AUDIT-REPORT.md containing everything except the inline detailed findings section. Replace that section with a reference line: '*Detailed write-ups for all findings organised by severity are in [DETAILED-FINDINGS.md](DETAILED-FINDINGS.md).*' Renumber subsequent sections to fill the gap. Fix internal cross-references to old section numbers."
+    required: true
+  - id: create-detailed-findings
+    name: Create DETAILED-FINDINGS.md
+    description: "Create a document containing an expanded write-up for every finding that appears in the domain tables — not just Critical and High. Organise by severity (Critical, High, Medium, Low). For each finding, extract from the source analysis artifact: Description, Impact, Location, Recommendation, Adversarial confirmation (if full-prism). Group findings within each severity section under domain sub-headings. Finding headings use ### {ID}: {Title} format."
+    required: true
+  - id: create-trade-off-analysis
+    name: Create DESIGN-TRADE-OFFS.md
+    description: "Read all synthesis documents and extract the Refined Conservation Law and Refined Meta-Law from each domain. Only include laws that SURVIVED or were REFINED through adversarial challenge — rejected laws are excluded. Produce three parts: (1) Trade-Off Catalogue — one entry per domain with constraint, current operating point, shift prediction, and design questions. (2) Cross-Domain Interactions — map which trade-offs compound. (3) Design Decision Register — table of implicit decisions that should be made explicit, with current choice, alternative, governing trade-off, and documentation status."
+    required: true
+  - id: apply-formatting-rules
+    name: Apply Audit Formatting Rules
+    description: "Apply formatting rules to AUDIT-REPORT.md: (1) Update all finding ID hyperlinks to point to DETAILED-FINDINGS.md per-finding anchors. (2) Convert 'Full details' lines to hyperlinks. (3) Ensure all priority remediation tables include an Impact column. (4) Hyperlink all paths in artifact reference tables. (5) Add Design Trade-Offs row to the introductory metadata table. (6) Verify zero old-style links remain."
+    required: true
+  - id: verify-artifacts
+    name: Verify All Artifacts
+    description: "Verify that all three documents exist and are internally consistent: AUDIT-REPORT.md (summary with hyperlinked tables), DETAILED-FINDINGS.md (all findings expanded), DESIGN-TRADE-OFFS.md (trade-off analysis). Check that all cross-document hyperlinks resolve to actual headings. Set audit_report_path, detailed_findings_path, and trade_offs_path."
+    required: true
+rules[6]:
+  - "REPORT SPLIT: REPORT.md (from triggered prism workflow) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md."
+  - "DETAILED FINDING FORMAT: Every finding in DETAILED-FINDINGS.md must have exactly 5 fields: Description, Impact, Location, Recommendation, Adversarial confirmation. Source priority for extraction: (1) structural-analysis.md for original findings, (2) adversarial-analysis.md for underclaims and significant corrections, (3) portfolio documents for portfolio-source findings."
+  - "SEVERITY RUBRIC: All severity labels must be computed from the Impact x Feasibility rubric. Intuitive severity assignments are a formatting violation. Toolkit/helper code carries I<=2. Config toggles carry F=2. Unconditional defects carry F>=3."
+  - "TRADE-OFF ANALYSIS REQUIREMENTS: Each trade-off entry must have a falsifiable constraint, code-level evidence for the current operating point (citing specific finding IDs), concrete shift predictions, and actionable design questions. Conservation laws rejected by the adversarial pass must NOT appear."
+  - "REMEDIATION IMPACT COLUMN: Every priority table (P0, P1, P2, P3) in the remediation section must include an Impact column as the final column."
+  - "MULTI-SCOPE CONSOLIDATION: For multi-scope audits (multiple triggered prism runs), findings are consolidated across all runs. Duplicate findings (same issue found in multiple scopes) are deduplicated. Cross-scope patterns are surfaced as systemic findings."
+artifacts[3]:
+  - id: audit-report
+    name: "AUDIT-REPORT.md"
+    location: audit
+    description: "Finalised summary report with hyperlinked tables, rubric-scored severities, and cross-references to companion documents"
+  - id: detailed-findings
+    name: "DETAILED-FINDINGS.md"
+    location: audit
+    description: "Expanded write-ups for all findings organised by severity (Critical, High, Medium, Low)"
+  - id: design-trade-offs
+    name: "DESIGN-TRADE-OFFS.md"
+    location: audit
+    description: "Trade-off catalogue, cross-domain interactions, and design decision register distilled from conservation laws"
+transitions[1]:
+  - to: deliver-audit
+    isDefault: true
