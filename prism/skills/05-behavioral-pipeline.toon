@@ -25,6 +25,12 @@ protocol:
     - "For independent lens passes (indices 19-22): apply the lens against the target content"
     - "Execute every operation completely — the analytical depth comes from the full chain"
     - "Write the artifact to {output-path}/{artifact-filename} per the artifact naming convention"
+  augment-with-graph[5]:
+    - "After lens execution for independent passes (19-22), check GitNexus availability via gitnexus_list_repos. If unavailable, skip graph augmentation."
+    - "Error-resilience (19): Use gitnexus_context on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function."
+    - "Evolution (21): Use gitnexus_impact(direction: upstream) on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts."
+    - "API-surface (22): Use gitnexus_cypher to enumerate exported/public symbols with caller counts (MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph."
+    - "Optimize (20): No graph augmentation — optimization analysis concerns algorithmic complexity, not graph structure."
   construct-synthesis-input[3]:
     - "For synthesis pass (index 23): read all 4 prior artifacts from prior-artifact-paths"
     - "Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules"
@@ -53,6 +59,7 @@ rules:
   evidence-required: "All findings must cite specific code: file paths, function names, line ranges."
   persist-output: "Every artifact MUST be written to the filesystem. Return artifact paths so subsequent passes can read them."
   synthesis-input-format: "The synthesis input is constructed as: ## ERRORS\\n\\n{errors_content}\\n\\n---\\n\\n## COSTS\\n\\n{costs_content}\\n\\n---\\n\\n## CHANGES\\n\\n{changes_content}\\n\\n---\\n\\n## PROMISES\\n\\n{promises_content}"
+  graph-evidence-is-supplementary: "GitNexus data is appended as a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data provides supplementary measurement that the synthesis pass can reference."
 
 resources[5]:
   - "19"
@@ -77,6 +84,21 @@ tools:
   grep:
     when: "Verifying findings against the codebase"
     usage: "Confirm that cited patterns exist at the claimed locations"
+  gitnexus_list_repos:
+    when: "Checking GitNexus availability before graph augmentation (independent lens passes only)"
+    returns: "List of indexed repositories"
+  gitnexus_context:
+    when: "Error-resilience (19): checking whether all callers of error-returning functions handle the error"
+    params: "name: error-returning function name"
+    returns: "Categorised incoming/outgoing references including callers"
+  gitnexus_impact:
+    when: "Evolution (21): measuring blast radius of identified coupling points"
+    params: "target: coupling point symbol, direction: upstream"
+    returns: "Affected symbols by depth, affected processes, risk rating"
+  gitnexus_cypher:
+    when: "API-surface (22): enumerating exported symbols with caller counts from the graph"
+    params: "query: Cypher query targeting public symbols and their callers"
+    returns: "Query results as markdown table"
 
 errors:
   lens_not_loaded:

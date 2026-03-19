@@ -38,10 +38,17 @@ protocol:
     - "Search for custom VMs or interpreters: bytecode execution, instruction dispatch, gas/cost metering"
     - "Record each characteristic: { category, location (file:line), description, severity_relevance }"
 
-  map-domains[5]:
+  map-trust-boundaries[4]:
+    - "If GitNexus is unavailable (gitnexus_available is false), skip this step entirely."
+    - "Use gitnexus_cypher to find cross-community call edges: MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(callee), (caller)-[:CodeRelation {type: 'MEMBER_OF'}]->(c1:Community), (callee)-[:CodeRelation {type: 'MEMBER_OF'}]->(c2:Community) WHERE c1 <> c2 RETURN c1.heuristicLabel, c2.heuristicLabel, caller.name, callee.name. These edges represent trust boundary crossings where validation may be absent."
+    - "Use gitnexus_impact(direction: upstream) on each security-critical symbol identified in scan-security-characteristics to map its blast radius — every upstream caller is a potential attack vector. Record: security_blast_radii (map of symbol to { direct_callers, affected_processes, affected_modules, risk })."
+    - "Record: trust_boundaries (array of { from_community, to_community, crossing_symbols }). Domains containing trust-boundary-crossing code will receive elevated risk in map-domains."
+
+  map-domains[6]:
     - "Group characteristics into audit domains. Common domain patterns: Cryptographic Correctness (hashing, signing, commitments, proofs), Value/Token Conservation (balance equations, minting, burning, transfer integrity), Transaction Safety (ordering, atomicity, replay protection), Execution Safety (VM, interpreter, cost model), Storage Integrity (Merkle trees, state transitions, garbage collection), Serialisation Safety (parsing, type confusion, malformed input), Network/API Security (HTTP, RPC, CORS, DoS), Error Handling (panic safety, silent degradation, error recovery), Feature Flag Discipline (test features, mock gates)"
     - "Only include domains that have corresponding code in the target codebase"
     - "Assign risk levels based on exposure and blast radius: CRITICAL — flaws directly compromise system integrity or user assets. HIGH — flaws degrade security guarantees or enable privilege escalation. MEDIUM — flaws have limited blast radius or require specific conditions. LOW — informational findings or defence-in-depth improvements"
+    - "If trust boundary data is available: domains containing trust-boundary-crossing code get elevated risk. Include specific cross-community call edges as patterns to examine within those domains."
     - "For each domain, list specific patterns and code paths to examine"
     - "Integrate the user's audit_description: if the user mentions specific concerns, elevate those areas in the relevant domains"
 
@@ -51,12 +58,13 @@ protocol:
     - "Trust boundary consistency: where trust transitions occur and whether they are consistently enforced"
     - "Dependency risk: third-party dependencies with known vulnerabilities or unmaintained status"
 
-  compose-prompt[6]:
+  compose-prompt[7]:
     - "Structure the prompt document with clear sections"
     - "Section 1: Codebase Overview — architecture summary, language, total LOC, module layout table (name, path, lines, purpose)"
     - "Section 2: Audit Domains — one subsection per domain with: Domain Name, Risk Level, Scope (which modules/files), Focus Areas (specific patterns to examine), Key Questions (what the audit should answer)"
-    - "Section 3: Cross-Cutting Concerns — error handling, feature flags, trust boundaries, dependencies"
-    - "Section 4: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'"
+    - "Section 3: Trust Boundary Map (if GitNexus data available; omit section if unavailable) — cross-community call edges with from/to community labels and crossing symbols, security-critical symbol blast radii with direct caller counts and affected process counts"
+    - "Section 4: Cross-Cutting Concerns — error handling, feature flags, trust boundaries, dependencies"
+    - "Section 5: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'"
     - "The prompt must be self-contained: readable and actionable without additional context beyond the codebase path"
 
   build-scopes[4]:
@@ -107,6 +115,14 @@ tools:
     when: "Checking fan-in for risk calibration — modules with many callers have larger blast radius"
     params: "name: module or symbol name"
     returns: "Callers, callees, process participation"
+  gitnexus_impact:
+    when: "Mapping blast radius of security-critical symbols during trust boundary analysis"
+    params: "target: security-critical symbol name, direction: upstream"
+    returns: "Affected symbols by depth, affected processes, affected modules, risk rating"
+  gitnexus_cypher:
+    when: "Querying cross-community call edges for trust boundary mapping"
+    params: "query: Cypher query targeting cross-community CALLS edges"
+    returns: "Query results as markdown table"
 
 errors:
   empty_codebase:

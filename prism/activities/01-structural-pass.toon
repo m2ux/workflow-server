@@ -23,10 +23,14 @@ loops[1]:
     variable: current_unit
     over: analysis_units
     maxIterations: 100
-    steps[10]:
+    steps[11]:
       - id: resolve-unit-output
         name: Resolve Unit Output Directory
         description: "Set the unit's output directory: {output_path}/{current_unit.unit_output_subdir} if unit_output_subdir is present (multi-unit), otherwise {output_path}. Create the directory if needed."
+        required: true
+      - id: check-gitnexus
+        name: Check GitNexus Availability
+        description: "Check whether GitNexus has indexed the target codebase via gitnexus_list_repos. Set a gitnexus_available flag for the current unit. This avoids each worker independently probing list_repos. Pass the flag to workers so they can skip graph operations when unavailable."
         required: true
       - id: load-lens
         name: Load Structural Lens

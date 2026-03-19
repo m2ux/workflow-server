@@ -5,7 +5,7 @@ description: "Analyse the target codebase structure and compose a detailed audit
 problem: "Generic audit prompts miss codebase-specific security characteristics. A blockchain ledger codebase needs different audit domains than a web service or CI/CD pipeline. The prompt must be tailored to the codebase's architecture, language, dependencies, and trust boundaries to produce meaningful findings."
 skills:
   primary: compose-audit-prompt
-steps[7]:
+steps[8]:
   - id: survey-structure
     name: Survey Codebase Structure
     description: "Explore the target codebase at target_path. Identify: (1) primary language(s) and build system, (2) module/crate/package layout, (3) total size (lines of code), (4) per-module size and purpose, (5) dependency graph (from build files), (6) test coverage structure. Record the structural inventory."
@@ -14,9 +14,13 @@ steps[7]:
     name: Identify Security-Relevant Characteristics
     description: "Scan for security-relevant patterns: (1) cryptographic operations (hashing, signing, encryption, key management), (2) authentication and authorisation boundaries, (3) network-exposed surfaces (HTTP, RPC, WebSocket), (4) state management (databases, caches, persistent storage), (5) serialisation/deserialisation of untrusted input, (6) feature flags that gate security-critical behaviour, (7) unsafe code blocks or FFI boundaries, (8) WASM compilation targets, (9) custom virtual machines or interpreters, (10) zero-knowledge proof systems. Record each characteristic with its location."
     required: true
+  - id: map-trust-boundaries
+    name: Map Trust Boundaries via Graph
+    description: "If GitNexus is available: (1) Use gitnexus_cypher to find cross-community call edges — functions in one community (functional area) calling functions in another. These edges represent trust boundary crossings where validation may be absent. (2) Use gitnexus_query with security-focused queries ('authentication', 'authorization', 'encryption', 'permission check') to identify execution flows that traverse security-critical code. (3) Use gitnexus_impact(direction: upstream) on security-critical symbols identified in the previous step to map their blast radius — every upstream caller is a potential attack vector. Record trust boundary crossings and blast radii as additional input for domain mapping. If GitNexus is unavailable, skip this step."
+    required: true
   - id: map-audit-domains
     name: Map Audit Domains
-    description: "From the identified characteristics, define audit domains. Each domain has: (1) name and scope, (2) risk level (CRITICAL, HIGH, MEDIUM), (3) rationale for the risk level, (4) specific patterns and code paths to examine, (5) key questions the audit should answer. Order domains by risk level (CRITICAL first). Typical domains include but are not limited to: cryptographic correctness, token/value conservation, transaction safety, VM execution, storage integrity, serialisation safety, error handling, API security."
+    description: "From the identified characteristics and trust boundary data (if available), define audit domains. Each domain has: (1) name and scope, (2) risk level (CRITICAL, HIGH, MEDIUM), (3) rationale for the risk level, (4) specific patterns and code paths to examine, (5) key questions the audit should answer. Domains containing trust-boundary-crossing code get elevated risk. Include specific cross-community call edges as patterns to examine. Order domains by risk level (CRITICAL first)."
     required: true
   - id: identify-cross-cutting-concerns
     name: Identify Cross-Cutting Concerns
@@ -24,7 +28,7 @@ steps[7]:
     required: true
   - id: compose-prompt
     name: Compose Audit Prompt
-    description: "Compose the full audit prompt document. Structure: (1) Codebase Overview — architecture, size, language, module layout. (2) Audit Domains — per-domain sections with risk level, scope, focus areas, specific patterns to check. (3) Cross-Cutting Concerns — patterns spanning all domains. (4) Output Requirements — expected deliverable format, severity rubric, evidence requirements. Incorporate the user's audit_description as additional context and focus direction."
+    description: "Compose the full audit prompt document. Structure: (1) Codebase Overview — architecture, size, language, module layout. (2) Audit Domains — per-domain sections with risk level, scope, focus areas, specific patterns to check. (3) Trust Boundary Map — cross-community call edges and security-critical blast radii from GitNexus (if available; omit section if GitNexus was unavailable). (4) Cross-Cutting Concerns — patterns spanning all domains. (5) Output Requirements — expected deliverable format, severity rubric, evidence requirements. Incorporate the user's audit_description as additional context and focus direction."
     required: true
   - id: build-audit-scopes
     name: Build Audit Scopes

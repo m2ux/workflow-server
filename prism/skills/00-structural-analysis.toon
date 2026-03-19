@@ -22,6 +22,12 @@ protocol:
   read-target[2]:
     - If code-content is a file path, read the file to obtain the code
     - If an analysis-focus is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
+  gather-structural-context[5]:
+    - "Check GitNexus availability via gitnexus_list_repos. If the target codebase is not indexed, skip this step entirely and proceed to execute-lens."
+    - "Use gitnexus_query with queries derived from the target code's primary concerns (e.g., the module name, key function names, or analysis-focus if provided) to discover execution flows through the target — this identifies which call chains the code participates in and which are most relevant."
+    - "Use gitnexus_context on the primary entry points and exported symbols of the target to obtain caller/callee maps — the lens can then make blast-radius claims backed by actual graph data rather than inference."
+    - "Record the structural context (execution flows, caller counts, callee maps) as a preamble section that the lens operations can reference when making claims about impact, coupling, or dead code."
+    - "If any GitNexus call fails, log the failure and continue without structural context — the lens operates independently."
   execute-lens[4]:
     - "Apply every operation in the lens prompt sequentially against the code"
     - "Start with the falsifiable claim about the code's deepest structural problem"
@@ -53,6 +59,7 @@ rules:
   evidence-required: "All findings must cite specific code: file paths, function names, line ranges. Abstract claims without code evidence are not findings."
   meta-law-specificity: "The meta-law must predict a concrete, testable consequence for this specific code. It must not generalize the conservation law to a broader category."
   persist-output: "The analysis MUST be written to the filesystem as an artifact. In-memory-only output is not acceptable — downstream passes and callers depend on reading the artifact file."
+  graph-context-is-supplementary: "Structural context from GitNexus is supplementary evidence, not a replacement for the lens operations. The L12 chain executes completely regardless of whether graph data is available. Graph data strengthens blast-radius claims and call-chain evidence but does not alter the analytical method."
 
 resources[1]:
   - "00"
@@ -73,6 +80,17 @@ tools:
   grep:
     when: Verifying findings against the codebase
     usage: Confirm that cited patterns exist at the claimed locations
+  gitnexus_list_repos:
+    when: "Checking whether GitNexus has indexed the target codebase (gather-structural-context step)"
+    returns: "List of indexed repositories — if empty or target not indexed, skip graph context gathering"
+  gitnexus_query:
+    when: "Discovering execution flows through the target code during gather-structural-context"
+    params: "query: derived from target module name, key functions, or analysis-focus"
+    returns: "Processes ranked by relevance with symbols and file locations"
+  gitnexus_context:
+    when: "Obtaining caller/callee maps for primary entry points and exported symbols during gather-structural-context"
+    params: "name: symbol name from the target code"
+    returns: "Categorised incoming/outgoing references, process participation"
 
 errors:
   empty_code:
