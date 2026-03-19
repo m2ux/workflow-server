@@ -142,5 +142,5 @@ transitions[3]:
       variable: pipeline_mode
       operator: "=="
       value: behavioral
-  - to: deliver-result
+  - to: generate-report
     isDefault: true

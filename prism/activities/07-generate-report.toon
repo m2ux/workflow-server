@@ -1,0 +1,43 @@
+id: generate-report
+version: 1.0.0
+name: Generate Final Report
+description: "Read all analysis artifacts produced by prior passes and generate a clean final report (REPORT.md) that presents definitive findings without methodology-specific language. The report uses unified finding identifiers, organises by severity, and contains only conclusions — not the analytical process that produced them. Works across all pipeline modes."
+problem: "Analysis artifacts (structural-analysis.md, adversarial-analysis.md, synthesis.md, portfolio-*.md, behavioral-synthesis.md) contain methodology-specific language (conservation laws, meta-laws, analysis scorecards, dispute resolutions) that is valuable for analytical rigour but obscures the definitive results for readers who need actionable findings."
+skills:
+  primary: generate-report
+steps[5]:
+  - id: collect-artifacts
+    name: Collect All Analysis Artifacts
+    description: "Read all_artifact_paths to identify which artifacts were produced. Determine the authoritative source per pipeline_mode: for full-prism, the synthesis.md per unit is authoritative (it reconciles structural + adversarial). For portfolio, all portfolio-*.md artifacts are authoritative. For behavioral, behavioral-synthesis.md per unit is authoritative. For single, structural-analysis.md per unit is authoritative."
+    required: true
+  - id: extract-findings
+    name: Extract Definitive Findings
+    description: "From each authoritative artifact, extract: (a) definitive findings with their final severity and classification, (b) governing constraints or invariants that survived adversarial challenge (if full-prism), (c) core insights and testable predictions. Strip all methodology-specific framing: dispute resolutions, analysis scorecards, structural-vs-adversarial attribution, wrong-prediction tables, overclaim/underclaim categories."
+    required: true
+  - id: assign-identifiers
+    name: Assign Unified Finding Identifiers
+    description: "Map source finding IDs (S-xx, A-xx, F-xx, etc.) to unified report identifiers using a consistent prefix scheme. If analysis_focus provides dimension names, use dimension-based prefixes. Otherwise use sequential numbering. Preserve a traceability mapping from each report ID to its source artifact path and original finding ID."
+    required: true
+  - id: compose-report
+    name: Compose Report
+    description: "Write REPORT.md to {output_path}/REPORT.md. Structure: (1) Executive Summary — scope, finding counts by severity, core finding if applicable. (2) Core Finding — the deepest structural insight, if the analysis produced one (full-prism deepest finding, behavioral convergence point). (3) Findings — organised by severity (Critical → Low), each stated as a definitive conclusion with location reference. (4) Corrections Required — actionable items if findings warrant them. (5) Traceability — appendix mapping report IDs to source artifacts and original IDs."
+    required: true
+  - id: verify-artifact
+    name: Verify Report Artifact
+    description: "Verify REPORT.md exists, all finding IDs are unique, severity counts in the executive summary match the findings section, and the traceability appendix covers every finding."
+    required: true
+artifacts[1]:
+  - id: final-report
+    name: "REPORT.md"
+    location: analysis
+    description: "Clean final report with definitive findings, unified identifiers, and no methodology-specific language"
+rules[6]:
+  - "METHODOLOGY STRIPPING: The report MUST NOT contain references to the analytical process. Forbidden phrases include: 'the structural analysis found', 'the adversarial pass identified', 'ANALYSIS 1', 'ANALYSIS 2', 'conservation law' (unless the finding itself describes a conserved property), 'meta-law', 'analysis scorecard', 'dispute resolution', 'overclaim', 'underclaim', 'wrong prediction', 'the synthesis determined'. The reader sees only definitive conclusions."
+  - "FINDING VOICE: Each finding is stated as a fact, not as a discovery. Write 'The Runner is an unverified trust anchor' — not 'The structural analysis identified the Runner as an unverified trust anchor.' Attribution to analytical passes is forbidden in the report body."
+  - "SEVERITY INHERITANCE: Finding severities come from the authoritative source: synthesis.md for full-prism (definitive post-reconciliation severities), individual lens artifacts for portfolio, behavioral-synthesis.md for behavioral, structural-analysis.md for single. The report does not reassign severities."
+  - "CORE FINDING PROMOTION: If the authoritative artifact identifies a 'deepest finding' (full-prism synthesis) or 'convergence point' (behavioral synthesis), promote it to the Core Finding section with its testable prediction. Strip the discovery narrative — present it as the central structural insight."
+  - "TRACEABILITY REQUIREMENT: The report MUST include a traceability section (appendix or footer) mapping each report finding ID to: (a) source artifact file path, (b) original finding ID in that artifact, (c) severity in the source. This enables readers to drill into the full analytical detail when needed."
+  - "MULTI-UNIT CONSOLIDATION: For multi-unit analyses, the report consolidates findings across all units. Finding IDs are prefixed by unit where ambiguity would otherwise arise. Cross-unit patterns (findings that appear in multiple units) are surfaced as systemic findings."
+transitions[1]:
+  - to: deliver-result
+    isDefault: true

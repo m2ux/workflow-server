@@ -55,5 +55,5 @@ loops[1]:
           operator: "=="
           value: full-prism
 transitions[1]:
-  - to: deliver-result
+  - to: generate-report
     isDefault: true
