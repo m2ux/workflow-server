@@ -18,7 +18,7 @@ rules[8]:
   - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
 
-variables[14]:
+variables[16]:
   - name: audit_description
     type: string
     description: "User's description of what to audit and any specific focus areas or concerns"
@@ -65,6 +65,14 @@ variables[14]:
   - name: trade_offs_path
     type: string
     description: "Path to DESIGN-TRADE-OFFS.md"
+  - name: gitnexus_available
+    type: boolean
+    description: "Whether GitNexus has indexed the target codebase — set during scope-definition index-codebase step"
+    defaultValue: false
+  - name: scope_confirmed
+    type: boolean
+    description: "Whether the user confirmed the audit scope at the confirm-scope checkpoint"
+    defaultValue: false
 
 artifactLocations:
   audit:

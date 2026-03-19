@@ -22,7 +22,7 @@ rules[12]:
   - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '[BLOCKER]: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
 
-variables[16]:
+variables[18]:
   - name: target
     type: string
     description: "What to analyze -- a file path, directory path, inline text, question, or concept"
@@ -75,6 +75,13 @@ variables[16]:
   - name: report_output_path
     type: string
     description: "File path to the generated REPORT.md artifact"
+  - name: gitnexus_available
+    type: boolean
+    description: "Whether GitNexus has indexed the target codebase — set during structural-pass check-gitnexus step"
+    defaultValue: false
+  - name: unit_output_dir
+    type: string
+    description: "Resolved output directory for the current analysis unit — computed in structural-pass resolve-unit-output step"
 
 artifactLocations:
   analysis:

@@ -17,6 +17,7 @@ loops[1]:
     type: forEach
     variable: current_unit
     over: analysis_units
+    maxIterations: 100
     steps[4]:
       - id: check-mode
         name: Check Unit Mode

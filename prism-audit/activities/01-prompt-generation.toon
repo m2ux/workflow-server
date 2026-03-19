@@ -16,8 +16,13 @@ steps[8]:
     required: true
   - id: map-trust-boundaries
     name: Map Trust Boundaries via Graph
-    description: "If GitNexus is available: (1) Use gitnexus_cypher to find cross-community call edges — functions in one community (functional area) calling functions in another. These edges represent trust boundary crossings where validation may be absent. (2) Use gitnexus_query with security-focused queries ('authentication', 'authorization', 'encryption', 'permission check') to identify execution flows that traverse security-critical code. (3) Use gitnexus_impact(direction: upstream) on security-critical symbols identified in the previous step to map their blast radius — every upstream caller is a potential attack vector. Record trust boundary crossings and blast radii as additional input for domain mapping. If GitNexus is unavailable, skip this step."
+    description: "Use gitnexus_cypher to find cross-community call edges, gitnexus_query with security-focused queries to identify security-critical execution flows, and gitnexus_impact(direction: upstream) on security-critical symbols to map blast radii. Record trust boundary crossings and blast radii as input for domain mapping."
     required: true
+    condition:
+      type: simple
+      variable: gitnexus_available
+      operator: "=="
+      value: true
   - id: map-audit-domains
     name: Map Audit Domains
     description: "From the identified characteristics and trust boundary data (if available), define audit domains. Each domain has: (1) name and scope, (2) risk level (CRITICAL, HIGH, MEDIUM), (3) rationale for the risk level, (4) specific patterns and code paths to examine, (5) key questions the audit should answer. Domains containing trust-boundary-crossing code get elevated risk. Include specific cross-community call edges as patterns to examine. Order domains by risk level (CRITICAL first)."
@@ -36,8 +41,38 @@ steps[8]:
     required: true
   - id: write-prompt-artifact
     name: Write Audit Prompt Artifact
-    description: "Write the composed prompt to {output_path}/audit-prompt.md. Set audit_prompt to the prompt text and audit_prompt_path to the written file path. Write audit_scopes to workflow state."
+    description: "Write the composed prompt to {output_path}/audit-prompt.md."
     required: true
+    actions[3]:
+      - action: set
+        variable: audit_prompt
+        description: "Set to the composed prompt text"
+      - action: set
+        variable: audit_prompt_path
+        description: "Set to the written file path"
+      - action: set
+        variable: audit_scopes
+        description: "Set to the array of scope objects built in build-audit-scopes"
+checkpoints[1]:
+  - id: no-security-characteristics
+    name: No Security Characteristics Found
+    message: "No security-relevant patterns were found in the target codebase. This may indicate a purely presentational or data-only codebase. Would you like to proceed with a generic structural analysis instead, or abort the audit?"
+    condition:
+      type: simple
+      variable: security_characteristics_count
+      operator: "=="
+      value: 0
+    options[2]:
+      - id: proceed-generic
+        label: Proceed with generic analysis
+        description: "Continue with a generic structural analysis prompt instead of a security-focused one"
+      - id: abort
+        label: Abort audit
+        description: "Stop the audit workflow"
+        effect:
+          transitionTo: deliver-audit
+    required: true
+    blocking: true
 artifacts[1]:
   - id: audit-prompt
     name: "audit-prompt.md"
@@ -48,6 +83,9 @@ rules[4]:
   - "RISK CALIBRATION: Risk levels must reflect the domain's exposure and blast radius, not generic severity. A cryptographic library used for transaction signing is CRITICAL; a cryptographic library used only for log hashing is MEDIUM."
   - "PROMPT COMPLETENESS: The prompt must be self-contained — an agent receiving only the prompt and the codebase path should be able to execute the full audit without additional context."
   - "USER FOCUS INTEGRATION: The user's audit_description MUST be reflected in the prompt. If the user mentions specific concerns (e.g., 'I am worried about the proof verification logic'), those concerns must appear as elevated focus areas in the relevant domain."
+outcome[2]:
+  - "Audit prompt written to audit_prompt_path with codebase-specific domains and risk levels"
+  - "audit_scopes populated for triggering prism workflows"
 transitions[1]:
   - to: execute-analysis
     isDefault: true

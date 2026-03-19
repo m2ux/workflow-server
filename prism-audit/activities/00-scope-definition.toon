@@ -1,14 +1,14 @@
 id: scope-definition
-version: 1.0.0
+version: 1.1.0
 name: Define Audit Scope
-description: "Collect the audit target, user's description of what to audit, and output path. Present the scope for confirmation before proceeding to prompt generation."
+description: "Collect the audit target, user's description of what to audit, and output path. Index the codebase with GitNexus. Present the scope for confirmation before proceeding to prompt generation."
 problem: "The audit requires a confirmed target codebase, a clear description of audit goals and focus areas, and an organised output directory before analysis can begin."
 skills:
   primary: compose-audit-prompt
 steps[5]:
   - id: collect-inputs
     name: Collect Audit Inputs
-    description: "Extract from the user's request: (1) target_path — the codebase or directory to audit, (2) audit_description — what to audit, any specific security concerns, domain focus areas, or known risk areas, (3) output_path — where to write audit artifacts. If output_path is not specified, derive it from the target name and current date (e.g., .engineering/artifacts/planning/YYYY-MM-DD-{target-name}-security-audit/)."
+    description: "Extract from the user's request: (1) target_path, (2) audit_description, (3) output_path. If output_path is not specified, derive it from the target name and current date."
     required: true
   - id: validate-target
     name: Validate Target Path
@@ -16,15 +16,19 @@ steps[5]:
     required: true
   - id: index-codebase
     name: Index Codebase with GitNexus
-    description: "Run 'npx gitnexus analyze {target_path}' to index the target codebase for structural analysis. This enables GitNexus query/context tools during prompt generation and when prism's plan-analysis skill classifies modules by fan-in and functional area. If the codebase is already indexed and up to date, the command completes quickly. If indexing fails (e.g., GitNexus not installed), log a warning and continue — GitNexus is optional and the workflow falls back to directory-based analysis."
+    description: "Run 'npx gitnexus analyze {target_path}' to index the target codebase for structural analysis. Set gitnexus_available to true on success, false on failure. GitNexus is optional — the workflow falls back to directory-based analysis if unavailable."
     required: true
+    actions[1]:
+      - action: set
+        variable: gitnexus_available
+        description: "Set to true if indexing succeeds, false otherwise"
   - id: summarize-scope
     name: Summarize Audit Scope
-    description: "Present a summary of the audit scope: target codebase, detected language/framework, estimated size, GitNexus indexing status, user's audit description and focus areas, output directory. This becomes the checkpoint context."
+    description: "Present a summary of the audit scope: target codebase, detected language/framework, estimated size, GitNexus indexing status, user's audit description and focus areas, output directory."
     required: true
   - id: create-output-directory
     name: Create Output Directory
-    description: "Create the output_path directory if it does not exist. This is where all audit artifacts will be written."
+    description: "Create the output_path directory if it does not exist."
     required: true
 checkpoints[1]:
   - id: confirm-scope
@@ -34,11 +38,19 @@ checkpoints[1]:
       - id: accept
         label: Proceed
         description: "Begin analysing the codebase and generating the audit prompt"
+        effect:
+          setVariable:
+            scope_confirmed: true
       - id: adjust
         label: Adjust scope
         description: "Modify the target, description, or output path before proceeding"
+        effect:
+          transitionTo: scope-definition
     required: true
     blocking: true
+outcome[2]:
+  - "Audit scope confirmed with validated target path and output directory"
+  - "GitNexus indexing status recorded in gitnexus_available"
 transitions[1]:
   - to: prompt-generation
     isDefault: true

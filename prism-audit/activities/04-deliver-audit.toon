@@ -20,5 +20,7 @@ steps[4]:
     required: true
   - id: report-artifact-paths
     name: Report All Artifact Paths
-    description: "List every artifact produced during the audit with its path, including: audit-prompt.md, analysis plan artifacts from prism, all per-unit analysis artifacts (structural-analysis.md, adversarial-analysis.md, synthesis.md), REPORT.md, and the three final audit deliverables."
+    description: "List every artifact produced during the audit with its path."
     required: true
+outcome[1]:
+  - "Audit results presented to user with finding metrics and complete artifact index"
