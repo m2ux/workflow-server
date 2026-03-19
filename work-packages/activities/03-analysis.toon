@@ -5,10 +5,7 @@ description: Perform completion or context analysis depending on whether continu
 problem: Need to understand context before detailed work package planning
 skills:
   primary: workflow-execution
-steps[4]:
-  - id: determine-analysis-type
-    name: Determine analysis type
-    description: "Ask user: Is this continuing previous work or a new initiative?"
+steps[3]:
   - id: perform-analysis
     name: Perform analysis
     description: Execute completion analysis (if continuing) or context analysis (if new)
@@ -18,17 +15,36 @@ steps[4]:
   - id: present-findings
     name: Present findings
     description: Summarize analysis findings for user review
-checkpoints[1]:
+checkpoints[2]:
+  - id: analysis-type-selection
+    name: Analysis Type Selection
+    message: "Is this continuing previous work or a new initiative?"
+    options[2]:
+      - id: continuing
+        label: Continuing previous work
+        description: Perform completion analysis of existing progress
+        effect:
+          setVariable:
+            analysis_type: completion
+      - id: new-initiative
+        label: New initiative
+        description: Perform context analysis for a fresh start
+        effect:
+          setVariable:
+            analysis_type: context
+    blocking: true
   - id: analysis-confirmed
     name: Analysis Confirmation
     message: "Analysis complete. Does this context look correct?"
     options[2]:
       - id: proceed
         label: Context is correct, proceed
-        transitionTo: package-planning
+        effect:
+          transitionTo: package-planning
       - id: revise
         label: Revise analysis
-        transitionTo: analysis
+        effect:
+          transitionTo: analysis
 transitions[1]:
   - to: package-planning
     isDefault: true

@@ -8,33 +8,29 @@ skills:
 triggers:
   workflow: work-package
   description: "Each iteration starts the work-package workflow for one planned package"
-steps[6]:
-  - id: select-package
-    name: Select next work package
-    description: Choose the highest priority unstarted work package from the roadmap
-  - id: trigger-workflow
-    name: Trigger work-package workflow
-    description: "Call get_workflow(work-package) and start the workflow for the selected package. Pass package context (issue, scope, dependencies) as initial variables."
-  - id: execute-workflow
-    name: Execute work-package workflow
-    description: "Follow the work-package workflow through all activities until PR is merged"
-  - id: return-to-roadmap
-    name: Return to roadmap
-    description: "After work-package workflow completes, return context to work-packages workflow"
-  - id: update-status
-    name: Update roadmap status
-    description: "Update START-HERE.md: mark completed package ✅, update progress"
-  - id: check-remaining
-    name: Check remaining packages
-    description: Determine if more work packages remain in priority order
+steps[1]:
+  - id: initialize-iteration
+    name: Initialize implementation iteration
+    description: "Prepare the ordered list of remaining packages from the priority order. The forEach loop below handles per-package execution."
 loops[1]:
   - id: package-iteration
     name: Package Iteration
     type: forEach
     variable: current_package
     over: remaining_packages
-    activities[1]:
-      - select-package
+    steps[4]:
+      - id: select-package
+        name: Select next work package
+        description: Choose the highest priority unstarted work package from the roadmap
+      - id: trigger-workflow
+        name: Trigger work-package workflow
+        description: "Call get_workflow(work-package) and start the workflow for the selected package. Pass package context (issue, scope, dependencies) as initial variables."
+      - id: update-status
+        name: Update roadmap status
+        description: "Update START-HERE.md: mark completed package as done and update progress."
+      - id: check-remaining
+        name: Check remaining packages
+        description: Determine if more work packages remain in priority order
 outcome[4]:
   - All planned work packages implemented via work-package workflow
   - Each package has merged PR

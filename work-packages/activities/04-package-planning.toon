@@ -5,25 +5,10 @@ description: Define scope, dependencies, effort, and success criteria for each w
 problem: Each work package needs detailed planning before prioritization
 skills:
   primary: workflow-execution
-steps[6]:
-  - id: iterate-packages
-    name: Iterate through packages
-    description: For each identified work package, perform planning steps
-  - id: define-scope
-    name: Define scope
-    description: Identify what is in scope and out of scope for the work package
-  - id: identify-dependencies
-    name: Identify dependencies
-    description: Document dependencies on other work packages or external factors
-  - id: estimate-effort
-    name: Estimate effort
-    description: Provide rough effort estimate for the work package
-  - id: define-success
-    name: Define success criteria
-    description: Establish measurable success criteria
-  - id: document-plan
-    name: Document plan
-    description: Create work package plan document (NN-package-name-plan.md)
+steps[1]:
+  - id: present-planning-overview
+    name: Present planning overview
+    description: "Summarize the work packages to be planned and the planning approach: for each package, define scope, dependencies, effort, and success criteria."
 checkpoints[1]:
   - id: plans-created
     name: Plans Created
@@ -31,18 +16,34 @@ checkpoints[1]:
     options[2]:
       - id: proceed
         label: Proceed to prioritization
-        transitionTo: prioritization
+        effect:
+          transitionTo: prioritization
       - id: revise
         label: Revise plans
-        transitionTo: package-planning
+        effect:
+          transitionTo: package-planning
 loops[1]:
   - id: package-loop
     name: Package Planning Loop
     type: forEach
     variable: current_package
     over: work_packages
-    activities[1]:
-      - define-scope
+    steps[5]:
+      - id: define-scope
+        name: Define scope
+        description: Identify what is in scope and out of scope for the work package
+      - id: identify-dependencies
+        name: Identify dependencies
+        description: Document dependencies on other work packages or external factors
+      - id: estimate-effort
+        name: Estimate effort
+        description: Provide rough effort estimate for the work package
+      - id: define-success
+        name: Define success criteria
+        description: Establish measurable success criteria
+      - id: document-plan
+        name: Document plan
+        description: Create work package plan document (NN-package-name-plan.md)
 transitions[1]:
   - to: prioritization
     isDefault: true
