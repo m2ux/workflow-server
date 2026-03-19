@@ -1,12 +1,13 @@
 "$schema": ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.0.0
+version: 1.1.0
 title: Workflow Design Workflow
-description: "Guides agents through creating or updating workflow definitions. Accepts a free-form user description and systematically elicits design details, enforcing schema expressiveness, convention conformance, and structural enforcement of critical constraints. Produces a complete workflow file set (workflow.toon, activities, skills, resources, README) in the workflows worktree."
+description: "Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details. In review mode, audits an existing workflow against the 13 design principles and produces a compliance report. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints."
 author: m2ux
-tags[4]:
+tags[5]:
   - meta
   - workflow-creation
+  - workflow-review
   - design
   - governance
 rules[13]:
@@ -25,7 +26,7 @@ rules[13]:
   - "Non-destructive updates — compare new content against existing content and flag any material being removed"
 artifactLocations:
   workflows: workflows/
-modes[1]:
+modes[2]:
   - id: update
     name: Update Mode
     description: "Modify an existing workflow following design principles. Loads the target workflow, analyses impact of changes, and applies modifications with content preservation checks."
@@ -40,10 +41,42 @@ modes[1]:
     defaults:
       is_update_mode: true
     resource: resources/03-update-mode-guide.md
-variables[10]:
+  - id: review
+    name: Review Mode
+    description: "Audit an existing workflow against the 13 design principles and produce a compliance report. Identifies schema expressiveness gaps, convention divergences, and rules lacking structural enforcement. Offers to switch to update mode to fix identified issues."
+    activationVariable: is_review_mode
+    recognition[6]:
+      - review workflow
+      - audit workflow
+      - check workflow compliance
+      - workflow review
+      - assess workflow quality
+      - evaluate workflow
+    skipActivities[5]:
+      - requirements-refinement
+      - pattern-analysis
+      - impact-analysis
+      - scope-and-structure
+      - content-drafting
+    defaults:
+      is_review_mode: true
+    resource: resources/04-review-mode-guide.md
+variables[13]:
   - name: is_update_mode
     type: boolean
     description: "Whether update mode is active (modifying an existing workflow rather than creating a new one)"
+    defaultValue: false
+  - name: is_review_mode
+    type: boolean
+    description: "Whether review mode is active (auditing an existing workflow against design principles)"
+    defaultValue: false
+  - name: review_findings_count
+    type: number
+    description: "Total number of compliance findings identified during review"
+    defaultValue: 0
+  - name: user_wants_fixes
+    type: boolean
+    description: "Whether the user opted to fix identified issues after review (transitions to update mode)"
     defaultValue: false
   - name: target_workflow_id
     type: string

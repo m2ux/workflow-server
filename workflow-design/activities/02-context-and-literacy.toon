@@ -13,6 +13,13 @@ rules[3]:
   - "Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true"
   - "Read at least two existing workflows of similar type to establish pattern baseline"
   - "Present the schema construct summary to the user for confirmation"
+modeOverrides:
+  review:
+    description: "Load schemas and construct inventory as the reference baseline for the compliance audit. Skip format literacy verification since no content will be drafted."
+    skipSteps[2]:
+      - read-toon-examples
+      - present-convention-summary
+    transitionOverride: quality-review
 steps[5]:
   - id: load-schemas
     name: Load Schema Definitions
