@@ -7,7 +7,7 @@ tags[3]:
   - meta
   - bootstrap
   - workflow-management
-variables[11]:
+variables[13]:
   - name: is_monorepo
     type: boolean
     description: Whether the target repository is a submodule monorepo
@@ -51,6 +51,14 @@ variables[11]:
   - name: workflow_completed
     type: boolean
     description: Whether the workflow has been finalized and closed
+    defaultValue: false
+  - name: is_resuming
+    type: boolean
+    description: Whether the orchestrator is resuming from restored state (set by initialize-state, cleared after first dispatch)
+    defaultValue: false
+  - name: has_saved_state
+    type: boolean
+    description: Whether a workflow-state.toon file was found and successfully restored
     defaultValue: false
 rules[3]:
   - This workflow is the entrypoint for all workflow operations
