@@ -1,14 +1,22 @@
 id: package-planning
-version: 1.0.0
+version: 1.1.0
 name: Work Package Planning
 description: Define scope, dependencies, effort, and success criteria for each work package
 problem: Each work package needs detailed planning before prioritization
 skills:
-  primary: workflow-execution
+  primary: plan-work-package-scope
+  supporting[1]:
+    - workflow-execution
 steps[1]:
   - id: present-planning-overview
     name: Present planning overview
     description: "Summarize the work packages to be planned and the planning approach: for each package, define scope, dependencies, effort, and success criteria."
+artifacts[1]:
+  - id: package-plan
+    name: "{package-name}-plan.md"
+    location: planning
+    description: "Individual work package plan with scope, dependencies, effort, and success criteria"
+    action: create
 checkpoints[1]:
   - id: plans-created
     name: Plans Created

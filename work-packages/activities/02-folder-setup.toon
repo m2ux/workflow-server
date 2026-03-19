@@ -1,5 +1,5 @@
 id: folder-setup
-version: 1.0.0
+version: 1.1.0
 name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons
 problem: Need organized folder structure for multi-package planning artifacts
@@ -21,6 +21,17 @@ steps[4]:
   - id: present-structure
     name: Present folder structure
     description: Show user the created folder structure
+artifacts[2]:
+  - id: start-here-skeleton
+    name: START-HERE.md
+    location: planning
+    description: "Executive summary and status tracking skeleton"
+    action: create
+  - id: readme-skeleton
+    name: README.md
+    location: planning
+    description: "Navigation and document index skeleton"
+    action: create
 checkpoints[1]:
   - id: folder-created
     name: Folder Setup Complete
@@ -28,10 +39,12 @@ checkpoints[1]:
     options[2]:
       - id: proceed
         label: Proceed with analysis
-        transitionTo: analysis
+        effect:
+          transitionTo: analysis
       - id: adjust
         label: Adjust structure
-        transitionTo: folder-setup
+        effect:
+          transitionTo: folder-setup
 transitions[1]:
   - to: analysis
     isDefault: true

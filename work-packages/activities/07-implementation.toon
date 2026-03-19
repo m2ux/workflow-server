@@ -1,17 +1,30 @@
 id: implementation
-version: 1.1.0
+version: 1.2.0
 name: Implementation
 description: Execute each planned work package in priority order by triggering the work-package workflow
 problem: Planned work packages need to be implemented one at a time according to the roadmap
 skills:
-  primary: workflow-execution
+  primary: orchestrate-package-execution
+  supporting[1]:
+    - workflow-execution
 triggers:
   workflow: work-package
   description: "Each iteration starts the work-package workflow for one planned package"
+  passContext[4]:
+    - current_package
+    - planning_folder_path
+    - initiative_name
+    - parent_workflow
 steps[1]:
   - id: initialize-iteration
     name: Initialize implementation iteration
     description: "Prepare the ordered list of remaining packages from the priority order. The forEach loop below handles per-package execution."
+artifacts[1]:
+  - id: start-here-progress
+    name: START-HERE.md
+    location: planning
+    description: "Updated progress status after each completed package"
+    action: update
 loops[1]:
   - id: package-iteration
     name: Package Iteration
@@ -24,10 +37,10 @@ loops[1]:
         description: Choose the highest priority unstarted work package from the roadmap
       - id: trigger-workflow
         name: Trigger work-package workflow
-        description: "Call get_workflow(work-package) and start the workflow for the selected package. Pass package context (issue, scope, dependencies) as initial variables."
+        description: "Load the work-package workflow via get_workflow and start it for the selected package"
       - id: update-status
         name: Update roadmap status
-        description: "Update START-HERE.md: mark completed package as done and update progress."
+        description: "Update START-HERE.md: mark completed package as done and update progress"
       - id: check-remaining
         name: Check remaining packages
         description: Determine if more work packages remain in priority order

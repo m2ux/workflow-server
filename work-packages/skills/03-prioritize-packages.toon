@@ -1,0 +1,60 @@
+id: prioritize-packages
+version: 1.0.0
+capability: Evaluate and order work packages by dependencies, value, risk, and effort
+
+description: "Guides the prioritization of work packages using a structured framework. Builds a dependency graph, evaluates each package on business value, risk, and effort, then produces a priority order that respects dependency constraints while optimizing for value delivery and risk reduction."
+
+inputs[2]:
+  - id: package-plans
+    description: "List of completed package plan documents with scope, dependencies, and effort"
+  - id: dependency-map
+    description: "Inter-package dependency map from package planning"
+
+protocol:
+  analyze-dependencies[3]:
+    - "Load resource 04 (prioritization-framework) for the evaluation methodology"
+    - "Build a dependency graph from the dependency sections of all package plans"
+    - "Perform topological sort to identify valid orderings"
+  evaluate-criteria[3]:
+    - "For each package, assess: business value (High/Medium/Low), risk (High/Medium/Low), effort (High/Medium/Low)"
+    - "Use the scoring guidance from the prioritization framework resource"
+    - "Document the rationale for each assessment"
+  propose-order[3]:
+    - "Apply priority ordering rules: dependency-first, then high-value/low-effort, then high-risk-early"
+    - "Identify packages that could be parallelized (independent, no shared resources)"
+    - "Generate the priority table with package, value, risk, effort, and rationale"
+  present-prioritization[3]:
+    - "Present the dependency graph (text or mermaid diagram)"
+    - "Present the priority table with rationale for the proposed order"
+    - "Note alternative orderings if multiple valid sequences exist"
+
+output[1]:
+  - id: priority-order
+    description: "Ordered list of work packages with prioritization rationale"
+    components:
+      priority_order: "Ordered list of packages by execution priority"
+      dependency_graph: "Dependency graph representation"
+      prioritization_rationale: "Per-package rationale for the ordering"
+
+rules:
+  dependencies-constrain: "Dependencies constrain but do not fully determine the order — within dependency layers, other criteria apply"
+  user-controls-final: "The user controls the final priority order — present recommendations but defer to user judgment"
+  risk-early: "High-risk packages should be scheduled early to surface problems before they cascade"
+  no-assumption: "Never assume a priority order without presenting rationale and getting user confirmation"
+
+resources[1]:
+  - "04"
+
+tools:
+  get_resource:
+    when: Loading prioritization framework
+    params: "workflow_id: work-packages, index: 04"
+    returns: Prioritization methodology and scoring guidance
+
+errors:
+  circular_dependencies:
+    cause: Dependency graph contains cycles
+    recovery: Present the cycle to the user and recommend decomposition or dependency removal
+  all_same_priority:
+    cause: All packages evaluate identically on all criteria
+    recovery: Ask the user which dimension matters most for their context to break the tie
