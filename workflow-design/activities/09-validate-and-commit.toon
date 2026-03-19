@@ -13,6 +13,35 @@ rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
   - "The scope manifest must be fully addressed — every item checked off"
   - "Commit to the workflows worktree, not the main repository"
+modeOverrides:
+  review:
+    description: "In review mode, save the compliance report as an artifact. If the user opted to fix issues, transition back to the intake activity in update mode."
+    skipSteps[4]:
+      - run-schema-validation
+      - verify-scope-manifest
+      - generate-readme
+      - update-readme
+    steps[2]:
+      - id: save-compliance-report
+        name: Save Compliance Report
+        description: "Save the compliance report as a markdown file in the .engineering/artifacts/reviews/ directory with naming convention: YYYY-MM-DD-{workflow-id}-compliance-review.md"
+      - id: commit-report
+        name: Commit Report
+        description: "Stage and commit the compliance report to the engineering submodule."
+    checkpoints[1]:
+      - id: report-saved
+        name: Report Saved Checkpoint
+        message: "Compliance report saved. Would you like to proceed with fixing the identified issues?"
+        options[2]:
+          - id: proceed-to-fix
+            label: "Yes, fix issues now"
+            description: Restart in update mode to apply recommended fixes
+            effect:
+              setVariable:
+                user_wants_fixes: true
+          - id: done
+            label: "No, review is complete"
+            description: End the workflow
 steps[6]:
   - id: run-schema-validation
     name: Run Schema Validation

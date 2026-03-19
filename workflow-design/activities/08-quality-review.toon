@@ -11,6 +11,63 @@ rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"
   - "Flag every instance of prose that maps to a formal schema construct"
   - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
+modeOverrides:
+  review:
+    description: "Audit an existing workflow against all 13 design principles. Load every file in the target workflow and run all three review passes plus additional principle checks. Produce a structured compliance report and offer to fix issues."
+    rules[4]:
+      - "Review the existing workflow content, not drafted content"
+      - "Load resource 00 (design principles) and resource 01 (schema construct inventory) as the audit checklist"
+      - "Load resource 02 (anti-patterns) and check each anti-pattern against the workflow"
+      - "Produce a severity-rated compliance report as the primary output"
+    steps[7]:
+      - id: load-all-workflow-files
+        name: Load All Workflow Files
+        description: "Read every file in the target workflow directory: workflow.toon, all activity .toon files, all skill .toon files, all resource .md files, and README.md. Build a complete picture of the workflow content."
+      - id: principle-compliance-audit
+        name: Principle Compliance Audit
+        description: "Audit the workflow against each of the 13 design principles from resource 00. For each principle, check whether the workflow complies, partially complies, or violates. Record specific file, field, and line references for each finding."
+      - id: anti-pattern-scan
+        name: Anti-Pattern Scan
+        description: "Check the workflow against all 23 anti-patterns from resource 02. For each anti-pattern found, record the file, the violating content, and the recommended fix."
+      - id: schema-validation-check
+        name: Schema Validation Check
+        description: "Run the schema validator on every TOON file in the workflow. Record any validation failures with their error messages."
+      - id: compile-compliance-report
+        name: Compile Compliance Report
+        description: "Compile all findings into a structured compliance report with sections: Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, and Recommended Fixes."
+      - id: present-compliance-report
+        name: Present Compliance Report
+        description: "Present the full compliance report to the user with severity-rated findings and recommended fixes."
+      - id: offer-fixes
+        name: Offer to Fix Issues
+        description: "Ask the user whether they want to fix the identified issues. If yes, set user_wants_fixes to true to transition to update mode for remediation."
+    checkpoints[1]:
+      - id: review-disposition
+        name: Review Disposition Checkpoint
+        message: "Compliance report complete. {review_findings_count} findings identified. Would you like to fix the issues?"
+        options[3]:
+          - id: fix-issues
+            label: "Fix identified issues"
+            description: Switch to update mode and apply recommended fixes
+            effect:
+              setVariable:
+                user_wants_fixes: true
+                is_update_mode: true
+                is_review_mode: false
+          - id: report-only
+            label: "Report only — no changes"
+            description: Save the compliance report without making changes
+            effect:
+              setVariable:
+                user_wants_fixes: false
+          - id: selective-fixes
+            label: "Selective fixes"
+            description: Choose which findings to fix
+            effect:
+              setVariable:
+                user_wants_fixes: true
+                is_update_mode: true
+                is_review_mode: false
 steps[6]:
   - id: expressiveness-review
     name: Schema Expressiveness Review

@@ -18,6 +18,36 @@ rules[2]:
   - "Do not begin drafting content during intake — this activity only captures intent"
   - "For update mode, always load the existing workflow before proceeding"
 modeOverrides:
+  review:
+    description: "Load the target workflow for compliance review. Present the workflow structure and confirm the review scope."
+    steps[3]:
+      - id: load-target-workflow
+        name: Load Target Workflow
+        description: "Call get_workflow with target_workflow_id to load the full workflow definition. Call get_workflow_activity for each activity to get complete details including steps, checkpoints, transitions, and modeOverrides."
+      - id: enumerate-workflow-contents
+        name: Enumerate Workflow Contents
+        description: "List all files in the target workflow directory (workflow.toon, activities, skills, resources, README). Record file count, activity count, skill count, resource count, checkpoint count, and transition count."
+      - id: present-review-scope
+        name: Present Review Scope
+        description: "Present the workflow structure summary to the user. Show the activity sequence, checkpoint locations, skill assignments, and resource index. Confirm this is the workflow to review."
+    skipSteps[3]:
+      - accept-description
+      - classify-operation
+      - extract-design-intent
+    checkpoints[1]:
+      - id: review-scope-confirmed
+        name: Review Scope Confirmation
+        message: "Here is the workflow structure for '{target_workflow_id}'. I will audit it against the 13 design principles. Shall I proceed?"
+        options[2]:
+          - id: proceed
+            label: "Yes, review this workflow"
+            description: Begin the compliance audit
+            effect:
+              setVariable:
+                is_review_mode: true
+          - id: different-workflow
+            label: "Review a different workflow"
+            description: Let me specify a different workflow
   update:
     description: "Load the existing target workflow and parse the user's change request. Present the current workflow structure before proceeding."
     steps[3]:
