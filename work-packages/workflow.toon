@@ -13,4 +13,35 @@ rules[5]:
   - "Ask, don't assume - Clarify scope and priorities before planning"
   - User controls priorities - Never assume priority order without confirmation
   - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
+variables[10]:
+  - name: initiative_name
+    type: string
+    description: "Name of the overall multi-package initiative"
+  - name: work_packages
+    type: array
+    description: "List of identified work packages with names and brief descriptions"
+  - name: remaining_packages
+    type: array
+    description: "Ordered list of work packages not yet started (derived from priority order)"
+  - name: completed_packages
+    type: array
+    description: "List of completed work packages"
+  - name: current_package
+    type: object
+    description: "Currently active work package being planned or implemented"
+  - name: planning_folder_path
+    type: string
+    description: "Path to the planning folder for this initiative"
+  - name: analysis_type
+    type: string
+    description: "Type of analysis performed: 'completion' (continuing previous work) or 'context' (new initiative)"
+  - name: package_plans
+    type: array
+    description: "List of created plan document paths"
+  - name: priority_order
+    type: array
+    description: "Ordered list of work packages by execution priority"
+  - name: overall_progress
+    type: string
+    description: "Progress indicator (e.g., '3/7 complete')"
 initialActivity: scope-assessment
