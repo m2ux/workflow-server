@@ -16,13 +16,15 @@ inputs[3]:
     required: true
 
 protocol:
-  survey-structure[6]:
+  survey-structure[8]:
     - "List files and directories at the top level of target_path"
     - "Identify the build system: Cargo.toml (Rust), package.json (JS/TS), go.mod (Go), pyproject.toml (Python), etc."
     - "For workspace/monorepo projects, enumerate all packages/crates/modules from the build configuration"
     - "Count lines of code per module (excluding tests, docs, generated files)"
     - "Identify test directories and test file patterns"
-    - "Record: language, build_system, modules (array of { name, path, line_count, purpose }), total_loc"
+    - "If GitNexus is available (check via gitnexus_list_repos): use gitnexus_query to discover functional areas, execution flows, and community clusters — these produce better module boundaries and dependency maps than directory layout alone"
+    - "If GitNexus is available: use gitnexus_context on high-risk modules to check fan-in (number of callers) — high fan-in modules have larger blast radius and should be elevated in risk classification"
+    - "Record: language, build_system, modules (array of { name, path, line_count, purpose, fan_in (if GitNexus available) }), total_loc, gitnexus_available (boolean)"
 
   scan-security-characteristics[10]:
     - "Search for cryptographic imports and usage: hashing (SHA, Blake, Poseidon), signing (Ed25519, ECDSA, Schnorr), encryption (AES, ChaCha), key derivation, commitment schemes, zero-knowledge proof systems"
@@ -91,6 +93,20 @@ tools:
   write_file:
     when: "Writing the audit prompt artifact"
     params: "path: {output_path}/audit-prompt.md"
+  shell:
+    when: "Running npx gitnexus analyze during scope-definition (not during prompt generation)"
+    usage: "Index the target codebase for GitNexus structural queries"
+  gitnexus_list_repos:
+    when: "Checking whether GitNexus has indexed the target codebase"
+    returns: "List of indexed repositories with names and paths"
+  gitnexus_query:
+    when: "Discovering functional areas, execution flows, and module clusters for better audit domain mapping"
+    params: "query: relevant to security characteristics being surveyed"
+    returns: "Processes ranked by relevance with symbols and file locations"
+  gitnexus_context:
+    when: "Checking fan-in for risk calibration — modules with many callers have larger blast radius"
+    params: "name: module or symbol name"
+    returns: "Callers, callees, process participation"
 
 errors:
   empty_codebase:
