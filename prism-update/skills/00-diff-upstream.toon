@@ -2,68 +2,60 @@ id: diff-upstream
 version: 1.0.0
 capability: Diff upstream prisms directory against current workflow resources and categorize changes
 
-description: "Compare the upstream agi-in-md prisms/ directory against the prism workflow's resources/ directory. Produce a categorized change set: new files (upstream-only), modified files (content differs), renamed files (high similarity under different name), and deleted files (resource-only, no upstream counterpart). Classify new prisms by family using YAML frontmatter metadata."
+description: "Compare upstream prisms/ against workflow resources/. Produce a categorized change set (new, modified, renamed, deleted) with family classification for new prisms."
 
 inputs[3]:
   - id: upstream-path
-    description: "Absolute path to the upstream prisms directory (e.g., /home/user/projects/vendor/agi-in-md/prisms/)"
+    description: "Absolute path to the upstream prisms directory"
   - id: resource-path
-    description: "Relative path to the prism workflow resources directory within the workflows worktree"
+    description: "Relative path to the prism workflow resources directory"
     default: "prism/resources/"
   - id: exclusions
-    description: "List of upstream filenames to exclude from the diff (e.g., arc_code.md, codegen.md)"
+    description: "Upstream filenames to exclude from the diff"
     required: false
     default: []
 
 protocol:
   enumerate-upstream[2]:
-    - "List all .md files in upstream-path. Filter out any filenames in the exclusions list."
-    - "For each file, extract the base name without extension as the prism identifier (e.g., deep_scan.md → deep_scan)."
+    - "List all .md files in upstream-path. Filter out exclusions."
+    - "Extract base name as prism identifier (deep_scan.md → deep_scan)."
   enumerate-resources[2]:
     - "List all .md files in resource-path except README.md."
-    - "For each file, extract the numeric index prefix and the prism name (e.g., 12-deep-scan.md → index 12, name deep-scan, maps to upstream deep_scan)."
+    - "Extract numeric index prefix and prism name (12-deep-scan.md → index 12, name deep-scan)."
   build-name-mapping[3]:
-    - "Build a mapping from upstream prism identifiers to resource filenames. The mapping converts underscores to hyphens (upstream deep_scan → resource deep-scan)."
-    - "For each upstream file, check if a corresponding resource exists by name. If found and content differs, mark as modified."
-    - "For upstream files with no name match, check git rename detection or content similarity against unmatched resources. If similarity > 90%, mark as renamed with old→new mapping. Otherwise mark as new."
-  detect-deletions[1]:
-    - "Any resource file with no corresponding upstream file (after accounting for renames) is marked as deleted."
+    - "Map upstream identifiers to resource filenames (underscores → hyphens)."
+    - "Name match + content diff → modified. No name match + high similarity → renamed. No match → new."
+    - "Resource with no upstream counterpart → deleted."
   classify-new-prisms[3]:
-    - "For each new prism, read the file and parse YAML frontmatter."
-    - "Extract: name, description, type, optimal_model, quality_baseline, words, steps, domain, origin."
-    - "Classify into family based on type and content: structural-sdl (type contains sdl or structural patterns), behavioral (type is error_resilience, optimization, evolution, api_surface), knowledge (type is structural with knowledge/epistemic focus), writer (type is writing), analysis (type contains archaeology, simulation, audit, cultivation, security, testability), meta (type is meta)."
+    - "Read each new prism's YAML frontmatter."
+    - "Extract: name, description, type, optimal_model, quality_baseline, words, domain."
+    - "Classify into family: structural-sdl, behavioral, knowledge, writer, analysis, meta."
   compute-next-index[1]:
-    - "Find the maximum numeric prefix across all resource files. Set next_index to max + 1."
+    - "Set next_index to max(existing resource indices) + 1."
 
 output[1]:
   - id: change-set
     description: "Categorized changes ready for review and import"
     components:
-      new: "Array of { name, upstream_file, family, optimal_model, quality_baseline, words, description }"
+      new: "Array of { name, upstream_file, family, optimal_model, quality_baseline, words }"
       modified: "Array of { name, resource_file, upstream_file }"
       renamed: "Array of { old_name, new_name, old_resource_file, upstream_file }"
       deleted: "Array of { name, resource_file }"
       next_index: "Next available resource index"
-      summary: "Counts: N new, M modified, R renamed, D deleted"
 
 tools:
   shell:
-    when: "Listing files, running git diff, checking content similarity"
-    usage: "ls, diff, git diff --name-status, wc"
+    when: "Listing files, running content diffs"
+    usage: "ls, diff, git diff --name-status"
   read_file:
-    when: "Reading upstream prism files to extract YAML frontmatter"
-    usage: "Parse frontmatter for classification metadata"
+    when: "Reading upstream prisms to extract YAML frontmatter"
   grep:
-    when: "Searching for name patterns to detect renames"
-    usage: "Match content signatures between upstream and resource files"
+    when: "Detecting renames via content similarity"
 
 errors:
   upstream_not_found:
-    cause: "The upstream_path directory does not exist"
-    recovery: "Verify the path. The upstream agi-in-md repository may need to be cloned or the path corrected."
-  no_resources:
-    cause: "The resource_path directory is empty or does not exist"
-    recovery: "Verify the workflows worktree is checked out and the prism workflow exists."
+    cause: "upstream_path directory does not exist"
+    recovery: "Verify the path. The upstream repository may need cloning."
   no_changes:
-    cause: "No differences found between upstream and resources"
-    recovery: "Report that resources are up to date. The workflow can end early."
+    cause: "No differences found"
+    recovery: "Report resources are up to date. Workflow can end early."

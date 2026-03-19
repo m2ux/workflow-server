@@ -1,36 +1,30 @@
 id: discover-changes
 version: 1.0.0
 name: Discover Changes
-description: "Diff upstream prisms directory against current workflow resources. Categorize each prism as new, modified, renamed, or deleted. Read new prism files to classify by family. Determine the next available resource index."
+description: "Diff upstream prisms directory against current workflow resources. Categorize each prism as new, modified, renamed, or deleted. Classify new prisms by family and determine the next available resource index."
 problem: Need to understand what changed upstream before importing
-recognition[4]:
-  - sync prisms
-  - update prism workflow
-  - import new prisms
-  - check upstream changes
 skills:
   primary: diff-upstream
-
 steps[5]:
   - id: list-upstream
     name: List upstream prisms
-    description: "List all .md files in the upstream_path directory. Record each filename."
+    description: "Enumerate all .md files in upstream_path, filtering out exclusions."
     required: true
   - id: list-current
     name: List current resources
-    description: "List all .md files in resource_path (excluding README.md). Extract the index prefix and source name from each filename."
+    description: "Enumerate all resource files, extracting index prefix and prism name from each."
     required: true
   - id: diff-and-categorize
     name: Diff and categorize
-    description: "Compare the two file lists. For each upstream file not excluded by the exclusions variable: if it has no corresponding resource, mark as 'new'. If it corresponds to an existing resource but content differs, mark as 'modified'. If it corresponds to a resource under a different name (detected by git rename tracking or high content similarity), mark as 'renamed' with old→new mapping. If a current resource has no upstream counterpart, mark as 'deleted'. Store results in the changes variable."
+    description: "Compare the two file lists. Categorize each upstream file as new, modified, renamed, or deleted."
     required: true
   - id: classify-new
     name: Classify new prisms
-    description: "For each new prism, read the file and extract YAML frontmatter fields: name, description, type, optimal_model, quality_baseline, words, steps, domain. Classify into family: structural-SDL, behavioral, knowledge/epistemic, writer, analysis, or meta."
+    description: "Read each new prism's YAML frontmatter. Extract metadata and classify into family."
     required: true
   - id: determine-next-index
     name: Determine next index
-    description: "Find the highest numeric prefix among current resource files. Set next_index to that value + 1."
+    description: "Set next_index to highest existing resource index + 1."
     required: true
 
 transitions[1]:

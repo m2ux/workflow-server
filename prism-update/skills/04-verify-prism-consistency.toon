@@ -1,58 +1,50 @@
 id: verify-prism-consistency
 version: 1.0.0
-capability: Verify consistency across prism workflow resources, skills, and documentation after an update
+capability: Verify consistency across prism workflow resources, skills, and documentation
 
-description: "Run four consistency checks: (1) grep for stale references to old prism names in all TOON files, (2) verify every prompt guide entry routes to the correct prism through the goal-mapping matrix, (3) confirm resource file counts match documented counts, (4) check for duplicate resource indices. Reports findings and sets has_issues accordingly."
+description: "Run four consistency checks: stale name references, prompt guide routing accuracy, resource count alignment, and duplicate index detection."
 
 inputs[2]:
   - id: changes
-    description: "The change set — renamed and deleted entries define what names are now stale"
+    description: "Change set — renamed and deleted entries define stale names"
   - id: resource-path
     description: "Path to the prism workflow resources directory"
 
 protocol:
-  check-stale-references[3]:
-    - "Build a list of old names from changes.renamed (old_name for each) and changes.deleted (name for each)."
-    - "Grep all .toon files in prism/skills/ and prism/activities/ for each old name. Exclude comments and false positives (e.g., 'recognition' matching 'rec')."
-    - "Record any matches as stale references with file path, line number, and matched text."
-  verify-prompt-routing[4]:
-    - "Read the Prompt Guide table from prism/README.md."
-    - "For each row, extract the prompt text and the claimed routing target (prism name and index)."
-    - "Read the goal-mapping-matrix rule from prism/skills/03-plan-analysis.toon."
-    - "For each prompt, determine which goal keyword it matches and verify the matrix routes to the claimed prism. Flag mismatches where the matrix would route to a different prism or has no matching entry."
-  verify-resource-counts[3]:
+  check-stale-references[2]:
+    - "Build stale name list from changes.renamed (old_name) and changes.deleted (name)."
+    - "Grep all .toon files in prism/skills/ and prism/activities/ for each stale name. Record matches."
+  verify-prompt-routing[3]:
+    - "Parse the Prompt Guide table from prism/README.md."
+    - "Parse the goal-mapping-matrix from prism/skills/03-plan-analysis.toon."
+    - "For each prompt, verify the matrix routes to the claimed prism. Flag mismatches."
+  verify-resource-counts[2]:
     - "Count .md files in resource-path (excluding README.md)."
-    - "Read the resource count from the Resources section header in prism/README.md."
-    - "Read the resource count from prism/resources/README.md. Flag if any count mismatches the actual file count."
-  check-duplicate-indices[2]:
-    - "Extract the numeric prefix from each resource filename."
-    - "Check for duplicates. Flag any index that appears more than once."
-  compile-findings[2]:
-    - "Combine all findings into a structured report: stale references, routing mismatches, count mismatches, duplicate indices."
-    - "Set has_issues to true if any findings exist, false otherwise."
+    - "Compare against stated counts in prism/README.md and prism/resources/README.md. Flag mismatches."
+  check-duplicate-indices[1]:
+    - "Extract numeric prefixes from resource filenames. Flag any that appear more than once."
+  compile-findings[1]:
+    - "Set has_issues = true if any findings, false otherwise."
 
 output[1]:
   - id: verification-report
     description: "Consistency check results"
     components:
-      stale_references: "Array of { file, line, old_name, context }"
+      stale_references: "Array of { file, line, old_name }"
       routing_mismatches: "Array of { prompt, claimed_target, actual_route }"
-      count_mismatches: "Array of { source, stated_count, actual_count }"
+      count_mismatches: "Array of { source, stated, actual }"
       duplicate_indices: "Array of { index, files }"
-      has_issues: "Boolean — true if any findings"
+      has_issues: "Boolean"
 
 tools:
   grep:
     when: "Searching for stale name references"
-    usage: "Search .toon files for old prism names"
   read_file:
     when: "Reading README and skill files for verification"
-    usage: "Extract prompt guide table, goal-mapping matrix, resource counts"
   shell:
     when: "Counting files, extracting index prefixes"
-    usage: "ls, wc, awk for index extraction"
 
 errors:
   parse_failure:
-    cause: "Could not parse the prompt guide table or goal-mapping matrix"
-    recovery: "Read the raw file content and extract the relevant sections manually."
+    cause: "Could not parse prompt guide table or goal-mapping matrix"
+    recovery: "Read raw file content and extract sections manually."

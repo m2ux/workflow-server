@@ -2,46 +2,40 @@ id: update-prism-docs
 version: 1.0.0
 capability: Update prism workflow documentation to reflect the current resource catalog
 
-description: "Rebuild documentation across three files: resources/README.md (full catalog with family groupings), workflow README.md (resource table, model sensitivity, prompt guide, file structure), and skills/README.md (resource counts in skill descriptions). Each new prism gets a prompt guide entry with a concrete example prompt, scope, and routing target."
+description: "Rebuild documentation across resources/README.md, workflow README.md, and skills/README.md. Add prompt guide entries for new prisms with concrete example prompts that align with the goal-mapping matrix."
 
 inputs[1]:
   - id: changes
-    description: "The change set — needed to know what's new, renamed, and deleted"
+    description: "Change set — needed to know what's new, renamed, and deleted"
 
 protocol:
-  update-resources-readme[3]:
-    - "Read prism/resources/README.md."
-    - "Rebuild the full catalog table organized by family. For each resource: index, name, description (from YAML frontmatter), optimal model, quality baseline."
-    - "Update the total count. Preserve any existing cross-workflow access documentation and provenance sections."
+  update-resources-readme[2]:
+    - "Rebuild the full catalog table organized by family: index, name, description, optimal model, quality baseline."
+    - "Update total count. Preserve existing cross-workflow and provenance documentation."
   update-workflow-readme[4]:
-    - "Read prism/README.md."
-    - "Update the Resources section: adjust the family table rows and total count. Add new family rows if a new family was introduced."
-    - "Update the Model Sensitivity table: categorize each new prism into the appropriate sensitivity tier based on its optimal_model metadata."
-    - "Update the Prompt Guide table: add one row per new prism with a concrete example prompt that reliably triggers it through the goal-mapping matrix, the appropriate scope (file/module/text/any), and the routing target. Fix any renamed references in existing rows. Ensure the prompt aligns with the goal-mapping entry added in update-routing."
+    - "Update Resources section: family table rows and total count."
+    - "Update Model Sensitivity table: categorize each new prism by optimal_model."
+    - "Add Prompt Guide rows: one per new prism with example prompt, scope, and routing target. Fix renamed references."
+    - "Update file structure tree with new resource ranges."
   update-skills-readme[1]:
-    - "Read prism/skills/README.md. Update resource counts and lens catalog counts referenced in skill capability descriptions."
-  update-file-structure[1]:
-    - "In prism/README.md, update the file structure tree to show the new resource index ranges."
+    - "Update resource counts and lens catalog counts in skill descriptions."
   commit[1]:
-    - "Stage all modified documentation files. Commit: 'docs: update prism workflow documentation for upstream sync'."
+    - "Stage and commit: 'docs: update prism workflow documentation for upstream sync'."
 
 output[1]:
   - id: docs-result
     description: "Summary of documentation updates"
     components:
-      files_updated: "List of documentation files modified"
+      files_updated: "List of modified files"
       prompt_guide_entries_added: "Number of new prompt guide rows"
 
 tools:
   read_file:
     when: "Reading documentation files"
-    usage: "Load current content for targeted edits"
   write_file:
     when: "Writing updated documentation"
-    usage: "Apply edits and save"
   shell:
     when: "Committing changes"
-    usage: "git add, git commit"
 
 errors:
   readme_not_found:
