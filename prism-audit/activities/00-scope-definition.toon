@@ -5,7 +5,7 @@ description: "Collect the audit target, user's description of what to audit, and
 problem: "The audit requires a confirmed target codebase, a clear description of audit goals and focus areas, and an organised output directory before analysis can begin."
 skills:
   primary: compose-audit-prompt
-steps[4]:
+steps[5]:
   - id: collect-inputs
     name: Collect Audit Inputs
     description: "Extract from the user's request: (1) target_path — the codebase or directory to audit, (2) audit_description — what to audit, any specific security concerns, domain focus areas, or known risk areas, (3) output_path — where to write audit artifacts. If output_path is not specified, derive it from the target name and current date (e.g., .engineering/artifacts/planning/YYYY-MM-DD-{target-name}-security-audit/)."
@@ -14,9 +14,13 @@ steps[4]:
     name: Validate Target Path
     description: "Verify that target_path exists and contains analysable files. Check for project markers (Cargo.toml, package.json, go.mod, pyproject.toml) to confirm it is a codebase. Report the top-level structure and estimated size."
     required: true
+  - id: index-codebase
+    name: Index Codebase with GitNexus
+    description: "Run 'npx gitnexus analyze {target_path}' to index the target codebase for structural analysis. This enables GitNexus query/context tools during prompt generation and when prism's plan-analysis skill classifies modules by fan-in and functional area. If the codebase is already indexed and up to date, the command completes quickly. If indexing fails (e.g., GitNexus not installed), log a warning and continue — GitNexus is optional and the workflow falls back to directory-based analysis."
+    required: true
   - id: summarize-scope
     name: Summarize Audit Scope
-    description: "Present a summary of the audit scope: target codebase, detected language/framework, estimated size, user's audit description and focus areas, output directory. This becomes the checkpoint context."
+    description: "Present a summary of the audit scope: target codebase, detected language/framework, estimated size, GitNexus indexing status, user's audit description and focus areas, output directory. This becomes the checkpoint context."
     required: true
   - id: create-output-directory
     name: Create Output Directory
