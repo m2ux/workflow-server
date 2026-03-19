@@ -1,0 +1,51 @@
+id: toon-authoring
+version: 1.0.0
+capability: Author syntactically valid TOON files that pass schema validation
+
+description: "Supporting skill for TOON file creation. Provides format rules, syntax patterns, and validation guidance. Agents using this skill produce TOON files that parse correctly and pass schema validation on the first attempt."
+
+inputs[2]:
+  - id: schema-type
+    description: "Which schema applies to this file (workflow, activity, skill)"
+  - id: reference-file
+    description: "Path to an existing valid TOON file of the same type to use as a syntax reference"
+    required: false
+
+protocol:
+  read-reference[2]:
+    - Read at least one existing valid TOON file of the target type
+    - "Note syntax patterns: key-value pairs, array declarations, nested objects, quoted strings"
+  plan-content[2]:
+    - Identify which schema fields will be used
+    - Map each piece of content to the appropriate field and determine the correct TOON syntax
+  draft-content[3]:
+    - Write the file following TOON syntax rules exactly
+    - Use the array[N] suffix for arrays with explicit count
+    - Quote any string value that contains a colon
+  validate[2]:
+    - Check the file against the schema
+    - Fix any validation errors and re-check
+
+output[1]:
+  - id: toon-file
+    description: "A syntactically valid TOON file that passes schema validation"
+
+rules:
+  no-json-syntax: "Never use JSON syntax in TOON files — no curly braces for objects, no square brackets for arrays, no commas between items"
+  no-yaml-nesting: "TOON uses indentation for nesting but is not YAML — do not use YAML-specific features like anchors or flow sequences"
+  array-declaration: "Declare arrays with key[N] where N is the item count, then list items with indentation using - prefix"
+  colon-quoting: "Any string value containing a colon must be wrapped in double quotes"
+  inline-objects: "For simple tabular data, use the inline shorthand: key[N]{field1,field2} followed by indented rows of comma-separated values"
+  version-format: "Always use semantic versioning X.Y.Z (e.g., 1.0.0)"
+  field-ordering: "Follow the field ordering from existing files of the same type — typically id, version, name, description first"
+  schema-reference: "workflow.toon files should include a $schema field pointing to the schema file path"
+
+errors:
+  parse_failure:
+    cause: "TOON file uses invalid syntax that the parser cannot handle"
+    detection: "Parser error message indicating the line and character position"
+    recovery: "Compare the failing line against the same construct in an existing valid TOON file and fix the syntax"
+  validation_failure:
+    cause: "TOON file parses but does not conform to the schema"
+    detection: "Schema validation error listing the non-conforming fields"
+    recovery: "Read the schema definition for the failing field and fix the content"

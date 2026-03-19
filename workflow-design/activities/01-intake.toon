@@ -1,0 +1,91 @@
+id: intake
+version: 1.0.0
+name: Intake
+description: "Accept the user's free-form workflow description, determine whether this is a create or update operation, and extract the initial design intent."
+problem: User wants to create or update a workflow and needs a guided process
+recognition[6]:
+  - create a workflow
+  - design a workflow
+  - new workflow
+  - build a workflow
+  - update workflow
+  - modify workflow
+skills:
+  primary: workflow-design
+required: true
+estimatedTime: 5-10m
+rules[2]:
+  - "Do not begin drafting content during intake — this activity only captures intent"
+  - "For update mode, always load the existing workflow before proceeding"
+modeOverrides:
+  update:
+    description: "Load the existing target workflow and parse the user's change request. Present the current workflow structure before proceeding."
+    steps[3]:
+      - id: load-existing-workflow
+        name: Load Existing Workflow
+        description: "Call get_workflow with target_workflow_id to load the full workflow definition. Present the workflow structure (activities, skills, resources) to the user."
+      - id: parse-change-request
+        name: Parse Change Request
+        description: "Extract what the user wants to change from their description. Categorize as: add activity, modify activity, add/modify skill, add/modify resource, change workflow metadata, or structural refactoring."
+      - id: present-current-structure
+        name: Present Current Structure
+        description: "Display the current workflow's activity sequence, checkpoint locations, skill references, and resource index. This establishes the baseline for impact analysis."
+    checkpoints[1]:
+      - id: change-request-confirmed
+        name: Change Request Confirmation
+        message: "Here is the existing workflow structure and my understanding of your requested changes. Is this correct?"
+        options[3]:
+          - id: confirmed
+            label: "Yes, that's correct"
+            description: Proceed with these changes
+          - id: refine
+            label: "Needs refinement"
+            description: Let me clarify what I want changed
+          - id: cancel
+            label: "Cancel — create new instead"
+            description: Switch to create mode
+            effect:
+              setVariable:
+                is_update_mode: false
+steps[4]:
+  - id: accept-description
+    name: Accept User Description
+    description: "Receive the user's free-form description of the workflow they want to create. Acknowledge receipt and summarize the key points."
+  - id: classify-operation
+    name: Classify Operation
+    description: "Determine whether this is a create or update operation based on user intent. If the user references an existing workflow by name or ID, classify as update. Otherwise, classify as create."
+  - id: extract-design-intent
+    name: Extract Design Intent
+    description: "From the user's description, extract: the workflow's purpose, domain, rough activity count, whether it is sequential or independent, and any mentioned constraints or requirements. Present this summary to the user."
+  - id: set-mode
+    name: Set Mode Variable
+    description: "Set is_update_mode and workflow_id variables based on classification. For update mode, also set target_workflow_id."
+checkpoints[1]:
+  - id: mode-confirmation
+    name: Mode Confirmation
+    message: "I've classified this as a {create/update} operation for workflow '{workflow_id}'. Is this correct?"
+    options[2]:
+      - id: confirm-create
+        label: "Yes, create a new workflow"
+        description: Proceed in create mode
+        effect:
+          setVariable:
+            is_update_mode: false
+      - id: confirm-update
+        label: "Yes, update an existing workflow"
+        description: Proceed in update mode
+        effect:
+          setVariable:
+            is_update_mode: true
+transitions[1]:
+  - to: context-and-literacy
+    isDefault: true
+outcome[3]:
+  - Operation classified as create or update
+  - Initial design intent extracted and confirmed
+  - Mode variables set correctly
+context_to_preserve[4]:
+  - workflow_id - The ID of the workflow being created or updated
+  - is_update_mode - Whether this is an update operation
+  - target_workflow_id - For update mode, the existing workflow ID
+  - design_intent - Summary of the user's design intent

@@ -1,0 +1,106 @@
+id: content-drafting
+version: 1.0.0
+name: Content Drafting
+description: "Draft or modify each file in the scope manifest. Each file gets an approach checkpoint before drafting and a review checkpoint after. All TOON files are validated against the schema immediately after drafting."
+problem: Content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
+skills:
+  primary: workflow-design
+  supporting[1]:
+    - toon-authoring
+required: true
+estimatedTime: 30-60m
+rules[5]:
+  - "Present approach for each file before drafting — what constructs will be used, what patterns followed"
+  - "Use formal schema constructs for every piece of structured information — no prose where a construct exists"
+  - "Validate each TOON file against its schema immediately after drafting"
+  - "In update mode, compare new content against existing content and flag any material being removed"
+  - "Draft files in the confirmed order: workflow.toon first, then activities, then skills, then resources, then README"
+modeOverrides:
+  update:
+    description: "Modify existing files with content preservation checks. For each file being modified, present a diff showing what changes and what is preserved."
+    rules[2]:
+      - "Before modifying any file, show the current content alongside the planned changes"
+      - "Flag any content being removed and get explicit confirmation before proceeding"
+    checkpoints[1]:
+      - id: preservation-check
+        name: Content Preservation Check
+        message: "Here is the diff for this file. Content being removed is highlighted. Should I proceed with these changes?"
+        options[3]:
+          - id: proceed
+            label: "Proceed with changes"
+            description: Apply the modifications as shown
+          - id: preserve-more
+            label: "Preserve more content"
+            description: Keep some of the content marked for removal
+          - id: rewrite
+            label: "Rewrite approach"
+            description: Take a different approach to this file
+entryActions[1]:
+  - action: validate
+    target: scope_manifest_confirmed
+    message: "Cannot begin content drafting without a confirmed scope manifest"
+steps[5]:
+  - id: present-file-approach
+    name: Present File Approach
+    description: "For the current file in the manifest, present: what schema constructs will be used, which patterns from reference workflows will be followed, and the planned content structure."
+  - id: draft-file-content
+    name: Draft File Content
+    description: "Draft the file content following the confirmed approach. Use formal schema constructs for all structured information. For TOON files, follow TOON syntax conventions exactly."
+  - id: validate-against-schema
+    name: Validate Against Schema
+    description: "For TOON files, validate the drafted content against the appropriate schema (workflow.schema.json, activity.schema.json, or skill.schema.json). Fix any validation errors immediately."
+  - id: present-for-review
+    name: Present for Review
+    description: "Present the drafted file content to the user for review. Highlight which schema constructs were used and any notable design decisions."
+  - id: advance-to-next-file
+    name: Advance to Next File
+    description: "Move to the next file in the scope manifest. If all files are drafted, transition to quality review."
+loops[1]:
+  - id: file-drafting-loop
+    name: File Drafting Loop
+    type: forEach
+    variable: current_file
+    over: scope_manifest
+    maxIterations: 50
+    steps[4]:
+      - id: present-approach
+        name: Present approach for current file
+      - id: draft-content
+        name: Draft content for current file
+      - id: validate-content
+        name: Validate content against schema
+      - id: review-content
+        name: Present content for user review
+checkpoints[2]:
+  - id: file-approach-confirmed
+    name: File Approach Checkpoint
+    message: "Here is my approach for drafting '{current_file}'. Does this look right?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, proceed with this approach"
+        description: Draft the file as described
+      - id: revise
+        label: "Change approach"
+        description: Take a different approach to this file
+  - id: file-review
+    name: File Review Checkpoint
+    message: "Here is the drafted content for '{current_file}'. Is this acceptable?"
+    options[3]:
+      - id: accepted
+        label: "Accepted"
+        description: File content is correct
+      - id: revise
+        label: "Needs revision"
+        description: Make changes to the content
+      - id: redraft
+        label: "Redraft from scratch"
+        description: Start over with a different approach
+transitions[1]:
+  - to: quality-review
+    isDefault: true
+outcome[2]:
+  - All files in the scope manifest drafted and individually reviewed
+  - All TOON files validated against their schemas
+context_to_preserve[2]:
+  - drafted_files - List of files drafted with their validation status
+  - schema_validation_results - Per-file validation results

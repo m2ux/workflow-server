@@ -1,0 +1,81 @@
+id: context-and-literacy
+version: 1.0.0
+name: Context and Literacy
+description: "Load the schema system, read existing workflows to understand conventions, and verify TOON format comprehension. This activity gates all subsequent content production."
+problem: Agent must internalize the schema system and format conventions before producing any workflow content
+skills:
+  primary: workflow-design
+  supporting[1]:
+    - toon-authoring
+required: true
+estimatedTime: 10-15m
+rules[3]:
+  - "Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true"
+  - "Read at least two existing workflows of similar type to establish pattern baseline"
+  - "Present the schema construct summary to the user for confirmation"
+steps[5]:
+  - id: load-schemas
+    name: Load Schema Definitions
+    description: "Fetch the workflow-server://schemas resource to load all schema definitions (workflow, activity, skill, condition, state). Internalize the available constructs."
+  - id: survey-existing-workflows
+    name: Survey Existing Workflows
+    description: "Call list_workflows to discover all available workflows. Select at least two workflows of similar type (sequential or independent, depending on the target). Call get_workflow for each to examine their structure."
+  - id: read-toon-examples
+    name: Read TOON File Examples
+    description: "Read at least one workflow.toon, one activity .toon, and one skill .toon from the surveyed workflows. Confirm understanding of TOON syntax: key-value pairs, arrays with [N] suffix, nested objects, quoted strings with colons, inline object shorthand with {keys}."
+  - id: identify-applicable-constructs
+    name: Identify Applicable Constructs
+    description: "Based on the design intent from intake, identify which schema constructs are applicable: steps, checkpoints, decisions, loops, transitions, triggers, actions, artifacts, variables, modes. Present the construct inventory with examples from the surveyed workflows."
+  - id: present-convention-summary
+    name: Present Convention Summary
+    description: "Summarize the conventions observed: file naming (NN-name.toon), folder structure (activities/, skills/, resources/), field ordering, version format, transition patterns, checkpoint structure. Present to user for confirmation."
+checkpoints[2]:
+  - id: format-literacy
+    name: Format Literacy Checkpoint
+    message: "I've reviewed existing TOON files and understand the format conventions. Here is my summary of TOON syntax rules and project conventions. Does this look correct?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, proceed"
+        description: Format understanding is correct
+        effect:
+          setVariable:
+            format_literacy_confirmed: true
+      - id: incorrect
+        label: "Needs correction"
+        description: There are errors in the format understanding
+  - id: constructs-confirmed
+    name: Schema Constructs Checkpoint
+    message: "Here are the schema constructs I've identified as applicable to this workflow. Does this coverage look right?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, these are the right constructs"
+        description: Proceed with these constructs
+        effect:
+          setVariable:
+            schema_constructs_confirmed: true
+      - id: adjust
+        label: "Needs adjustment"
+        description: Add or remove constructs from the list
+transitions[1]:
+  - to: requirements-refinement
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: format_literacy_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: schema_constructs_confirmed
+          operator: ==
+          value: true
+    isDefault: true
+outcome[3]:
+  - Schema system fully internalized
+  - TOON format conventions confirmed
+  - Applicable schema constructs identified and confirmed
+context_to_preserve[4]:
+  - format_literacy_confirmed - Agent has demonstrated TOON format understanding
+  - schema_constructs_confirmed - Applicable constructs identified
+  - surveyed_workflows - IDs of workflows examined for patterns
+  - observed_conventions - Summary of naming and structural conventions
