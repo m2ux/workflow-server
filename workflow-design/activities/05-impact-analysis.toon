@@ -1,0 +1,61 @@
+id: impact-analysis
+version: 1.0.0
+name: Impact Analysis
+description: "For update mode: enumerate all files in the existing workflow, identify which are affected by the change, check for side-effects, and flag content that will be removed."
+problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan skills and resources
+skills:
+  primary: workflow-design
+required: false
+estimatedTime: 10-20m
+rules[3]:
+  - "This activity is only executed in update mode"
+  - "Every file in the existing workflow must be examined for potential impact"
+  - "Content being removed must be explicitly flagged and confirmed"
+steps[5]:
+  - id: enumerate-existing-files
+    name: Enumerate Existing Files
+    description: "List all files in the target workflow directory: workflow.toon, all activity files, all skill files, all resource files, README.md. Record the full path and purpose of each."
+  - id: classify-impact
+    name: Classify File Impact
+    description: "For each file, classify as: unaffected, directly modified, indirectly affected (side-effect), or to be removed. Document the reason for each classification."
+  - id: check-transition-integrity
+    name: Check Transition Integrity
+    description: "If activities are being added, removed, or reordered, verify that all transition chains remain valid. Check that every transition 'to' field references an existing activity ID. Flag broken transitions."
+  - id: check-reference-integrity
+    name: Check Reference Integrity
+    description: "Verify that all skill references (skills.primary, skills.supporting) still resolve to existing skill files. Verify that all resource references still resolve to existing resource files. Flag orphaned references."
+  - id: flag-content-removal
+    name: Flag Content Removal
+    description: "For each file being modified, compare the planned changes against the existing content. Identify any material being removed. Present removed material to the user for confirmation."
+checkpoints[2]:
+  - id: impact-confirmed
+    name: Impact Scope Confirmation
+    message: "Here is the impact analysis: files directly modified, files indirectly affected, and any broken references detected. Does this scope look correct?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, impact scope is correct"
+        description: Proceed with this impact scope
+      - id: revise
+        label: "Needs revision"
+        description: The impact scope is missing something or includes too much
+  - id: preservation-confirmed
+    name: Content Preservation Confirmation
+    message: "The following content will be removed or replaced. Please confirm each removal is intentional."
+    options[2]:
+      - id: confirmed
+        label: "All removals are intentional"
+        description: Proceed with the changes
+      - id: preserve
+        label: "Preserve some content"
+        description: Let me specify what to keep
+transitions[1]:
+  - to: scope-and-structure
+    isDefault: true
+outcome[3]:
+  - All affected files identified and classified
+  - Transition and reference integrity verified
+  - Content removals explicitly confirmed by user
+context_to_preserve[3]:
+  - impact_manifest - Classification of all files (unaffected, modified, affected, removed)
+  - broken_references - Any broken transitions or skill/resource references found
+  - confirmed_removals - Content removals confirmed by user

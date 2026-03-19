@@ -1,0 +1,80 @@
+"$schema": ../../schemas/workflow.schema.json
+id: workflow-design
+version: 1.0.0
+title: Workflow Design Workflow
+description: "Guides agents through creating or updating workflow definitions. Accepts a free-form user description and systematically elicits design details, enforcing schema expressiveness, convention conformance, and structural enforcement of critical constraints. Produces a complete workflow file set (workflow.toon, activities, skills, resources, README) in the workflows worktree."
+author: m2ux
+tags[4]:
+  - meta
+  - workflow-creation
+  - design
+  - governance
+rules[13]:
+  - "Never use prose where a formal schema construct exists — steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, and variables must use their dedicated schema fields"
+  - "Never modify schemas during workflow creation — the schema is a fixed constraint; all content must conform as-is"
+  - "Present approach before implementation — show what will change, how, and in what order before modifying any file"
+  - "One question at a time — each elicitation question and each checkpoint is atomic; never combine multiple questions"
+  - "All TOON files must pass schema validation before commit — run validation on every produced file"
+  - "Content-reducing updates require explicit user approval — flag removed material and get confirmation"
+  - "Convention over invention — search for existing naming conventions before introducing new patterns"
+  - "Modular over inline — workflow.toon defines metadata and references; activities, skills, and resources live in their own files"
+  - "Encode critical constraints as structure, not just text — back rules with checkpoints, conditions, and validate actions"
+  - "Format literacy before content — verify TOON syntax understanding by reading existing files before drafting"
+  - "Define complete scope before execution — enumerate all files to create, modify, or remove before starting"
+  - "Corrections must persist — record corrections and verify compliance at every subsequent checkpoint"
+  - "Non-destructive updates — compare new content against existing content and flag any material being removed"
+artifactLocations:
+  workflows: workflows/
+modes[1]:
+  - id: update
+    name: Update Mode
+    description: "Modify an existing workflow following design principles. Loads the target workflow, analyses impact of changes, and applies modifications with content preservation checks."
+    activationVariable: is_update_mode
+    recognition[4]:
+      - update workflow
+      - modify workflow
+      - change workflow
+      - edit workflow
+    skipActivities[1]:
+      - pattern-analysis
+    defaults:
+      is_update_mode: true
+    resource: resources/03-update-mode-guide.md
+variables[10]:
+  - name: is_update_mode
+    type: boolean
+    description: "Whether update mode is active (modifying an existing workflow rather than creating a new one)"
+    defaultValue: false
+  - name: target_workflow_id
+    type: string
+    description: "For update mode: the ID of the existing workflow to modify"
+  - name: workflow_id
+    type: string
+    description: "The ID of the workflow being created or updated"
+  - name: format_literacy_confirmed
+    type: boolean
+    description: "Whether the agent has demonstrated TOON format understanding — gates content drafting"
+    defaultValue: false
+  - name: schema_constructs_confirmed
+    type: boolean
+    description: "Whether applicable schema constructs have been identified and confirmed — gates content drafting"
+    defaultValue: false
+  - name: approach_confirmed
+    type: boolean
+    description: "Whether the structural design approach has been confirmed — gates content drafting"
+    defaultValue: false
+  - name: scope_manifest_confirmed
+    type: boolean
+    description: "Whether the complete file manifest has been confirmed — gates content drafting"
+    defaultValue: false
+  - name: all_files_validated
+    type: boolean
+    description: "Whether all TOON files have passed schema validation — gates commit"
+    defaultValue: false
+  - name: scope_manifest
+    type: array
+    description: "List of files to create, modify, or remove with full paths and actions"
+  - name: current_file
+    type: object
+    description: "Current file being drafted during the content drafting loop"
+initialActivity: intake

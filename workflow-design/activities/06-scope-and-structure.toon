@@ -1,0 +1,83 @@
+id: scope-and-structure
+version: 1.0.0
+name: Scope and Structure
+description: "Define the complete file manifest and structural design for the workflow. Enumerates every file to be created, modified, or removed, and proposes the folder structure, activity decomposition, and file layout."
+problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution begins
+skills:
+  primary: workflow-design
+required: true
+estimatedTime: 10-20m
+rules[3]:
+  - "The scope manifest must include every file to be created, modified, or removed — no implicit files"
+  - "Verify the workflows worktree is checked out and on the correct branch before defining paths"
+  - "Present the structural design compared against adopted patterns from pattern analysis"
+modeOverrides:
+  update:
+    description: "Scope is derived from impact analysis. Focus on modified and added files rather than full structure design."
+    skipSteps[1]:
+      - design-folder-structure
+steps[5]:
+  - id: verify-worktree
+    name: Verify Workflows Worktree
+    description: "Check that the workflows worktree is checked out at the expected path. Run 'git worktree list' and verify the workflows branch is present. If not, instruct the user to run 'git worktree add ./workflows workflows'."
+  - id: design-folder-structure
+    name: Design Folder Structure
+    description: "Based on requirements and adopted patterns, define the folder structure: workflow-{id}/ with activities/, skills/, resources/ subfolders. Determine the file naming scheme (NN-name.toon for activities and skills, NN-name.md for resources)."
+  - id: enumerate-files
+    name: Enumerate File Manifest
+    description: "Create the complete file manifest. For each file, specify: full path relative to workflows/, action (create/modify/remove), file type (workflow/activity/skill/resource/readme), and a one-line description. Include workflow.toon, all activity files, all skill files, all resource files, and README.md."
+  - id: present-structural-design
+    name: Present Structural Design
+    description: "Present the proposed structure as a directory tree with the file manifest alongside it. For sequential workflows, show the activity transition diagram. Compare against patterns from reference workflows."
+  - id: present-approach
+    name: Present Approach
+    description: "Describe the order in which files will be drafted: workflow.toon first (establishes metadata and references), then activities in order, then skills, then resources, then README. Explain why this order is necessary (activities reference skills, skills reference resources)."
+checkpoints[2]:
+  - id: scope-confirmed
+    name: Scope Confirmation
+    message: "Here is the complete file manifest. Every file listed will be created, modified, or removed. Is this scope complete?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, scope is complete"
+        description: All files are accounted for
+        effect:
+          setVariable:
+            scope_manifest_confirmed: true
+      - id: revise
+        label: "Needs revision"
+        description: Add or remove files from the manifest
+  - id: structure-confirmed
+    name: Structure Confirmation
+    message: "Here is the structural design with activity transitions and the proposed implementation order. Does this look right?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, proceed with this structure"
+        description: Structure and order are correct
+        effect:
+          setVariable:
+            approach_confirmed: true
+      - id: revise
+        label: "Needs revision"
+        description: Change the structure or implementation order
+transitions[1]:
+  - to: content-drafting
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: approach_confirmed
+          operator: ==
+          value: true
+    isDefault: true
+outcome[3]:
+  - Complete file manifest with all files enumerated
+  - Structural design confirmed against existing patterns
+  - Implementation approach and order confirmed
+context_to_preserve[3]:
+  - scope_manifest - Complete list of files with paths, actions, and descriptions
+  - structural_design - Folder structure and activity transition diagram
+  - implementation_order - Order in which files will be drafted

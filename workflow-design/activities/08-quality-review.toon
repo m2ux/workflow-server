@@ -1,0 +1,77 @@
+id: quality-review
+version: 1.0.0
+name: Quality Review
+description: "Three review passes over all drafted content: schema expressiveness review, convention conformance check, and rule-to-structure audit. Each pass has its own checkpoint."
+problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
+skills:
+  primary: workflow-design
+required: true
+estimatedTime: 15-25m
+rules[3]:
+  - "Each review pass is independent — complete one pass fully before starting the next"
+  - "Flag every instance of prose that maps to a formal schema construct"
+  - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
+steps[6]:
+  - id: expressiveness-review
+    name: Schema Expressiveness Review
+    description: "Audit all drafted content against the schema construct inventory (resource 01). For each piece of prose, check whether a formal construct exists. Flag every instance where prose is used instead of: steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, variables, or modes. Rewrite flagged instances using the formal construct."
+  - id: present-expressiveness-findings
+    name: Present Expressiveness Findings
+    description: "Present the expressiveness audit results: how many instances were found, which files were affected, and what constructs were used as replacements. Show before/after for each change."
+  - id: conformance-review
+    name: Convention Conformance Review
+    description: "Compare all drafted content against the reference workflows from pattern analysis. Check: file naming conventions (NN-name.toon), field ordering, version format (X.Y.Z), transition patterns, checkpoint structure (id, name, message, options), skill structure (capability, protocol, rules). Flag any divergences."
+  - id: present-conformance-findings
+    name: Present Conformance Findings
+    description: "Present the conformance audit results: which conventions were followed, which diverged, and whether divergences are justified."
+  - id: rule-to-structure-audit
+    name: Rule-to-Structure Audit
+    description: "Review every rules[] entry in both the workflow and activity files. For each rule, ask: can this rule be violated by ignoring it? If yes, verify that a structural mechanism exists to prevent the violation (checkpoint, condition, validate action). Flag any critical rules that rely solely on text."
+  - id: present-enforcement-findings
+    name: Present Enforcement Findings
+    description: "Present the rule-to-structure audit results: which rules are text-only, which are structurally enforced, and recommendations for adding structural enforcement where needed."
+checkpoints[3]:
+  - id: expressiveness-confirmed
+    name: Expressiveness Review Checkpoint
+    message: "Schema expressiveness review complete. Here are the findings and corrections. Are these acceptable?"
+    options[2]:
+      - id: confirmed
+        label: "Accept corrections"
+        description: Apply the expressiveness corrections
+      - id: revise
+        label: "Revise corrections"
+        description: Change some of the corrections
+  - id: conformance-confirmed
+    name: Conformance Review Checkpoint
+    message: "Convention conformance review complete. Here are the findings. Should I fix the divergences?"
+    options[3]:
+      - id: fix-all
+        label: "Fix all divergences"
+        description: Bring all content into conformance
+      - id: selective
+        label: "Selective fixes"
+        description: Fix some divergences, keep justified ones
+      - id: accept-as-is
+        label: "Accept as-is"
+        description: The divergences are intentional
+  - id: enforcement-confirmed
+    name: Rule Enforcement Checkpoint
+    message: "Rule-to-structure audit complete. These critical rules lack structural enforcement. Should I add checkpoints, conditions, or validate actions to back them?"
+    options[2]:
+      - id: add-enforcement
+        label: "Add structural enforcement"
+        description: Add checkpoints, conditions, or validate actions for flagged rules
+      - id: accept-text-only
+        label: "Accept text-only rules"
+        description: These rules are acceptable as text-only guidance
+transitions[1]:
+  - to: validate-and-commit
+    isDefault: true
+outcome[3]:
+  - All prose replaced with formal schema constructs where applicable
+  - Convention conformance verified against reference workflows
+  - Critical rules backed by structural enforcement
+context_to_preserve[3]:
+  - expressiveness_corrections - List of prose-to-construct corrections applied
+  - conformance_divergences - List of convention divergences and their disposition
+  - enforcement_additions - List of structural enforcement mechanisms added

@@ -1,0 +1,141 @@
+id: requirements-refinement
+version: 1.0.0
+name: Requirements Refinement
+description: "Systematically elicit workflow design details from the user, one question at a time. Each design dimension has its own checkpoint to ensure atomic, sequential elicitation."
+problem: The user's free-form description needs to be refined into a complete workflow specification
+skills:
+  primary: workflow-design
+required: true
+estimatedTime: 15-30m
+rules[3]:
+  - "One question at a time — present each checkpoint independently and wait for the response before proceeding"
+  - "Show what was captured so far before asking the next question"
+  - "Do not assume answers — if the user's description is ambiguous, ask for clarification"
+modeOverrides:
+  update:
+    description: "Elicit change scope rather than full design. Focus on what specifically is being modified and why."
+    skipSteps[3]:
+      - elicit-activity-model
+      - elicit-variables
+      - elicit-skills
+steps[8]:
+  - id: elicit-purpose
+    name: Elicit Workflow Purpose
+    description: "Confirm or refine the workflow's purpose, target domain, and value proposition. What problem does this workflow solve? Who uses it?"
+  - id: elicit-activities
+    name: Elicit Activity List
+    description: "Work with the user to define the activity list. For each activity, capture: name, purpose (one sentence), whether it requires user interaction (checkpoints), and expected artifacts."
+  - id: elicit-activity-model
+    name: Elicit Activity Model
+    description: "Determine whether activities are sequential (connected by transitions, requiring initialActivity) or independent (matched via recognition patterns). Present examples of each from existing workflows."
+  - id: elicit-checkpoints
+    name: Elicit Checkpoints
+    description: "For each activity, identify where user decision points should occur. For each checkpoint, capture: what question is being asked, what options the user has, and what effects each option has (setVariable, transitionTo, skipActivities)."
+  - id: elicit-artifacts
+    name: Elicit Artifacts
+    description: "Identify what artifacts each activity produces. For each artifact, capture: name, location (key into artifactLocations), description, and action (create or update)."
+  - id: elicit-variables
+    name: Elicit Variables
+    description: "Identify workflow-level variables needed for state tracking. For each variable, capture: name, type, description, defaultValue, and whether it's required."
+  - id: elicit-skills
+    name: Elicit Skills
+    description: "Identify what skills are needed. For each skill, capture: capability description, which activities use it (primary or supporting), and what tools/protocol/rules it needs."
+  - id: elicit-rules
+    name: Elicit Rules
+    description: "Capture workflow-level rules that govern execution across all activities. For each rule, discuss whether it should be backed by structural enforcement (checkpoint, condition, validate action) or is guidance-only."
+checkpoints[8]:
+  - id: purpose-confirmed
+    name: Purpose Confirmation
+    message: "Here is the workflow purpose and domain I've captured. Is this accurate?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, that's right"
+        description: Purpose is accurately captured
+      - id: refine
+        label: "Needs refinement"
+        description: Let me clarify the purpose
+  - id: activities-confirmed
+    name: Activity List Confirmation
+    message: "Here is the activity list I've captured with names, purposes, and expected artifacts. Is this complete?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, this is complete"
+        description: Activity list is accurate and complete
+      - id: refine
+        label: "Needs changes"
+        description: Add, remove, or modify activities
+  - id: model-confirmed
+    name: Activity Model Confirmation
+    message: "Based on our discussion, this workflow uses a {sequential/independent} activity model. Is this correct?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, correct model"
+        description: Activity model is correct
+      - id: change
+        label: "Change model"
+        description: Switch to the other activity model
+  - id: checkpoints-confirmed
+    name: Checkpoints Confirmation
+    message: "Here are the checkpoints I've defined for each activity with their options and effects. Do these cover all necessary user decision points?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, checkpoints are complete"
+        description: Checkpoint coverage is adequate
+      - id: refine
+        label: "Needs changes"
+        description: Add, remove, or modify checkpoints
+  - id: artifacts-confirmed
+    name: Artifacts Confirmation
+    message: "Here are the artifacts each activity produces. Is this complete?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, artifacts are complete"
+        description: Artifact list is accurate
+      - id: refine
+        label: "Needs changes"
+        description: Add, remove, or modify artifacts
+  - id: variables-confirmed
+    name: Variables Confirmation
+    message: "Here are the workflow variables I've identified for state tracking. Is this complete?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, variables are complete"
+        description: Variable list is accurate
+      - id: refine
+        label: "Needs changes"
+        description: Add, remove, or modify variables
+  - id: skills-confirmed
+    name: Skills Confirmation
+    message: "Here are the skills needed by this workflow. Is this complete?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, skills are complete"
+        description: Skill list is accurate
+      - id: refine
+        label: "Needs changes"
+        description: Add, remove, or modify skills
+  - id: rules-confirmed
+    name: Rules Confirmation
+    message: "Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, rules are complete"
+        description: Rule list is accurate
+      - id: refine
+        label: "Needs changes"
+        description: Add, remove, or modify rules
+transitions[1]:
+  - to: pattern-analysis
+    isDefault: true
+outcome[2]:
+  - Complete workflow specification captured through guided elicitation
+  - All design dimensions confirmed by user
+context_to_preserve[8]:
+  - workflow_purpose - Confirmed purpose and domain
+  - activity_list - Confirmed activity names, purposes, and artifacts
+  - activity_model - Sequential or independent
+  - checkpoint_design - Checkpoints per activity with options and effects
+  - artifact_design - Artifacts per activity with names and locations
+  - variable_design - Workflow variables with types and defaults
+  - skill_design - Skills with capabilities and activity assignments
+  - rule_design - Workflow rules with enforcement classification

@@ -1,0 +1,124 @@
+id: workflow-design
+version: 1.0.0
+capability: Guide agents through designing and drafting workflow definitions that maximize schema expressiveness and follow established conventions
+
+description: "Primary skill for the workflow-design workflow. Provides design principles, schema construct awareness, quality review checklists, and structural enforcement guidance. Agents using this skill produce workflow definitions where every piece of structured information uses the most specific formal construct the schema provides."
+
+inputs[2]:
+  - id: user-description
+    description: "Free-form description of the workflow the user wants to create or modify"
+  - id: target-workflow-id
+    description: "For update mode: the ID of the existing workflow to modify"
+    required: false
+
+protocol:
+  intake[3]:
+    - Accept the user's free-form description and summarize key design intent
+    - Classify as create or update based on whether an existing workflow is referenced
+    - Set mode variables and present classification for confirmation
+  context-loading[4]:
+    - "Fetch workflow-server schemas resource to load all schema definitions"
+    - Call list_workflows and get_workflow for 2+ reference workflows
+    - Read existing TOON files to confirm format understanding
+    - Identify applicable schema constructs and present to user
+  elicitation[3]:
+    - Elicit one design dimension at a time with a dedicated checkpoint per question
+    - "Capture purpose, activity list, activity model, checkpoints, artifacts, variables, skills, rules"
+    - Present accumulated design after each answer so the user can track progress
+  pattern-analysis[2]:
+    - Extract structural and content patterns from 2+ reference workflows
+    - Present patterns alongside proposed structure for comparison
+  scope-definition[3]:
+    - Enumerate every file to create/modify/remove with full paths
+    - Verify the workflows worktree is available
+    - Present file manifest and structural design for confirmation
+  content-drafting[4]:
+    - "Draft files in order — workflow.toon, activities, skills, resources, README"
+    - Present approach before each file and get confirmation
+    - Use formal schema constructs for all structured information
+    - Validate each TOON file against its schema immediately after drafting
+  quality-review[3]:
+    - "Audit all content for prose that should be formal constructs"
+    - "Compare against reference workflows for convention conformance"
+    - "Verify critical rules are backed by structural enforcement"
+  validation[3]:
+    - Run schema validator on all TOON files
+    - Re-verify scope manifest completeness
+    - Commit to workflows worktree with signed commit
+
+output[1]:
+  - id: workflow-file-set
+    description: "Complete workflow definition: workflow.toon, activity files, skill files, resource files, README"
+    components:
+      workflow-toon: "Root workflow definition with metadata, modes, variables, rules, artifactLocations"
+      activity-files: "One .toon file per activity with steps, checkpoints, transitions"
+      skill-files: "One .toon file per skill with protocol, inputs, output, rules"
+      resource-files: "Markdown resource files for agent guidance"
+      readme: "Workflow README with description, activity table, and usage"
+
+rules:
+  formal-over-informal: "If the schema provides a dedicated construct for a piece of information, that construct must be used. Prose is only acceptable for description, problem, and recognition fields."
+  convention-first: "Search for existing naming conventions before introducing new patterns. Use NN-name.toon for activities and skills, NN-name.md for resources."
+  modular-always: "workflow.toon defines metadata and references only. Activities, skills, and resources live in their own files."
+  schema-immutable: "Never modify schemas during workflow creation. Fix content to match the schema, not the reverse."
+  one-question-at-a-time: "Each elicitation question is a separate checkpoint. Never combine multiple questions."
+  plan-before-act: "Present approach and get confirmation before drafting each file."
+  structural-enforcement: "Critical constraints must be backed by checkpoints, conditions, or validate actions — not just rule text."
+  non-destructive: "For updates, compare new content against existing and flag any removals."
+  corrections-persist: "Record user corrections and verify compliance at every subsequent checkpoint."
+  format-literacy: "Verify TOON format comprehension by reading existing files before drafting."
+  scope-completeness: "Enumerate all files before starting and re-verify after completion."
+  no-speculative-execution: "Never execute changes to see how they look. Follow the confirmed plan."
+  defense-in-depth: "For highest-severity constraints, use multiple enforcement layers: rule text + checkpoint + validate action."
+
+resources[3]:
+  - "00"
+  - "01"
+  - "02"
+
+tools:
+  list_workflows:
+    when: Surveying existing workflows during context loading
+    params: none
+    returns: List of all available workflow definitions
+    usage: Discover reference workflows for pattern analysis
+  get_workflow:
+    when: Loading reference workflows or target workflow (update mode)
+    params: workflow_id
+    returns: Complete workflow definition
+    preserve[5]:
+      - id
+      - rules
+      - variables
+      - modes
+      - initialActivity
+  get_workflow_activity:
+    when: Examining activity structure in reference workflows
+    params: "workflow_id, activity_id"
+    returns: Full activity with steps, checkpoints, transitions
+  get_skill:
+    when: Examining skill structure in reference workflows
+    params: skill_id
+    returns: Full skill with protocol, rules, inputs, output
+  list_workflow_resources:
+    when: Examining resource organization in reference workflows
+    params: workflow_id
+    returns: List of all resources for a workflow
+  validate_transition:
+    when: Verifying transition integrity in drafted content
+    params: "workflow_id, from_activity, to_activity"
+    returns: Whether the transition is valid
+
+errors:
+  schema_validation_failure:
+    cause: "Drafted TOON file does not conform to its schema"
+    recovery: "Read the validation error, identify the non-conforming field, fix the content, and re-validate"
+  format_error:
+    cause: "TOON file uses invalid syntax (JSON arrays, YAML nesting, Python quotes)"
+    recovery: "Read an existing valid TOON file of the same type, compare syntax, and rewrite"
+  convention_divergence:
+    cause: "Drafted content uses different naming or structural patterns than existing workflows"
+    recovery: "Compare against reference workflows, identify the divergence, and align with established conventions"
+  missing_construct:
+    cause: "Prose is used where a formal schema construct exists"
+    recovery: "Check the schema construct inventory (resource 01) and replace prose with the formal construct"

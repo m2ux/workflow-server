@@ -1,0 +1,80 @@
+id: validate-and-commit
+version: 1.0.0
+name: Validate and Commit
+description: "Run schema validation on all TOON files, re-verify the scope manifest, generate README if creating a new workflow, and commit all changes to the workflows worktree."
+problem: All workflow content must pass validation and the complete scope must be verified before committing
+skills:
+  primary: workflow-design
+  supporting[1]:
+    - toon-authoring
+required: true
+estimatedTime: 10-15m
+rules[3]:
+  - "All TOON files must pass schema validation before commit — no exceptions"
+  - "The scope manifest must be fully addressed — every item checked off"
+  - "Commit to the workflows worktree, not the main repository"
+steps[6]:
+  - id: run-schema-validation
+    name: Run Schema Validation
+    description: "For each TOON file (workflow.toon, all activity files, all skill files), run the schema validator. Record pass/fail for each file. If any file fails, fix the error and re-validate before proceeding."
+  - id: verify-scope-manifest
+    name: Verify Scope Manifest
+    description: "Re-read the scope manifest from the scope-and-structure activity. For each item, verify: the file exists at the specified path, the action (create/modify/remove) was performed, and the content matches the reviewed draft. Flag any items not addressed."
+  - id: generate-readme
+    name: Generate README
+    description: "For create mode: generate README.md with workflow title, description, activity sequence table, mode descriptions, usage instructions, and links to resources. For update mode: update the existing README if the changes affect the documented structure."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: ==
+      value: false
+  - id: update-readme
+    name: Update README
+    description: "For update mode: update the existing README.md to reflect any structural changes (new activities, modified activity descriptions, changed modes)."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: ==
+      value: true
+  - id: stage-and-commit
+    name: Stage and Commit
+    description: "Stage all created/modified files in the workflows worktree. Commit with a descriptive message following the convention: 'feat(workflow-design): create workflow-design workflow' for create mode, or 'fix(workflow-design): <change description>' for update mode. Sign the commit."
+  - id: verify-commit
+    name: Verify Commit
+    description: "Run 'git log -1' and 'git status' in the workflows worktree to verify the commit was successful and no files were missed."
+checkpoints[2]:
+  - id: validation-passed
+    name: Validation Results Checkpoint
+    message: "Schema validation results: {pass_count} passed, {fail_count} failed. Here are the details. Should I proceed to commit?"
+    options[2]:
+      - id: proceed
+        label: "Proceed to commit"
+        description: All validations passed or failures are acceptable
+        effect:
+          setVariable:
+            all_files_validated: true
+      - id: fix
+        label: "Fix failures first"
+        description: Go back and fix validation failures before committing
+  - id: scope-verified
+    name: Scope Verification Checkpoint
+    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed. Here are the details. Is the scope complete?"
+    options[2]:
+      - id: confirmed
+        label: "Scope is complete"
+        description: All items in the manifest have been addressed
+      - id: fix
+        label: "Address remaining items"
+        description: Go back and address the missing items
+exitActions[1]:
+  - action: log
+    message: "Workflow design complete — all files committed to workflows worktree"
+outcome[4]:
+  - All TOON files pass schema validation
+  - Scope manifest fully addressed
+  - README generated or updated
+  - All changes committed to workflows worktree
+context_to_preserve[3]:
+  - validation_results - Per-file validation pass/fail status
+  - commit_hash - Git commit hash of the final commit
+  - workflow_path - Full path to the created/updated workflow directory

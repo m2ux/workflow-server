@@ -1,0 +1,48 @@
+id: pattern-analysis
+version: 1.0.0
+name: Pattern Analysis
+description: "Audit existing workflows of similar type to extract reusable structural patterns. Present extracted patterns alongside the proposed structure for the new workflow."
+problem: New workflows must follow established conventions and reuse proven structural patterns
+skills:
+  primary: workflow-design
+required: false
+estimatedTime: 10-15m
+rules[2]:
+  - "Examine at least two existing workflows of the same model type (sequential or independent)"
+  - "Present patterns alongside the proposed structure so the user can see how conventions are being applied"
+steps[4]:
+  - id: select-reference-workflows
+    name: Select Reference Workflows
+    description: "From the surveyed workflows in the previous activity, select 2+ that share the same activity model (sequential or independent) as the target workflow. Prefer workflows in a similar domain."
+  - id: extract-structural-patterns
+    name: Extract Structural Patterns
+    description: "For each reference workflow, extract: activity naming patterns, step/checkpoint ratios, transition patterns, skill assignment patterns, artifact naming conventions, and resource organization."
+  - id: extract-content-patterns
+    name: Extract Content Patterns
+    description: "For each reference workflow, extract: how rules are structured, how checkpoints use effects, how transitions use conditions, how artifacts reference locations, and how skills use protocol/inputs/output."
+  - id: present-patterns
+    name: Present Patterns
+    description: "Present the extracted patterns in a comparison table alongside the proposed structure for the new workflow. Highlight where the proposed structure follows or diverges from established patterns."
+checkpoints[1]:
+  - id: patterns-confirmed
+    name: Patterns Confirmation
+    message: "Here are the structural patterns extracted from existing workflows, with my proposed structure shown alongside. Which patterns should I adopt?"
+    options[3]:
+      - id: adopt-all
+        label: Adopt all patterns
+        description: Follow all extracted conventions
+      - id: selective
+        label: Selective adoption
+        description: Let me specify which patterns to follow
+      - id: diverge
+        label: Diverge with justification
+        description: The new workflow needs different patterns (I'll explain why)
+transitions[1]:
+  - to: scope-and-structure
+    isDefault: true
+outcome[2]:
+  - Structural patterns extracted from 2+ reference workflows
+  - Pattern adoption decisions confirmed by user
+context_to_preserve[2]:
+  - adopted_patterns - List of patterns to follow
+  - reference_workflows - IDs and key characteristics of reference workflows
