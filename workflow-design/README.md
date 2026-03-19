@@ -41,24 +41,28 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 ## Workflow Flow
 
 ```mermaid
-stateDiagram-v2
-    direction LR
-    [*] --> Intake
-    Intake --> ContextAndLiteracy
+graph TD
+    startNode(["Start"]) --> INT["01 intake"]
+    INT --> CTX["02 context-and-literacy"]
 
-    state CreateUpdate {
-        RequirementsRefinement --> PatternAnalysis
-        RequirementsRefinement --> ImpactAnalysis
-        PatternAnalysis --> ScopeAndStructure
-        ImpactAnalysis --> ScopeAndStructure
-        ScopeAndStructure --> ContentDrafting
-    }
+    CTX --> MODE{"mode?"}
+    MODE -->|"create"| REQ["03 requirements-refinement"]
+    MODE -->|"update"| REQ
+    MODE -->|"review"| QR
 
-    ContextAndLiteracy --> RequirementsRefinement: "create/update"
-    ContextAndLiteracy --> QualityReview: "review mode"
-    ContentDrafting --> QualityReview
-    QualityReview --> ValidateAndCommit
-    ValidateAndCommit --> [*]
+    REQ --> CREATE{"create?"}
+    CREATE -->|"yes"| PAT["04 pattern-analysis"]
+    CREATE -->|"no"| UPD{"update?"}
+    UPD -->|"yes"| IMP["05 impact-analysis"]
+
+    PAT --> SCS["06 scope-and-structure"]
+    IMP --> SCS
+
+    SCS --> DRF["07 content-drafting"]
+    DRF --> QR["08 quality-review"]
+
+    QR --> VAL["09 validate-and-commit"]
+    VAL --> doneNode(["End"])
 ```
 
 ---
