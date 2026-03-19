@@ -1,0 +1,39 @@
+id: review-changes
+version: 1.0.0
+name: Review Changes
+description: "Present the discovered changes to the user for approval. Display categorized change summary with per-file detail for new prisms. User confirms scope and adjusts exclusions before import begins."
+problem: User needs to review and approve which upstream changes to import
+
+steps[2]:
+  - id: present-summary
+    name: Present change summary
+    description: "Display a table summarizing changes by category: count of new, modified, renamed, and deleted prisms. For new prisms, show name, family, optimal_model, and word count. For renames, show old→new mapping. For deletions, show which resources will be removed."
+    required: true
+  - id: apply-exclusions
+    name: Apply exclusion adjustments
+    description: "After user confirms, update the changes variable to remove any prisms the user excluded. Update next_index if the number of new prisms changed."
+    required: true
+
+checkpoints[1]:
+  - id: change-review
+    name: Change Review Checkpoint
+    message: "Here are the upstream changes. Review the summary above and confirm which changes to apply."
+    options[3]:
+      - id: confirm
+        label: Confirm — apply all changes
+        description: "Import all discovered changes as listed"
+      - id: adjust-exclusions
+        label: Adjust exclusions
+        description: "Exclude specific prisms before importing"
+      - id: abort
+        label: Abort
+        description: "Do not import any changes"
+    required: true
+    blocking: true
+
+transitions[1]:
+  - to: import-resources
+    isDefault: true
+
+outcome[1]:
+  - "User-approved change set ready for import"

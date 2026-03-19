@@ -38,6 +38,8 @@ workflows/                    # Worktree checkout
 | [`work-packages`](work-packages/) | Multi-package planning for large initiatives |
 | [`substrate-node-security-audit`](substrate-node-security-audit/) | Fully automated multi-phase AI security audit for Substrate-based node codebases |
 | [`cicd-pipeline-security-audit`](cicd-pipeline-security-audit/) | Fully automated CI/CD pipeline security audit detecting source-to-sink injection vulnerabilities in GitHub Actions |
+| [`prism`](prism/) | Structural analysis through cognitive lenses — 46 prisms across 11 families, 4 pipeline modes |
+| [`prism-update`](prism-update/) | Sync the prism workflow's resources and routing with upstream agi-in-md changes |
 
 ## Universal Skills ([meta/skills/](meta/skills/))
 

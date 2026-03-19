@@ -1,0 +1,27 @@
+id: commit-and-submit
+version: 1.0.0
+name: Commit and Submit
+description: "Create a feature branch (if not already on one), push all commits, and create a pull request against the workflows branch with a change summary."
+problem: Changes need to be submitted as a PR for review
+
+steps[4]:
+  - id: check-branch
+    name: Check current branch
+    description: "If on the workflows branch (not a feature branch), create a new branch with naming convention: enhancement/sync-upstream-prisms-YYYY-MM-DD. If already on a feature branch, use it."
+    required: true
+  - id: push-commits
+    name: Push commits
+    description: "Push all commits to the remote branch."
+    required: true
+  - id: create-pr
+    name: Create pull request
+    description: "Create a PR against the workflows branch. Title: 'Sync upstream prism updates: N new, M modified, R renamed, D deleted'. Body: include the change summary table from review-changes, list each new prism with its index, note any renames and deletions."
+    required: true
+  - id: report-completion
+    name: Report completion
+    description: "Present the PR URL and a summary of all changes applied."
+    required: true
+
+outcome[2]:
+  - "Feature branch pushed to remote"
+  - "Pull request created with change summary"
