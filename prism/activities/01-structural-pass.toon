@@ -1,5 +1,5 @@
 id: structural-pass
-version: 2.0.0
+version: 2.1.0
 name: Structural Analysis Pass
 description: "Iterate over analysis_units and run the appropriate analysis for each unit. For single and full-prism units, runs the L12 structural lens. For portfolio units, runs multiple independent lenses. For behavioral units, dispatches 4 independent behavioral lenses. Each iteration writes artifacts namespaced by unit. After all units complete, transitions based on pipeline mode."
 skills:
@@ -7,11 +7,31 @@ skills:
   supporting[2]:
     - portfolio-analysis
     - behavioral-pipeline
-artifacts[1]:
+artifacts[6]:
   - id: structural-analysis
     name: "{unit_output_subdir}structural-analysis.md"
     location: analysis
-    description: "L12 structural analysis per unit (single/full-prism modes). In portfolio mode, per-lens artifacts are written instead."
+    description: "L12 structural analysis per unit (single/full-prism modes)"
+  - id: portfolio-lens
+    name: "{unit_output_subdir}portfolio-{lens-name}.md"
+    location: analysis
+    description: "Per-lens portfolio analysis artifact (portfolio mode)"
+  - id: portfolio-synthesis
+    name: "{unit_output_subdir}portfolio-synthesis.md"
+    location: analysis
+    description: "Cross-lens synthesis artifact (portfolio mode)"
+  - id: behavioral-errors
+    name: "{unit_output_subdir}behavioral-errors.md"
+    location: analysis
+    description: "Error-resilience behavioral analysis (behavioral mode)"
+  - id: behavioral-costs
+    name: "{unit_output_subdir}behavioral-costs.md"
+    location: analysis
+    description: "Optimization behavioral analysis (behavioral mode)"
+  - id: behavioral-changes
+    name: "{unit_output_subdir}behavioral-changes.md"
+    location: analysis
+    description: "Evolution behavioral analysis (behavioral mode)"
 rules[3]:
   - "MODE ROUTING: Steps load-lens through write-structural-artifact execute only for single and full-prism pipeline modes. Steps select-portfolio-lenses through write-portfolio-artifacts execute only for portfolio mode. Steps dispatch-behavioral-lenses and collect-behavioral-paths execute only for behavioral mode. Step report-unit-paths always executes."
   - "LENS LOADING: Workers load the L12 structural lens from resource 00 via get_resource. Portfolio lenses are loaded per the portfolio-analysis skill. Behavioral lenses are resources 19-22."
@@ -26,24 +46,57 @@ loops[1]:
     steps[11]:
       - id: resolve-unit-output
         name: Resolve Unit Output Directory
-        description: "Set the unit's output directory: {output_path}/{current_unit.unit_output_subdir} if unit_output_subdir is present (multi-unit), otherwise {output_path}. Create the directory if needed."
+        description: "Set unit_output_dir from {output_path}/{current_unit.unit_output_subdir} if unit_output_subdir is present (multi-unit), otherwise {output_path}. Create the directory if needed."
         required: true
       - id: check-gitnexus
         name: Check GitNexus Availability
-        description: "Check whether GitNexus has indexed the target codebase via gitnexus_list_repos. Set a gitnexus_available flag for the current unit. This avoids each worker independently probing list_repos. Pass the flag to workers so they can skip graph operations when unavailable."
+        description: "Check whether GitNexus has indexed the target codebase via gitnexus_list_repos. Set gitnexus_available for use by subsequent workers."
         required: true
       - id: load-lens
         name: Load Structural Lens
-        description: "Load the L12 lens resource 00 (works for all target types). Runs for single and full-prism pipeline modes only — skip for portfolio and behavioral units."
+        description: "Load the L12 lens resource 00 (works for all target types)."
         required: true
+        condition:
+          type: or
+          conditions[2]:
+            - type: simple
+              variable: current_unit.pipeline_mode
+              operator: "=="
+              value: single
+            - type: simple
+              variable: current_unit.pipeline_mode
+              operator: "=="
+              value: full-prism
       - id: execute-lens
         name: Execute Lens Operations
-        description: "Apply every operation in the lens prompt sequentially against current_unit.target. Execute completely — do not abbreviate. Runs for single and full-prism pipeline modes only — skip for portfolio and behavioral units."
+        description: "Apply every operation in the lens prompt sequentially against current_unit.target. Execute completely — do not abbreviate."
         required: true
+        condition:
+          type: or
+          conditions[2]:
+            - type: simple
+              variable: current_unit.pipeline_mode
+              operator: "=="
+              value: single
+            - type: simple
+              variable: current_unit.pipeline_mode
+              operator: "=="
+              value: full-prism
       - id: write-structural-artifact
         name: Write Structural Artifact
-        description: "Write the analysis to {unit_output_dir}/structural-analysis.md. Runs for single and full-prism pipeline modes only — skip for portfolio and behavioral units."
+        description: "Write the analysis to {unit_output_dir}/structural-analysis.md."
         required: true
+        condition:
+          type: or
+          conditions[2]:
+            - type: simple
+              variable: current_unit.pipeline_mode
+              operator: "=="
+              value: single
+            - type: simple
+              variable: current_unit.pipeline_mode
+              operator: "=="
+              value: full-prism
       - id: select-portfolio-lenses
         name: Select Portfolio Lenses
         description: "Use current_unit.lenses if provided. Otherwise default to claim + degradation (code) or pedagogy + rejected-paths (general). Load the portfolio-analysis supporting skill for the selection guide."
@@ -73,7 +126,7 @@ loops[1]:
           value: portfolio
       - id: dispatch-behavioral-lenses
         name: Dispatch Behavioral Lenses
-        description: "Dispatch 4 independent behavioral lenses against current_unit.target: error-resilience (19) → behavioral-errors.md, optim (20) → behavioral-costs.md, evolution (21) → behavioral-changes.md, api-surface (22) → behavioral-promises.md. All 4 are independent and can run in parallel (up to 4 concurrent)."
+        description: "Dispatch 4 independent behavioral lenses against current_unit.target: error-resilience (19), optim (20), evolution (21), api-surface (22). All 4 are independent and can run in parallel (up to 4 concurrent)."
         required: true
         condition:
           type: simple
@@ -82,7 +135,7 @@ loops[1]:
           value: behavioral
       - id: collect-behavioral-paths
         name: Collect Behavioral Artifact Paths
-        description: "Capture all 4 behavioral artifact paths in behavioral_output_paths: ERRORS → {unit_output_dir}/behavioral-errors.md, COSTS → {unit_output_dir}/behavioral-costs.md, CHANGES → {unit_output_dir}/behavioral-changes.md, PROMISES → {unit_output_dir}/behavioral-promises.md."
+        description: "Capture all 4 behavioral artifact paths in behavioral_output_paths."
         required: true
         condition:
           type: simple
@@ -91,7 +144,7 @@ loops[1]:
           value: behavioral
       - id: report-unit-paths
         name: Report Unit Artifact Paths
-        description: "Append the artifact paths from this unit to all_artifact_paths. Report structural_output_path, portfolio_output_paths, or behavioral_output_paths for the current unit."
+        description: "Append the artifact paths from this unit to all_artifact_paths."
         required: true
 transitions[3]:
   - to: adversarial-pass

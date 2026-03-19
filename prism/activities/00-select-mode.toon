@@ -28,13 +28,23 @@ steps[3]:
     required: true
   - id: apply-plan
     name: Apply Plan
-    description: "After checkpoint confirmation, apply the selected pipeline_mode and any lens selections to workflow state variables."
+    description: "Apply the selected pipeline_mode and any lens selections to workflow state variables."
     required: true
+    actions[2]:
+      - action: set
+        variable: pipeline_mode
+        description: "Set pipeline_mode from checkpoint selection or plan recommendation"
+      - action: set
+        variable: analysis_units
+        description: "Set analysis_units from the plan-analysis skill output"
 checkpoints[1]:
   - id: confirm-mode
     name: Pipeline Mode Confirmation
     message: "Based on your request, I recommend the following analysis configuration. Would you like to proceed or adjust?"
-    prerequisite: "Only present when pipeline_mode was NOT explicitly provided by the caller. If the caller set pipeline_mode directly, skip this checkpoint."
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: notExists
     options[5]:
       - id: accept
         label: Proceed

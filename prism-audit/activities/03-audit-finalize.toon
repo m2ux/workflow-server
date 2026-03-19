@@ -12,8 +12,13 @@ steps[7]:
     required: true
   - id: enrich-findings-with-graph
     name: Enrich Findings with Graph Data
-    description: "If GitNexus is available (check via gitnexus_list_repos): for each finding in REPORT.md that references a specific symbol (function, class, module), use gitnexus_impact(target: symbol_name, direction: upstream) to compute the measured blast radius (direct callers, affected processes, affected modules). Use gitnexus_context on each finding's primary symbol to determine which execution flows it participates in. Write enrichment data as annotations that the subsequent report-splitting steps incorporate into DETAILED-FINDINGS.md as a per-finding 'Graph Evidence' subsection containing: blast radius metrics, execution flow participation, and upstream dependency chain. If GitNexus is unavailable, skip this step entirely."
+    description: "For each finding in REPORT.md that references a specific symbol, use gitnexus_impact to compute measured blast radius and gitnexus_context to determine execution flow participation. Write enrichment data as annotations for DETAILED-FINDINGS.md per-finding 'Graph Evidence' subsections."
     required: true
+    condition:
+      type: simple
+      variable: gitnexus_available
+      operator: "=="
+      value: true
   - id: split-report
     name: Split Report into Summary + Detailed Findings
     description: "Read REPORT.md. Write AUDIT-REPORT.md containing everything except the inline detailed findings section. Replace that section with a reference line: '*Detailed write-ups for all findings organised by severity are in [DETAILED-FINDINGS.md](DETAILED-FINDINGS.md).*' Renumber subsequent sections to fill the gap. Fix internal cross-references to old section numbers."
@@ -32,8 +37,18 @@ steps[7]:
     required: true
   - id: verify-artifacts
     name: Verify All Artifacts
-    description: "Verify that all three documents exist and are internally consistent: AUDIT-REPORT.md (summary with hyperlinked tables), DETAILED-FINDINGS.md (all findings expanded), DESIGN-TRADE-OFFS.md (trade-off analysis). Check that all cross-document hyperlinks resolve to actual headings. Set audit_report_path, detailed_findings_path, and trade_offs_path."
+    description: "Verify that all three documents exist and are internally consistent. Check that all cross-document hyperlinks resolve to actual headings."
     required: true
+    actions[3]:
+      - action: set
+        variable: audit_report_path
+        description: "Path to AUDIT-REPORT.md"
+      - action: set
+        variable: detailed_findings_path
+        description: "Path to DETAILED-FINDINGS.md"
+      - action: set
+        variable: trade_offs_path
+        description: "Path to DESIGN-TRADE-OFFS.md"
 rules[6]:
   - "REPORT SPLIT: REPORT.md (from triggered prism workflow) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md."
   - "DETAILED FINDING FORMAT: Every finding in DETAILED-FINDINGS.md must have exactly 5 fields plus an optional 6th: Description, Impact, Location, Recommendation, Adversarial confirmation, Graph Evidence (if GitNexus enrichment data is available — includes blast radius metrics and execution flow participation). Source priority for extraction: (1) structural-analysis.md for original findings, (2) adversarial-analysis.md for underclaims and significant corrections, (3) portfolio documents for portfolio-source findings."
@@ -54,6 +69,11 @@ artifacts[3]:
     name: "DESIGN-TRADE-OFFS.md"
     location: audit
     description: "Trade-off catalogue, cross-domain interactions, and design decision register distilled from conservation laws"
+exitActions[1]:
+  - action: validate
+    description: "Verify all three audit deliverables exist before transitioning to delivery"
+outcome[1]:
+  - "Three audit deliverables written and cross-validated: AUDIT-REPORT.md, DETAILED-FINDINGS.md, DESIGN-TRADE-OFFS.md"
 transitions[1]:
   - to: deliver-audit
     isDefault: true
