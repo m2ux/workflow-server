@@ -111,6 +111,26 @@ export const WorkflowStateSchema = z.object({
 });
 export type WorkflowState = z.infer<typeof WorkflowStateSchema>;
 
+// --- Recursive schemas for state persistence ---
+// These extend the base schemas to support nested child workflow state within
+// triggeredWorkflows entries, enabling hierarchical save/restore.
+
+export interface NestedTriggeredWorkflowRef extends TriggeredWorkflowRef {
+  state?: NestedWorkflowState;
+}
+
+export interface NestedWorkflowState extends Omit<WorkflowState, 'triggeredWorkflows'> {
+  triggeredWorkflows: NestedTriggeredWorkflowRef[];
+}
+
+export const NestedTriggeredWorkflowRefSchema: z.ZodType<NestedTriggeredWorkflowRef> = TriggeredWorkflowRefSchema.extend({
+  state: z.lazy(() => NestedWorkflowStateSchema).optional(),
+}) as z.ZodType<NestedTriggeredWorkflowRef>;
+
+export const NestedWorkflowStateSchema: z.ZodType<NestedWorkflowState> = WorkflowStateSchema.extend({
+  triggeredWorkflows: z.array(z.lazy(() => NestedTriggeredWorkflowRefSchema)).default([]),
+}) as z.ZodType<NestedWorkflowState>;
+
 export function createInitialState(workflowId: string, workflowVersion: string, initialActivity: string, initialVariables?: Record<string, unknown>): WorkflowState {
   const now = new Date().toISOString();
   return {
@@ -129,3 +149,17 @@ export function addHistoryEvent(state: WorkflowState, type: HistoryEventType, de
   const now = new Date().toISOString();
   return { ...state, stateVersion: state.stateVersion + 1, updatedAt: now, history: [...state.history, { timestamp: now, type, ...details }] };
 }
+
+export const StateSaveFileSchema = z.object({
+  id: z.string(),
+  savedAt: z.string().datetime(),
+  description: z.string().optional(),
+  workflowId: z.string(),
+  workflowVersion: z.string(),
+  planningFolder: z.string(),
+  state: z.lazy(() => NestedWorkflowStateSchema),
+});
+export type StateSaveFile = z.infer<typeof StateSaveFileSchema>;
+
+export function validateStateSave(data: unknown): StateSaveFile { return StateSaveFileSchema.parse(data); }
+export function safeValidateStateSave(data: unknown) { return StateSaveFileSchema.safeParse(data); }

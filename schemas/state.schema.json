@@ -81,9 +81,50 @@
           "type": "object",
           "additionalProperties": {},
           "description": "Context variables returned by the child workflow after completion"
+        },
+        "state": {
+          "$ref": "#/definitions/state",
+          "description": "Full nested state of the child workflow (used by state persistence for hierarchical save/restore)"
         }
       },
       "required": ["workflowId", "triggeredAt", "triggeredFrom", "status"],
+      "additionalProperties": false
+    },
+    "stateSaveFile": {
+      "type": "object",
+      "description": "Wrapper for persisted workflow state files with metadata for identification",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this state save"
+        },
+        "savedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the state was saved"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the save point"
+        },
+        "workflowId": {
+          "type": "string",
+          "description": "Top-level workflow ID for quick identification"
+        },
+        "workflowVersion": {
+          "type": "string",
+          "description": "Top-level workflow version"
+        },
+        "planningFolder": {
+          "type": "string",
+          "description": "Path to the planning folder where this state file resides"
+        },
+        "state": {
+          "$ref": "#/definitions/state",
+          "description": "The full nested workflow execution state"
+        }
+      },
+      "required": ["id", "savedAt", "workflowId", "workflowVersion", "planningFolder", "state"],
       "additionalProperties": false
     },
     "state": {
