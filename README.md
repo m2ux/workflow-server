@@ -40,6 +40,7 @@ workflows/                    # Worktree checkout
 | [`cicd-pipeline-security-audit`](cicd-pipeline-security-audit/) | Fully automated CI/CD pipeline security audit detecting source-to-sink injection vulnerabilities in GitHub Actions |
 | [`prism`](prism/) | Structural analysis through cognitive lenses — 46 prisms across 11 families, 4 pipeline modes |
 | [`prism-update`](prism-update/) | Sync the prism workflow's resources and routing with upstream agi-in-md changes |
+| [`workflow-design`](workflow-design/) | Create or update workflow definitions with guided elicitation, schema expressiveness enforcement, and convention conformance |
 
 ## Universal Skills ([meta/skills/](meta/skills/))
 
