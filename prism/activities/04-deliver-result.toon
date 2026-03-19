@@ -1,7 +1,7 @@
 id: deliver-result
-version: 2.0.0
+version: 3.0.0
 name: Deliver Result
-description: "Present the final report to the user. Reads the REPORT.md artifact produced by the generate-report activity. For security audits, transitions to audit-finalize for report splitting and trade-off analysis. Also reports paths to all underlying analysis artifacts for reference."
+description: "Present the final report to the user. Reads the REPORT.md artifact produced by the generate-report activity and reports paths to all underlying analysis artifacts for reference. This is the terminal activity for all prism pipeline modes."
 skills:
   primary: structural-analysis
 steps[3]:
@@ -17,16 +17,7 @@ steps[3]:
     name: Present Final Report
     description: "Present the report to the user. Include the REPORT.md path and list all underlying analysis artifact paths from all_artifact_paths for reference."
     required: true
-transitions[1]:
-  - to: audit-finalize
-    condition:
-      type: simple
-      variable: analysis_focus
-      operator: "=="
-      value: security audit
-rules[5]:
-  - "AUDIT TRANSITION: This activity transitions to audit-finalize when analysis_focus is 'security audit'. For other security-related focus values ('security review', 'audit'), the plan-analysis skill normalizes them to 'security audit' during planning. If analysis_focus does not match, the workflow terminates after this activity."
+rules[3]:
   - "FINDING ID HYPERLINKS — MAXIMUM DETAIL: Every finding ID in a domain summary table MUST be a relative markdown hyperlink to the per-finding heading in whichever source document (structural-analysis.md or adversarial-analysis.md) provides the most detailed explanation. The link target is NOT the synthesis summary table — it is the original analysis where the finding was discovered or most thoroughly corrected. Selection rules: (1) Findings originating from structural analysis → link to the per-finding heading in structural-analysis.md (e.g., ### F-01: Title). (2) Findings added as adversarial underclaims (new discoveries) → link to the per-finding heading in adversarial-analysis.md (e.g., ### U-01: Title or ### UC-01: Title). (3) Findings where the adversarial pass significantly corrected severity, mechanism, or classification → link to the adversarial heading that provides the corrected analysis (e.g., ### O-01: Title or ### WP-01: Title). (4) Portfolio-source findings → link to per-finding headings in the portfolio document. (5) If no per-finding heading exists (findings in tables only), link to the nearest section heading containing the finding table. The synthesis document is used ONLY as a mapping tool to trace report IDs back to source finding IDs — it is never the link target. Format: [REPORT-ID](unit-subdir/structural-analysis.md#per-finding-anchor) or [REPORT-ID](unit-subdir/adversarial-analysis.md#per-finding-anchor). Plain-text finding IDs are a formatting violation."
   - "ARTIFACT PATH HYPERLINKS: Every file path in artifact reference tables (e.g., Appendix sections listing synthesis documents) MUST be a relative markdown hyperlink to the referenced file. Format: [display-path](relative/path/to/file.md). For cross-cutting documents with multiple sections, append a section anchor: [file.md §N](file.md#section-heading-anchor). Plain-text or backtick-only paths in reference tables are a formatting violation."
   - "ANCHOR GENERATION: Section anchors follow GitHub-flavored markdown rules — lowercase, spaces replaced with hyphens, punctuation removed except hyphens. Examples: '## 3. Definitive Finding Table' becomes #3-definitive-finding-table, '### 3.1 Relay Unit' becomes #31-relay-unit, '### CRITICAL' becomes #critical. Verify anchors match actual headings in the target document."
-  - "SEVERITY RUBRIC FOR SECURITY AUDITS: When the analytical goal is 'security audit', 'security review', or similar, the report worker MUST load resource 49 (severity-rubric) via get_resource(workflow_id: 'prism', index: '49') and apply its 2-dimensional Impact × Feasibility scoring to every finding. Severity labels MUST NOT be assigned intuitively — they must be computed from the rubric formula: avg(I, F) mapped to Informational/Low/Medium/High/Critical. Each finding in the domain tables must show the I and F scores. Pay particular attention to the rubric's calibration guidance for AI over-rating (privileged-access findings rated Critical) and under-rating (RPC-accessible DoS rated Medium). Toolkit/helper code has an impact ceiling of I=2 unless its output enters on-chain state."
