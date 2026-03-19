@@ -10,11 +10,11 @@ Five markdown resources providing the design principles, construct inventories, 
 
 | Index | Resource | Purpose | Used By |
 |-------|----------|---------|---------|
-| `00` | [Design Principles](00-design-principles.md) | Condensed reference of all 13 design principles with enforcement mechanisms | All activities — loaded during context-and-literacy, referenced throughout |
-| `01` | [Schema Construct Inventory](01-schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, skill, and condition schemas | Quality review (expressiveness audit), content drafting (construct selection) |
-| `02` | [Anti-Patterns](02-anti-patterns.md) | 23 prohibited patterns organized by category: structural, interaction, schema, execution | Quality review (anti-pattern scan), review mode (compliance audit) |
-| `03` | [Update Mode Guide](03-update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns | Update mode activities (intake, impact-analysis, content-drafting) |
-| `04` | [Review Mode Guide](04-review-mode-guide.md) | Compliance audit procedure, 5 audit passes, report structure template | Review mode activities (quality-review, validate-and-commit) |
+| `00` | [Design Principles](00-design-principles.md) | Condensed reference of all 14 design principles with enforcement mechanisms | All activities — loaded during [Context and Literacy](../activities/README.md#02-context-and-literacy), referenced throughout |
+| `01` | [Schema Construct Inventory](01-schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, skill, and condition schemas | [Quality Review](../activities/README.md#08-quality-review) (expressiveness audit), [Content Drafting](../activities/README.md#07-content-drafting) (construct selection) |
+| `02` | [Anti-Patterns](02-anti-patterns.md) | 23 prohibited patterns organized by category: structural, interaction, schema, execution | [Quality Review](../activities/README.md#08-quality-review) (anti-pattern scan), review mode (compliance audit) |
+| `03` | [Update Mode Guide](03-update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns | Update mode: [Intake](../activities/README.md#01-intake), [Impact Analysis](../activities/README.md#05-impact-analysis), [Content Drafting](../activities/README.md#07-content-drafting) |
+| `04` | [Review Mode Guide](04-review-mode-guide.md) | Compliance audit procedure, 5 audit passes, report structure template | Review mode: [Quality Review](../activities/README.md#08-quality-review), [Validate and Commit](../activities/README.md#09-validate-and-commit) |
 
 ---
 

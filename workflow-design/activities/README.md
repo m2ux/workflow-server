@@ -10,7 +10,7 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** Accept the user's free-form description, classify as create/update/review, and extract initial design intent. In update mode, loads the existing workflow and parses the change request. In review mode, loads the target workflow and presents its structure for audit.
 
-**Skills:** primary `workflow-design`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
 
 **Steps:**
 
@@ -21,7 +21,7 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Checkpoints:** `mode-confirmation` — Confirm the classified operation type.
 
-**Transitions:** Default to `context-and-literacy`.
+**Transitions:** Default to [Context and Literacy](#02-context-and-literacy).
 
 **Mode overrides:**
 - **Update:** Adds steps to load existing workflow, parse change request, and present current structure. Adds `change-request-confirmed` checkpoint.
@@ -33,7 +33,7 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** Load schema definitions, read existing workflows to understand conventions, and verify TOON format comprehension. Gates all subsequent content production via `format_literacy_confirmed` and `schema_constructs_confirmed` variables.
 
-**Skills:** primary `workflow-design`, supporting `toon-authoring`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00), supporting [`toon-authoring`](../skills/README.md#skill-protocol-toon-authoring-01)
 
 **Steps:**
 
@@ -45,7 +45,7 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Checkpoints:** `format-literacy` (TOON format understanding), `constructs-confirmed` (schema constructs identified).
 
-**Transitions:** Default to `requirements-refinement` (gated by both confirmed variables). In review mode, `transitionOverride` to `quality-review`.
+**Transitions:** Default to [Requirements Refinement](#03-requirements-refinement) (gated by both confirmed variables). In review mode, `transitionOverride` to [Quality Review](#08-quality-review).
 
 ---
 
@@ -53,13 +53,13 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** Systematically elicit workflow design details one question at a time. Each design dimension has its own checkpoint to enforce atomic, sequential elicitation.
 
-**Skills:** primary `workflow-design`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
 
 **Steps:** 8 steps covering purpose, activities, activity model, checkpoints, artifacts, variables, skills, and rules.
 
 **Checkpoints:** 8 atomic checkpoints — one per design dimension: `purpose-confirmed`, `activities-confirmed`, `model-confirmed`, `checkpoints-confirmed`, `artifacts-confirmed`, `variables-confirmed`, `skills-confirmed`, `rules-confirmed`.
 
-**Transitions:** Default to `pattern-analysis`.
+**Transitions:** Default to [Pattern Analysis](#04-pattern-analysis).
 
 **Mode:** Skipped in review mode. In update mode, skips `elicit-activity-model`, `elicit-variables`, `elicit-skills`.
 
@@ -69,13 +69,13 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** Audit 2+ existing workflows of the same type to extract reusable structural and content patterns. Present patterns alongside proposed structure.
 
-**Skills:** primary `workflow-design`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
 
 **Steps:** Select reference workflows, extract structural patterns, extract content patterns, present comparison.
 
 **Checkpoints:** `patterns-confirmed` — Confirm which patterns to adopt.
 
-**Transitions:** Default to `scope-and-structure`.
+**Transitions:** Default to [Scope and Structure](#06-scope-and-structure).
 
 **Mode:** Skipped in update and review modes.
 
@@ -85,13 +85,13 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** For update mode only. Enumerate all files in the existing workflow, identify affected files, check transition and reference integrity, flag content that will be removed.
 
-**Skills:** primary `workflow-design`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
 
 **Steps:** Enumerate existing files, classify impact, check transition integrity, check reference integrity, flag content removal.
 
 **Checkpoints:** `impact-confirmed` (impact scope), `preservation-confirmed` (content removals).
 
-**Transitions:** Default to `scope-and-structure`.
+**Transitions:** Default to [Scope and Structure](#06-scope-and-structure).
 
 **Mode:** Skipped in create and review modes.
 
@@ -101,13 +101,13 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** Define the complete file manifest and structural design. Enumerates every file to create, modify, or remove, and proposes the folder structure and implementation order.
 
-**Skills:** primary `workflow-design`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
 
 **Steps:** Verify worktree, design folder structure, enumerate file manifest, present structural design, present approach.
 
 **Checkpoints:** `scope-confirmed` (sets `scope_manifest_confirmed`), `structure-confirmed` (sets `approach_confirmed`).
 
-**Transitions:** Default to `content-drafting` (gated by both confirmed variables).
+**Transitions:** Default to [Content Drafting](#07-content-drafting) (gated by both confirmed variables).
 
 **Mode:** Skipped in review mode. In update mode, skips `design-folder-structure`.
 
@@ -117,7 +117,7 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** Draft or modify each file in the scope manifest with per-file approach and review checkpoints. Validates all TOON files against the schema immediately after drafting.
 
-**Skills:** primary `workflow-design`, supporting `toon-authoring`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00), supporting [`toon-authoring`](../skills/README.md#skill-protocol-toon-authoring-01)
 
 **Steps:** Present file approach, draft file content, validate against schema, present for review, advance to next file.
 
@@ -125,7 +125,7 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Checkpoints:** `file-approach-confirmed` (per file), `file-review` (per file).
 
-**Transitions:** Default to `quality-review`.
+**Transitions:** Default to [Quality Review](#08-quality-review).
 
 **Mode:** Skipped in review mode. In update mode, adds `preservation-check` checkpoint for content being removed.
 
@@ -135,13 +135,13 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** Three review passes over all content: schema expressiveness, convention conformance, and rule-to-structure audit. Each pass has its own checkpoint.
 
-**Skills:** primary `workflow-design`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
 
-**Steps:** 6 steps — review and present findings for each of the three passes.
+**Steps:** 6 steps — review and present findings for each of the three passes. Uses [resource 01](../resources/01-schema-construct-inventory.md) for expressiveness audit and [resource 02](../resources/02-anti-patterns.md) for anti-pattern scan.
 
 **Checkpoints:** `expressiveness-confirmed`, `conformance-confirmed`, `enforcement-confirmed`.
 
-**Transitions:** Default to `validate-and-commit`.
+**Transitions:** Default to [Validate and Commit](#09-validate-and-commit).
 
 **Mode:** In review mode, gains 7 additional steps (load all workflow files, principle compliance audit, anti-pattern scan, schema validation check, compile compliance report, present report, offer fixes) and a `review-disposition` checkpoint.
 
@@ -151,7 +151,7 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Purpose:** Run schema validation, re-verify scope manifest, generate/update README, commit to the workflows worktree. In review mode, save the compliance report as an artifact.
 
-**Skills:** primary `workflow-design`, supporting `toon-authoring`
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00), supporting [`toon-authoring`](../skills/README.md#skill-protocol-toon-authoring-01)
 
 **Steps:** Run schema validation, verify scope manifest, generate README (create) or update README (update), stage and commit, verify commit.
 
