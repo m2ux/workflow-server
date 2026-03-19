@@ -24,7 +24,7 @@ The workflow includes 26 resources that provide templates, guidance, and referen
 | 17 | `test-suite-review` | Test Suite Review | Test suite quality assessment framework |
 | 18 | `strategic-review` | Strategic Review | Strategic review criteria for minimal focused changes |
 | 19 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
-| 19 | `pr-review-response` | PR Review Response | Guide for analyzing and responding to PR review comments |
+| 28 | `pr-review-response` | PR Review Response | Guide for analyzing and responding to PR review comments |
 | 20 | `workflow-retrospective` | Workflow Retrospective | Retrospective template and facilitation guide |
 | 21 | `complete-wp` | Complete Work Package | Completion document template |
 | 22 | `manual-diff-review` | Manual Diff Review | Manual diff review protocol with interview loop format |

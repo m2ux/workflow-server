@@ -70,7 +70,7 @@ modeOverrides:
           - id: done
             label: Complete review workflow
             description: End the review workflow
-    transitionOverride: workflow-end
+    transitionOverride: complete
     context_to_preserve[4]:
       - review_summary - Consolidated review summary text
       - review_posted - Whether review was posted to PR
