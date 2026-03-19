@@ -1,8 +1,8 @@
 id: resume-workflow
-version: 4.0.0
+version: 5.0.0
 name: Resume Workflow
 problem: The user wants to continue a workflow that was previously started.
-description: Guide resumption of an existing workflow by gathering context, assessing current state, determining entry point, and continuing from the appropriate activity.
+description: "Resume a workflow using persisted state as the primary mechanism. Checks for a workflow-state.toon file in the planning folder and restores from it. Falls back to manual reconstruction from external evidence only when no saved state exists."
 recognition[6]:
   - Resume workflow
   - Continue workflow
@@ -16,10 +16,10 @@ skills:
     - activity-resolution
     - state-management
 rules[4]:
-  - "Minimum requirement: User must identify the workflow and provide context"
-  - "Always verify state with user before resuming — reconstructed state may be incomplete"
-  - "For workflows with external artifacts (files, branches, PRs), assess their state before determining entry point"
-  - "Get explicit confirmation before resuming work"
+  - "Minimum requirement: User must identify the workflow and provide the planning folder path"
+  - "Prefer saved state over manual reconstruction — restore_state is the primary resumption path"
+  - "Always verify restored or reconstructed state with the user before resuming"
+  - "For workflows with external artifacts (files, branches, PRs), cross-check restored state against current external state"
 entryActions[1]:
   - action: validate
     target: workflowId
@@ -27,50 +27,54 @@ entryActions[1]:
 steps[6]:
   - id: gather-context
     name: Gather context
-    description: "Collect required information: workflow ID, last known activity, any external context (branch, PR, artifacts)"
-  - id: check-saved-state
-    name: Check for saved state
-    description: "Look for a workflow-state.toon file in the planning folder. If found, call restore_state to load the persisted state. The restored state provides currentActivity, completedActivities, variables, and checkpointResponses — eliminating the need for manual reconstruction. Present the restored state summary to the user for confirmation."
-  - id: assess-state
-    name: Assess current state
-    description: "If no saved state was found, reconstruct progress from workflow artifacts, external state (git, PRs), and user recall. If saved state was restored, verify it against external state for consistency."
-  - id: determine-entry-point
-    name: Determine entry point
-    description: "From restored or reconstructed state, identify the appropriate activity to resume from"
-  - id: acknowledge-existing-work
-    name: Acknowledge existing work
-    description: "Document pre-existing changes if needed; reconcile with workflow artifacts"
+    description: "Collect required information: workflow ID, planning folder path, and any user-provided context about where they left off"
+  - id: restore-saved-state
+    name: Restore saved state
+    description: "Check for {planning_folder_path}/workflow-state.toon. If found, call restore_state({ file_path }) to load the persisted state. Present a summary to the user: workflow ID, version, current activity, completed activities, key variable values. If the file does not exist, set has_saved_state = false and proceed to manual reconstruction."
+  - id: manual-reconstruction
+    name: Manual state reconstruction
+    description: "Fallback when no saved state exists. Reconstruct progress from workflow artifacts, external state (git branches, PRs, planning folder contents), and user recall. Build a state object manually."
+    condition:
+      type: simple
+      variable: has_saved_state
+      operator: ==
+      value: false
+  - id: verify-external-consistency
+    name: Verify external consistency
+    description: "Cross-check the restored or reconstructed state against current external state: git branch status, PR state, artifact files on disk. Flag any discrepancies between saved state and reality."
+  - id: confirm-entry-point
+    name: Confirm entry point
+    description: "Present the determined entry point (currentActivity from state) and let the user confirm, choose a different activity, or start fresh"
   - id: continue-workflow
     name: Continue workflow
-    description: "Load target activity and resume execution from determined entry point"
-checkpoints[4]:
-  - id: context-gathered
-    name: Context Checkpoint
-    message: "I've gathered the following context for resumption. Is this correct?"
-    options[2]:
+    description: "Load the workflow definition, set is_resuming = true, and hand off to the orchestrate-workflow skill which will adopt the restored state and dispatch from currentActivity"
+checkpoints[3]:
+  - id: state-verified
+    name: State Verification Checkpoint
+    message: "Here is the restored workflow state. Does this match your understanding of where you left off?"
+    options[3]:
       - id: confirm
-        label: Context confirmed
-        description: Proceed to assess current state
-      - id: correct
-        label: Needs correction
-        description: Provide additional or corrected context
-  - id: state-assessed
-    name: State Assessment Checkpoint
-    message: "Here's my assessment of the current state. Does this look correct?"
-    options[2]:
-      - id: confirm
-        label: Assessment confirmed
-        description: Proceed to determine entry point
-      - id: clarify
-        label: Needs clarification
-        description: Clarify or correct the assessment
+        label: State looks correct
+        description: Proceed to confirm entry point
+        effect:
+          setVariable:
+            entry_point_confirmed: true
+      - id: adjust
+        label: Needs adjustment
+        description: Correct specific state values before proceeding
+      - id: reconstruct
+        label: Discard and reconstruct manually
+        description: Ignore saved state and reconstruct from external evidence
+        effect:
+          setVariable:
+            has_saved_state: false
   - id: entry-point-confirmed
     name: Entry Point Checkpoint
-    message: "Based on the assessment, I recommend resuming at this activity. Do you agree?"
+    message: "Based on the state, I recommend resuming at this activity. Do you agree?"
     options[3]:
       - id: agree
         label: Agree with entry point
-        description: Proceed to acknowledge existing work
+        description: Proceed to resume execution
         effect:
           setVariable:
             entry_point_confirmed: true
@@ -85,7 +89,7 @@ checkpoints[4]:
             restart_workflow: true
   - id: ready-to-continue
     name: Ready to Continue Checkpoint
-    message: "All existing work has been acknowledged and integrated. Ready to proceed from the entry point?"
+    message: "Ready to resume workflow execution from the confirmed entry point?"
     options[2]:
       - id: proceed
         label: Proceed with workflow

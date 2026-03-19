@@ -14,7 +14,7 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
-steps[12]:
+steps[13]:
   - id: select-workflow
     name: Select workflow
     description: Identify the target workflow from user request or present available workflows
@@ -23,9 +23,12 @@ steps[12]:
     name: Load workflow
     description: Load the selected workflow definition and extract metadata, rules, modes, and variables
     skill: workflow-execution
+  - id: check-saved-state
+    name: Check for saved state
+    description: "If planning_folder_path is known or can be derived, check for {planning_folder_path}/workflow-state.toon. If found, call restore_state to load it and present the saved-state-found checkpoint. If not found, proceed to initialize fresh state."
   - id: initialize-state
     name: Initialize state
-    description: Initialize workflow state with variable defaults and set currentActivity
+    description: "If resuming from saved state, adopt the restored state fields. If starting fresh, initialize workflow state with variable defaults and set currentActivity per the orchestrate-workflow skill's initialize-state protocol."
     skill: state-management
   - id: apply-rules
     name: Apply rules
@@ -37,6 +40,11 @@ steps[12]:
   - id: discover-target
     name: Discover target
     description: Check for .gitmodules to determine repository type and resolve target_path
+    condition:
+      type: simple
+      variable: is_resuming
+      operator: ==
+      value: false
   - id: read-submodules
     name: Read submodules
     description: Parse .gitmodules to extract submodule names and paths for the submodule-selection checkpoint
@@ -55,20 +63,44 @@ steps[12]:
     skill: workflow-execution
   - id: get-initial-activity
     name: Get initial activity
-    description: Load the activity at initialActivity to begin execution
+    description: Load the activity at currentActivity (which is initialActivity for fresh starts, or the restored activity for resumptions)
     skill: workflow-execution
   - id: present-activity
     name: Present activity
-    description: Present the first activity to the user with steps and entry actions
+    description: Present the current activity to the user with steps and entry actions
     skill: workflow-execution
   - id: prepare-checkpoints
     name: Prepare checkpoints
     description: Identify blocking checkpoints in the current activity for presentation when reached
     skill: workflow-execution
-checkpoints[2]:
+checkpoints[3]:
+  - id: saved-state-found
+    name: Saved State Found
+    message: "A saved workflow state was found. Would you like to resume from where you left off or start fresh?"
+    condition:
+      type: simple
+      variable: is_resuming
+      operator: ==
+      value: true
+    options[2]:
+      - id: resume
+        label: Resume from saved state
+        description: "Continue from the saved activity with all prior progress preserved"
+      - id: fresh
+        label: Start fresh
+        description: "Discard saved state and begin the workflow from the start"
+        effect:
+          setVariable:
+            is_resuming: false
+    blocking: true
   - id: repo-type
     name: Repository Type
     message: "Is this a regular repository or a submodule monorepo?"
+    condition:
+      type: simple
+      variable: is_resuming
+      operator: ==
+      value: false
     options[2]:
       - id: regular-repo
         label: Regular repository
@@ -95,8 +127,9 @@ checkpoints[2]:
       - id: dynamic
         label: "Dynamically populated from .gitmodules by the read-submodules step"
     blocking: true
-outcome[5]:
+outcome[6]:
   - Workflow is selected and loaded
+  - Saved state is restored if available and user chooses to resume
   - Target path is resolved (regular repo root or selected submodule)
   - Initial state is created with correct initial activity
   - First activity is entered
