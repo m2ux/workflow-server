@@ -306,6 +306,27 @@ Agents authored TOON files using invalid syntax (JSON inline arrays, Python trip
 
 ---
 
+## Principle 14: Complete Documentation Structure
+
+**Problem addressed:** Workflows produced without README files in subfolders lack discoverability and self-documentation, forcing agents to read TOON files to understand the workflow's contents.
+
+Every workflow must include documentation that follows the established structure used by mature workflows (e.g., prism, work-package). This documentation is part of the workflow deliverable — not an afterthought.
+
+### Rules
+
+1. **Root README required.** Every workflow must have a `README.md` at its root documenting: workflow overview, modes, activity sequence (with Mermaid diagram), activities table, skills table, resources table, variables table, execution model, and file structure tree.
+
+2. **Subfolder READMEs required.** Each subfolder (`activities/`, `skills/`, `resources/`) must have its own `README.md` documenting the contents of that folder:
+   - `activities/README.md` — Per-activity documentation with purpose, skills, steps, checkpoints, transitions, mode overrides.
+   - `skills/README.md` — Per-skill documentation with protocol phases, rules, error recovery. Include Mermaid diagrams for complex protocols.
+   - `resources/README.md` — Resource index with purpose, usage context, and cross-workflow access examples.
+
+3. **Follow established style.** README format and depth must follow the patterns established in the prism and work-package workflows. Each subfolder README opens with a back-link to the parent README (`> Part of the [Workflow Name](../README.md)`).
+
+4. **Scope manifest inclusion.** All README files (root and subfolder) must be included in the scope manifest during the scope-and-structure activity. They are part of the deliverable, not optional.
+
+---
+
 ## Structural Requirements for the Workflow
 
 Based on these principles, the workflow creation workflow should include the following activity sequence:
