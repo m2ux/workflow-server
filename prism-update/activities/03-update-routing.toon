@@ -1,0 +1,37 @@
+id: update-routing
+version: 1.0.0
+name: Update Routing
+description: "Update all prism workflow skills to reflect resource changes: fix renamed references, add goal-mapping entries for new prisms, expand lens catalogs, update resource lists and model sensitivity notes."
+problem: Skill routing tables reference prism names and indices that may have changed
+skills:
+  primary: update-skill-routing
+
+steps[5]:
+  - id: update-plan-analysis
+    name: Update plan-analysis skill
+    description: "In prism/skills/03-plan-analysis.toon: (1) Add goal-mapping-matrix entries for each new prism — map an analytical goal keyword to the prism index. (2) Fix any renamed prism references in the matrix, code-vs-general rule, model-sensitivity rule, behavioral-is-code-only rule, and neutral-variant-routing rule. (3) Add new prisms to the resources list. (4) Update query-recommendation with entries for new prisms usable on general targets. (5) Add new entries to single-unit-recommendation goal-mapping."
+    required: true
+  - id: update-portfolio-analysis
+    name: Update portfolio-analysis skill
+    description: "In prism/skills/02-portfolio-analysis.toon: (1) Add new prisms to the description and selected-lenses input list. (2) Add new lens selection guide entries pairing new prisms with complementary lenses. (3) Update load-lenses index mapping. (4) Fix renamed references. (5) Update resources list. (6) Update lens_not_found error recovery text."
+    required: true
+  - id: update-behavioral-pipeline
+    name: Update behavioral-pipeline skill
+    description: "In prism/skills/05-behavioral-pipeline.toon: fix any renamed references to behavioral lens names or indices."
+    required: true
+  - id: update-orchestrate-prism
+    name: Update orchestrate-prism skill
+    description: "In prism/skills/04-orchestrate-prism.toon: update determine-lens-indices mapping if any prism indices changed due to renames."
+    required: true
+  - id: commit-routing
+    name: Commit routing updates
+    description: "Stage all modified skill files. Commit with message: 'feat: update skill routing for N new prisms and M renames'."
+    required: true
+
+transitions[1]:
+  - to: update-docs
+    isDefault: true
+
+outcome[2]:
+  - "All skill routing tables reflect current resource state"
+  - "No stale prism name references in skills"

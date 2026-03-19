@@ -1,0 +1,32 @@
+id: update-docs
+version: 1.0.0
+name: Update Documentation
+description: "Update all prism workflow documentation to reflect the new resource catalog: resources README, workflow README (resource table, model sensitivity, prompt guide, file structure), and skills README."
+problem: Documentation references resource counts, family groupings, and prism names that have changed
+skills:
+  primary: update-prism-docs
+
+steps[4]:
+  - id: update-resources-readme
+    name: Update resources README
+    description: "Rebuild prism/resources/README.md with the full catalog organized by family. Include resource index, name, description, optimal model, quality baseline, and word count for each resource."
+    required: true
+  - id: update-workflow-readme
+    name: Update workflow README
+    description: "In prism/README.md: (1) Update the Resources section table with new family rows and total count. (2) Update the Model Sensitivity table with new prism categorizations. (3) Add prompt guide entries for each new prism — one example prompt per prism with scope and routing target. Fix renamed references in existing entries. (4) Update the file structure tree with new resource ranges."
+    required: true
+  - id: update-skills-readme
+    name: Update skills README
+    description: "In prism/skills/README.md: update resource counts referenced in skill descriptions. Update if any skill capabilities changed."
+    required: true
+  - id: commit-docs
+    name: Commit documentation
+    description: "Stage all modified documentation files. Commit with message: 'docs: update prism workflow documentation for upstream sync'."
+    required: true
+
+transitions[1]:
+  - to: verify
+    isDefault: true
+
+outcome[1]:
+  - "All documentation reflects current resource catalog"

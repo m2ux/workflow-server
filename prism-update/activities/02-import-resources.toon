@@ -1,0 +1,37 @@
+id: import-resources
+version: 1.0.0
+name: Import Resources
+description: "Apply all approved resource file changes: sync modified content, apply renames via git mv, copy new prisms with indexed filenames, remove deleted prisms. Each change type is committed separately."
+problem: Resource files need to be created, updated, renamed, or removed to match upstream
+skills:
+  primary: sync-resources
+
+steps[5]:
+  - id: sync-modified
+    name: Sync modified resources
+    description: "For each entry in changes.modified: copy the upstream file content over the existing resource file (preserving the resource filename). Commit with message: 'feat: sync N modified prism resources with upstream'."
+    required: true
+  - id: apply-renames
+    name: Apply renames
+    description: "For each entry in changes.renamed: run git mv on the old resource filename to the new name, then copy the upstream file content over the renamed file. Commit with message: 'feat: rename N prism resources to match upstream'."
+    required: true
+  - id: import-new
+    name: Import new resources
+    description: "For each entry in changes.new (ordered by family): copy the upstream file to {resource_path}/{next_index}-{hyphenated-name}.md. Increment next_index after each file. Commit with message: 'feat: add N new prism resources (indices X-Y)'."
+    required: true
+  - id: remove-deleted
+    name: Remove deleted resources
+    description: "For each entry in changes.deleted: remove the resource file. Commit with message: 'feat: remove N deprecated prism resources'. If no deletions, skip."
+    required: true
+  - id: verify-file-count
+    name: Verify file count
+    description: "List all resource files and confirm the count matches expectations: previous count - deleted + new = current count."
+    required: true
+
+transitions[1]:
+  - to: update-routing
+    isDefault: true
+
+outcome[2]:
+  - "All resource files match upstream state"
+  - "Changes committed in logical groups"

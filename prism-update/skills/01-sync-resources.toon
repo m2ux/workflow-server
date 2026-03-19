@@ -1,0 +1,65 @@
+id: sync-resources
+version: 1.0.0
+capability: Apply resource file changes — sync modified content, rename files, import new resources, remove deleted resources
+
+description: "Execute the approved change set against the prism workflow's resources directory. Handles four change types in order: modified (overwrite content), renamed (git mv + overwrite), new (copy with indexed filename), deleted (remove). Each type is committed separately for clean git history."
+
+inputs[3]:
+  - id: changes
+    description: "The approved change set from discover-changes (after exclusion adjustments)"
+  - id: resource-path
+    description: "Path to the prism workflow resources directory"
+  - id: next-index
+    description: "Starting index for new resource files"
+
+protocol:
+  sync-modified[3]:
+    - "For each entry in changes.modified: copy the upstream file to the resource file path, overwriting existing content."
+    - "Stage all modified files with git add."
+    - "If any files were modified, commit with conventional message: 'feat: sync N modified prism resources with upstream'."
+  apply-renames[4]:
+    - "For each entry in changes.renamed: compute the new resource filename by replacing the old name portion with the new name (preserving the index prefix)."
+    - "Run git mv to rename the resource file."
+    - "Copy the upstream file content over the renamed file."
+    - "Stage and commit: 'feat: rename N prism resources to match upstream (old→new for each)'."
+  import-new[4]:
+    - "Order new prisms by family for logical grouping in the index sequence."
+    - "For each new prism: compute the resource filename as {next-index}-{hyphenated-name}.md where the name is derived from the upstream filename (underscores to hyphens, strip .md)."
+    - "Copy the upstream file to the computed resource path. Increment next-index."
+    - "Stage all new files and commit: 'feat: add N new prism resources (indices X-Y)'."
+  remove-deleted[3]:
+    - "For each entry in changes.deleted: remove the resource file with git rm."
+    - "If any files were deleted, commit: 'feat: remove N deprecated prism resources'."
+    - "If no deletions, skip silently."
+  verify-count[1]:
+    - "Count resource files (excluding README.md). Report the final count and confirm it matches: previous count - deleted + new."
+
+output[1]:
+  - id: import-result
+    description: "Summary of file operations performed"
+    components:
+      modified_count: "Number of resources synced"
+      renamed_count: "Number of resources renamed"
+      new_count: "Number of new resources imported"
+      deleted_count: "Number of resources removed"
+      total_count: "Final resource count"
+      commits: "List of commit SHAs created"
+
+tools:
+  shell:
+    when: "Copying files, running git mv, git add, git rm, git commit"
+    usage: "cp, git mv, git add, git rm, git commit"
+  read_file:
+    when: "Verifying file content after copy"
+    usage: "Spot-check that copied content matches upstream"
+
+errors:
+  copy_failed:
+    cause: "File copy operation failed"
+    recovery: "Check that upstream file exists and resource directory is writable."
+  rename_conflict:
+    cause: "git mv failed due to existing file at target path"
+    recovery: "Check for name collisions. Remove the conflicting file or adjust the target name."
+  index_collision:
+    cause: "Computed index for new resource already exists"
+    recovery: "Increment next-index past the collision and retry."

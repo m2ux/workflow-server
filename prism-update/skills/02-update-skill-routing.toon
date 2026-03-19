@@ -1,0 +1,60 @@
+id: update-skill-routing
+version: 1.0.0
+capability: Update all prism workflow skill files to reflect resource changes — new entries, renamed references, expanded catalogs
+
+description: "After resources are imported, the skill files that reference prism names and indices need updating. This covers four skills: plan-analysis (goal-mapping matrix, code-vs-general, model-sensitivity, query-recommendation, resource list), portfolio-analysis (lens catalog, selection guide, resource list), behavioral-pipeline (label mapping references), and orchestrate-prism (index mapping). Changes include adding goal-mapping entries for new prisms, fixing all renamed references, and expanding resource lists."
+
+inputs[2]:
+  - id: changes
+    description: "The change set with new, renamed, and deleted prisms"
+  - id: resource-path
+    description: "Path to verify resource indices"
+
+protocol:
+  update-plan-analysis[5]:
+    - "Read prism/skills/03-plan-analysis.toon."
+    - "For each renamed prism: find-and-replace all occurrences of the old name with the new name across goal-mapping-matrix, single-unit-recommendation, query-recommendation, code-vs-general, model-sensitivity, and resource list."
+    - "For each new prism: add an entry to the goal-mapping-matrix rule mapping an analytical goal keyword to the prism's index. The keyword should match the prism's cognitive operation or domain (e.g., archaeology → code archaeology, security → security audit). Also add to single-unit-recommendation and query-recommendation (if the prism works on general targets)."
+    - "Update the code-vs-general rule to include new indices in the appropriate category (code-only or general-capable)."
+    - "Update model-sensitivity with each new prism's optimal_model from its YAML frontmatter. Update the resources list with new indices."
+  update-portfolio-analysis[4]:
+    - "Read prism/skills/02-portfolio-analysis.toon."
+    - "Fix renamed references in description, selected-lenses input, select-lenses guide, load-lenses mapping, and lens_not_found error text."
+    - "Add new prisms to: description, selected-lenses input (full catalog), load-lenses index mapping, and lens_not_found recovery text."
+    - "Add new lens selection guide entries pairing new prisms with complementary lenses based on their family and cognitive operation."
+  update-behavioral-pipeline[1]:
+    - "Read prism/skills/05-behavioral-pipeline.toon. Fix any renamed references to behavioral lens names (error-resilience, optimize, evolution, api-surface)."
+  update-orchestrate-prism[1]:
+    - "Read prism/skills/04-orchestrate-prism.toon. Update determine-lens-indices if any behavioral or L12 indices changed. Fix renamed references."
+  commit[1]:
+    - "Stage all modified skill files. Commit with conventional message: 'feat: update skill routing for N new prisms and M renames'."
+
+output[1]:
+  - id: routing-result
+    description: "Summary of skill updates"
+    components:
+      skills_modified: "List of skill files modified"
+      entries_added: "Number of new goal-mapping entries"
+      references_fixed: "Number of renamed references updated"
+
+tools:
+  read_file:
+    when: "Reading skill TOON files"
+    usage: "Load current content for targeted edits"
+  write_file:
+    when: "Writing updated skill TOON files"
+    usage: "Apply edits and save"
+  grep:
+    when: "Finding all occurrences of old prism names"
+    usage: "Locate references to fix across all skill files"
+  shell:
+    when: "Committing changes"
+    usage: "git add, git commit"
+
+errors:
+  missing_skill:
+    cause: "Expected skill file not found at the standard path"
+    recovery: "Check that the prism workflow's skills directory exists and contains the expected files."
+  parse_error:
+    cause: "Could not locate the target section in a skill file for editing"
+    recovery: "Read the full file and locate the section manually. The TOON format may have changed since this skill was written."

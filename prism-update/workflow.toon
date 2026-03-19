@@ -1,0 +1,50 @@
+id: prism-update
+version: 1.0.0
+title: Prism Update Workflow
+description: "Sync the prism workflow's resources, skills, and documentation with upstream changes from the agi-in-md project. Discovers new, modified, renamed, and deleted prisms; imports resource files; updates skill routing (goal-mapping, portfolio catalog, model sensitivity); rebuilds documentation; and verifies consistency before submitting a PR."
+author: m2ux
+tags[3]:
+  - prism
+  - maintenance
+  - sync
+
+rules[6]:
+  - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
+  - "RESOURCE NAMING: Resources use the convention {NN}-{hyphenated-name}.md where NN is a zero-padded index. Indices are permanent — never reuse a deleted index."
+  - "VERBATIM COPY: Upstream prism content is copied verbatim including YAML frontmatter. Do not modify lens prompt content during import."
+  - "ROUTING COVERAGE: Skill routing updates must cover all affected surfaces: goal-mapping-matrix, code-vs-general, model-sensitivity, neutral-variant-routing, resource lists, lens catalogs, and selection guides in plan-analysis, portfolio-analysis, behavioral-pipeline, and orchestrate-prism."
+  - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
+  - "AUTOMATIC TRANSITIONS: Transitions between activities are automatic. User interaction occurs only at defined checkpoints within activities."
+
+variables[8]:
+  - name: upstream_path
+    type: string
+    description: "Path to the upstream prisms directory (e.g., /path/to/agi-in-md/prisms/)"
+    required: true
+  - name: resource_path
+    type: string
+    description: "Path to the prism workflow resources directory"
+    defaultValue: "prism/resources/"
+  - name: changes
+    type: object
+    description: "Categorized diff result: { new: [{name, upstream_file, family, optimal_model}], modified: [{name, resource_file, upstream_file}], renamed: [{old_name, new_name, resource_file, upstream_file}], deleted: [{name, resource_file}] }"
+  - name: exclusions
+    type: array
+    description: "Prism filenames to exclude from import (e.g., arc_code.md, codegen.md)"
+    defaultValue: []
+  - name: next_index
+    type: number
+    description: "Next available resource index, derived from highest existing index + 1"
+  - name: branch_name
+    type: string
+    description: "Feature branch name for the update"
+  - name: has_issues
+    type: boolean
+    description: "Whether verification found consistency issues requiring fixes"
+    defaultValue: false
+  - name: stale_references
+    type: array
+    description: "List of stale name references found during verification"
+    defaultValue: []
+
+initialActivity: discover-changes
