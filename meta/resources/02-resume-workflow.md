@@ -105,6 +105,10 @@ This workflow resumes with prior changes already in place.
 
 ---
 
+## Guiding Principle
+
+Successful resumption requires understanding both workflow progress AND the context of previous decisions. The reconstructed state is only as good as the evidence gathered — artifacts, git history, and user recall must all be cross-referenced.
+
 ## Resumption Rules
 
 1. Always verify context with user before proceeding

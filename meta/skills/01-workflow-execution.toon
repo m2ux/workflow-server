@@ -69,7 +69,9 @@ tools:
     params: workflow_id, index
     returns: Template content with placeholders
     usage: Fill template placeholders with context-specific values
-state: "Structure defined in state.schema.json. Initialization and update patterns defined in the state-management skill."
+state:
+  format: "Activity IDs for navigation, step indices within activities. Full structure defined in state.schema.json."
+  initialize: "Per state-management skill initialization protocol"
 interpretation:
   transitions: Evaluate conditions against state.variables; take matching transition or default
   checkpoints: "Present checkpoints as interactive selection dialogues. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. Apply effect from selected option."

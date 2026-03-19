@@ -15,12 +15,15 @@ skills:
   supporting[2]:
     - activity-resolution
     - state-management
-rules[5]:
+rules[4]:
   - "Minimum requirement: User must identify the workflow and provide context"
-  - "Key insight: Successful resumption requires understanding both workflow progress AND context of previous decisions"
-  - "Always verify state with user before resuming - reconstructed state may be incomplete"
+  - "Always verify state with user before resuming — reconstructed state may be incomplete"
   - "For workflows with external artifacts (files, branches, PRs), assess their state before determining entry point"
   - "Get explicit confirmation before resuming work"
+entryActions[1]:
+  - action: validate
+    target: workflowId
+    message: "Cannot resume without identifying the workflow — user must specify which workflow to continue"
 steps[5]:
   - id: gather-context
     name: Gather context
@@ -102,14 +105,14 @@ decisions[2]:
           variable: has_external_state
           operator: ==
           value: true
-        transitionTo: assess-external-state
+        transitionTo: assess-state
       - id: no-external
         label: Workflow state is internal only
         transitionTo: determine-entry-point
         isDefault: true
   - id: branch-status-check
     name: Branch Status Check
-    description: Handle stale or conflicting branches
+    description: Handle stale or conflicting branches per resource 02 special cases
     branches[3]:
       - id: sync-needed
         label: Branch needs sync
@@ -118,7 +121,7 @@ decisions[2]:
           variable: branch_behind_main
           operator: ">"
           value: 0
-        transitionTo: branch-sync-checkpoint
+        transitionTo: assess-state
       - id: conflicts
         label: Branch has conflicts
         condition:
@@ -126,10 +129,10 @@ decisions[2]:
           variable: has_conflicts
           operator: ==
           value: true
-        transitionTo: conflict-resolution-checkpoint
+        transitionTo: assess-state
       - id: clean
         label: Branch is clean
-        transitionTo: continue-assessment
+        transitionTo: determine-entry-point
         isDefault: true
 transitions[2]:
   - to: target-activity
