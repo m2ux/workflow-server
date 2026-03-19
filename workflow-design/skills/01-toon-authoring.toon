@@ -6,24 +6,27 @@ description: "Supporting skill for TOON file creation. Provides format rules, sy
 
 inputs[2]:
   - id: schema-type
-    description: "Which schema applies to this file (workflow, activity, skill)"
+    description: "Which schema applies to this file — one of: workflow (schemas/workflow.schema.json), activity (schemas/activity.schema.json), skill (schemas/skill.schema.json)"
   - id: reference-file
     description: "Path to an existing valid TOON file of the same type to use as a syntax reference"
     required: false
 
 protocol:
-  read-reference[2]:
+  read-reference[3]:
     - Read at least one existing valid TOON file of the target type
     - "Note syntax patterns: key-value pairs, array declarations, nested objects, quoted strings"
-  plan-content[2]:
-    - Identify which schema fields will be used
+    - "Read schemas/README.md for the field tables, required properties, and valid values for the target schema type"
+  plan-content[3]:
+    - "Identify which schema fields will be used by consulting the JSON schema definition (schemas/{type}.schema.json)"
     - Map each piece of content to the appropriate field and determine the correct TOON syntax
+    - "Cross-check required vs optional properties — id, version, name are required for activities; id, version, capability are required for skills"
   draft-content[3]:
     - Write the file following TOON syntax rules exactly
     - Use the array[N] suffix for arrays with explicit count
     - Quote any string value that contains a colon
-  validate[2]:
-    - Check the file against the schema
+  validate[3]:
+    - "Validate the file against its JSON schema (workflow.schema.json, activity.schema.json, or skill.schema.json)"
+    - "Use npx tsx scripts/validate-workflow-toon.ts for full workflow directory validation"
     - Fix any validation errors and re-check
 
 output[1]:

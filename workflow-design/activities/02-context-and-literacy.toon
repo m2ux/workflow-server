@@ -20,10 +20,13 @@ modeOverrides:
       - read-toon-examples
       - present-convention-summary
     transitionOverride: quality-review
-steps[5]:
+steps[6]:
   - id: load-schemas
     name: Load Schema Definitions
-    description: "Fetch the workflow-server://schemas resource to load all schema definitions (workflow, activity, skill, condition, state). Internalize the available constructs."
+    description: "Fetch the workflow-server://schemas MCP resource to load all five JSON schema definitions (workflow.schema.json, activity.schema.json, skill.schema.json, condition.schema.json, state.schema.json). These are the authoritative definitions that all workflow content must conform to."
+  - id: read-schema-documentation
+    name: Read Schema Documentation
+    description: "Read schemas/README.md from the workflow-server repository. This 45KB document contains the full schema ontology, entity relationships (ER diagram), field tables for every construct, complete examples, and validation guidance. This is the essential reference for understanding what constructs exist and how to use them correctly."
   - id: survey-existing-workflows
     name: Survey Existing Workflows
     description: "Call list_workflows to discover all available workflows. Select at least two workflows of similar type (sequential or independent, depending on the target). Call get_workflow for each to examine their structure."
@@ -32,7 +35,7 @@ steps[5]:
     description: "Read at least one workflow.toon, one activity .toon, and one skill .toon from the surveyed workflows. Confirm understanding of TOON syntax: key-value pairs, arrays with [N] suffix, nested objects, quoted strings with colons, inline object shorthand with {keys}."
   - id: identify-applicable-constructs
     name: Identify Applicable Constructs
-    description: "Based on the design intent from intake, identify which schema constructs are applicable: steps, checkpoints, decisions, loops, transitions, triggers, actions, artifacts, variables, modes. Present the construct inventory with examples from the surveyed workflows."
+    description: "Based on the design intent from intake and the schema documentation, identify which schema constructs are applicable. Cross-reference the schema field tables to confirm correct field names, types, required properties, and valid values. Present the construct inventory with examples from the surveyed workflows."
   - id: present-convention-summary
     name: Present Convention Summary
     description: "Summarize the conventions observed: file naming (NN-name.toon), folder structure (activities/, skills/, resources/), field ordering, version format, transition patterns, checkpoint structure. Present to user for confirmation."

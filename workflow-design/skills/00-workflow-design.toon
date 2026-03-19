@@ -16,11 +16,12 @@ protocol:
     - Accept the user's free-form description and summarize key design intent
     - Classify as create or update based on whether an existing workflow is referenced
     - Set mode variables and present classification for confirmation
-  context-loading[4]:
-    - "Fetch workflow-server schemas resource to load all schema definitions"
+  context-loading[5]:
+    - "Fetch workflow-server://schemas MCP resource to load all five JSON schema definitions (workflow, activity, skill, condition, state)"
+    - "Read schemas/README.md for the full schema ontology, entity relationships, field tables, examples, and validation guidance"
     - Call list_workflows and get_workflow for 2+ reference workflows
     - Read existing TOON files to confirm format understanding
-    - Identify applicable schema constructs and present to user
+    - "Cross-reference schema field tables to identify applicable constructs with correct field names, types, and constraints"
   elicitation[3]:
     - Elicit one design dimension at a time with a dedicated checkpoint per question
     - "Capture purpose, activity list, activity model, checkpoints, artifacts, variables, skills, rules"
