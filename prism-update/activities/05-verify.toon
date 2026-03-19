@@ -1,7 +1,7 @@
 id: verify
 version: 1.0.0
 name: Verify Consistency
-description: "Check for consistency issues across resources, skills, and documentation. Grep for stale references, verify prompt guide routing, confirm resource counts, and check for duplicate indices."
+description: "Check for consistency issues across resources, skills, and documentation. Detect stale references, routing mismatches, count errors, and duplicate indices."
 problem: Changes across multiple files may leave inconsistencies
 skills:
   primary: verify-prism-consistency
@@ -9,23 +9,23 @@ skills:
 steps[5]:
   - id: check-stale-references
     name: Check for stale references
-    description: "Grep all .toon files in prism/skills/ and prism/activities/ for references to old prism names (from changes.renamed and changes.deleted). Record any matches in stale_references."
+    description: "Grep .toon files for old prism names from renames and deletions."
     required: true
   - id: verify-prompt-routing
     name: Verify prompt guide routing
-    description: "For each entry in the README prompt guide table, trace the prompt through the plan-analysis goal-mapping matrix. Verify it routes to the claimed prism. Flag mismatches."
+    description: "Trace each prompt guide entry through the goal-mapping matrix. Flag mismatches."
     required: true
   - id: verify-resource-counts
     name: Verify resource counts
-    description: "Count actual resource files in prism/resources/ (excluding README.md). Compare against the count stated in the Resources section of prism/README.md and prism/resources/README.md. Flag mismatches."
+    description: "Compare actual resource file count against documented counts."
     required: true
   - id: check-duplicate-indices
     name: Check for duplicate indices
-    description: "Extract the numeric prefix from each resource filename. Verify all are unique. Flag duplicates."
+    description: "Extract numeric prefixes from resource filenames. Flag duplicates."
     required: true
   - id: set-result
     name: Set verification result
-    description: "If any issues found: set has_issues to true. Otherwise set has_issues to false."
+    description: "Set has_issues based on findings."
     required: true
 
 checkpoints[1]:
@@ -34,8 +34,8 @@ checkpoints[1]:
     message: "Verification complete. Results presented above. Proceeding in 30s unless you intervene."
     options[3]:
       - id: accept
-        label: Accept — no issues or issues are minor
-        description: "Proceed to commit and submit (default — auto-proceeds after 30s)"
+        label: Accept — proceed to submit
+        description: "No issues or issues are minor (default — auto-proceeds after 30s)"
         effect:
           setVariable:
             has_issues: false
@@ -48,6 +48,8 @@ checkpoints[1]:
       - id: abort
         label: Abort
         description: "Stop the workflow without submitting"
+        effect:
+          transitionTo: workflow-end
     required: true
     blocking: false
 
