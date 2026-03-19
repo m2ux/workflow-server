@@ -27,6 +27,7 @@ export const StepSchema = z.object({
   description: z.string().optional().describe('Detailed guidance for executing this step'),
   skill: z.string().optional().describe('Skill ID to apply for this step'),
   required: z.boolean().default(true),
+  condition: ConditionSchema.optional().describe('Condition that must be true for this step to execute'),
   actions: z.array(ActionSchema).optional(),
 });
 export type Step = z.infer<typeof StepSchema>;
