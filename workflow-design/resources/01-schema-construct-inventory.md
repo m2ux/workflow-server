@@ -2,6 +2,18 @@
 
 Maps informal patterns (what agents tend to write as prose) to their formal schema equivalents. During quality review, every piece of prose must be checked against this inventory — if a formal construct exists, it must be used.
 
+**Authoritative schema sources:**
+
+| Schema | Path | Documentation |
+|--------|------|---------------|
+| Workflow | `schemas/workflow.schema.json` | [schemas/README.md — Workflow Schema](../../schemas/README.md#workflow-schema) |
+| Activity | `schemas/activity.schema.json` | [schemas/README.md — Activity Schema](../../schemas/README.md#activity-schema) |
+| Skill | `schemas/skill.schema.json` | [schemas/README.md — Skill Schema](../../schemas/README.md#skill-schema) |
+| Condition | `schemas/condition.schema.json` | [schemas/README.md — Condition Schema](../../schemas/README.md#condition-schema) |
+| State | `schemas/state.schema.json` | [schemas/README.md — State Schema](../../schemas/README.md#state-schema) |
+
+The MCP resource `workflow-server://schemas` returns all five schemas as a single JSON object. The `schemas/README.md` file (45KB) contains the full ontology with entity relationships, field tables, examples, and validation guidance.
+
 ---
 
 ## Activity-Level Constructs (activity.schema.json)

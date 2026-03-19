@@ -14,8 +14,9 @@ rules[3]:
 modeOverrides:
   review:
     description: "Audit an existing workflow against all 13 design principles. Load every file in the target workflow and run all three review passes plus additional principle checks. Produce a structured compliance report and offer to fix issues."
-    rules[4]:
+    rules[5]:
       - "Review the existing workflow content, not drafted content"
+      - "Fetch workflow-server://schemas MCP resource and read schemas/README.md as the authoritative schema reference"
       - "Load resource 00 (design principles) and resource 01 (schema construct inventory) as the audit checklist"
       - "Load resource 02 (anti-patterns) and check each anti-pattern against the workflow"
       - "Produce a severity-rated compliance report as the primary output"
@@ -25,13 +26,13 @@ modeOverrides:
         description: "Read every file in the target workflow directory: workflow.toon, all activity .toon files, all skill .toon files, all resource .md files, and README.md. Build a complete picture of the workflow content."
       - id: principle-compliance-audit
         name: Principle Compliance Audit
-        description: "Audit the workflow against each of the 13 design principles from resource 00. For each principle, check whether the workflow complies, partially complies, or violates. Record specific file, field, and line references for each finding."
+        description: "Audit the workflow against each of the 14 design principles from resource 00. For each principle, check whether the workflow complies, partially complies, or violates. Record specific file, field, and line references for each finding. Cross-reference against the actual schema definitions (workflow.schema.json, activity.schema.json, skill.schema.json, condition.schema.json) to verify correct field usage."
       - id: anti-pattern-scan
         name: Anti-Pattern Scan
         description: "Check the workflow against all 23 anti-patterns from resource 02. For each anti-pattern found, record the file, the violating content, and the recommended fix."
       - id: schema-validation-check
         name: Schema Validation Check
-        description: "Run the schema validator on every TOON file in the workflow. Record any validation failures with their error messages."
+        description: "Validate every TOON file against its corresponding JSON schema (workflow.schema.json for workflow.toon, activity.schema.json for activity files, skill.schema.json for skill files). Use the schema validator script (npx tsx scripts/validate-workflow-toon.ts) or validate programmatically. Record pass/fail with specific error messages for each file."
       - id: compile-compliance-report
         name: Compile Compliance Report
         description: "Compile all findings into a structured compliance report with sections: Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, and Recommended Fixes."
