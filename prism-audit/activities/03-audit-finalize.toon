@@ -5,10 +5,14 @@ description: "Post-process the REPORT.md produced by the triggered prism workflo
 problem: "The prism workflow produces a single clean REPORT.md with definitive findings. Security audits require three deliverables: a summary report with hyperlinked domain tables, a detailed findings document with expanded write-ups for every finding organised by severity, and a design trade-off analysis distilled from the conservation laws surfaced during the prism passes."
 skills:
   primary: compose-audit-prompt
-steps[6]:
+steps[7]:
   - id: locate-artifacts
     name: Locate Analysis Artifacts
     description: "Identify all analysis artifacts from completed prism runs: REPORT.md (from generate-report), structural-analysis.md, adversarial-analysis.md, synthesis.md (from full-prism runs), portfolio-*.md (from portfolio runs), behavioral-synthesis.md (from behavioral runs). Use completed_analyses and all_analysis_artifact_paths to locate files. For multi-scope audits, consolidate findings across all prism runs."
+    required: true
+  - id: enrich-findings-with-graph
+    name: Enrich Findings with Graph Data
+    description: "If GitNexus is available (check via gitnexus_list_repos): for each finding in REPORT.md that references a specific symbol (function, class, module), use gitnexus_impact(target: symbol_name, direction: upstream) to compute the measured blast radius (direct callers, affected processes, affected modules). Use gitnexus_context on each finding's primary symbol to determine which execution flows it participates in. Write enrichment data as annotations that the subsequent report-splitting steps incorporate into DETAILED-FINDINGS.md as a per-finding 'Graph Evidence' subsection containing: blast radius metrics, execution flow participation, and upstream dependency chain. If GitNexus is unavailable, skip this step entirely."
     required: true
   - id: split-report
     name: Split Report into Summary + Detailed Findings
@@ -32,7 +36,7 @@ steps[6]:
     required: true
 rules[6]:
   - "REPORT SPLIT: REPORT.md (from triggered prism workflow) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md."
-  - "DETAILED FINDING FORMAT: Every finding in DETAILED-FINDINGS.md must have exactly 5 fields: Description, Impact, Location, Recommendation, Adversarial confirmation. Source priority for extraction: (1) structural-analysis.md for original findings, (2) adversarial-analysis.md for underclaims and significant corrections, (3) portfolio documents for portfolio-source findings."
+  - "DETAILED FINDING FORMAT: Every finding in DETAILED-FINDINGS.md must have exactly 5 fields plus an optional 6th: Description, Impact, Location, Recommendation, Adversarial confirmation, Graph Evidence (if GitNexus enrichment data is available — includes blast radius metrics and execution flow participation). Source priority for extraction: (1) structural-analysis.md for original findings, (2) adversarial-analysis.md for underclaims and significant corrections, (3) portfolio documents for portfolio-source findings."
   - "SEVERITY RUBRIC: All severity labels must be computed from the Impact x Feasibility rubric. Intuitive severity assignments are a formatting violation. Toolkit/helper code carries I<=2. Config toggles carry F=2. Unconditional defects carry F>=3."
   - "TRADE-OFF ANALYSIS REQUIREMENTS: Each trade-off entry must have a falsifiable constraint, code-level evidence for the current operating point (citing specific finding IDs), concrete shift predictions, and actionable design questions. Conservation laws rejected by the adversarial pass must NOT appear."
   - "REMEDIATION IMPACT COLUMN: Every priority table (P0, P1, P2, P3) in the remediation section must include an Impact column as the final column."
