@@ -12,12 +12,17 @@ artifacts[1]:
     name: "{unit_output_subdir}structural-analysis.md"
     location: analysis
     description: "L12 structural analysis per unit (single/full-prism modes). In portfolio mode, per-lens artifacts are written instead."
+rules[3]:
+  - "MODE ROUTING: Steps load-lens through write-structural-artifact execute only for single and full-prism pipeline modes. Steps select-portfolio-lenses through write-portfolio-artifacts execute only for portfolio mode. Steps dispatch-behavioral-lenses and collect-behavioral-paths execute only for behavioral mode. Step report-unit-paths always executes."
+  - "LENS LOADING: Workers load the L12 structural lens from resource 00 via get_resource. Portfolio lenses are loaded per the portfolio-analysis skill. Behavioral lenses are resources 19-22."
+  - "PARALLEL BEHAVIORAL: The 4 behavioral lenses are independent and can be dispatched in parallel (up to 4 concurrent sub-agents)."
 loops[1]:
   - id: unit-cycle
     name: Analysis Unit Cycle
     type: forEach
     variable: current_unit
     over: analysis_units
+    maxIterations: 100
     steps[10]:
       - id: resolve-unit-output
         name: Resolve Unit Output Directory
@@ -25,61 +30,16 @@ loops[1]:
         required: true
       - id: load-lens
         name: Load Structural Lens
-        description: "Load the L12 lens resource 00 (works for all target types)."
+        description: "Load the L12 lens resource 00 (works for all target types). Runs for single and full-prism pipeline modes only — skip for portfolio and behavioral units."
         required: true
-        condition:
-          type: and
-          conditions:
-            - type: not
-              condition:
-                type: simple
-                variable: current_unit.pipeline_mode
-                operator: "=="
-                value: portfolio
-            - type: not
-              condition:
-                type: simple
-                variable: current_unit.pipeline_mode
-                operator: "=="
-                value: behavioral
       - id: execute-lens
         name: Execute Lens Operations
-        description: "Apply every operation in the lens prompt sequentially against current_unit.target. Execute completely — do not abbreviate."
+        description: "Apply every operation in the lens prompt sequentially against current_unit.target. Execute completely — do not abbreviate. Runs for single and full-prism pipeline modes only — skip for portfolio and behavioral units."
         required: true
-        condition:
-          type: and
-          conditions:
-            - type: not
-              condition:
-                type: simple
-                variable: current_unit.pipeline_mode
-                operator: "=="
-                value: portfolio
-            - type: not
-              condition:
-                type: simple
-                variable: current_unit.pipeline_mode
-                operator: "=="
-                value: behavioral
       - id: write-structural-artifact
         name: Write Structural Artifact
-        description: "Write the analysis to {unit_output_dir}/structural-analysis.md"
+        description: "Write the analysis to {unit_output_dir}/structural-analysis.md. Runs for single and full-prism pipeline modes only — skip for portfolio and behavioral units."
         required: true
-        condition:
-          type: and
-          conditions:
-            - type: not
-              condition:
-                type: simple
-                variable: current_unit.pipeline_mode
-                operator: "=="
-                value: portfolio
-            - type: not
-              condition:
-                type: simple
-                variable: current_unit.pipeline_mode
-                operator: "=="
-                value: behavioral
       - id: select-portfolio-lenses
         name: Select Portfolio Lenses
         description: "Use current_unit.lenses if provided. Otherwise default to claim + degradation (code) or pedagogy + rejected-paths (general). Load the portfolio-analysis supporting skill for the selection guide."
