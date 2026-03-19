@@ -97,9 +97,14 @@ steps[6]:
     required: true
   - id: architecture-summary
     name: Architecture Summary
-    description: "Auto-decide whether an architecture summary is warranted based on change surface: create architecture-summary.md only if the diff introduces new modules, changes dependency structure, or modifies public interfaces. Skip silently for minor changes, documentation, or configuration."
+    description: "Create architecture-summary.md if the diff introduces new modules, changes dependency structure, or modifies public interfaces. Skipped for minor changes, documentation, or configuration."
     skill: summarize-architecture
     required: false
+    condition:
+      type: simple
+      variable: skip_architecture_summary
+      operator: "!="
+      value: true
 checkpoints[3]:
   - id: file-index-table
     name: File Index Checkpoint
@@ -249,3 +254,5 @@ context_to_preserve[10]:
   - architecture_summary_created - Whether architecture summary was created
   - manual_diff_review_report_path - Path to generated manual diff review report
   - prism_artifact_paths - Paths to prism structural analysis artifacts (single-pass or full-prism)
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark review artifacts as ✅ Complete.

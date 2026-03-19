@@ -133,6 +133,8 @@ checkpoints[4]:
         description: Proceed with the current model without switching
 transitions[1]{to,isDefault}:
   post-impl-review,true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — set Status to In Progress and mark implementation artifacts.
 outcome[2]:
   - All tasks implemented
   - Changes committed
