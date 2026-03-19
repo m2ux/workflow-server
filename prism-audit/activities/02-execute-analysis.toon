@@ -1,0 +1,51 @@
+id: execute-analysis
+version: 1.0.0
+name: Execute Prism Analysis
+description: "Trigger one or more prism workflows to perform the analytical passes. Each audit scope defined during prompt-generation triggers a separate prism run with its own target, pipeline mode, and output subdirectory. The orchestrator suspends while each triggered prism workflow executes to completion, then collects the results."
+problem: "The audit analysis must be executed through the prism workflow's analytical pipeline (structural, adversarial, synthesis passes) rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-audit controls the audit-specific context passed to each run."
+skills:
+  primary: compose-audit-prompt
+triggers:
+  workflow: prism
+  description: "Execute prism analytical pipeline for each audit scope. Each trigger passes the target, output path, pipeline mode, and the generated audit prompt as analysis focus."
+  passContext[4]:
+    - target
+    - output_path
+    - pipeline_mode
+    - analysis_focus
+steps[1]:
+  - id: prepare-triggers
+    name: Prepare Trigger Context
+    description: "For each scope in audit_scopes, prepare the context variables that will be passed to the triggered prism workflow: target = scope.target, output_path = {output_path}/{scope.output_subdir}, pipeline_mode = scope.pipeline_mode, analysis_focus = scope.analysis_focus (the audit prompt content, describing the security focus but NOT the literal string 'security audit')."
+    required: true
+loops[1]:
+  - id: scope-iteration
+    name: Audit Scope Iteration
+    type: forEach
+    variable: current_scope
+    over: audit_scopes
+    maxIterations: 10
+    steps[4]:
+      - id: set-trigger-context
+        name: Set Trigger Context for Current Scope
+        description: "Map current_scope fields to the variables expected by prism: target = current_scope.target, output_path = {output_path}/{current_scope.output_subdir}, pipeline_mode = current_scope.pipeline_mode, analysis_focus = current_scope.analysis_focus."
+        required: true
+      - id: trigger-prism
+        name: Trigger Prism Workflow
+        description: "Trigger the prism workflow via get_workflow and execute it for the current scope. The prism workflow runs its full analytical pipeline (select-mode → structural-pass → [adversarial-pass → synthesis-pass] → generate-report → deliver-result) and returns its analysis artifacts."
+        required: true
+      - id: collect-results
+        name: Collect Prism Results
+        description: "After the triggered prism workflow completes, collect: (1) the REPORT.md path from the prism output, (2) all analysis artifact paths (structural-analysis.md, adversarial-analysis.md, synthesis.md, etc.), (3) the analysis_units and their artifact locations. Append to completed_analyses and all_analysis_artifact_paths."
+        required: true
+      - id: verify-completion
+        name: Verify Prism Completion
+        description: "Verify the triggered prism workflow completed successfully: REPORT.md exists and contains findings, all expected analysis artifacts are present. If verification fails, record the failure in completed_analyses with status 'error'."
+        required: true
+rules[3]:
+  - "TRIGGER ISOLATION: When setting analysis_focus for the triggered prism workflow, use the audit prompt content which describes the security focus areas in detail. Do NOT set analysis_focus to the literal string 'security audit' — this would activate prism's built-in audit-finalize activity, duplicating the post-processing that this workflow handles in its own audit-finalize activity."
+  - "PIPELINE MODE SELECTION: The pipeline_mode for each scope defaults to 'full-prism' (3-pass structural → adversarial → synthesis) which provides the depth needed for security audits. Individual scopes may override to 'behavioral' or 'portfolio' if the prompt-generation activity determined a different mode is more appropriate for that scope."
+  - "SEQUENTIAL EXECUTION: Audit scopes are executed sequentially (one prism trigger at a time). This ensures each prism run has full system resources and avoids context interference between concurrent analyses."
+transitions[1]:
+  - to: audit-finalize
+    isDefault: true

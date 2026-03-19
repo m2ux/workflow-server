@@ -1,0 +1,104 @@
+id: compose-audit-prompt
+version: 1.0.0
+capability: Analyse a codebase to identify security-relevant characteristics and compose a detailed audit prompt tailored to its architecture, language, and trust boundaries
+
+description: "Given a target codebase path and a user's audit description, survey the codebase structure, identify security-relevant characteristics (cryptography, auth, network surfaces, state management, serialisation, unsafe code), map those characteristics to audit domains with calibrated risk levels, and compose a self-contained audit prompt that can drive a prism analytical pipeline."
+
+inputs[3]:
+  - id: target_path
+    description: "Path to the codebase or directory to audit"
+    required: true
+  - id: audit_description
+    description: "User's description of what to audit, focus areas, and specific concerns"
+    required: true
+  - id: output_path
+    description: "Directory to write the audit prompt artifact"
+    required: true
+
+protocol:
+  survey-structure[6]:
+    - "List files and directories at the top level of target_path"
+    - "Identify the build system: Cargo.toml (Rust), package.json (JS/TS), go.mod (Go), pyproject.toml (Python), etc."
+    - "For workspace/monorepo projects, enumerate all packages/crates/modules from the build configuration"
+    - "Count lines of code per module (excluding tests, docs, generated files)"
+    - "Identify test directories and test file patterns"
+    - "Record: language, build_system, modules (array of { name, path, line_count, purpose }), total_loc"
+
+  scan-security-characteristics[10]:
+    - "Search for cryptographic imports and usage: hashing (SHA, Blake, Poseidon), signing (Ed25519, ECDSA, Schnorr), encryption (AES, ChaCha), key derivation, commitment schemes, zero-knowledge proof systems"
+    - "Search for authentication/authorisation patterns: password handling, token validation, session management, role/permission checks, access control"
+    - "Search for network-exposed surfaces: HTTP servers/handlers, RPC endpoints, WebSocket listeners, gRPC services"
+    - "Search for state management: database connections, cache layers, persistent storage, Merkle trees, state machines"
+    - "Search for serialisation of untrusted input: custom deserialisation, binary parsing, protobuf/JSON with external input, tagged encoding"
+    - "Search for unsafe code: unsafe blocks (Rust), FFI/native bindings, raw pointer manipulation, transmute"
+    - "Search for WASM compilation targets: wasm-bindgen, wasm-pack, WASM-specific modules"
+    - "Search for feature flags that gate security behaviour: test-only features, mock verification, debug modes, feature-gated bypass"
+    - "Search for custom VMs or interpreters: bytecode execution, instruction dispatch, gas/cost metering"
+    - "Record each characteristic: { category, location (file:line), description, severity_relevance }"
+
+  map-domains[5]:
+    - "Group characteristics into audit domains. Common domain patterns: Cryptographic Correctness (hashing, signing, commitments, proofs), Value/Token Conservation (balance equations, minting, burning, transfer integrity), Transaction Safety (ordering, atomicity, replay protection), Execution Safety (VM, interpreter, cost model), Storage Integrity (Merkle trees, state transitions, garbage collection), Serialisation Safety (parsing, type confusion, malformed input), Network/API Security (HTTP, RPC, CORS, DoS), Error Handling (panic safety, silent degradation, error recovery), Feature Flag Discipline (test features, mock gates)"
+    - "Only include domains that have corresponding code in the target codebase"
+    - "Assign risk levels based on exposure and blast radius: CRITICAL — flaws directly compromise system integrity or user assets. HIGH — flaws degrade security guarantees or enable privilege escalation. MEDIUM — flaws have limited blast radius or require specific conditions. LOW — informational findings or defence-in-depth improvements"
+    - "For each domain, list specific patterns and code paths to examine"
+    - "Integrate the user's audit_description: if the user mentions specific concerns, elevate those areas in the relevant domains"
+
+  identify-cross-cutting[4]:
+    - "Error handling patterns: how the codebase handles errors across modules (panic vs Result, unwrap usage, silent error swallowing)"
+    - "Feature flag discipline: which features gate security-critical behaviour, risk of test/mock code in production"
+    - "Trust boundary consistency: where trust transitions occur and whether they are consistently enforced"
+    - "Dependency risk: third-party dependencies with known vulnerabilities or unmaintained status"
+
+  compose-prompt[6]:
+    - "Structure the prompt document with clear sections"
+    - "Section 1: Codebase Overview — architecture summary, language, total LOC, module layout table (name, path, lines, purpose)"
+    - "Section 2: Audit Domains — one subsection per domain with: Domain Name, Risk Level, Scope (which modules/files), Focus Areas (specific patterns to examine), Key Questions (what the audit should answer)"
+    - "Section 3: Cross-Cutting Concerns — error handling, feature flags, trust boundaries, dependencies"
+    - "Section 4: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'"
+    - "The prompt must be self-contained: readable and actionable without additional context beyond the codebase path"
+
+  build-scopes[4]:
+    - "For most audits: create a single scope entry covering the entire codebase"
+    - "Single scope: { target: target_path, output_subdir: 'analysis', pipeline_mode: 'full-prism', analysis_focus: <composed prompt summary> }"
+    - "For very large codebases (>100K LOC) with clearly separable security boundaries: consider multiple scopes, each focused on a distinct trust domain"
+    - "Set analysis_focus for each scope to a focused description derived from the prompt, NOT the literal string 'security audit'"
+
+output[2]:
+  - id: audit-prompt
+    description: "The composed audit prompt document"
+    artifact:
+      name: "audit-prompt.md"
+    components:
+      overview: "Codebase architecture and structure"
+      domains: "Audit domains with risk levels and focus areas"
+      cross_cutting: "Cross-cutting security concerns"
+      output_requirements: "Expected deliverable format"
+  - id: audit-scopes
+    description: "Array of scope objects for triggering prism workflows"
+    components:
+      scopes: "Array of { target, output_subdir, pipeline_mode, analysis_focus }"
+
+tools:
+  glob:
+    when: "Surveying codebase structure"
+    usage: "Discover files, directories, and project markers"
+  read_file:
+    when: "Reading build configuration, source files for characteristic identification"
+    usage: "Examine Cargo.toml, package.json, key source files"
+  grep:
+    when: "Scanning for security-relevant patterns"
+    usage: "Search for crypto imports, unsafe blocks, feature flags, network handlers"
+  write_file:
+    when: "Writing the audit prompt artifact"
+    params: "path: {output_path}/audit-prompt.md"
+
+errors:
+  empty_codebase:
+    cause: "Target path contains no analysable source files"
+    recovery: "Verify the path is correct. Check if submodules need initialisation."
+  no_security_characteristics:
+    cause: "No security-relevant patterns found in the codebase"
+    recovery: "The codebase may be purely presentational or data-only. Report this finding and ask the user whether to proceed with a generic structural analysis instead."
+  oversized_codebase:
+    cause: "Codebase exceeds 200K LOC, making single-scope analysis impractical"
+    recovery: "Split into multiple scopes by trust domain or module group. Each scope gets a focused prompt."
