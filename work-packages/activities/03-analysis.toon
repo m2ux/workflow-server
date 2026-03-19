@@ -1,20 +1,48 @@
 id: analysis
-version: 1.0.0
+version: 1.1.0
 name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
 problem: Need to understand context before detailed work package planning
 skills:
-  primary: workflow-execution
+  primary: analyze-initiative-context
+  supporting[1]:
+    - workflow-execution
 steps[3]:
   - id: perform-analysis
     name: Perform analysis
-    description: Execute completion analysis (if continuing) or context analysis (if new)
+    description: Execute the analysis type selected by the user at the analysis-type-selection checkpoint
   - id: document-analysis
     name: Document analysis
-    description: Create 01-COMPLETION-ANALYSIS.md or 02-CONTEXT-ANALYSIS.md
+    description: Create the analysis document in the planning folder using the appropriate resource template
   - id: present-findings
     name: Present findings
     description: Summarize analysis findings for user review
+artifacts[1]:
+  - id: analysis-document
+    name: analysis.md
+    location: planning
+    description: "Completion analysis or context analysis document"
+    action: create
+decisions[1]:
+  - id: analysis-method
+    name: Analysis Method Selection
+    description: "Route to completion or context analysis based on analysis_type variable"
+    branches[2]:
+      - id: completion
+        label: "Perform completion analysis when continuing previous work"
+        condition:
+          type: simple
+          variable: analysis_type
+          operator: "=="
+          value: completion
+      - id: context
+        label: "Perform context analysis for a new initiative"
+        condition:
+          type: simple
+          variable: analysis_type
+          operator: "=="
+          value: context
+        isDefault: true
 checkpoints[2]:
   - id: analysis-type-selection
     name: Analysis Type Selection

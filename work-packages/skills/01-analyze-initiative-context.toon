@@ -1,0 +1,64 @@
+id: analyze-initiative-context
+version: 1.0.0
+capability: Perform completion or context analysis for a multi-package initiative
+
+description: "Performs one of two analysis types based on whether the initiative is continuing previous work (completion analysis) or starting fresh (context analysis). Completion analysis surveys existing artifacts, assesses progress, and identifies remaining work. Context analysis surveys the domain, identifies cross-cutting concerns, and establishes the planning baseline."
+
+inputs[2]:
+  - id: analysis-type
+    description: "Type of analysis to perform: 'completion' or 'context'. Set by the analysis-type-selection checkpoint."
+  - id: planning-folder-path
+    description: "Path to the planning folder for storing the analysis document"
+
+protocol:
+  select-analysis-type[2]:
+    - "Present the analysis-type-selection checkpoint to determine if this is continuing or new"
+    - "Set analysis_type variable based on user selection"
+  perform-completion-analysis[4]:
+    - "Load resource 01 (completion-analysis-guide) for the analysis procedure"
+    - "Locate existing planning artifacts in .engineering/artifacts/planning/"
+    - "Assess completion state of each previously identified work package"
+    - "Identify changes since last session from git log and issue trackers"
+  perform-context-analysis[4]:
+    - "Load resource 02 (context-analysis-guide) for the analysis procedure"
+    - "Understand the domain, codebase, and technology stack"
+    - "Identify cross-cutting concerns: shared dependencies, common infrastructure, ordering constraints"
+    - "Assess external context: related issues, documentation, deadlines"
+  document-analysis[3]:
+    - "Create the analysis document using the appropriate template from the resource"
+    - "Store as 01-COMPLETION-ANALYSIS.md or 02-CONTEXT-ANALYSIS.md in the planning folder"
+    - "Set analysis_document variable to the document path"
+  present-findings[2]:
+    - "Summarize key findings for user review"
+    - "Present the analysis-confirmed checkpoint"
+
+output[1]:
+  - id: analysis-document
+    description: "Analysis document with findings and recommendations"
+    components:
+      analysis_type: "completion or context"
+      key_findings: "Summary of analysis findings"
+      recommendation: "Suggested approach for planning and prioritization"
+
+rules:
+  type-determines-method: "The analysis_type variable determines which analysis method to use — never mix them"
+  existing-artifacts-first: "For completion analysis, always check for existing planning artifacts before assuming fresh start"
+  document-everything: "All findings must be captured in the analysis document, not just presented verbally"
+
+resources[2]:
+  - "01"
+  - "02"
+
+tools:
+  get_resource:
+    when: Loading analysis guide for the selected type
+    params: "workflow_id: work-packages, index: 01 (completion) or 02 (context)"
+    returns: Analysis procedure and document template
+
+errors:
+  ambiguous_type:
+    cause: User is unsure whether this is continuing or new
+    recovery: Check for existing planning artifacts — if found, suggest completion analysis; if not, suggest context analysis
+  no_existing_artifacts:
+    cause: Completion analysis selected but no prior artifacts found
+    recovery: Switch to context analysis and note that no prior work was found

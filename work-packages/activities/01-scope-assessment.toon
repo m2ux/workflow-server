@@ -1,5 +1,5 @@
 id: scope-assessment
-version: 1.0.0
+version: 1.1.0
 name: Scope Assessment
 description: Confirm multi-work-package initiative and identify work packages to be planned
 problem: User has multiple related work items that need coordination and planning
@@ -9,7 +9,13 @@ recognition[4]:
   - Multi-package initiative
   - Related work items needing coordination
 skills:
-  primary: workflow-execution
+  primary: assess-initiative-scope
+  supporting[1]:
+    - workflow-execution
+entryActions[1]:
+  - action: validate
+    target: agents_md_read
+    message: "AGENTS.md must be read before starting workflow"
 steps[3]:
   - id: confirm-multi-package
     name: Confirm initiative scope
@@ -27,10 +33,12 @@ checkpoints[1]:
     options[2]:
       - id: proceed
         label: Proceed with planning
-        transitionTo: folder-setup
+        effect:
+          transitionTo: folder-setup
       - id: refine
         label: Refine scope
-        transitionTo: scope-assessment
+        effect:
+          transitionTo: scope-assessment
 transitions[1]:
   - to: folder-setup
     isDefault: true

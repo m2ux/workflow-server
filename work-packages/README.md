@@ -50,7 +50,7 @@ graph TD
 
 **Purpose:** Confirm multi-work-package initiative and identify work packages to be planned.
 
-**Primary Skill:** `workflow-execution`
+**Primary Skill:** `assess-initiative-scope`
 
 ```mermaid
 graph TD
@@ -108,6 +108,8 @@ graph TD
 | Create README.md | Create skeleton for navigation |
 | Present folder structure | Show user the created structure |
 
+**Artifacts:** START-HERE.md (create), README.md (create)
+
 **Checkpoint:** "Planning folder created. Proceed with analysis?"
 
 ---
@@ -116,29 +118,36 @@ graph TD
 
 **Purpose:** Perform completion or context analysis depending on whether continuing previous work or starting new.
 
-**Primary Skill:** `workflow-execution`
+**Primary Skill:** `analyze-initiative-context`
 
 ```mermaid
 graph TD
     subgraph analysis[Analysis]
         a1([Determine analysis type])
-        a2([Perform analysis])
+        d1{analysis_type?}
+        a2a([Completion analysis])
+        a2b([Context analysis])
         a3([Document analysis])
         a4([Present findings])
         cp1{Analysis confirmed?}
         
-        a1 --> a2 --> a3 --> a4 --> cp1
+        a1 --> d1
+        d1 -->|completion| a2a --> a3
+        d1 -->|context| a2b --> a3
+        a3 --> a4 --> cp1
         cp1 -->|proceed| Next([→ package-planning])
-        cp1 -->|revise| a2
+        cp1 -->|revise| a2a
     end
 ```
 
 | Step | Description |
 |------|-------------|
 | Determine analysis type | Ask: Is this continuing previous work or new initiative? |
-| Perform analysis | Execute completion analysis or context analysis |
-| Document analysis | Create 01-COMPLETION-ANALYSIS.md or 02-CONTEXT-ANALYSIS.md |
+| Perform analysis | Execute completion or context analysis based on decision |
+| Document analysis | Create analysis document using resource template |
 | Present findings | Summarize analysis findings for review |
+
+**Artifacts:** analysis.md (create)
 
 **Checkpoint:** "Analysis complete. Does this context look correct?"
 
@@ -148,7 +157,7 @@ graph TD
 
 **Purpose:** Define scope, dependencies, effort, and success criteria for each work package.
 
-**Primary Skill:** `workflow-execution`
+**Primary Skill:** `plan-work-package-scope`
 
 ```mermaid
 graph TD
@@ -180,6 +189,8 @@ graph TD
 | Define success criteria | Establish measurable success criteria |
 | Document plan | Create NN-package-name-plan.md |
 
+**Artifacts:** {package-name}-plan.md (create, per package)
+
 **Checkpoint:** "Work package plans created. Ready for prioritization?"
 
 ---
@@ -188,7 +199,7 @@ graph TD
 
 **Purpose:** Prioritize work packages based on dependencies, value, risk, and effort.
 
-**Primary Skill:** `workflow-execution`
+**Primary Skill:** `prioritize-packages`
 
 ```mermaid
 graph TD
@@ -213,6 +224,8 @@ graph TD
 | Propose priority order | Generate recommended execution order |
 | Present prioritization | Show dependency graph and proposed order |
 
+**Artifacts:** priority-ranking.md (create)
+
 **Checkpoint:** "Here's the proposed priority order. Adjust as needed?"
 
 ---
@@ -221,7 +234,7 @@ graph TD
 
 **Purpose:** Complete roadmap documentation with timeline, navigation, and success criteria.
 
-**Primary Skill:** `workflow-execution`
+**Primary Skill:** `document-roadmap`
 
 ```mermaid
 graph TD
@@ -247,6 +260,8 @@ graph TD
 | Document success criteria | Define how initiative completion will be measured |
 | Present final roadmap | Show completed roadmap for final approval |
 
+**Artifacts:** START-HERE.md (update), README.md (update)
+
 **Checkpoint:** "Roadmap complete. Ready to begin implementation?"
 
 ---
@@ -255,7 +270,7 @@ graph TD
 
 **Purpose:** Execute each planned work package in priority order by triggering the work-package workflow.
 
-**Primary Skill:** `workflow-execution`
+**Primary Skill:** `orchestrate-package-execution`
 
 ```mermaid
 graph TD
@@ -283,11 +298,13 @@ graph TD
 | Step | Description |
 |------|-------------|
 | Select next work package | Choose highest priority unstarted package |
-| Trigger work-package workflow | Call `get_workflow(work-package)` and start |
+| Trigger work-package workflow | Load `work-package` workflow and start |
 | Execute workflow | Follow work-package workflow through all activities |
 | Return to roadmap | After workflow completes, return context |
-| Update roadmap status | Mark completed package ✅, update progress |
+| Update roadmap status | Mark completed package, update progress |
 | Check remaining packages | Determine if more packages remain |
+
+**Artifacts:** START-HERE.md (update, progress tracking)
 
 **Outcome:**
 - All planned work packages implemented via work-package workflow
@@ -298,12 +315,28 @@ graph TD
 
 ## Skills Summary
 
-This workflow primarily uses universal skills from the Meta workflow:
+| Skill | Type | Capability | Used By |
+|-------|------|------------|---------|
+| `assess-initiative-scope` | Workflow-specific | Identify and categorize work packages | Scope Assessment |
+| `analyze-initiative-context` | Workflow-specific | Completion or context analysis | Analysis |
+| `plan-work-package-scope` | Workflow-specific | Scope, dependencies, effort, success criteria per package | Package Planning |
+| `prioritize-packages` | Workflow-specific | Evaluate and order packages | Prioritization |
+| `document-roadmap` | Workflow-specific | Produce finalized roadmap documentation | Finalize Roadmap |
+| `orchestrate-package-execution` | Workflow-specific | Trigger and manage work-package workflow instances | Implementation |
+| `workflow-execution` | Universal | Execute workflows following schema patterns | All activities (supporting) |
+| `artifact-management` | Universal | Manage planning artifacts folder structure | Folder Setup |
 
-| Skill | Capability | Used By |
-|-------|------------|---------|
-| `workflow-execution` | Execute workflows following schema patterns | All activities |
-| `artifact-management` | Manage planning artifacts folder structure | folder-setup |
+## Resources
+
+| # | Resource | Purpose |
+|---|----------|---------|
+| 00 | Planning Folder Template | Templates for START-HERE.md and README.md skeletons |
+| 01 | Completion Analysis Guide | Procedure for analyzing continuing initiatives |
+| 02 | Context Analysis Guide | Procedure for analyzing new initiatives |
+| 03 | Package Plan Template | Template for individual work package plans |
+| 04 | Prioritization Framework | Framework for evaluating and ordering packages |
+| 05 | Roadmap Template | Templates for finalized roadmap documentation |
+| 06 | Workflow Triggering Protocol | How to trigger and manage work-package workflow instances |
 
 ---
 
@@ -311,9 +344,46 @@ This workflow primarily uses universal skills from the Meta workflow:
 
 | Variable | Description |
 |----------|-------------|
-| `work_packages` | List of identified work packages |
 | `initiative_name` | Name of the overall initiative |
+| `work_packages` | List of identified work packages |
 | `planning_folder_path` | Path to the created planning folder |
+| `analysis_type` | Completion or context |
+| `package_plans` | List of created plan document paths |
 | `priority_order` | Ordered list of work packages |
 | `completed_packages` | List of completed work packages |
 | `remaining_packages` | List of remaining work packages |
+| `overall_progress` | Progress indicator |
+
+## File Structure
+
+```
+work-packages/
+├── workflow.toon
+├── README.md
+├── activities/
+│   ├── README.md
+│   ├── 01-scope-assessment.toon
+│   ├── 02-folder-setup.toon
+│   ├── 03-analysis.toon
+│   ├── 04-package-planning.toon
+│   ├── 05-prioritization.toon
+│   ├── 06-finalize-roadmap.toon
+│   └── 07-implementation.toon
+├── skills/
+│   ├── README.md
+│   ├── 00-assess-initiative-scope.toon
+│   ├── 01-analyze-initiative-context.toon
+│   ├── 02-plan-work-package-scope.toon
+│   ├── 03-prioritize-packages.toon
+│   ├── 04-document-roadmap.toon
+│   └── 05-orchestrate-package-execution.toon
+└── resources/
+    ├── README.md
+    ├── 00-planning-folder-template.md
+    ├── 01-completion-analysis-guide.md
+    ├── 02-context-analysis-guide.md
+    ├── 03-package-plan-template.md
+    ├── 04-prioritization-framework.md
+    ├── 05-roadmap-template.md
+    └── 06-workflow-triggering-protocol.md
+```

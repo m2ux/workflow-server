@@ -1,5 +1,5 @@
 id: work-packages
-version: 2.1.0
+version: 3.0.0
 title: Work Packages Workflow
 description: "Plan and coordinate multiple related work packages, then execute each in turn by triggering the work-package workflow. Use when you have multiple related features, a roadmap spanning several weeks/months, or features with shared context. This workflow handles planning and prioritization; execution triggers the work-package workflow for each package."
 author: m2ux
@@ -13,7 +13,11 @@ rules[5]:
   - "Ask, don't assume - Clarify scope and priorities before planning"
   - User controls priorities - Never assume priority order without confirmation
   - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
-variables[10]:
+artifactLocations:
+  planning:
+    path: "{planning_folder_path}"
+    description: "Planning folder for initiative documentation and work package plans"
+variables[19]:
   - name: initiative_name
     type: string
     description: "Name of the overall multi-package initiative"
@@ -44,4 +48,32 @@ variables[10]:
   - name: overall_progress
     type: string
     description: "Progress indicator (e.g., '3/7 complete')"
+  - name: documents_created
+    type: array
+    description: "List of created document file paths during folder setup"
+  - name: analysis_document
+    type: string
+    description: "Path to the analysis document produced during the analysis activity"
+  - name: key_findings
+    type: string
+    description: "Summary of analysis findings from completion or context analysis"
+  - name: dependency_map
+    type: object
+    description: "Map of inter-package dependencies identified during package planning"
+  - name: dependency_graph
+    type: string
+    description: "Visual or structured dependency graph representation"
+  - name: prioritization_rationale
+    type: string
+    description: "Reasoning for the chosen priority order"
+  - name: roadmap_complete
+    type: boolean
+    description: "Whether the roadmap has been finalized and approved"
+    defaultValue: false
+  - name: timeline_estimate
+    type: string
+    description: "Overall timeline estimate for the initiative"
+  - name: parent_workflow
+    type: string
+    description: "Reference back to work-packages context when triggering work-package workflow"
 initialActivity: scope-assessment

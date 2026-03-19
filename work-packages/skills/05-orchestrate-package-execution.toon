@@ -1,0 +1,67 @@
+id: orchestrate-package-execution
+version: 1.0.0
+capability: Trigger and manage work-package workflow instances for each planned package in priority order
+
+description: "Orchestrates the implementation loop by triggering the work-package workflow for each planned package. Handles context passing between the parent work-packages workflow and each child work-package workflow instance. Updates roadmap status after each package completes."
+
+inputs[3]:
+  - id: remaining-packages
+    description: "Ordered list of packages not yet started, derived from priority order"
+  - id: planning-folder-path
+    description: "Path to the planning folder for status updates"
+  - id: priority-order
+    description: "Full priority order for reference"
+
+protocol:
+  initialize-iteration[2]:
+    - "Derive remaining_packages from priority_order minus completed_packages"
+    - "Set overall_progress to '{completed}/{total} complete'"
+  select-package[2]:
+    - "Take the first package from remaining_packages"
+    - "Set current_package to the selected package"
+  trigger-workflow[3]:
+    - "Load resource 06 (workflow-triggering-protocol) for the triggering procedure"
+    - "Call get_workflow('work-package') to load the work-package workflow"
+    - "Pass context: package name, scope from plan document, dependencies, planning folder path"
+  update-status[3]:
+    - "After work-package workflow completes, update START-HERE.md status table"
+    - "Mark completed package as done, add PR link"
+    - "Update overall_progress counter"
+  check-remaining[2]:
+    - "Remove completed package from remaining_packages, add to completed_packages"
+    - "If remaining_packages is not empty, continue the loop with the next package"
+
+output[1]:
+  - id: implementation-status
+    description: "Updated roadmap status reflecting completed packages"
+    components:
+      completed_packages: "List of completed package names"
+      remaining_packages: "List of remaining package names"
+      overall_progress: "Progress indicator (e.g., '3/7 complete')"
+
+rules:
+  one-at-a-time: "Execute one work-package workflow at a time — do not parallelize"
+  status-after-each: "Update START-HERE.md status after every completed package"
+  context-passing: "Pass package context (scope, dependencies, planning path) to each work-package workflow instance"
+  handle-failures: "If a package fails, mark it and continue with the next independent package"
+
+resources[1]:
+  - "06"
+
+tools:
+  get_workflow:
+    when: Triggering the work-package workflow for each package
+    params: "workflow_id: work-package"
+    returns: Complete work-package workflow definition
+  get_resource:
+    when: Loading workflow triggering protocol
+    params: "workflow_id: work-packages, index: 06"
+    returns: Triggering procedure and status update format
+
+errors:
+  workflow_trigger_failure:
+    cause: Unable to load or start the work-package workflow
+    recovery: Verify work-package workflow exists via list_workflows, then retry
+  package_blocked:
+    cause: Next package depends on an incomplete package
+    recovery: Skip to the next independent package and note the blocked package

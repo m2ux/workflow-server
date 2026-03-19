@@ -1,0 +1,68 @@
+id: plan-work-package-scope
+version: 1.0.0
+capability: Define scope, dependencies, effort, and success criteria for a single package within a multi-package initiative
+
+description: "Guides the planning of individual work packages during the package-planning loop. For each package, produces a plan document covering scope boundaries, dependency mapping, effort estimation, and measurable success criteria. Uses the package-plan-template resource for consistent document structure."
+
+inputs[2]:
+  - id: current-package
+    description: "The work package currently being planned (from the forEach loop)"
+  - id: planning-folder-path
+    description: "Path to the planning folder for storing plan documents"
+
+protocol:
+  present-overview[2]:
+    - "Before entering the loop, summarize all packages to be planned and the planning approach"
+    - "Explain that each package will get: scope definition, dependency analysis, effort estimate, and success criteria"
+  define-scope[3]:
+    - "Identify what is in scope for the current package — specific deliverables and changes"
+    - "Identify what is explicitly out of scope with reasons for exclusion"
+    - "Apply the independence test: could this package be shipped without any other package?"
+  identify-dependencies[3]:
+    - "Document hard blockers: packages or external factors that must complete first"
+    - "Document soft dependencies: helpful but not required"
+    - "Flag circular dependencies as decomposition problems requiring resolution"
+  estimate-effort[3]:
+    - "Assess complexity: Low / Medium / High based on scope and unknowns"
+    - "Estimate agentic time, review time, and calendar time as ranges"
+    - "Document the rationale for the estimate, noting key complexity drivers"
+  define-success[2]:
+    - "Establish measurable success criteria — each must be objectively verifiable"
+    - "Include verification method for each criterion (tests, review, demonstration)"
+  document-plan[2]:
+    - "Load resource 03 (package-plan-template) for the document structure"
+    - "Create NN-{package-name}-plan.md in the planning folder using the template"
+
+output[1]:
+  - id: package-plan
+    description: "Work package plan document"
+    artifact:
+      name: "{package-name}-plan.md"
+    components:
+      scope: "In-scope and out-of-scope definitions"
+      dependencies: "Blocker and soft dependency list"
+      effort: "Effort estimate with rationale"
+      success_criteria: "Measurable success criteria with verification methods"
+
+rules:
+  scope-specificity: "Scope items must name specific deliverables — vague scope leads to scope creep"
+  dependency-types: "Distinguish hard blockers from soft dependencies"
+  range-estimates: "Use ranges for effort, not point estimates"
+  verifiable-criteria: "Every success criterion must be objectively verifiable"
+
+resources[1]:
+  - "03"
+
+tools:
+  get_resource:
+    when: Loading plan template before writing
+    params: "workflow_id: work-packages, index: 03"
+    returns: Package plan template and guidelines
+
+errors:
+  circular_dependency:
+    cause: Two packages depend on each other
+    recovery: Identify the shared component and extract it as a separate package, or merge the two packages
+  scope_too_large:
+    cause: Package scope exceeds 8 hours of agentic work
+    recovery: Split into two or more packages along natural boundaries

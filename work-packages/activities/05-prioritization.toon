@@ -1,10 +1,12 @@
 id: prioritization
-version: 1.0.0
+version: 1.1.0
 name: Prioritization
 description: Prioritize work packages based on dependencies, value, risk, and effort
 problem: Need to determine execution order for work packages
 skills:
-  primary: workflow-execution
+  primary: prioritize-packages
+  supporting[1]:
+    - workflow-execution
 steps[4]:
   - id: analyze-dependencies
     name: Analyze dependencies
@@ -18,6 +20,12 @@ steps[4]:
   - id: present-prioritization
     name: Present prioritization
     description: Show dependency graph and proposed priority order to user
+artifacts[1]:
+  - id: priority-ranking
+    name: priority-ranking.md
+    location: planning
+    description: "Priority ranking with dependency graph and evaluation rationale"
+    action: create
 checkpoints[1]:
   - id: priority-confirmed
     name: Priority Confirmation
@@ -25,13 +33,16 @@ checkpoints[1]:
     options[3]:
       - id: accept
         label: Accept priority order
-        transitionTo: finalize-roadmap
+        effect:
+          transitionTo: finalize-roadmap
       - id: adjust
         label: Adjust priorities
-        transitionTo: prioritization
+        effect:
+          transitionTo: prioritization
       - id: revisit
         label: Revisit package plans
-        transitionTo: package-planning
+        effect:
+          transitionTo: package-planning
 transitions[1]:
   - to: finalize-roadmap
     isDefault: true
