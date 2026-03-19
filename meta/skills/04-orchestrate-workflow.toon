@@ -1,5 +1,5 @@
 id: orchestrate-workflow
-version: 2.1.0
+version: 3.0.0
 capability: Orchestrate work-package workflow execution using a persistent worker sub-agent
 
 description: "Coordination-only skill executed INLINE by the top-level agent (the agent that received the user request). This skill MUST NOT be delegated to a sub-agent — the orchestrator runs at the top-level conversation so that AskQuestion calls render directly to the user. Loads the workflow definition (with schema preamble), initializes state, then dispatches activities sequentially to a persistent worker sub-agent. The orchestrator evaluates transition conditions between activities, manages state variables, and handles rework loops. It MUST NOT execute activity steps, write code, review code, or produce artifacts — all domain work is delegated to the worker."
@@ -49,8 +49,13 @@ protocol:
     - "Commit with conventional message format: 'docs(<workflow-id>): <activity-id> artifacts' and push to remote."
     - "If no changes detected, skip silently. Set artifacts_committed = true before proceeding."
   verify-commit-gate[2]:
-    - "GATE: Do NOT proceed to evaluate-transition unless artifacts_committed is true (set by commit-artifacts) or no changes were detected."
+    - "GATE: Do NOT proceed to persist-state unless artifacts_committed is true (set by commit-artifacts) or no changes were detected."
     - "If artifacts_committed is false and uncommitted changes exist, go back to commit-artifacts. This prevents the orchestrator from advancing past an activity without persisting its outputs."
+  persist-state[4]:
+    - "MANDATORY after every activity_complete, after artifacts are committed. Construct the current workflow state as a JSON object containing: workflowId, workflowVersion, stateVersion, startedAt, updatedAt (now), currentActivity, currentStep, completedActivities, skippedActivities, completedSteps, checkpointResponses, decisionOutcomes, activeLoops, variables (current values), history, status, parentWorkflow (if any), and triggeredWorkflows (with nested state for any child workflows)."
+    - "Call save_state with three arguments: state (the JSON-stringified state object), planning_folder_path (from workflow variables), and description (a brief summary like 'Completed {activity_id} — {N} of {total} activities done')."
+    - "The save_state tool validates the state, wraps it with metadata (id, savedAt, workflowId, workflowVersion, planningFolder), serializes to TOON format, and writes to {planning_folder_path}/workflow-state.toon. Each save overwrites the previous file — the file always reflects the latest state."
+    - "If planning_folder_path is not set in workflow variables, skip state persistence silently. Not all workflows use planning folders."
   evaluate-transition[4]:
     - "Load the current activity's transitions array"
     - "Evaluate each transition's condition against current state variables using the condition schema (simple, and, or, not)"
@@ -85,6 +90,7 @@ rules:
   automatic-transition: "After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT asking the user for confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. The user interacts ONLY through defined checkpoints within activities. Any pause between activities for user confirmation is a protocol violation."
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result. Empty checkpoints_responded on an activity with required blocking checkpoints is always a validation failure — no rationalization permitted."
+  state-persistence: "After every completed activity (post-commit, pre-transition), the orchestrator MUST call save_state to persist the current workflow state. The state file enables cross-session resumption without manual reconstruction. If planning_folder_path is not available, skip silently."
 
 tools:
   get_workflow:
@@ -113,6 +119,16 @@ tools:
     params: "git commands (status, add, commit, push)"
     returns: "Command output"
     action: "Detect changes in .engineering/artifacts/, commit following engineering-artifacts rules, and push to remote"
+  save_state:
+    when: "After every activity_complete, after artifacts are committed (persist-state phase)"
+    params: "state (JSON string of current workflow state), planning_folder_path (string), description (optional string)"
+    returns: "File path and summary (workflowId, currentActivity, completedActivities count)"
+    action: "Persist current workflow state to {planning_folder_path}/workflow-state.toon for cross-session resumption"
+  restore_state:
+    when: "Resuming a workflow from a previously saved state file"
+    params: "file_path (path to workflow-state.toon)"
+    returns: "Full nested state object as JSON"
+    action: "Load and validate saved state, return to orchestrator for resumption"
 
 errors:
   worker_timeout:

@@ -24,16 +24,19 @@ entryActions[1]:
   - action: validate
     target: workflowId
     message: "Cannot resume without identifying the workflow — user must specify which workflow to continue"
-steps[5]:
+steps[6]:
   - id: gather-context
     name: Gather context
     description: "Collect required information: workflow ID, last known activity, any external context (branch, PR, artifacts)"
+  - id: check-saved-state
+    name: Check for saved state
+    description: "Look for a workflow-state.toon file in the planning folder. If found, call restore_state to load the persisted state. The restored state provides currentActivity, completedActivities, variables, and checkpointResponses — eliminating the need for manual reconstruction. Present the restored state summary to the user for confirmation."
   - id: assess-state
     name: Assess current state
-    description: "Check workflow artifacts, external state (git, PRs), and reconstruct progress"
+    description: "If no saved state was found, reconstruct progress from workflow artifacts, external state (git, PRs), and user recall. If saved state was restored, verify it against external state for consistency."
   - id: determine-entry-point
     name: Determine entry point
-    description: "Map available artifacts and state to workflow activities; identify appropriate activity to resume from"
+    description: "From restored or reconstructed state, identify the appropriate activity to resume from"
   - id: acknowledge-existing-work
     name: Acknowledge existing work
     description: "Document pre-existing changes if needed; reconcile with workflow artifacts"
