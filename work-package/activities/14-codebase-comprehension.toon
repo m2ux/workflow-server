@@ -91,7 +91,11 @@ checkpoints[2]:
         description: "The survey is too shallow — analyze specific areas more thoroughly"
   - id: comprehension-sufficient
     name: Comprehension Sufficiency Checkpoint
-    prerequisite: "Only present when has_open_questions is true. If all open questions were resolved during the initial deep-dive, this checkpoint is skipped and needs_comprehension is set to false automatically."
+    condition:
+      type: simple
+      variable: has_open_questions
+      operator: "=="
+      value: true
     message: "Open questions remain after deep-dive (see above). Proceeding in 30s — intervene to explore further."
     blocking: false
     defaultOption: sufficient
