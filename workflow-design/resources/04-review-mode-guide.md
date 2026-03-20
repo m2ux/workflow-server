@@ -1,6 +1,6 @@
 # Review Mode Guide
 
-Guidance for auditing existing workflows against the 13 design principles. Review mode produces a compliance report without modifying the target workflow, then offers to switch to update mode for remediation.
+Guidance for auditing existing workflows against the 14 design principles. Review mode produces a compliance report without modifying the target workflow, then offers to switch to update mode for remediation.
 
 ---
 

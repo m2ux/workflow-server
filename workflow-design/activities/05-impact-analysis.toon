@@ -7,8 +7,11 @@ skills:
   primary: workflow-design
 required: false
 estimatedTime: 10-20m
-rules[3]:
-  - "This activity is only executed in update mode"
+entryActions[1]:
+  - action: validate
+    target: is_update_mode
+    message: "Impact analysis requires update mode — is_update_mode must be true"
+rules[2]:
   - "Every file in the existing workflow must be examined for potential impact"
   - "Content being removed must be explicitly flagged and confirmed"
 steps[5]:

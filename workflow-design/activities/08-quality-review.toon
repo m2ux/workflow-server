@@ -13,7 +13,7 @@ rules[3]:
   - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
 modeOverrides:
   review:
-    description: "Audit an existing workflow against all 13 design principles. Load every file in the target workflow and run all three review passes plus additional principle checks. Produce a structured compliance report and offer to fix issues."
+    description: "Audit an existing workflow against all 14 design principles. Load every file in the target workflow and run all three review passes plus additional principle checks. Produce a structured compliance report and offer to fix issues."
     rules[5]:
       - "Review the existing workflow content, not drafted content"
       - "Fetch workflow-server://schemas MCP resource and read schemas/README.md as the authoritative schema reference"
@@ -69,6 +69,12 @@ modeOverrides:
                 user_wants_fixes: true
                 is_update_mode: true
                 is_review_mode: false
+    artifacts[1]:
+      - id: compliance-report
+        name: "{target_workflow_id}-compliance-review.md"
+        location: reviews
+        description: "Severity-rated compliance report with findings across 5 audit passes"
+        action: create
 steps[6]:
   - id: expressiveness-review
     name: Schema Expressiveness Review

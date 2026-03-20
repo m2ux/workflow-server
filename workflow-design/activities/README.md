@@ -38,10 +38,11 @@ Nine sequential activities that guide an agent from free-form description to val
 **Steps:**
 
 1. **load-schemas** — Fetch `workflow-server://schemas` to load all schema definitions
-2. **survey-existing-workflows** — Call `list_workflows` and `get_workflow` for 2+ reference workflows
-3. **read-toon-examples** — Read existing TOON files to confirm syntax understanding
-4. **identify-applicable-constructs** — Identify which schema constructs apply to this workflow
-5. **present-convention-summary** — Summarize observed conventions for user confirmation
+2. **read-schema-documentation** — Read `schemas/README.md` for the full schema ontology, field tables, and validation guidance
+3. **survey-existing-workflows** — Call `list_workflows` and `get_workflow` for 2+ reference workflows
+4. **read-toon-examples** — Read existing TOON files to confirm syntax understanding
+5. **identify-applicable-constructs** — Identify which schema constructs apply to this workflow
+6. **present-convention-summary** — Summarize observed conventions for user confirmation
 
 **Checkpoints:** `format-literacy` (TOON format understanding), `constructs-confirmed` (schema constructs identified).
 

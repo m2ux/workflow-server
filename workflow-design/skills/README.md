@@ -17,14 +17,14 @@ The workflow-design workflow provides 2 skills. The primary skill (`workflow-des
 
 ### Skill Protocol: `workflow-design` (00)
 
-Primary skill governing the entire workflow design process. Encodes the 13 design principles as an 8-phase protocol with 13 named rules. Declares inputs (user description, target workflow ID), outputs (complete workflow file set), and error recovery patterns.
+Primary skill governing the entire workflow design process. Encodes the 14 design principles as an 8-phase protocol with 13 named rules. Declares inputs (user description, target workflow ID), outputs (complete workflow file set), and error recovery patterns.
 
 **Protocol phases:**
 
 | Phase | Steps | Purpose |
 |-------|-------|---------|
 | `intake` | 3 | Accept description, classify operation, set mode |
-| `context-loading` | 4 | Load schemas, survey workflows, confirm format literacy |
+| `context-loading` | 5 | Load schemas, survey workflows, confirm format literacy |
 | `elicitation` | 3 | Elicit design dimensions one at a time with per-question checkpoints |
 | `pattern-analysis` | 2 | Extract patterns from 2+ reference workflows |
 | `scope-definition` | 3 | Enumerate all files, verify worktree, confirm manifest |
@@ -69,10 +69,10 @@ Supporting skill for TOON file creation. Provides format rules and validation pa
 
 | Phase | Steps | Purpose |
 |-------|-------|---------|
-| `read-reference` | 2 | Read existing valid TOON file, note syntax patterns |
-| `plan-content` | 2 | Identify schema fields, map content to TOON syntax |
+| `read-reference` | 3 | Read existing valid TOON file, note syntax patterns, read schema documentation |
+| `plan-content` | 3 | Identify schema fields, map content to TOON syntax, cross-check properties |
 | `draft-content` | 3 | Write file following TOON syntax rules exactly |
-| `validate` | 2 | Check against schema, fix errors |
+| `validate` | 3 | Check against schema, run validator script, fix errors |
 
 **Rules (8):**
 

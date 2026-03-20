@@ -1,6 +1,6 @@
 # Design Principles Reference
 
-Condensed, agent-executable reference of the 13 design principles governing workflow creation and modification. Each principle includes the rule and the structural enforcement mechanism.
+Condensed, agent-executable reference of the 14 design principles governing workflow creation and modification. Each principle includes the rule and the structural enforcement mechanism.
 
 ---
 
@@ -81,3 +81,9 @@ Condensed, agent-executable reference of the 13 design principles governing work
 **Rule:** Verify TOON format comprehension by reading existing files before drafting. Validate all TOON files against their schema before committing.
 
 **Enforcement:** `format-literacy` checkpoint in context-and-literacy. Schema validation in content-drafting and validate-and-commit.
+
+## 14. Complete Documentation Structure
+
+**Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/). Root README documents the workflow overview, modes, activity sequence, variables, and file structure. Subfolder READMEs document the contents of that folder.
+
+**Enforcement:** `generate-readme` / `update-readme` steps in validate-and-commit. Scope manifest must include README files.

@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.1.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
+> v1.2.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
 
 ---
 
@@ -129,6 +129,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 | Variable | Type | Description |
 |----------|------|-------------|
+| `planning_folder_path` | string | Path to the unique planning folder for this workflow execution |
 | `is_update_mode` | boolean | Whether update mode is active |
 | `is_review_mode` | boolean | Whether review mode is active |
 | `target_workflow_id` | string | For update/review: existing workflow ID |

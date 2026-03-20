@@ -124,7 +124,13 @@ checkpoints[8]:
       - id: refine
         label: "Needs changes"
         description: Add, remove, or modify rules
-transitions[1]:
+transitions[2]:
+  - to: impact-analysis
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: ==
+      value: true
   - to: pattern-analysis
     isDefault: true
 outcome[2]:
