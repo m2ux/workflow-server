@@ -2,11 +2,12 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 26 resources that provide templates, guidance, and reference material for skills and activities.
+The workflow includes 28 resources that provide templates, guidance, and reference material for skills and activities.
 
 | # | Resource ID | Title | Purpose |
 |---|-------------|-------|---------|
 | 01 | `readme` | README Guide | Entry point and artifact index template for planning folders |
+| 02 | `readme` | README Guide (v2) | Planning folder README template (alternate version) |
 | 03 | `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
 | 04 | `jira-issue-creation` | Jira Issue Creation | Guide for creating Jira issues with proper field mapping |
 | 05 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
@@ -31,3 +32,5 @@ The workflow includes 26 resources that provide templates, guidance, and referen
 | 23 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | 24 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
 | 25 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature |
+| 26 | `assumption-reconciliation` | Assumption Reconciliation | Methodology for iterative assumption resolution through targeted code analysis |
+| 27 | `gitnexus-reference` | GitNexus Reference | GitNexus knowledge graph tool workflows and query examples |
