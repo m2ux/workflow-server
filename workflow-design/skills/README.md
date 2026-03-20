@@ -4,7 +4,7 @@
 
 ## Skills (2 workflow-specific)
 
-The workflow-design workflow provides 2 skills. The primary skill (`workflow-design`) encodes the 13 design principles as an executable protocol. The supporting skill (`toon-authoring`) provides TOON format rules and validation patterns.
+The workflow-design workflow provides 2 skills. The primary skill (`workflow-design`) encodes the 14 design principles as an executable protocol. The supporting skill (`toon-authoring`) provides TOON format rules and validation patterns.
 
 | # | Skill ID | Capability | Used By |
 |---|----------|------------|---------|

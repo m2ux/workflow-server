@@ -34,20 +34,7 @@ modeOverrides:
       - accept-description
       - classify-operation
       - extract-design-intent
-    checkpoints[1]:
-      - id: review-scope-confirmed
-        name: Review Scope Confirmation
-        message: "Here is the workflow structure for '{target_workflow_id}'. I will audit it against the 13 design principles. Shall I proceed?"
-        options[2]:
-          - id: proceed
-            label: "Yes, review this workflow"
-            description: Begin the compliance audit
-            effect:
-              setVariable:
-                is_review_mode: true
-          - id: different-workflow
-            label: "Review a different workflow"
-            description: Let me specify a different workflow
+    checkpoints[0]:
   update:
     description: "Load the existing target workflow and parse the user's change request. Present the current workflow structure before proceeding."
     steps[3]:

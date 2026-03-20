@@ -158,7 +158,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 ```
 workflows/workflow-design/
-├── workflow.toon                          # Workflow definition (3 modes, 13 variables, 14 rules)
+├── workflow.toon                          # Workflow definition (3 modes, 14 variables, 14 rules)
 ├── README.md                             # This file
 ├── activities/
 │   ├── README.md                         # Per-activity documentation
