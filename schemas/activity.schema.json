@@ -123,9 +123,9 @@
           "type": "string",
           "description": "Question or prompt to present to the user at this checkpoint"
         },
-        "prerequisite": {
-          "type": "string",
-          "description": "Condition that must be true before presenting this checkpoint to the user. If not met, skip the checkpoint."
+        "condition": {
+          "$ref": "condition.schema.json",
+          "description": "Condition that must be true before presenting this checkpoint. If false, the checkpoint is skipped."
         },
         "options": {
           "type": "array",

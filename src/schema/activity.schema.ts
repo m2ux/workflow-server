@@ -50,7 +50,7 @@ export const CheckpointSchema = z.object({
   id: z.string(),
   name: z.string(),
   message: z.string().describe('Message to present to user at checkpoint'),
-  prerequisite: z.string().optional().describe('Action to complete before presenting checkpoint'),
+  condition: ConditionSchema.optional().describe('Condition that must be true before presenting this checkpoint. If false, the checkpoint is skipped.'),
   options: z.array(CheckpointOptionSchema).min(1),
   required: z.boolean().default(true),
   blocking: z.boolean().default(true),

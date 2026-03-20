@@ -79,7 +79,8 @@ flowchart TB
     end
     
     subgraph Condition["condition.schema.json"]
-        T --> COND[Conditions]
+        C --> COND[Conditions]
+        T --> COND
         D --> COND
         L --> COND
         COND --> Simple["Simple: variable op value"]
@@ -121,6 +122,7 @@ erDiagram
     
     Step ||--o{ Action : performs
     
+    Checkpoint |o--o| Condition : "conditional on"
     Checkpoint ||--|{ CheckpointOption : has
     CheckpointOption ||--o| Effect : triggers
     
@@ -162,6 +164,7 @@ erDiagram
         string id PK
         string name
         string message
+        Condition condition
         boolean blocking
     }
     
@@ -299,14 +302,15 @@ A step represents an individual task within an activity.
 
 A checkpoint is a blocking decision point requiring user input.
 
-| Field      | Type               | Purpose                                     |
-| ---------- | ------------------ | ------------------------------------------- |
-| `id`       | string             | Unique identifier within activity           |
-| `name`     | string             | Checkpoint name                             |
-| `message`  | string             | Question to present to user                 |
-| `options`  | CheckpointOption[] | Available choices                           |
-| `required` | boolean            | Whether checkpoint must be answered         |
-| `blocking` | boolean            | Always true - checkpoints block progress    |
+| Field       | Type               | Purpose                                             |
+| ----------- | ------------------ | --------------------------------------------------- |
+| `id`        | string             | Unique identifier within activity                   |
+| `name`      | string             | Checkpoint name                                     |
+| `message`   | string             | Question to present to user                         |
+| `condition` | Condition          | Condition that must be true to present; if false, skip |
+| `options`   | CheckpointOption[] | Available choices                                   |
+| `required`  | boolean            | Whether checkpoint must be answered                 |
+| `blocking`  | boolean            | Always true - checkpoints block progress            |
 
 #### Decision
 
@@ -565,6 +569,12 @@ Checkpoints pause execution and require user input:
       "id": "checkpoint-1",
       "name": "Confirmation Checkpoint",
       "message": "Do you want to proceed?",
+      "condition": {
+        "type": "simple",
+        "variable": "needs_confirmation",
+        "operator": "==",
+        "value": true
+      },
       "required": true,
       "blocking": true,
       "options": [
@@ -588,6 +598,8 @@ Checkpoints pause execution and require user input:
   ]
 }
 ```
+
+The `condition` field uses the same formal condition schema as steps, transitions, decisions, and loops (`condition.schema.json`). If omitted, the checkpoint is always presented.
 
 **Checkpoint Option Effects:**
 - `setVariable` - Set workflow variables
@@ -698,7 +710,7 @@ Triggers allow an activity to invoke another workflow:
 
 ## Condition Schema
 
-The condition schema (`condition.schema.json`) defines expressions for controlling transitions, decisions, and loops.
+The condition schema (`condition.schema.json`) defines expressions for controlling transitions, decisions, loops, and checkpoints.
 
 ### Simple Conditions
 
