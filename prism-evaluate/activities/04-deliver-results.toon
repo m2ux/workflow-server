@@ -1,0 +1,26 @@
+id: deliver-results
+version: 1.0.0
+name: Deliver Evaluation Results
+description: "Present the final evaluation results to the user. Reads and summarises the evaluation report, reports all artifact paths, and provides a structured summary of findings by dimension and severity."
+problem: "The evaluation produces multiple artifacts across multiple prism runs. The user needs a clear summary of what was produced, key metrics (finding counts by dimension and severity), the core finding, and paths to all deliverables."
+skills:
+  primary: compose-evaluation-report
+steps[4]:
+  - id: read-evaluation-report
+    name: Read Evaluation Report
+    description: "Read EVALUATION-REPORT.md from evaluation_report_path. Extract the executive summary: total findings by dimension and severity, the core finding, and top-priority recommendations."
+    required: true
+  - id: compile-metrics
+    name: Compile Evaluation Metrics
+    description: "From the evaluation report, compile: (1) finding count by dimension, (2) finding count by severity (Critical, High, Medium, Low), (3) dimensions evaluated, (4) number of prism runs triggered, (5) total analysis artifacts produced."
+    required: true
+  - id: present-results
+    name: Present Evaluation Results
+    description: "Present the evaluation results to the user in a structured format: (1) Evaluation summary with finding counts by dimension and severity, (2) Core finding highlight, (3) Top-priority recommendations, (4) Document index with paths to all deliverables: EVALUATION-REPORT.md, evaluation-plan.md, and all dimension-specific analysis artifacts."
+    required: true
+  - id: report-artifact-paths
+    name: Report All Artifact Paths
+    description: "List every artifact produced during the evaluation with its path, organised by dimension."
+    required: true
+outcome[1]:
+  - "Evaluation results presented to user with finding metrics and complete artifact index"
