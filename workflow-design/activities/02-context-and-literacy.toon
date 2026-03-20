@@ -19,20 +19,7 @@ modeOverrides:
     skipSteps[2]:
       - read-toon-examples
       - present-convention-summary
-    checkpoints[1]:
-      - id: constructs-confirmed
-        name: Audit Constructs Checkpoint
-        message: "Here are the schema constructs I will audit this workflow against. Is this the right set?"
-        options[2]:
-          - id: confirmed
-            label: "Yes, audit against these constructs"
-            description: Proceed with the compliance audit
-            effect:
-              setVariable:
-                schema_constructs_confirmed: true
-          - id: adjust
-            label: "Needs adjustment"
-            description: Add or remove constructs from the audit set
+    checkpoints[0]:
     transitionOverride: quality-review
 steps[6]:
   - id: load-schemas
