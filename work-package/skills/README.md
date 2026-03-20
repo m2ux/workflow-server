@@ -2,9 +2,9 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-## Skills (23 workflow-specific + 2 universal)
+## Skills (24 workflow-specific + 2 universal + 3 cross-workflow)
 
-The workflow uses 23 workflow-specific skills organized by capability, plus 2 universal orchestration skills from `meta/skills/`. Skills are referenced by activities through `primary` and `supporting` roles.
+The workflow uses 24 workflow-specific skills organized by capability, plus 2 universal orchestration skills from `meta/skills/` and 3 cross-workflow skill references. Skills are referenced by activities through `primary` and `supporting` roles.
 
 | # | Skill ID | Capability | Used By |
 |---|----------|------------|---------|
@@ -31,9 +31,19 @@ The workflow uses 23 workflow-specific skills organized by capability, plus 2 un
 | 20 | `summarize-architecture` | Architecture summary with UML-style diagrams for stakeholders | Post-Implementation Review, Strategic Review |
 | 21 | `create-adr` | Architecture Decision Record creation for significant decisions | Complete |
 | 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
-
+| 23 | `reconcile-assumptions` | Iterative assumption reconciliation through targeted code analysis | Design Philosophy, Requirements Elicitation, Research, Implementation Analysis, Plan & Prepare, Implement |
 
 > Skills `orchestrate-workflow` and `execute-activity` are **universal skills** in [meta/skills/](../../meta/skills/) — they apply to all workflows using the orchestrator/worker pattern.
+
+### Cross-Workflow Skill References
+
+The following skills are referenced by activities but defined in other workflows:
+
+| Skill ID | Source Workflow | Used By |
+|----------|----------------|---------|
+| `atlassian-operations` | [meta](../../meta/skills/07-atlassian-operations.toon) | Start Work Package, Assumptions Review |
+| `structural-analysis` | [prism](../../prism/skills/00-structural-analysis.toon) | Post-Implementation Review |
+| `portfolio-analysis` | [prism](../../prism/skills/02-portfolio-analysis.toon) | Codebase Comprehension |
 
 ---
 

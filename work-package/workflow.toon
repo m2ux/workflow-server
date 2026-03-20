@@ -179,6 +179,7 @@ variables[56]:
   - name: needs_further_discussion
     type: boolean
     description: Whether further stakeholder discussion is needed
+    defaultValue: false
   - name: needs_plan_revision
     type: boolean
     description: "Whether stakeholder feedback requires returning to plan-prepare for significant approach revision"

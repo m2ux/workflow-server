@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> v3.3.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.4.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
@@ -83,20 +83,20 @@ graph TD
 
 | # | Activity | Primary Skill | Supporting Skills | Checkpoints | artifactPrefix |
 |---|----------|--------------|-------------------|-------------|----------------|
-| 01 | [Start Work Package](activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts` | 8 | — |
-| 02 | [Design Philosophy](activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions` | 5 | `02` |
-| 14 | [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `manage-artifacts` | 3 | — |
-| 03 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions` | 3 | `03` |
-| 04 | [Research](activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions` | 4 | `04` |
-| 05 | [Implementation Analysis](activities/README.md#05-implementation-analysis) | `analyze-implementation` | `manage-artifacts`, `review-assumptions` | 2 | `05` |
-| 06 | [Plan & Prepare](activities/README.md#06-plan--prepare) | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan` | 4 | `06` |
-| 07 | [Assumptions Review](activities/README.md#07-assumptions-review) | `review-assumptions` | `manage-artifacts` | 3 | `07` |
-| 08 | [Implement](activities/README.md#08-implement) | `implement-task` | `review-assumptions`, `validate-build`, `manage-git` | 2 | `08` |
-| 09 | [Post-Impl Review](activities/README.md#09-post-implementation-review) | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture` | 5 | `09` |
+| 01 | [Start Work Package](activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts`, `atlassian-operations` | 8 | — |
+| 02 | [Design Philosophy](activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions`, `reconcile-assumptions` | 1 | `02` |
+| 14 | [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `manage-artifacts`, `portfolio-analysis` | 2 | — |
+| 03 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `03` |
+| 04 | [Research](activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions`, `reconcile-assumptions` | 2 | `04` |
+| 05 | [Implementation Analysis](activities/README.md#05-implementation-analysis) | `analyze-implementation` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `05` |
+| 06 | [Plan & Prepare](activities/README.md#06-plan--prepare) | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan`, `reconcile-assumptions` | 2 | `06` |
+| 07 | [Assumptions Review](activities/README.md#07-assumptions-review) | `review-assumptions` | `manage-artifacts`, `atlassian-operations` | 3 | `07` |
+| 08 | [Implement](activities/README.md#08-implement) | `implement-task` | `review-assumptions`, `reconcile-assumptions`, `validate-build`, `manage-git` | 4 | `08` |
+| 09 | [Post-Impl Review](activities/README.md#09-post-implementation-review) | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture`, `structural-analysis` | 3 | `09` |
 | 10 | [Validate](activities/README.md#10-validate) | `validate-build` | — | 0 | — |
-| 11 | [Strategic Review](activities/README.md#11-strategic-review) | `review-strategy` | — | 2 | `11` |
-| 12 | [Submit for Review](activities/README.md#12-submit-for-review) | `update-pr` | `respond-to-pr-review` | 3 | — |
-| 13 | [Complete](activities/README.md#13-complete) | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 1 | `13` |
+| 11 | [Strategic Review](activities/README.md#11-strategic-review) | `review-strategy` | — | 1 | `11` |
+| 12 | [Submit for Review](activities/README.md#12-submit-for-review) | `update-pr` | `respond-to-pr-review` | 2 | — |
+| 13 | [Complete](activities/README.md#13-complete) | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 0 | `13` |
 
 See [activities/README.md](activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
 
@@ -236,14 +236,15 @@ graph LR
 
 ---
 
-## Variables (52)
+## Variables (56)
 
-The workflow declares 52 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
+The workflow declares 56 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
 
 ### Core Identifiers
 
 | Variable | Type | Description |
 |----------|------|-------------|
+| `target_path` | string | Path to the target directory for this work package. All git operations are performed inside this directory. |
 | `planning_folder_path` | string | Path to planning folder: `.engineering/artifacts/planning/YYYY-MM-DD-{name}` |
 | `issue_number` | string | GitHub issue number (#N) or Jira issue key (PROJ-N) |
 | `issue_platform` | string | Issue tracking platform: `github` or `jira` |
@@ -295,7 +296,7 @@ The workflow declares 52 variables that drive control flow, store checkpoint sta
 | `post_jira_comment` | boolean | Whether to post assumptions to Jira |
 | `has_stakeholder_comment` | boolean | Whether stakeholder provided feedback |
 | `stakeholder_review_complete` | boolean | Whether stakeholder review is complete |
-| `needs_further_discussion` | boolean | Whether further stakeholder discussion is needed |
+| `needs_further_discussion` | boolean | Whether further stakeholder discussion is needed (default: `false`) |
 | `needs_plan_revision` | boolean | Whether stakeholder feedback requires returning to plan-prepare |
 | `ticket_refactor_needed` | boolean | Whether Jira ticket needs refactoring (review mode) |
 | `skip_assumption_review` | boolean | Whether to skip assumption review for current task |
@@ -322,28 +323,31 @@ See `workflow.toon` for the complete variable declarations with default values.
 
 ## Appendix: Workflow Rules
 
-The following rules are declared at the workflow level and apply to all activities:
+The following 12 rules are declared at the workflow level and apply to all activities:
 
 1. **PREREQUISITE:** Agents MUST read and follow `AGENTS.md` before starting any work.
 2. Agents must NOT proceed past checkpoints without user confirmation.
 3. Ask, don't assume — Clarify requirements before acting.
 4. Summarize, then proceed — Provide brief status before asking to continue.
 5. One task at a time — Complete current work before starting new work.
-6. Explicit approval — Get clear "yes" or "proceed" before major actions.
+6. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
 7. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-8. Never reference gitignored artifacts in PRs, issues, or ADRs — planning artifacts are local-only.
-9. Artifacts in `planning` and `reviews` locations are gitignored.
+8. **AUTOMATIC TRANSITION RULE:** The orchestrator MUST advance between activities automatically without asking the user. After an activity completes and artifacts are committed, evaluate the transition table and immediately dispatch the next activity. User interaction occurs ONLY at defined checkpoints within activities, NEVER between activities.
+9. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The receiving agent acts AS the orchestrator inline — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints via AskQuestion at top level. A persistent worker sub-agent executes activity steps and produces artifacts.
+10. **ORCHESTRATOR DISCIPLINE:** The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. It coordinates only. All domain work is delegated to the worker sub-agent.
+11. **CHECKPOINT YIELD RULE:** When a checkpoint references generated content, the worker MUST include that content in the `context` field of the checkpoint_pending yield. The orchestrator presents context before the AskQuestion call.
+12. **README PROGRESS RULE:** After each completed activity, the orchestrator MUST update the planning folder README.md: mark produced artifacts as complete, update status.
 
 ---
 
 ## Appendix: Artifact Locations
 
-| Location Key | Path | Gitignored | Purpose |
-|--------------|------|------------|---------|
-| `planning` | `{planning_folder_path}` | yes | Work package planning documents and review artifacts |
-| `reviews` | `.engineering/artifacts/reviews` | yes | PR review analysis documents |
-| `adr` | `.engineering/artifacts/adr` | no | Architecture Decision Records |
-| `comprehension` | `.engineering/artifacts/comprehension` | no | Persistent codebase knowledge artifacts (cumulative across work packages) |
+| Location Key | Path | Purpose |
+|--------------|------|---------|
+| `planning` | `{planning_folder_path}` | Work package planning documents and review artifacts |
+| `reviews` | `.engineering/artifacts/reviews` | PR review analysis documents |
+| `adr` | `.engineering/artifacts/adr` | Architecture Decision Records |
+| `comprehension` | `.engineering/artifacts/comprehension` | Persistent codebase knowledge artifacts (cumulative across work packages) |
 
 ---
 
