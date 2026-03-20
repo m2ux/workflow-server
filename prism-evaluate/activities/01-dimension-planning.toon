@@ -1,0 +1,73 @@
+id: dimension-planning
+version: 1.0.0
+name: Plan Dimension Analysis
+description: "Survey the target to understand its structure and content, map each evaluation dimension to prism pipeline modes and lenses, group dimensions by pipeline mode for execution, and write the evaluation plan artifact."
+problem: "Generic evaluation prompts miss target-specific content. A blockchain proposal needs different analytical focus than a product strategy document or a codebase architecture review. The dimension-to-lens mapping must be informed by the target's actual structure, claims, and content to produce meaningful findings."
+skills:
+  primary: plan-evaluation
+steps[5]:
+  - id: survey-target
+    name: Survey Target Structure
+    description: "Read and analyse the target at target_path. For documents: identify sections, key claims, stated goals, architectural decisions, resource assumptions, timeline commitments, cross-references. For codebases: identify modules, build system, dependencies, architecture patterns. Record a structural inventory and key topics that will inform the analysis_focus values for each dimension."
+    required: true
+  - id: map-dimensions
+    name: Map Dimensions to Lenses
+    description: "For each dimension in the dimensions array, select: (1) pipeline_mode — full-prism for deep consistency analysis, portfolio for breadth across complementary lenses, single for targeted single-lens evaluation. (2) lenses — prism resource indices. (3) analysis_focus — dimension-specific evaluation guidance referencing target content discovered during survey-target. (4) output_subdir — where prism will write artifacts. Apply lens_overrides where provided. Build the dimension_plan array."
+    required: true
+    actions[1]:
+      - action: set
+        variable: dimension_plan
+        description: "Set to the array of dimension-to-lens mappings"
+  - id: group-dimensions
+    name: Group Dimensions for Execution
+    description: "Group dimensions by pipeline mode into execution_groups. Full-prism dimensions each get their own group. Portfolio dimensions are combined into a single group with merged lens sets. Record execution order: full-prism groups first (deepest analysis), then portfolio groups."
+    required: true
+    actions[1]:
+      - action: set
+        variable: execution_groups
+        description: "Set to the array of execution groups"
+  - id: write-plan
+    name: Write Evaluation Plan Artifact
+    description: "Write the evaluation plan to {output_path}/evaluation-plan.md. Include: target overview, dimension-to-lens mapping table, execution groups with estimated sub-agent dispatch count, and analysis focus summaries per dimension."
+    required: true
+    actions[1]:
+      - action: set
+        variable: evaluation_plan_path
+        description: "Set to the written file path"
+  - id: present-plan
+    name: Present Dimension Plan
+    description: "Present the dimension plan summary: which dimensions map to which prism modes and lenses, execution group structure, and total estimated sub-agent dispatches."
+    required: true
+checkpoints[1]:
+  - id: confirm-plan
+    name: Dimension Plan Confirmation
+    message: "Please confirm the dimension-to-lens mapping and execution plan before triggering prism analyses."
+    options[2]:
+      - id: accept
+        label: Proceed
+        description: "Execute the evaluation plan"
+        effect:
+          setVariable:
+            dimensions_confirmed: true
+      - id: adjust
+        label: Adjust plan
+        description: "Modify the lens mapping, pipeline modes, or execution grouping"
+        effect:
+          transitionTo: dimension-planning
+    required: true
+    blocking: true
+rules[3]:
+  - "EVIDENCE-BASED FOCUS: Every analysis_focus value must reference specific content from the target discovered during survey-target. Do not use generic focus descriptions. If a proposal makes specific claims about market size, name those claims in the Veracity dimension's analysis_focus."
+  - "TRIGGER ISOLATION: No analysis_focus value may contain the strings 'security audit', 'security review', or the bare word 'audit' as the primary descriptor. These would activate prism's built-in audit-finalize activity. Use descriptive evaluation language: 'evaluate consistency of...', 'assess veracity of claims regarding...', 'analyse feasibility constraints for...'."
+  - "LENS OVERRIDE RESPECT: When lens_overrides provides a mapping for a dimension, use it without modification. The user's explicit lens choice takes precedence over the derived mapping."
+artifacts[1]:
+  - id: evaluation-plan
+    name: "evaluation-plan.md"
+    location: evaluation
+    description: "Target overview, dimension-to-lens mapping, and execution group plan"
+outcome[2]:
+  - "Evaluation plan written with dimension-to-lens mapping and execution groups"
+  - "dimension_plan and execution_groups populated for the execute-analysis activity"
+transitions[1]:
+  - to: execute-analysis
+    isDefault: true

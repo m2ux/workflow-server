@@ -1,0 +1,60 @@
+id: scope-definition
+version: 1.0.0
+name: Define Evaluation Scope
+description: "Collect the evaluation target, user's description of what to evaluate, and output path. Classify the target type, derive or validate evaluation dimensions, and present the scope for confirmation before proceeding to dimension planning."
+problem: "The evaluation requires a confirmed target, a clear description of evaluation goals, validated dimensions, and an organised output directory before analysis planning can begin."
+skills:
+  primary: plan-evaluation
+steps[5]:
+  - id: collect-inputs
+    name: Collect Evaluation Inputs
+    description: "Extract from the user's request: (1) target_path, (2) evaluation_description, (3) output_path, (4) dimensions (if explicitly provided), (5) lens_overrides (if provided). If output_path is not specified, derive it from the target name and current date."
+    required: true
+  - id: classify-target
+    name: Classify Target
+    description: "Examine target_path to determine target_type: 'document' (single file), 'document-set' (directory of documents without build infrastructure), 'codebase' (directory with build files), or 'mixed'. Verify the target exists and contains analysable content. Report the top-level structure and estimated size."
+    required: true
+    actions[1]:
+      - action: set
+        variable: target_type
+        description: "Set to the classified target type"
+  - id: derive-dimensions
+    name: Derive Evaluation Dimensions
+    description: "If dimensions were not provided by the user, derive them from evaluation_description and target_type. For proposal/strategy documents: Consistency, Veracity, Plausibility, Feasibility. For codebases: Correctness, Robustness, Architecture, Maintainability. For other targets: infer from the evaluation description. Present the dimensions with names, descriptions, and focus areas."
+    required: true
+    actions[1]:
+      - action: set
+        variable: dimensions
+        description: "Set to the derived or user-supplied dimensions array"
+  - id: create-output-directory
+    name: Create Output Directory
+    description: "Create the output_path directory if it does not exist."
+    required: true
+  - id: summarize-scope
+    name: Summarize Evaluation Scope
+    description: "Present a summary of the evaluation scope: target path and type, detected structure and size, evaluation description and goals, dimensions with descriptions, output directory, and any lens_overrides."
+    required: true
+checkpoints[1]:
+  - id: confirm-scope
+    name: Evaluation Scope Confirmation
+    message: "Please confirm the evaluation scope, dimensions, and configuration before proceeding to dimension planning."
+    options[2]:
+      - id: accept
+        label: Proceed
+        description: "Begin planning the dimension-to-lens mapping"
+        effect:
+          setVariable:
+            scope_confirmed: true
+      - id: adjust
+        label: Adjust scope
+        description: "Modify the target, description, dimensions, or output path before proceeding"
+        effect:
+          transitionTo: scope-definition
+    required: true
+    blocking: true
+outcome[2]:
+  - "Evaluation scope confirmed with validated target path, target type, and dimensions"
+  - "Output directory created"
+transitions[1]:
+  - to: dimension-planning
+    isDefault: true
