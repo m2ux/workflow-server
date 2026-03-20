@@ -143,6 +143,8 @@ transitions[2]:
       variable: elicitation_complete
       operator: ==
       value: false
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark requirements elicitation artifacts as ✅ Complete.
 outcome[3]:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods

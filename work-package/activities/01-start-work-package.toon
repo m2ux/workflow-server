@@ -78,7 +78,7 @@ modeOverrides:
       - review_base_branch - Base branch of PR being reviewed
 entryActions[1]{action,message}:
   log,Starting issue management
-steps[13]:
+steps[15]:
   - id: resolve-target
     name: Resolve Target Directory
     description: "Read target_path from state variables (set during workflow initialization). Verify the directory exists. All git operations (branch, PR) will be performed inside this directory."
@@ -90,7 +90,27 @@ steps[13]:
     description: "Auto-detect project type inside target_path: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
   - id: check-issue
     name: Check for Existing Issue
-    description: "Check whether the user provided an issue key or URL. (1) If no issue reference found, present the issue-verification checkpoint and stop — do NOT call any Jira or GitHub tools. (2) If an issue key is provided, detect the platform from the key format: '#N' or bare number → GitHub, 'PROJ-N' → Jira. Set issue_platform accordingly. (3) For Jira verification: load the atlassian-operations supporting skill, call getAccessibleAtlassianResources FIRST to obtain cloudId, THEN call getJiraIssue to verify the issue exists. Capture issue_number and issue_url. (4) For GitHub verification: run 'gh issue view <number>' to verify. Capture issue_number and issue_url."
+    description: "Check whether the user provided an issue key or URL. If no issue reference found, present the issue-verification checkpoint. If a key is provided, detect the platform from the format: '#N' or bare number → GitHub, 'PROJ-N' → Jira."
+    actions[1]:
+      - action: set
+        variable: issue_platform
+        description: "Set to 'github' or 'jira' based on key format detection"
+  - id: verify-jira-issue
+    name: Verify Jira Issue
+    description: "Load the atlassian-operations supporting skill. Call getAccessibleAtlassianResources to obtain cloudId, then call getJiraIssue to verify the issue exists. Capture issue_number and issue_url."
+    condition:
+      type: simple
+      variable: issue_platform
+      operator: "=="
+      value: jira
+  - id: verify-github-issue
+    name: Verify GitHub Issue
+    description: "Run 'gh issue view <number>' to verify the issue exists. Capture issue_number and issue_url."
+    condition:
+      type: simple
+      variable: issue_platform
+      operator: "=="
+      value: github
   - id: create-issue
     name: Create Issue
     description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."

@@ -13,7 +13,7 @@ skills:
     - manage-artifacts
     - review-assumptions
     - reconcile-assumptions
-required: true
+required: false
 estimatedTime: 10-20m
 rules[1]:
   - "Analysis protocol and domain rules are in the implementation-analysis skill"
@@ -120,6 +120,8 @@ checkpoints[2]:
         description: No analysis assumptions worth documenting
 transitions[1]{to,isDefault}:
   plan-prepare,true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark implementation analysis artifacts as ✅ Complete.
 outcome[3]:
   - Current state documented with baseline metrics
   - Gaps identified and prioritized

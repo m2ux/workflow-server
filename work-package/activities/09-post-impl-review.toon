@@ -21,9 +21,9 @@ rules[7]:
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
   - "All three automated reviews (code, test suite, architecture) should be completed"
   - "Adoption workflows must still complete quality reviews"
-  - "ENTRY: Run git pull to ensure branch is up to date before evaluating diffs"
-  - "ENTRY: Parse git diff to extract list of changed files"
-  - "ENTRY: Create file index table (Row | Path | File) with review time estimate (30 sec/change), write to change-block-index.md"
+  - "Run git pull to ensure branch is up to date before evaluating diffs"
+  - "Parse git diff to extract list of changed files"
+  - "Create file index table (Row | Path | File) with review time estimate (30 sec/change), write to change-block-index.md"
 modeOverrides:
   review:
     description: "Compare PR changes against expected changes from implementation analysis. Document findings for PR author."
@@ -31,8 +31,11 @@ modeOverrides:
       - Compare actual PR changes against 'expected_changes' documented in implementation analysis
       - Identify deviations - missing changes, unexpected changes, alternative approaches
       - Document findings as review comments for PR author, not fixes to apply
-entryActions[1]{action,message}:
+entryActions[4]{action,message}:
   log,Starting post-implementation review
+  validate,Ensure branch is up to date — run git pull before evaluating diffs
+  set,Parse git diff to extract list of changed files into change inventory
+  log,Create file index table with review time estimate and write to change-block-index.md
 artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"
@@ -83,8 +86,15 @@ steps[6]:
         value: complex
   - id: dispatch-prism
     name: Structural Analysis (Full Prism)
-    description: "For complex work packages, the orchestrator dispatches a fresh prism orchestrator sub-agent following the orchestrate-prism skill (get_skill skill_id: 'orchestrate-prism', workflow_id: 'prism'). Pass target (changed files), pipeline_mode: 'full-prism', and output_path (planning folder). The prism orchestrator runs the 3-pass isolated pipeline autonomously and returns artifact paths. Capture prism_artifact_paths into workflow state."
+    description: "For complex work packages, trigger the prism workflow with full-prism pipeline mode. The prism workflow runs the 3-pass isolated pipeline (structural → adversarial → synthesis) autonomously and returns artifact paths."
     required: true
+    triggers:
+      workflow: prism
+      description: "Dispatch full 3-pass prism structural analysis for complex work packages"
+      passContext[3]:
+        - target
+        - output_path
+        - pipeline_mode
     condition:
       type: simple
       variable: complexity

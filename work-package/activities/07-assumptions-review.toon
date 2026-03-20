@@ -133,6 +133,8 @@ transitions[4]:
       value: true
   - to: implement
     isDefault: true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark assumptions review artifacts as ✅ Complete.
 outcome[4]:
   - Plan summary and assumptions posted to issue tracker for stakeholder review
   - Stakeholder feedback incorporated into assumptions log

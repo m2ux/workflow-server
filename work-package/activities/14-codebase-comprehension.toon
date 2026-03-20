@@ -135,7 +135,7 @@ loops[1]:
       - id: revise-open-questions
         name: Revise open questions
         description: "Review findings from this iteration (including portfolio lens findings) against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation — including structural properties revealed by the lenses. Write the updated section to the artifact. If all questions are now Resolved, set has_open_questions to false and needs_comprehension to false — loop exits. Otherwise present the revised table as context for the sufficiency checkpoint."
-transitions[3]:
+transitions[4]:
   - to: requirements-elicitation
     condition:
       type: simple
@@ -160,6 +160,7 @@ transitions[3]:
       variable: skip_optional_activities
       operator: ==
       value: true
+  - to: implementation-analysis
     isDefault: true
 outcome[5]:
   - Mental model of codebase architecture established

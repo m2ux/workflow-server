@@ -56,14 +56,36 @@ steps[5]:
         message: "Set to true if all checks passed; false otherwise"
   - id: fix-failures
     name: Fix any failures
-    description: "Analyze root cause of test/build/lint failures, fix, and re-run. Repeat until all pass."
+    description: "Analyze root cause of failures, fix, and re-validate."
     condition:
       type: simple
       variable: has_failures
       operator: ==
       value: true
+    loops[1]:
+      - id: fix-revalidate-cycle
+        name: Fix and Revalidate Cycle
+        type: doWhile
+        condition:
+          type: simple
+          variable: has_failures
+          operator: "=="
+          value: true
+        maxIterations: 10
+        steps[3]:
+          - id: analyze-failure
+            name: Analyze Failure Root Cause
+            description: "Identify the root cause of each test/build/lint failure."
+          - id: apply-fix
+            name: Apply Fix
+            description: "Implement the fix for the identified root cause."
+          - id: revalidate
+            name: Re-run Validation
+            description: "Re-run the failing checks. Update has_failures based on results."
 transitions[1]{to,isDefault}:
   strategic-review,true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark validation results as ✅ Complete.
 outcome[2]:
   - All tests passing
   - Build successful
