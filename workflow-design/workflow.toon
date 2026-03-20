@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.1.0
+version: 1.2.0
 title: Workflow Design Workflow
 description: "Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details. In review mode, audits an existing workflow against the 13 design principles and produces a compliance report. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints."
 author: m2ux
@@ -26,7 +26,15 @@ rules[14]:
   - "Non-destructive updates — compare new content against existing content and flag any material being removed"
   - "Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/). Root README documents the workflow overview, modes, activity sequence, variables, and file structure. Subfolder READMEs document the contents of that folder with tables and protocol details. Follow the style established by the prism workflow."
 artifactLocations:
-  workflows: workflows/
+  planning:
+    path: "{planning_folder_path}"
+    gitignored: false
+  workflows:
+    path: "workflows/"
+    gitignored: false
+  reviews:
+    path: ".engineering/artifacts/reviews"
+    gitignored: false
 modes[2]:
   - id: update
     name: Update Mode
@@ -62,7 +70,10 @@ modes[2]:
     defaults:
       is_review_mode: true
     resource: resources/04-review-mode-guide.md
-variables[13]:
+variables[14]:
+  - name: planning_folder_path
+    type: string
+    description: "Path to the unique planning folder for this workflow execution (e.g., .engineering/artifacts/planning/workflow-design-{workflow_id})"
   - name: is_update_mode
     type: boolean
     description: "Whether update mode is active (modifying an existing workflow rather than creating a new one)"

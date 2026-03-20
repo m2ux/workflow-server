@@ -22,7 +22,7 @@ Five markdown resources providing the design principles, construct inventories, 
 
 ### 00 — Design Principles
 
-The 13 design principles derived from analysis of 175+ historical workflow creation sessions across two projects. Each principle entry includes the rule statement and the structural enforcement mechanism that backs it. This resource is the authoritative checklist for the quality review activity.
+The 14 design principles derived from analysis of 175+ historical workflow creation sessions across two projects. Each principle entry includes the rule statement and the structural enforcement mechanism that backs it. This resource is the authoritative checklist for the quality review activity.
 
 ### 01 — Schema Construct Inventory
 
