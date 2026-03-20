@@ -27,21 +27,8 @@ modeOverrides:
         description: "Save the compliance report as a markdown file in the .engineering/artifacts/reviews/ directory with naming convention: YYYY-MM-DD-{workflow-id}-compliance-review.md"
       - id: commit-report
         name: Commit Report
-        description: "Stage and commit the compliance report to the engineering submodule."
-    checkpoints[1]:
-      - id: report-saved
-        name: Report Saved Checkpoint
-        message: "Compliance report saved. Would you like to proceed with fixing the identified issues?"
-        options[2]:
-          - id: proceed-to-fix
-            label: "Yes, fix issues now"
-            description: Restart in update mode to apply recommended fixes
-            effect:
-              setVariable:
-                user_wants_fixes: true
-          - id: done
-            label: "No, review is complete"
-            description: End the workflow
+        description: "Stage and commit the compliance report to the parent repository (.engineering/artifacts/reviews/ is a regular directory, not a submodule)."
+    checkpoints[0]:
 steps[6]:
   - id: run-schema-validation
     name: Run Schema Validation

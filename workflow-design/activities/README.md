@@ -25,7 +25,7 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Mode overrides:**
 - **Update:** Adds steps to load existing workflow, parse change request, and present current structure. Adds `change-request-confirmed` checkpoint.
-- **Review:** Adds steps to load target workflow, enumerate contents, and present review scope. Skips `accept-description`, `classify-operation`, `extract-design-intent`. Adds `review-scope-confirmed` checkpoint.
+- **Review:** Adds steps to load target workflow, enumerate contents, and present review scope. Skips `accept-description`, `classify-operation`, `extract-design-intent`. No blocking checkpoint — proceeds directly after presenting scope.
 
 ---
 
@@ -44,7 +44,7 @@ Nine sequential activities that guide an agent from free-form description to val
 5. **identify-applicable-constructs** — Identify which schema constructs apply to this workflow
 6. **present-convention-summary** — Summarize observed conventions for user confirmation
 
-**Checkpoints:** `format-literacy` (TOON format understanding), `constructs-confirmed` (schema constructs identified).
+**Checkpoints:** `format-literacy` (TOON format understanding), `constructs-confirmed` (schema constructs identified). In review mode, `format-literacy` is skipped and `constructs-confirmed` is adapted to audit context.
 
 **Transitions:** Default to [Requirements Refinement](#03-requirements-refinement) (gated by both confirmed variables). In review mode, `transitionOverride` to [Quality Review](#08-quality-review).
 
@@ -160,4 +160,4 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Transitions:** Terminal activity.
 
-**Mode:** In review mode, skips validation/scope/README steps and instead saves the compliance report and commits it to the engineering submodule.
+**Mode:** In review mode, skips validation/scope/README steps and instead saves the compliance report and commits it to the parent repository.
