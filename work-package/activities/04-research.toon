@@ -98,6 +98,8 @@ checkpoints[2]:
         description: No synthesis assumptions worth documenting
 transitions[1]{to,isDefault}:
   implementation-analysis,true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark research artifacts as ✅ Complete.
 outcome[3]:
   - Best practices identified from multiple sources
   - Patterns validated and mapped to requirements

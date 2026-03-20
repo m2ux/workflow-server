@@ -78,7 +78,12 @@ steps[7]:
     description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
   - id: determine-path
     name: Determine Workflow Path
-    description: "Based on problem complexity and clarity, determine which optional activities are needed. Always set needs_comprehension to true — codebase comprehension is mandatory before planning."
+    description: "Based on problem complexity and clarity, determine which optional activities are needed."
+    actions[1]:
+      - action: set
+        variable: needs_comprehension
+        value: true
+        description: "Codebase comprehension is mandatory before planning"
   - id: document-philosophy
     name: Document Design Philosophy
     description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
@@ -162,6 +167,8 @@ checkpoints[1]:
 transitions[1]:
   - to: codebase-comprehension
     isDefault: true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark design philosophy artifacts as ✅ Complete.
 outcome[5]:
   - Problem clearly defined and classified
   - Complexity assessed
