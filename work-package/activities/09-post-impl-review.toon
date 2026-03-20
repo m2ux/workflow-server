@@ -132,7 +132,11 @@ checkpoints[3]:
         description: All changes look good, proceed with automated reviews
   - id: block-interview
     name: Block Interview Checkpoint
-    prerequisite: "Repeats for each entry in flagged_block_indices"
+    condition:
+      type: simple
+      variable: has_flagged_blocks
+      operator: "=="
+      value: true
     message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. What's the issue with this change?"
     blocking: true
     options[3]:

@@ -49,7 +49,10 @@ artifacts[1]:
 checkpoints[3]:
   - id: comment-review
     name: Plan and Assumptions Comment Review
-    prerequisite: "Only present when issue_platform is set"
+    condition:
+      type: simple
+      variable: issue_platform
+      operator: exists
     message: "Posting this comment to {issue_platform} for stakeholder review. Posting in 30s unless you intervene."
     blocking: false
     defaultOption: post-comment
@@ -72,7 +75,11 @@ checkpoints[3]:
             post_jira_comment: false
   - id: stakeholder-response
     name: Stakeholder Response Checkpoint
-    prerequisite: "Only present when has_open_assumptions is true. If all assumptions were resolved through code analysis, this checkpoint is skipped and stakeholder_review_complete is set to true automatically."
+    condition:
+      type: simple
+      variable: has_open_assumptions
+      operator: "=="
+      value: true
     message: "The plan and assumptions have been posted for stakeholder review. Once stakeholders have reviewed, provide their feedback here."
     blocking: true
     options[2]:
@@ -90,7 +97,11 @@ checkpoints[3]:
             has_stakeholder_comment: true
   - id: feedback-triage
     name: Feedback Triage Checkpoint
-    prerequisite: "Only present when has_stakeholder_comment is true"
+    condition:
+      type: simple
+      variable: has_stakeholder_comment
+      operator: "=="
+      value: true
     message: "Based on the stakeholder feedback, what level of revision is needed?"
     blocking: true
     options[3]:

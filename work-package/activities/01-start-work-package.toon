@@ -185,7 +185,11 @@ checkpoints[8]:
             issue_skipped: true
   - id: branch-check
     name: Branch Check Checkpoint
-    prerequisite: "Only present when on_feature_branch is true"
+    condition:
+      type: simple
+      variable: on_feature_branch
+      operator: "=="
+      value: true
     message: "You're currently on branch '{current_branch}'. Would you like to use this branch or create a new one?"
     options[2]:
       - id: use-existing
@@ -202,7 +206,11 @@ checkpoints[8]:
             use_existing_branch: false
   - id: pr-check
     name: PR Check Checkpoint
-    prerequisite: "Only present when pr_exists is true"
+    condition:
+      type: simple
+      variable: pr_exists
+      operator: "=="
+      value: true
     message: "Found existing PR #{existing_pr_number} for this branch. Would you like to use it or create a new one?"
     options[2]:
       - id: use-existing
@@ -220,7 +228,11 @@ checkpoints[8]:
             use_existing_pr: false
   - id: platform-selection
     name: Platform Selection Checkpoint
-    prerequisite: "Only present when needs_issue_creation is true"
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: "=="
+      value: true
     message: "Which platform should I create this issue in?"
     options[2]:
       - id: github
@@ -237,7 +249,11 @@ checkpoints[8]:
             issue_platform: jira
   - id: jira-project-selection
     name: Jira Project Selection Checkpoint
-    prerequisite: "Only present when issue_platform is jira"
+    condition:
+      type: simple
+      variable: issue_platform
+      operator: "=="
+      value: jira
     message: "Which Jira project should I create this issue in?"
     options[2]:
       - id: select
@@ -248,7 +264,11 @@ checkpoints[8]:
         description: Provide a specific project key
   - id: issue-type-selection
     name: Issue Type Selection Checkpoint
-    prerequisite: "Only present when needs_issue_creation is true"
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: "=="
+      value: true
     message: "What type of issue is this?"
     options[5]:
       - id: feature
@@ -283,7 +303,11 @@ checkpoints[8]:
             issue_type: epic
   - id: issue-review
     name: Issue Review Checkpoint
-    prerequisite: "Only present when needs_issue_creation is true"
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: "=="
+      value: true
     message: "Here's the drafted issue. Creating in 30s unless you intervene."
     blocking: false
     defaultOption: create
@@ -306,7 +330,11 @@ checkpoints[8]:
             issue_cancelled: true
   - id: pr-creation
     name: PR Creation Checkpoint
-    prerequisite: "Only present when issue_cancelled is false"
+    condition:
+      type: simple
+      variable: issue_cancelled
+      operator: "=="
+      value: false
     message: "Issue confirmed. Proceed to create feature branch and draft PR?"
     options[2]:
       - id: proceed
