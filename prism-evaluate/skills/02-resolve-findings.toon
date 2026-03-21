@@ -1,0 +1,92 @@
+id: resolve-findings
+version: 1.0.0
+capability: Propose and apply finding-specific mitigations through structured one-by-one dialogue with the user
+
+description: "Given an evaluation report and its target, classify each finding by mitigation difficulty, propose specific mitigations that preserve claim intent where possible, and conduct a structured dialogue presenting one finding at a time. Produces a mitigation plan artifact and optionally applies accepted changes to the target."
+
+inputs[4]:
+  - id: evaluation_report_path
+    description: "Path to the EVALUATION-REPORT.md produced by the consolidate-report activity"
+    required: true
+  - id: target_path
+    description: "Path to the original document, proposal, or artifact set that was evaluated"
+    required: true
+  - id: output_path
+    description: "Directory for writing the MITIGATION-PLAN.md artifact"
+    required: true
+  - id: evaluation_description
+    description: "Original evaluation description for context"
+    required: true
+
+protocol:
+  load-and-classify[5]:
+    - "Read the evaluation report and extract all findings with IDs, severities, titles, descriptions, and referenced target sections"
+    - "Read the target document and identify the specific text, sections, and claims referenced by each finding"
+    - "Classify each finding into a mitigation tier: T1 (direct correction — wrong numbers, terminology), T2 (reframing — claims needing qualification), T3 (novel mitigation — new mechanisms or content needed), T4 (structural/immovable — external constraints requiring acknowledgement)"
+    - "Order findings within each tier by severity (Critical first, then High, Medium, Low)"
+    - "Present the tier classification summary before beginning the dialogue"
+
+  propose-mitigation-by-tier[4]:
+    - "T1 (Direct Correction): Identify the incorrect text, provide the corrected replacement, and cite the source for the correction. These are simple text swaps."
+    - "T2 (Reframing & Caveating): Identify the claim, explain why it needs qualification, and propose replacement text that preserves the claim's intent while adding honest scoping. Show the before/after in context."
+    - "T3 (Novel Mitigation): Read the finding's critique deeply. Propose a novel mechanism, architectural addition, or content section that addresses the critique without requiring the claim to be struck. Explain how the proposed solution works, what it adds to the target, and why it resolves the finding. Show the proposed new text in full."
+    - "T4 (Structural/Immovable): Explain why no mitigation can resolve this finding within the target itself. Propose acknowledgement language that honestly states the constraint and how the target relates to it."
+
+  dialogue-protocol[5]:
+    - "Present one finding at a time — never batch findings even within the same tier"
+    - "For each finding, present: (1) finding ID and severity, (2) the claim from the target with its location, (3) the evaluation's critique, (4) the proposed mitigation with replacement or new text"
+    - "Collect the user's decision: accept, modify, skip, or discuss"
+    - "If the user selects 'discuss', engage in clarifying dialogue. Incorporate the user's context into a revised proposal. Re-present and re-collect."
+    - "If the user selects 'modify', record the user's modification as the accepted version"
+
+  compile-plan[4]:
+    - "After all findings are presented, compile MITIGATION-PLAN.md"
+    - "Structure: Summary table (ID, severity, tier, user decision), detailed changes grouped by tier, implementation priority order"
+    - "Include the full proposed text for each accepted mitigation so the plan is self-contained"
+    - "Verify every finding from the report has a corresponding entry (accepted, modified, or skipped)"
+
+  apply-changes[3]:
+    - "Apply accepted mitigations in priority order: T1 first, then T2, T3, T4"
+    - "For each change, verify the target text matches expectations before applying"
+    - "After all changes, verify each was applied correctly"
+
+output[2]:
+  - id: mitigation-plan
+    description: "Comprehensive mitigation plan with all finding dispositions"
+    artifact:
+      name: "MITIGATION-PLAN.md"
+    components:
+      summary_table: "Finding ID, severity, tier, decision for every finding"
+      detailed_mitigations: "Full change specifications grouped by tier"
+      implementation_priority: "Ordered list of changes for application"
+  - id: modified-target
+    description: "The target document with accepted mitigations applied"
+
+tools:
+  read_file:
+    when: "Reading the evaluation report and target document"
+    usage: "Extract findings and identify target text for each finding"
+  write_file:
+    when: "Writing the MITIGATION-PLAN.md artifact"
+    params: "path: {output_path}/MITIGATION-PLAN.md"
+  str_replace:
+    when: "Applying individual mitigations to the target document"
+    usage: "Replace specific text in the target with mitigation text"
+  ask_question:
+    when: "Presenting each finding to the user and collecting their decision"
+    usage: "One question per finding with options: accept, modify, skip, discuss"
+
+errors:
+  finding_not_located:
+    cause: "A finding references target text that cannot be located in the current target"
+    recovery: "Report the finding as unlocatable. Present the finding to the user with a note that the referenced text could not be found — the target may have been modified since the evaluation."
+  apply_conflict:
+    cause: "Earlier mitigations shifted text locations, preventing a later mitigation from matching"
+    recovery: "Search for the expected text in the modified target. If found at a different location, apply there. If not found, report the conflict and skip."
+
+rules:
+  one-at-a-time: "Each finding is presented individually. The dialogue is sequential — present, propose, collect decision, advance. Never combine multiple findings."
+  preserve-intent: "Mitigations should preserve the author's intent and the claim's value. Propose novel solutions that address critiques while keeping claims, rather than striking claims."
+  non-feasible-flag: "Findings where no mitigation can address the critique without removing the claim entirely are flagged as non-feasible with an explicit explanation."
+  user-context: "When the user provides context during discussion that changes the mitigation approach, incorporate that context. The user's domain knowledge takes precedence over generic mitigation strategies."
+  tier-ordering: "Present findings in tier order (T1 → T2 → T3 → T4) and within each tier by severity (Critical → High → Medium → Low). This ensures the easiest changes are handled first."
