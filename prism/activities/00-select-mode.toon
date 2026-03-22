@@ -45,7 +45,7 @@ checkpoints[1]:
       type: simple
       variable: pipeline_mode
       operator: notExists
-    options[5]:
+    options[11]:
       - id: accept
         label: Proceed
         description: "Run the analysis with the recommended configuration"
@@ -73,8 +73,80 @@ checkpoints[1]:
         effect:
           setVariable:
             pipeline_mode: behavioral
+      - id: switch-dispute
+        label: Dispute
+        description: "2 orthogonal prisms + disagreement synthesis. 3 calls, lightweight self-correction."
+        effect:
+          setVariable:
+            pipeline_mode: dispute
+      - id: switch-subsystem
+        label: Subsystem
+        description: "AST split + per-region prism assignment + cross-subsystem synthesis. Code-only."
+        effect:
+          setVariable:
+            pipeline_mode: subsystem
+      - id: switch-verified
+        label: Verified
+        description: "L12 + gap detection (boundary+audit) + re-analysis with corrections. Highest accuracy."
+        effect:
+          setVariable:
+            pipeline_mode: verified
+      - id: switch-reflect
+        label: Reflect
+        description: "L12 + meta-analysis (claim on L12 output) + constraint synthesis. 3 calls."
+        effect:
+          setVariable:
+            pipeline_mode: reflect
+      - id: switch-smart
+        label: Smart
+        description: "Adaptive chain: prereq + knowledge fill + analysis + dispute + profile. System decides pipeline."
+        effect:
+          setVariable:
+            pipeline_mode: smart
+      - id: switch-adaptive
+        label: Adaptive
+        description: "Depth escalation: SDL -> L12 -> full-prism. Stops at first adequate signal."
+        effect:
+          setVariable:
+            pipeline_mode: adaptive
     required: true
     blocking: true
-transitions[1]:
+transitions[7]:
+  - to: dispute-pass
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: "=="
+      value: dispute
+  - to: subsystem-pass
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: "=="
+      value: subsystem
+  - to: verified-pass
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: "=="
+      value: verified
+  - to: reflect-pass
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: "=="
+      value: reflect
+  - to: smart-pass
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: "=="
+      value: smart
+  - to: adaptive-pass
+    condition:
+      type: simple
+      variable: pipeline_mode
+      operator: "=="
+      value: adaptive
   - to: structural-pass
     isDefault: true

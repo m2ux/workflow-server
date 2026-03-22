@@ -1,0 +1,72 @@
+id: smart-analysis
+version: 1.0.0
+capability: Automatically compose an analysis pipeline based on input characteristics — the only mode where the system decides the pipeline topology
+
+description: "Smart mode chains prereq → knowledge fill → {subsystem OR L12} → dispute → profile. Each step is conditional: prereq runs always, knowledge fill runs if questions extracted, analysis mode depends on code structure, dispute runs if analysis produced sufficient output. The system decides each step."
+
+inputs[3]:
+  - id: target-content
+    description: "The code or text to analyze (file path or inline content)"
+  - id: target-type
+    description: "Whether the input is 'code' or 'general'"
+  - id: output-path
+    description: "Directory for smart-prereq.md, smart-analysis.md (or subsystem-*.md), and smart-dispute-*.md"
+
+protocol:
+  prereq-scan[2]:
+    - "Dispatch prereq (resource 59) to a fresh worker"
+    - "Extract atomic questions from output for knowledge fill"
+  knowledge-fill[2]:
+    - "If questions were extracted, attempt to fill via available knowledge sources"
+    - "Construct <verified_knowledge> context block with answered questions"
+  select-mode[3]:
+    - "For code: attempt AST decomposition via _split_into_subsystems logic"
+    - "If >1 subsystem found: use subsystem mode (different prisms per region)"
+    - "If 1 subsystem or general target: use L12 single pass (or 3-pass for general)"
+  execute-analysis[2]:
+    - "Run the selected analysis mode with enriched content (verified facts injected)"
+    - "Capture output for dispute decision"
+  dispute-correction[3]:
+    - "Check analysis output quality: look for conservation law presence and output length"
+    - "If adequate output (>200 chars): run dispute for self-correction"
+    - "If analysis found a conservation law, dispute is supplementary; if not, dispute is critical"
+
+output[1]:
+  - id: smart-result
+    description: "Paths and pipeline trace for the smart adaptive run"
+    components:
+      prereq_path: "Filesystem path to smart-prereq.md"
+      analysis_paths: "Array of paths to smart-analysis.md and/or subsystem-*.md as produced"
+      dispute_paths: "Array of paths to smart-dispute-*.md (empty if dispute skipped)"
+      pipeline_steps: "Array of step names executed in order"
+
+rules:
+  auto-composition: "Smart is the only mode that composes its pipeline automatically. Do not ask the user which sub-mode to use — decide based on input."
+  conditional-steps: "Each step after prereq is conditional. Knowledge fill requires extracted questions. Subsystem requires multi-class code. Dispute requires sufficient analysis output."
+  model-selection: "Each sub-step uses the optimal model for its prism. Prereq uses sonnet. Analysis uses the selected prism's optimal model. Dispute synthesis uses sonnet."
+
+resources[5]:
+  - "00"
+  - "07"
+  - "17"
+  - "59"
+  - "62"
+
+tools:
+  get_resource:
+    when: "Loading L12 (00), dispute (07), full-prism or pipeline resources (17), prereq (59), profile (62), and any prism resources selected by subsystem calibration"
+    params: "workflow_id: prism, index: resource index as string"
+    returns: "Lens, prereq, dispute, pipeline, or profile prompt text"
+    usage: "Workers load prompts once per pass; execute every operation in the prompt"
+  task:
+    when: "Dispatching fresh workers for prereq, knowledge fill orchestration, analysis (subsystem or L12 / full-prism), dispute, and profile update — 5+ workers; do NOT resume prior workers"
+    params: "description, prompt, subagent_type — one Task per major sub-step"
+    returns: "Worker completion and artifact path confirmation"
+    usage: "Smart mode never resumes; each sub-step uses a new worker"
+  read_file:
+    when: "Reading target content, prereq output for question extraction, analysis outputs before dispute, verifying writes"
+    usage: "Orchestrator reads artifacts to decide conditionals and inject verified_knowledge"
+  write_file:
+    when: "Workers persist smart-prereq.md, smart-analysis.md, subsystem-*.md, smart-dispute-*.md under output-path"
+    params: "path: {output-path}/smart-prereq.md | smart-analysis.md | subsystem-*.md | smart-dispute-*.md"
+    usage: "Collect all paths into all_artifact_paths; record smart_pipeline_steps for reporting"

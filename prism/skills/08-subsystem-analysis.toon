@@ -1,0 +1,69 @@
+id: subsystem-analysis
+version: 1.0.0
+capability: Decompose source code into subsystems, assign different prisms per region via calibration, and synthesize cross-boundary findings
+
+description: "Subsystem mode finds bugs that exist BETWEEN code regions — invisible to single-prism whole-file analysis. AST decomposition splits code into structural units (classes, functions). A calibration call assigns the optimal prism to each unit, maximizing analytical diversity. Per-subsystem analysis runs with the assigned prism. Cross-subsystem synthesis finds coupling patterns, shared assumptions, and inter-region bugs."
+
+inputs[3]:
+  - id: target-content
+    description: "Code to analyze"
+  - id: target-type
+    description: "Must be 'code' — subsystem mode is code-only"
+  - id: output-path
+    description: "Directory for subsystem-{name}.md and subsystem-synthesis.md"
+
+protocol:
+  decompose[4]:
+    - "Parse source code via AST (Python) or regex heuristic (other languages)"
+    - "Identify classes, functions, top-level blocks as subsystems"
+    - "Min 10 lines per subsystem; merge smallest pairs to stay under 8 subsystems"
+    - "If only 1 subsystem found, fall back to single L12 pass"
+  calibrate[3]:
+    - "Load subsystem calibration resource (63)"
+    - "Send prism catalog + subsystem summaries to calibration worker"
+    - "Parse JSON assignments — fallback to L12 for unassigned subsystems"
+  execute[3]:
+    - "For each subsystem, dispatch a FRESH worker with its assigned prism"
+    - "Include context header with subsystem name, line range, and list of other subsystem names"
+    - "Workers write to {output-path}/subsystem-{name}.md"
+  synthesize[3]:
+    - "Load subsystem synthesis resource (64)"
+    - "Dispatch synthesis worker with all per-subsystem outputs"
+    - "Worker writes to {output-path}/subsystem-synthesis.md"
+
+output[1]:
+  - id: subsystem-result
+    description: "Paths to per-subsystem artifacts, synthesis artifact, and prism assignments"
+    components:
+      subsystem_paths: "Array of filesystem paths to subsystem-{name}.md files"
+      synthesis_path: "Filesystem path to subsystem-synthesis.md"
+      assignments: "Map of subsystem name (or id) to assigned prism resource index or lens id"
+
+rules:
+  code-only: "Subsystem mode requires code input. Reject general targets with guidance to use portfolio mode instead."
+  diversity: "Prism assignments MUST maximize diversity — the calibration prompt enforces this"
+  context-headers: "Each per-subsystem worker receives a context header noting its position in the file and the names of adjacent subsystems"
+  fallback: "If AST parsing fails and regex finds no definitions, chunk into ~100-line blocks"
+
+resources[2]:
+  - "63"
+  - "64"
+
+tools:
+  get_resource:
+    when: "Loading subsystem calibration (63), assigned prism resources per subsystem, and subsystem synthesis (64)"
+    params: "workflow_id: prism, index: resource index as string"
+    returns: "Lens or calibration/synthesis prompt text"
+    usage: "Workers load prompts once; execute every operation in the prompt"
+  task:
+    when: "Dispatching fresh workers for calibration, each per-subsystem pass, and synthesis — do NOT resume prior workers"
+    params: "description, prompt, subagent_type — N+2 workers total (1 + N subsystems + 1 synthesis)"
+    returns: "Worker completion and artifact path confirmation"
+    usage: "One Task per calibration, one per subsystem analysis, one for cross-subsystem synthesis"
+  read_file:
+    when: "Reading target source, per-subsystem outputs before synthesis, verifying writes"
+    usage: "Synthesis worker reads all subsystem-{name}.md from disk; orchestrator verifies files exist"
+  write_file:
+    when: "Workers persist per-subsystem and synthesis markdown under output-path"
+    params: "path: {output-path}/subsystem-{name}.md | subsystem-synthesis.md"
+    usage: "Subsystem workers write one file each; synthesis worker writes subsystem-synthesis.md"

@@ -1,0 +1,43 @@
+id: reflect-pass
+version: 1.0.0
+name: Reflect Analysis Pass
+description: "L12 structural analysis followed by meta-analysis (claim prism applied to L12 output) and constraint synthesis. 3 fresh workers. Applies recursive meta-analysis — running a prism on the output of another prism to find what the first analysis conceals about itself."
+problem: "Single-pass analysis cannot examine its own blind spots. Reflect uses the claim prism to attack the L12 output as a text artifact, revealing hidden assumptions in the analysis itself, not just the code."
+skills:
+  primary: reflect-analysis
+artifacts[3]:
+  - id: reflect-l12
+    name: "reflect-l12.md"
+    location: analysis
+    description: "L12 structural analysis output for the original target"
+  - id: reflect-meta
+    name: "reflect-meta.md"
+    location: analysis
+    description: "Claim-prism meta-analysis of the L12 output (analysis as artifact)"
+  - id: reflect-synthesis
+    name: "reflect-synthesis.md"
+    location: analysis
+    description: "Constraint synthesis: recurring patterns, unexplored dimensions, false positives, next best scan"
+rules[2]:
+  - "The meta-analysis worker receives the L12 OUTPUT as its target, not the original code. The claim prism treats the analysis text as an artifact to interrogate for hidden assumptions."
+  - "The synthesis worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, and NEXT BEST SCAN."
+steps[4]:
+  - id: run-l12
+    name: Run L12 Structural Analysis
+    description: "Create a FRESH worker with L12 resource (00). Worker analyzes the target and writes to {output_path}/reflect-l12.md."
+    required: true
+  - id: run-meta
+    name: Run Meta-analysis
+    description: "Create a FRESH worker with claim resource (07). Worker applies the claim prism to the L12 OUTPUT (treating the analysis as a text artifact to interrogate). Writes to {output_path}/reflect-meta.md."
+    required: true
+  - id: run-synthesis
+    name: Run Constraint Synthesis
+    description: "Create a FRESH worker. Worker receives: L12 output, meta-analysis output, and any prior constraint history. Synthesizes recurring patterns, unexplored dimensions, known false positives, and the next best scan recommendation. Writes to {output_path}/reflect-synthesis.md."
+    required: true
+  - id: collect-paths
+    name: Collect Artifact Paths
+    description: "Add reflect-l12.md, reflect-meta.md, reflect-synthesis.md to all_artifact_paths."
+    required: true
+transitions[1]:
+  - to: generate-report
+    isDefault: true

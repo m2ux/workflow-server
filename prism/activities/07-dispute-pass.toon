@@ -1,0 +1,47 @@
+id: dispute-pass
+version: 1.0.0
+name: Dispute Analysis Pass
+description: "Run 2 maximally orthogonal prisms independently, then synthesize ONLY their disagreements. 3 fresh workers total. Prism pair is selected automatically: l12 + identity for code, l12_universal + claim for general targets."
+problem: "Full-prism self-correction costs 3x more than needed for many targets. Dispute provides genuine self-correction at 1/3 the cost by focusing on divergence between orthogonal analytical perspectives."
+skills:
+  primary: dispute-analysis
+artifacts[3]:
+  - id: dispute-lens-a
+    name: "dispute-lens-a.md"
+    location: analysis
+    description: "Output of prism A (l12 or l12_universal) in isolation"
+  - id: dispute-lens-b
+    name: "dispute-lens-b.md"
+    location: analysis
+    description: "Output of prism B (identity or claim) in isolation"
+  - id: dispute-synthesis
+    name: "dispute-synthesis.md"
+    location: analysis
+    description: "Disagreement synthesis: blind spots, implicit convergence, deepest cross-lens finding"
+rules[2]:
+  - "Prisms A and B MUST run in separate fresh contexts. Neither should see the other's output. The synthesis worker receives both outputs but has never seen the target being analyzed by either lens."
+  - "Prism pair selection is automatic, not user-configurable. The pairs are chosen for maximum analytical divergence."
+steps[5]:
+  - id: select-prism-pair
+    name: Select Orthogonal Prism Pair
+    description: "If target_type is 'code', select l12 (resource 00) and identity (resource 17) — highest pairwise uniqueness (10/10). If target_type is 'general', select l12_universal (resource 18) and claim (resource 07). Set prism_a and prism_b indices."
+    required: true
+  - id: dispatch-prism-a
+    name: Dispatch Prism A
+    description: "Create a FRESH worker with prism_a resource index. Worker loads the lens via get_resource, executes against the target, writes to {output_path}/dispute-lens-a.md."
+    required: true
+  - id: dispatch-prism-b
+    name: Dispatch Prism B
+    description: "Create a FRESH worker with prism_b resource index. Worker loads the lens via get_resource, executes against the target, writes to {output_path}/dispute-lens-b.md. Can run in parallel with prism A."
+    required: true
+  - id: dispatch-synthesis
+    name: Dispatch Disagreement Synthesis
+    description: "Create a FRESH worker with dispute synthesis resource (62). Worker receives both lens outputs (labeled LENS A and LENS B), focuses ONLY on disagreements, blind spots, implicit convergence, and the deepest cross-lens finding. Writes to {output_path}/dispute-synthesis.md."
+    required: true
+  - id: collect-paths
+    name: Collect Artifact Paths
+    description: "Add dispute-lens-a.md, dispute-lens-b.md, dispute-synthesis.md to all_artifact_paths."
+    required: true
+transitions[1]:
+  - to: generate-report
+    isDefault: true
