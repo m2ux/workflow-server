@@ -30,10 +30,11 @@ modeOverrides:
       - id: present-review-scope
         name: Present Review Scope
         description: "Present the workflow structure summary to the user. Show the activity sequence, checkpoint locations, skill assignments, and resource index. Confirm this is the workflow to review."
-    skipSteps[3]:
+    skipSteps[4]:
       - accept-description
       - classify-operation
       - extract-design-intent
+      - set-mode
     checkpoints[0]:
   update:
     description: "Load the existing target workflow and parse the user's change request. Present the current workflow structure before proceeding."

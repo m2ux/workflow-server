@@ -18,6 +18,60 @@ modeOverrides:
       - elicit-activity-model
       - elicit-variables
       - elicit-skills
+    checkpoints[5]:
+      - id: purpose-confirmed
+        name: Purpose Confirmation
+        message: "Here is the workflow purpose and domain I've captured. Is this accurate?"
+        options[2]:
+          - id: confirmed
+            label: "Yes, that's right"
+            description: Purpose is accurately captured
+          - id: refine
+            label: "Needs refinement"
+            description: Let me clarify the purpose
+      - id: activities-confirmed
+        name: Activity List Confirmation
+        message: "Here is the activity list I've captured with names, purposes, and expected artifacts. Is this complete?"
+        options[2]:
+          - id: confirmed
+            label: "Yes, this is complete"
+            description: Activity list is accurate and complete
+          - id: refine
+            label: "Needs changes"
+            description: Add, remove, or modify activities
+      - id: checkpoints-confirmed
+        name: Checkpoints Confirmation
+        message: "Here are the checkpoints I've defined for each activity with their options and effects. Do these cover all necessary user decision points?"
+        options[2]:
+          - id: confirmed
+            label: "Yes, checkpoints are complete"
+            description: Checkpoint coverage is adequate
+          - id: refine
+            label: "Needs changes"
+            description: Add, remove, or modify checkpoints
+      - id: artifacts-confirmed
+        name: Artifacts Confirmation
+        message: "Here are the artifacts each activity produces. Is this complete?"
+        options[2]:
+          - id: confirmed
+            label: "Yes, artifacts are complete"
+            description: Artifact list is accurate
+          - id: refine
+            label: "Needs changes"
+            description: Add, remove, or modify artifacts
+      - id: rules-confirmed
+        name: Rules Confirmation
+        message: "Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?"
+        options[2]:
+          - id: confirmed
+            label: "Yes, rules are complete"
+            description: Rule list is accurate
+            effect:
+              setVariable:
+                requirements_confirmed: true
+          - id: refine
+            label: "Needs changes"
+            description: Add, remove, or modify rules
 steps[8]:
   - id: elicit-purpose
     name: Elicit Workflow Purpose
@@ -121,6 +175,9 @@ checkpoints[8]:
       - id: confirmed
         label: "Yes, rules are complete"
         description: Rule list is accurate
+        effect:
+          setVariable:
+            requirements_confirmed: true
       - id: refine
         label: "Needs changes"
         description: Add, remove, or modify rules

@@ -72,10 +72,12 @@ rules:
   no-speculative-execution: "Never execute changes to see how they look. Follow the confirmed plan."
   defense-in-depth: "For highest-severity constraints, use multiple enforcement layers: rule text + checkpoint + validate action."
 
-resources[3]:
+resources[5]:
   - "00"
   - "01"
   - "02"
+  - "03"
+  - "04"
 
 tools:
   list_workflows:

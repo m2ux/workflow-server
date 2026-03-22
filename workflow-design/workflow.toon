@@ -52,7 +52,7 @@ modes[2]:
     resource: resources/03-update-mode-guide.md
   - id: review
     name: Review Mode
-    description: "Audit an existing workflow against the 13 design principles and produce a compliance report. Identifies schema expressiveness gaps, convention divergences, and rules lacking structural enforcement. Offers to switch to update mode to fix identified issues."
+    description: "Audit an existing workflow against the 14 design principles and produce a compliance report. Identifies schema expressiveness gaps, convention divergences, and rules lacking structural enforcement. Offers to switch to update mode to fix identified issues."
     activationVariable: is_review_mode
     recognition[6]:
       - review workflow
@@ -70,7 +70,7 @@ modes[2]:
     defaults:
       is_review_mode: true
     resource: resources/04-review-mode-guide.md
-variables[14]:
+variables[15]:
   - name: planning_folder_path
     type: string
     description: "Path to the unique planning folder for this workflow execution (e.g., .engineering/artifacts/planning/workflow-design-{workflow_id})"
@@ -115,6 +115,10 @@ variables[14]:
   - name: all_files_validated
     type: boolean
     description: "Whether all TOON files have passed schema validation — gates commit"
+    defaultValue: false
+  - name: requirements_confirmed
+    type: boolean
+    description: "Whether all requirements elicitation checkpoints have been completed — set by the final checkpoint in requirements-refinement"
     defaultValue: false
   - name: scope_manifest
     type: array

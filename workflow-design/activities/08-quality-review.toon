@@ -55,6 +55,7 @@ modeOverrides:
                 user_wants_fixes: true
                 is_update_mode: true
                 is_review_mode: false
+              transitionTo: intake
           - id: report-only
             label: "Report only — no changes"
             description: Save the compliance report without making changes
@@ -69,6 +70,7 @@ modeOverrides:
                 user_wants_fixes: true
                 is_update_mode: true
                 is_review_mode: false
+              transitionTo: intake
     artifacts[1]:
       - id: compliance-report
         name: "{target_workflow_id}-compliance-review.md"

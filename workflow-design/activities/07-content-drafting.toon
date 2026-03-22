@@ -63,13 +63,13 @@ loops[1]:
     over: scope_manifest
     maxIterations: 50
     steps[4]:
-      - id: present-approach
+      - id: present-file-approach
         name: Present approach for current file
-      - id: draft-content
+      - id: draft-file-content
         name: Draft content for current file
-      - id: validate-content
+      - id: validate-against-schema
         name: Validate content against schema
-      - id: review-content
+      - id: present-for-review
         name: Present content for user review
 checkpoints[2]:
   - id: file-approach-confirmed
