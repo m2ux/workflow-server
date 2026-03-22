@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v1.5.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 47 lenses, isolated multi-pass pipelines, automated report generation.
+> v1.5.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 58 lenses, isolated multi-pass pipelines, automated report generation.
 
 ---
 
@@ -69,9 +69,9 @@ Each prism responds to a specific analytical question. The table below shows use
 | `Find registration gaps — features wired but undocumented, or declared but unwired` | module | Audit-code (34) |
 | `Plant a new requirement and trace what resists the change` | file | Cultivation (35) |
 | `What breaks when a new developer joins? What becomes cargo cult?` | file | SDL-simulation (36) |
-| `Map trust entry points and trace exploit chains` | file | Security (37) |
+| `Map trust entry points and trace exploit chains` | file | Security V1 (37) |
 | `Run this code forward through 5 maintenance cycles — what calcifies?` | file | Simulation (38) |
-| `Which functions can't be unit tested? What's the isolation cost?` | file | Testability (39) |
+| `Which functions can't be unit tested? What's the isolation cost?` | file | Testability V1 (39) |
 | `Attack this analysis for confabulated knowledge claims` | text | Knowledge-audit (40) |
 | `Classify every claim by knowledge dependency — structural vs contextual vs temporal` | text | Knowledge-boundary (41) |
 | `Type every finding with confidence, provenance, and falsifiability` | any | Knowledge-typed (42) |
@@ -79,7 +79,18 @@ Each prism responds to a specific analytical question. The table below shows use
 | `Maximum-trust analysis — 5-phase self-aware structural analysis, zero confabulation` | file | Oracle (44) |
 | `Rewrite this README as a high-converting developer landing page` | text | Writer (45) |
 | `Plan the optimal analysis strategy for this goal` | any | Strategist (48) |
-| `Security review of this module` | module | Portfolio: trust (13) + security (37) |
+| `Design 3 alternative architectures with migration paths` | file | Architect (51) |
+| `What does my prism catalog systematically miss?` | any | Blindspot (52) |
+| `Generate an interface-first implementation with failure prediction` | file | Codegen (53) |
+| `What if the opposite design choice was made?` | file | Counterfactual (54) |
+| `What emergent behaviors arise from component interactions?` | file | Emergence (55) |
+| `Is this conservation law genuine or generic?` | any | Falsify (56) |
+| `Design a system that would NOT obey this conservation law` | any | Genesis (57) |
+| `Reconstruct decision history from structural fossils` | file | History (58) |
+| `What knowledge prerequisites does this task require?` | any | Prereq (59) |
+| `Which findings actually matter? Rank by surprise and action distance` | any | Significance (60) |
+| `Extract testable claims and generate verification commands` | file | Verify Claims (61) |
+| `Security review of this module` | module | Portfolio: trust (13) + security-v1 (37) |
 | `Code review of src/api.ts` | file | Portfolio: L12 (00) + contract (11) |
 | `Assess maintainability of this service` | module | Portfolio: degradation (10) + contract (11) |
 | `Design review of this architecture` | any | Portfolio: claim (07) + rejected-paths (09) |
@@ -97,7 +108,7 @@ Scope: **file** = single source file, **module** = directory or module (multiple
 |------|--------|-------------|
 | **Single** | 1 | L12 structural lens — conservation law, meta-law, bug table |
 | **Full Prism** | 3 | Structural → adversarial → synthesis (self-correcting) |
-| **Portfolio** | 2+ | Multiple independent lenses for breadth (40+ available) |
+| **Portfolio** | 2+ | Multiple independent lenses for breadth (52+ available) |
 | **Behavioral** | 4+1 | Error resilience + optimization + evolution + API surface → synthesis. Code-only. |
 
 ---
@@ -161,7 +172,7 @@ graph TD
 
 ---
 
-## Resources (47)
+## Resources (58)
 
 Resources are indexed markdown files containing lens prompts. Each lens encodes a specific analytical operation.
 
@@ -174,13 +185,17 @@ Resources are indexed markdown files containing lens prompts. Each lens encodes 
 | 24–26 | Domain-Neutral | 3 | Error resilience neutral, API surface neutral, evolution neutral |
 | 27–28 | Compressed | 2 | Error resilience compact, error resilience 70w |
 | 29–32 | Hybrid/Specialized | 4 | Evidence cost, reachability, fidelity, state audit |
-| 33–39 | Analysis | 7 | Archaeology, audit-code, cultivation, sdl-simulation, security, simulation, testability |
+| 33–39 | Analysis | 7 | Archaeology, audit-code, cultivation, sdl-simulation, security-v1, simulation, testability-v1 |
 | 40–44 | Knowledge/Epistemic | 5 | Knowledge-audit, knowledge-boundary, knowledge-typed, l12g, oracle |
 | 45–47 | Writer Pipeline | 3 | Writer, writer-critique, writer-synthesis |
 | 48 | Meta | 1 | Strategist |
-| 49 | Audit | 1 | Severity rubric (security audits) |
+| 50–53 | Generative | 4 | Arc-code, architect, codegen, genesis |
+| 54, 58 | Counterfactual/Historical | 2 | Counterfactual, history |
+| 55 | Emergent | 1 | Emergence |
+| 52, 56, 60 | Meta/Epistemic | 3 | Blindspot, falsify, significance |
+| 59, 61 | Task/Verification | 2 | Prereq, verify-claims |
 
-Indices 03–05 are deprecated (upstream general L12 variants removed).
+Indices 03–05 are deprecated (upstream general L12 variants removed). Index 49 (severity-rubric) has been removed.
 
 **Detailed documentation:** See [resources/README.md](resources/README.md) for the full catalog with model sensitivity, quality scores, and recommended combinations.
 
@@ -193,8 +208,8 @@ Prisms fall into two model-sensitivity categories:
 | Category | Prisms | Guidance |
 |----------|--------|----------|
 | **Model-Independent** | L12, SDL family (12–15), portfolio (06–11) | Equivalent quality across Haiku, Sonnet, Opus |
-| **Haiku-Optimized** | sdl-simulation (36), security (37), testability (39), audit-code (34) | Designed for Haiku; works on all models |
-| **Sonnet-Recommended** | Behavioral (19–22), domain-neutral (24–26), knowledge (40–42), archaeology (33), cultivation (35), simulation (38), l12g (43), oracle (44) | Sonnet scores +0.5–1.3 over Haiku |
+| **Haiku-Optimized** | sdl-simulation (36), security-v1 (37), testability-v1 (39), audit-code (34), arc-code (50) | Designed for Haiku; works on all models |
+| **Sonnet-Recommended** | Behavioral (19–22), domain-neutral (24–26), knowledge (40–42), archaeology (33), cultivation (35), simulation (38), l12g (43), oracle (44), architect (51), blindspot (52), codegen (53), counterfactual (54), emergence (55), falsify (56), genesis (57), history (58), prereq (59), significance (60), verify-claims (61) | Sonnet scores +0.5–1.3 over Haiku |
 | **Opus-Preferred** | Deep-scan (12), fix-cascade (16), writer-critique (46), writer-synthesis (47) | Best results on Opus |
 | **Sonnet-Only** | l12-universal (18) | Haiku fails below compression floor |
 
@@ -280,7 +295,7 @@ workflows/prism/
 │   ├── 00-structural-analysis.toon       # Single-pass L12
 │   ├── 01-full-prism.toon               # Full Prism worker pass
 │   ├── 02-portfolio-analysis.toon        # Portfolio lenses (40+ lenses)
-│   ├── 03-plan-analysis.toon             # Analysis planning (46 goal mappings)
+│   ├── 03-plan-analysis.toon             # Analysis planning (58 goal mappings)
 │   ├── 04-orchestrate-prism.toon         # Pipeline orchestration
 │   ├── 05-behavioral-pipeline.toon       # Behavioral pipeline worker pass
 │   ├── 06-generate-report.toon           # Report generation from analysis artifacts
@@ -293,10 +308,15 @@ workflows/prism/
     ├── 24–26: Domain-neutral variants
     ├── 27–28: Compressed variants
     ├── 29–32: Hybrid/specialized
-    ├── 33–39: Analysis (archaeology, audit, cultivation, simulation, security, testability)
+    ├── 33–39: Analysis (archaeology, audit, cultivation, simulation, security-v1, testability-v1)
     ├── 40–44: Knowledge/epistemic (knowledge-audit, boundary, typed, l12g, oracle)
     ├── 45–47: Writer pipeline
     ├── 48: Strategist
-    ├── 49: Severity rubric
-    └── README.md (47 resources)
+    ├── 50–53: Generative (arc-code, architect, codegen, genesis)
+    ├── 54, 58: Counterfactual/historical
+    ├── 55: Emergent (emergence)
+    ├── 56, 60: Meta/epistemic (falsify, significance)
+    ├── 52: Meta (blindspot)
+    ├── 59, 61: Task/verification (prereq, verify-claims)
+    └── README.md (58 resources)
 ```

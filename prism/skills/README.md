@@ -10,8 +10,8 @@ The prism workflow provides 7 skills organized by role. Skills `orchestrate-pris
 |---|----------|------------|------|
 | 00 | `structural-analysis` | Single-pass L12 structural analysis on code | Standalone / Worker |
 | 01 | `full-prism` | Execute one isolated pass of the Full Prism pipeline | Worker |
-| 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses (expanded catalog: 24 lenses) | Standalone |
-| 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy (24 goal mappings) | Planning / Advisory |
+| 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses (expanded catalog: 52 lenses) | Standalone |
+| 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy (58 goal mappings) | Planning / Advisory |
 | 04 | `orchestrate-prism` | Dispatch isolated workers, manage all pipeline modes | Orchestrator |
 | 05 | `behavioral-pipeline` | Execute a pass of the 4+1 behavioral pipeline | Worker |
 | 06 | `generate-report` | Produce clean REPORT.md from analysis artifacts — methodology stripped | Worker |
