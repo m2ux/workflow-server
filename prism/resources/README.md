@@ -2,7 +2,7 @@
 
 > Part of the [Structural Analysis Prism Workflow](../README.md)
 
-The prism workflow includes 47 lens resources organized into twelve families. All resources are accessible cross-workflow via `get_resource("prism", index)`.
+The prism workflow includes 58 lens resources organized into fifteen families. All resources are accessible cross-workflow via `get_resource("prism", index)`.
 
 Each lens is a short imperative prompt (60–400 words) that encodes a specific sequence of analytical operations. The model executes these operations as a program — the lens determines *what kind* of analysis is performed, not how intelligent the analysis is.
 
@@ -14,8 +14,8 @@ The L12 pipeline runs three sequential passes with context isolation between eac
 
 | Index | Resource | Words | Key Question | Purpose |
 |-------|----------|-------|-------------|---------|
-| `00` | [L12 Structural](00-l12-structural.md) | ~330 | "What code IS" | Conservation law + meta-law + classified bug table |
-| `01` | [L12 Adversarial](01-l12-adversarial.md) | ~150 | — | Challenge structural findings: wrong predictions, overclaims, underclaims |
+| `00` | [L12](00-l12.md) | ~330 | "What code IS" | Conservation law + meta-law + classified bug table |
+| `01` | [L12 Complement Adversarial](01-l12-complement-adversarial.md) | ~150 | — | Challenge structural findings: wrong predictions, overclaims, underclaims |
 | `02` | [L12 Synthesis](02-l12-synthesis.md) | ~130 | — | Reconcile structural + adversarial into corrected conservation law |
 
 **Pass dependency chain:** `00` (standalone) → `01` (requires output of `00`) → `02` (requires output of both `00` and `01`)
@@ -134,9 +134,9 @@ Lenses for structural deep-dives into specific concerns: temporal behavior, code
 | `34` | [Audit-Code](34-audit-code.md) | ~200 | "Where are registration gaps?" | Haiku (9.0) | code |
 | `35` | [Cultivation](35-cultivation.md) | ~190 | "What resists change?" | Sonnet (9.0+) | code |
 | `36` | [SDL-Simulation](36-sdl-simulation.md) | ~155 | "What breaks under maintenance?" | Haiku (8.5-9.0) | code |
-| `37` | [Security](37-security.md) | ~130 | "Where are exploit chains?" | Haiku (8.5) | code |
+| `37` | [Security V1](37-security-v1.md) | ~130 | "Where are exploit chains?" | Haiku (8.5) | code |
 | `38` | [Simulation](38-simulation.md) | ~170 | "What calcifies over time?" | Sonnet (9.0+) | code |
-| `39` | [Testability](39-testability.md) | ~130 | "What can't be tested in isolation?" | Haiku (8.0) | code |
+| `39` | [Testability V1](39-testability-v1.md) | ~130 | "What can't be tested in isolation?" | Haiku (8.0) | code |
 
 > **SDL-Simulation (36) vs Simulation (38):** SDL-Simulation is a 3-step Haiku-optimized compression of the full Simulation prism. Use SDL-Simulation for quick temporal fragility scans; use Simulation for deeper 5-cycle temporal analysis.
 
@@ -184,13 +184,64 @@ The strategist is a meta-agent that knows all prism capabilities and plans the o
 
 ---
 
-## Audit
+## Generative
 
-| Index | Resource | Words | Purpose | Target Type |
-|-------|----------|-------|---------|-------------|
-| `49` | [Severity Rubric](49-severity-rubric.md) | ~250 | 2-dimensional Impact × Feasibility severity scoring | code (security audits) |
+Lenses that produce design alternatives and creative output rather than diagnostic findings.
 
-The severity rubric is not an analytical lens — it is a scoring framework loaded by the deliver-result activity and audit-finalize activity during security audit workflows. All findings are scored on Impact (blast radius) and Feasibility (ease of triggering), with calibration anchors to correct for systematic AI over-rating and under-rating.
+| Index | Resource | Words | Key Question | Model | Target Type |
+|-------|----------|-------|-------------|-------|-------------|
+| `50` | [Arc Code](50-arc-code.md) | ~130 | "How to solve grid transformations?" | Haiku | spatial (ARC) |
+| `51` | [Architect](51-architect.md) | ~230 | "What alternative architectures exist?" | Sonnet | code |
+| `53` | [Codegen](53-codegen.md) | ~130 | "Interface-first implementation" | Sonnet | code |
+| `57` | [Genesis](57-genesis.md) | ~190 | "What system would break the conservation law?" | Sonnet | code + general |
+
+> **Arc-Code (50)** is domain-specific — for ARC grid puzzle solving with Python code output. **Codegen (53)** is a code-generation prism, not an analytical lens.
+
+---
+
+## Meta / Epistemic
+
+Lenses that analyze the analytical framework itself or test the validity of structural findings.
+
+| Index | Resource | Words | Key Question | Model | Target Type |
+|-------|----------|-------|-------------|-------|-------------|
+| `52` | [Blindspot](52-blindspot.md) | ~195 | "What does the catalog miss?" | Sonnet | any |
+| `56` | [Falsify](56-falsify.md) | ~210 | "Is this conservation law genuine?" | Sonnet | any |
+| `60` | [Significance](60-significance.md) | ~180 | "Do these findings matter?" | Sonnet | any |
+
+> Run **Blindspot (52)** periodically on the catalog itself. Run **Falsify (56)** after any scan that produces a conservation law. Run **Significance (60)** to rank findings by actionability.
+
+---
+
+## Counterfactual / Historical
+
+Lenses exploring design decisions and their alternatives through structural evidence.
+
+| Index | Resource | Words | Key Question | Model | Target Type |
+|-------|----------|-------|-------------|-------|-------------|
+| `54` | [Counterfactual](54-counterfactual.md) | ~200 | "What if the opposite choice was made?" | Sonnet | code |
+| `58` | [History](58-history.md) | ~200 | "Why does the code look this way?" | Sonnet | code |
+
+---
+
+## Emergent
+
+| Index | Resource | Words | Key Question | Model | Target Type |
+|-------|----------|-------|-------------|-------|-------------|
+| `55` | [Emergence](55-emergence.md) | ~195 | "What arises from interactions, not components?" | Sonnet | code |
+
+---
+
+## Task / Verification
+
+Lenses for pre-analysis preparation and post-analysis claim verification.
+
+| Index | Resource | Words | Key Question | Model | Target Type |
+|-------|----------|-------|-------------|-------|-------------|
+| `59` | [Prereq](59-prereq.md) | ~150 | "What knowledge is needed before starting?" | Sonnet | any |
+| `61` | [Verify Claims](61-verify-claims.md) | ~150 | "Which claims are testable?" | Sonnet | code |
+
+> Run **Prereq (59)** before analysis to ground the model. Run **Verify Claims (61)** after analysis to extract testable behavioral claims.
 
 ---
 
@@ -203,17 +254,23 @@ The severity rubric is not an analytical lens — it is a scoring framework load
 | Comprehensive behavioral | `19-23` (Behavioral pipeline) | 4-dimensional behavioral analysis + synthesis |
 | Trade-off analysis | `08` (scarcity) + `09` (rejected-paths) | Scarcity finds what's assumed infinite; rejected-paths finds what was given up |
 | Architecture review | `12` (deep-scan) + `15` (sdl-abstraction) | Conservation laws + abstraction leak detection |
-| Trust/security | `13` (sdl-trust) + `37` (security) | Authority inversions + exploit chains |
+| Trust/security | `13` (sdl-trust) + `37` (security-v1) | Authority inversions + exploit chains |
 | API quality | `22` (api-surface) + `17` (identity) | Promise-reality gap + identity displacement |
 | Coupling analysis | `14` (sdl-coupling) + `21` (evolution) | Temporal coupling + invisible handshakes |
 | Maintainability | `10` (degradation) + `11` (contract) | Time-dependent decay + interface drift |
 | Hidden assumptions | `07` (claim) + `06` (pedagogy) | Assumption inversion + transferred patterns |
 | Code archaeology | `33` (archaeology) + `38` (simulation) | Structural layers + temporal calcification |
 | Change resilience | `35` (cultivation) + `21` (evolution) | Perturbation-response + invisible handshakes |
-| Testability audit | `39` (testability) + `16` (fix-cascade) | Isolation cost + what fixes hide |
+| Testability audit | `39` (testability-v1) + `16` (fix-cascade) | Isolation cost + what fixes hide |
 | Registration gaps | `34` (audit-code) | Self-consistency across declaration surfaces |
 | Verified analysis | `40` (knowledge-audit) + `41` (knowledge-boundary) | Confabulation detection + knowledge gap classification |
 | Maximum trust | `44` (oracle) | 5-phase self-aware analysis with epistemic typing |
+| Architecture redesign | `51` (architect) + `57` (genesis) | Alternative architectures + conservation law breaking |
+| Analytical blind spots | `52` (blindspot) + `60` (significance) | Catalog gaps + impact ranking |
+| Counterfactual analysis | `54` (counterfactual) + `58` (history) | Alternative decisions + decision fossils |
+| Emergent behavior | `55` (emergence) + `21` (evolution) | Interaction emergence + coupling analysis |
+| Conservation law validation | `56` (falsify) + `60` (significance) | Falsification + impact assessment |
+| Knowledge-grounded analysis | `59` (prereq) + `61` (verify-claims) | Prerequisites before, verification after |
 
 ---
 
@@ -222,7 +279,7 @@ The severity rubric is not an analytical lens — it is a scoring framework load
 Any workflow can load prism resources without depending on the prism workflow's activities or orchestration:
 
 ```
-get_resource({ workflow_id: "prism", index: "00" })   # L12 structural
+get_resource({ workflow_id: "prism", index: "00" })   # L12
 get_resource({ workflow_id: "prism", index: "12" })   # Deep Scan
 get_resource({ workflow_id: "prism", index: "19" })   # Error Resilience
 get_resource({ workflow_id: "prism", index: "33" })   # Archaeology
