@@ -1,0 +1,69 @@
+id: adaptive-analysis
+version: 1.0.0
+capability: Automatically escalate analysis depth from cheap/fast to deep/expensive based on signal quality assessment
+
+description: "Adaptive mode minimizes cost by starting with the cheapest analysis (SDL deep_scan, ~$0.02 on Haiku) and escalating only when signal quality is insufficient. Stage 1: SDL quick scan. Stage 2: L12 deep (if needed). Stage 3: Full 3-pass pipeline (if still needed). Stops at the first stage producing adequate analytical depth."
+
+inputs[3]:
+  - id: target-content
+    description: "The code or text to analyze (file path or inline content)"
+  - id: target-type
+    description: "Whether the input is 'code' or 'general'"
+  - id: output-path
+    description: "Directory for adaptive-stage1.md, adaptive-stage2.md (conditional), and full-prism artifacts (conditional)"
+
+protocol:
+  stage-1-sdl[3]:
+    - "Dispatch deep_scan (resource 12) to a fresh worker on Haiku"
+    - "Worker writes to {output-path}/adaptive-stage1.md"
+    - "Assess signal quality: conservation law + word count > 300 + bug table"
+  assess-signal[3]:
+    - "Check for conservation law: regex for 'conservation law' or '= constant'"
+    - "Check output length: > 300 words is adequate"
+    - "If conservation law, word count, and bug table are all present: set adaptive_signal_quality = adequate, stop escalation. Otherwise set insufficient and continue."
+  stage-2-l12[3]:
+    - "Dispatch L12 (resource 00) to a fresh worker on Sonnet"
+    - "Worker writes to {output-path}/adaptive-stage2.md"
+    - "Re-assess signal quality with same criteria"
+  stage-3-full[2]:
+    - "If still insufficient: run full-prism 3-pass pipeline"
+    - "Produces structural-analysis.md, adversarial-analysis.md, synthesis.md"
+
+output[1]:
+  - id: adaptive-result
+    description: "Paths and escalation trace for the adaptive run"
+    components:
+      stage_reached: "One of: sdl | l12 | full — deepest stage that ran"
+      artifact_paths: "Array of filesystem paths to all produced artifacts"
+      signal_assessment: "Final value of adaptive_signal_quality (adequate | insufficient)"
+
+rules:
+  cheapest-first: "Always start with SDL/Haiku. Never skip directly to full-prism."
+  signal-criteria: "Signal quality = conservation law presence (regex: 'conservation law' or '= constant') AND word count > 300 AND bug table presence. All three must be true for 'adequate'."
+  stop-early: "Stop escalating as soon as signal quality is adequate. Do not run deeper stages for marginal improvement."
+  model-escalation: "Stage 1: Haiku. Stage 2: Sonnet. Stage 3: per-prism optimal models."
+
+resources[4]:
+  - "00"
+  - "01"
+  - "02"
+  - "12"
+
+tools:
+  get_resource:
+    when: "Loading deep_scan (12), L12 structural (00), full-prism adversarial (01), and synthesis (02)"
+    params: "workflow_id: prism, index: resource index as string"
+    returns: "Lens or pipeline prompt text"
+    usage: "Workers load prompts once per pass; execute every operation in the prompt"
+  task:
+    when: "Dispatching fresh workers for SDL, optional L12, and optional full-prism triple pass — do NOT resume prior workers"
+    params: "description, prompt, subagent_type — one Task per stage or per full-prism pass"
+    returns: "Worker completion and artifact path confirmation"
+    usage: "Adaptive mode uses a new worker for each stage; never skip stage ordering"
+  read_file:
+    when: "Reading target content, stage outputs for signal assessment, prior artifacts for full-prism passes, verifying writes"
+    usage: "Orchestrator reads adaptive-stage*.md to evaluate adaptive_signal_quality before escalating"
+  write_file:
+    when: "Workers persist adaptive-stage1.md, adaptive-stage2.md, structural-analysis.md, adversarial-analysis.md, synthesis.md under output-path"
+    params: "path: {output-path}/adaptive-stage1.md | adaptive-stage2.md | structural-analysis.md | adversarial-analysis.md | synthesis.md"
+    usage: "Collect all paths into artifact_paths; set adaptive_stage for reporting"
