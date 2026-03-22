@@ -74,7 +74,7 @@ modeOverrides:
     artifacts[1]:
       - id: compliance-report
         name: "{target_workflow_id}-compliance-review.md"
-        location: reviews
+        location: planning
         description: "Severity-rated compliance report with findings across 5 audit passes"
         action: create
 steps[6]:

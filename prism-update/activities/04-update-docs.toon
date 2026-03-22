@@ -6,6 +6,11 @@ problem: Documentation references resource counts, family groupings, and prism n
 skills:
   primary: update-prism-docs
 
+entryActions[1]:
+  - action: validate
+    target: changes
+    message: "changes must be populated before updating documentation"
+
 steps[4]:
   - id: update-resources-readme
     name: Update resources README
@@ -24,9 +29,19 @@ steps[4]:
     description: "Stage and commit all modified documentation files."
     required: true
 
+artifacts[1]:
+  - id: docs-commit
+    name: Documentation commit
+    description: "Commit with updated README files"
+    location: workflows
+    action: create
+
 transitions[1]:
   - to: verify
     isDefault: true
+
+required: true
+estimatedTime: "5-10m"
 
 outcome[1]:
   - "All documentation reflects current resource catalog"

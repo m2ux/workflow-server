@@ -6,6 +6,11 @@ problem: Resource files need to be created, updated, renamed, or removed to matc
 skills:
   primary: sync-resources
 
+entryActions[1]:
+  - action: validate
+    target: resource_path
+    message: "resource_path must be set — file operations require a valid workflows worktree path"
+
 steps[5]:
   - id: sync-modified
     name: Sync modified resources
@@ -28,10 +33,24 @@ steps[5]:
     description: "Confirm resource count matches: previous - deleted + new = current."
     required: true
 
+artifacts[1]:
+  - id: import-commits
+    name: Resource import commits
+    description: "Up to 4 commits: sync modified, apply renames, import new, remove deleted"
+    location: workflows
+    action: create
+
 transitions[1]:
   - to: update-routing
     isDefault: true
 
+required: true
+estimatedTime: "5-10m"
+
 outcome[2]:
   - "All resource files match upstream state"
   - "Changes committed in logical groups"
+
+context_to_preserve[2]:
+  - "changes — needed by routing and docs activities"
+  - "next_index — final index after new imports"

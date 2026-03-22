@@ -24,10 +24,10 @@ modeOverrides:
     steps[2]:
       - id: save-compliance-report
         name: Save Compliance Report
-        description: "Save the compliance report as a markdown file in the .engineering/artifacts/reviews/ directory with naming convention: YYYY-MM-DD-{workflow-id}-compliance-review.md"
+        description: "Save the compliance report as a markdown file in the planning folder ({planning_folder_path}) with naming convention: YYYY-MM-DD-{workflow-id}-compliance-review.md"
       - id: commit-report
         name: Commit Report
-        description: "Stage and commit the compliance report to the parent repository (.engineering/artifacts/reviews/ is a regular directory, not a submodule)."
+        description: "Stage and commit the compliance report to the parent repository (planning folder is a regular directory, not a submodule)."
     checkpoints[0]:
 steps[6]:
   - id: run-schema-validation

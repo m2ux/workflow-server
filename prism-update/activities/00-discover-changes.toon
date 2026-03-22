@@ -26,12 +26,23 @@ steps[5]:
     name: Determine next index
     description: "Set next_index to highest existing resource index + 1."
     required: true
+    actions[1]:
+      - action: set
+        target: next_index
 
 transitions[1]:
   - to: review-changes
     isDefault: true
 
+required: true
+estimatedTime: "3-5m"
+
 outcome[3]:
   - "changes variable populated with categorized diff"
   - "New prisms classified by family with metadata"
   - "next_index determined"
+
+context_to_preserve[3]:
+  - "changes — categorized diff result"
+  - "next_index — next available resource index"
+  - "exclusions — user-specified exclusions"

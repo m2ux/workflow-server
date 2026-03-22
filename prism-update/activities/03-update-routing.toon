@@ -6,6 +6,11 @@ problem: Skill routing tables reference prism names and indices that may have ch
 skills:
   primary: update-skill-routing
 
+entryActions[1]:
+  - action: validate
+    target: changes
+    message: "changes must be populated before updating skill routing"
+
 steps[5]:
   - id: update-plan-analysis
     name: Update plan-analysis skill
@@ -28,9 +33,19 @@ steps[5]:
     description: "Stage and commit all modified skill files."
     required: true
 
+artifacts[1]:
+  - id: routing-commit
+    name: Skill routing commit
+    description: "Commit with updated skill files"
+    location: workflows
+    action: create
+
 transitions[1]:
   - to: update-docs
     isDefault: true
+
+required: true
+estimatedTime: "10-20m"
 
 outcome[2]:
   - "All skill routing tables reflect current resource state"
