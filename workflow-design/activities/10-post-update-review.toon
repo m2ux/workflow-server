@@ -1,0 +1,58 @@
+id: post-update-review
+version: 1.0.0
+name: Post-Update Review
+description: "Automatically runs after an update commit. Reloads the updated workflow from the workflow-server and runs the 5 audit passes (principle compliance, anti-pattern scan, schema validation, expressiveness, conformance, rule enforcement) to verify the update did not introduce new compliance issues."
+problem: Updates can introduce new compliance issues that are invisible without a post-commit audit against the full design principles and anti-pattern catalog
+skills:
+  primary: workflow-design
+required: true
+estimatedTime: 10-15m
+rules[2]:
+  - "Load the updated workflow from the workflow-server, not from cached data — the audit must verify the committed state"
+  - "Produce a severity-rated findings summary; do not repeat the full compliance report structure unless findings exist"
+steps[5]:
+  - id: reload-updated-workflow
+    name: Reload Updated Workflow
+    description: "Call get_workflow with the target_workflow_id to reload the full workflow definition from the workflow-server. Call get_workflow_activity for each activity to get complete details. This ensures the audit operates on the committed state, not cached pre-update data."
+  - id: run-audit-passes
+    name: Run Audit Passes
+    description: "Run all 5 audit passes from resource 04 (review mode guide) against the reloaded workflow: (1) schema expressiveness review using resource 01, (2) convention conformance review, (3) rule-to-structure enforcement audit, (4) anti-pattern scan using resource 02, (5) schema validation of all TOON files. Record findings with severity ratings."
+  - id: compile-summary
+    name: Compile Findings Summary
+    description: "Compile a severity-rated findings summary. If zero findings, report a clean pass. If findings exist, present each with file, location, severity, and recommended fix."
+  - id: present-results
+    name: Present Results
+    description: "Present the post-update review results to the user. Show pass/fail counts by severity and list any new findings introduced by the update."
+  - id: save-review-snapshot
+    name: Save Review Snapshot
+    description: "Save the post-update review results as a markdown file in .engineering/artifacts/reviews/ with naming convention: YYYY-MM-DD-{workflow-id}-post-update-review.md. Commit to the parent repository."
+artifacts[1]:
+  - id: post-update-review-report
+    name: "{target_workflow_id}-post-update-review.md"
+    location: reviews
+    description: "Post-update compliance snapshot with pass/fail counts and any new findings"
+    action: create
+checkpoints[1]:
+  - id: post-update-disposition
+    name: Post-Update Review Disposition
+    message: "Post-update review complete. {review_findings_count} findings identified. The update has been committed."
+    options[3]:
+      - id: accept
+        label: "Accept — update complete"
+        description: No further action needed
+      - id: iterate
+        label: "Fix findings — start another update cycle"
+        description: Return to intake to address the new findings
+        effect:
+          transitionTo: intake
+      - id: revert
+        label: "Revert commit"
+        description: Roll back the update commit and return to intake
+        effect:
+          transitionTo: intake
+outcome[2]:
+  - Updated workflow verified against all design principles and anti-patterns
+  - Post-update compliance snapshot saved as artifact
+context_to_preserve[2]:
+  - post_update_findings - List of findings from the post-update review
+  - post_update_review_path - Path to the saved review snapshot

@@ -82,6 +82,13 @@ checkpoints[2]:
       - id: fix
         label: "Address remaining items"
         description: Go back and address the missing items
+transitions[1]:
+  - to: post-update-review
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: ==
+      value: true
 exitActions[1]:
   - action: log
     message: "Workflow design complete — all files committed to workflows worktree"
