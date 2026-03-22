@@ -26,14 +26,10 @@ protocol:
     - "'codebase' — target_path is a directory containing source code with build files (Cargo.toml, package.json, go.mod, pyproject.toml)"
     - "'mixed' — target_path contains both code and substantive documentation"
 
-  derive-dimensions[8]:
+  derive-dimensions[4]:
     - "If the user supplied dimensions, validate them: each must have a name and description. Proceed to survey-target."
-    - "If no dimensions supplied, derive them from evaluation_description and target_type"
-    - "For proposal/strategy evaluation: Consistency (internal logical coherence — do the parts agree?), Veracity (truthfulness of claims — are the assertions correct?), Plausibility (viability of approach — are rejected alternatives properly considered?), Feasibility (practical achievability — do the resources and constraints support delivery?)"
-    - "For codebase evaluation: Correctness (does the code do what it claims?), Robustness (how does it handle failures?), Architecture (are the design decisions sound?), Maintainability (will this be sustainable over time?)"
-    - "For mixed targets: combine document and code dimension patterns based on which aspect the evaluation_description emphasises"
-    - "For other evaluation types: infer dimensions from the evaluation_description. Each dimension should represent an independent analytical axis that contributes to the overall evaluation."
-    - "Each dimension object has: { name, description, focus_areas (array of specific aspects to examine) }"
+    - "If no dimensions supplied, load resource 00 (default-dimensions) and select the dimension set matching the target_type. Each dimension object has: { name, description, focus_areas (array of specific aspects to examine) }."
+    - "For target types not covered by the resource defaults, infer dimensions from the evaluation_description. Each dimension should represent an independent analytical axis."
     - "Present derived dimensions for user confirmation during the scope-definition checkpoint"
 
   survey-target[8]:
@@ -46,16 +42,12 @@ protocol:
     - "For proposal documents: identify the major sections, stated goals, key claims, architectural decisions, resource assumptions, and timeline commitments"
     - "Record: target_type, target_summary, structure_inventory (sections or modules with sizes), key_topics"
 
-  map-dimensions-to-lenses[10]:
-    - "For each dimension, select a pipeline mode and lens set from the prism workflow's lens inventory"
-    - "Consistency / coherence / contradictions → full-prism (L12 pipeline: resources 00→01→02). The 3-pass pipeline with adversarial challenge is the strongest tool for internal consistency — it finds contradictions, challenges them, and produces synthesised findings with conservation laws."
-    - "Veracity / truthfulness / claims → portfolio with claim-inversion (07) + knowledge-audit (40). Claim-inversion inverts each empirical claim and traces corruption. Knowledge-audit detects confabulated vs verified assertions."
-    - "Plausibility / alternatives / viability → portfolio with rejected-paths (09). Examines alternatives that were dismissed, what problems migrate between chosen and rejected designs, and honesty of rejection assessments."
-    - "Feasibility / resources / constraints → portfolio with scarcity (08). Identifies resource scarcities, conservation laws across designs, and what remains immovable regardless of redesign."
-    - "For custom dimensions not matching the above patterns: use the prism plan-analysis skill's goal-mapping matrix to select appropriate lenses. Exploration → claim (07) + rejected-paths (09). Assumptions → claim (07) + scarcity (08). Quality → L12 (00). Degradation → degradation (10). Knowledge gaps → knowledge-boundary (41)."
+  map-dimensions-to-lenses[6]:
+    - "Load resource 01 (dimension-lens-mapping) for the standard and custom mapping tables, output subdirectory conventions, and pipeline mode selection guidance."
+    - "For each dimension, match against the standard mappings table first. If no standard mapping matches, use the custom dimension mappings table."
     - "If lens_overrides contains an entry for a dimension name, use the override values instead of the derived mapping"
     - "For each dimension, compose a dimension-specific analysis_focus string: a focused description of what to examine within this dimension, referencing specific target content discovered during survey-target. This MUST NOT be a bare label like 'security audit' or 'audit' — it must be substantive guidance."
-    - "Assign each dimension an output_subdir: for full-prism dimensions use the dimension name lowercased (e.g., 'consistency/'). For portfolio dimensions group them under 'dimensions/'."
+    - "Assign each dimension an output_subdir per the conventions in resource 01."
     - "Record dimension_plan: array of { dimension (name), pipeline_mode, lenses (array of resource indices), analysis_focus, output_subdir }"
 
   group-for-execution[4]:
@@ -104,6 +96,10 @@ tools:
     when: "Discovering functional areas and module clusters for codebase targets"
     params: "query: relevant to evaluation dimensions"
     returns: "Processes ranked by relevance with symbols and file locations"
+
+resources[2]:
+  - "00"
+  - "01"
 
 errors:
   empty_target:
