@@ -1,0 +1,68 @@
+id: verified-analysis
+version: 1.0.0
+capability: Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-analyze with gap corrections for highest accuracy
+
+description: "Verified mode addresses confabulation by making knowledge gaps explicit. Initial L12 finds structural properties. Gap detection (boundary+audit on the L12 output) identifies claims that depend on unverifiable facts. Re-analysis injects gap context so the model can mark uncertain claims rather than confabulate."
+
+inputs[3]:
+  - id: target-content
+    description: "The code or text to analyze (file path or inline content)"
+  - id: target-type
+    description: "Whether the input is 'code' or 'general'"
+    required: false
+    default: code
+  - id: output-path
+    description: "Directory to write verified-initial.md, verified-gaps.md, and verified-corrected.md"
+
+protocol:
+  initial-analysis[2]:
+    - "Dispatch L12 (resource 00) to a fresh worker"
+    - "Worker writes to {output-path}/verified-initial.md"
+  gap-detection[3]:
+    - "Dispatch gap detection to a fresh worker"
+    - "Worker loads knowledge_boundary (41) and knowledge_audit (40)"
+    - "Worker applies both to the L12 OUTPUT (not source code), writes to {output-path}/verified-gaps.md"
+  gap-extraction[2]:
+    - "Parse gap output for structured claims"
+    - "Construct verified_knowledge context block with gap data"
+  corrected-analysis[3]:
+    - "Dispatch re-analysis to a fresh worker with L12 (resource 00)"
+    - "Worker receives: <verified_knowledge source='GAP-ANALYSIS'>\n{gap_data}\n</verified_knowledge>\n\n{target_content}"
+    - "Worker writes to {output-path}/verified-corrected.md"
+
+output[1]:
+  - id: verified-result
+    description: "Paths to the three verified pipeline artifacts"
+    components:
+      initial_path: "Filesystem path to verified-initial.md"
+      gaps_path: "Filesystem path to verified-gaps.md"
+      corrected_path: "Filesystem path to verified-corrected.md"
+
+rules:
+  gap-target: "Gap detection prisms run on the L12 OUTPUT, not on source code"
+  isolation: "Corrected re-analysis worker does not see the initial L12 output — only the target content + gap context"
+  model-selection: "L12 passes use optimal model from YAML frontmatter. Gap detection uses sonnet."
+
+resources[3]:
+  - "00"
+  - "40"
+  - "41"
+
+tools:
+  get_resource:
+    when: "Loading L12 (00), knowledge_audit (40), or knowledge_boundary (41)"
+    params: "workflow_id: prism, index: resource index as string"
+    returns: "Prism lens prompt text"
+    usage: "Workers load the lens for the pass type; execute every operation in the prompt"
+  task:
+    when: "Dispatching each analytical pass to a fresh sub-agent (initial L12, gap detection, corrected L12)"
+    params: "description, prompt, subagent_type: generalPurpose — do NOT use resume"
+    returns: "Worker completion and artifact path confirmation"
+    usage: "Three worker dispatches for verified mode; gap-detection worker runs both boundary and audit prisms in one context. Orchestrator never resumes prior workers."
+  read_file:
+    when: "Reading target content from a path, reading verified-initial.md for gap detection, verifying artifacts after writes"
+    usage: "Gap worker reads L12 output from disk; orchestrator verifies files exist"
+  write_file:
+    when: "Workers persist analysis and gap artifacts under output-path"
+    params: "path: {output-path}/verified-initial.md | verified-gaps.md | verified-corrected.md"
+    usage: "Each worker writes its designated artifact; orchestrator collects paths for all_artifact_paths"

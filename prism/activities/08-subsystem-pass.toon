@@ -1,0 +1,44 @@
+id: subsystem-pass
+version: 1.0.0
+name: Subsystem Analysis Pass
+description: "AST-decompose source code into structural subsystems, assign different prisms per subsystem via calibration, execute per-subsystem analysis, then synthesize cross-subsystem findings. N+2 fresh workers (1 calibration + N per-subsystem + 1 synthesis). Code-only mode."
+problem: "Whole-file analysis with a single prism misses bugs that exist BETWEEN subsystems and structural properties that span class boundaries. Different code regions benefit from different analytical lenses."
+skills:
+  primary: subsystem-analysis
+artifacts[2]:
+  - id: subsystem-output
+    name: "subsystem-{name}.md"
+    location: analysis
+    description: "Per-subsystem analysis artifact (one per structural subsystem)"
+  - id: subsystem-synthesis
+    name: "subsystem-synthesis.md"
+    location: analysis
+    description: "Cross-subsystem findings, cross-subsystem bugs, file-level conservation law, coverage map"
+rules[3]:
+  - "Subsystem mode is code-only. Reject with guidance if target_type is general."
+  - "Per-subsystem workers include a context header: '# SUBSYSTEM: {name} (lines {start}-{end} of {filename})\\n# OTHER SUBSYSTEMS: {other_names}' so the prism has awareness of adjacent regions."
+  - "Prism assignment MUST maximize diversity — avoid assigning the same prism to multiple subsystems unless they are structurally identical."
+steps[5]:
+  - id: split-subsystems
+    name: Split Into Subsystems
+    description: "Parse source code into structural subsystems (classes, functions, top-level blocks). Min 10 lines per subsystem, max 8 subsystems (merge smallest pairs if exceeded). If only 1 subsystem, fall back to single L12 pass."
+    required: true
+  - id: calibrate-assignments
+    name: Calibrate Prism Assignments
+    description: "Create a FRESH worker with subsystem calibration resource (63). Worker receives the prism catalog and subsystem summaries, assigns optimal prism per subsystem maximizing diversity. Store assignments in subsystem_assignments variable."
+    required: true
+  - id: execute-per-subsystem
+    name: Execute Per-subsystem Analysis
+    description: "For each subsystem, create a FRESH worker with the assigned prism resource. Worker analyzes the subsystem content with a context header noting other subsystems. Writes to {output_path}/subsystem-{name}.md. Store outputs in subsystem_outputs."
+    required: true
+  - id: synthesize-cross-subsystem
+    name: Synthesize Cross-subsystem Findings
+    description: "Create a FRESH worker with subsystem synthesis resource (64). Worker receives all per-subsystem outputs and produces: cross-subsystem findings, cross-subsystem bugs, file-level conservation law, coverage map. Writes to {output_path}/subsystem-synthesis.md."
+    required: true
+  - id: collect-paths
+    name: Collect Artifact Paths
+    description: "Add all subsystem-{name}.md and subsystem-synthesis.md to all_artifact_paths."
+    required: true
+transitions[1]:
+  - to: generate-report
+    isDefault: true

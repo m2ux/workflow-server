@@ -1,7 +1,7 @@
 id: prism
-version: 1.6.0
+version: 2.0.0
 title: Structural Analysis Prism Workflow
-description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence -- particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports four modes: single-pass L12, 3-pass Full Prism (structural -> adversarial -> synthesis), multi-lens portfolio analysis, and 4+1 behavioral pipeline (error resilience -> optimization -> evolution -> API surface -> synthesis). After analysis passes complete, a report generation activity produces a clean REPORT.md with definitive findings stripped of methodology-specific language. For security audit use cases, use the prism-audit workflow which triggers prism and adds audit-specific post-processing."
+description: "Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence -- particularly critical for the adversarial pass which must genuinely challenge the structural analysis without being biased by having generated it. Supports ten modes: single-pass L12, 3-pass Full Prism (structural -> adversarial -> synthesis), multi-lens portfolio, 4+1 behavioral pipeline, 3-call dispute (orthogonal prism disagreement synthesis), N+2 subsystem (per-region prism assignment), 4-call verified (gap detection + re-analysis), 3-call reflect (meta-analysis + constraint synthesis), adaptive smart chain (automatic pipeline composition), and adaptive depth escalation (error resilience -> optimization -> evolution -> API surface -> synthesis). After analysis passes complete, a report generation activity produces a clean REPORT.md with definitive findings stripped of methodology-specific language. For security audit use cases, use the prism-audit workflow which triggers prism and adds audit-specific post-processing."
 author: m2ux
 tags[3]:
   - analysis
@@ -22,7 +22,7 @@ rules[12]:
   - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '[BLOCKER]: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
 
-variables[18]:
+variables[26]:
   - name: target
     type: string
     description: "What to analyze -- a file path, directory path, inline text, question, or concept"
@@ -33,7 +33,7 @@ variables[18]:
     defaultValue: code
   - name: pipeline_mode
     type: string
-    description: "Analysis mode: 'single' (L12), 'full-prism' (3-pass), 'portfolio' (multiple lenses), or 'behavioral' (4+1 behavioral pipeline)"
+    description: "Analysis mode: 'single' (L12), 'full-prism' (3-pass), 'portfolio' (multiple lenses), 'behavioral' (4+1 behavioral pipeline), 'dispute' (2 orthogonal prisms + disagreement synthesis), 'subsystem' (per-region prism assignment + cross-subsystem synthesis), 'verified' (L12 + gap detection + re-analysis with corrections), 'reflect' (L12 + meta-analysis + constraint synthesis), 'smart' (adaptive chain: prereq + analysis + dispute + profile), or 'adaptive' (depth escalation: SDL -> L12 -> full-prism)"
     defaultValue: single
   - name: output_path
     type: string
@@ -82,6 +82,30 @@ variables[18]:
   - name: unit_output_dir
     type: string
     description: "Resolved output directory for the current analysis unit — computed in structural-pass resolve-unit-output step"
+  - name: dispute_outputs
+    type: object
+    description: "For dispute mode: map of {prism_a: output, prism_b: output, synthesis: output}"
+  - name: subsystem_assignments
+    type: object
+    description: "For subsystem mode: map of {subsystem_name: prism_name} from calibration"
+  - name: subsystem_outputs
+    type: array
+    description: "For subsystem mode: per-subsystem analysis output objects"
+  - name: verified_gap_data
+    type: string
+    description: "For verified mode: extracted gap JSON from boundary + audit analysis"
+  - name: reflect_history_context
+    type: string
+    description: "For reflect mode: loaded constraint history for synthesis step"
+  - name: smart_pipeline_steps
+    type: array
+    description: "For smart mode: steps the adaptive engine decided to execute"
+  - name: adaptive_stage
+    type: string
+    description: "For adaptive mode: current escalation stage (sdl, l12, or full)"
+  - name: adaptive_signal_quality
+    type: string
+    description: "For adaptive mode: signal quality assessment at current stage (adequate or insufficient)"
 
 artifactLocations:
   analysis:

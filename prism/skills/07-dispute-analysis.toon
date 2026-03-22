@@ -1,0 +1,67 @@
+id: dispute-analysis
+version: 1.0.0
+capability: Run 2 maximally orthogonal prisms against the same target and synthesize their disagreements for lightweight self-correction
+
+description: "Dispute mode executes 2 prisms chosen for maximum analytical divergence, then synthesizes ONLY where they disagree. Produces blind spots, implicit convergence, and the deepest cross-lens finding. 3 calls for ~$0.15 — genuine self-correction at 1/3 full-prism cost."
+
+inputs[3]:
+  - id: target-content
+    description: "The code or text to analyze"
+  - id: target-type
+    description: "code or general — drives automatic prism pair selection"
+  - id: output-path
+    description: "Directory for dispute-lens-a.md, dispute-lens-b.md, dispute-synthesis.md"
+
+protocol:
+  select-pair[2]:
+    - "For code: l12 (00) + identity (17) — highest pairwise uniqueness"
+    - "For general: l12_universal (18) + claim (07)"
+  execute-lenses[3]:
+    - "Dispatch prism A to a fresh worker with its resource index"
+    - "Dispatch prism B to a fresh worker (can be parallel)"
+    - "Each worker writes to {output-path}/dispute-lens-{a|b}.md"
+  synthesize-disagreements[3]:
+    - "Dispatch synthesis to a fresh worker with dispute-synthesis resource (62)"
+    - "Worker constructs input: \"# LENS A: {prism_a}\\n\\n{output_a}\\n\\n---\\n\\n# LENS B: {prism_b}\\n\\n{output_b}\""
+    - "Worker writes to {output-path}/dispute-synthesis.md"
+
+output[1]:
+  - id: dispute-result
+    description: "Paths to the three dispute artifacts and the prism pair used"
+    components:
+      lens_a_path: "Filesystem path to dispute-lens-a.md"
+      lens_b_path: "Filesystem path to dispute-lens-b.md"
+      synthesis_path: "Filesystem path to dispute-synthesis.md"
+      prism_pair: "Resource indices and lens identities used for A and B"
+
+rules:
+  pair-selection: "l12+identity for code, l12_universal+claim for general — these pairs maximize analytical divergence"
+  isolation: "Each lens runs in a fresh context; neither sees the other's output"
+  synthesis-focus: "The synthesis focuses on DISAGREEMENTS, not agreements. Convergence is noted only to test implicit shared assumptions."
+  model-selection: "Each prism uses its optimal model from YAML frontmatter. Synthesis uses sonnet."
+
+resources[5]:
+  - "00"
+  - "07"
+  - "17"
+  - "18"
+  - "62"
+
+tools:
+  get_resource:
+    when: Loading lens prompts for prism A, prism B, and synthesis (62)
+    params: "workflow_id: prism, index: resource index from pair or 62 for dispute synthesis"
+    returns: "Lens or synthesis prompt text"
+    usage: "Worker loads the prompt once, then executes every operation"
+  task:
+    when: Dispatching fresh workers for each pass
+    params: "description, prompt, subagent_type — do NOT resume prior workers"
+    returns: "Worker result with artifact path confirmation"
+    usage: "One Task per prism pass and one for synthesis; each sub-agent is new"
+  read_file:
+    when: Reading target content and verifying dispute-lens-a.md, dispute-lens-b.md before synthesis; verifying dispute-synthesis.md after
+    usage: "Synthesis worker reads both lens artifacts from disk; orchestrator verifies writes"
+  write_file:
+    when: Each worker persists its markdown artifact under output-path
+    params: "path: {output-path}/dispute-lens-a.md | dispute-lens-b.md | dispute-synthesis.md"
+    usage: "Lens workers write A and B; synthesis worker writes dispute-synthesis.md"

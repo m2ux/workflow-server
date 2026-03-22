@@ -1,0 +1,63 @@
+id: reflect-analysis
+version: 1.0.0
+capability: Apply recursive meta-analysis to L12 output using the claim prism, then synthesize findings with constraint history
+
+description: "Reflect mode treats prior analysis as a target for further analysis. L12 produces structural findings. The claim prism then interrogates the L12 output for hidden assumptions, overclaims, and unfounded assertions — exposing what the structural analysis conceals about itself. A synthesis step combines both with any available constraint history."
+
+inputs[3]:
+  - id: target-content
+    description: "The code or text to analyze in the L12 pass"
+  - id: target-type
+    description: "code or general — informs L12 and downstream framing"
+  - id: output-path
+    description: "Directory for reflect-l12.md, reflect-meta.md, reflect-synthesis.md"
+
+protocol:
+  structural-analysis[2]:
+    - "Dispatch L12 (resource 00) to a fresh worker"
+    - "Worker writes to {output-path}/reflect-l12.md"
+  meta-analysis[3]:
+    - "Dispatch claim (resource 07) to a fresh worker"
+    - "Worker receives the L12 OUTPUT as its analysis target (not source code)"
+    - "Worker writes to {output-path}/reflect-meta.md"
+  constraint-synthesis[4]:
+    - "Dispatch synthesis to a fresh worker"
+    - "Worker receives: L12 output + meta output + constraint history (if available)"
+    - "Worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN"
+    - "Worker writes to {output-path}/reflect-synthesis.md"
+
+output[1]:
+  - id: reflect-result
+    description: "Paths to the three reflect pipeline artifacts"
+    components:
+      l12_path: "Filesystem path to reflect-l12.md"
+      meta_path: "Filesystem path to reflect-meta.md"
+      synthesis_path: "Filesystem path to reflect-synthesis.md"
+
+rules:
+  meta-target: "The claim prism runs on L12 OUTPUT, not on source code — this is recursive meta-analysis"
+  synthesis-sections: "Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN"
+  model-selection: "L12 uses its optimal model. Claim uses its optimal model. Synthesis uses sonnet."
+
+resources[2]:
+  - "00"
+  - "07"
+
+tools:
+  get_resource:
+    when: Loading L12 lens (00) and claim lens (07) for fresh workers
+    params: "workflow_id: prism, index: resource index"
+    returns: "Lens prompt text"
+    usage: "Each worker loads its lens once, then executes every operation"
+  task:
+    when: Dispatching fresh workers for L12, meta-analysis, and synthesis passes
+    params: "description, prompt, subagent_type — do NOT resume prior workers"
+    returns: "Worker result with artifact path confirmation"
+    usage: "One Task per pass; each sub-agent is new"
+  read_file:
+    when: Reading target for L12; reading reflect-l12.md for meta worker; reading L12 and meta outputs plus constraint history for synthesis; verifying writes
+    usage: "Meta worker reads L12 output from disk; synthesis worker reads both artifacts and optional constraint history"
+  write_file:
+    when: Each worker persists its markdown artifact under output-path
+    params: "path: {output-path}/reflect-l12.md | reflect-meta.md | reflect-synthesis.md"
+    usage: "L12 worker writes reflect-l12.md; claim worker writes reflect-meta.md; synthesis worker writes reflect-synthesis.md"
