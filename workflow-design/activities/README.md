@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Nine sequential activities that guide an agent from free-form description to validated, committed workflow files. Activities 3–7 are mode-dependent (skipped in review mode). Each activity section below includes its purpose, skills, steps, checkpoints, transitions, and mode overrides.
+Ten sequential activities that guide an agent from free-form description to validated, committed workflow files. Activities 3–7 are mode-dependent (skipped in review mode). Activity 10 runs only in update mode as an automatic post-commit compliance audit. Each activity section below includes its purpose, skills, steps, checkpoints, transitions, and mode overrides.
 
 ---
 
@@ -158,6 +158,22 @@ Nine sequential activities that guide an agent from free-form description to val
 
 **Checkpoints:** `validation-passed`, `scope-verified`.
 
-**Transitions:** Terminal activity.
+**Transitions:** In update mode, transitions to [Post-Update Review](#10-post-update-review). Terminal in create and review modes.
 
 **Mode:** In review mode, skips validation/scope/README steps and instead saves the compliance report and commits it to the parent repository.
+
+---
+
+### 10. Post-Update Review
+
+**Purpose:** Automatically runs after validate-and-commit in update mode. Reloads the updated workflow from the workflow-server and runs all 5 audit passes (schema expressiveness, convention conformance, rule enforcement, anti-pattern scan, schema validation) to verify the update did not introduce new compliance issues.
+
+**Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
+
+**Steps:** Reload updated workflow, run 5 audit passes, compile findings summary, present results, save review snapshot.
+
+**Checkpoints:** `post-update-disposition` — Accept results, fix findings (transitions back to intake), or revert commit.
+
+**Transitions:** Terminal activity. The `iterate` and `revert` checkpoint options use `transitionTo: intake` to restart the workflow in update mode if findings need to be addressed.
+
+**Mode:** Update mode only (reached via conditional transition from validate-and-commit).

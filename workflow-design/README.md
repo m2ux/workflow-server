@@ -6,7 +6,7 @@
 
 ## Overview
 
-This workflow manages the complete lifecycle of workflow definition authoring through nine sequential activities, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints.
+This workflow manages the complete lifecycle of workflow definition authoring through ten sequential activities, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints.
 
 | # | Activity | Mode | Est. Time | Purpose |
 |---|----------|------|-----------|---------|
@@ -19,6 +19,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 | 07 | [**Content Drafting**](activities/README.md#07-content-drafting) | Create, Update | 30-60m | Draft each file with per-file approach and review checkpoints |
 | 08 | [**Quality Review**](activities/README.md#08-quality-review) | All | 15-25m | Expressiveness, conformance, rule-to-structure, and anti-pattern audits |
 | 09 | [**Validate and Commit**](activities/README.md#09-validate-and-commit) | All | 10-15m | Schema validation and commit (create/update) or save compliance report (review) |
+| 10 | [**Post-Update Review**](activities/README.md#10-post-update-review) | Update only | 10-15m | Automatic post-commit compliance audit of the updated workflow |
 
 **Detailed documentation:**
 
@@ -33,7 +34,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 | Mode | Activation | Description |
 |------|------------|-------------|
 | **Create** (default) | "create a workflow", "new workflow" | Build a new workflow from a free-form description |
-| **Update** | "update workflow", "modify workflow" | Modify an existing workflow with content preservation checks |
+| **Update** | "update workflow", "modify workflow" | Modify an existing workflow with content preservation checks; automatic post-commit compliance review |
 | **Review** | "review workflow", "audit workflow" | Audit an existing workflow against design principles; produce compliance report |
 
 ---
@@ -62,7 +63,12 @@ graph TD
     DRF --> QR["08 quality-review"]
 
     QR --> VAL["09 validate-and-commit"]
-    VAL --> doneNode(["End"])
+
+    VAL -->|"create"| doneNode(["End"])
+    VAL -->|"review"| doneNode
+    VAL -->|"update"| PUR["10 post-update-review"]
+    PUR --> doneNode2(["End"])
+    PUR -.->|"fix findings"| INT
 ```
 
 ---
@@ -142,13 +148,16 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 | `review_findings_count` | number | Total compliance findings (review mode) |
 | `user_wants_fixes` | boolean | Whether to fix issues after review |
 | `scope_manifest` | array | Files to create/modify/remove |
+| `requirements_confirmed` | boolean | Gates transition from requirements-refinement |
 | `current_file` | object | Current file in drafting loop |
 
 ---
 
 ## Output
 
-**Create/Update modes:** A complete workflow file set in the `workflows/` worktree.
+**Create mode:** A complete workflow file set in the `workflows/` worktree.
+
+**Update mode:** Modified workflow files in the `workflows/` worktree, plus a post-update compliance snapshot in `.engineering/artifacts/reviews/`.
 
 **Review mode:** A compliance report in `.engineering/artifacts/reviews/`.
 
@@ -158,7 +167,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 ```
 workflows/workflow-design/
-├── workflow.toon                          # Workflow definition (3 modes, 14 variables, 14 rules)
+├── workflow.toon                          # Workflow definition (3 modes, 15 variables, 14 rules)
 ├── README.md                             # This file
 ├── activities/
 │   ├── README.md                         # Per-activity documentation
@@ -170,7 +179,8 @@ workflows/workflow-design/
 │   ├── 06-scope-and-structure.toon       # Define file manifest
 │   ├── 07-content-drafting.toon          # Draft/modify files
 │   ├── 08-quality-review.toon            # Three review passes
-│   └── 09-validate-and-commit.toon       # Validate and commit
+│   ├── 09-validate-and-commit.toon       # Validate and commit
+│   └── 10-post-update-review.toon       # Post-commit compliance audit (update mode)
 ├── skills/
 │   ├── README.md                         # Skill protocols and rules
 │   ├── 00-workflow-design.toon           # Primary skill
