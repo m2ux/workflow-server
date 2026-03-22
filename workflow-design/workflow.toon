@@ -32,9 +32,6 @@ artifactLocations:
   workflows:
     path: "workflows/"
     gitignored: false
-  reviews:
-    path: ".engineering/artifacts/reviews"
-    gitignored: false
 modes[2]:
   - id: update
     name: Update Mode

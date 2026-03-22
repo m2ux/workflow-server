@@ -24,6 +24,16 @@ steps[4]:
     description: "Present the PR URL and summary of changes applied."
     required: true
 
+required: true
+estimatedTime: "3-5m"
+
+artifacts[1]:
+  - id: pull-request
+    name: Pull request
+    description: "PR against workflows branch with change summary"
+    location: workflows
+    action: create
+
 outcome[2]:
   - "Feature branch pushed to remote"
   - "Pull request created with change summary"

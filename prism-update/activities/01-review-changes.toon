@@ -26,6 +26,9 @@ checkpoints[1]:
       - id: adjust-exclusions
         label: Adjust exclusions
         description: "Exclude specific prisms before importing"
+        effect:
+          setVariable:
+            exclusions_adjusted: true
       - id: abort
         label: Abort
         description: "Do not import any changes"
@@ -38,5 +41,12 @@ transitions[1]:
   - to: import-resources
     isDefault: true
 
+required: true
+estimatedTime: "2-5m"
+
 outcome[1]:
   - "User-approved change set ready for import"
+
+context_to_preserve[2]:
+  - "changes — approved change set (may differ from discovered if exclusions applied)"
+  - "exclusions — final exclusion list"

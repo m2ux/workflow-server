@@ -1,5 +1,5 @@
 id: prism-update
-version: 1.0.0
+version: 1.1.0
 title: Prism Update Workflow
 description: "Sync the prism workflow's resources, skills, and documentation with upstream changes from the agi-in-md project. Discovers new, modified, renamed, and deleted prisms; imports resource files; updates skill routing (goal-mapping, portfolio catalog, model sensitivity); rebuilds documentation; and verifies consistency before submitting a PR."
 author: m2ux
@@ -7,6 +7,14 @@ tags[3]:
   - prism
   - maintenance
   - sync
+
+artifactLocations:
+  planning:
+    path: "{planning_folder_path}"
+    gitignored: false
+  workflows:
+    path: "workflows/"
+    gitignored: false
 
 rules[6]:
   - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
@@ -16,7 +24,10 @@ rules[6]:
   - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
   - "AUTOMATIC TRANSITIONS: Transitions between activities are automatic. User interaction occurs only at defined checkpoints within activities."
 
-variables[8]:
+variables[10]:
+  - name: planning_folder_path
+    type: string
+    description: "Path to the planning folder for this workflow execution (e.g., .engineering/artifacts/planning/prism-update-YYYY-MM-DD)"
   - name: upstream_path
     type: string
     description: "Path to the upstream prisms directory (e.g., /path/to/agi-in-md/prisms/)"
@@ -38,6 +49,10 @@ variables[8]:
   - name: branch_name
     type: string
     description: "Feature branch name for the update"
+  - name: exclusions_adjusted
+    type: boolean
+    description: "Whether the user chose to adjust exclusions at the review checkpoint"
+    defaultValue: false
   - name: has_issues
     type: boolean
     description: "Whether verification found consistency issues requiring fixes"
@@ -48,3 +63,4 @@ variables[8]:
     defaultValue: []
 
 initialActivity: discover-changes
+activitiesDir: activities

@@ -6,7 +6,11 @@ problem: Changes across multiple files may leave inconsistencies
 skills:
   primary: verify-prism-consistency
 
-steps[5]:
+steps[6]:
+  - id: verify-content-integrity
+    name: Verify content integrity
+    description: "For each modified and newly imported resource, diff against the upstream original. Flag any content differences beyond the expected filename change."
+    required: true
   - id: check-stale-references
     name: Check for stale references
     description: "Grep .toon files for old prism names from renames and deletions."
@@ -27,6 +31,9 @@ steps[5]:
     name: Set verification result
     description: "Set has_issues based on findings."
     required: true
+    actions[1]:
+      - action: set
+        target: has_issues
 
 checkpoints[1]:
   - id: verification-result
@@ -68,5 +75,12 @@ transitions[2]:
       operator: "=="
       value: true
 
+required: true
+estimatedTime: "3-5m"
+
 outcome[1]:
   - "All resources, skills, and documentation are consistent"
+
+context_to_preserve[2]:
+  - "has_issues — whether verification found problems"
+  - "stale_references — list of stale references found"
