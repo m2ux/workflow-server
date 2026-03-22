@@ -12,28 +12,28 @@ steps[5]:
     required: true
   - id: map-dimensions
     name: Map Dimensions to Lenses
-    description: "For each dimension in the dimensions array, select: (1) pipeline_mode — full-prism for deep consistency analysis, portfolio for breadth across complementary lenses, single for targeted single-lens evaluation. (2) lenses — prism resource indices. (3) analysis_focus — dimension-specific evaluation guidance referencing target content discovered during survey-target. (4) output_subdir — where prism will write artifacts. Apply lens_overrides where provided. Build the dimension_plan array."
+    description: "For each dimension, load resource 01 (dimension-lens-mapping) and match against the standard and custom mapping tables. Select pipeline_mode, lenses, analysis_focus, and output_subdir. Apply lens_overrides where provided. Build the dimension_plan array."
     required: true
     actions[1]:
       - action: set
-        variable: dimension_plan
-        description: "Set to the array of dimension-to-lens mappings"
+        target: dimension_plan
+        message: "Set to the array of dimension-to-lens mappings"
   - id: group-dimensions
     name: Group Dimensions for Execution
     description: "Group dimensions by pipeline mode into execution_groups. Full-prism dimensions each get their own group. Portfolio dimensions are combined into a single group with merged lens sets. Record execution order: full-prism groups first (deepest analysis), then portfolio groups."
     required: true
     actions[1]:
       - action: set
-        variable: execution_groups
-        description: "Set to the array of execution groups"
+        target: execution_groups
+        message: "Set to the array of execution groups"
   - id: write-plan
     name: Write Evaluation Plan Artifact
-    description: "Write the evaluation plan to {output_path}/evaluation-plan.md. Include: target overview, dimension-to-lens mapping table, execution groups with estimated sub-agent dispatch count, and analysis focus summaries per dimension."
+    description: "Write the evaluation plan artifact to {output_path}. Include: target overview, dimension-to-lens mapping table, execution groups with estimated sub-agent dispatch count, and analysis focus summaries per dimension."
     required: true
     actions[1]:
       - action: set
-        variable: evaluation_plan_path
-        description: "Set to the written file path"
+        target: evaluation_plan_path
+        message: "Set to the written file path"
   - id: present-plan
     name: Present Dimension Plan
     description: "Present the dimension plan summary: which dimensions map to which prism modes and lenses, execution group structure, and total estimated sub-agent dispatches."
@@ -70,4 +70,9 @@ outcome[2]:
   - "dimension_plan and execution_groups populated for the execute-analysis activity"
 transitions[1]:
   - to: execute-analysis
+    condition:
+      type: simple
+      variable: dimensions_confirmed
+      operator: "=="
+      value: true
     isDefault: true

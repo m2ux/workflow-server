@@ -20,12 +20,12 @@ steps[6]:
     required: true
   - id: compose-report
     name: Compose Evaluation Report
-    description: "Write EVALUATION-REPORT.md to {output_path}. Structure: Executive Summary (target, total findings, core finding, overall assessment), The Core Finding (expanded with testable prediction), Per-Dimension Findings (one subsection per dimension with severity table and key findings), Cross-Cutting Patterns, Corrections and Recommendations (immediate, short-term, structural). NO methodology metadata."
+    description: "Write the evaluation report artifact to {output_path}. Structure: Executive Summary (target, total findings, core finding, overall assessment), The Core Finding (expanded with testable prediction), Per-Dimension Findings (one subsection per dimension with severity table and key findings), Cross-Cutting Patterns, Corrections and Recommendations (immediate, short-term, structural). NO methodology metadata."
     required: true
     actions[1]:
       - action: set
-        variable: evaluation_report_path
-        description: "Set to the path of the written EVALUATION-REPORT.md"
+        target: evaluation_report_path
+        message: "Set to the path of the written EVALUATION-REPORT.md"
   - id: verify-report
     name: Verify Report
     description: "Verify: (1) all finding IDs are unique and follow the prefix convention, (2) severity counts in the executive summary match per-dimension details, (3) the report contains no methodology metadata — no lens names, pass types, pipeline modes, or analytical process descriptions."

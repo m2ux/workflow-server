@@ -16,16 +16,16 @@ steps[5]:
     required: true
     actions[1]:
       - action: set
-        variable: target_type
-        description: "Set to the classified target type"
+        target: target_type
+        message: "Set to the classified target type"
   - id: derive-dimensions
     name: Derive Evaluation Dimensions
-    description: "If dimensions were not provided by the user, derive them from evaluation_description and target_type. For proposal/strategy documents: Consistency, Veracity, Plausibility, Feasibility. For codebases: Correctness, Robustness, Architecture, Maintainability. For other targets: infer from the evaluation description. Present the dimensions with names, descriptions, and focus areas."
+    description: "If dimensions were not provided by the user, load resource 00 (default-dimensions) and select the set matching the target_type. For other targets: infer from the evaluation description. Present the dimensions with names, descriptions, and focus areas."
     required: true
     actions[1]:
       - action: set
-        variable: dimensions
-        description: "Set to the derived or user-supplied dimensions array"
+        target: dimensions
+        message: "Set to the derived or user-supplied dimensions array"
   - id: create-output-directory
     name: Create Output Directory
     description: "Create the output_path directory if it does not exist."
@@ -57,4 +57,9 @@ outcome[2]:
   - "Output directory created"
 transitions[1]:
   - to: dimension-planning
+    condition:
+      type: simple
+      variable: scope_confirmed
+      operator: "=="
+      value: true
     isDefault: true

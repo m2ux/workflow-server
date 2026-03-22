@@ -7,7 +7,7 @@ skills:
   primary: plan-evaluation
 entryActions[1]:
   - action: validate
-    description: "Verify execution_groups is non-empty before starting the trigger loop"
+    message: "Verify execution_groups is non-empty before starting the trigger loop"
     condition:
       type: simple
       variable: execution_groups
@@ -22,9 +22,9 @@ triggers:
     - selected_lenses
     - analysis_focus
 steps[1]:
-  - id: prepare-triggers
-    name: Prepare Trigger Context
-    description: "For each group in execution_groups, prepare the context variables for the triggered prism workflow: target = target_path, output_path = {output_path}/{group.output_subdir}, pipeline_mode = group.pipeline_mode, selected_lenses = group.lenses (for portfolio mode), analysis_focus = group.analysis_focus (substantive dimension-specific guidance, NOT a bare label)."
+  - id: log-execution-plan
+    name: Log Execution Plan
+    description: "Log the number of execution groups, their pipeline modes, and the total dimensions covered. This provides a pre-loop summary for traceability before the group-iteration loop begins."
     required: true
 loops[1]:
   - id: group-iteration
@@ -36,7 +36,7 @@ loops[1]:
     steps[4]:
       - id: set-trigger-context
         name: Set Trigger Context for Current Group
-        description: "Map current_group fields to the variables expected by prism: target = target_path, target_type = target_type (document targets → 'general', codebase targets → 'code'), output_path = {output_path}/{current_group.output_subdir}, pipeline_mode = current_group.pipeline_mode, selected_lenses = current_group.lenses, analysis_focus = current_group.analysis_focus."
+        description: "Map current_group fields to the variables expected by prism: target = target_path, target_type per the TARGET TYPE MAPPING rule, output_path = {output_path}/{current_group.output_subdir}, pipeline_mode = current_group.pipeline_mode, selected_lenses = current_group.lenses, analysis_focus = current_group.analysis_focus."
         required: true
       - id: trigger-prism
         name: Trigger Prism Workflow
@@ -50,10 +50,11 @@ loops[1]:
         name: Verify Prism Completion
         description: "Verify the triggered prism workflow completed successfully: expected analysis artifacts exist and contain substantive content. If verification fails, record the failure in completed_analyses with status 'error' and the failure reason."
         required: true
-rules[3]:
+rules[4]:
   - "TRIGGER ISOLATION: When setting analysis_focus for the triggered prism workflow, use the substantive dimension-specific guidance from the dimension plan. Do NOT use bare labels like 'audit', 'security audit', or 'security review' — these would activate prism's built-in audit-finalize activity, conflicting with this workflow's own report consolidation."
   - "PIPELINE MODE FIDELITY: Each execution group's pipeline_mode and lenses must match exactly what dimension-planning specified. Do not change modes or lenses during execution."
   - "SEQUENTIAL EXECUTION: Execution groups are triggered sequentially (one prism run at a time). This ensures each prism run has full system resources and avoids context interference between concurrent analyses."
+  - "TARGET TYPE MAPPING: When passing target_type to the triggered prism workflow, map prism-evaluate's classification to prism's expected values: 'document' → 'general', 'document-set' → 'general', 'codebase' → 'code', 'mixed' → 'general'."
 outcome[2]:
   - "All execution groups triggered and completed with analysis artifacts in completed_analyses"
   - "all_artifact_paths populated with paths to all prism outputs"

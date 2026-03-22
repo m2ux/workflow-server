@@ -73,7 +73,7 @@ variables[21]:
     defaultValue: false
   - name: pipeline_mode
     type: string
-    description: "Default prism pipeline mode (can be overridden per dimension)"
+    description: "Prism pipeline mode for the current execution group. Set per-group during execute-analysis from the dimension plan — not used as a global default. Fallback value applies only to custom dimensions where no mapping pattern matches."
     defaultValue: full-prism
   - name: gitnexus_available
     type: boolean
