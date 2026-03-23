@@ -9,7 +9,8 @@ artifacts[1]:
     name: "{unit_output_subdir}adversarial-analysis.md"
     location: analysis
     description: "Adversarial challenge per unit: wrong predictions, overclaims, underclaims, revised findings table"
-rules[2]:
+rules[3]:
+  - "SINGLE-UNIT DISPATCH: When invoked via execute-plan, current_unit is pre-set. The internal loop MUST process only that unit — skip all others."
   - "CRITICAL: Each worker has never seen the structural analysis being generated. It receives only the final text from the artifact file. Treat it as an opponent's work to defeat with evidence."
   - "The worker MUST load the adversarial lens (resource 01 or 04) not the structural lens."
 loops[1]:

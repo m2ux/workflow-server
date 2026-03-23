@@ -43,15 +43,16 @@ loops[1]:
         name: Verify Unit Completion
         description: "Verify expected artifacts exist and contain substantive content. If verification fails, log the failure but continue to next unit."
         required: true
-rules[3]:
+rules[4]:
   - "DISPATCH ISOLATION: Each pipeline dispatch uses fresh workers per the prism workflow's isolation model. Workers are never resumed between units."
   - "PER-UNIT MODE: The pipeline_mode is set per-unit from current_unit.pipeline_mode, not from the global variable. This enables mixed-mode execution across dimensions."
   - "ARTIFACT TAGGING: When analysis_units contain dimension_names, artifact paths must be tagged with their dimension association. This metadata drives dimension-organized report generation."
+  - "WORKER PROTOCOL ACTIVITIES: Mode-specific activities (01-structural-pass through 12-adaptive-pass) are worker protocol definitions, not orchestrator transition targets. Workers load them via get_workflow_activity to understand their steps, artifacts, and rules. These activities are intentionally unreachable in the transition graph — execute-plan dispatches workers directly."
 artifacts[1]:
   - id: evaluation-plan
     name: "evaluation-plan.md"
     location: analysis
-    description: "Execution plan artifact: unit count, per-unit mode assignments, dimension mappings, estimated dispatches. Written during validate-units when multi-dimensional."
+    description: "Execution plan artifact: unit count, per-unit mode assignments, dimension mappings, estimated dispatches. Produced only for multi-dimensional plans (analysis_units with dimension_names). Single-unit plans skip this artifact."
     action: create
 transitions[1]:
   - to: generate-report

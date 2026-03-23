@@ -1,7 +1,7 @@
 id: structural-pass
-version: 2.1.0
+version: 3.0.0
 name: Structural Analysis Pass
-description: "Iterate over analysis_units and run the appropriate analysis for each unit. For single and full-prism units, runs the L12 structural lens. For portfolio units, runs multiple independent lenses. For behavioral units, dispatches 4 independent behavioral lenses. Each iteration writes artifacts namespaced by unit. After all units complete, transitions based on pipeline mode."
+description: "Execute the appropriate analysis for a single unit. For single and full-prism units, runs the L12 structural lens. For portfolio units, runs multiple independent lenses. For behavioral units, dispatches 4 independent behavioral lenses. When invoked via execute-plan, current_unit is pre-set — the internal loop processes only that unit. For backward-compatible direct invocation, the loop iterates over all analysis_units."
 skills:
   primary: structural-analysis
   supporting[2]:
@@ -32,7 +32,8 @@ artifacts[6]:
     name: "{unit_output_subdir}behavioral-changes.md"
     location: analysis
     description: "Evolution behavioral analysis (behavioral mode)"
-rules[3]:
+rules[4]:
+  - "SINGLE-UNIT DISPATCH: When invoked via execute-plan, current_unit is pre-set by the dispatcher. The internal loop MUST process only that unit — skip all others. When current_unit is already set on entry, treat analysis_units as a single-element array containing only current_unit."
   - "MODE ROUTING: Steps load-lens through write-structural-artifact execute only for single and full-prism pipeline modes. Steps select-portfolio-lenses through write-portfolio-artifacts execute only for portfolio mode. Steps dispatch-behavioral-lenses and collect-behavioral-paths execute only for behavioral mode. Step report-unit-paths always executes."
   - "LENS LOADING: Workers load the L12 structural lens from resource 00 via get_resource. Portfolio lenses are loaded per the portfolio-analysis skill. Behavioral lenses are resources 19-22."
   - "PARALLEL BEHAVIORAL: The 4 behavioral lenses are independent and can be dispatched in parallel (up to 4 concurrent sub-agents)."

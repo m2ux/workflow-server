@@ -9,7 +9,8 @@ artifacts[1]:
     name: "{unit_output_subdir}behavioral-synthesis.md"
     location: analysis
     description: "Behavioral synthesis per unit: convergence points, blind spots, and unified conservation law across ERRORS, COSTS, CHANGES, PROMISES"
-rules[2]:
+rules[3]:
+  - "SINGLE-UNIT DISPATCH: When invoked via execute-plan, current_unit is pre-set. The internal loop MUST process only that unit — skip all others."
   - "The worker MUST load the behavioral synthesis lens (resource 23)."
   - "The worker reads 4 prior artifacts and labels them: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES. These labels match what the behavioral_synthesis lens expects."
 loops[1]:

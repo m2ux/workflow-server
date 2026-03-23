@@ -9,7 +9,8 @@ artifacts[1]:
     name: "{unit_output_subdir}synthesis.md"
     location: analysis
     description: "Final reconciliation per unit: refined conservation law, refined meta-law, definitive classification, deepest finding"
-rules[1]:
+rules[2]:
+  - "SINGLE-UNIT DISPATCH: When invoked via execute-plan, current_unit is pre-set. The internal loop MUST process only that unit — skip all others."
   - "The worker MUST load the synthesis lens (resource 02 or 05) not the structural or adversarial lens."
 loops[1]:
   - id: synthesis-unit-cycle

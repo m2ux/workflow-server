@@ -129,31 +129,31 @@ Scope: **file** = single source file, **module** = directory or module (multiple
 
 ```mermaid
 graph TD
-    Start([Start]) --> SM["select-mode"]
-    SM --> SP["structural-pass"]
-    SM -->|dispute| DP["dispute-pass"]
-    SM -->|subsystem| SUB["subsystem-pass"]
-    SM -->|verified| VP["verified-pass"]
-    SM -->|reflect| RP["reflect-pass"]
-    SM -->|smart| SMP["smart-pass"]
-    SM -->|adaptive| ADP["adaptive-pass"]
+    Start([Start]) --> SM["select-mode (elicit + plan)"]
+    SM --> EP["execute-plan"]
 
-    SP --> MODE{"pipeline mode?"}
-    MODE -->|"single"| GR["generate-report"]
-    MODE -->|"portfolio"| GR
-    MODE -->|"full-prism"| AP["adversarial-pass"]
-    MODE -->|"behavioral"| BSP["behavioral-synthesis-pass"]
+    EP --> |"per unit"| DISPATCH{"dispatch by mode"}
+    DISPATCH -->|"single/full-prism"| SP["structural-pass workers"]
+    DISPATCH -->|"portfolio"| PF["portfolio workers"]
+    DISPATCH -->|"behavioral"| BH["behavioral workers"]
+    DISPATCH -->|"dispute"| DP["dispute workers"]
+    DISPATCH -->|"subsystem"| SUB["subsystem workers"]
+    DISPATCH -->|"verified"| VP["verified workers"]
+    DISPATCH -->|"reflect"| RP["reflect workers"]
+    DISPATCH -->|"smart"| SMP["smart workers"]
+    DISPATCH -->|"adaptive"| ADP["adaptive workers"]
 
-    AP --> SYN["synthesis-pass"]
-    SYN --> GR
+    SP --> EP
+    PF --> EP
+    BH --> EP
+    DP --> EP
+    VP --> EP
+    RP --> EP
+    SMP --> EP
+    SUB --> EP
+    ADP --> EP
 
-    BSP --> GR
-    DP --> GR
-    SUB --> GR
-    VP --> GR
-    RP --> GR
-    SMP --> GR
-    ADP --> GR
+    EP -->|"all units done"| GR["generate-report"]
     GR --> DR["deliver-result"]
     DR --> Done([End])
 ```
@@ -177,7 +177,8 @@ graph TD
 | 10 | **Reflect Pass** | L12 → meta-analysis → constraint synthesis (reflect only) |
 | 11 | **Smart Pass** | Adaptive chain engine — system decides pipeline (smart only) |
 | 12 | **Adaptive Pass** | Depth escalation with signal quality assessment (adaptive only) |
-| 13 | **Generate Report** | Produce clean REPORT.md from analysis artifacts — definitive findings only, no methodology language |
+| 13 | **Execute Plan** | Per-unit pipeline dispatch loop — enables mixed-mode multi-dimensional analysis |
+| 14 | **Generate Report** | Produce REPORT.md or EVALUATION-REPORT.md from analysis artifacts |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 

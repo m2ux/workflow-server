@@ -3,7 +3,7 @@ version: 3.0.0
 name: Plan Analysis
 description: "When no analysis_prompt is provided, elicit the user's analytical goals through targeted questions and compose a structured prompt (saved as a reusable artifact). Then parse the prompt to extract dimensions, detect scope and target type, map dimensions to pipeline modes and lenses, and present the execution plan for confirmation. Delegates planning logic to the plan-analysis skill."
 problem: Users need guided elicitation to articulate what they want to understand, and the resulting intent must drive all pipeline and lens decisions internally
-recognition[11]:
+recognition[19]:
   - analyze
   - structural analysis
   - full prism
@@ -15,6 +15,14 @@ recognition[11]:
   - behavioral
   - error resilience
   - behavioral analysis
+  - dispute
+  - subsystem
+  - verified
+  - reflect
+  - smart
+  - adaptive
+  - evaluate
+  - evaluation
 skills:
   primary: plan-analysis
 steps[5]:

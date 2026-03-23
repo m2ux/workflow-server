@@ -82,7 +82,7 @@ artifacts[2]:
     name: "EVALUATION-REPORT.md"
     location: analysis
     description: "Evaluation report: per-dimension findings with cross-dimensional patterns for multi-dimensional analyses"
-rules[6]:
+rules[9]:
   - "METHODOLOGY STRIPPING: The report MUST NOT contain references to the analytical process. Forbidden phrases include: 'the structural analysis found', 'the adversarial pass identified', 'ANALYSIS 1', 'ANALYSIS 2', 'conservation law' (unless the finding itself describes a conserved property), 'meta-law', 'analysis scorecard', 'dispute resolution', 'overclaim', 'underclaim', 'wrong prediction', 'the synthesis determined'. The reader sees only definitive conclusions."
   - "FINDING VOICE: Each finding is stated as a fact, not as a discovery. Write 'The Runner is an unverified trust anchor' — not 'The structural analysis identified the Runner as an unverified trust anchor.' Attribution to analytical passes is forbidden in the report body."
   - "SEVERITY INHERITANCE: Finding severities come from the authoritative source: synthesis.md for full-prism (definitive post-reconciliation severities), individual lens artifacts for portfolio, behavioral-synthesis.md for behavioral, structural-analysis.md for single. The report does not reassign severities."
