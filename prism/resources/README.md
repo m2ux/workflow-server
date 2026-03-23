@@ -2,7 +2,7 @@
 
 > Part of the [Structural Analysis Prism Workflow](../README.md)
 
-The prism workflow includes 58 lens resources organized into fifteen families. All resources are accessible cross-workflow via `get_resource("prism", index)`.
+The prism workflow includes 61 resources organized into sixteen families: 58 analytical lenses and 3 pipeline-orchestration prompts. All resources are accessible cross-workflow via `get_resource("prism", index)`.
 
 Each lens is a short imperative prompt (60–400 words) that encodes a specific sequence of analytical operations. The model executes these operations as a program — the lens determines *what kind* of analysis is performed, not how intelligent the analysis is.
 
@@ -242,6 +242,18 @@ Lenses for pre-analysis preparation and post-analysis claim verification.
 | `61` | [Verify Claims](61-verify-claims.md) | ~150 | "Which claims are testable?" | Sonnet | code |
 
 > Run **Prereq (59)** before analysis to ground the model. Run **Verify Claims (61)** after analysis to extract testable behavioral claims.
+
+---
+
+## Pipeline Prompts
+
+Internal prompts used by the new pipeline modes to orchestrate multi-prism compositions. Not analytical lenses — these coordinate how lenses are combined.
+
+| Index | Resource | Purpose | Used By |
+|-------|----------|---------|---------|
+| `62` | [Dispute Synthesis](62-dispute-synthesis.md) | Synthesize disagreements between 2 orthogonal prisms | dispute mode |
+| `63` | [Subsystem Calibration](63-subsystem-calibration.md) | Assign optimal prism per code subsystem | subsystem mode |
+| `64` | [Subsystem Synthesis](64-subsystem-synthesis.md) | Cross-subsystem findings, inter-region bugs, file-level conservation law | subsystem mode |
 
 ---
 

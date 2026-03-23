@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v1.5.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 58 lenses, isolated multi-pass pipelines, automated report generation.
+> v2.0.0 — Structured analytical prompts that find what asking a model directly misses. Ten modes, 61 lenses (58 analytical + 3 pipeline prompts), isolated multi-pass pipelines, automated report generation.
 
 ---
 
@@ -97,6 +97,12 @@ Each prism responds to a specific analytical question. The table below shows use
 | `What are the trade-offs in this approach?` | text | Portfolio: scarcity (08) + rejected-paths (09) |
 | `How does this code age? Archaeology + temporal simulation` | file | Portfolio: archaeology (33) + simulation (38) |
 | `Verify this analysis has no confabulated claims` | text | Portfolio: knowledge-audit (40) + knowledge-boundary (41) |
+| `Find where these two lenses disagree on src/handler.ts` | file | Dispute: l12 vs identity → disagreement synthesis |
+| `Analyze each class in src/engine.py separately` | file | Subsystem: per-class prism assignment → cross-subsystem synthesis |
+| `Highest accuracy analysis of src/auth.ts — detect confabulation` | file | Verified: L12 → gap detection → corrected re-analysis |
+| `What did prior analyses of this code miss?` | file | Reflect: L12 → meta-analysis → constraint synthesis |
+| `Just analyze src/core.rs thoroughly — you decide how` | file | Smart: automatic pipeline composition |
+| `Quick scan of src/utils.ts, escalate if needed` | file | Adaptive: SDL → L12 → full-prism (stops at adequate signal) |
 
 Scope: **file** = single source file, **module** = directory or module (multiple files), **text** = inline text, question, or proposal (no file target), **any** = works at all scopes.
 
@@ -110,6 +116,12 @@ Scope: **file** = single source file, **module** = directory or module (multiple
 | **Full Prism** | 3 | Structural → adversarial → synthesis (self-correcting) |
 | **Portfolio** | 2+ | Multiple independent lenses for breadth (52+ available) |
 | **Behavioral** | 4+1 | Error resilience + optimization + evolution + API surface → synthesis. Code-only. |
+| **Dispute** | 3 | 2 orthogonal prisms → disagreement synthesis. Lightweight self-correction. |
+| **Subsystem** | N+2 | AST split → per-region prism calibration → cross-subsystem synthesis. Code-only. |
+| **Verified** | 4 | L12 → gap detection (boundary+audit) → re-analysis with corrections. Highest accuracy. |
+| **Reflect** | 3 | L12 → meta-analysis (claim on L12 output) → constraint synthesis. |
+| **Smart** | 5+ | Adaptive chain: prereq → knowledge fill → analysis → dispute → profile. System decides pipeline. |
+| **Adaptive** | 1-3+ | Depth escalation: SDL → L12 → full-prism. Stops at first adequate signal. |
 
 ---
 
@@ -119,6 +131,12 @@ Scope: **file** = single source file, **module** = directory or module (multiple
 graph TD
     Start([Start]) --> SM["select-mode"]
     SM --> SP["structural-pass"]
+    SM -->|dispute| DP["dispute-pass"]
+    SM -->|subsystem| SUB["subsystem-pass"]
+    SM -->|verified| VP["verified-pass"]
+    SM -->|reflect| RP["reflect-pass"]
+    SM -->|smart| SMP["smart-pass"]
+    SM -->|adaptive| ADP["adaptive-pass"]
 
     SP --> MODE{"pipeline mode?"}
     MODE -->|"single"| GR["generate-report"]
@@ -130,11 +148,14 @@ graph TD
     SYN --> GR
 
     BSP --> GR
+    DP --> GR
+    SUB --> GR
+    VP --> GR
+    RP --> GR
+    SMP --> GR
+    ADP --> GR
     GR --> DR["deliver-result"]
-    DR --> AF{"security audit?"}
-    AF -->|yes| AUD["audit-finalize"]
-    AF -->|no| Done([End])
-    AUD --> Done
+    DR --> Done([End])
 ```
 
 ---
@@ -150,7 +171,13 @@ graph TD
 | 04 | **Deliver Result** | Present final report with artifact paths |
 | 05 | **Behavioral Synthesis Pass** | Synthesize 4 behavioral lens outputs (behavioral only) |
 | 06 | **Audit Finalize** | Split report, create detailed findings + trade-off analysis (security audits only) |
-| 07 | **Generate Report** | Produce clean REPORT.md from analysis artifacts — definitive findings only, no methodology language |
+| 07 | **Dispute Pass** | Run 2 orthogonal prisms + disagreement synthesis (dispute only) |
+| 08 | **Subsystem Pass** | AST split → calibrate → per-region analysis → cross-subsystem synthesis (subsystem only) |
+| 09 | **Verified Pass** | L12 → gap detection → corrected re-analysis (verified only) |
+| 10 | **Reflect Pass** | L12 → meta-analysis → constraint synthesis (reflect only) |
+| 11 | **Smart Pass** | Adaptive chain engine — system decides pipeline (smart only) |
+| 12 | **Adaptive Pass** | Depth escalation with signal quality assessment (adaptive only) |
+| 13 | **Generate Report** | Produce clean REPORT.md from analysis artifacts — definitive findings only, no methodology language |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 
@@ -167,12 +194,18 @@ graph TD
 | 04 | `orchestrate-prism` | Dispatch isolated workers, manage the analysis pipeline | Orchestrator |
 | 05 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | Worker |
 | 06 | `generate-report` | Produce clean final report from analysis artifacts | Worker |
+| 07 | `dispute-analysis` | Run 2 orthogonal prisms + disagreement synthesis | Worker |
+| 08 | `subsystem-analysis` | Decompose code, calibrate per-region prisms, cross-subsystem synthesis | Worker |
+| 09 | `verified-analysis` | L12 + gap detection + corrected re-analysis | Worker |
+| 10 | `reflect-analysis` | L12 + meta-analysis + constraint synthesis | Worker |
+| 11 | `smart-analysis` | Automatic pipeline composition engine | Worker |
+| 12 | `adaptive-analysis` | Depth escalation with signal quality assessment | Worker |
 
 **Detailed documentation:** See [skills/README.md](skills/README.md) for protocol flows and skill details.
 
 ---
 
-## Resources (58)
+## Resources (61)
 
 Resources are indexed markdown files containing lens prompts. Each lens encodes a specific analytical operation.
 
@@ -194,6 +227,7 @@ Resources are indexed markdown files containing lens prompts. Each lens encodes 
 | 55 | Emergent | 1 | Emergence |
 | 52, 56, 60 | Meta/Epistemic | 3 | Blindspot, falsify, significance |
 | 59, 61 | Task/Verification | 2 | Prereq, verify-claims |
+| 62–64 | Pipeline Prompts | 3 | Dispute synthesis, subsystem calibration, subsystem synthesis |
 
 Indices 03–05 are deprecated (upstream general L12 variants removed). Index 49 (severity-rubric) has been removed.
 
@@ -258,7 +292,7 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 |----------|------|-------------|
 | `target` | string | What to analyze — file path, directory, inline text, question, or concept |
 | `target_type` | string | `code` or `general` (default: `code`) |
-| `pipeline_mode` | string | `single`, `full-prism`, `portfolio`, or `behavioral` (default: `single`) |
+| `pipeline_mode` | string | `single`, `full-prism`, `portfolio`, `behavioral`, `dispute`, `subsystem`, `verified`, `reflect`, `smart`, or `adaptive` (default: `single`) |
 | `output_path` | string | Directory to write analysis artifacts (default: `.`) |
 | `selected_lenses` | array | For portfolio mode: array of lens names |
 | `analysis_focus` | string | Optional focus area to guide the analysis |
@@ -272,6 +306,17 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 | `behavioral_output_paths` | object | Map of behavioral lens name to artifact path |
 | `behavioral_synthesis_output_path` | string | File path to behavioral synthesis artifact |
 | `report_output_path` | string | File path to the generated REPORT.md |
+| `analysis_prompt` | string | Structured prose describing analytical intent — prism derives all decisions from this |
+| `prompt_was_elicited` | boolean | Whether the prompt was generated by elicitation (triggers review checkpoint) |
+| `planning_folder` | string | Path to planning folder for prompt artifacts |
+| `dispute_outputs` | object | For dispute mode: map of prism_a, prism_b, synthesis outputs |
+| `subsystem_assignments` | object | For subsystem mode: map of subsystem → prism name |
+| `subsystem_outputs` | array | For subsystem mode: per-subsystem analysis outputs |
+| `verified_gap_data` | string | For verified mode: extracted gap JSON |
+| `reflect_history_context` | string | For reflect mode: loaded constraint history |
+| `smart_pipeline_steps` | array | For smart mode: steps the engine decided to execute |
+| `adaptive_stage` | string | For adaptive mode: current escalation stage |
+| `adaptive_signal_quality` | string | For adaptive mode: signal quality assessment |
 
 ---
 
@@ -279,7 +324,7 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 ```
 workflows/prism/
-├── workflow.toon                         # Workflow definition (4 modes, 16 variables, 12 rules)
+├── workflow.toon                         # Workflow definition (10 modes, 29 variables, 12 rules)
 ├── README.md                             # This file
 ├── concept-lexicon.md                    # Analytical concept definitions (49 concepts)
 ├── activities/
@@ -289,8 +334,13 @@ workflows/prism/
 │   ├── 03-synthesis-pass.toon            # L12 synthesis (full-prism only)
 │   ├── 04-deliver-result.toon            # Present final report
 │   ├── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
-│   ├── 06-audit-finalize.toon            # Audit report finalization (security audits only)
-│   └── 07-generate-report.toon           # Generate clean REPORT.md from analysis artifacts
+│   ├── 06-generate-report.toon           # Generate clean REPORT.md from analysis artifacts
+│   ├── 07-dispute-pass.toon              # Dispute pipeline (dispute only)
+│   ├── 08-subsystem-pass.toon            # Subsystem pipeline (subsystem only)
+│   ├── 09-verified-pass.toon             # Verified pipeline (verified only)
+│   ├── 10-reflect-pass.toon              # Reflect pipeline (reflect only)
+│   ├── 11-smart-pass.toon                # Smart adaptive chain (smart only)
+│   └── 12-adaptive-pass.toon             # Adaptive depth escalation (adaptive only)
 ├── skills/
 │   ├── 00-structural-analysis.toon       # Single-pass L12
 │   ├── 01-full-prism.toon               # Full Prism worker pass
@@ -299,6 +349,12 @@ workflows/prism/
 │   ├── 04-orchestrate-prism.toon         # Pipeline orchestration
 │   ├── 05-behavioral-pipeline.toon       # Behavioral pipeline worker pass
 │   ├── 06-generate-report.toon           # Report generation from analysis artifacts
+│   ├── 07-dispute-analysis.toon          # Dispute execution
+│   ├── 08-subsystem-analysis.toon        # Subsystem execution
+│   ├── 09-verified-analysis.toon         # Verified execution
+│   ├── 10-reflect-analysis.toon          # Reflect execution
+│   ├── 11-smart-analysis.toon            # Smart composition
+│   ├── 12-adaptive-analysis.toon         # Adaptive escalation
 │   └── README.md
 └── resources/
     ├── 00–02: L12 pipeline
@@ -318,5 +374,6 @@ workflows/prism/
     ├── 56, 60: Meta/epistemic (falsify, significance)
     ├── 52: Meta (blindspot)
     ├── 59, 61: Task/verification (prereq, verify-claims)
-    └── README.md (58 resources)
+    ├── 62–64: Pipeline prompts (dispute-synthesis, subsystem-calibration, subsystem-synthesis)
+    └── README.md (61 resources)
 ```

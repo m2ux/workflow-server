@@ -2,9 +2,9 @@
 
 > Part of the [Structural Analysis Prism Workflow](../README.md)
 
-## Skills (7 workflow-specific)
+## Skills (13 workflow-specific)
 
-The prism workflow provides 7 skills organized by role. Skills `orchestrate-prism`, `full-prism`, and `behavioral-pipeline` form the isolation pipeline. `generate-report` produces the final clean output. The remaining skills are usable standalone by any workflow.
+The prism workflow provides 13 skills organized by role. Skills `orchestrate-prism`, `full-prism`, and `behavioral-pipeline` form the isolation pipeline. `generate-report` produces the final clean output. The remaining skills are usable standalone by any workflow.
 
 | # | Skill ID | Capability | Role |
 |---|----------|------------|------|
@@ -15,6 +15,12 @@ The prism workflow provides 7 skills organized by role. Skills `orchestrate-pris
 | 04 | `orchestrate-prism` | Dispatch isolated workers, manage all pipeline modes | Orchestrator |
 | 05 | `behavioral-pipeline` | Execute a pass of the 4+1 behavioral pipeline | Worker |
 | 06 | `generate-report` | Produce clean REPORT.md from analysis artifacts — methodology stripped | Worker |
+| 07 | `dispute-analysis` | Run 2 orthogonal prisms + disagreement synthesis | Worker |
+| 08 | `subsystem-analysis` | Decompose code into subsystems, calibrate per-region prisms, synthesize cross-boundary findings | Worker |
+| 09 | `verified-analysis` | L12 analysis + gap detection (boundary+audit) + corrected re-analysis | Worker |
+| 10 | `reflect-analysis` | L12 + meta-analysis (claim on L12 output) + constraint synthesis | Worker |
+| 11 | `smart-analysis` | Automatic pipeline composition — prereq + analysis + dispute + profile | Worker |
+| 12 | `adaptive-analysis` | Depth escalation: SDL → L12 → full-prism based on signal quality | Worker |
 
 > The universal skills `orchestrate-workflow` and `execute-activity` from [meta/skills/](../../meta/skills/) are **not used** by this workflow. Prism uses its own orchestration skill (`orchestrate-prism`) because it requires disposable (non-resumed) workers for context isolation.
 
