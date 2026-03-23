@@ -21,11 +21,22 @@ artifacts[3]:
 rules[2]:
   - "Prisms A and B MUST run in separate fresh contexts. Neither should see the other's output. The synthesis worker receives both outputs but has never seen the target being analyzed by either lens."
   - "Prism pair selection is automatic, not user-configurable. The pairs are chosen for maximum analytical divergence."
-steps[5]:
+decisions[1]:
   - id: select-prism-pair
     name: Select Orthogonal Prism Pair
-    description: "If target_type is 'code', select l12 (resource 00) and identity (resource 17) — highest pairwise uniqueness (10/10). If target_type is 'general', select l12_universal (resource 18) and claim (resource 07). Set prism_a and prism_b indices."
-    required: true
+    description: "Select 2 maximally orthogonal prisms based on target type"
+    branches[2]:
+      - id: code-pair
+        label: "Code target: l12 (00) + identity (17) — highest pairwise uniqueness (10/10)"
+        condition:
+          type: simple
+          variable: target_type
+          operator: "=="
+          value: code
+      - id: general-pair
+        label: "General target: l12_universal (18) + claim (07)"
+        isDefault: true
+steps[4]:
   - id: dispatch-prism-a
     name: Dispatch Prism A
     description: "Create a FRESH worker with prism_a resource index. Worker loads the lens via get_resource, executes against the target, writes to {output_path}/dispute-lens-a.md."

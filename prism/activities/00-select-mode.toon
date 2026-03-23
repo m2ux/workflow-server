@@ -147,6 +147,12 @@ checkpoints[2]:
             pipeline_mode: adaptive
     required: true
     blocking: true
+artifacts[1]:
+  - id: analysis-prompt
+    name: "analysis-prompt.md"
+    location: analysis
+    description: "Structured analysis prompt composed during elicitation — saved to planning_folder for re-use"
+    action: create
 transitions[7]:
   - to: dispute-pass
     condition:

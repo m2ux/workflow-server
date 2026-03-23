@@ -29,8 +29,13 @@ steps[6]:
     required: true
   - id: fill-knowledge
     name: Fill Knowledge Gaps
-    description: "If questions were extracted, attempt to fill via available knowledge sources. Construct verified_knowledge context block. Skip if no questions extracted."
+    description: "Attempt to fill extracted questions via available knowledge sources. Construct verified_knowledge context block."
     required: false
+    condition:
+      type: simple
+      variable: smart_pipeline_steps
+      operator: contains
+      value: prereq_questions_extracted
   - id: select-analysis-mode
     name: Select Analysis Mode
     description: "Determine analysis approach: if target is code, attempt AST decomposition — if multi-subsystem, use subsystem mode; otherwise use L12. If target is general, use 3-pass full-prism. Record decision in smart_pipeline_steps."
@@ -41,8 +46,13 @@ steps[6]:
     required: true
   - id: run-dispute
     name: Run Dispute Self-correction
-    description: "If analysis produced sufficient output (>200 chars), run dispute mode on the enriched content for self-correction. Writes to {output_path}/smart-dispute-*.md. Skip if analysis output is insufficient."
+    description: "Run dispute mode on the enriched content for self-correction. Writes to {output_path}/smart-dispute-*.md."
     required: false
+    condition:
+      type: simple
+      variable: smart_pipeline_steps
+      operator: contains
+      value: analysis_sufficient
   - id: collect-paths
     name: Collect Artifact Paths
     description: "Add all produced artifacts to all_artifact_paths. Record smart_pipeline_steps for reporting."
