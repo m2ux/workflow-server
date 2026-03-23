@@ -1,0 +1,58 @@
+id: execute-plan
+version: 1.0.0
+name: Execute Analysis Plan
+description: "Iterate over analysis_units and dispatch each unit to the appropriate pipeline activity based on its pipeline_mode. For single-unit plans (the common case), the loop executes once — identical to direct dispatch. For multi-dimensional plans, each unit runs its own pipeline chain with a different mode. After all units complete, transition to generate-report."
+problem: "Multi-dimensional analysis prompts produce analysis_units with different pipeline_modes per dimension. The previous transition model routed to ONE activity based on a global pipeline_mode. This activity provides per-unit dispatch, enabling mixed-mode execution from a single invocation."
+skills:
+  primary: orchestrate-prism
+steps[2]:
+  - id: validate-units
+    name: Validate Analysis Units
+    description: "Verify analysis_units is populated and each unit has: target, target_type, pipeline_mode, and output_subdir (if multi-unit). Log the execution plan: unit count, modes to execute, estimated total dispatches."
+    required: true
+  - id: report-completion
+    name: Report Completion
+    description: "After all units complete, report: total units executed, total artifacts produced, any failures. Set all_artifact_paths from accumulated per-unit paths."
+    required: true
+loops[1]:
+  - id: unit-dispatch
+    name: Per-unit Pipeline Dispatch
+    type: forEach
+    variable: current_unit
+    over: analysis_units
+    maxIterations: 20
+    steps[4]:
+      - id: set-unit-context
+        name: Set Unit Context
+        description: "Set unit_output_dir from current_unit.output_subdir (or output_path if single-unit). Create the output directory if needed. Set pipeline_mode from current_unit.pipeline_mode for the dispatch."
+        required: true
+        actions[2]:
+          - action: set
+            variable: unit_output_dir
+          - action: set
+            variable: pipeline_mode
+      - id: dispatch-pipeline
+        name: Dispatch Pipeline for Unit
+        description: "Based on current_unit.pipeline_mode, dispatch the appropriate pipeline chain as fresh workers. single: 1 worker (L12). full-prism: 3 workers (structural → adversarial → synthesis). portfolio: N workers (1 per lens). behavioral: 5 workers (4 lenses + synthesis). dispute: 3 workers (prism A + prism B + disagreement synthesis). subsystem: N+2 workers (calibration + N per-subsystem + cross-subsystem synthesis). verified: 3-4 workers (L12 + gap detection + re-analysis). reflect: 3 workers (L12 + meta + constraint synthesis). smart: 5+ workers (prereq + analysis + dispute). adaptive: 1-3+ workers (escalation stages)."
+        required: true
+      - id: collect-unit-artifacts
+        name: Collect Unit Artifacts
+        description: "Collect all artifact paths produced by the dispatched pipeline. If current_unit has dimension_names, tag the artifacts with their dimension association for cross-dimensional synthesis in generate-report."
+        required: true
+      - id: verify-unit-completion
+        name: Verify Unit Completion
+        description: "Verify expected artifacts exist and contain substantive content. If verification fails, log the failure but continue to next unit."
+        required: true
+rules[3]:
+  - "DISPATCH ISOLATION: Each pipeline dispatch uses fresh workers per the prism workflow's isolation model. Workers are never resumed between units."
+  - "PER-UNIT MODE: The pipeline_mode is set per-unit from current_unit.pipeline_mode, not from the global variable. This enables mixed-mode execution across dimensions."
+  - "ARTIFACT TAGGING: When analysis_units contain dimension_names, artifact paths must be tagged with their dimension association. This metadata drives dimension-organized report generation."
+artifacts[1]:
+  - id: evaluation-plan
+    name: "evaluation-plan.md"
+    location: analysis
+    description: "Execution plan artifact: unit count, per-unit mode assignments, dimension mappings, estimated dispatches. Written during validate-units when multi-dimensional."
+    action: create
+transitions[1]:
+  - to: generate-report
+    isDefault: true

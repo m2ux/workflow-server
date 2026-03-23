@@ -153,42 +153,6 @@ artifacts[1]:
     location: analysis
     description: "Structured analysis prompt composed during elicitation — saved to planning_folder for re-use"
     action: create
-transitions[7]:
-  - to: dispute-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: dispute
-  - to: subsystem-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: subsystem
-  - to: verified-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: verified
-  - to: reflect-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: reflect
-  - to: smart-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: smart
-  - to: adaptive-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: "=="
-      value: adaptive
-  - to: structural-pass
+transitions[1]:
+  - to: execute-plan
     isDefault: true
