@@ -1,5 +1,5 @@
 id: plan-analysis
-version: 1.1.0
+version: 2.0.0
 capability: Plan an analysis strategy by detecting scope, classifying targets, and selecting lenses appropriate to each unit of work
 
 description: "Given a target and an analytical goal, produce an execution plan that maps each unit of work to a pipeline mode and lens selection. Handles five scope types: query (a question, idea, or concept — no files), file (single source file or document), module (coherent code group), codebase (repository with multiple modules), and document-set (directory of non-code artifacts). For query and file scopes, produces a direct lens recommendation. For broader scopes, surveys the structure, classifies units by role and risk, and produces a prioritised execution plan with cost estimates."
@@ -25,6 +25,12 @@ inputs[6]:
     required: false
 
 protocol:
+  parse-prompt[5]:
+    - "Read analysis_prompt. If absent, skip to detect-scope (backward-compatible fallback for callers that do not provide a structured prompt)."
+    - "Extract analytical dimensions from the prompt: look for evaluation axes, concerns, questions, or focus areas described in prose. Each distinct analytical question becomes a dimension. Single-concern prompts produce one dimension."
+    - "For each dimension, extract: name (short label), description (what to examine), evidence-pointers (any specific target content referenced in the prompt), and budget signal (accuracy/speed/cost keywords)."
+    - "Read the target (or a sample for large targets) to understand its structure, sections, claims, and architecture. Produce content-aware analysis_focus values per dimension that reference actual target content."
+    - "Proceed to detect-scope, then to map-dimensions (skip query-recommendation and single-unit-recommendation — those are fallback paths for unstructured requests)."
   detect-scope[6]:
     - "Determine the scope from the target input"
     - "If target is a file path pointing to a single file → scope 'file'"
@@ -39,6 +45,11 @@ protocol:
     - "Scope eligibility gates: subsystem requires scope 'file' and target_type 'code'. verified requires scope 'file' or 'module'. reflect requires scope 'file' or 'module'. adaptive requires scope 'file' or 'module'. dispute and smart work at all scopes."
     - "If no mode-inference rule matches, fall through to lens-based mode selection (single/full-prism/portfolio/behavioral) via the existing depth-preference and budget logic."
     - "When a new mode is selected, set pipeline_mode directly and skip lens selection — new modes handle their own lens composition internally."
+  map-dimensions[4]:
+    - "For prompted analyses (analysis_prompt was provided): map each extracted dimension to a pipeline_mode using mode-inference rules. consistency/coherence → full-prism or verified. truthfulness/claims → dispute or portfolio (claim + knowledge-audit). alternatives/viability → single (rejected-paths). resources/constraints → single (scarcity). accuracy-critical → verified. broad exploration → portfolio. self-correction → dispute. complex multi-class code → subsystem. unknown/delegated → smart."
+    - "For each dimension, select lenses using the goal-mapping matrix. Compose analysis_focus from the dimension description + evidence-pointers + target content discovered during parse-prompt."
+    - "Group dimensions that share a pipeline_mode AND target into execution groups where possible. Full-prism, verified, dispute, subsystem, reflect, smart, and adaptive dimensions each get their own group. Portfolio dimensions with different lenses can be grouped into a single portfolio run."
+    - "Build analysis_units: one unit per execution group. Each unit has: target, target_type, pipeline_mode, lenses, analysis_focus, dimension_names (which dimensions this unit covers), output_subdir. Proceed to build-analysis-units to finalize."
   query-recommendation[4]:
     - "For scope 'query': the target is text, not files. Select lenses from the general set (resources 00-02 + 06-10 + 15 + 18 + 24-26)."
     - "Map the analytical goal to lenses: exploring implications → claim (07) + rejected-paths (09). evaluating a strategy → scarcity (08) + claim (07). understanding trade-offs → scarcity (08) + rejected-paths (09). deep structural analysis → L12 pipeline (00-02). general exploration → L12 single (00). abstraction quality → sdl-abstraction (15). error resilience → error-resilience-neutral (24). API quality → api-surface-neutral (25). evolution/coupling/dependencies → evolution-neutral (26). pattern transfer → pedagogy (06). hidden assumptions → claim (07). resource scarcity → scarcity (08). rejected alternatives → rejected-paths (09). decay/degradation → degradation (10). code archaeology → archaeology (33). change resilience → cultivation (35). temporal simulation → simulation (38). confabulation detection → knowledge-audit (40). knowledge gaps → knowledge-boundary (41). epistemic typing → knowledge-typed (42). self-correcting analysis → l12g (43). maximum-trust analysis → oracle (44). README rewriting → writer (45). analysis strategy → strategist (48). architecture exploration → architect (51). catalog blindspots → blindspot (52). counterfactual analysis → counterfactual (54). conservation law falsification → falsify (56). creative synthesis → genesis (57). knowledge prerequisites → prereq (59). significance evaluation → significance (60)."

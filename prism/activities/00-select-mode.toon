@@ -1,8 +1,8 @@
 id: select-mode
-version: 2.0.0
+version: 3.0.0
 name: Plan Analysis
-description: "Analyze the user's request to determine what to analyze, detect scope and target type, recommend a pipeline mode with rationale, and present the recommendation for confirmation. Delegates all planning logic to the plan-analysis skill."
-problem: User needs the analysis planned and configured before execution begins
+description: "When no analysis_prompt is provided, elicit the user's analytical goals through targeted questions and compose a structured prompt (saved as a reusable artifact). Then parse the prompt to extract dimensions, detect scope and target type, map dimensions to pipeline modes and lenses, and present the execution plan for confirmation. Delegates planning logic to the plan-analysis skill."
+problem: Users need guided elicitation to articulate what they want to understand, and the resulting intent must drive all pipeline and lens decisions internally
 recognition[11]:
   - analyze
   - structural analysis
@@ -17,27 +17,63 @@ recognition[11]:
   - behavioral analysis
 skills:
   primary: plan-analysis
-steps[3]:
+steps[5]:
+  - id: elicit-goals
+    name: Elicit Analytical Goals
+    description: "When analysis_prompt is absent, ask the user 1-2 targeted questions to understand their analytical intent: (1) 'What do you want to understand about this target?' (2) optionally 'What matters most — depth, breadth, accuracy, or cost?'. Compose the answers into a structured analysis_prompt. Write the prompt to {planning_folder}/analysis-prompt.md as a reusable artifact. Set prompt_was_elicited to true."
+    required: true
+    condition:
+      type: simple
+      variable: analysis_prompt
+      operator: notExists
+    actions[2]:
+      - action: set
+        variable: analysis_prompt
+        description: "Set analysis_prompt from composed elicitation output"
+      - action: set
+        variable: prompt_was_elicited
+        value: true
   - id: plan
     name: Plan the Analysis
-    description: "Execute the plan-analysis skill protocol: detect scope from the target, classify units if multi-scope, recommend pipeline_mode and lens selection, resolve output_path."
+    description: "Execute the plan-analysis skill protocol: parse the analysis_prompt to extract dimensions, detect scope from the target, map dimensions to pipeline modes and lenses via mode-inference and goal-mapping, resolve output_path. For prompts with multiple dimensions, produce multiple analysis_units with potentially different pipeline_modes per dimension."
     required: true
   - id: summarize
     name: Summarize Configuration
-    description: "Present the recommended configuration: scope, target, target_type, pipeline_mode, selected_lenses (if portfolio), output_path, and rationale. This is the checkpoint context."
+    description: "Present the recommended configuration: scope, target, target_type, dimensions (if multi-dimensional), pipeline_mode per dimension, selected_lenses, output_path, and rationale. This is the checkpoint context."
     required: true
   - id: apply-plan
     name: Apply Plan
-    description: "Apply the selected pipeline_mode and any lens selections to workflow state variables."
+    description: "Apply the selected pipeline_mode(s) and lens selections to workflow state variables."
     required: true
     actions[2]:
       - action: set
         variable: pipeline_mode
-        description: "Set pipeline_mode from checkpoint selection or plan recommendation"
+        description: "Set pipeline_mode from checkpoint selection or plan recommendation (first/primary mode for single-dimension plans)"
       - action: set
         variable: analysis_units
-        description: "Set analysis_units from the plan-analysis skill output"
-checkpoints[1]:
+        description: "Set analysis_units from the plan-analysis skill output — may contain multiple units with different pipeline_modes for multi-dimensional prompts"
+checkpoints[2]:
+  - id: confirm-prompt
+    name: Analysis Prompt Review
+    message: "Here is the analysis prompt composed from your input. It has been saved for re-use. Review and confirm to proceed with planning."
+    condition:
+      type: simple
+      variable: prompt_was_elicited
+      operator: "=="
+      value: true
+    options[2]:
+      - id: proceed
+        label: "Proceed with this prompt"
+        description: "Use this prompt to plan the analysis"
+      - id: edit
+        label: "Refine the prompt"
+        description: "Let me adjust what I want to understand"
+        effect:
+          setVariable:
+            analysis_prompt: null
+            prompt_was_elicited: false
+    required: true
+    blocking: true
   - id: confirm-mode
     name: Pipeline Mode Confirmation
     message: "Based on your request, I recommend the following analysis configuration. Would you like to proceed or adjust?"
