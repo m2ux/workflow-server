@@ -13,18 +13,13 @@
 | `validate_transition` | `workflow_id`, `from_activity`, `to_activity` | Validate if a transition between activities is allowed |
 | `health_check` | - | Check server health and available workflows |
 
-### Activity Tools
+### Goal Matching & Session Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_activities` | - | Get activity index - primary entry point for agents |
-| `get_activity` | `activity_id` | Get a specific workflow activity |
-
-### Rules Tools
-
-| Tool | Parameters | Description |
-|------|------------|-------------|
-| `get_rules` | - | Get global agent rules - behavioral guidelines for workflow execution |
+| `match_goal` | - | Match user goal to a workflow via activity index |
+| `start_session` | `workflow_version` | Start a workflow session — returns agent rules and a session token |
+| `get_activity` | `session_token`, `activity_id` | Get a specific workflow activity |
 
 ### Skill Tools
 
@@ -109,7 +104,7 @@ Primary skill for workflow navigation:
 #### activity-resolution (universal)
 
 Bootstrap skill for agent initialization:
-- **Bootstrap**: `get_activities` → `get_activity`
+- **Bootstrap**: `match_goal` → `start_session` → `get_activity`
 - **Skill loading**: `get_skill`
 - **Discovery**: `discover_resources`
 

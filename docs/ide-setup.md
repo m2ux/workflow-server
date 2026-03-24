@@ -5,7 +5,7 @@ Paste the following into your IDE rules location:
 ```
 For all workflow execution user requests use the workflow-server MCP server. Before use you *must*:
 1. Fetch the `workflow-server://schemas` resource to load TOON schema definitions
-2. Call the `get_rules` tool to load agent guidelines
+2. Call the `start_session` tool to load agent guidelines and obtain a session token
 
 CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics
 ```
@@ -13,8 +13,8 @@ CRITICAL: When following the workflow you *must* respect workflow fidelity as de
 ## How It Works
 
 1. **Fetch schemas** - Fetch `workflow-server://schemas` resource to load TOON schema definitions
-2. **Get rules** - Call `get_rules` to load agent behavioral guidelines
-3. **Get activities** - Call `get_activities` to get the activity index with `quick_match` patterns
+2. **Start session** - Call `start_session` to load agent behavioral guidelines and obtain a session token
+3. **Match goal** - Call `match_goal` to get the activity index with `quick_match` patterns
 4. **Match user goal** - Use `quick_match` patterns to identify the appropriate activity
 5. **Load activity** - Call `get_activity { activity_id: "{id}" }` for detailed flow
 6. **Load skill** - Call `get_skill { skill_id: "{skill}" }` referenced by the activity
@@ -30,8 +30,8 @@ CRITICAL: When following the workflow you *must* respect workflow fidelity as de
 
 | Tool | Purpose |
 |------|---------|
-| `get_rules` | Get agent behavioral guidelines |
-| `get_activities` | Get activity index - primary entry point |
+| `start_session` | Start session — returns agent guidelines and session token |
+| `match_goal` | Match user goal to a workflow via activity index |
 | `get_activity` | Get specific activity by ID |
 | `list_skills` | List available skills |
 | `get_skill` | Get specific skill by ID |

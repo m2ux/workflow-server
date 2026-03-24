@@ -18,7 +18,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 Workflow Server uses a **Goal → Activity → Skill → Tools** architecture to guide AI agents through structured workflows.
 
 After initial setup of an always-applied [rule](docs/ide-setup.md), agents:
-1. **Match the user's goal** to an activity via `get_activities` (returns `quick_match` patterns and `next_action` guidance)
+1. **Match the user's goal** to an activity via `match_goal` (returns `quick_match` patterns and `next_action` guidance)
 2. **Load the primary skill** via `get_skill` to get tool orchestration patterns (execution order, state tracking, error recovery)
 3. **Execute workflow activities** using skill-directed tools (`get_workflow`, `get_workflow_activity`, `get_checkpoint`, `validate_transition`)
 
@@ -104,7 +104,7 @@ Add the following to your IDE 'always-applied' rule-set (see [`docs/ide-setup.md
 ```
 For all workflow execution user requests use the workflow-server MCP server. Before use you *must*:
 1. Fetch the `workflow-server://schemas` resource to load TOON schema definitions
-2. Call the `get_rules` tool to load agent guidelines
+2. Call the `start_session` tool to load agent guidelines and obtain a session token
 
 CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics
 ```

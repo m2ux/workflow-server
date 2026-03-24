@@ -1184,7 +1184,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 **Independent Activities** (e.g., meta workflow):
 - Have `recognition` patterns for intent matching
 - No `transitions` to other activities
-- Matched via `get_activities` tool
+- Matched via `match_goal` tool
 
 **Sequential Activities** (e.g., work-package workflow):
 - Have `transitions` connecting them

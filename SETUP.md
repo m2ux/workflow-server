@@ -72,7 +72,7 @@ Add the following to your IDE rules (see [`docs/ide-setup.md`](docs/ide-setup.md
 ```
 For all workflow execution user requests use the workflow-server MCP server. Before use you *must*:
 1. Fetch the `workflow-server://schemas` resource to load TOON schema definitions
-2. Call the `get_rules` tool to load agent guidelines
+2. Call the `start_session` tool to load agent guidelines and obtain a session token
 
 CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics
 ```
