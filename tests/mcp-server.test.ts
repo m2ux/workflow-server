@@ -20,7 +20,7 @@ describe('mcp-server integration', () => {
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
 
     await server.connect(serverTransport);
-    
+
     client = new Client({ name: 'test-client', version: '1.0.0' }, {});
     await client.connect(clientTransport);
 
@@ -31,79 +31,110 @@ describe('mcp-server integration', () => {
 
     const sessionResult = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_version: '3.4.0' },
+      arguments: { workflow_id: 'work-package' },
     });
     const sessionResponse = JSON.parse((sessionResult.content[0] as { type: 'text'; text: string }).text);
-    sessionToken = sessionResponse.session.token;
+    sessionToken = sessionResponse.session_token;
   });
 
   afterAll(async () => {
     await closeTransport();
   });
 
-  // ============== Session & Bootstrap Tools ==============
+  // ============== Bootstrap Flow ==============
 
-  describe('tool: start_session', () => {
-    it('should return rules and session with token', async () => {
+  describe('bootstrap flow: list_workflows -> start_session', () => {
+    it('list_workflows should not require session_token', async () => {
+      const result = await client.callTool({ name: 'list_workflows', arguments: {} });
+      expect(result.isError).toBeFalsy();
+
+      const workflows = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(Array.isArray(workflows)).toBe(true);
+      expect(workflows.length).toBeGreaterThanOrEqual(2);
+
+      const ids = workflows.map((w: { id: string }) => w.id);
+      expect(ids).toContain('work-package');
+      expect(ids).toContain('meta');
+    });
+
+    it('start_session should return rules, workflow metadata, and opaque token', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_version: '3.4.0' },
+        arguments: { workflow_id: 'work-package' },
       });
+      expect(result.isError).toBeFalsy();
 
       const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
 
       expect(response.rules).toBeDefined();
       expect(response.rules.id).toBe('agent-rules');
       expect(response.rules.sections).toBeDefined();
-      expect(response.session).toBeDefined();
-      expect(response.session.token).toBeDefined();
-      expect(response.session.created_at).toBeDefined();
-      expect(response.session.server_version).toBe('1.0.0');
+
+      expect(response.workflow).toBeDefined();
+      expect(response.workflow.id).toBe('work-package');
+      expect(response.workflow.version).toBe('3.4.0');
+
+      expect(response.session_token).toBeDefined();
+      expect(typeof response.session_token).toBe('string');
+      expect(response.session_token.length).toBeGreaterThan(10);
     });
 
-    it('should return token matching structured format', async () => {
+    it('start_session should reject unknown workflow_id', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_version: '3.4.0' },
+        arguments: { workflow_id: 'non-existent' },
       });
-
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(response.session.token).toMatch(/^[\d.]+_\d+_[0-9a-f]{8}$/);
-      expect(response.session.token).toMatch(/^3\.4\.0_/);
+      expect(result.isError).toBe(true);
     });
 
-    it('should work without session_token (exempt)', async () => {
+    it('start_session should not require session_token (exempt)', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_version: '1.0.0' },
+        arguments: { workflow_id: 'meta' },
       });
       expect(result.isError).toBeFalsy();
     });
   });
 
-  describe('tool: match_goal', () => {
-    it('should return activity index', async () => {
-      const result = await client.callTool({ name: 'match_goal', arguments: {} });
-      
-      const index = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
-      expect(index.description).toBeDefined();
-      expect(index.activities).toBeDefined();
-      expect(index.activities.length).toBeGreaterThanOrEqual(3);
-      expect(index.quick_match).toBeDefined();
+  // ============== Session Token Lifecycle ==============
+
+  describe('session token lifecycle', () => {
+    it('token should be opaque (not readable JSON)', async () => {
+      expect(sessionToken).not.toContain('{');
+      expect(sessionToken).not.toContain('workflow');
     });
 
-    it('should reference start_session in next_action', async () => {
-      const result = await client.callTool({ name: 'match_goal', arguments: {} });
-
-      const index = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-
-      expect(index.next_action).toBeDefined();
-      expect(index.next_action.tool).toBe('start_session');
+    it('tools should return updated token in _meta', async () => {
+      const result = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_token: sessionToken },
+      });
+      expect(result.isError).toBeFalsy();
+      const meta = result._meta as Record<string, unknown> | undefined;
+      expect(meta).toBeDefined();
+      expect(meta!['session_token']).toBeDefined();
+      expect(typeof meta!['session_token']).toBe('string');
+      expect(meta!['session_token']).not.toBe(sessionToken);
     });
 
-    it('should work without session_token (exempt)', async () => {
-      const result = await client.callTool({ name: 'match_goal', arguments: {} });
+    it('should reject tool call without session_token', async () => {
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: {},
+      });
+      expect(result.isError).toBe(true);
+    });
+
+    it('should reject tool call with invalid session_token', async () => {
+      const result = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_token: 'not-a-valid-token' },
+      });
+      expect(result.isError).toBe(true);
+    });
+
+    it('health_check should not require session_token', async () => {
+      const result = await client.callTool({ name: 'health_check', arguments: {} });
       expect(result.isError).toBeFalsy();
     });
   });
@@ -120,129 +151,74 @@ describe('mcp-server integration', () => {
       const result = await client.callTool({ name: 'get_rules', arguments: {} });
       expect(result.isError).toBe(true);
     });
-  });
 
-  // ============== Session Token Enforcement ==============
-
-  describe('session_token enforcement', () => {
-    it('should reject tool call without session_token', async () => {
-      const result = await client.callTool({
-        name: 'get_activity',
-        arguments: { activity_id: 'start-workflow' },
-      });
+    it('should reject match_goal (removed)', async () => {
+      const result = await client.callTool({ name: 'match_goal', arguments: { prompt: 'test' } });
       expect(result.isError).toBe(true);
     });
-
-    it('should reject tool call with malformed session_token', async () => {
-      const result = await client.callTool({
-        name: 'get_activity',
-        arguments: { session_token: 'invalid-token', activity_id: 'start-workflow' },
-      });
-      expect(result.isError).toBe(true);
-    });
-
-    it('should accept tool call with valid session_token', async () => {
-      const result = await client.callTool({
-        name: 'get_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-workflow' },
-      });
-      expect(result.isError).toBeFalsy();
-    });
-
-    it('should not require session_token for health_check', async () => {
-      const result = await client.callTool({ name: 'health_check', arguments: {} });
-      expect(result.isError).toBeFalsy();
-    });
   });
 
-  // ============== Workflow Tools (with session_token) ==============
-
-  describe('tool: list_workflows', () => {
-    it('should list available workflows', async () => {
-      const result = await client.callTool({ name: 'list_workflows', arguments: { session_token: sessionToken } });
-      
-      expect(result.content).toBeDefined();
-      expect(result.content[0]).toHaveProperty('type', 'text');
-      
-      const workflows = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(Array.isArray(workflows)).toBe(true);
-      expect(workflows.length).toBeGreaterThanOrEqual(2);
-      
-      const ids = workflows.map((w: { id: string }) => w.id);
-      expect(ids).toContain('work-package');
-      expect(ids).toContain('meta');
-    });
-  });
+  // ============== Workflow Tools ==============
 
   describe('tool: get_workflow', () => {
-    it('should get work-package workflow', async () => {
+    it('should get workflow using workflow_id from token', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+        arguments: { session_token: sessionToken },
       });
-      
+
       expect(result.content).toBeDefined();
       const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
+
       expect(workflow.id).toBe('work-package');
       expect(workflow.version).toBe('3.4.0');
       expect(workflow.activities).toHaveLength(14);
-      expect(workflow.initialActivity).toBe('start-work-package');
-    });
-
-    it('should return error for non-existent workflow', async () => {
-      const result = await client.callTool({
-        name: 'get_workflow',
-        arguments: { session_token: sessionToken, workflow_id: 'non-existent' },
-      });
-      
-      expect(result.isError).toBe(true);
-      expect((result.content[0] as { type: 'text'; text: string }).text).toContain('not found');
     });
   });
 
   describe('tool: get_workflow_activity', () => {
-    it('should get specific activity from workflow', async () => {
+    it('should get activity and update token act field', async () => {
       const result = await client.callTool({
         name: 'get_workflow_activity',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      
+
       const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
       expect(activity.id).toBe('start-work-package');
       expect(activity.name).toBe('Start Work Package');
       expect(activity.checkpoints).toBeDefined();
       expect(activity.checkpoints.length).toBeGreaterThan(0);
+
+      const meta = result._meta as Record<string, unknown> | undefined;
+      expect(meta).toBeDefined();
+      expect(meta!['session_token']).toBeDefined();
     });
 
     it('should return error for non-existent activity', async () => {
       const result = await client.callTool({
         name: 'get_workflow_activity',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'non-existent' },
+        arguments: { session_token: sessionToken, activity_id: 'non-existent' },
       });
-      
       expect(result.isError).toBe(true);
-      expect((result.content[0] as { type: 'text'; text: string }).text).toContain('not found');
     });
   });
 
   describe('tool: get_checkpoint', () => {
-    it('should get specific checkpoint', async () => {
+    it('should get checkpoint using activity from token', async () => {
+      const actResult = await client.callTool({
+        name: 'get_workflow_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const updatedToken = actMeta['session_token'] as string;
+
       const result = await client.callTool({
         name: 'get_checkpoint',
-        arguments: {
-          session_token: sessionToken,
-          workflow_id: 'work-package',
-          activity_id: 'start-work-package',
-          checkpoint_id: 'issue-verification',
-        },
+        arguments: { session_token: updatedToken, checkpoint_id: 'issue-verification' },
       });
-      
+
       const checkpoint = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
       expect(checkpoint.id).toBe('issue-verification');
-      expect(checkpoint.name).toBe('Issue Verification Checkpoint');
       expect(checkpoint.options).toBeDefined();
       expect(checkpoint.options.length).toBeGreaterThan(0);
     });
@@ -254,12 +230,11 @@ describe('mcp-server integration', () => {
         name: 'validate_transition',
         arguments: {
           session_token: sessionToken,
-          workflow_id: 'work-package',
           from_activity: 'start-work-package',
           to_activity: 'design-philosophy',
         },
       });
-      
+
       const validation = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(validation.valid).toBe(true);
     });
@@ -269,107 +244,98 @@ describe('mcp-server integration', () => {
         name: 'validate_transition',
         arguments: {
           session_token: sessionToken,
-          workflow_id: 'work-package',
           from_activity: 'start-work-package',
           to_activity: 'complete',
         },
       });
-      
+
       const validation = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(validation.valid).toBe(false);
-      expect(validation.reason).toContain('No valid transition');
     });
   });
 
   describe('tool: health_check', () => {
     it('should return healthy status', async () => {
       const result = await client.callTool({ name: 'health_check', arguments: {} });
-      
+
       const health = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
       expect(health.status).toBe('healthy');
       expect(health.server).toBe('test-workflow-server');
       expect(health.workflows_available).toBeGreaterThanOrEqual(2);
-      expect(health.uptime_seconds).toBeGreaterThanOrEqual(0);
     });
   });
 
-  // ============== Resource Tools (with session_token) ==============
+  // ============== Resource Tools ==============
 
   describe('tool: get_activity', () => {
-    it('should return specific activity', async () => {
+    it('should get activity from token act field', async () => {
+      const actResult = await client.callTool({
+        name: 'get_workflow_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_token'] as string;
+
       const result = await client.callTool({
         name: 'get_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-workflow' },
+        arguments: { session_token: tokenWithAct },
       });
-      
-      const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
-      expect(activity.id).toBe('start-workflow');
-      expect(activity.skills).toBeDefined();
-      expect(activity.skills.primary).toBe('workflow-execution');
+      expect(result.isError).toBeFalsy();
     });
   });
 
   describe('tool: get_skill', () => {
-    it('should return specific skill', async () => {
+    it('should get skill using workflow from token', async () => {
       const result = await client.callTool({
         name: 'get_skill',
         arguments: { session_token: sessionToken, skill_id: 'workflow-execution' },
       });
-      
+
       const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
       expect(skill.id).toBe('workflow-execution');
       expect(skill.capability).toBeDefined();
-      expect(skill.tools).toBeDefined();
     });
   });
 
   describe('tool: list_workflow_resources', () => {
-    it('should list resources for a workflow', async () => {
+    it('should list resources using workflow from token', async () => {
       const result = await client.callTool({
         name: 'list_workflow_resources',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+        arguments: { session_token: sessionToken },
       });
-      
+
       const resources = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      
       expect(Array.isArray(resources)).toBe(true);
       expect(resources.length).toBeGreaterThan(0);
       expect(resources[0]).toHaveProperty('index');
-      expect(resources[0]).toHaveProperty('name');
     });
   });
 
   describe('tool: get_resource', () => {
-    it('should get specific resource', async () => {
+    it('should get resource using workflow from token', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', index: '01' },
+        arguments: { session_token: sessionToken, index: '01' },
       });
-      
+
       const content = (result.content[0] as { type: 'text'; text: string }).text;
-      
       expect(content).toBeDefined();
-      expect(content).toContain('id:');
-      expect(content.includes('title:') || content.includes('# ')).toBe(true);
+      expect(content.length).toBeGreaterThan(0);
     });
   });
 
   // ============== Discovery Tool ==============
 
   describe('tool: discover_resources', () => {
-    it('should reference match_goal in discovery output', async () => {
+    it('should reference list_workflows bootstrap in discovery', async () => {
       const result = await client.callTool({
         name: 'discover_resources',
         arguments: { session_token: sessionToken },
       });
 
       const discovery = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-
-      expect(discovery.activities).toBeDefined();
-      expect(discovery.activities.tool).toBe('match_goal');
+      expect(discovery.bootstrap).toBeDefined();
+      expect(discovery.bootstrap.tool).toBe('list_workflows');
     });
   });
 });

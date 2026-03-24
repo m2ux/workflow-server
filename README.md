@@ -18,9 +18,9 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 Workflow Server uses a **Goal → Activity → Skill → Tools** architecture to guide AI agents through structured workflows.
 
 After initial setup of an always-applied [rule](docs/ide-setup.md), agents:
-1. **Match the user's goal** to an activity via `match_goal` (returns `quick_match` patterns and `next_action` guidance)
+1. **Discover workflows** via `list_workflows`, match the user's goal to a workflow, then call `start_session(workflow_id)` to get agent rules and an opaque session token
 2. **Load the primary skill** via `get_skill` to get tool orchestration patterns (execution order, state tracking, error recovery)
-3. **Execute workflow activities** using skill-directed tools (`get_workflow`, `get_workflow_activity`, `get_checkpoint`, `validate_transition`)
+3. **Execute workflow activities** using skill-directed tools (`get_workflow`, `get_workflow_activity`, `get_checkpoint`, `validate_transition`) — all tools derive workflow context from the session token
 
 This reduces context overhead and provides deterministic tool selection.
 

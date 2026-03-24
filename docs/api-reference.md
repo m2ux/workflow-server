@@ -2,45 +2,71 @@
 
 ## MCP Tools
 
-### Workflow Tools
+### Bootstrap Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `list_workflows` | - | List all available workflow definitions with metadata |
-| `get_workflow` | `workflow_id` | Get complete workflow definition by ID |
-| `get_workflow_activity` | `workflow_id`, `activity_id` | Get details of a specific activity within a workflow |
-| `get_checkpoint` | `workflow_id`, `activity_id`, `checkpoint_id` | Get checkpoint details including options and effects |
-| `validate_transition` | `workflow_id`, `from_activity`, `to_activity` | Validate if a transition between activities is allowed |
+| `list_workflows` | - | List all available workflow definitions. Call before start_session to choose a workflow |
+| `start_session` | `workflow_id` | Start a workflow session. Returns agent rules, workflow metadata, and an opaque session token |
 | `health_check` | - | Check server health and available workflows |
 
-### Goal Matching & Session Tools
+### Workflow Tools
+
+All workflow tools require `session_token` (from `start_session`). Each response includes an updated token in `_meta.session_token`.
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `match_goal` | - | Match user goal to a workflow via activity index |
-| `start_session` | `workflow_version` | Start a workflow session — returns agent rules and a session token |
-| `get_activity` | `session_token`, `activity_id` | Get a specific workflow activity |
+| `get_workflow` | `session_token` | Get the complete workflow definition (workflow_id from token) |
+| `get_workflow_activity` | `session_token`, `activity_id` | Get activity details and update the session's current activity |
+| `get_checkpoint` | `session_token`, `checkpoint_id` | Get checkpoint details (activity_id from token) |
+| `validate_transition` | `session_token`, `from_activity`, `to_activity` | Validate if a transition between activities is allowed |
 
 ### Skill Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_skills` | - | Get skill index - summary of all skills with capabilities |
-| `list_skills` | `workflow_id?` | List all skills (universal + workflow-specific if workflow_id provided) |
-| `get_skill` | `skill_id`, `workflow_id?` | Get a skill (checks workflow-specific first, then universal) |
+| `get_activity` | `session_token` | Get the current activity from the session (activity_id from token) |
+| `get_skills` | `session_token` | Get skill index — summary of all skills with capabilities |
+| `list_skills` | `session_token` | List all skills for the session workflow (universal + workflow-specific) |
+| `get_skill` | `session_token`, `skill_id` | Get a skill (checks workflow-specific first, then universal) |
 
 ### Resource Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `list_workflow_resources` | `workflow_id` | List all resources for a workflow |
-| `get_resource` | `workflow_id`, `index` | Get content of a specific resource by index |
+| `list_workflow_resources` | `session_token` | List all resources for the session workflow |
+| `get_resource` | `session_token`, `index` | Get a specific resource by index |
 
 ### Discovery Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `discover_resources` | - | Discover all available resources: workflows, resources, activities, skills |
+| `discover_resources` | `session_token` | Discover all available resources: workflows, resources, skills |
+
+### State Tools
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `save_state` | `session_token`, `state`, `planning_folder_path`, `description?` | Save workflow state (encrypts session token at rest) |
+| `restore_state` | `session_token`, `file_path` | Restore workflow state (decrypts session token) |
+
+## Session Token
+
+The session token is an opaque string returned by `start_session`. It encodes the current workflow, activity, and a sequence counter. Agents should treat it as an opaque value — pass it to every tool call and use the updated token from each response's `_meta.session_token`.
+
+### Lifecycle
+
+1. Call `list_workflows` to see available workflows
+2. Call `start_session(workflow_id)` to get rules + opaque token
+3. Pass `session_token` to every subsequent tool call
+4. Use the updated token from `_meta.session_token` in the next call
+5. The counter increments on every call, enabling staleness detection
+
+### Token exempt tools
+
+- `list_workflows` — pre-session bootstrap
+- `start_session` — creates the session
+- `health_check` — operational
 
 ## Activities
 
@@ -77,7 +103,7 @@ The `meta` workflow is the bootstrap workflow for the workflow-server. It contai
 
 ### Skill Resolution
 
-When calling `get_skill { skill_id, workflow_id }`:
+When calling `get_skill { skill_id }` (workflow_id is derived from the session token):
 1. First checks `{workflow_id}/skills/{NN}-{skill_id}.toon`
 2. Falls back to `meta/skills/{NN}-{skill_id}.toon` (universal)
 
@@ -96,7 +122,7 @@ Each skill provides:
 #### workflow-execution (universal)
 
 Primary skill for workflow navigation:
-- **Start**: `list_workflows` → `get_workflow` → `list_workflow_resources`
+- **Start**: `list_workflows` → `start_session` → `get_workflow` → `list_workflow_resources`
 - **Per-activity**: `get_workflow_activity` → `get_checkpoint` → `get_resource`
 - **Transitions**: `validate_transition`
 - **Triggers**: Suspend parent, execute child workflow, return to parent
@@ -104,7 +130,7 @@ Primary skill for workflow navigation:
 #### activity-resolution (universal)
 
 Bootstrap skill for agent initialization:
-- **Bootstrap**: `match_goal` → `start_session` → `get_activity`
+- **Bootstrap**: `list_workflows` → `start_session`
 - **Skill loading**: `get_skill`
 - **Discovery**: `discover_resources`
 

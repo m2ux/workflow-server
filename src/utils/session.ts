@@ -1,24 +1,57 @@
-import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 
-/**
- * Token format: <workflow-version>_<unix-epoch-seconds>_<8-hex-chars>
- * Example: 3.4.0_1711300000_a3b2c1d4
- */
-const SESSION_TOKEN_PATTERN = /^[\d.]+_\d+_[0-9a-f]{8}$/;
-
-export function generateSessionToken(workflowVersion: string): string {
-  const epoch = Math.floor(Date.now() / 1000);
-  const hex = randomUUID().replace(/-/g, '').substring(0, 8);
-  return `${workflowVersion}_${epoch}_${hex}`;
+export interface SessionPayload {
+  wf: string;
+  act: string;
+  v: string;
+  seq: number;
+  ts: number;
 }
 
-export function validateSessionToken(token: string): boolean {
-  return SESSION_TOKEN_PATTERN.test(token);
+function encode(payload: SessionPayload): string {
+  const json = JSON.stringify(payload);
+  return Buffer.from(json, 'utf8').toString('base64url');
+}
+
+function decode(token: string): SessionPayload {
+  try {
+    const json = Buffer.from(token, 'base64url').toString('utf8');
+    const parsed = JSON.parse(json) as Record<string, unknown>;
+    if (typeof parsed['wf'] !== 'string' || typeof parsed['act'] !== 'string' ||
+        typeof parsed['v'] !== 'string' || typeof parsed['seq'] !== 'number' ||
+        typeof parsed['ts'] !== 'number') {
+      throw new Error('Missing or invalid token fields');
+    }
+    return parsed as unknown as SessionPayload;
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    throw new Error(`Invalid session token: ${msg}`);
+  }
+}
+
+export function createSessionToken(workflowId: string, workflowVersion: string, initialActivity?: string): string {
+  return encode({
+    wf: workflowId,
+    act: initialActivity ?? '',
+    v: workflowVersion,
+    seq: 0,
+    ts: Math.floor(Date.now() / 1000),
+  });
+}
+
+export function decodeSessionToken(token: string): SessionPayload {
+  return decode(token);
+}
+
+export function advanceToken(token: string, updates?: { act?: string }): string {
+  const payload = decode(token);
+  payload.seq += 1;
+  if (updates?.act !== undefined) payload.act = updates.act;
+  return encode(payload);
 }
 
 export const sessionTokenParam = {
   session_token: z.string()
-    .regex(SESSION_TOKEN_PATTERN, 'Invalid session token format')
-    .describe('Session token from start_session'),
+    .min(1, 'Session token is required')
+    .describe('Opaque session token from start_session'),
 };

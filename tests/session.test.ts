@@ -1,98 +1,127 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { generateSessionToken, validateSessionToken } from '../src/utils/session.js';
-import { encryptToken, decryptToken } from '../src/utils/crypto.js';
-import { randomBytes } from 'node:crypto';
+import { describe, it, expect } from 'vitest';
+import { createSessionToken, decodeSessionToken, advanceToken } from '../src/utils/session.js';
 
 describe('session token utilities', () => {
-  describe('generateSessionToken', () => {
-    it('should produce token matching structured format', () => {
-      const token = generateSessionToken('3.4.0');
-      expect(token).toMatch(/^[\d.]+_\d+_[0-9a-f]{8}$/);
+  describe('createSessionToken', () => {
+    it('should create a base64url-encoded token', () => {
+      const token = createSessionToken('work-package', '3.4.0', 'start-work-package');
+      expect(typeof token).toBe('string');
+      expect(token.length).toBeGreaterThan(10);
+      expect(token).not.toContain('{');
+      expect(token).not.toContain(' ');
     });
 
-    it('should embed the workflow version as prefix', () => {
-      const token = generateSessionToken('2.1.0');
-      expect(token.startsWith('2.1.0_')).toBe(true);
+    it('should encode workflow_id and version', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      const payload = decodeSessionToken(token);
+      expect(payload.wf).toBe('work-package');
+      expect(payload.v).toBe('3.4.0');
     });
 
-    it('should produce unique tokens on successive calls', () => {
-      const tokens = new Set(Array.from({ length: 10 }, () => generateSessionToken('1.0.0')));
-      expect(tokens.size).toBe(10);
+    it('should set initial activity when provided', () => {
+      const token = createSessionToken('work-package', '3.4.0', 'start-work-package');
+      const payload = decodeSessionToken(token);
+      expect(payload.act).toBe('start-work-package');
     });
 
-    it('should embed a recent epoch timestamp', () => {
+    it('should default activity to empty string', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      const payload = decodeSessionToken(token);
+      expect(payload.act).toBe('');
+    });
+
+    it('should set seq to 0', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      const payload = decodeSessionToken(token);
+      expect(payload.seq).toBe(0);
+    });
+
+    it('should set ts to current epoch seconds', () => {
       const before = Math.floor(Date.now() / 1000);
-      const token = generateSessionToken('1.0.0');
+      const token = createSessionToken('work-package', '3.4.0');
       const after = Math.floor(Date.now() / 1000);
-      const epoch = parseInt(token.split('_')[1]!, 10);
-      expect(epoch).toBeGreaterThanOrEqual(before);
-      expect(epoch).toBeLessThanOrEqual(after);
+      const payload = decodeSessionToken(token);
+      expect(payload.ts).toBeGreaterThanOrEqual(before);
+      expect(payload.ts).toBeLessThanOrEqual(after);
     });
   });
 
-  describe('validateSessionToken', () => {
-    it('should accept valid tokens', () => {
-      expect(validateSessionToken('3.4.0_1711300000_a3b2c1d4')).toBe(true);
-      expect(validateSessionToken('1.0.0_1700000000_00000000')).toBe(true);
-      expect(validateSessionToken('10.20.30_9999999999_abcdef01')).toBe(true);
+  describe('decodeSessionToken', () => {
+    it('should decode a valid token', () => {
+      const token = createSessionToken('meta', '1.0.0', 'start-workflow');
+      const payload = decodeSessionToken(token);
+      expect(payload.wf).toBe('meta');
+      expect(payload.v).toBe('1.0.0');
+      expect(payload.act).toBe('start-workflow');
+      expect(payload.seq).toBe(0);
     });
 
-    it('should reject tokens without version prefix', () => {
-      expect(validateSessionToken('_1711300000_a3b2c1d4')).toBe(false);
+    it('should throw on garbage input', () => {
+      expect(() => decodeSessionToken('not-valid')).toThrow('Invalid session token');
     });
 
-    it('should reject tokens with wrong separators', () => {
-      expect(validateSessionToken('3.4.0-1711300000-a3b2c1d4')).toBe(false);
+    it('should throw on empty string', () => {
+      expect(() => decodeSessionToken('')).toThrow();
     });
 
-    it('should reject tokens with short hex part', () => {
-      expect(validateSessionToken('3.4.0_1711300000_a3b2c1')).toBe(false);
-    });
-
-    it('should reject tokens with non-hex characters', () => {
-      expect(validateSessionToken('3.4.0_1711300000_g3b2c1d4')).toBe(false);
-    });
-
-    it('should reject empty string', () => {
-      expect(validateSessionToken('')).toBe(false);
-    });
-
-    it('should reject tokens with extra segments', () => {
-      expect(validateSessionToken('3.4.0_1711300000_a3b2c1d4_extra')).toBe(false);
+    it('should throw on valid base64 with wrong structure', () => {
+      const bad = Buffer.from(JSON.stringify({ foo: 'bar' })).toString('base64url');
+      expect(() => decodeSessionToken(bad)).toThrow('Missing or invalid token fields');
     });
   });
-});
 
-describe('token encryption', () => {
-  const testKey = randomBytes(32);
-  const testToken = '3.4.0_1711300000_a3b2c1d4';
-
-  describe('encryptToken / decryptToken', () => {
-    it('should produce ciphertext different from plaintext', () => {
-      const encrypted = encryptToken(testToken, testKey);
-      expect(encrypted).not.toBe(testToken);
+  describe('advanceToken', () => {
+    it('should increment seq by 1', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      const advanced = advanceToken(token);
+      const payload = decodeSessionToken(advanced);
+      expect(payload.seq).toBe(1);
     });
 
-    it('should round-trip: decrypt(encrypt(token)) returns original', () => {
-      const encrypted = encryptToken(testToken, testKey);
-      const decrypted = decryptToken(encrypted, testKey);
-      expect(decrypted).toBe(testToken);
+    it('should increment cumulatively', () => {
+      let token = createSessionToken('work-package', '3.4.0');
+      token = advanceToken(token);
+      token = advanceToken(token);
+      token = advanceToken(token);
+      const payload = decodeSessionToken(token);
+      expect(payload.seq).toBe(3);
     });
 
-    it('should produce different ciphertext for same input (random IV)', () => {
-      const a = encryptToken(testToken, testKey);
-      const b = encryptToken(testToken, testKey);
-      expect(a).not.toBe(b);
+    it('should update act when provided', () => {
+      const token = createSessionToken('work-package', '3.4.0', 'start-work-package');
+      const advanced = advanceToken(token, { act: 'design-philosophy' });
+      const payload = decodeSessionToken(advanced);
+      expect(payload.act).toBe('design-philosophy');
+      expect(payload.seq).toBe(1);
     });
 
-    it('should fail with wrong key', () => {
-      const encrypted = encryptToken(testToken, testKey);
-      const wrongKey = randomBytes(32);
-      expect(() => decryptToken(encrypted, wrongKey)).toThrow();
+    it('should preserve fields when not updating act', () => {
+      const token = createSessionToken('work-package', '3.4.0', 'start-work-package');
+      const advanced = advanceToken(token);
+      const payload = decodeSessionToken(advanced);
+      expect(payload.wf).toBe('work-package');
+      expect(payload.v).toBe('3.4.0');
+      expect(payload.act).toBe('start-work-package');
     });
 
-    it('should fail with malformed encrypted string', () => {
-      expect(() => decryptToken('not-valid', testKey)).toThrow();
+    it('should produce different token strings', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      const advanced = advanceToken(token);
+      expect(advanced).not.toBe(token);
+    });
+  });
+
+  describe('token opacity', () => {
+    it('token should not contain readable workflow id', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      expect(token).not.toContain('work-package');
+      expect(token).not.toContain('3.4.0');
+    });
+
+    it('token should not look like JSON', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      expect(token).not.toContain('{');
+      expect(token).not.toContain('"');
     });
   });
 });

@@ -6,7 +6,7 @@ import { NestedWorkflowStateSchema, StateSaveFileSchema } from '../schema/state.
 import type { StateSaveFile } from '../schema/state.schema.js';
 import { decodeToon, encodeToon } from '../utils/toon.js';
 import { withAuditLog } from '../logging.js';
-import { sessionTokenParam } from '../utils/session.js';
+import { advanceToken, sessionTokenParam } from '../utils/session.js';
 import { getOrCreateServerKey, encryptToken, decryptToken } from '../utils/crypto.js';
 
 const STATE_FILENAME = 'workflow-state.toon';
@@ -19,14 +19,14 @@ function generateSaveId(): string {
 export function registerStateTools(server: McpServer): void {
   server.tool(
     'save_state',
-    'Save workflow execution state to a TOON file in the planning folder for cross-session resumption. Accepts the state as a JSON string with support for nested child workflow states in triggeredWorkflows.',
+    'Save workflow execution state to a TOON file in the planning folder for cross-session resumption.',
     {
       ...sessionTokenParam,
       state: z.string().describe('Workflow state as a JSON string (validated against NestedWorkflowStateSchema)'),
       planning_folder_path: z.string().describe('Absolute or relative path to the planning folder'),
       description: z.string().optional().describe('Human-readable description of the save point'),
     },
-    withAuditLog('save_state', async ({ state: stateJson, planning_folder_path, description }) => {
+    withAuditLog('save_state', async ({ session_token, state: stateJson, planning_folder_path, description }) => {
       const parsed = JSON.parse(stateJson);
       const stateResult = NestedWorkflowStateSchema.safeParse(parsed);
       if (!stateResult.success) {
@@ -65,7 +65,10 @@ export function registerStateTools(server: McpServer): void {
         triggeredWorkflows: state.triggeredWorkflows.length,
         status: state.status,
       };
-      return { content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }] };
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }],
+        _meta: { session_token: advanceToken(session_token) },
+      };
     }),
   );
 
@@ -76,7 +79,7 @@ export function registerStateTools(server: McpServer): void {
       ...sessionTokenParam,
       file_path: z.string().describe('Path to the workflow-state.toon file'),
     },
-    withAuditLog('restore_state', async ({ file_path }) => {
+    withAuditLog('restore_state', async ({ session_token, file_path }) => {
       const content = await readFile(file_path, 'utf-8');
       const decoded = decodeToon<Record<string, unknown>>(content);
       const result = StateSaveFileSchema.safeParse(decoded);
@@ -91,7 +94,10 @@ export function registerStateTools(server: McpServer): void {
         delete restored.state.variables['_session_token_encrypted'];
       }
 
-      return { content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }] };
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }],
+        _meta: { session_token: advanceToken(session_token) },
+      };
     }),
   );
 }
