@@ -9,7 +9,7 @@ resources[1]:
 
 protocol:
   bootstrap-get-rules[1]:
-    - Call get_rules() to load agent behavioral guidelines
+    - Call start_session() to load agent behavioral guidelines
   bootstrap-get-activity[1]:
     - "Call get_workflow_activity({ workflow_id: 'substrate-node-security-audit', activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps"
   exec-read-steps[1]:
@@ -56,7 +56,7 @@ errors:
     recovery: "Fall back to the prompt instructions. Note in output that workflow-server was not available."
 
 tools:
-  get_rules:
+  start_session:
     when: "Bootstrap — first call"
     returns: "Agent behavioral guidelines"
   get_workflow_activity:

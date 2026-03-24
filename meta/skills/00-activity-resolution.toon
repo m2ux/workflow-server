@@ -10,14 +10,14 @@ architecture:
   gap_detection: "If a goal matches a skill but no activity exists, this indicates a missing activity - create one"
 execution_pattern:
   bootstrap[2]:
-    - get_activities
+    - match_goal
     - get_activity
   skill_loading[1]:
     - get_skill
   discovery[1]:
     - list_resources
 tools:
-  get_activities:
+  match_goal:
     when: Agent starts; IDE rule triggers; user mentions workflow
     params: none
     returns: Activity index with quick_match patterns and activity list
@@ -51,7 +51,7 @@ tools:
     returns: Hierarchical index of all resources by workflow
     usage: Discovery of available workflows, resources, templates
 flow[5]:
-  - 1. Call get_activities to get activity index
+  - 1. Call match_goal to get activity index
   - 2. Match user goal using quick_match patterns or activity descriptions
   - 3. Call get_activity with matched activity_id
   - 4. Call get_skill with activity.skills.primary
@@ -64,7 +64,7 @@ matching:
 errors:
   activity_not_found:
     cause: Invalid activity_id parameter
-    recovery: Call get_activities to see valid activity IDs
+    recovery: Call match_goal to see valid activity IDs
   skill_not_found:
     cause: Invalid skill_id in activity.skills
     recovery: Call list_skills to see valid skill IDs

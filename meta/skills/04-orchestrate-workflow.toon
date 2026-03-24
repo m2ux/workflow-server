@@ -27,7 +27,7 @@ protocol:
   dispatch-activity[7]:
     - "Call get_workflow_activity({ workflow_id, activity_id: current_activity }) to load the activity definition"
     - "Compose the worker prompt: include activity_id, workflow_id, current state variables, planning_folder_path, and bootstrap instructions"
-    - "Bootstrap instructions for worker: call get_rules(), then get_workflow_activity(), then get_skill() for primary skill, then execute steps sequentially"
+    - "Bootstrap instructions for worker: call start_session(), then get_workflow_activity(), then get_skill() for primary skill, then execute steps sequentially"
     - "For first dispatch: use Task tool with subagent_type=generalPurpose. For subsequent dispatches: use Task tool with resume=worker_agent_id to preserve context"
     - "If is_resuming is true: this is the first dispatch after state restoration. The worker has no prior context (new session). Include a resumption context block in the prompt: list completedActivities, key variable values, and prior checkpoint decisions so the worker understands what has already been done. After this first dispatch completes, set is_resuming = false."
     - "If is_resuming is true and the current_activity has completedSteps in the restored state, include the completed step indices so the worker can skip already-finished steps within the activity."

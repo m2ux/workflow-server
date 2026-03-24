@@ -14,7 +14,7 @@ inputs[3]:
 
 protocol:
   bootstrap-rules[1]:
-    - "Call get_rules() to load agent behavioral guidelines. Follow these rules throughout execution."
+    - "Call start_session() to load agent behavioral guidelines. Follow these rules throughout execution."
   bootstrap-activity[2]:
     - "Call get_workflow_activity({ workflow_id, activity_id }) to load the activity definition"
     - "Extract steps, checkpoints, skills (primary + supporting), loops, decisions, transitions, modeOverrides, and artifactPrefix"
@@ -85,7 +85,7 @@ rules:
   readme-progress-mandatory: "The update-readme-progress phase is NOT optional. It MUST execute before report-completion. If the planning folder README.md does not exist, skip silently. If it exists, update it. Failure to update the progress table is a protocol violation — the orchestrator depends on this for incremental progress tracking."
 
 tools:
-  get_rules:
+  start_session:
     when: "First action on initial dispatch (not needed on resume — rules persist in context)"
     returns: "Agent behavioral guidelines"
   get_workflow_activity:
