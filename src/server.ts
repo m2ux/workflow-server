@@ -19,7 +19,7 @@ export function createServer(config: ServerConfig): McpServer {
   logInfo('Server configured', { 
     tools: [
       'list_workflows', 'get_workflow', 'validate_transition', 'get_workflow_activity', 'get_checkpoint', 'health_check',
-      'get_activities', 'get_activity', 'get_rules', 'get_skills', 'list_skills', 'get_skill',
+      'match_goal', 'get_activity', 'get_rules', 'get_skills', 'list_skills', 'get_skill',
       'list_workflow_resources', 'get_resource', 'discover_resources',
       'save_state', 'restore_state'
     ],

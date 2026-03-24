@@ -15,10 +15,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   // ============== Activity Tools ==============
   
   server.tool(
-    'get_activities',
-    'Get the activity index - the primary entry point for workflow execution. Returns quick_match patterns to identify user activity.',
+    'match_goal',
+    'Match a user goal to an available workflow. Returns quick_match patterns and an activity index for goal-to-workflow resolution.',
     {},
-    withAuditLog('get_activities', async () => {
+    withAuditLog('match_goal', async () => {
       const result = await readActivityIndex(config.workflowDir);
       if (!result.success) {
         // Fall back to listing activities
@@ -152,8 +152,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       
       const discovery: Record<string, unknown> = {
         activities: {
-          tool: 'get_activities',
-          description: 'Activity index - primary entry point for workflow execution',
+          tool: 'match_goal',
+          description: 'Match user goal to a workflow via activity index',
         },
         universal_skills: {
           items: universalSkills.map(s => s.id),
