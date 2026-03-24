@@ -6,9 +6,7 @@ alwaysApply: true
 # Overview
 
 For all workflow execution user requests use the workflow-server MCP server. Before use you *must*:
-1. Fetch the `workflow-server://schemas` resource to load TOON schema definitions
-2. Call `list_workflows` to discover available workflows and match the user's goal
-3. Call `start_session` with the chosen `workflow_id` to load agent guidelines and obtain an opaque session token
-4. Pass the session token to all subsequent tool calls and use the updated token from each response's `_meta.session_token`
+1. Call `list_workflows` to discover available workflows and match the user's goal
+2. Call `start_session` with the chosen `workflow_id`
 
-CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics
+The server response contains all further instructions including session protocol, behavioral rules, and workflow fidelity requirements.
