@@ -82,7 +82,7 @@ checkpoints[2]:
         description: Research should focus on different areas
   - id: research-assumptions-review
     name: Research Assumptions Checkpoint
-    message: "Research assumptions listed above. Confirming in 30s unless you intervene."
+    message: "Present the full assumptions table as a message to the user BEFORE showing this question. Then: Research assumptions confirming in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000

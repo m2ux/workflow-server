@@ -96,7 +96,7 @@ checkpoints[2]:
         description: "Adjust the approach before planning continues"
   - id: assumptions-log-final
     name: Final Assumptions Review
-    message: "Before implementation: all code-resolvable assumptions across design, requirements, research, analysis, and planning phases have been resolved through targeted analysis. The remaining assumptions require stakeholder or operational input. Do these meet expectations?"
+    message: "Present the full assumptions table (all phases: design, requirements, research, analysis, planning) as a message to the user BEFORE showing this question. Include each assumption's ID, statement, status, and resolution. Then: Do these meet expectations?"
     options[3]:
       - id: acceptable
         label: Assumptions log is acceptable

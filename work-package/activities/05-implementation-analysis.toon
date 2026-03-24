@@ -104,7 +104,7 @@ checkpoints[2]:
         description: Additional areas need investigation
   - id: analysis-assumptions-review
     name: Analysis Assumptions Checkpoint
-    message: "Analysis assumptions listed above. Confirming in 30s unless you intervene."
+    message: "Present the full assumptions table as a message to the user BEFORE showing this question. Then: Analysis assumptions confirming in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000

@@ -103,7 +103,7 @@ checkpoints[4]:
         description: Return to plan-prepare to adjust the approach before implementing
   - id: implementation-assumptions-review
     name: Implementation Assumptions Review
-    message: "All tasks complete. Assumptions reconciled. Confirming in 30s unless you intervene."
+    message: "Present the full implementation assumptions table as a message to the user BEFORE showing this question. Include each assumption's ID, statement, status, and resolution. Then: Confirming in 30s unless you intervene."
     blocking: false
     defaultOption: all-confirmed
     autoAdvanceMs: 30000
