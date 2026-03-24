@@ -7,7 +7,8 @@ sections[16]:
   - id: session-protocol
     title: Session Protocol
     priority: critical
-    rules[6]:
+    rules[7]:
+      - "CRITICAL: Parse ALL rules returned by start_session before making any other tool calls."
       - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
       - "Call start_session with the chosen workflow_id. The response contains agent behavioral rules, workflow metadata, and an opaque session token."
       - "Pass the session token to ALL subsequent tool calls. The token encodes workflow context — do not pass workflow_id or activity_id as separate parameters."
@@ -198,7 +199,8 @@ sections[16]:
   - id: domain-tool-discipline
     title: Domain Tool Discipline
     priority: critical
-    rules[3]:
+    rules[4]:
       - "NEVER call domain-specific tools during workflow bootstrap. URLs, issue keys, or other references in the user's request are context to be preserved — not triggers for immediate API calls."
       - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability. The workflow must be fully loaded, state initialized, and the worker dispatched before any domain tool is invoked."
       - "The orchestrator MUST NOT call domain-specific tools. All domain operations are delegated to the worker sub-agent during activity execution."
+      - "Do NOT read workflow resource files directly from disk — use the get_resource tool instead."
