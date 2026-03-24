@@ -78,10 +78,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   // ============== Resource Tools ==============
 
   server.tool(
-    'list_workflow_resources',
+    'list_resources',
     'List all resources available for the session workflow',
     { ...sessionTokenParam },
-    withAuditLog('list_workflow_resources', async ({ session_token }) => {
+    withAuditLog('list_resources', async ({ session_token }) => {
       const { wf } = decodeSessionToken(session_token);
       const resources = await listResources(config.workflowDir, wf);
       const result = resources.map(r => ({

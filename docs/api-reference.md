@@ -31,7 +31,7 @@ All workflow tools require `session_token` (from `start_session`). Each response
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `list_workflow_resources` | `session_token` | List all resources for the session workflow |
+| `list_resources` | `session_token` | List all resources for the session workflow |
 | `get_resource` | `session_token`, `index` | Get a specific resource by index |
 
 ### Discovery Tools
@@ -119,7 +119,7 @@ Each skill provides:
 #### workflow-execution (universal)
 
 Primary skill for workflow navigation:
-- **Start**: `list_workflows` → `start_session` → `get_workflow` → `list_workflow_resources`
+- **Start**: `list_workflows` → `start_session` → `get_workflow` → `list_resources`
 - **Per-activity**: `get_activity` → `get_checkpoint` → `get_resource`
 - **Transitions**: `validate_transition`
 - **Triggers**: Suspend parent, execute child workflow, return to parent

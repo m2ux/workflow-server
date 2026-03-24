@@ -302,10 +302,10 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: list_workflow_resources', () => {
+  describe('tool: list_resources', () => {
     it('should list resources using workflow from token', async () => {
       const result = await client.callTool({
-        name: 'list_workflow_resources',
+        name: 'list_resources',
         arguments: { session_token: sessionToken },
       });
 

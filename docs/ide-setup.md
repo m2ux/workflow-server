@@ -37,7 +37,7 @@ CRITICAL: When following the workflow you *must* respect workflow fidelity as de
 | `get_checkpoint` | Get checkpoint details (activity from token) |
 | `validate_transition` | Check if a transition is allowed |
 | `get_skill` | Get specific skill (workflow from token) |
-| `list_workflow_resources` | List resources for session workflow |
+| `list_resources` | List resources for session workflow |
 | `get_resource` | Get specific resource by index |
 | `discover_resources` | Discover all available resources |
 | `save_state` / `restore_state` | Persist/restore workflow state (encrypts token at rest) |
