@@ -1,8 +1,8 @@
 # Orchestration — Comprehension Artifact
 
-> **Last updated**: 2026-03-12 (second pass — verified and augmented)
-> **Work packages**: [#51 Checkpoint Enforcement Reliability](../planning/2026-03-12-checkpoint-enforcement-reliability/README.md)
-> **Coverage**: Workflow server architecture, orchestrator/worker execution model, checkpoint enforcement chain, schema infrastructure, validation surface analysis
+> **Last updated**: 2026-03-24 (third pass — tool naming and session surface)
+> **Work packages**: [#51 Checkpoint Enforcement Reliability](../planning/2026-03-12-checkpoint-enforcement-reliability/README.md), [#59 Rename MCP Tools](../planning/2026-03-24-rename-mcp-tools/README.md)
+> **Coverage**: Workflow server architecture, orchestrator/worker execution model, checkpoint enforcement chain, schema infrastructure, validation surface analysis, tool naming surface, session management gap
 > **Related artifacts**: [Assumptions Log](../planning/2026-03-12-checkpoint-enforcement-reliability/01-assumptions-log.md)
 
 ## Architecture Overview
@@ -428,6 +428,146 @@ These can serve as building blocks for a `getBlockingCheckpoints()` helper witho
 - `output`: Structured result definitions with named components — this defines what the worker reports back
 
 The skill's `output` definitions for `execute-activity` include both `activity-complete` and `checkpoint-pending` result types with specific component lists. However, these are descriptive, not enforced — the worker can return any shape. Adding a required `blocking_checkpoints_applicable` field to the `activity-complete` output definition would signal to the worker (via the skill contract) that it must enumerate applicable blocking checkpoints in its result.
+
+## Tool Naming and Session Surface Analysis (Third Pass — 2026-03-24)
+
+> **Work package**: [#59 Rename MCP Tools](../planning/2026-03-24-rename-mcp-tools/README.md)
+> **Focus**: Entry-point tool naming (`get_activities`, `get_rules`), activity index builder, session management gap, cross-cutting reference inventory
+
+### Entry-Point Tool Architecture
+
+The server exposes 17 MCP tools across three registration modules. Two are designated "entry points" for agent bootstrap:
+
+1. **`get_activities`** (`resource-tools.ts:17-30`): Calls `readActivityIndex()` which dynamically builds an `ActivityIndex` from all activity TOON files across all workflows. Returns:
+   ```
+   ActivityIndex {
+     description: string        // "Match user goal to an activity..."
+     usage: string              // "Call the tool in next_action first (get_rules)..."
+     next_action: { tool: 'get_rules', parameters: {} }
+     activities: ActivityIndexEntry[]   // id, workflowId, problem, primary_skill, next_action
+     quick_match: Record<string, string>  // pattern → activityId
+   }
+   ```
+   The `next_action` field at the index level hardcodes `get_rules` as the follow-up tool. Each activity entry also has a `next_action` pointing to `get_skill`.
+
+2. **`get_rules`** (`resource-tools.ts:45-54`): Calls `readRules()` which reads `meta/rules.toon`. Returns:
+   ```
+   Rules {
+     id: string, version: string, title: string, description: string,
+     precedence: string, sections: RulesSection[]
+   }
+   ```
+   Pure data return — no session context, no correlation identifier.
+
+### Activity Index Builder Internals
+
+`readActivityIndex()` in `activity-loader.ts:229-283` builds the index dynamically:
+- Calls `listActivities()` to discover all `.toon` files across all workflow directories
+- For each activity, calls `readActivity()` to load and validate via Zod
+- Extracts `recognition` patterns into `quick_match` (lowercased pattern → activity ID)
+- Extracts `problem` field (or falls back to `description` then `name`) into activity entries
+- Hardcodes `next_action: { tool: 'get_rules', parameters: {} }` at the index level (line 274)
+
+The hardcoded `get_rules` reference is the only place in the codebase where one tool's response directs agents to another tool by name at the data level (as opposed to documentation/skill files).
+
+### Session Management Gap
+
+The server is stateless by design (see Design Rationale above). No tool accepts or produces a session identifier:
+
+| Existing Pattern | Purpose | Session-like? |
+|-----------------|---------|---------------|
+| `save_state` / `restore_state` | Cross-session resumption via `planning_folder_path` | No — these save/restore full workflow state to disk for later sessions, not intra-session correlation |
+| `generateSaveId()` | Produces timestamp-based IDs (`state-2026-03-24T...`) | No — tied to state persistence, not session tracking |
+| `withAuditLog()` | Wraps every tool handler for structured logging | Closest candidate — could log a session ID if one were provided, but currently logs only tool name and duration |
+
+Adding session management would be the server's first stateful feature. The `start_session` tool would need to either: (a) generate a token and return it without storing anything server-side (stateless token), or (b) maintain an in-memory session registry. Option (a) preserves the stateless architecture.
+
+### Test Coverage
+
+| Tool | Test Exists | Test Location |
+|------|-------------|---------------|
+| `get_activities` | Yes | `tests/mcp-server.test.ts:170-181` — validates index structure (description, activities[], quick_match) |
+| `get_rules` | No | No test coverage |
+| `discover_resources` | No | No test coverage |
+
+The `get_activities` test asserts on the `ActivityIndex` structure but not on `next_action.tool` value. `start_session` will need both a dedicated test and assertions on session token presence.
+
+### Cross-Cutting Reference Inventory
+
+References to `get_activities` and `get_rules` span three git contexts:
+
+**Main branch (source + docs): 10 files, ~15 references**
+
+| File | `get_activities` refs | `get_rules` refs |
+|------|----------------------|-----------------|
+| `src/tools/resource-tools.ts` | 4 (tool name, audit tag, description, discover_resources output) | 3 (tool name, description, audit tag) |
+| `src/loaders/activity-loader.ts` | 0 | 2 (usage string, next_action.tool value) |
+| `src/server.ts` | 1 (log list) | 1 (log list) |
+| `tests/mcp-server.test.ts` | 2 (describe block, tool call) | 0 |
+| `README.md` | 1 | 1 |
+| `SETUP.md` | 0 | 1 |
+| `docs/api-reference.md` | 2 | 1 |
+| `docs/ide-setup.md` | 2 | 3 |
+| `schemas/README.md` | 1 | 0 |
+| `.cursor/rules/workflow-server.mdc` | 0 | 1 |
+
+**Workflows worktree (currently on `prism-pipeline-modes-v2`): 9 files, 17 references**
+
+| File | Tool | Count |
+|------|------|-------|
+| `meta/skills/00-activity-resolution.toon` | `get_activities` | 4 |
+| `meta/workflow.toon` | `get_activities` | 1 |
+| `meta/skills/04-orchestrate-workflow.toon` | `get_rules` | 1 |
+| `meta/skills/05-execute-activity.toon` | `get_rules` | 2 |
+| `substrate-node-security-audit/skills/02-execute-sub-agent.toon` | `get_rules` | 2 |
+| `substrate-node-security-audit/skills/04-dispatch-sub-agents.toon` | `get_rules` | 1 |
+| `cicd-pipeline-security-audit/skills/04-dispatch-scanners.toon` | `get_rules` | 4 |
+| `cicd-pipeline-security-audit/skills/08-execute-sub-agent.toon` | `get_rules` | 2 |
+| `cicd-pipeline-security-audit/workflow.toon` | `get_rules` | 1 |
+
+**Total: 19 files, ~32 references** across two git contexts.
+
+### Open Questions (Issue #59)
+
+| # | Question | Status | Resolution | Deep-Dive Section |
+|---|----------|--------|------------|-------------------|
+| Q1 | What is the complete response shape of `get_activities`? | Resolved | `ActivityIndex` with `description`, `usage`, `next_action: { tool: 'get_rules' }`, `activities[]`, `quick_match{}` | Tool Architecture |
+| Q2 | What is the complete response shape of `get_rules`? | Resolved | `Rules` with `id`, `version`, `title`, `description`, `precedence`, `sections[]` — pure data, no session context | Tool Architecture |
+| Q3 | Does any existing tool accept or produce a session-like identifier? | Resolved | No. `save_state`/`restore_state` use planning_folder_path for cross-session resumption, not intra-session correlation. Server is fully stateless. | Session Management Gap |
+| Q4 | Will changing `next_action.tool` from `get_rules` to `start_session` require schema changes? | Resolved | No — `ActivityIndex.next_action` uses `{ tool: string; parameters: Record<string, unknown> }`. Changing the string value is sufficient. | Index Builder Internals |
+| Q5 | What test coverage exists for these tools? | Resolved | `get_activities` has one test (structure validation). `get_rules` has none. New tests needed for both renamed tools. | Test Coverage |
+| Q6 | Does `discover_resources` need updating? | Resolved | Yes — line 155 outputs `tool: 'get_activities'` in the discovery payload. Must change to `match_goal`. | Reference Inventory |
+| Q7 | How does the activity-resolution skill reference these tools? | Resolved | `00-activity-resolution.toon` references `get_activities` in bootstrap, tools section, flow, and error recovery (4 occurrences). All need updating. | Reference Inventory |
+
+All questions resolved through code analysis. No unresolved questions remain.
+
+### Initial Deep-Dive — DD-7: Tool Bootstrap Flow
+
+The agent bootstrap sequence is defined across three layers:
+
+1. **IDE rules / AGENTS.md**: Instruct agents to call `get_rules` as the first tool. These are consumer-facing configuration files.
+2. **Activity index (`get_activities` response)**: The `usage` field says "Call the tool in next_action first (get_rules)" and `next_action.tool` is `get_rules`. This programmatically directs agents from goal-matching to rules-loading.
+3. **Workflow skills**: `00-activity-resolution.toon` defines the canonical flow as `get_activities → get_activity → get_skill`. The `04-orchestrate-workflow.toon` and `05-execute-activity.toon` skills instruct workers to "call get_rules() to load agent behavioral guidelines."
+
+Renaming changes the flow to: `match_goal → start_session → get_workflow_activity → get_skill`. The `start_session` response would need to include both rules and a session token. The `match_goal` response would update `next_action.tool` from `get_rules` to `start_session`.
+
+The activity-resolution skill's `flow` section defines a 5-step sequence. Step 1 references `get_activities` by name. The `tools` section has a full entry for `get_activities` with `when`, `params`, `returns`, `preserve`, and `usage` fields. These are all text content in TOON files — purely mechanical find-and-replace.
+
+### Portfolio Lens Analysis (Issue #59)
+
+#### Pedagogy Lens
+
+The naming pattern `get_activities` was inherited from a prior rename (`get_intents` → `get_activities`, documented in `.engineering/history/2026-01-22`). The original name `get_intents` more closely matched the tool's purpose (matching user intent to workflows), but was renamed when the domain model shifted from "intents" to "activities." The constraint transferred was: *"Tool names should mirror the domain model's vocabulary."* This is generally sound, but it fails when a domain term is overloaded — `activity` means both "a workflow phase" and "an entry in the goal-matching index." The transferred assumption is that vocabulary alignment is always beneficial, but here it creates ambiguity because the same word names both a data-access tool and a domain concept.
+
+The invisible transferred decision: naming the goal-matching tool after the data it returns (activities) rather than the action it performs (matching goals). When `get_intents` was renamed, the focus was on vocabulary consistency, not on distinguishing the tool's function from the domain concept.
+
+#### Rejected-Paths Lens
+
+One design path was implicitly rejected when `get_rules` was created as a standalone tool:
+
+**Combined bootstrap tool**: A single tool that returns both the goal-matching index and the rules in one call. This would have reduced the bootstrap sequence from two calls to one. Rejected because: the separation keeps each tool focused on one concern, and not all consumers need both (an agent that already knows which activity to run might call `get_rules` without `get_activities`). The visible problem avoided: coupling unrelated data. The invisible problem created: no natural point to establish a session, since neither tool owns the "session start" concern.
+
+**Cross-lens synthesis**: Both lenses converge on the same naming tension. The pedagogy lens reveals that vocabulary alignment transferred a naming problem from the domain model. The rejected-paths lens reveals that separating rules from the bootstrap flow removed the natural session-establishment point. The `start_session` rename addresses both: it gives the bootstrap tool a function-oriented name (starting a session) rather than a data-oriented name (getting rules), and it creates a natural point for session establishment.
 
 ---
 *This artifact is part of a persistent knowledge base. It is augmented across successive work packages to build cumulative codebase understanding.*
