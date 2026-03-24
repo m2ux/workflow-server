@@ -103,7 +103,7 @@ tools:
     when: Examining skill structure in reference workflows
     params: skill_id
     returns: Full skill with protocol, rules, inputs, output
-  list_workflow_resources:
+  list_resources:
     when: Examining resource organization in reference workflows
     params: workflow_id
     returns: List of all resources for a workflow
