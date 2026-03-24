@@ -43,6 +43,28 @@ describe('mcp-server integration', () => {
 
   // ============== Bootstrap Flow ==============
 
+  describe('tool: help', () => {
+    it('should return bootstrap procedure and session protocol', async () => {
+      const result = await client.callTool({ name: 'help', arguments: {} });
+      expect(result.isError).toBeFalsy();
+
+      const guide = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+
+      expect(guide.bootstrap).toBeDefined();
+      expect(guide.bootstrap.step_1.tool).toBe('list_workflows');
+      expect(guide.bootstrap.step_2.tool).toBe('start_session');
+      expect(guide.session_protocol).toBeDefined();
+      expect(guide.session_protocol.exempt_tools).toContain('help');
+      expect(guide.available_workflows).toBeDefined();
+      expect(guide.available_workflows.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should not require session_token', async () => {
+      const result = await client.callTool({ name: 'help', arguments: {} });
+      expect(result.isError).toBeFalsy();
+    });
+  });
+
   describe('bootstrap flow: list_workflows -> start_session', () => {
     it('list_workflows should not require session_token', async () => {
       const result = await client.callTool({ name: 'list_workflows', arguments: {} });

@@ -7,7 +7,38 @@ import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/se
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
 
-  server.tool('list_workflows', 'List all available workflow definitions. Call this before start_session to choose a workflow.', {},
+  server.tool('help', 'How to use this server. Call this first. Returns the bootstrap procedure and session protocol.', {},
+    withAuditLog('help', async () => {
+      const workflows = await listWorkflows(config.workflowDir);
+      const guide = {
+        server: config.serverName,
+        version: config.serverVersion,
+        bootstrap: {
+          step_1: {
+            action: 'Call list_workflows to discover available workflows',
+            tool: 'list_workflows',
+            note: 'Match the user goal to a workflow from the returned list',
+          },
+          step_2: {
+            action: 'Call start_session with the chosen workflow_id',
+            tool: 'start_session',
+            params: { workflow_id: '<chosen workflow ID>' },
+            returns: 'Agent behavioral rules, workflow metadata, and an opaque session token',
+          },
+        },
+        session_protocol: {
+          token_usage: 'Pass the session_token to ALL subsequent tool calls. It encodes workflow context so you do not need to pass workflow_id or activity_id separately.',
+          token_update: 'Every tool response includes an updated token in _meta.session_token. Use the updated token for the next call.',
+          token_opacity: 'Treat the token as opaque. Do not attempt to parse, decode, or fabricate tokens.',
+          staleness: 'The token includes a counter that increments on each call. Stale tokens indicate missed exchanges.',
+          exempt_tools: ['help', 'list_workflows', 'start_session', 'health_check'],
+        },
+        available_workflows: workflows.map(w => ({ id: w.id, title: w.title, version: w.version })),
+      };
+      return { content: [{ type: 'text' as const, text: JSON.stringify(guide, null, 2) }] };
+    }));
+
+  server.tool('list_workflows', 'List all available workflow definitions. Call this after help to choose a workflow.', {},
     withAuditLog('list_workflows', async () => ({
       content: [{ type: 'text', text: JSON.stringify(await listWorkflows(config.workflowDir), null, 2) }],
     })));

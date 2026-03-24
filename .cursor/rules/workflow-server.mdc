@@ -5,8 +5,4 @@ alwaysApply: true
 
 # Overview
 
-For all workflow execution user requests use the workflow-server MCP server. Before use you *must*:
-1. Call `list_workflows` to discover available workflows and match the user's goal
-2. Call `start_session` with the chosen `workflow_id`
-
-The server response contains all further instructions including session protocol, behavioral rules, and workflow fidelity requirements.
+For all workflow execution user requests, call the `help` tool on the workflow-server MCP server to learn the bootstrap procedure.
