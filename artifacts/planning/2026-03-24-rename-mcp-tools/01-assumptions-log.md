@@ -3,7 +3,7 @@
 **Work Package:** Rename MCP Tools  
 **Issue:** [#59](https://github.com/m2ux/workflow-server/issues/59)  
 **Created:** 2026-03-24  
-**Last Updated:** 2026-03-24 (requirements elicitation)
+**Last Updated:** 2026-03-24 (implementation analysis)
 
 ---
 
@@ -26,6 +26,11 @@
 | A-RI-4 | Scope Boundaries | `discover_resources` should also be exempt from session_token | Code-analyzable | Invalidated | discover_resources is a data-access tool (lists all workflows, resources, skills), not a discovery entry point like match_goal. It should require session_token like other data-access tools. |
 | A-RI-5 | Scope Boundaries | Workflows worktree changes committed to current branch (prism-pipeline-modes-v2) | Code-analyzable | Validated | The worktree is on `prism-pipeline-modes-v2` and pushes to `origin`. Tool name changes in .toon files can be committed to this branch. |
 | A-RI-6 | Implicit Requirements | withAuditLog wrapper needs modification to log session_token | Code-analyzable | Invalidated | `withAuditLog` already logs all `parameters` as a Record. Since session_token is a tool parameter, it automatically appears in audit logs. No wrapper changes needed. |
+| A-IA-1 | Current Behavior | withAuditLog wrapper doesn't need changes for session logging | Code-analyzable | Validated | Logs all parameters automatically — session_token will appear in audit output |
+| A-IA-2 | Dependency Understanding | No Zod schema changes needed for state persistence of session tokens | Code-analyzable | Validated | `variables` is `z.record(z.unknown())` — session_token can be stored as `variables.session_token` |
+| A-IA-3 | Gap Identification | Shared `sessionTokenParam` can be spread into tool schemas | Code-analyzable | Validated | Zod's `z.object()` accepts spread for composition |
+| A-IA-4 | Current Behavior | `start_session` returns token + rules; orchestrator handles state persistence | Stakeholder-dependent | Open | User said "stored in state file" — existing pattern is for orchestrators to call `save_state`. Clarification needed: does `start_session` write to state file directly, or does orchestrator handle it? |
+| A-IA-5 | Current Behavior | `crypto.randomUUID()` available in Node.js runtime | Code-analyzable | Validated | Available via `node:crypto` import (stable since Node.js 19+; this project targets Node.js 18+, where it's available via import) |
 
 ---
 
@@ -89,3 +94,4 @@ All stakeholder-dependent assumptions from the design-philosophy phase were reso
 |---|-----------|-----------------|
 | A-RI-2 | Format-only validation is sufficient for v1 | A fabricated well-formed token would pass validation. Acceptable tradeoff per scope exclusion of server-side registry. |
 | A-RI-3 | Token format: `wfs_<unix-epoch-seconds>_<8-hex-chars>` | If user intended different field lengths or timestamp format, the generator and validator need adjustment. Low risk — easily changed during implementation. |
+| A-IA-4 | `start_session` returns token; orchestrator persists via `save_state` | If user intended `start_session` to write directly to state file, the tool needs a `planning_folder_path` parameter. Current separation of concerns favors orchestrator-managed persistence. |
