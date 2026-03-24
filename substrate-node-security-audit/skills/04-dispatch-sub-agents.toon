@@ -10,7 +10,7 @@ inputs[1]:
 
 protocol:
   compose-prompts[1]:
-    - "For each agent in the roster, build a Task prompt containing: (1) workflow-server bootstrap instructions — 'call get_rules() then call get_workflow_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the output schema resource.'"
+    - "For each agent in the roster, build a Task prompt containing: (1) workflow-server bootstrap instructions — 'call get_rules() then call get_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the output schema resource.'"
   dispatch-all[1]:
     - "Submit all agents in the roster as concurrent Task calls in a single batch. Each Task call uses the composed prompt from step 1."
   collect-all[1]:

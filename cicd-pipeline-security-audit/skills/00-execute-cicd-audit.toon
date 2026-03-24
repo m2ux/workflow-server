@@ -46,7 +46,7 @@ tools:
   get_workflow:
     when: Loading workflow definition at audit start
     params: "workflow_id: cicd-pipeline-security-audit"
-  get_workflow_activity:
+  get_activity:
     when: Loading each activity for execution
     params: "workflow_id, activity_id"
   get_resource:

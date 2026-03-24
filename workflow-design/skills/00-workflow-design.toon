@@ -95,7 +95,7 @@ tools:
       - variables
       - modes
       - initialActivity
-  get_workflow_activity:
+  get_activity:
     when: Examining activity structure in reference workflows
     params: "workflow_id, activity_id"
     returns: Full activity with steps, checkpoints, transitions

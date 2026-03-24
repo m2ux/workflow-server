@@ -16,7 +16,7 @@ protocol:
   bootstrap-rules[1]:
     - "Call get_rules() to load agent behavioral guidelines. Follow these rules throughout execution."
   bootstrap-activity[2]:
-    - "Call get_workflow_activity({ workflow_id, activity_id }) to load the activity definition"
+    - "Call get_activity({ workflow_id, activity_id }) to load the activity definition"
     - "Extract steps, checkpoints, skills (primary + supporting), loops, decisions, transitions, modeOverrides, and artifactPrefix"
   bootstrap-skill[2]:
     - "Call get_skill({ skill_id: activity.skills.primary, workflow_id }) to load the primary skill definition"
@@ -76,7 +76,7 @@ output[2]:
       artifacts_produced_so_far: "Any artifacts produced before this checkpoint"
 
 rules:
-  self-bootstrap: "Always load activity and skill definitions from the workflow-server via get_workflow_activity and get_skill. The workflow-server is the source of truth for step-level details."
+  self-bootstrap: "Always load activity and skill definitions from the workflow-server via get_activity and get_skill. The workflow-server is the source of truth for step-level details."
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities via resume. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
@@ -88,7 +88,7 @@ tools:
   get_rules:
     when: "First action on initial dispatch (not needed on resume — rules persist in context)"
     returns: "Agent behavioral guidelines"
-  get_workflow_activity:
+  get_activity:
     when: "After receiving activity_id"
     params: "workflow_id, activity_id"
     returns: "Activity definition with steps, checkpoints, skills, transitions"
@@ -118,7 +118,7 @@ tools:
 
 errors:
   activity_not_found:
-    cause: "get_workflow_activity returned error for the given activity_id"
+    cause: "get_activity returned error for the given activity_id"
     recovery: "Report error in result. Check activity_id spelling against workflow definition."
   skill_not_found:
     cause: "get_skill returned error for the activity's primary skill"

@@ -7,7 +7,7 @@ execution_pattern:
     - get_workflow
     - list_workflow_resources
   per_activity[3]:
-    - get_workflow_activity
+    - get_activity
     - get_checkpoint
     - get_resource
   transitions[1]:
@@ -31,7 +31,7 @@ tools:
       - variables
       - rules
       - activities
-  get_workflow_activity:
+  get_activity:
     when: Entering a new activity within a workflow
     params: workflow_id, activity_id
     returns: "Activity details with steps, checkpoints, decisions"

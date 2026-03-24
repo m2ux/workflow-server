@@ -11,7 +11,7 @@ protocol:
   bootstrap-get-rules[1]:
     - Call get_rules() to load agent behavioral guidelines
   bootstrap-get-activity[1]:
-    - "Call get_workflow_activity({ workflow_id: 'cicd-pipeline-security-audit', activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps"
+    - "Call get_activity({ workflow_id: 'cicd-pipeline-security-audit', activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps"
   exec-read-steps[1]:
     - Read the activity's steps array in order
   exec-per-step-description[1]:
@@ -45,7 +45,7 @@ errors:
     cause: "A step requires data or context that is unavailable"
     recovery: "Record the step as completed with output 'INCOMPLETE — [reason]'. Continue to next step. Flag in the self-verification."
   activity_not_found:
-    cause: "get_workflow_activity returns an error"
+    cause: "get_activity returns an error"
     recovery: "Fall back to the prompt instructions provided by the orchestrator. Note in output that activity was not loaded."
   workflow_server_unavailable:
     cause: "MCP tool calls fail"
@@ -55,7 +55,7 @@ tools:
   get_rules:
     when: "Bootstrap — first call"
     returns: "Agent behavioral guidelines"
-  get_workflow_activity:
+  get_activity:
     when: "Bootstrap — second call"
     params: "workflow_id: cicd-pipeline-security-audit, activity_id"
     returns: "Activity definition with steps, rules, outcome"
