@@ -1,43 +1,43 @@
 id: activity-resolution
-version: 1.1.0
-capability: Resolve user goals to appropriate activities and skills
+version: 2.0.0
+capability: Resolve user goals to appropriate workflows and skills
 architecture:
-  principle: "Goals resolve to activities; activities resolve to skills. Goals NEVER resolve directly to skills."
+  principle: "Goals resolve to workflows; workflows contain activities; activities resolve to skills. Goals NEVER resolve directly to skills."
   layers[3]:
-    - "User Goal (problem domain) → Activity"
-    - "Activity → Skill(s) (solution domain)"
+    - "User Goal (problem domain) → Workflow"
+    - "Workflow → Activity → Skill(s) (solution domain)"
     - "Skill → Tools (execution domain)"
-  gap_detection: "If a goal matches a skill but no activity exists, this indicates a missing activity - create one"
+  gap_detection: "If a goal matches a skill but no workflow/activity exists, this indicates a missing workflow or activity"
 execution_pattern:
-  bootstrap[2]:
-    - get_activities
-    - get_activity
+  bootstrap[3]:
+    - help
+    - list_workflows
+    - start_session
   skill_loading[1]:
     - get_skill
-  discovery[1]:
-    - list_resources
 tools:
-  get_activities:
-    when: Agent starts; IDE rule triggers; user mentions workflow
+  help:
+    when: Agent needs to learn how to use this server
     params: none
-    returns: Activity index with quick_match patterns and activity list
-    preserve[2]:
-      - activities
-      - quick_match
-    usage: Primary entry point; match user goal to activity ID
-  get_activity:
-    when: User goal matched to activity; need execution flow
-    params: activity_id
-    returns: Full activity with problem, recognition, skills, outcome, flow
-    preserve[4]:
-      - problem
-      - skills
-      - flow
-      - context_to_preserve
-    next: get_skill for skills.primary
+    returns: Bootstrap procedure, session protocol, available workflows
+    usage: Call first if unsure how to proceed
+  list_workflows:
+    when: Agent needs to discover available workflows and match user goal
+    params: none
+    returns: List of workflow definitions with id, title, version, description
+    usage: Match user goal to a workflow from the returned list
+  start_session:
+    when: Workflow selected from list_workflows
+    params: workflow_id
+    returns: Agent rules, workflow metadata, opaque session token
+    preserve[3]:
+      - rules
+      - workflow metadata
+      - session_token
+    next: get_workflow to load the full workflow definition
   get_skill:
     when: Activity loaded; need tool orchestration pattern
-    params: skill_id
+    params: session_token, skill_id
     returns: Full skill with execution_pattern, tools, state, errors
     preserve[4]:
       - execution_pattern
@@ -45,34 +45,27 @@ tools:
       - state
       - errors
     usage: Follow execution_pattern; use tools guidance for each tool call
-  list_resources:
-    when: "Understanding what's available; exploring workflow contents"
-    params: none
-    returns: Hierarchical index of all resources by workflow
-    usage: Discovery of available workflows, resources, templates
 flow[5]:
-  - 1. Call get_activities to get activity index
-  - 2. Match user goal using quick_match patterns or activity descriptions
-  - 3. Call get_activity with matched activity_id
-  - 4. Call get_skill with activity.skills.primary
-  - 5. Execute following skill.execution_pattern
+  - 1. Call list_workflows to see available workflows
+  - 2. Match user goal to a workflow by comparing goal to workflow descriptions
+  - 3. Call start_session with the chosen workflow_id
+  - 4. Call get_workflow to load the full workflow definition
+  - 5. Call get_skill with the activity's primary skill to get execution guidance
 matching:
-  quick_match: "Use exact or fuzzy match against quick_match keys"
-  fallback: "If no quick_match, compare user goal to activity.problem descriptions"
-  ambiguous: "If multiple activities match, ask user to clarify"
-  never: "NEVER skip activity matching to use a skill directly"
+  strategy: "Compare user goal to workflow descriptions returned by list_workflows"
+  ambiguous: "If multiple workflows could match, ask user to clarify"
+  never: "NEVER skip workflow matching to use a skill directly"
 errors:
-  activity_not_found:
-    cause: Invalid activity_id parameter
-    recovery: Call get_activities to see valid activity IDs
+  workflow_not_found:
+    cause: Invalid workflow_id passed to start_session
+    recovery: Call list_workflows to see valid workflow IDs
   skill_not_found:
     cause: Invalid skill_id in activity.skills
-    recovery: Call list_skills to see valid skill IDs
-  no_matching_activity:
-    cause: User goal doesn't match any existing activity
-    detection: "Goal could be served by existing skill but no activity maps to it"
-    resolution[3]:
-      - "1. Identify which skill(s) would serve this goal"
-      - "2. Create a new activity that maps goal to skill"
-      - "3. Add activity to prompts/intents/ with recognition patterns"
+    recovery: Check the activity definition for the correct skill ID
+  no_matching_workflow:
+    cause: User goal doesn't match any existing workflow
+    detection: "Goal could be served by existing skills but no workflow maps to it"
+    resolution[2]:
+      - "1. Inform the user that no workflow matches their goal"
+      - "2. Suggest the closest available workflow or offer to proceed without a workflow"
     note: "This is a design gap, not a user error - do not ask user to rephrase"
