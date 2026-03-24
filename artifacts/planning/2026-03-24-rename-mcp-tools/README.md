@@ -53,7 +53,7 @@ The second tool, `get_rules`, gives agents their behavioral guidelines but offer
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#59](https://github.com/m2ux/workflow-server/issues/59) |
-| PR | *Created below* |
+| PR | [#60](https://github.com/m2ux/workflow-server/pull/60) |
 | Engineering | [Planning folder](https://github.com/m2ux/workflow-server/blob/main/.engineering/artifacts/planning/2026-03-24-rename-mcp-tools/README.md) |
 
 ---
