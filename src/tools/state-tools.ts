@@ -6,6 +6,7 @@ import { NestedWorkflowStateSchema, StateSaveFileSchema } from '../schema/state.
 import type { StateSaveFile } from '../schema/state.schema.js';
 import { decodeToon, encodeToon } from '../utils/toon.js';
 import { withAuditLog } from '../logging.js';
+import { sessionTokenParam } from '../utils/session.js';
 
 const STATE_FILENAME = 'workflow-state.toon';
 
@@ -19,6 +20,7 @@ export function registerStateTools(server: McpServer): void {
     'save_state',
     'Save workflow execution state to a TOON file in the planning folder for cross-session resumption. Accepts the state as a JSON string with support for nested child workflow states in triggeredWorkflows.',
     {
+      ...sessionTokenParam,
       state: z.string().describe('Workflow state as a JSON string (validated against NestedWorkflowStateSchema)'),
       planning_folder_path: z.string().describe('Absolute or relative path to the planning folder'),
       description: z.string().optional().describe('Human-readable description of the save point'),
@@ -64,6 +66,7 @@ export function registerStateTools(server: McpServer): void {
     'restore_state',
     'Restore workflow execution state from a previously saved TOON file. Returns the full nested state object for resumption.',
     {
+      ...sessionTokenParam,
       file_path: z.string().describe('Path to the workflow-state.toon file'),
     },
     withAuditLog('restore_state', async ({ file_path }) => {

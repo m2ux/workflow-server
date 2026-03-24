@@ -3,12 +3,13 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, validateTransition } from '../loaders/workflow-loader.js';
 import { withAuditLog } from '../logging.js';
+import { sessionTokenParam } from '../utils/session.js';
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
-  server.tool('list_workflows', 'List all available workflow definitions', {},
+  server.tool('list_workflows', 'List all available workflow definitions', { ...sessionTokenParam },
     withAuditLog('list_workflows', async () => ({ content: [{ type: 'text', text: JSON.stringify(await listWorkflows(config.workflowDir), null, 2) }] })));
 
-  server.tool('get_workflow', 'Get a complete workflow definition by ID', { workflow_id: z.string() },
+  server.tool('get_workflow', 'Get a complete workflow definition by ID', { ...sessionTokenParam, workflow_id: z.string() },
     withAuditLog('get_workflow', async ({ workflow_id }) => {
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -21,14 +22,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('validate_transition', 'Validate if a transition between activities is allowed',
-    { workflow_id: z.string(), from_activity: z.string(), to_activity: z.string() },
+    { ...sessionTokenParam, workflow_id: z.string(), from_activity: z.string(), to_activity: z.string() },
     withAuditLog('validate_transition', async ({ workflow_id, from_activity, to_activity }) => {
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       return { content: [{ type: 'text', text: JSON.stringify(validateTransition(result.value, from_activity, to_activity), null, 2) }] };
     }));
 
-  server.tool('get_workflow_activity', 'Get details of a specific activity within a workflow', { workflow_id: z.string(), activity_id: z.string() },
+  server.tool('get_workflow_activity', 'Get details of a specific activity within a workflow', { ...sessionTokenParam, workflow_id: z.string(), activity_id: z.string() },
     withAuditLog('get_workflow_activity', async ({ workflow_id, activity_id }) => {
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -37,7 +38,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text', text: JSON.stringify(activity, null, 2) }] };
     }));
 
-  server.tool('get_checkpoint', 'Get checkpoint details', { workflow_id: z.string(), activity_id: z.string(), checkpoint_id: z.string() },
+  server.tool('get_checkpoint', 'Get checkpoint details', { ...sessionTokenParam, workflow_id: z.string(), activity_id: z.string(), checkpoint_id: z.string() },
     withAuditLog('get_checkpoint', async ({ workflow_id, activity_id, checkpoint_id }) => {
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;

@@ -9,7 +9,7 @@ import { listResources, readResourceRaw, listWorkflowsWithResources } from '../l
 import { listActivities, readActivity, readActivityIndex } from '../loaders/activity-loader.js';
 import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
-import { generateSessionToken } from '../utils/session.js';
+import { generateSessionToken, sessionTokenParam } from '../utils/session.js';
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   
@@ -33,7 +33,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'get_activity',
     'Get a specific activity by ID for detailed flow guidance',
-    { activity_id: z.string().describe('Activity ID (e.g., start-workflow, resume-workflow)') },
+    { ...sessionTokenParam, activity_id: z.string().describe('Activity ID (e.g., start-workflow, resume-workflow)') },
     withAuditLog('get_activity', async ({ activity_id }) => {
       const result = await readActivity(config.workflowDir, activity_id);
       if (!result.success) throw result.error;
@@ -70,7 +70,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'get_skills',
     'Get the skill index - summary of all available skills with capabilities. Returns universal skills and workflow-specific skills grouped by workflow.',
-    {},
+    { ...sessionTokenParam },
     withAuditLog('get_skills', async () => {
       const result = await readSkillIndex(config.workflowDir);
       if (!result.success) {
@@ -86,6 +86,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'list_skills',
     'List all available skills - both universal (from meta workflow) and workflow-specific. Optionally filter by workflow.',
     { 
+      ...sessionTokenParam,
       workflow_id: z.string().optional().describe('Optional workflow ID to filter workflow-specific skills')
     },
     withAuditLog('list_skills', async ({ workflow_id }) => {
@@ -109,6 +110,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'get_skill',
     'Get a specific skill for tool orchestration guidance. Workflow-specific skills are checked first, then universal.',
     { 
+      ...sessionTokenParam,
       skill_id: z.string().describe('Skill ID (e.g., workflow-execution, activity-resolution)'),
       workflow_id: z.string().optional().describe('Optional workflow ID to look for workflow-specific skill first')
     },
@@ -124,7 +126,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'list_workflow_resources',
     'List all resources available for a workflow',
-    { workflow_id: z.string().describe('Workflow ID (e.g., work-package)') },
+    { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID (e.g., work-package)') },
     withAuditLog('list_workflow_resources', async ({ workflow_id }) => {
       const resources = await listResources(config.workflowDir, workflow_id);
       const result = resources.map(r => ({
@@ -141,6 +143,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'get_resource',
     'Get a specific resource by index',
     { 
+      ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID (e.g., work-package)'),
       index: z.string().describe('Resource index (e.g., 0, 00, 01)')
     },
@@ -156,7 +159,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'discover_resources',
     'Discover all available resources: workflows, resources, activities, skills',
-    {},
+    { ...sessionTokenParam },
     withAuditLog('discover_resources', async () => {
       const workflows = await listWorkflows(config.workflowDir);
       const workflowsWithResources = await listWorkflowsWithResources(config.workflowDir);
