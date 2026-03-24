@@ -9,6 +9,7 @@ import { listResources, readResourceRaw, listWorkflowsWithResources } from '../l
 import { listActivities, readActivity, readActivityIndex } from '../loaders/activity-loader.js';
 import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
+import { generateSessionToken } from '../utils/session.js';
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   
@@ -40,16 +41,27 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     })
   );
 
-  // ============== Rules Tools ==============
+  // ============== Session Tools ==============
 
   server.tool(
-    'get_rules',
-    'Get global agent rules - behavioral guidelines that apply to all workflow executions. Call this after get_activities and before executing any workflow.',
-    {},
-    withAuditLog('get_rules', async () => {
+    'start_session',
+    'Start a workflow session. Returns agent behavioral rules and a session token for subsequent tool calls.',
+    {
+      workflow_version: z.string().describe('Workflow version to embed in the session token (e.g., "3.4.0")'),
+    },
+    withAuditLog('start_session', async ({ workflow_version }) => {
       const result = await readRules(config.workflowDir);
       if (!result.success) throw result.error;
-      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
+      const token = generateSessionToken(workflow_version);
+      const response = {
+        rules: result.value,
+        session: {
+          token,
+          created_at: new Date().toISOString(),
+          server_version: config.serverVersion,
+        },
+      };
+      return { content: [{ type: 'text', text: JSON.stringify(response, null, 2) }] };
     })
   );
 
