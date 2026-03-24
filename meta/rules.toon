@@ -3,7 +3,17 @@ version: 1.0.0
 title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
-sections[15]:
+sections[16]:
+  - id: session-protocol
+    title: Session Protocol
+    priority: critical
+    rules[6]:
+      - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
+      - "Call start_session with the chosen workflow_id. The response contains agent behavioral rules, workflow metadata, and an opaque session token."
+      - "Pass the session token to ALL subsequent tool calls. The token encodes workflow context — do not pass workflow_id or activity_id as separate parameters."
+      - "Use the updated token from each response's _meta.session_token field for the next call. The token tracks session state and each exchange increments an internal counter for staleness detection."
+      - "Token-exempt tools: list_workflows, start_session, and health_check do not require a session token."
+      - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens."
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical
