@@ -1,7 +1,7 @@
 # Rename MCP Tools - March 2026
 
 **Created:** 2026-03-24  
-**Status:** Planning  
+**Status:** Ready  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -24,7 +24,9 @@ The second tool, `get_rules`, gives agents their behavioral guidelines but offer
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix renames the two confusing entry-point tools and adds session tracking to every subsequent call. The goal-matching tool changes from `get_activities` to `match_goal`, making clear that it matches a user's goal to a workflow rather than listing workflow phases. The rules tool changes from `get_rules` to `start_session`, which now returns both the behavioral guidelines agents need and a unique session token that identifies the working session.
+
+Once an agent has its session token from `start_session`, it must include that token in every subsequent tool call. The server validates the token's format before processing each request, and the token automatically appears in audit logs so that all operations within a session can be traced together. The token is stored in the workflow state file alongside other session data, so it persists across session interruptions. This is a clean break — the old tool names are removed immediately, and all references across source code, documentation, and workflow definitions are updated atomically.
 
 ---
 
@@ -36,8 +38,8 @@ The second tool, `get_rules`, gives agents their behavioral guidelines but offer
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 02 | [Requirements elicitation](02-requirements-elicitation.md) | Captured requirements, scope, success criteria | 15-30m | ✅ Complete |
 | 03 | [Implementation analysis](03-implementation-analysis.md) | Current state, baselines, gaps, strategy notes | 10-20m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
@@ -60,4 +62,4 @@ The second tool, `get_rules`, gives agents their behavioral guidelines but offer
 
 ---
 
-**Status:** Planning
+**Status:** Ready for implementation

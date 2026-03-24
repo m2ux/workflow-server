@@ -3,7 +3,7 @@
 **Work Package:** Rename MCP Tools  
 **Issue:** [#59](https://github.com/m2ux/workflow-server/issues/59)  
 **Created:** 2026-03-24  
-**Last Updated:** 2026-03-24 (implementation analysis)
+**Last Updated:** 2026-03-24 (plan-prepare)
 
 ---
 
@@ -31,6 +31,9 @@
 | A-IA-3 | Gap Identification | Shared `sessionTokenParam` can be spread into tool schemas | Code-analyzable | Validated | Zod's `z.object()` accepts spread for composition |
 | A-IA-4 | Current Behavior | `start_session` returns token + rules; orchestrator handles state persistence | Stakeholder-dependent | Open | User said "stored in state file" — existing pattern is for orchestrators to call `save_state`. Clarification needed: does `start_session` write to state file directly, or does orchestrator handle it? |
 | A-IA-5 | Current Behavior | `crypto.randomUUID()` available in Node.js runtime | Code-analyzable | Validated | Available via `node:crypto` import (stable since Node.js 19+; this project targets Node.js 18+, where it's available via import) |
+| A-PP-1 | Design Approach | Session utilities belong in a new `src/utils/session.ts` file | Code-analyzable | Validated | `src/utils/` already exists (contains `toon.ts`). Adding `session.ts` follows existing module organization. |
+| A-PP-2 | Task Breakdown | Tasks 2, 3, 4 can be parallelized after Task 1 | Code-analyzable | Validated | No interdependencies between rename, replace, and param-addition tasks — they modify different sections of the same files. |
+| A-PP-3 | Scope Decision | `AGENTS.md` in repo root may need updating if it references old tool names | Code-analyzable | Validated | Checked: root `AGENTS.md` does not reference `get_activities` or `get_rules` by name. No update needed. |
 
 ---
 
