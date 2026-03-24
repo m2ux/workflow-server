@@ -3,7 +3,7 @@
 **Work Package:** Rename MCP Tools  
 **Issue:** [#59](https://github.com/m2ux/workflow-server/issues/59)  
 **Created:** 2026-03-24  
-**Last Updated:** 2026-03-24 (final — all assumptions resolved)
+**Last Updated:** 2026-03-24 (post-implementation — all 30 assumptions resolved)
 
 ---
 
@@ -34,6 +34,12 @@
 | A-PP-1 | Design Approach | Session utilities belong in a new `src/utils/session.ts` file | Code-analyzable | Validated | `src/utils/` already exists (contains `toon.ts`). Adding `session.ts` follows existing module organization. |
 | A-PP-2 | Task Breakdown | Tasks 2, 3, 4 can be parallelized after Task 1 | Code-analyzable | Validated | No interdependencies between rename, replace, and param-addition tasks — they modify different sections of the same files. |
 | A-PP-3 | Scope Decision | `AGENTS.md` in repo root may need updating if it references old tool names | Code-analyzable | Validated | Checked: root `AGENTS.md` does not reference `get_activities` or `get_rules` by name. No update needed. |
+| A-IMPL-1 | Implementation | `node:crypto` import pattern consistent with codebase | Code-analyzable | Validated | `node:` protocol imports used elsewhere (node:fs, node:path). Confirmed by typecheck. |
+| A-IMPL-2 | Implementation | GCM decipher buffer/string concatenation produces correct UTF-8 | Code-analyzable | Validated | Standard Node.js crypto API behavior. Confirmed by encrypt/decrypt round-trip tests. |
+| A-IMPL-3 | Implementation | `config.serverVersion` available in `registerResourceTools` scope | Code-analyzable | Validated | `ServerConfig.serverVersion` populated from env or default. Used in `start_session` response. |
+| A-IMPL-4 | Implementation | Zod schema-level regex sufficient for session_token validation | Code-analyzable | Validated | Zod rejects invalid tokens before handler runs. Confirmed by 13 test failures when tests lacked tokens, and by explicit malformed-token test. |
+| A-IMPL-5 | Implementation | `Record<string, unknown>` bracket notation for encrypted values | Code-analyzable | Validated | TypeScript's `noPropertyAccessFromIndexSignature` requires bracket notation; `as string` cast works. |
+| A-IMPL-6 | Implementation | Real token from `start_session` sufficient for integration tests | Code-analyzable | Validated | All 26 integration tests pass using a token obtained from `start_session` in `beforeAll`. |
 
 ---
 
@@ -93,4 +99,4 @@ All stakeholder-dependent assumptions from the design-philosophy phase were reso
 
 ## Remaining Open Assumptions
 
-All assumptions have been resolved. No open assumptions remain.
+All 30 assumptions across 6 phases (design, requirements, analysis, planning, elicitation, implementation) have been resolved. No open assumptions remain.
