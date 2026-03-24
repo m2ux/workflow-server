@@ -198,10 +198,10 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: get_workflow_activity', () => {
+  describe('tool: get_activity', () => {
     it('should get activity and update token act field', async () => {
       const result = await client.callTool({
-        name: 'get_workflow_activity',
+        name: 'get_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
 
@@ -218,7 +218,7 @@ describe('mcp-server integration', () => {
 
     it('should return error for non-existent activity', async () => {
       const result = await client.callTool({
-        name: 'get_workflow_activity',
+        name: 'get_activity',
         arguments: { session_token: sessionToken, activity_id: 'non-existent' },
       });
       expect(result.isError).toBe(true);
@@ -228,7 +228,7 @@ describe('mcp-server integration', () => {
   describe('tool: get_checkpoint', () => {
     it('should get checkpoint using activity from token', async () => {
       const actResult = await client.callTool({
-        name: 'get_workflow_activity',
+        name: 'get_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;

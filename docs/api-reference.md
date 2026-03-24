@@ -17,7 +17,7 @@ All workflow tools require `session_token` (from `start_session`). Each response
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `get_workflow` | `session_token` | Get the complete workflow definition (workflow_id from token) |
-| `get_workflow_activity` | `session_token`, `activity_id` | Get activity details and update the session's current activity |
+| `get_activity` | `session_token`, `activity_id` | Get activity details and update the session's current activity |
 | `get_checkpoint` | `session_token`, `checkpoint_id` | Get checkpoint details (activity_id from token) |
 | `validate_transition` | `session_token`, `from_activity`, `to_activity` | Validate if a transition between activities is allowed |
 
@@ -122,7 +122,7 @@ Each skill provides:
 
 Primary skill for workflow navigation:
 - **Start**: `list_workflows` → `start_session` → `get_workflow` → `list_workflow_resources`
-- **Per-activity**: `get_workflow_activity` → `get_checkpoint` → `get_resource`
+- **Per-activity**: `get_activity` → `get_checkpoint` → `get_resource`
 - **Transitions**: `validate_transition`
 - **Triggers**: Suspend parent, execute child workflow, return to parent
 

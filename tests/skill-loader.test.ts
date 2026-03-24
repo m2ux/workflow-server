@@ -86,7 +86,7 @@ describe('skill-loader', () => {
         expect(skill.tools).toBeDefined();
         expect(skill.tools['list_workflows']).toBeDefined();
         expect(skill.tools['get_workflow']).toBeDefined();
-        expect(skill.tools['get_workflow_activity']).toBeDefined();
+        expect(skill.tools['get_activity']).toBeDefined();
         expect(skill.tools['get_checkpoint']).toBeDefined();
         expect(skill.tools['validate_transition']).toBeDefined();
         

@@ -69,9 +69,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }));
 
-  server.tool('get_workflow_activity', 'Get details of a specific activity within the session workflow',
+  server.tool('get_activity', 'Get details of a specific activity within the session workflow',
     { ...sessionTokenParam, activity_id: z.string().describe('Activity ID to load (also updates the session activity)') },
-    withAuditLog('get_workflow_activity', async ({ session_token, activity_id }) => {
+    withAuditLog('get_activity', async ({ session_token, activity_id }) => {
       const { wf } = decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, wf);
       if (!result.success) throw result.error;
