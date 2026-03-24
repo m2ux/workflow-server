@@ -3,7 +3,7 @@
 **Work Package:** Rename MCP Tools  
 **Issue:** [#59](https://github.com/m2ux/workflow-server/issues/59)  
 **Created:** 2026-03-24  
-**Last Updated:** 2026-03-24 (plan-prepare)
+**Last Updated:** 2026-03-24 (final — all assumptions resolved)
 
 ---
 
@@ -14,22 +14,22 @@
 | A-PI-1 | Problem Interpretation | Rename scope limited to source, tests, and docs on main branch | Code-analyzable | Invalidated | Workflow data files (.toon) in the workflows worktree also reference both tool names (17 occurrences across 9 files) |
 | A-PI-2 | Problem Interpretation | Loader interfaces (`readActivityIndex`, `readRules`) don't need changes | Code-analyzable | Validated | Loaders return domain objects; tool handlers wrap them. `start_session` can call `readRules()` and augment the response with a token without changing the loader interface. |
 | A-PI-3 | Problem Interpretation | `get_activity` (singular) is unrelated and unchanged | Code-analyzable | Validated | `get_activity` retrieves a specific workflow phase by ID — entirely different purpose from the goal-matching index. |
-| A-CA-1 | Complexity Assessment | Session token is a simple UUID with no server-side storage | Stakeholder-dependent | Resolved | User chose structured token format: `wfs_<timestamp>_<uuid-short>`. No server-side storage confirmed. |
+| A-CA-1 | Complexity Assessment | Session token is a simple UUID with no server-side storage | Stakeholder-dependent | Resolved | User chose structured token format: `<workflow-version>_<timestamp>_<uuid-short>`. Token encrypted at rest in state file using AES-256-GCM with persistent server key. |
 | A-CA-2 | Complexity Assessment | Backward compatibility is not required (breaking change acceptable) | Stakeholder-dependent | Resolved | User confirmed clean break — no aliases, no transition period. |
 | A-CA-3 | Complexity Assessment | Changeset limited to ~10 files | Code-analyzable | Invalidated | Including workflow data files and session_token additions, total is ~22+ files across two git contexts. |
 | A-WP-1 | Workflow Path | Workflow data files (.toon) in workflows worktree are in scope | Stakeholder-dependent | Resolved | User confirmed: include all .toon files for atomic consistency. |
 | A-WP-2 | Workflow Path | No external consumers exist beyond repo files | Stakeholder-dependent | Resolved | External consumers exist: Cursor IDE rules in other projects. Out of scope to update them; they update their own rules after this ships. |
 | A-CA-4 | Complexity Assessment | Subsequent tools need a `session_token` parameter | Stakeholder-dependent | Resolved | User chose `required-param` — all tools except match_goal, start_session, and health_check must require session_token. 14 tools affected. |
 | A-RI-1 | Requirement Interpretation | `health_check` is exempt from session_token requirement | Code-analyzable | Validated | health_check is a server health probe (uptime, workflow count) — not a workflow operation. Requiring a session token would prevent basic health monitoring. |
-| A-RI-2 | Requirement Interpretation | Session token validation is format-only, not registry-based | Implicit Requirement | Open | User chose "required-param" but scope excludes server-side session registry. Format validation (regex) cannot verify a token was actually issued by start_session. A well-formed but fabricated token would pass. Acceptable for v1 per "no server-side session registry" scope exclusion. |
-| A-RI-3 | Requirement Interpretation | Token format uses Unix epoch seconds and first 8 hex chars of UUID | Implicit Requirement | Open | Specific format `wfs_<unix-epoch-seconds>_<8-hex-chars>` assumed from user's choice of "structured token." Exact field lengths not explicitly stated. |
+| A-RI-2 | Requirement Interpretation | Session token validation is format-only, not registry-based | Stakeholder-dependent | Resolved | Token is encrypted in state file via AES-256-GCM. Server key at `~/.workflow-server/secret` (auto-generated on first run). `save_state` encrypts `session_token` variable; `restore_state` decrypts. Tools validate by comparing against orchestrator-held plaintext. |
+| A-RI-3 | Requirement Interpretation | Token format uses Unix epoch seconds and first 8 hex chars of UUID | Stakeholder-dependent | Resolved | Token format: `<workflow-version>_<unix-epoch-seconds>_<8-hex-chars>`. Example: `3.4.0_1711300000_a3b2c1d4`. Workflow version (with dots) as prefix, not static `wfs_` string. |
 | A-RI-4 | Scope Boundaries | `discover_resources` should also be exempt from session_token | Code-analyzable | Invalidated | discover_resources is a data-access tool (lists all workflows, resources, skills), not a discovery entry point like match_goal. It should require session_token like other data-access tools. |
 | A-RI-5 | Scope Boundaries | Workflows worktree changes committed to current branch (prism-pipeline-modes-v2) | Code-analyzable | Validated | The worktree is on `prism-pipeline-modes-v2` and pushes to `origin`. Tool name changes in .toon files can be committed to this branch. |
 | A-RI-6 | Implicit Requirements | withAuditLog wrapper needs modification to log session_token | Code-analyzable | Invalidated | `withAuditLog` already logs all `parameters` as a Record. Since session_token is a tool parameter, it automatically appears in audit logs. No wrapper changes needed. |
 | A-IA-1 | Current Behavior | withAuditLog wrapper doesn't need changes for session logging | Code-analyzable | Validated | Logs all parameters automatically — session_token will appear in audit output |
 | A-IA-2 | Dependency Understanding | No Zod schema changes needed for state persistence of session tokens | Code-analyzable | Validated | `variables` is `z.record(z.unknown())` — session_token can be stored as `variables.session_token` |
 | A-IA-3 | Gap Identification | Shared `sessionTokenParam` can be spread into tool schemas | Code-analyzable | Validated | Zod's `z.object()` accepts spread for composition |
-| A-IA-4 | Current Behavior | `start_session` returns token + rules; orchestrator handles state persistence | Stakeholder-dependent | Open | User said "stored in state file" — existing pattern is for orchestrators to call `save_state`. Clarification needed: does `start_session` write to state file directly, or does orchestrator handle it? |
+| A-IA-4 | Current Behavior | `start_session` returns token + rules; orchestrator handles state persistence | Stakeholder-dependent | Resolved | Confirmed: orchestrator handles persistence via `save_state` (separation of concerns). `start_session` generates and returns token; orchestrator stores in `variables.session_token` and calls `save_state`. |
 | A-IA-5 | Current Behavior | `crypto.randomUUID()` available in Node.js runtime | Code-analyzable | Validated | Available via `node:crypto` import (stable since Node.js 19+; this project targets Node.js 18+, where it's available via import) |
 | A-PP-1 | Design Approach | Session utilities belong in a new `src/utils/session.ts` file | Code-analyzable | Validated | `src/utils/` already exists (contains `toon.ts`). Adding `session.ts` follows existing module organization. |
 | A-PP-2 | Task Breakdown | Tasks 2, 3, 4 can be parallelized after Task 1 | Code-analyzable | Validated | No interdependencies between rename, replace, and param-addition tasks — they modify different sections of the same files. |
@@ -93,8 +93,4 @@ All stakeholder-dependent assumptions from the design-philosophy phase were reso
 
 ## Remaining Open Assumptions
 
-| # | Assumption | Impact if Wrong |
-|---|-----------|-----------------|
-| A-RI-2 | Format-only validation is sufficient for v1 | A fabricated well-formed token would pass validation. Acceptable tradeoff per scope exclusion of server-side registry. |
-| A-RI-3 | Token format: `wfs_<unix-epoch-seconds>_<8-hex-chars>` | If user intended different field lengths or timestamp format, the generator and validator need adjustment. Low risk — easily changed during implementation. |
-| A-IA-4 | `start_session` returns token; orchestrator persists via `save_state` | If user intended `start_session` to write directly to state file, the tool needs a `planning_folder_path` parameter. Current separation of concerns favors orchestrator-managed persistence. |
+All assumptions have been resolved. No open assumptions remain.
