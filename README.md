@@ -15,31 +15,34 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ## 🎯 Overview
 
-Workflow Server uses a **Goal → Activity → Skill → Tools** architecture to guide AI agents through structured workflows.
+Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [IDE rule](docs/ide-setup.md) bootstraps the agent — from there, the server handles workflow discovery, session management, and step-by-step navigation.
 
-After initial setup of an always-applied [rule](docs/ide-setup.md), agents:
-1. **Discover workflows** via `list_workflows`, match the user's goal to a workflow, then call `start_session(workflow_id)` to get agent rules and an opaque session token
-2. **Load the primary skill** via `get_skill` to get tool orchestration patterns (execution order, state tracking, error recovery)
-3. **Execute workflow activities** using skill-directed tools (`get_workflow`, `get_workflow_activity`, `get_checkpoint`, `validate_transition`) — all tools derive workflow context from the session token
+### How It Works
 
-This reduces context overhead and provides deterministic tool selection.
+1. **Discover** — The agent lists available workflows and selects one that matches the user's goal
+2. **Start session** — The server returns behavioral rules for the workflow and an opaque session token that tracks workflow state across all subsequent calls
+3. **Navigate** — Skills loaded from the server tell the agent which tools to call and in what order. The session token carries workflow context so individual tools need minimal parameters
+4. **Execute** — The agent works through activities (phases of a workflow), with checkpoints for user decisions and transitions governing the flow between activities
 
-### Execution Model
+### Architecture
 
-> Problem Domain:
-> ```
-> User Goal (complete a work package) → Activity (start-workflow, resume-workflow, ..)
-> ```
-> Solution Domain:
-> ```
-> Skill(s) (workflow-execution) → Tool(s) (validate_transition, get_workflow_activity, get_checkpoint, ..)
-> ```
+```
+User Goal → Workflow → Activity → Skill → Tools
+                         ↑                   |
+                         └───────────────────┘
+                           (transitions)
+```
+
+- **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
+- **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
+- **Skills** provide tool orchestration patterns — which tools to call, in what order, what state to track
+- **Tools** are the MCP operations the agent invokes, all correlated by the session token
 
 ### Available Workflows
 
 | Workflow | Activities | Description |
 |----------|------------|-------------|
-| `work-package` | 11 | Single work package from issue to merged PR |
+| `work-package` | 14 | Single work package from issue to merged PR |
 | `work-packages` | 7 | Plan and coordinate multiple related work packages |
 
 ---
