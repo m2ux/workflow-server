@@ -25,8 +25,6 @@ All workflow tools require `session_token` (from `start_session`). Each response
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_skills` | `session_token` | Get skill index — summary of all skills with capabilities |
-| `list_skills` | `session_token` | List all skills for the session workflow (universal + workflow-specific) |
 | `get_skill` | `session_token`, `skill_id` | Get a skill (checks workflow-specific first, then universal) |
 
 ### Resource Tools

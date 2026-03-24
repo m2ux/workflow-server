@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { listWorkflows, loadWorkflow } from '../loaders/workflow-loader.js';
 import { listResources, readResourceRaw, listWorkflowsWithResources } from '../loaders/resource-loader.js';
-import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
+import { listUniversalSkills, listWorkflowSkills, readSkill } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 
@@ -56,42 +56,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   );
 
   // ============== Skill Tools ==============
-
-  server.tool(
-    'get_skills',
-    'Get the skill index - summary of all available skills with capabilities.',
-    { ...sessionTokenParam },
-    withAuditLog('get_skills', async ({ session_token }) => {
-      const result = await readSkillIndex(config.workflowDir);
-      if (!result.success) {
-        const skills = await listSkills(config.workflowDir);
-        return withAdvancedToken(
-          { content: [{ type: 'text' as const, text: JSON.stringify(skills, null, 2) }] },
-          session_token,
-        );
-      }
-      return withAdvancedToken(
-        { content: [{ type: 'text' as const, text: JSON.stringify(result.value, null, 2) }] },
-        session_token,
-      );
-    })
-  );
-
-  server.tool(
-    'list_skills',
-    'List all available skills - both universal and workflow-specific for the session workflow.',
-    { ...sessionTokenParam },
-    withAuditLog('list_skills', async ({ session_token }) => {
-      const { wf } = decodeSessionToken(session_token);
-      const workflowSkills = await listWorkflowSkills(config.workflowDir, wf);
-      const universalSkills = await listUniversalSkills(config.workflowDir);
-      const result = { universal: universalSkills, workflow: workflowSkills };
-      return withAdvancedToken(
-        { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] },
-        session_token,
-      );
-    })
-  );
 
   server.tool(
     'get_skill',
@@ -166,8 +130,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         },
         universal_skills: {
           items: universalSkills.map(s => s.id),
-          tool: 'list_skills',
-          description: 'Universal skills (apply to all workflows)',
+          description: 'Universal skills (apply to all workflows). Load with get_skill.',
         },
         workflows: workflows.map(w => ({
           id: w.id, title: w.title,
