@@ -5,7 +5,7 @@ execution_pattern:
   start[3]:
     - list_workflows
     - get_workflow
-    - list_workflow_resources
+    - list_resources
   per_activity[3]:
     - get_activity
     - get_checkpoint
@@ -49,7 +49,7 @@ tools:
     when: Moving between activities
     params: workflow_id, from_activity, to_activity
     returns: Validity of transition and applicable conditions
-  list_workflow_resources:
+  list_resources:
     when: Starting a workflow; understanding available resources
     params: workflow_id
     returns: Array of resource entries with index, name, description
@@ -98,7 +98,7 @@ errors:
     recovery: Present checkpoint to user; await response before continuing
   resource_not_found:
     cause: Invalid resource index for workflow
-    recovery: Call list_workflow_resources to discover valid indices
+    recovery: Call list_resources to discover valid indices
   template_not_found:
     cause: Invalid template index for workflow
     recovery: Call list_templates to discover valid indices
