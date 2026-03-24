@@ -141,7 +141,7 @@ describe('mcp-server integration', () => {
 
     it('should reject tool call without session_token', async () => {
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'get_workflow',
         arguments: {},
       });
       expect(result.isError).toBe(true);
@@ -288,23 +288,6 @@ describe('mcp-server integration', () => {
   });
 
   // ============== Resource Tools ==============
-
-  describe('tool: get_activity', () => {
-    it('should get activity from token act field', async () => {
-      const actResult = await client.callTool({
-        name: 'get_workflow_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenWithAct = actMeta['session_token'] as string;
-
-      const result = await client.callTool({
-        name: 'get_activity',
-        arguments: { session_token: tokenWithAct },
-      });
-      expect(result.isError).toBeFalsy();
-    });
-  });
 
   describe('tool: get_skill', () => {
     it('should get skill using workflow from token', async () => {

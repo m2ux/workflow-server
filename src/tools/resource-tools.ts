@@ -5,7 +5,6 @@ import { withAuditLog } from '../logging.js';
 
 import { listWorkflows, loadWorkflow } from '../loaders/workflow-loader.js';
 import { listResources, readResourceRaw, listWorkflowsWithResources } from '../loaders/resource-loader.js';
-import { listActivities, readActivity, readActivityIndex } from '../loaders/activity-loader.js';
 import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
@@ -22,24 +21,6 @@ function withAdvancedToken(
 }
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
-
-  // ============== Activity Tools ==============
-
-  server.tool(
-    'get_activity',
-    'Get a specific activity by ID for detailed flow guidance',
-    { ...sessionTokenParam },
-    withAuditLog('get_activity', async ({ session_token }) => {
-      const { act } = decodeSessionToken(session_token);
-      if (!act) throw new Error('No activity set in session token');
-      const result = await readActivity(config.workflowDir, act);
-      if (!result.success) throw result.error;
-      return withAdvancedToken(
-        { content: [{ type: 'text' as const, text: JSON.stringify(result.value, null, 2) }] },
-        session_token,
-      );
-    })
-  );
 
   // ============== Session Tools ==============
 

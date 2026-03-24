@@ -36,7 +36,6 @@ CRITICAL: When following the workflow you *must* respect workflow fidelity as de
 | `get_workflow_activity` | Get activity details and update session activity |
 | `get_checkpoint` | Get checkpoint details (activity from token) |
 | `validate_transition` | Check if a transition is allowed |
-| `get_activity` | Get current activity from token |
 | `get_skill` | Get specific skill (workflow from token) |
 | `list_skills` | List skills for session workflow |
 | `list_workflow_resources` | List resources for session workflow |
