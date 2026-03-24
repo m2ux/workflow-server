@@ -7,6 +7,7 @@ import type { StateSaveFile } from '../schema/state.schema.js';
 import { decodeToon, encodeToon } from '../utils/toon.js';
 import { withAuditLog } from '../logging.js';
 import { sessionTokenParam } from '../utils/session.js';
+import { getOrCreateServerKey, encryptToken, decryptToken } from '../utils/crypto.js';
 
 const STATE_FILENAME = 'workflow-state.toon';
 
@@ -32,6 +33,12 @@ export function registerStateTools(server: McpServer): void {
         throw new Error(`State validation failed: ${stateResult.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ')}`);
       }
       const state = stateResult.data;
+
+      if (typeof state.variables['session_token'] === 'string') {
+        const key = await getOrCreateServerKey();
+        state.variables['session_token'] = encryptToken(state.variables['session_token'] as string, key);
+        state.variables['_session_token_encrypted'] = true;
+      }
 
       const saveFile: StateSaveFile = {
         id: generateSaveId(),
@@ -76,7 +83,15 @@ export function registerStateTools(server: McpServer): void {
       if (!result.success) {
         throw new Error(`State file validation failed: ${result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ')}`);
       }
-      return { content: [{ type: 'text' as const, text: JSON.stringify(result.data, null, 2) }] };
+
+      const restored = result.data;
+      if (restored.state.variables['_session_token_encrypted'] && typeof restored.state.variables['session_token'] === 'string') {
+        const key = await getOrCreateServerKey();
+        restored.state.variables['session_token'] = decryptToken(restored.state.variables['session_token'] as string, key);
+        delete restored.state.variables['_session_token_encrypted'];
+      }
+
+      return { content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }] };
     }),
   );
 }
