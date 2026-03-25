@@ -59,10 +59,7 @@ tools:
   read_file:
     when: Understanding changed files and module structure
     usage: Parse source and design docs
-  get_resource:
-    when: Loading architecture guidance
-    params: "workflow_id: work-package, index: 15 or 19"
-    returns: Architecture review and summary resources
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   write_file:
     when: Creating architecture-summary.md
     usage: Write summary document

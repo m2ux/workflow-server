@@ -50,10 +50,7 @@ resources[4]:
   - "12"
 
 tools:
-  get_resource:
-    when: "Loading deep_scan (12), L12 structural (00), full-prism adversarial (01), and synthesis (02)"
-    params: "workflow_id: prism, index: resource index as string"
-    returns: "Lens or pipeline prompt text"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Workers load prompts once per pass; execute every operation in the prompt"
   task:
     when: "Dispatching fresh workers for SDL, optional L12, and optional full-prism triple pass — do NOT resume prior workers"

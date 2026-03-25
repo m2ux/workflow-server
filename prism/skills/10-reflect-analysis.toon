@@ -44,10 +44,7 @@ resources[2]:
   - "07"
 
 tools:
-  get_resource:
-    when: Loading L12 lens (00) and claim lens (07) for fresh workers
-    params: "workflow_id: prism, index: resource index"
-    returns: "Lens prompt text"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Each worker loads its lens once, then executes every operation"
   task:
     when: Dispatching fresh workers for L12, meta-analysis, and synthesis passes

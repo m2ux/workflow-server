@@ -70,10 +70,7 @@ tools:
   WebSearch:
     when: Needing current information not in knowledge base
     usage: Search web for documentation, best practices, recent updates
-  get_resource:
-    when: Loading research guidance
-    params: "workflow_id: work-package, index: 07 or 08"
-    returns: Knowledge-base and web research guidance documents
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   no_kb_results:

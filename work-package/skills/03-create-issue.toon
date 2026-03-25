@@ -52,10 +52,7 @@ resources[2]:
   - "04"
 
 tools:
-  get_resource:
-    when: Starting issue creation
-    params: "workflow_id: work-package, index: 03 (GitHub) or 04 (Jira)"
-    returns: Issue creation guidelines and templates
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     next: "gh_issue_create (GitHub) or getAccessibleAtlassianResources (Jira)"
   gh_issue_create:
     when: Creating a GitHub issue

@@ -28,11 +28,11 @@ steps[5]:
     required: true
   - id: dispatch-prism-a
     name: Dispatch Prism A
-    description: "Create a FRESH worker with prism_a resource index. Worker loads the lens via get_resource, executes against the target, writes to {output_path}/dispute-lens-a.md."
+    description: "Create a FRESH worker with prism_a resource index. Worker loads the lens via get_skill (resources attached), executes against the target, writes to {output_path}/dispute-lens-a.md."
     required: true
   - id: dispatch-prism-b
     name: Dispatch Prism B
-    description: "Create a FRESH worker with prism_b resource index. Worker loads the lens via get_resource, executes against the target, writes to {output_path}/dispute-lens-b.md. Can run in parallel with prism A."
+    description: "Create a FRESH worker with prism_b resource index. Worker loads the lens via get_skill (resources attached), executes against the target, writes to {output_path}/dispute-lens-b.md. Can run in parallel with prism A."
     required: true
   - id: dispatch-synthesis
     name: Dispatch Disagreement Synthesis

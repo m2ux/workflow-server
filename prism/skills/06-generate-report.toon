@@ -86,10 +86,7 @@ tools:
     when: "Writing the final report"
     params: "path: {output-path}/REPORT.md"
     usage: "Persist the clean report as a markdown artifact"
-  get_resource:
-    when: "Never — this skill does not load lens prompts. It reads prior artifacts directly."
-  gitnexus_list_repos:
-    when: "Checking GitNexus availability before blast radius enrichment"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills"
     returns: "List of indexed repositories"
   gitnexus_impact:
     when: "Computing measured blast radius for findings that reference specific symbols"

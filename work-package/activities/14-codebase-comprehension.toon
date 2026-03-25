@@ -132,7 +132,7 @@ loops[1]:
         description: "Dive into the selected area: trace data flows, examine implementation details, identify edge cases, document internal design decisions and their implications."
       - id: portfolio-lens-pass
         name: Apply portfolio lenses to deep-dive area
-        description: "Load portfolio lenses from the prism workflow and apply them independently to the code under examination. Use pedagogy (get_resource workflow_id: 'prism', index: '06') to trace where inherited patterns create silent problems, and rejected-paths (get_resource workflow_id: 'prism', index: '09') to reveal what design paths were rejected and what problems they would swap. Apply each lens independently to the key files in the deep-dive area. Append per-lens findings and a cross-lens synthesis (convergent vs unique) to the comprehension artifact under the current deep-dive section."
+        description: "Load portfolio lenses from the prism workflow and apply them independently to the code under examination. Use pedagogy (prism resource 06 — attached to skill response via get_skill) to trace where inherited patterns create silent problems, and rejected-paths (prism resource 09 — attached to skill response via get_skill) to reveal what design paths were rejected and what problems they would swap. Apply each lens independently to the key files in the deep-dive area. Append per-lens findings and a cross-lens synthesis (convergent vs unique) to the comprehension artifact under the current deep-dive section."
       - id: update-artifact
         name: Update comprehension artifact
         description: "Append deep-dive findings and portfolio lens findings to the comprehension artifact under a dedicated section for this area."

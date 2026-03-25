@@ -38,6 +38,4 @@ resources[1]:
   - "02"
 
 tools:
-  get_resource:
-    when: Loading severity rubric
-    params: "workflow_id: cicd-pipeline-security-audit, index: 02"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills"

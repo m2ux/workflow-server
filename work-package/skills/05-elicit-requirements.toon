@@ -57,10 +57,7 @@ resources[1]:
   - "05"
 
 tools:
-  get_resource:
-    when: Loading elicitation question domains and templates
-    params: "workflow_id: work-package, index: 05"
-    returns: Requirements elicitation guidance and question domains
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   addCommentToJiraIssue:
     when: Posting assumptions for stakeholder review
     usage: Add assumptions summary as Jira comment for stakeholder feedback

@@ -65,10 +65,7 @@ resources[2]:
   - "04"
 
 tools:
-  get_resource:
-    when: Loading pattern catalog and output schema
-    params: "workflow_id: cicd-pipeline-security-audit, index: 01 or 04"
-  read_file:
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills"
     when: Reading workflow YAML files and referenced scripts
   grep:
     when: Searching for injection patterns across workflow files

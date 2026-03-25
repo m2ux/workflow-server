@@ -14,7 +14,7 @@ rules[12]:
   - "ORCHESTRATOR DISCIPLINE: The orchestrator coordinates but MUST NOT execute lens operations, generate analysis, or produce findings. All analytical work is delegated to isolated workers."
   - "AUTOMATIC TRANSITIONS: After each pass completes, the orchestrator captures the output and immediately dispatches the next pass without user confirmation."
   - "OUTPUT FORWARDING: The orchestrator captures the full text output from each pass and includes it verbatim in the next pass's prompt. Summarizing between passes loses evidence the adversary needs."
-  - "LENS LOADING: Workers load lens prompts from prism workflow resources via get_resource. The orchestrator tells the worker which resource index to load -- it does not load or forward the lens itself."
+  - "LENS LOADING: Workers load lens prompts from prism workflow resources via get_skill (resources attached). The orchestrator tells the worker which resource index to load -- it does not load or forward the lens itself."
   - "MINIMAL INTERACTION: This workflow has at most one user checkpoint (pipeline mode confirmation in select-mode), which is skipped when pipeline_mode is explicitly provided by the caller. All subsequent execution after select-mode is fully automated with no user interaction."
   - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission or deferring to the user."
   - "NO PERMISSION QUESTIONS: Workers must NEVER ask 'Would you like me to save this?' or 'Can I write to this directory?' or similar permission-deferral questions. These questions create workflow stalls. Write artifacts immediately and report completion."

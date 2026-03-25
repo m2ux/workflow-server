@@ -46,8 +46,5 @@ resources[1]:
   - "03"
 
 tools:
-  get_resource:
-    when: Loading remediation playbook
-    params: "workflow_id: cicd-pipeline-security-audit, index: 03"
-  read_file:
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills"
     when: Loading merged findings and coverage data

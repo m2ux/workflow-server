@@ -45,6 +45,4 @@ resources[1]:
 tools:
   read_file:
     when: Loading scanner output JSON files
-  get_resource:
-    when: Loading output schema for validation
-    params: "workflow_id: cicd-pipeline-security-audit, index: 04"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills"

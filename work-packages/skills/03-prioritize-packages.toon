@@ -46,10 +46,7 @@ resources[1]:
   - "04"
 
 tools:
-  get_resource:
-    when: Loading prioritization framework
-    params: "workflow_id: work-packages, index: 04"
-    returns: Prioritization methodology and scoring guidance
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   circular_dependencies:

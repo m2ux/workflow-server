@@ -54,10 +54,7 @@ rules:
   completion-timing: "COMPLETE.md is created after implementation is complete and PR is merged. It captures the final delivered state — what was built, tested, and deferred. Update if post-merge changes occur."
 
 tools:
-  get_resource:
-    when: Loading complete-wp guidance
-    params: "workflow_id: work-package, index: 21"
-    returns: Complete work package resource
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   read_file:
     when: Loading test plan, ADR, or source files
     usage: Read artifacts and source for documentation

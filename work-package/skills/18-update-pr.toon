@@ -51,10 +51,7 @@ tools:
     when: Git push, gh pr edit, gh pr ready, gh pr view, gh pr review
     params: "git push, gh pr edit --body, gh pr ready, gh pr review --comment --body-file"
     usage: Push commits and manage PR via gh CLI
-  get_resource:
-    when: Loading PR description template (standard mode) or review comment template (review mode)
-    params: "workflow_id: work-package, index: 12 (standard) or index: 24 (review mode)"
-    returns: PR description resource or review mode resource
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   push_failed:

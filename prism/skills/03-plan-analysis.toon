@@ -190,10 +190,7 @@ tools:
     when: "Writing the analysis plan artifact (only when output-path is provided)"
     params: "path: {output-path}/analysis-plan.md"
     usage: "Persist the plan for the orchestrator to execute"
-  get_resource:
-    when: "Caller wants to verify a lens before committing to the plan"
-    params: "workflow_id: prism, index: recommended resource index"
-    returns: "The lens prompt text"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   empty_directory:

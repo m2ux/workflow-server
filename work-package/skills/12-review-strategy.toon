@@ -78,10 +78,7 @@ tools:
   edit:
     when: Applying cleanup after user approval
     usage: Remove identified artifacts from codebase
-  get_resource:
-    when: Loading strategic review and architecture guidance
-    params: "workflow_id: work-package, index: 18 or 15"
-    returns: Strategic review and architecture review guides
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   scope_creep:
