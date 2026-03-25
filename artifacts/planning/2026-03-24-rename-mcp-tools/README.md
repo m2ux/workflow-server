@@ -1,7 +1,7 @@
 # Rename MCP Tools - March 2026
 
 **Created:** 2026-03-24  
-**Status:** In Progress  
+**Status:** Ready for review  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -48,7 +48,7 @@ Once an agent has its session token from `start_session`, it must include that t
 | 06 | [Structural findings](06-structural-findings.md) | Single-pass structural analysis | 10-15m | ✅ Complete |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ✅ Complete |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
 | 09 | [Step completion manifest](09-step-completion-manifest.md) | Design for step manifest validation | — | ✅ Complete |
@@ -67,4 +67,4 @@ Once an agent has its session token from `start_session`, it must include that t
 
 ---
 
-**Status:** Implementation complete — pending review
+**Status:** PR description updated; marked ready for review (#60)
