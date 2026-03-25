@@ -37,10 +37,10 @@ tools:
       - session_token
     next: get_workflow to load the full workflow definition
   get_skills:
-    when: Activity loaded; need all skills for the activity
+    when: Activity loaded; need all skills and resources for the activity
     params: session_token, workflow_id, activity_id
-    returns: All skills (primary + supporting) for the activity in one call
-    usage: Preferred over multiple get_skill calls. Load all skills at once during activity bootstrap.
+    returns: All skills (primary + supporting) and their referenced resources in one call
+    usage: Preferred over multiple get_skill/get_resource calls. Load everything needed for activity execution in one call.
   get_skill:
     when: Need a single skill mid-activity (e.g., a step references a specific skill)
     params: session_token, workflow_id, skill_id
