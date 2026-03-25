@@ -62,5 +62,5 @@ variables[13]:
     defaultValue: false
 rules[3]:
   - This workflow is the entrypoint for all workflow operations
-  - Each activity is matched independently via recognition patterns in get_activities
+  - Each activity is matched independently via recognition patterns in list_workflows
   - Skills in this workflow are universal and apply to all workflows
