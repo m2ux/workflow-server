@@ -7,15 +7,17 @@ sections[16]:
   - id: session-protocol
     title: Session Protocol
     priority: critical
-    rules[8]:
+    rules[10]:
       - "CRITICAL: Parse ALL rules returned by start_session before making any other tool calls."
       - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
-      - "Call start_session with the chosen workflow_id. The response contains agent behavioral rules, workflow metadata, and an opaque session token."
+      - "Call start_session with the chosen workflow_id. The response contains agent behavioral rules, workflow metadata, and an HMAC-signed opaque session token."
       - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id and activity_id parameters. The token enables server-side validation of call consistency."
       - "Use the updated token from each response's _meta.session_token field for the next call."
-      - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies (workflow mismatch, invalid transition, skill not associated with activity, version drift) and should be addressed but do not block execution."
+      - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies (workflow mismatch, invalid transition, skill not associated with activity, version drift, missing step manifest) and should be addressed but do not block execution."
       - "Token-exempt tools: help, list_workflows, start_session, and health_check do not require a session token."
-      - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens."
+      - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens. The token is cryptographically signed and tampered tokens will be rejected."
+      - "STEP MANIFEST: When transitioning to the next activity (calling get_activity), include a step_manifest parameter listing each step completed in the previous activity with its output summary. The server validates step completeness, ordering, and non-empty outputs."
+      - "STEP COMPLETENESS: All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level."
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical
