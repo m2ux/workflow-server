@@ -47,7 +47,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('get_workflow', 'Get the complete workflow definition by ID',
     { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID (e.g., "work-package")') },
     withAuditLog('get_workflow', async ({ session_token, workflow_id }) => {
-      const token = decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
@@ -61,7 +61,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content.push({ type: 'text', text: config.schemaPreamble });
       }
       content.push({ type: 'text', text: JSON.stringify(result.value, null, 2) });
-      return { content, _meta: { session_token: advanceToken(session_token, { wf: workflow_id }), validation } };
+      return { content, _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation } };
     }));
 
   server.tool('get_activity', 'Get details of a specific activity within a workflow',
@@ -71,7 +71,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       activity_id: z.string().describe('Activity ID to load'),
     },
     withAuditLog('get_activity', async ({ session_token, workflow_id, activity_id }) => {
-      const token = decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       const activity = getActivity(result.value, activity_id);
@@ -85,7 +85,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(activity, null, 2) }],
-        _meta: { session_token: advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
     }));
 
@@ -97,7 +97,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       checkpoint_id: z.string().describe('Checkpoint ID'),
     },
     withAuditLog('get_checkpoint', async ({ session_token, workflow_id, activity_id, checkpoint_id }) => {
-      const token = decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
@@ -110,14 +110,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(checkpoint, null, 2) }],
-        _meta: { session_token: advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
     }));
 
   server.tool('validate_transition', 'Validate if a transition between activities is allowed',
     { ...sessionTokenParam, workflow_id: z.string(), from_activity: z.string(), to_activity: z.string() },
     withAuditLog('validate_transition', async ({ session_token, workflow_id, from_activity, to_activity }) => {
-      const token = decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
@@ -128,7 +128,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(validateTransition(result.value, from_activity, to_activity), null, 2) }],
-        _meta: { session_token: advanceToken(session_token, { wf: workflow_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     }));
 

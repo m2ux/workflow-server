@@ -28,7 +28,7 @@ export function registerStateTools(server: McpServer): void {
       description: z.string().optional().describe('Human-readable description of the save point'),
     },
     withAuditLog('save_state', async ({ session_token, state: stateJson, planning_folder_path, description }) => {
-      decodeSessionToken(session_token);
+      await decodeSessionToken(session_token);
 
       const parsed = JSON.parse(stateJson);
       const stateResult = NestedWorkflowStateSchema.safeParse(parsed);
@@ -70,7 +70,7 @@ export function registerStateTools(server: McpServer): void {
       };
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }],
-        _meta: { session_token: advanceToken(session_token), validation: buildValidation() },
+        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
       };
     }),
   );
@@ -83,7 +83,7 @@ export function registerStateTools(server: McpServer): void {
       file_path: z.string().describe('Path to the workflow-state.toon file'),
     },
     withAuditLog('restore_state', async ({ session_token, file_path }) => {
-      decodeSessionToken(session_token);
+      await decodeSessionToken(session_token);
 
       const content = await readFile(file_path, 'utf-8');
       const decoded = decodeToon<Record<string, unknown>>(content);
@@ -101,7 +101,7 @@ export function registerStateTools(server: McpServer): void {
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }],
-        _meta: { session_token: advanceToken(session_token), validation: buildValidation() },
+        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
       };
     }),
   );

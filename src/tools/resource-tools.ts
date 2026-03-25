@@ -28,7 +28,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!rulesResult.success) throw rulesResult.error;
 
       const workflow = wfResult.value;
-      const token = createSessionToken(workflow_id, workflow.version ?? '0.0.0');
+      const token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0');
 
       const response = {
         rules: rulesResult.value,
@@ -55,7 +55,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       skill_id: z.string().describe('Skill ID (e.g., workflow-execution, activity-resolution)'),
     },
     withAuditLog('get_skill', async ({ session_token, workflow_id, skill_id }) => {
-      const token = decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
       const result = await readSkill(skill_id, config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
@@ -68,7 +68,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(result.value, null, 2) }],
-        _meta: { session_token: advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
       };
     })
   );
@@ -80,7 +80,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'List all resources available for a workflow',
     { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID') },
     withAuditLog('list_resources', async ({ session_token, workflow_id }) => {
-      const token = decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
       const resources = await listResources(config.workflowDir, workflow_id);
       const result = resources.map(r => ({
         index: r.index, name: r.name, title: r.title, format: r.format,
@@ -92,7 +92,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
-        _meta: { session_token: advanceToken(session_token, { wf: workflow_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     })
   );
@@ -106,7 +106,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       index: z.string().describe('Resource index (e.g., 0, 00, 01)'),
     },
     withAuditLog('get_resource', async ({ session_token, workflow_id, index }) => {
-      const token = decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
       const result = await readResourceRaw(config.workflowDir, workflow_id, index);
       if (!result.success) throw result.error;
 
@@ -116,7 +116,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: result.value.content }],
-        _meta: { session_token: advanceToken(session_token, { wf: workflow_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     })
   );
@@ -128,6 +128,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'Discover all available resources: workflows, resources, skills',
     { ...sessionTokenParam },
     withAuditLog('discover_resources', async ({ session_token }) => {
+      await decodeSessionToken(session_token);
       const workflows = await listWorkflows(config.workflowDir);
       const workflowsWithResources = await listWorkflowsWithResources(config.workflowDir);
       const universalSkills = await listUniversalSkills(config.workflowDir);
@@ -161,7 +162,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(discovery, null, 2) }],
-        _meta: { session_token: advanceToken(session_token), validation: buildValidation() },
+        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
       };
     })
   );

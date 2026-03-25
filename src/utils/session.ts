@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getOrCreateServerKey, hmacSign, hmacVerify } from './crypto.js';
 
 export interface SessionPayload {
   wf: string;
@@ -15,14 +16,28 @@ export interface SessionAdvance {
   skill?: string;
 }
 
-function encode(payload: SessionPayload): string {
+async function encode(payload: SessionPayload): Promise<string> {
   const json = JSON.stringify(payload);
-  return Buffer.from(json, 'utf8').toString('base64url');
+  const b64 = Buffer.from(json, 'utf8').toString('base64url');
+  const key = await getOrCreateServerKey();
+  const sig = hmacSign(b64, key);
+  return `${b64}.${sig}`;
 }
 
-function decode(token: string): SessionPayload {
+async function decode(token: string): Promise<SessionPayload> {
+  const dotIndex = token.lastIndexOf('.');
+  if (dotIndex === -1) throw new Error('Invalid session token: missing signature');
+
+  const b64 = token.substring(0, dotIndex);
+  const sig = token.substring(dotIndex + 1);
+
+  const key = await getOrCreateServerKey();
+  if (!hmacVerify(b64, sig, key)) {
+    throw new Error('Invalid session token: signature verification failed');
+  }
+
   try {
-    const json = Buffer.from(token, 'base64url').toString('utf8');
+    const json = Buffer.from(b64, 'base64url').toString('utf8');
     const parsed = JSON.parse(json) as Record<string, unknown>;
     if (typeof parsed['wf'] !== 'string' || typeof parsed['act'] !== 'string' ||
         typeof parsed['skill'] !== 'string' || typeof parsed['v'] !== 'string' ||
@@ -36,7 +51,7 @@ function decode(token: string): SessionPayload {
   }
 }
 
-export function createSessionToken(workflowId: string, workflowVersion: string): string {
+export async function createSessionToken(workflowId: string, workflowVersion: string): Promise<string> {
   return encode({
     wf: workflowId,
     act: '',
@@ -47,12 +62,12 @@ export function createSessionToken(workflowId: string, workflowVersion: string):
   });
 }
 
-export function decodeSessionToken(token: string): SessionPayload {
+export async function decodeSessionToken(token: string): Promise<SessionPayload> {
   return decode(token);
 }
 
-export function advanceToken(token: string, updates?: SessionAdvance): string {
-  const payload = decode(token);
+export async function advanceToken(token: string, updates?: SessionAdvance): Promise<string> {
+  const payload = await decode(token);
   payload.seq += 1;
   if (updates?.wf !== undefined) payload.wf = updates.wf;
   if (updates?.act !== undefined) payload.act = updates.act;

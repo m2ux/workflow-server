@@ -1,4 +1,4 @@
-import { randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
+import { randomBytes, createCipheriv, createDecipheriv, createHmac } from 'node:crypto';
 import { readFile, writeFile, mkdir, chmod } from 'node:fs/promises';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
@@ -41,4 +41,18 @@ export function decryptToken(encrypted: string, key: Buffer): string {
   const decipher = createDecipheriv(ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
   decipher.setAuthTag(authTag);
   return decipher.update(ciphertext) + decipher.final('utf8');
+}
+
+export function hmacSign(payload: string, key: Buffer): string {
+  return createHmac('sha256', key).update(payload).digest('hex');
+}
+
+export function hmacVerify(payload: string, signature: string, key: Buffer): boolean {
+  const expected = hmacSign(payload, key);
+  if (expected.length !== signature.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < expected.length; i++) {
+    mismatch |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
+  }
+  return mismatch === 0;
 }
