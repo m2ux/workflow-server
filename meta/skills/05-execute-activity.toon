@@ -96,10 +96,10 @@ tools:
     when: "After loading activity, for the primary skill and any step-level skill references"
     params: "skill_id, workflow_id"
     returns: "Skill definition with protocol, tools, rules, inputs, output"
-  get_resource:
-    when: "When a skill references resources by index"
-    params: "workflow_id, index"
-    returns: "Resource content (templates, guidance, checklists)"
+  get_skills:
+    when: "Activity bootstrap — load all skills and resources at once"
+    params: "session_token, workflow_id, activity_id"
+    returns: "All skills (primary + supporting) with referenced resources attached"
   read_file:
     when: "Reading source code, artifacts, or planning documents"
     usage: "Examine codebase, load prior artifacts, review plans"

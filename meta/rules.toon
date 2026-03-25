@@ -206,4 +206,4 @@ sections[16]:
       - "NEVER call domain-specific tools during workflow bootstrap. URLs, issue keys, or other references in the user's request are context to be preserved — not triggers for immediate API calls."
       - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability. The workflow must be fully loaded, state initialized, and the worker dispatched before any domain tool is invoked."
       - "The orchestrator MUST NOT call domain-specific tools. All domain operations are delegated to the worker sub-agent during activity execution."
-      - "Do NOT read workflow resource files directly from disk — use the get_resource tool instead."
+      - "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_skill and get_skills."
