@@ -48,7 +48,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get all skills for an activity in one call (primary + supporting). More efficient than multiple get_skill calls.',
+    'Get all skills and their associated resources for an activity in one call. Returns primary + supporting skills with full content, plus all resources referenced by those skills.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -64,9 +64,23 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
       const skills: Record<string, unknown> = {};
+      const resourceIndices = new Set<string>();
+
       for (const sid of skillIds) {
         const result = await readSkill(sid, config.workflowDir, workflow_id);
-        if (result.success) skills[sid] = result.value;
+        if (result.success) {
+          skills[sid] = result.value;
+          const skillResources = (result.value as Record<string, unknown>)['resources'] as string[] | undefined;
+          if (skillResources) {
+            for (const idx of skillResources) resourceIndices.add(idx);
+          }
+        }
+      }
+
+      const resources: Record<string, string> = {};
+      for (const idx of resourceIndices) {
+        const result = await readResourceRaw(config.workflowDir, workflow_id, idx);
+        if (result.success) resources[idx] = result.value.content;
       }
 
       const validation = buildValidation(
@@ -75,7 +89,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ activity_id, skills }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ activity_id, skills, resources }, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
     })
