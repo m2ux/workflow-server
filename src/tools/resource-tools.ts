@@ -115,8 +115,21 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         wfResult.success && token.act ? validateSkillAssociation(wfResult.value, token.act, skill_id) : null,
       );
 
+      const skillResources = (result.value as Record<string, unknown>)['resources'] as string[] | undefined;
+      const resources: Record<string, string> = {};
+      if (skillResources) {
+        for (const idx of skillResources) {
+          const resResult = await readResourceRaw(config.workflowDir, workflow_id, idx);
+          if (resResult.success) resources[idx] = resResult.value.content;
+        }
+      }
+
+      const response = Object.keys(resources).length > 0
+        ? { ...result.value as Record<string, unknown>, _resources: resources }
+        : result.value;
+
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(result.value, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
       };
     })
@@ -141,30 +154,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
-      };
-    })
-  );
-
-  server.tool(
-    'get_resource',
-    'Get a specific resource by index',
-    {
-      ...sessionTokenParam,
-      workflow_id: z.string().describe('Workflow ID'),
-      index: z.string().describe('Resource index (e.g., 0, 00, 01)'),
-    },
-    withAuditLog('get_resource', async ({ session_token, workflow_id, index }) => {
-      const token = await decodeSessionToken(session_token);
-      const result = await readResourceRaw(config.workflowDir, workflow_id, index);
-      if (!result.success) throw result.error;
-
-      const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
-      );
-
-      return {
-        content: [{ type: 'text' as const, text: result.value.content }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     })

@@ -28,14 +28,13 @@ All workflow tools require `session_token` and explicit `workflow_id`. Each resp
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `get_skills` | `session_token`, `workflow_id`, `activity_id` | Get all skills and their referenced resources for an activity in one call |
-| `get_skill` | `session_token`, `workflow_id`, `skill_id` | Get a single skill by ID |
+| `get_skill` | `session_token`, `workflow_id`, `skill_id` | Get a single skill with its referenced resources attached |
 
 ### Resource Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `list_resources` | `session_token`, `workflow_id` | List all resources for a workflow |
-| `get_resource` | `session_token`, `workflow_id`, `index` | Get a specific resource by index |
+| `list_resources` | `session_token`, `workflow_id` | List all resources for a workflow (discovery only — resources are attached to skill responses) |
 
 ### Discovery Tools
 
