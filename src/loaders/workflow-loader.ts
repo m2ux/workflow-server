@@ -177,6 +177,45 @@ export function getValidTransitions(workflow: Workflow, fromActivityId: string):
   return [...new Set(transitions)];
 }
 
+export interface TransitionEntry {
+  to: string;
+  condition?: string | undefined;
+  isDefault?: boolean | undefined;
+}
+
+/** Get the transition list for an activity with human-readable conditions */
+export function getTransitionList(workflow: Workflow, fromActivityId: string): TransitionEntry[] {
+  const activity = getActivity(workflow, fromActivityId);
+  if (!activity) return [];
+
+  const entries: TransitionEntry[] = [];
+
+  for (const t of activity.transitions ?? []) {
+    entries.push({
+      to: t.to,
+      condition: t.condition ? conditionToString(t.condition) : undefined,
+      isDefault: t.isDefault || undefined,
+    });
+  }
+
+  return entries;
+}
+
+function conditionToString(condition: { type: string; variable?: string; operator?: string; value?: unknown; conditions?: unknown[]; condition?: unknown }): string {
+  switch (condition.type) {
+    case 'simple':
+      return `${condition.variable} ${condition.operator} ${JSON.stringify(condition.value)}`;
+    case 'and':
+      return (condition.conditions as Array<typeof condition>).map(c => conditionToString(c)).join(' AND ');
+    case 'or':
+      return (condition.conditions as Array<typeof condition>).map(c => conditionToString(c)).join(' OR ');
+    case 'not':
+      return `NOT (${conditionToString(condition.condition as typeof condition)})`;
+    default:
+      return String(condition);
+  }
+}
+
 /** Validate a transition between activities */
 export function validateTransition(workflow: Workflow, fromActivityId: string, toActivityId: string): { valid: boolean; reason?: string } {
   if (!getActivity(workflow, fromActivityId)) return { valid: false, reason: `Source activity not found: ${fromActivityId}` };

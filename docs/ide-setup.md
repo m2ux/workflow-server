@@ -29,8 +29,9 @@ For all workflow execution user requests, call the `help` tool on the workflow-s
 | `help` | Bootstrap procedure and session protocol (no token required) |
 | `list_workflows` | List all workflows (no token required) |
 | `start_session` | Start session — returns rules, workflow metadata, and opaque token |
-| `get_workflow` | Get workflow definition |
+| `get_workflow` | Get workflow definition (use summary=true for lightweight metadata) |
 | `get_activity` | Get activity details |
+| `next_activity` | Get possible next activities with transition conditions |
 | `get_checkpoint` | Get checkpoint details |
 | `validate_transition` | Check if a transition is allowed |
 | `get_skill` | Get specific skill |

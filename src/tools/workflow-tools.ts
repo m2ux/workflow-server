@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
-import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, validateTransition } from '../loaders/workflow-loader.js';
+import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, validateTransition, getTransitionList } from '../loaders/workflow-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest } from '../utils/validation.js';
@@ -51,9 +51,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir), null, 2) }],
     })));
 
-  server.tool('get_workflow', 'Get the complete workflow definition by ID',
-    { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID (e.g., "work-package")') },
-    withAuditLog('get_workflow', async ({ session_token, workflow_id }) => {
+  server.tool('get_workflow', 'Get a workflow definition. Use summary=true for lightweight metadata (rules, variables, activity stubs) to reduce context usage.',
+    {
+      ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID (e.g., "work-package")'),
+      summary: z.boolean().optional().default(false).describe('If true, returns lightweight summary instead of full definition'),
+    },
+    withAuditLog('get_workflow', async ({ session_token, workflow_id, summary }) => {
       const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -67,7 +71,24 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (config.schemaPreamble) {
         content.push({ type: 'text', text: config.schemaPreamble });
       }
-      content.push({ type: 'text', text: JSON.stringify(result.value, null, 2) });
+
+      if (summary) {
+        const wf = result.value;
+        const summaryData = {
+          id: wf.id,
+          version: wf.version,
+          title: wf.title,
+          description: wf.description,
+          rules: wf.rules,
+          variables: wf.variables,
+          initialActivity: (wf as Record<string, unknown>)['initialActivity'],
+          activities: wf.activities.map(a => ({ id: a.id, name: a.name, required: a.required })),
+        };
+        content.push({ type: 'text', text: JSON.stringify(summaryData, null, 2) });
+      } else {
+        content.push({ type: 'text', text: JSON.stringify(result.value, null, 2) });
+      }
+
       return { content, _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation } };
     }));
 
@@ -152,6 +173,31 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(validateTransition(result.value, from_activity, to_activity), null, 2) }],
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
+      };
+    }));
+
+  server.tool('next_activity', 'Get the list of possible next activities with their transition conditions. Returns transitions from the current activity (token.act) so the agent can match conditions against its state variables.',
+    { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID') },
+    withAuditLog('next_activity', async ({ session_token, workflow_id }) => {
+      const token = await decodeSessionToken(session_token);
+      if (!token.act) throw new Error('No current activity in session token. Call get_activity first.');
+
+      const result = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!result.success) throw result.error;
+
+      const transitions = getTransitionList(result.value, token.act);
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        validateWorkflowVersion(token, result.value),
+      );
+
+      const response = {
+        current_activity: token.act,
+        transitions,
+      };
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     }));

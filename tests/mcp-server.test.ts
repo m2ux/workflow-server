@@ -478,4 +478,136 @@ describe('mcp-server integration', () => {
       expect(activity.id).toBe('design-philosophy');
     });
   });
+
+  // ============== Next Activity ==============
+
+  describe('tool: next_activity', () => {
+    it('should return transition list for current activity', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
+      });
+      expect(result.isError).toBeFalsy();
+
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(response.current_activity).toBe('start-work-package');
+      expect(response.transitions).toBeDefined();
+      expect(Array.isArray(response.transitions)).toBe(true);
+      expect(response.transitions.length).toBeGreaterThan(0);
+      expect(response.transitions[0].to).toBeDefined();
+    });
+
+    it('should include conditions as readable strings', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'codebase-comprehension' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
+      });
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const conditional = response.transitions.find((t: { condition?: string }) => t.condition);
+      expect(conditional).toBeDefined();
+      expect(typeof conditional.condition).toBe('string');
+    });
+
+    it('should mark default transitions', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
+      });
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const defaultTransition = response.transitions.find((t: { isDefault?: boolean }) => t.isDefault);
+      expect(defaultTransition).toBeDefined();
+    });
+
+    it('should error when no activity in token', async () => {
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+      });
+      expect(result.isError).toBe(true);
+    });
+
+    it('should return updated token in _meta', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      expect(meta['session_token']).toBeDefined();
+      expect(meta['session_token']).not.toBe(tokenWithAct);
+    });
+  });
+
+  // ============== Workflow Summary Mode ==============
+
+  describe('tool: get_workflow (summary mode)', () => {
+    it('should return lightweight summary when summary=true', async () => {
+      const result = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', summary: true },
+      });
+      expect(result.isError).toBeFalsy();
+
+      const wf = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(wf.id).toBe('work-package');
+      expect(wf.version).toBe('3.4.0');
+      expect(wf.rules).toBeDefined();
+      expect(wf.variables).toBeDefined();
+      expect(wf.activities).toBeDefined();
+      expect(wf.activities[0].id).toBeDefined();
+      expect(wf.activities[0].steps).toBeUndefined();
+      expect(wf.activities[0].checkpoints).toBeUndefined();
+    });
+
+    it('summary should be smaller than full definition', async () => {
+      const fullResult = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', summary: false },
+      });
+      const summaryResult = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', summary: true },
+      });
+
+      const fullSize = (fullResult.content[0] as { type: 'text'; text: string }).text.length;
+      const summarySize = (summaryResult.content[0] as { type: 'text'; text: string }).text.length;
+      expect(summarySize).toBeLessThan(fullSize / 2);
+    });
+
+    it('should return full definition when summary=false', async () => {
+      const result = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', summary: false },
+      });
+      const wf = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(wf.activities[0].steps).toBeDefined();
+    });
+  });
 });
