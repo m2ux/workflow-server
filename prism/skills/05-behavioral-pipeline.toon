@@ -17,7 +17,7 @@ inputs[4]:
 
 protocol:
   load-lens[2]:
-    - "Call get_resource({ workflow_id: 'prism', index: lens-resource-index }) to load the lens prompt"
+    - "Resources are attached to skill responses (loaded via get_skill or get_skills). Resource index lens-resource-index is available in the _resources field after loading the lens prompt"
     - "The lens prompt is the program — execute its operations in order"
   read-target[1]:
     - "If target-content is a file path, read the file to obtain the code"
@@ -69,10 +69,7 @@ resources[5]:
   - "23"
 
 tools:
-  get_resource:
-    when: Loading the behavioral lens prompt for this pass
-    params: "workflow_id: prism, index: 19-23 (provided by orchestrator)"
-    returns: "Lens prompt text"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Load once, then execute every operation in the prompt"
   read_file:
     when: "Reading target code and prior behavioral artifacts (synthesis pass)"
@@ -102,7 +99,7 @@ tools:
 
 errors:
   lens_not_loaded:
-    cause: "get_resource returned an error for the given index"
+    cause: "resource not found in skill response for the given index"
     recovery: "Report the error. Valid behavioral indices: 19-23."
   prior_artifact_not_found:
     cause: "A prior behavioral artifact path was provided but the file does not exist (synthesis pass)"

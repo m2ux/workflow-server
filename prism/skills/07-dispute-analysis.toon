@@ -48,10 +48,7 @@ resources[5]:
   - "62"
 
 tools:
-  get_resource:
-    when: Loading lens prompts for prism A, prism B, and synthesis (62)
-    params: "workflow_id: prism, index: resource index from pair or 62 for dispute synthesis"
-    returns: "Lens or synthesis prompt text"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Worker loads the prompt once, then executes every operation"
   task:
     when: Dispatching fresh workers for each pass

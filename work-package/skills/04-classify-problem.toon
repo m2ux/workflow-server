@@ -61,10 +61,7 @@ resources[1]:
   - "09"
 
 tools:
-  get_resource:
-    when: Loading design framework guidance
-    params: "workflow_id: work-package, index: 09"
-    returns: Design framework guide with classification and path determination criteria
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   read_file:
     when: Reviewing issue content or Cargo.toml for project context
     usage: Examine files for problem context and project type

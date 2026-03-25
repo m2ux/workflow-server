@@ -53,10 +53,7 @@ resources[5]:
   - "62"
 
 tools:
-  get_resource:
-    when: "Loading L12 (00), dispute (07), full-prism or pipeline resources (17), prereq (59), profile (62), and any prism resources selected by subsystem calibration"
-    params: "workflow_id: prism, index: resource index as string"
-    returns: "Lens, prereq, dispute, pipeline, or profile prompt text"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Workers load prompts once per pass; execute every operation in the prompt"
   task:
     when: "Dispatching fresh workers for prereq, knowledge fill orchestration, analysis (subsystem or L12 / full-prism), dispute, and profile update — 5+ workers; do NOT resume prior workers"

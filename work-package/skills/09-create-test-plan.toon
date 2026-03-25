@@ -46,10 +46,7 @@ resources[1]:
   - "11"
 
 tools:
-  get_resource:
-    when: Loading test plan guidance
-    params: "workflow_id: work-package, index: 11"
-    returns: Test plan template and guidance
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   read_file:
     when: Reading requirements and plan artifacts
     usage: Load inputs for test case design

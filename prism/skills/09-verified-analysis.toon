@@ -49,10 +49,7 @@ resources[3]:
   - "41"
 
 tools:
-  get_resource:
-    when: "Loading L12 (00), knowledge_audit (40), or knowledge_boundary (41)"
-    params: "workflow_id: prism, index: resource index as string"
-    returns: "Prism lens prompt text"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Workers load the lens for the pass type; execute every operation in the prompt"
   task:
     when: "Dispatching each analytical pass to a fresh sub-agent (initial L12, gap detection, corrected L12)"

@@ -119,10 +119,7 @@ tools:
   semantic_search:
     when: Finding code by meaning when exact terms are unknown
     usage: Explore unfamiliar areas by describing what you're looking for
-  get_resource:
-    when: Loading comprehension guidance and artifact template
-    params: "workflow_id: work-package, index: 25"
-    returns: Comprehension artifact template and technique guide
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   no_existing_artifacts:

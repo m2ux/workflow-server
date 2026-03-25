@@ -17,7 +17,7 @@ inputs[3]:
 
 protocol:
   load-lens[2]:
-    - "Load resource 00 (l12-structural) from the prism workflow: get_resource(workflow_id: 'prism', index: '00')"
+    - "Load resource 00 (l12-structural) from the prism workflow: get_skill (resource 00 attached in _resources)"
     - The resource contains the full L12 lens prompt — a sequence of analytical operations the agent must execute step by step
   read-target[2]:
     - If code-content is a file path, read the file to obtain the code
@@ -65,10 +65,7 @@ resources[1]:
   - "00"
 
 tools:
-  get_resource:
-    when: Loading the L12 structural analysis lens
-    params: "workflow_id: prism, index: 00"
-    returns: "L12 lens prompt with the full sequence of analytical operations"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "The lens prompt is the program — execute its operations against the code"
   read_file:
     when: Reading code files to analyze

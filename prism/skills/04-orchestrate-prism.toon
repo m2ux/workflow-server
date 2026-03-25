@@ -40,7 +40,7 @@ protocol:
     - "Compressed variants (model-specific): error-resilience-compact=27, error-resilience-70w=28"
   dispatch-structural-pass[6]:
     - "Create a FRESH sub-agent using Task tool (subagent_type=generalPurpose, do NOT use resume)"
-    - "Worker prompt must include: (1) the resolved_content, (2) the lens resource index to load, (3) the workflow_id 'prism' for get_resource calls, (4) the output-path to write its artifact, (5) instruction to load the lens via get_resource, execute every operation, and write to {output-path}/structural-analysis.md"
+    - "Worker prompt must include: (1) the resolved_content, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the output-path to write its artifact, (5) instruction to load the lens via get_skill (resources attached), execute every operation, and write to {output-path}/structural-analysis.md"
     - "Worker prompt must NOT include any prior analysis — this is the first pass"
     - "Capture the artifact path from the worker's response: structural_output_path = {output-path}/structural-analysis.md"
     - "Verify the artifact was written by reading its first line"

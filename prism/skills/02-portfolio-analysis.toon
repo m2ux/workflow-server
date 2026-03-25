@@ -123,10 +123,7 @@ resources[52]:
   - "61"
 
 tools:
-  get_resource:
-    when: Loading portfolio lens prompts
-    params: "workflow_id: prism, index: 06-22, 24-26, 29-32, 33-44, 50-61 (mapped from lens name)"
-    returns: "Lens prompt for the selected portfolio lens"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Load each selected lens and apply independently to the artifact"
   read_file:
     when: Reading files to analyze

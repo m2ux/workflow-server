@@ -51,10 +51,7 @@ resources[1]:
   - "05"
 
 tools:
-  get_resource:
-    when: Loading roadmap template
-    params: "workflow_id: work-packages, index: 05"
-    returns: START-HERE.md and README.md final format templates
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   missing_plans:

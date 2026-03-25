@@ -53,10 +53,7 @@ tools:
     when: Triggering the work-package workflow for each package
     params: "workflow_id: work-package"
     returns: Complete work-package workflow definition
-  get_resource:
-    when: Loading workflow triggering protocol
-    params: "workflow_id: work-packages, index: 06"
-    returns: Triggering procedure and status update format
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   workflow_trigger_failure:

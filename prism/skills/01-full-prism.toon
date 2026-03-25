@@ -2,7 +2,7 @@ id: full-prism
 version: 2.1.0
 capability: Execute a single pass of the Full Prism pipeline within the prism workflow's isolation model
 
-description: "Worker-side skill for executing one pass of the 3-pass Full Prism pipeline. Each pass runs in a fresh, isolated sub-agent dispatched by the orchestrate-prism skill. The worker receives: (1) the target content, (2) any prior pass artifact paths to read, and (3) a resource index indicating which lens to load. The worker loads the lens via get_resource, reads prior artifacts from the filesystem, applies the lens, writes the result artifact, and returns the artifact path."
+description: "Worker-side skill for executing one pass of the 3-pass Full Prism pipeline. Each pass runs in a fresh, isolated sub-agent dispatched by the orchestrate-prism skill. The worker receives: (1) the target content, (2) any prior pass artifact paths to read, and (3) a resource index indicating which lens to load. The worker loads the lens via get_skill (resources attached), reads prior artifacts from the filesystem, applies the lens, writes the result artifact, and returns the artifact path."
 
 inputs[5]:
   - id: target-content
@@ -21,7 +21,7 @@ inputs[5]:
 
 protocol:
   load-lens[2]:
-    - "Call get_resource({ workflow_id: 'prism', index: lens-resource-index }) to load the lens prompt"
+    - "Resources are attached to skill responses (loaded via get_skill or get_skills). Resource index lens-resource-index is available in the _resources field after loading the lens prompt"
     - "The lens prompt is the program — it defines the exact sequence of analytical operations to execute"
   read-prior-artifacts[2]:
     - "If prior-artifact-paths is provided, read each artifact file from the filesystem"
@@ -70,10 +70,7 @@ resources[3]:
   - "02"
 
 tools:
-  get_resource:
-    when: Loading the lens prompt for this pass
-    params: "workflow_id: prism, index: lens-resource-index (provided by orchestrator)"
-    returns: "Lens prompt text"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Load once, then execute every operation in the prompt"
   read_file:
     when: "Reading prior pass artifacts and target content"
@@ -103,7 +100,7 @@ tools:
 
 errors:
   lens_not_loaded:
-    cause: "get_resource returned an error for the given index"
+    cause: "resource not found in skill response for the given index"
     recovery: "Report the error. Valid indices: 00-02 (all target types)."
   prior_artifact_not_found:
     cause: "A prior pass artifact path was provided but the file does not exist"

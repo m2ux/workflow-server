@@ -49,10 +49,7 @@ tools:
   get_activity:
     when: Loading each activity for execution
     params: "workflow_id, activity_id"
-  get_resource:
-    when: Loading resources for sub-agent context
-    params: "workflow_id: cicd-pipeline-security-audit, index"
-  shell:
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills"
     when: "Discovering workflow files, checking submodule paths"
   read_file:
     when: "Loading scanner output JSON files"

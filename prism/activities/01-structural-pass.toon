@@ -34,7 +34,7 @@ artifacts[6]:
     description: "Evolution behavioral analysis (behavioral mode)"
 rules[3]:
   - "MODE ROUTING: Steps load-lens through write-structural-artifact execute only for single and full-prism pipeline modes. Steps select-portfolio-lenses through write-portfolio-artifacts execute only for portfolio mode. Steps dispatch-behavioral-lenses and collect-behavioral-paths execute only for behavioral mode. Step report-unit-paths always executes."
-  - "LENS LOADING: Workers load the L12 structural lens from resource 00 via get_resource. Portfolio lenses are loaded per the portfolio-analysis skill. Behavioral lenses are resources 19-22."
+  - "LENS LOADING: Workers load the L12 structural lens from resource 00 via get_skill (resources attached). Portfolio lenses are loaded per the portfolio-analysis skill. Behavioral lenses are resources 19-22."
   - "PARALLEL BEHAVIORAL: The 4 behavioral lenses are independent and can be dispatched in parallel (up to 4 concurrent sub-agents)."
 loops[1]:
   - id: unit-cycle

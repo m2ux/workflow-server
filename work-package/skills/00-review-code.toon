@@ -45,10 +45,7 @@ resources[1]:
   - "16"
 
 tools:
-  get_resource:
-    when: Starting code review
-    params: "workflow_id: work-package, index: 16"
-    returns: Full code review guidance document
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: Reference for review criteria and patterns
   read_file:
     when: Reviewing each changed file

@@ -46,10 +46,7 @@ resources[1]:
   - "20"
 
 tools:
-  get_resource:
-    when: Loading workflow-retrospective guidance
-    params: "workflow_id: work-package, index: 20"
-    returns: Workflow retrospective resource
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   write_file:
     when: Creating retrospective document
     usage: Write artifact to planning folder

@@ -54,10 +54,7 @@ rules:
   engineering-link-must-resolve: "The 📐 Engineering link in the PR body points to the parent (engineering) repo, not the target submodule. The planning folder MUST be committed and pushed to the parent repo BEFORE the PR is created, otherwise the link 404s."
 
 tools:
-  get_resource:
-    when: Before composing PR body
-    params: "workflow_id: work-package, index: 12"
-    returns: PR description template and guidelines
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     next: gh_pr_create
   shell:
     when: Git operations and gh CLI

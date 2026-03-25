@@ -63,7 +63,4 @@ tools:
     when: "Bootstrap — second call"
     params: "workflow_id, activity_id"
     returns: "Activity definition with steps, rules, outcome"
-  get_resource:
-    when: "Loading the output schema or toolkit checklist"
-    params: "workflow_id, index"
-    returns: "Resource content (markdown)"
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"

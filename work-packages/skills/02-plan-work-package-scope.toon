@@ -54,10 +54,7 @@ resources[1]:
   - "03"
 
 tools:
-  get_resource:
-    when: Loading plan template before writing
-    params: "workflow_id: work-packages, index: 03"
-    returns: Package plan template and guidelines
+  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   circular_dependency:
