@@ -568,7 +568,7 @@ describe('mcp-server integration', () => {
   // ============== Workflow Summary Mode ==============
 
   describe('tool: get_workflow (summary mode)', () => {
-    it('should return lightweight summary when summary=true', async () => {
+    it('should return lightweight summary by default', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', summary: true },

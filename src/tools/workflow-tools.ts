@@ -55,7 +55,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID (e.g., "work-package")'),
-      summary: z.boolean().optional().default(false).describe('If true, returns lightweight summary instead of full definition'),
+      summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the full definition.'),
     },
     withAuditLog('get_workflow', async ({ session_token, workflow_id, summary }) => {
       const token = await decodeSessionToken(session_token);
