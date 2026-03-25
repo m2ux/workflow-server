@@ -54,6 +54,8 @@ Once an agent has its session token from `start_session`, it must include that t
 | 09 | [Step completion manifest](09-step-completion-manifest.md) | Design for step manifest validation | — | ✅ Complete |
 | 10 | [Work package plan](10-work-package-plan.md) | HMAC signing + manifest implementation plan | 30-45m | ✅ Complete |
 | 10 | [Test plan](10-test-plan.md) | Test cases for HMAC + manifest features | 15-30m | ✅ Complete |
+| 11 | [Work package plan](11-work-package-plan.md) | Server-side transition evaluation implementation plan | 20-40m | ✅ Complete |
+| 11 | [Test plan](11-test-plan.md) | Test cases for transition evaluation + summary mode | 15-30m | ✅ Complete |
 
 ---
 
@@ -67,4 +69,4 @@ Once an agent has its session token from `start_session`, it must include that t
 
 ---
 
-**Status:** PR description updated; marked ready for review (#60)
+**Status:** Planning for server-side transition evaluation complete; implementation pending
