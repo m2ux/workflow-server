@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
-import { listWorkflows, loadWorkflow } from '../loaders/workflow-loader.js';
+import { listWorkflows, loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { listResources, readResourceRaw, listWorkflowsWithResources } from '../loaders/resource-loader.js';
 import { listUniversalSkills, listWorkflowSkills, readSkill } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
@@ -47,8 +47,43 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   // ============== Skill Tools ==============
 
   server.tool(
+    'get_skills',
+    'Get all skills for an activity in one call (primary + supporting). More efficient than multiple get_skill calls.',
+    {
+      ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID'),
+      activity_id: z.string().describe('Activity ID to load skills for'),
+    },
+    withAuditLog('get_skills', async ({ session_token, workflow_id, activity_id }) => {
+      const token = await decodeSessionToken(session_token);
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!wfResult.success) throw wfResult.error;
+
+      const activity = getActivity(wfResult.value, activity_id);
+      if (!activity) throw new Error(`Activity not found: ${activity_id}`);
+
+      const skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
+      const skills: Record<string, unknown> = {};
+      for (const sid of skillIds) {
+        const result = await readSkill(sid, config.workflowDir, workflow_id);
+        if (result.success) skills[sid] = result.value;
+      }
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        validateWorkflowVersion(token, wfResult.value),
+      );
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify({ activity_id, skills }, null, 2) }],
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+      };
+    })
+  );
+
+  server.tool(
     'get_skill',
-    'Get a specific skill for tool orchestration guidance. Checks workflow-specific skills first, then universal.',
+    'Get a single skill by ID. For loading all skills for an activity at once, use get_skills instead.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),

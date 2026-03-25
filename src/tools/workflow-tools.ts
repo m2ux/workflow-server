@@ -39,6 +39,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           token_update: 'Every tool response includes an updated token in _meta.session_token. Use the updated token for the next call.',
           token_opacity: 'Treat the token as opaque. Do not attempt to parse, decode, or fabricate tokens.',
           validation: 'The server validates each call against the token: workflow consistency, activity transition validity, skill-activity association, and version drift. Warnings are returned in _meta.validation.',
+          efficiency: 'Use get_skills(workflow_id, activity_id) to load all skills for an activity in one call instead of multiple get_skill calls.',
           exempt_tools: ['help', 'list_workflows', 'start_session', 'health_check'],
         },
         available_workflows: workflows.map(w => ({ id: w.id, title: w.title, version: w.version })),

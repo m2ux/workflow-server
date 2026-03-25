@@ -34,7 +34,8 @@ For all workflow execution user requests, call the `help` tool on the workflow-s
 | `next_activity` | Get possible next activities with transition conditions |
 | `get_checkpoint` | Get checkpoint details |
 | `validate_transition` | Check if a transition is allowed |
-| `get_skill` | Get specific skill |
+| `get_skills` | Get all skills for an activity (primary + supporting) in one call |
+| `get_skill` | Get a single skill by ID |
 | `list_resources` | List resources for a workflow |
 | `get_resource` | Get specific resource by index |
 | `discover_resources` | Discover all available resources |

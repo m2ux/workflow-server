@@ -305,6 +305,50 @@ describe('mcp-server integration', () => {
     });
   });
 
+  // ============== Batch Skill Loading ==============
+
+  describe('tool: get_skills', () => {
+    it('should return all skills for an activity in one call', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      expect(result.isError).toBeFalsy();
+
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(response.activity_id).toBe('start-work-package');
+      expect(response.skills).toBeDefined();
+      expect(response.skills['create-issue']).toBeDefined();
+    });
+
+    it('should include primary and supporting skills', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const skillIds = Object.keys(response.skills);
+      expect(skillIds.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should return updated token in _meta', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      expect(meta['session_token']).toBeDefined();
+    });
+
+    it('should error for non-existent activity', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'non-existent' },
+      });
+      expect(result.isError).toBe(true);
+    });
+  });
+
   // ============== Validation ==============
 
   describe('token validation', () => {
