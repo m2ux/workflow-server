@@ -19,8 +19,8 @@ protocol:
     - "Call get_activity({ workflow_id, activity_id }) to load the activity definition"
     - "Extract steps, checkpoints, skills (primary + supporting), loops, decisions, transitions, modeOverrides, and artifactPrefix"
   bootstrap-skill[2]:
-    - "Call get_skill({ skill_id: activity.skills.primary, workflow_id }) to load the primary skill definition"
-    - "Read the skill protocol, rules, tools, inputs, and output definitions. These guide HOW to execute the activity steps."
+    - "Call get_skills({ workflow_id, activity_id }) to load all skills (primary + supporting) for the activity in one call"
+    - "Read each skill's protocol, rules, tools, inputs, and output definitions. These guide HOW to execute the activity steps."
   check-mode[2]:
     - "If is_review_mode is true in state variables, apply the activity's modeOverrides: use override description, apply override rules, add override steps, skip steps listed in skipSteps"
     - "If the activity is listed in the workflow's mode.skipActivities, report back immediately with a skip result"
@@ -76,7 +76,7 @@ output[2]:
       artifacts_produced_so_far: "Any artifacts produced before this checkpoint"
 
 rules:
-  self-bootstrap: "Always load activity and skill definitions from the workflow-server via get_activity and get_skill. The workflow-server is the source of truth for step-level details."
+  self-bootstrap: "Always load activity and skill definitions from the workflow-server via get_activity and get_skills (batch). Use get_skill only for per-step skill references. The workflow-server is the source of truth for step-level details."
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities via resume. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
