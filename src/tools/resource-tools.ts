@@ -3,9 +3,9 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
-import { listWorkflows, loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
-import { listResources, readResourceRaw, listWorkflowsWithResources } from '../loaders/resource-loader.js';
-import { listUniversalSkills, listWorkflowSkills, readSkill } from '../loaders/skill-loader.js';
+import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
+import { readResourceRaw } from '../loaders/resource-loader.js';
+import { readSkill } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
@@ -135,49 +135,4 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     })
   );
 
-  // ============== Discovery Tool ==============
-
-  server.tool(
-    'discover_resources',
-    'Discover all available resources: workflows, resources, skills',
-    { ...sessionTokenParam },
-    withAuditLog('discover_resources', async ({ session_token }) => {
-      await decodeSessionToken(session_token);
-      const workflows = await listWorkflows(config.workflowDir);
-      const workflowsWithResources = await listWorkflowsWithResources(config.workflowDir);
-      const universalSkills = await listUniversalSkills(config.workflowDir);
-
-      const discovery: Record<string, unknown> = {
-        bootstrap: {
-          tool: 'list_workflows',
-          description: 'List available workflows, then call start_session with the chosen workflow_id',
-        },
-        universal_skills: {
-          items: universalSkills.map(s => s.id),
-          description: 'Universal skills (apply to all workflows). Load with get_skill.',
-        },
-        workflows: workflows.map(w => ({
-          id: w.id, title: w.title,
-        })),
-      };
-
-      for (const workflowId of workflowsWithResources) {
-        const resources = await listResources(config.workflowDir, workflowId);
-        const workflowSkills = await listWorkflowSkills(config.workflowDir, workflowId);
-
-        const workflowDiscovery: Record<string, unknown> = {
-          resources: { count: resources.length },
-        };
-        if (workflowSkills.length > 0) {
-          workflowDiscovery['skills'] = { items: workflowSkills.map(s => s.id) };
-        }
-        discovery[workflowId] = workflowDiscovery;
-      }
-
-      return {
-        content: [{ type: 'text' as const, text: JSON.stringify(discovery, null, 2) }],
-        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
-      };
-    })
-  );
 }

@@ -284,18 +284,6 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: discover_resources', () => {
-    it('should return bootstrap info in discovery', async () => {
-      const result = await client.callTool({
-        name: 'discover_resources',
-        arguments: { session_token: sessionToken },
-      });
-      const discovery = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(discovery.bootstrap).toBeDefined();
-      expect(discovery.bootstrap.tool).toBe('list_workflows');
-    });
-  });
-
   // ============== Batch Skill Loading ==============
 
   describe('tool: get_skills', () => {

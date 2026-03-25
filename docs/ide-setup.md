@@ -36,6 +36,5 @@ For all workflow execution user requests, call the `help` tool on the workflow-s
 | `validate_transition` | Check if a transition is allowed |
 | `get_skills` | Get all skills and their referenced resources for an activity in one call |
 | `get_skill` | Get a single skill with its referenced resources attached |
-| `discover_resources` | Discover all available resources |
 | `save_state` / `restore_state` | Persist/restore workflow state (encrypts token at rest) |
 | `health_check` | Server health (no token required) |

@@ -20,7 +20,6 @@ export function createServer(config: ServerConfig): McpServer {
     tools: [
       'help', 'list_workflows', 'get_workflow', 'validate_transition', 'get_activity', 'get_checkpoint', 'next_activity', 'health_check',
       'start_session', 'get_skills', 'get_skill',
-      'discover_resources',
       'save_state', 'restore_state'
     ],
     resources: ['workflow-server://schemas']
