@@ -10,7 +10,7 @@ execution_pattern:
     - get_skills
     - get_checkpoint
   transitions[1]:
-    - validate_transition
+    - next_activity
   artifacts[2]:
     - list_templates
     - get_template
@@ -44,10 +44,10 @@ tools:
     params: workflow_id, activity_id, checkpoint_id
     returns: Checkpoint options and their effects
     action: Present checkpoint to user as interactive selection; apply selected effect
-  validate_transition:
-    when: Moving between activities
-    params: workflow_id, from_activity, to_activity
-    returns: Validity of transition and applicable conditions
+  next_activity:
+    when: Moving between activities — get the list of possible next activities
+    params: session_token, workflow_id
+    returns: Transition list with conditions from current activity (token.act)
   get_skills:
     when: "Activity loaded; need skills and resources for execution"
     params: session_token, workflow_id, activity_id
