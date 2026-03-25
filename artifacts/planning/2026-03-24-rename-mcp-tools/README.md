@@ -1,7 +1,7 @@
 # Rename MCP Tools - March 2026
 
 **Created:** 2026-03-24  
-**Status:** Ready for review  
+**Status:** Complete  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -10,7 +10,7 @@
 
 ## 🎯 Executive Summary
 
-Rename the workflow-server's two entry-point MCP tools to eliminate naming ambiguity and enable session-aware interactions. `get_activities` becomes `match_goal` to avoid overloading the workflow "activity" concept, and `get_rules` becomes `start_session` to return both agent guidelines and a session token for correlated subsequent calls.
+Rename and reshape the workflow-server MCP entry flow to eliminate naming ambiguity and enable session-aware interactions. Agents call **`help`** and **`list_workflows`** to bootstrap, then **`start_session`** (replacing `get_rules`) to obtain behavioral rules, workflow metadata, and an opaque **HMAC-signed session token** for correlated subsequent calls. The old `get_activities` / goal-index tool path was removed in favor of explicit workflow selection from the list.
 
 ---
 
@@ -24,7 +24,7 @@ The second tool, `get_rules`, gives agents their behavioral guidelines but offer
 
 ## Solution Overview
 
-The fix renames the two confusing entry-point tools and adds session tracking to every subsequent call. The goal-matching tool changes from `get_activities` to `match_goal`, making clear that it matches a user's goal to a workflow rather than listing workflow phases. The rules tool changes from `get_rules` to `start_session`, which now returns both the behavioral guidelines agents need and a unique session token that identifies the working session.
+The shipped design replaces the confusing entry points with a clear bootstrap: **`help`** documents the protocol; **`list_workflows`** lists definitions; **`start_session`** replaces `get_rules` and returns rules, workflow metadata, and a signed session token. Session tokens are validated on each call (workflow consistency, transitions, skills, version drift, manifests—**warnings only**), advanced in `_meta`, and **encrypted at rest** when persisted via `save_state`.
 
 Once an agent has its session token from `start_session`, it must include that token in every subsequent tool call. The server validates the token's format before processing each request, and the token automatically appears in audit logs so that all operations within a session can be traced together. The token is stored in the workflow state file alongside other session data, so it persists across session interruptions. This is a clean break — the old tool names are removed immediately, and all references across source code, documentation, and workflow definitions are updated atomically.
 
@@ -49,7 +49,7 @@ Once an agent has its session token from `start_session`, it must include that t
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ✅ Complete |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
+| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ✅ Complete |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
 | 09 | [Step completion manifest](09-step-completion-manifest.md) | Design for step manifest validation | — | ✅ Complete |
 | 10 | [Work package plan](10-work-package-plan.md) | HMAC signing + manifest implementation plan | 30-45m | ✅ Complete |
@@ -69,4 +69,6 @@ Once an agent has its session token from `start_session`, it must include that t
 
 ---
 
-**Status:** Planning for server-side transition evaluation complete; implementation pending
+**Last updated:** 2026-03-25 — Issue [#59](https://github.com/m2ux/workflow-server/issues/59) closed; PR [#60](https://github.com/m2ux/workflow-server/pull/60) merged. Completion summary: [08-COMPLETE.md](08-COMPLETE.md).
+
+**Status:** Work package complete. Follow-up plans in this folder (e.g. transition evaluation, optional cleanups) remain **future** work unless filed as new issues.
