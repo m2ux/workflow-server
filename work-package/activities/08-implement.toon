@@ -44,7 +44,7 @@ loops[2]:
         name: Commit changes
       - id: self-review
         name: Self-review
-        description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies; (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Load resource 14 for verification checklist."
+        description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies; (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource 14 for verification checklist."
       - id: collect-assumptions
         name: Collect assumptions
         description: "Identify all assumptions made during this task. Accumulate — do not review yet."

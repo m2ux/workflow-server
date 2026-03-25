@@ -20,7 +20,7 @@ protocol:
     - "Take the first package from remaining_packages"
     - "Set current_package to the selected package"
   trigger-workflow[3]:
-    - "Load resource 06 (workflow-triggering-protocol) for the triggering procedure"
+    - "Use attached resource 06 (workflow-triggering-protocol) for the triggering procedure"
     - "Call get_workflow('work-package') to load the work-package workflow"
     - "Pass context: package name, scope from plan document, dependencies, planning folder path"
   update-status[3]:
@@ -53,7 +53,6 @@ tools:
     when: Triggering the work-package workflow for each package
     params: "workflow_id: work-package"
     returns: Complete work-package workflow definition
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   workflow_trigger_failure:

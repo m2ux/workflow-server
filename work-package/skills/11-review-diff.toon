@@ -66,7 +66,6 @@ tools:
     when: Git operations
     params: "git pull, git diff"
     usage: Sync branch and extract diff for parsing
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   write_file:
     when: Creating change block index and review report
     usage: Persist change-block-index.md and manual-diff-review.md

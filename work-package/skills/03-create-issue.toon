@@ -19,12 +19,12 @@ protocol:
     - "For Jira: call getAccessibleAtlassianResources FIRST to obtain cloudId, preserve as jira_cloud_id. THEN call getJiraIssue with cloudId and the issue key. Do NOT call getJiraIssue before cloudId is resolved."
     - "Capture issue_number and issue_url from the verification result. Set needs_issue_creation to false."
   create-github-issue[4]:
-    - "Runs when issue_platform is github and needs_issue_creation is true. Load resource 03 for guidance."
+    - "Runs when issue_platform is github and needs_issue_creation is true. Use attached resource 03 for guidance."
     - Gather title, description, and acceptance criteria from user context
     - Map issue_type to GitHub labels per github-label-mapping rule
     - Create the issue, then verify creation succeeded. Capture issue_number and issue_url.
   create-jira-issue[5]:
-    - "Runs when issue_platform is jira and needs_issue_creation is true. Load resource 04 for guidance."
+    - "Runs when issue_platform is jira and needs_issue_creation is true. Use attached resource 04 for guidance."
     - "Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as jira_cloud_id. This MUST be the first Jira tool call."
     - "List available projects via getVisibleJiraProjects, then present the jira-project-selection checkpoint (defined on the activity) for user selection. Resolve available issue types for the selected project."
     - Gather summary, description, and acceptance criteria. Resolve assignee account ID if specified.
@@ -52,7 +52,6 @@ resources[2]:
   - "04"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     next: "gh_issue_create (GitHub) or getAccessibleAtlassianResources (Jira)"
   gh_issue_create:
     when: Creating a GitHub issue

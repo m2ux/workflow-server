@@ -12,7 +12,7 @@ steps[5]:
     required: true
   - id: map-dimensions
     name: Map Dimensions to Lenses
-    description: "For each dimension, load resource 01 (dimension-lens-mapping) and match against the standard and custom mapping tables. Select pipeline_mode, lenses, analysis_focus, and output_subdir. Apply lens_overrides where provided. Build the dimension_plan array."
+    description: "For each dimension, use attached resource 01 (dimension-lens-mapping) and match against the standard and custom mapping tables. Select pipeline_mode, lenses, analysis_focus, and output_subdir. Apply lens_overrides where provided. Build the dimension_plan array."
     required: true
     actions[1]:
       - action: set

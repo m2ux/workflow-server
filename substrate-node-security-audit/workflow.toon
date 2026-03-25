@@ -11,7 +11,7 @@ tags[3]:
 rules[27]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
-  - "PREREQUISITE: Load resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
+  - "PREREQUISITE: Use attached resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
   - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions."
   - "The audit prompt template defines the checklist — the workflow defines the execution phases"
   - "Severity scoring MUST use the Impact x Feasibility rubric, not intuitive assignment. CALIBRATION: If the target profile includes a severity benchmark table, use it as calibration anchors. DIVERGENCE GATE: If a finding diverges by >=2 levels from a matching benchmark, the benchmark severity is the floor. If no benchmark table exists, apply the rubric's common calibration error guidance (operational hazards: F>=3 when the trigger occurs without an attacker; shared resources with external consumers: F>=3)."

@@ -14,7 +14,7 @@ inputs[3]:
 
 protocol:
   load-guidance[2]:
-    - Load resource 18 (strategic-review) and 15 (architecture-review) for guidance
+    - Use attached resource 18 (strategic-review) and 15 (architecture-review) for guidance
     - Examine all changes in the PR using git diff and git log
   examine-scope[3]:
     - Review changes for scope and relevance to work package
@@ -78,7 +78,6 @@ tools:
   edit:
     when: Applying cleanup after user approval
     usage: Remove identified artifacts from codebase
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   scope_creep:

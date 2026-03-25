@@ -21,7 +21,7 @@ protocol:
     - Verify design_philosophy and requirements are available
     - Confirm prerequisite activities completed before proceeding
   load-guidance[2]:
-    - Load resource 10 (wp-plan) for plan template and guidance
+    - Use attached resource 10 (wp-plan) for plan template and guidance
     - Review design_philosophy, requirements, analysis_findings, research_findings
   apply-design-framework[4]:
     - Apply design framework to structure implementation approach
@@ -54,7 +54,6 @@ resources[1]:
   - "10"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   read_file:
     when: Reviewing design philosophy, requirements, analysis, research artifacts
     usage: Load prerequisite inputs

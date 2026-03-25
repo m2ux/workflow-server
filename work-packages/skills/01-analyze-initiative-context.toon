@@ -15,12 +15,12 @@ protocol:
     - "Present the analysis-type-selection checkpoint to determine if this is continuing or new"
     - "Set analysis_type variable based on user selection"
   perform-completion-analysis[4]:
-    - "Load resource 01 (completion-analysis-guide) for the analysis procedure"
+    - "Use attached resource 01 (completion-analysis-guide) for the analysis procedure"
     - "Locate existing planning artifacts in .engineering/artifacts/planning/"
     - "Assess completion state of each previously identified work package"
     - "Identify changes since last session from git log and issue trackers"
   perform-context-analysis[4]:
-    - "Load resource 02 (context-analysis-guide) for the analysis procedure"
+    - "Use attached resource 02 (context-analysis-guide) for the analysis procedure"
     - "Understand the domain, codebase, and technology stack"
     - "Identify cross-cutting concerns: shared dependencies, common infrastructure, ordering constraints"
     - "Assess external context: related issues, documentation, deadlines"
@@ -50,7 +50,6 @@ resources[2]:
   - "02"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   ambiguous_type:

@@ -7,7 +7,7 @@ sections[16]:
   - id: session-protocol
     title: Session Protocol
     priority: critical
-    rules[10]:
+    rules[11]:
       - "CRITICAL: Parse ALL rules returned by start_session before making any other tool calls."
       - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
       - "Call start_session with the chosen workflow_id. The response contains agent behavioral rules, workflow metadata, and an HMAC-signed opaque session token."
@@ -18,6 +18,7 @@ sections[16]:
       - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens. The token is cryptographically signed and tampered tokens will be rejected."
       - "STEP MANIFEST: When transitioning to the next activity (calling get_activity), include a step_manifest parameter listing each step completed in the previous activity with its output summary. The server validates step completeness, ordering, and non-empty outputs."
       - "STEP COMPLETENESS: All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level."
+      - "RESOURCE USAGE: Resources referenced by skills are returned as a structured array in the get_skill and get_skills responses. Each resource has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in the resources array of the skill response. Do not attempt to call a separate tool to load resources."
   - id: workflow-fidelity
     title: Workflow Execution Fidelity
     priority: critical

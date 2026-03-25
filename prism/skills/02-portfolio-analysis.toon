@@ -123,7 +123,6 @@ resources[52]:
   - "61"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Load each selected lens and apply independently to the artifact"
   read_file:
     when: Reading files to analyze

@@ -44,4 +44,3 @@ tools:
     usage: "Use Task tool with subagent_type generalPurpose for each scanner, V, and M agent"
   read_file:
     when: Loading scanner output files for verification and merge agent context
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills"

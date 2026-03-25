@@ -86,7 +86,6 @@ tools:
     when: "Writing the final report"
     params: "path: {output-path}/REPORT.md"
     usage: "Persist the clean report as a markdown artifact"
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills"
     returns: "List of indexed repositories"
   gitnexus_impact:
     when: "Computing measured blast radius for findings that reference specific symbols"

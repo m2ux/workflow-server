@@ -14,7 +14,7 @@ inputs[3]:
 
 protocol:
   update-start-here[4]:
-    - "Load resource 05 (roadmap-template) for the final START-HERE.md format"
+    - "Use attached resource 05 (roadmap-template) for the final START-HERE.md format"
     - "Write executive summary: 2-3 sentences on purpose, scope, and expected impact"
     - "Complete the work packages table with priority, effort, and dependencies from plans"
     - "Add status legend and initialize all packages as Planned"
@@ -51,7 +51,6 @@ resources[1]:
   - "05"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   missing_plans:

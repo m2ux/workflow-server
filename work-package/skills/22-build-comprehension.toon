@@ -20,7 +20,7 @@ protocol:
     - Summarize relevant artifacts with coverage scope and last-updated date
   check-gitnexus[3]:
     - "Check if the target codebase has a GitNexus index: call list_repos or read gitnexus://repo/{name}/context"
-    - "If indexed: load resource meta:04 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill."
+    - "If indexed: use attached resource meta:04 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill."
     - "If not indexed or stale: fall back to grep/read/glob for all exploration steps."
   architecture-survey[6]:
     - "Top-down survey: start with project root structure, build system, entry points"
@@ -72,7 +72,7 @@ output[1]:
       deep_dives: "Targeted exploration sections added during user-driven loop"
 
 rules:
-  gitnexus-first: "When the target codebase has a GitNexus index, the agent MUST use gitnexus query() and context() as the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for specific text patterns, string literals, and codebases without a GitNexus index. This is not a preference — it is a requirement. Load resource meta:04 (gitnexus-reference) for checklists, pattern tables, and worked examples."
+  gitnexus-first: "When the target codebase has a GitNexus index, the agent MUST use gitnexus query() and context() as the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for specific text patterns, string literals, and codebases without a GitNexus index. This is not a preference — it is a requirement. Use attached resource meta:04 (gitnexus-reference) for checklists, pattern tables, and worked examples."
   gitnexus-skill: "For GitNexus-based analysis, the gitnexus-operations skill (meta workflow) provides the full task-oriented protocol — explore, impact-analysis, debug, refactor. Load it via get_skill skill_id: 'gitnexus-operations', workflow_id: 'meta' when performing codebase exploration or impact analysis with a GitNexus index."
   persistent-artifacts: "Comprehension artifacts persist across work packages — they are cumulative knowledge, not disposable planning documents"
   augment-not-replace: "When existing artifacts cover the same area, augment them with new sections and deeper detail rather than replacing"
@@ -119,7 +119,6 @@ tools:
   semantic_search:
     when: Finding code by meaning when exact terms are unknown
     usage: Explore unfamiliar areas by describing what you're looking for
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   no_existing_artifacts:

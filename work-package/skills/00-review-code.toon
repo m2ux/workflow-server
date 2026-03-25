@@ -14,7 +14,7 @@ inputs[2]:
 
 protocol:
   load-guidance[2]:
-    - Load resource 16 (rust-substrate-code-review) for full review criteria
+    - Use attached resource 16 (rust-substrate-code-review) for full review criteria
     - Identify all files changed since work package started using git diff
   review-files[3]:
     - Review each changed file against architecture and design patterns
@@ -45,7 +45,6 @@ resources[1]:
   - "16"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: Reference for review criteria and patterns
   read_file:
     when: Reviewing each changed file

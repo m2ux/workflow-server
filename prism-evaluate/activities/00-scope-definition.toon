@@ -20,7 +20,7 @@ steps[5]:
         message: "Set to the classified target type"
   - id: derive-dimensions
     name: Derive Evaluation Dimensions
-    description: "If dimensions were not provided by the user, load resource 00 (default-dimensions) and select the set matching the target_type. For other targets: infer from the evaluation description. Present the dimensions with names, descriptions, and focus areas."
+    description: "If dimensions were not provided by the user, use attached resource 00 (default-dimensions) and select the set matching the target_type. For other targets: infer from the evaluation description. Present the dimensions with names, descriptions, and focus areas."
     required: true
     actions[1]:
       - action: set
