@@ -9,7 +9,7 @@ AI agents executing multi-step workflows face two reliability challenges:
 1. **Context degradation** — as conversations grow, earlier instructions (including workflow definitions) fall out of the model's effective attention window, leading to skipped steps, wrong transitions, and hallucinated procedures
 2. **Behavioral drift** — without enforcement, agents may take shortcuts, skip checkpoints, or fabricate state rather than following the defined execution path
 
-The workflow server addresses these through three layers of enforcement, each operating at a different granularity.
+The workflow server addresses these through four layers of enforcement, each operating at a different granularity.
 
 ## Enforcement Layers
 
@@ -109,6 +109,10 @@ Beyond enforcement, the server reduces the context burden on agents:
 }
 ```
 
+### Batch Skill Loading
+
+`get_skills(workflow_id, activity_id)` returns all skills (primary + supporting) for an activity in one call, replacing multiple sequential `get_skill` calls. This reduces round-trips and context overhead from repeated tool exchanges.
+
 ### Self-Describing Bootstrap
 
 The `help` tool returns the complete bootstrap procedure and session protocol. Agents learn how to use the server from the server itself, reducing reliance on IDE-side configuration that may go stale.
@@ -120,6 +124,7 @@ When workflow state is persisted via `save_state`, the session token is encrypte
 ## Limitations
 
 - **Step execution is not provable** — the manifest validates that the agent *reported* each step, not that it *performed* the work. The output descriptions are agent-generated.
+- **Condition truth is not verified** — the server checks that a claimed condition maps to the target activity, but cannot verify whether the condition is actually true in the agent's state. Post-hoc audit via checkpoint logs is possible.
 - **Replay is not detected** — an agent could present an old valid token. The HMAC proves authenticity but not freshness (the server is stateless).
 - **Warnings are advisory** — a confused agent may ignore validation warnings. The enforcement is detection-oriented, not prevention-oriented.
 
