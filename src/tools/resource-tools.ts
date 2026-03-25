@@ -4,11 +4,24 @@ import type { ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
-import { readResourceRaw } from '../loaders/resource-loader.js';
+import { readResourceStructured } from '../loaders/resource-loader.js';
+import type { StructuredResource } from '../loaders/resource-loader.js';
 import { readSkill } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
+
+async function loadSkillResources(workflowDir: string, workflowId: string, skillValue: unknown): Promise<StructuredResource[]> {
+  const skillResources = (skillValue as Record<string, unknown>)['resources'] as string[] | undefined;
+  if (!skillResources) return [];
+
+  const resources: StructuredResource[] = [];
+  for (const idx of skillResources) {
+    const result = await readResourceStructured(workflowDir, workflowId, idx);
+    if (result.success) resources.push(result.value);
+  }
+  return resources;
+}
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
 
@@ -48,7 +61,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get all skills and their associated resources for an activity in one call. Returns primary + supporting skills with full content, plus all resources referenced by those skills.',
+    'Get all skills and their associated resources for an activity in one call. Resources are returned as a structured array with index, id, version, and content fields.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -64,23 +77,21 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
       const skills: Record<string, unknown> = {};
-      const resourceIndices = new Set<string>();
+      const allResources: StructuredResource[] = [];
+      const seenIndices = new Set<string>();
 
       for (const sid of skillIds) {
         const result = await readSkill(sid, config.workflowDir, workflow_id);
         if (result.success) {
           skills[sid] = result.value;
-          const skillResources = (result.value as Record<string, unknown>)['resources'] as string[] | undefined;
-          if (skillResources) {
-            for (const idx of skillResources) resourceIndices.add(idx);
+          const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
+          for (const r of resources) {
+            if (!seenIndices.has(r.index)) {
+              seenIndices.add(r.index);
+              allResources.push(r);
+            }
           }
         }
-      }
-
-      const resources: Record<string, string> = {};
-      for (const idx of resourceIndices) {
-        const result = await readResourceRaw(config.workflowDir, workflow_id, idx);
-        if (result.success) resources[idx] = result.value.content;
       }
 
       const validation = buildValidation(
@@ -89,7 +100,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ activity_id, skills, resources }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ activity_id, skills, resources: allResources }, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
     })
@@ -97,7 +108,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Get a single skill by ID. For loading all skills for an activity at once, use get_skills instead.',
+    'Get a single skill with its referenced resources. Resources are returned as a structured array with index, id, version, and content fields.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -115,18 +126,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         wfResult.success && token.act ? validateSkillAssociation(wfResult.value, token.act, skill_id) : null,
       );
 
-      const skillResources = (result.value as Record<string, unknown>)['resources'] as string[] | undefined;
-      const resources: Record<string, string> = {};
-      if (skillResources) {
-        for (const idx of skillResources) {
-          const resResult = await readResourceRaw(config.workflowDir, workflow_id, idx);
-          if (resResult.success) resources[idx] = resResult.value.content;
-        }
-      }
+      const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
 
-      const response = Object.keys(resources).length > 0
-        ? { ...result.value as Record<string, unknown>, _resources: resources }
-        : result.value;
+      const response = {
+        skill: result.value,
+        resources,
+      };
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
