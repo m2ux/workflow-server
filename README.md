@@ -35,13 +35,6 @@ User Goal → Workflow → Activities → Skills → Tools
 - **Skills** provide tool orchestration patterns — which tools to call, in what order, what state to track
 - **Tools** are the MCP operations the agent invokes, all correlated by the session token
 
-### Available Workflows
-
-| Workflow | Activities | Description |
-|----------|------------|-------------|
-| `work-package` | 14 | Single work package from issue to merged PR |
-| `work-packages` | 7 | Plan and coordinate multiple related work packages |
-
 ---
 
 ## 🚀 Quick Start
