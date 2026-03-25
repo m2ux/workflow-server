@@ -18,9 +18,9 @@ All workflow tools require `session_token` and explicit `workflow_id`. Each resp
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `get_workflow` | `session_token`, `workflow_id` | Get the complete workflow definition |
-| `get_activity` | `session_token`, `workflow_id`, `activity_id` | Get activity details |
+| `get_activity` | `session_token`, `workflow_id`, `activity_id`, `step_manifest?` | Get activity details. Optional manifest validates previous activity's step completion |
 | `get_checkpoint` | `session_token`, `workflow_id`, `activity_id`, `checkpoint_id` | Get checkpoint details |
-| `validate_transition` | `session_token`, `workflow_id`, `from_activity`, `to_activity` | Validate if a transition between activities is allowed |
+| `validate_transition` | `session_token`, `workflow_id`, `from_activity`, `to_activity`, `step_manifest?` | Validate transition. Optional manifest validates from_activity's step completion |
 
 ### Skill Tools
 
@@ -81,8 +81,25 @@ Validation checks:
 - **Activity transition** — the requested activity is a valid transition from the token's last activity
 - **Skill association** — the requested skill is declared by the current activity
 - **Version drift** — the workflow version hasn't changed since the session started
+- **Step completion** — when `step_manifest` is provided, validates all steps present, in order, with outputs
+- **HMAC integrity** — token signature is verified on every call (rejects fabricated/tampered tokens)
 
 Warnings do not block execution — the tool still returns its result. They enable agent self-correction.
+
+### Step Completion Manifest
+
+When transitioning between activities, agents can include a `step_manifest` parameter — a structured summary of completed steps from the previous activity:
+
+```json
+{
+  "step_manifest": [
+    { "step_id": "resolve-target", "output": "Target verified at /path" },
+    { "step_id": "initialize-target", "output": "Checked out main, pulled latest" }
+  ]
+}
+```
+
+The server validates: all required steps present, correct order, non-empty outputs. Missing manifest triggers a warning. All steps within an activity are required — optionality is handled at the activity level.
 
 ### Token-exempt tools
 

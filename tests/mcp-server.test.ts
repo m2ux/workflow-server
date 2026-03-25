@@ -347,7 +347,7 @@ describe('mcp-server integration', () => {
       expect(validation.warnings.some((w: string) => w.includes('not a direct transition'))).toBe(true);
     });
 
-    it('should not warn on valid activity transition', async () => {
+    it('should not warn on valid activity transition with manifest', async () => {
       const actResult = await client.callTool({
         name: 'get_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
@@ -355,9 +355,12 @@ describe('mcp-server integration', () => {
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAfterStart = actMeta['session_token'] as string;
 
+      const actContent = JSON.parse((actResult.content[0] as { type: 'text'; text: string }).text);
+      const manifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
+
       const result = await client.callTool({
         name: 'get_activity',
-        arguments: { session_token: tokenAfterStart, workflow_id: 'work-package', activity_id: 'design-philosophy' },
+        arguments: { session_token: tokenAfterStart, workflow_id: 'work-package', activity_id: 'design-philosophy', step_manifest: manifest },
       });
       expect(result.isError).toBeFalsy();
       const meta = result._meta as Record<string, unknown>;
@@ -380,6 +383,99 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(workflow.id).toBe('work-package');
+    });
+  });
+
+  // ============== Step Manifest ==============
+
+  describe('step completion manifest', () => {
+    it('should warn when no manifest provided for previous activity', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenAfterAct = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: tokenAfterAct, workflow_id: 'work-package', activity_id: 'design-philosophy' },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings.some((w: string) => w.includes('No step_manifest'))).toBe(true);
+    });
+
+    it('should warn on missing steps in manifest', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenAfterAct = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: {
+          session_token: tokenAfterAct,
+          workflow_id: 'work-package',
+          activity_id: 'design-philosophy',
+          step_manifest: [{ step_id: 'resolve-target', output: 'done' }],
+        },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings.some((w: string) => w.includes('Missing steps'))).toBe(true);
+    });
+
+    it('should warn on wrong step order in manifest', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenAfterAct = actMeta['session_token'] as string;
+
+      const actContent = JSON.parse((actResult.content[0] as { type: 'text'; text: string }).text);
+      const reversedManifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'done' })).reverse();
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: {
+          session_token: tokenAfterAct,
+          workflow_id: 'work-package',
+          activity_id: 'design-philosophy',
+          step_manifest: reversedManifest,
+        },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings.some((w: string) => w.includes('order mismatch'))).toBe(true);
+    });
+
+    it('manifest validation should not block execution', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenAfterAct = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: {
+          session_token: tokenAfterAct,
+          workflow_id: 'work-package',
+          activity_id: 'design-philosophy',
+          step_manifest: [{ step_id: 'fake-step', output: 'done' }],
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(activity.id).toBe('design-philosophy');
     });
   });
 });

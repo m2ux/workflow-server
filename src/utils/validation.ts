@@ -60,6 +60,52 @@ export function validateWorkflowVersion(token: SessionPayload, workflow: Workflo
   return null;
 }
 
+export interface StepManifestEntry {
+  step_id: string;
+  output: string;
+}
+
+export function validateStepManifest(
+  manifest: StepManifestEntry[],
+  workflow: Workflow,
+  activityId: string,
+): string[] {
+  const activity = getActivity(workflow, activityId);
+  if (!activity) return [`Cannot validate manifest: activity '${activityId}' not found`];
+
+  const steps = (activity as Record<string, unknown>)['steps'] as Array<{ id: string }> | undefined;
+  if (!steps || steps.length === 0) return [];
+
+  const expectedIds = steps.map(s => s.id);
+  const manifestIds = manifest.map(m => m.step_id);
+  const warnings: string[] = [];
+
+  const missing = expectedIds.filter(id => !manifestIds.includes(id));
+  if (missing.length > 0) {
+    warnings.push(`Missing steps in manifest: [${missing.join(', ')}]`);
+  }
+
+  const unexpected = manifestIds.filter(id => !expectedIds.includes(id));
+  if (unexpected.length > 0) {
+    warnings.push(`Unexpected steps in manifest: [${unexpected.join(', ')}]`);
+  }
+
+  for (let i = 0; i < manifestIds.length && i < expectedIds.length; i++) {
+    if (manifestIds[i] !== expectedIds[i]) {
+      warnings.push(`Step order mismatch at position ${i}: expected '${expectedIds[i]}' but got '${manifestIds[i]}'`);
+      break;
+    }
+  }
+
+  for (const entry of manifest) {
+    if (!entry.output || entry.output.trim().length === 0) {
+      warnings.push(`Step '${entry.step_id}' has empty output`);
+    }
+  }
+
+  return warnings;
+}
+
 export function buildValidation(...warnings: (string | null)[]): ValidationResult {
   const result = emptyValidation();
   for (const w of warnings) {

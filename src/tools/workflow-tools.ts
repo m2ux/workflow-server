@@ -4,7 +4,14 @@ import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, validateTransition } from '../loaders/workflow-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition } from '../utils/validation.js';
+import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest } from '../utils/validation.js';
+import type { StepManifestEntry } from '../utils/validation.js';
+
+const stepManifestSchema = z.array(z.object({
+  step_id: z.string(),
+  output: z.string(),
+})).optional().describe('Step completion manifest from the previous activity. Each entry reports a step ID and its output summary.');
+
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
 
@@ -69,18 +76,28 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
       activity_id: z.string().describe('Activity ID to load'),
+      step_manifest: stepManifestSchema,
     },
-    withAuditLog('get_activity', async ({ session_token, workflow_id, activity_id }) => {
+    withAuditLog('get_activity', async ({ session_token, workflow_id, activity_id, step_manifest }) => {
       const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       const activity = getActivity(result.value, activity_id);
       if (!activity) throw new Error(`Activity not found: ${activity_id}`);
 
+      const manifestWarnings: (string | null)[] = [];
+      if (step_manifest && token.act) {
+        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, token.act);
+        manifestWarnings.push(...mw);
+      } else if (!step_manifest && token.act) {
+        manifestWarnings.push(`No step_manifest provided for previous activity '${token.act}'. Include a manifest to enable step completion validation.`);
+      }
+
       const validation = buildValidation(
         validateWorkflowConsistency(token, workflow_id),
         validateActivityTransition(token, result.value, activity_id),
         validateWorkflowVersion(token, result.value),
+        ...manifestWarnings,
       );
 
       return {
@@ -115,15 +132,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('validate_transition', 'Validate if a transition between activities is allowed',
-    { ...sessionTokenParam, workflow_id: z.string(), from_activity: z.string(), to_activity: z.string() },
-    withAuditLog('validate_transition', async ({ session_token, workflow_id, from_activity, to_activity }) => {
+    { ...sessionTokenParam, workflow_id: z.string(), from_activity: z.string(), to_activity: z.string(), step_manifest: stepManifestSchema },
+    withAuditLog('validate_transition', async ({ session_token, workflow_id, from_activity, to_activity, step_manifest }) => {
       const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
+      const manifestWarnings: (string | null)[] = [];
+      if (step_manifest) {
+        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, from_activity);
+        manifestWarnings.push(...mw);
+      }
+
       const validation = buildValidation(
         validateWorkflowConsistency(token, workflow_id),
         validateWorkflowVersion(token, result.value),
+        ...manifestWarnings,
       );
 
       return {
