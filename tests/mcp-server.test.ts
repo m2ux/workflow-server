@@ -235,22 +235,54 @@ describe('mcp-server integration', () => {
         name: 'get_skill',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
       });
-      const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(skill.id).toBe('create-issue');
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(response.skill).toBeDefined();
+      expect(response.skill.id).toBe('create-issue');
+      expect(response.resources).toBeDefined();
+      expect(Array.isArray(response.resources)).toBe(true);
     });
   });
 
-  describe('resources attached to skills', () => {
-    it('get_skill should include referenced resources in _resources', async () => {
+  describe('structured resources in skill responses', () => {
+    it('get_skill should return structured resources with index/id/version/content', async () => {
       const result = await client.callTool({
         name: 'get_skill',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
-      const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      if (skill.resources && skill.resources.length > 0) {
-        expect(skill._resources).toBeDefined();
-        expect(Object.keys(skill._resources).length).toBeGreaterThan(0);
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(response.resources.length).toBeGreaterThan(0);
+      const resource = response.resources[0];
+      expect(resource.index).toBeDefined();
+      expect(resource.id).toBeDefined();
+      expect(resource.version).toBeDefined();
+      expect(resource.content).toBeDefined();
+      expect(resource.content.length).toBeGreaterThan(0);
+    });
+
+    it('get_skills should return structured resources array', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(Array.isArray(response.resources)).toBe(true);
+      if (response.resources.length > 0) {
+        expect(response.resources[0].index).toBeDefined();
+        expect(response.resources[0].id).toBeDefined();
+        expect(response.resources[0].content).toBeDefined();
+      }
+    });
+
+    it('resource content should not contain frontmatter', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
+      });
+      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      for (const resource of response.resources) {
+        expect(resource.content).not.toMatch(/^---/);
       }
     });
   });

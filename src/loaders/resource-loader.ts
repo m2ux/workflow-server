@@ -212,6 +212,48 @@ export async function getResourceEntry(
   ) ?? null;
 }
 
+export interface StructuredResource {
+  index: string;
+  id: string;
+  version: string;
+  content: string;
+}
+
+function parseFrontmatter(raw: string): { id: string; version: string; content: string } {
+  const fmMatch = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
+  if (!fmMatch) return { id: '', version: '', content: raw };
+
+  const frontmatter = fmMatch[1] ?? '';
+  const body = (fmMatch[2] ?? '').trim();
+
+  const idMatch = frontmatter.match(/^id:\s*(.+)$/m);
+  const versionMatch = frontmatter.match(/^version:\s*(.+)$/m);
+
+  return {
+    id: idMatch?.[1]?.trim() ?? '',
+    version: versionMatch?.[1]?.trim() ?? '',
+    content: body,
+  };
+}
+
+/**
+ * Read a resource by index and return structured metadata + content.
+ * Parses frontmatter (id, version) and returns body separately.
+ */
+export async function readResourceStructured(
+  workflowDir: string,
+  workflowId: string,
+  resourceIndex: string,
+): Promise<Result<StructuredResource, ResourceNotFoundError>> {
+  const rawResult = await readResourceRaw(workflowDir, workflowId, resourceIndex);
+  if (!rawResult.success) return rawResult;
+
+  const { id, version, content } = parseFrontmatter(rawResult.value.content);
+  const normalizedIndex = resourceIndex.padStart(2, '0');
+
+  return ok({ index: normalizedIndex, id, version, content });
+}
+
 /**
  * List all workflows that contain resources.
  * Scans {workflowDir}/ for subdirectories containing a resources/ subdirectory with resource files.
