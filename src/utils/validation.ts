@@ -1,6 +1,6 @@
 import type { SessionPayload } from './session.js';
 import type { Workflow } from '../schema/workflow.schema.js';
-import { getValidTransitions, getActivity } from '../loaders/workflow-loader.js';
+import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
 
 export interface ValidationResult {
   status: 'valid' | 'warning';
@@ -104,6 +104,35 @@ export function validateStepManifest(
   }
 
   return warnings;
+}
+
+export function validateTransitionCondition(token: SessionPayload, workflow: Workflow, activityId: string, claimedCondition: string): string | null {
+  if (!token.act) return null;
+  if (token.act === activityId) return null;
+
+  const transitions = getTransitionList(workflow, token.act);
+  if (transitions.length === 0) return null;
+
+  const matchingTransition = transitions.find(t => t.to === activityId);
+  if (!matchingTransition) return null;
+
+  if (claimedCondition === '' || claimedCondition === 'default') {
+    if (matchingTransition.isDefault) return null;
+    if (matchingTransition.condition) {
+      return `Transition to '${activityId}' requires condition '${matchingTransition.condition}' but agent claimed default transition.`;
+    }
+    return null;
+  }
+
+  if (matchingTransition.isDefault && !matchingTransition.condition) {
+    return `Transition to '${activityId}' is the default (no condition) but agent claimed condition '${claimedCondition}'.`;
+  }
+
+  if (matchingTransition.condition && matchingTransition.condition !== claimedCondition) {
+    return `Condition mismatch for transition to '${activityId}': workflow defines '${matchingTransition.condition}' but agent claimed '${claimedCondition}'.`;
+  }
+
+  return null;
 }
 
 export function buildValidation(...warnings: (string | null)[]): ValidationResult {

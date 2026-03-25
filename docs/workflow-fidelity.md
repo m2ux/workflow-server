@@ -21,7 +21,10 @@ The workflow server addresses these through three layers of enforcement, each op
 │  Layer 2: Cross-Activity Validation          │
 │  Between activities — checks consistency     │
 ├─────────────────────────────────────────────┤
-│  Layer 3: Step Completion Manifest           │
+│  Layer 3: Transition Condition Tracking      │
+│  At transitions — verifies condition logic   │
+├─────────────────────────────────────────────┤
+│  Layer 4: Step Completion Manifest           │
 │  Within activities — verifies completeness   │
 └─────────────────────────────────────────────┘
 ```
@@ -52,7 +55,18 @@ When an agent makes a tool call, the server compares the token's recorded state 
 
 **Design principle:** Warnings don't block execution — the tool still returns its result. This allows agents to self-correct rather than being hard-blocked, while making violations visible.
 
-### Layer 3: Step Completion Manifest
+### Layer 3: Transition Condition Tracking
+
+When calling `get_activity` to transition to a new activity, agents can include a `transition_condition` parameter — the condition string (from `next_activity` output) that caused the transition.
+
+**What it enforces:**
+- The claimed condition actually maps to the target activity in the transition table
+- Default transitions are correctly reported (no false condition claims)
+- The condition is recorded in the HMAC-signed token, creating an immutable audit trail
+
+**What it cannot verify in real-time:** Whether the condition is actually true in the agent's state. However, conditions are typically set by user choices at checkpoints, which are logged. Post-hoc review can cross-reference claimed conditions against checkpoint responses.
+
+### Layer 4: Step Completion Manifest
 
 When transitioning between activities, agents can include a `step_manifest` parameter — a structured summary of each step completed in the previous activity.
 

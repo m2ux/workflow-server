@@ -4,7 +4,7 @@ import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, validateTransition, getTransitionList } from '../loaders/workflow-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest } from '../utils/validation.js';
+import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition } from '../utils/validation.js';
 import type { StepManifestEntry } from '../utils/validation.js';
 
 const stepManifestSchema = z.array(z.object({
@@ -98,9 +98,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
       activity_id: z.string().describe('Activity ID to load'),
+      transition_condition: z.string().optional().describe('The condition that caused this transition (from next_activity output). Enables server-side validation of condition-activity consistency.'),
       step_manifest: stepManifestSchema,
     },
-    withAuditLog('get_activity', async ({ session_token, workflow_id, activity_id, step_manifest }) => {
+    withAuditLog('get_activity', async ({ session_token, workflow_id, activity_id, transition_condition, step_manifest }) => {
       const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -115,16 +116,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         manifestWarnings.push(`No step_manifest provided for previous activity '${token.act}'. Include a manifest to enable step completion validation.`);
       }
 
+      const condWarning = (transition_condition !== undefined && token.act)
+        ? validateTransitionCondition(token, result.value, activity_id, transition_condition)
+        : null;
+
       const validation = buildValidation(
         validateWorkflowConsistency(token, workflow_id),
         validateActivityTransition(token, result.value, activity_id),
         validateWorkflowVersion(token, result.value),
+        condWarning,
         ...manifestWarnings,
       );
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(activity, null, 2) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id, cond: transition_condition ?? '' }), validation },
       };
     }));
 

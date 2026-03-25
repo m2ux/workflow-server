@@ -18,7 +18,7 @@ All workflow tools require `session_token` and explicit `workflow_id`. Each resp
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `get_workflow` | `session_token`, `workflow_id`, `summary?` | Get workflow definition. Use `summary=true` for lightweight metadata |
-| `get_activity` | `session_token`, `workflow_id`, `activity_id`, `step_manifest?` | Get activity details. Optional manifest validates previous activity's step completion |
+| `get_activity` | `session_token`, `workflow_id`, `activity_id`, `transition_condition?`, `step_manifest?` | Get activity details. Optional condition and manifest enable transition and step validation |
 | `next_activity` | `session_token`, `workflow_id` | Get possible next activities with transition conditions from current activity (token.act) |
 | `get_checkpoint` | `session_token`, `workflow_id`, `activity_id`, `checkpoint_id` | Get checkpoint details |
 | `validate_transition` | `session_token`, `workflow_id`, `from_activity`, `to_activity`, `step_manifest?` | Validate transition. Optional manifest validates from_activity's step completion |

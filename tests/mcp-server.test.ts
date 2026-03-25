@@ -430,6 +430,104 @@ describe('mcp-server integration', () => {
     });
   });
 
+  // ============== Transition Condition Tracking ==============
+
+  describe('transition condition validation', () => {
+    it('should accept correct condition-activity pairing', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'codebase-comprehension' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenAtComprehension = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: {
+          session_token: tokenAtComprehension,
+          workflow_id: 'work-package',
+          activity_id: 'requirements-elicitation',
+          transition_condition: 'needs_elicitation == true',
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const meta = result._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      const condWarnings = validation.warnings.filter((w: string) => w.includes('Condition mismatch') || w.includes('condition'));
+      expect(condWarnings).toHaveLength(0);
+    });
+
+    it('should warn on mismatched condition for activity', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'codebase-comprehension' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenAtComprehension = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: {
+          session_token: tokenAtComprehension,
+          workflow_id: 'work-package',
+          activity_id: 'requirements-elicitation',
+          transition_condition: 'skip_optional_activities == true',
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const meta = result._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings.some((w: string) => w.includes('Condition mismatch'))).toBe(true);
+    });
+
+    it('should accept default transition with empty condition', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenAtStart = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: {
+          session_token: tokenAtStart,
+          workflow_id: 'work-package',
+          activity_id: 'design-philosophy',
+          transition_condition: 'default',
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const meta = result._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      const condWarnings = validation.warnings.filter((w: string) => w.includes('condition') || w.includes('Condition'));
+      expect(condWarnings).toHaveLength(0);
+    });
+
+    it('condition should not block execution', async () => {
+      const actResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'codebase-comprehension' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenAtComprehension = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: {
+          session_token: tokenAtComprehension,
+          workflow_id: 'work-package',
+          activity_id: 'requirements-elicitation',
+          transition_condition: 'wrong_condition == true',
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(activity.id).toBe('requirements-elicitation');
+    });
+  });
+
   // ============== Step Manifest ==============
 
   describe('step completion manifest', () => {
