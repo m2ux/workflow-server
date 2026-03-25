@@ -122,8 +122,8 @@ When calling `get_skill { workflow_id, skill_id }`:
 #### workflow-execution (universal)
 
 Primary skill for workflow navigation:
-- **Start**: `list_workflows` → `start_session` → `get_workflow` → `list_resources`
-- **Per-activity**: `get_activity` → `get_checkpoint` → `get_resource`
+- **Start**: `list_workflows` → `start_session` → `get_workflow`
+- **Per-activity**: `get_activity` → `get_skills` (includes skills + resources) → `get_checkpoint`
 - **Transitions**: `validate_transition`
 
 #### activity-resolution (universal)
