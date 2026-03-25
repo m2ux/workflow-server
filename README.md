@@ -27,10 +27,7 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 ### Architecture
 
 ```
-User Goal → Workflow → Activity → Skill → Tools
-                         ↑                   |
-                         └───────────────────┘
-                           (transitions)
+User Goal → Workflow → Activities → Skills → Tools
 ```
 
 - **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
