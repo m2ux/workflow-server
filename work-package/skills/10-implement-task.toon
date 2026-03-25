@@ -36,7 +36,8 @@ rules:
   follow-conventions: "Follow existing code patterns and conventions in the target codebase — do not introduce new styles"
   single-task-focus: "Implement exactly one task — do not scope-creep into adjacent tasks"
 
-resources[1]:
+resources[2]:
+  - "14"
   - "23"
 
 tools:
