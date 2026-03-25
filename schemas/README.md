@@ -1184,7 +1184,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 **Independent Activities** (e.g., meta workflow):
 - Have `recognition` patterns for intent matching
 - No `transitions` to other activities
-- Matched via `get_activities` tool
+- Matched via `list_workflows` and `start_session`
 
 **Sequential Activities** (e.g., work-package workflow):
 - Have `transitions` connecting them
@@ -1399,14 +1399,14 @@ A minimal skill demonstrating key concepts:
   "capability": "Demonstrate skill schema structure",
   "description": "A minimal skill showing required and optional fields",
   "execution_pattern": {
-    "start": ["discover_resources"],
+    "start": ["list_workflows", "start_session"],
     "per_task": ["execute_task", "validate_result"]
   },
   "tools": {
-    "discover_resources": {
+    "list_workflows": {
       "when": "Beginning a new task",
       "params": "none",
-      "returns": "List of available resources"
+      "returns": "List of available workflows"
     },
     "execute_task": {
       "when": "Ready to perform work",
@@ -1421,7 +1421,7 @@ A minimal skill demonstrating key concepts:
     }
   },
   "flow": [
-    "1. Call discover_resources to understand context",
+    "1. Call list_workflows to understand available workflows",
     "2. Match task to available resources",
     "3. Call execute_task with appropriate parameters",
     "4. Call validate_result to confirm success"
@@ -1429,7 +1429,7 @@ A minimal skill demonstrating key concepts:
   "errors": {
     "resource_not_found": {
       "cause": "Requested resource does not exist",
-      "recovery": "Call discover_resources to see available options"
+      "recovery": "Call list_workflows to see available options"
     }
   }
 }

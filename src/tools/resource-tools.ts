@@ -3,53 +3,44 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
-// Loaders
-import { listWorkflows } from '../loaders/workflow-loader.js';
-import { listResources, readResourceRaw, listWorkflowsWithResources } from '../loaders/resource-loader.js';
-import { listActivities, readActivity, readActivityIndex } from '../loaders/activity-loader.js';
-import { listSkills, listUniversalSkills, listWorkflowSkills, readSkill, readSkillIndex } from '../loaders/skill-loader.js';
+import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
+import { readResourceRaw } from '../loaders/resource-loader.js';
+import { readSkill } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
+import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
+import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
-  
-  // ============== Activity Tools ==============
-  
-  server.tool(
-    'get_activities',
-    'Get the activity index - the primary entry point for workflow execution. Returns quick_match patterns to identify user activity.',
-    {},
-    withAuditLog('get_activities', async () => {
-      const result = await readActivityIndex(config.workflowDir);
-      if (!result.success) {
-        // Fall back to listing activities
-        const activities = await listActivities(config.workflowDir);
-        return { content: [{ type: 'text', text: JSON.stringify(activities, null, 2) }] };
-      }
-      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
-    })
-  );
+
+  // ============== Session Tools ==============
 
   server.tool(
-    'get_activity',
-    'Get a specific activity by ID for detailed flow guidance',
-    { activity_id: z.string().describe('Activity ID (e.g., start-workflow, resume-workflow)') },
-    withAuditLog('get_activity', async ({ activity_id }) => {
-      const result = await readActivity(config.workflowDir, activity_id);
-      if (!result.success) throw result.error;
-      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
-    })
-  );
+    'start_session',
+    'Start a workflow session. Accepts a workflow ID (from list_workflows). Returns agent rules, workflow metadata, and an opaque session token for all subsequent tool calls.',
+    {
+      workflow_id: z.string().describe('Workflow ID to start a session for (e.g., "work-package")'),
+    },
+    withAuditLog('start_session', async ({ workflow_id }) => {
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!wfResult.success) throw wfResult.error;
 
-  // ============== Rules Tools ==============
+      const rulesResult = await readRules(config.workflowDir);
+      if (!rulesResult.success) throw rulesResult.error;
 
-  server.tool(
-    'get_rules',
-    'Get global agent rules - behavioral guidelines that apply to all workflow executions. Call this after get_activities and before executing any workflow.',
-    {},
-    withAuditLog('get_rules', async () => {
-      const result = await readRules(config.workflowDir);
-      if (!result.success) throw result.error;
-      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
+      const workflow = wfResult.value;
+      const token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0');
+
+      const response = {
+        rules: rulesResult.value,
+        workflow: {
+          id: workflow.id,
+          version: workflow.version,
+          title: workflow.title,
+          description: workflow.description,
+        },
+        session_token: token,
+      };
+      return { content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }] };
     })
   );
 
@@ -57,140 +48,91 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get the skill index - summary of all available skills with capabilities. Returns universal skills and workflow-specific skills grouped by workflow.',
-    {},
-    withAuditLog('get_skills', async () => {
-      const result = await readSkillIndex(config.workflowDir);
-      if (!result.success) {
-        // Fall back to listing skills
-        const skills = await listSkills(config.workflowDir);
-        return { content: [{ type: 'text', text: JSON.stringify(skills, null, 2) }] };
-      }
-      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
-    })
-  );
-
-  server.tool(
-    'list_skills',
-    'List all available skills - both universal (from meta workflow) and workflow-specific. Optionally filter by workflow.',
-    { 
-      workflow_id: z.string().optional().describe('Optional workflow ID to filter workflow-specific skills')
+    'Get all skills and their associated resources for an activity in one call. Returns primary + supporting skills with full content, plus all resources referenced by those skills.',
+    {
+      ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID'),
+      activity_id: z.string().describe('Activity ID to load skills for'),
     },
-    withAuditLog('list_skills', async ({ workflow_id }) => {
-      if (workflow_id) {
-        // List skills for a specific workflow + universal skills
-        const workflowSkills = await listWorkflowSkills(config.workflowDir, workflow_id);
-        const universalSkills = await listUniversalSkills(config.workflowDir);
-        const result = {
-          universal: universalSkills,
-          workflow: workflowSkills,
-        };
-        return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+    withAuditLog('get_skills', async ({ session_token, workflow_id, activity_id }) => {
+      const token = await decodeSessionToken(session_token);
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!wfResult.success) throw wfResult.error;
+
+      const activity = getActivity(wfResult.value, activity_id);
+      if (!activity) throw new Error(`Activity not found: ${activity_id}`);
+
+      const skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
+      const skills: Record<string, unknown> = {};
+      const resourceIndices = new Set<string>();
+
+      for (const sid of skillIds) {
+        const result = await readSkill(sid, config.workflowDir, workflow_id);
+        if (result.success) {
+          skills[sid] = result.value;
+          const skillResources = (result.value as Record<string, unknown>)['resources'] as string[] | undefined;
+          if (skillResources) {
+            for (const idx of skillResources) resourceIndices.add(idx);
+          }
+        }
       }
-      // List all skills
-      const skills = await listSkills(config.workflowDir);
-      return { content: [{ type: 'text', text: JSON.stringify(skills, null, 2) }] };
+
+      const resources: Record<string, string> = {};
+      for (const idx of resourceIndices) {
+        const result = await readResourceRaw(config.workflowDir, workflow_id, idx);
+        if (result.success) resources[idx] = result.value.content;
+      }
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        validateWorkflowVersion(token, wfResult.value),
+      );
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify({ activity_id, skills, resources }, null, 2) }],
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+      };
     })
   );
 
   server.tool(
     'get_skill',
-    'Get a specific skill for tool orchestration guidance. Workflow-specific skills are checked first, then universal.',
-    { 
+    'Get a single skill by ID. For loading all skills for an activity at once, use get_skills instead.',
+    {
+      ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID'),
       skill_id: z.string().describe('Skill ID (e.g., workflow-execution, activity-resolution)'),
-      workflow_id: z.string().optional().describe('Optional workflow ID to look for workflow-specific skill first')
     },
-    withAuditLog('get_skill', async ({ skill_id, workflow_id }) => {
+    withAuditLog('get_skill', async ({ session_token, workflow_id, skill_id }) => {
+      const token = await decodeSessionToken(session_token);
       const result = await readSkill(skill_id, config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      return { content: [{ type: 'text', text: JSON.stringify(result.value, null, 2) }] };
-    })
-  );
 
-  // ============== Resource Tools ==============
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
+        wfResult.success && token.act ? validateSkillAssociation(wfResult.value, token.act, skill_id) : null,
+      );
 
-  server.tool(
-    'list_workflow_resources',
-    'List all resources available for a workflow',
-    { workflow_id: z.string().describe('Workflow ID (e.g., work-package)') },
-    withAuditLog('list_workflow_resources', async ({ workflow_id }) => {
-      const resources = await listResources(config.workflowDir, workflow_id);
-      const result = resources.map(r => ({
-        index: r.index,
-        name: r.name,
-        title: r.title,
-        format: r.format,
-      }));
-      return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
-    })
-  );
-
-  server.tool(
-    'get_resource',
-    'Get a specific resource by index',
-    { 
-      workflow_id: z.string().describe('Workflow ID (e.g., work-package)'),
-      index: z.string().describe('Resource index (e.g., 0, 00, 01)')
-    },
-    withAuditLog('get_resource', async ({ workflow_id, index }) => {
-      const result = await readResourceRaw(config.workflowDir, workflow_id, index);
-      if (!result.success) throw result.error;
-      return { content: [{ type: 'text', text: result.value.content }] };
-    })
-  );
-
-  // ============== Discovery Tool ==============
-
-  server.tool(
-    'discover_resources',
-    'Discover all available resources: workflows, resources, activities, skills',
-    {},
-    withAuditLog('discover_resources', async () => {
-      const workflows = await listWorkflows(config.workflowDir);
-      const workflowsWithResources = await listWorkflowsWithResources(config.workflowDir);
-      const universalSkills = await listUniversalSkills(config.workflowDir);
-      
-      const discovery: Record<string, unknown> = {
-        activities: {
-          tool: 'get_activities',
-          description: 'Activity index - primary entry point for workflow execution',
-        },
-        universal_skills: {
-          items: universalSkills.map(s => s.id),
-          tool: 'list_skills',
-          description: 'Universal skills (apply to all workflows)',
-        },
-        workflows: workflows.map(w => ({
-          id: w.id,
-          title: w.title,
-          tool: `get_workflow { workflow_id: "${w.id}" }`,
-        })),
-      };
-      
-      // Add workflow-specific resources
-      for (const workflowId of workflowsWithResources) {
-        const resources = await listResources(config.workflowDir, workflowId);
-        const workflowSkills = await listWorkflowSkills(config.workflowDir, workflowId);
-        
-        const workflowDiscovery: Record<string, unknown> = {
-          resources: {
-            count: resources.length,
-            tool: `list_workflow_resources { workflow_id: "${workflowId}" }`,
-          },
-        };
-        
-        if (workflowSkills.length > 0) {
-          workflowDiscovery['skills'] = {
-            items: workflowSkills.map(s => s.id),
-            tool: `list_skills { workflow_id: "${workflowId}" }`,
-            get: `get_skill { skill_id: "...", workflow_id: "${workflowId}" }`,
-          };
+      const skillResources = (result.value as Record<string, unknown>)['resources'] as string[] | undefined;
+      const resources: Record<string, string> = {};
+      if (skillResources) {
+        for (const idx of skillResources) {
+          const resResult = await readResourceRaw(config.workflowDir, workflow_id, idx);
+          if (resResult.success) resources[idx] = resResult.value.content;
         }
-        
-        discovery[workflowId] = workflowDiscovery;
       }
-      
-      return { content: [{ type: 'text', text: JSON.stringify(discovery, null, 2) }] };
+
+      const response = Object.keys(resources).length > 0
+        ? { ...result.value as Record<string, unknown>, _resources: resources }
+        : result.value;
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
+      };
     })
   );
+
 }

@@ -6,6 +6,9 @@ import { NestedWorkflowStateSchema, StateSaveFileSchema } from '../schema/state.
 import type { StateSaveFile } from '../schema/state.schema.js';
 import { decodeToon, encodeToon } from '../utils/toon.js';
 import { withAuditLog } from '../logging.js';
+import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
+import { buildValidation } from '../utils/validation.js';
+import { getOrCreateServerKey, encryptToken, decryptToken } from '../utils/crypto.js';
 
 const STATE_FILENAME = 'workflow-state.toon';
 
@@ -17,19 +20,28 @@ function generateSaveId(): string {
 export function registerStateTools(server: McpServer): void {
   server.tool(
     'save_state',
-    'Save workflow execution state to a TOON file in the planning folder for cross-session resumption. Accepts the state as a JSON string with support for nested child workflow states in triggeredWorkflows.',
+    'Save workflow execution state to a TOON file in the planning folder for cross-session resumption.',
     {
+      ...sessionTokenParam,
       state: z.string().describe('Workflow state as a JSON string (validated against NestedWorkflowStateSchema)'),
       planning_folder_path: z.string().describe('Absolute or relative path to the planning folder'),
       description: z.string().optional().describe('Human-readable description of the save point'),
     },
-    withAuditLog('save_state', async ({ state: stateJson, planning_folder_path, description }) => {
+    withAuditLog('save_state', async ({ session_token, state: stateJson, planning_folder_path, description }) => {
+      await decodeSessionToken(session_token);
+
       const parsed = JSON.parse(stateJson);
       const stateResult = NestedWorkflowStateSchema.safeParse(parsed);
       if (!stateResult.success) {
         throw new Error(`State validation failed: ${stateResult.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ')}`);
       }
       const state = stateResult.data;
+
+      if (typeof state.variables['session_token'] === 'string') {
+        const key = await getOrCreateServerKey();
+        state.variables['session_token'] = encryptToken(state.variables['session_token'] as string, key);
+        state.variables['_session_token_encrypted'] = true;
+      }
 
       const saveFile: StateSaveFile = {
         id: generateSaveId(),
@@ -56,7 +68,10 @@ export function registerStateTools(server: McpServer): void {
         triggeredWorkflows: state.triggeredWorkflows.length,
         status: state.status,
       };
-      return { content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }] };
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }],
+        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+      };
     }),
   );
 
@@ -64,16 +79,30 @@ export function registerStateTools(server: McpServer): void {
     'restore_state',
     'Restore workflow execution state from a previously saved TOON file. Returns the full nested state object for resumption.',
     {
+      ...sessionTokenParam,
       file_path: z.string().describe('Path to the workflow-state.toon file'),
     },
-    withAuditLog('restore_state', async ({ file_path }) => {
+    withAuditLog('restore_state', async ({ session_token, file_path }) => {
+      await decodeSessionToken(session_token);
+
       const content = await readFile(file_path, 'utf-8');
       const decoded = decodeToon<Record<string, unknown>>(content);
       const result = StateSaveFileSchema.safeParse(decoded);
       if (!result.success) {
         throw new Error(`State file validation failed: ${result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ')}`);
       }
-      return { content: [{ type: 'text' as const, text: JSON.stringify(result.data, null, 2) }] };
+
+      const restored = result.data;
+      if (restored.state.variables['_session_token_encrypted'] && typeof restored.state.variables['session_token'] === 'string') {
+        const key = await getOrCreateServerKey();
+        restored.state.variables['session_token'] = decryptToken(restored.state.variables['session_token'] as string, key);
+        delete restored.state.variables['_session_token_encrypted'];
+      }
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }],
+        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+      };
     }),
   );
 }

@@ -197,7 +197,7 @@ Resources are stored in a `resources/` subdirectory within each workflow:
 1. Create `{NN}-{name}.toon` or `{NN}-{name}.md` in `workflows/{workflow-id}/resources/`
 2. Use sequential index (00, 01, 02, etc.)
 3. Resources are auto-discovered - no manifest update needed
-4. Access via: `get_resource { workflow_id: "{id}", index: "{NN}" }`
+4. Access via: `get_skill` or `get_skills` (resources are attached to skill responses)
 5. Commit to the `workflows` branch
 
 Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.

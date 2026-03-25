@@ -2,142 +2,126 @@
 
 ## MCP Tools
 
-### Workflow Tools
+### Bootstrap Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `list_workflows` | - | List all available workflow definitions with metadata |
-| `get_workflow` | `workflow_id` | Get complete workflow definition by ID |
-| `get_workflow_activity` | `workflow_id`, `activity_id` | Get details of a specific activity within a workflow |
-| `get_checkpoint` | `workflow_id`, `activity_id`, `checkpoint_id` | Get checkpoint details including options and effects |
-| `validate_transition` | `workflow_id`, `from_activity`, `to_activity` | Validate if a transition between activities is allowed |
+| `help` | - | How to use this server. Returns bootstrap procedure and session protocol |
+| `list_workflows` | - | List all available workflow definitions |
+| `start_session` | `workflow_id` | Start a workflow session. Returns agent rules, workflow metadata, and opaque session token |
 | `health_check` | - | Check server health and available workflows |
 
-### Activity Tools
+### Workflow Tools
+
+All workflow tools require `session_token` and explicit `workflow_id`. Each response includes an updated token and validation result in `_meta`.
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_activities` | - | Get activity index - primary entry point for agents |
-| `get_activity` | `activity_id` | Get a specific workflow activity |
-
-### Rules Tools
-
-| Tool | Parameters | Description |
-|------|------------|-------------|
-| `get_rules` | - | Get global agent rules - behavioral guidelines for workflow execution |
+| `get_workflow` | `session_token`, `workflow_id`, `summary?` | Get workflow definition. Use `summary=true` for lightweight metadata |
+| `get_activity` | `session_token`, `workflow_id`, `activity_id`, `transition_condition?`, `step_manifest?` | Get activity details. Optional condition and manifest enable transition and step validation |
+| `next_activity` | `session_token`, `workflow_id` | Get possible next activities with transition conditions from current activity (token.act) |
+| `get_checkpoint` | `session_token`, `workflow_id`, `activity_id`, `checkpoint_id` | Get checkpoint details |
 
 ### Skill Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_skills` | - | Get skill index - summary of all skills with capabilities |
-| `list_skills` | `workflow_id?` | List all skills (universal + workflow-specific if workflow_id provided) |
-| `get_skill` | `skill_id`, `workflow_id?` | Get a skill (checks workflow-specific first, then universal) |
+| `get_skills` | `session_token`, `workflow_id`, `activity_id` | Get all skills and their referenced resources for an activity in one call |
+| `get_skill` | `session_token`, `workflow_id`, `skill_id` | Get a single skill with its referenced resources attached |
 
-### Resource Tools
-
-| Tool | Parameters | Description |
-|------|------------|-------------|
-| `list_workflow_resources` | `workflow_id` | List all resources for a workflow |
-| `get_resource` | `workflow_id`, `index` | Get content of a specific resource by index |
-
-### Discovery Tools
+### State Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `discover_resources` | - | Discover all available resources: workflows, resources, activities, skills |
+| `save_state` | `session_token`, `state`, `planning_folder_path`, `description?` | Save workflow state (encrypts session token at rest) |
+| `restore_state` | `session_token`, `file_path` | Restore workflow state (decrypts session token) |
 
-## Activities
+## Session Token
 
-Activities define user goals and map them to skills. They are the primary entry point for agent interaction.
+The session token is an opaque string returned by `start_session`. It captures the context of each call (workflow, activity, skill) so the server can validate subsequent calls for consistency.
 
-| Activity | Problem | Primary Skill |
-|----------|---------|---------------|
-| `start-workflow` | Begin executing a new workflow | `workflow-execution` |
-| `resume-workflow` | Continue a previously started workflow | `workflow-execution` |
-| `end-workflow` | Complete and finalize a workflow | `workflow-execution` |
+### Lifecycle
+
+1. Call `help` to learn the bootstrap procedure
+2. Call `list_workflows` to see available workflows
+3. Call `start_session(workflow_id)` to get rules + opaque token
+4. Pass `session_token` alongside explicit `workflow_id`/`activity_id` params to every subsequent tool call
+5. Use the updated token from `_meta.session_token` in the next call
+
+### Validation
+
+The server validates each call against the token's recorded state. Validation results are returned in `_meta.validation`:
+
+```json
+{
+  "_meta": {
+    "session_token": "<updated-token>",
+    "validation": {
+      "status": "valid",
+      "warnings": []
+    }
+  }
+}
+```
+
+Validation checks:
+- **Workflow consistency** — the token's workflow matches the explicit `workflow_id`
+- **Activity transition** — the requested activity is a valid transition from the token's last activity
+- **Skill association** — the requested skill is declared by the current activity
+- **Version drift** — the workflow version hasn't changed since the session started
+- **Step completion** — when `step_manifest` is provided, validates all steps present, in order, with outputs
+- **HMAC integrity** — token signature is verified on every call (rejects fabricated/tampered tokens)
+
+Warnings do not block execution — the tool still returns its result. They enable agent self-correction.
+
+### Step Completion Manifest
+
+When transitioning between activities, agents can include a `step_manifest` parameter — a structured summary of completed steps from the previous activity:
+
+```json
+{
+  "step_manifest": [
+    { "step_id": "resolve-target", "output": "Target verified at /path" },
+    { "step_id": "initialize-target", "output": "Checked out main, pulled latest" }
+  ]
+}
+```
+
+The server validates: all required steps present, correct order, non-empty outputs. Missing manifest triggers a warning. All steps within an activity are required — optionality is handled at the activity level.
+
+### Token-exempt tools
+
+- `help`, `list_workflows`, `start_session`, `health_check`
 
 ## Skills
 
-Skills provide structured guidance for agents to consistently execute workflows. Skills can be **universal** (apply globally) or **workflow-specific**.
-
-### Universal Skills
-
-Universal skills are stored in the `meta` workflow and apply to all workflows.
-
-| Skill | Location | Description |
-|-------|----------|-------------|
-| `activity-resolution` | `meta/skills/` | Bootstraps agent interaction by resolving user goals to activities and loading appropriate skills |
-| `workflow-execution` | `meta/skills/` | Guides agents through workflow execution with tool orchestration, state management, and error recovery |
-
-### Workflow-Specific Skills
-
-Workflow-specific skills are stored in each workflow's `skills/` directory. Currently no workflow-specific skills are defined.
-
-### The Meta Workflow
-
-The `meta` workflow is the bootstrap workflow for the workflow-server. It contains:
-- **Activities** (`meta/activities/`): All user activities for workflow operations
-- **Universal skills** (`meta/skills/`): Skills that apply to all workflows
+Skills provide structured guidance for agents to consistently execute workflows.
 
 ### Skill Resolution
 
-When calling `get_skill { skill_id, workflow_id }`:
+When calling `get_skill { workflow_id, skill_id }`:
 1. First checks `{workflow_id}/skills/{NN}-{skill_id}.toon`
 2. Falls back to `meta/skills/{NN}-{skill_id}.toon` (universal)
 
-All skills use NN- indexed filenames (e.g., `00-activity-resolution.toon`, `01-workflow-execution.toon`).
-
-### Skill Contents
-
-Each skill provides:
-
-- **Execution pattern** - Tool sequence for workflow stages
-- **Tool guidance** - When to use each tool, parameters, what to preserve
-- **State management** - What to track in memory during execution (activity IDs, step indices)
-- **Interpretation rules** - How to evaluate transitions, checkpoints, decisions, triggers
-- **Error recovery** - Common error scenarios and recovery patterns
+### Key Skills
 
 #### workflow-execution (universal)
 
 Primary skill for workflow navigation:
-- **Start**: `list_workflows` → `get_workflow` → `list_workflow_resources`
-- **Per-activity**: `get_workflow_activity` → `get_checkpoint` → `get_resource`
-- **Transitions**: `validate_transition`
-- **Triggers**: Suspend parent, execute child workflow, return to parent
+- **Start**: `list_workflows` → `start_session` → `get_workflow`
+- **Per-activity**: `get_activity` → `get_skills` (includes skills + resources) → `get_checkpoint`
+- **Transitions**: `next_activity`
 
 #### activity-resolution (universal)
 
 Bootstrap skill for agent initialization:
-- **Bootstrap**: `get_activities` → `get_activity`
+- **Bootstrap**: `help` → `list_workflows` → `start_session`
 - **Skill loading**: `get_skill`
-- **Discovery**: `discover_resources`
 
 ## Available Workflows
 
 | Workflow | Activities | Description |
 |----------|------------|-------------|
 | `meta` | 3 | Bootstrap workflow - independent activities for workflow lifecycle |
-| `work-package` | 11 | Single work package from issue to merged PR |
+| `work-package` | 14 | Single work package from issue to merged PR |
 | `work-packages` | 7 | Plan and coordinate multiple related work packages |
-
-### Workflow Types
-
-**Sequential workflows** (e.g., `work-package`, `work-packages`):
-- Activities connected by transitions
-- Require `initialActivity`
-- Follow a defined flow
-
-**Independent activities** (e.g., `meta`):
-- Activities matched via recognition patterns
-- No transitions between activities
-- Each is a self-contained entry point
-
-### Cross-Workflow Triggering
-
-Activities can trigger other workflows using the `triggers` property. When triggered:
-1. Parent workflow state is suspended
-2. Child workflow executes to completion
-3. Parent workflow resumes with returned context
-
-Example: `work-packages` implementation activity triggers `work-package` for each planned package.
