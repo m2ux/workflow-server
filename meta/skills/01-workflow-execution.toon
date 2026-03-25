@@ -2,10 +2,9 @@ id: workflow-execution
 version: 3.0.0
 capability: Execute workflows from start to completion with consistent tool usage
 execution_pattern:
-  start[3]:
+  start[2]:
     - list_workflows
     - get_workflow
-    - list_resources
   per_activity[3]:
     - get_activity
     - get_skills
@@ -49,11 +48,6 @@ tools:
     when: Moving between activities
     params: workflow_id, from_activity, to_activity
     returns: Validity of transition and applicable conditions
-  list_resources:
-    when: Starting a workflow; understanding available resources
-    params: workflow_id
-    returns: Array of resource entries with index, name, description
-    usage: Review resource list at workflow start; reference resources during execution
   get_skills:
     when: "Activity loaded; need skills and resources for execution"
     params: session_token, workflow_id, activity_id
@@ -97,7 +91,7 @@ errors:
     recovery: Present checkpoint to user; await response before continuing
   resource_not_found:
     cause: Invalid resource index for workflow
-    recovery: Call list_resources to discover valid indices
+    recovery: Resources are attached to skill responses — check the _resources field in get_skill output
   template_not_found:
     cause: Invalid template index for workflow
     recovery: Call list_templates to discover valid indices
