@@ -50,6 +50,9 @@ tools:
     params: "command"
     returns: "Command output"
 
+resources[1]:
+  - "05"
+
 errors:
   resource_not_found:
     cause: "The specified resource ID does not exist in the workflow"

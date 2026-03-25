@@ -36,6 +36,9 @@ rules:
   granularity: "Packages should be 2-8 hours of agentic work. Larger packages should be split; smaller ones merged."
   naming: "Package names should use domain language from the user's description, not implementation language"
 
+resources[1]:
+  - "00"
+
 errors:
   single_package:
     cause: User's request is actually a single work package
