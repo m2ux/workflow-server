@@ -53,6 +53,9 @@ tools:
     when: Loading existing artifacts or verifying content
     usage: Read artifact files for context
 
+resources[1]:
+  - "01"
+
 errors:
   folder_exists:
     cause: Planning folder already exists
