@@ -135,30 +135,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     })
   );
 
-  // ============== Resource Tools ==============
-
-  server.tool(
-    'list_resources',
-    'List all resources available for a workflow',
-    { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID') },
-    withAuditLog('list_resources', async ({ session_token, workflow_id }) => {
-      const token = await decodeSessionToken(session_token);
-      const resources = await listResources(config.workflowDir, workflow_id);
-      const result = resources.map(r => ({
-        index: r.index, name: r.name, title: r.title, format: r.format,
-      }));
-
-      const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
-      );
-
-      return {
-        content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
-      };
-    })
-  );
-
   // ============== Discovery Tool ==============
 
   server.tool(

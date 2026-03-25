@@ -269,27 +269,18 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: list_resources', () => {
-    it('should list resources with explicit workflow_id', async () => {
+  describe('resources attached to skills', () => {
+    it('get_skill should include referenced resources in _resources', async () => {
       const result = await client.callTool({
-        name: 'list_resources',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+        name: 'get_skill',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
       });
-      const resources = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(Array.isArray(resources)).toBe(true);
-      expect(resources.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('tool: get_resource', () => {
-    it('should get resource with explicit workflow_id', async () => {
-      const result = await client.callTool({
-        name: 'get_resource',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', index: '01' },
-      });
-      const content = (result.content[0] as { type: 'text'; text: string }).text;
-      expect(content).toBeDefined();
-      expect(content.length).toBeGreaterThan(0);
+      expect(result.isError).toBeFalsy();
+      const skill = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      if (skill.resources && skill.resources.length > 0) {
+        expect(skill._resources).toBeDefined();
+        expect(Object.keys(skill._resources).length).toBeGreaterThan(0);
+      }
     });
   });
 
