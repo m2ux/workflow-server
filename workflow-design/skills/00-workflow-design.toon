@@ -107,10 +107,10 @@ tools:
     when: Examining resource organization in reference workflows
     params: workflow_id
     returns: List of all resources for a workflow
-  validate_transition:
+  next_activity:
     when: Verifying transition integrity in drafted content
-    params: "workflow_id, from_activity, to_activity"
-    returns: Whether the transition is valid
+    params: "session_token, workflow_id"
+    returns: Transition list with conditions from current activity
 
 errors:
   schema_validation_failure:
