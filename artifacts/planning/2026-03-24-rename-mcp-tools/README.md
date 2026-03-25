@@ -49,6 +49,9 @@ Once an agent has its session token from `start_session`, it must include that t
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| 09 | [Step completion manifest](09-step-completion-manifest.md) | Design for step manifest validation | — | ✅ Complete |
+| 10 | [Work package plan](10-work-package-plan.md) | HMAC signing + manifest implementation plan | 30-45m | ✅ Complete |
+| 10 | [Test plan](10-test-plan.md) | Test cases for HMAC + manifest features | 15-30m | ✅ Complete |
 
 ---
 
