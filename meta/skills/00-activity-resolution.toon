@@ -13,7 +13,8 @@ execution_pattern:
     - help
     - list_workflows
     - start_session
-  skill_loading[1]:
+  skill_loading[2]:
+    - get_skills
     - get_skill
 tools:
   help:
@@ -35,22 +36,22 @@ tools:
       - workflow metadata
       - session_token
     next: get_workflow to load the full workflow definition
+  get_skills:
+    when: Activity loaded; need all skills for the activity
+    params: session_token, workflow_id, activity_id
+    returns: All skills (primary + supporting) for the activity in one call
+    usage: Preferred over multiple get_skill calls. Load all skills at once during activity bootstrap.
   get_skill:
-    when: Activity loaded; need tool orchestration pattern
-    params: session_token, skill_id
+    when: Need a single skill mid-activity (e.g., a step references a specific skill)
+    params: session_token, workflow_id, skill_id
     returns: Full skill with execution_pattern, tools, state, errors
-    preserve[4]:
-      - execution_pattern
-      - tools
-      - state
-      - errors
-    usage: Follow execution_pattern; use tools guidance for each tool call
+    usage: Use for per-step skill loading. For initial activity bootstrap, prefer get_skills.
 flow[5]:
   - 1. Call list_workflows to see available workflows
   - 2. Match user goal to a workflow by comparing goal to workflow descriptions
   - 3. Call start_session with the chosen workflow_id
   - 4. Call get_workflow to load the full workflow definition
-  - 5. Call get_skill with the activity's primary skill to get execution guidance
+  - 5. Call get_skills with workflow_id and activity_id to load all skills at once
 matching:
   strategy: "Compare user goal to workflow descriptions returned by list_workflows"
   ambiguous: "If multiple workflows could match, ask user to clarify"
