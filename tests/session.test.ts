@@ -4,35 +4,20 @@ import { createSessionToken, decodeSessionToken, advanceToken } from '../src/uti
 describe('session token utilities', () => {
   describe('createSessionToken', () => {
     it('should create a base64url-encoded token', () => {
-      const token = createSessionToken('work-package', '3.4.0', 'start-work-package');
+      const token = createSessionToken('work-package', '3.4.0');
       expect(typeof token).toBe('string');
       expect(token.length).toBeGreaterThan(10);
       expect(token).not.toContain('{');
       expect(token).not.toContain(' ');
     });
 
-    it('should encode workflow_id and version', () => {
+    it('should encode workflow_id, version, and empty defaults', () => {
       const token = createSessionToken('work-package', '3.4.0');
       const payload = decodeSessionToken(token);
       expect(payload.wf).toBe('work-package');
       expect(payload.v).toBe('3.4.0');
-    });
-
-    it('should set initial activity when provided', () => {
-      const token = createSessionToken('work-package', '3.4.0', 'start-work-package');
-      const payload = decodeSessionToken(token);
-      expect(payload.act).toBe('start-work-package');
-    });
-
-    it('should default activity to empty string', () => {
-      const token = createSessionToken('work-package', '3.4.0');
-      const payload = decodeSessionToken(token);
       expect(payload.act).toBe('');
-    });
-
-    it('should set seq to 0', () => {
-      const token = createSessionToken('work-package', '3.4.0');
-      const payload = decodeSessionToken(token);
+      expect(payload.skill).toBe('');
       expect(payload.seq).toBe(0);
     });
 
@@ -48,11 +33,10 @@ describe('session token utilities', () => {
 
   describe('decodeSessionToken', () => {
     it('should decode a valid token', () => {
-      const token = createSessionToken('meta', '1.0.0', 'start-workflow');
+      const token = createSessionToken('meta', '1.0.0');
       const payload = decodeSessionToken(token);
       expect(payload.wf).toBe('meta');
       expect(payload.v).toBe('1.0.0');
-      expect(payload.act).toBe('start-workflow');
       expect(payload.seq).toBe(0);
     });
 
@@ -88,20 +72,36 @@ describe('session token utilities', () => {
     });
 
     it('should update act when provided', () => {
-      const token = createSessionToken('work-package', '3.4.0', 'start-work-package');
+      const token = createSessionToken('work-package', '3.4.0');
       const advanced = advanceToken(token, { act: 'design-philosophy' });
       const payload = decodeSessionToken(advanced);
       expect(payload.act).toBe('design-philosophy');
       expect(payload.seq).toBe(1);
     });
 
-    it('should preserve fields when not updating act', () => {
-      const token = createSessionToken('work-package', '3.4.0', 'start-work-package');
-      const advanced = advanceToken(token);
+    it('should update skill when provided', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      const advanced = advanceToken(token, { skill: 'create-issue' });
       const payload = decodeSessionToken(advanced);
+      expect(payload.skill).toBe('create-issue');
+    });
+
+    it('should update wf when provided', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      const advanced = advanceToken(token, { wf: 'meta' });
+      const payload = decodeSessionToken(advanced);
+      expect(payload.wf).toBe('meta');
+    });
+
+    it('should preserve fields when not updating', () => {
+      const token = createSessionToken('work-package', '3.4.0');
+      const step1 = advanceToken(token, { act: 'start-work-package', skill: 'create-issue' });
+      const step2 = advanceToken(step1);
+      const payload = decodeSessionToken(step2);
       expect(payload.wf).toBe('work-package');
-      expect(payload.v).toBe('3.4.0');
       expect(payload.act).toBe('start-work-package');
+      expect(payload.skill).toBe('create-issue');
+      expect(payload.seq).toBe(2);
     });
 
     it('should produce different token strings', () => {

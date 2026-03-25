@@ -6,7 +6,8 @@ import { NestedWorkflowStateSchema, StateSaveFileSchema } from '../schema/state.
 import type { StateSaveFile } from '../schema/state.schema.js';
 import { decodeToon, encodeToon } from '../utils/toon.js';
 import { withAuditLog } from '../logging.js';
-import { advanceToken, sessionTokenParam } from '../utils/session.js';
+import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
+import { buildValidation } from '../utils/validation.js';
 import { getOrCreateServerKey, encryptToken, decryptToken } from '../utils/crypto.js';
 
 const STATE_FILENAME = 'workflow-state.toon';
@@ -27,6 +28,8 @@ export function registerStateTools(server: McpServer): void {
       description: z.string().optional().describe('Human-readable description of the save point'),
     },
     withAuditLog('save_state', async ({ session_token, state: stateJson, planning_folder_path, description }) => {
+      decodeSessionToken(session_token);
+
       const parsed = JSON.parse(stateJson);
       const stateResult = NestedWorkflowStateSchema.safeParse(parsed);
       if (!stateResult.success) {
@@ -67,7 +70,7 @@ export function registerStateTools(server: McpServer): void {
       };
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }],
-        _meta: { session_token: advanceToken(session_token) },
+        _meta: { session_token: advanceToken(session_token), validation: buildValidation() },
       };
     }),
   );
@@ -80,6 +83,8 @@ export function registerStateTools(server: McpServer): void {
       file_path: z.string().describe('Path to the workflow-state.toon file'),
     },
     withAuditLog('restore_state', async ({ session_token, file_path }) => {
+      decodeSessionToken(session_token);
+
       const content = await readFile(file_path, 'utf-8');
       const decoded = decodeToon<Record<string, unknown>>(content);
       const result = StateSaveFileSchema.safeParse(decoded);
@@ -96,7 +101,7 @@ export function registerStateTools(server: McpServer): void {
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }],
-        _meta: { session_token: advanceToken(session_token) },
+        _meta: { session_token: advanceToken(session_token), validation: buildValidation() },
       };
     }),
   );

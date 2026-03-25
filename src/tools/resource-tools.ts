@@ -8,17 +8,7 @@ import { listResources, readResourceRaw, listWorkflowsWithResources } from '../l
 import { listUniversalSkills, listWorkflowSkills, readSkill } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-
-function withAdvancedToken(
-  result: { content: Array<{ type: 'text'; text: string }> },
-  token: string,
-  updates?: { act?: string },
-) {
-  return {
-    ...result,
-    _meta: { session_token: advanceToken(token, updates) },
-  };
-}
+import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
 
@@ -38,8 +28,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!rulesResult.success) throw rulesResult.error;
 
       const workflow = wfResult.value;
-      const initialActivity = (workflow as Record<string, unknown>)['initialActivity'] as string | undefined;
-      const token = createSessionToken(workflow_id, workflow.version ?? '0.0.0', initialActivity ?? '');
+      const token = createSessionToken(workflow_id, workflow.version ?? '0.0.0');
 
       const response = {
         rules: rulesResult.value,
@@ -62,16 +51,25 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'Get a specific skill for tool orchestration guidance. Checks workflow-specific skills first, then universal.',
     {
       ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID'),
       skill_id: z.string().describe('Skill ID (e.g., workflow-execution, activity-resolution)'),
     },
-    withAuditLog('get_skill', async ({ session_token, skill_id }) => {
-      const { wf } = decodeSessionToken(session_token);
-      const result = await readSkill(skill_id, config.workflowDir, wf);
+    withAuditLog('get_skill', async ({ session_token, workflow_id, skill_id }) => {
+      const token = decodeSessionToken(session_token);
+      const result = await readSkill(skill_id, config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      return withAdvancedToken(
-        { content: [{ type: 'text' as const, text: JSON.stringify(result.value, null, 2) }] },
-        session_token,
+
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
+        wfResult.success && token.act ? validateSkillAssociation(wfResult.value, token.act, skill_id) : null,
       );
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(result.value, null, 2) }],
+        _meta: { session_token: advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
+      };
     })
   );
 
@@ -79,36 +77,47 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'list_resources',
-    'List all resources available for the session workflow',
-    { ...sessionTokenParam },
-    withAuditLog('list_resources', async ({ session_token }) => {
-      const { wf } = decodeSessionToken(session_token);
-      const resources = await listResources(config.workflowDir, wf);
+    'List all resources available for a workflow',
+    { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID') },
+    withAuditLog('list_resources', async ({ session_token, workflow_id }) => {
+      const token = decodeSessionToken(session_token);
+      const resources = await listResources(config.workflowDir, workflow_id);
       const result = resources.map(r => ({
         index: r.index, name: r.name, title: r.title, format: r.format,
       }));
-      return withAdvancedToken(
-        { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] },
-        session_token,
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
       );
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
+        _meta: { session_token: advanceToken(session_token, { wf: workflow_id }), validation },
+      };
     })
   );
 
   server.tool(
     'get_resource',
-    'Get a specific resource by index from the session workflow',
+    'Get a specific resource by index',
     {
       ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID'),
       index: z.string().describe('Resource index (e.g., 0, 00, 01)'),
     },
-    withAuditLog('get_resource', async ({ session_token, index }) => {
-      const { wf } = decodeSessionToken(session_token);
-      const result = await readResourceRaw(config.workflowDir, wf, index);
+    withAuditLog('get_resource', async ({ session_token, workflow_id, index }) => {
+      const token = decodeSessionToken(session_token);
+      const result = await readResourceRaw(config.workflowDir, workflow_id, index);
       if (!result.success) throw result.error;
-      return withAdvancedToken(
-        { content: [{ type: 'text' as const, text: result.value.content }] },
-        session_token,
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
       );
+
+      return {
+        content: [{ type: 'text' as const, text: result.value.content }],
+        _meta: { session_token: advanceToken(session_token, { wf: workflow_id }), validation },
+      };
     })
   );
 
@@ -150,10 +159,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         discovery[workflowId] = workflowDiscovery;
       }
 
-      return withAdvancedToken(
-        { content: [{ type: 'text' as const, text: JSON.stringify(discovery, null, 2) }] },
-        session_token,
-      );
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(discovery, null, 2) }],
+        _meta: { session_token: advanceToken(session_token), validation: buildValidation() },
+      };
     })
   );
 }

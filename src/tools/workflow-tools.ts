@@ -4,6 +4,7 @@ import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, validateTransition } from '../loaders/workflow-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
+import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition } from '../utils/validation.js';
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
 
@@ -27,10 +28,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           },
         },
         session_protocol: {
-          token_usage: 'Pass the session_token to ALL subsequent tool calls. It encodes workflow context so you do not need to pass workflow_id or activity_id separately.',
+          token_usage: 'Pass the session_token to all subsequent tool calls alongside explicit workflow_id and activity_id parameters. The token enables server-side validation of call consistency.',
           token_update: 'Every tool response includes an updated token in _meta.session_token. Use the updated token for the next call.',
           token_opacity: 'Treat the token as opaque. Do not attempt to parse, decode, or fabricate tokens.',
-          staleness: 'The token includes a counter that increments on each call. Stale tokens indicate missed exchanges.',
+          validation: 'The server validates each call against the token: workflow consistency, activity transition validity, skill-activity association, and version drift. Warnings are returned in _meta.validation.',
           exempt_tools: ['help', 'list_workflows', 'start_session', 'health_check'],
         },
         available_workflows: workflows.map(w => ({ id: w.id, title: w.title, version: w.version })),
@@ -40,61 +41,94 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
   server.tool('list_workflows', 'List all available workflow definitions. Call this after help to choose a workflow.', {},
     withAuditLog('list_workflows', async () => ({
-      content: [{ type: 'text', text: JSON.stringify(await listWorkflows(config.workflowDir), null, 2) }],
+      content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir), null, 2) }],
     })));
 
-  server.tool('get_workflow', 'Get the complete workflow definition for the session workflow',
-    { ...sessionTokenParam },
-    withAuditLog('get_workflow', async ({ session_token }) => {
-      const { wf } = decodeSessionToken(session_token);
-      const result = await loadWorkflow(config.workflowDir, wf);
+  server.tool('get_workflow', 'Get the complete workflow definition by ID',
+    { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID (e.g., "work-package")') },
+    withAuditLog('get_workflow', async ({ session_token, workflow_id }) => {
+      const token = decodeSessionToken(session_token);
+      const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        validateWorkflowVersion(token, result.value),
+      );
+
       const content: Array<{ type: 'text'; text: string }> = [];
       if (config.schemaPreamble) {
         content.push({ type: 'text', text: config.schemaPreamble });
       }
       content.push({ type: 'text', text: JSON.stringify(result.value, null, 2) });
-      return { content, _meta: { session_token: advanceToken(session_token) } };
+      return { content, _meta: { session_token: advanceToken(session_token, { wf: workflow_id }), validation } };
     }));
 
-  server.tool('validate_transition', 'Validate if a transition between activities is allowed',
-    { ...sessionTokenParam, from_activity: z.string(), to_activity: z.string() },
-    withAuditLog('validate_transition', async ({ session_token, from_activity, to_activity }) => {
-      const { wf } = decodeSessionToken(session_token);
-      const result = await loadWorkflow(config.workflowDir, wf);
-      if (!result.success) throw result.error;
-      return {
-        content: [{ type: 'text', text: JSON.stringify(validateTransition(result.value, from_activity, to_activity), null, 2) }],
-        _meta: { session_token: advanceToken(session_token) },
-      };
-    }));
-
-  server.tool('get_activity', 'Get details of a specific activity within the session workflow',
-    { ...sessionTokenParam, activity_id: z.string().describe('Activity ID to load (also updates the session activity)') },
-    withAuditLog('get_activity', async ({ session_token, activity_id }) => {
-      const { wf } = decodeSessionToken(session_token);
-      const result = await loadWorkflow(config.workflowDir, wf);
+  server.tool('get_activity', 'Get details of a specific activity within a workflow',
+    {
+      ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID'),
+      activity_id: z.string().describe('Activity ID to load'),
+    },
+    withAuditLog('get_activity', async ({ session_token, workflow_id, activity_id }) => {
+      const token = decodeSessionToken(session_token);
+      const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       const activity = getActivity(result.value, activity_id);
       if (!activity) throw new Error(`Activity not found: ${activity_id}`);
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        validateActivityTransition(token, result.value, activity_id),
+        validateWorkflowVersion(token, result.value),
+      );
+
       return {
-        content: [{ type: 'text', text: JSON.stringify(activity, null, 2) }],
-        _meta: { session_token: advanceToken(session_token, { act: activity_id }) },
+        content: [{ type: 'text' as const, text: JSON.stringify(activity, null, 2) }],
+        _meta: { session_token: advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
     }));
 
-  server.tool('get_checkpoint', 'Get checkpoint details for the current session activity',
-    { ...sessionTokenParam, checkpoint_id: z.string() },
-    withAuditLog('get_checkpoint', async ({ session_token, checkpoint_id }) => {
-      const { wf, act } = decodeSessionToken(session_token);
-      if (!act) throw new Error('No activity set in session token');
-      const result = await loadWorkflow(config.workflowDir, wf);
+  server.tool('get_checkpoint', 'Get checkpoint details for an activity',
+    {
+      ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID'),
+      activity_id: z.string().describe('Activity ID containing the checkpoint'),
+      checkpoint_id: z.string().describe('Checkpoint ID'),
+    },
+    withAuditLog('get_checkpoint', async ({ session_token, workflow_id, activity_id, checkpoint_id }) => {
+      const token = decodeSessionToken(session_token);
+      const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      const checkpoint = getCheckpoint(result.value, act, checkpoint_id);
+      const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
       if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id}`);
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        validateWorkflowVersion(token, result.value),
+      );
+
       return {
-        content: [{ type: 'text', text: JSON.stringify(checkpoint, null, 2) }],
-        _meta: { session_token: advanceToken(session_token) },
+        content: [{ type: 'text' as const, text: JSON.stringify(checkpoint, null, 2) }],
+        _meta: { session_token: advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+      };
+    }));
+
+  server.tool('validate_transition', 'Validate if a transition between activities is allowed',
+    { ...sessionTokenParam, workflow_id: z.string(), from_activity: z.string(), to_activity: z.string() },
+    withAuditLog('validate_transition', async ({ session_token, workflow_id, from_activity, to_activity }) => {
+      const token = decodeSessionToken(session_token);
+      const result = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!result.success) throw result.error;
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        validateWorkflowVersion(token, result.value),
+      );
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(validateTransition(result.value, from_activity, to_activity), null, 2) }],
+        _meta: { session_token: advanceToken(session_token, { wf: workflow_id }), validation },
       };
     }));
 
@@ -102,7 +136,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     withAuditLog('health_check', async () => {
       const workflows = await listWorkflows(config.workflowDir);
       return {
-        content: [{ type: 'text', text: JSON.stringify({
+        content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'healthy', server: config.serverName, version: config.serverVersion,
           workflows_available: workflows.length, uptime_seconds: Math.floor(process.uptime()),
         }, null, 2) }],
