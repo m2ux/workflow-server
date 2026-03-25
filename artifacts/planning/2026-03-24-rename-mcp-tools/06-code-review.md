@@ -2,7 +2,7 @@
 
 **Reviewer:** automated (post-impl-review)  
 **Date:** 2026-03-25  
-**Scope:** All implementation changes across 8 source files  
+**Scope:** All implementation changes across 9 source files (incl. workflow-loader additions)  
 **Verdict:** Approve with observations (no blockers)
 
 ---
@@ -73,15 +73,17 @@
 
 ## 5. `src/tools/workflow-tools.ts` — Workflow Navigation Tools
 
-**Overall:** Most complex file. Clean validation orchestration. Two observations.
+**Overall:** Most complex file. Clean validation orchestration. Several observations.
 
 | # | Severity | Line(s) | Finding |
 |---|----------|---------|---------|
-| W1 | Observation | 81–106 | `get_activity`: manifest is validated against `token.act` (the *previous* activity), not `activity_id` (the current one). Correct — the manifest reports completion of the activity being exited. When `token.act` is empty (first activity), no manifest validation or warning occurs. |
-| W2 | Observation | 134–157 | `validate_transition`: Does **not** emit a "no manifest" warning when `step_manifest` is absent, unlike `get_activity` (line 92–93). This asymmetry is arguably intentional — `validate_transition` is a check, not a navigational step — but it means agents won't get a reminder to provide manifests when using `validate_transition` before `get_activity`. |
-| W3 | Observation | 134–155 | `validate_transition`: The `from_activity` parameter is used for manifest validation and transition checking, but the token's `act` field is **not** compared against `from_activity`. A caller can claim to be transitioning from an activity the token doesn't reflect. The token is also not updated with `from_activity` — only `wf` is passed to `advanceToken`. This means the token's activity tracking may lag behind actual navigation when `validate_transition` is used. |
+| W1 | Observation | 102–128 | `get_activity`: manifest is validated against `token.act` (the *previous* activity), not `activity_id` (the current one). Correct — the manifest reports completion of the activity being exited. When `token.act` is empty (first activity), no manifest validation or warning occurs. |
+| W2 | Observation | 155–178 | `validate_transition`: Does **not** emit a "no manifest" warning when `step_manifest` is absent, unlike `get_activity` (line 113–115). This asymmetry is arguably intentional — `validate_transition` is a check, not a navigational step — but it means agents won't get a reminder to provide manifests when using `validate_transition` before `get_activity`. |
+| W3 | Observation | 155–178 | `validate_transition`: The `from_activity` parameter is used for manifest validation and transition checking, but the token's `act` field is **not** compared against `from_activity`. A caller can claim to be transitioning from an activity the token doesn't reflect. The token is also not updated with `from_activity` — only `wf` is passed to `advanceToken`. This means the token's activity tracking may lag behind actual navigation when `validate_transition` is used. |
 | W4 | Info | 10–13 | `stepManifestSchema` defined at module level, shared between `get_activity` and `validate_transition`. Clean. |
-| W5 | Info | 18–47 | `help` tool dynamically lists workflows. Response structure is self-describing. Well designed for agent consumption. |
+| W5 | Info | 18–47 | `help` tool dynamically lists workflows. Response structure is self-describing and covers the session protocol (token usage, opacity, exempt tools). Well designed for agent consumption. |
+| W6 | Info | 54–93 | `get_workflow` summary mode: `summary` defaults to `true`, returning lightweight metadata (id, version, title, description, rules, variables, initialActivity, activity stubs). Full definition available via `summary: false`. Good default for reducing agent context usage. Uses raw cast `(wf as Record<string, unknown>)['initialActivity']` to access `initialActivity` which may not be on the TS type — same pattern as V2/V3. |
+| W7 | Info | 180–203 | `next_activity` tool: reads `token.act` to determine current position, calls `getTransitionList` to return transitions with human-readable conditions. Correctly throws if `token.act` is empty (no current activity). Does not accept `step_manifest` — by design, since it's a read-only query rather than a navigational step. |
 
 **W3 is the most notable finding** — it's a consistency gap rather than a bug, since the token is a validation aid, not an authority.
 
@@ -102,15 +104,24 @@
 
 ---
 
-## 7. `src/server.ts` — Tool Registration List
+## 7. `src/loaders/workflow-loader.ts` — Transition List Support
 
 | # | Severity | Line(s) | Finding |
 |---|----------|---------|---------|
-| SV1 | Info | 20–24 | Tool list updated from 17 to 14 entries. Matches the actual registered tools. Verified: `help` + `list_workflows` + `get_workflow` + `validate_transition` + `get_activity` + `get_checkpoint` + `health_check` + `start_session` + `get_skill` + `list_resources` + `get_resource` + `discover_resources` + `save_state` + `restore_state` = 14. Correct. |
+| WL1 | Info | 180–202 | `getTransitionList` maps activity transitions to a flat `TransitionEntry[]` with human-readable conditions via `conditionToString`. Returns `[]` for unknown activities — graceful degradation. |
+| WL2 | Info | 204–217 | `conditionToString` recursively converts condition AST nodes to strings. Handles `simple`, `and`, `or`, `not`. Default case falls through to `String(condition)` which produces `[object Object]` for unrecognized types — functional but opaque. Low risk since all known condition types are covered. |
 
 ---
 
-## 8. `src/loaders/activity-loader.ts` — Mechanical Update
+## 8. `src/server.ts` — Tool Registration List
+
+| # | Severity | Line(s) | Finding |
+|---|----------|---------|---------|
+| SV1 | Info | 20–24 | Tool list updated from 17 to 15 entries. Verified: `help` + `list_workflows` + `get_workflow` + `validate_transition` + `get_activity` + `get_checkpoint` + `next_activity` + `health_check` + `start_session` + `get_skill` + `list_resources` + `get_resource` + `discover_resources` + `save_state` + `restore_state` = 15. Correct. |
+
+---
+
+## 9. `src/loaders/activity-loader.ts` — Mechanical Update
 
 | # | Severity | Line(s) | Finding |
 |---|----------|---------|---------|
@@ -125,6 +136,6 @@
 | Blocking | 0 | — |
 | Low | 1 | C1: Remove unused `chmod` import |
 | Observation | 10 | Documented for awareness |
-| Info | 13 | No action needed |
+| Info | 18 | No action needed |
 
-**Recommendation:** Approve. The single low-severity finding (unused import) is trivial cleanup. The observations around type casting (V2, V3), validate_transition token tracking (W3), and key caching (C2) are worth tracking for a future iteration but do not block merge.
+**Recommendation:** Approve. The single low-severity finding (unused import) is trivial cleanup. The observations around type casting (V2, V3, W6), validate_transition token tracking (W3), and key caching (C2) are worth tracking for a future iteration but do not block merge. The newer additions (`next_activity`, `get_workflow` summary mode, `getTransitionList`) are clean and well-integrated.
