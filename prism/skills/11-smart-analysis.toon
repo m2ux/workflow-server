@@ -53,7 +53,6 @@ resources[5]:
   - "62"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Workers load prompts once per pass; execute every operation in the prompt"
   task:
     when: "Dispatching fresh workers for prereq, knowledge fill orchestration, analysis (subsystem or L12 / full-prism), dispute, and profile update — 5+ workers; do NOT resume prior workers"

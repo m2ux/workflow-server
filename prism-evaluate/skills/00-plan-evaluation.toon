@@ -28,7 +28,7 @@ protocol:
 
   derive-dimensions[4]:
     - "If the user supplied dimensions, validate them: each must have a name and description. Proceed to survey-target."
-    - "If no dimensions supplied, load resource 00 (default-dimensions) and select the dimension set matching the target_type. Each dimension object has: { name, description, focus_areas (array of specific aspects to examine) }."
+    - "If no dimensions supplied, use attached resource 00 (default-dimensions) and select the dimension set matching the target_type. Each dimension object has: { name, description, focus_areas (array of specific aspects to examine) }."
     - "For target types not covered by the resource defaults, infer dimensions from the evaluation_description. Each dimension should represent an independent analytical axis."
     - "Present derived dimensions for user confirmation during the scope-definition checkpoint"
 
@@ -43,7 +43,7 @@ protocol:
     - "Record: target_type, target_summary, structure_inventory (sections or modules with sizes), key_topics"
 
   map-dimensions-to-lenses[6]:
-    - "Load resource 01 (dimension-lens-mapping) for the standard and custom mapping tables, output subdirectory conventions, and pipeline mode selection guidance."
+    - "Use attached resource 01 (dimension-lens-mapping) for the standard and custom mapping tables, output subdirectory conventions, and pipeline mode selection guidance."
     - "For each dimension, match against the standard mappings table first. If no standard mapping matches, use the custom dimension mappings table."
     - "If lens_overrides contains an entry for a dimension name, use the override values instead of the derived mapping"
     - "For each dimension, compose a dimension-specific analysis_focus string: a focused description of what to examine within this dimension, referencing specific target content discovered during survey-target. This MUST NOT be a bare label like 'security audit' or 'audit' — it must be substantive guidance."

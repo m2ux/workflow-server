@@ -20,7 +20,7 @@ protocol:
     - "Extract steps, checkpoints, skills (primary + supporting), loops, decisions, transitions, modeOverrides, and artifactPrefix"
   bootstrap-skill[2]:
     - "Call get_skills({ workflow_id, activity_id }) to load all skills (primary + supporting) and their referenced resources in one call"
-    - "Read each skill's protocol, rules, tools, inputs, and output definitions. Referenced resources are included in the response — no separate get_resource calls needed."
+    - "Read each skill's protocol, rules, tools, inputs, and output definitions. Referenced resources are in the response's resources array — each has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in this array."
   check-mode[2]:
     - "If is_review_mode is true in state variables, apply the activity's modeOverrides: use override description, apply override rules, add override steps, skip steps listed in skipSteps"
     - "If the activity is listed in the workflow's mode.skipActivities, report back immediately with a skip result"

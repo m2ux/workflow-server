@@ -59,7 +59,6 @@ tools:
   read_file:
     when: Understanding changed files and module structure
     usage: Parse source and design docs
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   write_file:
     when: Creating architecture-summary.md
     usage: Write summary document

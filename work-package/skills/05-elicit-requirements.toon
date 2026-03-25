@@ -18,7 +18,7 @@ protocol:
     - Prompt user for stakeholder discussion transcript before elicitation
     - Offer skip option with note about limitation
   iterate-domains[4]:
-    - Load resource 05 (requirements-elicitation) for question domains
+    - Use attached resource 05 (requirements-elicitation) for question domains
     - Iterate through domains one question at a time
     - Record responses and adapt follow-up based on answers
     - Skip irrelevant follow-ups; probe deeper when needed
@@ -57,7 +57,6 @@ resources[1]:
   - "05"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   addCommentToJiraIssue:
     when: Posting assumptions for stakeholder review
     usage: Add assumptions summary as Jira comment for stakeholder feedback

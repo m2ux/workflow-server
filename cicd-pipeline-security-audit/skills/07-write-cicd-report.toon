@@ -12,7 +12,7 @@ inputs[2]:
 
 protocol:
   load-remediation[1]:
-    - Load resource 03 (remediation-playbook) for per-pattern remediation guidance
+    - Use attached resource 03 (remediation-playbook) for per-pattern remediation guidance
   write-executive-summary[3]:
     - Summarize total findings by severity level
     - Highlight critical and high findings requiring immediate attention
@@ -46,5 +46,4 @@ resources[1]:
   - "03"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills"
     when: Loading merged findings and coverage data

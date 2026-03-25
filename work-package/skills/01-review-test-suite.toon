@@ -10,7 +10,7 @@ inputs[1]:
 
 protocol:
   load-guidance[2]:
-    - Load resource 17 (test-suite-review) for full review criteria
+    - Use attached resource 17 (test-suite-review) for full review criteria
     - Identify all test files in the project related to changed code
   run-tests[1]:
     - Run the test suite to establish a passing baseline
@@ -46,7 +46,6 @@ resources[2]:
   - "23"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: Reference for review criteria
   shell:
     when: Running test suite

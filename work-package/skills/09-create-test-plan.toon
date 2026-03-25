@@ -12,7 +12,7 @@ inputs[2]:
 
 protocol:
   load-guidance[1]:
-    - Load resource 11 (test-plan) for test plan template and guidance
+    - Use attached resource 11 (test-plan) for test plan template and guidance
   define-strategy[3]:
     - Define test strategy for the work package (unit, integration, e2e)
     - Identify which requirements need which types of tests
@@ -46,7 +46,6 @@ resources[1]:
   - "11"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   read_file:
     when: Reading requirements and plan artifacts
     usage: Load inputs for test case design

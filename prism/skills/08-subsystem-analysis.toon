@@ -50,7 +50,6 @@ resources[2]:
   - "64"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Workers load prompts once; execute every operation in the prompt"
   task:
     when: "Dispatching fresh workers for calibration, each per-subsystem pass, and synthesis — do NOT resume prior workers"

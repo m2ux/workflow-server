@@ -30,7 +30,7 @@ protocol:
     - "Establish measurable success criteria — each must be objectively verifiable"
     - "Include verification method for each criterion (tests, review, demonstration)"
   document-plan[2]:
-    - "Load resource 03 (package-plan-template) for the document structure"
+    - "Use attached resource 03 (package-plan-template) for the document structure"
     - "Create NN-{package-name}-plan.md in the planning folder using the template"
 
 output[1]:
@@ -54,7 +54,6 @@ resources[1]:
   - "03"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   circular_dependency:

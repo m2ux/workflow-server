@@ -12,7 +12,7 @@ inputs[2]:
 
 protocol:
   fetch-comments[2]:
-    - Load resource 28 (pr-review-response) for full response guidance
+    - Use attached resource 28 (pr-review-response) for full response guidance
     - Fetch all review comments from PR using gh API
   categorize[3]:
     - Categorize comments by type (required change, suggestion, question, nit)

@@ -12,7 +12,7 @@ inputs[2]:
 
 protocol:
   analyze-dependencies[3]:
-    - "Load resource 04 (prioritization-framework) for the evaluation methodology"
+    - "Use attached resource 04 (prioritization-framework) for the evaluation methodology"
     - "Build a dependency graph from the dependency sections of all package plans"
     - "Perform topological sort to identify valid orderings"
   evaluate-criteria[3]:
@@ -46,7 +46,6 @@ resources[1]:
   - "04"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   circular_dependencies:

@@ -63,7 +63,6 @@ tools:
     when: "Loading step-level skill references"
     params: "skill_id, workflow_id: cicd-pipeline-security-audit"
     returns: "Skill definition with protocol, tools, rules"
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   read_file:
     when: "Reading workflow YAML files, scripts, CODEOWNERS"
   grep:

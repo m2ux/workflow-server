@@ -21,7 +21,7 @@ protocol:
     - Create feature branch from the default branch (main/master)
     - Use naming convention type/issue-number-short-description
   create-pr[5]:
-    - "Load resource 12 (pr-description) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource."
+    - "Use attached resource 12 (pr-description) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource."
     - "BEFORE creating the PR: commit and push the planning folder to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote."
     - Create draft PR linked to issue using gh pr create
     - Ensure PR title and body reference issue number
@@ -54,7 +54,6 @@ rules:
   engineering-link-must-resolve: "The 📐 Engineering link in the PR body points to the parent (engineering) repo, not the target submodule. The planning folder MUST be committed and pushed to the parent repo BEFORE the PR is created, otherwise the link 404s."
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     next: gh_pr_create
   shell:
     when: Git operations and gh CLI

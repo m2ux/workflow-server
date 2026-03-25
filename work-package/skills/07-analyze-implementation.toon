@@ -14,7 +14,7 @@ inputs[3]:
 
 protocol:
   load-guidance[2]:
-    - Load resource 06 (implementation-analysis) for full guidance
+    - Use attached resource 06 (implementation-analysis) for full guidance
     - Review requirements and problem_statement for analysis scope
   locate-implementation[3]:
     - Identify where the feature/component is implemented (files, modules, entry points)
@@ -65,7 +65,6 @@ tools:
     when: Running existing tests or benchmarks
     params: "nice -n 19 cargo test, nice -n 19 cargo bench, or project-specific commands"
     usage: Execute tests and benchmarks to establish baseline metrics
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   no_existing_impl:

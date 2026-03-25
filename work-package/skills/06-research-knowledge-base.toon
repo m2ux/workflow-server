@@ -12,7 +12,7 @@ inputs[2]:
 
 protocol:
   load-resources[2]:
-    - Load resource 07 (knowledge-base-research) and 08 (web-research) for guidance
+    - Use attached resource 07 (knowledge-base-research) and 08 (web-research) for guidance
     - Review requirements and problem_statement for research focus
   search-knowledge-base[5]:
     - "Fetch concept-rag://activities resource to load activity index"
@@ -70,7 +70,6 @@ tools:
   WebSearch:
     when: Needing current information not in knowledge base
     usage: Search web for documentation, best practices, recent updates
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
 
 errors:
   no_kb_results:

@@ -49,7 +49,6 @@ resources[3]:
   - "41"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Workers load the lens for the pass type; execute every operation in the prompt"
   task:
     when: "Dispatching each analytical pass to a fresh sub-agent (initial L12, gap detection, corrected L12)"

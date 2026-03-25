@@ -45,4 +45,3 @@ resources[1]:
 tools:
   read_file:
     when: Loading scanner output JSON files
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills"

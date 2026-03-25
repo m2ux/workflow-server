@@ -13,7 +13,7 @@ inputs[2]:
 
 protocol:
   load-framework[2]:
-    - Load resource 09 (design-framework) for full guidance
+    - Use attached resource 09 (design-framework) for full guidance
     - Review issue_details and problem_context
   define-problem[4]:
     - Create clear problem statement with system understanding
@@ -61,7 +61,6 @@ resources[1]:
   - "09"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
   read_file:
     when: Reviewing issue content or Cargo.toml for project context
     usage: Examine files for problem context and project type

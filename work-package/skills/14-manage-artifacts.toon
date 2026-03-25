@@ -16,7 +16,7 @@ protocol:
     - Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/
     - Derive initiative-name from issue title (slugified)
   create-readme[3]:
-    - Load resource 01 (readme) for the README.md template and guidelines
+    - Use attached resource 01 (readme) for the README.md template and guidelines
     - Create README.md from the template in the planning folder with placeholder sections populated from issue context
     - "Populate header fields (name, date, status, type), Executive Summary, and Links table. Leave Problem Overview and Solution Overview as placeholder text for later activities to populate."
   apply-prefix[3]:

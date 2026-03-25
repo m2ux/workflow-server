@@ -63,4 +63,3 @@ tools:
     when: "Bootstrap — second call"
     params: "workflow_id, activity_id"
     returns: "Activity definition with steps, rules, outcome"
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"

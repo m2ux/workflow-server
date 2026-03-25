@@ -17,8 +17,8 @@ modeOverrides:
     rules[5]:
       - "Review the existing workflow content, not drafted content"
       - "Fetch workflow-server://schemas MCP resource and read schemas/README.md as the authoritative schema reference"
-      - "Load resource 00 (design principles) and resource 01 (schema construct inventory) as the audit checklist"
-      - "Load resource 02 (anti-patterns) and check each anti-pattern against the workflow"
+      - "Use attached resource 00 (design principles) and resource 01 (schema construct inventory) as the audit checklist"
+      - "Use attached resource 02 (anti-patterns) and check each anti-pattern against the workflow"
       - "Produce a severity-rated compliance report as the primary output"
     steps[7]:
       - id: load-all-workflow-files

@@ -16,7 +16,7 @@ rules[8]:
   - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"
   - "The scanner MUST apply ALL seven patterns (P1-P7) to every workflow file in the assigned submodule"
   - "Every finding MUST include: pattern ID, source (attacker-controlled input), sink (execution point), affected file path, affected line numbers, and evidence (the vulnerable code snippet)"
-  - "Load resource 01 (injection pattern catalog) before beginning scan — it contains grep patterns, untrusted context variables, and real-world examples"
+  - "Use attached resource 01 (injection pattern catalog) before beginning scan — it contains grep patterns, untrusted context variables, and real-world examples"
   - "For P2 (Pwn Request), the scanner must trace the full chain: trigger → checkout → execution. A pull_request_target trigger alone is not a finding; it becomes one when combined with fork code checkout and execution."
   - "For P1 (expression injection), the scanner must distinguish between safe and unsafe contexts. Expressions in if: conditions are safe. Expressions interpolated into run: blocks, action inputs that flow to shell, or script contents are unsafe."
   - "For P6 (AI config poisoning), check whether AI config files in the submodule are listed in CODEOWNERS. If no CODEOWNERS exists, flag all AI config files."
@@ -27,7 +27,7 @@ steps[9]:
   - id: load-patterns
     name: Load Detection Pattern Catalog
     skill: scan-injection-patterns
-    description: "Load resource 01 (injection pattern catalog) for grep patterns, untrusted context variable lists, and detection heuristics."
+    description: "Use attached resource 01 (injection pattern catalog) for grep patterns, untrusted context variable lists, and detection heuristics."
   - id: scan-expression-injection
     name: "P1: Scan for Expression Injection"
     skill: scan-injection-patterns

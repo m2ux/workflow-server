@@ -10,7 +10,7 @@ inputs[1]:
 
 protocol:
   load-rubric[1]:
-    - Load resource 02 (cicd-severity-rubric) for the Impact x Exploitability matrix
+    - Use attached resource 02 (cicd-severity-rubric) for the Impact x Exploitability matrix
   score-individual[3]:
     - For each finding, assess Impact tier (T1-T4) based on worst-case outcome
     - For each finding, assess Exploitability tier (E1-E4) based on attacker prerequisites
@@ -38,4 +38,3 @@ resources[1]:
   - "02"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills"

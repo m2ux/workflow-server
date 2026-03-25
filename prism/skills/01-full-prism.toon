@@ -70,7 +70,6 @@ resources[3]:
   - "02"
 
 tools:
-  note_resources: "Resources are attached to skill responses via get_skill and get_skills — no separate get_resource call needed"
     usage: "Load once, then execute every operation in the prompt"
   read_file:
     when: "Reading prior pass artifacts and target content"
