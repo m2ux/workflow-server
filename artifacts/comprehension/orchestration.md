@@ -1,8 +1,8 @@
 # Orchestration — Comprehension Artifact
 
-> **Last updated**: 2026-03-24 (third pass — tool naming and session surface)
-> **Work packages**: [#51 Checkpoint Enforcement Reliability](../planning/2026-03-12-checkpoint-enforcement-reliability/README.md), [#59 Rename MCP Tools](../planning/2026-03-24-rename-mcp-tools/README.md)
-> **Coverage**: Workflow server architecture, orchestrator/worker execution model, checkpoint enforcement chain, schema infrastructure, validation surface analysis, tool naming surface, session management gap
+> **Last updated**: 2026-03-25 (fourth pass — execution trace surface)  
+> **Work packages**: [#51 Checkpoint Enforcement Reliability](../planning/2026-03-12-checkpoint-enforcement-reliability/README.md), [#59 Rename MCP Tools](../planning/2026-03-24-rename-mcp-tools/README.md), [#63 Execution Traces](../planning/2026-03-25-execution-traces/README.md)  
+> **Coverage**: Workflow server architecture, orchestrator/worker execution model, checkpoint enforcement chain, schema infrastructure, validation surface analysis, tool naming surface, session management gap, execution trace surface
 > **Related artifacts**: [Assumptions Log](../planning/2026-03-12-checkpoint-enforcement-reliability/01-assumptions-log.md)
 
 ## Architecture Overview
@@ -568,6 +568,108 @@ One design path was implicitly rejected when `get_rules` was created as a standa
 **Combined bootstrap tool**: A single tool that returns both the goal-matching index and the rules in one call. This would have reduced the bootstrap sequence from two calls to one. Rejected because: the separation keeps each tool focused on one concern, and not all consumers need both (an agent that already knows which activity to run might call `get_rules` without `get_activities`). The visible problem avoided: coupling unrelated data. The invisible problem created: no natural point to establish a session, since neither tool owns the "session start" concern.
 
 **Cross-lens synthesis**: Both lenses converge on the same naming tension. The pedagogy lens reveals that vocabulary alignment transferred a naming problem from the domain model. The rejected-paths lens reveals that separating rules from the bootstrap flow removed the natural session-establishment point. The `start_session` rename addresses both: it gives the bootstrap tool a function-oriented name (starting a session) rather than a data-oriented name (getting rules), and it creates a natural point for session establishment.
+
+## Execution Trace Surface — 2026-03-25
+
+### Open Questions (Issue #63)
+
+| # | Question | Status | Resolution | Deep-Dive Section |
+|---|----------|--------|------------|-------------------|
+| Q1 | Does the codebase already have trace/history infrastructure that can be leveraged? | Resolved | Yes — `state.schema.ts` defines `HistoryEventTypeSchema` (21 event types), `HistoryEntrySchema`, and `addHistoryEvent()`. `WorkflowState.history` is an array of history entries. However, these are agent-side constructs — the server never calls `addHistoryEvent()`. | DD-8 |
+| Q2 | Are tool calls that lack a session token (help, list_workflows, health_check, start_session) traceable? | Resolved | `help`, `list_workflows`, `health_check` don't receive session tokens. `start_session` creates the token. These exempt tools (listed in the help response's `session_protocol.exempt_tools`) cannot be associated with a session for tracing. Only post-session tools are traceable. | DD-8 |
+| Q3 | Can the session token's `ts` field (second-precision) reliably identify a session for trace keying? | Resolved | For the current single-process stdio architecture: yes, collisions require same workflow started in the same second. But second-precision is fragile — a dedicated session ID (UUID) in the token would be more robust and trivial to add. | DD-8 |
+| Q4 | What data is already available in `withAuditLog` that could feed a trace? | Resolved | Tool name, full parameters object, result status (success/error), duration_ms, error message. Parameters include `session_token`, `workflow_id`, `activity_id`, `step_manifest`, `transition_condition` — rich workflow-semantic data. | DD-8 |
+| Q5 | Does the server have any in-process state that persists across tool calls? | Resolved | Only `config.schemaPreamble` (computed once at startup). No Maps, no caches, no session stores. Adding in-process trace storage (e.g., `Map<string, TraceEvent[]>`) would be the first mutable runtime state in the server. | DD-8 |
+
+### DD-8: Execution Trace Infrastructure Analysis
+
+#### Existing History Schema (Agent-Side)
+
+`src/schema/state.schema.ts` defines a comprehensive history event system designed for agent-side state management:
+
+```typescript
+HistoryEventTypeSchema = z.enum([
+  'workflow_started', 'workflow_completed', 'workflow_aborted',
+  'workflow_triggered', 'workflow_returned', 'workflow_suspended',
+  'activity_entered', 'activity_exited', 'activity_skipped',
+  'step_started', 'step_completed',
+  'checkpoint_reached', 'checkpoint_response',
+  'decision_reached', 'decision_branch_taken',
+  'loop_started', 'loop_iteration', 'loop_completed', 'loop_break',
+  'variable_set', 'error',
+]);
+```
+
+`HistoryEntrySchema` includes: `timestamp` (ISO datetime), `type` (from above), `activity`, `step`, `checkpoint`, `decision`, `loop`, `data` (arbitrary), `error` (message + code).
+
+`WorkflowState.history` is `z.array(HistoryEntrySchema).default([])`.
+
+`addHistoryEvent()` creates an immutable state update appending a new entry.
+
+`createInitialState()` seeds history with a `workflow_started` event.
+
+**Critical gap**: The server never calls `addHistoryEvent()`. It is exported from `types/state.ts` but only consumed in tests (`state-persistence.test.ts`). The history system is designed for the orchestrator agent to maintain in its `WorkflowState` object and persist via `save_state`. The server is a passive data store for agent-managed state.
+
+#### Server-Side Trace Interception Points
+
+The `withAuditLog` wrapper in `src/logging.ts` is the universal interception point. It wraps all 12 tool handlers:
+
+| Module | Tools | Count |
+|--------|-------|-------|
+| `workflow-tools.ts` | help, list_workflows, get_workflow, get_activity, get_checkpoint, next_activity, health_check | 7 |
+| `resource-tools.ts` | start_session, get_skills, get_skill | 3 |
+| `state-tools.ts` | save_state, restore_state | 2 |
+
+The wrapper captures: tool name, full parameters, success/error status, duration. Parameters include workflow-semantic fields (`workflow_id`, `activity_id`, `step_manifest`, `transition_condition`, `checkpoint_id`, `skill_id`).
+
+Current implementation logs to stderr and returns — no accumulation:
+
+```typescript
+export function withAuditLog<T, R>(toolName: string, handler: (params: T) => Promise<R>) {
+  return async (params: T): Promise<R> => {
+    const start = Date.now();
+    try {
+      const result = await handler(params);
+      logAuditEvent({ timestamp: new Date().toISOString(), tool: toolName, parameters: params, result: 'success', duration_ms: Date.now() - start });
+      return result;
+    } catch (error) {
+      logAuditEvent({ ... result: 'error', error_message: ... });
+      throw error;
+    }
+  };
+}
+```
+
+#### Session Identity
+
+Session tokens encode `SessionPayload { wf, act, skill, cond, v, seq, ts }`. The `ts` field is `Math.floor(Date.now() / 1000)` — Unix seconds. Combined with `wf`, this identifies a session but with second-precision collision risk.
+
+Session-exempt tools (`help`, `list_workflows`, `health_check`, `start_session`) cannot be traced to a session because they either don't accept a token or create one.
+
+`start_session` is the natural trace-initialization point — it's when a session begins. The returned token's `ts` (or a new session ID field) can key the trace.
+
+#### In-Process State Feasibility
+
+The server has zero mutable runtime state today. Adding a `Map<string, TraceEvent[]>` would be the first. Given the stdio transport (single process, single connection, single agent), this is architecturally simple:
+
+- Map lives in a module-level variable (or on ServerConfig)
+- `start_session` initializes a trace entry
+- `withAuditLog` (or a parallel `withTrace`) appends events
+- A new `get_trace` tool reads the accumulated events
+- Traces survive for the server's process lifetime (same as the session)
+
+#### Design Decision: Server-Side vs Agent-Side Tracing
+
+Two approaches are available:
+
+| Approach | How It Works | Pros | Cons |
+|----------|-------------|------|------|
+| **Server-side** (new) | Server accumulates events in-process via `withAuditLog` augmentation | Automatic — no agent cooperation needed; captures all tool calls; traces even when agent doesn't maintain state | Breaks the purely-stateless server architecture; traces don't include agent-side details (step execution within activities) |
+| **Agent-side** (existing schema) | Agent uses `addHistoryEvent()` on its `WorkflowState` and persists via `save_state` | Schema already exists; richer detail (step-level, checkpoint resolution, variable changes); no server changes | Requires agent discipline; traces lost if agent doesn't call `save_state`; only as complete as the agent makes them |
+
+The issue's acceptance criteria favor server-side: "Every tool call in a workflow session is captured in the trace" and "Incomplete or failed executions still produce partial traces up to the point of failure." Agent-side tracing cannot guarantee either — if the agent crashes or doesn't maintain state, no trace exists.
+
+A hybrid approach is possible: server-side captures tool-call-level events automatically, while the existing agent-side history schema captures richer semantic events (step completions, variable changes). The two can be correlated by session ID.
 
 ---
 *This artifact is part of a persistent knowledge base. It is augmented across successive work packages to build cumulative codebase understanding.*
