@@ -54,7 +54,7 @@ Without a record of execution, diagnosing problems becomes guesswork. When a wor
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#63](https://github.com/m2ux/workflow-server/issues/63) |
-| PR | *Created below* |
+| PR | [#64](https://github.com/m2ux/workflow-server/pull/64) |
 
 ---
 
