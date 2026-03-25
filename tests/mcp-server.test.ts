@@ -217,35 +217,6 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: validate_transition', () => {
-    it('should validate allowed transition', async () => {
-      const result = await client.callTool({
-        name: 'validate_transition',
-        arguments: {
-          session_token: sessionToken,
-          workflow_id: 'work-package',
-          from_activity: 'start-work-package',
-          to_activity: 'design-philosophy',
-        },
-      });
-      const validation = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(validation.valid).toBe(true);
-    });
-
-    it('should reject invalid transition', async () => {
-      const result = await client.callTool({
-        name: 'validate_transition',
-        arguments: {
-          session_token: sessionToken,
-          workflow_id: 'work-package',
-          from_activity: 'start-work-package',
-          to_activity: 'complete',
-        },
-      });
-      const validation = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
-      expect(validation.valid).toBe(false);
-    });
-  });
 
   describe('tool: health_check', () => {
     it('should return healthy status', async () => {

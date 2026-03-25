@@ -33,7 +33,6 @@ For all workflow execution user requests, call the `help` tool on the workflow-s
 | `get_activity` | Get activity details |
 | `next_activity` | Get possible next activities with transition conditions |
 | `get_checkpoint` | Get checkpoint details |
-| `validate_transition` | Check if a transition is allowed |
 | `get_skills` | Get all skills and their referenced resources for an activity in one call |
 | `get_skill` | Get a single skill with its referenced resources attached |
 | `save_state` / `restore_state` | Persist/restore workflow state (encrypts token at rest) |
