@@ -26,8 +26,8 @@ All workflow tools require `session_token` and explicit `workflow_id`. Each resp
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_skills` | `session_token`, `workflow_id`, `activity_id` | Get all skills and their referenced resources for an activity in one call |
-| `get_skill` | `session_token`, `workflow_id`, `skill_id` | Get a single skill with its referenced resources attached |
+| `get_skills` | `session_token`, `workflow_id`, `activity_id` | Get all skills and resources for an activity. Resources returned as structured array `[{index, id, version, content}]` |
+| `get_skill` | `session_token`, `workflow_id`, `skill_id` | Get a single skill with resources. Response: `{skill, resources: [{index, id, version, content}]}` |
 
 ### State Tools
 

@@ -111,7 +111,7 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 ### Batch Skill Loading
 
-`get_skills(workflow_id, activity_id)` returns all skills (primary + supporting) and their referenced resources for an activity in one call. This replaces multiple sequential `get_skill` and `get_resource` calls, reducing round-trips and context overhead.
+`get_skills(workflow_id, activity_id)` returns all skills and their referenced resources as a structured array. Each resource has `index`, `id`, `version`, and `content` fields — agents match resources by index or id, eliminating ambiguity. `get_skill` returns the same structured format for individual skill loads.
 
 ### Self-Describing Bootstrap
 
