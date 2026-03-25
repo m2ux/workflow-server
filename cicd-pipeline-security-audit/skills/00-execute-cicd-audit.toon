@@ -54,6 +54,9 @@ tools:
   read_file:
     when: "Loading scanner output JSON files"
 
+resources[1]:
+  - "00"
+
 errors:
   no_targets:
     cause: "No target submodules specified or found"

@@ -68,6 +68,11 @@ state:
     - coverage_files - List of files read by agents
     - checklist_coverage - §3 coverage matrix showing per-item evaluation status
 
+resources[3]:
+  - "00"
+  - "01"
+  - "07"
+
 errors:
   submodule_not_found:
     cause: Target submodule path does not exist
