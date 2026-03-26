@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { getOrCreateServerKey, hmacSign, hmacVerify } from './utils/crypto.js';
 
+/** Mechanical trace event with compressed field names (opaque to agents). */
 export interface TraceEvent {
   traceId: string;
   spanId: string;
@@ -15,6 +16,7 @@ export interface TraceEvent {
   vw?: string[];
 }
 
+/** HMAC-signed trace token payload containing full event data for a segment. */
 export interface TraceTokenPayload {
   sid: string;
   act: string;
@@ -27,6 +29,7 @@ export interface TraceTokenPayload {
   events: TraceEvent[];
 }
 
+/** Create a trace event with compressed field names. */
 export function createTraceEvent(
   traceId: string,
   name: string,
@@ -52,6 +55,7 @@ export function createTraceEvent(
   };
 }
 
+/** In-process trace store. Accumulates events per session with cursor-based segment emission. */
 export class TraceStore {
   private sessions = new Map<string, TraceEvent[]>();
   private cursors = new Map<string, number>();
@@ -85,6 +89,7 @@ export class TraceStore {
   }
 }
 
+/** Encode a trace token payload as an HMAC-signed base64url string. */
 export async function createTraceToken(payload: TraceTokenPayload): Promise<string> {
   const json = JSON.stringify(payload);
   const b64 = Buffer.from(json, 'utf8').toString('base64url');
@@ -93,6 +98,7 @@ export async function createTraceToken(payload: TraceTokenPayload): Promise<stri
   return `${b64}.${sig}`;
 }
 
+/** Decode and verify an HMAC-signed trace token, returning the payload with events. */
 export async function decodeTraceToken(token: string): Promise<TraceTokenPayload> {
   const dotIndex = token.lastIndexOf('.');
   if (dotIndex === -1) throw new Error('Invalid trace token: missing signature');
