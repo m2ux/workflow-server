@@ -3,33 +3,45 @@
 **Work Package:** Execution Traces for Workflows  
 **Issue:** [#63](https://github.com/m2ux/workflow-server/issues/63)  
 **Created:** 2026-03-25  
-**Revised:** 2026-03-25 (v3 — incorporating user design feedback: tool renames, two-level manifests, agent ID, validation capture)
+**Revised:** 2026-03-25 (v4 — final: mechanical/semantic split, full-data trace tokens)
 
 ---
 
 ## Design Approach
 
-### Strategy: Server-Side Trace Accumulation with Enhanced Manifests
+### Two-Layer Trace Architecture
 
-Add server-side trace accumulation with OTel-compatible format. Rename workflow navigation tools for clarity. Introduce two-level manifests (step + activity) for richer trace data. Extend session tokens with agent ID for worker attribution. Capture validation warnings in trace events.
+| Layer | Owner | What | Where |
+|-------|-------|------|-------|
+| **Mechanical** | Server (`withAuditLog`) | Tool calls, timing, duration, status, errors, validation warnings | Full-data HMAC trace tokens in `_meta.trace_token` |
+| **Semantic** | Agent (skill instructions) | Step outputs, checkpoint responses, decisions, loops, variables | Planning folder files (agent-written) |
+
+### How It Works
+
+1. Every tool call passes through `withAuditLog`, which builds a mechanical `TraceEvent` (tool name, timestamps, duration, status, validation warnings, workflow/activity position)
+2. On `next_activity` (the activity transition call), the server packages all events since the last transition into a **full-data trace token** — an HMAC-signed, base64url-encoded blob containing the raw events
+3. The token is returned in `_meta.trace_token`. The orchestrator appends it to an array (opaque — never parsed)
+4. At any point, `get_trace` decodes the accumulated tokens and returns the full mechanical trace
+5. Meanwhile, the agent writes semantic trace data (step outputs, decisions, checkpoint responses) to files in the planning folder per skill instructions
 
 ### Design Decisions
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| **Tool rename** | `get_activity` → `next_activity` (commit), `next_activity` → `get_activities` (query) | Clearer semantics: `next_activity` = "transition to next", `get_activities` = "list available transitions" |
-| **Two-level manifests** | Step manifest (worker) + Activity manifest (orchestrator), both on `next_activity` | Different agents produce different granularity data; single manifest conflates producers |
-| **Step manifest extension** | Add optional `decision_branch`, `loop_iteration`, `loop_total`, `checkpoint_response` | Captures within-activity semantic events without schema-breaking changes |
-| **Activity manifest** | New: `activity_id`, `outcome`, `transition_condition`, `checkpoints_resolved`, `variables_changed` | Captures workflow-level events invisible to step manifests |
-| **Agent ID in token** | Add `aid` field to `SessionPayload` | Distinguishes orchestrator from worker calls in traces |
-| **Validation in trace** | Extract `_meta.validation` from handler response | Essential for debugging transition and manifest validation issues |
-| **Trace format** | OTel-compatible: traceId, spanId, name, timestamp, duration_ms, status, attributes | Future export compatibility |
-| **Privacy** | Redact `session_token` from trace; extract semantic fields only | Token is HMAC credential |
-| **Self-exclusion** | `get_trace` excluded from its own trace via `excludeFromTrace` | Prevents recursion |
+| **Trace split** | Mechanical (server) + Semantic (agent) | Each side owns its data; no semantic bloat in tokens |
+| **Token format** | Full-data HMAC-signed (not coordinate-only) | Self-contained — survives server restart; no in-memory dependency for resolution |
+| **Field naming** | Compressed (`ts`, `ms`, `s`, `wf`, `act`, `aid`) | Tokens are opaque to agents; minimizes token size (~189 bytes/event) |
+| **Tool rename** | `get_activity` → `next_activity`, `next_activity` → `get_activities` | Clearer semantics: commit vs query |
+| **Token extension** | `sid` (UUID) + `aid` (agent ID) | Session identity + worker attribution |
+| **Validation capture** | `_meta.validation` extracted into trace events | Essential diagnostic data |
+| **Step manifest** | Lean: `step_id` + `output` only (on `next_activity`) | Structural validation only; semantic detail in agent trace |
+| **Activity manifest** | Lean: `activity_id`, `outcome`, `transition_condition` (on `next_activity`) | Structural validation; detailed content in agent trace |
+| **Self-exclusion** | `get_trace` excluded from trace capture | Prevents recursion |
+| **Privacy** | `session_token` redacted from events | HMAC credential |
 
 ### Visual Reference
 
-See [Solution Diagrams](04-solution-diagrams.md) for sequence diagrams and component architecture.
+See [Solution Diagrams](04-solution-diagrams.md) for architecture and sequence flows.
 
 ---
 
@@ -37,182 +49,182 @@ See [Solution Diagrams](04-solution-diagrams.md) for sequence diagrams and compo
 
 ### Phase 1: Tool Rename
 
-#### T1: Rename `get_activity` → `next_activity`
+#### T1: Rename `get_activity` → `next_activity` and `next_activity` → `get_activities`
 **Files:** `src/tools/workflow-tools.ts`, `src/server.ts`, `tests/mcp-server.test.ts`  
 **Changes:**
-- `workflow-tools.ts`: Rename tool registration from `'get_activity'` to `'next_activity'` (line 96). Update `withAuditLog` name (line 104). Update error message referencing old name (line 166).
-- `server.ts`: Update tools list in `logInfo` (line 21)
-- `tests/mcp-server.test.ts`: Update all ~20 references to `get_activity` → `next_activity` in test tool calls
-- Update description to: "Transition to the next activity. Validates step manifest for the leaving activity, validates transition legality, loads the target activity definition, and advances the session token."  
+- Rename both tool registrations, `withAuditLog` names, and descriptions (single atomic commit)
+- Update ~20+ references in `workflows/` TOON files (meta skills, rules, audit workflows)
+- Update all test references (~33 occurrences in `mcp-server.test.ts`)  
 **Dependencies:** None  
-**Estimate:** 15m
+**Estimate:** 25m
 
-#### T2: Rename `next_activity` → `get_activities`
-**Files:** `src/tools/workflow-tools.ts`, `src/server.ts`, `tests/mcp-server.test.ts`  
-**Changes:**
-- `workflow-tools.ts`: Rename tool registration from `'next_activity'` to `'get_activities'` (line 162). Update `withAuditLog` name (line 164).
-- `server.ts`: Update tools list
-- `tests/mcp-server.test.ts`: Update references  
-- Update description to: "Get the list of possible next activities with their transition conditions."  
-**Dependencies:** T1 (do rename sequentially to avoid name collision — old `next_activity` must be renamed before new `next_activity` is created)  
-**Estimate:** 10m
+### Phase 2: Token + Trace Infrastructure
 
-**Note:** T1 and T2 must be executed carefully. Rename current `get_activity` → `next_activity` first, then rename current `next_activity` → `get_activities`. If done simultaneously, the intermediate state has a name collision.
-
-### Phase 2: Token and Trace Infrastructure
-
-#### T3: Extend SessionPayload with `sid` and `aid`
+#### T2: Extend SessionPayload with `sid` and `aid`
 **Files:** `src/utils/session.ts`  
 **Changes:**
-- Add `sid: string` (session UUID) and `aid: string` (agent ID) to `SessionPayload`
+- Add `sid: string` and `aid: string` to `SessionPayload`
 - Add `aid?: string` to `SessionAdvance`
-- Import `randomUUID` from `node:crypto`
-- `createSessionToken()`: generate `sid: randomUUID()`, set `aid: ''`
-- `decode()`: add `sid` and `aid` to type guard checks
-- `advanceToken()`: handle `aid` in updates (auto-preserve `sid`)  
-**Dependencies:** None (parallel with T1/T2)  
+- `createSessionToken()`: `sid: randomUUID()`, `aid: ''`
+- `decode()`: add type guards for `sid` and `aid`  
+**Dependencies:** None  
 **Estimate:** 15m
 
-#### T4: Create trace module
+#### T3: Create trace module
 **File:** `src/trace.ts` (new)  
 **Changes:**
-- `TraceAttributes` interface: `workflow_id?`, `activity_id?`, `checkpoint_id?`, `skill_id?`, `transition_condition?`, `step_manifest?`, `activity_manifest?`, `summary?`, `agent_id?`
-- `TraceEvent` interface (OTel-compatible): `traceId`, `spanId`, `name`, `timestamp`, `duration_ms`, `status` ("ok" | "error"), `error_message?`, `attributes: TraceAttributes`, `validation_warnings?: string[]`, `validation_status?: string`
-- `TraceStore` class with `Map<string, TraceEvent[]>`: `initSession()`, `append()`, `getEvents()`, `listSessions()`  
+- `TraceEvent` interface (compressed fields): `traceId`, `spanId`, `name`, `ts` (Unix seconds), `ms` (duration), `s` ("ok"|"error"), `err?` (error message), `wf`, `act`, `aid`, `vw?` (validation warnings array)
+- `TraceStore` class:
+  - `sessions: Map<string, TraceEvent[]>`
+  - `cursors: Map<string, number>` (last-emitted index per session)
+  - `initSession(sid)`, `append(sid, event)`, `getEvents(sid)`, `listSessions()`
+  - `getSegmentAndAdvanceCursor(sid)`: returns events since last emission + updates cursor
+- `createTraceToken(events: TraceEvent[]): Promise<string>` — JSON → base64url → HMAC sign (reuses `hmacSign` from crypto.ts)
+- `decodeTraceToken(token: string): Promise<TraceEvent[]>` — HMAC verify → base64url → JSON parse  
 **Dependencies:** None  
-**Estimate:** 20m
+**Estimate:** 30m
 
-#### T5: Augment withAuditLog for trace + validation capture
+#### T4: Augment withAuditLog for trace capture + validation extraction
 **File:** `src/logging.ts`  
 **Changes:**
 - Add optional `traceStore?: TraceStore` and `excludeFromTrace?: boolean` params
-- When tracing: extract `session_token` → decode `sid` and `aid` → build `TraceAttributes` from semantic fields → redact token
-- After handler returns: extract `_meta.validation` from result (duck-type check: `result && typeof result === 'object' && '_meta' in result`). Add `validation_warnings` and `validation_status` to trace event.
-- Append `TraceEvent` to store
-- On error: capture with `status: "error"`, `error_message`
-- Preserve existing stderr logging unchanged  
-**Dependencies:** T3 (sid/aid in token), T4 (TraceStore type)  
-**Estimate:** 30m
+- When tracing: decode `sid` and `aid` from `session_token`; build `TraceEvent` with compressed fields
+- After handler returns: duck-type check for `_meta.validation`; add `vw` (validation warnings) to event
+- On error: `s: 'error'`, `err: message`
+- Preserve existing stderr logging  
+**Dependencies:** T2 (sid/aid), T3 (TraceStore)  
+**Estimate:** 25m
 
-### Phase 3: Manifest Schemas and Tool Integration
+### Phase 3: Manifests
 
-#### T6: Extend step manifest schema
-**Files:** `src/tools/workflow-tools.ts`, `src/utils/validation.ts`, `schemas/` (new JSON schema)  
+#### T5: Add step_manifest param to `next_activity`
+**Files:** `src/tools/workflow-tools.ts`  
 **Changes:**
-- Extend `stepManifestSchema` zod definition with optional fields: `decision_branch?: string`, `loop_iteration?: number`, `loop_total?: number`, `checkpoint_response?: string`
-- Update `StepManifestEntry` interface in `validation.ts`
-- Create `schemas/step-manifest.schema.json` documenting the extended format
-- `validateStepManifest()`: no logic changes needed (extra fields are optional, validation checks step IDs and order)  
-**Dependencies:** T1 (new tool name `next_activity`)  
-**Estimate:** 20m
+- The renamed `next_activity` already has step_manifest (it was `get_activity`). Verify it's wired correctly after rename.
+- Step manifest stays lean: `{ step_id: string, output: string }[]`  
+**Dependencies:** T1  
+**Estimate:** 5m (verification only)
 
-#### T7: Add activity manifest schema and parameter
-**Files:** `src/tools/workflow-tools.ts`, `src/utils/validation.ts`, `schemas/` (new JSON schema)  
+#### T6: Add activity_manifest param to `next_activity`
+**Files:** `src/tools/workflow-tools.ts`, `src/utils/validation.ts`  
 **Changes:**
-- Define `activityManifestSchema` zod schema: `Array<{ activity_id: string, outcome: string, transition_condition?: string, checkpoints_resolved?: string[], variables_changed?: Record<string, unknown> }>`
-- Define `ActivityManifestEntry` interface in `validation.ts`
-- Add `activity_manifest` as optional parameter on `next_activity` tool (the commit operation, renamed from `get_activity`)
-- Add `validateActivityManifest()`: validate reported activity sequence against workflow transition graph
+- Define `activityManifestSchema`: `Array<{ activity_id: string, outcome: string, transition_condition?: string }>`
+- Add as optional param on `next_activity`
+- Add `validateActivityManifest()`: check reported activity sequence against transition graph (advisory warnings)
 - Create `schemas/activity-manifest.schema.json`  
-**Dependencies:** T1 (tool renamed), T6 (pattern established)  
-**Estimate:** 30m
+**Dependencies:** T1  
+**Estimate:** 25m
 
-### Phase 4: Server Wiring and New Tools
+### Phase 4: Server Wiring + Tools
 
-#### T8: Wire TraceStore into server
+#### T7: Wire TraceStore into server + emit trace tokens
 **Files:** `src/server.ts`, `src/config.ts`, `src/tools/workflow-tools.ts`, `src/tools/resource-tools.ts`, `src/tools/state-tools.ts`  
 **Changes:**
 - `config.ts`: Add `traceStore?: TraceStore` to `ServerConfig`
-- `server.ts`: Instantiate `TraceStore` in `createServer()`, attach to config
-- All tool registration functions: pass `config.traceStore` to `withAuditLog`. For `get_trace`: pass `excludeFromTrace: true`  
-**Dependencies:** T4, T5  
-**Estimate:** 20m
+- `server.ts`: Instantiate `TraceStore` in `createServer()`
+- All tool registrations: pass `config.traceStore` to `withAuditLog`
+- In `next_activity` handler (after all processing): call `traceStore.getSegmentAndAdvanceCursor(sid)`, create trace token from segment, add `_meta.trace_token` to response
+- `get_trace`: pass `excludeFromTrace: true`  
+**Dependencies:** T3, T4  
+**Estimate:** 25m
 
-#### T9: Initialize trace on start_session
+#### T8: Initialize trace on start_session
 **File:** `src/tools/resource-tools.ts`  
 **Changes:**
-- In `start_session` handler: decode new token → extract `sid` → `traceStore.initSession(sid)` → append `session_started` event  
-**Dependencies:** T3, T8  
+- After `createSessionToken()`: decode → extract `sid` → `traceStore.initSession(sid)`
+- Append `session_started` event  
+**Dependencies:** T2, T7  
 **Estimate:** 10m
 
-#### T10: Add get_trace MCP tool
+#### T9: Add get_trace MCP tool
 **File:** `src/tools/workflow-tools.ts`  
 **Changes:**
-- Register `get_trace` tool: accepts `session_token`, returns `{ traceId, events[] }`
-- Decode token → extract `sid` → `traceStore.getEvents(sid)`
+- Register `get_trace`: accepts `session_token` + optional `trace_tokens: string[]`
+- When `trace_tokens` provided: verify HMAC, decode each, concatenate events in order
+- When not provided: return full in-memory trace from `traceStore.getEvents(sid)`
+- Handle expired/invalid tokens gracefully (return receipt metadata)
 - Pass `excludeFromTrace: true` to `withAuditLog`  
-**Dependencies:** T3, T4, T8  
-**Estimate:** 15m
+**Dependencies:** T2, T3, T7  
+**Estimate:** 20m
 
-#### T11: Update exports and registration
+#### T10: Update exports
 **Files:** `src/index.ts`, `src/server.ts`  
 **Changes:**
-- Export `TraceEvent`, `TraceStore`, `TraceAttributes`, `StepManifestEntry`, `ActivityManifestEntry`
+- Export `TraceEvent`, `TraceStore` from `./trace.js`
 - Update server tool list in `logInfo`  
-**Dependencies:** T10  
+**Dependencies:** T9  
 **Estimate:** 5m
 
 ### Phase 5: Tests
 
-#### T12: Write tests
+#### T11: Write tests
 **Files:** `tests/trace.test.ts` (new), `tests/session.test.ts`, `tests/mcp-server.test.ts`  
 **Changes:**
 
 **Unit — TraceStore** (`tests/trace.test.ts`):
-- initSession, append, getEvents, listSessions, session isolation, unknown session
+- initSession, append, getEvents, listSessions, isolation, unknown session
+- getSegmentAndAdvanceCursor: returns correct slice, advances cursor, subsequent call returns new segment only
+- createTraceToken / decodeTraceToken: round-trip, HMAC verification, tampered token rejection
 
 **Unit — Session** (`tests/session.test.ts`):
-- `sid` present and UUID format
-- `aid` present, defaults empty, preserved across advance, settable via advanceToken
-- `sid` preserved across advance
+- `sid` present, UUID format, preserved across advance
+- `aid` defaults empty, settable via advanceToken, preserved when not updated
 
-**Integration — Tool Renames** (`tests/mcp-server.test.ts`):
-- `next_activity` (renamed from `get_activity`) accepts step_manifest and activity_manifest
-- `get_activities` (renamed from `next_activity`) returns transitions
-- Old tool names return errors
+**Integration** (`tests/mcp-server.test.ts`):
+- Tool renames: `next_activity` loads activity, `get_activities` returns transitions, old names fail
+- Trace capture: start_session → tool calls → get_trace returns all events
+- Trace tokens: next_activity returns `_meta.trace_token`; accumulate tokens → get_trace with tokens resolves full trace
+- Validation warnings in trace events
+- Error events captured
+- get_trace excluded from own output
+- session_token not in trace events (privacy)
+- Exempt tools not traced
+- agent_id in events when set
+- get_trace with no tokens returns in-memory trace
+- Activity manifest accepted and validated  
 
-**Integration — Trace Capture** (`tests/mcp-server.test.ts`):
-- start_session → tool calls → get_trace verifies all captured
-- Trace events have OTel-compatible fields
-- Validation warnings appear in trace events
-- Error events captured with status and message
-- Session-exempt tools not in trace
-- get_trace excluded from its own output
-- session_token not in trace attributes (privacy)
-- traceId matches session sid
-- agent_id appears in trace when set
-- Extended manifest fields (decision_branch, checkpoint_response) in trace attributes
-- Activity manifest in trace attributes  
-
-**Dependencies:** T1-T11  
+**Dependencies:** T1-T10  
 **Estimate:** 60m
+
+### Phase 6: Workflow Content + Issue Update
+
+#### T12: Update TOON files with semantic trace instructions
+**Files:** `workflows/meta/skills/*.toon`, `workflows/work-package/skills/*.toon`  
+**Changes:**
+- Instruct workers to write semantic trace (step outputs, checkpoint responses, decisions) to planning folder
+- Instruct orchestrator to accumulate `_meta.trace_token` and persist to planning folder  
+**Dependencies:** T1 (tool renames already done)  
+**Estimate:** 30m (workflow content authoring)
+
+#### T13: Update issue #63
+**Changes:**
+- Update issue description to reflect evolved scope (mechanical/semantic split, trace tokens, tool renames)  
+**Dependencies:** All implementation complete  
+**Estimate:** 10m
 
 ---
 
 ## Task Ordering
 
 ```
-Phase 1 (Renames):
-  T1 (get_activity→next_activity) → T2 (next_activity→get_activities)
+Phase 1:  T1 (tool renames + TOON updates)
 
-Phase 2 (Infrastructure, parallel with Phase 1):
-  T3 (sid+aid in token) ──┐
-                           ├── T5 (augment withAuditLog)
-  T4 (trace module)  ─────┘
+Phase 2:  T2 (sid+aid) ──┐
+                          ├── T4 (augment withAuditLog)
+          T3 (trace module) ┘
 
-Phase 3 (Manifests, after Phase 1):
-  T6 (extend step manifest) → T7 (add activity manifest)
+Phase 3:  T5 (verify step manifest) ─── T6 (add activity manifest)
 
-Phase 4 (Wiring, after Phase 2):
-  T8 (wire TraceStore) → T9 (init on start_session)
-                        → T10 (get_trace tool)
-                        → T11 (exports)
+Phase 4:  T7 (wire + token emission) → T8 (init start_session)
+                                      → T9 (get_trace tool)
+                                      → T10 (exports)
 
-Phase 5 (Tests, after all):
-  T12 (all tests)
+Phase 5:  T11 (all tests)
+
+Phase 6:  T12 (TOON instructions) → T13 (issue update)
 ```
 
-**Critical path:** T1 → T2 → T7 → T12 and T3 → T5 → T8 → T10 → T12
+**Critical path:** T1 → T3 → T4 → T7 → T9 → T11
 
 ---
 
@@ -220,21 +232,21 @@ Phase 5 (Tests, after all):
 
 | Phase | Tasks | Estimate |
 |-------|-------|----------|
-| Phase 1: Tool Rename | T1-T2 | ~25m |
-| Phase 2: Token + Trace Infrastructure | T3-T5 | ~65m |
-| Phase 3: Manifest Schemas | T6-T7 | ~50m |
-| Phase 4: Server Wiring + Tools | T8-T11 | ~50m |
-| Phase 5: Tests | T12 | ~60m |
-| **Total** | **T1-T12** | **~4-4.5h agentic time** |
+| 1. Tool Rename | T1 | 25m |
+| 2. Token + Trace Infrastructure | T2-T4 | 70m |
+| 3. Manifests | T5-T6 | 30m |
+| 4. Server Wiring + Tools | T7-T10 | 60m |
+| 5. Tests | T11 | 60m |
+| 6. Workflow Content + Issue | T12-T13 | 40m |
+| **Total** | **T1-T13** | **~4.5-5h agentic time** |
 
 ---
 
 ## Out of Scope
 
-- Agent-side history accumulation (existing `addHistoryEvent` — separate concern)
-- Cross-session trace aggregation or persistence beyond server lifetime
+- Extended step manifest semantic fields (moved to agent-written semantic trace)
+- Cross-session trace aggregation
 - Real-time trace streaming or dashboards
-- mcp-trace-js or OpenTelemetry library integration (designed for future compatibility)
-- Trace export to external systems (File, DB, OTLP)
-- Mid-workflow trace access configuration (workflow authoring in TOON, not server code)
-- TOON-format manifest encoding (manifests are JSON params on MCP tool calls — TOON applies to workflow definitions, not runtime API parameters)
+- mcp-trace-js or OpenTelemetry library dependencies
+- Trace export to external systems
+- Mid-workflow trace access configuration (workflow authoring, addressed by T12)
