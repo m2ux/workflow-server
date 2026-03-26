@@ -1,3 +1,5 @@
+import type { TraceStore } from './trace.js';
+
 export interface ServerConfig {
   workflowDir: string;
   schemasDir: string;
@@ -5,6 +7,8 @@ export interface ServerConfig {
   serverVersion: string;
   /** Schema preamble prepended to get_workflow responses. Built at startup. */
   schemaPreamble?: string;
+  /** In-process trace store for execution tracing. Created by createServer(). */
+  traceStore?: TraceStore;
 }
 
 export function loadConfig(): ServerConfig {

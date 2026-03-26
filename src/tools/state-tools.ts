@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { ServerConfig } from '../config.js';
 import { NestedWorkflowStateSchema, StateSaveFileSchema } from '../schema/state.schema.js';
 import type { StateSaveFile } from '../schema/state.schema.js';
 import { decodeToon, encodeToon } from '../utils/toon.js';
@@ -17,7 +18,9 @@ function generateSaveId(): string {
   return `state-${ts}`;
 }
 
-export function registerStateTools(server: McpServer): void {
+export function registerStateTools(server: McpServer, config: ServerConfig): void {
+  const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
+
   server.tool(
     'save_state',
     'Save workflow execution state to a TOON file in the planning folder for cross-session resumption.',
@@ -72,7 +75,7 @@ export function registerStateTools(server: McpServer): void {
         content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }],
         _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
       };
-    }),
+    }, traceOpts),
   );
 
   server.tool(
@@ -103,6 +106,6 @@ export function registerStateTools(server: McpServer): void {
         content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }],
         _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
       };
-    }),
+    }, traceOpts),
   );
 }
