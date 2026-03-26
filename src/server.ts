@@ -18,7 +18,7 @@ export function createServer(config: ServerConfig): McpServer {
   registerSchemaResources(server, config);
   logInfo('Server configured', { 
     tools: [
-      'help', 'list_workflows', 'get_workflow', 'get_activity', 'get_checkpoint', 'next_activity', 'health_check',
+      'help', 'list_workflows', 'get_workflow', 'next_activity', 'get_checkpoint', 'get_activities', 'health_check',
       'start_session', 'get_skills', 'get_skill',
       'save_state', 'restore_state'
     ],

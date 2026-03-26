@@ -93,15 +93,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content, _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation } };
     }));
 
-  server.tool('get_activity', 'Get details of a specific activity within a workflow',
+  server.tool('next_activity', 'Transition to the next activity. Validates step manifest for the leaving activity, validates transition legality, loads the target activity definition, and advances the session token.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
       activity_id: z.string().describe('Activity ID to load'),
-      transition_condition: z.string().optional().describe('The condition that caused this transition (from next_activity output). Enables server-side validation of condition-activity consistency.'),
+      transition_condition: z.string().optional().describe('The condition that caused this transition (from get_activities output). Enables server-side validation of condition-activity consistency.'),
       step_manifest: stepManifestSchema,
     },
-    withAuditLog('get_activity', async ({ session_token, workflow_id, activity_id, transition_condition, step_manifest }) => {
+    withAuditLog('next_activity', async ({ session_token, workflow_id, activity_id, transition_condition, step_manifest }) => {
       const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -159,11 +159,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }));
 
-  server.tool('next_activity', 'Get the list of possible next activities with their transition conditions. Returns transitions from the current activity (token.act) so the agent can match conditions against its state variables.',
+  server.tool('get_activities', 'Get the list of possible next activities with their transition conditions. Returns transitions from the current activity (token.act) so the agent can match conditions against its state variables.',
     { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID') },
-    withAuditLog('next_activity', async ({ session_token, workflow_id }) => {
+    withAuditLog('get_activities', async ({ session_token, workflow_id }) => {
       const token = await decodeSessionToken(session_token);
-      if (!token.act) throw new Error('No current activity in session token. Call get_activity first.');
+      if (!token.act) throw new Error('No current activity in session token. Call next_activity first.');
 
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
