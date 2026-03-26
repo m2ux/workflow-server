@@ -39,7 +39,7 @@ artifacts[2]:
     name: "architecture-summary.md"
     location: planning
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
-steps[5]:
+steps[6]:
   - id: diff-review
     name: Review diff
     description: "Examine all changes in the PR for scope and relevance"
@@ -55,10 +55,17 @@ steps[5]:
   - id: create-architecture-summary
     name: Create architecture summary
     description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
+  - id: analyze-strategic-findings
+    name: Analyze Strategic Findings
+    description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly."
+    actions[1]:
+      - action: set
+        target: recommended_strategic_option
+        description: "Set to the recommended strategic review option based on findings analysis"
 checkpoints[1]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
-    message: "Strategic review complete. Accepting in 30s unless you want fixes."
+    message: "Strategic review complete. Based on findings analysis, the recommended action is {recommended_strategic_option}. Auto-advancing in 30s."
     blocking: false
     defaultOption: acceptable
     autoAdvanceMs: 30000

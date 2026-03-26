@@ -336,7 +336,10 @@ checkpoints[8]:
       variable: issue_cancelled
       operator: "=="
       value: false
-    message: "Issue confirmed. Proceed to create feature branch and draft PR?"
+    message: "Issue confirmed. Creating feature branch and draft PR in 30s unless you intervene."
+    blocking: false
+    defaultOption: proceed
+    autoAdvanceMs: 30000
     options[2]:
       - id: proceed
         label: Create branch and PR

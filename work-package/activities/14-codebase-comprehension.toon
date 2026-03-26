@@ -75,7 +75,7 @@ artifacts[1]:
 checkpoints[2]:
   - id: architecture-confirmed
     name: Architecture Survey Checkpoint
-    message: "Here is my understanding of the codebase architecture, key abstractions, and design rationale. Confirming in 30s unless you intervene."
+    message: "Comprehension artifact: {comprehension_artifact_path}. Here is my understanding of the codebase architecture, key abstractions, and design rationale. Confirming in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000

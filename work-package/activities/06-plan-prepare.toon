@@ -80,7 +80,7 @@ artifacts[2]:
   - id: test-plan-document
     name: test-plan.md
     location: planning
-checkpoints[2]:
+checkpoints[1]:
   - id: approach-confirmed
     name: Approach Checkpoint
     message: "Approach presented above. Confirming in 30s unless you want to revise."
@@ -94,19 +94,6 @@ checkpoints[2]:
       - id: revise
         label: Revise approach
         description: "Adjust the approach before planning continues"
-  - id: assumptions-log-final
-    name: Final Assumptions Review
-    message: "Present the full assumptions table (all phases: design, requirements, research, analysis, planning) as a message to the user BEFORE showing this question. Include each assumption's ID, statement, status, and resolution. Then: Do these meet expectations?"
-    options[3]:
-      - id: acceptable
-        label: Assumptions log is acceptable
-        description: Proceed to implementation with current assumptions
-      - id: revisit
-        label: Need to revisit some assumptions
-        description: Return to earlier phase to address assumption gaps
-      - id: document-concerns
-        label: Document concerns and proceed
-        description: Note concerns in the log but continue to implementation
 transitions[1]{to,isDefault}:
   assumptions-review,true
 exitActions[1]{action,message}:

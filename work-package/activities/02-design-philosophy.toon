@@ -47,10 +47,11 @@ modeOverrides:
                 ticket_refactor_needed: true
           - id: proceed-with-gaps
             label: Proceed with gaps noted
-            description: Continue review with gaps documented as review findings
+            description: "Document gaps in assumptions-log.md and continue review with gaps as tracked findings"
             effect:
               setVariable:
                 ticket_refactor_needed: false
+                ticket_gaps_documented: true
           - id: no-gaps
             label: Ticket is complete
             description: No significant gaps were found
@@ -123,7 +124,10 @@ loops[1]:
 checkpoints[2]:
   - id: classification-confirmed
     name: Classification Checkpoint
-    message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Is this classification correct?"
+    message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Confirming in 30s unless you intervene."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[2]:
       - id: confirmed
         label: Classification confirmed
@@ -133,7 +137,10 @@ checkpoints[2]:
         description: The problem classification needs adjustment
   - id: workflow-path-selected
     name: Workflow Path Checkpoint
-    message: "Given the {complexity} classification, which workflow path would you like?"
+    message: "Given the {complexity} classification, the recommended path is shown as default. Auto-advancing in 30s. For simple: skip optional, moderate: research only, complex: full workflow."
+    blocking: false
+    defaultOption: skip-optional
+    autoAdvanceMs: 30000
     options[4]:
       - id: full-workflow
         label: Full workflow (elicitation + research)
