@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { randomUUID } from 'node:crypto';
 import { getOrCreateServerKey, hmacSign, hmacVerify } from './crypto.js';
 
 export interface SessionPayload {
@@ -9,6 +10,8 @@ export interface SessionPayload {
   v: string;
   seq: number;
   ts: number;
+  sid: string;
+  aid: string;
 }
 
 export interface SessionAdvance {
@@ -16,6 +19,7 @@ export interface SessionAdvance {
   act?: string;
   skill?: string;
   cond?: string;
+  aid?: string;
 }
 
 async function encode(payload: SessionPayload): Promise<string> {
@@ -44,7 +48,8 @@ async function decode(token: string): Promise<SessionPayload> {
     if (typeof parsed['wf'] !== 'string' || typeof parsed['act'] !== 'string' ||
         typeof parsed['skill'] !== 'string' || typeof parsed['cond'] !== 'string' ||
         typeof parsed['v'] !== 'string' || typeof parsed['seq'] !== 'number' ||
-        typeof parsed['ts'] !== 'number') {
+        typeof parsed['ts'] !== 'number' || typeof parsed['sid'] !== 'string' ||
+        typeof parsed['aid'] !== 'string') {
       throw new Error('Missing or invalid token fields');
     }
     return parsed as unknown as SessionPayload;
@@ -63,6 +68,8 @@ export async function createSessionToken(workflowId: string, workflowVersion: st
     v: workflowVersion,
     seq: 0,
     ts: Math.floor(Date.now() / 1000),
+    sid: randomUUID(),
+    aid: '',
   });
 }
 
@@ -77,6 +84,7 @@ export async function advanceToken(token: string, updates?: SessionAdvance): Pro
   if (updates?.act !== undefined) payload.act = updates.act;
   if (updates?.skill !== undefined) payload.skill = updates.skill;
   if (updates?.cond !== undefined) payload.cond = updates.cond;
+  if (updates?.aid !== undefined) payload.aid = updates.aid;
   return encode(payload);
 }
 
