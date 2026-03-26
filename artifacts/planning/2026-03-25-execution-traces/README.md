@@ -24,7 +24,9 @@ Without a record of execution, diagnosing problems becomes guesswork. When a wor
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix adds an automatic recording system to the workflow server. Every time an AI agent makes a request to the server — such as loading an activity, checking available transitions, or saving progress — the server captures a structured record of that request including what was asked for, how long it took, and whether it succeeded. These records accumulate throughout a workflow session and can be retrieved at any time using a new tool, giving anyone a complete timeline of what happened during the session without relying on chat logs.
+
+The recording works by extending the server's existing request-handling wrapper to also store events in memory, keyed by a unique session identifier embedded in the session token. The events use an industry-standard format that can be exported to external monitoring tools in the future. The solution also introduces two levels of structured reports — one from the worker agent describing step-level activity within each phase, and another from the orchestrator describing the sequence of phases and transitions — so the trace captures not just raw server calls but the workflow-meaningful context behind them.
 
 ---
 
@@ -36,8 +38,8 @@ Without a record of execution, diagnosing problems becomes guesswork. When a wor
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 04 | [Research](04-kb-research.md) | Tracing patterns, mcp-trace, OTel findings | 20-30m | ✅ Complete |
 | 04 | [Solution diagrams](04-solution-diagrams.md) | Sequence diagrams, component architecture | 15-20m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
