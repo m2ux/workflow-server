@@ -23,7 +23,7 @@ modeOverrides:
     steps[3]:
       - id: load-target-workflow
         name: Load Target Workflow
-        description: "Call get_workflow with target_workflow_id to load the full workflow definition. Call get_activity for each activity to get complete details including steps, checkpoints, transitions, and modeOverrides."
+        description: "Call get_workflow with target_workflow_id to load the full workflow definition. Call next_activity for each activity to get complete details including steps, checkpoints, transitions, and modeOverrides."
       - id: enumerate-workflow-contents
         name: Enumerate Workflow Contents
         description: "List all files in the target workflow directory (workflow.toon, activities, skills, resources, README). Record file count, activity count, skill count, resource count, checkpoint count, and transition count."

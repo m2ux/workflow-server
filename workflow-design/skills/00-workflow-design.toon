@@ -95,7 +95,7 @@ tools:
       - variables
       - modes
       - initialActivity
-  get_activity:
+  next_activity:
     when: Examining activity structure in reference workflows
     params: "workflow_id, activity_id"
     returns: Full activity with steps, checkpoints, transitions
@@ -107,7 +107,7 @@ tools:
     when: Examining resource organization in reference workflows
     params: workflow_id
     returns: List of all resources for a workflow
-  next_activity:
+  get_activities:
     when: Verifying transition integrity in drafted content
     params: "session_token, workflow_id"
     returns: Transition list with conditions from current activity

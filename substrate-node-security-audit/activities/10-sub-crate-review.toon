@@ -1,7 +1,7 @@
 id: sub-crate-review
 version: 1.8.0
 name: "Sub-Agent: Crate Deep Review"
-description: "Workflow for Group A sub-agents. Executes an 8-step structured crate review with verifiable outputs at each stage. Each step defines a REQUIRED OUTPUT that must be produced before proceeding. The sub-agent loads this activity via get_activity and follows it sequentially."
+description: "Workflow for Group A sub-agents. Executes an 8-step structured crate review with verifiable outputs at each stage. Each step defines a REQUIRED OUTPUT that must be produced before proceeding. The sub-agent loads this activity via next_activity and follows it sequentially."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
 recognition[3]:
   - crate deep review

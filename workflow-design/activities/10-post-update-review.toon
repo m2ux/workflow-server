@@ -13,7 +13,7 @@ rules[2]:
 steps[5]:
   - id: reload-updated-workflow
     name: Reload Updated Workflow
-    description: "Call get_workflow with the target_workflow_id to reload the full workflow definition from the workflow-server. Call get_activity for each activity to get complete details. This ensures the audit operates on the committed state, not cached pre-update data."
+    description: "Call get_workflow with the target_workflow_id to reload the full workflow definition from the workflow-server. Call next_activity for each activity to get complete details. This ensures the audit operates on the committed state, not cached pre-update data."
   - id: run-audit-passes
     name: Run Audit Passes
     description: "Run all 5 audit passes from resource 04 (review mode guide) against the reloaded workflow: (1) schema expressiveness review using resource 01, (2) convention conformance review, (3) rule-to-structure enforcement audit, (4) anti-pattern scan using resource 02, (5) schema validation of all TOON files. Record findings with severity ratings."
