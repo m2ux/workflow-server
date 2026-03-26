@@ -4,13 +4,19 @@ import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, getTransitionList } from '../loaders/workflow-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition } from '../utils/validation.js';
-import type { StepManifestEntry } from '../utils/validation.js';
+import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
+import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
   output: z.string(),
 })).optional().describe('Step completion manifest from the previous activity. Each entry reports a step ID and its output summary.');
+
+const activityManifestSchema = z.array(z.object({
+  activity_id: z.string(),
+  outcome: z.string(),
+  transition_condition: z.string().optional(),
+})).optional().describe('Activity completion manifest from the orchestrator. Reports the sequence of activities completed so far with outcomes and transition conditions.');
 
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
@@ -100,8 +106,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       activity_id: z.string().describe('Activity ID to load'),
       transition_condition: z.string().optional().describe('The condition that caused this transition (from get_activities output). Enables server-side validation of condition-activity consistency.'),
       step_manifest: stepManifestSchema,
+      activity_manifest: activityManifestSchema,
     },
-    withAuditLog('next_activity', async ({ session_token, workflow_id, activity_id, transition_condition, step_manifest }) => {
+    withAuditLog('next_activity', async ({ session_token, workflow_id, activity_id, transition_condition, step_manifest, activity_manifest }) => {
       const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -120,12 +127,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? validateTransitionCondition(token, result.value, activity_id, transition_condition)
         : null;
 
+      const activityManifestWarnings: string[] = [];
+      if (activity_manifest) {
+        const amw = validateActivityManifest(activity_manifest as ActivityManifestEntry[], result.value);
+        activityManifestWarnings.push(...amw);
+      }
+
       const validation = buildValidation(
         validateWorkflowConsistency(token, workflow_id),
         validateActivityTransition(token, result.value, activity_id),
         validateWorkflowVersion(token, result.value),
         condWarning,
         ...manifestWarnings,
+        ...activityManifestWarnings,
       );
 
       return {
