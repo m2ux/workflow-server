@@ -49,6 +49,11 @@ protocol:
     - "Update descriptive text in the Status column to reflect what was done (e.g., 'Code quality review (4/5, M1-M3 fixed)')."
     - "Update the footer status line to reflect the current workflow position (e.g., 'Implementation complete — PR submitted for review')."
     - "Write the updated README.md back to disk. The orchestrator will include it in the same commit as the activity's artifacts."
+  write-semantic-trace[4]:
+    - "MANDATORY before report-completion. Write a semantic trace file to the planning folder capturing workflow-meaningful events from this activity."
+    - "File path: {planning_folder_path}/{artifactPrefix}-semantic-trace.json. Content: JSON object with activity_id, started_at, completed_at, and an events array."
+    - "Events to capture: step outputs (step_id + output summary for each completed step), checkpoint responses (checkpoint_id + selected_option_id + effects applied), decision branches taken (decision_id + branch_id + condition evaluated), loop iterations (loop_id + iteration count + convergence info), variable changes (variable name + old value + new value)."
+    - "This complements the server's mechanical trace (tool call timing and validation) with the agent-side semantic context that the server cannot observe."
   report-completion[3]:
     - "Compile structured result with result_type: 'activity_complete'"
     - "Include: variables_changed (all variable mutations from checkpoint effects and step actions), checkpoints_responded (checkpoint_id + selected_option for each), artifacts_produced (id + path for each — include README.md if updated), steps_completed (list of step IDs)"

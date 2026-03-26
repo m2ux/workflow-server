@@ -32,13 +32,15 @@ protocol:
     - "If is_resuming is true: this is the first dispatch after state restoration. The worker has no prior context (new session). Include a resumption context block in the prompt: list completedActivities, key variable values, and prior checkpoint decisions so the worker understands what has already been done. After this first dispatch completes, set is_resuming = false."
     - "If is_resuming is true and the current_activity has completedSteps in the restored state, include the completed step indices so the worker can skip already-finished steps within the activity."
     - "Include in prompt: 'Report back with structured result: result_type (activity_complete or checkpoint_pending), variables_changed, checkpoints_responded, artifacts_produced, steps_completed'"
-  process-result[6]:
+  process-result[8]:
     - "Read worker output: check result_type field"
     - "If result_type is 'checkpoint_pending': go to handle-checkpoint-yield"
     - "If result_type is 'activity_complete': extract variables_changed, checkpoints_responded, artifacts_produced, steps_completed"
     - "VALIDATE COMPLETION: Compare the worker's steps_completed against the activity definition's required steps, and checkpoints_responded against all required blocking checkpoints. If any required step or required blocking checkpoint is missing, do NOT accept the result — resume the worker with instructions to complete the remaining steps/checkpoints. This check requires the activity definition loaded during dispatch-activity."
     - "If validation fails, go back to dispatch-activity (resume) with the missing steps and checkpoints listed explicitly in the prompt. Do not advance."
     - "If validation passes: update state — apply all variable changes reported by the worker. Record completed activity in completedActivities list."
+    - "TRACE TOKEN ACCUMULATION: When calling next_activity to load the next activity, check the response's _meta.trace_token field. If present, append the trace token string to the trace_tokens array (maintained as orchestrator state). Trace tokens are opaque — do not parse them."
+    - "At workflow completion or when diagnostic trace data is needed, call get_trace({ session_token, trace_tokens }) to resolve all accumulated tokens into the full mechanical execution trace."
   handle-checkpoint-yield[7]:
     - "Worker has yielded a blocking checkpoint. Extract checkpoint_id, checkpoint_message, checkpoint_options from the worker result."
     - "Apply any partial_variables_changed from the worker to orchestrator state before presenting the checkpoint."
@@ -135,6 +137,11 @@ tools:
     params: "file_path (path to workflow-state.toon)"
     returns: "Full nested state object as JSON"
     action: "Load and validate saved state, return to orchestrator for resumption"
+  get_trace:
+    when: "Resolving accumulated trace tokens at workflow end or for diagnostics"
+    params: "session_token, trace_tokens (array of opaque trace token strings)"
+    returns: "Full mechanical execution trace with all tool call events"
+    action: "Resolve trace tokens into concatenated event timeline. Tokens are accumulated from next_activity _meta.trace_token responses."
 
 errors:
   worker_timeout:
