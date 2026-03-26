@@ -144,6 +144,15 @@
           "type": "boolean",
           "default": true,
           "description": "Whether this checkpoint blocks workflow execution until the user responds. Defaults to true."
+        },
+        "defaultOption": {
+          "type": "string",
+          "description": "Option ID to auto-select when autoAdvanceMs elapses without user intervention. Only meaningful when blocking is false."
+        },
+        "autoAdvanceMs": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Milliseconds to wait before auto-selecting defaultOption. Only meaningful when blocking is false and defaultOption is set."
         }
       },
       "required": ["id", "name", "message", "options"],
@@ -508,6 +517,13 @@
                   "type": "string"
                 },
                 "description": "Step IDs to skip in this mode"
+              },
+              "skipCheckpoints": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Checkpoint IDs to skip in this mode"
               },
               "checkpoints": {
                 "type": "array",
