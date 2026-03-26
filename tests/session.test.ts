@@ -118,6 +118,52 @@ describe('session token utilities', () => {
     });
   });
 
+  describe('session ID (sid)', () => {
+    it('should have sid field (UT-13)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const payload = await decodeSessionToken(token);
+      expect(typeof payload.sid).toBe('string');
+      expect(payload.sid.length).toBeGreaterThan(0);
+    });
+
+    it('sid should be UUID format (UT-14)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const payload = await decodeSessionToken(token);
+      expect(payload.sid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+    });
+
+    it('sid should be preserved across advance (UT-15)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const original = await decodeSessionToken(token);
+      const advanced = await advanceToken(token, { act: 'some-activity' });
+      const after = await decodeSessionToken(advanced);
+      expect(after.sid).toBe(original.sid);
+    });
+  });
+
+  describe('agent ID (aid)', () => {
+    it('should default to empty string (UT-16)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const payload = await decodeSessionToken(token);
+      expect(payload.aid).toBe('');
+    });
+
+    it('should be settable via advanceToken (UT-17)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const advanced = await advanceToken(token, { aid: 'worker-1' });
+      const payload = await decodeSessionToken(advanced);
+      expect(payload.aid).toBe('worker-1');
+    });
+
+    it('should be preserved when not in updates (UT-18)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const step1 = await advanceToken(token, { aid: 'worker-1' });
+      const step2 = await advanceToken(step1, { act: 'some-activity' });
+      const payload = await decodeSessionToken(step2);
+      expect(payload.aid).toBe('worker-1');
+    });
+  });
+
   describe('token opacity and HMAC', () => {
     it('token should not contain readable workflow id', async () => {
       const token = await createSessionToken('work-package', '3.4.0');
