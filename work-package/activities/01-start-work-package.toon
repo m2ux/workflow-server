@@ -76,7 +76,8 @@ modeOverrides:
     context_to_preserve[2]:
       - review_pr_url - URL of PR being reviewed
       - review_base_branch - Base branch of PR being reviewed
-entryActions[1]{action,message}:
+entryActions[2]{action,message}:
+  validate,PREREQUISITE: Agent must read and follow AGENTS.md before starting any work
   log,Starting issue management
 steps[15]:
   - id: resolve-target

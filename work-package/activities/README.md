@@ -89,6 +89,7 @@ graph TD
 |------|----------|
 | primary | `classify-problem` |
 | supporting | `review-assumptions` |
+| supporting | `reconcile-assumptions` |
 
 **Steps:**
 
@@ -99,14 +100,12 @@ graph TD
 5. **collect-assumptions** — Identify assumptions made during problem classification and path selection.
 6. **create-assumptions-log** — Create the assumptions log with initial assumptions from this activity.
 
-**Checkpoints (5):**
+**Checkpoints (2):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `problem-classified` | Confirm problem type and complexity assessment | yes |
-| `workflow-path` | Select workflow path: full, elicit-only, research-only, or direct | yes |
-| `design-philosophy-doc` | Confirm design philosophy document is accurate | yes |
-| `assumptions-review` | Review assumptions from classification and path selection | yes |
+| `classification-confirmed` | Confirm problem type and complexity assessment | yes |
+| `workflow-path-selected` | Select workflow path: full, elicit-only, research-only, or skip | yes |
 
 **Transitions:**
 
@@ -167,13 +166,12 @@ graph TD
 7. **create-comprehension-artifact** — Write/augment artifact to `.engineering/artifacts/comprehension/{codebase-area}.md`.
 8. **deep-dive-loop** — Interactive loop: present areas for deeper exploration, perform targeted analysis, append to artifact.
 
-**Checkpoints (3):**
+**Checkpoints (2):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `existing-artifacts-review` | Show existing artifacts, ask if user wants to review them first (conditional) | yes |
-| `architecture-confirmed` | Confirm architecture survey and key abstractions are correct | yes |
-| `comprehension-sufficient` | Confirm understanding is sufficient or select area for deeper exploration | yes |
+| `architecture-confirmed` | Confirm architecture survey and key abstractions are correct | no (autoAdvance 30s) |
+| `comprehension-sufficient` | Confirm understanding is sufficient or select area for deeper exploration (conditional: has_open_questions) | no (autoAdvance 30s) |
 
 **Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration explores a selected area, performs targeted analysis, and updates the artifact.
 
@@ -244,13 +242,12 @@ graph TD
 5. **update-assumptions-log** — Add requirements-phase assumptions to the assumptions log.
 6. **reconcile-assumptions** — Classify and iteratively resolve code-analyzable assumptions through targeted codebase analysis.
 
-**Checkpoints (3):**
+**Checkpoints (2):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `stakeholder-transcript` | Provide or skip stakeholder discussion transcript | yes |
-| `domain-complete` | Continue to next domain, revisit, or finish early | yes |
-| `document-review` | Confirm requirements document, proceed to research | yes |
+| `elicitation-complete` | Confirm elicitation is complete | no (autoAdvance 30s) |
 
 **Loops:**
 - `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
@@ -311,14 +308,12 @@ graph TD
 
 **Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
 
-**Checkpoints (4):**
+**Checkpoints (2):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `kb-insights` | Confirm knowledge base findings are relevant | yes |
-| `web-research-confirmed` | Confirm web research is complete | yes |
-| `assumptions-review` | Review pattern applicability and synthesis assumptions | yes |
-| `research-complete` | Confirm research is sufficient, proceed to analysis | yes |
+| `research-findings` | Confirm research findings | no (autoAdvance 30s) |
+| `research-assumptions-review` | Review research assumptions | no (autoAdvance 30s) |
 
 **Transitions:** Default to `implementation-analysis`.
 
@@ -378,8 +373,8 @@ graph TD
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `analysis-confirmed` | Confirm analysis findings are correct | yes |
-| `assumptions-review` | Review assumptions about current behavior and gaps | yes |
+| `analysis-confirmed` | Confirm analysis findings are correct | no (autoAdvance 30s) |
+| `analysis-assumptions-review` | Review assumptions about current behavior and gaps | no (autoAdvance 30s) |
 
 **Transitions:** Default to `plan-prepare`.
 
@@ -428,12 +423,11 @@ graph TD
 7. **sync-branch** — Ensure feature branch is up to date with `main`.
 8. **update-pr** — Update PR with planning information.
 
-**Checkpoints (3):**
+**Checkpoints (2):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `approach-confirmed` | Confirm implementation approach | yes |
-| `assumptions-review` | Review planning assumptions | yes |
+| `approach-confirmed` | Confirm implementation approach | no (autoAdvance 30s) |
 | `assumptions-log-final` | Final review of accumulated assumptions before implementation | yes |
 
 **Transitions:** Default to `assumptions-review`.
@@ -556,12 +550,14 @@ graph TD
 4. **collect-assumptions** — Identify all assumptions made during this task.
 5. **update-assumptions-log** — Record outcomes in assumptions log after review.
 
-**Checkpoints (2):**
+**Checkpoints (4):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `task-complete` | Confirm task implementation, proceed to assumption review | yes |
-| `assumption-review` | Review each individual assumption | yes |
+| `switch-model-pre-impl` | Switch model before implementation | yes |
+| `confirm-implementation` | Confirm task implementation | yes |
+| `implementation-assumptions-review` | Review implementation assumptions | no (autoAdvance 30s) |
+| `switch-model-post-impl` | Switch model after implementation | yes |
 
 **Transitions:** Default to `post-impl-review`.
 
@@ -615,15 +611,13 @@ graph TD
 3. **Test suite review** — Assess test quality, coverage, and anti-patterns.
 4. **Architecture summary** — Create high-level architecture summary with diagrams.
 
-**Checkpoints (5):**
+**Checkpoints (3):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `file-index-table` | Present file/block index for user to flag items | yes |
-| `block-interview` | Interview user on each flagged block | yes |
-| `code-review` | Present code review findings | yes |
-| `test-quality` | Present test suite review findings | yes |
-| `architecture-summary` | Present architecture summary for confirmation | yes |
+| `block-interview` | Interview user on each flagged block (conditional: has_flagged_blocks) | yes |
+| `review-findings` | Confirm review findings | no (autoAdvance 30s) |
 
 **Decision:** `blocker-gate` — If `has_critical_blocker == true`, transition back to `implement`. Otherwise proceed to `validate`.
 
@@ -716,12 +710,11 @@ graph TD
 4. **apply-cleanup** — If cleanup needed, remove identified artifacts and update review document. (Skipped in review mode.)
 5. **create-architecture-summary** — Create `11-architecture-summary.md` using the architecture summary resource template.
 
-**Checkpoints (2):**
+**Checkpoints (1):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `review-findings` | Confirm strategic review findings | yes |
-| `review-result` | Determine outcome: pass, cleanup, or rework | yes |
+| `review-findings` | Confirm strategic review findings | no (autoAdvance 30s) |
 
 **Decision:** `review-result` — If `review_passed == true`, transition to `submit-for-review`. Otherwise loop back to `plan-prepare`.
 
@@ -770,11 +763,10 @@ graph TD
 4. **await-review** — Wait for PR to receive manual review.
 5. **process-review-comments** — Analyze and respond to review feedback using `respond-to-pr-review` skill.
 
-**Checkpoints (3):**
+**Checkpoints (2):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `pr-description` | Confirm PR description is accurate | yes |
 | `review-received` | Confirm that review comments have been received | yes |
 | `review-outcome` | Determine outcome: approved, minor changes, or significant changes | yes |
 
@@ -832,11 +824,7 @@ graph TD
 8. **update-status** — Update work package plan status after PR merge.
 9. **select-next** — Select next work package.
 
-**Checkpoints (1):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `retrospective-review` | Review received, confirm PR feedback has been addressed | yes |
+**Checkpoints (0):** This activity has no checkpoints.
 
 **Transitions:** None — this is the terminal activity.
 

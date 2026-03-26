@@ -46,7 +46,6 @@ resources[2]:
   - "23"
 
 tools:
-    usage: Reference for review criteria
   shell:
     when: Running test suite
     usage: Execute tests to verify they pass
