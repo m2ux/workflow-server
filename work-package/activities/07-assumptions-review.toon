@@ -34,7 +34,7 @@ modeOverrides:
     rules[2]:
       - "Do NOT post to the issue tracker in review mode — the review plan is internal to the reviewer"
       - "Set stakeholder_review_complete=true and proceed directly to the next activity"
-steps[5]:
+steps[6]:
   - id: evaluate-open-assumptions
     name: Evaluate whether open assumptions exist
     description: "Read assumptions-log.md and count assumptions that remain open (not resolved through code analysis). If zero open assumptions remain, set has_open_assumptions to false and stakeholder_review_complete to true — the activity will post the comment (auto-advance) but skip the blocking stakeholder-response checkpoint entirely. If open assumptions exist, set has_open_assumptions to true."
@@ -51,6 +51,18 @@ steps[5]:
   - id: await-stakeholder-response
     name: Await stakeholder response
     description: "Wait for stakeholders to review the posted comment. User returns with stakeholder feedback or indicates approval."
+  - id: analyze-stakeholder-feedback
+    name: Analyze stakeholder feedback
+    description: "Analyze the stakeholder feedback content and severity. Classify as minor (terminology, clarification), moderate (approach questions, scope concerns), or major (fundamental objections, missing requirements). Set recommended_triage_option based on analysis: minor-corrections for minor, needs-comprehension for moderate with knowledge gaps, plan-revision-needed for major."
+    condition:
+      type: simple
+      variable: has_stakeholder_comment
+      operator: "=="
+      value: true
+    actions[1]:
+      - action: set
+        target: recommended_triage_option
+        description: "Set to the recommended feedback-triage option based on analysis"
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Update assumptions log with stakeholder review outcomes and any feedback received."
@@ -116,8 +128,10 @@ checkpoints[3]:
       variable: has_stakeholder_comment
       operator: "=="
       value: true
-    message: "Based on the stakeholder feedback, what level of revision is needed?"
-    blocking: true
+    message: "Based on the stakeholder feedback analysis, the recommended action is {recommended_triage_option}. Auto-advancing in 30s unless you choose differently."
+    blocking: false
+    defaultOption: minor-corrections
+    autoAdvanceMs: 30000
     options[3]:
       - id: minor-corrections
         label: Minor corrections to assumptions

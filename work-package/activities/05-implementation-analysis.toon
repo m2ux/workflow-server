@@ -38,7 +38,7 @@ modeOverrides:
       - base_commit_sha - SHA of base branch at time of analysis
       - expected_changes - What changes should be made per requirements
       - pr_diff_summary - Summary of changes between base and PR branch
-steps[7]:
+steps[9]:
   - id: review-implementation
     name: Review implementation
     description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture."
@@ -61,7 +61,16 @@ steps[7]:
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
     skill: reconcile-assumptions
-loops[1]:
+  - id: present-resolved-assumptions
+    name: Present resolved assumptions
+    description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."
+    actions[1]:
+      - action: message
+        message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
+  - id: interview-open-assumptions
+    name: Interview open assumptions
+    description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the analysis-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
+loops[2]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
     type: while
@@ -81,6 +90,20 @@ loops[1]:
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+  - id: assumption-interview
+    name: Assumption Interview Loop
+    type: forEach
+    variable: current_assumption
+    over: open_assumptions
+    maxIterations: 20
+    description: "Iterates over each open (stakeholder-dependent) assumption, presenting the analysis-assumption-interview checkpoint for each."
+    steps[2]:
+      - id: present-assumption
+        name: Present assumption to user
+        description: "Present the current open assumption via the analysis-assumption-interview checkpoint."
+      - id: record-response
+        name: Record user response
+        description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
 artifacts[1]:
   - id: analysis-document
     name: implementation-analysis.md
@@ -88,7 +111,7 @@ artifacts[1]:
 checkpoints[2]:
   - id: analysis-confirmed
     name: Analysis Confirmation Checkpoint
-    message: "Here's my analysis of the current implementation. Confirming in 30s unless you intervene."
+    message: "Implementation analysis complete. Proceeding in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
@@ -102,22 +125,28 @@ checkpoints[2]:
       - id: more-analysis
         label: More analysis needed
         description: Additional areas need investigation
-  - id: analysis-assumptions-review
-    name: Analysis Assumptions Checkpoint
-    message: "Present the full assumptions table as a message to the user BEFORE showing this question. Then: Analysis assumptions confirming in 30s unless you intervene."
-    blocking: false
-    defaultOption: confirmed
-    autoAdvanceMs: 30000
-    options[3]:
-      - id: confirmed
-        label: Assumptions confirmed
-        description: All analysis assumptions are correct (default — auto-confirms after 30s)
-      - id: corrections
-        label: Some need correction
-        description: One or more assumptions need adjustment
-      - id: skip
-        label: No significant assumptions
-        description: No analysis assumptions worth documenting
+  - id: analysis-assumption-interview
+    name: Analysis Assumption Interview
+    condition:
+      type: simple
+      variable: has_open_assumptions
+      operator: "=="
+      value: true
+    message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
+    blocking: true
+    options[2]:
+      - id: resolve-inline
+        label: Resolve now
+        description: "Provide resolution for this assumption — it will be marked as resolved in the assumptions log"
+        effect:
+          setVariable:
+            assumption_resolved_inline: true
+      - id: defer-to-stakeholder
+        label: Defer to stakeholder review
+        description: "Queue this assumption for stakeholder review in the issue tracker"
+        effect:
+          setVariable:
+            assumption_deferred: true
 transitions[1]{to,isDefault}:
   plan-prepare,true
 exitActions[1]{action,message}:

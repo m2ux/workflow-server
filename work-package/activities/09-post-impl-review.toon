@@ -61,7 +61,7 @@ artifacts[6]:
     name: "structural-findings.md"
     location: planning
     description: "Prism structural analysis findings — conservation law, meta-law, and classified bug table. For complex work packages, includes adversarial and synthesis pass artifacts."
-steps[6]:
+steps[7]:
   - id: manual-diff-review
     name: Manual Diff Review
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
@@ -115,6 +115,13 @@ steps[6]:
       variable: skip_architecture_summary
       operator: "!="
       value: true
+  - id: analyze-review-findings
+    name: Analyze Review Findings
+    description: "Analyze the severity of code review and test suite review findings. If critical or high-severity findings exist, recommend fix-code or improve-tests. If all findings are low/informational, recommend all-acceptable. Set recommended_review_option accordingly."
+    actions[1]:
+      - action: set
+        target: recommended_review_option
+        description: "Set to the recommended review-findings option based on severity analysis"
 checkpoints[3]:
   - id: file-index-table
     name: File Index Checkpoint
@@ -154,7 +161,7 @@ checkpoints[3]:
         description: No longer an issue, move to next
   - id: review-findings
     name: Review Findings Checkpoint
-    message: "Code review and test quality reports complete. Accepting in 30s unless you want fixes."
+    message: "Code review and test quality reports complete. Based on findings analysis, the recommended action is {recommended_review_option}. Auto-advancing in 30s."
     blocking: false
     defaultOption: all-acceptable
     autoAdvanceMs: 30000

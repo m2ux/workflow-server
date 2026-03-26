@@ -43,7 +43,7 @@ modeOverrides:
       - push-commits
       - update-description
       - mark-ready
-    checkpoints[2]:
+    checkpoints[1]:
       - id: review-summary-approval
         name: Review Summary Approval Checkpoint
         message: "Here is the consolidated review summary. Ready to post to the PR?"
@@ -63,13 +63,6 @@ modeOverrides:
             effect:
               setVariable:
                 review_posted: false
-      - id: review-complete
-        name: Review Complete Checkpoint
-        message: "Review workflow complete."
-        options[1]:
-          - id: done
-            label: Complete review workflow
-            description: End the review workflow
     transitionOverride: complete
     context_to_preserve[4]:
       - review_summary - Consolidated review summary text
@@ -78,7 +71,7 @@ modeOverrides:
       - actionable_items - List of specific items for PR author to address
 entryActions[1]{action,message}:
   log,Submitting PR for review
-steps[7]:
+steps[8]:
   - id: verify-commit-signatures
     name: Verify and sign commits
     description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
@@ -102,6 +95,13 @@ steps[7]:
   - id: determine-review-outcome
     name: Determine Review Outcome
     description: "Based on review feedback, determine whether changes are needed."
+  - id: analyze-review-outcome
+    name: Analyze Review Outcome
+    description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly."
+    actions[1]:
+      - action: set
+        target: recommended_outcome
+        description: "Set to the recommended review-outcome option based on comment analysis"
 checkpoints[2]:
   - id: review-received
     name: Review Received Checkpoint
@@ -115,7 +115,10 @@ checkpoints[2]:
         description: Continue waiting for review
   - id: review-outcome
     name: Review Outcome Checkpoint
-    message: "What is the outcome of processing review comments?"
+    message: "Based on review comment analysis, the recommended outcome is {recommended_outcome}. Auto-advancing in 30s."
+    blocking: false
+    defaultOption: approved
+    autoAdvanceMs: 30000
     options[3]:
       - id: approved
         label: Approved - No changes required
