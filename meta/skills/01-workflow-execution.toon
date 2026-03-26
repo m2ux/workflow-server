@@ -6,11 +6,11 @@ execution_pattern:
     - list_workflows
     - get_workflow
   per_activity[3]:
-    - get_activity
+    - next_activity
     - get_skills
     - get_checkpoint
   transitions[1]:
-    - next_activity
+    - get_activities
   artifacts[2]:
     - list_templates
     - get_template
@@ -30,9 +30,9 @@ tools:
       - variables
       - rules
       - activities
-  get_activity:
-    when: Entering a new activity within a workflow
-    params: workflow_id, activity_id
+  next_activity:
+    when: Transitioning to a new activity within a workflow
+    params: workflow_id, activity_id, step_manifest, transition_condition
     returns: "Activity details with steps, checkpoints, decisions"
     preserve[4]:
       - steps
@@ -44,7 +44,7 @@ tools:
     params: workflow_id, activity_id, checkpoint_id
     returns: Checkpoint options and their effects
     action: Present checkpoint to user as interactive selection; apply selected effect
-  next_activity:
+  get_activities:
     when: Moving between activities — get the list of possible next activities
     params: session_token, workflow_id
     returns: Transition list with conditions from current activity (token.act)

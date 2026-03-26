@@ -28,7 +28,7 @@ rules[20]:
   - "REMEDIATION GUIDANCE: Every finding in the final report MUST include a specific remediation recommendation referencing the playbook in resource 03."
   - "AI CONFIG FILES: Detection pattern P6 covers CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/, and similar AI agent configuration files. These are high-value prompt injection targets when not protected by CODEOWNERS."
   - "AGENT OUTPUT PERSISTENCE: Every sub-agent MUST write its own structured output as a JSON file to the planning folder. The orchestrator verifies all expected files exist BEFORE dispatching V or M. If any file is missing, the orchestrator re-dispatches the agent. File naming: s{n}-{submodule}.json for scanners, verification-report.json for V, merged-findings.json and reconciliation-table.json for M."
-  - "SUB-AGENT BOOTSTRAP: Every sub-agent receives workflow-server bootstrap instructions in its Task prompt: call start_session(workflow_id), then get_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: <assigned> }), then follow activity steps sequentially. Sub-agents self-load their activity definition — the orchestrator does NOT inline the activity content."
+  - "SUB-AGENT BOOTSTRAP: Every sub-agent receives workflow-server bootstrap instructions in its Task prompt: call start_session(workflow_id), then next_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: <assigned> }), then follow activity steps sequentially. Sub-agents self-load their activity definition — the orchestrator does NOT inline the activity content."
 variables[14]:
   - name: target_submodules
     type: string

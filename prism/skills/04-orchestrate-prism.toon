@@ -105,7 +105,7 @@ tools:
     when: Once at workflow start
     params: "workflow_id: prism"
     returns: "Workflow definition with variables, rules, activities"
-  get_activity:
+  next_activity:
     when: Before dispatching each pass
     params: "workflow_id: prism, activity_id: structural-pass | adversarial-pass | synthesis-pass"
     returns: Activity definition with artifact declarations
