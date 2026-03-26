@@ -52,7 +52,6 @@ resources[2]:
   - "04"
 
 tools:
-    next: "gh_issue_create (GitHub) or getAccessibleAtlassianResources (Jira)"
   gh_issue_create:
     when: Creating a GitHub issue
     params: "gh issue create --title <title> --body <body> [--label <label>] [--assignee <user>] [--milestone <name>] [--project <name>]"

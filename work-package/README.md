@@ -15,7 +15,7 @@ This workflow guides the complete lifecycle of a single work package through fou
 | 14 | [**Codebase Comprehension**](activities/README.md#codebase-comprehension) | yes | Build/augment mental model of codebase via persistent knowledge artifacts |
 | 03 | [**Requirements Elicitation**](activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
 | 04 | [**Research**](activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
-| 05 | [**Implementation Analysis**](activities/README.md#05-implementation-analysis) | yes | Understand current state, establish baselines |
+| 05 | [**Implementation Analysis**](activities/README.md#05-implementation-analysis) | conditional | Understand current state, establish baselines |
 | 06 | [**Plan & Prepare**](activities/README.md#06-plan--prepare) | yes | Create implementation and test plans |
 | 07 | [**Assumptions Review**](activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
 | 08 | [**Implement**](activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
@@ -84,7 +84,7 @@ graph TD
 | # | Activity | Primary Skill | Supporting Skills | Checkpoints | artifactPrefix |
 |---|----------|--------------|-------------------|-------------|----------------|
 | 01 | [Start Work Package](activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts`, `atlassian-operations` | 8 | — |
-| 02 | [Design Philosophy](activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions`, `reconcile-assumptions` | 1 | `02` |
+| 02 | [Design Philosophy](activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions`, `reconcile-assumptions` | 2 | `02` |
 | 14 | [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `manage-artifacts`, `portfolio-analysis` | 2 | — |
 | 03 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `03` |
 | 04 | [Research](activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions`, `reconcile-assumptions` | 2 | `04` |
@@ -266,7 +266,7 @@ The workflow declares 56 variables that drive control flow, store checkpoint sta
 | Variable | Type | Description |
 |----------|------|-------------|
 | `complexity` | string | Problem complexity: simple, moderate, or complex. Drives ADR creation. |
-| `needs_comprehension` | boolean | Whether codebase comprehension step is needed (default: `false`) |
+| `needs_comprehension` | boolean | Whether codebase comprehension step is needed (default: `true`) |
 | `needs_elicitation` | boolean | Whether requirements elicitation is needed (default: `false`) |
 | `needs_research` | boolean | Whether research activity is needed (default: `false`) |
 | `skip_optional_activities` | boolean | Whether to skip optional discovery activities (default: `false`) |

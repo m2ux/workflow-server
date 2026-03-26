@@ -45,7 +45,6 @@ resources[1]:
   - "16"
 
 tools:
-    usage: Reference for review criteria and patterns
   read_file:
     when: Reviewing each changed file
     usage: Examine implementation details

@@ -7,7 +7,7 @@ The workflow includes 28 resources that provide templates, guidance, and referen
 | # | Resource ID | Title | Purpose |
 |---|-------------|-------|---------|
 | 01 | `readme` | README Guide | Entry point and artifact index template for planning folders |
-| 02 | `readme` | README Guide (v2) | Planning folder README template (alternate version) |
+| 02 | `readme-v2` | README Guide (v2) | Planning folder README template (alternate version) |
 | 03 | `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
 | 04 | `jira-issue-creation` | Jira Issue Creation | Guide for creating Jira issues with proper field mapping |
 | 05 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
