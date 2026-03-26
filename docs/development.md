@@ -46,12 +46,13 @@ npm run build:schemas
 ```
 workflow-server/
 ├── src/
-│   ├── index.ts              # Entry point
+│   ├── index.ts              # Entry point and exports
 │   ├── server.ts             # MCP server setup
 │   ├── config.ts             # Configuration loading
 │   ├── errors.ts             # Custom error classes
 │   ├── result.ts             # Result type for error handling
-│   ├── logging.ts            # Audit logging
+│   ├── logging.ts            # Audit logging and trace capture
+│   ├── trace.ts              # TraceStore, TraceEvent, trace token encode/decode
 │   ├── schema/               # Zod schemas
 │   │   ├── workflow.schema.ts
 │   │   ├── state.schema.ts
@@ -65,10 +66,14 @@ workflow-server/
 │   │   ├── rules-loader.ts
 │   │   └── schema-loader.ts
 │   ├── tools/                # MCP tool implementations
-│   │   ├── workflow-tools.ts
-│   │   └── resource-tools.ts
+│   │   ├── workflow-tools.ts # next_activity, get_activities, get_trace, etc.
+│   │   ├── resource-tools.ts # start_session, get_skill, get_skills
+│   │   └── state-tools.ts    # save_state, restore_state
 │   └── utils/                # Utility functions
-│       └── toon.ts           # TOON format parser
+│       ├── toon.ts           # TOON format parser
+│       ├── session.ts        # Session token create/decode/advance (HMAC)
+│       ├── validation.ts     # Transition, manifest, and activity validation
+│       └── crypto.ts         # HMAC signing and AES encryption
 ├── schemas/                  # Generated JSON schemas
 ├── scripts/                  # Build scripts
 │   ├── generate-schemas.ts
@@ -124,10 +129,14 @@ npm test -- --run --coverage
 |------------|-------|----------|
 | `workflow-loader.test.ts` | 17 | Workflow loading, transitions, validation |
 | `schema-validation.test.ts` | 23 | All Zod schemas |
-| `mcp-server.test.ts` | 19 | All MCP tools |
+| `mcp-server.test.ts` | 62 | All MCP tools, trace lifecycle, activity manifest |
 | `activity-loader.test.ts` | 10 | Activity loading and dynamic index |
 | `skill-loader.test.ts` | 13 | Skill loading and dynamic index |
-| **Total** | **82** | ✅ All passing |
+| `session.test.ts` | 22 | Token create/decode/advance, sid, aid |
+| `trace.test.ts` | 20 | TraceStore, trace token encode/decode |
+| `toon-parser.test.ts` | 13 | TOON format parsing |
+| `resource-loader.test.ts` | 7 | Resource loading |
+| **Total** | **187** | All passing |
 
 ### Test Infrastructure
 
