@@ -180,10 +180,10 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: get_activity', () => {
+  describe('tool: next_activity', () => {
     it('should get activity with explicit params', async () => {
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
@@ -193,7 +193,7 @@ describe('mcp-server integration', () => {
 
     it('should return error for non-existent activity', async () => {
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'non-existent' },
       });
       expect(result.isError).toBe(true);
@@ -356,14 +356,14 @@ describe('mcp-server integration', () => {
 
     it('should warn on invalid activity transition', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAfterStart = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: tokenAfterStart, workflow_id: 'work-package', activity_id: 'complete' },
       });
       expect(result.isError).toBeFalsy();
@@ -375,7 +375,7 @@ describe('mcp-server integration', () => {
 
     it('should not warn on valid activity transition with manifest', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
@@ -385,7 +385,7 @@ describe('mcp-server integration', () => {
       const manifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: tokenAfterStart, workflow_id: 'work-package', activity_id: 'design-philosophy', step_manifest: manifest },
       });
       expect(result.isError).toBeFalsy();
@@ -417,14 +417,14 @@ describe('mcp-server integration', () => {
   describe('transition condition validation', () => {
     it('should accept correct condition-activity pairing', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'codebase-comprehension' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAtComprehension = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: {
           session_token: tokenAtComprehension,
           workflow_id: 'work-package',
@@ -441,14 +441,14 @@ describe('mcp-server integration', () => {
 
     it('should warn on mismatched condition for activity', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'codebase-comprehension' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAtComprehension = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: {
           session_token: tokenAtComprehension,
           workflow_id: 'work-package',
@@ -465,14 +465,14 @@ describe('mcp-server integration', () => {
 
     it('should accept default transition with empty condition', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAtStart = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: {
           session_token: tokenAtStart,
           workflow_id: 'work-package',
@@ -489,14 +489,14 @@ describe('mcp-server integration', () => {
 
     it('condition should not block execution', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'codebase-comprehension' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAtComprehension = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: {
           session_token: tokenAtComprehension,
           workflow_id: 'work-package',
@@ -515,14 +515,14 @@ describe('mcp-server integration', () => {
   describe('step completion manifest', () => {
     it('should warn when no manifest provided for previous activity', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAfterAct = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: tokenAfterAct, workflow_id: 'work-package', activity_id: 'design-philosophy' },
       });
       const meta = result._meta as Record<string, unknown>;
@@ -533,14 +533,14 @@ describe('mcp-server integration', () => {
 
     it('should warn on missing steps in manifest', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAfterAct = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: {
           session_token: tokenAfterAct,
           workflow_id: 'work-package',
@@ -556,7 +556,7 @@ describe('mcp-server integration', () => {
 
     it('should warn on wrong step order in manifest', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
@@ -566,7 +566,7 @@ describe('mcp-server integration', () => {
       const reversedManifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'done' })).reverse();
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: {
           session_token: tokenAfterAct,
           workflow_id: 'work-package',
@@ -582,14 +582,14 @@ describe('mcp-server integration', () => {
 
     it('manifest validation should not block execution', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAfterAct = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: {
           session_token: tokenAfterAct,
           workflow_id: 'work-package',
@@ -603,19 +603,19 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // ============== Next Activity ==============
+  // ============== Get Activities ==============
 
-  describe('tool: next_activity', () => {
+  describe('tool: get_activities', () => {
     it('should return transition list for current activity', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'next_activity',
+        name: 'get_activities',
         arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
@@ -630,14 +630,14 @@ describe('mcp-server integration', () => {
 
     it('should include conditions as readable strings', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'codebase-comprehension' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'next_activity',
+        name: 'get_activities',
         arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
       });
       const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
@@ -648,14 +648,14 @@ describe('mcp-server integration', () => {
 
     it('should mark default transitions', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'next_activity',
+        name: 'get_activities',
         arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
       });
       const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
@@ -665,7 +665,7 @@ describe('mcp-server integration', () => {
 
     it('should error when no activity in token', async () => {
       const result = await client.callTool({
-        name: 'next_activity',
+        name: 'get_activities',
         arguments: { session_token: sessionToken, workflow_id: 'work-package' },
       });
       expect(result.isError).toBe(true);
@@ -673,14 +673,14 @@ describe('mcp-server integration', () => {
 
     it('should return updated token in _meta', async () => {
       const actResult = await client.callTool({
-        name: 'get_activity',
+        name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_token'] as string;
 
       const result = await client.callTool({
-        name: 'next_activity',
+        name: 'get_activities',
         arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
       });
       const meta = result._meta as Record<string, unknown>;
@@ -732,6 +732,187 @@ describe('mcp-server integration', () => {
       });
       const wf = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
       expect(wf.activities[0].steps).toBeDefined();
+    });
+  });
+
+  // ============== Trace Integration ==============
+
+  describe('trace lifecycle', () => {
+    let traceSessionToken: string;
+
+    beforeAll(async () => {
+      const sessionResult = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+      const sessionResponse = JSON.parse((sessionResult.content[0] as { type: 'text'; text: string }).text);
+      traceSessionToken = sessionResponse.session_token;
+    });
+
+    it('start_session initializes trace (IT-6)', async () => {
+      const result = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: traceSessionToken },
+      });
+      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(trace.source).toBe('memory');
+      expect(trace.events.length).toBeGreaterThanOrEqual(1);
+      expect(trace.events[0].name).toBe('start_session');
+    });
+
+    it('next_activity returns _meta.trace_token (IT-7)', async () => {
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: traceSessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      traceSessionToken = meta['session_token'] as string;
+      expect(meta['trace_token']).toBeDefined();
+      expect(typeof meta['trace_token']).toBe('string');
+      expect((meta['trace_token'] as string).length).toBeGreaterThan(10);
+    });
+
+    it('get_trace without tokens returns in-memory trace (IT-13)', async () => {
+      const result = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: traceSessionToken },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      traceSessionToken = meta['session_token'] as string;
+      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(trace.source).toBe('memory');
+      expect(trace.events.length).toBeGreaterThan(0);
+    });
+
+    it('trace events have compressed field names (IT-10)', async () => {
+      const result = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: traceSessionToken },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      traceSessionToken = meta['session_token'] as string;
+      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const event = trace.events[0];
+      expect(event.ts).toBeDefined();
+      expect(event.ms).toBeDefined();
+      expect(event.s).toBeDefined();
+      expect(event.wf).toBeDefined();
+      expect(event.traceId).toBeDefined();
+    });
+
+    it('session_token not in trace events (IT-15)', async () => {
+      const result = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: traceSessionToken },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      traceSessionToken = meta['session_token'] as string;
+      const traceText = (result.content[0] as { type: 'text'; text: string }).text;
+      expect(traceText).not.toContain('session_token');
+    });
+
+    it('get_trace excludes itself from trace (IT-14)', async () => {
+      const result = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: traceSessionToken },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      traceSessionToken = meta['session_token'] as string;
+      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const traceNames = trace.events.map((e: { name: string }) => e.name);
+      expect(traceNames).not.toContain('get_trace');
+    });
+
+    it('error events are captured (IT-12)', async () => {
+      try {
+        await client.callTool({
+          name: 'next_activity',
+          arguments: { session_token: traceSessionToken, workflow_id: 'work-package', activity_id: 'nonexistent-activity' },
+        });
+      } catch { /* expected */ }
+
+      const result = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: traceSessionToken },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      traceSessionToken = meta['session_token'] as string;
+      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const errorEvents = trace.events.filter((e: { s: string }) => e.s === 'error');
+      expect(errorEvents.length).toBeGreaterThan(0);
+      expect(errorEvents[0].err).toBeDefined();
+    });
+
+    it('accumulated trace tokens resolve via get_trace (IT-8)', async () => {
+      const session2 = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+      let tok = JSON.parse((session2.content[0] as { type: 'text'; text: string }).text).session_token as string;
+
+      await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: tok, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+
+      const act1 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: tok, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const meta1 = act1._meta as Record<string, unknown>;
+      tok = meta1['session_token'] as string;
+      const traceToken1 = meta1['trace_token'] as string;
+      expect(traceToken1).toBeDefined();
+
+      const act2 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: tok, workflow_id: 'work-package', activity_id: 'design-philosophy' },
+      });
+      const meta2 = act2._meta as Record<string, unknown>;
+      tok = meta2['session_token'] as string;
+      const traceToken2 = meta2['trace_token'] as string;
+      expect(traceToken2).toBeDefined();
+
+      const resolved = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: tok, trace_tokens: [traceToken1, traceToken2] },
+      });
+      const trace = JSON.parse((resolved.content[0] as { type: 'text'; text: string }).text);
+      expect(trace.source).toBe('tokens');
+      expect(trace.event_count).toBeGreaterThanOrEqual(2);
+    });
+
+    it('invalid trace token handled gracefully (IT-19)', async () => {
+      const result = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: traceSessionToken, trace_tokens: ['invalid.token.here'] },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      traceSessionToken = meta['session_token'] as string;
+      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      expect(trace.token_errors).toBeDefined();
+      expect(trace.token_errors.length).toBeGreaterThan(0);
+    });
+
+    it('activity_manifest accepted without error (IT-3)', async () => {
+      const session3 = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+      const tok3 = JSON.parse((session3.content[0] as { type: 'text'; text: string }).text).session_token as string;
+
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_token: tok3,
+          workflow_id: 'work-package',
+          activity_id: 'start-work-package',
+          activity_manifest: [
+            { activity_id: 'start-work-package', outcome: 'completed' },
+          ],
+        },
+      });
+      expect(result.isError).toBeFalsy();
     });
   });
 });

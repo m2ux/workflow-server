@@ -4,16 +4,25 @@ import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, getTransitionList } from '../loaders/workflow-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition } from '../utils/validation.js';
-import type { StepManifestEntry } from '../utils/validation.js';
+import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
+import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
+import { createTraceToken, decodeTraceToken } from '../trace.js';
+import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
   output: z.string(),
 })).optional().describe('Step completion manifest from the previous activity. Each entry reports a step ID and its output summary.');
 
+const activityManifestSchema = z.array(z.object({
+  activity_id: z.string(),
+  outcome: z.string(),
+  transition_condition: z.string().optional(),
+})).optional().describe('Activity completion manifest from the orchestrator. Reports the sequence of activities completed so far with outcomes and transition conditions.');
+
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
+  const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
 
   server.tool('help', 'How to use this server. Call this first. Returns the bootstrap procedure and session protocol.', {},
     withAuditLog('help', async () => {
@@ -91,17 +100,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       return { content, _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation } };
-    }));
+    }, traceOpts));
 
-  server.tool('get_activity', 'Get details of a specific activity within a workflow',
+  server.tool('next_activity', 'Transition to the next activity. Validates step manifest for the leaving activity, validates transition legality, loads the target activity definition, and advances the session token.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
       activity_id: z.string().describe('Activity ID to load'),
-      transition_condition: z.string().optional().describe('The condition that caused this transition (from next_activity output). Enables server-side validation of condition-activity consistency.'),
+      transition_condition: z.string().optional().describe('The condition that caused this transition (from get_activities output). Enables server-side validation of condition-activity consistency.'),
       step_manifest: stepManifestSchema,
+      activity_manifest: activityManifestSchema,
     },
-    withAuditLog('get_activity', async ({ session_token, workflow_id, activity_id, transition_condition, step_manifest }) => {
+    withAuditLog('next_activity', async ({ session_token, workflow_id, activity_id, transition_condition, step_manifest, activity_manifest }) => {
       const token = await decodeSessionToken(session_token);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -120,19 +130,48 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? validateTransitionCondition(token, result.value, activity_id, transition_condition)
         : null;
 
+      const activityManifestWarnings: string[] = [];
+      if (activity_manifest) {
+        const amw = validateActivityManifest(activity_manifest as ActivityManifestEntry[], result.value);
+        activityManifestWarnings.push(...amw);
+      }
+
       const validation = buildValidation(
         validateWorkflowConsistency(token, workflow_id),
         validateActivityTransition(token, result.value, activity_id),
         validateWorkflowVersion(token, result.value),
         condWarning,
         ...manifestWarnings,
+        ...activityManifestWarnings,
       );
+
+      const advancedToken = await advanceToken(session_token, { wf: workflow_id, act: activity_id, cond: transition_condition ?? '' });
+
+      const meta: Record<string, unknown> = { session_token: advancedToken, validation };
+
+      if (config.traceStore) {
+        const segment = config.traceStore.getSegmentAndAdvanceCursor(token.sid);
+        if (segment.events.length > 0) {
+          const payload: TraceTokenPayload = {
+            sid: token.sid,
+            act: token.act || activity_id,
+            from: segment.fromIndex,
+            to: segment.toIndex,
+            n: segment.events.length,
+            t0: segment.events[0]!.ts,
+            t1: segment.events[segment.events.length - 1]!.ts,
+            ts: Math.floor(Date.now() / 1000),
+            events: segment.events,
+          };
+          meta['trace_token'] = await createTraceToken(payload);
+        }
+      }
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(activity, null, 2) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id, cond: transition_condition ?? '' }), validation },
+        _meta: meta,
       };
-    }));
+    }, traceOpts));
 
   server.tool('get_checkpoint', 'Get checkpoint details for an activity',
     {
@@ -157,13 +196,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content: [{ type: 'text' as const, text: JSON.stringify(checkpoint, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
-    }));
+    }, traceOpts));
 
-  server.tool('next_activity', 'Get the list of possible next activities with their transition conditions. Returns transitions from the current activity (token.act) so the agent can match conditions against its state variables.',
+  server.tool('get_activities', 'Get the list of possible next activities with their transition conditions. Returns transitions from the current activity (token.act) so the agent can match conditions against its state variables.',
     { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID') },
-    withAuditLog('next_activity', async ({ session_token, workflow_id }) => {
+    withAuditLog('get_activities', async ({ session_token, workflow_id }) => {
       const token = await decodeSessionToken(session_token);
-      if (!token.act) throw new Error('No current activity in session token. Call get_activity first.');
+      if (!token.act) throw new Error('No current activity in session token. Call next_activity first.');
 
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -182,7 +221,41 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
-    }));
+    }, traceOpts));
+
+  server.tool('get_trace', 'Retrieve execution trace for a workflow session. Accepts accumulated trace_tokens from next_activity responses, or returns the full in-memory trace for the current session.',
+    {
+      ...sessionTokenParam,
+      trace_tokens: z.array(z.string()).optional().describe('Accumulated trace tokens from next_activity _meta.trace_token responses. If not provided, returns the full in-memory trace for the current session.'),
+    },
+    withAuditLog('get_trace', async ({ session_token, trace_tokens }) => {
+      const token = await decodeSessionToken(session_token);
+
+      if (trace_tokens && trace_tokens.length > 0) {
+        const allEvents: TraceEvent[] = [];
+        const errors: string[] = [];
+        for (const tt of trace_tokens) {
+          try {
+            const payload = await decodeTraceToken(tt);
+            allEvents.push(...payload.events);
+          } catch (e) {
+            errors.push(e instanceof Error ? e.message : String(e));
+          }
+        }
+        const result: Record<string, unknown> = { traceId: token.sid, source: 'tokens', event_count: allEvents.length, events: allEvents };
+        if (errors.length > 0) result['token_errors'] = errors;
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
+          _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+        };
+      }
+
+      const events = config.traceStore ? config.traceStore.getEvents(token.sid) : [];
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', event_count: events.length, events }, null, 2) }],
+        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+      };
+    }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 
   server.tool('health_check', 'Check server health', {},
     withAuditLog('health_check', async () => {

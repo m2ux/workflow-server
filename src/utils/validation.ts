@@ -135,6 +135,31 @@ export function validateTransitionCondition(token: SessionPayload, workflow: Wor
   return null;
 }
 
+export interface ActivityManifestEntry {
+  activity_id: string;
+  outcome: string;
+  transition_condition?: string;
+}
+
+export function validateActivityManifest(
+  manifest: ActivityManifestEntry[],
+  workflow: Workflow,
+): string[] {
+  const activityIds = workflow.activities.map(a => a.id);
+  const warnings: string[] = [];
+
+  for (const entry of manifest) {
+    if (!activityIds.includes(entry.activity_id)) {
+      warnings.push(`Activity manifest references unknown activity '${entry.activity_id}'`);
+    }
+    if (!entry.outcome || entry.outcome.trim().length === 0) {
+      warnings.push(`Activity '${entry.activity_id}' has empty outcome`);
+    }
+  }
+
+  return warnings;
+}
+
 export function buildValidation(...warnings: (string | null)[]): ValidationResult {
   const result = emptyValidation();
   for (const w of warnings) {

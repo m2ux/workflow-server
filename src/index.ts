@@ -13,6 +13,8 @@ export { createServer } from './server.js';
 export { loadConfig } from './config.js';
 export type { ServerConfig } from './config.js';
 export { buildSchemaPreamble } from './loaders/schema-preamble.js';
+export { TraceStore, createTraceToken, decodeTraceToken, createTraceEvent } from './trace.js';
+export type { TraceEvent, TraceTokenPayload } from './trace.js';
 
 async function main(): Promise<void> {
   try {

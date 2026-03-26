@@ -56,7 +56,7 @@ describe('session token utilities', () => {
     it('should throw on tampered payload', async () => {
       const token = await createSessionToken('work-package', '3.4.0');
       const [, sig] = token.split('.');
-      const tampered = Buffer.from(JSON.stringify({ wf: 'hacked', act: '', skill: '', v: '1.0.0', seq: 0, ts: 0 })).toString('base64url');
+      const tampered = Buffer.from(JSON.stringify({ wf: 'hacked', act: '', skill: '', cond: '', v: '1.0.0', seq: 0, ts: 0, sid: 'fake', aid: '' })).toString('base64url');
       await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('signature verification failed');
     });
   });
@@ -115,6 +115,52 @@ describe('session token utilities', () => {
       const advanced = await advanceToken(token);
       const payload = await decodeSessionToken(advanced);
       expect(payload.seq).toBe(1);
+    });
+  });
+
+  describe('session ID (sid)', () => {
+    it('should have sid field (UT-13)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const payload = await decodeSessionToken(token);
+      expect(typeof payload.sid).toBe('string');
+      expect(payload.sid.length).toBeGreaterThan(0);
+    });
+
+    it('sid should be UUID format (UT-14)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const payload = await decodeSessionToken(token);
+      expect(payload.sid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+    });
+
+    it('sid should be preserved across advance (UT-15)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const original = await decodeSessionToken(token);
+      const advanced = await advanceToken(token, { act: 'some-activity' });
+      const after = await decodeSessionToken(advanced);
+      expect(after.sid).toBe(original.sid);
+    });
+  });
+
+  describe('agent ID (aid)', () => {
+    it('should default to empty string (UT-16)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const payload = await decodeSessionToken(token);
+      expect(payload.aid).toBe('');
+    });
+
+    it('should be settable via advanceToken (UT-17)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const advanced = await advanceToken(token, { aid: 'worker-1' });
+      const payload = await decodeSessionToken(advanced);
+      expect(payload.aid).toBe('worker-1');
+    });
+
+    it('should be preserved when not in updates (UT-18)', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const step1 = await advanceToken(token, { aid: 'worker-1' });
+      const step2 = await advanceToken(step1, { act: 'some-activity' });
+      const payload = await decodeSessionToken(step2);
+      expect(payload.aid).toBe('worker-1');
     });
   });
 

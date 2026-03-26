@@ -10,6 +10,7 @@ import { readSkill } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
+import { createTraceEvent } from '../trace.js';
 
 async function loadSkillResources(workflowDir: string, workflowId: string, skillValue: unknown): Promise<StructuredResource[]> {
   const skillResources = (skillValue as Record<string, unknown>)['resources'] as string[] | undefined;
@@ -24,6 +25,7 @@ async function loadSkillResources(workflowDir: string, workflowId: string, skill
 }
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
+  const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
 
   // ============== Session Tools ==============
 
@@ -42,6 +44,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const workflow = wfResult.value;
       const token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0');
+
+      if (config.traceStore) {
+        const decoded = await decodeSessionToken(token);
+        config.traceStore.initSession(decoded.sid);
+        // Session initialization marker (duration 0) — the actual start_session
+        // tool call duration is captured separately by withAuditLog.
+        const event = createTraceEvent(
+          decoded.sid, 'start_session', 0, 'ok',
+          workflow_id, '', '',
+        );
+        config.traceStore.append(decoded.sid, event);
+      }
 
       const response = {
         rules: rulesResult.value,
@@ -103,7 +117,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         content: [{ type: 'text' as const, text: JSON.stringify({ activity_id, skills, resources: allResources }, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
-    })
+    }, traceOpts)
   );
 
   server.tool(
@@ -137,7 +151,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
       };
-    })
+    }, traceOpts)
   );
 
 }
