@@ -34,6 +34,8 @@ Without a record of execution, diagnosing problems becomes guesswork. When a wor
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 04 | [Research](04-kb-research.md) | Tracing patterns, mcp-trace, OTel findings | 20-30m | ✅ Complete |
+| 04 | [Solution diagrams](04-solution-diagrams.md) | Sequence diagrams, component architecture | 15-20m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
