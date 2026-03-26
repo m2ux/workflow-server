@@ -54,8 +54,8 @@ async function appendTraceEvent(
       opts,
     );
     traceStore.append(token.sid, event);
-  } catch {
-    // Token decode failure — skip trace capture silently
+  } catch (e) {
+    logWarn('Trace capture skipped: token decode failed', { tool: toolName, error: e instanceof Error ? e.message : String(e) });
   }
 }
 

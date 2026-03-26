@@ -48,6 +48,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (config.traceStore) {
         const decoded = await decodeSessionToken(token);
         config.traceStore.initSession(decoded.sid);
+        // Session initialization marker (duration 0) — the actual start_session
+        // tool call duration is captured separately by withAuditLog.
         const event = createTraceEvent(
           decoded.sid, 'start_session', 0, 'ok',
           workflow_id, '', '',
