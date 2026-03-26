@@ -45,9 +45,10 @@ The recording works by extending the server's existing request-handling wrapper 
 | 09 | [Code review](09-code-review.md) | Automated code quality review | 10-20m | ✅ Complete |
 | 09 | [Test suite review](09-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
 | 09 | [Structural findings](09-structural-findings.md) | Conservation laws, meta-law, classified findings | 10-15m | ✅ Complete |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
+| 11 | [Architecture summary](11-architecture-summary.md) | System context, package, sequence diagrams | 10-15m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/orchestration.md) | Persistent codebase knowledge | 20-45m | ✅ Complete |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | Validation | 187 tests pass, build clean, typecheck clean | 5m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
