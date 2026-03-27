@@ -162,7 +162,10 @@
           "type": "object",
           "description": "Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions (e.g., 'planning'), values define path patterns and metadata.",
           "additionalProperties": {
-            "$ref": "#/definitions/artifactLocation"
+            "oneOf": [
+              { "type": "string", "description": "Path shorthand — equivalent to { path: <value> }" },
+              { "$ref": "#/definitions/artifactLocation" }
+            ]
           }
         },
         "initialActivity": {

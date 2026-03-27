@@ -1,14 +1,13 @@
 #!/usr/bin/env npx tsx
 /**
- * Validate a workflow JSON file against the schema
+ * Validate a workflow JSON file against the Zod schema
  * Usage: npx tsx scripts/validate-workflow.ts <path-to-workflow.json>
  */
 
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
-import Ajv from 'ajv';
+import { WorkflowSchema } from '../src/schema/workflow.schema.js';
 
-const schemaPath = resolve(import.meta.dirname, '../schemas/workflow.schema.json');
 const workflowPath = process.argv[2];
 
 if (!workflowPath) {
@@ -22,32 +21,19 @@ if (!existsSync(resolvedPath)) {
   process.exit(2);
 }
 
-if (!existsSync(schemaPath)) {
-  console.error(`[FAIL] Schema not found: ${schemaPath}`);
-  console.error('Run "npm run build:schemas" first to generate JSON schemas.');
-  process.exit(2);
-}
-
-const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'));
 const workflow = JSON.parse(readFileSync(resolvedPath, 'utf-8'));
+const result = WorkflowSchema.safeParse(workflow);
 
-const ajv = new Ajv({ allErrors: true, strict: true });
-const validate = ajv.compile(schema);
-const valid = validate(workflow);
-
-if (valid) {
+if (result.success) {
   console.log(`[PASS] ${workflowPath} is valid`);
-  console.log(`   ID: ${workflow.id}`);
-  console.log(`   Version: ${workflow.version}`);
-  console.log(`   Phases: ${workflow.phases?.length ?? 0}`);
+  console.log(`   ID: ${result.data.id}`);
+  console.log(`   Version: ${result.data.version}`);
+  console.log(`   Activities: ${result.data.activities?.length ?? 0}`);
   process.exit(0);
 } else {
   console.error(`[FAIL] ${workflowPath} validation failed:`);
-  for (const error of validate.errors ?? []) {
-    console.error(`   - ${error.instancePath}: ${error.message}`);
-    if (error.params) {
-      console.error(`     Params: ${JSON.stringify(error.params)}`);
-    }
+  for (const issue of result.error.issues) {
+    console.error(`   - ${issue.path.join('.')}: ${issue.message}`);
   }
   process.exit(1);
 }
