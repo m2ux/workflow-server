@@ -1,6 +1,5 @@
 import { z } from 'zod';
-
-const SemanticVersionSchema = z.string().regex(/^\d+\.\d+\.\d+$/);
+import { SemanticVersionSchema } from './common.js';
 
 export const ToolDefinitionSchema = z.object({
   when: z.string().optional(),
@@ -10,7 +9,7 @@ export const ToolDefinitionSchema = z.object({
   action: z.string().optional(),
   usage: z.string().optional(),
   preserve: z.array(z.string()).optional(),
-}).passthrough();
+});
 export type ToolDefinition = z.infer<typeof ToolDefinitionSchema>;
 
 export const ErrorDefinitionSchema = z.object({
@@ -19,7 +18,7 @@ export const ErrorDefinitionSchema = z.object({
   detection: z.string().optional(),
   resolution: z.array(z.string()).optional(),
   note: z.string().optional(),
-}).passthrough();
+});
 export type ErrorDefinition = z.infer<typeof ErrorDefinitionSchema>;
 
 export const ExecutionPatternSchema = z.object({
@@ -30,14 +29,14 @@ export const ExecutionPatternSchema = z.object({
   discovery: z.array(z.string()).optional(),
   transitions: z.array(z.string()).optional(),
   artifacts: z.array(z.string()).optional(),
-}).passthrough();
+});
 export type ExecutionPattern = z.infer<typeof ExecutionPatternSchema>;
 
 export const ArchitectureSchema = z.object({
   principle: z.string().optional(),
   layers: z.array(z.string()).optional(),
   gap_detection: z.string().optional(),
-}).passthrough();
+});
 export type Architecture = z.infer<typeof ArchitectureSchema>;
 
 export const MatchingSchema = z.object({
@@ -45,7 +44,7 @@ export const MatchingSchema = z.object({
   fallback: z.string().optional(),
   ambiguous: z.string().optional(),
   never: z.string().optional(),
-}).passthrough();
+});
 export type Matching = z.infer<typeof MatchingSchema>;
 
 export const StateStructureSchema = z.record(z.string());
@@ -56,9 +55,9 @@ export const StateDefinitionSchema = z.object({
   structure: StateStructureSchema.optional(),
   initialize: z.string().optional(),
   update_on: z.record(z.string()).optional(),
-  checkpoint_response_format: z.object({}).passthrough().optional(),
-  decision_outcome_format: z.object({}).passthrough().optional(),
-}).passthrough();
+  checkpoint_response_format: z.record(z.unknown()).optional(),
+  decision_outcome_format: z.record(z.unknown()).optional(),
+});
 export type StateDefinition = z.infer<typeof StateDefinitionSchema>;
 
 export const InterpretationSchema = z.object({
@@ -68,32 +67,32 @@ export const InterpretationSchema = z.object({
   loops: z.string().optional(),
   resources: z.string().optional(),
   templates: z.string().optional(),
-}).passthrough();
+});
 export type Interpretation = z.infer<typeof InterpretationSchema>;
 
 export const NumericFormatSchema = z.object({
   description: z.string().optional(),
   examples: z.record(z.string()).optional(),
-}).passthrough();
+});
 export type NumericFormat = z.infer<typeof NumericFormatSchema>;
 
 export const InitializationSchema = z.object({
   trigger: z.string().optional(),
-  state: z.object({}).passthrough().optional(),
-}).passthrough();
+  state: z.record(z.unknown()).optional(),
+});
 export type Initialization = z.infer<typeof InitializationSchema>;
 
 export const UpdatePatternSchema = z.object({
   trigger: z.string().optional(),
   actions: z.array(z.string()).optional(),
-}).passthrough();
+});
 export type UpdatePattern = z.infer<typeof UpdatePatternSchema>;
 
 export const ResumptionSchema = z.object({
   description: z.string().optional(),
   steps: z.array(z.string()).optional(),
   note: z.string().optional(),
-}).passthrough();
+});
 export type Resumption = z.infer<typeof ResumptionSchema>;
 
 export const InputItemDefinitionSchema = z.object({
@@ -101,14 +100,14 @@ export const InputItemDefinitionSchema = z.object({
   description: z.string().optional().describe('Human-readable description of this input'),
   required: z.boolean().default(true).describe('Whether this input must be supplied. Defaults to true — only set to false for optional inputs.'),
   default: z.unknown().optional().describe('Default value when not supplied'),
-}).passthrough();
+});
 export type InputItemDefinition = z.infer<typeof InputItemDefinitionSchema>;
 
 export const ProtocolStepSchema = z.object({
   id: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
-}).passthrough();
+});
 export type ProtocolStep = z.infer<typeof ProtocolStepSchema>;
 
 export const InputsDefinitionSchema = z.array(InputItemDefinitionSchema).describe('Inputs the skill expects from context: array of named items (mirrors output structure for deterministic binding)');
@@ -127,7 +126,7 @@ export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefiniti
 
 export const OutputArtifactSchema = z.object({
   name: z.string().describe('Artifact filename when this output is persisted (e.g. 01-audit-report.md).'),
-}).passthrough();
+});
 export type OutputArtifact = z.infer<typeof OutputArtifactSchema>;
 
 export const OutputItemDefinitionSchema = z.object({
@@ -135,7 +134,7 @@ export const OutputItemDefinitionSchema = z.object({
   description: z.string().optional().describe('Human-readable description of this output'),
   components: OutputComponentsDefinitionSchema.optional(),
   artifact: OutputArtifactSchema.optional().describe('Optional. When populated, specifies the artifact name to create when persisting this output.'),
-}).passthrough();
+});
 export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 
 export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the skill produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
@@ -155,10 +154,10 @@ export const SkillSchema = z.object({
   numeric_format: NumericFormatSchema.optional(),
   initialization: InitializationSchema.optional(),
   update_patterns: z.record(UpdatePatternSchema).optional(),
-  checkpoint_response_format: z.object({}).passthrough().optional(),
-  decision_outcome_format: z.object({}).passthrough().optional(),
-  history_event_types: z.object({}).passthrough().optional(),
-  history_entry_format: z.object({}).passthrough().optional(),
+  checkpoint_response_format: z.record(z.unknown()).optional(),
+  decision_outcome_format: z.record(z.unknown()).optional(),
+  history_event_types: z.record(z.unknown()).optional(),
+  history_entry_format: z.record(z.unknown()).optional(),
   status_values: z.record(z.string()).optional(),
   interpretation: InterpretationSchema.optional(),
   resumption: ResumptionSchema.optional(),
@@ -168,7 +167,7 @@ export const SkillSchema = z.object({
   protocol: ProtocolDefinitionSchema.optional(),
   output: OutputDefinitionSchema.optional(),
   resources: z.array(z.string()).optional().describe('Resource indices or IDs this skill depends on (e.g. 02, 04, 08)'),
-}).passthrough();
+});
 export type Skill = z.infer<typeof SkillSchema>;
 
 export function validateSkill(data: unknown): Skill { return SkillSchema.parse(data); }

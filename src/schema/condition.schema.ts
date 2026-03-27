@@ -45,6 +45,7 @@ export function evaluateCondition(condition: Condition, variables: Record<string
   }
 }
 
+/** Resolves a dot-delimited path against the variables object. Returns undefined for missing segments — callers handle this via exists/notExists operators. */
 function getVariableValue(path: string, variables: Record<string, unknown>): unknown {
   const parts = path.split('.');
   let current: unknown = variables;
@@ -60,8 +61,8 @@ function evaluateSimpleCondition(condition: SimpleCondition, variables: Record<s
   switch (condition.operator) {
     case 'exists': return value !== undefined && value !== null;
     case 'notExists': return value === undefined || value === null;
-    case '==': return value === condition.value;
-    case '!=': return value !== condition.value;
+    case '==': return value == condition.value;
+    case '!=': return value != condition.value;
     case '>': return typeof value === 'number' && typeof condition.value === 'number' && value > condition.value;
     case '<': return typeof value === 'number' && typeof condition.value === 'number' && value < condition.value;
     case '>=': return typeof value === 'number' && typeof condition.value === 'number' && value >= condition.value;

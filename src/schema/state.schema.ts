@@ -131,6 +131,7 @@ export const NestedWorkflowStateSchema: z.ZodType<NestedWorkflowState> = Workflo
   triggeredWorkflows: z.array(z.lazy(() => NestedTriggeredWorkflowRefSchema)).default([]),
 }) as z.ZodType<NestedWorkflowState>;
 
+/** Creates initial workflow state. Caller must ensure initialActivity is a valid activity ID in the workflow. */
 export function createInitialState(workflowId: string, workflowVersion: string, initialActivity: string, initialVariables?: Record<string, unknown>): WorkflowState {
   const now = new Date().toISOString();
   return {
@@ -145,6 +146,7 @@ export function createInitialState(workflowId: string, workflowVersion: string, 
 export function validateState(data: unknown): WorkflowState { return WorkflowStateSchema.parse(data); }
 export function safeValidateState(data: unknown) { return WorkflowStateSchema.safeParse(data); }
 
+/** Appends a history event. The details parameter is type-constrained to known HistoryEntry fields via Partial<Omit<...>>. */
 export function addHistoryEvent(state: WorkflowState, type: HistoryEventType, details?: Partial<Omit<HistoryEntry, 'timestamp' | 'type'>>): WorkflowState {
   const now = new Date().toISOString();
   return { ...state, stateVersion: state.stateVersion + 1, updatedAt: now, history: [...state.history, { timestamp: now, type, ...details }] };
