@@ -17,14 +17,22 @@ rules[5]:
   - "Draft files in the confirmed order: workflow.toon first, then activities, then skills, then resources, then README"
 modeOverrides:
   update:
-    description: "Modify existing files with content preservation checks. For each file being modified, present a diff showing what changes and what is preserved."
+    description: "Modify existing files without per-file checkpoint interruptions. The approach and preservation were already confirmed in scope-and-structure and impact-analysis. A single batch-review checkpoint at the end replaces per-file confirmations."
     rules[2]:
-      - "Before modifying any file, show the current content alongside the planned changes"
-      - "Flag any content being removed and get explicit confirmation before proceeding"
-    checkpoints[1]:
+      - "Execute all file modifications without per-file checkpoints — approach and preservation were confirmed in earlier activities"
+      - "Present a single batch summary of all changes for review after all files are modified"
+    skipCheckpoints[2]:
+      - file-approach-confirmed
+      - file-review
+    checkpoints[2]:
       - id: preservation-check
         name: Content Preservation Check
-        message: "Here is the diff for this file. Content being removed is highlighted. Should I proceed with these changes?"
+        condition:
+          type: simple
+          variable: has_unflagged_removals
+          operator: "=="
+          value: true
+        message: "Content removal detected that was not flagged during impact analysis. Review the diff and confirm."
         options[3]:
           - id: proceed
             label: "Proceed with changes"
@@ -35,6 +43,22 @@ modeOverrides:
           - id: rewrite
             label: "Rewrite approach"
             description: Take a different approach to this file
+      - id: batch-review
+        name: Batch Content Review
+        message: "All {file_count} files modified. Here is the change summary. Proceeding in 30s unless you intervene."
+        blocking: false
+        defaultOption: accepted
+        autoAdvanceMs: 30000
+        options[3]:
+          - id: accepted
+            label: "All changes accepted"
+            description: Proceed with all modifications as applied
+          - id: revise-specific
+            label: "Revise a specific file"
+            description: Go back and modify one particular file
+          - id: redraft-all
+            label: "Redraft all changes"
+            description: Start content drafting over from scratch
 entryActions[1]:
   - action: validate
     target: scope_manifest_confirmed

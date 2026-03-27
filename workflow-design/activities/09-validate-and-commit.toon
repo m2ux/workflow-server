@@ -61,11 +61,14 @@ steps[6]:
 checkpoints[2]:
   - id: validation-passed
     name: Validation Results Checkpoint
-    message: "Schema validation results: {pass_count} passed, {fail_count} failed. Here are the details. Should I proceed to commit?"
+    message: "Schema validation results: {pass_count} passed, {fail_count} failed. Proceeding in 30s unless you intervene."
+    blocking: false
+    defaultOption: proceed
+    autoAdvanceMs: 30000
     options[2]:
       - id: proceed
         label: "Proceed to commit"
-        description: All validations passed or failures are acceptable
+        description: All validations passed or failures are acceptable (default — auto-proceeds after 30s)
         effect:
           setVariable:
             all_files_validated: true
@@ -74,11 +77,14 @@ checkpoints[2]:
         description: Go back and fix validation failures before committing
   - id: scope-verified
     name: Scope Verification Checkpoint
-    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed. Here are the details. Is the scope complete?"
+    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed. Proceeding in 30s unless you intervene."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[2]:
       - id: confirmed
         label: "Scope is complete"
-        description: All items in the manifest have been addressed
+        description: All items in the manifest have been addressed (default — auto-proceeds after 30s)
       - id: fix
         label: "Address remaining items"
         description: Go back and address the missing items

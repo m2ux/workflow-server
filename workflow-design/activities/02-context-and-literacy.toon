@@ -21,6 +21,21 @@ modeOverrides:
       - present-convention-summary
     checkpoints[0]:
     transitionOverride: quality-review
+  update:
+    description: "Skip format literacy verification in update mode — agent demonstrated TOON understanding during intake by loading and analyzing the target workflow."
+    skipSteps[2]:
+      - read-toon-examples
+      - present-convention-summary
+    skipCheckpoints[2]:
+      - format-literacy
+      - constructs-confirmed
+    entryActions[2]:
+      - action: set
+        target: format_literacy_confirmed
+        value: true
+      - action: set
+        target: schema_constructs_confirmed
+        value: true
 steps[6]:
   - id: load-schemas
     name: Load Schema Definitions

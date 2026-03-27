@@ -32,33 +32,24 @@ steps[5]:
   - id: present-approach
     name: Present Approach
     description: "Describe the order in which files will be drafted: workflow.toon first (establishes metadata and references), then activities in order, then skills, then resources, then README. Explain why this order is necessary (activities reference skills, skills reference resources)."
-checkpoints[2]:
-  - id: scope-confirmed
-    name: Scope Confirmation
-    message: "Here is the complete file manifest. Every file listed will be created, modified, or removed. Is this scope complete?"
+checkpoints[1]:
+  - id: scope-and-structure-confirmed
+    name: Scope and Structure Confirmation
+    message: "Here is the complete file manifest and implementation order. Proceeding in 30s unless you want to revise."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[2]:
       - id: confirmed
-        label: "Yes, scope is complete"
-        description: All files are accounted for
+        label: "Yes, scope and structure are correct"
+        description: File manifest and implementation order are correct
         effect:
           setVariable:
             scope_manifest_confirmed: true
-      - id: revise
-        label: "Needs revision"
-        description: Add or remove files from the manifest
-  - id: structure-confirmed
-    name: Structure Confirmation
-    message: "Here is the structural design with activity transitions and the proposed implementation order. Does this look right?"
-    options[2]:
-      - id: confirmed
-        label: "Yes, proceed with this structure"
-        description: Structure and order are correct
-        effect:
-          setVariable:
             approach_confirmed: true
       - id: revise
         label: "Needs revision"
-        description: Change the structure or implementation order
+        description: Adjust the file manifest or implementation order
 transitions[1]:
   - to: content-drafting
     condition:
