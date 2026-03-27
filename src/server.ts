@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import type { ServerConfig } from './config.js';
+import type { ServerConfig, ResolvedServerConfig } from './config.js';
 import { TraceStore } from './trace.js';
 import { registerWorkflowTools } from './tools/workflow-tools.js';
 import { registerResourceTools } from './tools/resource-tools.js';
@@ -8,24 +8,21 @@ import { registerSchemaResources } from './resources/schema-resources.js';
 import { logInfo } from './logging.js';
 
 export function createServer(config: ServerConfig): McpServer {
-  config.traceStore = new TraceStore();
+  const resolvedConfig: ResolvedServerConfig = {
+    ...config,
+    traceStore: config.traceStore ?? new TraceStore(),
+    schemaPreamble: config.schemaPreamble ?? '',
+  };
 
   const server = new McpServer(
-    { name: config.serverName, version: config.serverVersion },
+    { name: resolvedConfig.serverName, version: resolvedConfig.serverVersion },
     { capabilities: { tools: {}, resources: {} } }
   );
-  logInfo('Creating workflow server', { name: config.serverName, version: config.serverVersion, workflowDir: config.workflowDir });
-  registerWorkflowTools(server, config);
-  registerResourceTools(server, config);
-  registerStateTools(server, config);
-  registerSchemaResources(server, config);
-  logInfo('Server configured', { 
-    tools: [
-      'help', 'list_workflows', 'get_workflow', 'next_activity', 'get_checkpoint', 'get_activities', 'health_check',
-      'start_session', 'get_skills', 'get_skill',
-      'save_state', 'restore_state', 'get_trace'
-    ],
-    resources: ['workflow-server://schemas']
-  });
+  logInfo('Creating workflow server', { name: resolvedConfig.serverName, version: resolvedConfig.serverVersion, workflowDir: resolvedConfig.workflowDir });
+  registerWorkflowTools(server, resolvedConfig);
+  registerResourceTools(server, resolvedConfig);
+  registerStateTools(server, resolvedConfig);
+  registerSchemaResources(server, resolvedConfig);
+  logInfo('Server configured', { resources: ['workflow-server://schemas'] });
   return server;
 }

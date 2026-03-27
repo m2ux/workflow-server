@@ -12,13 +12,24 @@ export interface ServerConfig {
   traceStore?: TraceStore;
 }
 
+/** Config shape after startup — schemaPreamble and traceStore are guaranteed present. */
+export interface ResolvedServerConfig extends ServerConfig {
+  schemaPreamble: string;
+  traceStore: TraceStore;
+}
+
 const PROJECT_ROOT = resolve(import.meta.dirname, '..');
+
+function envOrDefault(key: string, fallback: string): string {
+  const value = process.env[key]?.trim();
+  return value || fallback;
+}
 
 export function loadConfig(): ServerConfig {
   return {
-    workflowDir: resolve(PROJECT_ROOT, process.env['WORKFLOW_DIR'] ?? './workflows'),
-    schemasDir: resolve(PROJECT_ROOT, process.env['SCHEMAS_DIR'] ?? './schemas'),
-    serverName: process.env['SERVER_NAME'] ?? 'workflow-server',
-    serverVersion: process.env['SERVER_VERSION'] ?? '1.0.0',
+    workflowDir: resolve(PROJECT_ROOT, envOrDefault('WORKFLOW_DIR', './workflows')),
+    schemasDir: resolve(PROJECT_ROOT, envOrDefault('SCHEMAS_DIR', './schemas')),
+    serverName: envOrDefault('SERVER_NAME', 'workflow-server'),
+    serverVersion: envOrDefault('SERVER_VERSION', '1.0.0'),
   };
 }
