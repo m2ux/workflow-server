@@ -30,6 +30,18 @@ async function encode(payload: SessionPayload): Promise<string> {
   return `${b64}.${sig}`;
 }
 
+const SessionPayloadSchema = z.object({
+  wf: z.string(),
+  act: z.string(),
+  skill: z.string(),
+  cond: z.string(),
+  v: z.string(),
+  seq: z.number(),
+  ts: z.number(),
+  sid: z.string(),
+  aid: z.string(),
+});
+
 async function decode(token: string): Promise<SessionPayload> {
   const dotIndex = token.lastIndexOf('.');
   if (dotIndex === -1) throw new Error('Invalid session token: missing signature');
@@ -44,15 +56,13 @@ async function decode(token: string): Promise<SessionPayload> {
 
   try {
     const json = Buffer.from(b64, 'base64url').toString('utf8');
-    const parsed = JSON.parse(json) as Record<string, unknown>;
-    if (typeof parsed['wf'] !== 'string' || typeof parsed['act'] !== 'string' ||
-        typeof parsed['skill'] !== 'string' || typeof parsed['cond'] !== 'string' ||
-        typeof parsed['v'] !== 'string' || typeof parsed['seq'] !== 'number' ||
-        typeof parsed['ts'] !== 'number' || typeof parsed['sid'] !== 'string' ||
-        typeof parsed['aid'] !== 'string') {
-      throw new Error('Missing or invalid token fields');
+    const parsed = JSON.parse(json);
+    const result = SessionPayloadSchema.safeParse(parsed);
+    if (!result.success) {
+      const issues = result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
+      throw new Error(`Missing or invalid token fields: ${issues}`);
     }
-    return parsed as unknown as SessionPayload;
+    return result.data;
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     throw new Error(`Invalid session token: ${msg}`);
@@ -78,14 +88,18 @@ export async function decodeSessionToken(token: string): Promise<SessionPayload>
 }
 
 export async function advanceToken(token: string, updates?: SessionAdvance): Promise<string> {
-  const payload = await decode(token);
-  payload.seq += 1;
-  if (updates?.wf !== undefined) payload.wf = updates.wf;
-  if (updates?.act !== undefined) payload.act = updates.act;
-  if (updates?.skill !== undefined) payload.skill = updates.skill;
-  if (updates?.cond !== undefined) payload.cond = updates.cond;
-  if (updates?.aid !== undefined) payload.aid = updates.aid;
-  return encode(payload);
+  const decoded = await decode(token);
+  const advanced: SessionPayload = {
+    ...decoded,
+    seq: decoded.seq + 1,
+    ts: Math.floor(Date.now() / 1000),
+    ...(updates?.wf !== undefined && { wf: updates.wf }),
+    ...(updates?.act !== undefined && { act: updates.act }),
+    ...(updates?.skill !== undefined && { skill: updates.skill }),
+    ...(updates?.cond !== undefined && { cond: updates.cond }),
+    ...(updates?.aid !== undefined && { aid: updates.aid }),
+  };
+  return encode(advanced);
 }
 
 export const sessionTokenParam = {

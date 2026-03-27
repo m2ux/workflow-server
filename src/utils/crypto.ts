@@ -1,8 +1,7 @@
-import { randomBytes, createCipheriv, createDecipheriv, createHmac } from 'node:crypto';
-import { readFile, writeFile, mkdir, chmod } from 'node:fs/promises';
+import { randomBytes, createCipheriv, createDecipheriv, createHmac, timingSafeEqual } from 'node:crypto';
+import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
-import { existsSync } from 'node:fs';
 
 const KEY_DIR = join(homedir(), '.workflow-server');
 const KEY_FILE = join(KEY_DIR, 'secret');
@@ -12,14 +11,23 @@ const AUTH_TAG_LENGTH = 16;
 const ALGORITHM = 'aes-256-gcm';
 
 export async function getOrCreateServerKey(): Promise<Buffer> {
-  if (existsSync(KEY_FILE)) {
-    return readFile(KEY_FILE);
+  try {
+    const key = await readFile(KEY_FILE);
+    if (key.length !== KEY_LENGTH) {
+      throw new Error(`Server key must be exactly ${KEY_LENGTH} bytes, got ${key.length}`);
+    }
+    return key;
+  } catch (err: unknown) {
+    if (err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'ENOENT') {
+      const key = randomBytes(KEY_LENGTH);
+      await mkdir(KEY_DIR, { recursive: true, mode: 0o700 });
+      const tmpFile = `${KEY_FILE}.${process.pid}.tmp`;
+      await writeFile(tmpFile, key, { mode: 0o600 });
+      await rename(tmpFile, KEY_FILE);
+      return key;
+    }
+    throw err;
   }
-
-  const key = randomBytes(KEY_LENGTH);
-  await mkdir(KEY_DIR, { recursive: true, mode: 0o700 });
-  await writeFile(KEY_FILE, key, { mode: 0o600 });
-  return key;
 }
 
 export function encryptToken(token: string, key: Buffer): string {
@@ -40,7 +48,7 @@ export function decryptToken(encrypted: string, key: Buffer): string {
 
   const decipher = createDecipheriv(ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
   decipher.setAuthTag(authTag);
-  return decipher.update(ciphertext) + decipher.final('utf8');
+  return decipher.update(ciphertext, undefined, 'utf8') + decipher.final('utf8');
 }
 
 export function hmacSign(payload: string, key: Buffer): string {
@@ -48,11 +56,8 @@ export function hmacSign(payload: string, key: Buffer): string {
 }
 
 export function hmacVerify(payload: string, signature: string, key: Buffer): boolean {
-  const expected = hmacSign(payload, key);
-  if (expected.length !== signature.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < expected.length; i++) {
-    mismatch |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
-  }
-  return mismatch === 0;
+  const expected = Buffer.from(hmacSign(payload, key), 'utf8');
+  const actual = Buffer.from(signature, 'utf8');
+  if (expected.length !== actual.length) return false;
+  return timingSafeEqual(expected, actual);
 }
