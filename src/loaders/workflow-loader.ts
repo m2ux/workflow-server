@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir, stat } from 'node:fs/promises';
-import { join, basename, dirname } from 'node:path';
+import { join, dirname } from 'node:path';
 import { type Workflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
 import { type Activity, safeValidateActivity } from '../schema/activity.schema.js';
 import { type Result, ok, err } from '../result.js';
@@ -46,13 +46,11 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
       const decoded = decodeToon<Activity>(content);
       
       const validation = safeValidateActivity(decoded);
-      let activity: Activity;
       if (!validation.success) {
-        logWarn('Activity validation failed', { activityId: parsed.id, errors: validation.error.issues });
-        activity = decoded;
-      } else {
-        activity = validation.data;
+        logWarn('Skipping invalid activity', { activityId: parsed.id, errors: validation.error.issues });
+        continue;
       }
+      const activity = validation.data;
       activity.artifactPrefix = parsed.index;
       activities.push(activity);
     } catch (error) {
@@ -138,22 +136,34 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
       const entryPath = join(workflowDir, entry);
       const stats = await stat(entryPath);
       
+      let toonPath: string | null = null;
       if (stats.isFile() && entry.endsWith('.toon')) {
-        // Root-level workflow file
-        const result = await loadWorkflow(workflowDir, basename(entry, '.toon'));
-        if (result.success) manifests.push({ id: result.value.id, title: result.value.title, version: result.value.version, description: result.value.description });
+        toonPath = entryPath;
       } else if (stats.isDirectory()) {
-        // Check for workflow in subdirectory (workflow.toon is the standard filename)
         const subWorkflowPath = join(entryPath, 'workflow.toon');
         if (existsSync(subWorkflowPath)) {
-          const result = await loadWorkflow(workflowDir, entry);
-          if (result.success) manifests.push({ id: result.value.id, title: result.value.title, version: result.value.version, description: result.value.description });
+          toonPath = subWorkflowPath;
+        }
+      }
+      
+      if (toonPath) {
+        try {
+          const content = await readFile(toonPath, 'utf-8');
+          const raw = decodeToon<RawWorkflow>(content);
+          if (raw.id && raw.title && raw.version) {
+            manifests.push({ id: raw.id, title: raw.title, version: raw.version, description: raw.description });
+          }
+        } catch (error) {
+          logWarn('Failed to read workflow manifest', { path: toonPath, error: error instanceof Error ? error.message : String(error) });
         }
       }
     }
     
     return manifests;
-  } catch { return []; }
+  } catch (error) {
+    logWarn('Failed to list workflows', { workflowDir, error: error instanceof Error ? error.message : String(error) });
+    return [];
+  }
 }
 
 /** Get an activity from a workflow by ID */
@@ -206,8 +216,10 @@ function conditionToString(condition: { type: string; variable?: string; operato
     case 'simple':
       return `${condition.variable} ${condition.operator} ${JSON.stringify(condition.value)}`;
     case 'and':
+      if (!Array.isArray(condition.conditions)) return String(condition);
       return (condition.conditions as Array<typeof condition>).map(c => conditionToString(c)).join(' AND ');
     case 'or':
+      if (!Array.isArray(condition.conditions)) return String(condition);
       return (condition.conditions as Array<typeof condition>).map(c => conditionToString(c)).join(' OR ');
     case 'not':
       return `NOT (${conditionToString(condition.condition as typeof condition)})`;

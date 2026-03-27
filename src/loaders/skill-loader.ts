@@ -3,7 +3,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, basename } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
-import { logInfo } from '../logging.js';
+import { logInfo, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
 import type { Skill } from '../schema/skill.schema.js';
 
@@ -82,7 +82,8 @@ async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | 
   try {
     const content = await readFile(filePath, 'utf-8');
     return decodeToon<Skill>(content);
-  } catch {
+  } catch (error) {
+    logWarn('Failed to decode skill TOON', { skillId, path: filePath, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
 }
