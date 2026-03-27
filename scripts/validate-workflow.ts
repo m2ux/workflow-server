@@ -13,36 +13,36 @@ const workflowPath = process.argv[2];
 
 if (!workflowPath) {
   console.error('Usage: npx tsx scripts/validate-workflow.ts <path-to-workflow.json>');
-  process.exit(1);
+  process.exit(2);
 }
 
 const resolvedPath = resolve(workflowPath);
 if (!existsSync(resolvedPath)) {
-  console.error(`File not found: ${resolvedPath}`);
-  process.exit(1);
+  console.error(`[FAIL] File not found: ${resolvedPath}`);
+  process.exit(2);
 }
 
 if (!existsSync(schemaPath)) {
-  console.error(`Schema not found: ${schemaPath}`);
+  console.error(`[FAIL] Schema not found: ${schemaPath}`);
   console.error('Run "npm run build:schemas" first to generate JSON schemas.');
-  process.exit(1);
+  process.exit(2);
 }
 
 const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'));
 const workflow = JSON.parse(readFileSync(resolvedPath, 'utf-8'));
 
-const ajv = new Ajv({ allErrors: true, strict: false });
+const ajv = new Ajv({ allErrors: true, strict: true });
 const validate = ajv.compile(schema);
 const valid = validate(workflow);
 
 if (valid) {
-  console.log(`✅ ${workflowPath} is valid`);
+  console.log(`[PASS] ${workflowPath} is valid`);
   console.log(`   ID: ${workflow.id}`);
   console.log(`   Version: ${workflow.version}`);
   console.log(`   Phases: ${workflow.phases?.length ?? 0}`);
   process.exit(0);
 } else {
-  console.error(`❌ ${workflowPath} validation failed:`);
+  console.error(`[FAIL] ${workflowPath} validation failed:`);
   for (const error of validate.errors ?? []) {
     console.error(`   - ${error.instancePath}: ${error.message}`);
     if (error.params) {
