@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import type { TraceStore } from './trace.js';
 
 export interface ServerConfig {
@@ -11,10 +12,12 @@ export interface ServerConfig {
   traceStore?: TraceStore;
 }
 
+const PROJECT_ROOT = resolve(import.meta.dirname, '..');
+
 export function loadConfig(): ServerConfig {
   return {
-    workflowDir: process.env['WORKFLOW_DIR'] ?? './workflows',
-    schemasDir: process.env['SCHEMAS_DIR'] ?? './schemas',
+    workflowDir: resolve(PROJECT_ROOT, process.env['WORKFLOW_DIR'] ?? './workflows'),
+    schemasDir: resolve(PROJECT_ROOT, process.env['SCHEMAS_DIR'] ?? './schemas'),
     serverName: process.env['SERVER_NAME'] ?? 'workflow-server',
     serverVersion: process.env['SERVER_VERSION'] ?? '1.0.0',
   };
