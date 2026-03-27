@@ -10,9 +10,8 @@ skills:
 triggers:
   workflow: work-package
   description: "Each iteration starts the work-package workflow for one planned package"
-  passContext[4]:
+  passContext[3]:
     - current_package
-    - planning_folder_path
     - initiative_name
     - parent_workflow
 steps[1]:
@@ -40,7 +39,7 @@ loops[1]:
         description: "Load the work-package workflow via get_workflow and start it for the selected package"
       - id: update-status
         name: Update roadmap status
-        description: "Update START-HERE.md: mark completed package as done and update progress"
+        description: "After the child work-package workflow completes, capture its planning_folder_path from returnedContext and store it in package_planning_paths. Update START-HERE.md: mark completed package as done, update progress, and add a link to the child's planning folder README."
       - id: check-remaining
         name: Check remaining packages
         description: Determine if more work packages remain in priority order
@@ -49,9 +48,10 @@ outcome[4]:
   - Each package has merged PR
   - Roadmap status reflects completion
   - Initiative complete
-context_to_preserve[5]:
+context_to_preserve[6]:
   - current_package - Currently active work package (passed to work-package workflow)
   - completed_packages - List of completed work packages
   - remaining_packages - List of remaining work packages
   - overall_progress - Percentage or fraction of completion
   - parent_workflow - Reference back to work-packages context
+  - package_planning_paths - Map of package name to child planning folder path (captured from returnedContext)
