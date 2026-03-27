@@ -55,7 +55,7 @@ The approach is additive: path validation is a new check before existing filesys
 | — | WP-03 Implementation | Zod schema alignment (PR #70) | ✅ Complete |
 | — | WP-04 Implementation | Cross-schema sync (PR #71) | ✅ Complete |
 | — | WP-05 Implementation | Loader error handling (PR #72) | ✅ Complete |
-| — | WP-06 Implementation | Loader determinism (PR #73) | ⬚ Pending |
+| — | WP-06 Implementation | Loader determinism (PR #73) | ✅ Complete |
 | — | WP-07 Implementation | Tools session protocol (PR #74) | ✅ Complete |
 | — | WP-08 Implementation | Utils hardening (PR #75) | ✅ Complete |
 | — | WP-09 Implementation | Test infrastructure (PR #76) | ⬚ Pending |
@@ -85,4 +85,4 @@ The approach is additive: path validation is a new check before existing filesys
 
 ---
 
-**Status:** WP-01, WP-02, WP-03, WP-04, WP-05, WP-07, WP-08, WP-10 & WP-11 complete; 3 packages pending
+**Status:** WP-01, WP-02, WP-03, WP-04, WP-05, WP-06, WP-07, WP-08, WP-10 & WP-11 complete; 2 packages pending

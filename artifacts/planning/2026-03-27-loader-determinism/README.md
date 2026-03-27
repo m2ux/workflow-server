@@ -1,7 +1,7 @@
 # WP-06: Loader Determinism and Deduplication
 
 **Created:** 2026-03-27
-**Status:** In Progress
+**Status:** Complete
 **Type:** Bug Fix
 **Issue:** [#67](https://github.com/m2ux/workflow-server/issues/67)
 **PR:** [#73](https://github.com/m2ux/workflow-server/pull/73)
@@ -38,9 +38,9 @@ Sort all directory-derived identifier lists before iteration to guarantee determ
 | 02 | [Design philosophy](02-design-philosophy.md) | Design approach and complexity | ✅ Complete |
 | 03 | [Implementation plan](03-implementation-plan.md) | Task breakdown | ✅ Complete |
 | 04 | [Assumptions](04-assumptions.md) | Assumptions and decisions | ✅ Complete |
-| — | Implementation | Code changes across 5 loader files | ⬚ Pending |
-| — | Post-impl review | Structural review of changes | ⬚ Pending |
-| — | Validation | Typecheck and test pass | ⬚ Pending |
+| — | Implementation | Code changes across 6 files (5 modified + 1 new) | ✅ Complete |
+| 05 | [Post-impl review](05-post-impl-review.md) | Structural review of changes | ✅ Complete |
+| — | Validation | Typecheck and test pass (197/197) | ✅ Complete |
 
 ---
 
@@ -55,4 +55,4 @@ Sort all directory-derived identifier lists before iteration to guarantee determ
 
 ---
 
-**Status:** Planning complete; implementation pending
+**Status:** Complete — all 12 findings remediated, tests pass, PR merged
