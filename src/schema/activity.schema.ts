@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ConditionSchema } from './condition.schema.js';
+import { SemanticVersionSchema } from './common.js';
 
-const SemanticVersionSchema = z.string().regex(/^\d+\.\d+\.\d+$/);
 const TimeEstimateSchema = z.string().regex(/^\d+(-\d+)?\s*(m|min|h|hr|hours?|d|days?)?$/i).optional();
 
 // Skills reference
@@ -54,6 +54,8 @@ export const CheckpointSchema = z.object({
   options: z.array(CheckpointOptionSchema).min(1),
   required: z.boolean().default(true),
   blocking: z.boolean().default(true),
+  defaultOption: z.string().optional().describe('Option ID to auto-select when autoAdvanceMs elapses without user intervention'),
+  autoAdvanceMs: z.number().int().positive().optional().describe('Milliseconds to wait before auto-selecting defaultOption'),
 });
 export type Checkpoint = z.infer<typeof CheckpointSchema>;
 
@@ -113,6 +115,7 @@ export const ArtifactSchema = z.object({
   name: z.string().describe('Filename or template (supports {variable} substitution)'),
   location: z.string().optional().describe('Location category (e.g., planning, docs)'),
   description: z.string().optional().describe('Purpose of the artifact'),
+  action: z.enum(['create', 'update']).default('create').optional().describe('Whether this activity creates a new artifact or updates an existing one'),
 });
 export type Artifact = z.infer<typeof ArtifactSchema>;
 
@@ -122,6 +125,7 @@ export const ModeOverrideSchema = z.object({
   rules: z.array(z.string()).optional().describe('Mode-specific rules and constraints'),
   steps: z.array(StepSchema).optional().describe('Additional steps for this mode (merged with base steps)'),
   skipSteps: z.array(z.string()).optional().describe('Step IDs to skip in this mode'),
+  skipCheckpoints: z.array(z.string()).optional().describe('Checkpoint IDs to skip in this mode'),
   checkpoints: z.array(CheckpointSchema).optional().describe('Additional checkpoints for this mode'),
   transitionOverride: z.string().optional().describe('Override default transition target in this mode'),
   context_to_preserve: z.array(z.string()).optional().describe('Additional context to preserve in this mode'),
