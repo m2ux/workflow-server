@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { resolve } from 'node:path';
 import {
   WorkflowSchema,
   safeValidateWorkflow,
@@ -9,8 +10,13 @@ import {
   StepSchema,
   DecisionSchema,
   LoopSchema,
+  safeValidateActivity,
 } from '../src/schema/activity.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
+import { loadWorkflow } from '../src/loaders/workflow-loader.js';
+import { readActivity } from '../src/loaders/activity-loader.js';
+
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('schema-validation', () => {
   describe('ConditionSchema', () => {
@@ -257,6 +263,37 @@ describe('schema-validation', () => {
       };
       const result = ActivitySchema.safeParse(activity);
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe('loader schema integration', () => {
+    it('loaded workflow should pass WorkflowSchema validation', async () => {
+      const result = await loadWorkflow(WORKFLOW_DIR, 'work-package');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const validation = safeValidateWorkflow(result.value);
+        expect(validation.success).toBe(true);
+      }
+    });
+
+    it('loaded activity should pass ActivitySchema validation', async () => {
+      const result = await readActivity(WORKFLOW_DIR, 'start-workflow');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const validation = safeValidateActivity(result.value);
+        expect(validation.success).toBe(true);
+      }
+    });
+
+    it('loaded workflow activities should all pass ActivitySchema', async () => {
+      const result = await loadWorkflow(WORKFLOW_DIR, 'work-package');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        for (const activity of result.value.activities) {
+          const validation = ActivitySchema.safeParse(activity);
+          expect(validation.success, `Activity ${activity.id} failed schema validation`).toBe(true);
+        }
+      }
     });
   });
 

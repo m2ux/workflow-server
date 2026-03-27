@@ -1,8 +1,15 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createServer } from '../src/server.js';
 import { resolve } from 'node:path';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseToolResponse(result: { content: unknown[] }): any {
+  return JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+}
+
+const SEMVER_RE = /^\d+\.\d+\.\d+$/;
 
 describe('mcp-server integration', () => {
   let client: Client;
@@ -27,13 +34,14 @@ describe('mcp-server integration', () => {
       await client.close();
       await server.close();
     };
+  });
 
+  beforeEach(async () => {
     const sessionResult = await client.callTool({
       name: 'start_session',
       arguments: { workflow_id: 'work-package' },
     });
-    const sessionResponse = JSON.parse((sessionResult.content[0] as { type: 'text'; text: string }).text);
-    sessionToken = sessionResponse.session_token;
+    sessionToken = parseToolResponse(sessionResult).session_token;
   });
 
   afterAll(async () => {
@@ -46,7 +54,7 @@ describe('mcp-server integration', () => {
     it('should return bootstrap procedure and session protocol', async () => {
       const result = await client.callTool({ name: 'help', arguments: {} });
       expect(result.isError).toBeFalsy();
-      const guide = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const guide = parseToolResponse(result);
       expect(guide.bootstrap).toBeDefined();
       expect(guide.bootstrap.step_1.tool).toBe('list_workflows');
       expect(guide.bootstrap.step_2.tool).toBe('start_session');
@@ -60,7 +68,7 @@ describe('mcp-server integration', () => {
     it('should not require session_token', async () => {
       const result = await client.callTool({ name: 'list_workflows', arguments: {} });
       expect(result.isError).toBeFalsy();
-      const workflows = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const workflows = parseToolResponse(result);
       expect(Array.isArray(workflows)).toBe(true);
       const ids = workflows.map((w: { id: string }) => w.id);
       expect(ids).toContain('work-package');
@@ -75,7 +83,7 @@ describe('mcp-server integration', () => {
         arguments: { workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       expect(response.rules).toBeDefined();
       expect(response.rules.id).toBe('agent-rules');
       expect(response.workflow.id).toBe('work-package');
@@ -106,7 +114,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
-      const meta = result._meta as Record<string, unknown> | undefined;
+      const meta = result._meta as Record<string, unknown>;
       expect(meta).toBeDefined();
       expect(meta!['session_token']).toBeDefined();
       expect(meta!['session_token']).not.toBe(sessionToken);
@@ -144,16 +152,22 @@ describe('mcp-server integration', () => {
     it('should reject get_activities', async () => {
       const result = await client.callTool({ name: 'get_activities', arguments: {} });
       expect(result.isError).toBe(true);
+      expect(result.content.length).toBeGreaterThan(0);
+      expect((result.content[0] as { type: string; text: string }).text).toBeTruthy();
     });
 
     it('should reject get_rules', async () => {
       const result = await client.callTool({ name: 'get_rules', arguments: {} });
       expect(result.isError).toBe(true);
+      expect(result.content.length).toBeGreaterThan(0);
+      expect((result.content[0] as { type: string; text: string }).text).toBeTruthy();
     });
 
     it('should reject match_goal', async () => {
       const result = await client.callTool({ name: 'match_goal', arguments: { prompt: 'test' } });
       expect(result.isError).toBe(true);
+      expect(result.content.length).toBeGreaterThan(0);
+      expect((result.content[0] as { type: string; text: string }).text).toBeTruthy();
     });
   });
 
@@ -166,9 +180,9 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, workflow_id: 'work-package' },
       });
       expect(result.content).toBeDefined();
-      const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const workflow = parseToolResponse(result);
       expect(workflow.id).toBe('work-package');
-      expect(workflow.version).toBe('3.4.0');
+      expect(workflow.version).toMatch(SEMVER_RE);
     });
 
     it('should return error for non-existent workflow', async () => {
@@ -186,7 +200,7 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
-      const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const activity = parseToolResponse(result);
       expect(activity.id).toBe('start-work-package');
       expect(activity.name).toBe('Start Work Package');
     });
@@ -211,7 +225,7 @@ describe('mcp-server integration', () => {
           checkpoint_id: 'issue-verification',
         },
       });
-      const checkpoint = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const checkpoint = parseToolResponse(result);
       expect(checkpoint.id).toBe('issue-verification');
       expect(checkpoint.options.length).toBeGreaterThan(0);
     });
@@ -221,7 +235,7 @@ describe('mcp-server integration', () => {
   describe('tool: health_check', () => {
     it('should return healthy status', async () => {
       const result = await client.callTool({ name: 'health_check', arguments: {} });
-      const health = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const health = parseToolResponse(result);
       expect(health.status).toBe('healthy');
       expect(health.workflows_available).toBeGreaterThanOrEqual(2);
     });
@@ -235,7 +249,7 @@ describe('mcp-server integration', () => {
         name: 'get_skill',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
       });
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       expect(response.skill).toBeDefined();
       expect(response.skill.id).toBe('create-issue');
       expect(response.resources).toBeDefined();
@@ -250,7 +264,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       expect(response.resources.length).toBeGreaterThan(0);
       const resource = response.resources[0];
       expect(resource.index).toBeDefined();
@@ -266,13 +280,15 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       expect(result.isError).toBeFalsy();
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       expect(Array.isArray(response.resources)).toBe(true);
       if (response.resources.length > 0) {
         expect(response.resources[0].index).toBeDefined();
         expect(response.resources[0].id).toBeDefined();
         expect(response.resources[0].content).toBeDefined();
       }
+      const meta = result._meta as Record<string, unknown>;
+      expect(meta['session_token']).toBeDefined();
     });
 
     it('resource content should not contain frontmatter', async () => {
@@ -280,7 +296,7 @@ describe('mcp-server integration', () => {
         name: 'get_skill',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
       });
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       for (const resource of response.resources) {
         expect(resource.content).not.toMatch(/^---/);
       }
@@ -297,10 +313,12 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
 
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       expect(response.activity_id).toBe('start-work-package');
       expect(response.skills).toBeDefined();
       expect(response.skills['create-issue']).toBeDefined();
+      const meta = result._meta as Record<string, unknown>;
+      expect(meta['session_token']).toBeDefined();
     });
 
     it('should include primary and supporting skills', async () => {
@@ -308,7 +326,7 @@ describe('mcp-server integration', () => {
         name: 'get_skills',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       const skillIds = Object.keys(response.skills);
       expect(skillIds.length).toBeGreaterThanOrEqual(1);
     });
@@ -339,8 +357,7 @@ describe('mcp-server integration', () => {
         name: 'start_session',
         arguments: { workflow_id: 'meta' },
       });
-      const metaResponse = JSON.parse((metaSession.content[0] as { type: 'text'; text: string }).text);
-      const metaToken = metaResponse.session_token;
+      const metaToken = parseToolResponse(metaSession).session_token;
 
       const result = await client.callTool({
         name: 'get_workflow',
@@ -381,7 +398,7 @@ describe('mcp-server integration', () => {
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAfterStart = actMeta['session_token'] as string;
 
-      const actContent = JSON.parse((actResult.content[0] as { type: 'text'; text: string }).text);
+      const actContent = parseToolResponse(actResult);
       const manifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
 
       const result = await client.callTool({
@@ -399,15 +416,14 @@ describe('mcp-server integration', () => {
         name: 'start_session',
         arguments: { workflow_id: 'meta' },
       });
-      const metaResponse = JSON.parse((metaSession.content[0] as { type: 'text'; text: string }).text);
-      const metaToken = metaResponse.session_token;
+      const metaToken = parseToolResponse(metaSession).session_token;
 
       const result = await client.callTool({
         name: 'get_workflow',
         arguments: { session_token: metaToken, workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
-      const workflow = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const workflow = parseToolResponse(result);
       expect(workflow.id).toBe('work-package');
     });
   });
@@ -505,7 +521,7 @@ describe('mcp-server integration', () => {
         },
       });
       expect(result.isError).toBeFalsy();
-      const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const activity = parseToolResponse(result);
       expect(activity.id).toBe('requirements-elicitation');
     });
   });
@@ -562,7 +578,7 @@ describe('mcp-server integration', () => {
       const actMeta = actResult._meta as Record<string, unknown>;
       const tokenAfterAct = actMeta['session_token'] as string;
 
-      const actContent = JSON.parse((actResult.content[0] as { type: 'text'; text: string }).text);
+      const actContent = parseToolResponse(actResult);
       const reversedManifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'done' })).reverse();
 
       const result = await client.callTool({
@@ -598,7 +614,7 @@ describe('mcp-server integration', () => {
         },
       });
       expect(result.isError).toBeFalsy();
-      const activity = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const activity = parseToolResponse(result);
       expect(activity.id).toBe('design-philosophy');
     });
   });
@@ -620,7 +636,7 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
 
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       expect(response.current_activity).toBe('start-work-package');
       expect(response.transitions).toBeDefined();
       expect(Array.isArray(response.transitions)).toBe(true);
@@ -640,7 +656,7 @@ describe('mcp-server integration', () => {
         name: 'get_activities',
         arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
       });
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       const conditional = response.transitions.find((t: { condition?: string }) => t.condition);
       expect(conditional).toBeDefined();
       expect(typeof conditional.condition).toBe('string');
@@ -658,7 +674,7 @@ describe('mcp-server integration', () => {
         name: 'get_activities',
         arguments: { session_token: tokenWithAct, workflow_id: 'work-package' },
       });
-      const response = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const response = parseToolResponse(result);
       const defaultTransition = response.transitions.find((t: { isDefault?: boolean }) => t.isDefault);
       expect(defaultTransition).toBeDefined();
     });
@@ -699,9 +715,9 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
 
-      const wf = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const wf = parseToolResponse(result);
       expect(wf.id).toBe('work-package');
-      expect(wf.version).toBe('3.4.0');
+      expect(wf.version).toMatch(SEMVER_RE);
       expect(wf.rules).toBeDefined();
       expect(wf.variables).toBeDefined();
       expect(wf.activities).toBeDefined();
@@ -730,7 +746,7 @@ describe('mcp-server integration', () => {
         name: 'get_workflow',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', summary: false },
       });
-      const wf = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const wf = parseToolResponse(result);
       expect(wf.activities[0].steps).toBeDefined();
     });
   });
@@ -738,23 +754,12 @@ describe('mcp-server integration', () => {
   // ============== Trace Integration ==============
 
   describe('trace lifecycle', () => {
-    let traceSessionToken: string;
-
-    beforeAll(async () => {
-      const sessionResult = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
-      });
-      const sessionResponse = JSON.parse((sessionResult.content[0] as { type: 'text'; text: string }).text);
-      traceSessionToken = sessionResponse.session_token;
-    });
-
     it('start_session initializes trace (IT-6)', async () => {
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: traceSessionToken },
+        arguments: { session_token: sessionToken },
       });
-      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const trace = parseToolResponse(result);
       expect(trace.source).toBe('memory');
       expect(trace.events.length).toBeGreaterThanOrEqual(1);
       expect(trace.events[0].name).toBe('start_session');
@@ -763,35 +768,38 @@ describe('mcp-server integration', () => {
     it('next_activity returns _meta.trace_token (IT-7)', async () => {
       const result = await client.callTool({
         name: 'next_activity',
-        arguments: { session_token: traceSessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const meta = result._meta as Record<string, unknown>;
-      traceSessionToken = meta['session_token'] as string;
       expect(meta['trace_token']).toBeDefined();
       expect(typeof meta['trace_token']).toBe('string');
       expect((meta['trace_token'] as string).length).toBeGreaterThan(10);
     });
 
     it('get_trace without tokens returns in-memory trace (IT-13)', async () => {
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: traceSessionToken },
+        arguments: { session_token: sessionToken },
       });
-      const meta = result._meta as Record<string, unknown>;
-      traceSessionToken = meta['session_token'] as string;
-      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const trace = parseToolResponse(result);
       expect(trace.source).toBe('memory');
       expect(trace.events.length).toBeGreaterThan(0);
     });
 
     it('trace events have compressed field names (IT-10)', async () => {
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: traceSessionToken },
+        arguments: { session_token: sessionToken },
       });
-      const meta = result._meta as Record<string, unknown>;
-      traceSessionToken = meta['session_token'] as string;
-      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const trace = parseToolResponse(result);
       const event = trace.events[0];
       expect(event.ts).toBeDefined();
       expect(event.ms).toBeDefined();
@@ -801,24 +809,22 @@ describe('mcp-server integration', () => {
     });
 
     it('session_token not in trace events (IT-15)', async () => {
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: traceSessionToken },
+        arguments: { session_token: sessionToken },
       });
-      const meta = result._meta as Record<string, unknown>;
-      traceSessionToken = meta['session_token'] as string;
       const traceText = (result.content[0] as { type: 'text'; text: string }).text;
       expect(traceText).not.toContain('session_token');
     });
 
     it('get_trace excludes itself from trace (IT-14)', async () => {
-      const result = await client.callTool({
-        name: 'get_trace',
-        arguments: { session_token: traceSessionToken },
-      });
-      const meta = result._meta as Record<string, unknown>;
-      traceSessionToken = meta['session_token'] as string;
-      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      await client.callTool({ name: 'get_trace', arguments: { session_token: sessionToken } });
+      const result = await client.callTool({ name: 'get_trace', arguments: { session_token: sessionToken } });
+      const trace = parseToolResponse(result);
       const traceNames = trace.events.map((e: { name: string }) => e.name);
       expect(traceNames).not.toContain('get_trace');
     });
@@ -827,57 +833,49 @@ describe('mcp-server integration', () => {
       try {
         await client.callTool({
           name: 'next_activity',
-          arguments: { session_token: traceSessionToken, workflow_id: 'work-package', activity_id: 'nonexistent-activity' },
+          arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'nonexistent-activity' },
         });
       } catch { /* expected */ }
 
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: traceSessionToken },
+        arguments: { session_token: sessionToken },
       });
-      const meta = result._meta as Record<string, unknown>;
-      traceSessionToken = meta['session_token'] as string;
-      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const trace = parseToolResponse(result);
       const errorEvents = trace.events.filter((e: { s: string }) => e.s === 'error');
       expect(errorEvents.length).toBeGreaterThan(0);
       expect(errorEvents[0].err).toBeDefined();
     });
 
     it('accumulated trace tokens resolve via get_trace (IT-8)', async () => {
-      const session2 = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
-      });
-      let tok = JSON.parse((session2.content[0] as { type: 'text'; text: string }).text).session_token as string;
-
       await client.callTool({
         name: 'get_skills',
-        arguments: { session_token: tok, workflow_id: 'work-package', activity_id: 'start-work-package' },
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
 
       const act1 = await client.callTool({
         name: 'next_activity',
-        arguments: { session_token: tok, workflow_id: 'work-package', activity_id: 'start-work-package' },
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
       });
       const meta1 = act1._meta as Record<string, unknown>;
-      tok = meta1['session_token'] as string;
+      const updatedToken = meta1['session_token'] as string;
       const traceToken1 = meta1['trace_token'] as string;
       expect(traceToken1).toBeDefined();
 
       const act2 = await client.callTool({
         name: 'next_activity',
-        arguments: { session_token: tok, workflow_id: 'work-package', activity_id: 'design-philosophy' },
+        arguments: { session_token: updatedToken, workflow_id: 'work-package', activity_id: 'design-philosophy' },
       });
       const meta2 = act2._meta as Record<string, unknown>;
-      tok = meta2['session_token'] as string;
+      const updatedToken2 = meta2['session_token'] as string;
       const traceToken2 = meta2['trace_token'] as string;
       expect(traceToken2).toBeDefined();
 
       const resolved = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: tok, trace_tokens: [traceToken1, traceToken2] },
+        arguments: { session_token: updatedToken2, trace_tokens: [traceToken1, traceToken2] },
       });
-      const trace = JSON.parse((resolved.content[0] as { type: 'text'; text: string }).text);
+      const trace = parseToolResponse(resolved);
       expect(trace.source).toBe('tokens');
       expect(trace.event_count).toBeGreaterThanOrEqual(2);
     });
@@ -885,26 +883,18 @@ describe('mcp-server integration', () => {
     it('invalid trace token handled gracefully (IT-19)', async () => {
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: traceSessionToken, trace_tokens: ['invalid.token.here'] },
+        arguments: { session_token: sessionToken, trace_tokens: ['invalid.token.here'] },
       });
-      const meta = result._meta as Record<string, unknown>;
-      traceSessionToken = meta['session_token'] as string;
-      const trace = JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+      const trace = parseToolResponse(result);
       expect(trace.token_errors).toBeDefined();
       expect(trace.token_errors.length).toBeGreaterThan(0);
     });
 
     it('activity_manifest accepted without error (IT-3)', async () => {
-      const session3 = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
-      });
-      const tok3 = JSON.parse((session3.content[0] as { type: 'text'; text: string }).text).session_token as string;
-
       const result = await client.callTool({
         name: 'next_activity',
         arguments: {
-          session_token: tok3,
+          session_token: sessionToken,
           workflow_id: 'work-package',
           activity_id: 'start-work-package',
           activity_manifest: [
@@ -913,6 +903,65 @@ describe('mcp-server integration', () => {
         },
       });
       expect(result.isError).toBeFalsy();
+    });
+  });
+
+  // ============== Concurrent Session Isolation ==============
+
+  describe('concurrent session isolation', () => {
+    it('operations on one session should not affect another', async () => {
+      const s1 = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+      const s2 = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+
+      const token1 = parseToolResponse(s1).session_token as string;
+      const token2 = parseToolResponse(s2).session_token as string;
+
+      const act1 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: token1, workflow_id: 'work-package', activity_id: 'design-philosophy' },
+      });
+      const act2 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: token2, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+
+      expect(act1.isError).toBeFalsy();
+      expect(act2.isError).toBeFalsy();
+      expect(parseToolResponse(act1).id).toBe('design-philosophy');
+      expect(parseToolResponse(act2).id).toBe('start-work-package');
+    });
+
+    it('traces from different sessions should be isolated', async () => {
+      const s1 = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+      const s2 = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+
+      const token1 = parseToolResponse(s1).session_token as string;
+      const token2 = parseToolResponse(s2).session_token as string;
+
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: token1, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+
+      const trace2 = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: token2 },
+      });
+      const traceData = parseToolResponse(trace2);
+      const names = traceData.events.map((e: { name: string }) => e.name);
+      expect(names).not.toContain('next_activity');
     });
   });
 });

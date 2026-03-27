@@ -1,57 +1,58 @@
-import { describe, it, expect } from 'vitest';
-import { join } from 'node:path';
+import { describe, it, expect, beforeAll } from 'vitest';
+import { resolve } from 'node:path';
 import { readRules, readRulesRaw } from '../src/loaders/rules-loader.js';
 
-const WORKFLOW_DIR = join(process.cwd(), 'workflows');
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('rules-loader', () => {
   describe('readRules', () => {
-    it('should load global rules from meta/rules.toon', async () => {
-      const result = await readRules(WORKFLOW_DIR);
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.value.id).toBe('agent-rules');
-        expect(result.value.version).toBeDefined();
-        expect(result.value.title).toBeDefined();
-        expect(result.value.description).toBeDefined();
+    let rulesResult: Awaited<ReturnType<typeof readRules>>;
+
+    beforeAll(async () => {
+      rulesResult = await readRules(WORKFLOW_DIR);
+    });
+
+    it('should load global rules from meta/rules.toon', () => {
+      expect(rulesResult.success).toBe(true);
+      if (rulesResult.success) {
+        expect(rulesResult.value.id).toBe('agent-rules');
+        expect(rulesResult.value.version).toBeDefined();
+        expect(rulesResult.value.title).toBeDefined();
+        expect(rulesResult.value.description).toBeDefined();
       }
     });
 
-    it('should have sections array with rule categories', async () => {
-      const result = await readRules(WORKFLOW_DIR);
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(Array.isArray(result.value.sections)).toBe(true);
-        expect(result.value.sections.length).toBeGreaterThan(0);
+    it('should have sections array with rule categories', () => {
+      expect(rulesResult.success).toBe(true);
+      if (rulesResult.success) {
+        expect(Array.isArray(rulesResult.value.sections)).toBe(true);
+        expect(rulesResult.value.sections.length).toBeGreaterThan(0);
       }
     });
 
-    it('should include code-modification section', async () => {
-      const result = await readRules(WORKFLOW_DIR);
-      expect(result.success).toBe(true);
-      if (result.success) {
-        const codeModSection = result.value.sections.find(s => s.id === 'code-modification');
+    it('should include code-modification section', () => {
+      expect(rulesResult.success).toBe(true);
+      if (rulesResult.success) {
+        const codeModSection = rulesResult.value.sections.find(s => s.id === 'code-modification');
         expect(codeModSection).toBeDefined();
         expect(codeModSection?.title).toBe('Code Modification Boundaries');
         expect(codeModSection?.priority).toBe('critical');
       }
     });
 
-    it('should include version-control section with GitHub CLI guidance', async () => {
-      const result = await readRules(WORKFLOW_DIR);
-      expect(result.success).toBe(true);
-      if (result.success) {
-        const githubSection = result.value.sections.find(s => s.id === 'github-cli');
+    it('should include version-control section with GitHub CLI guidance', () => {
+      expect(rulesResult.success).toBe(true);
+      if (rulesResult.success) {
+        const githubSection = rulesResult.value.sections.find(s => s.id === 'github-cli');
         expect(githubSection).toBeDefined();
         expect(githubSection?.title).toBe('GitHub CLI Usage');
       }
     });
 
-    it('should include precedence statement', async () => {
-      const result = await readRules(WORKFLOW_DIR);
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.value.precedence).toContain('Workflow-specific rules override');
+    it('should include precedence statement', () => {
+      expect(rulesResult.success).toBe(true);
+      if (rulesResult.success) {
+        expect(rulesResult.value.precedence).toContain('Workflow-specific rules override');
       }
     });
 

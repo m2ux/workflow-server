@@ -1,8 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { listActivities, readActivity, readActivityIndex } from '../src/loaders/activity-loader.js';
-import { join } from 'node:path';
+import { resolve, join } from 'node:path';
+import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 
-const WORKFLOW_DIR = join(process.cwd(), 'workflows');
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('activity-loader', () => {
   describe('listActivities', () => {
@@ -99,6 +101,39 @@ describe('activity-loader', () => {
         expect(result.value.next_action.parameters).toBeDefined();
         expect(result.value.next_action.parameters.skill_id).toBe(result.value.skills.primary);
       }
+    });
+  });
+
+  describe('malformed TOON handling', () => {
+    let tempDir: string;
+
+    beforeEach(async () => {
+      tempDir = await import('node:fs/promises').then(fs =>
+        fs.mkdtemp(join(tmpdir(), 'activity-test-'))
+      );
+      await mkdir(join(tempDir, 'meta', 'activities'), { recursive: true });
+    });
+
+    afterEach(async () => {
+      await rm(tempDir, { recursive: true, force: true });
+    });
+
+    it('should return error for malformed TOON content', async () => {
+      await writeFile(join(tempDir, 'meta', 'activities', '01-broken.toon'), 'this is not valid TOON {{{', 'utf-8');
+      const result = await readActivity(tempDir, 'broken');
+      expect(result.success).toBe(false);
+    });
+
+    it('should return error for empty TOON file', async () => {
+      await writeFile(join(tempDir, 'meta', 'activities', '01-empty-activity.toon'), '', 'utf-8');
+      const result = await readActivity(tempDir, 'empty-activity');
+      expect(result.success).toBe(false);
+    });
+
+    it('should return error for TOON with missing required fields', async () => {
+      await writeFile(join(tempDir, 'meta', 'activities', '01-incomplete.toon'), 'id: incomplete\n', 'utf-8');
+      const result = await readActivity(tempDir, 'incomplete');
+      expect(result.success).toBe(false);
     });
   });
 
