@@ -163,9 +163,11 @@ describe('trace token encode/decode', () => {
 
   it('rejects tampered payload (UT-10)', async () => {
     const token = await createTraceToken(samplePayload);
-    const [b64] = token.split('.');
-    const tampered = `${b64}x.${token.split('.')[1]}`;
-    await expect(decodeTraceToken(tampered)).rejects.toThrow('signature verification failed');
+    const [b64, sig] = token.split('.');
+    const decoded = JSON.parse(Buffer.from(b64!, 'base64url').toString());
+    decoded.n = 999;
+    const tamperedB64 = Buffer.from(JSON.stringify(decoded)).toString('base64url');
+    await expect(decodeTraceToken(`${tamperedB64}.${sig}`)).rejects.toThrow('signature verification failed');
   });
 
   it('rejects invalid HMAC (UT-11)', async () => {

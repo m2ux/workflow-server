@@ -55,8 +55,9 @@ describe('session token utilities', () => {
 
     it('should throw on tampered payload', async () => {
       const token = await createSessionToken('work-package', '3.4.0');
+      const payload = await decodeSessionToken(token);
       const [, sig] = token.split('.');
-      const tampered = Buffer.from(JSON.stringify({ wf: 'hacked', act: '', skill: '', cond: '', v: '1.0.0', seq: 0, ts: 0, sid: 'fake', aid: '' })).toString('base64url');
+      const tampered = Buffer.from(JSON.stringify({ ...payload, wf: 'hacked' })).toString('base64url');
       await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('signature verification failed');
     });
   });

@@ -1,8 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { listSkills, listUniversalSkills, readSkill, readSkillIndex } from '../src/loaders/skill-loader.js';
-import { join } from 'node:path';
+import { resolve, join } from 'node:path';
+import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 
-const WORKFLOW_DIR = join(process.cwd(), 'workflows');
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('skill-loader', () => {
   describe('listUniversalSkills', () => {
@@ -125,6 +127,50 @@ describe('skill-loader', () => {
           expect(errorInfo.cause, `${errorName} should have 'cause' field`).toBeDefined();
           expect(errorInfo.recovery, `${errorName} should have 'recovery' field`).toBeDefined();
         }
+      }
+    });
+  });
+
+  describe('malformed TOON handling', () => {
+    let tempDir: string;
+
+    beforeEach(async () => {
+      tempDir = await import('node:fs/promises').then(fs =>
+        fs.mkdtemp(join(tmpdir(), 'skill-test-'))
+      );
+      await mkdir(join(tempDir, 'meta', 'skills'), { recursive: true });
+    });
+
+    afterEach(async () => {
+      await rm(tempDir, { recursive: true, force: true });
+    });
+
+    it('should handle non-skill TOON content without crashing', async () => {
+      await writeFile(join(tempDir, 'meta', 'skills', '01-not-a-skill.toon'), 'just a plain string', 'utf-8');
+      const result = await readSkill('not-a-skill', tempDir);
+      expect(result.success).toBe(true);
+    });
+
+    it('should handle empty TOON file without crashing', async () => {
+      await writeFile(join(tempDir, 'meta', 'skills', '01-empty-skill.toon'), '', 'utf-8');
+      const result = await readSkill('empty-skill', tempDir);
+      expect(result.success).toBe(true);
+    });
+
+    it('should handle TOON with minimal fields without crashing', async () => {
+      await writeFile(join(tempDir, 'meta', 'skills', '01-minimal.toon'), 'id: minimal\nversion: 1.0.0\n', 'utf-8');
+      const result = await readSkill('minimal', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.id).toBe('minimal');
+      }
+    });
+
+    it('should return error for non-existent skill in temp directory', async () => {
+      const result = await readSkill('does-not-exist', tempDir);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.name).toBe('SkillNotFoundError');
       }
     });
   });

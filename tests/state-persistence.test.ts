@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readFile, rm, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, rm, mkdir } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
@@ -187,7 +187,7 @@ describe('state-persistence', () => {
         sessionTokenEncrypted: false,
         state,
       };
-      const encoded = encodeToon(saveFile as unknown as Record<string, unknown>);
+      const encoded = encodeToon(saveFile);
       const decoded = decodeToon<Record<string, unknown>>(encoded);
       expect(decoded).toEqual(saveFile);
     });
@@ -245,7 +245,7 @@ describe('state-persistence', () => {
           }],
         },
       };
-      const encoded = encodeToon(saveFile as unknown as Record<string, unknown>);
+      const encoded = encodeToon(saveFile);
       const decoded = decodeToon<Record<string, unknown>>(encoded);
       expect(decoded).toEqual(saveFile);
     });
@@ -262,9 +262,8 @@ describe('state-persistence', () => {
         state,
       };
       const filePath = join(TEST_DIR, 'workflow-state.toon');
-      const encoded = encodeToon(saveFile as unknown as Record<string, unknown>);
-      const { writeFile: wf } = await import('node:fs/promises');
-      await wf(filePath, encoded, 'utf-8');
+      const encoded = encodeToon(saveFile);
+      await writeFile(filePath, encoded, 'utf-8');
 
       const content = await readFile(filePath, 'utf-8');
       const decoded = decodeToon<Record<string, unknown>>(content);
