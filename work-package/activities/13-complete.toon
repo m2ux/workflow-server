@@ -106,7 +106,8 @@ outcome[5]:
   - Retrospective completed with lessons learned
   - Work package status updated
   - Ready for next work package
-context_to_preserve[5]:
+context_to_preserve[6]:
+  - planning_folder_path - Path to this work package's planning folder (returned to parent workflow via returnedContext)
   - session_history - Session history captured
   - retrospective_notes - Notes from retrospective
   - adr_status - ADR status (if applicable)
