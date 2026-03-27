@@ -6,6 +6,7 @@ import { SkillNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
 import type { Skill } from '../schema/skill.schema.js';
+import { parseActivityFilename as parseSkillFilename } from './filename-utils.js';
 
 /** The meta workflow contains universal skills */
 const META_WORKFLOW_ID = 'meta';
@@ -15,14 +16,7 @@ export interface SkillEntry {
   id: string; 
   name: string; 
   path: string;
-  workflowId?: string;  // If set, this is a workflow-specific skill
-}
-
-/** Parse skill filename to extract index and id: NN-skill-id.toon */
-function parseSkillFilename(filename: string): { index: string; id: string } | null {
-  const match = filename.match(/^(\d{2})-(.+)\.toon$/);
-  if (!match || !match[1] || !match[2]) return null;
-  return { index: match[1], id: match[2] };
+  workflowId?: string;
 }
 
 /** Find skill file by ID in a directory (handles NN- prefix) */
@@ -51,7 +45,7 @@ function getWorkflowSkillDir(workflowDir: string, workflowId: string): string {
   return join(workflowDir, workflowId, 'skills');
 }
 
-/** Find all workflows that have a skills folder */
+/** Find all workflows that have a skills folder (excluding meta, which is searched separately as universal) */
 async function findWorkflowsWithSkills(workflowDir: string): Promise<string[]> {
   if (!existsSync(workflowDir)) return [];
 
@@ -68,7 +62,7 @@ async function findWorkflowsWithSkills(workflowDir: string): Promise<string[]> {
       }
     }
 
-    return workflowIds;
+    return workflowIds.sort();
   } catch {
     return [];
   }
@@ -189,12 +183,11 @@ export async function listSkills(workflowDir: string): Promise<SkillEntry[]> {
   // Add universal skills from meta workflow
   skills.push(...await listUniversalSkills(workflowDir));
   
-  // Add workflow-specific skills (excluding meta which is the universal source)
   if (existsSync(workflowDir)) {
     try {
-      const entries = await readdir(workflowDir);
+      const entries = (await readdir(workflowDir)).sort();
       for (const entry of entries) {
-        if (entry === META_WORKFLOW_ID) continue; // Skip meta, already included as universal
+        if (entry === META_WORKFLOW_ID) continue;
         const entryPath = join(workflowDir, entry);
         const stats = await stat(entryPath);
         if (stats.isDirectory()) {
@@ -234,48 +227,51 @@ export interface SkillIndex {
 /**
  * Build skill index dynamically from skill files.
  * Returns universal skills and workflow-specific skills grouped by workflow.
+ * Loads skills directly from enumerated entries to avoid redundant readdir calls.
  */
 export async function readSkillIndex(workflowDir: string): Promise<Result<SkillIndex, SkillNotFoundError>> {
   const universal: SkillIndex['universal'] = [];
   const workflow_specific: SkillIndex['workflow_specific'] = {};
   
-  // Load universal skills
+  // Load universal skills directly from already-enumerated entries
   const universalEntries = await listUniversalSkills(workflowDir);
+  const universalSkillDir = getUniversalSkillDir(workflowDir);
   for (const entry of universalEntries) {
-    const result = await readSkill(entry.id, workflowDir);
-    if (result.success) {
+    const skill = await tryLoadSkill(universalSkillDir, entry.id);
+    if (skill) {
       universal.push({
-        id: result.value.id,
-        capability: result.value.capability,
+        id: skill.id,
+        capability: skill.capability,
         next_action: {
           tool: 'get_skill',
-          parameters: { skill_id: result.value.id },
+          parameters: { skill_id: skill.id },
         },
       });
     }
   }
   
-  // Load workflow-specific skills
+  // Load workflow-specific skills directly from enumerated entries
   if (existsSync(workflowDir)) {
     try {
       const entries = await readdir(workflowDir);
-      for (const workflowId of entries) {
+      for (const workflowId of entries.sort()) {
         if (workflowId === META_WORKFLOW_ID) continue;
         const entryPath = join(workflowDir, workflowId);
         const stats = await stat(entryPath);
         if (stats.isDirectory()) {
           const workflowSkillEntries = await listWorkflowSkills(workflowDir, workflowId);
           if (workflowSkillEntries.length > 0) {
+            const skillDir = getWorkflowSkillDir(workflowDir, workflowId);
             workflow_specific[workflowId] = [];
             for (const skillEntry of workflowSkillEntries) {
-              const result = await readSkill(skillEntry.id, workflowDir, workflowId);
-              if (result.success) {
+              const skill = await tryLoadSkill(skillDir, skillEntry.id);
+              if (skill) {
                 workflow_specific[workflowId].push({
-                  id: result.value.id,
-                  capability: result.value.capability,
+                  id: skill.id,
+                  capability: skill.capability,
                   next_action: {
                     tool: 'get_skill',
-                    parameters: { skill_id: result.value.id, workflow_id: workflowId },
+                    parameters: { skill_id: skill.id, workflow_id: workflowId },
                   },
                 });
               }

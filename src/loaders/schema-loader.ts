@@ -20,25 +20,21 @@ const SCHEMA_IDS = ['workflow', 'activity', 'condition', 'skill', 'state'] as co
  * Returns a single object with all schemas keyed by their ID.
  */
 export async function readAllSchemas(schemasDir: string): Promise<Result<AllSchemas>> {
-  try {
-    const schemas: Record<string, object> = {};
+  const schemas: Record<string, object> = {};
+  
+  for (const schemaId of SCHEMA_IDS) {
+    const filename = `${schemaId}.schema.json`;
+    const filepath = join(schemasDir, filename);
     
-    for (const schemaId of SCHEMA_IDS) {
-      const filename = `${schemaId}.schema.json`;
-      const filepath = join(schemasDir, filename);
-      
-      try {
-        const content = await readFile(filepath, 'utf-8');
-        schemas[schemaId] = JSON.parse(content);
-      } catch (error) {
-        return err(new Error(`Failed to read schema '${schemaId}': ${error instanceof Error ? error.message : String(error)}`));
-      }
+    try {
+      const content = await readFile(filepath, 'utf-8');
+      schemas[schemaId] = JSON.parse(content);
+    } catch (error) {
+      return err(new Error(`Failed to read schema '${schemaId}': ${error instanceof Error ? error.message : String(error)}`));
     }
-    
-    return ok(schemas as unknown as AllSchemas);
-  } catch (error) {
-    return err(error instanceof Error ? error : new Error(String(error)));
   }
+  
+  return ok(schemas as unknown as AllSchemas);
 }
 
 /**

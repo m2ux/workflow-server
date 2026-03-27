@@ -23,6 +23,11 @@ export interface Resource {
   [key: string]: unknown;
 }
 
+/** Normalize a resource index to a consistent width for comparison. */
+function normalizeResourceIndex(index: string): string {
+  return index.padStart(3, '0');
+}
+
 /**
  * Parse a resource filename to extract index and name.
  * Expected format: {NN}-{name}.toon or {NN}-{name}.md (in resources/ subdirectory)
@@ -82,28 +87,33 @@ export async function readResource(
     return err(new ResourceNotFoundError(resourceIndex, workflowId));
   }
   
-  // Normalize index (e.g., '0' -> '00' for lookup)
-  const normalizedIndex = resourceIndex.padStart(2, '0');
+  const normalizedIndex = normalizeResourceIndex(resourceIndex);
   
   try {
-    const files = await readdir(resourceDir);
+    const files = (await readdir(resourceDir)).sort();
     
+    // Two-pass: prefer TOON over Markdown for the same index
+    let mdFallback: string | null = null;
     for (const file of files) {
       const parsed = parseResourceFilename(file);
-      if (parsed) {
-        // Match either exact index or normalized index
-        const fileIndex = parsed.index.padStart(2, '0');
-        if (fileIndex === normalizedIndex || parsed.index === resourceIndex) {
-          const filePath = join(resourceDir, file);
-          const content = await readFile(filePath, 'utf-8');
-          logInfo('Resource loaded', { workflowId, resourceIndex, path: filePath, format: parsed.format });
-          
-          if (parsed.format === 'toon') {
-            return ok(decodeToon<Resource>(content));
-          }
-          return ok(content);
-        }
+      if (!parsed) continue;
+      const fileIndex = normalizeResourceIndex(parsed.index);
+      if (fileIndex !== normalizedIndex && parsed.index !== resourceIndex) continue;
+      
+      if (parsed.format === 'toon') {
+        const filePath = join(resourceDir, file);
+        const content = await readFile(filePath, 'utf-8');
+        logInfo('Resource loaded', { workflowId, resourceIndex, path: filePath, format: 'toon' });
+        return ok(decodeToon<Resource>(content));
       }
+      if (!mdFallback) mdFallback = file;
+    }
+    
+    if (mdFallback) {
+      const filePath = join(resourceDir, mdFallback);
+      const content = await readFile(filePath, 'utf-8');
+      logInfo('Resource loaded', { workflowId, resourceIndex, path: filePath, format: 'markdown' });
+      return ok(content);
     }
   } catch (error) {
     logError('Failed to read resource', error instanceof Error ? error : undefined, { workflowId, resourceIndex });
@@ -129,23 +139,33 @@ export async function readResourceRaw(
     return err(new ResourceNotFoundError(resourceIndex, workflowId));
   }
   
-  // Normalize index (e.g., '0' -> '00' for lookup)
-  const normalizedIndex = resourceIndex.padStart(2, '0');
+  const normalizedIndex = normalizeResourceIndex(resourceIndex);
   
   try {
-    const files = await readdir(resourceDir);
+    const files = (await readdir(resourceDir)).sort();
     
+    // Prefer TOON over Markdown for the same index
+    let mdFallback: { file: string; parsed: ReturnType<typeof parseResourceFilename> } | null = null;
     for (const file of files) {
       const parsed = parseResourceFilename(file);
-      if (parsed) {
-        const fileIndex = parsed.index.padStart(2, '0');
-        if (fileIndex === normalizedIndex || parsed.index === resourceIndex) {
-          const filePath = join(resourceDir, file);
-          const content = await readFile(filePath, 'utf-8');
-          logInfo('Resource loaded (raw)', { workflowId, resourceIndex, path: filePath, format: parsed.format });
-          return ok({ content, format: parsed.format });
-        }
+      if (!parsed) continue;
+      const fileIndex = normalizeResourceIndex(parsed.index);
+      if (fileIndex !== normalizedIndex && parsed.index !== resourceIndex) continue;
+      
+      if (parsed.format === 'toon') {
+        const filePath = join(resourceDir, file);
+        const content = await readFile(filePath, 'utf-8');
+        logInfo('Resource loaded (raw)', { workflowId, resourceIndex, path: filePath, format: 'toon' });
+        return ok({ content, format: parsed.format });
       }
+      if (!mdFallback) mdFallback = { file, parsed };
+    }
+    
+    if (mdFallback && mdFallback.parsed) {
+      const filePath = join(resourceDir, mdFallback.file);
+      const content = await readFile(filePath, 'utf-8');
+      logInfo('Resource loaded (raw)', { workflowId, resourceIndex, path: filePath, format: mdFallback.parsed.format });
+      return ok({ content, format: mdFallback.parsed.format });
     }
   } catch (error) {
     logWarn('Failed to read resource (raw)', { workflowId, resourceIndex, error: error instanceof Error ? error.message : String(error) });
@@ -204,10 +224,10 @@ export async function getResourceEntry(
   resourceIndex: string
 ): Promise<ResourceEntry | null> {
   const resources = await listResources(workflowDir, workflowId);
-  const normalizedIndex = resourceIndex.padStart(2, '0');
+  const normalizedIndex = normalizeResourceIndex(resourceIndex);
   
   return resources.find(r => 
-    r.index.padStart(2, '0') === normalizedIndex || 
+    normalizeResourceIndex(r.index) === normalizedIndex || 
     r.index === resourceIndex
   ) ?? null;
 }
@@ -249,7 +269,7 @@ export async function readResourceStructured(
   if (!rawResult.success) return rawResult;
 
   const { id, version, content } = parseFrontmatter(rawResult.value.content);
-  const normalizedIndex = resourceIndex.padStart(2, '0');
+  const normalizedIndex = normalizeResourceIndex(resourceIndex);
 
   return ok({ index: normalizedIndex, id, version, content });
 }
@@ -277,7 +297,7 @@ export async function listWorkflowsWithResources(workflowDir: string): Promise<s
       }
     }
     
-    return workflows;
+    return workflows.sort();
   } catch {
     return [];
   }
