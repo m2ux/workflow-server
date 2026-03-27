@@ -91,7 +91,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           description: wf.description,
           rules: wf.rules,
           variables: wf.variables,
-          initialActivity: (wf as Record<string, unknown>)['initialActivity'],
+          initialActivity: wf.initialActivity,
           activities: wf.activities.map(a => ({ id: a.id, name: a.name, required: a.required })),
         };
         content.push({ type: 'text', text: JSON.stringify(summaryData, null, 2) });
@@ -132,8 +132,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const activityManifestWarnings: string[] = [];
       if (activity_manifest) {
-        const amw = validateActivityManifest(activity_manifest as ActivityManifestEntry[], result.value);
-        activityManifestWarnings.push(...amw);
+        if (activity_manifest.length === 0) {
+          activityManifestWarnings.push('Empty activity_manifest provided. Omit the parameter if no activities have been completed.');
+        } else {
+          const amw = validateActivityManifest(activity_manifest as ActivityManifestEntry[], result.value);
+          activityManifestWarnings.push(...amw);
+        }
       }
 
       const validation = buildValidation(
@@ -152,14 +156,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (config.traceStore) {
         const segment = config.traceStore.getSegmentAndAdvanceCursor(token.sid);
         if (segment.events.length > 0) {
+          const firstEvent = segment.events[0];
+          const lastEvent = segment.events[segment.events.length - 1];
           const payload: TraceTokenPayload = {
             sid: token.sid,
-            act: token.act || activity_id,
+            act: activity_id,
             from: segment.fromIndex,
             to: segment.toIndex,
             n: segment.events.length,
-            t0: segment.events[0]!.ts,
-            t1: segment.events[segment.events.length - 1]!.ts,
+            t0: firstEvent ? firstEvent.ts : 0,
+            t1: lastEvent ? lastEvent.ts : 0,
             ts: Math.floor(Date.now() / 1000),
             events: segment.events,
           };
@@ -250,9 +256,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         };
       }
 
-      const events = config.traceStore ? config.traceStore.getEvents(token.sid) : [];
+      if (!config.traceStore) {
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: false, event_count: 0, events: [] }, null, 2) }],
+          _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+        };
+      }
+
+      const events = config.traceStore.getEvents(token.sid);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', event_count: events.length, events }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: true, event_count: events.length, events }, null, 2) }],
         _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
       };
     }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
