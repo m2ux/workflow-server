@@ -1,7 +1,7 @@
 # Cross-Schema Consistency Enforcement — WP-04
 
 **Created:** 2026-03-27
-**Status:** In Progress
+**Status:** Complete
 **Type:** Bug Fix
 
 ---
@@ -34,10 +34,10 @@ For QC-014, add `string` as an accepted alternative in the JSON Schema `artifact
 | 02 | [Design philosophy](02-design-philosophy.md) | Approach and constraints | ✅ Complete |
 | 04 | [Plan](04-plan.md) | Implementation plan | ✅ Complete |
 | 05 | [Assumptions review](05-assumptions-review.md) | Risk and assumptions | ✅ Complete |
-| 06 | Implementation | Code changes for QC-014, QC-019, QC-027 | ⬚ Pending |
-| 09 | Post-impl review | Code review artifact | ⬚ Pending |
-| 10 | Validation | Typecheck + tests | ⬚ Pending |
-| 11 | Strategic review | Final quality check | ⬚ Pending |
+| 06 | Implementation | Code changes for QC-014, QC-019, QC-027 | ✅ Complete |
+| 09 | [Post-impl review](09-code-review.md) | Code review artifact | ✅ Complete |
+| 10 | [Validation](10-validation.md) | Typecheck + tests | ✅ Complete |
+| 11 | [Strategic review](11-strategic-review.md) | Final quality check | ✅ Complete |
 
 ---
 
@@ -53,4 +53,4 @@ For QC-014, add `string` as an accepted alternative in the JSON Schema `artifact
 
 ---
 
-**Status:** Planning complete, implementation pending
+**Status:** ✅ Complete — all findings resolved, PR ready to merge
