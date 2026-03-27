@@ -119,11 +119,29 @@ Note: T3.5 tests that the schema field is authoritative. If `sessionTokenEncrypt
 - Encryption flag tests need mock state objects but don't require actual crypto operations for schema tests. Integration tests that verify decrypt behavior will need a real key (use `getOrCreateServerKey()` in test setup).
 - Use `vi.spyOn` or direct function calls — avoid spinning up the full MCP server for these unit tests.
 
+## Implementation Status
+
+All T1 and T2 tests implemented in `tests/state-persistence.test.ts`. T3 (flag migration) deferred — requires MCP server integration test harness.
+
+| Plan ID | Test | File Location | Status |
+|---------|------|---------------|--------|
+| T1.1 | Reject relative `..` traversal | `tests/state-persistence.test.ts:304` | ✅ Implemented |
+| T1.2 | Reject absolute path outside workspace | `tests/state-persistence.test.ts:308` | ✅ Implemented |
+| T1.3 | Reject embedded traversal | `tests/state-persistence.test.ts:312` | ✅ Implemented |
+| T1.4 | Accept workspace-relative path | `tests/state-persistence.test.ts:321` | ✅ Implemented |
+| T1.5 | Accept workspace root | `tests/state-persistence.test.ts:333` | ✅ Implemented |
+| T1.6 | Accept absolute path within workspace | `tests/state-persistence.test.ts:327` | ✅ Implemented |
+| T1.7 | Reject prefix spoofing | `tests/state-persistence.test.ts:316` | ✅ Implemented |
+| T2.1 | Schema accepts `true` | `tests/state-persistence.test.ts:370` | ✅ Implemented |
+| T2.2 | Schema requires field | `tests/state-persistence.test.ts:360` | ✅ Implemented |
+| T2.3 | Schema accepts `false` | `tests/state-persistence.test.ts:365` | ✅ Implemented |
+| T3.1–T3.5 | Flag migration (5 tests) | — | ⬚ Deferred |
+
 ## Coverage Targets
 
 | Area | Before | After |
 |------|--------|-------|
 | Path validation | 0 tests | 7 tests (T1.1–T1.7) |
 | Schema field | 0 tests | 3 tests (T2.1–T2.3) |
-| Flag migration | 0 tests | 5 tests (T3.1–T3.5) |
-| **Total new** | — | **15 tests** |
+| Flag migration | 0 tests | 0 tests (deferred) |
+| **Total new** | — | **10 tests** |
