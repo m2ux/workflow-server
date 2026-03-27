@@ -99,17 +99,23 @@ steps[6]:
 checkpoints[3]:
   - id: expressiveness-confirmed
     name: Expressiveness Review Checkpoint
-    message: "Schema expressiveness review complete. Here are the findings and corrections. Are these acceptable?"
+    message: "Schema expressiveness review complete. {expressiveness_finding_count} findings. Accepting in 30s unless you intervene."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options[2]:
       - id: confirmed
         label: "Accept corrections"
-        description: Apply the expressiveness corrections
+        description: Apply the expressiveness corrections (default — auto-accepts after 30s)
       - id: revise
         label: "Revise corrections"
         description: Change some of the corrections
   - id: conformance-confirmed
     name: Conformance Review Checkpoint
-    message: "Convention conformance review complete. Here are the findings. Should I fix the divergences?"
+    message: "Convention conformance review complete. {conformance_finding_count} divergences found. Accepting in 30s unless you intervene."
+    blocking: false
+    defaultOption: accept-as-is
+    autoAdvanceMs: 30000
     options[3]:
       - id: fix-all
         label: "Fix all divergences"
@@ -119,17 +125,20 @@ checkpoints[3]:
         description: Fix some divergences, keep justified ones
       - id: accept-as-is
         label: "Accept as-is"
-        description: The divergences are intentional
+        description: The divergences are intentional (default — auto-accepts after 30s)
   - id: enforcement-confirmed
     name: Rule Enforcement Checkpoint
-    message: "Rule-to-structure audit complete. These critical rules lack structural enforcement. Should I add checkpoints, conditions, or validate actions to back them?"
+    message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Accepting in 30s unless you intervene."
+    blocking: false
+    defaultOption: accept-text-only
+    autoAdvanceMs: 30000
     options[2]:
       - id: add-enforcement
         label: "Add structural enforcement"
         description: Add checkpoints, conditions, or validate actions for flagged rules
       - id: accept-text-only
         label: "Accept text-only rules"
-        description: These rules are acceptable as text-only guidance
+        description: These rules are acceptable as text-only guidance (default — auto-accepts after 30s)
 transitions[1]:
   - to: validate-and-commit
     isDefault: true

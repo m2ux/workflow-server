@@ -21,7 +21,10 @@ modeOverrides:
     checkpoints[5]:
       - id: purpose-confirmed
         name: Purpose Confirmation
-        message: "Here is the workflow purpose and domain I've captured. Is this accurate?"
+        message: "Here is the workflow purpose and domain I've captured. Confirming in 30s unless you intervene."
+        blocking: false
+        defaultOption: confirmed
+        autoAdvanceMs: 30000
         options[2]:
           - id: confirmed
             label: "Yes, that's right"
@@ -31,7 +34,10 @@ modeOverrides:
             description: Let me clarify the purpose
       - id: activities-confirmed
         name: Activity List Confirmation
-        message: "Here is the activity list I've captured with names, purposes, and expected artifacts. Is this complete?"
+        message: "Here is the activity list I've captured. Confirming in 30s unless you intervene."
+        blocking: false
+        defaultOption: confirmed
+        autoAdvanceMs: 30000
         options[2]:
           - id: confirmed
             label: "Yes, this is complete"
@@ -51,7 +57,10 @@ modeOverrides:
             description: Add, remove, or modify checkpoints
       - id: artifacts-confirmed
         name: Artifacts Confirmation
-        message: "Here are the artifacts each activity produces. Is this complete?"
+        message: "Here are the artifacts each activity produces. Confirming in 30s unless you intervene."
+        blocking: false
+        defaultOption: confirmed
+        autoAdvanceMs: 30000
         options[2]:
           - id: confirmed
             label: "Yes, artifacts are complete"
