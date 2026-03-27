@@ -13,8 +13,10 @@ import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, 
 import { createTraceEvent } from '../trace.js';
 
 async function loadSkillResources(workflowDir: string, workflowId: string, skillValue: unknown): Promise<StructuredResource[]> {
-  const skillResources = (skillValue as Record<string, unknown>)['resources'] as string[] | undefined;
-  if (!skillResources) return [];
+  if (typeof skillValue !== 'object' || skillValue === null) return [];
+  const resources_field = (skillValue as Record<string, unknown>)['resources'];
+  if (!Array.isArray(resources_field)) return [];
+  const skillResources = resources_field.filter((v): v is string => typeof v === 'string');
 
   const resources: StructuredResource[] = [];
   for (const idx of skillResources) {
@@ -43,6 +45,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!rulesResult.success) throw rulesResult.error;
 
       const workflow = wfResult.value;
+      if (!workflow.version) {
+        console.warn(`[start_session] Workflow '${workflow_id}' has no version defined; version drift detection will be unreliable.`);
+      }
       const token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0');
 
       if (config.traceStore) {
@@ -67,7 +72,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         },
         session_token: token,
       };
-      return { content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }] };
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        _meta: { session_token: token },
+      };
     })
   );
 
@@ -91,8 +99,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
       const skills: Record<string, unknown> = {};
+      const failedSkills: string[] = [];
       const allResources: StructuredResource[] = [];
       const seenIndices = new Set<string>();
+      const duplicateIndices: string[] = [];
 
       for (const sid of skillIds) {
         const result = await readSkill(sid, config.workflowDir, workflow_id);
@@ -103,8 +113,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             if (!seenIndices.has(r.index)) {
               seenIndices.add(r.index);
               allResources.push(r);
+            } else {
+              duplicateIndices.push(r.index);
             }
           }
+        } else {
+          failedSkills.push(sid);
         }
       }
 
@@ -113,8 +127,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
+      const responseBody: Record<string, unknown> = { activity_id, skills, resources: allResources };
+      if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
+      if (duplicateIndices.length > 0) responseBody['duplicate_resource_indices'] = duplicateIndices;
+
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ activity_id, skills, resources: allResources }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(responseBody, null, 2) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
     }, traceOpts)

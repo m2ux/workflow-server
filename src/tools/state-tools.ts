@@ -8,10 +8,12 @@ import type { StateSaveFile } from '../schema/state.schema.js';
 import { decodeToon, encodeToon } from '../utils/toon.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-import { buildValidation } from '../utils/validation.js';
+import { buildValidation, validateWorkflowConsistency } from '../utils/validation.js';
 import { getOrCreateServerKey, encryptToken, decryptToken } from '../utils/crypto.js';
 
 const STATE_FILENAME = 'workflow-state.toon';
+const SESSION_TOKEN_KEY = 'session_token';
+const SESSION_TOKEN_ENCRYPTED_KEY = '_session_token_encrypted';
 
 /** @internal Exported for testing. Validates that a path resolves within process.cwd(). */
 export function validateStatePath(inputPath: string): string {
@@ -41,9 +43,14 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       description: z.string().optional().describe('Human-readable description of the save point'),
     },
     withAuditLog('save_state', async ({ session_token, state: stateJson, planning_folder_path, description }) => {
-      await decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
 
-      const parsed = JSON.parse(stateJson);
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(stateJson);
+      } catch (e) {
+        throw new Error(`Invalid JSON in state parameter: ${e instanceof Error ? e.message : String(e)}`);
+      }
       const stateResult = NestedWorkflowStateSchema.safeParse(parsed);
       if (!stateResult.success) {
         throw new Error(`State validation failed: ${stateResult.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ')}`);
@@ -53,12 +60,12 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       const validatedFolder = validateStatePath(planning_folder_path);
 
       let sessionTokenEncrypted = false;
-      if (typeof state.variables['session_token'] === 'string') {
+      if (typeof state.variables[SESSION_TOKEN_KEY] === 'string') {
         const key = await getOrCreateServerKey();
-        state.variables['session_token'] = encryptToken(state.variables['session_token'] as string, key);
+        state.variables[SESSION_TOKEN_KEY] = encryptToken(state.variables[SESSION_TOKEN_KEY] as string, key);
         sessionTokenEncrypted = true;
       }
-      delete state.variables['_session_token_encrypted'];
+      delete state.variables[SESSION_TOKEN_ENCRYPTED_KEY];
 
       const saveFile: StateSaveFile = {
         id: generateSaveId(),
@@ -73,7 +80,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
 
       const filePath = join(validatedFolder, STATE_FILENAME);
       await mkdir(dirname(filePath), { recursive: true });
-      const toonContent = encodeToon(saveFile as unknown as Record<string, unknown>);
+      const toonContent = encodeToon(saveFile as Record<string, unknown>);
       await writeFile(filePath, toonContent, 'utf-8');
 
       const summary = {
@@ -86,9 +93,13 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
         triggeredWorkflows: state.triggeredWorkflows.length,
         status: state.status,
       };
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, state.workflowId),
+      );
+
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }],
-        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+        _meta: { session_token: await advanceToken(session_token), validation },
       };
     }, traceOpts),
   );
@@ -101,7 +112,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       file_path: z.string().describe('Path to the workflow-state.toon file'),
     },
     withAuditLog('restore_state', async ({ session_token, file_path }) => {
-      await decodeSessionToken(session_token);
+      const token = await decodeSessionToken(session_token);
 
       const validatedPath = validateStatePath(file_path);
       const content = await readFile(validatedPath, 'utf-8');
@@ -112,14 +123,25 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       }
 
       const restored = result.data;
-      if (restored.sessionTokenEncrypted && typeof restored.state.variables['session_token'] === 'string') {
-        const key = await getOrCreateServerKey();
-        restored.state.variables['session_token'] = decryptToken(restored.state.variables['session_token'] as string, key);
+      if (restored.sessionTokenEncrypted && typeof restored.state.variables[SESSION_TOKEN_KEY] === 'string') {
+        try {
+          const key = await getOrCreateServerKey();
+          restored.state.variables[SESSION_TOKEN_KEY] = decryptToken(restored.state.variables[SESSION_TOKEN_KEY] as string, key);
+        } catch {
+          throw new Error(
+            'Failed to decrypt session token from saved state. This typically occurs when the server key has been rotated ' +
+            '(~/.workflow-server/secret was regenerated). The saved state must be re-created with the current key.',
+          );
+        }
       }
+
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, restored.state.workflowId),
+      );
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }],
-        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+        _meta: { session_token: await advanceToken(session_token), validation },
       };
     }, traceOpts),
   );
