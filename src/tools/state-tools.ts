@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve, sep } from 'node:path';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { NestedWorkflowStateSchema, StateSaveFileSchema } from '../schema/state.schema.js';
@@ -12,6 +12,16 @@ import { buildValidation } from '../utils/validation.js';
 import { getOrCreateServerKey, encryptToken, decryptToken } from '../utils/crypto.js';
 
 const STATE_FILENAME = 'workflow-state.toon';
+
+/** @internal Exported for testing. Validates that a path resolves within process.cwd(). */
+export function validateStatePath(inputPath: string): string {
+  const root = process.cwd();
+  const resolved = resolve(inputPath);
+  if (resolved !== root && !resolved.startsWith(root + sep)) {
+    throw new Error(`Path validation failed: "${inputPath}" resolves outside the workspace root`);
+  }
+  return resolved;
+}
 
 function generateSaveId(): string {
   const ts = new Date().toISOString().replace(/[:.]/g, '-');
@@ -40,11 +50,15 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       }
       const state = stateResult.data;
 
+      const validatedFolder = validateStatePath(planning_folder_path);
+
+      let sessionTokenEncrypted = false;
       if (typeof state.variables['session_token'] === 'string') {
         const key = await getOrCreateServerKey();
         state.variables['session_token'] = encryptToken(state.variables['session_token'] as string, key);
-        state.variables['_session_token_encrypted'] = true;
+        sessionTokenEncrypted = true;
       }
+      delete state.variables['_session_token_encrypted'];
 
       const saveFile: StateSaveFile = {
         id: generateSaveId(),
@@ -52,11 +66,12 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
         description,
         workflowId: state.workflowId,
         workflowVersion: state.workflowVersion,
-        planningFolder: planning_folder_path,
+        planningFolder: validatedFolder,
+        sessionTokenEncrypted,
         state,
       };
 
-      const filePath = join(planning_folder_path, STATE_FILENAME);
+      const filePath = join(validatedFolder, STATE_FILENAME);
       await mkdir(dirname(filePath), { recursive: true });
       const toonContent = encodeToon(saveFile as unknown as Record<string, unknown>);
       await writeFile(filePath, toonContent, 'utf-8');
@@ -88,7 +103,8 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
     withAuditLog('restore_state', async ({ session_token, file_path }) => {
       await decodeSessionToken(session_token);
 
-      const content = await readFile(file_path, 'utf-8');
+      const validatedPath = validateStatePath(file_path);
+      const content = await readFile(validatedPath, 'utf-8');
       const decoded = decodeToon<Record<string, unknown>>(content);
       const result = StateSaveFileSchema.safeParse(decoded);
       if (!result.success) {
@@ -96,10 +112,9 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       }
 
       const restored = result.data;
-      if (restored.state.variables['_session_token_encrypted'] && typeof restored.state.variables['session_token'] === 'string') {
+      if (restored.sessionTokenEncrypted && typeof restored.state.variables['session_token'] === 'string') {
         const key = await getOrCreateServerKey();
         restored.state.variables['session_token'] = decryptToken(restored.state.variables['session_token'] as string, key);
-        delete restored.state.variables['_session_token_encrypted'];
       }
 
       return {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { readFile, rm, mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
   WorkflowStateSchema,
@@ -10,6 +10,7 @@ import {
   createInitialState,
 } from '../src/schema/state.schema.js';
 import { encodeToon, decodeToon } from '../src/utils/toon.js';
+import { validateStatePath } from '../src/tools/state-tools.js';
 
 const TEST_DIR = join(tmpdir(), `state-persistence-test-${Date.now()}`);
 
@@ -155,6 +156,7 @@ describe('state-persistence', () => {
         workflowId: 'work-package',
         workflowVersion: '3.4.0',
         planningFolder: '.engineering/artifacts/planning/2026-03-19-feature/',
+        sessionTokenEncrypted: false,
         state: {
           workflowId: 'work-package',
           workflowVersion: '3.4.0',
@@ -182,6 +184,7 @@ describe('state-persistence', () => {
         workflowId: state.workflowId,
         workflowVersion: state.workflowVersion,
         planningFolder: '/tmp/test',
+        sessionTokenEncrypted: false,
         state,
       };
       const encoded = encodeToon(saveFile as unknown as Record<string, unknown>);
@@ -196,6 +199,7 @@ describe('state-persistence', () => {
         workflowId: 'work-package',
         workflowVersion: '3.4.0',
         planningFolder: '/tmp/test',
+        sessionTokenEncrypted: false,
         state: {
           workflowId: 'work-package',
           workflowVersion: '3.4.0',
@@ -254,6 +258,7 @@ describe('state-persistence', () => {
         workflowId: state.workflowId,
         workflowVersion: state.workflowVersion,
         planningFolder: TEST_DIR,
+        sessionTokenEncrypted: false,
         state,
       };
       const filePath = join(TEST_DIR, 'workflow-state.toon');
@@ -291,6 +296,79 @@ describe('state-persistence', () => {
         }],
       };
       const result = WorkflowStateSchema.safeParse(state);
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('validateStatePath', () => {
+    it('should reject relative path with traversal above workspace', () => {
+      expect(() => validateStatePath('../../etc/passwd')).toThrow('resolves outside the workspace root');
+    });
+
+    it('should reject absolute path outside workspace', () => {
+      expect(() => validateStatePath('/tmp/malicious')).toThrow('resolves outside the workspace root');
+    });
+
+    it('should reject path with embedded traversal that escapes workspace', () => {
+      expect(() => validateStatePath('valid-dir/../../../../../../etc/shadow')).toThrow('resolves outside the workspace root');
+    });
+
+    it('should reject path that is a prefix but not a subdirectory', () => {
+      const spoofed = process.cwd() + '-evil/attack';
+      expect(() => validateStatePath(spoofed)).toThrow('resolves outside the workspace root');
+    });
+
+    it('should accept workspace-relative path', () => {
+      const result = validateStatePath('.engineering/artifacts/test');
+      expect(result).toBe(resolve('.engineering/artifacts/test'));
+      expect(result.startsWith(process.cwd() + sep)).toBe(true);
+    });
+
+    it('should accept absolute path within workspace', () => {
+      const absPath = join(process.cwd(), 'subdir', 'nested');
+      const result = validateStatePath(absPath);
+      expect(result).toBe(absPath);
+    });
+
+    it('should accept cwd itself', () => {
+      const result = validateStatePath('.');
+      expect(result).toBe(process.cwd());
+    });
+  });
+
+  describe('StateSaveFileSchema — sessionTokenEncrypted', () => {
+    const baseSaveFile = {
+      id: 'test-id',
+      savedAt: '2026-03-19T15:30:00Z',
+      workflowId: 'test-wf',
+      workflowVersion: '1.0.0',
+      planningFolder: '/tmp/test',
+      state: {
+        workflowId: 'test-wf',
+        workflowVersion: '1.0.0',
+        stateVersion: 1,
+        startedAt: '2026-03-19T10:00:00Z',
+        updatedAt: '2026-03-19T15:00:00Z',
+        currentActivity: 'test',
+        completedActivities: [],
+        variables: {},
+        triggeredWorkflows: [],
+        status: 'running' as const,
+      },
+    };
+
+    it('should require sessionTokenEncrypted field', () => {
+      const result = StateSaveFileSchema.safeParse(baseSaveFile);
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept sessionTokenEncrypted: false', () => {
+      const result = StateSaveFileSchema.safeParse({ ...baseSaveFile, sessionTokenEncrypted: false });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept sessionTokenEncrypted: true', () => {
+      const result = StateSaveFileSchema.safeParse({ ...baseSaveFile, sessionTokenEncrypted: true });
       expect(result.success).toBe(true);
     });
   });

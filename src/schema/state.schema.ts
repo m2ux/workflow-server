@@ -157,6 +157,7 @@ export const StateSaveFileSchema = z.object({
   workflowId: z.string(),
   workflowVersion: z.string(),
   planningFolder: z.string(),
+  sessionTokenEncrypted: z.boolean(),
   state: z.lazy(() => NestedWorkflowStateSchema),
 });
 export type StateSaveFile = z.infer<typeof StateSaveFileSchema>;
