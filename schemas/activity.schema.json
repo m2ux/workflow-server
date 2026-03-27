@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "activity.schema.json",
   "title": "activity",
   "description": "Unified activity definition schema - combines intent matching with workflow execution",
   "$ref": "#/definitions/activity",
@@ -86,7 +87,9 @@
           "properties": {
             "setVariable": {
               "type": "object",
-              "additionalProperties": {},
+              "additionalProperties": {
+                "type": ["string", "number", "boolean", "array", "object", "null"]
+              },
               "description": "Variables to set when this option is selected (key-value pairs)"
             },
             "transitionTo": {
@@ -439,8 +442,11 @@
           "description": "Navigation to other activities"
         },
         "triggers": {
-          "$ref": "#/definitions/workflowTrigger",
-          "description": "Workflow to trigger from this activity"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/workflowTrigger"
+          },
+          "description": "Workflows to trigger from this activity"
         },
         "entryActions": {
           "type": "array",
@@ -485,7 +491,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Activity-level rules and constraints that agents MUST follow during this activity. Domain-specific rules are on the skill; sequencing rules are here."
+          "description": "Activity-level rules and constraints (string array of ordered imperative directives) that agents MUST follow during this activity. Domain-specific rules are on the skill; sequencing rules are here. Note: skill schemas use a different format (object with named key-value rule pairs)."
         },
         "modeOverrides": {
           "type": "object",
@@ -549,7 +555,7 @@
         }
       },
       "required": ["id", "version", "name", "skills"],
-      "additionalProperties": true
+      "additionalProperties": false
     }
   }
 }

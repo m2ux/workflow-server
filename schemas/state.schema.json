@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "state.schema.json",
   "title": "state",
   "description": "Runtime workflow execution state. Tracks current position, completed work, user responses, variable values, and execution history. Supports nested workflow relationships.",
   "$ref": "#/definitions/state",
@@ -18,7 +19,9 @@
         },
         "passedContext": {
           "type": "object",
-          "additionalProperties": {},
+          "additionalProperties": {
+            "type": ["string", "number", "boolean", "array", "object", "null"]
+          },
           "description": "Context variables passed from the parent workflow"
         },
         "returnTo": {
@@ -79,7 +82,9 @@
         },
         "returnedContext": {
           "type": "object",
-          "additionalProperties": {},
+          "additionalProperties": {
+            "type": ["string", "number", "boolean", "array", "object", "null"]
+          },
           "description": "Context variables returned by the child workflow after completion"
         },
         "state": {
@@ -141,6 +146,7 @@
         "stateVersion": {
           "type": "integer",
           "exclusiveMinimum": 0,
+          "maximum": 1000,
           "default": 1,
           "description": "State schema version for migration support"
         },
@@ -217,7 +223,9 @@
                 "properties": {
                   "variablesSet": {
                     "type": "object",
-                    "additionalProperties": {},
+                    "additionalProperties": {
+                      "type": ["string", "number", "boolean", "array", "object", "null"]
+                    },
                     "description": "Variables that were set as a result of the selection"
                   },
                   "transitionedTo": {
@@ -305,7 +313,9 @@
         },
         "variables": {
           "type": "object",
-          "additionalProperties": {},
+          "additionalProperties": {
+            "type": ["string", "number", "boolean", "array", "object", "null"]
+          },
           "default": {},
           "description": "Current values of all workflow variables (set by defaults, checkpoint effects, or set actions)"
         },
@@ -370,7 +380,9 @@
               },
               "data": {
                 "type": "object",
-                "additionalProperties": {},
+                "additionalProperties": {
+                  "type": ["string", "number", "boolean", "array", "object", "null"]
+                },
                 "description": "Additional event-specific data (e.g., variable values set, branch taken)"
               },
               "error": {
@@ -444,7 +456,14 @@
           "additionalProperties": false
         }
       },
-      "required": ["workflowId", "workflowVersion", "startedAt", "updatedAt", "currentActivity"],
+      "required": ["workflowId", "workflowVersion", "startedAt", "updatedAt"],
+      "if": {
+        "properties": { "status": { "enum": ["running", "paused", "suspended"] } },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["currentActivity"]
+      },
       "additionalProperties": false
     }
   }
