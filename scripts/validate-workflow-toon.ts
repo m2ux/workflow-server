@@ -8,16 +8,22 @@
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { decodeToon } from '../src/utils/toon.js';
-import { safeValidateWorkflow } from '../src/schema/workflow.schema.js';
-import { safeValidateActivity } from '../src/schema/activity.schema.js';
 import { safeValidateSkill } from '../src/schema/skill.schema.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
+import { validateActivityFile } from './validate-activities.js';
 
 const workflowDirPath = resolve(process.argv[2] ?? '');
 if (!workflowDirPath || !existsSync(workflowDirPath)) {
   console.error('Usage: npx tsx scripts/validate-workflow-toon.ts <path-to-workflow-dir>');
   console.error('Example: npx tsx scripts/validate-workflow-toon.ts workflows/substrate-node-security-audit');
-  process.exit(1);
+  process.exit(2);
+}
+
+const workflowToonPath = join(workflowDirPath, 'workflow.toon');
+if (!existsSync(workflowToonPath)) {
+  console.error(`[FAIL] workflow.toon not found at ${workflowToonPath}`);
+  console.error('The specified directory does not appear to be a workflow directory.');
+  process.exit(2);
 }
 
 const workflowId = workflowDirPath.split(/[/\\]/).pop() ?? '';
@@ -26,59 +32,57 @@ const parentDir = resolve(workflowDirPath, '..');
 async function main() {
   let failed = 0;
 
-  // 1. Validate workflow.toon (via loader so activities are merged and validated)
-  const workflowPath = join(workflowDirPath, 'workflow.toon');
-  if (!existsSync(workflowPath)) {
-    console.error(`❌ workflow.toon not found at ${workflowPath}`);
-    process.exit(1);
-  }
   const loadResult = await loadWorkflow(parentDir, workflowId);
   if (loadResult.success) {
-    console.log('✅ workflow.toon valid');
+    console.log('[PASS] workflow.toon valid');
     console.log(`   ID: ${loadResult.value.id}, Version: ${loadResult.value.version}, Activities: ${loadResult.value.activities.length}`);
   } else {
-    console.error('❌ workflow.toon validation failed:', loadResult.error);
+    console.error('[FAIL] workflow.toon validation failed:', loadResult.error);
     failed++;
   }
 
-  // 2. Validate each activity file (redundant if load succeeded, but reports per-file)
   const activitiesDir = join(workflowDirPath, 'activities');
   if (existsSync(activitiesDir)) {
     const activityFiles = readdirSync(activitiesDir).filter((f) => f.endsWith('.toon'));
-    console.log(`\n📁 activities/ (${activityFiles.length} files)`);
+    console.log(`\n[INFO] activities/ (${activityFiles.length} files)`);
     for (const file of activityFiles) {
-      const content = readFileSync(join(activitiesDir, file), 'utf-8');
-      const decoded = decodeToon(content);
-      const result = safeValidateActivity(decoded);
-      if (result.success) {
-        console.log(`   ✅ ${file}`);
+      const result = validateActivityFile(join(activitiesDir, file));
+      if (result.passed) {
+        console.log(`   [PASS] ${file}`);
       } else {
-        console.log(`   ❌ ${file}`);
-        result.error.issues.forEach((i) => console.log(`      - ${i.path.join('.')}: ${i.message}`));
+        console.log(`   [FAIL] ${file}`);
+        for (const err of result.errors ?? []) {
+          console.log(`      - ${err}`);
+        }
         failed++;
       }
     }
   }
 
-  // 3. Validate each skill file
   const skillsDir = join(workflowDirPath, 'skills');
   if (existsSync(skillsDir)) {
     const skillFiles = readdirSync(skillsDir).filter((f) => f.endsWith('.toon'));
-    console.log(`\n📁 skills/ (${skillFiles.length} files)`);
+    console.log(`\n[INFO] skills/ (${skillFiles.length} files)`);
     for (const file of skillFiles) {
       const content = readFileSync(join(skillsDir, file), 'utf-8');
       try {
         const decoded = decodeToon(content);
+        if (decoded == null || typeof decoded !== 'object') {
+          console.log(`   [FAIL] ${file}`);
+          console.log(`      - TOON decode returned non-object value`);
+          failed++;
+          continue;
+        }
         const result = safeValidateSkill(decoded);
         if (result.success) {
-          console.log(`   ✅ ${file}`);
+          console.log(`   [PASS] ${file}`);
         } else {
-          console.log(`   ❌ ${file}`);
+          console.log(`   [FAIL] ${file}`);
           result.error.issues.forEach((i) => console.log(`      - ${i.path.join('.')}: ${i.message}`));
           failed++;
         }
       } catch (e) {
-        console.log(`   ❌ ${file}`);
+        console.log(`   [FAIL] ${file}`);
         console.log(`      - Parse error: ${(e as Error).message}`);
         failed++;
       }

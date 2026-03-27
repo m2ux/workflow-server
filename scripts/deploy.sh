@@ -20,18 +20,60 @@
 #   --keep                     Don't self-destruct after deployment
 #   --help                     Show this help
 
-set -e
+set -euo pipefail
 
 # =============================================================================
 # Configuration
 # =============================================================================
 
 DEFAULT_HISTORY_REPO="https://github.com/m2ux/ai-metadata.git"
+NETWORK_TIMEOUT=30
 
 SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_NAME="$(basename "$REPO_ROOT")"
 ENGINEERING_DIR="$REPO_ROOT/.engineering"
+
+# Sanitize PROJECT_NAME to alphanumeric, hyphen, underscore, dot
+PROJECT_NAME="$(printf '%s' "$PROJECT_NAME" | tr -cd 'a-zA-Z0-9._-')"
+if [[ -z "$PROJECT_NAME" ]]; then
+    echo "[FAIL] Could not determine a valid project name"
+    exit 2
+fi
+
+# =============================================================================
+# Cleanup
+# =============================================================================
+
+TEMP_DIRS_TO_CLEAN=()
+
+cleanup() {
+    for dir in "${TEMP_DIRS_TO_CLEAN[@]}"; do
+        if [[ -d "$dir" ]]; then
+            rm -rf "$dir"
+        fi
+    done
+}
+
+trap cleanup EXIT
+
+# =============================================================================
+# Network helpers
+# =============================================================================
+
+timed_git() {
+    timeout "$NETWORK_TIMEOUT" git "$@"
+}
+
+verify_push_access() {
+    local remote_url="$1"
+    local branch="$2"
+    if ! timeout "$NETWORK_TIMEOUT" git push --dry-run "$remote_url" "$branch" >/dev/null 2>&1; then
+        echo "[FAIL] No push access to $remote_url (branch: $branch)"
+        return 1
+    fi
+    return 0
+}
 
 # =============================================================================
 # Argument Parsing
@@ -43,7 +85,7 @@ DEPLOY_MODE=""
 ORPHAN_REPO=""
 HISTORY_REPO="$DEFAULT_HISTORY_REPO"
 SKIP_HISTORY=false
-KEEP_SCRIPT=false
+KEEP_SCRIPT=true
 INTERACTIVE=true
 
 while [[ $# -gt 0 ]]; do
@@ -52,7 +94,6 @@ while [[ $# -gt 0 ]]; do
             DEPLOY_MODE="orphan"
             INTERACTIVE=false
             shift
-            # Check if next arg is a URL (not another flag)
             if [[ $# -gt 0 && ! "$1" =~ ^-- ]]; then
                 ORPHAN_REPO="$1"
                 shift
@@ -75,13 +116,17 @@ while [[ $# -gt 0 ]]; do
             KEEP_SCRIPT=true
             shift
             ;;
+        --no-keep)
+            KEEP_SCRIPT=false
+            shift
+            ;;
         --help|-h)
             head -28 "$0" | tail -24
             exit 0
             ;;
         *)
-            echo "Unknown option: $1"
-            exit 1
+            echo "[FAIL] Unknown option: $1"
+            exit 2
             ;;
     esac
 done
@@ -95,14 +140,12 @@ create_engineering_structure() {
     
     echo "  Creating directory structure..."
     
-    # Create all directories (mkdir -p is idempotent)
     mkdir -p "$target_dir/artifacts/adr"
     mkdir -p "$target_dir/artifacts/planning"
     mkdir -p "$target_dir/artifacts/reviews"
     mkdir -p "$target_dir/artifacts/templates"
     mkdir -p "$target_dir/scripts"
     
-    # Create files only if they don't exist
     if [ ! -f "$target_dir/README.md" ]; then
         cat > "$target_dir/README.md" << EOF
 # Engineering
@@ -199,36 +242,36 @@ if [ "$UPDATE_WORKFLOWS" = true ] && [ -d "$ENGINEERING_ROOT/workflows" ]; then
     echo "=== Updating workflows ===" && cd "$ENGINEERING_ROOT/workflows"
     git fetch origin --quiet 2>/dev/null || true
     git checkout workflows --quiet 2>/dev/null || true
-    git pull origin workflows --quiet && echo "✓ workflows: $(git rev-parse --short HEAD)"
+    git pull origin workflows --quiet && echo "[PASS] workflows: $(git rev-parse --short HEAD)"
 fi
 if [ "$UPDATE_HISTORY" = true ] && [ -d "$ENGINEERING_ROOT/history" ]; then
     echo "=== Updating history ===" && cd "$ENGINEERING_ROOT/history"
     git fetch origin "$PROJECT_NAME" && git checkout "$PROJECT_NAME" 2>/dev/null || true
-    git pull origin "$PROJECT_NAME" && echo "✓ history: $(git rev-parse --short HEAD)"
+    git pull origin "$PROJECT_NAME" && echo "[PASS] history: $(git rev-parse --short HEAD)"
 fi
 EOF
         chmod +x "$target_dir/scripts/update.sh"
     fi
     
-    echo "  ✓ Structure verified"
+    echo "  [PASS] Structure verified"
 }
 
-# Create orphan branch for project history if it doesn't exist
 ensure_history_branch() {
     local repo_url="$1"
     local branch_name="$2"
     
-    # Check if branch exists
-    if git ls-remote --heads "$repo_url" "$branch_name" 2>/dev/null | grep -q "$branch_name"; then
-        echo "  ✓ History branch '$branch_name' exists"
+    if timed_git ls-remote --heads "$repo_url" "$branch_name" 2>/dev/null | grep -q "$branch_name"; then
+        echo "  [PASS] History branch '$branch_name' exists"
         return 0
     fi
     
     echo "  Creating orphan branch '$branch_name' in history repo..."
     
-    local temp_dir=$(mktemp -d)
-    git clone --depth 1 "$repo_url" "$temp_dir" 2>/dev/null || {
-        # If clone fails (empty repo), init fresh
+    local temp_dir
+    temp_dir=$(mktemp -d)
+    TEMP_DIRS_TO_CLEAN+=("$temp_dir")
+    
+    timed_git clone --depth 1 "$repo_url" "$temp_dir" 2>/dev/null || {
         cd "$temp_dir"
         git init
         git remote add origin "$repo_url"
@@ -238,7 +281,6 @@ ensure_history_branch() {
     git checkout --orphan "$branch_name"
     git rm -rf . 2>/dev/null || true
     
-    # Create minimal README
     cat > README.md << EOF
 # $branch_name
 
@@ -248,17 +290,21 @@ EOF
     git add README.md
     git commit -m "docs: initialize $branch_name history branch"
     
-    if git push -u origin "$branch_name" 2>/dev/null; then
-        echo "  ✓ Created and pushed branch '$branch_name'"
-    else
-        echo "  ⚠ Failed to push branch '$branch_name' - check repo permissions"
+    if ! verify_push_access "$repo_url" "$branch_name"; then
+        echo "  [WARN] Cannot push to $repo_url — check repo permissions"
         cd "$REPO_ROOT"
-        rm -rf "$temp_dir"
+        return 1
+    fi
+    
+    if timed_git push -u origin "$branch_name" 2>/dev/null; then
+        echo "  [PASS] Created and pushed branch '$branch_name'"
+    else
+        echo "  [WARN] Failed to push branch '$branch_name' — check repo permissions"
+        cd "$REPO_ROOT"
         return 1
     fi
     
     cd "$REPO_ROOT"
-    rm -rf "$temp_dir"
     return 0
 }
 
@@ -272,29 +318,27 @@ echo "=== Engineering Branch Deployment ==="
 echo "Project: $PROJECT_NAME"
 echo ""
 
-# Verify git repository
 if ! git rev-parse --git-dir >/dev/null 2>&1; then
-    echo "Error: Not in a git repository"
-    exit 1
+    echo "[FAIL] Not in a git repository"
+    exit 2
 fi
 
-# Interactive prompt if no flags specified
 if [ "$INTERACTIVE" = true ]; then
     echo "How should engineering artifacts be managed?"
     echo ""
     echo "  [1] Orphan Branch - Local (default)"
-    echo "      → Creates 'engineering' branch in this repo"
-    echo "      → Adds .engineering as submodule tracking that branch"
+    echo "      -> Creates 'engineering' branch in this repo"
+    echo "      -> Adds .engineering as submodule tracking that branch"
     echo ""
     echo "  [2] Orphan Branch - External"
-    echo "      → Creates '$PROJECT_NAME' branch in external repo"
-    echo "      → Adds .engineering as submodule tracking that branch"
+    echo "      -> Creates '$PROJECT_NAME' branch in external repo"
+    echo "      -> Adds .engineering as submodule tracking that branch"
     echo ""
     echo "  [3] In-Branch"
-    echo "      → .engineering/ as regular files in current branch"
-    echo "      → Engineering artifacts committed with code"
+    echo "      -> .engineering/ as regular files in current branch"
+    echo "      -> Engineering artifacts committed with code"
     echo ""
-    read -p "Choice [1/2/3, Enter → Local Orphan]: " CHOICE
+    read -p "Choice [1/2/3, Enter -> Local Orphan]: " CHOICE
     
     case "$CHOICE" in
         1|"")
@@ -304,21 +348,20 @@ if [ "$INTERACTIVE" = true ]; then
             DEPLOY_MODE="orphan"
             read -p "External repo URL: " ORPHAN_REPO
             if [ -z "$ORPHAN_REPO" ]; then
-                echo "Error: External repo URL is required"
-                exit 1
+                echo "[FAIL] External repo URL is required"
+                exit 2
             fi
             ;;
         3)
             DEPLOY_MODE="in-branch"
             ;;
         *)
-            echo "Invalid choice"
-            exit 1
+            echo "[FAIL] Invalid choice"
+            exit 2
             ;;
     esac
     echo ""
 else
-    # Default to orphan if not specified
     [ -z "$DEPLOY_MODE" ] && DEPLOY_MODE="orphan"
 fi
 
@@ -326,25 +369,20 @@ fi
 # Main
 # =============================================================================
 
-# Note: For orphan modes, .engineering is added as a submodule (tracked by parent repo)
-# For in-branch mode, user decides whether to commit or gitignore
-
-# Handle existing .engineering - migrate data if present
 MIGRATION_BACKUP=""
 if [ -d "$ENGINEERING_DIR" ]; then
-    # Check if there's content to migrate (artifacts folder with files)
     if [ -d "$ENGINEERING_DIR/artifacts" ] && [ -n "$(find "$ENGINEERING_DIR/artifacts" -type f 2>/dev/null | head -1)" ]; then
         MIGRATION_BACKUP="${ENGINEERING_DIR}_migration_$$"
         echo "Found existing artifacts to migrate..."
         echo "  Backing up to: $MIGRATION_BACKUP"
         cp -r "$ENGINEERING_DIR" "$MIGRATION_BACKUP"
-        echo "  ✓ Backup complete ($(find "$MIGRATION_BACKUP/artifacts" -type f 2>/dev/null | wc -l) files)"
+        TEMP_DIRS_TO_CLEAN+=("$MIGRATION_BACKUP")
+        echo "  [PASS] Backup complete ($(find "$MIGRATION_BACKUP/artifacts" -type f 2>/dev/null | wc -l) files)"
     fi
     echo "Removing existing .engineering/..."
     rm -rf "$ENGINEERING_DIR"
 fi
 
-# Function to migrate backed up data into new engineering folder
 migrate_existing_data() {
     local target_dir="$1"
     
@@ -355,38 +393,32 @@ migrate_existing_data() {
     echo ""
     echo "Migrating existing artifacts..."
     
-    # Copy artifacts folder (the main content to preserve)
     if [ -d "$MIGRATION_BACKUP/artifacts" ]; then
         cp -r "$MIGRATION_BACKUP/artifacts"/* "$target_dir/artifacts/" 2>/dev/null || true
-        echo "  ✓ Migrated artifacts"
+        echo "  [PASS] Migrated artifacts"
     fi
     
-    # Copy resources folder if it exists and target doesn't have it
     if [ -d "$MIGRATION_BACKUP/resources" ] && [ ! -d "$target_dir/resources" ]; then
         cp -r "$MIGRATION_BACKUP/resources" "$target_dir/" 2>/dev/null || true
-        echo "  ✓ Migrated resources"
+        echo "  [PASS] Migrated resources"
     fi
     
-    # Commit and push migrated data
     cd "$target_dir"
     if [ -d .git ] || [ -f .git ]; then
         if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
             git add -A
             git commit -m "docs: migrate existing engineering artifacts" 2>/dev/null || true
-            echo "  ✓ Committed migrated data"
+            echo "  [PASS] Committed migrated data"
             
-            # Push to remote (with timeout to avoid hanging)
-            if timeout 30 git push origin HEAD 2>/dev/null; then
-                echo "  ✓ Pushed migrated data to remote"
+            if timed_git push origin HEAD 2>/dev/null; then
+                echo "  [PASS] Pushed migrated data to remote"
             else
-                echo "  ⚠ Push failed or timed out - run 'git push' manually in .engineering/"
+                echo "  [WARN] Push failed or timed out — run 'git push' manually in .engineering/"
             fi
         fi
     fi
     
-    # Clean up backup
-    rm -rf "$MIGRATION_BACKUP"
-    echo "  ✓ Cleaned up migration backup"
+    echo "  [PASS] Cleaned up migration backup"
 }
 
 if [ "$DEPLOY_MODE" = "in-branch" ]; then
@@ -396,51 +428,45 @@ if [ "$DEPLOY_MODE" = "in-branch" ]; then
     echo "Using in-branch mode (regular files)"
     echo ""
     
-    # Create engineering structure directly
     echo "Creating .engineering/ structure..."
     create_engineering_structure "$ENGINEERING_DIR"
     
-    # Clone workflows as standalone repo
     echo ""
     echo "Setting up submodule repos..."
     cd "$ENGINEERING_DIR"
     
     if [ ! -d "workflows/.git" ]; then
         rm -rf workflows 2>/dev/null || true
-        if git clone -b workflows "https://github.com/m2ux/workflow-server.git" workflows 2>/dev/null; then
-            echo "✓ workflows (workflows branch)"
+        if timed_git clone -b workflows "https://github.com/m2ux/workflow-server.git" workflows 2>/dev/null; then
+            echo "[PASS] workflows (workflows branch)"
         else
-            echo "⚠ workflows skipped"
+            echo "[WARN] workflows skipped"
         fi
     else
-        echo "✓ workflows exists"
+        echo "[PASS] workflows exists"
     fi
     
-    # Clone history from project-specific orphan branch
     if [ "$SKIP_HISTORY" = false ]; then
         if [ ! -d "history/.git" ]; then
             rm -rf history 2>/dev/null || true
-            # Ensure orphan branch exists for this project
             ensure_history_branch "$HISTORY_REPO" "$PROJECT_NAME"
-            if git clone --single-branch --branch "$PROJECT_NAME" "$HISTORY_REPO" history 2>/dev/null; then
-                echo "✓ history (branch: $PROJECT_NAME)"
+            if timed_git clone --single-branch --branch "$PROJECT_NAME" "$HISTORY_REPO" history 2>/dev/null; then
+                echo "[PASS] history (branch: $PROJECT_NAME)"
             else
-                echo "⚠ history skipped (private or branch not found)"
+                echo "[WARN] history skipped (private or branch not found)"
             fi
         else
-            echo "✓ history exists"
+            echo "[PASS] history exists"
         fi
     fi
     
     cd "$REPO_ROOT"
     
     echo ""
-    echo "✓ Created .engineering/ structure"
+    echo "[PASS] Created .engineering/ structure"
     
-    # Migrate existing data if backup exists
     migrate_existing_data "$ENGINEERING_DIR"
     
-    # Note: In-branch mode - user should commit .engineering/ to their branch
     echo ""
     echo "Note: .engineering/ is ready for use."
     echo "      Add to .gitignore if you don't want to track artifacts."
@@ -451,48 +477,43 @@ else
     # Orphan Branch Mode (Default)
     # ==========================================================================
     
-    # Determine repo and branch based on ORPHAN_REPO
     if [ -n "$ORPHAN_REPO" ]; then
-        # External repo mode: use project-named branch
         TARGET_REPO="$ORPHAN_REPO"
         TARGET_BRANCH="$PROJECT_NAME"
         echo "Using orphan branch mode (external repo)"
         echo "Repo: $TARGET_REPO"
         echo "Branch: $TARGET_BRANCH"
     else
-        # Local repo mode: use 'engineering' branch
         TARGET_REPO="$(git remote get-url origin 2>/dev/null || echo "")"
         TARGET_BRANCH="engineering"
         echo "Using orphan branch mode (local)"
         echo "Branch: $TARGET_BRANCH"
         
         if [ -z "$TARGET_REPO" ]; then
-            echo "Error: Could not determine remote URL"
+            echo "[FAIL] Could not determine remote URL"
             exit 1
         fi
     fi
     echo ""
     
-    # Check if target branch exists
-    if git ls-remote --heads "$TARGET_REPO" "$TARGET_BRANCH" 2>/dev/null | grep -q "$TARGET_BRANCH"; then
-        echo "✓ Branch '$TARGET_BRANCH' found"
+    if timed_git ls-remote --heads "$TARGET_REPO" "$TARGET_BRANCH" 2>/dev/null | grep -q "$TARGET_BRANCH"; then
+        echo "[PASS] Branch '$TARGET_BRANCH' found"
     else
         echo "Branch '$TARGET_BRANCH' not found. Creating..."
         echo ""
         
         if [ -n "$ORPHAN_REPO" ]; then
-            # External repo: clone to temp dir
             TEMP_DIR=$(mktemp -d)
-            git clone --depth 1 "$TARGET_REPO" "$TEMP_DIR" 2>/dev/null || {
-                # If clone fails (empty repo), init fresh
+            TEMP_DIRS_TO_CLEAN+=("$TEMP_DIR")
+            timed_git clone --depth 1 "$TARGET_REPO" "$TEMP_DIR" 2>/dev/null || {
                 cd "$TEMP_DIR"
                 git init
                 git remote add origin "$TARGET_REPO"
             }
             cd "$TEMP_DIR"
         else
-            # Local repo: use worktree
             WORKTREE_DIR="${REPO_ROOT}_engineering_tmp"
+            TEMP_DIRS_TO_CLEAN+=("$WORKTREE_DIR")
             git worktree add --detach "$WORKTREE_DIR" 2>/dev/null || true
             cd "$WORKTREE_DIR"
         fi
@@ -502,8 +523,7 @@ else
         
         create_engineering_structure "."
         
-        # Add submodules
-        git submodule add -b workflows "https://github.com/m2ux/workflow-server.git" workflows 2>/dev/null || true
+        timed_git submodule add -b workflows "https://github.com/m2ux/workflow-server.git" workflows 2>/dev/null || true
         if [ -d "workflows" ]; then
             cd workflows
             git checkout workflows 2>/dev/null || true
@@ -512,7 +532,7 @@ else
         
         if [ "$SKIP_HISTORY" = false ]; then
             ensure_history_branch "$HISTORY_REPO" "$PROJECT_NAME"
-            git submodule add -b "$PROJECT_NAME" "$HISTORY_REPO" history 2>/dev/null || true
+            timed_git submodule add -b "$PROJECT_NAME" "$HISTORY_REPO" history 2>/dev/null || true
             if [ -d "history" ]; then
                 cd history
                 git checkout "$PROJECT_NAME" 2>/dev/null || true
@@ -522,52 +542,55 @@ else
         
         git add .
         git commit -m "docs: initialize $TARGET_BRANCH engineering branch"
-        git push -u origin "$TARGET_BRANCH"
         
-        echo "✓ Created and pushed branch '$TARGET_BRANCH'"
+        if ! verify_push_access "$TARGET_REPO" "$TARGET_BRANCH"; then
+            echo "[FAIL] Cannot push to $TARGET_REPO"
+            exit 1
+        fi
+        
+        timed_git push -u origin "$TARGET_BRANCH"
+        
+        echo "[PASS] Created and pushed branch '$TARGET_BRANCH'"
         
         cd "$REPO_ROOT"
         if [ -n "$ORPHAN_REPO" ]; then
-            rm -rf "$TEMP_DIR"
+            : # cleanup handled by trap
         else
-            git worktree remove "$WORKTREE_DIR" 2>/dev/null || rm -rf "$WORKTREE_DIR"
+            git worktree remove "$WORKTREE_DIR" 2>/dev/null || true
         fi
     fi
     
-    # Add .engineering as submodule
     echo ""
     echo "Adding .engineering submodule..."
     cd "$REPO_ROOT"
     git submodule add -b "$TARGET_BRANCH" "$TARGET_REPO" .engineering
-    echo "✓ Added .engineering submodule (branch: $TARGET_BRANCH)"
+    echo "[PASS] Added .engineering submodule (branch: $TARGET_BRANCH)"
     
-    # Initialize nested submodules
     echo ""
     echo "Initializing nested submodules..."
     cd "$ENGINEERING_DIR"
     
     if [ -f .gitmodules ]; then
-        if git submodule update --init workflows 2>/dev/null; then
-            echo "✓ workflows"
+        if timed_git submodule update --init workflows 2>/dev/null; then
+            echo "[PASS] workflows"
         else
-            echo "⚠ workflows skipped"
+            echo "[WARN] workflows skipped"
         fi
         
         if [ "$SKIP_HISTORY" = false ]; then
-            if git submodule update --init history 2>/dev/null; then
+            if timed_git submodule update --init history 2>/dev/null; then
                 cd history
                 git checkout "$PROJECT_NAME" 2>/dev/null || true
                 cd ..
-                echo "✓ history (branch: $PROJECT_NAME)"
+                echo "[PASS] history (branch: $PROJECT_NAME)"
             else
-                echo "⚠ history skipped (private or branch not found)"
+                echo "[WARN] history skipped (private or branch not found)"
             fi
         fi
     fi
     
     cd "$REPO_ROOT"
     
-    # Migrate existing data if backup exists
     migrate_existing_data "$ENGINEERING_DIR"
     
     echo ""
@@ -576,11 +599,10 @@ fi
 
 cd "$REPO_ROOT"
 
-# Self-destruct unless --keep
 if [ "$KEEP_SCRIPT" = false ]; then
     rm -f "$SCRIPT_PATH"
     echo ""
-    echo "✓ Removed deploy script"
+    echo "[PASS] Removed deploy script"
 fi
 
 echo ""

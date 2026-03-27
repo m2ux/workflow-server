@@ -81,7 +81,7 @@ update_workflows() {
     echo "=== Updating agent/workflows ==="
     
     if [ ! -d "$WORKFLOWS_DIR" ]; then
-        echo "⚠ Workflows directory not found at $WORKFLOWS_DIR"
+        echo "[WARN] Workflows directory not found at $WORKFLOWS_DIR"
         echo "  Skipping workflows update"
         return 1
     fi
@@ -97,7 +97,7 @@ update_workflows() {
     echo "Pulling latest changes..."
     if git pull origin workflows --quiet; then
         WORKFLOWS_COMMIT=$(git rev-parse --short HEAD)
-        echo "✓ Updated to $WORKFLOWS_COMMIT"
+        echo "[PASS] Updated to $WORKFLOWS_COMMIT"
         
         cd "$ENGINEERING_ROOT"
         if [ -d .git ] || [ -f .git ]; then
@@ -105,7 +105,7 @@ update_workflows() {
         fi
         return 0
     else
-        echo "⚠ Failed to pull workflows"
+        echo "[WARN] Failed to pull workflows"
         return 1
     fi
 }
@@ -119,7 +119,7 @@ update_metadata() {
     if [ ! -d "$METADATA_DIR/.git" ] && [ ! -f "$METADATA_DIR/.git" ]; then
         echo "Initializing submodule..."
         if ! git submodule update --init agent/metadata 2>&1; then
-            echo "⚠ Failed to initialize agent/metadata submodule"
+            echo "[WARN] Failed to initialize agent/metadata submodule"
             echo "  This is expected if you don't have access to the private repository."
             return 1
         fi
@@ -144,13 +144,13 @@ update_metadata() {
     echo "Pulling latest changes..."
     if git pull origin master; then
         METADATA_COMMIT=$(git rev-parse --short HEAD)
-        echo "✓ Updated to $METADATA_COMMIT (sparse: projects/$PROJECT_NAME)"
+        echo "[PASS] Updated to $METADATA_COMMIT (sparse: projects/$PROJECT_NAME)"
         
         cd "$ENGINEERING_ROOT"
         git add agent/metadata 2>/dev/null || true
         return 0
     else
-        echo "⚠ Failed to pull metadata"
+        echo "[WARN] Failed to pull metadata"
         return 1
     fi
 }
@@ -182,7 +182,7 @@ fi
 if [ ${#UPDATED[@]} -gt 0 ]; then
     echo "=== Summary ==="
     for item in "${UPDATED[@]}"; do
-        echo "  ✓ $item"
+        echo "  [PASS] $item"
     done
     echo ""
     
