@@ -166,6 +166,8 @@ erDiagram
         string message
         Condition condition
         boolean blocking
+        string defaultOption
+        integer autoAdvanceMs
     }
     
     CheckpointOption {
@@ -300,7 +302,7 @@ A step represents an individual task within an activity.
 
 #### Checkpoint
 
-A checkpoint is a blocking decision point requiring user input.
+A checkpoint is a decision point requiring user input. Checkpoints block by default but can be non-blocking with auto-advance.
 
 | Field       | Type               | Purpose                                             |
 | ----------- | ------------------ | --------------------------------------------------- |
@@ -310,7 +312,9 @@ A checkpoint is a blocking decision point requiring user input.
 | `condition` | Condition          | Condition that must be true to present; if false, skip |
 | `options`   | CheckpointOption[] | Available choices                                   |
 | `required`  | boolean            | Whether checkpoint must be answered                 |
-| `blocking`  | boolean            | Always true - checkpoints block progress            |
+| `blocking`  | boolean            | Whether this checkpoint blocks progress (default: true). Non-blocking checkpoints support `defaultOption` and `autoAdvanceMs` for auto-advance. |
+| `defaultOption` | string          | Option ID to auto-select when `autoAdvanceMs` elapses. Only meaningful when `blocking` is false. |
+| `autoAdvanceMs` | integer         | Milliseconds to wait before auto-selecting `defaultOption`. Only meaningful when `blocking` is false and `defaultOption` is set. |
 
 #### Decision
 
@@ -377,7 +381,7 @@ An action performed during workflow execution.
 
 | Field     | Type   | Purpose                             |
 | --------- | ------ | ----------------------------------- |
-| `action`  | enum   | "log", "validate", "set", or "emit" |
+| `action`  | enum   | "log", "validate", "set", "emit", or "message" |
 | `target`  | string | Target of the action                |
 | `message` | string | Message content                     |
 | `value`   | any    | Value for set/emit actions          |
