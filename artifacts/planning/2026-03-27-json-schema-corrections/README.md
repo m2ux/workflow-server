@@ -1,7 +1,7 @@
 # JSON Schema Corrections - March 2026
 
 **Created:** 2026-03-27  
-**Status:** Planning  
+**Status:** Complete  
 **Type:** Bug-Fix
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -24,7 +24,7 @@ The consequences are felt in two directions. Downstream consumers — agents and
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+Corrected all 15 findings with targeted schema edits across 5 files (+76 −35 lines). Added the missing `activities` property to the workflow schema. Fixed recursive condition validation by replacing `items: {}` with proper `$ref`. Enforced `additionalProperties: false` uniformly (stakeholder decision). Added `$id` to all schemas for explicit `$ref` resolution. Type-constrained variable-value properties. Made `currentActivity` conditionally required via `if`/`then`. Documented intentional type differences in `rules` descriptions.
 
 ---
 
@@ -36,15 +36,15 @@ The consequences are felt in two directions. Downstream consumers — agents and
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
-| — | Implementation | Code changes per plan | 1-3h | ⬚ Pending |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| — | Implementation | Code changes per plan (commit `e4fb4b3`) | 1-3h | ✅ Complete |
+| 07 | [Change block index](07-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| 07 | [Code review](07-code-review.md) | Automated code quality review | 10-20m | ✅ Complete |
+| 07 | [Test suite review](07-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
+| 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
+| — | Validation | Build, test, lint verification (187/187 pass) | 15-30m | ✅ Complete |
+| — | PR review | External review feedback cycle | 30-60m | ✅ Complete |
+| 13 | [Completion summary](13-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ✅ Complete |
+| 13 | [Workflow retrospective](13-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ✅ Complete |
 
 ---
 
@@ -58,4 +58,4 @@ The consequences are felt in two directions. Downstream consumers — agents and
 
 ---
 
-**Status:** Ready for planning
+**Status:** Complete — 15 findings addressed, PR #69 ready for merge

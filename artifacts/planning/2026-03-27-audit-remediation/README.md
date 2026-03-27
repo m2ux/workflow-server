@@ -51,7 +51,7 @@ The approach is additive: path validation is a new check before existing filesys
 | 04 | [WP-12 plan](04-12-documentation-alignment-plan.md) | Documentation alignment | ✅ Complete |
 | 05 | [Priority ranking](05-priority-ranking.md) | Dependency graph and execution order | ✅ Complete |
 | — | WP-01 Implementation | Security hardening (PR #68) | ✅ Complete |
-| — | WP-02 Implementation | JSON Schema corrections (PR #69) | ⬚ Pending |
+| — | WP-02 Implementation | JSON Schema corrections (PR #69) | ✅ Complete |
 | — | WP-03 Implementation | Zod schema alignment (PR #70) | ⬚ Pending |
 | — | WP-04 Implementation | Cross-schema sync (PR #71) | ⬚ Pending |
 | — | WP-05 Implementation | Loader error handling (PR #72) | ⬚ Pending |
@@ -85,4 +85,4 @@ The approach is additive: path validation is a new check before existing filesys
 
 ---
 
-**Status:** WP-01 complete, WP-02 next, 11 packages pending
+**Status:** WP-01 & WP-02 complete, WP-03 next, 10 packages pending
