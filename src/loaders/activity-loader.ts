@@ -6,9 +6,7 @@ import { ActivityNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
 import { type Activity, safeValidateActivity } from '../schema/activity.schema.js';
-
-/** Default workflow for standalone activities (backward compatibility) */
-const DEFAULT_ACTIVITY_WORKFLOW = 'meta';
+import { parseActivityFilename } from './filename-utils.js';
 
 export interface ActivityEntry { 
   index: string;
@@ -16,13 +14,6 @@ export interface ActivityEntry {
   name: string; 
   path: string;
   workflowId: string;
-}
-
-/** Parse activity filename to extract index and id: NN-activity-id.toon */
-function parseActivityFilename(filename: string): { index: string; id: string } | null {
-  const match = filename.match(/^(\d{2})-(.+)\.toon$/);
-  if (!match || !match[1] || !match[2]) return null;
-  return { index: match[1], id: match[2] };
 }
 
 export interface ActivityWithGuidance extends Activity {
@@ -55,7 +46,7 @@ async function findWorkflowsWithActivities(workflowDir: string): Promise<string[
       }
     }
     
-    return workflowIds;
+    return workflowIds.sort();
   } catch {
     return [];
   }
@@ -230,6 +221,7 @@ export interface ActivityIndex {
 /**
  * Build activity index dynamically from activity files across all workflows.
  * Each activity's `recognition` patterns become quick_match entries.
+ * Loads activities directly from the already-enumerated entries to avoid redundant readdir calls.
  */
 export async function readActivityIndex(workflowDir: string): Promise<Result<ActivityIndex, ActivityNotFoundError>> {
   const activityEntries = await listActivities(workflowDir);
@@ -242,11 +234,16 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
   const quick_match: Record<string, string> = {};
   
   for (const entry of activityEntries) {
-    const result = await readActivity(workflowDir, entry.id, entry.workflowId);
-    if (result.success) {
-      const activity = result.value;
+    const activityDir = getActivityDir(workflowDir, entry.workflowId);
+    const filePath = join(activityDir, entry.path);
+    
+    try {
+      const content = await readFile(filePath, 'utf-8');
+      const decoded = decodeToon<Activity>(content);
       
-      // Build activity entry for index
+      const validation = safeValidateActivity(decoded);
+      const activity = validation.success ? validation.data : decoded;
+      
       const indexSkillParams: Record<string, string> = { skill_id: activity.skills.primary };
       if (entry.workflowId) indexSkillParams['workflow_id'] = entry.workflowId;
       
@@ -263,12 +260,13 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       
       activities.push(activityEntry);
       
-      // Build quick_match from recognition patterns
       if (activity.recognition) {
         for (const pattern of activity.recognition) {
           quick_match[pattern.toLowerCase()] = activity.id;
         }
       }
+    } catch {
+      logWarn('Failed to load activity for index', { activityId: entry.id, workflowId: entry.workflowId });
     }
   }
   

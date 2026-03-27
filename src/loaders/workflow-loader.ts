@@ -7,6 +7,7 @@ import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
+import { parseActivityFilename } from './filename-utils.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; description?: string | undefined; }
 
@@ -16,16 +17,9 @@ interface RawWorkflow {
   version: string;
   title: string;
   description?: string;
-  activitiesDir?: string;  // Legacy - will be removed after loading
+  activitiesDir?: string;
   initialActivity?: string;
   [key: string]: unknown;
-}
-
-/** Parse activity filename to extract index and id: NN-activity-id.toon */
-function parseActivityFilename(filename: string): { index: string; id: string } | null {
-  const match = filename.match(/^(\d{2})-(.+)\.toon$/);
-  if (!match || !match[1] || !match[2]) return null;
-  return { index: match[1], id: match[2] };
 }
 
 /**
@@ -58,13 +52,9 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
     }
   }
   
-  // Sort by index
-  return activities.sort((a, b) => {
-    // Find the file index for each activity by matching ID
-    const aIndex = files.find(f => parseActivityFilename(f)?.id === a.id);
-    const bIndex = files.find(f => parseActivityFilename(f)?.id === b.id);
-    return (aIndex ?? '').localeCompare(bIndex ?? '');
-  });
+  return activities.sort((a, b) =>
+    (a.artifactPrefix ?? '').localeCompare(b.artifactPrefix ?? '')
+  );
 }
 
 /**

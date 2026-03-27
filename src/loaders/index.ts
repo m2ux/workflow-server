@@ -4,3 +4,4 @@ export * from './skill-loader.js';
 export * from './activity-loader.js';
 export * from './rules-loader.js';
 export * from './schema-loader.js';
+export * from './filename-utils.js';
