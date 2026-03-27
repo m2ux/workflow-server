@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { readAllSchemas } from './schema-loader.js';
+import { readAllSchemas, listSchemaIds } from './schema-loader.js';
 import { logInfo, logWarn } from '../logging.js';
 
 /**
@@ -25,14 +25,11 @@ export async function buildSchemaPreamble(schemasDir: string): Promise<string> {
   }
 
   const schemas = result.value;
-  const sections = [
-    header,
-    '## workflow.schema.json\n```json\n' + JSON.stringify(schemas.workflow, null, 2) + '\n```',
-    '## activity.schema.json\n```json\n' + JSON.stringify(schemas.activity, null, 2) + '\n```',
-    '## skill.schema.json\n```json\n' + JSON.stringify(schemas.skill, null, 2) + '\n```',
-    '## condition.schema.json\n```json\n' + JSON.stringify(schemas.condition, null, 2) + '\n```',
-    '## state.schema.json\n```json\n' + JSON.stringify(schemas.state, null, 2) + '\n```',
-  ].filter(Boolean);
+  const schemaRecord = schemas as unknown as Record<string, object>;
+  const sections: string[] = header ? [header] : [];
+  for (const id of listSchemaIds()) {
+    sections.push(`## ${id}.schema.json\n\`\`\`json\n${JSON.stringify(schemaRecord[id], null, 2)}\n\`\`\``);
+  }
 
   const preamble = sections.join('\n\n');
   logInfo('Schema preamble built', { headerLength: header.length, preambleLength: preamble.length });
