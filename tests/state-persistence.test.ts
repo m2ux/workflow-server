@@ -155,6 +155,7 @@ describe('state-persistence', () => {
         workflowId: 'work-package',
         workflowVersion: '3.4.0',
         planningFolder: '.engineering/artifacts/planning/2026-03-19-feature/',
+        sessionTokenEncrypted: false,
         state: {
           workflowId: 'work-package',
           workflowVersion: '3.4.0',
@@ -182,6 +183,7 @@ describe('state-persistence', () => {
         workflowId: state.workflowId,
         workflowVersion: state.workflowVersion,
         planningFolder: '/tmp/test',
+        sessionTokenEncrypted: false,
         state,
       };
       const encoded = encodeToon(saveFile as unknown as Record<string, unknown>);
@@ -196,6 +198,7 @@ describe('state-persistence', () => {
         workflowId: 'work-package',
         workflowVersion: '3.4.0',
         planningFolder: '/tmp/test',
+        sessionTokenEncrypted: false,
         state: {
           workflowId: 'work-package',
           workflowVersion: '3.4.0',
@@ -254,6 +257,7 @@ describe('state-persistence', () => {
         workflowId: state.workflowId,
         workflowVersion: state.workflowVersion,
         planningFolder: TEST_DIR,
+        sessionTokenEncrypted: false,
         state,
       };
       const filePath = join(TEST_DIR, 'workflow-state.toon');
