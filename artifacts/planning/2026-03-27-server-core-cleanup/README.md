@@ -1,7 +1,7 @@
 # WP-10: Server Core Cleanup
 
 **Created:** 2026-03-27
-**Status:** In Progress
+**Status:** Complete
 **Type:** Bug Fix / Hardening
 **Severity:** Medium (5 medium) + Low (9 low)
 
@@ -32,12 +32,14 @@ Each finding is addressed with a minimal, targeted fix in the affected file. Con
 | # | Item | Description | Status |
 |---|------|-------------|--------|
 | 01 | Planning README | This document | ✅ Complete |
-| 02 | Design philosophy | Guiding principles for changes | ⬚ Pending |
-| 03 | Change plan | Detailed per-finding implementation plan | ⬚ Pending |
-| 04 | Risk assessment | Risk analysis and mitigations | ⬚ Pending |
-| 05 | Assumptions review | Assumptions and validation | ⬚ Pending |
-| 06 | Implementation | Apply all 14 fixes | ⬚ Pending |
-| 07 | Post-impl review | Change block index | ⬚ Pending |
+| 02 | Design philosophy | Guiding principles for changes | ✅ Complete |
+| 03 | Change plan | Detailed per-finding implementation plan | ✅ Complete |
+| 04 | Risk assessment | Risk analysis and mitigations | ✅ Complete |
+| 05 | Assumptions review | Assumptions and validation | ✅ Complete |
+| 06 | Implementation | Apply all 14 fixes | ✅ Complete |
+| 07 | Post-impl review | Code review, structural, test suite | ✅ Complete |
+| 08 | Strategic review | Cross-package alignment | ✅ Complete |
+| 09 | Completion | COMPLETE marker and retrospective | ✅ Complete |
 
 ---
 

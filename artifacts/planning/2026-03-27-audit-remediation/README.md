@@ -59,7 +59,7 @@ The approach is additive: path validation is a new check before existing filesys
 | — | WP-07 Implementation | Tools session protocol (PR #74) | ✅ Complete |
 | — | WP-08 Implementation | Utils hardening (PR #75) | ✅ Complete |
 | — | WP-09 Implementation | Test infrastructure (PR #76) | ⬚ Pending |
-| — | WP-10 Implementation | Server core cleanup (PR #77) | ⬚ Pending |
+| — | WP-10 Implementation | Server core cleanup (PR #77) | ✅ Complete |
 | — | WP-11 Implementation | Scripts cleanup (PR #78) | ⬚ Pending |
 | — | WP-12 Implementation | Documentation alignment (PR #79) | ⬚ Pending |
 
@@ -85,4 +85,4 @@ The approach is additive: path validation is a new check before existing filesys
 
 ---
 
-**Status:** WP-01, WP-02, WP-03, WP-05, WP-07 & WP-08 complete; 6 packages pending
+**Status:** WP-01, WP-02, WP-03, WP-05, WP-07, WP-08 & WP-10 complete; 5 packages pending
