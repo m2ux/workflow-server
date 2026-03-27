@@ -11,7 +11,7 @@ export * from './types/workflow.js';
 export * from './types/state.js';
 export { createServer } from './server.js';
 export { loadConfig } from './config.js';
-export type { ServerConfig } from './config.js';
+export type { ServerConfig, ResolvedServerConfig } from './config.js';
 export { buildSchemaPreamble } from './loaders/schema-preamble.js';
 export { TraceStore, createTraceToken, decodeTraceToken, createTraceEvent } from './trace.js';
 export type { TraceEvent, TraceTokenPayload } from './trace.js';
@@ -30,4 +30,4 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => { logError('Unhandled error', error instanceof Error ? error : undefined); process.exit(1); });
+main();

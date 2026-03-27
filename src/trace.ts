@@ -29,6 +29,8 @@ export interface TraceTokenPayload {
   events: TraceEvent[];
 }
 
+const DEFAULT_MAX_SESSIONS = 1000;
+
 /** Create a trace event with compressed field names. */
 export function createTraceEvent(
   traceId: string,
@@ -42,7 +44,7 @@ export function createTraceEvent(
 ): TraceEvent {
   return {
     traceId,
-    spanId: randomUUID().slice(0, 8),
+    spanId: randomUUID(),
     name,
     ts: Math.floor(Date.now() / 1000),
     ms: durationMs,
@@ -59,9 +61,21 @@ export function createTraceEvent(
 export class TraceStore {
   private sessions = new Map<string, TraceEvent[]>();
   private cursors = new Map<string, number>();
+  private readonly maxSessions: number;
+
+  constructor(maxSessions: number = DEFAULT_MAX_SESSIONS) {
+    this.maxSessions = maxSessions;
+  }
 
   initSession(sid: string): void {
     if (!this.sessions.has(sid)) {
+      if (this.sessions.size >= this.maxSessions) {
+        const oldest = this.sessions.keys().next().value;
+        if (oldest !== undefined) {
+          this.sessions.delete(oldest);
+          this.cursors.delete(oldest);
+        }
+      }
       this.sessions.set(sid, []);
       this.cursors.set(sid, 0);
     }
@@ -98,6 +112,26 @@ export async function createTraceToken(payload: TraceTokenPayload): Promise<stri
   return `${b64}.${sig}`;
 }
 
+function validateTraceTokenPayload(parsed: unknown): asserts parsed is TraceTokenPayload {
+  if (parsed === null || typeof parsed !== 'object') {
+    throw new Error('Invalid trace token: payload is not an object');
+  }
+  const p = parsed as Record<string, unknown>;
+  const invalid: string[] = [];
+  if (typeof p['sid'] !== 'string') invalid.push('sid (expected string)');
+  if (typeof p['act'] !== 'string') invalid.push('act (expected string)');
+  if (typeof p['from'] !== 'number') invalid.push('from (expected number)');
+  if (typeof p['to'] !== 'number') invalid.push('to (expected number)');
+  if (typeof p['n'] !== 'number') invalid.push('n (expected number)');
+  if (typeof p['t0'] !== 'number') invalid.push('t0 (expected number)');
+  if (typeof p['t1'] !== 'number') invalid.push('t1 (expected number)');
+  if (typeof p['ts'] !== 'number') invalid.push('ts (expected number)');
+  if (!Array.isArray(p['events'])) invalid.push('events (expected array)');
+  if (invalid.length > 0) {
+    throw new Error(`Invalid trace token: malformed payload fields: ${invalid.join(', ')}`);
+  }
+}
+
 /** Decode and verify an HMAC-signed trace token, returning the payload with events. */
 export async function decodeTraceToken(token: string): Promise<TraceTokenPayload> {
   const dotIndex = token.lastIndexOf('.');
@@ -112,9 +146,7 @@ export async function decodeTraceToken(token: string): Promise<TraceTokenPayload
   }
 
   const json = Buffer.from(b64, 'base64url').toString('utf8');
-  const parsed = JSON.parse(json) as TraceTokenPayload;
-  if (typeof parsed.sid !== 'string' || !Array.isArray(parsed.events)) {
-    throw new Error('Invalid trace token: malformed payload');
-  }
+  const parsed: unknown = JSON.parse(json);
+  validateTraceTokenPayload(parsed);
   return parsed;
 }

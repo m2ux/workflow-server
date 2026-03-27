@@ -10,7 +10,18 @@ const IV_LENGTH = 12;  // GCM standard
 const AUTH_TAG_LENGTH = 16;
 const ALGORITHM = 'aes-256-gcm';
 
+let keyPromise: Promise<Buffer> | null = null;
+
 export async function getOrCreateServerKey(): Promise<Buffer> {
+  if (keyPromise) return keyPromise;
+  keyPromise = loadOrCreateKey().catch((err) => {
+    keyPromise = null;
+    throw err;
+  });
+  return keyPromise;
+}
+
+async function loadOrCreateKey(): Promise<Buffer> {
   try {
     const key = await readFile(KEY_FILE);
     if (key.length !== KEY_LENGTH) {
