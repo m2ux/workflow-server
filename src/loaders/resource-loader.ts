@@ -3,7 +3,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
-import { logInfo, logError } from '../logging.js';
+import { logInfo, logError, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
 
 export interface ResourceEntry { 
@@ -147,8 +147,8 @@ export async function readResourceRaw(
         }
       }
     }
-  } catch {
-    // Fall through to error
+  } catch (error) {
+    logWarn('Failed to read resource (raw)', { workflowId, resourceIndex, error: error instanceof Error ? error.message : String(error) });
   }
   
   return err(new ResourceNotFoundError(resourceIndex, workflowId));
@@ -214,14 +214,14 @@ export async function getResourceEntry(
 
 export interface StructuredResource {
   index: string;
-  id: string;
-  version: string;
+  id: string | undefined;
+  version: string | undefined;
   content: string;
 }
 
-function parseFrontmatter(raw: string): { id: string; version: string; content: string } {
+function parseFrontmatter(raw: string): { id: string | undefined; version: string | undefined; content: string } {
   const fmMatch = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
-  if (!fmMatch) return { id: '', version: '', content: raw };
+  if (!fmMatch) return { id: undefined, version: undefined, content: raw };
 
   const frontmatter = fmMatch[1] ?? '';
   const body = (fmMatch[2] ?? '').trim();
@@ -230,8 +230,8 @@ function parseFrontmatter(raw: string): { id: string; version: string; content: 
   const versionMatch = frontmatter.match(/^version:\s*(.+)$/m);
 
   return {
-    id: idMatch?.[1]?.trim() ?? '',
-    version: versionMatch?.[1]?.trim() ?? '',
+    id: idMatch?.[1]?.trim(),
+    version: versionMatch?.[1]?.trim(),
     content: body,
   };
 }

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { RulesNotFoundError } from '../errors.js';
-import { logInfo } from '../logging.js';
+import { logInfo, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
 
 /** The meta workflow contains global rules */
@@ -44,7 +44,7 @@ export async function readRules(workflowDir: string): Promise<Result<Rules, Rule
     logInfo('Rules loaded', { path: rulesPath, sectionCount: rules.sections?.length ?? 0 });
     return ok(rules);
   } catch (error) {
-    logInfo('Rules parse error', { path: rulesPath, error: String(error) });
+    logWarn('Rules parse error', { path: rulesPath, error: String(error) });
     return err(new RulesNotFoundError());
   }
 }

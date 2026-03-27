@@ -112,14 +112,18 @@ async function readActivityFromWorkflow(
       return err(new ActivityNotFoundError(activityId));
     }
     
+    const parsedMatch = parseActivityFilename(matchingFile);
+    if (parsedMatch && parsedMatch.id === 'index') {
+      return err(new ActivityNotFoundError(activityId));
+    }
+    
     const filePath = join(activityDir, matchingFile);
     const content = await readFile(filePath, 'utf-8');
     const decoded = decodeToon<Activity>(content);
     
-    // Validate against schema
     const validation = safeValidateActivity(decoded);
     if (!validation.success) {
-      logWarn('Activity validation failed', { activityId, workflowId, errors: validation.error.issues });
+      logWarn('Activity validation failed, using raw content', { activityId, workflowId, errors: validation.error.issues });
     }
     
     const activity = validation.success ? validation.data : decoded;
@@ -146,8 +150,9 @@ async function readActivityFromWorkflow(
     };
     
     return ok(activityWithGuidance);
-  } catch {
-    return err(new ActivityNotFoundError(activityId));
+  } catch (error) {
+    logWarn('Failed to load activity', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
+    return err(new ActivityNotFoundError(activityId, workflowId));
   }
 }
 
