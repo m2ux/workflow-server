@@ -3,8 +3,9 @@ import type { Workflow } from '../schema/workflow.schema.js';
 import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
 
 export interface ValidationResult {
-  status: 'valid' | 'warning';
+  status: 'valid' | 'warning' | 'error';
   warnings: string[];
+  errors?: string[];
 }
 
 function emptyValidation(): ValidationResult {
@@ -37,17 +38,13 @@ export function validateSkillAssociation(workflow: Workflow, activityId: string,
   const activity = getActivity(workflow, activityId);
   if (!activity) return null;
 
-  const skills = activity.skills;
+  const { skills } = activity;
   if (!skills) return null;
 
-  const declared: string[] = [];
-  if (typeof skills === 'object' && 'primary' in skills) {
-    declared.push((skills as { primary: string }).primary);
-    const supporting = (skills as { supporting?: string[] }).supporting;
-    if (supporting) declared.push(...supporting);
-  }
+  const declared: string[] = [skills.primary];
+  if (skills.supporting) declared.push(...skills.supporting);
 
-  if (declared.length > 0 && !declared.includes(skillId)) {
+  if (!declared.includes(skillId)) {
     return `Skill '${skillId}' is not declared by activity '${activityId}'. Declared skills: [${declared.join(', ')}]`;
   }
   return null;
@@ -73,7 +70,7 @@ export function validateStepManifest(
   const activity = getActivity(workflow, activityId);
   if (!activity) return [`Cannot validate manifest: activity '${activityId}' not found`];
 
-  const steps = (activity as Record<string, unknown>)['steps'] as Array<{ id: string }> | undefined;
+  const { steps } = activity;
   if (!steps || steps.length === 0) return [];
 
   const expectedIds = steps.map(s => s.id);
@@ -93,12 +90,11 @@ export function validateStepManifest(
   for (let i = 0; i < manifestIds.length && i < expectedIds.length; i++) {
     if (manifestIds[i] !== expectedIds[i]) {
       warnings.push(`Step order mismatch at position ${i}: expected '${expectedIds[i]}' but got '${manifestIds[i]}'`);
-      break;
     }
   }
 
   for (const entry of manifest) {
-    if (!entry.output || entry.output.trim().length === 0) {
+    if (!entry.output || (typeof entry.output === 'string' && entry.output.trim().length === 0)) {
       warnings.push(`Step '${entry.step_id}' has empty output`);
     }
   }
@@ -106,7 +102,7 @@ export function validateStepManifest(
   return warnings;
 }
 
-export function validateTransitionCondition(token: SessionPayload, workflow: Workflow, activityId: string, claimedCondition: string): string | null {
+export function validateTransitionCondition(token: SessionPayload, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {
   if (!token.act) return null;
   if (token.act === activityId) return null;
 
@@ -116,12 +112,12 @@ export function validateTransitionCondition(token: SessionPayload, workflow: Wor
   const matchingTransition = transitions.find(t => t.to === activityId);
   if (!matchingTransition) return null;
 
-  if (claimedCondition === '' || claimedCondition === 'default') {
-    if (matchingTransition.isDefault) return null;
-    if (matchingTransition.condition) {
-      return `Transition to '${activityId}' requires condition '${matchingTransition.condition}' but agent claimed default transition.`;
-    }
-    return null;
+  const claimIsEmpty = claimedCondition === undefined || claimedCondition === '';
+  const claimIsDefault = claimedCondition === 'default';
+
+  if (claimIsEmpty || claimIsDefault) {
+    if (matchingTransition.isDefault || !matchingTransition.condition) return null;
+    return `Transition to '${activityId}' requires condition '${matchingTransition.condition}' but agent claimed ${claimIsDefault ? "'default'" : 'no condition'}.`;
   }
 
   if (matchingTransition.isDefault && !matchingTransition.condition) {
@@ -152,8 +148,20 @@ export function validateActivityManifest(
     if (!activityIds.includes(entry.activity_id)) {
       warnings.push(`Activity manifest references unknown activity '${entry.activity_id}'`);
     }
-    if (!entry.outcome || entry.outcome.trim().length === 0) {
+    if (!entry.outcome || (typeof entry.outcome === 'string' && entry.outcome.trim().length === 0)) {
       warnings.push(`Activity '${entry.activity_id}' has empty outcome`);
+    }
+    if (entry.transition_condition !== undefined && entry.transition_condition !== '') {
+      const activity = getActivity(workflow, entry.activity_id);
+      if (activity) {
+        const transitions = getTransitionList(workflow, entry.activity_id);
+        const hasMatchingCondition = transitions.some(
+          t => t.condition === entry.transition_condition || (t.isDefault && entry.transition_condition === 'default')
+        );
+        if (!hasMatchingCondition && transitions.length > 0) {
+          warnings.push(`Activity '${entry.activity_id}' claims transition condition '${entry.transition_condition}' not found in workflow transitions`);
+        }
+      }
     }
   }
 
@@ -168,5 +176,12 @@ export function buildValidation(...warnings: (string | null)[]): ValidationResul
       result.status = 'warning';
     }
   }
+  return result;
+}
+
+export function buildErrorValidation(error: string, ...warnings: (string | null)[]): ValidationResult {
+  const result = buildValidation(...warnings);
+  result.status = 'error';
+  result.errors = [error];
   return result;
 }
