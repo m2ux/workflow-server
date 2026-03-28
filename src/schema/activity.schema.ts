@@ -157,7 +157,7 @@ export const ActivitySchema = z.object({
   decisions: z.array(DecisionSchema).optional().describe('Conditional branching points'),
   loops: z.array(LoopSchema).optional().describe('Iteration constructs'),
   transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities'),
-  triggers: WorkflowTriggerSchema.optional().describe('Workflow to trigger from this activity'),
+  triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this activity'),
   
   // Lifecycle (optional)
   entryActions: z.array(ActionSchema).optional().describe('Actions to execute when entering activity'),

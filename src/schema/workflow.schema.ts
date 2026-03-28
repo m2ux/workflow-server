@@ -51,8 +51,8 @@ export const WorkflowSchema = z.object({
   modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
   artifactLocations: z.record(ArtifactLocationValueSchema).optional().describe('Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions.'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
-  // Not in JSON Schema (which validates individual TOON files where activities are separate files).
-  // Present here because Zod validates the full assembled runtime workflow object.
+  // JSON Schema validates individual TOON files where activities are separate files.
+  // Zod validates the full assembled runtime workflow object, so activities are included here.
   activities: z.array(ActivitySchema).min(1).describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points.'),
 });
 export type Workflow = z.infer<typeof WorkflowSchema>;
