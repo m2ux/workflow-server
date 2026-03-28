@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import type { SessionPayload } from './session.js';
 import type { Workflow } from '../schema/workflow.schema.js';
 import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
@@ -184,4 +185,20 @@ export function buildErrorValidation(error: string, ...warnings: (string | null)
   result.status = 'error';
   result.errors = [error];
   return result;
+}
+
+export const ValidationResultSchema = z.object({
+  status: z.enum(['valid', 'warning', 'error']),
+  warnings: z.array(z.string()),
+  errors: z.array(z.string()).optional(),
+});
+
+export const MetaResponseSchema = z.object({
+  session_token: z.string(),
+  validation: ValidationResultSchema,
+});
+export type MetaResponse = z.infer<typeof MetaResponseSchema>;
+
+export function buildMeta(sessionToken: string, validation: ValidationResult): MetaResponse {
+  return { session_token: sessionToken, validation };
 }

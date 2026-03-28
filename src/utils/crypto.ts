@@ -1,5 +1,6 @@
 import { randomBytes, createCipheriv, createDecipheriv, createHmac, timingSafeEqual } from 'node:crypto';
-import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, open } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 
@@ -32,9 +33,16 @@ async function loadOrCreateKey(): Promise<Buffer> {
     if (err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'ENOENT') {
       const key = randomBytes(KEY_LENGTH);
       await mkdir(KEY_DIR, { recursive: true, mode: 0o700 });
-      const tmpFile = `${KEY_FILE}.${process.pid}.tmp`;
-      await writeFile(tmpFile, key, { mode: 0o600 });
-      await rename(tmpFile, KEY_FILE);
+      try {
+        const fh = await open(KEY_FILE, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL, 0o600);
+        await fh.writeFile(key);
+        await fh.close();
+      } catch (writeErr: unknown) {
+        if (writeErr instanceof Error && 'code' in writeErr && (writeErr as NodeJS.ErrnoException).code === 'EEXIST') {
+          return readFile(KEY_FILE);
+        }
+        throw writeErr;
+      }
       return key;
     }
     throw err;
