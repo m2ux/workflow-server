@@ -145,25 +145,32 @@ describe('skill-loader', () => {
       await rm(tempDir, { recursive: true, force: true });
     });
 
-    it('should handle non-skill TOON content without crashing', async () => {
+    it('should reject non-skill TOON content', async () => {
       await writeFile(join(tempDir, 'meta', 'skills', '01-not-a-skill.toon'), 'just a plain string', 'utf-8');
       const result = await readSkill('not-a-skill', tempDir);
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
     });
 
-    it('should handle empty TOON file without crashing', async () => {
+    it('should reject empty TOON file', async () => {
       await writeFile(join(tempDir, 'meta', 'skills', '01-empty-skill.toon'), '', 'utf-8');
       const result = await readSkill('empty-skill', tempDir);
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
     });
 
-    it('should handle TOON with minimal fields without crashing', async () => {
-      await writeFile(join(tempDir, 'meta', 'skills', '01-minimal.toon'), 'id: minimal\nversion: 1.0.0\n', 'utf-8');
+    it('should accept TOON with all required fields', async () => {
+      await writeFile(join(tempDir, 'meta', 'skills', '01-minimal.toon'), 'id: minimal\nversion: 1.0.0\ncapability: test capability\n', 'utf-8');
       const result = await readSkill('minimal', tempDir);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('minimal');
+        expect(result.value.capability).toBe('test capability');
       }
+    });
+
+    it('should reject TOON missing required capability field', async () => {
+      await writeFile(join(tempDir, 'meta', 'skills', '01-incomplete.toon'), 'id: incomplete\nversion: 1.0.0\n', 'utf-8');
+      const result = await readSkill('incomplete', tempDir);
+      expect(result.success).toBe(false);
     });
 
     it('should return error for non-existent skill in temp directory', async () => {

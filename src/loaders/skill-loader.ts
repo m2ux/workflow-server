@@ -5,7 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
-import type { Skill } from '../schema/skill.schema.js';
+import { type Skill, safeValidateSkill } from '../schema/skill.schema.js';
 import { parseActivityFilename as parseSkillFilename } from './filename-utils.js';
 
 /** The meta workflow contains universal skills */
@@ -75,7 +75,13 @@ async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | 
 
   try {
     const content = await readFile(filePath, 'utf-8');
-    return decodeToon<Skill>(content);
+    const decoded = decodeToon<Skill>(content);
+    const validation = safeValidateSkill(decoded);
+    if (!validation.success) {
+      logWarn('Skill validation failed', { skillId, path: filePath, errors: validation.error.issues });
+      return null;
+    }
+    return validation.data;
   } catch (error) {
     logWarn('Failed to decode skill TOON', { skillId, path: filePath, error: error instanceof Error ? error.message : String(error) });
     return null;
