@@ -45,7 +45,7 @@ Each package produces a PR with its own branch, test coverage, and review cycle.
 | 06 | [Work Package Plan](06-work-package-plan.md) | WP-01 implementation plan | ✅ Complete |
 | 06 | [Test Plan](06-test-plan.md) | WP-01 test strategy | ✅ Complete |
 | — | WP-01 Implementation | Schema alignment (PR #80) | ✅ Complete |
-| — | WP-02 Implementation | Validation enforcement | ⬜ Planned |
+| — | WP-02 Implementation | Validation enforcement (PR #81) | ✅ Complete |
 | — | WP-03 Implementation | Behavioral & infrastructure fixes | ⬜ Planned |
 
 ---
@@ -59,7 +59,8 @@ Each package produces a PR with its own branch, test coverage, and review cycle.
 | Adversarial Analysis | [adversarial-analysis.md](../../prism-analysis/adversarial-analysis.md) |
 | Synthesis | [synthesis.md](../../prism-analysis/synthesis.md) |
 | WP-01 PR | [#80](https://github.com/m2ux/workflow-server/pull/80) — Schema alignment |
+| WP-02 PR | [#81](https://github.com/m2ux/workflow-server/pull/81) — Validation enforcement |
 
 ---
 
-**Status:** 1/3 work packages complete. 6/15 findings remediated in PR #80.
+**Status:** 2/3 work packages complete. 11/15 findings remediated in PRs #80–#81.
