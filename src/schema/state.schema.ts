@@ -81,14 +81,16 @@ export const TriggeredWorkflowRefSchema = z.object({
 });
 export type TriggeredWorkflowRef = z.infer<typeof TriggeredWorkflowRefSchema>;
 
-export const WorkflowStateSchema = z.object({
+const ActiveStatuses = ['running', 'paused', 'suspended'] as const;
+
+export const WorkflowStateBaseSchema = z.object({
   workflowId: z.string(),
   workflowVersion: z.string(),
   stateVersion: z.number().int().positive().default(1),
   startedAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   completedAt: z.string().datetime().optional(),
-  currentActivity: z.string(),
+  currentActivity: z.string().optional(),
   currentStep: StepIndex.optional(),
   completedActivities: z.array(z.string()).default([]),
   skippedActivities: z.array(z.string()).default([]),
@@ -109,6 +111,11 @@ export const WorkflowStateSchema = z.object({
     timestamp: z.string().datetime(),
   }).optional(),
 });
+
+export const WorkflowStateSchema = WorkflowStateBaseSchema.refine(
+  (state) => !(ActiveStatuses as readonly string[]).includes(state.status) || state.currentActivity != null,
+  { message: 'currentActivity is required when status is running, paused, or suspended', path: ['currentActivity'] },
+);
 export type WorkflowState = z.infer<typeof WorkflowStateSchema>;
 
 // --- Recursive schemas for state persistence ---
@@ -127,9 +134,12 @@ export const NestedTriggeredWorkflowRefSchema: z.ZodType<NestedTriggeredWorkflow
   state: z.lazy(() => NestedWorkflowStateSchema).optional(),
 }) as z.ZodType<NestedTriggeredWorkflowRef>;
 
-export const NestedWorkflowStateSchema: z.ZodType<NestedWorkflowState> = WorkflowStateSchema.extend({
+export const NestedWorkflowStateSchema: z.ZodType<NestedWorkflowState> = WorkflowStateBaseSchema.extend({
   triggeredWorkflows: z.array(z.lazy(() => NestedTriggeredWorkflowRefSchema)).default([]),
-}) as z.ZodType<NestedWorkflowState>;
+}).refine(
+  (state) => !(ActiveStatuses as readonly string[]).includes(state.status) || state.currentActivity != null,
+  { message: 'currentActivity is required when status is running, paused, or suspended', path: ['currentActivity'] },
+) as z.ZodType<NestedWorkflowState>;
 
 /** Creates initial workflow state. Caller must ensure initialActivity is a valid activity ID in the workflow. */
 export function createInitialState(workflowId: string, workflowVersion: string, initialActivity: string, initialVariables?: Record<string, unknown>): WorkflowState {
