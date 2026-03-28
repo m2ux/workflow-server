@@ -1,7 +1,7 @@
 # Prism Audit Remediation — March 2026
 
 **Created:** 2026-03-27
-**Status:** In Progress
+**Status:** Complete
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -46,7 +46,7 @@ Each package produces a PR with its own branch, test coverage, and review cycle.
 | 06 | [Test Plan](06-test-plan.md) | WP-01 test strategy | ✅ Complete |
 | — | WP-01 Implementation | Schema alignment (PR #80) | ✅ Complete |
 | — | WP-02 Implementation | Validation enforcement (PR #81) | ✅ Complete |
-| — | WP-03 Implementation | Behavioral & infrastructure fixes | ⬜ Planned |
+| — | WP-03 Implementation | Behavioral & infrastructure fixes (PR #82) | ✅ Complete |
 
 ---
 
@@ -60,7 +60,8 @@ Each package produces a PR with its own branch, test coverage, and review cycle.
 | Synthesis | [synthesis.md](../../prism-analysis/synthesis.md) |
 | WP-01 PR | [#80](https://github.com/m2ux/workflow-server/pull/80) — Schema alignment |
 | WP-02 PR | [#81](https://github.com/m2ux/workflow-server/pull/81) — Validation enforcement |
+| WP-03 PR | [#82](https://github.com/m2ux/workflow-server/pull/82) — Behavioral & infrastructure fixes |
 
 ---
 
-**Status:** 2/3 work packages complete. 11/15 findings remediated in PRs #80–#81.
+**Status:** All 3 work packages complete. 15 findings remediated across 3 PRs (#80–#82).
