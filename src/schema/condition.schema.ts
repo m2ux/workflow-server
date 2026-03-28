@@ -61,8 +61,8 @@ function evaluateSimpleCondition(condition: SimpleCondition, variables: Record<s
   switch (condition.operator) {
     case 'exists': return value !== undefined && value !== null;
     case 'notExists': return value === undefined || value === null;
-    case '==': return value == condition.value;
-    case '!=': return value != condition.value;
+    case '==': return value === condition.value;
+    case '!=': return value !== condition.value;
     case '>': return typeof value === 'number' && typeof condition.value === 'number' && value > condition.value;
     case '<': return typeof value === 'number' && typeof condition.value === 'number' && value < condition.value;
     case '>=': return typeof value === 'number' && typeof condition.value === 'number' && value >= condition.value;
