@@ -161,6 +161,7 @@ export const SkillSchema = z.object({
   status_values: z.record(z.string()).optional(),
   interpretation: InterpretationSchema.optional(),
   resumption: ResumptionSchema.optional(),
+  execution_pattern: ExecutionPatternSchema.optional(),
   rules: RulesDefinitionSchema.optional(),
   errors: z.record(ErrorDefinitionSchema).optional(),
   inputs: InputsDefinitionSchema.optional(),

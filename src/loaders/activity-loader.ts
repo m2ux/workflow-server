@@ -114,10 +114,11 @@ async function readActivityFromWorkflow(
     
     const validation = safeValidateActivity(decoded);
     if (!validation.success) {
-      logWarn('Activity validation failed, using raw content', { activityId, workflowId, errors: validation.error.issues });
+      logWarn('Activity validation failed', { activityId, workflowId, errors: validation.error.issues });
+      return err(new ActivityNotFoundError(activityId, workflowId));
     }
     
-    const activity = validation.success ? validation.data : decoded;
+    const activity = validation.data;
     
     // Infer artifactPrefix from the activity filename index
     const parsedFilename = parseActivityFilename(matchingFile);
@@ -242,7 +243,11 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       const decoded = decodeToon<Activity>(content);
       
       const validation = safeValidateActivity(decoded);
-      const activity = validation.success ? validation.data : decoded;
+      if (!validation.success) {
+        logWarn('Activity validation failed, skipping', { activityId: entry.id, workflowId: entry.workflowId, errors: validation.error.issues });
+        continue;
+      }
+      const activity = validation.data;
       
       const indexSkillParams: Record<string, string> = { skill_id: activity.skills.primary };
       if (entry.workflowId) indexSkillParams['workflow_id'] = entry.workflowId;
