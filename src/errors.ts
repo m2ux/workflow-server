@@ -44,5 +44,5 @@ export class ActivityNotFoundError extends Error {
 
 export class RulesNotFoundError extends Error {
   readonly code: ErrorCode = ERROR_CODES.RULES_NOT_FOUND;
-  constructor() { super('Global rules not found'); this.name = 'RulesNotFoundError'; }
+  constructor(message?: string) { super(message ?? 'Global rules not found'); this.name = 'RulesNotFoundError'; }
 }

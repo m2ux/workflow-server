@@ -210,7 +210,8 @@ export async function listResources(workflowDir: string, workflowId: string): Pr
     resources.sort((a, b) => parseInt(a.index, 10) - parseInt(b.index, 10));
     
     return resources;
-  } catch { 
+  } catch (error) {
+    logWarn('Failed to list resources', { workflowId, error: error instanceof Error ? error.message : String(error) });
     return []; 
   }
 }
@@ -298,7 +299,8 @@ export async function listWorkflowsWithResources(workflowDir: string): Promise<s
     }
     
     return workflows.sort();
-  } catch {
+  } catch (error) {
+    logWarn('Failed to list workflows with resources', { workflowDir, error: error instanceof Error ? error.message : String(error) });
     return [];
   }
 }

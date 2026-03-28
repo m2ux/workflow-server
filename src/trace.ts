@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { getOrCreateServerKey, hmacSign, hmacVerify } from './utils/crypto.js';
+import { logWarn } from './logging.js';
 
 /** Mechanical trace event with compressed field names (opaque to agents). */
 export interface TraceEvent {
@@ -72,6 +73,7 @@ export class TraceStore {
       if (this.sessions.size >= this.maxSessions) {
         const oldest = this.sessions.keys().next().value;
         if (oldest !== undefined) {
+          logWarn('TraceStore evicting oldest session', { evictedSid: oldest, maxSessions: this.maxSessions });
           this.sessions.delete(oldest);
           this.cursors.delete(oldest);
         }
@@ -82,6 +84,9 @@ export class TraceStore {
   }
 
   append(sid: string, event: TraceEvent): void {
+    if (!this.sessions.has(sid)) {
+      this.initSession(sid);
+    }
     const events = this.sessions.get(sid);
     if (events) events.push(event);
   }

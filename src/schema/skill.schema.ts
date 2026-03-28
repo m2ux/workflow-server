@@ -167,7 +167,7 @@ export const SkillSchema = z.object({
   protocol: ProtocolDefinitionSchema.optional(),
   output: OutputDefinitionSchema.optional(),
   resources: z.array(z.string()).optional().describe('Resource indices or IDs this skill depends on (e.g. 02, 04, 08)'),
-});
+}).passthrough();
 export type Skill = z.infer<typeof SkillSchema>;
 
 export function validateSkill(data: unknown): Skill { return SkillSchema.parse(data); }

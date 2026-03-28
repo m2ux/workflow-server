@@ -47,7 +47,8 @@ async function findWorkflowsWithActivities(workflowDir: string): Promise<string[
     }
     
     return workflowIds.sort();
-  } catch {
+  } catch (error) {
+    logWarn('Failed to list workflows with activities', { workflowDir, error: error instanceof Error ? error.message : String(error) });
     return [];
   }
 }
@@ -114,10 +115,11 @@ async function readActivityFromWorkflow(
     
     const validation = safeValidateActivity(decoded);
     if (!validation.success) {
-      logWarn('Activity validation failed, using raw content', { activityId, workflowId, errors: validation.error.issues });
+      logWarn('Activity validation failed', { activityId, workflowId, errors: validation.error.issues });
+      return err(new ActivityNotFoundError(activityId, workflowId));
     }
     
-    const activity = validation.success ? validation.data : decoded;
+    const activity = validation.data;
     
     // Infer artifactPrefix from the activity filename index
     const parsedFilename = parseActivityFilename(matchingFile);
@@ -191,7 +193,8 @@ async function listActivitiesFromWorkflow(workflowDir: string, workflowId: strin
       })
       .filter((entry): entry is ActivityEntry => entry !== null)
       .sort((a, b) => a.index.localeCompare(b.index));
-  } catch { 
+  } catch (error) {
+    logWarn('Failed to list activities', { workflowId, error: error instanceof Error ? error.message : String(error) });
     return []; 
   }
 }
@@ -265,8 +268,8 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
           quick_match[pattern.toLowerCase()] = activity.id;
         }
       }
-    } catch {
-      logWarn('Failed to load activity for index', { activityId: entry.id, workflowId: entry.workflowId });
+    } catch (error) {
+      logWarn('Failed to load activity for index', { activityId: entry.id, workflowId: entry.workflowId, error: error instanceof Error ? error.message : String(error) });
     }
   }
   

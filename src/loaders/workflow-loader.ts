@@ -151,7 +151,7 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
     
     return manifests;
   } catch (error) {
-    logWarn('Failed to list workflows', { workflowDir, error: error instanceof Error ? error.message : String(error) });
+    logWarn('Failed to list workflows', { workflowDir, error: error instanceof Error ? error.message : String(error), code: error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined });
     return [];
   }
 }
@@ -189,6 +189,7 @@ export function getTransitionList(workflow: Workflow, fromActivityId: string): T
   if (!activity) return [];
 
   const entries: TransitionEntry[] = [];
+  const seen = new Set<string>();
 
   for (const t of activity.transitions ?? []) {
     entries.push({
@@ -196,6 +197,25 @@ export function getTransitionList(workflow: Workflow, fromActivityId: string): T
       condition: t.condition ? conditionToString(t.condition) : undefined,
       isDefault: t.isDefault || undefined,
     });
+    seen.add(t.to);
+  }
+
+  for (const d of activity.decisions ?? []) {
+    for (const b of d.branches) {
+      if (b.transitionTo && !seen.has(b.transitionTo)) {
+        entries.push({ to: b.transitionTo, condition: b.condition ? conditionToString(b.condition) : undefined, isDefault: b.isDefault || undefined });
+        seen.add(b.transitionTo);
+      }
+    }
+  }
+
+  for (const c of activity.checkpoints ?? []) {
+    for (const o of c.options) {
+      if (o.effect?.transitionTo && !seen.has(o.effect.transitionTo)) {
+        entries.push({ to: o.effect.transitionTo, condition: `checkpoint:${c.id}:${o.id}` });
+        seen.add(o.effect.transitionTo);
+      }
+    }
   }
 
   return entries;

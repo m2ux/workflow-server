@@ -15,12 +15,12 @@ const STATE_FILENAME = 'workflow-state.toon';
 const SESSION_TOKEN_KEY = 'session_token';
 const SESSION_TOKEN_ENCRYPTED_KEY = '_session_token_encrypted';
 
-/** @internal Exported for testing. Validates that a path resolves within process.cwd(). */
-export function validateStatePath(inputPath: string): string {
-  const root = process.cwd();
+/** @internal Exported for testing. Validates that a path resolves within the workspace root. */
+export function validateStatePath(inputPath: string, workspaceRoot?: string): string {
+  const root = workspaceRoot ?? process.cwd();
   const resolved = resolve(inputPath);
   if (resolved !== root && !resolved.startsWith(root + sep)) {
-    throw new Error(`Path validation failed: "${inputPath}" resolves outside the workspace root`);
+    throw new Error(`Path validation failed: "${inputPath}" resolves outside the workspace root ("${root}")`);
   }
   return resolved;
 }
@@ -98,7 +98,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       );
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(summary, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(summary) }],
         _meta: { session_token: await advanceToken(session_token), validation },
       };
     }, traceOpts),
@@ -127,10 +127,12 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
         try {
           const key = await getOrCreateServerKey();
           restored.state.variables[SESSION_TOKEN_KEY] = decryptToken(restored.state.variables[SESSION_TOKEN_KEY] as string, key);
-        } catch {
+        } catch (decryptErr) {
+          const cause = decryptErr instanceof Error ? decryptErr.message : String(decryptErr);
           throw new Error(
-            'Failed to decrypt session token from saved state. This typically occurs when the server key has been rotated ' +
-            '(~/.workflow-server/secret was regenerated). The saved state must be re-created with the current key.',
+            `Failed to decrypt session token from saved state (${cause}). ` +
+            'Possible causes: server key rotation (~/.workflow-server/secret was regenerated), ' +
+            'corrupted state file, or manually edited save. The saved state must be re-created with the current key.',
           );
         }
       }
@@ -140,7 +142,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       );
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(restored, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(restored) }],
         _meta: { session_token: await advanceToken(session_token), validation },
       };
     }, traceOpts),

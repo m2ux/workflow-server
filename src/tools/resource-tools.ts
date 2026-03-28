@@ -73,7 +73,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         session_token: token,
       };
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
         _meta: { session_token: token },
       };
     })
@@ -132,7 +132,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (duplicateIndices.length > 0) responseBody['duplicate_resource_indices'] = duplicateIndices;
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(responseBody, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(responseBody) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
     }, traceOpts)
@@ -166,7 +166,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       };
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
       };
     }, traceOpts)
