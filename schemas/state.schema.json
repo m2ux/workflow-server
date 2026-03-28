@@ -124,12 +124,16 @@
           "type": "string",
           "description": "Path to the planning folder where this state file resides"
         },
+        "sessionTokenEncrypted": {
+          "type": "boolean",
+          "description": "Whether the session token in this save file is encrypted"
+        },
         "state": {
           "$ref": "#/definitions/state",
           "description": "The full nested workflow execution state"
         }
       },
-      "required": ["id", "savedAt", "workflowId", "workflowVersion", "planningFolder", "state"],
+      "required": ["id", "savedAt", "workflowId", "workflowVersion", "planningFolder", "sessionTokenEncrypted", "state"],
       "additionalProperties": false
     },
     "state": {
@@ -146,9 +150,8 @@
         "stateVersion": {
           "type": "integer",
           "exclusiveMinimum": 0,
-          "maximum": 1000,
           "default": 1,
-          "description": "State schema version for migration support"
+          "description": "Monotonically increasing state sequence number"
         },
         "startedAt": {
           "type": "string",
