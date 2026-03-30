@@ -135,12 +135,25 @@ erDiagram
     
     Transition |o--o| Condition : "guarded by"
 
+    Workflow ||--|| ExecutionModel : declares
+    ExecutionModel ||--|{ AgentRole : contains
+
     Workflow {
         string id PK
         string version
         string title
         string description
         string initialActivity FK
+        ExecutionModel executionModel
+    }
+    
+    ExecutionModel {
+        AgentRole[] roles
+    }
+    
+    AgentRole {
+        string id PK
+        string description
     }
     
     Activity {
@@ -252,6 +265,7 @@ A workflow is the top-level container representing a complete process definition
 | `author`          | string     | Creator of the workflow                                    |
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | string[]   | Execution guidelines                                       |
+| `executionModel`  | ExecutionModel | Agent roles and execution model for this workflow (required) |
 | `variables`       | Variable[] | State variables                                            |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
 | `activitiesDir`   | string     | Directory containing external activity files               |
@@ -446,6 +460,11 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
   "author": "author-name",
   "tags": ["sample", "documentation"],
   "rules": ["Rule 1", "Rule 2"],
+  "executionModel": {
+    "roles": [
+      { "id": "agent", "description": "Single agent executing all activities" }
+    ]
+  },
   "variables": [],
   "initialActivity": "first-activity",
   "activitiesDir": "activities"
@@ -459,6 +478,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `id` | string | Unique workflow identifier |
 | `version` | string | Semantic version (e.g., `1.0.0`) |
 | `title` | string | Human-readable title |
+| `executionModel` | ExecutionModel | Declares the agent roles for this workflow |
 | `activities` | array | Array of activity definitions (or loaded from activitiesDir) |
 
 ### Optional Properties
@@ -499,6 +519,50 @@ Variables store state that persists across phases. Define them at the workflow l
 ```
 
 **Variable Types:** `string`, `number`, `boolean`, `array`, `object`
+
+### Execution Model
+
+Every workflow must declare an `executionModel` that defines the agent roles participating in its execution. Each workflow defines its own role vocabulary — role IDs are validated for uniqueness within the workflow.
+
+```json
+{
+  "executionModel": {
+    "roles": [
+      {
+        "id": "orchestrator",
+        "description": "Coordinates workflow execution, manages transitions, presents checkpoints"
+      },
+      {
+        "id": "worker",
+        "description": "Executes activity steps, produces artifacts, yields at checkpoints"
+      }
+    ]
+  }
+}
+```
+
+**ExecutionModel Properties:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `roles` | AgentRole[] | Agent roles declared for this workflow (min 1, unique IDs) |
+
+**AgentRole Properties:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | string | Unique role identifier within this workflow |
+| `description` | string | What this role does in the workflow |
+
+Role declarations are descriptive metadata — the server stores and serves them via `get_workflow`, but does not enforce agent behavior against them. Behavioral constraints for each role are expressed in the workflow's `rules` array.
+
+**Common patterns:**
+
+| Pattern | Roles | Example Workflows |
+|---------|-------|-------------------|
+| Single agent | `agent` | meta, workflow-design, work-packages |
+| Orchestrator + worker | `orchestrator`, `worker` | work-package, prism family |
+| Named multi-agent | Multiple specific roles | substrate-node-security-audit (7 roles), cicd-pipeline-security-audit (4 roles) |
 
 ### Activities
 
@@ -996,6 +1060,11 @@ Here's a minimal valid workflow that demonstrates all key concepts:
   "version": "1.0.0",
   "title": "Example Workflow",
   "description": "A minimal workflow demonstrating key schema features",
+  "executionModel": {
+    "roles": [
+      { "id": "agent", "description": "Single agent executing all activities" }
+    ]
+  },
   "variables": [
     {
       "name": "approved",
