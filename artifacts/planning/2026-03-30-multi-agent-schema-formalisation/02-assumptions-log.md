@@ -232,3 +232,37 @@ Assumptions identified during the research activity (2026-03-30). All resolved t
 **Resolution:** MITIGATED  
 **Evidence:** All surveyed frameworks attach behavioral metadata to roles. Our out-of-scope table (03-requirements-elicitation.md §6) documents 7 future extension paths: activity-level overrides, persistence, enforcement, state/session tracking, mode interaction, cardinality, and structured constraints. Strict schema provides a controlled evolution mechanism.  
 **Impact:** Extension paths are documented and ready for future work packages when needed.
+
+---
+
+## Implementation-Analysis Assumptions
+
+Assumptions identified during the implementation-analysis activity (2026-03-30). All resolved through code analysis.
+
+### IA-01: makeWorkflow test helper requires executionModel
+
+**Assumption:** The `makeWorkflow()` helper in `validation.test.ts` must be updated when executionModel becomes a required field.  
+**Resolution:** CONFIRMED  
+**Evidence:** `makeWorkflow` returns `Workflow` type (`z.infer<typeof WorkflowSchema>`). Required fields on WorkflowSchema make TypeScript require them in the helper's return object. Helper at `validation.test.ts:30-55` used in 11 test cases.  
+**Impact:** Helper must include a default executionModel with at least one role.
+
+### IA-02: Integration tests load actual TOON files from workflows worktree
+
+**Assumption:** workflow-loader and schema-validation tests depend on real TOON files, not mocks.  
+**Resolution:** CONFIRMED  
+**Evidence:** Both test files set `WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows')` and load `meta` and `work-package` workflows. TOON migration must be complete before these tests can pass.  
+**Impact:** Implementation must be atomic — schema + TOON + test updates in the same build.
+
+### IA-03: MCP summary test doesn't verify executionModel
+
+**Assumption:** The `get_workflow` summary test doesn't check for executionModel in the response.  
+**Resolution:** CONFIRMED  
+**Evidence:** `mcp-server.test.ts:711-728` asserts `wf.rules`, `wf.variables`, `wf.activities` in summary response but not `executionModel`. The field will be present after our changes but untested unless we add an assertion.  
+**Impact:** Optional — add one assertion line for completeness.
+
+### IA-04: .refine() may change WorkflowSchema type from ZodObject to ZodEffects
+
+**Assumption:** Adding `.refine()` for unique role ID validation might break code that depends on WorkflowSchema being a `ZodObject`.  
+**Resolution:** LOW RISK — needs verification during implementation  
+**Evidence:** Quick grep shows `safeValidateWorkflow` and `validateWorkflow` use `.safeParse()` and `.parse()` which work on both types. No `.shape` or `.extend()` usage found on WorkflowSchema. But must be explicitly verified.  
+**Impact:** If callers exist, they need refactoring. If none exist (likely), no impact.
