@@ -57,80 +57,103 @@ These assumptions were resolved through targeted codebase analysis during the re
 
 ---
 
-## Open Assumptions
+## Resolved Assumptions
 
-These assumptions require human judgment. They are ordered by decision impact. For each, the alternatives are presented before the agent's position, following the judgement augmentation format.
+All assumptions reviewed and resolved by the user on 2026-03-30.
 
 ### A-01: Scope limited to definition schemas (not state or session)
 
 **Decision impact:** HIGH — determines work package size and deliverables  
 **Reversibility:** HIGH (additive; state/session changes can follow as a separate work package)  
+**Resolution:** **(a) Definition schemas only** ✅  
 
-**Alternatives:**  
-(a) **Definition schemas only** — extend workflow.schema and activity.schema with execution model constructs. State and session schemas are unchanged. Runtime tracking of which agent is executing what is a follow-up concern.  
-(b) **End-to-end** — also extend state.schema (agent tracking in workflow state), session.ts (agent identity in tokens), and trace.ts (agent identity in trace events). Delivers complete multi-agent support in one work package.  
+**Alternatives presented:**  
+(a) **Definition schemas only** — extend workflow.schema with execution model constructs. State and session schemas are unchanged.  
+(b) **End-to-end** — also extend state.schema, session.ts, and trace.ts for runtime agent tracking.  
 
-**Agent position:** (a) Definition schemas only.  
-**Rationale:** The definition side (what does the workflow require) is the prerequisite for everything else. Runtime tracking depends on having definitions first. Keeping scope narrow reduces risk and delivers value sooner. State/session/trace changes involve runtime behavior changes, not just metadata — they warrant their own design cycle.
+**User decision:** (a) Definition schemas only. Runtime integration (state, session, trace) follows as a separate work package.  
+**Agent position was:** (a) — aligned with user decision.
 
-### A-02: Execution model at workflow level with activity-level overrides
+### A-02: Execution model placement
 
 **Decision impact:** HIGH — determines schema structure and where authors declare execution models  
-**Reversibility:** HIGH (additive; can expand to activity-level later if omitted initially)  
+**Reversibility:** HIGH (additive; can expand to activity-level later)  
+**Resolution:** **(a) Workflow-level only** ✅  
 
-**Alternatives:**  
+**Alternatives presented:**  
 (a) **Workflow-level only** — declare execution model once in the workflow definition. All activities inherit it.  
-(b) **Workflow-level with activity-level overrides** — declare default model at workflow level; activities can override or constrain (e.g., "this activity the orchestrator handles directly").  
-(c) **Activity-level only** — each activity independently declares its execution model. No workflow-level declaration.  
+(b) **Workflow-level with activity-level overrides** — declare default at workflow level; activities can override.  
+(c) **Activity-level only** — each activity independently declares its execution model.  
 
-**Agent position:** (b) Workflow-level with activity-level overrides.  
-**Rationale:** Follows the proven ModeSchema pattern. Execution model is typically a workflow-wide concern (all three discovered patterns — persistent worker, disposable workers, named agents — are workflow-level decisions). Activity-level overrides handle exceptions (e.g., "the orchestrator can handle this lightweight activity directly without dispatching a worker"). Option (c) creates unnecessary repetition.
+**User decision:** (a) Workflow-level only. No activity-level overrides in this iteration.  
+**Agent position was:** (b) — user chose a simpler starting point. Activity-level overrides can be added later.
 
-### A-03: Agent role representation — enum vs. freeform
+### A-03: Agent role representation
 
 **Decision impact:** MODERATE — affects validation granularity and extensibility  
-**Reversibility:** MODERATE (enum → string is backward compatible; adding new enum values requires schema version bump)  
+**Reversibility:** MODERATE  
+**Resolution:** **CUSTOM — per-workflow declared role vocabulary** ✅  
 
-**Alternatives:**  
-(a) **Strict enum** — predefined roles: `orchestrator`, `worker`, `verifier`, `merger`, `scanner`. New roles require schema updates.  
-(b) **Freeform strings** — any string value for roles. Maximum flexibility, no validation.  
-(c) **Enum with extensible escape hatch** — well-known roles as enum values plus a `custom` type with a freeform `description` field. Validation for known roles, flexibility for new ones.  
+**Alternatives presented:**  
+(a) **Strict enum** — predefined global roles. New roles require schema updates.  
+(b) **Freeform strings** — any string value for roles.  
+(c) **Enum with extensible escape hatch** — well-known roles plus a custom type.  
 
-**Agent position:** (c) Enum with extensible escape hatch.  
-**Rationale:** The codebase analysis revealed both generic roles (orchestrator, worker) and domain-specific roles (scanner, verifier, merger, analyst). An enum provides validation for the common cases; the escape hatch accommodates domain-specific roles without requiring schema updates. This matches how TOON schemas handle similar extensibility elsewhere (e.g., action types in ActionSchema use a strict enum).
+**User decision:** NONE OF THE ABOVE. The user wants a per-workflow declared enum: each workflow defines its own set of valid roles (a "workforce"). Role references within the workflow are validated against that declared set. This is not a global enum shared across workflows, and not freeform strings — it's a locally-scoped vocabulary defined by the workflow author.  
+**Agent position was:** (c) — user's approach is fundamentally different. The agent proposed a global type system; the user wants per-workflow type declarations. This is a stronger design that provides validation without requiring cross-workflow consensus on role names.  
+**Design implications:** The schema needs a role declaration section in the execution model (defining valid roles for this workflow) and a validation mechanism to ensure role references elsewhere in the workflow match the declared set.
 
 ### A-04: Worker persistence as a schema property
 
 **Decision impact:** MODERATE — affects whether the schema distinguishes persistent vs. disposable workers  
 **Reversibility:** HIGH (adding a field later is purely additive)  
+**Resolution:** **(b) Omit persistence** ✅  
 
-**Alternatives:**  
-(a) **Include persistence** — add a `persistence` field (enum: `persistent`, `disposable`) to the worker role definition. This captures the critical behavioral difference between work-package (resume workers) and prism (fresh workers).  
-(b) **Omit persistence** — leave persistence as an orchestration concern described in prose rules. The schema defines roles but not how workers are managed.  
+**Alternatives presented:**  
+(a) **Include persistence** — add a `persistence` field to the worker role definition.  
+(b) **Omit persistence** — leave persistence as an orchestration concern described in prose rules.  
 
-**Agent position:** (a) Include persistence.  
-**Rationale:** The three discovered execution model patterns (CR-05) differ primarily on worker persistence. This is not an orchestration detail — it fundamentally affects how activities are structured (checkpoint-yielding for persistent, output-capturing for disposable). Without this, the schema can't distinguish work-package-style and prism-style execution.
+**User decision:** (b) Omit. Leave persistence as a prose/orchestration concern.  
+**Agent position was:** (a) — user disagrees. Persistence remains a behavioral concern for prose rules and orchestration skills, not schema metadata.
 
-### A-05: Schema should support but not mandate multi-agent execution
+### A-05: Optional vs. required execution model declaration
 
-**Decision impact:** LOW (likely consensus)  
-**Reversibility:** LOW concern (optional → required is a breaking change, but very unlikely to be needed)  
+**Decision impact:** HIGH (revised from LOW — user chose breaking change direction)  
+**Reversibility:** N/A (chosen direction is the less reversible option)  
+**Resolution:** **(b) Required** ✅  
 
-**Alternatives:**  
-(a) **Optional** — workflows without an execution model field remain valid. Implicit default: single-agent inline execution.  
+**Alternatives presented:**  
+(a) **Optional** — workflows without an execution model field remain valid.  
 (b) **Required** — all workflows must declare an execution model. Existing workflows need migration.  
 
-**Agent position:** (a) Optional.  
-**Rationale:** 2 out of 10 workflows have no multi-agent rules. Requiring the field would break backward compatibility for no benefit. The implicit default (single-agent inline) is well-understood.
+**User decision:** (b) Required. ALL workflows must explicitly declare their execution model.  
+**Agent position was:** (a) — user overrode. This means existing TOON files that lack the execution model field will fail validation after this change. All 10 workflows in the worktree need migration. The 2 workflows without multi-agent rules will need an explicit single-agent/inline declaration.  
+**Migration implications:** This is a breaking schema change. A minor version bump is needed. All existing workflow TOON files must be updated before or alongside the schema release. JSON Schema `required` arrays must include the new field.
 
-### A-06: Descriptive first, prescriptive later
+### A-06: Descriptive vs. prescriptive approach
 
 **Decision impact:** HIGH — determines whether server code changes (enforcement) are in scope  
 **Reversibility:** HIGH (descriptive → prescriptive is purely additive)  
+**Resolution:** **(a) Descriptive only** ✅  
 
-**Alternatives:**  
-(a) **Descriptive only** — schema constructs are metadata. The server stores and serves them. It does not validate agent behavior against them. Agents and IDE rules interpret the metadata to inform execution.  
-(b) **Descriptive + prescriptive** — schema constructs are metadata AND the server uses them at runtime: validating session tokens against declared roles, rejecting tool calls from incorrect agent types, enforcing orchestrator discipline.  
+**Alternatives presented:**  
+(a) **Descriptive only** — schema constructs are metadata. The server stores and serves them but does not enforce.  
+(b) **Descriptive + prescriptive** — schema constructs are metadata AND the server enforces them at runtime.  
 
-**Agent position:** (a) Descriptive only (this work package).  
-**Rationale:** This work package establishes the vocabulary (#84). Enforcement is a separate concern (#65). Coupling them would double the scope, require runtime behavior changes, and delay delivery. The schema must exist before enforcement can reference it. Enforcement is additive once constructs are in place.
+**User decision:** (a) Descriptive only. Enforcement follows separately as #65.  
+**Agent position was:** (a) — aligned with user decision.
+
+---
+
+## Decision Summary
+
+| ID | Topic | User Choice | Agrees with Agent? |
+|----|-------|------------|-------------------|
+| A-01 | Scope | Definition schemas only | ✅ Yes |
+| A-02 | Placement | Workflow-level only (no overrides) | ❌ Simpler than proposed |
+| A-03 | Roles | Per-workflow declared vocabulary | ❌ Different approach entirely |
+| A-04 | Persistence | Omit from schema | ❌ Opposite of proposed |
+| A-05 | Optional/Required | Required (breaking change) | ❌ Opposite of proposed |
+| A-06 | Approach | Descriptive only | ✅ Yes |
+
+**Net effect:** The user's decisions produce a narrower but more opinionated design than proposed. The execution model is workflow-level only (simpler), with per-workflow role vocabulary (more expressive than a global enum), required for all workflows (stronger contract, requires migration), without persistence metadata (leaner). The schema defines what roles exist in a workflow's workforce — not how they behave at runtime.

@@ -102,16 +102,18 @@ Every addition is an optional field. No existing behavior changes. The migration
 
 ## 5. Workflow Path Assessment
 
-**Recommended path: skip-optional** (skip elicitation and research)
+**Selected path: full-workflow** (user override — complexity upgraded to COMPLEX)
 
-| Activity | Recommendation | Rationale |
-|----------|---------------|-----------|
-| Elicitation | **Skip** | Problem is well-understood from issue #84, #65, compliance review, and codebase analysis. No ambiguity about what's missing. |
-| Research | **Skip** | Internal schema extension. No external standards, libraries, or competing approaches to evaluate. The domain is the existing codebase. |
-| Context analysis | **Perform** | Should analyze existing workflow TOON files to extract concrete multi-agent rule patterns. These patterns inform the schema design. |
-| Design | **Perform** | Core activity — define new schema types, placement, and interfaces. |
-| Implementation | **Perform** | Schema changes, JSON Schema sync, tests. |
-| Review | **Perform** | Verify backward compatibility and schema consistency. |
+The agent recommended skip-optional, but the user chose the full workflow path after reviewing the assumption decisions. The combination of a required field (breaking change with migration), per-workflow role vocabulary (novel design pattern), and workflow-level-only placement (no activity overrides) shifts complexity from moderate to complex. Elicitation and research are warranted to validate design decisions before implementation.
+
+| Activity | Decision | Rationale |
+|----------|----------|-----------|
+| Elicitation | **Perform** | User decisions diverge from agent proposals on 4 of 6 assumptions. Elicitation validates the per-workflow role vocabulary concept and the required-field migration strategy with concrete workflow examples. |
+| Research | **Perform** | The per-workflow declared enum pattern (A-03) is novel — no existing schema construct in this codebase follows this pattern. Research should examine how similar local-vocabulary patterns work in other schema systems to inform the design. |
+| Context analysis | **Perform** | Extract concrete multi-agent rule patterns from all 10 workflows. These patterns are the source material for the per-workflow role vocabulary design. |
+| Design | **Perform** | Core activity — define execution model schema types, per-workflow role declarations, and validation approach. |
+| Implementation | **Perform** | Schema changes, JSON Schema sync, TOON migration for all 10 workflows, tests. |
+| Review | **Perform** | Verify backward compatibility, migration completeness, and schema consistency. |
 
 ---
 
