@@ -205,3 +205,30 @@ Assumptions identified during the requirements-elicitation activity (2026-03-30)
 **Resolution:** CONFIRMED — requires a one-line code change  
 **Evidence:** `workflow-tools.ts` L87-96 builds the summary object manually: `{ id, version, title, description, rules, variables, initialActivity, activities }`. The `executionModel` field must be added to this object. This is a minor code change, not a schema change.  
 **Impact:** One line added to `workflow-tools.ts`. Contradicts NFR-03 ("no tool changes") — this is a minor exception. The tool handler code isn't changing behavior, just including an additional field in the summary projection.
+
+---
+
+## Research-Phase Assumptions
+
+Assumptions identified during the research activity (2026-03-30). All resolved through industry comparison.
+
+### RA-01: Minimal id+description is a valid starting point
+
+**Assumption:** The `id` + `description` role definition is sufficient despite industry frameworks using 3+ identity fields (role, goal, backstory).  
+**Resolution:** CONFIRMED  
+**Evidence:** Our `id` maps to the "role" component and `description` combines "goal" and "backstory" from the industry-standard RGB (Role-Goal-Backstory) pattern established by CrewAI. Goal and backstory are optional enrichments for runtime agent configuration, not prerequisites for role declaration. Our schema declares role types, not agent instances.  
+**Impact:** None — design proceeds as specified.
+
+### RA-02: Strict schema diverges from industry norms
+
+**Assumption:** Using `additionalProperties: false` on the execution model is safe despite most frameworks being permissive.  
+**Resolution:** ACKNOWLEDGED TRADE-OFF  
+**Evidence:** CrewAI, AutoGen, and LangGraph all support open/extensible agent definitions. Our choice is consistent with the workflow-server's own workflow.schema.json policy (strict everywhere). Trade-off: new properties require schema version bumps, which provides controlled evolution but slower iteration.  
+**Impact:** Future extensions require schema updates. This is the intended behavior per user decision Q8.
+
+### RA-03: Extension pressure is likely
+
+**Assumption:** Industry trend toward richer role definitions (tools, constraints, handoffs) suggests our schema will need extension sooner than typical for a new construct.  
+**Resolution:** MITIGATED  
+**Evidence:** All surveyed frameworks attach behavioral metadata to roles. Our out-of-scope table (03-requirements-elicitation.md §6) documents 7 future extension paths: activity-level overrides, persistence, enforcement, state/session tracking, mode interaction, cardinality, and structured constraints. Strict schema provides a controlled evolution mechanism.  
+**Impact:** Extension paths are documented and ready for future work packages when needed.
