@@ -1,7 +1,7 @@
 # Multi-Agent Schema Formalisation — March 2026
 
 **Created:** 2026-03-30
-**Status:** In Progress
+**Status:** Complete
 **Type:** Enhancement
 
 ---
@@ -44,9 +44,16 @@ The change is purely additive and descriptive. Behavioral rules (what each role 
 | 06 | [Work package plan](06-work-package-plan.md) | 26 tasks, dependencies, estimates (~2.5h) | 20-30m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | 13 new test cases, coverage matrix | 15-20m | ✅ Complete |
 | 14 | [Schema comprehension](../../comprehension/workflow-server-schemas.md) | Schema system architecture, field propagation lifecycle | 30-45m | ✅ Complete |
-| — | Implementation | Schema + JSON Schema + TOON migration + tests | ~2.5h | ⬜ Not started |
-| — | Review | Code review, test review, strategic review | 30-60m | ⬜ Not started |
-| — | Validation | Build, test, lint verification | 15-30m | ⬜ Not started |
+| — | Implementation | Schema + JSON Schema + TOON migration + tests | ~2.5h | ✅ Complete |
+| 09 | [Code review](09-code-review.md) | APPROVE — no critical/high/medium findings | 15-20m | ✅ Complete |
+| 09 | [Structural analysis](09-structural-findings.md) | High cohesion, zero new coupling | 10-15m | ✅ Complete |
+| 09 | [Test suite review](09-test-suite-review.md) | Adequate — all 7 FRs covered | 10-15m | ✅ Complete |
+| 09 | [Architecture summary](09-architecture-summary.md) | 2 new types, 7 extension points | 10-15m | ✅ Complete |
+| 11 | [Strategic review](11-strategic-review.md) | APPROVE — 8/8 files on-scope | 10-15m | ✅ Complete |
+| — | Validation | Build, test, lint — 262/262 passing | 5m | ✅ Complete |
+| 13 | [Completion summary](13-COMPLETE.md) | Deliverables, coverage, deferred items | 10m | ✅ Complete |
+| 13 | [Retrospective](13-workflow-retrospective.md) | Lessons learned, key statistics | 10m | ✅ Complete |
+| — | [ADR-0002](../../adr/0002-execution-model-schema.md) | Architectural decision record | 10m | ✅ Complete |
 
 ---
 
@@ -55,9 +62,10 @@ The change is purely additive and descriptive. Behavioral rules (what each role 
 | Resource | Link |
 |----------|------|
 | Tracking Issue | [#84](https://github.com/m2ux/workflow-server/issues/84) |
-| Draft PR | [#85](https://github.com/m2ux/workflow-server/pull/85) |
+| PR | [#85](https://github.com/m2ux/workflow-server/pull/85) |
+| ADR | [ADR-0002](../../adr/0002-execution-model-schema.md) |
 | Related Issue | [#65](https://github.com/m2ux/workflow-server/issues/65) — Orchestrator/worker rules lack structural enforcement |
 
 ---
 
-**Status:** Ready — planning complete, ready for implementation
+**Status:** Complete — all deliverables shipped, all reviews approved, 262/262 tests passing
