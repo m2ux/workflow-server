@@ -5,6 +5,9 @@ import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
 import { decodeToon } from '../utils/toon.js';
+import { ResourceSchema, type Resource } from '../schema/resource.schema.js';
+
+export type { Resource };
 
 export interface ResourceEntry { 
   index: string;  // e.g., "00", "01"
@@ -12,15 +15,6 @@ export interface ResourceEntry {
   title: string;  // e.g., "Start Here"
   path: string;   // e.g., "resources/00-start-here.toon"
   format: 'toon' | 'markdown';
-}
-
-export interface Resource {
-  id: string;
-  version?: string;
-  title: string;
-  purpose?: string;
-  sections?: unknown[];
-  [key: string]: unknown;
 }
 
 /** Normalize a resource index to a consistent width for comparison. */
@@ -104,7 +98,7 @@ export async function readResource(
         const filePath = join(resourceDir, file);
         const content = await readFile(filePath, 'utf-8');
         logInfo('Resource loaded', { workflowId, resourceIndex, path: filePath, format: 'toon' });
-        return ok(decodeToon<Resource>(content));
+        return ok(decodeToon(content, ResourceSchema));
       }
       if (!mdFallback) mdFallback = file;
     }

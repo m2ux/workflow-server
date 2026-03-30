@@ -1,49 +1,17 @@
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { z } from 'zod';
 import { type Result, ok, err } from '../result.js';
 import { RulesNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
-import { decodeToon } from '../utils/toon.js';
+import { decodeToonRaw } from '../utils/toon.js';
+import { RulesSchema, type Rules, type RulesSection } from '../schema/rules.schema.js';
 
-const RulesSectionSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  priority: z.string().optional(),
-  rules: z.array(z.string()).optional(),
-}).passthrough();
-
-const RulesSchema = z.object({
-  id: z.string(),
-  version: z.string(),
-  title: z.string(),
-  description: z.string(),
-  precedence: z.string(),
-  sections: z.array(RulesSectionSchema),
-});
+export type { Rules, RulesSection };
 
 /** The meta workflow contains global rules */
 const META_WORKFLOW_ID = 'meta';
 const RULES_FILE = 'rules.toon';
-
-export interface RulesSection {
-  id: string;
-  title: string;
-  priority?: string;
-  rules?: string[];
-  content?: string;
-  [key: string]: unknown;
-}
-
-export interface Rules {
-  id: string;
-  version: string;
-  title: string;
-  description: string;
-  precedence: string;
-  sections: RulesSection[];
-}
 
 /**
  * Read global agent rules from meta/rules.toon
@@ -57,7 +25,7 @@ export async function readRules(workflowDir: string): Promise<Result<Rules, Rule
   
   try {
     const content = await readFile(rulesPath, 'utf-8');
-    const decoded = decodeToon<unknown>(content);
+    const decoded = decodeToonRaw(content);
     const result = RulesSchema.safeParse(decoded);
     if (!result.success) {
       const issues = result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');

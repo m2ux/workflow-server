@@ -1,12 +1,21 @@
+import { type ZodType } from 'zod';
 import { decode, encode } from '@toon-format/toon';
 
 /**
- * Decode a TOON string to a JavaScript object.
- * The caller is responsible for validating the returned structure
- * matches the expected type T (e.g., via Zod schema validation).
+ * Decode a TOON string and validate against a Zod schema.
+ * Returns the validated, typed result. Throws ZodError on validation failure.
  */
-export function decodeToon<T = unknown>(content: string): T {
-  return decode(content) as T;
+export function decodeToon<T>(content: string, schema: ZodType<T>): T {
+  return schema.parse(decode(content));
+}
+
+/**
+ * Decode a TOON string without schema validation.
+ * Returns an untyped value — callers must validate or narrow the result.
+ * Use decodeToon(content, schema) when a schema is available.
+ */
+export function decodeToonRaw(content: string): unknown {
+  return decode(content);
 }
 
 /**

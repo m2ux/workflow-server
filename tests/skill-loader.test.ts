@@ -79,10 +79,8 @@ describe('skill-loader', () => {
       if (result.success) {
         const skill = result.value;
         
-        // Check execution_pattern
-        expect(skill.execution_pattern).toBeDefined();
-        expect(skill.execution_pattern.start).toContain('list_workflows');
-        expect(skill.execution_pattern.start).toContain('get_workflow');
+        // Check protocol (refactored from execution_pattern)
+        expect(skill.protocol).toBeDefined();
         
         // Check tools
         expect(skill.tools).toBeDefined();

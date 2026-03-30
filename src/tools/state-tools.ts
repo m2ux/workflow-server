@@ -5,7 +5,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { NestedWorkflowStateSchema, StateSaveFileSchema } from '../schema/state.schema.js';
 import type { StateSaveFile } from '../schema/state.schema.js';
-import { decodeToon, encodeToon } from '../utils/toon.js';
+import { decodeToonRaw, encodeToon } from '../utils/toon.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency } from '../utils/validation.js';
@@ -116,7 +116,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
 
       const validatedPath = validateStatePath(file_path);
       const content = await readFile(validatedPath, 'utf-8');
-      const decoded = decodeToon<Record<string, unknown>>(content);
+      const decoded = decodeToonRaw(content);
       const result = StateSaveFileSchema.safeParse(decoded);
       if (!result.success) {
         throw new Error(`State file validation failed: ${result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ')}`);

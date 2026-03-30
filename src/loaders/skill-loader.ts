@@ -4,7 +4,7 @@ import { join, basename } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
-import { decodeToon } from '../utils/toon.js';
+import { decodeToonRaw } from '../utils/toon.js';
 import type { Skill } from '../schema/skill.schema.js';
 import { safeValidateSkill } from '../schema/skill.schema.js';
 import { parseActivityFilename as parseSkillFilename } from './filename-utils.js';
@@ -78,7 +78,7 @@ async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | 
 
   try {
     const content = await readFile(filePath, 'utf-8');
-    const decoded = decodeToon<unknown>(content);
+    const decoded = decodeToonRaw(content);
     const result = safeValidateSkill(decoded);
     if (!result.success) {
       logWarn('Skill validation failed', { skillId, path: filePath, errors: result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`) });

@@ -9,7 +9,7 @@ import {
   StateSaveFileSchema,
   createInitialState,
 } from '../src/schema/state.schema.js';
-import { encodeToon, decodeToon } from '../src/utils/toon.js';
+import { encodeToon, decodeToonRaw } from '../src/utils/toon.js';
 import { validateStatePath } from '../src/tools/state-tools.js';
 
 const TEST_DIR = join(tmpdir(), `state-persistence-test-${Date.now()}`);
@@ -188,7 +188,7 @@ describe('state-persistence', () => {
         state,
       };
       const encoded = encodeToon(saveFile);
-      const decoded = decodeToon<Record<string, unknown>>(encoded);
+      const decoded = decodeToonRaw(encoded);
       expect(decoded).toEqual(saveFile);
     });
 
@@ -246,7 +246,7 @@ describe('state-persistence', () => {
         },
       };
       const encoded = encodeToon(saveFile);
-      const decoded = decodeToon<Record<string, unknown>>(encoded);
+      const decoded = decodeToonRaw(encoded);
       expect(decoded).toEqual(saveFile);
     });
 
@@ -266,7 +266,7 @@ describe('state-persistence', () => {
       await writeFile(filePath, encoded, 'utf-8');
 
       const content = await readFile(filePath, 'utf-8');
-      const decoded = decodeToon<Record<string, unknown>>(content);
+      const decoded = decodeToonRaw(content);
       const result = StateSaveFileSchema.safeParse(decoded);
       expect(result.success).toBe(true);
       if (result.success) {
