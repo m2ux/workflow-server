@@ -34,6 +34,8 @@ These issues compound in practice. When a file loader encounters a permission er
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, review path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 04 | [KB Research](04-kb-research.md) | Knowledge base and web research synthesis | 20-45m | ✅ Complete |
+| 04 | [Deferred findings](deferred-findings.md) | Deferred findings rationale and required changes | 5-10m | ✅ Complete |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
@@ -55,4 +57,4 @@ These issues compound in practice. When a file loader encounters a permission er
 
 ---
 
-**Status:** Design philosophy complete, transitioning to codebase comprehension
+**Status:** Research complete, transitioning to post-implementation review
