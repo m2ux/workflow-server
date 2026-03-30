@@ -56,6 +56,12 @@ function getVariableValue(path: string, variables: Record<string, unknown>): unk
   return current;
 }
 
+function toNumber(v: unknown): number | undefined {
+  if (typeof v === 'number') return v;
+  if (typeof v === 'string') { const n = Number(v); return Number.isFinite(n) ? n : undefined; }
+  return undefined;
+}
+
 function evaluateSimpleCondition(condition: SimpleCondition, variables: Record<string, unknown>): boolean {
   const value = getVariableValue(condition.variable, variables);
   switch (condition.operator) {
@@ -63,10 +69,10 @@ function evaluateSimpleCondition(condition: SimpleCondition, variables: Record<s
     case 'notExists': return value === undefined || value === null;
     case '==': return value === condition.value;
     case '!=': return value !== condition.value;
-    case '>': return typeof value === 'number' && typeof condition.value === 'number' && value > condition.value;
-    case '<': return typeof value === 'number' && typeof condition.value === 'number' && value < condition.value;
-    case '>=': return typeof value === 'number' && typeof condition.value === 'number' && value >= condition.value;
-    case '<=': return typeof value === 'number' && typeof condition.value === 'number' && value <= condition.value;
+    case '>': { const a = toNumber(value), b = toNumber(condition.value); return a !== undefined && b !== undefined && a > b; }
+    case '<': { const a = toNumber(value), b = toNumber(condition.value); return a !== undefined && b !== undefined && a < b; }
+    case '>=': { const a = toNumber(value), b = toNumber(condition.value); return a !== undefined && b !== undefined && a >= b; }
+    case '<=': { const a = toNumber(value), b = toNumber(condition.value); return a !== undefined && b !== undefined && a <= b; }
   }
 }
 

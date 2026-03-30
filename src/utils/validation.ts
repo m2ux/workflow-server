@@ -21,7 +21,12 @@ export function validateWorkflowConsistency(token: SessionPayload, workflowId: s
 }
 
 export function validateActivityTransition(token: SessionPayload, workflow: Workflow, activityId: string): string | null {
-  if (!token.act) return null;
+  if (!token.act) {
+    if (workflow.initialActivity && activityId !== workflow.initialActivity) {
+      return `First activity must be '${workflow.initialActivity}' but '${activityId}' was requested. Start with the workflow's initialActivity.`;
+    }
+    return null;
+  }
   if (token.act === activityId) return null;
 
   const valid = getValidTransitions(workflow, token.act);
@@ -34,13 +39,13 @@ export function validateActivityTransition(token: SessionPayload, workflow: Work
 }
 
 export function validateSkillAssociation(workflow: Workflow, activityId: string, skillId: string): string | null {
-  if (!activityId) return null;
+  if (!activityId) return 'Skill association check skipped: no current activity in session';
 
   const activity = getActivity(workflow, activityId);
-  if (!activity) return null;
+  if (!activity) return `Skill association check skipped: activity '${activityId}' not found in workflow`;
 
   const { skills } = activity;
-  if (!skills) return null;
+  if (!skills) return `Activity '${activityId}' declares no skills`;
 
   const declared: string[] = [skills.primary];
   if (skills.supporting) declared.push(...skills.supporting);

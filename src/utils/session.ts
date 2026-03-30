@@ -87,11 +87,11 @@ export async function decodeSessionToken(token: string): Promise<SessionPayload>
   return decode(token);
 }
 
-export async function advanceToken(token: string, updates?: SessionAdvance): Promise<string> {
-  const decoded = await decode(token);
+export async function advanceToken(token: string, updates?: SessionAdvance, decoded?: SessionPayload): Promise<string> {
+  const payload = decoded ?? await decode(token);
   const advanced: SessionPayload = {
-    ...decoded,
-    seq: decoded.seq + 1,
+    ...payload,
+    seq: payload.seq + 1,
     ts: Math.floor(Date.now() / 1000),
     ...(updates?.wf !== undefined && { wf: updates.wf }),
     ...(updates?.act !== undefined && { act: updates.act }),

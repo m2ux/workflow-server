@@ -79,10 +79,8 @@ describe('skill-loader', () => {
       if (result.success) {
         const skill = result.value;
         
-        // Check execution_pattern
-        expect(skill.execution_pattern).toBeDefined();
-        expect(skill.execution_pattern.start).toContain('list_workflows');
-        expect(skill.execution_pattern.start).toContain('get_workflow');
+        // Check protocol (refactored from execution_pattern)
+        expect(skill.protocol).toBeDefined();
         
         // Check tools
         expect(skill.tools).toBeDefined();
@@ -145,20 +143,20 @@ describe('skill-loader', () => {
       await rm(tempDir, { recursive: true, force: true });
     });
 
-    it('should handle non-skill TOON content without crashing', async () => {
+    it('should reject non-skill TOON content as validation failure', async () => {
       await writeFile(join(tempDir, 'meta', 'skills', '01-not-a-skill.toon'), 'just a plain string', 'utf-8');
       const result = await readSkill('not-a-skill', tempDir);
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
     });
 
     it('should handle empty TOON file without crashing', async () => {
       await writeFile(join(tempDir, 'meta', 'skills', '01-empty-skill.toon'), '', 'utf-8');
       const result = await readSkill('empty-skill', tempDir);
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
     });
 
-    it('should handle TOON with minimal fields without crashing', async () => {
-      await writeFile(join(tempDir, 'meta', 'skills', '01-minimal.toon'), 'id: minimal\nversion: 1.0.0\n', 'utf-8');
+    it('should handle TOON with minimal valid fields', async () => {
+      await writeFile(join(tempDir, 'meta', 'skills', '01-minimal.toon'), 'id: minimal\nversion: 1.0.0\ncapability: test capability\n', 'utf-8');
       const result = await readSkill('minimal', tempDir);
       expect(result.success).toBe(true);
       if (result.success) {

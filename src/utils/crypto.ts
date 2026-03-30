@@ -39,7 +39,11 @@ async function loadOrCreateKey(): Promise<Buffer> {
         await fh.close();
       } catch (writeErr: unknown) {
         if (writeErr instanceof Error && 'code' in writeErr && (writeErr as NodeJS.ErrnoException).code === 'EEXIST') {
-          return readFile(KEY_FILE);
+          const existingKey = await readFile(KEY_FILE);
+          if (existingKey.length !== KEY_LENGTH) {
+            throw new Error(`Server key must be exactly ${KEY_LENGTH} bytes, got ${existingKey.length} (concurrent write may have produced a truncated key)`);
+          }
+          return existingKey;
         }
         throw writeErr;
       }

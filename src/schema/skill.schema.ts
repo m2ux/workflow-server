@@ -21,17 +21,6 @@ export const ErrorDefinitionSchema = z.object({
 });
 export type ErrorDefinition = z.infer<typeof ErrorDefinitionSchema>;
 
-export const ExecutionPatternSchema = z.object({
-  start: z.array(z.string()).optional(),
-  bootstrap: z.array(z.string()).optional(),
-  per_activity: z.array(z.string()).optional(),
-  skill_loading: z.array(z.string()).optional(),
-  discovery: z.array(z.string()).optional(),
-  transitions: z.array(z.string()).optional(),
-  artifacts: z.array(z.string()).optional(),
-});
-export type ExecutionPattern = z.infer<typeof ExecutionPatternSchema>;
-
 export const ArchitectureSchema = z.object({
   principle: z.string().optional(),
   layers: z.array(z.string()).optional(),
@@ -167,7 +156,7 @@ export const SkillSchema = z.object({
   protocol: ProtocolDefinitionSchema.optional(),
   output: OutputDefinitionSchema.optional(),
   resources: z.array(z.string()).optional().describe('Resource indices or IDs this skill depends on (e.g. 02, 04, 08)'),
-});
+}).strict();
 export type Skill = z.infer<typeof SkillSchema>;
 
 export function validateSkill(data: unknown): Skill { return SkillSchema.parse(data); }

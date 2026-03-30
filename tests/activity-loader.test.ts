@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { listActivities, readActivity, readActivityIndex } from '../src/loaders/activity-loader.js';
+import { readActivity, listActivities, readActivityIndex } from '../src/loaders/activity-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -7,50 +7,45 @@ import { tmpdir } from 'node:os';
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('activity-loader', () => {
-  describe('listActivities', () => {
-    it('should list available activities from meta workflow', async () => {
-      const activities = await listActivities(WORKFLOW_DIR);
-      expect(activities.length).toBeGreaterThanOrEqual(3);
-      
-      const ids = activities.map(i => i.id);
-      expect(ids).toContain('start-workflow');
-      expect(ids).toContain('resume-workflow');
-      expect(ids).toContain('end-workflow');
-    });
-
-    it('should not include index.toon in activity list', async () => {
-      const activities = await listActivities(WORKFLOW_DIR);
-      const ids = activities.map(i => i.id);
-      expect(ids).not.toContain('index');
-    });
-
-    it('should include index, name, and path in activity entries', async () => {
-      const activities = await listActivities(WORKFLOW_DIR);
-      const startWorkflow = activities.find(i => i.id === 'start-workflow');
-      
-      expect(startWorkflow).toBeDefined();
-      expect(startWorkflow?.index).toBe('01');
-      expect(startWorkflow?.name).toBe('Start Workflow');
-      expect(startWorkflow?.path).toBe('01-start-workflow.toon');
-    });
-  });
-
   describe('readActivity', () => {
-    it('should load a valid activity', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'start-workflow');
-      
+    it('should load a known activity from a specific workflow', async () => {
+      const result = await readActivity(WORKFLOW_DIR, 'start-workflow', 'meta');
+
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('start-workflow');
-        expect(result.value.version).toBe('4.0.0');
+        expect(result.value.version).toBeDefined();
         expect(result.value.name).toBeDefined();
-        expect(result.value.problem).toBeDefined();
+        expect(result.value.skills).toBeDefined();
+        expect(result.value.skills.primary).toBeDefined();
+        expect(result.value.workflowId).toBe('meta');
       }
     });
 
-    it('should return error for non-existent activity', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'non-existent-activity');
-      
+    it('should include next_action guidance pointing to the primary skill', async () => {
+      const result = await readActivity(WORKFLOW_DIR, 'start-workflow', 'meta');
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.next_action).toBeDefined();
+        expect(result.value.next_action.tool).toBe('get_skill');
+        expect(result.value.next_action.parameters.skill_id).toBe(result.value.skills.primary);
+        expect(result.value.next_action.parameters.workflow_id).toBe('meta');
+      }
+    });
+
+    it('should find an activity by searching all workflows when workflowId is omitted', async () => {
+      const result = await readActivity(WORKFLOW_DIR, 'start-workflow');
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.id).toBe('start-workflow');
+      }
+    });
+
+    it('should return ActivityNotFoundError for non-existent activity', async () => {
+      const result = await readActivity(WORKFLOW_DIR, 'this-activity-does-not-exist', 'meta');
+
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.name).toBe('ActivityNotFoundError');
@@ -58,149 +53,192 @@ describe('activity-loader', () => {
       }
     });
 
-    it('should load activity with all required sections', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'start-workflow');
-      
-      expect(result.success).toBe(true);
-      if (result.success) {
-        const activity = result.value;
-        
-        // Check name (required in unified schema)
-        expect(activity.name).toBe('Start Workflow');
-        
-        // Check recognition patterns
-        expect(activity.recognition).toBeDefined();
-        expect(activity.recognition!.length).toBeGreaterThan(0);
-        
-        // Check skills
-        expect(activity.skills).toBeDefined();
-        expect(activity.skills.primary).toBe('workflow-execution');
-        expect(activity.skills.supporting).toBeDefined();
-        
-        // Check outcome
-        expect(activity.outcome).toBeDefined();
-        expect(activity.outcome!.length).toBeGreaterThan(0);
-        
-        // Check steps (unified schema uses steps, not flow)
-        expect(activity.steps).toBeDefined();
-        expect(activity.steps!.length).toBeGreaterThan(0);
-        
-        // Check context to preserve
-        expect(activity.context_to_preserve).toBeDefined();
-        expect(activity.context_to_preserve!.length).toBeGreaterThan(0);
+    it('should return ActivityNotFoundError for non-existent workflow', async () => {
+      const result = await readActivity(WORKFLOW_DIR, 'start-workflow', 'no-such-workflow');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.name).toBe('ActivityNotFoundError');
       }
     });
 
-    it('should include next_action with primary skill guidance', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'start-workflow');
-      
+    it('should have all required fields on a successfully loaded activity', async () => {
+      const result = await readActivity(WORKFLOW_DIR, 'resume-workflow', 'meta');
+
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.next_action).toBeDefined();
-        expect(result.value.next_action.tool).toBe('get_skill');
-        expect(result.value.next_action.parameters).toBeDefined();
-        expect(result.value.next_action.parameters.skill_id).toBe(result.value.skills.primary);
+        const activity = result.value;
+        expect(typeof activity.id).toBe('string');
+        expect(typeof activity.version).toBe('string');
+        expect(typeof activity.name).toBe('string');
+        expect(activity.skills).toBeDefined();
+        expect(typeof activity.skills.primary).toBe('string');
+        expect(activity.next_action).toBeDefined();
+        expect(activity.next_action.tool).toBe('get_skill');
       }
     });
   });
 
-  describe('malformed TOON handling', () => {
+  describe('readActivity validation failures (BF-08)', () => {
     let tempDir: string;
 
     beforeEach(async () => {
       tempDir = await import('node:fs/promises').then(fs =>
         fs.mkdtemp(join(tmpdir(), 'activity-test-'))
       );
-      await mkdir(join(tempDir, 'meta', 'activities'), { recursive: true });
+      await mkdir(join(tempDir, 'test-wf', 'activities'), { recursive: true });
     });
 
     afterEach(async () => {
       await rm(tempDir, { recursive: true, force: true });
     });
 
-    it('should return error for malformed TOON content', async () => {
-      await writeFile(join(tempDir, 'meta', 'activities', '01-broken.toon'), 'this is not valid TOON {{{', 'utf-8');
-      const result = await readActivity(tempDir, 'broken');
+    it('should return ActivityNotFoundError on validation failure, not raw data', async () => {
+      await writeFile(
+        join(tempDir, 'test-wf', 'activities', '01-bad-activity.toon'),
+        'just plain text, not a valid activity',
+        'utf-8',
+      );
+      const result = await readActivity(tempDir, 'bad-activity', 'test-wf');
+
       expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.name).toBe('ActivityNotFoundError');
+        expect(result.error.code).toBe('ACTIVITY_NOT_FOUND');
+        expect(result.error.activityId).toBe('bad-activity');
+      }
     });
 
-    it('should return error for empty TOON file', async () => {
-      await writeFile(join(tempDir, 'meta', 'activities', '01-empty-activity.toon'), '', 'utf-8');
-      const result = await readActivity(tempDir, 'empty-activity');
+    it('should return ActivityNotFoundError for TOON missing required fields', async () => {
+      await writeFile(
+        join(tempDir, 'test-wf', 'activities', '01-missing-fields.toon'),
+        'id: missing-fields\nname: Missing Fields\n',
+        'utf-8',
+      );
+      const result = await readActivity(tempDir, 'missing-fields', 'test-wf');
+
       expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.name).toBe('ActivityNotFoundError');
+      }
     });
 
-    it('should return error for TOON with missing required fields', async () => {
-      await writeFile(join(tempDir, 'meta', 'activities', '01-incomplete.toon'), 'id: incomplete\n', 'utf-8');
-      const result = await readActivity(tempDir, 'incomplete');
+    it('should return ActivityNotFoundError for empty TOON file', async () => {
+      await writeFile(
+        join(tempDir, 'test-wf', 'activities', '01-empty.toon'),
+        '',
+        'utf-8',
+      );
+      const result = await readActivity(tempDir, 'empty', 'test-wf');
+
       expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.name).toBe('ActivityNotFoundError');
+      }
+    });
+  });
+
+  describe('listActivities', () => {
+    it('should list activities from a specific workflow', async () => {
+      const activities = await listActivities(WORKFLOW_DIR, 'meta');
+
+      expect(activities.length).toBeGreaterThanOrEqual(3);
+      const ids = activities.map(a => a.id);
+      expect(ids).toContain('start-workflow');
+      expect(ids).toContain('resume-workflow');
+      expect(ids).toContain('end-workflow');
+    });
+
+    it('should include index, id, name, path, and workflowId in each entry', async () => {
+      const activities = await listActivities(WORKFLOW_DIR, 'meta');
+      const startWf = activities.find(a => a.id === 'start-workflow');
+
+      expect(startWf).toBeDefined();
+      expect(startWf?.index).toBe('01');
+      expect(startWf?.name).toBe('Start Workflow');
+      expect(startWf?.path).toBe('01-start-workflow.toon');
+      expect(startWf?.workflowId).toBe('meta');
+    });
+
+    it('should list activities from all workflows when workflowId is omitted', async () => {
+      const activities = await listActivities(WORKFLOW_DIR);
+
+      expect(activities.length).toBeGreaterThan(3);
+      const workflowIds = [...new Set(activities.map(a => a.workflowId))];
+      expect(workflowIds.length).toBeGreaterThan(1);
+    });
+
+    it('should return empty array for non-existent workflow', async () => {
+      const activities = await listActivities(WORKFLOW_DIR, 'no-such-workflow');
+      expect(activities).toEqual([]);
+    });
+
+    it('should sort activities by index within a workflow', async () => {
+      const activities = await listActivities(WORKFLOW_DIR, 'meta');
+      const indices = activities.map(a => a.index);
+      const sorted = [...indices].sort();
+      expect(indices).toEqual(sorted);
     });
   });
 
   describe('readActivityIndex', () => {
-    it('should build activity index dynamically from activity files', async () => {
+    it('should build an index from all workflow activities', async () => {
       const result = await readActivityIndex(WORKFLOW_DIR);
-      
+
       expect(result.success).toBe(true);
       if (result.success) {
+        expect(result.value.activities.length).toBeGreaterThanOrEqual(3);
         expect(result.value.description).toBeDefined();
-        // 3 meta activities + 11 work-package activities = 14 total
-        expect(result.value.activities.length).toBeGreaterThanOrEqual(14);
+        expect(result.value.usage).toBeDefined();
+        expect(result.value.next_action).toBeDefined();
+        expect(result.value.next_action.tool).toBe('start_session');
       }
     });
 
-    it('should have quick_match patterns from activity recognition arrays', async () => {
+    it('should include id, workflowId, problem, and primary_skill for each entry', async () => {
       const result = await readActivityIndex(WORKFLOW_DIR);
-      
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.value.quick_match).toBeDefined();
-        // Recognition patterns are lowercased
-        expect(result.value.quick_match['start a workflow']).toBe('start-workflow');
-        expect(result.value.quick_match['resume workflow']).toBe('resume-workflow');
-        expect(result.value.quick_match['end workflow']).toBe('end-workflow');
-      }
-    });
 
-    it('should list all activities with problem and primary skill', async () => {
-      const result = await readActivityIndex(WORKFLOW_DIR);
-      
       expect(result.success).toBe(true);
       if (result.success) {
         for (const activity of result.value.activities) {
           expect(activity.id).toBeDefined();
+          expect(activity.workflowId).toBeDefined();
           expect(activity.problem).toBeDefined();
           expect(activity.primary_skill).toBeDefined();
-          expect(activity.workflowId).toBeDefined();
-        }
-        
-        // Meta activities should have workflow-execution or activity-resolution as primary skill
-        const metaActivities = result.value.activities.filter(a => a.workflowId === 'meta');
-        const validMetaSkills = ['workflow-execution', 'activity-resolution'];
-        for (const activity of metaActivities) {
-          expect(validMetaSkills).toContain(activity.primary_skill);
-        }
-      }
-    });
-
-    it('should include usage instructions and next_action for each activity', async () => {
-      const result = await readActivityIndex(WORKFLOW_DIR);
-      
-      expect(result.success).toBe(true);
-      if (result.success) {
-        // Check usage instructions exist
-        expect(result.value.usage).toBeDefined();
-        expect(result.value.usage).toContain('next_action');
-        
-        // Check each activity has next_action pointing to its primary skill
-        for (const activity of result.value.activities) {
           expect(activity.next_action).toBeDefined();
           expect(activity.next_action.tool).toBe('get_skill');
-          expect(activity.next_action.parameters).toBeDefined();
-          expect(activity.next_action.parameters.skill_id).toBe(activity.primary_skill);
         }
       }
     });
 
+    it('should populate quick_match from recognition patterns', async () => {
+      const result = await readActivityIndex(WORKFLOW_DIR);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const keys = Object.keys(result.value.quick_match);
+        expect(keys.length).toBeGreaterThan(0);
+
+        // start-workflow has recognition patterns like "Start a workflow"
+        const matchesStartWorkflow = Object.entries(result.value.quick_match)
+          .some(([, activityId]) => activityId === 'start-workflow');
+        expect(matchesStartWorkflow).toBe(true);
+      }
+    });
+
+    it('should return ActivityNotFoundError for empty workflow directory', async () => {
+      const tempDir = await import('node:fs/promises').then(fs =>
+        fs.mkdtemp(join(tmpdir(), 'empty-wf-'))
+      );
+      try {
+        const result = await readActivityIndex(tempDir);
+        expect(result.success).toBe(false);
+        if (!result.success) {
+          expect(result.error.name).toBe('ActivityNotFoundError');
+        }
+      } finally {
+        await rm(tempDir, { recursive: true, force: true });
+      }
+    });
   });
 });

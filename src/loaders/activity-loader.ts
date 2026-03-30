@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { ActivityNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
-import { decodeToon } from '../utils/toon.js';
+import { decodeToonRaw } from '../utils/toon.js';
 import { type Activity, safeValidateActivity } from '../schema/activity.schema.js';
 import { parseActivityFilename } from './filename-utils.js';
 
@@ -47,7 +47,8 @@ async function findWorkflowsWithActivities(workflowDir: string): Promise<string[
     }
     
     return workflowIds.sort();
-  } catch {
+  } catch (error) {
+    logWarn('Failed to list workflows with activities', { workflowDir, error: error instanceof Error ? error.message : String(error) });
     return [];
   }
 }
@@ -110,14 +111,15 @@ async function readActivityFromWorkflow(
     
     const filePath = join(activityDir, matchingFile);
     const content = await readFile(filePath, 'utf-8');
-    const decoded = decodeToon<Activity>(content);
+    const decoded = decodeToonRaw(content);
     
     const validation = safeValidateActivity(decoded);
     if (!validation.success) {
-      logWarn('Activity validation failed, using raw content', { activityId, workflowId, errors: validation.error.issues });
+      logWarn('Activity validation failed', { activityId, workflowId, errors: validation.error.issues });
+      return err(new ActivityNotFoundError(activityId, workflowId));
     }
     
-    const activity = validation.success ? validation.data : decoded;
+    const activity = validation.data;
     
     // Infer artifactPrefix from the activity filename index
     const parsedFilename = parseActivityFilename(matchingFile);
@@ -191,7 +193,8 @@ async function listActivitiesFromWorkflow(workflowDir: string, workflowId: strin
       })
       .filter((entry): entry is ActivityEntry => entry !== null)
       .sort((a, b) => a.index.localeCompare(b.index));
-  } catch { 
+  } catch (error) {
+    logWarn('Failed to list activities', { workflowId, error: error instanceof Error ? error.message : String(error) });
     return []; 
   }
 }
@@ -239,10 +242,10 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
     
     try {
       const content = await readFile(filePath, 'utf-8');
-      const decoded = decodeToon<Activity>(content);
+      const decoded = decodeToonRaw(content);
       
       const validation = safeValidateActivity(decoded);
-      const activity = validation.success ? validation.data : decoded;
+      const activity = validation.success ? validation.data : decoded as Activity;
       
       const indexSkillParams: Record<string, string> = { skill_id: activity.skills.primary };
       if (entry.workflowId) indexSkillParams['workflow_id'] = entry.workflowId;
@@ -265,8 +268,8 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
           quick_match[pattern.toLowerCase()] = activity.id;
         }
       }
-    } catch {
-      logWarn('Failed to load activity for index', { activityId: entry.id, workflowId: entry.workflowId });
+    } catch (error) {
+      logWarn('Failed to load activity for index', { activityId: entry.id, workflowId: entry.workflowId, error: error instanceof Error ? error.message : String(error) });
     }
   }
   

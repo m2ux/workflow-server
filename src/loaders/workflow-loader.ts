@@ -6,7 +6,7 @@ import { type Activity, safeValidateActivity } from '../schema/activity.schema.j
 import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
-import { decodeToon } from '../utils/toon.js';
+import { decodeToonRaw } from '../utils/toon.js';
 import { parseActivityFilename } from './filename-utils.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; description?: string | undefined; }
@@ -37,7 +37,7 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
     
     try {
       const content = await readFile(join(activitiesPath, file), 'utf-8');
-      const decoded = decodeToon<Activity>(content);
+      const decoded = decodeToonRaw(content);
       
       const validation = safeValidateActivity(decoded);
       if (!validation.success) {
@@ -81,7 +81,7 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
   
   try {
     const content = await readFile(filePath, 'utf-8');
-    const rawWorkflow = decodeToon<RawWorkflow>(content);
+    const rawWorkflow = decodeToonRaw(content) as RawWorkflow;
     
     // Load activities from directory if not inline
     // Default to 'activities/' subfolder, or use activitiesDir if specified
@@ -139,7 +139,7 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
       if (toonPath) {
         try {
           const content = await readFile(toonPath, 'utf-8');
-          const raw = decodeToon<RawWorkflow>(content);
+          const raw = decodeToonRaw(content) as RawWorkflow;
           if (raw.id && raw.title && raw.version) {
             manifests.push({ id: raw.id, title: raw.title, version: raw.version, description: raw.description });
           }
@@ -151,7 +151,7 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
     
     return manifests;
   } catch (error) {
-    logWarn('Failed to list workflows', { workflowDir, error: error instanceof Error ? error.message : String(error) });
+    logWarn('Failed to list workflows', { workflowDir, error: error instanceof Error ? error.message : String(error), code: error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined });
     return [];
   }
 }
@@ -189,6 +189,7 @@ export function getTransitionList(workflow: Workflow, fromActivityId: string): T
   if (!activity) return [];
 
   const entries: TransitionEntry[] = [];
+  const seen = new Set<string>();
 
   for (const t of activity.transitions ?? []) {
     entries.push({
@@ -196,6 +197,25 @@ export function getTransitionList(workflow: Workflow, fromActivityId: string): T
       condition: t.condition ? conditionToString(t.condition) : undefined,
       isDefault: t.isDefault || undefined,
     });
+    seen.add(t.to);
+  }
+
+  for (const d of activity.decisions ?? []) {
+    for (const b of d.branches) {
+      if (b.transitionTo && !seen.has(b.transitionTo)) {
+        entries.push({ to: b.transitionTo, condition: b.condition ? conditionToString(b.condition) : undefined, isDefault: b.isDefault || undefined });
+        seen.add(b.transitionTo);
+      }
+    }
+  }
+
+  for (const c of activity.checkpoints ?? []) {
+    for (const o of c.options) {
+      if (o.effect?.transitionTo && !seen.has(o.effect.transitionTo)) {
+        entries.push({ to: o.effect.transitionTo, condition: `checkpoint:${c.id}:${o.id}` });
+        seen.add(o.effect.transitionTo);
+      }
+    }
   }
 
   return entries;

@@ -55,10 +55,10 @@ describe('TraceStore', () => {
     expect(store.getEvents('s2').map(e => e.name)).toEqual(['only-in-s2']);
   });
 
-  it('append to uninitialized session is a no-op', () => {
+  it('append to uninitialized session auto-initializes and stores the event', () => {
     const store = new TraceStore();
-    store.append('unknown', makeEvent('ignored'));
-    expect(store.getEvents('unknown')).toEqual([]);
+    store.append('unknown', makeEvent('auto-init'));
+    expect(store.getEvents('unknown').map(e => e.name)).toEqual(['auto-init']);
   });
 
   describe('getSegmentAndAdvanceCursor', () => {

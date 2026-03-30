@@ -4,8 +4,9 @@ import { join, basename } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
-import { decodeToon } from '../utils/toon.js';
+import { decodeToonRaw } from '../utils/toon.js';
 import type { Skill } from '../schema/skill.schema.js';
+import { safeValidateSkill } from '../schema/skill.schema.js';
 import { parseActivityFilename as parseSkillFilename } from './filename-utils.js';
 
 /** The meta workflow contains universal skills */
@@ -30,7 +31,8 @@ async function findSkillFile(skillDir: string, skillId: string): Promise<string 
       return parsed && parsed.id === skillId;
     });
     return matchingFile ? join(skillDir, matchingFile) : null;
-  } catch {
+  } catch (error) {
+    logWarn('Failed to read skill directory', { skillDir, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
 }
@@ -63,19 +65,26 @@ async function findWorkflowsWithSkills(workflowDir: string): Promise<string[]> {
     }
 
     return workflowIds.sort();
-  } catch {
+  } catch (error) {
+    logWarn('Failed to list workflows with skills', { workflowDir, error: error instanceof Error ? error.message : String(error) });
     return [];
   }
 }
 
-/** Try to load a skill from a specific directory, returning the parsed Skill or null */
+/** Try to load a skill from a specific directory, returning the validated Skill or null */
 async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | null> {
   const filePath = await findSkillFile(skillDir, skillId);
   if (!filePath) return null;
 
   try {
     const content = await readFile(filePath, 'utf-8');
-    return decodeToon<Skill>(content);
+    const decoded = decodeToonRaw(content);
+    const result = safeValidateSkill(decoded);
+    if (!result.success) {
+      logWarn('Skill validation failed', { skillId, path: filePath, errors: result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`) });
+      return null;
+    }
+    return result.data;
   } catch (error) {
     logWarn('Failed to decode skill TOON', { skillId, path: filePath, error: error instanceof Error ? error.message : String(error) });
     return null;
@@ -144,7 +153,8 @@ export async function listUniversalSkills(workflowDir: string): Promise<SkillEnt
       })
       .filter((entry): entry is SkillEntry => entry !== null)
       .sort((a, b) => a.index.localeCompare(b.index));
-  } catch { 
+  } catch (error) {
+    logWarn('Failed to list universal skills', { error: error instanceof Error ? error.message : String(error) });
     return []; 
   }
 }
@@ -169,7 +179,8 @@ export async function listWorkflowSkills(workflowDir: string, workflowId: string
     }
     
     return entries.sort((a, b) => a.index.localeCompare(b.index));
-  } catch { 
+  } catch (error) {
+    logWarn('Failed to list workflow skills', { workflowId, error: error instanceof Error ? error.message : String(error) });
     return []; 
   }
 }
@@ -195,8 +206,8 @@ export async function listSkills(workflowDir: string): Promise<SkillEntry[]> {
           skills.push(...workflowSkills);
         }
       }
-    } catch {
-      // Ignore errors
+    } catch (error) {
+      logWarn('Failed to enumerate workflow skill directories', { workflowDir, error: error instanceof Error ? error.message : String(error) });
     }
   }
   
@@ -279,8 +290,8 @@ export async function readSkillIndex(workflowDir: string): Promise<Result<SkillI
           }
         }
       }
-    } catch {
-      // Ignore errors
+    } catch (error) {
+      logWarn('Failed to build skill index', { workflowDir, error: error instanceof Error ? error.message : String(error) });
     }
   }
   

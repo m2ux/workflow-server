@@ -53,12 +53,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         },
         available_workflows: workflows.map(w => ({ id: w.id, title: w.title, version: w.version })),
       };
-      return { content: [{ type: 'text' as const, text: JSON.stringify(guide, null, 2) }] };
+      return { content: [{ type: 'text' as const, text: JSON.stringify(guide) }] };
     }));
 
   server.tool('list_workflows', 'List all available workflow definitions. Call this after help to choose a workflow.', {},
     withAuditLog('list_workflows', async () => ({
-      content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir), null, 2) }],
+      content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir)) }],
     })));
 
   server.tool('get_workflow', 'Get a workflow definition. Use summary=true for lightweight metadata (rules, variables, activity stubs) to reduce context usage.',
@@ -94,9 +94,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           initialActivity: wf.initialActivity,
           activities: wf.activities.map(a => ({ id: a.id, name: a.name, required: a.required })),
         };
-        content.push({ type: 'text', text: JSON.stringify(summaryData, null, 2) });
+        content.push({ type: 'text', text: JSON.stringify(summaryData) });
       } else {
-        content.push({ type: 'text', text: JSON.stringify(result.value, null, 2) });
+        content.push({ type: 'text', text: JSON.stringify(result.value) });
       }
 
       return { content, _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation } };
@@ -174,7 +174,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(activity, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(activity) }],
         _meta: meta,
       };
     }, traceOpts));
@@ -199,7 +199,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(checkpoint, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(checkpoint) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
       };
     }, traceOpts));
@@ -224,7 +224,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         transitions,
       };
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
         _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     }, traceOpts));
@@ -251,21 +251,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const result: Record<string, unknown> = { traceId: token.sid, source: 'tokens', event_count: allEvents.length, events: allEvents };
         if (errors.length > 0) result['token_errors'] = errors;
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify(result) }],
           _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
         };
       }
 
       if (!config.traceStore) {
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: false, event_count: 0, events: [] }, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: false, event_count: 0, events: [] }) }],
           _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
         };
       }
 
       const events = config.traceStore.getEvents(token.sid);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: true, event_count: events.length, events }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: true, event_count: events.length, events }) }],
         _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
       };
     }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
@@ -277,7 +277,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'healthy', server: config.serverName, version: config.serverVersion,
           workflows_available: workflows.length, uptime_seconds: Math.floor(process.uptime()),
-        }, null, 2) }],
+        }) }],
       };
     }));
 }
