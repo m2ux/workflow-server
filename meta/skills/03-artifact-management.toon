@@ -3,10 +3,10 @@ version: 1.0.0
 capability: Initialize and manage the planning artifacts folder for a work package
 description: Provides the root folder path pattern for planning artifacts. Individual activities define their own artifact names.
 
-folder_structure:
-  base: .engineering/artifacts/planning
-  pattern: "{base}/YYYY-MM-DD-{initiative-name}/"
-  example: ".engineering/artifacts/planning/2026-01-28-workflow-readme-diagrams/"
+inputs:
+  - id: planning-base-path
+    description: Base directory for planning artifacts
+    default: ".engineering/artifacts/planning"
 
 initialization:
   trigger: First activity that requires planning artifacts
@@ -39,4 +39,5 @@ errors:
     detection: Document path does not start with planning_folder_path
     recovery: Move document to correct location
 
-critical_rule: "NEVER create planning documents directly in .engineering/artifacts/ - ALWAYS use the dated subfolder"
+rules:
+  planning-folder-convention: "Create planning folders as {planning-base-path}/YYYY-MM-DD-{initiative-name}/ — NEVER create planning documents directly in .engineering/artifacts/"
