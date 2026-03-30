@@ -54,7 +54,7 @@ The consequences are significant. Mandatory phases defined in the workflow — s
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#86](https://github.com/m2ux/workflow-server/issues/86) |
-| PR | *Created during start-work-package* |
+| PR | [#87](https://github.com/m2ux/workflow-server/pull/87) |
 | Branch | `bug/86-mandatory-phase-bypass` |
 
 ---
