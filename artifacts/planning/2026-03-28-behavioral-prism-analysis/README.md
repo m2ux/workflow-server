@@ -57,4 +57,4 @@ These issues compound in practice. When a file loader encounters a permission er
 
 ---
 
-**Status:** Research complete, transitioning to post-implementation review
+**Status:** Implementation analysis complete, transitioning to post-implementation review
