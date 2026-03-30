@@ -24,11 +24,12 @@ protocol:
     - "If no state file exists or user chose to start fresh: set all workflow variables to their declared defaultValue, set current_activity to initialActivity, initialize empty completedActivities/checkpointResponses/history. Set is_resuming = false."
     - "Detect mode from user request (e.g., 'review PR' activates review mode: set is_review_mode=true, apply mode defaults). If resuming from saved state, the restored variables already encode the active mode — do not override unless the user explicitly requests a mode change."
     - "Log the initialization outcome: either 'Restored state from {file_path} — resuming at {current_activity} with {N} activities completed' or 'Initialized fresh state — starting at {initialActivity}'."
-  dispatch-activity[7]:
+  dispatch-activity[8]:
     - "Call next_activity({ workflow_id, activity_id: current_activity }) to load the activity definition"
-    - "Compose the worker prompt: include activity_id, workflow_id, current state variables, planning_folder_path, and bootstrap instructions"
-    - "Bootstrap instructions for worker: call start_session(workflow_id), then next_activity(), then get_skills(workflow_id, activity_id) to load all skills, then execute steps sequentially"
+    - "Compose the worker prompt using attached resource 05 (worker-prompt-template). Fill in the placeholders with current values. Do NOT add step-by-step instructions, paraphrased skill content, tool parameter lists, or resource content beyond what the template specifies. The worker self-bootstraps from the workflow-server."
+    - "SKILL-LOADING BOUNDARY REMINDER: Do NOT call get_skill or get_skills at the orchestrator level for worker activities. The worker calls these itself during bootstrap. Violating this causes the worker to miss resources (templates, guides) that are bundled with skill responses."
     - "For first dispatch: use Task tool with subagent_type=generalPurpose. For subsequent dispatches: use Task tool with resume=worker_agent_id to preserve context"
+    - "For resumed workers (Task resume with existing agent_id): send only the new activity_id, updated state variables, and bootstrap instructions. The worker retains prior codebase context from earlier activities."
     - "If is_resuming is true: this is the first dispatch after state restoration. The worker has no prior context (new session). Include a resumption context block in the prompt: list completedActivities, key variable values, and prior checkpoint decisions so the worker understands what has already been done. After this first dispatch completes, set is_resuming = false."
     - "If is_resuming is true and the current_activity has completedSteps in the restored state, include the completed step indices so the worker can skip already-finished steps within the activity."
     - "Include in prompt: 'Report back with structured result: result_type (activity_complete or checkpoint_pending), variables_changed, checkpoints_responded, artifacts_produced, steps_completed'"
@@ -143,6 +144,9 @@ tools:
     params: "session_token, trace_tokens (array of opaque trace token strings)"
     returns: "Full mechanical execution trace with all tool call events"
     action: "Resolve trace tokens into concatenated event timeline. Tokens are accumulated from next_activity _meta.trace_token responses."
+
+resources[1]:
+  - "05"
 
 errors:
   worker_timeout:
