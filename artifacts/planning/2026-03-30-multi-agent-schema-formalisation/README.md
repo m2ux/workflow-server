@@ -1,7 +1,7 @@
 # Multi-Agent Schema Formalisation — March 2026
 
 **Created:** 2026-03-30
-**Status:** Planning
+**Status:** Ready
 **Type:** Enhancement
 
 ---
@@ -26,7 +26,9 @@ This gap means agents frequently misinterpret or ignore multi-agent requirements
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+Add a required `executionModel` field to the workflow schema that declares the agent roles participating in workflow execution. Each workflow defines its own role vocabulary — a set of named roles (id + description) that describe the agents involved. The server validates that role IDs are unique within each workflow. This provides machine-readable discoverability: agents and tooling can determine from structured schema data whether a workflow requires multiple agents and what roles they play, without parsing prose rules.
+
+The change is purely additive and descriptive. Behavioral rules (what each role must or must not do) remain as prose in the existing `rules` array. The execution model declares "who participates," while prose rules describe "how they behave." All 10 existing workflows are migrated to include explicit execution model declarations — 7 with multi-agent roles reflecting their current orchestrator/worker patterns, and 3 with a single-agent role for workflows that don't use multi-agent execution.
 
 ---
 
@@ -35,17 +37,16 @@ This gap means agents frequently misinterpret or ignore multi-agent requirements
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
-| 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
+| 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | ongoing | ✅ Complete |
+| 03 | [Requirements elicitation](03-requirements-elicitation.md) | 8 design questions, functional/non-functional requirements | 20-30m | ✅ Complete |
+| 04 | [Research](04-kb-research.md) | Industry framework comparison, pattern validation | 15-20m | ✅ Complete |
+| 05 | [Implementation analysis](05-implementation-analysis.md) | Integration points, baselines, exact schema design | 20-30m | ✅ Complete |
+| 06 | [Work package plan](06-work-package-plan.md) | 26 tasks, dependencies, estimates (~2.5h) | 20-30m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | 13 new test cases, coverage matrix | 15-20m | ✅ Complete |
+| 14 | [Schema comprehension](../../comprehension/workflow-server-schemas.md) | Schema system architecture, field propagation lifecycle | 30-45m | ✅ Complete |
+| — | Implementation | Schema + JSON Schema + TOON migration + tests | ~2.5h | ⬜ Not started |
+| — | Review | Code review, test review, strategic review | 30-60m | ⬜ Not started |
+| — | Validation | Build, test, lint verification | 15-30m | ⬜ Not started |
 
 ---
 
@@ -59,4 +60,4 @@ This gap means agents frequently misinterpret or ignore multi-agent requirements
 
 ---
 
-**Status:** Ready — implementation-analysis complete, transitioning to plan-prepare
+**Status:** Ready — planning complete, ready for implementation

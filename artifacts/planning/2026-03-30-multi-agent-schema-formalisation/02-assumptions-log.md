@@ -266,3 +266,23 @@ Assumptions identified during the implementation-analysis activity (2026-03-30).
 **Resolution:** LOW RISK — needs verification during implementation  
 **Evidence:** Quick grep shows `safeValidateWorkflow` and `validateWorkflow` use `.safeParse()` and `.parse()` which work on both types. No `.shape` or `.extend()` usage found on WorkflowSchema. But must be explicitly verified.  
 **Impact:** If callers exist, they need refactoring. If none exist (likely), no impact.
+
+---
+
+## Planning-Phase Assumptions
+
+Assumptions identified during the plan-prepare activity (2026-03-30). All resolved.
+
+### PA-01: TOON migration must include the workflows worktree
+
+**Assumption:** The 10 workflow TOON files live in a separate git worktree (`workflows` branch), not the main branch. Changes to TOON files must be committed to the workflows branch separately.  
+**Resolution:** CONFIRMED  
+**Evidence:** `git worktree list` shows `workflows` at `/home/mike/projects/dev/workflow-server/workflows` on the `workflows` branch. TOON changes need a separate commit to the workflows worktree, then the worktree reference must be updated in the parent repo.  
+**Impact:** Implementation commit strategy requires two commits: one to `workflows` branch (TOON files) and one to the feature branch (schema + tests + tool).
+
+### PA-02: Single-commit strategy for the parent repo is viable
+
+**Assumption:** All parent-repo changes (schema, JSON Schema, tool, tests) can be a single atomic commit.  
+**Resolution:** CONFIRMED  
+**Evidence:** All changes are in the same repo (workflow-server). The feature branch `enhancement/84-multi-agent-schema-formalisation` can receive a single commit with schema + tool + test changes. The workflows worktree commit is separate.  
+**Impact:** Clean commit history — one commit for schema changes, one for TOON migration.
