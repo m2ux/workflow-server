@@ -1,7 +1,7 @@
 # Multi-Agent Schema Formalisation — March 2026
 
 **Created:** 2026-03-30
-**Status:** Ready
+**Status:** In Progress
 **Type:** Enhancement
 
 ---
