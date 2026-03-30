@@ -40,9 +40,9 @@ These issues compound in practice. When a file loader encounters a permission er
 | 09 | [Code review](09-code-review.md) | Automated code quality review | 10-20m | ✅ Complete |
 | 09 | [Test suite review](09-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
 | 09 | [Structural findings](09-structural-findings.md) | Structural analysis findings | 10-15m | ✅ Complete |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | — | Validation | Build, test, lint verification (209 tests pass) | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| — | PR review | Review posted to PR #83 (Request Changes) | 30-60m | ✅ Complete |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
 
@@ -58,4 +58,4 @@ These issues compound in practice. When a file loader encounters a permission er
 
 ---
 
-**Status:** Validation passed, transitioning to strategic review
+**Status:** Review posted, completing work package
