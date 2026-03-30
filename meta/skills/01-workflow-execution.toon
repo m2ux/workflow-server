@@ -1,19 +1,19 @@
 id: workflow-execution
 version: 3.0.0
 capability: Execute workflows from start to completion with consistent tool usage
-execution_pattern:
+protocol:
   start[2]:
-    - list_workflows
-    - get_workflow
+    - Call list_workflows to discover available workflows
+    - Call get_workflow to load workflow for execution
   per_activity[3]:
-    - next_activity
-    - get_skills
-    - get_checkpoint
+    - Call next_activity to transition to the next activity
+    - Call get_skills to load all skills and resources for the activity
+    - Call get_checkpoint when user decision required
   transitions[1]:
-    - get_activities
+    - Call get_activities to get transition targets from current activity
   artifacts[2]:
-    - list_templates
-    - get_template
+    - Call list_templates to discover document templates
+    - Call get_template to load template content
 tools:
   list_workflows:
     when: Discovering available workflows

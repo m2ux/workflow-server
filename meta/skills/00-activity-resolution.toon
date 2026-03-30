@@ -8,14 +8,14 @@ architecture:
     - "Workflow → Activity → Skill(s) (solution domain)"
     - "Skill → Tools (execution domain)"
   gap_detection: "If a goal matches a skill but no workflow/activity exists, this indicates a missing workflow or activity"
-execution_pattern:
+protocol:
   bootstrap[3]:
-    - help
-    - list_workflows
-    - start_session
+    - Call help to learn server usage
+    - Call list_workflows to discover available workflows
+    - Call start_session with chosen workflow_id
   skill_loading[2]:
-    - get_skills
-    - get_skill
+    - Call get_skills to batch-load all skills for an activity
+    - Call get_skill for single skill mid-activity
 tools:
   help:
     when: Agent needs to learn how to use this server
