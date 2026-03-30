@@ -157,3 +157,51 @@ All assumptions reviewed and resolved by the user on 2026-03-30.
 | A-06 | Approach | Descriptive only | ✅ Yes |
 
 **Net effect:** The user's decisions produce a narrower but more opinionated design than proposed. The execution model is workflow-level only (simpler), with per-workflow role vocabulary (more expressive than a global enum), required for all workflows (stronger contract, requires migration), without persistence metadata (leaner). The schema defines what roles exist in a workflow's workforce — not how they behave at runtime.
+
+---
+
+## Elicitation-Phase Assumptions
+
+Assumptions identified during the requirements-elicitation activity (2026-03-30). All resolved through elicitation or code analysis.
+
+### EA-01: Roster-only design is sufficient for agent interpretation
+
+**Assumption:** Agents can correctly interpret multi-agent execution requirements with only role declarations in the schema, relying on prose rules for behavioral constraints.  
+**Resolution:** ACCEPTED (user decision Q1)  
+**Evidence:** The user explicitly chose roster-only. Prose rules remain the authoritative source for behavioral constraints. The execution model provides machine-readable "who participates" while prose rules provide "how they behave."  
+**Impact:** The schema addition is minimal — only `executionModel.roles[]`. No behavioral metadata fields.
+
+### EA-02: Static role declarations are adequate for dynamic workforces
+
+**Assumption:** Workflows with variable agent counts (substrate-audit A1-A7, cicd-audit S1-Sn) can use representative role types instead of individual agent instances.  
+**Resolution:** ACCEPTED (user decision Q2)  
+**Evidence:** The user confirmed that cardinality is an orchestration concern, not a schema concern. The schema declares role types (e.g., "auditor"); the orchestrator decides how many instances to spawn.  
+**Impact:** No cardinality field needed. Simplifies schema design.
+
+### EA-03: The field name `executionModel` has no conflicts
+
+**Assumption:** The chosen field name `executionModel` doesn't conflict with any existing schema field or internal identifier.  
+**Resolution:** CONFIRMED via code analysis  
+**Evidence:** Grep across `src/` for `executionModel` returns zero matches. Existing WorkflowSchema fields are: `$schema`, `id`, `version`, `title`, `description`, `author`, `tags`, `rules`, `variables`, `modes`, `artifactLocations`, `initialActivity`, `activities`. No collision.  
+**Impact:** None — safe to proceed.
+
+### EA-04: All 10 workflow TOON files can be migrated synchronously
+
+**Assumption:** Every workflow in the `workflows/` worktree can have a valid `executionModel` block added, including the 3 workflows without multi-agent prose rules.  
+**Resolution:** CONFIRMED via code analysis  
+**Evidence:** 7 workflows have explicit multi-agent rules with clear role patterns. 3 workflows (meta, workflow-design, work-packages) have zero multi-agent rules — they will receive a single-role `executionModel` declaring one `agent` role. All TOON files are writable in the workflows worktree.  
+**Impact:** Migration covers 7 multi-agent + 3 single-agent workflows. All 10 accounted for.
+
+### EA-05: No ModeOverrideSchema changes are needed
+
+**Assumption:** The decision for no mode-execution model interaction (Q5) means ModeOverrideSchema is unchanged.  
+**Resolution:** CONFIRMED  
+**Evidence:** User explicitly chose `no-interaction`. Modes and execution model are independent. ModeOverrideSchema's existing fields (description, rules, steps, skipSteps, skipCheckpoints, checkpoints, transitionOverride, context_to_preserve) are unaffected.  
+**Impact:** Zero changes to activity.schema.ts ModeOverrideSchema.
+
+### EA-06: Workflow summary mode must include executionModel
+
+**Assumption:** The `get_workflow` tool's summary mode currently returns a hand-picked subset of fields. The `executionModel` field needs to be included in this subset for agents to discover it without loading the full workflow.  
+**Resolution:** CONFIRMED — requires a one-line code change  
+**Evidence:** `workflow-tools.ts` L87-96 builds the summary object manually: `{ id, version, title, description, rules, variables, initialActivity, activities }`. The `executionModel` field must be added to this object. This is a minor code change, not a schema change.  
+**Impact:** One line added to `workflow-tools.ts`. Contradicts NFR-03 ("no tool changes") — this is a minor exception. The tool handler code isn't changing behavior, just including an additional field in the summary projection.
