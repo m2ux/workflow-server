@@ -59,4 +59,4 @@ This gap means agents frequently misinterpret or ignore multi-agent requirements
 
 ---
 
-**Status:** Planning — codebase-comprehension complete, transitioning to requirements-elicitation
+**Status:** Planning — requirements-elicitation complete, transitioning to research
