@@ -123,4 +123,8 @@ variables[15]:
   - name: current_file
     type: object
     description: "Current file being drafted during the content drafting loop"
+executionModel:
+  roles[1]:
+    - id: agent
+      description: "Single agent that executes workflow design activities directly"
 initialActivity: intake

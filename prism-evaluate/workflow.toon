@@ -98,4 +98,10 @@ artifactLocations:
     path: "{output_path}"
     gitignored: false
 
+executionModel:
+  roles[2]:
+    - id: orchestrator
+      description: "Coordinates evaluation activities, triggers prism workflows, and consolidates results"
+    - id: worker
+      description: "Executes evaluation activities in fresh contexts — dimension planning, analysis, and report consolidation"
 initialActivity: scope-definition

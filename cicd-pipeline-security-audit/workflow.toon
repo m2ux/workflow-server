@@ -84,4 +84,14 @@ variables[14]:
     type: number
     description: "Number of High-severity findings"
     defaultValue: 0
+executionModel:
+  roles[4]:
+    - id: orchestrator
+      description: "Coordinates scan phases, dispatches scanner agents per submodule, and enforces verification and merge gates"
+    - id: scanner
+      description: "Per-submodule scanner agent (S1-Sn) that applies detection patterns P1-P7 to workflow files"
+    - id: verifier
+      description: "Verification agent (V) that validates scan completeness and produces gap reports"
+    - id: merger
+      description: "Merge agent (M) that deduplicates findings, performs cross-pattern correlation, and scores severity"
 initialActivity: scope-setup
