@@ -79,4 +79,8 @@ variables[20]:
   - name: package_planning_paths
     type: object
     description: "Map of package name/index to the child work-package's planning_folder_path. Populated from returnedContext after each child workflow completes. Used to link the initiative README to each WP's independent planning folder."
+executionModel:
+  roles[1]:
+    - id: agent
+      description: "Single agent that manages the multi-work-package initiative lifecycle"
 initialActivity: scope-assessment

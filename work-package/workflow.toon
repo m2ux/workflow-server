@@ -249,4 +249,10 @@ variables[56]:
   - name: prism_artifact_paths
     type: array
     description: "Paths to prism structural analysis artifacts produced during post-impl-review. Single-pass produces one path; full-prism produces paths to structural, adversarial, and synthesis artifacts."
+executionModel:
+  roles[2]:
+    - id: orchestrator
+      description: "Coordinates workflow execution, manages activity transitions, presents checkpoints to the user, and delegates all domain work to the worker"
+    - id: worker
+      description: "Executes activity steps, produces artifacts, and yields checkpoint results to the orchestrator"
 initialActivity: start-work-package
