@@ -37,5 +37,5 @@ This gap means agents frequently misinterpret or ignore multi-agent requirements
 | Resource | Link |
 |----------|------|
 | Tracking Issue | [#84](https://github.com/m2ux/workflow-server/issues/84) |
-| Draft PR | *To be created* |
+| Draft PR | [#85](https://github.com/m2ux/workflow-server/pull/85) |
 | Related Issue | [#65](https://github.com/m2ux/workflow-server/issues/65) — Orchestrator/worker rules lack structural enforcement |
