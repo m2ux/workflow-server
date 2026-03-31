@@ -20,9 +20,8 @@ rules:
     - "Do not include process attribution in code comments or documentation."
   code-commentary[1]:
     - "Comments should explain why code exists and the rationale for design choices — avoid narrating what the code does."
-  operational-discipline[5]:
-    - "NEVER call domain-specific tools during workflow bootstrap. URLs, issue keys, or other references in the user's request are context to be preserved — not triggers for immediate API calls."
-    - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability."
+  operational-discipline[4]:
+    - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls."
     - "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_skill and get_skills."
     - "CPU-intensive build commands (cargo build, cargo check, cargo test, cargo clippy, npm run build, and similar) MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
     - "cargo fmt is exempt from nice — it is fast and should run at normal priority."
