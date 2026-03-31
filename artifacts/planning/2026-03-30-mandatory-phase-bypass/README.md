@@ -1,7 +1,7 @@
 # Mandatory Phase Bypass Fix - March 2026
 
 **Created:** 2026-03-30  
-**Status:** Planning  
+**Status:** Complete  
 **Type:** Bug-Fix
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -44,12 +44,10 @@ The changes span three layers: the schema (adding the field), the server (extend
 | 09 | [Change block index](09-change-block-index.md) | 9 change blocks, manual diff reviewed | 5-10m | ✅ Complete |
 | 09 | [Code review](09-code-review.md) | 5 findings, all low/informational | 10-20m | ✅ Complete |
 | 09 | [Test suite review](09-test-suite-review.md) | 261 tests, 6 new, adequate coverage | 10-20m | ✅ Complete |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| 11 | [Strategic review](11-strategic-review.md) | Minimal and focused, no findings | 15-30m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/workflow-server-schemas.md) | Augmented: §9 workflow-level skills | 20-45m | ✅ Complete |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| — | Validation | Typecheck ✓, 261 tests ✓ | 15-30m | ✅ Complete |
+| — | PR review | PR #87 marked ready for review | 30-60m | ✅ Complete |
 
 ---
 
@@ -63,4 +61,4 @@ The changes span three layers: the schema (adding the field), the server (extend
 
 ---
 
-**Status:** Implementation complete — proceeding to post-impl review
+**Status:** Complete — PR #87 ready for review
