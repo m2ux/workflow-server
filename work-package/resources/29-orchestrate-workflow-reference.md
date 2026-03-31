@@ -13,7 +13,7 @@ Reference material for the orchestrate-workflow skill. Contains detailed phase g
 ## Phase: dispatch-activity
 
 1. Call `next_activity({ workflow_id, activity_id: current_activity })` to load the activity definition.
-2. Compose the worker prompt using attached resource 05 (worker-prompt-template). Fill in placeholders with current values. Do NOT add paraphrased skill content, tool parameter lists, or resource content beyond the template.
+2. Compose the worker prompt using attached resource meta/05 (worker-prompt-template). Fill in placeholders with current values. Do NOT add paraphrased skill content, tool parameter lists, or resource content beyond the template.
 3. **SKILL-LOADING BOUNDARY:** Do NOT call `get_skill` or `get_skills` at the orchestrator level. The worker calls these itself during bootstrap.
 4. First dispatch: use Task tool with `subagent_type=generalPurpose`. Subsequent dispatches: use `resume=worker_agent_id`.
 5. For resumed workers: send only the new `activity_id`, updated state variables, and bootstrap instructions.
