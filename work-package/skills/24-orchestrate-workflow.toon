@@ -20,7 +20,7 @@ protocol:
     - "If no saved state: set variables to defaults, current_activity to initialActivity, detect mode from user request"
   dispatch-activity[4]:
     - "Call next_activity to load the activity definition"
-    - "Compose worker prompt using resource 05 (worker-prompt-template) — do NOT inject paraphrased skill content"
+    - "Compose worker prompt using resource meta:05 (worker-prompt-template) — do NOT inject paraphrased skill content"
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
     - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap."
   process-result[3]:
@@ -86,5 +86,5 @@ errors:
     recovery: "Worker-reported values take precedence (worker has ground truth from user interaction)."
 
 resources[2]:
-  - "05"
+  - "meta:05"
   - "29"
