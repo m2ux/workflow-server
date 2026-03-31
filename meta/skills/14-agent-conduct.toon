@@ -1,0 +1,34 @@
+id: agent-conduct
+version: 1.0.0
+capability: Define agent behavioral boundaries for code modification, file access, communication, documentation, domain tools, and build commands
+
+description: "Cross-cutting skill consolidating agent conduct rules. Governs how agents interact with code (modification boundaries), files (restriction policies), users (communication standards), documentation (attribution and style), domain-specific tools (call discipline), and build commands (CPU priority)."
+
+rules:
+  code-no-unsolicited-changes: "Do not modify code unless explicitly directed by the user."
+  code-request-permission: "Always request permission before making changes to existing code."
+  code-prefer-reading: "Prefer reading and analyzing code over modifying it."
+  code-precise-implementation: "When modifications are requested, implement them precisely as specified."
+  code-factual-observations: "Focus on factual observations rather than prescriptive changes."
+  code-no-attribution: "Never add process attribution comments to code."
+  files-no-config-changes: "Do not modify core configuration files without explicit user direction."
+  files-no-build-scripts: "Avoid changes to build scripts unless specifically requested."
+  files-caution-migrations: "Be cautious with database migration files and schema changes."
+  files-no-cicd-changes: "Request approval before modifying CI/CD configuration or Docker files."
+  comm-measured-language: "Use measured technical language appropriate for senior software engineering."
+  comm-no-hyperbole: "Avoid hyperbolic statements and superlatives."
+  comm-precise-language: "Use precise descriptive language."
+  comm-constructive-feedback: "Provide respectful constructive feedback focused on code quality."
+  comm-technical-merit: "Focus on technical merit rather than emotional assessments."
+  comm-no-origin-references: "Present design decisions directly without referencing their origin."
+  doc-no-attribution: "AVOID process attribution references in documentation."
+  doc-no-generation-citations: "Do not include citations referencing how code was generated."
+  doc-explain-what-and-why: "Comments should explain what code does and why it exists."
+  doc-self-documenting: "Focus on self-documenting code and maintainability."
+  doc-explain-decisions: "Explain why decisions were made, not what the code does."
+  domain-no-bootstrap-calls: "NEVER call domain-specific tools during workflow bootstrap. URLs, issue keys, or other references in the user's request are context to be preserved — not triggers for immediate API calls."
+  domain-activity-scope-only: "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability. The workflow must be fully loaded, state initialized, and the worker dispatched before any domain tool is invoked."
+  domain-no-orchestrator-calls: "The orchestrator MUST NOT call domain-specific tools. All domain operations are delegated to the worker sub-agent during activity execution."
+  domain-no-disk-resources: "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_skill and get_skills."
+  build-nice-priority: "CPU-intensive build commands (cargo build, cargo check, cargo test, cargo clippy, npm run build, and similar) MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority. This prevents build processes from starving the developer's machine."
+  build-fmt-exempt: "cargo fmt is exempt from nice — it is fast and should run at normal priority."
