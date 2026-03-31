@@ -12,4 +12,4 @@
 - Use the updated token from each response's `_meta.session_token` field for the next call.
 - Treat the token as opaque — do not parse, decode, or fabricate tokens.
 - Check `_meta.validation` for warnings (workflow mismatch, invalid transition, version drift).
-- Token-exempt tools: `discovery`, `list_workflows`, `start_session`, `health_check`.
+- Token-exempt tools: `discover`, `list_workflows`, `start_session`, `health_check`.
