@@ -45,9 +45,6 @@ rules:
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
   no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
   skill-loading-boundary: "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap."
-  worker-persistence: "Resume the same worker agent for each activity using Task resume. This preserves accumulated codebase context."
-  automatic-transition: "After activity completion and artifact commit, evaluate transitions and dispatch the next activity WITHOUT user confirmation. Transitions are deterministic."
-  no-ad-hoc-interaction: "User interaction occurs ONLY through checkpoint yields. Do not generate questions or solicit input outside of checkpoints."
   target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
 
 tools:

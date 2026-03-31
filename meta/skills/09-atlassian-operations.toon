@@ -34,10 +34,6 @@ output[1]:
 
 rules:
   no-eager-calls: "NEVER call Atlassian tools during workflow bootstrap. Jira URLs in the user's request are context to preserve, not triggers for immediate API calls."
-  cloud-id-first: "ALWAYS call getAccessibleAtlassianResources before any other Atlassian tool."
-  search-paradigm: "Rovo for natural-language. JQL for precise Jira filtering. CQL for structured Confluence queries."
-  metadata-before-create: "Before creating a Jira issue, resolve project key and issue type via getVisibleJiraProjects and getJiraProjectIssueTypesMetadata."
-  transitions-before-transition: "Before transitioning, call getTransitionsForJiraIssue to discover available transitions."
   content-format: "Set contentFormat to 'markdown' for Confluence create/update/read operations."
   account-id-for-users: "User fields require account IDs. Use lookupJiraAccountId to resolve names/emails."
 

@@ -14,11 +14,8 @@ skills:
   primary: execute-activity
   supporting[1]:
     - state-management
-rules[4]:
+rules[1]:
   - "Minimum requirement: User must identify the workflow and provide the planning folder path"
-  - "Prefer saved state over manual reconstruction — restore_state is the primary resumption path"
-  - "Always verify restored or reconstructed state with the user before resuming"
-  - "For workflows with external artifacts (files, branches, PRs), cross-check restored state against current external state"
 entryActions[1]:
   - action: validate
     target: workflowId

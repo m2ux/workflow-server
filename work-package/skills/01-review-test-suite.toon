@@ -36,7 +36,6 @@ output[1]:
       recommendations: "Prioritized improvement recommendations"
 
 rules:
-  baseline-first: "Run tests before reviewing to establish pass/fail baseline"
   coverage-relative: "Assess coverage relative to the changes made, not absolute project coverage"
   actionable-recommendations: "Every finding must include a concrete improvement suggestion"
   tdd-awareness: "For Rust projects, reference TDD best practices from resource 23"

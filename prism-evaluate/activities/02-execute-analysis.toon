@@ -50,8 +50,7 @@ loops[1]:
         name: Verify Prism Completion
         description: "Verify the triggered prism workflow completed successfully: expected analysis artifacts exist and contain substantive content. If verification fails, record the failure in completed_analyses with status 'error' and the failure reason."
         required: true
-rules[4]:
-  - "TRIGGER ISOLATION: When setting analysis_focus for the triggered prism workflow, use the substantive dimension-specific guidance from the dimension plan. Do NOT use bare labels like 'audit', 'security audit', or 'security review' — these would activate prism's built-in audit-finalize activity, conflicting with this workflow's own report consolidation."
+rules[3]:
   - "PIPELINE MODE FIDELITY: Each execution group's pipeline_mode and lenses must match exactly what dimension-planning specified. Do not change modes or lenses during execution."
   - "SEQUENTIAL EXECUTION: Execution groups are triggered sequentially (one prism run at a time). This ensures each prism run has full system resources and avoids context interference between concurrent analyses."
   - "TARGET TYPE MAPPING: When passing target_type to the triggered prism workflow, map prism-evaluate's classification to prism's expected values: 'document' → 'general', 'document-set' → 'general', 'codebase' → 'code', 'mixed' → 'general'."

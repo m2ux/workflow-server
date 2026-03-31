@@ -22,15 +22,6 @@ protocol:
   resource-usage[1]:
     - "RESOURCE USAGE: Resources referenced by skills are returned as a structured array in the get_skill and get_skills responses. Each resource has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in the resources array of the skill response. Do not attempt to call a separate tool to load resources."
 
-rules:
-  token-opacity: "Treat the session token as opaque. Do not parse, decode, or fabricate tokens."
-  token-passthrough: "Pass session_token alongside workflow_id and activity_id on every non-exempt tool call."
-  token-refresh: "Always use the updated token from _meta.session_token for the next call."
-  manifest-required: "Include a step_manifest when calling next_activity. The server validates completeness."
-  steps-not-optional: "All steps within an activity are required. Optionality is at the activity level."
-  resources-from-skills: "Resources are attached to get_skill/get_skills responses. Do not load them separately."
-  exempt-tools: "help, list_workflows, start_session, and health_check do not require a session token."
-
 tools:
   start_session:
     when: "Beginning a new workflow session"

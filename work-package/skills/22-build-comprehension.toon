@@ -72,8 +72,9 @@ output[1]:
       deep_dives: "Targeted exploration sections added during user-driven loop"
 
 rules:
-  gitnexus-first: "When the target codebase has a GitNexus index, the agent MUST use gitnexus query() and context() as the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for specific text patterns, string literals, and codebases without a GitNexus index. This is not a preference — it is a requirement. Use attached resource meta:04 (gitnexus-reference) for checklists, pattern tables, and worked examples."
-  gitnexus-skill: "For GitNexus-based analysis, the gitnexus-operations skill (meta workflow) provides the full task-oriented protocol — explore, impact-analysis, debug, refactor. Load it via get_skill skill_id: 'gitnexus-operations', workflow_id: 'meta' when performing codebase exploration or impact analysis with a GitNexus index."
+  gitnexus-usage[2]:
+    - gitnexus-first: "When the target codebase has a GitNexus index, the agent MUST use gitnexus query() and context() as the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for specific text patterns, string literals, and codebases without a GitNexus index. This is not a preference — it is a requirement. Use attached resource meta:04 (gitnexus-reference) for checklists, pattern tables, and worked examples."
+    - gitnexus-skill: "For GitNexus-based analysis, the gitnexus-operations skill (meta workflow) provides the full task-oriented protocol — explore, impact-analysis, debug, refactor. Load it via get_skill skill_id: 'gitnexus-operations', workflow_id: 'meta' when performing codebase exploration or impact analysis with a GitNexus index."
   persistent-artifacts: "Comprehension artifacts persist across work packages — they are cumulative knowledge, not disposable planning documents"
   augment-not-replace: "When existing artifacts cover the same area, augment them with new sections and deeper detail rather than replacing"
   hypothesis-framing: "Frame design rationale as hypotheses for user validation — the goal is to enable the user to qualify assumptions, not to assert correctness"

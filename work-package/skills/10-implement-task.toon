@@ -33,7 +33,6 @@ output[1]:
 
 rules:
   tdd-cycle: "For Rust projects, follow TDD best practices from resource 23 — Red-Green-Refactor, FIRST principles, test doubles, boundary testing"
-  follow-conventions: "Follow existing code patterns and conventions in the target codebase — do not introduce new styles"
   single-task-focus: "Implement exactly one task — do not scope-creep into adjacent tasks"
 
 resources[2]:

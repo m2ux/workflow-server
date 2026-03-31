@@ -37,8 +37,6 @@ output[1]:
       validation_passed: "Boolean — all checks passed"
 
 rules:
-  observable-results: "Test pass/fail, build success, lint errors are observable — do not ask user about these"
-  fix-and-rerun: "If failures occur, analyze root cause, fix, and re-run until all pass"
   no-duplicate-review: "Test suite quality was already reviewed in post-impl-review — this activity validates execution only"
 
 tools:

@@ -20,12 +20,9 @@ protocol:
     - "For Rust projects, run cargo fmt to format code before committing"
 
 rules:
-  conventional-commits: "Follow the Conventional Commits specification for all commit messages. Use format: type(optional-scope): description."
-  branch-naming: "Follow naming conventions for feature branches. Keep branches focused on specific features or fixes."
   no-destructive-ops: "NEVER run destructive or irreversible operations (force push to protected branches, hard resets) without explicit user request."
   no-hook-skipping: "NEVER skip hooks (--no-verify, --no-gpg-sign) unless the user explicitly requests it."
   explicit-commit: "NEVER commit changes unless the user explicitly asks. Verify the request before executing."
-  sync-before-push: "Regularly sync with the main branch before pushing to avoid merge conflicts."
 
 errors:
   uncommitted_changes:

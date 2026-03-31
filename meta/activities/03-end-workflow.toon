@@ -15,8 +15,7 @@ skills:
   supporting[2]:
     - state-management
     - artifact-management
-rules[2]:
-  - "Never end a workflow with incomplete required activities or unanswered blocking checkpoints"
+rules[1]:
   - "Document any deferred or out-of-scope items before completing"
 steps[6]:
   - id: verify-completion

@@ -14,10 +14,5 @@ protocol:
     - "After each completed activity, serialize state and call save_state"
     - "State file at {planning_folder_path}/workflow-state.toon enables cross-session resumption"
 
-rules:
-  history-mandatory: "Every state mutation MUST be logged in the history array with a typed event entry"
-  version-check: "On resumption, compare saved workflowVersion against loaded workflow definition. Warn on mismatch."
-  variables-from-defaults: "Initialize all workflow variables to their declared defaultValue. Variables not in the schema are rejected."
-
 resources[1]:
   - "07"

@@ -48,9 +48,7 @@ output[1]:
 
 rules:
   conversation-not-interrogation: "Core principle: Conversation, not interrogation — discover what user actually needs"
-  one-question-per-turn: "One question per turn — never present multiple questions in a single message"
   skip-always-available: "Skip option always available — user can say 'skip' to move to next question"
-  adapt-to-responses: "Adapt based on responses — skip irrelevant follow-ups, probe deeper when needed"
   stakeholder-first: "Stakeholder input first: User should discuss with key stakeholders before agent elicitation"
 
 resources[1]:

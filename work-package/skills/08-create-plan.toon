@@ -45,11 +45,6 @@ output[1]:
       tasks: "Atomic tasks with explicit dependencies and ordering"
       design_decisions: "Approach and rationale with documented assumptions"
 
-rules:
-  assumptions-documented: "Design and planning decisions often involve significant assumptions that should be documented before implementation"
-  tasks-atomic: "Break work into atomic tasks that can each be implemented, tested, and committed independently"
-  dependencies-explicit: "Task dependencies must be explicitly documented — never assume ordering is obvious"
-
 resources[1]:
   - "10"
 

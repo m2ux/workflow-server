@@ -38,10 +38,6 @@ output[1]:
 
 rules:
   index-location: "Domain knowledge indexes are stored as markdown files in the project's .engineering/resources/ directory"
-  index-first: "ALWAYS load the domain index resource before making concept-rag tool calls"
-  prefer-chunks-search: "When the index provides a source path, prefer chunks_search over broad_chunks_search"
-  mapped-terms: "Use the concept lookup table to translate natural terms into indexed concept strings"
-  fallback-gracefully: "If no index exists for the domain or the index has no mapping, fall back to standard concept-rag search strategies"
 
 tools:
   Read:

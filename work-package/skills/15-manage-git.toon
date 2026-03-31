@@ -45,14 +45,6 @@ output[1]:
 resources[1]:
   - "12"
 
-rules:
-  target-scope: "ALL git operations (branch, commit, push, PR) MUST be performed inside target_path. Branches and PRs are against the target directory's upstream."
-  naming-convention: "Branch naming: type/issue-number-short-description (e.g., fix/PM-21781-storage-root-panic)"
-  draft-first: "Always create PRs as draft — mark ready only after implementation and review"
-  link-to-issue: "PR title and body must reference the associated issue number"
-  sync-before-push: "Sync with main before pushing to avoid merge conflicts"
-  engineering-link-must-resolve: "The 📐 Engineering link in the PR body points to the parent (engineering) repo, not the target submodule. The planning folder MUST be committed and pushed to the parent repo BEFORE the PR is created, otherwise the link 404s."
-
 tools:
   shell:
     when: Git operations and gh CLI
