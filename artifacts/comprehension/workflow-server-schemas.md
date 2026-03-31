@@ -1,8 +1,8 @@
 # Workflow Server Schemas — Comprehension Artifact
 
 > **Last updated**: 2026-03-30  
-> **Work package**: [Multi-Agent Schema Formalisation (#84)](../planning/2026-03-30-multi-agent-schema-formalisation/README.md)  
-> **Coverage**: Schema definition system (Zod + JSON Schema), field propagation lifecycle, validation boundaries, and extension surface analysis  
+> **Work packages**: [Multi-Agent Schema Formalisation (#84)](../planning/2026-03-30-multi-agent-schema-formalisation/README.md), [Mandatory Phase Bypass (#86)](../planning/2026-03-30-mandatory-phase-bypass/README.md)  
+> **Coverage**: Schema definition system (Zod + JSON Schema), field propagation lifecycle, validation boundaries, extension surface analysis, workflow-level skills, get_skills API, and skill-loader dead code  
 > **Related artifacts**: [workflow-server.md](workflow-server.md), [zod-schemas.md](zod-schemas.md), [json-schemas.md](json-schemas.md)
 
 ## 1. Schema System Architecture
@@ -372,6 +372,109 @@ This resolves the tension between A-05 (required) and backward compatibility: Zo
 | 3 | How does `additionalProperties: false` in JSON Schema interact with schema updates? | ✅ Resolved | New properties must be declared in JSON Schema `properties`. Only `work-package` declares `$schema`; runtime validation is Zod-only. See §3.2. |
 | 4 | Does JSON Schema validate individual TOON files or the assembled workflow? | ✅ Resolved | JSON Schema validates individual TOON files (no `activities` property). Zod validates the assembled runtime object. See §1.1. |
 | 5 | Should the required field use `.default()` or hard-fail on missing values? | ⬜ Open | This is a design decision for the implementation phase. `.default()` enables incremental TOON migration; hard-fail requires synchronous migration. See §8.3. |
+| 6 | How does `get_skills` resolve skill IDs and can it work without `activity_id`? | ✅ Resolved | `get_skills` extracts IDs from `activity.skills`, calls `readSkill()` for each. Making `activity_id` optional requires branching to load `workflow.skills` instead. See §9.1. |
+| 7 | What functions in skill-loader.ts are dead code? | ✅ Resolved | `listUniversalSkills`, `listWorkflowSkills`, `listSkills`, `readSkillIndex`, `SkillIndex`, `SkillEntry` — none imported outside skill-loader.ts. See §9.3. |
+| 8 | What is the `findWorkflowsWithSkills` function's status? | ✅ Resolved | Used by `readSkill()` for cross-workflow fallback — NOT dead code. Must be preserved. See §9.3. |
+
+---
+
+## Deep-Dive 2: Workflow-Level Skills and get_skills API (#86)
+
+### 9.1 get_skills Tool Handler Anatomy
+
+The `get_skills` handler (`src/tools/resource-tools.ts:84-139`) follows this flow:
+
+```
+1. Decode session token
+2. Load workflow via loadWorkflow()
+3. Get activity via getActivity(workflow, activity_id)
+4. Extract skillIds = [activity.skills.primary, ...activity.skills.supporting]
+5. For each skillId: readSkill(sid, workflowDir, workflow_id)
+6. For each loaded skill: loadSkillResources(workflowDir, workflow_id, skill)
+7. Return { activity_id, skills, resources }
+```
+
+**Extension point**: Step 3-4 extracts skill IDs from the activity. When `activity_id` is omitted, step 3-4 should extract from `workflow.skills` instead:
+
+```
+3'. If no activity_id: skillIds = workflow.skills ?? []
+4'. Throw if skillIds is empty
+```
+
+The Zod parameter schema changes from `z.string()` to `z.string().optional()`. The handler must branch on presence of `activity_id`. Token advancement: when `activity_id` is omitted, `advanceToken` should receive `act: ''` (workflow-level context).
+
+### 9.2 Workflow Schema Extension
+
+Following the optional field addition pattern from §2.3:
+
+**Zod** (`src/schema/workflow.schema.ts`): add `skills: z.array(z.string()).optional()` after `executionModel` and before `initialActivity`.
+
+**JSON Schema** (`schemas/workflow.schema.json`): add `skills` to `properties` (not to `required`). Per §3.2, `additionalProperties: false` requires the property to be declared.
+
+**TOON declaration** (`workflows/work-package/workflow.toon`): add `skills[2]: [orchestrate-workflow, execute-activity]` after `executionModel` (line 257) and before `initialActivity` (line 258).
+
+**Design note (user correction):** Workflow-level skills have no semantic constraint — they are NOT limited to "execution protocol" or "how to run" concerns. They use the same skill schema and have the same flexibility as activity-level skills. The only difference is scope: workflow-level skills apply across all activities, while activity-level skills apply to a specific activity. This is analogous to workflow-level `rules` (apply everywhere) vs activity-level rules (apply to one activity).
+
+### 9.5 executionModel Deprecation Consideration
+
+The `executionModel` field (added by ADR-0002, #84/#85) currently declares agent roles:
+
+```typescript
+executionModel: ExecutionModelSchema  // required
+// where ExecutionModelSchema = { roles: [{ id, description }] }
+```
+
+With workflow-level `skills`, the behavioral specification for each role moves into the skills themselves (`orchestrate-workflow` defines the orchestrator's protocol; `execute-activity` defines the worker's protocol). The `executionModel.roles` declaration becomes redundant — the roles are implicit in the skills.
+
+**Current consumers of executionModel:**
+- `workflow.schema.ts:66` — required field on WorkflowSchema
+- `workflow.schema.ts:71-76` — `.refine()` for unique role IDs
+- `schemas/workflow.schema.json:203-205` — in `required` array
+- All 10 workflow TOON files — must declare it (required field)
+- `schemas/README.md` — documented
+
+**Options:**
+1. **Remove executionModel** — delete the field, schema, migration, refine. Clean but breaking. All 10 TOON files need migration.
+2. **Make executionModel optional** — change from required to optional. Non-breaking. Workflows that declare skills don't need it.
+3. **Defer** — keep executionModel as-is, track removal separately. Avoids scope creep on #86.
+
+**Scope assessment:** Removing `executionModel` is a separate concern from fixing the discoverability gap (#86). It should be tracked as a follow-up issue rather than included in this work package. However, making `executionModel` optional (option 2) could be done as a low-risk cleanup within #86 if desired.
+
+### 9.3 Skill-Loader Dead Code Map
+
+```
+skill-loader.ts (315 lines)
+├── KEEP: findSkillFile()           L24-38    helper for tryLoadSkill
+├── KEEP: getUniversalSkillDir()    L41-43    used by readSkill
+├── KEEP: getWorkflowSkillDir()     L46-48    used by readSkill
+├── KEEP: findWorkflowsWithSkills() L51-72    used by readSkill (cross-workflow fallback)
+├── KEEP: tryLoadSkill()            L75-92    used by readSkill
+├── KEEP: readSkill()               L101-135  ONLY EXPORT USED BY SERVER
+├── REMOVE: listUniversalSkills()   L140-160  only used by dead functions
+├── REMOVE: listWorkflowSkills()    L165-186  only used by dead functions
+├── REMOVE: listSkills()            L191-215  not imported outside this file
+├── REMOVE: SkillIndex (type)       L217-236  not imported outside this file
+├── REMOVE: readSkillIndex()        L243-314  not imported outside this file
+└── REMOVE: SkillEntry (interface)  L15-21    not imported outside this file
+```
+
+**Import analysis**: `src/tools/resource-tools.ts:9` imports only `readSkill`. No other `src/` file imports from skill-loader.
+
+**Test impact**: Remove `listUniversalSkills` (2 tests), `listSkills` (1 test), `readSkillIndex` (4 tests). Keep `readSkill` (7 tests), `malformed TOON handling` (4 tests).
+
+### 9.4 Meta Skill Update Points
+
+**orchestrate-workflow** (`04-orchestrate-workflow.toon`): Update `dispatch-activity` bullet 3 (L30) to prepend `get_skills(workflow_id)` as first bootstrap step before `next_activity()`.
+
+**execute-activity** (`05-execute-activity.toon`): Update `bootstrap-rules` (L16-17) to add `get_skills(workflow_id)` as the mechanism for discovering the execute-activity skill itself.
+
+**meta/rules.toon** (L190): Update rule 3 to reference workflow-level skill loading before activity-level bootstrap.
+
+### 9.6 Corrections Log
+
+**Correction 1 (user, architecture-confirmed checkpoint):** Workflow-level skills are NOT semantically constrained to "execution protocol" or "how to run." They use the same schema as activity-level skills and have the same flexibility. The only difference is scope (workflow-wide vs single activity). The prior characterization of "workflow-level = how to run, activity-level = what to do" was a false dichotomy introduced by the agent. See updated §9.2 design note.
+
+**Correction 2 (user, architecture-confirmed checkpoint):** The `executionModel` infrastructure may become unnecessary after workflow-level skills are added. The behavioral specification for orchestrator/worker roles is already encoded in the skills themselves — the structural `executionModel.roles` declaration is redundant. See §9.5 for deprecation analysis. Tracked as potential follow-up, not in scope for #86.
 
 ---
 

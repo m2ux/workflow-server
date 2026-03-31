@@ -1,0 +1,80 @@
+{
+  "activity_id": "codebase-comprehension",
+  "workflow_id": "work-package",
+  "started_at": "2026-03-30T19:05:00Z",
+  "completed_at": "2026-03-30T19:25:00Z",
+  "events": [
+    {
+      "type": "step_output",
+      "step_id": "check-existing-artifacts",
+      "output": "Found 8 existing comprehension artifacts. workflow-server-schemas.md and workflow-server.md directly relevant."
+    },
+    {
+      "type": "step_output",
+      "step_id": "review-existing",
+      "output": "Reviewed workflow-server-schemas.md (380 lines): covers dual-schema design, field propagation lifecycle, additionalProperties policy, Mode pattern as template, extension surface. Reviewed workflow-server.md (262 lines): covers architecture, tool call lifecycle, design patterns."
+    },
+    {
+      "type": "step_output",
+      "step_id": "architecture-survey",
+      "output": "All 10 target files analyzed. Architecture well-understood from prior activities. Key insight: get_skills handler at resource-tools.ts:84-139 is the primary extension point."
+    },
+    {
+      "type": "step_output",
+      "step_id": "key-abstractions",
+      "output": "readSkill() is the sole server-used export from skill-loader.ts. get_skills extracts skillIds from activity.skills. Workflow schema has executionModel but no skills field."
+    },
+    {
+      "type": "step_output",
+      "step_id": "design-rationale",
+      "output": "Skills were activity-scoped because the original design tied skills to activities. Universal skills in meta/ were a later addition for cross-cutting concerns but were never integrated into the get_skills API path."
+    },
+    {
+      "type": "step_output",
+      "step_id": "domain-concept-mapping",
+      "output": "Workflow-level skills = execution protocol skills (how to run). Activity-level skills = domain skills (what to do). This distinction was implicit; making it explicit via schema field makes the architecture self-documenting."
+    },
+    {
+      "type": "step_output",
+      "step_id": "create-comprehension-artifact",
+      "output": "Augmented workflow-server-schemas.md with Deep-Dive 2 (§9): 4 new sections covering get_skills anatomy, schema extension, dead code map, and meta skill update points. Added 3 resolved questions to Open Questions table."
+    },
+    {
+      "type": "step_output",
+      "step_id": "initial-deep-dive",
+      "output": "All 3 new open questions resolved through code analysis: Q6 (get_skills branching), Q7 (dead code inventory), Q8 (findWorkflowsWithSkills is NOT dead). skill-loader.test.ts analyzed: 7 tests to remove, 11 to keep."
+    },
+    {
+      "type": "step_output",
+      "step_id": "revise-initial-questions",
+      "output": "All open questions resolved. has_open_questions=false, needs_comprehension=false. Comprehension sufficient — skipping sufficiency checkpoint per SUFFICIENCY RULE."
+    },
+    {
+      "type": "checkpoint_response",
+      "checkpoint_id": "architecture-confirmed",
+      "selected_option_id": "corrections",
+      "effects_applied": {},
+      "user_corrections": [
+        "Workflow-level skills should NOT be semantically constrained as 'how-to-run'. Same flexibility as activity-level skills.",
+        "executionModel may become unnecessary after workflow-level skills are added."
+      ]
+    },
+    {
+      "type": "step_output",
+      "step_id": "architecture-corrections",
+      "output": "Applied 2 corrections: (1) removed 'how to run vs what to do' semantic constraint from §9.2, (2) added §9.5 executionModel deprecation analysis and §9.6 corrections log to comprehension artifact."
+    },
+    {
+      "type": "variable_change",
+      "variable": "has_open_questions",
+      "old_value": true,
+      "new_value": false
+    },
+    {
+      "type": "variable_change",
+      "variable": "needs_comprehension",
+      "old_value": true,
+      "new_value": false
+    }
+  ]
+}
