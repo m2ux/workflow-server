@@ -47,7 +47,7 @@ graph TD
         s1([Select workflow])
         s2([Load workflow])
         s3([Initialize state])
-        s4([Apply rules])
+        s4([Load skills])
         s5([Detect execution model])
         s6([Discover target])
         s7([Read submodules])
@@ -74,7 +74,7 @@ graph TD
 | Select workflow | Identify target workflow from user request or present available workflows |
 | Load workflow | Load the selected workflow definition and extract metadata |
 | Initialize state | Initialize workflow state with variable defaults |
-| Apply rules | Internalize workflow-level rules for enforcement |
+| Load skills | Load behavioral protocols via get_skills (session-protocol, agent-conduct, workflow skills) |
 | Detect execution model | Check for EXECUTION MODEL rule; load orchestrate-workflow skill if present |
 | Discover target | Check for .gitmodules to determine repository type and resolve target_path |
 | Read submodules | Parse .gitmodules for submodule selection (only when is_monorepo is true) |
@@ -201,8 +201,10 @@ The Meta workflow defines universal skills used by all workflows:
 | `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
 | `engineering-artifacts-management` | Engineering artifact commits | Regular file vs submodule commit workflows for .engineering/ |
 | `github-cli-protocol` | GitHub CLI usage | GraphQL deprecation workarounds, REST API for mutations |
+| `session-protocol` | Session lifecycle protocol | Token handling, step manifests, resource usage, skill loading bootstrap |
+| `agent-conduct` | Agent behavioral boundaries | Code modification, file restrictions, communication, documentation, domain tool discipline, build commands |
 
-> **Note:** `workflow-execution` was absorbed into `execute-activity`. `orchestrate-workflow` was moved to `work-package/skills/` — it encodes the persistent-worker model which is not universal.
+> **Note:** `workflow-execution` was absorbed into `execute-activity`. `orchestrate-workflow` was moved to `work-package/skills/` — it encodes the persistent-worker model which is not universal. Agent behavioral rules formerly in `rules.toon` are now delivered through `session-protocol` and `agent-conduct` skills.
 
 ---
 
