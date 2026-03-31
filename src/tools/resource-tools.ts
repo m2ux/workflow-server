@@ -6,7 +6,7 @@ import { withAuditLog } from '../logging.js';
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import type { StructuredResource } from '../loaders/resource-loader.js';
-import { readSkill } from '../loaders/skill-loader.js';
+import { readSkill, listUniversalSkillIds, listWorkflowSkillIds } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
@@ -76,21 +76,35 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get all skills and their associated resources for an activity in one call. Resources are returned as a structured array with index, id, version, and content fields.',
+    'Get all skills and their associated resources in one call. Reads the current activity from the session token (set by next_activity). Before any activity is entered (token.act empty), returns workflow-level skills. On the first activity, returns workflow-level + activity skills. On subsequent activities, returns activity skills only.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
-      activity_id: z.string().describe('Activity ID to load skills for'),
     },
-    withAuditLog('get_skills', async ({ session_token, workflow_id, activity_id }) => {
+    withAuditLog('get_skills', async ({ session_token, workflow_id }) => {
       const token = await decodeSessionToken(session_token);
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
-      const activity = getActivity(wfResult.value, activity_id);
-      if (!activity) throw new Error(`Activity not found: ${activity_id}`);
+      const workflow = wfResult.value;
+      const activityId = token.act || null;
+      let skillIds: string[];
+      let scope: string;
 
-      const skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
+      if (!activityId) {
+        const universalIds = await listUniversalSkillIds(config.workflowDir);
+        const workflowSpecificIds = await listWorkflowSkillIds(config.workflowDir, workflow_id);
+        const workflowDeclared = workflow.skills ?? [];
+        const combined = new Set([...universalIds, ...workflowSpecificIds, ...workflowDeclared]);
+        skillIds = [...combined];
+        scope = 'workflow';
+      } else {
+        const activity = getActivity(workflow, activityId);
+        if (!activity) throw new Error(`Activity not found: ${activityId}`);
+        skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
+        scope = 'activity';
+      }
+
       const skills: Record<string, unknown> = {};
       const failedSkills: string[] = [];
       const allResources: StructuredResource[] = [];
@@ -120,13 +134,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const responseBody: Record<string, unknown> = { activity_id, skills, resources: allResources };
+      const responseBody: Record<string, unknown> = { activity_id: activityId, scope, skills, resources: allResources };
       if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
       if (duplicateIndices.length > 0) responseBody['duplicate_resource_indices'] = duplicateIndices;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseBody) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     }, traceOpts)
   );

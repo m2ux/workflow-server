@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { listSkills, listUniversalSkills, readSkill, readSkillIndex } from '../src/loaders/skill-loader.js';
+import { readSkill } from '../src/loaders/skill-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -7,39 +7,6 @@ import { tmpdir } from 'node:os';
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('skill-loader', () => {
-  describe('listUniversalSkills', () => {
-    it('should list universal skills from meta workflow', async () => {
-      const skills = await listUniversalSkills(WORKFLOW_DIR);
-      expect(skills.length).toBeGreaterThanOrEqual(2);
-      
-      const ids = skills.map(s => s.id);
-      expect(ids).toContain('execute-activity');
-      expect(ids).toContain('state-management');
-    });
-
-    it('should include index, name, and path in universal skills', async () => {
-      const skills = await listUniversalSkills(WORKFLOW_DIR);
-      const executeActivity = skills.find(s => s.id === 'execute-activity');
-      
-      expect(executeActivity).toBeDefined();
-      expect(executeActivity?.index).toBe('02');
-      expect(executeActivity?.name).toBe('Execute Activity');
-      expect(executeActivity?.path).toContain('execute-activity.toon');
-      expect(executeActivity?.workflowId).toBeUndefined();
-    });
-  });
-
-  describe('listSkills', () => {
-    it('should list all skills when given workflowDir', async () => {
-      const skills = await listSkills(WORKFLOW_DIR);
-      expect(skills.length).toBeGreaterThanOrEqual(2);
-      
-      const ids = skills.map(s => s.id);
-      expect(ids).toContain('execute-activity');
-      expect(ids).toContain('state-management');
-    });
-  });
-
   describe('readSkill', () => {
     it('should load a universal skill from meta workflow', async () => {
       const result = await readSkill('state-management', WORKFLOW_DIR);
@@ -158,63 +125,6 @@ describe('skill-loader', () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.name).toBe('SkillNotFoundError');
-      }
-    });
-  });
-
-  describe('readSkillIndex', () => {
-    it('should build skill index dynamically from skill files', async () => {
-      const result = await readSkillIndex(WORKFLOW_DIR);
-      
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.value.description).toBeDefined();
-        expect(result.value.universal.length).toBeGreaterThanOrEqual(2);
-      }
-    });
-
-    it('should include universal skills with id and capability', async () => {
-      const result = await readSkillIndex(WORKFLOW_DIR);
-      
-      expect(result.success).toBe(true);
-      if (result.success) {
-        const ids = result.value.universal.map(s => s.id);
-        expect(ids).toContain('execute-activity');
-        expect(ids).toContain('state-management');
-        
-        for (const skill of result.value.universal) {
-          expect(skill.id).toBeDefined();
-          expect(skill.capability).toBeDefined();
-        }
-      }
-    });
-
-    it('should group workflow-specific skills by workflow', async () => {
-      const result = await readSkillIndex(WORKFLOW_DIR);
-      
-      expect(result.success).toBe(true);
-      if (result.success) {
-        // Currently no workflow-specific skills exist
-        expect(result.value.workflow_specific).toBeDefined();
-      }
-    });
-
-    it('should include usage instructions and next_action for each skill', async () => {
-      const result = await readSkillIndex(WORKFLOW_DIR);
-      
-      expect(result.success).toBe(true);
-      if (result.success) {
-        // Check usage instructions exist
-        expect(result.value.usage).toBeDefined();
-        expect(result.value.usage).toContain('next_action');
-        
-        // Check each universal skill has next_action
-        for (const skill of result.value.universal) {
-          expect(skill.next_action).toBeDefined();
-          expect(skill.next_action.tool).toBe('get_skill');
-          expect(skill.next_action.parameters).toBeDefined();
-          expect(skill.next_action.parameters.skill_id).toBe(skill.id);
-        }
       }
     });
   });

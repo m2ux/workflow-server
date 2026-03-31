@@ -204,6 +204,13 @@
           "$ref": "#/definitions/executionModel",
           "description": "Declares the agent roles that participate in workflow execution"
         },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Workflow-level skill IDs. Returned by get_skills when called without activity_id."
+        },
         "initialActivity": {
           "type": "string",
           "description": "ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points."

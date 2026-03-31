@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
-import { readFile, readdir, stat } from 'node:fs/promises';
-import { join, basename } from 'node:path';
+import { readFile, readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
@@ -11,14 +11,6 @@ import { parseActivityFilename as parseSkillFilename } from './filename-utils.js
 
 /** The meta workflow contains universal skills */
 const META_WORKFLOW_ID = 'meta';
-
-export interface SkillEntry { 
-  index: string;
-  id: string; 
-  name: string; 
-  path: string;
-  workflowId?: string;
-}
 
 /** Find skill file by ID in a directory (handles NN- prefix) */
 async function findSkillFile(skillDir: string, skillId: string): Promise<string | null> {
@@ -91,6 +83,35 @@ async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | 
   }
 }
 
+async function listSkillIdsInDir(skillDir: string): Promise<string[]> {
+  if (!existsSync(skillDir)) return [];
+
+  try {
+    const files = await readdir(skillDir);
+    return files
+      .map(f => parseSkillFilename(f)?.id)
+      .filter((id): id is string => id !== undefined)
+      .sort();
+  } catch (error) {
+    logWarn('Failed to list skills', { skillDir, error: error instanceof Error ? error.message : String(error) });
+    return [];
+  }
+}
+
+/**
+ * List all universal skill IDs from meta/skills/.
+ */
+export async function listUniversalSkillIds(workflowDir: string): Promise<string[]> {
+  return listSkillIdsInDir(getUniversalSkillDir(workflowDir));
+}
+
+/**
+ * List skill IDs from a specific workflow's skills/ directory.
+ */
+export async function listWorkflowSkillIds(workflowDir: string, workflowId: string): Promise<string[]> {
+  return listSkillIdsInDir(getWorkflowSkillDir(workflowDir, workflowId));
+}
+
 /**
  * Read a skill by ID, with optional workflow context.
  * Resolution order:
@@ -132,183 +153,4 @@ export async function readSkill(
   }
   
   return err(new SkillNotFoundError(skillId));
-}
-
-/**
- * List all universal skills from meta/skills/
- */
-export async function listUniversalSkills(workflowDir: string): Promise<SkillEntry[]> {
-  const skillDir = getUniversalSkillDir(workflowDir);
-  
-  if (!existsSync(skillDir)) return [];
-  
-  try {
-    const files = await readdir(skillDir);
-    return files
-      .map(file => {
-        const parsed = parseSkillFilename(file);
-        if (!parsed) return null;
-        const name = parsed.id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        return { index: parsed.index, id: parsed.id, name, path: file };
-      })
-      .filter((entry): entry is SkillEntry => entry !== null)
-      .sort((a, b) => a.index.localeCompare(b.index));
-  } catch (error) {
-    logWarn('Failed to list universal skills', { error: error instanceof Error ? error.message : String(error) });
-    return []; 
-  }
-}
-
-/**
- * List skills for a specific workflow from {workflowDir}/{workflowId}/skills/
- */
-export async function listWorkflowSkills(workflowDir: string, workflowId: string): Promise<SkillEntry[]> {
-  const skillDir = getWorkflowSkillDir(workflowDir, workflowId);
-  
-  if (!existsSync(skillDir)) return [];
-  
-  try {
-    const files = await readdir(skillDir);
-    const entries: SkillEntry[] = [];
-    
-    for (const file of files) {
-      const parsed = parseSkillFilename(file);
-      if (!parsed) continue;
-      const name = parsed.id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      entries.push({ index: parsed.index, id: parsed.id, name, path: `skills/${file}`, workflowId });
-    }
-    
-    return entries.sort((a, b) => a.index.localeCompare(b.index));
-  } catch (error) {
-    logWarn('Failed to list workflow skills', { workflowId, error: error instanceof Error ? error.message : String(error) });
-    return []; 
-  }
-}
-
-/**
- * List all skills - both universal (from meta) and workflow-specific for all workflows.
- */
-export async function listSkills(workflowDir: string): Promise<SkillEntry[]> {
-  const skills: SkillEntry[] = [];
-  
-  // Add universal skills from meta workflow
-  skills.push(...await listUniversalSkills(workflowDir));
-  
-  if (existsSync(workflowDir)) {
-    try {
-      const entries = (await readdir(workflowDir)).sort();
-      for (const entry of entries) {
-        if (entry === META_WORKFLOW_ID) continue;
-        const entryPath = join(workflowDir, entry);
-        const stats = await stat(entryPath);
-        if (stats.isDirectory()) {
-          const workflowSkills = await listWorkflowSkills(workflowDir, entry);
-          skills.push(...workflowSkills);
-        }
-      }
-    } catch (error) {
-      logWarn('Failed to enumerate workflow skill directories', { workflowDir, error: error instanceof Error ? error.message : String(error) });
-    }
-  }
-  
-  return skills;
-}
-
-export interface SkillIndex {
-  description: string;
-  usage: string;
-  universal: Array<{
-    id: string;
-    capability: string;
-    next_action: {
-      tool: string;
-      parameters: Record<string, string>;
-    };
-  }>;
-  workflow_specific: Record<string, Array<{
-    id: string;
-    capability: string;
-    next_action: {
-      tool: string;
-      parameters: Record<string, string>;
-    };
-  }>>;
-}
-
-/**
- * Build skill index dynamically from skill files.
- * Returns universal skills and workflow-specific skills grouped by workflow.
- * Loads skills directly from enumerated entries to avoid redundant readdir calls.
- */
-export async function readSkillIndex(workflowDir: string): Promise<Result<SkillIndex, SkillNotFoundError>> {
-  const universal: SkillIndex['universal'] = [];
-  const workflow_specific: SkillIndex['workflow_specific'] = {};
-  
-  // Load universal skills directly from already-enumerated entries
-  const universalEntries = await listUniversalSkills(workflowDir);
-  const universalSkillDir = getUniversalSkillDir(workflowDir);
-  for (const entry of universalEntries) {
-    const skill = await tryLoadSkill(universalSkillDir, entry.id);
-    if (skill) {
-      universal.push({
-        id: skill.id,
-        capability: skill.capability,
-        next_action: {
-          tool: 'get_skill',
-          parameters: { skill_id: skill.id },
-        },
-      });
-    }
-  }
-  
-  // Load workflow-specific skills directly from enumerated entries
-  if (existsSync(workflowDir)) {
-    try {
-      const entries = await readdir(workflowDir);
-      for (const workflowId of entries.sort()) {
-        if (workflowId === META_WORKFLOW_ID) continue;
-        const entryPath = join(workflowDir, workflowId);
-        const stats = await stat(entryPath);
-        if (stats.isDirectory()) {
-          const workflowSkillEntries = await listWorkflowSkills(workflowDir, workflowId);
-          if (workflowSkillEntries.length > 0) {
-            const skillDir = getWorkflowSkillDir(workflowDir, workflowId);
-            workflow_specific[workflowId] = [];
-            for (const skillEntry of workflowSkillEntries) {
-              const skill = await tryLoadSkill(skillDir, skillEntry.id);
-              if (skill) {
-                workflow_specific[workflowId].push({
-                  id: skill.id,
-                  capability: skill.capability,
-                  next_action: {
-                    tool: 'get_skill',
-                    parameters: { skill_id: skill.id, workflow_id: workflowId },
-                  },
-                });
-              }
-            }
-          }
-        }
-      }
-    } catch (error) {
-      logWarn('Failed to build skill index', { workflowDir, error: error instanceof Error ? error.message : String(error) });
-    }
-  }
-  
-  if (universal.length === 0 && Object.keys(workflow_specific).length === 0) {
-    return err(new SkillNotFoundError('index'));
-  }
-  
-  const index: SkillIndex = {
-    description: 'Skills provide tool orchestration patterns for executing activities.',
-    usage: 'After identifying a skill, call the tool specified in next_action with the given parameters to get full execution guidance.',
-    universal,
-    workflow_specific,
-  };
-  
-  logInfo('Skill index built dynamically', { 
-    universalCount: universal.length, 
-    workflowCount: Object.keys(workflow_specific).length 
-  });
-  return ok(index);
 }
