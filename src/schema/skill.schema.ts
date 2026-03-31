@@ -106,8 +106,11 @@ export type InputsDefinition = z.infer<typeof InputsDefinitionSchema>;
 export const ProtocolDefinitionSchema = z.object({}).catchall(z.array(z.string()).describe('Ordered list of imperative bullets for this step or phase.'));
 export type ProtocolDefinition = z.infer<typeof ProtocolDefinitionSchema>;
 
-/** Flat name-value rules: each key is a rule name; each value is a single rule string. */
-export const RulesDefinitionSchema = z.record(z.string().describe('Rule text for this rule name.'));
+/** Named rules: each key is a rule name or group; each value is a single rule string or an array of related rules. */
+export const RulesDefinitionSchema = z.record(z.union([
+  z.string().describe('Single rule text.'),
+  z.array(z.string()).describe('Array of related rules grouped under this key.'),
+]));
 export type RulesDefinition = z.infer<typeof RulesDefinitionSchema>;
 
 export const OutputComponentsDefinitionSchema = z.record(z.string()).describe('Named output components: each key is a component id, value is the spec or description for that component');
