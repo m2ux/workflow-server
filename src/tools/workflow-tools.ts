@@ -25,8 +25,8 @@ const activityManifestSchema = z.array(z.object({
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
 
-  server.tool('help', 'How to use this server. Call this first. Returns the bootstrap procedure and session protocol.', {},
-    withAuditLog('help', async () => {
+  server.tool('discovery', 'Discover this server. Call this first. Returns available workflows and bootstrap procedure.', {},
+    withAuditLog('discovery', async () => {
       const workflows = await listWorkflows(config.workflowDir);
       const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '00');
       const guide: Record<string, unknown> = {
@@ -40,7 +40,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: JSON.stringify(guide) }] };
     }));
 
-  server.tool('list_workflows', 'List all available workflow definitions. Call this after help to choose a workflow.', {},
+  server.tool('list_workflows', 'List all available workflow definitions. Call this after discovery to choose a workflow.', {},
     withAuditLog('list_workflows', async () => ({
       content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir)) }],
     })));

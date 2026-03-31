@@ -51,9 +51,9 @@ describe('mcp-server integration', () => {
 
   // ============== Bootstrap Tools ==============
 
-  describe('tool: help', () => {
+  describe('tool: discovery', () => {
     it('should return bootstrap guide and available workflows', async () => {
-      const result = await client.callTool({ name: 'help', arguments: {} });
+      const result = await client.callTool({ name: 'discovery', arguments: {} });
       expect(result.isError).toBeFalsy();
       const guide = parseToolResponse(result);
       expect(guide.server).toBeDefined();
