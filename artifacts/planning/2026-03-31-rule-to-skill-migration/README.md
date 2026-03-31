@@ -41,11 +41,10 @@ The migration works in three phases to avoid disrupting agents during the transi
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | 13 tasks across 4 phases — all complete | 2-4h | ✅ Complete |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| 09 | [Change block index](09-change-block-index.md) | 28 blocks across 18 files | 5-10m | ✅ Complete |
+| 09 | [Code review](09-code-review.md) | 0 critical, 2 low, 1 info — all acceptable | 10-20m | ✅ Complete |
+| 09 | [Test suite review](09-test-suite-review.md) | 262 tests pass, coverage adequate | 10-20m | ✅ Complete |
+| — | Validation | Build, test, lint — all pass | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
@@ -63,4 +62,4 @@ The migration works in three phases to avoid disrupting agents during the transi
 
 ---
 
-**Status:** Implementation complete — 13/13 tasks done, all tests pass (262/262)
+**Status:** Post-implementation review complete — ready for PR review
