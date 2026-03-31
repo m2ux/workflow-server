@@ -84,6 +84,25 @@ async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | 
 }
 
 /**
+ * List all universal skill IDs from meta/skills/.
+ */
+export async function listUniversalSkillIds(workflowDir: string): Promise<string[]> {
+  const skillDir = getUniversalSkillDir(workflowDir);
+  if (!existsSync(skillDir)) return [];
+
+  try {
+    const files = await readdir(skillDir);
+    return files
+      .map(f => parseSkillFilename(f)?.id)
+      .filter((id): id is string => id !== undefined)
+      .sort();
+  } catch (error) {
+    logWarn('Failed to list universal skills', { error: error instanceof Error ? error.message : String(error) });
+    return [];
+  }
+}
+
+/**
  * Read a skill by ID, with optional workflow context.
  * Resolution order:
  * 1. If workflowId provided: check {workflowDir}/{workflowId}/skills/NN-{skillId}.toon

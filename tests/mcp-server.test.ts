@@ -361,12 +361,20 @@ describe('mcp-server integration', () => {
       expect(meta['session_token']).toBeDefined();
     });
 
-    it('should error when pre-activity and workflow has no skills declared', async () => {
+    it('should return universal meta skills even for workflows without declared skills', async () => {
+      const metaSession = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'meta' },
+      });
+      const metaToken = parseToolResponse(metaSession).session_token;
       const result = await client.callTool({
         name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'meta' },
+        arguments: { session_token: metaToken, workflow_id: 'meta' },
       });
-      expect(result.isError).toBe(true);
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.scope).toBe('workflow');
+      expect(Object.keys(response.skills).length).toBeGreaterThanOrEqual(1);
     });
   });
 

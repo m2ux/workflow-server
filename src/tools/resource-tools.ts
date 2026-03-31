@@ -6,7 +6,7 @@ import { withAuditLog } from '../logging.js';
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import type { StructuredResource } from '../loaders/resource-loader.js';
-import { readSkill } from '../loaders/skill-loader.js';
+import { readSkill, listUniversalSkillIds } from '../loaders/skill-loader.js';
 import { readRules } from '../loaders/rules-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
@@ -99,11 +99,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       let scope: string;
 
       if (!activityId) {
-        skillIds = workflow.skills ?? [];
+        const universalIds = await listUniversalSkillIds(config.workflowDir);
+        const workflowDeclared = workflow.skills ?? [];
+        const combined = new Set([...universalIds, ...workflowDeclared]);
+        skillIds = [...combined];
         scope = 'workflow';
-        if (skillIds.length === 0) {
-          throw new Error(`No workflow-level skills declared for workflow '${workflow_id}'. Call next_activity first to load activity skills.`);
-        }
       } else {
         const activity = getActivity(workflow, activityId);
         if (!activity) throw new Error(`Activity not found: ${activityId}`);
