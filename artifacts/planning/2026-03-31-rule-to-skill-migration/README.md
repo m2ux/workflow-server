@@ -53,7 +53,7 @@ This duplication creates real maintenance problems. When a rule needs updating, 
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#88](https://github.com/m2ux/workflow-server/issues/88) |
-| PR | *Created during start-work-package* |
+| PR | [#89](https://github.com/m2ux/workflow-server/pull/89) |
 | Branch | `enhancement/88-rule-to-skill-migration` |
 | Depends On | [#86](https://github.com/m2ux/workflow-server/issues/86) — Workflow-level skills |
 
