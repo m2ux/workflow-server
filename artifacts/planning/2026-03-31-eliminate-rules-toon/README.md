@@ -53,7 +53,7 @@ The practical consequences are threefold. First, the `start_session` response is
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#90](https://github.com/m2ux/workflow-server/issues/90) |
-| PR | *Created below* |
+| PR | [#91](https://github.com/m2ux/workflow-server/pull/91) |
 
 ---
 
