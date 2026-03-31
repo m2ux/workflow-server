@@ -8,9 +8,10 @@
 
 ## Reconciliation Summary
 
-Total: 19 | Validated: 12 | Invalidated: 1 | Partially Validated: 0 | Open: 6  
+Total: 19 | Validated: 18 | Invalidated: 1 | Partially Validated: 0 | Open: 0  
 Convergence iterations: 3 (1 per activity) | Newly surfaced: 0  
-**Stakeholder corrections applied**: A-04-01 invalidated (orchestration models are family-specific, not universal)
+**Stakeholder corrections applied**: A-04-01 invalidated (orchestration models are family-specific, not universal)  
+**Assumptions review**: All 6 open assumptions accepted by user (2026-03-31)
 
 ---
 
@@ -52,32 +53,29 @@ Convergence iterations: 3 (1 per activity) | Newly surfaced: 0
 **Risk if wrong:** If no tests existed, we could make changes without updating test expectations. Since they do exist, tests must be updated.
 
 ### A-02-06: No external consumers depend on the start_session rules response shape  
-**Status:** Open  
+**Status:** Validated (user-accepted)  
 **Resolvability:** Not code-analyzable  
 **Assumption:** Only the MCP client agents consume `start_session` responses, and no external tooling or integrations parse the `rules` field programmatically.  
-**What would resolve it:** Stakeholder confirmation that no external systems or scripts depend on the `start_session` response shape.  
-**Risk if wrong:** Changing the rules response shape could break unknown consumers. However, the change is easily reversible — the `readRules()` function can be restored.
+**Resolution:** Accepted by stakeholder — no external consumers depend on the response shape.  
+**Risk if wrong:** Easily reversible — restore rules.toon content.
 
 ### A-02-07: Priority ordering (P1 → P2 → P3) is the correct migration sequence  
-**Status:** Open  
+**Status:** Validated (user-accepted)  
 **Resolvability:** Not code-analyzable  
-**Assumption:** Extracting the highest-duplication rule groups first (orchestrator-discipline at ~24, worker-execution-discipline at ~12) maximizes early value and validates the migration pattern.  
-**What would resolve it:** Stakeholder confirmation that impact-based prioritization is preferred over risk-based or dependency-based ordering.  
-**Risk if wrong:** A different ordering might reduce risk or unblock other work. However, the ordering is easily reversible — any group can be extracted independently.
+**Assumption:** Extracting the highest-duplication rule groups first maximizes early value and validates the migration pattern.  
+**Resolution:** Accepted by stakeholder — impact-based prioritization confirmed. Phase 1 tasks are independent anyway.
 
 ### A-02-08: The 85-rule payload in start_session is a context efficiency concern  
-**Status:** Open  
+**Status:** Validated (user-accepted)  
 **Resolvability:** Not code-analyzable  
-**Assumption:** The monolithic 85-rule payload returned by `start_session` consumes significant agent context window space and would be more efficiently delivered on-demand via `get_skills`.  
-**What would resolve it:** Empirical measurement of token counts or stakeholder judgment on context budget allocation.  
-**Risk if wrong:** If the payload is small relative to agent context windows, slimming may not provide meaningful benefit. However, the architectural improvement (structured skills vs prose rules) has value independent of payload size.
+**Assumption:** The monolithic 85-rule payload consumes significant context and would be more efficiently delivered on-demand via `get_skills`.  
+**Resolution:** Accepted by stakeholder — architectural improvement has value independent of token savings.
 
 ### A-02-09: Workflow-specific unique rules should remain in workflow.toon  
-**Status:** Open  
+**Status:** Validated (user-accepted)  
 **Resolvability:** Not code-analyzable  
-**Assumption:** Rules that are genuinely unique to a single workflow (e.g., "PREREQUISITE: Agents MUST read AGENTS.md") should remain as workflow-level rules rather than being extracted into skills.  
-**What would resolve it:** Architectural decision on whether ALL rules should eventually live in skills or whether workflow.toon rules serve a legitimate purpose for workflow-specific constraints.  
-**Risk if wrong:** Leaving some rules in workflow.toon creates a hybrid model where agents must check both places. This is path-committing — migrating from a hybrid model later requires revisiting all workflows again.
+**Assumption:** Rules genuinely unique to a single workflow should remain as workflow-level rules rather than being extracted into skills.  
+**Resolution:** Accepted by stakeholder — hybrid model confirmed (workflow-specific rules stay, duplicated protocols migrate to skills).
 
 ---
 
@@ -113,18 +111,16 @@ Convergence iterations: 3 (1 per activity) | Newly surfaced: 0
 **Risk if wrong:** Would require both file and code changes, increasing scope.
 
 ### A-04-05: Prism-specific skills should go in prism/skills/ rather than meta/skills/  
-**Status:** Open  
+**Status:** Validated (user-accepted)  
 **Resolvability:** Not code-analyzable  
-**Assumption:** Skills like `analytical-isolation` and `prism-report-formatting` that apply only to prism-family workflows should be scoped to `prism/skills/` rather than placed universally in `meta/skills/`.  
-**What would resolve it:** Architectural decision on skill scoping. Currently `prism/skills/` does not exist as a directory — it would need to be created.  
-**Risk if wrong:** Placing them in meta/skills/ makes them available to all workflows (unnecessary but harmless). Placing them in prism/skills/ makes them available only to the prism workflow — prism-audit and prism-evaluate would need cross-workflow resolution (tier 3 search). This is easily reversible.
+**Assumption:** Skills like `analytical-isolation` and `prism-report-formatting` should be scoped to `prism/skills/` rather than placed universally in `meta/skills/`.  
+**Resolution:** Accepted by stakeholder — prism-specific skills stay scoped. Cross-workflow resolution (tier 3) handles prism-audit and prism-evaluate access. Prism consolidation deferred to follow-up work package.
 
 ### A-04-06: ~29 guardrail rules should remain in rules.toon rather than becoming skills  
-**Status:** Open  
+**Status:** Validated (user-accepted)  
 **Resolvability:** Not code-analyzable  
-**Assumption:** Generic behavioral rules (communication standards, documentation standards, task management, error recovery, build commands, domain tool discipline, context management) are better served as upfront guardrails in rules.toon than as skills, because they apply universally and don't benefit from skill structure (protocol, inputs, outputs).  
-**What would resolve it:** Stakeholder decision on whether to keep a hybrid model (some rules in rules.toon, protocols in skills) or to move everything into skills for a unified model.  
-**Risk if wrong:** If all rules should be skills, the scope expands significantly. This is path-committing — the hybrid vs unified decision affects the end-state architecture.
+**Assumption:** Generic behavioral rules (~29 rules across 9 sections) are better served as upfront guardrails in rules.toon than as skills.  
+**Resolution:** Accepted by stakeholder — guardrails stay in rules.toon. The hybrid model mirrors a natural distinction: guardrails (always-on behavioral bounds via start_session) vs protocols (structured procedures loaded on-demand via get_skills).
 
 ---
 

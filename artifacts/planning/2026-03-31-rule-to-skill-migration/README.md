@@ -63,4 +63,4 @@ The migration works in three phases to avoid disrupting agents during the transi
 
 ---
 
-**Status:** Ready — plan and test plan complete, PR updated
+**Status:** Ready — all assumptions accepted, ready for implementation
