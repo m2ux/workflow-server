@@ -17,7 +17,7 @@ protocol:
     - "Call list_workflows and match user goal to a workflow by comparing to descriptions"
     - "If no workflow matches, inform the user — this is a design gap, not a user error"
   bootstrap-session[1]:
-    - "Call start_session(workflow_id) to load agent rules and obtain a session token"
+    - "Call start_session(workflow_id) to obtain workflow metadata and a session token"
   bootstrap-activity[2]:
     - "Call next_activity({ workflow_id, activity_id }) to load the activity definition"
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, modeOverrides, and artifactPrefix"
@@ -68,7 +68,7 @@ tools:
     next: "start_session with chosen workflow_id"
   start_session:
     when: "First action on initial dispatch (not needed on resume)"
-    returns: "Agent rules, workflow metadata, and session token"
+    returns: "Workflow metadata and session token"
   next_activity:
     when: "After receiving activity_id"
     params: "workflow_id, activity_id"
