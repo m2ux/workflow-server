@@ -11,6 +11,8 @@ import { parseActivityFilename } from './filename-utils.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; description?: string | undefined; }
 
+const META_WORKFLOW_ID = 'meta';
+
 /** Raw workflow before activity loading */
 interface RawWorkflow {
   id: string;
@@ -123,6 +125,7 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
     const manifests: WorkflowManifestEntry[] = [];
     
     for (const entry of entries) {
+      if (entry === META_WORKFLOW_ID) continue;
       const entryPath = join(workflowDir, entry);
       const stats = await stat(entryPath);
       

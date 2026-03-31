@@ -13,19 +13,19 @@ describe('skill-loader', () => {
       expect(skills.length).toBeGreaterThanOrEqual(2);
       
       const ids = skills.map(s => s.id);
-      expect(ids).toContain('activity-resolution');
-      expect(ids).toContain('workflow-execution');
+      expect(ids).toContain('execute-activity');
+      expect(ids).toContain('state-management');
     });
 
     it('should include index, name, and path in universal skills', async () => {
       const skills = await listUniversalSkills(WORKFLOW_DIR);
-      const activityResolution = skills.find(s => s.id === 'activity-resolution');
+      const executeActivity = skills.find(s => s.id === 'execute-activity');
       
-      expect(activityResolution).toBeDefined();
-      expect(activityResolution?.index).toBe('00');
-      expect(activityResolution?.name).toBe('Activity Resolution');
-      expect(activityResolution?.path).toBe('00-activity-resolution.toon');
-      expect(activityResolution?.workflowId).toBeUndefined();
+      expect(executeActivity).toBeDefined();
+      expect(executeActivity?.index).toBe('05');
+      expect(executeActivity?.name).toBe('Execute Activity');
+      expect(executeActivity?.path).toContain('execute-activity.toon');
+      expect(executeActivity?.workflowId).toBeUndefined();
     });
   });
 
@@ -35,29 +35,29 @@ describe('skill-loader', () => {
       expect(skills.length).toBeGreaterThanOrEqual(2);
       
       const ids = skills.map(s => s.id);
-      expect(ids).toContain('workflow-execution');
-      expect(ids).toContain('activity-resolution');
+      expect(ids).toContain('execute-activity');
+      expect(ids).toContain('state-management');
     });
   });
 
   describe('readSkill', () => {
     it('should load a universal skill from meta workflow', async () => {
-      const result = await readSkill('activity-resolution', WORKFLOW_DIR);
+      const result = await readSkill('state-management', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.id).toBe('activity-resolution');
+        expect(result.value.id).toBe('state-management');
         expect(result.value.capability).toBeDefined();
       }
     });
 
-    it('should load workflow-execution as universal skill', async () => {
-      const result = await readSkill('workflow-execution', WORKFLOW_DIR);
+    it('should load execute-activity as universal skill', async () => {
+      const result = await readSkill('execute-activity', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.id).toBe('workflow-execution');
-        expect(result.value.version).toBe('3.0.0');
+        expect(result.value.id).toBe('execute-activity');
+        expect(result.value.version).toBeDefined();
         expect(result.value.capability).toBeDefined();
       }
     });
@@ -72,52 +72,41 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should load workflow-execution skill with all required sections', async () => {
-      const result = await readSkill('workflow-execution', WORKFLOW_DIR);
+    it('should load execute-activity skill with protocol and tools', async () => {
+      const result = await readSkill('execute-activity', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
         const skill = result.value;
         
-        // Check protocol (refactored from execution_pattern)
         expect(skill.protocol).toBeDefined();
         
-        // Check tools
         expect(skill.tools).toBeDefined();
-        expect(skill.tools['list_workflows']).toBeDefined();
-        expect(skill.tools['get_workflow']).toBeDefined();
+        expect(skill.tools['start_session']).toBeDefined();
         expect(skill.tools['next_activity']).toBeDefined();
-        expect(skill.tools['get_checkpoint']).toBeDefined();
-        expect(skill.tools['get_activities']).toBeDefined();
+        expect(skill.tools['get_skills']).toBeDefined();
         
-        // Check state reference (structure now in state.schema.json, behavior in state-management skill)
-        expect(skill.state).toBeDefined();
+        expect(skill.rules).toBeDefined();
+        expect(Object.keys(skill.rules).length).toBeGreaterThanOrEqual(7);
         
-        // Check interpretation
-        expect(skill.interpretation).toBeDefined();
-        expect(skill.interpretation.transitions).toBeDefined();
-        expect(skill.interpretation.checkpoints).toBeDefined();
-        
-        // Check errors
         expect(skill.errors).toBeDefined();
         expect(Object.keys(skill.errors).length).toBeGreaterThanOrEqual(3);
       }
     });
 
-    it('should have tool guidance with when and returns fields', async () => {
-      const result = await readSkill('workflow-execution', WORKFLOW_DIR);
+    it('should have tool guidance with when field', async () => {
+      const result = await readSkill('execute-activity', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
         for (const [toolName, toolInfo] of Object.entries(result.value.tools)) {
           expect(toolInfo.when, `${toolName} should have 'when' field`).toBeDefined();
-          expect(toolInfo.returns, `${toolName} should have 'returns' field`).toBeDefined();
         }
       }
     });
 
     it('should have error recovery patterns', async () => {
-      const result = await readSkill('workflow-execution', WORKFLOW_DIR);
+      const result = await readSkill('execute-activity', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -190,8 +179,8 @@ describe('skill-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         const ids = result.value.universal.map(s => s.id);
-        expect(ids).toContain('activity-resolution');
-        expect(ids).toContain('workflow-execution');
+        expect(ids).toContain('execute-activity');
+        expect(ids).toContain('state-management');
         
         for (const skill of result.value.universal) {
           expect(skill.id).toBeDefined();

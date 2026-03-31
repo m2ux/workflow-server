@@ -144,7 +144,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
-      skill_id: z.string().describe('Skill ID (e.g., workflow-execution, activity-resolution)'),
+      skill_id: z.string().describe('Skill ID (e.g., execute-activity, orchestrate-workflow)'),
     },
     withAuditLog('get_skill', async ({ session_token, workflow_id, skill_id }) => {
       const token = await decodeSessionToken(session_token);

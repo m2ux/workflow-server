@@ -73,7 +73,7 @@ describe('mcp-server integration', () => {
       expect(Array.isArray(workflows)).toBe(true);
       const ids = workflows.map((w: { id: string }) => w.id);
       expect(ids).toContain('work-package');
-      expect(ids).toContain('meta');
+      expect(ids).not.toContain('meta');
     });
   });
 
