@@ -54,7 +54,7 @@ Auto-included on the first `get_skills` call for any workflow session.
 | [`03-state-management`](meta/skills/03-state-management.toon) | Manage workflow state across sessions |
 | [`04-artifact-management`](meta/skills/04-artifact-management.toon) | Manage planning artifact folder structure |
 | [`05-version-control-protocol`](meta/skills/05-version-control-protocol.toon) | Conventional commits, branch management, destructive operation guardrails |
-| [`06-engineering-artifacts-management`](meta/skills/06-engineering-artifacts-management.toon) | Regular file vs submodule commit workflows for .engineering/ |
+| [`04-artifact-management`](meta/skills/04-artifact-management.toon) | Planning folders, regular file + submodule commit workflows |
 | [`07-github-cli-protocol`](meta/skills/07-github-cli-protocol.toon) | GitHub CLI usage: GraphQL deprecation workarounds, REST API for mutations |
 | [`08-knowledge-base-search`](meta/skills/08-knowledge-base-search.toon) | Optimise knowledge base searches via pre-indexed domain map |
 | [`09-atlassian-operations`](meta/skills/09-atlassian-operations.toon) | Perform Atlassian Jira and Confluence operations via MCP |
