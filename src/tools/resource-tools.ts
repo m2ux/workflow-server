@@ -11,6 +11,20 @@ import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 
+/**
+ * Parse a resource reference that may include a workflow prefix.
+ * Format: "workflow/index" for cross-workflow, or bare "index" for local.
+ * Examples: "meta/05" → { workflowId: "meta", index: "05" }
+ *           "05"      → { workflowId: undefined, index: "05" }
+ */
+function parseResourceRef(ref: string): { workflowId: string | undefined; index: string } {
+  const slashIdx = ref.indexOf('/');
+  if (slashIdx > 0) {
+    return { workflowId: ref.substring(0, slashIdx), index: ref.substring(slashIdx + 1) };
+  }
+  return { workflowId: undefined, index: ref };
+}
+
 async function loadSkillResources(workflowDir: string, workflowId: string, skillValue: unknown): Promise<StructuredResource[]> {
   if (typeof skillValue !== 'object' || skillValue === null) return [];
   const resources_field = (skillValue as Record<string, unknown>)['resources'];
@@ -18,11 +32,29 @@ async function loadSkillResources(workflowDir: string, workflowId: string, skill
   const skillResources = resources_field.filter((v): v is string => typeof v === 'string');
 
   const resources: StructuredResource[] = [];
-  for (const idx of skillResources) {
-    const result = await readResourceStructured(workflowDir, workflowId, idx);
-    if (result.success) resources.push(result.value);
+  for (const ref of skillResources) {
+    const parsed = parseResourceRef(ref);
+    const targetWorkflow = parsed.workflowId ?? workflowId;
+    const result = await readResourceStructured(workflowDir, targetWorkflow, parsed.index);
+    if (result.success) {
+      resources.push({ ...result.value, index: ref });
+    }
   }
   return resources;
+}
+
+/**
+ * Strip the raw `resources` array from a skill value and attach resolved content.
+ * Returns a new object with `_resources` containing the resolved content
+ * and the original `resources` reference list removed.
+ */
+function bundleSkillWithResources(skillValue: unknown, resolvedResources: StructuredResource[]): unknown {
+  if (typeof skillValue !== 'object' || skillValue === null) return skillValue;
+  const { resources: _stripped, ...rest } = skillValue as Record<string, unknown>;
+  if (resolvedResources.length > 0) {
+    return { ...rest, _resources: resolvedResources };
+  }
+  return rest;
 }
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
@@ -76,12 +108,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get all skills and their associated resources in one call. Reads the current activity from the session token (set by next_activity). Before any activity is entered (token.act empty), returns workflow-level skills. On the first activity, returns workflow-level + activity skills. On subsequent activities, returns activity skills only.',
+    'Get all skills with resources nested under each skill. Before any activity is entered (token.act empty), returns workflow-level skills. When an activity is entered and agent_id is provided: if the agent_id differs from the last known agent (token.aid), returns universal meta skills + activity skills (first call for a new agent); if the agent_id matches, returns activity skills only. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
+      agent_id: z.string().optional().describe('Agent identifier. When provided, the server detects new agents and includes universal/meta skills on their first call. Omit for backward-compatible behavior.'),
     },
-    withAuditLog('get_skills', async ({ session_token, workflow_id }) => {
+    withAuditLog('get_skills', async ({ session_token, workflow_id, agent_id }) => {
       const token = await decodeSessionToken(session_token);
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
@@ -90,6 +123,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const activityId = token.act || null;
       let skillIds: string[];
       let scope: string;
+      const isNewAgent = agent_id !== undefined && agent_id !== token.aid;
 
       if (!activityId) {
         const universalIds = await listUniversalSkillIds(config.workflowDir);
@@ -98,6 +132,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         const combined = new Set([...universalIds, ...workflowSpecificIds, ...workflowDeclared]);
         skillIds = [...combined];
         scope = 'workflow';
+      } else if (isNewAgent) {
+        const activity = getActivity(workflow, activityId);
+        if (!activity) throw new Error(`Activity not found: ${activityId}`);
+        const universalIds = await listUniversalSkillIds(config.workflowDir);
+        const activitySkills = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
+        const combined = new Set([...universalIds, ...activitySkills]);
+        skillIds = [...combined];
+        scope = 'activity+meta';
       } else {
         const activity = getActivity(workflow, activityId);
         if (!activity) throw new Error(`Activity not found: ${activityId}`);
@@ -107,23 +149,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const skills: Record<string, unknown> = {};
       const failedSkills: string[] = [];
-      const allResources: StructuredResource[] = [];
-      const seenIndices = new Set<string>();
-      const duplicateIndices: string[] = [];
 
       for (const sid of skillIds) {
         const result = await readSkill(sid, config.workflowDir, workflow_id);
         if (result.success) {
-          skills[sid] = result.value;
           const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
-          for (const r of resources) {
-            if (!seenIndices.has(r.index)) {
-              seenIndices.add(r.index);
-              allResources.push(r);
-            } else {
-              duplicateIndices.push(r.index);
-            }
-          }
+          skills[sid] = bundleSkillWithResources(result.value, resources);
         } else {
           failedSkills.push(sid);
         }
@@ -134,20 +165,22 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const responseBody: Record<string, unknown> = { activity_id: activityId, scope, skills, resources: allResources };
+      const responseBody: Record<string, unknown> = { activity_id: activityId, scope, skills };
       if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
-      if (duplicateIndices.length > 0) responseBody['duplicate_resource_indices'] = duplicateIndices;
+
+      const tokenUpdates: { wf: string; aid?: string } = { wf: workflow_id };
+      if (isNewAgent) tokenUpdates.aid = agent_id;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseBody) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, tokenUpdates), validation },
       };
     }, traceOpts)
   );
 
   server.tool(
     'get_skill',
-    'Get a single skill with its referenced resources. Resources are returned as a structured array with index, id, version, and content fields.',
+    'Get a single skill with its referenced resources. Resources are nested under the skill as _resources (the raw resources reference list is stripped).',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -168,8 +201,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
 
       const response = {
-        skill: result.value,
-        resources,
+        skill: bundleSkillWithResources(result.value, resources),
       };
 
       return {
