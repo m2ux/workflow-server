@@ -83,27 +83,32 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get all skills and their associated resources in one call. When activity_id is provided, returns skills declared by that activity. When activity_id is omitted, returns workflow-level skills declared in the workflow\'s skills field. Resources are returned as a structured array with index, id, version, and content fields.',
+    'Get all skills and their associated resources in one call. Reads the current activity from the session token (set by next_activity). Before any activity is entered (token.act empty), returns workflow-level skills. On the first activity, returns workflow-level + activity skills. On subsequent activities, returns activity skills only.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
-      activity_id: z.string().optional().describe('Activity ID to load skills for. When omitted, returns workflow-level skills.'),
     },
-    withAuditLog('get_skills', async ({ session_token, workflow_id, activity_id }) => {
+    withAuditLog('get_skills', async ({ session_token, workflow_id }) => {
       const token = await decodeSessionToken(session_token);
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
+      const workflow = wfResult.value;
+      const activityId = token.act || null;
       let skillIds: string[];
-      if (activity_id) {
-        const activity = getActivity(wfResult.value, activity_id);
-        if (!activity) throw new Error(`Activity not found: ${activity_id}`);
-        skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
-      } else {
-        skillIds = wfResult.value.skills ?? [];
+      let scope: string;
+
+      if (!activityId) {
+        skillIds = workflow.skills ?? [];
+        scope = 'workflow';
         if (skillIds.length === 0) {
-          throw new Error(`No workflow-level skills declared for workflow '${workflow_id}'`);
+          throw new Error(`No workflow-level skills declared for workflow '${workflow_id}'. Call next_activity first to load activity skills.`);
         }
+      } else {
+        const activity = getActivity(workflow, activityId);
+        if (!activity) throw new Error(`Activity not found: ${activityId}`);
+        skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
+        scope = 'activity';
       }
 
       const skills: Record<string, unknown> = {};
@@ -135,13 +140,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const responseBody: Record<string, unknown> = { activity_id: activity_id ?? null, skills, resources: allResources };
+      const responseBody: Record<string, unknown> = { activity_id: activityId, scope, skills, resources: allResources };
       if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
       if (duplicateIndices.length > 0) responseBody['duplicate_resource_indices'] = duplicateIndices;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseBody) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id ?? '' }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     }, traceOpts)
   );

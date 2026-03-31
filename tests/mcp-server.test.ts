@@ -276,9 +276,14 @@ describe('mcp-server integration', () => {
     });
 
     it('get_skills should return structured resources array', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
       const result = await client.callTool({
         name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+        arguments: { session_token: actToken, workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -304,77 +309,38 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // ============== Batch Skill Loading ==============
+  // ============== Token-Driven Skill Loading ==============
 
   describe('tool: get_skills', () => {
-    it('should return all skills for an activity in one call', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      expect(result.isError).toBeFalsy();
-
-      const response = parseToolResponse(result);
-      expect(response.activity_id).toBe('start-work-package');
-      expect(response.skills).toBeDefined();
-      expect(response.skills['create-issue']).toBeDefined();
-      const meta = result._meta as Record<string, unknown>;
-      expect(meta['session_token']).toBeDefined();
-    });
-
-    it('should include primary and supporting skills', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      const response = parseToolResponse(result);
-      const skillIds = Object.keys(response.skills);
-      expect(skillIds.length).toBeGreaterThanOrEqual(1);
-    });
-
-    it('should return updated token in _meta', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      const meta = result._meta as Record<string, unknown>;
-      expect(meta['session_token']).toBeDefined();
-    });
-
-    it('should error for non-existent activity', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'non-existent' },
-      });
-      expect(result.isError).toBe(true);
-    });
-  });
-
-  // ============== Workflow-Level Skills ==============
-
-  describe('tool: get_skills (workflow-level)', () => {
-    it('should return workflow-level skills when activity_id is omitted', async () => {
+    it('should return workflow-level skills before any activity is entered', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken, workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
-
       const response = parseToolResponse(result);
-      expect(response.skills).toBeDefined();
-      expect(Object.keys(response.skills).length).toBeGreaterThanOrEqual(1);
+      expect(response.scope).toBe('workflow');
       expect(response.activity_id).toBeNull();
+      expect(response.skills['orchestrate-workflow']).toBeDefined();
+      expect(response.skills['execute-activity']).toBeDefined();
     });
 
-    it('should resolve workflow-level skills via universal fallback', async () => {
+    it('should return activity skills after next_activity sets token.act', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
       const result = await client.callTool({
         name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+        arguments: { session_token: actToken, workflow_id: 'work-package' },
       });
+      expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('orchestrate-workflow');
-      expect(skillIds).toContain('execute-activity');
+      expect(response.scope).toBe('activity');
+      expect(response.activity_id).toBe('start-work-package');
+      expect(response.skills['create-issue']).toBeDefined();
+      expect(response.skills['orchestrate-workflow']).toBeUndefined();
     });
 
     it('should include resources for workflow-level skills', async () => {
@@ -386,7 +352,7 @@ describe('mcp-server integration', () => {
       expect(Array.isArray(response.resources)).toBe(true);
     });
 
-    it('should return updated token in _meta for workflow-level call', async () => {
+    it('should return updated token in _meta', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken, workflow_id: 'work-package' },
@@ -395,23 +361,12 @@ describe('mcp-server integration', () => {
       expect(meta['session_token']).toBeDefined();
     });
 
-    it('should error when workflow has no skills declared', async () => {
+    it('should error when pre-activity and workflow has no skills declared', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken, workflow_id: 'meta' },
       });
       expect(result.isError).toBe(true);
-    });
-
-    it('should preserve existing activity-level behavior', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.activity_id).toBe('start-work-package');
-      expect(Object.keys(response.skills).length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -918,7 +873,7 @@ describe('mcp-server integration', () => {
     it('accumulated trace tokens resolve via get_trace (IT-8)', async () => {
       await client.callTool({
         name: 'get_skills',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
       });
 
       const act1 = await client.callTool({
