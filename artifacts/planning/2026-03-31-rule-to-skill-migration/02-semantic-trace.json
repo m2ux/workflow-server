@@ -1,0 +1,92 @@
+{
+  "activity": "design-philosophy",
+  "artifactPrefix": "02",
+  "timestamp": "2026-03-31T00:00:00Z",
+  "workPackage": {
+    "issue": 88,
+    "title": "Extract convoluted workflow rule groups into dedicated skill+resource sets",
+    "branch": "enhancement/88-rule-to-skill-migration",
+    "pr": 89
+  },
+  "steps": [
+    {
+      "id": "define-problem",
+      "status": "completed",
+      "summary": "Defined problem: workflow TOON files embed ~140+ behavioral rules as prose text with heavy duplication across 10 workflows. Three rule layers identified: global (85 rules in meta/rules.toon), workflow-level (118 rules across 10 workflow.toon files), skill-level (already formalized)."
+    },
+    {
+      "id": "classify-problem",
+      "status": "completed",
+      "summary": "Classified as Inventive Goal — Improvement with Complex complexity. Not broken but architecturally suboptimal. Touches all 3 rule layers, requires server code changes, and affects behavioral contracts."
+    },
+    {
+      "id": "determine-path",
+      "status": "completed",
+      "summary": "Selected research-only path. Requirements are clear from prior analysis; elicitation unnecessary. Research needed for skill/resource structure patterns and start_session slimming approach."
+    },
+    {
+      "id": "document-philosophy",
+      "status": "completed",
+      "artifact": "02-design-philosophy.md",
+      "summary": "Created design philosophy with problem statement, system context (3-layer rule architecture), impact assessment, classification rationale, workflow path decision, constraints, success criteria, and initial design decisions."
+    },
+    {
+      "id": "collect-assumptions",
+      "status": "completed",
+      "summary": "Identified 9 assumptions across Problem Interpretation, Complexity Assessment, and Workflow Path categories."
+    },
+    {
+      "id": "create-assumptions-log",
+      "status": "completed",
+      "artifact": "02-assumptions-log.md",
+      "summary": "Created assumptions log with 9 assumptions. Reconciliation converged in 1 iteration: 5 validated through code analysis, 4 open (non-code-resolvable)."
+    },
+    {
+      "id": "reconcile-assumptions",
+      "status": "completed",
+      "summary": "Reconciliation loop converged. Validated: list_workflows has no meta filter, start_session returns full 85-rule payload, meta/skills/ provides universal fallback, RulesSchema supports minimal content, tests exist that need updating. Open: external consumer impact, priority ordering, context efficiency, hybrid rule model."
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "classification-confirmed",
+      "response": "confirmed",
+      "summary": "Inventive Goal — Improvement, Complex complexity confirmed"
+    },
+    {
+      "id": "workflow-path-selected",
+      "response": "research-only",
+      "summary": "Research only path selected — skip elicitation, research skill/resource patterns"
+    }
+  ],
+  "keyFindings": {
+    "codebaseEvidence": [
+      "listWorkflows() in workflow-loader.ts:119-157 has no meta exclusion — iterates all directories with workflow.toon",
+      "start_session in resource-tools.ts:40-79 calls readRules() which returns full meta/rules.toon content unconditionally",
+      "readSkill() in skill-loader.ts:101-134 uses layered search with meta/skills/ as universal fallback",
+      "RulesSchema in rules.schema.ts:10-17 allows empty rules arrays via optional() — minimal file is valid",
+      "rules-loader.test.ts and mcp-server.test.ts both assert on current rules structure"
+    ],
+    "ruleInventory": {
+      "globalRules": 85,
+      "workflowRules": {
+        "work-package": 13,
+        "prism": 12,
+        "prism-evaluate": 10,
+        "prism-audit": 8,
+        "prism-update": 6,
+        "cicd-pipeline-security-audit": 20,
+        "substrate-node-security-audit": 27,
+        "workflow-design": 14,
+        "work-packages": 5,
+        "meta": 3
+      },
+      "totalWorkflowRules": 118,
+      "totalAllRules": 203
+    }
+  },
+  "transition": {
+    "to": "research",
+    "rationale": "Requirements clear, research needed for skill structure patterns"
+  }
+}
