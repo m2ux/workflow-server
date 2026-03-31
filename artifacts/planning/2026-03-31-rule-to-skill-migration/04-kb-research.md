@@ -139,6 +139,8 @@ errors:
 - Not every extracted group needs `tools`, `inputs`, or `output` — these apply only when the skill governs specific tool usage patterns
 - Resources should be used for lengthy reference material (checklists, templates, guides) that would bloat the skill file
 
+**CORRECTION (stakeholder):** P1 orchestrator-discipline should NOT merge into a single universal `orchestrate-workflow` skill. Three orchestration models exist (persistent-worker, disposable-worker, concurrent-dispatch). Orchestration discipline must be family-specific. Additionally, `workflow-execution` (01) should be absorbed into `execute-activity` (05) or deprecated — it's a shallow API reference fully superseded by execute-activity's behavioral protocol.
+
 ### Recommended start_session Slimming Approach
 
 **Option B (selected): Retain session-protocol, remove everything else.**

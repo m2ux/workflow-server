@@ -8,8 +8,9 @@
 
 ## Reconciliation Summary
 
-Total: 15 | Validated: 9 | Invalidated: 0 | Partially Validated: 0 | Open: 6  
-Convergence iterations: 2 (1 per activity) | Newly surfaced: 0
+Total: 15 | Validated: 8 | Invalidated: 1 | Partially Validated: 0 | Open: 6  
+Convergence iterations: 2 (1 per activity) | Newly surfaced: 0  
+**Stakeholder corrections applied**: A-04-01 invalidated (orchestration models are family-specific, not universal)
 
 ---
 
@@ -83,11 +84,12 @@ Convergence iterations: 2 (1 per activity) | Newly surfaced: 0
 ## Activity: Research (04)
 
 ### A-04-01: Orchestrator-discipline rules can be merged into existing orchestrate-workflow skill  
-**Status:** Validated  
+**Status:** Invalidated (corrected by stakeholder)  
 **Resolvability:** Code-analyzable  
 **Assumption:** The orchestrator-discipline rules duplicated across workflow.toon files are semantically equivalent to rules already present in the `orchestrate-workflow` skill, making merge (not separate skill creation) the correct approach.  
-**Evidence:** Compared work-package/workflow.toon rules 2, 9-12 against orchestrate-workflow skill rules. Direct equivalences found: `inline-execution` = EXECUTION MODEL, `no-domain-work` = ORCHESTRATOR DISCIPLINE, `skill-loading-boundary` = SKILL-LOADING BOUNDARY, `automatic-transition` = AUTOMATIC TRANSITION RULE, `checkpoint-presentation` ≈ CHECKPOINT YIELD RULE. The skill already has 18 named rules covering all orchestrator concepts. The workflow rules are semantic duplicates with different phrasing.  
-**Risk if wrong:** If the skill rules were different in meaning, creating a separate skill would be needed.
+**Evidence:** Code analysis confirmed semantic overlap in rule text. However, stakeholder correction revealed the critical flaw: three distinct orchestration models exist (persistent-worker in work-package, disposable-worker in prism-family, concurrent-dispatch in security audits). Merging into a single universal skill would confuse agents running workflows with different patterns. The `orchestrate-workflow` skill already targets the persistent-worker model.  
+**Resolution:** Orchestration discipline should be family-specific, not universal. Options: (1) workflow-family skills (e.g., `prism-orchestration`, `audit-orchestration`), (2) keep orchestration rules workflow-level but deduplicate within each family, (3) parameterized skill with model-specific protocol branches.  
+**Risk if wrong:** A universal orchestration skill would cause agents to apply persistent-worker patterns to disposable-worker workflows (or vice versa), breaking analytical isolation in prism or context preservation in work-package.
 
 ### A-04-02: Worker-execution rules can be merged into existing execute-activity skill  
 **Status:** Validated  
