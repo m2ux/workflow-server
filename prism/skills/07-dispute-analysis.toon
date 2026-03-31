@@ -13,17 +13,19 @@ inputs[3]:
     description: "Directory for dispute-lens-a.md, dispute-lens-b.md, dispute-synthesis.md"
 
 protocol:
-  select-pair[2]:
+  select-pair[3]:
     - "For code: l12 (00) + identity (17) — highest pairwise uniqueness"
     - "For general: l12_universal (18) + claim (07)"
+    - "l12+identity for code, l12_universal+claim for general — these pairs maximize analytical divergence"
   execute-lenses[3]:
     - "Dispatch prism A to a fresh worker with its resource index"
     - "Dispatch prism B to a fresh worker (can be parallel)"
     - "Each worker writes to {output-path}/dispute-lens-{a|b}.md"
-  synthesize-disagreements[3]:
+  synthesize-disagreements[4]:
     - "Dispatch synthesis to a fresh worker with dispute-synthesis resource (62)"
     - "Worker constructs input: \"# LENS A: {prism_a}\\n\\n{output_a}\\n\\n---\\n\\n# LENS B: {prism_b}\\n\\n{output_b}\""
     - "Worker writes to {output-path}/dispute-synthesis.md"
+    - "The synthesis focuses on DISAGREEMENTS, not agreements. Convergence is noted only to test implicit shared assumptions."
 
 output[1]:
   - id: dispute-result
@@ -35,9 +37,7 @@ output[1]:
       prism_pair: "Resource indices and lens identities used for A and B"
 
 rules:
-  pair-selection: "l12+identity for code, l12_universal+claim for general — these pairs maximize analytical divergence"
   isolation: "Each lens runs in a fresh context; neither sees the other's output"
-  synthesis-focus: "The synthesis focuses on DISAGREEMENTS, not agreements. Convergence is noted only to test implicit shared assumptions."
   model-selection: "Each prism uses its optimal model from YAML frontmatter. Synthesis uses sonnet."
 
 resources[5]:

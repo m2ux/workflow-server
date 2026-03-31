@@ -18,17 +18,20 @@ protocol:
     - "Identify what is in scope for the current package — specific deliverables and changes"
     - "Identify what is explicitly out of scope with reasons for exclusion"
     - "Apply the independence test: could this package be shipped without any other package?"
-  identify-dependencies[3]:
+  identify-dependencies[4]:
     - "Document hard blockers: packages or external factors that must complete first"
     - "Document soft dependencies: helpful but not required"
     - "Flag circular dependencies as decomposition problems requiring resolution"
-  estimate-effort[3]:
+    - "Distinguish hard blockers from soft dependencies"
+  estimate-effort[4]:
     - "Assess complexity: Low / Medium / High based on scope and unknowns"
     - "Estimate agentic time, review time, and calendar time as ranges"
     - "Document the rationale for the estimate, noting key complexity drivers"
-  define-success[2]:
+    - "Use ranges for effort, not point estimates"
+  define-success[3]:
     - "Establish measurable success criteria — each must be objectively verifiable"
     - "Include verification method for each criterion (tests, review, demonstration)"
+    - "Every success criterion must be objectively verifiable"
   document-plan[2]:
     - "Use attached resource 03 (package-plan-template) for the document structure"
     - "Create NN-{package-name}-plan.md in the planning folder using the template"
@@ -46,9 +49,6 @@ output[1]:
 
 rules:
   scope-specificity: "Scope items must name specific deliverables — vague scope leads to scope creep"
-  dependency-types: "Distinguish hard blockers from soft dependencies"
-  range-estimates: "Use ranges for effort, not point estimates"
-  verifiable-criteria: "Every success criterion must be objectively verifiable"
 
 resources[1]:
   - "03"

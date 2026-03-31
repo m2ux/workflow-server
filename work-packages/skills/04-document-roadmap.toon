@@ -21,13 +21,15 @@ protocol:
   update-readme[2]:
     - "Add navigation links to all analysis and plan documents"
     - "Organize links by document type: analysis, package plans"
-  add-timeline[3]:
+  add-timeline[4]:
     - "Group packages into implementation phases based on dependency chains"
     - "Calculate phase durations from effort estimates (use formula from resource)"
     - "Present timeline as a phase table with packages and estimated duration"
-  document-success[2]:
+    - "Timeline estimates use ranges, not point estimates, derived from package effort estimates"
+  document-success[3]:
     - "Define initiative-level success criteria (all packages complete, domain-specific criteria)"
     - "Reference per-package criteria from individual plan documents"
+    - "Initiative-level success criteria must be measurable and verifiable"
   present-roadmap[2]:
     - "Present the completed roadmap to the user for final review"
     - "Set roadmap_complete to true after user confirms"
@@ -44,8 +46,6 @@ output[2]:
 
 rules:
   complete-before-implementation: "Roadmap must be fully documented and approved before implementation begins"
-  timeline-uses-ranges: "Timeline estimates use ranges, not point estimates, derived from package effort estimates"
-  success-criteria-measurable: "Initiative-level success criteria must be measurable and verifiable"
 
 resources[1]:
   - "05"

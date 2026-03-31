@@ -16,10 +16,12 @@ protocol:
   load-guidance[2]:
     - Use attached resource 16 (rust-substrate-code-review) for full review criteria
     - Identify all files changed since work package started using git diff
-  review-files[3]:
+  review-files[5]:
     - Review each changed file against architecture and design patterns
     - Check error handling, safety, and unwrap/expect usage
     - Verify Substrate-specific patterns (weights, storage, hooks, extrinsics)
+    - "Evaluate architecture and design pattern adherence before low-level details"
+    - "For rust-substrate projects, check weight annotations, storage migrations, hook implementations, and extrinsic validation"
   document-findings[2]:
     - Document each finding with severity (critical, high, medium, low, informational)
     - Create code-review.md report in planning folder
@@ -36,10 +38,8 @@ output[1]:
       summary: "Counts by severity level and top issues"
 
 rules:
-  architecture-first: "Evaluate architecture and design pattern adherence before low-level details"
   evidence-required: "Every finding must cite specific code with file path and line numbers"
   severity-consistency: "Apply severity levels consistently — critical for security/data loss, high for correctness, medium for maintainability, low for style"
-  substrate-awareness: "For rust-substrate projects, check weight annotations, storage migrations, hook implementations, and extrinsic validation"
 
 resources[1]:
   - "16"

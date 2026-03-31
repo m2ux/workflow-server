@@ -14,14 +14,16 @@ inputs[3]:
     description: "Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)"
 
 protocol:
-  prompt-transcript[2]:
+  prompt-transcript[3]:
     - Prompt user for stakeholder discussion transcript before elicitation
     - Offer skip option with note about limitation
-  iterate-domains[4]:
+    - "Stakeholder input first: User should discuss with key stakeholders before agent elicitation"
+  iterate-domains[5]:
     - Use attached resource 05 (requirements-elicitation) for question domains
     - Iterate through domains one question at a time
     - Record responses and adapt follow-up based on answers
     - Skip irrelevant follow-ups; probe deeper when needed
+    - "Skip option always available — user can say 'skip' to move to next question"
   collect-assumptions[2]:
     - Identify assumptions from requirement interpretation
     - "Categorize by Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria"
@@ -48,8 +50,6 @@ output[1]:
 
 rules:
   conversation-not-interrogation: "Core principle: Conversation, not interrogation — discover what user actually needs"
-  skip-always-available: "Skip option always available — user can say 'skip' to move to next question"
-  stakeholder-first: "Stakeholder input first: User should discuss with key stakeholders before agent elicitation"
 
 resources[1]:
   - "05"

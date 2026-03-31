@@ -11,17 +11,17 @@ resources[3]:
 
 rules:
   rubric-required: "Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration examples in resource 08 (and target profile if present) before finalizing. Do not assign severity intuitively."
-  connection-pool-feasibility: "Connection pool and infrastructure findings affecting consensus paths through routinely-accessible systems (RPC, p2p): Feasibility >= 3"
-  panics-config-feasibility: "Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility = 2"
-  normal-operation-feasibility: "Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility = 4"
   under-rating: "Infrastructure and availability findings (pool sharing, SSL, genesis consistency, panics under normal operation) are systematically under-rated. Use calibration examples in resource 08."
   over-rating: "Configuration/toggle findings (mock data source, feature flags, InMemory keystore) are systematically over-rated. Use calibration examples in resource 08."
 
 protocol:
   determine-impact[1]:
     - For each finding, determine the Impact score (1-4) with a one-sentence justification
-  determine-feasibility[1]:
+  determine-feasibility[4]:
     - Determine the Feasibility score (1-4) with a one-sentence justification
+    - "Connection pool and infrastructure findings affecting consensus paths through routinely-accessible systems (RPC, p2p): Feasibility >= 3"
+    - "Panics triggered only by operator-provided invalid configuration (chain spec, config file): Feasibility = 2"
+    - "Conditions occurring under normal operation without attacker action (pruning, routine block production, standard configs): Feasibility = 4"
   map-to-severity[1]:
     - Compute average and map to severity using the scale (resource 02/08)
   compare-calibration[1]:

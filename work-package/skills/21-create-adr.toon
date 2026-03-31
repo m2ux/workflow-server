@@ -21,10 +21,11 @@ protocol:
     - Read design philosophy document for decision rationale
     - Review implementation analysis and plan for architectural choices
     - Identify alternatives that were considered and rejected
-  write-adr[3]:
+  write-adr[4]:
     - Create NNNN-{decision-title}.md at .engineering/artifacts/adr/
     - Use standard ADR format (Title, Status, Context, Decision, Consequences)
     - Set status to Proposed (finalize activity updates to Accepted)
+    - "New ADRs are created with status Proposed — the finalize activity updates to Accepted"
 
 output[1]:
   - id: adr-document
@@ -40,7 +41,6 @@ output[1]:
 rules:
   complexity-gate: "Only create ADRs for moderate or complex implementations — simple changes do not warrant ADRs"
   alternatives-required: "Every ADR must document at least one alternative that was considered"
-  status-proposed: "New ADRs are created with status Proposed — the finalize activity updates to Accepted"
 
 tools:
   read_file:

@@ -50,7 +50,7 @@ protocol:
     - "If no dimensions, use severity-ordered sequential numbering (e.g., F-01, F-02)"
     - "For multi-unit analyses, prefix with a short unit identifier where needed to avoid collisions"
     - "Record the full mapping: report_id → { source_artifact_path, original_id, original_severity }"
-  compose-report[7]:
+  compose-report[8]:
     - "Write the report in clean markdown with no methodology metadata in the front-matter"
     - "Front-matter: Subject, Evaluation Date, Scope — no lens names, no pass counts, no model versions"
     - "Executive Summary: 2-3 sentences on scope + findings count table by severity + statement of core finding"
@@ -58,6 +58,7 @@ protocol:
     - "Findings sections: organised by severity (Critical, High, Medium, Low). Each finding has: ID, severity, description (as a factual statement), classification, and blast radius annotation where graph data is available (e.g., '14 direct callers, 3 execution flows, 2 modules')"
     - "Corrections Required (if applicable): actionable items derived from findings"
     - "Traceability: appendix table mapping each report ID to source artifact and original ID"
+    - "The Executive Summary finding count must exactly match the number of findings in the body. Counting errors are a format violation."
   write-artifact[2]:
     - "Write the complete report to {output-path}/REPORT.md"
     - "Report the artifact path, file size, and format validation status"
@@ -75,7 +76,6 @@ rules:
   no-reassignment: "Severities are inherited from the authoritative source. The report worker does not second-guess the analytical pipeline's severity assignments."
   factual-voice: "All findings are written in factual declarative voice. No attribution to analytical process, passes, or lenses."
   traceability-completeness: "The traceability appendix must have an entry for every finding ID in the report. Missing entries are a report integrity violation."
-  no-inflation: "The Executive Summary finding count must exactly match the number of findings in the body. Counting errors are a format violation."
   blast-radius-is-evidence: "Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol."
 resources: []
 tools:

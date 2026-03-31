@@ -16,15 +16,17 @@ protocol:
   structural-analysis[2]:
     - "Dispatch L12 (resource 00) to a fresh worker"
     - "Worker writes to {output-path}/reflect-l12.md"
-  meta-analysis[3]:
+  meta-analysis[4]:
     - "Dispatch claim (resource 07) to a fresh worker"
     - "Worker receives the L12 OUTPUT as its analysis target (not source code)"
     - "Worker writes to {output-path}/reflect-meta.md"
-  constraint-synthesis[4]:
+    - "The claim prism runs on L12 OUTPUT, not on source code — this is recursive meta-analysis"
+  constraint-synthesis[5]:
     - "Dispatch synthesis to a fresh worker"
     - "Worker receives: L12 output + meta output + constraint history (if available)"
     - "Worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN"
     - "Worker writes to {output-path}/reflect-synthesis.md"
+    - "Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN"
 
 output[1]:
   - id: reflect-result
@@ -35,8 +37,6 @@ output[1]:
       synthesis_path: "Filesystem path to reflect-synthesis.md"
 
 rules:
-  meta-target: "The claim prism runs on L12 OUTPUT, not on source code — this is recursive meta-analysis"
-  synthesis-sections: "Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN"
   model-selection: "L12 uses its optimal model. Claim uses its optimal model. Synthesis uses sonnet."
 
 resources[2]:

@@ -16,16 +16,18 @@ protocol:
     - Accept the user's free-form description and summarize key design intent
     - Classify as create or update based on whether an existing workflow is referenced
     - Set mode variables and present classification for confirmation
-  context-loading[5]:
+  context-loading[6]:
     - "Fetch workflow-server://schemas MCP resource to load all five JSON schema definitions (workflow, activity, skill, condition, state)"
     - "Read schemas/README.md for the full schema ontology, entity relationships, field tables, examples, and validation guidance"
     - Call list_workflows and get_workflow for 2+ reference workflows
     - Read existing TOON files to confirm format understanding
     - "Cross-reference schema field tables to identify applicable constructs with correct field names, types, and constraints"
-  elicitation[3]:
+    - "Verify TOON format comprehension by reading existing files before drafting."
+  elicitation[4]:
     - Elicit one design dimension at a time with a dedicated checkpoint per question
     - "Capture purpose, activity list, activity model, checkpoints, artifacts, variables, skills, rules"
     - Present accumulated design after each answer so the user can track progress
+    - "Each elicitation question is a separate checkpoint. Never combine multiple questions."
   pattern-analysis[2]:
     - Extract structural and content patterns from 2+ reference workflows
     - Present patterns alongside proposed structure for comparison
@@ -62,12 +64,10 @@ rules:
   convention-first: "Search for existing naming conventions before introducing new patterns. Use NN-name.toon for activities and skills, NN-name.md for resources."
   modular-always: "workflow.toon defines metadata and references only. Activities, skills, and resources live in their own files."
   schema-immutable: "Never modify schemas during workflow creation. Fix content to match the schema, not the reverse."
-  one-question-at-a-time: "Each elicitation question is a separate checkpoint. Never combine multiple questions."
   plan-before-act: "Present approach and get confirmation before drafting each file."
   structural-enforcement: "Critical constraints must be backed by checkpoints, conditions, or validate actions — not just rule text."
   non-destructive: "For updates, compare new content against existing and flag any removals."
   corrections-persist: "Record user corrections and verify compliance at every subsequent checkpoint."
-  format-literacy: "Verify TOON format comprehension by reading existing files before drafting."
   scope-completeness: "Enumerate all files before starting and re-verify after completion."
   no-speculative-execution: "Never execute changes to see how they look. Follow the confirmed plan."
   defense-in-depth: "For highest-severity constraints, use multiple enforcement layers: rule text + checkpoint + validate action."

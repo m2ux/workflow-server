@@ -53,11 +53,12 @@ protocol:
     - "For selected area: trace data flows, examine implementation details, document edge cases"
     - "When GitNexus is available: use context() to trace callers/callees, read process resources for full execution traces, and cypher() for custom call chain queries"
     - "Append findings as dedicated subsections in the comprehension artifact"
-  question-management[4]:
+  question-management[5]:
     - "The 'Open Questions' section is a markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section"
     - "After each deep-dive iteration, mark resolved questions as 'Resolved' with a one-line summary and cross-reference to the deep-dive section that answered them"
     - "Add new questions discovered during investigation with status 'Open' — questions naturally emerge from tracing data flows, examining edge cases, and reading adjacent code"
     - "Below the table, maintain a 'Remaining follow-up items (out of scope)' list for questions identified but explicitly out of scope for the current work package"
+    - "The Open Questions table is generated content the user must evaluate — per the workflow's CHECKPOINT YIELD RULE, include it in the yield context."
 
 output[1]:
   - id: comprehension-artifact
@@ -82,7 +83,6 @@ rules:
   relevance-focus: "Prioritize areas relevant to the current problem statement while still building broadly useful knowledge"
   cross-reference: "Cross-reference related comprehension artifacts and note dependencies between codebase areas"
   question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
-  open-questions-before-yield: "The Open Questions table is generated content the user must evaluate — per the workflow's CHECKPOINT YIELD RULE, include it in the yield context."
 
 resources[2]:
   - "25"

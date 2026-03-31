@@ -16,21 +16,21 @@ inputs[3]:
 rules:
   refute-role: "Refute safety claims, not confirm them."
   focus-domains: "§3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these checks are most susceptible to false PASSes."
-  events-filtered-decompose: "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? call_addresses? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."
   cursor-guard: "A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'."
-  confirmed-only-verified: "CONFIRMED only when ALL decomposed properties are verified with code citations."
 
 protocol:
   seed-from-gaps[1]:
     - "If verification-gaps input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet target profile obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the adversarial queue regardless of severity estimate — the verification gap indicates higher false-PASS risk."
   extract-and-filter[1]:
     - "Collect all PASS verdicts from agent results. Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. Merge with any pre-seeded items from verification gaps. Deduplicate by checklist reference."
-  decompose-claims[1]:
+  decompose-claims[2]:
     - For each PASS item, enumerate the specific independent properties the PASS requires to be true. A claim like 'events are filtered for failed segments' decomposes into N properties — one per event field type (e.g., UTXOs, call_addresses, deploy_addresses, maintain_addresses, claim_rewards).
+    - "A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? call_addresses? deploy_addresses? maintain_addresses? claim_rewards? Each field independently."
   enumerate-instances[1]:
     - "For every property involving multiple fields, sites, or instances, enumerate ALL of them. A single-instance verification is insufficient. Produce a table: | Property | Instance | Verified? | Evidence |"
-  verify-independently[1]:
+  verify-independently[2]:
     - For each decomposed property, read the cited code location and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).
+    - "CONFIRMED only when ALL decomposed properties are verified with code citations."
 
 output[1]:
   - id: decomposition-results

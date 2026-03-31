@@ -38,9 +38,10 @@ protocol:
   execute-loops[2]:
     - "forEach: iterate over the named collection, executing loop steps for each item"
     - "doWhile: execute steps, evaluate condition, repeat up to maxIterations"
-  produce-artifacts[2]:
+  produce-artifacts[3]:
     - "Write artifacts to the planning folder using the activity's artifactPrefix convention"
     - "Record each artifact produced: id, name, path"
+    - "Prepend the activity's artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
   update-readme-progress[1]:
     - "MANDATORY before report-completion. Update the planning folder README.md progress table (see resource 06 for details)"
   write-semantic-trace[1]:
@@ -55,7 +56,7 @@ rules:
   preserve-context: "Accumulated codebase understanding persists across activities via Task resume parameter. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
   checkpoint-yield: "All blocking checkpoints MUST cause execution to yield. NEVER auto-resolve. Present checkpoints as interactive selection dialogues, not plain text."
-  artifact-prefixing: "Prepend the activity's artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')."
+
   workflow-fidelity: "Respect TOON semantics. Execute activities in sequence unless transitions allow alternatives. Activity transitions are automatic — never pause for user confirmation between activities."
 
 tools:

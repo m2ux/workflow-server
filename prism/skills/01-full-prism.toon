@@ -23,23 +23,26 @@ protocol:
   load-lens[2]:
     - "Resources are attached to skill responses (loaded via get_skill or get_skills). Resource index lens-resource-index is available in the _resources field after loading the lens prompt"
     - "The lens prompt is the program — it defines the exact sequence of analytical operations to execute"
-  read-prior-artifacts[2]:
+  read-prior-artifacts[3]:
     - "If prior-artifact-paths is provided, read each artifact file from the filesystem"
     - "Label the content: first artifact as ANALYSIS 1, second as ANALYSIS 2. These labels match what the adversarial and synthesis lenses expect."
+    - "Prior pass output MUST be read from the filesystem via the artifact path. The orchestrator provides paths, not inline content, to keep prompts focused and artifacts as the source of truth."
   apply-lens[3]:
     - "Apply every operation in the lens prompt sequentially against the target content"
     - "If prior artifacts were read, include them as context as instructed by the lens (adversarial lenses reference 'the structural analysis'; synthesis lenses reference 'ANALYSIS 1' and 'ANALYSIS 2')"
     - "Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain."
-  verify-with-graph[5]:
+  verify-with-graph[6]:
     - "ADVERSARIAL PASS ONLY (lens-resource-index 01). Skip this step for structural (00) and synthesis (02) passes."
     - "Check GitNexus availability via gitnexus_list_repos. If the target codebase is not indexed, skip graph verification entirely."
     - "For each blast-radius claim in the adversarial analysis (e.g., 'this affects module X only'), use gitnexus_impact(target: claimed_symbol, direction: upstream) to mechanically verify or refute. Record the measured affected-symbol count, affected-process count, and affected-module count alongside the claim."
     - "For each call-chain claim in the structural analysis being challenged, use gitnexus_context on the key symbols to verify whether the claimed callers/callees are actually connected in the graph. Note confirmed and refuted edges."
     - "For 'dead code' or 'unused path' claims, use gitnexus_cypher to query for incoming CALLS edges: MATCH (a)-[:CodeRelation {type: 'CALLS'}]->(b {name: 'claimed_dead_symbol'}) RETURN a.name, a.filePath. If results exist, the claim is refuted. Append a 'Graph Verification' section to the adversarial artifact with all verification results."
-  write-artifact[3]:
+    - "Graph verification results augment the adversarial analysis, not replace it. The adversarial lens operations execute first and produce the full analysis. Graph queries then provide mechanical evidence that strengthens or refutes specific claims. Graph verification is only performed during the adversarial pass (index 01)."
+  write-artifact[4]:
     - "Determine artifact filename from the pass type: structural-analysis.md (index 00), adversarial-analysis.md (index 01), synthesis.md (index 02)"
     - "Write the complete analysis to {output-path}/{artifact-filename}"
     - "Return the full artifact path in the output"
+    - "The analysis MUST be written to the filesystem. Return the artifact path to the orchestrator so subsequent passes can read it."
   format-output[4]:
     - "Structure the output with clear section headers matching the lens operations"
     - "For structural: claim, dialectic, concealment mechanism, improvements, invariant, conservation law, meta-law, findings table"
@@ -60,9 +63,7 @@ rules:
   evidence-required: "All findings must cite specific code or text: file paths, function names, line ranges, specific passages."
   no-context-leakage: "This worker runs in isolation. Do not reference conversations, prior interactions, or context beyond what was provided in the prompt."
   lens-is-program: "The lens resource is an imperative program. Execute its operations in order, producing the output each operation requests."
-  read-not-receive: "Prior pass output MUST be read from the filesystem via the artifact path. The orchestrator provides paths, not inline content, to keep prompts focused and artifacts as the source of truth."
-  persist-output: "The analysis MUST be written to the filesystem. Return the artifact path to the orchestrator so subsequent passes can read it."
-  graph-verification-augments: "Graph verification results augment the adversarial analysis, not replace it. The adversarial lens operations execute first and produce the full analysis. Graph queries then provide mechanical evidence that strengthens or refutes specific claims. Graph verification is only performed during the adversarial pass (index 01)."
+
 
 resources[3]:
   - "00"

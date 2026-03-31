@@ -18,10 +18,11 @@ protocol:
   initialize-state[2]:
     - "Check for saved state at {planning_folder_path}/workflow-state.toon — if found, call restore_state to resume (see resource 25)"
     - "If no saved state: set variables to defaults, current_activity to initialActivity, detect mode from user request"
-  dispatch-activity[3]:
+  dispatch-activity[4]:
     - "Call next_activity to load the activity definition"
     - "Compose worker prompt using resource 05 (worker-prompt-template) — do NOT inject paraphrased skill content"
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
+    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap."
   process-result[3]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
     - "If activity_complete: validate steps_completed and checkpoints_responded against activity definition — reject if incomplete"
@@ -46,7 +47,6 @@ protocol:
 rules:
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
   no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
-  skill-loading-boundary: "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap."
   target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
 
 tools:

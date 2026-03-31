@@ -19,11 +19,12 @@ protocol:
     - Classify all workflows by trigger type
     - Map permission scopes and checkout patterns
     - Assign scanner agents (one per submodule)
-  phase-3-primary-scan[4]:
+  phase-3-primary-scan[5]:
     - Dispatch all scanner agents concurrently
     - Collect scanner outputs and verify dispatch completeness
     - Dispatch verification agent (V) — check coverage
     - Dispatch merge agent (M) — deduplicate and reconcile
+    - "Verify all assigned agents were dispatched before proceeding"
   phase-4-report[3]:
     - Apply severity scoring using Impact x Exploitability rubric
     - Verify coverage gate
@@ -40,7 +41,6 @@ output[1]:
 rules:
   orchestrator-discipline: "Coordinate only — never analyze workflow files directly"
   phase-gates: "Enforce exitAction gates before advancing phases"
-  dispatch-completeness: "Verify all assigned agents were dispatched before proceeding"
 
 tools:
   get_workflow:

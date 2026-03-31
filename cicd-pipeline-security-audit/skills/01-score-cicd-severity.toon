@@ -15,12 +15,14 @@ protocol:
     - For each finding, assess Impact tier (T1-T4) based on worst-case outcome
     - For each finding, assess Exploitability tier (E1-E4) based on attacker prerequisites
     - Map (Impact, Exploitability) to severity level using the rubric matrix
-  score-compound[2]:
+  score-compound[3]:
     - Identify compound findings (multiple patterns on same workflow)
     - Apply compound severity elevation rules from the rubric
-  calibrate[2]:
+    - "Compound vulnerabilities receive the higher of: individual max severity, or one level above individual max"
+  calibrate[3]:
     - Cross-check severity assignments against campaign calibration anchors
     - Adjust any finding that diverges by >= 2 levels from a matching anchor
+    - "Severity must be consistent with known campaign outcomes"
 
 output[1]:
   - id: scored-findings
@@ -31,8 +33,6 @@ output[1]:
 
 rules:
   evidence-based: "Every severity assignment must cite the specific Impact and Exploitability factors"
-  compound-elevation: "Compound vulnerabilities receive the higher of: individual max severity, or one level above individual max"
-  campaign-calibration: "Severity must be consistent with known campaign outcomes"
 
 resources[1]:
   - "02"

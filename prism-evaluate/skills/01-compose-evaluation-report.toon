@@ -25,13 +25,14 @@ protocol:
     - "Portfolio dimensions produce one artifact per lens: e.g., claim-inversion.md (lens 07), knowledge-audit.md (lens 40), rejected-paths.md (lens 09), scarcity.md (lens 08)"
     - "Verify all expected artifacts exist. Record any missing artifacts for error reporting."
 
-  extract-findings-per-dimension[6]:
+  extract-findings-per-dimension[7]:
     - "For each dimension, read the terminal artifact (synthesis.md for full-prism, individual lens artifacts for portfolio)"
     - "Extract definitive findings: each finding has an ID, severity/importance, title, and summary description"
     - "For full-prism dimensions: use the synthesis document's definitive classification as the source of truth. The synthesis reconciles structural and adversarial analyses — use its final severity assignments."
     - "For portfolio dimensions: extract the key findings and conservation laws from each lens artifact. Assign severity using the Impact x Feasibility rubric: CRITICAL — directly undermines the target's core purpose. HIGH — degrades significant guarantees. MEDIUM — limited scope or conditional. LOW — informational."
     - "Assign unified finding IDs by dimension prefix: e.g., CON-01 for Consistency, VER-01 for Veracity, PLB-01 for Plausibility, FEA-01 for Feasibility. For custom dimensions, derive a 3-letter prefix from the dimension name."
     - "Record per-dimension: dimension name, finding count, finding count by severity, list of findings with IDs"
+    - "All severity labels must be computed from Impact x Feasibility: CRITICAL — flaws directly undermine the target's core purpose or stated goals. HIGH — flaws degrade significant guarantees or create major gaps. MEDIUM — flaws have limited scope or require specific conditions. LOW — informational findings or improvement opportunities."
 
   identify-cross-dimensional-patterns[4]:
     - "Compare findings across dimensions to identify patterns that span multiple evaluation axes"
@@ -97,4 +98,3 @@ errors:
 rules:
   methodology-stripping: "The report MUST NOT contain references to analytical methodology: no lens names (L12, claim-inversion, knowledge-audit, etc.), no pipeline mode names (full-prism, portfolio), no pass descriptions (structural pass, adversarial pass, synthesis), no process narratives ('the analysis first examined X then challenged Y'). Methodology details are available in the raw analysis artifacts for readers who want them."
   finding-id-convention: "Finding IDs use a 3-letter dimension prefix followed by a dash and two-digit number: CON-01, VER-03, PLB-01, FEA-07. For custom dimensions, derive the prefix from the first letters or a natural abbreviation."
-  severity-rubric: "All severity labels must be computed from Impact x Feasibility: CRITICAL — flaws directly undermine the target's core purpose or stated goals. HIGH — flaws degrade significant guarantees or create major gaps. MEDIUM — flaws have limited scope or require specific conditions. LOW — informational findings or improvement opportunities."

@@ -23,10 +23,11 @@ protocol:
     - "Use attached resource 06 (workflow-triggering-protocol) for the triggering procedure"
     - "Call get_workflow('work-package') to load the work-package workflow"
     - "Pass context: package name, scope from plan document, dependencies, planning folder path"
-  update-status[3]:
+  update-status[4]:
     - "After work-package workflow completes, update START-HERE.md status table"
     - "Mark completed package as done, add PR link"
     - "Update overall_progress counter"
+    - "Update START-HERE.md status after every completed package"
   check-remaining[2]:
     - "Remove completed package from remaining_packages, add to completed_packages"
     - "If remaining_packages is not empty, continue the loop with the next package"
@@ -41,7 +42,6 @@ output[1]:
 
 rules:
   one-at-a-time: "Execute one work-package workflow at a time — do not parallelize"
-  status-after-each: "Update START-HERE.md status after every completed package"
   context-passing: "Pass package context (scope, dependencies, planning path) to each work-package workflow instance"
   handle-failures: "If a package fails, mark it and continue with the next independent package"
 

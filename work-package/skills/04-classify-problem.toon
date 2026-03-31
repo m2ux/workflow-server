@@ -24,16 +24,18 @@ protocol:
     - Determine if specific problem (cause known/unknown) or inventive goal (improvement/prevention)
     - "Assess complexity as simple, moderate, or complex"
     - Document classification rationale
-  determine-path[3]:
+  determine-path[4]:
     - "Map complexity to workflow path (full, elicitation-only, research-only, or skip optional activities)"
     - Document path rationale
     - Set needs_elicitation, needs_research, skip_optional_activities accordingly
+    - "For simple changes, lightweight application is acceptable — not every bug fix needs full elicitation"
   document-philosophy[2]:
     - Create design-philosophy.md artifact in planning folder
     - Include problem statement, classification, complexity, workflow path rationale
-  create-assumptions-log[2]:
+  create-assumptions-log[3]:
     - Identify assumptions made during problem classification and path selection
     - Create assumptions-log.md artifact with initial assumptions
+    - "Create assumptions log here — first activity that makes decisions requiring assumptions"
 
 output[2]:
   - id: design-philosophy-doc
@@ -54,8 +56,6 @@ output[2]:
 
 rules:
   path-determines-workflow: "Design philosophy determines the path through the workflow — all subsequent activities depend on this classification"
-  lightweight-for-simple: "For simple changes, lightweight application is acceptable — not every bug fix needs full elicitation"
-  assumptions-first: "Create assumptions log here — first activity that makes decisions requiring assumptions"
 
 resources[1]:
   - "09"

@@ -13,11 +13,12 @@ protocol:
     - "Assess whether the user's request involves multiple distinct deliverables or a single work package"
     - "If single package, recommend using the work-package workflow directly instead"
     - "If multiple packages, proceed with decomposition"
-  identify-packages[4]:
+  identify-packages[5]:
     - "Parse the user's description to identify distinct units of work"
     - "Each package should be independently deliverable (its own branch, PR, and review cycle)"
     - "Name each package descriptively using the domain language from the user's description"
     - "Capture a one-sentence description for each package"
+    - "Package names should use domain language from the user's description, not implementation language"
   present-scope[3]:
     - "Present the identified packages in a numbered table with name and description"
     - "Highlight any packages that seem too large (should be split) or too small (should be merged)"
@@ -34,7 +35,6 @@ output[1]:
 rules:
   independence-test: "Each work package must be independently deliverable — if two packages cannot be shipped separately, they are one package"
   granularity: "Packages should be 2-8 hours of agentic work. Larger packages should be split; smaller ones merged."
-  naming: "Package names should use domain language from the user's description, not implementation language"
 
 resources[1]:
   - "00"
