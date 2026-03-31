@@ -14,7 +14,7 @@ describe('rules-loader', () => {
       if (result.success) {
         const rules = result.value;
         expect(rules.id).toBe('agent-rules');
-        expect(rules.version).toBe('1.0.0');
+        expect(rules.version).toBe('2.0.0');
         expect(rules.title).toBe('AI Agent Guidelines');
         expect(rules.description).toBeDefined();
         expect(rules.precedence).toBeDefined();
