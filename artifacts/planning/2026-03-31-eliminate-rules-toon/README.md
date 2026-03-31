@@ -1,7 +1,8 @@
 # Eliminate Standalone rules.toon — March 2026
 
 **Created:** 2026-03-31  
-**Status:** In Progress  
+**Status:** Complete  
+**Revised:** 2026-03-31 (completed)  
 **Type:** Refactor
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -40,8 +41,10 @@ On the server side, `start_session` is slimmed to return only `{ workflow, sessi
 | 09 | [Structural findings](09-structural-findings.md) | Conservation law, meta-law, bug table | 10m | ✅ Complete |
 | 09 | [Test suite review](09-test-suite-review.md) | Test quality and coverage assessment | 10m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 5m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10m | ⬚ Pending |
+| 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 10m | ✅ Complete |
+| — | PR submission | PR updated, marked ready for review | 5m | ✅ Complete |
+| 13 | [Completion summary](13-COMPLETE.md) | Deliverables, decisions, lessons learned | 10m | ✅ Complete |
+| 13 | [Workflow retrospective](13-workflow-retrospective.md) | Process improvement recommendations | 10m | ✅ Complete |
 
 ---
 
@@ -54,4 +57,4 @@ On the server side, `start_session` is slimmed to return only `{ workflow, sessi
 
 ---
 
-**Status:** Post-implementation review complete, proceeding to validation
+**Status:** Complete
