@@ -13,7 +13,7 @@ inputs[3]:
 
 protocol:
   resolve-goal[3]:
-    - "Call discovery to learn server usage and available workflows"
+    - "Call discover to learn server usage and available workflows"
     - "Call list_workflows and match user goal to a workflow by comparing to descriptions"
     - "If no workflow matches, inform the user — this is a design gap, not a user error"
   bootstrap-session[1]:
@@ -59,7 +59,7 @@ rules:
   workflow-fidelity: "Respect TOON semantics. Execute activities in sequence unless transitions allow alternatives. Activity transitions are automatic — never pause for user confirmation between activities."
 
 tools:
-  discovery:
+  discover:
     when: "Agent needs to learn how to use this server"
     returns: "Available workflows and bootstrap procedure"
   list_workflows:
