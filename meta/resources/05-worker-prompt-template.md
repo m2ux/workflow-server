@@ -17,7 +17,7 @@ You are the WORKER agent for the {workflow_id} workflow. Execute the `{activity_
 ## Bootstrap Instructions
 1. Call `start_session({ workflow_id: "{workflow_id}" })` to load agent rules and obtain a session token
 2. Call `next_activity({ workflow_id: "{workflow_id}", activity_id: "{activity_id}" })` to load the activity definition
-3. Call `get_skills({ workflow_id: "{workflow_id}", activity_id: "{activity_id}" })` to load all skills and resources
+3. Call `get_skills({ workflow_id: "{workflow_id}" })` to load skills and resources (token determines scope: workflow-level on first call, activity-level after next_activity)
 4. Execute steps per the loaded skill protocols
 
 ## Current State Variables

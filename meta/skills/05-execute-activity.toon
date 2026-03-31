@@ -13,16 +13,14 @@ inputs[3]:
     description: "Current workflow state variables"
 
 protocol:
-  bootstrap-workflow-skills[2]:
-    - "Call get_skills({ workflow_id }) WITHOUT activity_id to load workflow-level skills. This returns execute-activity (this skill) and any other workflow-level skills declared by the workflow."
-    - "Read the execute-activity protocol — it governs your entire execution lifecycle including mandatory phases (write-semantic-trace, update-readme-progress) that must execute before reporting completion."
   bootstrap-rules[1]:
     - "Call start_session(workflow_id) to load agent rules and obtain a session token. Follow these rules throughout execution."
-  bootstrap-activity[2]:
-    - "Call next_activity({ workflow_id, activity_id }) to load the activity definition"
+  bootstrap-activity[3]:
+    - "Call next_activity({ workflow_id, activity_id }) to load the activity definition. This sets token.act to the current activity."
     - "Extract steps, checkpoints, skills (primary + supporting), loops, decisions, transitions, modeOverrides, and artifactPrefix"
+    - "On the FIRST call to next_activity (before any activity has been entered), get_skills will automatically return workflow-level skills (including execute-activity). On subsequent activities, get_skills returns activity-level skills only."
   bootstrap-skill[2]:
-    - "Call get_skills({ workflow_id, activity_id }) to load all skills (primary + supporting) and their referenced resources in one call"
+    - "Call get_skills({ workflow_id }) to load skills and their referenced resources. The server uses the session token to determine scope: pre-activity returns workflow-level skills, post-next_activity returns activity-level skills."
     - "Read each skill's protocol, rules, tools, inputs, and output definitions. Referenced resources are in the response's resources array — each has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in this array."
   check-mode[2]:
     - "If is_review_mode is true in state variables, apply the activity's modeOverrides: use override description, apply override rules, add override steps, skip steps listed in skipSteps"
@@ -105,9 +103,9 @@ tools:
     params: "skill_id, workflow_id"
     returns: "Skill definition with protocol, tools, rules, inputs, output"
   get_skills:
-    when: "Activity bootstrap — load all skills and resources at once"
-    params: "session_token, workflow_id, activity_id"
-    returns: "All skills (primary + supporting) with referenced resources attached"
+    when: "Activity bootstrap — load all skills and resources at once. Token-driven: pre-activity returns workflow skills, post-next_activity returns activity skills."
+    params: "session_token, workflow_id"
+    returns: "Skills (scope depends on token state) with referenced resources attached"
   read_file:
     when: "Reading source code, artifacts, or planning documents"
     usage: "Examine codebase, load prior artifacts, review plans"
