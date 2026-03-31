@@ -8,7 +8,7 @@ tags[3]:
   - security
   - audit
   - workflow
-rules[27]:
+rules[26]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
   - "PREREQUISITE: Use attached resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
@@ -20,7 +20,6 @@ rules[27]:
   - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
   - "CONTAMINATION PREVENTION: A reference report must NEVER be loaded or discussed before Phase 5 (gap-analysis). Record the path at scope-setup; defer loading."
   - "TOOLKIT DEPTH LIMITATION: Per-function toolkit findings have low single-pass detection rates. Enable ensemble_enabled=true for reliable detection."
-  - "ORCHESTRATOR ROLE DISCIPLINE: The orchestrator coordinates but MUST NOT apply §3 checklist items or produce trace tables. Potential issues from reconnaissance are recorded as leads and assigned to Group A agents."
   - "COVERAGE GATE IS A HARD STOP: Report generation MUST NOT begin until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent."
   - "CONCURRENT DISPATCH: All primary agents (A1-A7, B, D1, D2) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
   - "DISPATCH COMPLETENESS GATE: agents_dispatched MUST equal agents_assigned. Reconnaissance data does NOT substitute for §3-applying sub-agents. This is a HARD STOP."

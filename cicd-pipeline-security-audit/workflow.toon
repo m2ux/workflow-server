@@ -8,13 +8,12 @@ tags[3]:
   - security
   - cicd
   - workflow
-rules[20]:
+rules[19]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: At least one target submodule MUST be specified before the workflow begins. If 'all' is specified, scan every submodule that contains .github/workflows/."
   - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions."
   - "DETECTION SCOPE: Seven vulnerability classes derived from the hackerbot-claw campaign (P1-P7): expression injection, Pwn Request, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, dangerous execution patterns."
   - "SOURCE-SINK MENTAL MODEL: Every finding MUST identify the source (attacker-controlled input) and the sink (privileged execution point). Findings without a clear source-to-sink flow are observations, not vulnerabilities."
-  - "ORCHESTRATOR ROLE DISCIPLINE: The orchestrator coordinates but MUST NOT analyze workflow files or produce findings. All detection is delegated to scanner sub-agents."
   - "CONCURRENT DISPATCH: All per-submodule scanner agents (S1-Sn) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
   - "DISPATCH COMPLETENESS GATE: scanners_dispatched MUST equal scanners_assigned. This is a HARD STOP."
   - "COVERAGE GATE: Every .github/workflows/*.yml and .github/workflows/*.yaml file in scope MUST be scanned. Report generation blocks on incomplete coverage."

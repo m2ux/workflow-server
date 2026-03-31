@@ -8,11 +8,9 @@ tags[3]:
   - analysis
   - prism
 
-rules[10]:
+rules[8]:
   - "EXECUTION MODEL: This workflow uses an orchestrator with disposable workers. The orchestrator manages transitions and triggers. Workers execute activities in fresh contexts. Prism workflows are triggered via the trigger-workflow mechanism, not called inline."
-  - "ORCHESTRATOR DISCIPLINE: The orchestrator coordinates activity transitions, triggers prism workflows, and passes context. It MUST NOT execute analysis, generate findings, or compose reports. All substantive work is delegated to workers."
   - "TRIGGER ISOLATION: When triggering prism, the orchestrator sets analysis_focus to the dimension-specific evaluation guidance produced by the dimension-planning activity. It MUST NOT set analysis_focus to bare labels such as 'security audit', 'audit', 'security review', or any string that would activate prism's built-in audit-finalize activity. All evaluation-specific post-processing is handled by this workflow's own consolidate-report activity."
-  - "AUTOMATIC TRANSITIONS: After each activity completes, the orchestrator evaluates the transition table and immediately dispatches the next activity without user confirmation."
   - "DIMENSION PLANNING: The dimension-planning activity analyses the target and maps each evaluation dimension to prism modes and lenses. This mapping drives lens selection and analytical depth when prism workflows are triggered."
   - "MULTI-GROUP SUPPORT: The execute-analysis activity supports triggering multiple prism workflows via the execution_groups array. Each group triggers a separate prism run with its own pipeline mode, lens selection, and output subdirectory. Dimensions sharing the same pipeline mode are grouped together."
   - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission."
