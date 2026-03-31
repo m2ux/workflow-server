@@ -350,6 +350,71 @@ describe('mcp-server integration', () => {
     });
   });
 
+  // ============== Workflow-Level Skills ==============
+
+  describe('tool: get_skills (workflow-level)', () => {
+    it('should return workflow-level skills when activity_id is omitted', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+      });
+      expect(result.isError).toBeFalsy();
+
+      const response = parseToolResponse(result);
+      expect(response.skills).toBeDefined();
+      expect(Object.keys(response.skills).length).toBeGreaterThanOrEqual(1);
+      expect(response.activity_id).toBeNull();
+    });
+
+    it('should resolve workflow-level skills via universal fallback', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+      });
+      const response = parseToolResponse(result);
+      const skillIds = Object.keys(response.skills);
+      expect(skillIds).toContain('orchestrate-workflow');
+      expect(skillIds).toContain('execute-activity');
+    });
+
+    it('should include resources for workflow-level skills', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+      });
+      const response = parseToolResponse(result);
+      expect(Array.isArray(response.resources)).toBe(true);
+    });
+
+    it('should return updated token in _meta for workflow-level call', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      expect(meta['session_token']).toBeDefined();
+    });
+
+    it('should error when workflow has no skills declared', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'meta' },
+      });
+      expect(result.isError).toBe(true);
+    });
+
+    it('should preserve existing activity-level behavior', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.activity_id).toBe('start-work-package');
+      expect(Object.keys(response.skills).length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
   // ============== Validation ==============
 
   describe('token validation', () => {
