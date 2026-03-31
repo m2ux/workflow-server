@@ -83,11 +83,7 @@ async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | 
   }
 }
 
-/**
- * List all universal skill IDs from meta/skills/.
- */
-export async function listUniversalSkillIds(workflowDir: string): Promise<string[]> {
-  const skillDir = getUniversalSkillDir(workflowDir);
+async function listSkillIdsInDir(skillDir: string): Promise<string[]> {
   if (!existsSync(skillDir)) return [];
 
   try {
@@ -97,9 +93,23 @@ export async function listUniversalSkillIds(workflowDir: string): Promise<string
       .filter((id): id is string => id !== undefined)
       .sort();
   } catch (error) {
-    logWarn('Failed to list universal skills', { error: error instanceof Error ? error.message : String(error) });
+    logWarn('Failed to list skills', { skillDir, error: error instanceof Error ? error.message : String(error) });
     return [];
   }
+}
+
+/**
+ * List all universal skill IDs from meta/skills/.
+ */
+export async function listUniversalSkillIds(workflowDir: string): Promise<string[]> {
+  return listSkillIdsInDir(getUniversalSkillDir(workflowDir));
+}
+
+/**
+ * List skill IDs from a specific workflow's skills/ directory.
+ */
+export async function listWorkflowSkillIds(workflowDir: string, workflowId: string): Promise<string[]> {
+  return listSkillIdsInDir(getWorkflowSkillDir(workflowDir, workflowId));
 }
 
 /**

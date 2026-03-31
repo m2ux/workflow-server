@@ -20,7 +20,7 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 ### How It Works
 
 1. **Discover** — The agent lists available workflows and selects one that matches the user's goal
-2. **Start session** — The server returns behavioral rules for the workflow and an opaque session token that tracks workflow state across all subsequent calls
+2. **Start session** — The server returns workflow metadata and an opaque session token that tracks workflow state across all subsequent calls
 3. **Navigate** — Skills loaded from the server tell the agent which tools to call and in what order. The session token carries workflow context so individual tools need minimal parameters
 4. **Execute** — The agent works through activities (phases of a workflow), with checkpoints for user decisions and transitions governing the flow between activities
 
@@ -97,7 +97,7 @@ Add the following to your IDE 'always-applied' rule-set (see [`docs/ide-setup.md
 ```
 For all workflow execution user requests use the workflow-server MCP server. Before use you *must*:
 1. Fetch the `workflow-server://schemas` resource to load TOON schema definitions
-2. Call the `start_session` tool to load agent guidelines and obtain a session token
+2. Call the `start_session` tool to obtain workflow metadata and a session token
 
 CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics
 ```

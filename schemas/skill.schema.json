@@ -349,8 +349,13 @@
     },
     "rulesDefinition": {
       "type": "object",
-      "additionalProperties": { "type": "string", "description": "Rule text for this rule name." },
-      "description": "Named domain rules as flat key-value pairs (object format): each key is a rule name (e.g. configuration-invariant); each value is a single rule string. Note: workflow/activity schemas use a different format (string array of ordered imperative directives)."
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "description": "Single rule text." },
+          { "type": "array", "items": { "type": "string" }, "description": "Array of related rules grouped under this key." }
+        ]
+      },
+      "description": "Named rules: each key is a rule name or group. Values can be a single rule string or an array of related rules. Note: workflow/activity schemas use a different format (string array of ordered imperative directives)."
     },
     "outputComponentsDefinition": {
       "type": "object",

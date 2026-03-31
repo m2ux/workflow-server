@@ -51,16 +51,17 @@ describe('mcp-server integration', () => {
 
   // ============== Bootstrap Tools ==============
 
-  describe('tool: help', () => {
-    it('should return bootstrap procedure and session protocol', async () => {
-      const result = await client.callTool({ name: 'help', arguments: {} });
+  describe('tool: discover', () => {
+    it('should return bootstrap guide and available workflows', async () => {
+      const result = await client.callTool({ name: 'discover', arguments: {} });
       expect(result.isError).toBeFalsy();
       const guide = parseToolResponse(result);
-      expect(guide.bootstrap).toBeDefined();
-      expect(guide.bootstrap.step_1.tool).toBe('list_workflows');
-      expect(guide.bootstrap.step_2.tool).toBe('start_session');
-      expect(guide.session_protocol).toBeDefined();
-      expect(guide.session_protocol.validation).toBeDefined();
+      expect(guide.server).toBeDefined();
+      expect(guide.version).toBeDefined();
+      expect(guide.discovery).toBeDefined();
+      expect(typeof guide.discovery).toBe('string');
+      expect(guide.discovery).toContain('start_session');
+      expect(guide.discovery).toContain('get_skills');
       expect(guide.available_workflows.length).toBeGreaterThanOrEqual(2);
     });
   });
@@ -73,20 +74,19 @@ describe('mcp-server integration', () => {
       expect(Array.isArray(workflows)).toBe(true);
       const ids = workflows.map((w: { id: string }) => w.id);
       expect(ids).toContain('work-package');
-      expect(ids).toContain('meta');
+      expect(ids).not.toContain('meta');
     });
   });
 
   describe('tool: start_session', () => {
-    it('should return rules, workflow metadata, and opaque token', async () => {
+    it('should return workflow metadata and opaque token (no rules payload)', async () => {
       const result = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.rules).toBeDefined();
-      expect(response.rules.id).toBe('agent-rules');
+      expect(response.rules).toBeUndefined();
       expect(response.workflow.id).toBe('work-package');
       expect(response.session_token).toBeDefined();
       expect(typeof response.session_token).toBe('string');

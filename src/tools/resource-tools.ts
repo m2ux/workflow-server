@@ -6,8 +6,7 @@ import { withAuditLog } from '../logging.js';
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import type { StructuredResource } from '../loaders/resource-loader.js';
-import { readSkill, listUniversalSkillIds } from '../loaders/skill-loader.js';
-import { readRules } from '../loaders/rules-loader.js';
+import { readSkill, listUniversalSkillIds, listWorkflowSkillIds } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
@@ -33,16 +32,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'start_session',
-    'Start a workflow session. Accepts a workflow ID (from list_workflows). Returns agent rules, workflow metadata, and an opaque session token for all subsequent tool calls.',
+    'Start a workflow session. Accepts a workflow ID (from list_workflows). Returns workflow metadata and an opaque session token for all subsequent tool calls. Call get_skills after this to load behavioral protocols.',
     {
       workflow_id: z.string().describe('Workflow ID to start a session for (e.g., "work-package")'),
     },
     withAuditLog('start_session', async ({ workflow_id }) => {
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
-
-      const rulesResult = await readRules(config.workflowDir);
-      if (!rulesResult.success) throw rulesResult.error;
 
       const workflow = wfResult.value;
       if (!workflow.version) {
@@ -53,8 +49,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (config.traceStore) {
         const decoded = await decodeSessionToken(token);
         config.traceStore.initSession(decoded.sid);
-        // Session initialization marker (duration 0) — the actual start_session
-        // tool call duration is captured separately by withAuditLog.
         const event = createTraceEvent(
           decoded.sid, 'start_session', 0, 'ok',
           workflow_id, '', '',
@@ -63,7 +57,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       const response = {
-        rules: rulesResult.value,
         workflow: {
           id: workflow.id,
           version: workflow.version,
@@ -100,8 +93,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       if (!activityId) {
         const universalIds = await listUniversalSkillIds(config.workflowDir);
+        const workflowSpecificIds = await listWorkflowSkillIds(config.workflowDir, workflow_id);
         const workflowDeclared = workflow.skills ?? [];
-        const combined = new Set([...universalIds, ...workflowDeclared]);
+        const combined = new Set([...universalIds, ...workflowSpecificIds, ...workflowDeclared]);
         skillIds = [...combined];
         scope = 'workflow';
       } else {
@@ -157,7 +151,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
-      skill_id: z.string().describe('Skill ID (e.g., workflow-execution, activity-resolution)'),
+      skill_id: z.string().describe('Skill ID (e.g., execute-activity, orchestrate-workflow)'),
     },
     withAuditLog('get_skill', async ({ session_token, workflow_id, skill_id }) => {
       const token = await decodeSessionToken(session_token);
