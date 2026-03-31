@@ -10,9 +10,8 @@ recognition[6]:
   - New workflow
   - Let's start the work-package workflow
 skills:
-  primary: workflow-execution
-  supporting[2]:
-    - activity-resolution
+  primary: execute-activity
+  supporting[1]:
     - state-management
 steps[13]:
   - id: select-workflow

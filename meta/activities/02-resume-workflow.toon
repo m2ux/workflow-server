@@ -11,9 +11,8 @@ recognition[6]:
   - Continue the work-package
   - Where were we?
 skills:
-  primary: workflow-execution
-  supporting[2]:
-    - activity-resolution
+  primary: execute-activity
+  supporting[1]:
     - state-management
 rules[4]:
   - "Minimum requirement: User must identify the workflow and provide the planning folder path"
