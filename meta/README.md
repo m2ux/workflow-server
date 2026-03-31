@@ -198,7 +198,7 @@ Meta defines universal skills used by all workflows:
 | `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
 | `gitnexus-operations` | Query codebases via knowledge graph | GitNexus MCP tools for impact analysis, debugging, refactoring |
 | `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
-| `engineering-artifacts-management` | Engineering artifact commits | Regular file vs submodule commit workflows for .engineering/ |
+| `artifact-management` | Planning folders + artifact commits | Planning folder creation, regular file and submodule commit workflows |
 | `github-cli-protocol` | GitHub CLI usage | GraphQL deprecation workarounds, REST API for mutations |
 
 > **Note:** `workflow-execution` was absorbed into `execute-activity`. `orchestrate-workflow` was moved to `work-package/skills/` — it encodes the persistent-worker model which is not universal. Agent behavioral rules formerly in `rules.toon` are now delivered through `session-protocol` and `agent-conduct` skills.
