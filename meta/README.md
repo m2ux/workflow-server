@@ -39,7 +39,7 @@ graph TD
 **Purpose:** Begin executing a new workflow from the beginning.
 
 **Primary Skill:** `execute-activity`  
-**Supporting Skills:** `activity-resolution`, `state-management`
+**Supporting Skills:** `state-management`
 
 ```mermaid
 graph TD
@@ -97,7 +97,7 @@ graph TD
 **Purpose:** Continue a workflow that was previously started.
 
 **Primary Skill:** `execute-activity`  
-**Supporting Skills:** `activity-resolution`, `state-management`
+**Supporting Skills:** `state-management`
 
 ```mermaid
 graph TD
