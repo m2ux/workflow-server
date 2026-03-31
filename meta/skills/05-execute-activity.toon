@@ -1,8 +1,16 @@
 id: execute-activity
-version: 2.0.0
-capability: Bootstrap and execute a single workflow activity
+version: 3.0.0
+capability: Resolve user goals to workflows and execute workflow activities
 
-description: "Activity execution skill. Self-loads the activity definition and primary skill from the workflow-server, executes steps sequentially, yields at blocking checkpoints, produces artifacts, and reports structured results. Persists across activities (via Task resume) to preserve accumulated codebase understanding and implementation context."
+description: "Unified activity resolution and execution skill. Resolves user goals to workflows via the Goal → Workflow → Activity → Skill → Tools metamodel. Self-loads activity definitions and skills from the workflow-server, executes steps sequentially, yields at blocking checkpoints, produces artifacts, and reports structured results. Persists across activities (via Task resume) to preserve accumulated codebase understanding and implementation context."
+
+architecture:
+  principle: "Goals resolve to workflows; workflows contain activities; activities resolve to skills. Goals NEVER resolve directly to skills."
+  layers[3]:
+    - "User Goal (problem domain) → Workflow"
+    - "Workflow → Activity → Skill(s) (solution domain)"
+    - "Skill → Tools (execution domain)"
+  gap_detection: "If a goal matches a skill but no workflow/activity exists, this indicates a missing workflow or activity — do not bypass the workflow layer"
 
 inputs[3]:
   - id: activity-id
@@ -12,8 +20,17 @@ inputs[3]:
   - id: state-variables
     description: "Current workflow state variables"
 
+matching:
+  strategy: "Compare user goal to workflow descriptions returned by list_workflows"
+  ambiguous: "If multiple workflows could match, ask user to clarify"
+  never: "NEVER skip workflow matching to use a skill directly"
+
 protocol:
-  bootstrap-rules[1]:
+  resolve-goal[3]:
+    - "Call help to learn server usage and available workflows"
+    - "Call list_workflows to discover available workflows. Match user goal to a workflow by comparing goal to workflow descriptions."
+    - "If no workflow matches, inform the user — this is a design gap, not a user error"
+  bootstrap-session[1]:
     - "Call start_session(workflow_id) to load agent rules and obtain a session token. Follow these rules throughout execution."
   bootstrap-activity[3]:
     - "Call next_activity({ workflow_id, activity_id }) to load the activity definition. This sets token.act to the current activity."
@@ -98,6 +115,13 @@ rules:
   implementation-no-batch: "NEVER implement multiple recommendations in a single iteration within an activity. Provide brief summary of completed work before asking to continue."
 
 tools:
+  help:
+    when: "Agent needs to learn how to use this server"
+    returns: "Bootstrap procedure, session protocol, available workflows"
+  list_workflows:
+    when: "Discovering available workflows to match user goal"
+    returns: "List of workflow definitions with id, title, version, description"
+    next: "start_session with chosen workflow_id"
   start_session:
     when: "First action on initial dispatch (not needed on resume — rules persist in context)"
     returns: "Agent rules, workflow metadata, and session token"
@@ -130,6 +154,10 @@ tools:
     usage: "Write artifacts to planning folder with artifactPrefix"
 
 errors:
+  no_matching_workflow:
+    cause: "User goal doesn't match any existing workflow"
+    detection: "Goal could be served by existing skills but no workflow maps to it"
+    recovery: "Inform the user that no workflow matches their goal. Suggest the closest available workflow or offer to proceed without a workflow. This is a design gap, not a user error."
   activity_not_found:
     cause: "next_activity returned error for the given activity_id"
     recovery: "Report error in result. Check activity_id spelling against workflow definition."
