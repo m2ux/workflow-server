@@ -253,21 +253,21 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.skill).toBeDefined();
       expect(response.skill.id).toBe('create-issue');
-      expect(response.resources).toBeDefined();
-      expect(Array.isArray(response.resources)).toBe(true);
+      expect(response.skill._resources).toBeDefined();
+      expect(Array.isArray(response.skill._resources)).toBe(true);
     });
   });
 
   describe('structured resources in skill responses', () => {
-    it('get_skill should return structured resources with index/id/version/content', async () => {
+    it('get_skill should nest _resources under the skill with index/id/version/content', async () => {
       const result = await client.callTool({
         name: 'get_skill',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resources.length).toBeGreaterThan(0);
-      const resource = response.resources[0];
+      expect(response.skill._resources.length).toBeGreaterThan(0);
+      const resource = response.skill._resources[0];
       expect(resource.index).toBeDefined();
       expect(resource.id).toBeDefined();
       expect(resource.version).toBeDefined();
@@ -275,7 +275,18 @@ describe('mcp-server integration', () => {
       expect(resource.content.length).toBeGreaterThan(0);
     });
 
-    it('get_skills should return structured resources array', async () => {
+    it('get_skill should strip raw resources array from skill', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.skill.resources).toBeUndefined();
+      expect(response.resources).toBeUndefined();
+    });
+
+    it('get_skills should nest _resources under each skill', async () => {
       const actResult = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
@@ -287,12 +298,13 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(Array.isArray(response.resources)).toBe(true);
-      if (response.resources.length > 0) {
-        expect(response.resources[0].index).toBeDefined();
-        expect(response.resources[0].id).toBeDefined();
-        expect(response.resources[0].content).toBeDefined();
-      }
+      expect(response.resources).toBeUndefined();
+      const createIssue = response.skills['create-issue'];
+      expect(createIssue).toBeDefined();
+      expect(createIssue._resources.length).toBeGreaterThan(0);
+      expect(createIssue._resources[0].index).toBeDefined();
+      expect(createIssue._resources[0].content).toBeDefined();
+      expect(createIssue.resources).toBeUndefined();
       const meta = result._meta as Record<string, unknown>;
       expect(meta['session_token']).toBeDefined();
     });
@@ -303,7 +315,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
       });
       const response = parseToolResponse(result);
-      for (const resource of response.resources) {
+      for (const resource of response.skill._resources) {
         expect(resource.content).not.toMatch(/^---/);
       }
     });
@@ -343,13 +355,17 @@ describe('mcp-server integration', () => {
       expect(response.skills['orchestrate-workflow']).toBeUndefined();
     });
 
-    it('should include resources for workflow-level skills', async () => {
+    it('should nest resources under workflow-level skills', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken, workflow_id: 'work-package' },
       });
       const response = parseToolResponse(result);
-      expect(Array.isArray(response.resources)).toBe(true);
+      expect(response.resources).toBeUndefined();
+      const skillsWithResources = Object.values(response.skills).filter(
+        (s: unknown) => (s as Record<string, unknown>)._resources
+      );
+      expect(skillsWithResources.length).toBeGreaterThan(0);
     });
 
     it('should return updated token in _meta', async () => {
@@ -375,6 +391,120 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       expect(Object.keys(response.skills).length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  // ============== Agent-ID Meta-Skill Loading ==============
+
+  describe('agent_id meta-skill loading', () => {
+    it('new agent_id should include meta skills alongside activity skills', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: actToken, workflow_id: 'work-package', agent_id: 'worker-001' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.scope).toBe('activity+meta');
+      expect(response.skills['create-issue']).toBeDefined();
+      expect(response.skills['session-protocol']).toBeDefined();
+      expect(response.skills['agent-conduct']).toBeDefined();
+    });
+
+    it('same agent_id should return activity skills only', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
+      const first = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: actToken, workflow_id: 'work-package', agent_id: 'worker-001' },
+      });
+      const updatedToken = (first._meta as Record<string, unknown>)['session_token'] as string;
+
+      const second = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: updatedToken, workflow_id: 'work-package', agent_id: 'worker-001' },
+      });
+      expect(second.isError).toBeFalsy();
+      const response = parseToolResponse(second);
+      expect(response.scope).toBe('activity');
+      expect(response.skills['create-issue']).toBeDefined();
+      expect(response.skills['session-protocol']).toBeUndefined();
+    });
+
+    it('different agent_id should re-include meta skills', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
+      const first = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: actToken, workflow_id: 'work-package', agent_id: 'worker-001' },
+      });
+      const updatedToken = (first._meta as Record<string, unknown>)['session_token'] as string;
+
+      const second = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: updatedToken, workflow_id: 'work-package', agent_id: 'worker-002' },
+      });
+      expect(second.isError).toBeFalsy();
+      const response = parseToolResponse(second);
+      expect(response.scope).toBe('activity+meta');
+      expect(response.skills['session-protocol']).toBeDefined();
+    });
+
+    it('omitted agent_id should use existing behavior (no meta skills)', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: actToken, workflow_id: 'work-package' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.scope).toBe('activity');
+      expect(response.skills['session-protocol']).toBeUndefined();
+    });
+  });
+
+  // ============== Cross-Workflow Resource Resolution ==============
+
+  describe('cross-workflow resource resolution', () => {
+    it('meta/NN prefix should resolve from meta workflow resources', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'orchestrate-workflow' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      const workerPrompt = response.skill._resources.find((r: { id: string }) => r.id === 'worker-prompt-template');
+      expect(workerPrompt).toBeDefined();
+      expect(workerPrompt.content.length).toBeGreaterThan(0);
+      expect(workerPrompt.index).toBe('meta/05');
+    });
+
+    it('bare index should still resolve from current workflow', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'elicit-requirements' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      const resource = response.skill._resources.find((r: { id: string }) => r.id === 'requirements-elicitation');
+      expect(resource).toBeDefined();
+      expect(resource.index).toBe('05');
     });
   });
 
