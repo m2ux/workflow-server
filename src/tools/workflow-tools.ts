@@ -28,7 +28,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('help', 'How to use this server. Call this first. Returns the bootstrap procedure and session protocol.', {},
     withAuditLog('help', async () => {
       const workflows = await listWorkflows(config.workflowDir);
-      const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '09');
+      const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '00');
       const guide: Record<string, unknown> = {
         server: config.serverName,
         version: config.serverVersion,
