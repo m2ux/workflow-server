@@ -101,6 +101,8 @@ rules:
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result. Empty checkpoints_responded on an activity with required blocking checkpoints is always a validation failure — no rationalization permitted."
   state-persistence: "After every completed activity (post-commit, pre-transition), the orchestrator MUST call save_state to persist the current workflow state. The state file enables cross-session resumption without manual reconstruction. If planning_folder_path is not available, skip silently."
+  target-path-scope: "All git operations (branch, commit, push, PR) MUST be performed inside the target_path directory specified by the workflow, not in the parent repo."
+  execution-model-detection: "Check workflow.rules for the EXECUTION MODEL rule to determine whether a workflow uses the orchestrator/worker pattern. If absent, execute the workflow directly without the orchestrator/worker split."
 
 tools:
   get_workflow:
