@@ -87,8 +87,15 @@ rules:
   preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities via resume. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
   checkpoint-yield: "All blocking checkpoints MUST cause execution to yield. NEVER auto-resolve a blocking checkpoint. Return the checkpoint details in a checkpoint_pending result and pause until resumed with a checkpoint_response."
+  checkpoint-presentation: "Present checkpoints as interactive selection dialogues. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. Apply the effect from the selected option."
   artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
   readme-progress-mandatory: "The update-readme-progress phase is NOT optional. It MUST execute before report-completion. If the planning folder README.md does not exist, skip silently. If it exists, update it. Failure to update the progress table is a protocol violation — the orchestrator depends on this for incremental progress tracking."
+  resource-usage: "Resources referenced by skills are returned as a structured array in the get_skill and get_skills responses. Each resource has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in the resources array. Do not attempt to call a separate tool to load resources."
+  workflow-fidelity: "When following the workflow, respect workflow fidelity as defined in the TOON files' semantics. Execute workflow activities in the defined sequence unless transitions explicitly allow alternatives."
+  checkpoint-enforcement: "Honor all defined checkpoints within activities and await user confirmation at each checkpoint. Checkpoints are explicit constructs defined inside activity definitions — activity transitions are NOT checkpoints."
+  automatic-transitions: "Activity transitions are deterministic and automatic. The worker MUST NOT pause, prompt, or wait for user confirmation between activities. User interaction happens ONLY through checkpoints defined within activities."
+  implementation-one-at-a-time: "For complex implementations within an activity, complete only ONE numbered task at a time. Within an activity, stop and ask user permission before proceeding to the next implementation item."
+  implementation-no-batch: "NEVER implement multiple recommendations in a single iteration within an activity. Provide brief summary of completed work before asking to continue."
 
 tools:
   start_session:
