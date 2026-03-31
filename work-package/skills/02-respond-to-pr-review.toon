@@ -18,14 +18,16 @@ protocol:
     - Categorize comments by type (required change, suggestion, question, nit)
     - Identify actionable items vs discussion points
     - Prioritize by reviewer authority and impact
-  address-comments[4]:
+  address-comments[5]:
     - "For each review item with follow-up actions, present the item and its actions to the user. Ask which to implement (e.g., '1,3' or 'all' or 'none')."
     - Only implement actions explicitly selected by the user
     - Commit fix changes per concern
     - Document which comments require re-planning vs inline fixes
-  post-responses[2]:
+    - "Group related fixes into logical commits, not one giant commit"
+  post-responses[3]:
     - "Present drafted PR responses for user approval before posting"
     - Post approved responses to the PR comment thread
+    - "If disagreeing with a reviewer, explain reasoning explicitly"
   update-pr[2]:
     - Push all fix commits to the PR branch
     - Post response summary to PR
@@ -45,8 +47,6 @@ output[1]:
 rules:
   respond-to-all: "Every review comment must receive a response — acknowledged, implemented, or discussed"
   prioritize-required: "Address required changes before suggestions and nits"
-  commit-per-concern: "Group related fixes into logical commits, not one giant commit"
-  no-silent-disagreement: "If disagreeing with a reviewer, explain reasoning explicitly"
 
 resources[1]:
   - "28"

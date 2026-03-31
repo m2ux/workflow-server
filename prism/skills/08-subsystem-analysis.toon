@@ -13,19 +13,22 @@ inputs[3]:
     description: "Directory for subsystem-{name}.md and subsystem-synthesis.md"
 
 protocol:
-  decompose[4]:
+  decompose[5]:
     - "Parse source code via AST (Python) or regex heuristic (other languages)"
     - "Identify classes, functions, top-level blocks as subsystems"
     - "Min 10 lines per subsystem; merge smallest pairs to stay under 8 subsystems"
     - "If only 1 subsystem found, fall back to single L12 pass"
-  calibrate[3]:
+    - "If AST parsing fails and regex finds no definitions, chunk into ~100-line blocks"
+  calibrate[4]:
     - "Load subsystem calibration resource (63)"
     - "Send prism catalog + subsystem summaries to calibration worker"
     - "Parse JSON assignments — fallback to L12 for unassigned subsystems"
-  execute[3]:
+    - "Prism assignments MUST maximize diversity — the calibration prompt enforces this"
+  execute[4]:
     - "For each subsystem, dispatch a FRESH worker with its assigned prism"
     - "Include context header with subsystem name, line range, and list of other subsystem names"
     - "Workers write to {output-path}/subsystem-{name}.md"
+    - "Each per-subsystem worker receives a context header noting its position in the file and the names of adjacent subsystems"
   synthesize[3]:
     - "Load subsystem synthesis resource (64)"
     - "Dispatch synthesis worker with all per-subsystem outputs"
@@ -41,9 +44,6 @@ output[1]:
 
 rules:
   code-only: "Subsystem mode requires code input. Reject general targets with guidance to use portfolio mode instead."
-  diversity: "Prism assignments MUST maximize diversity — the calibration prompt enforces this"
-  context-headers: "Each per-subsystem worker receives a context header noting its position in the file and the names of adjacent subsystems"
-  fallback: "If AST parsing fails and regex finds no definitions, chunk into ~100-line blocks"
 
 resources[2]:
   - "63"

@@ -13,18 +13,20 @@ inputs[3]:
     description: "Expected scanner output schema from resource 04"
 
 protocol:
-  validate-structure[2]:
+  validate-structure[3]:
     - Load each scanner output JSON
     - Validate against the output schema — flag malformed or missing fields
+    - "Malformed outputs count as gaps"
   verify-file-coverage[2]:
     - Build set of all scanned files across all scanner outputs
     - Diff against the workflow file inventory — identify unscanned files
   verify-pattern-coverage[2]:
     - For each scanner output, check the coverage section for all seven patterns (P1-P7)
     - Flag any scanner that reports incomplete pattern application
-  produce-gap-report[2]:
+  produce-gap-report[3]:
     - Compile all gaps into verification-report.json
     - Set verification_complete=true only if zero gaps found
+    - "verification_complete is only set when file and pattern coverage are both 100%"
 
 output[1]:
   - id: verification-report
@@ -34,10 +36,6 @@ output[1]:
       pattern_coverage: "Per-scanner pattern application status"
       gaps: "List of unscanned files or skipped patterns"
       recommendation: "Re-scan targets if gaps exist"
-
-rules:
-  zero-gaps-required: "verification_complete is only set when file and pattern coverage are both 100%"
-  schema-validation: "Malformed outputs count as gaps"
 
 resources[1]:
   - "04"

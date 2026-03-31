@@ -24,10 +24,11 @@ protocol:
     - "Record evidence with file paths and line numbers for every finding"
     - "Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)"
     - "Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies"
-  update-assumptions[3]:
+  update-assumptions[4]:
     - "Update assumptions-log.md: mark resolved assumptions with finding, evidence, and resolution status"
     - "Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)"
     - "Maintain a running count: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable"
+    - "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
   check-convergence[4]:
     - "Re-classify all open assumptions after the analysis pass"
     - "If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set has_resolvable_assumptions to true"
@@ -52,7 +53,6 @@ output[1]:
 rules:
   no-user-interaction: "The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result at the activity's assumptions checkpoint."
   classification-transparency: "When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis."
-  markdown-field-formatting: "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
 
 tools:
   read_file:

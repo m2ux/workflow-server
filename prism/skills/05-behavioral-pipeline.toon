@@ -25,22 +25,26 @@ protocol:
     - "For independent lens passes (indices 19-22): apply the lens against the target content"
     - "Execute every operation completely — the analytical depth comes from the full chain"
     - "Write the artifact to {output-path}/{artifact-filename} per the artifact naming convention"
-  augment-with-graph[5]:
+  augment-with-graph[6]:
     - "After lens execution for independent passes (19-22), check GitNexus availability via gitnexus_list_repos. If unavailable, skip graph augmentation."
     - "Error-resilience (19): Use gitnexus_context on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function."
     - "Evolution (21): Use gitnexus_impact(direction: upstream) on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts."
     - "API-surface (22): Use gitnexus_cypher to enumerate exported/public symbols with caller counts (MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph."
     - "Optimize (20): No graph augmentation — optimization analysis concerns algorithmic complexity, not graph structure."
-  construct-synthesis-input[3]:
+    - "GitNexus data is appended as a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data provides supplementary measurement that the synthesis pass can reference."
+  construct-synthesis-input[4]:
     - "For synthesis pass (index 23): read all 4 prior artifacts from prior-artifact-paths"
     - "Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules"
     - "The synthesis lens expects exactly these 4 labeled sections"
+    - "The synthesis input is constructed as: ## ERRORS\\n\\n{errors_content}\\n\\n---\\n\\n## COSTS\\n\\n{costs_content}\\n\\n---\\n\\n## CHANGES\\n\\n{changes_content}\\n\\n---\\n\\n## PROMISES\\n\\n{promises_content}"
   apply-synthesis-lens[2]:
     - "Apply the behavioral_synthesis lens (index 23) against the constructed input"
     - "Write the synthesis artifact to {output-path}/behavioral-synthesis.md"
-  write-artifact[2]:
+  write-artifact[4]:
     - "Write the complete analysis to the artifact file"
     - "Return the full artifact path in the output"
+    - "Independent lens artifacts use descriptive role names: behavioral-errors.md (19), behavioral-costs.md (20), behavioral-changes.md (21), behavioral-promises.md (22). Synthesis artifact: behavioral-synthesis.md (23)."
+    - "Every artifact MUST be written to the filesystem. Return artifact paths so subsequent passes can read them."
 
 output[1]:
   - id: behavioral-artifact
@@ -53,13 +57,9 @@ output[1]:
 
 rules:
   label-mapping: "The behavioral pipeline uses fixed role labels mapped to specific lenses: error-resilience (19) → ERRORS, optimize (20) → COSTS, evolution (21) → CHANGES, api-surface (22) → PROMISES. The synthesis lens (23) expects these exact labels."
-  artifact-naming: "Independent lens artifacts use descriptive role names: behavioral-errors.md (19), behavioral-costs.md (20), behavioral-changes.md (21), behavioral-promises.md (22). Synthesis artifact: behavioral-synthesis.md (23)."
   code-only: "The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target_type is 'general'."
   complete-execution: "Every step in each lens prompt must be executed. Do not skip or summarize."
   evidence-required: "All findings must cite specific code: file paths, function names, line ranges."
-  persist-output: "Every artifact MUST be written to the filesystem. Return artifact paths so subsequent passes can read them."
-  synthesis-input-format: "The synthesis input is constructed as: ## ERRORS\\n\\n{errors_content}\\n\\n---\\n\\n## COSTS\\n\\n{costs_content}\\n\\n---\\n\\n## CHANGES\\n\\n{changes_content}\\n\\n---\\n\\n## PROMISES\\n\\n{promises_content}"
-  graph-evidence-is-supplementary: "GitNexus data is appended as a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data provides supplementary measurement that the synthesis pass can reference."
 
 resources[5]:
   - "19"

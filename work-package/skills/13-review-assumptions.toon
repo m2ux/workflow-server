@@ -15,9 +15,10 @@ protocol:
   collect-assumptions[2]:
     - Identify all implicit decisions and assumptions made
     - Classify by category appropriate to the activity
-  write-assumptions[2]:
+  write-assumptions[3]:
     - Write collected assumptions to assumptions-log.md with type, statement, rationale, and alternatives for each
     - The file is the record of truth — do not duplicate assumption content in checkpoint messages
+    - "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
   format-judgement-context[7]:
     - "For each open (non-code-resolvable) assumption, assemble structured context: (1) the decision space — what alternatives exist, (2) trade-off analysis for each alternative, (3) why the agent could not resolve it through code analysis, (4) relevant technical context discovered during reconciliation — code patterns found, constraints identified, related implementation details, (5) which alternative the agent's current assumption favors and why"
     - "Present the decision space (alternatives and trade-offs) before stating which option the agent's current assumption favors. This ordering reduces anchoring bias — the user encounters the options before being anchored to the agent's interpretation"
@@ -50,7 +51,6 @@ output[1]:
 rules:
   elevate-implicit: "Make implicit decisions explicit — assumptions should be elevated for validation"
   categorize-per-activity: "Use categories appropriate to the current activity phase"
-  markdown-field-formatting: "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
 
 tools:
   read_file:

@@ -17,10 +17,11 @@ protocol:
     - "Dispatch deep_scan (resource 12) to a fresh worker on Haiku"
     - "Worker writes to {output-path}/adaptive-stage1.md"
     - "Assess signal quality: conservation law + word count > 300 + bug table"
-  assess-signal[3]:
+  assess-signal[4]:
     - "Check for conservation law: regex for 'conservation law' or '= constant'"
     - "Check output length: > 300 words is adequate"
     - "If conservation law, word count, and bug table are all present: set adaptive_signal_quality = adequate, stop escalation. Otherwise set insufficient and continue."
+    - "Signal quality = conservation law presence (regex: 'conservation law' or '= constant') AND word count > 300 AND bug table presence. All three must be true for 'adequate'."
   stage-2-l12[3]:
     - "Dispatch L12 (resource 00) to a fresh worker on Sonnet"
     - "Worker writes to {output-path}/adaptive-stage2.md"
@@ -39,7 +40,6 @@ output[1]:
 
 rules:
   cheapest-first: "Always start with SDL/Haiku. Never skip directly to full-prism."
-  signal-criteria: "Signal quality = conservation law presence (regex: 'conservation law' or '= constant') AND word count > 300 AND bug table presence. All three must be true for 'adequate'."
   stop-early: "Stop escalating as soon as signal quality is adequate. Do not run deeper stages for marginal improvement."
   model-escalation: "Stage 1: Haiku. Stage 2: Sonnet. Stage 3: per-prism optimal models."
 

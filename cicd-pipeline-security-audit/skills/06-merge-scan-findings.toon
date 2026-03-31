@@ -15,13 +15,15 @@ protocol:
     - Group findings by (file_path, line_range, pattern_id)
     - For duplicates, keep the finding with the most complete evidence
     - Record duplicate mappings for reconciliation
-  cross-pattern-correlation[3]:
+  cross-pattern-correlation[4]:
     - Group remaining findings by workflow file
     - Identify compound chains where multiple patterns affect the same workflow
     - Create compound findings that capture the full attack chain (e.g., P2+P1+P4 = Pwn Request with expression injection and excessive permissions)
-  reconcile[2]:
+    - "Compound chains must preserve all constituent pattern evidence"
+  reconcile[3]:
     - Build reconciliation table mapping every original scanner finding to its merged finding number
     - Verify Unaccounted equals zero for every scanner
+    - "Every scanner finding must map to a merged finding or be marked duplicate"
   write-output[1]:
     - Produce merged-findings.json and reconciliation-table.json
 
@@ -36,8 +38,6 @@ output[2]:
     description: "Per-scanner finding mapping to merged findings"
 
 rules:
-  zero-unaccounted: "Every scanner finding must map to a merged finding or be marked duplicate"
-  compound-preservation: "Compound chains must preserve all constituent pattern evidence"
   observation-retention: "Observations are preserved even if they don't rise to finding level"
 
 tools:

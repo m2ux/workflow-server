@@ -19,14 +19,16 @@ protocol:
     - "For each package, assess: business value (High/Medium/Low), risk (High/Medium/Low), effort (High/Medium/Low)"
     - "Use the scoring guidance from the prioritization framework resource"
     - "Document the rationale for each assessment"
-  propose-order[3]:
+  propose-order[4]:
     - "Apply priority ordering rules: dependency-first, then high-value/low-effort, then high-risk-early"
     - "Identify packages that could be parallelized (independent, no shared resources)"
     - "Generate the priority table with package, value, risk, effort, and rationale"
-  present-prioritization[3]:
+    - "High-risk packages should be scheduled early to surface problems before they cascade"
+  present-prioritization[4]:
     - "Present the dependency graph (text or mermaid diagram)"
     - "Present the priority table with rationale for the proposed order"
     - "Note alternative orderings if multiple valid sequences exist"
+    - "Never assume a priority order without presenting rationale and getting user confirmation"
 
 output[1]:
   - id: priority-order
@@ -39,8 +41,6 @@ output[1]:
 rules:
   dependencies-constrain: "Dependencies constrain but do not fully determine the order — within dependency layers, other criteria apply"
   user-controls-final: "The user controls the final priority order — present recommendations but defer to user judgment"
-  risk-early: "High-risk packages should be scheduled early to surface problems before they cascade"
-  no-assumption: "Never assume a priority order without presenting rationale and getting user confirmation"
 
 resources[1]:
   - "04"

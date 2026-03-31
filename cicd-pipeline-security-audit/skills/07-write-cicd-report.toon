@@ -17,11 +17,12 @@ protocol:
     - Summarize total findings by severity level
     - Highlight critical and high findings requiring immediate attention
     - Note compound vulnerability chains as priority items
-  write-finding-details[4]:
+  write-finding-details[5]:
     - For each finding, write a structured block with finding number, pattern ID, severity, source, sink, evidence, and remediation
     - For compound findings, document the full attack chain
     - Include before/after code examples from the remediation playbook
     - Group findings by submodule for readability
+    - "Every finding must have a specific remediation recommendation"
   write-severity-distribution[1]:
     - Produce severity distribution table and per-pattern breakdown
   write-remediation-roadmap[2]:
@@ -39,7 +40,6 @@ output[1]:
 
 rules:
   finding-format: "Each finding must include: number, pattern ID (P1-P7), severity, source, sink, evidence snippet, and remediation"
-  remediation-required: "Every finding must have a specific remediation recommendation"
   no-false-positives: "Observations without confirmed source-to-sink flow are listed separately as informational items"
 
 resources[1]:

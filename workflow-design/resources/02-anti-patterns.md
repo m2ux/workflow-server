@@ -54,6 +54,8 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 
 28. **"status-proposed" AND "status-accepted-directly"** — Contradictory rules in the same skill. Every rule must be checked for logical consistency with its siblings. If two rules describe mutually exclusive behaviors, one is stale — identify and remove it.
 
+29. **"persist-output" rule on a skill with a "write-artifact" step** — A rule that applies to only one protocol step is not a cross-cutting constraint — it's step-level guidance masquerading as a rule. Move the content into the step's description prose and delete the rule. Skill-level rules should span multiple protocol phases.
+
 ## Execution Anti-Patterns
 
 17. **"I'll just start implementing"** — Present approach and receive confirmation before any modification.

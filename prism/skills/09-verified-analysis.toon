@@ -18,10 +18,11 @@ protocol:
   initial-analysis[2]:
     - "Dispatch L12 (resource 00) to a fresh worker"
     - "Worker writes to {output-path}/verified-initial.md"
-  gap-detection[3]:
+  gap-detection[4]:
     - "Dispatch gap detection to a fresh worker"
     - "Worker loads knowledge_boundary (41) and knowledge_audit (40)"
     - "Worker applies both to the L12 OUTPUT (not source code), writes to {output-path}/verified-gaps.md"
+    - "Gap detection prisms run on the L12 OUTPUT, not on source code"
   gap-extraction[2]:
     - "Parse gap output for structured claims"
     - "Construct verified_knowledge context block with gap data"
@@ -39,7 +40,6 @@ output[1]:
       corrected_path: "Filesystem path to verified-corrected.md"
 
 rules:
-  gap-target: "Gap detection prisms run on the L12 OUTPUT, not on source code"
   isolation: "Corrected re-analysis worker does not see the initial L12 output — only the target content + gap context"
   model-selection: "L12 passes use optimal model from YAML frontmatter. Gap detection uses sonnet."
 

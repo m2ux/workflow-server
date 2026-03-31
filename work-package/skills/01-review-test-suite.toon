@@ -14,11 +14,12 @@ protocol:
     - Identify all test files in the project related to changed code
   run-tests[1]:
     - Run the test suite to establish a passing baseline
-  review-tests[4]:
+  review-tests[5]:
     - Assess test coverage relative to implementation changes
     - Check for anti-patterns (flaky tests, over-mocking, brittle assertions)
     - Verify test isolation and independence
     - Review assertion quality and error message clarity
+    - "For Rust projects, reference TDD best practices from resource 23"
   document-findings[2]:
     - Document findings with severity and recommendations
     - Create test-suite-review.md report in planning folder
@@ -38,7 +39,6 @@ output[1]:
 rules:
   coverage-relative: "Assess coverage relative to the changes made, not absolute project coverage"
   actionable-recommendations: "Every finding must include a concrete improvement suggestion"
-  tdd-awareness: "For Rust projects, reference TDD best practices from resource 23"
 
 resources[2]:
   - "17"

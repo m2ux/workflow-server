@@ -12,7 +12,7 @@ Five markdown resources providing the design principles, construct inventories, 
 |-------|----------|---------|---------|
 | `00` | [Design Principles](00-design-principles.md) | Condensed reference of all 14 design principles with enforcement mechanisms | All activities — loaded during [Context and Literacy](../activities/README.md#02-context-and-literacy), referenced throughout |
 | `01` | [Schema Construct Inventory](01-schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, skill, and condition schemas | [Quality Review](../activities/README.md#08-quality-review) (expressiveness audit), [Content Drafting](../activities/README.md#07-content-drafting) (construct selection) |
-| `02` | [Anti-Patterns](02-anti-patterns.md) | 28 prohibited patterns organized by category: structural, interaction, schema, rule hygiene, execution | [Quality Review](../activities/README.md#08-quality-review) (anti-pattern scan), review mode (compliance audit) |
+| `02` | [Anti-Patterns](02-anti-patterns.md) | 29 prohibited patterns organized by category: structural, interaction, schema, rule hygiene, execution | [Quality Review](../activities/README.md#08-quality-review) (anti-pattern scan), review mode (compliance audit) |
 | `03` | [Update Mode Guide](03-update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns | Update mode: [Intake](../activities/README.md#01-intake), [Impact Analysis](../activities/README.md#05-impact-analysis), [Content Drafting](../activities/README.md#07-content-drafting) |
 | `04` | [Review Mode Guide](04-review-mode-guide.md) | Compliance audit procedure, 5 audit passes, report structure template | Review mode: [Quality Review](../activities/README.md#08-quality-review), [Validate and Commit](../activities/README.md#09-validate-and-commit) |
 
@@ -39,14 +39,14 @@ Also includes checkpoint effect types (`setVariable`, `transitionTo`, `skipActiv
 
 ### 02 — Anti-Patterns
 
-28 prohibited patterns organized into five categories:
+29 prohibited patterns organized into five categories:
 
 | Category | Count | Examples |
 |----------|-------|---------|
 | Structural | 4 | Inline content, schema modification, partial implementations, invented naming |
 | Interaction | 4 | Combined checkpoints, assumption-based execution, scope non-verification, multiple questions |
 | Schema expressiveness | 8 | Prose checkpoints, prose loops, prose decisions, prose artifacts, implicit variables, prose modes, prose protocols, prose inputs |
-| Rule hygiene | 5 | Protocol-restating rules, ungrouped contradictory rules, flat prefix keys, cross-level duplication, contradictory siblings |
+| Rule hygiene | 6 | Protocol-restating rules, ungrouped contradictory rules, flat prefix keys, cross-level duplication, contradictory siblings, single-step rules |
 | Execution | 7 | Premature implementation, recommendations without action, text-only rules, destructive updates, invalid TOON syntax, informal execution, defending output |
 
 ### 03 — Update Mode Guide

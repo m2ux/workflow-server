@@ -33,9 +33,10 @@ protocol:
     - "Start with the falsifiable claim about the code's deepest structural problem"
     - "Follow the construction-based reasoning chain through improvements, invariants, inversions, and conservation laws"
     - "Conclude with the concrete bug table — every bug, edge case, and silent failure discovered at any stage"
-  write-artifact[2]:
+  write-artifact[3]:
     - "Write the complete analysis to {output-path}/structural-analysis.md"
     - "Include a YAML front-matter header with target file, analysis date, and lens used (L12 structural)"
+    - "The analysis MUST be written to the filesystem as an artifact. In-memory-only output is not acceptable — downstream passes and callers depend on reading the artifact file."
   format-output[3]:
     - "Structure the output with clear section headers: Claim, Dialectic, Concealment Mechanism, Improvements, Structural Invariant, Conservation Law, Meta-Law, Bug Table"
     - "In the Bug Table, classify each finding as fixable or structural based on whether the conservation law predicts it can be resolved"
@@ -58,7 +59,7 @@ rules:
   construction-over-description: "Build improvements and observe what they reveal. Do not merely describe problems — construct alternatives and trace what becomes visible."
   evidence-required: "All findings must cite specific code: file paths, function names, line ranges. Abstract claims without code evidence are not findings."
   meta-law-specificity: "The meta-law must predict a concrete, testable consequence for this specific code. It must not generalize the conservation law to a broader category."
-  persist-output: "The analysis MUST be written to the filesystem as an artifact. In-memory-only output is not acceptable — downstream passes and callers depend on reading the artifact file."
+
   graph-context-is-supplementary: "Structural context from GitNexus is supplementary evidence, not a replacement for the lens operations. The L12 chain executes completely regardless of whether graph data is available. Graph data strengthens blast-radius claims and call-chain evidence but does not alter the analytical method."
 
 resources[1]:

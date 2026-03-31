@@ -9,10 +9,11 @@ inputs[1]:
     description: "Change set with new, renamed, and deleted prisms"
 
 protocol:
-  update-plan-analysis[3]:
+  update-plan-analysis[4]:
     - "Find-and-replace old names with new names across all rules and protocol sections."
     - "Add goal-mapping-matrix entry for each new prism: analytical goal keyword → prism index."
     - "Update code-vs-general, model-sensitivity, resource list, query-recommendation, and single-unit-recommendation."
+    - "Each new prism's goal keyword should match its cognitive operation or domain from the YAML frontmatter description."
   update-portfolio-analysis[3]:
     - "Fix renamed references in description, selected-lenses, select-lenses guide, load-lenses mapping."
     - "Add new prisms to catalog and selection guide with complementary pairings."
@@ -34,7 +35,6 @@ output[1]:
 
 rules:
   coverage: "Every routing surface must be updated: goal-mapping-matrix, code-vs-general, model-sensitivity, neutral-variant-routing, resource lists, lens catalogs, selection guides."
-  goal-keyword-mapping: "Each new prism's goal keyword should match its cognitive operation or domain from the YAML frontmatter description."
 
 tools:
   read_file:

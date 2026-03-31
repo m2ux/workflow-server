@@ -16,11 +16,12 @@ inputs[3]:
 protocol:
   load-patterns[1]:
     - Use attached resource 01 (injection-pattern-catalog) for grep patterns, untrusted context lists, and detection heuristics
-  p1-expression-injection[4]:
+  p1-expression-injection[5]:
     - Search run: blocks for ${{ }} expressions
     - Cross-reference each expression against the untrusted context variable list
     - Distinguish safe contexts (if: conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)
     - For each unsafe expression, document the source context variable and the sink (run block, script, action)
+    - "Expressions in if: conditions, env: key-value (not interpolated into shell), and action version pins are safe and should not be flagged"
   p2-pwn-request[3]:
     - Identify workflows with pull_request_target trigger
     - Check for checkout of PR head (ref: github.event.pull_request.head.sha or head.ref)
@@ -57,7 +58,6 @@ output[1]:
 rules:
   source-sink-required: "Every finding MUST identify both the source and the sink"
   evidence-required: "Every finding must include the vulnerable code snippet"
-  safe-expression-exclusion: "Expressions in if: conditions, env: key-value (not interpolated into shell), and action version pins are safe and should not be flagged"
   chain-tracing: "For P2 and P5, trace the complete chain from trigger through checkout to execution"
 
 resources[2]:

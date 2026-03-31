@@ -15,10 +15,11 @@ protocol:
   identify-domain[2]:
     - Determine the domain from the search topic or domain-hint input
     - "Match domain to an available knowledge index file in .engineering/resources/ (e.g., substrate-knowledge-index.md)"
-  load-index[3]:
+  load-index[4]:
     - "Read the matched index file from .engineering/resources/ using the Read tool"
     - Parse the source registry, concept lookup table, and topic clusters
     - Identify the document names and mapped concept terms relevant to the search topic
+    - "Domain knowledge indexes are stored as markdown files in the project's .engineering/resources/ directory"
   execute-targeted-search[4]:
     - "Use catalog_search with the document name from the index to resolve the full source path"
     - "Use chunks_search with the resolved source path when searching within a known document"
@@ -35,9 +36,6 @@ output[1]:
       findings: "Content retrieved from concept-rag using the indexed search strategy"
       sources: "Source documents and paths used"
       related_concepts: "Related concepts from the index that may warrant follow-up"
-
-rules:
-  index-location: "Domain knowledge indexes are stored as markdown files in the project's .engineering/resources/ directory"
 
 tools:
   Read:

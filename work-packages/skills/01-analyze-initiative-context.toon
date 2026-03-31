@@ -14,11 +14,12 @@ protocol:
   select-analysis-type[2]:
     - "Present the analysis-type-selection checkpoint to determine if this is continuing or new"
     - "Set analysis_type variable based on user selection"
-  perform-completion-analysis[4]:
+  perform-completion-analysis[5]:
     - "Use attached resource 01 (completion-analysis-guide) for the analysis procedure"
     - "Locate existing planning artifacts in .engineering/artifacts/planning/"
     - "Assess completion state of each previously identified work package"
     - "Identify changes since last session from git log and issue trackers"
+    - "For completion analysis, always check for existing planning artifacts before assuming fresh start"
   perform-context-analysis[4]:
     - "Use attached resource 02 (context-analysis-guide) for the analysis procedure"
     - "Understand the domain, codebase, and technology stack"
@@ -42,7 +43,6 @@ output[1]:
 
 rules:
   type-determines-method: "The analysis_type variable determines which analysis method to use — never mix them"
-  existing-artifacts-first: "For completion analysis, always check for existing planning artifacts before assuming fresh start"
   document-everything: "All findings must be captured in the analysis document, not just presented verbally"
 
 resources[2]:
