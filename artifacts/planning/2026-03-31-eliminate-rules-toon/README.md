@@ -24,7 +24,9 @@ The practical consequences are threefold. First, the `start_session` response is
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+Split `meta/rules.toon` content into two new meta skills delivered through the standard skill system. The `session-protocol` skill (12 rules) covers token mechanics, step manifests, resource usage, and the bootstrap sequence. The `agent-conduct` skill (27 rules) covers code-modification boundaries, file restrictions, communication standards, documentation, domain-tool discipline, and build commands. Three IDE-specific sections (task-management, error-recovery, context-management) are dropped as not the workflow server's domain.
+
+On the server side, `start_session` is slimmed to return only `{ workflow, session_token }` — no rules payload. The `rules-loader.ts` module, `rules.schema.ts`, and `RulesNotFoundError` are deleted. The `help` tool bootstrap guide is externalized to a versioned meta resource. Net effect: -293 lines, one fewer loader module, one fewer schema file, one fewer error class, and a consistent single delivery path for all behavioral guidance.
 
 ---
 
@@ -32,19 +34,14 @@ The practical consequences are threefold. First, the `start_session` response is
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
-| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | Implementation | 8 tasks: skills, deletions, server changes, tests | 1-2h | ✅ Complete |
+| 09 | [Change block index](09-change-block-index.md) | Indexed diff hunks for manual review | 5m | ✅ Complete |
+| 09 | [Code review](09-code-review.md) | Automated code quality review | 10m | ✅ Complete |
+| 09 | [Structural findings](09-structural-findings.md) | Conservation law, meta-law, bug table | 10m | ✅ Complete |
+| 09 | [Test suite review](09-test-suite-review.md) | Test quality and coverage assessment | 10m | ✅ Complete |
+| — | Validation | Build, test, lint verification | 5m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10m | ⬚ Pending |
 
 ---
 
@@ -57,4 +54,4 @@ The practical consequences are threefold. First, the `start_session` response is
 
 ---
 
-**Status:** Ready for design philosophy
+**Status:** Post-implementation review complete, proceeding to validation
