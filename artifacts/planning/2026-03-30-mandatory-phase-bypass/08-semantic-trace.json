@@ -1,0 +1,48 @@
+{
+  "activity_id": "implement",
+  "workflow_id": "work-package",
+  "started_at": "2026-03-31T07:19:00Z",
+  "completed_at": "2026-03-31T07:25:00Z",
+  "events": [
+    {
+      "type": "step_output",
+      "step_id": "T6-dead-code",
+      "output": "Removed SkillEntry, listUniversalSkills, listWorkflowSkills, listSkills, SkillIndex, readSkillIndex from skill-loader.ts. Removed 7 tests. 280 lines deleted. Commit: bd5495f"
+    },
+    {
+      "type": "step_output",
+      "step_id": "T1-schema",
+      "output": "Added skills: z.array(z.string()).optional() to workflow.schema.ts and workflow.schema.json. Commit: c07aefe"
+    },
+    {
+      "type": "step_output",
+      "step_id": "T2-server",
+      "output": "Extended get_skills in resource-tools.ts: activity_id now optional. When omitted, loads workflow.skills. Token advancement uses act: ''. Commit: 8aeef3f"
+    },
+    {
+      "type": "step_output",
+      "step_id": "T8-tests",
+      "output": "Added 6 tests for workflow-level get_skills: skill loading, universal fallback, resources, token, error on missing skills, regression. Total tests: 261. Commit: 23ab165"
+    },
+    {
+      "type": "step_output",
+      "step_id": "T3-toon",
+      "output": "Added skills[2]: [orchestrate-workflow, execute-activity] to work-package/workflow.toon. Workflows worktree commit: d1ee4d8"
+    },
+    {
+      "type": "step_output",
+      "step_id": "T4-meta-skills",
+      "output": "Updated orchestrate-workflow dispatch-activity: references get_skills(workflow_id) in worker bootstrap. Added bootstrap-workflow-skills phase to execute-activity as first protocol step. Workflows worktree commit: 2b73373"
+    },
+    {
+      "type": "step_output",
+      "step_id": "T5-meta-rules",
+      "output": "Updated meta/rules.toon rule 3: references get_skills(workflow_id), execute-activity, and mandatory phases by name. Workflows worktree commit: bb3f37c"
+    },
+    {
+      "type": "step_output",
+      "step_id": "T7-docs",
+      "output": "Updated schemas/README.md: added skills to field tables, optional properties, and mermaid diagram. Commit: 349c5b6"
+    }
+  ]
+}

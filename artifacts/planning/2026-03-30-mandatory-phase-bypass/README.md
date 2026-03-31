@@ -40,7 +40,7 @@ The changes span three layers: the schema (adding the field), the server (extend
 | 04 | [KB research](04-kb-research.md) | Schema design, API extension, dead code analysis | 20-45m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | 8 tasks, execution order, risk register | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | 20 test cases across 6 areas | 15-30m | ✅ Complete |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
+| — | Implementation | 8 tasks, 6 commits, 261 tests pass | 2-3h | ✅ Complete |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
@@ -63,4 +63,4 @@ The changes span three layers: the schema (adding the field), the server (extend
 
 ---
 
-**Status:** Assumptions reviewed — ready for implementation
+**Status:** Implementation complete — proceeding to post-impl review
