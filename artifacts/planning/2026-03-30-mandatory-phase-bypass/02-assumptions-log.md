@@ -9,8 +9,9 @@
 
 ## Summary
 
-Total: 12 | Validated: 6 | Invalidated: 2 | Partially Validated: 1 | Resolved (user): 1 | Open: 2  
-Convergence iterations: 3 | Newly surfaced: 1 (from design-philosophy)
+Total: 12 | Validated: 8 | Invalidated: 2 | Partially Validated: 1 | Resolved (user): 1 | Open: 0  
+Convergence iterations: 3 | Newly surfaced: 1 (from design-philosophy)  
+Stakeholder review: 2 assumptions accepted (A-02-05, A-02-07)
 
 ---
 
@@ -59,12 +60,12 @@ Convergence iterations: 3 | Newly surfaced: 1 (from design-philosophy)
 
 ### A-02-05: Orchestrator pre-digestion is addressable through behavioral guidance
 
-**Status:** Open  
+**Status:** Validated (user-accepted)  
 **Category:** Problem Interpretation  
 **Resolvability:** Not code-resolvable  
 **Assumption:** The orchestrator's habit of pre-digesting worker instructions can be corrected by improving skill protocols and rules.  
-**Risk if wrong:** If behavioral guidance alone is insufficient, server-side enforcement (#65) would be needed.  
-**What would resolve it:** Empirical testing after implementation.
+**Resolution:** Accepted during assumptions review. The violation correlates with missing discoverability, not behavioral defiance. Once orchestrate-workflow is discoverable via workflow-level skills, its `skill-loading-boundary` rule becomes enforceable through guidance. Easily reversible — server enforcement (#65) can be added later if needed.  
+**Resolved by:** User acceptance (assumptions-review activity)
 
 ### A-02-06: Worker self-bootstrap is technically feasible
 
@@ -78,12 +79,12 @@ Convergence iterations: 3 | Newly surfaced: 1 (from design-philosophy)
 
 ### A-02-07: Semantic trace format can be standardized
 
-**Status:** Open  
+**Status:** Validated (user-accepted)  
 **Category:** Workflow Path  
 **Resolvability:** Not code-resolvable  
 **Assumption:** A single standardized semantic trace format can serve all activities.  
-**Risk if wrong:** If the format is too verbose or rigid, activity-level customization may be needed.  
-**What would resolve it:** Stakeholder decision on trace granularity, informed by the existing spec in execute-activity lines 52-56.
+**Resolution:** Accepted during assumptions review. The format (JSON with activity_id, timestamps, events array of 5 typed entries) has been successfully used across 6 activities in this work package. The events array is extensible — new event types can be added without breaking existing traces. Easily reversible.  
+**Resolved by:** User acceptance (assumptions-review activity)
 
 ### A-02-08: get_skills does not return universal meta-skills
 

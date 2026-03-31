@@ -63,4 +63,4 @@ The changes span three layers: the schema (adding the field), the server (extend
 
 ---
 
-**Status:** Ready for implementation
+**Status:** Assumptions reviewed — ready for implementation
