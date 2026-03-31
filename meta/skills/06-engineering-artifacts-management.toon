@@ -22,10 +22,6 @@ protocol:
 
 rules:
   commit-after-activity: "The orchestrator MUST commit and push engineering artifacts after each completed activity, before evaluating transitions to the next activity."
-  read-agents-md-first: "BEFORE committing engineering artifacts, ALWAYS read and follow .engineering/AGENTS.md for the git structure diagram."
-  regular-vs-submodule: "Files in .engineering/artifacts/, .engineering/AGENTS.md, .engineering/scripts/ are regular files — commit directly. Files in .engineering/workflows/ and .engineering/history/ are SUBMODULES — use the two-step commit workflow."
-  submodule-push-required: "When committing submodule changes, push the submodule first (Step 1), then update the parent pointer (Step 2). Skipping either step leaves the repository in an inconsistent state."
-  path-identification: "To identify whether a path is a submodule: run 'git ls-tree HEAD <path>' — 160000 means submodule, 040000 means regular directory."
 
 errors:
   submodule-desync:

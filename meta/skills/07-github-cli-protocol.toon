@@ -17,10 +17,8 @@ protocol:
     - "ALWAYS ask the user before replying to PR comments or review feedback"
 
 rules:
-  no-graphql-mutations: "Avoid gh CLI commands that mutate PRs/issues via GraphQL (e.g., gh pr edit) as they fail due to Projects Classic deprecation. Use the REST API endpoints instead."
-  use-rest-for-updates: "Use gh api with REST endpoints for all mutating operations on PRs and issues."
+  no-graphql-mutations: "Do not use gh CLI commands that mutate PRs/issues via GraphQL (e.g., gh pr edit) — they fail due to Projects Classic deprecation. Use gh api with REST endpoints for all mutating operations instead."
   read-ops-safe: "Read operations via gh CLI (gh pr view, gh pr list, gh issue list) are safe and preferred."
-  approval-before-reply: "ALWAYS ask the user before replying to PR comments or review feedback."
 
 errors:
   graphql-deprecation:

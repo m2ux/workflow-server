@@ -34,8 +34,7 @@ steps[6]:
     name: Report Artifact Verification
     description: "Report the written artifact: file path, file size (KB), format validation status."
     required: true
-rules[4]:
-  - "METHODOLOGY STRIPPING: The report MUST NOT contain references to analytical methodology. No lens names (L12, claim-inversion, knowledge-audit, scarcity, rejected-paths). No pipeline modes (full-prism, portfolio). No pass types (structural pass, adversarial pass, synthesis). No process narratives. Methodology details remain available in the raw dimension-specific artifacts."
+rules[3]:
   - "FINDING ID CONVENTION: Finding IDs use a 3-letter dimension prefix followed by a dash and two-digit number. Standard prefixes: CON (Consistency), VER (Veracity), PLB (Plausibility), FEA (Feasibility). For custom dimensions, derive a 3-letter prefix from the dimension name."
   - "SEVERITY RUBRIC: All severity labels must be computed from Impact x Feasibility. CRITICAL — directly undermines the target's core purpose. HIGH — degrades significant guarantees or creates major gaps. MEDIUM — limited scope or conditional. LOW — informational."
   - "STANDALONE REPORT: The report must be readable and actionable by someone who knows nothing about prism, lenses, or evaluation methodology. It should read as a professional evaluation document."

@@ -47,9 +47,6 @@ output[1]:
 
 rules:
   measure-before-improve: "You can't improve what you don't measure — establish quantitative baselines"
-  reproducible-metrics: "Document how each metric was measured for reproducibility"
-  link-gaps-to-criteria: "Gaps should be linked to measurable success criteria"
-  document-assumptions: "Assumptions about current behavior and gaps should be documented"
 
 resources[1]:
   - "06"

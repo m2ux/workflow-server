@@ -49,8 +49,6 @@ output[1]:
 
 rules:
   elevate-implicit: "Make implicit decisions explicit — assumptions should be elevated for validation"
-  structured-batch-presentation: "Present all open assumptions together as a structured interview-style list ordered by decision impact, with judgement augmentation context (decision space, alternatives with trade-offs, non-resolvability rationale, technical context, agent's position, reversibility flag). Present alternatives before the agent's position to reduce anchoring. Do not present assumptions one at a time."
-  update-after-review: "Update assumptions log AFTER the review checkpoint — record user responses and outcomes"
   categorize-per-activity: "Use categories appropriate to the current activity phase"
   markdown-field-formatting: "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
 

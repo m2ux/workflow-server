@@ -47,11 +47,7 @@ output[1]:
 rules:
   multiple-sources: "Multiple sources should be consulted for robust findings"
   validate-patterns: "Patterns should be validated across documents"
-  map-to-needs: "Clear mapping to work package needs is essential"
-  document-assumptions: "Assumptions about pattern applicability and synthesis should be documented"
-  fetch-activities-first: "MANDATORY: Fetch concept-rag://activities resource before making any concept-rag MCP tool calls. This provides activity matching, skill mapping, and tool sequence."
   no-narration: "Never narrate the search process to the user. Synthesize answers directly and cite sources."
-  activity-driven: "Follow the Activity → Skill → Tool model: match research goal to a concept-rag activity, follow that activity's skill workflow, then synthesize findings."
 
 resources[2]:
   - "07"

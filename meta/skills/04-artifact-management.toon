@@ -19,7 +19,7 @@ protocol:
     - "If not, create folder using pattern and store path"
 
 rules:
-  planning-folder-convention: "Create planning folders as {planning-base-path}/YYYY-MM-DD-{initiative-name}/ — NEVER create planning documents directly in .engineering/artifacts/"
+  planning-folder-convention: "NEVER create planning documents directly in .engineering/artifacts/"
 
 errors:
   no_folder_path:

@@ -16,14 +16,11 @@ skills:
     - structural-analysis
 required: true
 estimatedTime: 30-60m
-rules[7]:
+rules[4]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
   - "All three automated reviews (code, test suite, architecture) should be completed"
   - "Adoption workflows must still complete quality reviews"
-  - "Run git pull to ensure branch is up to date before evaluating diffs"
-  - "Parse git diff to extract list of changed files"
-  - "Create file index table (Row | Path | File) with review time estimate (30 sec/change), write to change-block-index.md"
 modeOverrides:
   review:
     description: "Compare PR changes against expected changes from implementation analysis. Document findings for PR author."

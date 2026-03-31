@@ -39,7 +39,6 @@ output[1]:
 
 rules:
   retrospective-honest: "Retrospective should be honest about what worked and what didn't — avoid generic positive statements"
-  history-private: "Session history is private metadata — never committed to the repository"
   skip-if-trivial: "Skip retrospective if: only checkpoint responses occurred (no clarifications, corrections, or process questions), OR work package was trivial (<30 min, single task)."
 
 resources[1]:

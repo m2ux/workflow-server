@@ -52,12 +52,6 @@ output[2]:
       findings: "Per-block issues with interview responses"
       has_critical_blocker: "True if any block marked as critical blocker"
 
-rules:
-  index-first: "Always generate the change block index before asking user to review — they need the reference numbers"
-  user-drives-review: "The user identifies issues in their external diff tool — agent does not pre-judge changes"
-  interview-each-block: "For each flagged block, conduct a focused interview asking what the issue is and recording the response"
-  critical-blockers: "If user marks a block as critical blocker, set has_critical_blocker=true for downstream handling"
-
 resources[1]:
   - "22"
 

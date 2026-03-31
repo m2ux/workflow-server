@@ -50,10 +50,6 @@ output[1]:
       newly_surfaced: "Count of assumptions discovered during analysis that were not in the original set"
 
 rules:
-  convergence-required: "The loop MUST continue until no code-resolvable assumptions remain. Do not ask the user to select which assumptions to analyze — analyze all code-resolvable ones in each iteration."
-  evidence-based: "Every resolution MUST cite file paths and code evidence. A resolution without evidence is not a resolution."
-  new-assumptions-captured: "Assumptions surfaced during analysis MUST be captured, classified, and resolved if code-resolvable — within the same convergence loop, not deferred."
-  comprehension-augmented: "When a comprehension artifact exists, findings MUST be appended to it for traceability. Reconciliation findings are a form of targeted comprehension."
   no-user-interaction: "The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result at the activity's assumptions checkpoint."
   classification-transparency: "When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis."
   markdown-field-formatting: "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."

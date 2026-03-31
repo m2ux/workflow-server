@@ -48,9 +48,6 @@ resources[1]:
   - "21"
 
 rules:
-  source-links: "Test plan must include hyperlinks to actual test source locations — not just test names"
-  completion-summary: "COMPLETE.md summarizes deliverables, test coverage, deferred items, and known limitations"
-  api-docs-required: "Public APIs must have inline documentation — verify and add missing doc comments"
   completion-timing: "COMPLETE.md is created after implementation is complete and PR is merged. It captures the final delivered state — what was built, tested, and deferred. Update if post-merge changes occur."
 
 tools:

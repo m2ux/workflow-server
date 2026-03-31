@@ -38,11 +38,7 @@ output[1]:
       recommendations: "Suggested next steps based on findings"
 
 rules:
-  context-first: "ALWAYS read gitnexus://repo/{name}/context before making any tool calls — verify the index is loaded and fresh"
   query-not-grep: "Use GitNexus query() when you need execution flows and relationships, not just file matches. GitNexus complements grep/search — it finds how code works together."
-  impact-before-change: "Before modifying shared code, run impact() with direction 'upstream' to understand what depends on the target"
-  dry-run-renames: "ALWAYS preview renames with dry_run=true before applying. Review graph edits (high confidence) separately from text_search edits (lower confidence, review carefully)"
-  detect-after-refactor: "After any refactoring operation, run detect_changes() to verify only expected files were modified"
   resource-reference: "Use attached resource 04 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
 
 resources[1]:
