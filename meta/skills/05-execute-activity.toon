@@ -1,16 +1,7 @@
 id: execute-activity
-version: 3.0.0
+version: 3.1.0
 capability: Resolve user goals to workflows and execute workflow activities
-
-description: "Unified activity resolution and execution skill. Resolves user goals to workflows via the Goal → Workflow → Activity → Skill → Tools metamodel. Self-loads activity definitions and skills from the workflow-server, executes steps sequentially, yields at blocking checkpoints, produces artifacts, and reports structured results. Persists across activities (via Task resume) to preserve accumulated codebase understanding and implementation context."
-
-architecture:
-  principle: "Goals resolve to workflows; workflows contain activities; activities resolve to skills. Goals NEVER resolve directly to skills."
-  layers[3]:
-    - "User Goal (problem domain) → Workflow"
-    - "Workflow → Activity → Skill(s) (solution domain)"
-    - "Skill → Tools (execution domain)"
-  gap_detection: "If a goal matches a skill but no workflow/activity exists, this indicates a missing workflow or activity — do not bypass the workflow layer"
+description: "Resolves user goals to workflows via the Goal → Workflow → Activity → Skill → Tools metamodel. Self-loads activity definitions and skills, executes steps, yields at blocking checkpoints, produces artifacts, writes semantic traces, and reports structured results. Use attached resource 06 for detailed phase guidance, output formats, and trace specification."
 
 inputs[3]:
   - id: activity-id
@@ -20,99 +11,52 @@ inputs[3]:
   - id: state-variables
     description: "Current workflow state variables"
 
-matching:
-  strategy: "Compare user goal to workflow descriptions returned by list_workflows"
-  ambiguous: "If multiple workflows could match, ask user to clarify"
-  never: "NEVER skip workflow matching to use a skill directly"
-
 protocol:
   resolve-goal[3]:
     - "Call help to learn server usage and available workflows"
-    - "Call list_workflows to discover available workflows. Match user goal to a workflow by comparing goal to workflow descriptions."
+    - "Call list_workflows and match user goal to a workflow by comparing to descriptions"
     - "If no workflow matches, inform the user — this is a design gap, not a user error"
   bootstrap-session[1]:
-    - "Call start_session(workflow_id) to load agent rules and obtain a session token. Follow these rules throughout execution."
-  bootstrap-activity[3]:
-    - "Call next_activity({ workflow_id, activity_id }) to load the activity definition. This sets token.act to the current activity."
-    - "Extract steps, checkpoints, skills (primary + supporting), loops, decisions, transitions, modeOverrides, and artifactPrefix"
-    - "On the FIRST call to next_activity (before any activity has been entered), get_skills will automatically return workflow-level skills (including execute-activity). On subsequent activities, get_skills returns activity-level skills only."
+    - "Call start_session(workflow_id) to load agent rules and obtain a session token"
+  bootstrap-activity[2]:
+    - "Call next_activity({ workflow_id, activity_id }) to load the activity definition"
+    - "Extract steps, checkpoints, skills, loops, decisions, transitions, modeOverrides, and artifactPrefix"
   bootstrap-skill[2]:
-    - "Call get_skills({ workflow_id }) to load skills and their referenced resources. The server uses the session token to determine scope: pre-activity returns workflow-level skills, post-next_activity returns activity-level skills."
-    - "Read each skill's protocol, rules, tools, inputs, and output definitions. Referenced resources are in the response's resources array — each has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in this array."
+    - "Call get_skills({ workflow_id }) to load skills and resources (token determines scope: pre-activity returns workflow skills, post-next_activity returns activity skills)"
+    - "Read each skill's protocol, rules, tools, inputs, and output definitions. Resources are in the response's resources array."
   check-mode[2]:
-    - "If is_review_mode is true in state variables, apply the activity's modeOverrides: use override description, apply override rules, add override steps, skip steps listed in skipSteps"
-    - "If the activity is listed in the workflow's mode.skipActivities, report back immediately with a skip result"
-  execute-steps[5]:
-    - "Execute each step in the activity's steps array sequentially"
-    - "For each step with a skill reference (step.skill), load that skill via get_skill and follow its protocol"
-    - "For steps with a condition, evaluate the condition against current state variables. Skip the step if the condition is false."
-    - "For actions with type 'message', output the message content to the user as markdown."
+    - "If is_review_mode is true, apply the activity's modeOverrides"
+    - "If the activity is in mode.skipActivities, report back with a skip result"
+  execute-steps[3]:
+    - "Execute each step sequentially. For steps with a skill reference, load via get_skill."
+    - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
-  yield-checkpoint[5]:
-    - "When a blocking checkpoint is reached, STOP execution and yield."
-    - "If a checkpoint has a prerequisite field, evaluate it against current state variables. If the prerequisite is not met, skip the checkpoint entirely — do not yield."
-    - "Return a checkpoint_pending result: { result_type: 'checkpoint_pending', checkpoint_id, checkpoint_message, checkpoint_options, steps_completed_so_far, partial_variables_changed, artifacts_produced_so_far }."
-    - "On resume with a checkpoint_response: extract selected_option_id and effects_applied. Apply the effects (setVariable, transitionTo, skipActivities) to local state. Continue executing remaining steps from where execution paused."
-    - "NEVER auto-resolve a blocking checkpoint. If the checkpoint cannot be presented, yield it."
-  execute-loops[3]:
-    - "For forEach loops: iterate over the named collection, executing loop steps for each item"
-    - "For doWhile loops: execute loop steps, then evaluate the condition. Repeat while condition is true, up to maxIterations."
-    - "Track loop iterations and current item for state reporting"
+  yield-checkpoint[3]:
+    - "At a blocking checkpoint, STOP and return checkpoint_pending (see resource 06 for format)"
+    - "On resume with checkpoint_response, apply effects and continue from where paused"
+    - "NEVER auto-resolve a blocking checkpoint"
+  execute-loops[2]:
+    - "forEach: iterate over the named collection, executing loop steps for each item"
+    - "doWhile: execute steps, evaluate condition, repeat up to maxIterations"
   produce-artifacts[2]:
     - "Write artifacts to the planning folder using the activity's artifactPrefix convention"
     - "Record each artifact produced: id, name, path"
-  update-readme-progress[5]:
-    - "MANDATORY before returning activity_complete. Read the planning folder README.md."
-    - "In the Progress table, mark each artifact produced by this activity as '✅ Complete'. If the activity itself represents a progress row (e.g., Implementation, Validation), update that row's status too."
-    - "Update descriptive text in the Status column to reflect what was done (e.g., 'Code quality review (4/5, M1-M3 fixed)')."
-    - "Update the footer status line to reflect the current workflow position (e.g., 'Implementation complete — PR submitted for review')."
-    - "Write the updated README.md back to disk. The orchestrator will include it in the same commit as the activity's artifacts."
-  write-semantic-trace[4]:
-    - "MANDATORY before report-completion. Write a semantic trace file to the planning folder capturing workflow-meaningful events from this activity."
-    - "File path: {planning_folder_path}/{artifactPrefix}-semantic-trace.json. Content: JSON object with activity_id, started_at, completed_at, and an events array."
-    - "Events to capture: step outputs (step_id + output summary for each completed step), checkpoint responses (checkpoint_id + selected_option_id + effects applied), decision branches taken (decision_id + branch_id + condition evaluated), loop iterations (loop_id + iteration count + convergence info), variable changes (variable name + old value + new value)."
-    - "This complements the server's mechanical trace (tool call timing and validation) with the agent-side semantic context that the server cannot observe."
-  report-completion[3]:
-    - "Compile structured result with result_type: 'activity_complete'"
-    - "Include: variables_changed (all variable mutations from checkpoint effects and step actions), checkpoints_responded (checkpoint_id + selected_option for each), artifacts_produced (id + path for each — include README.md if updated), steps_completed (list of step IDs)"
+  update-readme-progress[1]:
+    - "MANDATORY before report-completion. Update the planning folder README.md progress table (see resource 06 for details)"
+  write-semantic-trace[1]:
+    - "MANDATORY before report-completion. Write {artifactPrefix}-semantic-trace.json to the planning folder (see resource 06 for format)"
+  report-completion[2]:
+    - "Compile structured result with result_type: activity_complete (see resource 06 for format)"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
 
-output[2]:
-  - id: activity-complete
-    description: "Final result when all steps and checkpoints are done"
-    components:
-      result_type: "activity_complete"
-      variables_changed: "Map of variable names to new values (only variables that changed)"
-      checkpoints_responded: "Array of checkpoint responses with option IDs and effects"
-      artifacts_produced: "Array of artifacts with IDs and file paths"
-      steps_completed: "Array of completed step IDs"
-      transition_override: "Activity ID to transition to (if a checkpoint effect specified transitionTo)"
-  - id: checkpoint-pending
-    description: "Intermediate result when a blocking checkpoint is reached — execution is paused"
-    components:
-      result_type: "checkpoint_pending"
-      checkpoint_id: "ID of the blocking checkpoint"
-      checkpoint_message: "The checkpoint prompt text"
-      checkpoint_options: "Array of options with id, label, description, effect"
-      steps_completed_so_far: "Steps completed before this checkpoint"
-      partial_variables_changed: "Any variables changed by steps before this checkpoint"
-      artifacts_produced_so_far: "Any artifacts produced before this checkpoint"
-
 rules:
-  self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity and get_skills (batch). Use get_skill only for per-step skill references. The workflow-server is the source of truth for step-level details."
+  self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity and get_skills. The workflow-server is the source of truth."
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
-  preserve-context: "Accumulated codebase understanding, file locations, implementation decisions, and conversation history persist across activities via resume. Use this context to inform subsequent activities."
-  complete-all-steps: "Execute all required steps in the activity. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
-  checkpoint-yield: "All blocking checkpoints MUST cause execution to yield. NEVER auto-resolve a blocking checkpoint. Return the checkpoint details in a checkpoint_pending result and pause until resumed with a checkpoint_response."
-  checkpoint-presentation: "Present checkpoints as interactive selection dialogues. checkpoint.message is the prompt, checkpoint.options are the selectable choices. Never render checkpoint options as plain text, bulleted lists, or tables. Apply the effect from the selected option."
-  artifact-prefixing: "When writing artifacts, prepend the activity's artifactPrefix to the bare filename (e.g., artifactPrefix '08' + 'code-review.md' = '08-code-review.md')."
-  readme-progress-mandatory: "The update-readme-progress phase is NOT optional. It MUST execute before report-completion. If the planning folder README.md does not exist, skip silently. If it exists, update it. Failure to update the progress table is a protocol violation — the orchestrator depends on this for incremental progress tracking."
-  resource-usage: "Resources referenced by skills are returned as a structured array in the get_skill and get_skills responses. Each resource has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in the resources array. Do not attempt to call a separate tool to load resources."
-  workflow-fidelity: "When following the workflow, respect workflow fidelity as defined in the TOON files' semantics. Execute workflow activities in the defined sequence unless transitions explicitly allow alternatives."
-  checkpoint-enforcement: "Honor all defined checkpoints within activities and await user confirmation at each checkpoint. Checkpoints are explicit constructs defined inside activity definitions — activity transitions are NOT checkpoints."
-  automatic-transitions: "Activity transitions are deterministic and automatic. The worker MUST NOT pause, prompt, or wait for user confirmation between activities. User interaction happens ONLY through checkpoints defined within activities."
-  implementation-one-at-a-time: "For complex implementations within an activity, complete only ONE numbered task at a time. Within an activity, stop and ask user permission before proceeding to the next implementation item."
-  implementation-no-batch: "NEVER implement multiple recommendations in a single iteration within an activity. Provide brief summary of completed work before asking to continue."
+  preserve-context: "Accumulated codebase understanding persists across activities via resume. Use this context to inform subsequent activities."
+  complete-all-steps: "Execute all required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
+  checkpoint-yield: "All blocking checkpoints MUST cause execution to yield. NEVER auto-resolve. Present checkpoints as interactive selection dialogues, not plain text."
+  artifact-prefixing: "Prepend the activity's artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')."
+  workflow-fidelity: "Respect TOON semantics. Execute activities in sequence unless transitions allow alternatives. Activity transitions are automatic — never pause for user confirmation between activities."
 
 tools:
   help:
@@ -123,41 +67,25 @@ tools:
     returns: "List of workflow definitions with id, title, version, description"
     next: "start_session with chosen workflow_id"
   start_session:
-    when: "First action on initial dispatch (not needed on resume — rules persist in context)"
+    when: "First action on initial dispatch (not needed on resume)"
     returns: "Agent rules, workflow metadata, and session token"
   next_activity:
     when: "After receiving activity_id"
     params: "workflow_id, activity_id"
     returns: "Activity definition with steps, checkpoints, skills, transitions"
   get_skill:
-    when: "After loading activity, for the primary skill and any step-level skill references"
+    when: "Per-step skill references during execution"
     params: "skill_id, workflow_id"
     returns: "Skill definition with protocol, tools, rules, inputs, output"
   get_skills:
-    when: "Activity bootstrap — load all skills and resources at once. Token-driven: pre-activity returns workflow skills, post-next_activity returns activity skills."
+    when: "Activity bootstrap — load all skills and resources at once"
     params: "session_token, workflow_id"
-    returns: "Skills (scope depends on token state) with referenced resources attached"
-  read_file:
-    when: "Reading source code, artifacts, or planning documents"
-    usage: "Examine codebase, load prior artifacts, review plans"
-  edit:
-    when: "Modifying source code during implementation"
-    usage: "Apply code changes as directed by the skill protocol"
-  shell:
-    when: "Running tests, builds, git operations, CLI commands"
-    usage: "Execute cargo test, cargo build, git commit, gh CLI, etc."
-  grep:
-    when: "Searching codebase for patterns"
-    usage: "Find relevant code, check consistency, locate usages"
-  write_file:
-    when: "Creating planning artifacts"
-    usage: "Write artifacts to planning folder with artifactPrefix"
+    returns: "Skills with referenced resources attached (scope from token state)"
 
 errors:
   no_matching_workflow:
     cause: "User goal doesn't match any existing workflow"
-    detection: "Goal could be served by existing skills but no workflow maps to it"
-    recovery: "Inform the user that no workflow matches their goal. Suggest the closest available workflow or offer to proceed without a workflow. This is a design gap, not a user error."
+    recovery: "Inform the user and suggest the closest workflow. This is a design gap, not a user error."
   activity_not_found:
     cause: "next_activity returned error for the given activity_id"
     recovery: "Report error in result. Check activity_id spelling against workflow definition."
@@ -166,7 +94,10 @@ errors:
     recovery: "Report error in result. Check skill ID in the activity's skills.primary field."
   step_failure:
     cause: "A step could not be completed (e.g., test failure, build error)"
-    recovery: "Attempt to fix the issue per the skill's error handling. If unresolvable, report the failure in steps_completed with the error details."
+    recovery: "Attempt to fix per the skill's error handling. If unresolvable, report failure with error details."
   checkpoint_skipped:
     cause: "A checkpoint's prerequisite condition was not met"
     recovery: "Skip the checkpoint silently and note it in the result."
+
+resources[1]:
+  - "06"
