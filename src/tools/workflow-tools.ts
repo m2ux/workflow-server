@@ -40,7 +40,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             action: 'Call start_session with the chosen workflow_id',
             tool: 'start_session',
             params: { workflow_id: '<chosen workflow ID>' },
-            returns: 'Agent behavioral rules, workflow metadata, and an opaque session token',
+            returns: 'Workflow metadata and an opaque session token',
+          },
+          step_3: {
+            action: 'Call get_skills to load behavioral protocols (session-protocol, agent-conduct, and workflow-specific skills)',
+            tool: 'get_skills',
+            params: { workflow_id: '<chosen workflow ID>', session_token: '<token from step 2>' },
+            returns: 'Skills with rules, protocols, and referenced resources',
           },
         },
         session_protocol: {

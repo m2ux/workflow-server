@@ -78,15 +78,14 @@ describe('mcp-server integration', () => {
   });
 
   describe('tool: start_session', () => {
-    it('should return rules, workflow metadata, and opaque token', async () => {
+    it('should return workflow metadata and opaque token (no rules payload)', async () => {
       const result = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.rules).toBeDefined();
-      expect(response.rules.id).toBe('agent-rules');
+      expect(response.rules).toBeUndefined();
       expect(response.workflow.id).toBe('work-package');
       expect(response.session_token).toBeDefined();
       expect(typeof response.session_token).toBe('string');
