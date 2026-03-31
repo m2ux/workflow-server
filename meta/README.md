@@ -38,7 +38,7 @@ graph TD
 
 **Purpose:** Begin executing a new workflow from the beginning.
 
-**Primary Skill:** `workflow-execution`  
+**Primary Skill:** `execute-activity`  
 **Supporting Skills:** `activity-resolution`, `state-management`
 
 ```mermaid
@@ -60,7 +60,7 @@ graph TD
         s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> s11 --> s12
     end
     
-    skill1((workflow-execution))
+    skill1((execute-activity))
     skill2((activity-resolution))
     skill3((state-management))
     
@@ -96,7 +96,7 @@ graph TD
 
 **Purpose:** Continue a workflow that was previously started.
 
-**Primary Skill:** `workflow-execution`  
+**Primary Skill:** `execute-activity`  
 **Supporting Skills:** `activity-resolution`, `state-management`
 
 ```mermaid
@@ -115,7 +115,7 @@ graph TD
         r1 --> r2 --> r3 --> r4 --> r5 --> r6 --> r7 --> r8 --> r9
     end
     
-    skill1((workflow-execution))
+    skill1((execute-activity))
     skill3((state-management))
     
     r4 -.-> skill3
@@ -146,7 +146,7 @@ graph TD
 
 **Purpose:** Complete and finalize a workflow execution.
 
-**Primary Skill:** `workflow-execution`  
+**Primary Skill:** `execute-activity`  
 **Supporting Skills:** `state-management`
 
 ```mermaid
@@ -162,7 +162,7 @@ graph TD
         e1 --> e2 --> e3 --> e4 --> e5 --> e6
     end
     
-    skill1((workflow-execution))
+    skill1((execute-activity))
     skill3((state-management))
     
     e1 -.-> skill1
@@ -192,14 +192,17 @@ The Meta workflow defines universal skills used by all workflows:
 | Skill | Capability | Description |
 |-------|------------|-------------|
 | `activity-resolution` | Resolve user goals to activities | Maps user intent to appropriate activities and skills |
-| `workflow-execution` | Execute workflows | Follows schema patterns for workflow execution |
 | `state-management` | Manage workflow state | Handles state across sessions |
 | `artifact-management` | Manage planning artifacts | Ensures artifacts are created in correct folder structure |
-| `orchestrate-workflow` | Orchestrate workflow execution | Coordinates orchestrator/worker pattern with persistent sub-agent |
-| `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps as a worker |
+| `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps as a worker. Includes merged workflow-fidelity, implementation-workflow, and checkpoint presentation rules. |
 | `knowledge-base-search` | Optimise knowledge base searches | Pre-indexes domain maps before querying concept-rag |
 | `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
 | `gitnexus-operations` | Query codebases via knowledge graph | GitNexus MCP tools for impact analysis, debugging, refactoring |
+| `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
+| `engineering-artifacts-management` | Engineering artifact commits | Regular file vs submodule commit workflows for .engineering/ |
+| `github-cli-protocol` | GitHub CLI usage | GraphQL deprecation workarounds, REST API for mutations |
+
+> **Note:** `workflow-execution` was absorbed into `execute-activity`. `orchestrate-workflow` was moved to `work-package/skills/` — it encodes the persistent-worker model which is not universal.
 
 ---
 
