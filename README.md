@@ -11,14 +11,13 @@ This orphan branch contains workflow definitions, activities, skills, and resour
 
 ```
 workflows/                    # Worktree checkout
-├── meta/                     # Bootstrap workflow (manages other workflows)
-│   ├── README.md             # Workflow documentation with Mermaid diagrams
-│   ├── workflow.toon         # Meta workflow definition
-│   ├── rules.toon            # Agent rules for workflow execution
+├── meta/                     # Skill and resource repository (excluded from list_workflows)
+│   ├── README.md             # Meta documentation with Mermaid diagrams
+│   ├── workflow.toon         # Meta definition (activities for lifecycle management)
 │   ├── activities/           # All activities (indexed)
 │   │   └── {NN}-{id}.toon    # 01-start-workflow, 02-resume-workflow, etc.
-│   └── skills/               # Universal skills (indexed)
-│       └── {NN}-{id}.toon    # 00-activity-resolution, 01-workflow-execution, etc.
+│   └── skills/               # Universal skills (indexed, auto-included on first get_skills)
+│       └── {NN}-{id}.toon    # 00-session-protocol, 01-agent-conduct, etc.
 ├── {workflow-id}/            # Each workflow folder
 │   ├── README.md             # Workflow documentation with Mermaid diagrams
 │   ├── workflow.toon         # Workflow definition
@@ -45,16 +44,21 @@ workflows/                    # Worktree checkout
 
 ## Universal Skills ([meta/skills/](meta/skills/))
 
+Auto-included on the first `get_skills` call for any workflow session.
+
 | Skill | Description |
 |-------|-------------|
-| [`00-activity-resolution`](meta/skills/00-activity-resolution.toon) | Resolve user goals to activities |
-| [`01-workflow-execution`](meta/skills/01-workflow-execution.toon) | Execute workflows following schema patterns |
-| [`02-state-management`](meta/skills/02-state-management.toon) | Manage workflow state across sessions |
-| [`03-artifact-management`](meta/skills/03-artifact-management.toon) | Manage planning artifact folder structure |
-| [`04-orchestrate-workflow`](meta/skills/04-orchestrate-workflow.toon) | Orchestrate workflow execution using a persistent worker sub-agent |
-| [`05-execute-activity`](meta/skills/05-execute-activity.toon) | Bootstrap and execute a single workflow activity |
-| [`06-knowledge-base-search`](meta/skills/06-knowledge-base-search.toon) | Optimise knowledge base searches via pre-indexed domain map |
-| [`07-atlassian-operations`](meta/skills/07-atlassian-operations.toon) | Perform Atlassian Jira and Confluence operations via MCP |
+| [`00-session-protocol`](meta/skills/00-session-protocol.toon) | Session lifecycle protocol: token handling, step manifests, resource usage, skill loading bootstrap |
+| [`01-agent-conduct`](meta/skills/01-agent-conduct.toon) | Agent behavioral boundaries: code modification, file restrictions, communication, documentation |
+| [`02-execute-activity`](meta/skills/02-execute-activity.toon) | Bootstrap and execute a single workflow activity |
+| [`03-state-management`](meta/skills/03-state-management.toon) | Manage workflow state across sessions |
+| [`04-artifact-management`](meta/skills/04-artifact-management.toon) | Manage planning artifact folder structure |
+| [`05-version-control-protocol`](meta/skills/05-version-control-protocol.toon) | Conventional commits, branch management, destructive operation guardrails |
+| [`06-engineering-artifacts-management`](meta/skills/06-engineering-artifacts-management.toon) | Regular file vs submodule commit workflows for .engineering/ |
+| [`07-github-cli-protocol`](meta/skills/07-github-cli-protocol.toon) | GitHub CLI usage: GraphQL deprecation workarounds, REST API for mutations |
+| [`08-knowledge-base-search`](meta/skills/08-knowledge-base-search.toon) | Optimise knowledge base searches via pre-indexed domain map |
+| [`09-atlassian-operations`](meta/skills/09-atlassian-operations.toon) | Perform Atlassian Jira and Confluence operations via MCP |
+| [`10-gitnexus-operations`](meta/skills/10-gitnexus-operations.toon) | Query codebases via knowledge graph for impact analysis, debugging, refactoring |
 
 ## Worktree Setup
 
@@ -86,7 +90,7 @@ git worktree add ./workflows workflows
 
 **Skills:**
 1. Create `{NN}-{skill-id}.toon` with two-digit index
-2. Universal: Create in `meta/skills/` (e.g., `00-activity-resolution.toon`)
+2. Universal: Create in `meta/skills/` (e.g., `00-session-protocol.toon`)
 3. Workflow-specific: Create in `{workflow-id}/skills/`
 4. Commit to this branch
 

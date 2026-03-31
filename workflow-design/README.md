@@ -80,7 +80,7 @@ Review mode audits an existing workflow against:
 1. **Schema expressiveness** — flags prose that should be formal constructs
 2. **Convention conformance** — checks naming, structure, and field ordering
 3. **Rule-to-structure enforcement** — identifies critical rules lacking structural backing
-4. **Anti-pattern scan** — checks all 23 prohibited patterns
+4. **Anti-pattern scan** — checks all 28 prohibited patterns
 5. **Schema validation** — validates every TOON file
 
 The output is a severity-rated compliance report saved to `.engineering/artifacts/reviews/`. After review, the user can opt to fix issues (transitions to update mode) or accept the report as-is.
@@ -125,7 +125,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 |---|----------|---------|---------|
 | 00 | [Design Principles](resources/README.md#00--design-principles) | Condensed reference of all 14 principles | All activities |
 | 01 | [Schema Construct Inventory](resources/README.md#01--schema-construct-inventory) | Prose-to-formal construct mapping tables | Quality Review, Content Drafting |
-| 02 | [Anti-Patterns](resources/README.md#02--anti-patterns) | 23 prohibited patterns by category | Quality Review, Review Mode |
+| 02 | [Anti-Patterns](resources/README.md#02--anti-patterns) | 28 prohibited patterns by category | Quality Review, Review Mode |
 | 03 | [Update Mode Guide](resources/README.md#03--update-mode-guide) | Content preservation and impact analysis procedures | Update mode activities |
 | 04 | [Review Mode Guide](resources/README.md#04--review-mode-guide) | Compliance audit procedure and report structure | Review mode activities |
 
@@ -178,7 +178,7 @@ workflows/workflow-design/
 │   ├── 05-impact-analysis.toon           # Impact analysis (update mode)
 │   ├── 06-scope-and-structure.toon       # Define file manifest
 │   ├── 07-content-drafting.toon          # Draft/modify files
-│   ├── 08-quality-review.toon            # Three review passes
+│   ├── 08-quality-review.toon            # Four review passes
 │   ├── 09-validate-and-commit.toon       # Validate and commit
 │   └── 10-post-update-review.toon       # Post-commit compliance audit (update mode)
 ├── skills/

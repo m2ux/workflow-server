@@ -1,15 +1,15 @@
-# Meta Workflow
+# Meta
 
-> Bootstrap workflow for the workflow-server. Provides self-contained activities for workflow lifecycle management (start, resume, end). Each activity is an independent entry point matched via recognition patterns.
+> Skill and resource repository for the workflow-server. Provides universal skills (auto-included on first `get_skills` call) and self-contained activities for workflow lifecycle management (start, resume, end). Excluded from `list_workflows`.
 
 ## Overview
 
-The Meta workflow is the **entrypoint for all workflow operations**. Unlike other workflows with sequential activity flows, the Meta workflow provides three independent activities that are matched directly via user intent recognition patterns.
+Meta is the **skill and resource repository** for the workflow server. It provides universal skills that apply to all workflows, plus three independent activities for workflow lifecycle management matched via user intent recognition patterns.
 
 **Key characteristics:**
-- Each activity is an independent entry point
-- Activities are matched via recognition patterns (not sequential flow)
-- Skills in this workflow are universal and apply to all workflows
+- Excluded from `list_workflows` — not a user-facing workflow
+- Skills are universal and auto-included on the first `get_skills` call for any session
+- Activities are independent entry points matched via recognition patterns (not sequential flow)
 
 ## Workflow Structure
 
@@ -61,10 +61,8 @@ graph TD
     end
     
     skill1((execute-activity))
-    skill2((activity-resolution))
     skill3((state-management))
     
-    s1 -.-> skill2
     s3 -.-> skill3
     s10 -.-> skill1
 ```
@@ -187,11 +185,12 @@ graph TD
 
 ## Skills Summary
 
-The Meta workflow defines universal skills used by all workflows:
+Meta defines universal skills used by all workflows:
 
 | Skill | Capability | Description |
 |-------|------------|-------------|
-| `activity-resolution` | Resolve user goals to activities | Maps user intent to appropriate activities and skills |
+| `session-protocol` | Session lifecycle protocol | Token handling, step manifests, resource usage, skill loading bootstrap |
+| `agent-conduct` | Agent behavioral boundaries | Code modification, file restrictions, communication, documentation, domain tool discipline, build commands |
 | `state-management` | Manage workflow state | Handles state across sessions |
 | `artifact-management` | Manage planning artifacts | Ensures artifacts are created in correct folder structure |
 | `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps as a worker. Includes merged workflow-fidelity, implementation-workflow, and checkpoint presentation rules. |
@@ -201,8 +200,6 @@ The Meta workflow defines universal skills used by all workflows:
 | `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
 | `engineering-artifacts-management` | Engineering artifact commits | Regular file vs submodule commit workflows for .engineering/ |
 | `github-cli-protocol` | GitHub CLI usage | GraphQL deprecation workarounds, REST API for mutations |
-| `session-protocol` | Session lifecycle protocol | Token handling, step manifests, resource usage, skill loading bootstrap |
-| `agent-conduct` | Agent behavioral boundaries | Code modification, file restrictions, communication, documentation, domain tool discipline, build commands |
 
 > **Note:** `workflow-execution` was absorbed into `execute-activity`. `orchestrate-workflow` was moved to `work-package/skills/` — it encodes the persistent-worker model which is not universal. Agent behavioral rules formerly in `rules.toon` are now delivered through `session-protocol` and `agent-conduct` skills.
 

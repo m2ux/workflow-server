@@ -2,9 +2,9 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-## Skills (24 workflow-specific + 2 universal + 3 cross-workflow)
+## Skills (25 workflow-specific + 3 cross-workflow)
 
-The workflow uses 24 workflow-specific skills organized by capability, plus 2 universal orchestration skills from `meta/skills/` and 3 cross-workflow skill references. Skills are referenced by activities through `primary` and `supporting` roles.
+The workflow uses 25 workflow-specific skills organized by capability, plus 3 cross-workflow skill references. Universal meta skills are auto-included on the first `get_skills` call. Skills are referenced by activities through `primary` and `supporting` roles.
 
 | # | Skill ID | Capability | Used By |
 |---|----------|------------|---------|
@@ -33,7 +33,7 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 2 un
 | 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
 | 23 | `reconcile-assumptions` | Iterative assumption reconciliation through targeted code analysis | Design Philosophy, Requirements Elicitation, Research, Implementation Analysis, Plan & Prepare, Implement |
 
-> Skills `orchestrate-workflow` and `execute-activity` are **universal skills** in [meta/skills/](../../meta/skills/) — they apply to all workflows using the orchestrator/worker pattern.
+> Skill `execute-activity` is a **universal skill** in [meta/skills/](../../meta/skills/). Skill `orchestrate-workflow` (24) is workflow-specific — it encodes the persistent-worker model used by this workflow.
 
 ### Cross-Workflow Skill References
 
