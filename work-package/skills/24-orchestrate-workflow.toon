@@ -1,7 +1,7 @@
 id: orchestrate-workflow
 version: 4.1.0
 capability: Orchestrate workflow execution with persistent worker dispatch and state management
-description: "Coordination-only skill executed INLINE by the top-level agent. Loads the workflow, initializes state, dispatches activities to a persistent worker sub-agent, evaluates transitions, and manages checkpoints. MUST NOT be delegated to a sub-agent — the orchestrator runs at the top level so AskQuestion calls render to the user. Use attached resource 25 for detailed phase guidance, state management, and tool reference."
+description: "Coordination-only skill executed INLINE by the top-level agent. Loads the workflow, initializes state, dispatches activities to a persistent worker sub-agent, evaluates transitions, and manages checkpoints. MUST NOT be delegated to a sub-agent — the orchestrator runs at the top level so AskQuestion calls render to the user. Use attached resource 29 for detailed phase guidance, state management, and tool reference."
 
 inputs[3]:
   - id: workflow-id
@@ -16,7 +16,7 @@ protocol:
     - "Call get_workflow({ workflow_id }) to receive schema preamble and workflow definition"
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
   initialize-state[2]:
-    - "Check for saved state at {planning_folder_path}/workflow-state.toon — if found, call restore_state to resume (see resource 25)"
+    - "Check for saved state at {planning_folder_path}/workflow-state.toon — if found, call restore_state to resume (see resource 29)"
     - "If no saved state: set variables to defaults, current_activity to initialActivity, detect mode from user request"
   dispatch-activity[4]:
     - "Call next_activity to load the activity definition"
@@ -32,11 +32,11 @@ protocol:
     - "Present checkpoint via AskQuestion with ONLY the question and options (no contextual prose)"
     - "Resume worker with checkpoint_response including selected_option_id and effects_applied"
   append-trace[1]:
-    - "MANDATORY after every activity_complete. Call get_trace to resolve accumulated trace tokens, then append a mechanical trace entry to {planning_folder_path}/workflow-trace.json (see resource 25 for format)"
+    - "MANDATORY after every activity_complete. Call get_trace to resolve accumulated trace tokens, then append a mechanical trace entry to {planning_folder_path}/workflow-trace.json (see resource 29 for format)"
   commit-artifacts[1]:
-    - "MANDATORY after trace append. Commit engineering artifacts following .engineering/AGENTS.md procedures (see resource 25)"
+    - "MANDATORY after trace append. Commit engineering artifacts following .engineering/AGENTS.md procedures (see resource 29)"
   persist-state[1]:
-    - "MANDATORY after commit. Call save_state to persist workflow state for cross-session resumption (see resource 25)"
+    - "MANDATORY after commit. Call save_state to persist workflow state for cross-session resumption (see resource 29)"
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
     - "If no transitions exist, the workflow is complete"
@@ -87,4 +87,4 @@ errors:
 
 resources[2]:
   - "05"
-  - "25"
+  - "29"
