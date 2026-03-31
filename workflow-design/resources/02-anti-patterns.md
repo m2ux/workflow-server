@@ -42,6 +42,18 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 
 16. **"This skill needs a file path"** (buried in description) — Use skill `inputs[]` with `id` and `description`.
 
+## Rule Hygiene Anti-Patterns
+
+24. **"The rule restates the protocol"** — Rules that verbatim copy a protocol phase add no information and create maintenance drift. Rules should state novel constraints or invariants that the protocol's procedural steps don't convey. If a rule says the same thing as a protocol bullet, delete the rule.
+
+25. **"Explain why / Avoid attribution"** (without group context) — Rules that appear contradictory when read together must be disambiguated by their group name. Use grouped rule arrays where the key provides the missing context (e.g., `code-commentary` vs `attribution-prohibition`).
+
+26. **"code-foo, code-bar, code-baz"** (flat prefix keys) — Rules sharing a prefix belong in a grouped array under a descriptive key. The key name replaces the prefix and provides semantic context. Use `z.union([z.string(), z.array(z.string())])` rule format.
+
+27. **"This rule appears in the skill AND the activity AND the workflow"** — A rule should exist in exactly one authoritative location. Cross-level duplication (workflow → activity → skill) causes silent drift when one copy is updated but others aren't. The rule belongs at the level where it's enforced.
+
+28. **"status-proposed" AND "status-accepted-directly"** — Contradictory rules in the same skill. Every rule must be checked for logical consistency with its siblings. If two rules describe mutually exclusive behaviors, one is stale — identify and remove it.
+
 ## Execution Anti-Patterns
 
 17. **"I'll just start implementing"** — Present approach and receive confirmation before any modification.
