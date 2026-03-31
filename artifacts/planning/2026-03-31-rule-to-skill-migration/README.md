@@ -34,6 +34,7 @@ This duplication creates real maintenance problems. When a rule needs updating, 
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 04 | [KB research](04-kb-research.md) | Skill structure patterns, migration approach, start_session slimming | 20-45m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 2-4h | ⬚ Pending |
@@ -59,4 +60,4 @@ This duplication creates real maintenance problems. When a rule needs updating, 
 
 ---
 
-**Status:** Design philosophy complete — ready for research
+**Status:** Research complete — ready for implementation analysis

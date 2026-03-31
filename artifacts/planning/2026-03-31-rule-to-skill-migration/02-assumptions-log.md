@@ -8,8 +8,8 @@
 
 ## Reconciliation Summary
 
-Total: 9 | Validated: 5 | Invalidated: 0 | Partially Validated: 0 | Open: 4  
-Convergence iterations: 1 | Newly surfaced: 0
+Total: 15 | Validated: 9 | Invalidated: 0 | Partially Validated: 0 | Open: 6  
+Convergence iterations: 2 (1 per activity) | Newly surfaced: 0
 
 ---
 
@@ -77,3 +77,49 @@ Convergence iterations: 1 | Newly surfaced: 0
 **Assumption:** Rules that are genuinely unique to a single workflow (e.g., "PREREQUISITE: Agents MUST read AGENTS.md") should remain as workflow-level rules rather than being extracted into skills.  
 **What would resolve it:** Architectural decision on whether ALL rules should eventually live in skills or whether workflow.toon rules serve a legitimate purpose for workflow-specific constraints.  
 **Risk if wrong:** Leaving some rules in workflow.toon creates a hybrid model where agents must check both places. This is path-committing — migrating from a hybrid model later requires revisiting all workflows again.
+
+---
+
+## Activity: Research (04)
+
+### A-04-01: Orchestrator-discipline rules can be merged into existing orchestrate-workflow skill  
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The orchestrator-discipline rules duplicated across workflow.toon files are semantically equivalent to rules already present in the `orchestrate-workflow` skill, making merge (not separate skill creation) the correct approach.  
+**Evidence:** Compared work-package/workflow.toon rules 2, 9-12 against orchestrate-workflow skill rules. Direct equivalences found: `inline-execution` = EXECUTION MODEL, `no-domain-work` = ORCHESTRATOR DISCIPLINE, `skill-loading-boundary` = SKILL-LOADING BOUNDARY, `automatic-transition` = AUTOMATIC TRANSITION RULE, `checkpoint-presentation` ≈ CHECKPOINT YIELD RULE. The skill already has 18 named rules covering all orchestrator concepts. The workflow rules are semantic duplicates with different phrasing.  
+**Risk if wrong:** If the skill rules were different in meaning, creating a separate skill would be needed.
+
+### A-04-02: Worker-execution rules can be merged into existing execute-activity skill  
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The worker-execution-discipline rules duplicated across workflow.toon files are semantically equivalent to rules already present in the `execute-activity` skill.  
+**Evidence:** The execute-activity skill in `meta/skills/05-execute-activity.toon` has 7 rules covering: self-bootstrap, report-state-changes, preserve-context, complete-all-steps, checkpoint-yield, artifact-prefixing, readme-progress-mandatory. These map to the worker execution rules found in workflow.toon files. The skill also has a detailed protocol covering bootstrap, step execution, and completion reporting.  
+**Risk if wrong:** Would require a new separate skill instead of merging.
+
+### A-04-03: Session-protocol rules must stay in start_session due to bootstrap dependency  
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The session-protocol section (11 rules about token usage, step manifests, resource access) cannot be moved to skills because agents need these rules BEFORE they can call `get_skills`.  
+**Evidence:** The bootstrap flow is: `start_session` → (agent reads rules) → `get_skills`. The session-protocol rules teach agents: (1) how to pass session_token to subsequent calls, (2) to use the updated token from `_meta.session_token`, (3) that step_manifest is required for next_activity. Without these rules, agents wouldn't know the protocol for calling `get_skills` correctly. Rule 11 ("RESOURCE USAGE") explains how to find resources in get_skills responses — needed before the first get_skills call.  
+**Risk if wrong:** If rules could be loaded independently of the token protocol, all rules could move to skills.
+
+### A-04-04: No server code changes needed for meta/rules.toon slimming  
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** Reducing `meta/rules.toon` content requires only editing the TOON file, with no changes to `rules-loader.ts` or `resource-tools.ts` — the loader reads whatever is in the file.  
+**Evidence:** `readRules()` in `rules-loader.ts:19-42` reads the file, decodes TOON, validates against `RulesSchema`, and returns the result. The code imposes no minimum on section or rule count. `start_session` in `resource-tools.ts:64-74` returns `rulesResult.value` verbatim. Reducing the file content is sufficient — no code path changes needed.  
+**Risk if wrong:** Would require both file and code changes, increasing scope.
+
+### A-04-05: Prism-specific skills should go in prism/skills/ rather than meta/skills/  
+**Status:** Open  
+**Resolvability:** Not code-analyzable  
+**Assumption:** Skills like `analytical-isolation` and `prism-report-formatting` that apply only to prism-family workflows should be scoped to `prism/skills/` rather than placed universally in `meta/skills/`.  
+**What would resolve it:** Architectural decision on skill scoping. Currently `prism/skills/` does not exist as a directory — it would need to be created.  
+**Risk if wrong:** Placing them in meta/skills/ makes them available to all workflows (unnecessary but harmless). Placing them in prism/skills/ makes them available only to the prism workflow — prism-audit and prism-evaluate would need cross-workflow resolution (tier 3 search). This is easily reversible.
+
+### A-04-06: ~29 guardrail rules should remain in rules.toon rather than becoming skills  
+**Status:** Open  
+**Resolvability:** Not code-analyzable  
+**Assumption:** Generic behavioral rules (communication standards, documentation standards, task management, error recovery, build commands, domain tool discipline, context management) are better served as upfront guardrails in rules.toon than as skills, because they apply universally and don't benefit from skill structure (protocol, inputs, outputs).  
+**What would resolve it:** Stakeholder decision on whether to keep a hybrid model (some rules in rules.toon, protocols in skills) or to move everything into skills for a unified model.  
+**Risk if wrong:** If all rules should be skills, the scope expands significantly. This is path-committing — the hybrid vs unified decision affects the end-state architecture.

@@ -1,0 +1,49 @@
+{
+  "activity": "research",
+  "artifactPrefix": "04",
+  "timestamp": "2026-03-31T00:00:00Z",
+  "steps": [
+    {
+      "id": "kb-research",
+      "status": "completed",
+      "summary": "concept-rag knowledge base not directly relevant (general books/concepts). Internal codebase research conducted instead: examined existing universal skills (orchestrate-workflow: 163 lines, 18 rules; execute-activity: 137 lines, 7 rules), skill schema structure, workflow rule duplication patterns."
+    },
+    {
+      "id": "web-research",
+      "status": "completed",
+      "summary": "MCP best practices 2026: dynamic loading over monolithic payloads (30-50% context waste), namespace organization for skills, workflow-aligned tool design. Validates start_session slimming approach."
+    },
+    {
+      "id": "synthesize",
+      "status": "completed",
+      "summary": "Key synthesis: (1) P1 rules can MERGE into existing skills (not new skills needed), (2) session-protocol must stay in start_session (bootstrap dependency), (3) ~29 guardrail rules stay in rules.toon, (4) 3-phase migration: extract→remove dupes→slim start_session, (5) no server code changes needed for rules.toon slimming."
+    },
+    {
+      "id": "collect-assumptions",
+      "status": "completed",
+      "summary": "6 research-phase assumptions identified. 4 code-analyzable: merge into orchestrate-workflow (A-04-01 validated), merge into execute-activity (A-04-02 validated), session-protocol bootstrap dependency (A-04-03 validated), no code changes for slimming (A-04-04 validated). 2 open: prism skill scoping (A-04-05), guardrail vs skill model (A-04-06)."
+    },
+    {
+      "id": "document",
+      "status": "completed",
+      "summary": "04-kb-research.md created with 8 findings, synthesis with 5 recommendations, 3 open questions for plan-prepare."
+    },
+    {
+      "id": "update-assumptions-log",
+      "status": "completed",
+      "summary": "Assumptions log updated: total 15 (9 validated, 6 open). Research added 6 new assumptions (A-04-01 through A-04-06)."
+    },
+    {
+      "id": "reconcile-assumptions",
+      "status": "completed",
+      "summary": "Convergence in 1 iteration. 4/4 code-analyzable validated. 2 open non-code-resolvable."
+    }
+  ],
+  "keyFindings": {
+    "mergeNotCreate": "P1 extractions can merge into existing orchestrate-workflow and execute-activity skills — no new skill creation needed for P1",
+    "bootstrapDependency": "session-protocol (11 rules) must stay in start_session — agents need token protocol before calling get_skills",
+    "noCodeChanges": "Slimming rules.toon requires only file edits, not code changes — rules-loader reads whatever is in the file",
+    "migrationOrder": "Extract skills → remove workflow dupes → slim start_session (architecture changes last)",
+    "guardrailsRemain": "~29 generic behavioral rules stay in rules.toon as upfront guardrails"
+  }
+}
