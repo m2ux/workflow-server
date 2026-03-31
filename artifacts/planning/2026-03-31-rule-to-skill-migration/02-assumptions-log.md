@@ -8,8 +8,8 @@
 
 ## Reconciliation Summary
 
-Total: 15 | Validated: 8 | Invalidated: 1 | Partially Validated: 0 | Open: 6  
-Convergence iterations: 2 (1 per activity) | Newly surfaced: 0  
+Total: 19 | Validated: 12 | Invalidated: 1 | Partially Validated: 0 | Open: 6  
+Convergence iterations: 3 (1 per activity) | Newly surfaced: 0  
 **Stakeholder corrections applied**: A-04-01 invalidated (orchestration models are family-specific, not universal)
 
 ---
@@ -125,3 +125,35 @@ Convergence iterations: 2 (1 per activity) | Newly surfaced: 0
 **Assumption:** Generic behavioral rules (communication standards, documentation standards, task management, error recovery, build commands, domain tool discipline, context management) are better served as upfront guardrails in rules.toon than as skills, because they apply universally and don't benefit from skill structure (protocol, inputs, outputs).  
 **What would resolve it:** Stakeholder decision on whether to keep a hybrid model (some rules in rules.toon, protocols in skills) or to move everything into skills for a unified model.  
 **Risk if wrong:** If all rules should be skills, the scope expands significantly. This is path-committing — the hybrid vs unified decision affects the end-state architecture.
+
+---
+
+## Activity: Plan & Prepare (06)
+
+### A-06-01: Workflow rules array is optional in the schema  
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** Removing or reducing the `rules[]` array in workflow.toon files will not cause schema validation failures.  
+**Evidence:** `workflow.schema.json` line 220: `required: ["id", "version", "title", "executionModel", "activities"]`. `rules` is not in the required list. Workflows with zero rules are schema-valid.  
+**Risk if wrong:** Workflows with reduced rules would fail to load.
+
+### A-06-02: New skill files in meta/skills/ auto-register without code changes  
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** Placing new `.toon` files in `meta/skills/` is sufficient for `readSkill()` to discover them — no registry or configuration needed.  
+**Evidence:** `skill-loader.ts:24-37` `findSkillFile()` scans the directory with `readdir()` and matches by filename. `getUniversalSkillDir()` returns `meta/skills/`. No explicit registration required.  
+**Risk if wrong:** New skills would need additional configuration.
+
+### A-06-03: Deleting workflow-execution.toon won't break any activity skill references  
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** No activity in any workflow references `workflow-execution` as a primary or supporting skill, so deleting it won't break `get_skills` calls.  
+**Evidence:** Searched all activity TOON files across all workflows. `workflow-execution` is a meta-level skill loaded via the initial `get_skills` call (before any activity is entered — the token-driven scope logic). It's not referenced as `skills.primary` or `skills.supporting` in any activity definition. Agents load it implicitly during bootstrap, not explicitly per-activity.  
+**Risk if wrong:** An activity referencing it would fail to load skills.
+
+### A-06-04: Phase ordering (extract-then-remove) prevents behavioral gaps  
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** Creating/augmenting skills before removing source rules ensures agents always have access to behavioral constraints during the transition.  
+**Evidence:** The skill-loader resolves skills on-demand per `get_skills` call. New skills placed in `meta/skills/` are immediately available to all subsequent `get_skills` calls. The workflow.toon rules are loaded during `get_workflow` / `next_activity` — they remain available until explicitly removed. Both paths coexist without conflict during the transition window.  
+**Risk if wrong:** Agents would lose constraints during migration. The phased approach eliminates this risk.

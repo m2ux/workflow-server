@@ -1,7 +1,7 @@
 # Rule-to-Skill Migration - March 2026
 
 **Created:** 2026-03-31  
-**Status:** Planning  
+**Status:** Ready  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -24,7 +24,9 @@ This duplication creates real maintenance problems. When a rule needs updating, 
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix reorganizes how the workflow server delivers behavioral rules to AI agents. Instead of embedding the same rules as prose text in every workflow file, the rules are consolidated into formal, reusable "skills" — structured definitions that agents can load on demand when they need them. This means each rule exists in exactly one place, agents get only the rules relevant to their current task, and the initial startup payload shrinks from 85 rules to just the essential connection protocol.
+
+The migration works in three phases to avoid disrupting agents during the transition. First, new skills are created and existing skills are expanded to absorb the duplicated rules, so agents gain access to the formalized versions. Second, the duplicate rules are removed from individual workflow files and the global rules file is slimmed down. Third, a small server code change hides the internal "meta" workflow from agent discovery, since it serves as a skill repository rather than a workflow agents should run. Throughout, tests verify that every original rule is still accessible — just through the structured skill system instead of monolithic text payloads.
 
 ---
 
@@ -36,8 +38,8 @@ This duplication creates real maintenance problems. When a rule needs updating, 
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 04 | [KB research](04-kb-research.md) | Skill structure patterns, migration approach, start_session slimming | 20-45m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/rule-architecture.md) | Rule architecture, duplication map, migration paths | 20-45m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 2-4h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
@@ -61,4 +63,4 @@ This duplication creates real maintenance problems. When a rule needs updating, 
 
 ---
 
-**Status:** Comprehension complete — ready for implementation analysis
+**Status:** Ready — plan and test plan complete, PR updated

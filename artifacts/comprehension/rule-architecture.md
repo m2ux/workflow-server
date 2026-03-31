@@ -182,6 +182,12 @@ Two meta skills overlap significantly:
 
 `execute-activity` supersedes `workflow-execution` in every dimension. The API reference content in `workflow-execution` is either redundant or could be absorbed into `execute-activity`'s tools section. `workflow-execution` should be deprecated or absorbed as part of this migration.
 
+### Correction 3: orchestrate-workflow Must Leave meta/skills/
+
+Since `meta/skills/` is auto-ingested on the first `get_skills` call for ALL workflows, `orchestrate-workflow` (which encodes the persistent-worker model) MUST be moved out of `meta/skills/` to avoid conflicting with other orchestration models. It moves to `work-package/skills/` (and `work-packages/skills/` if applicable). `execute-activity` stays in meta because worker execution IS model-agnostic.
+
+**meta/skills/ post-migration inventory**: 00-activity-resolution, 02-state-management, 03-artifact-management, 05-execute-activity, 06-knowledge-base-search, 07-atlassian-operations, 08-gitnexus-operations, plus new: version-control-protocol, engineering-artifacts-management, github-cli-protocol. (-2 removed: 01-workflow-execution, 04-orchestrate-workflow. +3 added.)
+
 ## Domain Concept Mapping
 
 | Domain Concept | Technical Construct | Location |
