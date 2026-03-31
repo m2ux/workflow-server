@@ -4,7 +4,6 @@ export const ERROR_CODES = {
   WORKFLOW_VALIDATION_ERROR: 'WORKFLOW_VALIDATION_ERROR',
   SKILL_NOT_FOUND: 'SKILL_NOT_FOUND',
   ACTIVITY_NOT_FOUND: 'ACTIVITY_NOT_FOUND',
-  RULES_NOT_FOUND: 'RULES_NOT_FOUND',
 } as const;
 
 export type ErrorCode = typeof ERROR_CODES[keyof typeof ERROR_CODES];
@@ -40,9 +39,4 @@ export class ActivityNotFoundError extends Error {
     super(workflowId ? `Activity not found: ${activityId} in workflow ${workflowId}` : `Activity not found: ${activityId}`); 
     this.name = 'ActivityNotFoundError'; 
   }
-}
-
-export class RulesNotFoundError extends Error {
-  readonly code: ErrorCode = ERROR_CODES.RULES_NOT_FOUND;
-  constructor(message?: string) { super(message ?? 'Global rules not found'); this.name = 'RulesNotFoundError'; }
 }
