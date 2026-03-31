@@ -29,13 +29,14 @@ MANDATORY before returning `activity_complete`. Read the planning folder `README
 
 ## Phase: write-semantic-trace
 
-MANDATORY before `report-completion`. Write a semantic trace file to the planning folder.
+MANDATORY before `report-completion`. Append semantic trace events to the unified trace file.
 
-- **File path:** `{planning_folder_path}/{artifactPrefix}-semantic-trace.json`
-- **Content:** JSON object with `activity_id`, `started_at`, `completed_at`, and an `events` array.
+- **File path:** `{planning_folder_path}/workflow-trace.json`
+- **Append, don't overwrite:** Read the existing file (if present), parse the JSON array, append new entries, write back. If the file doesn't exist, create it with a new array.
+- **Entry format:** JSON object with `type: "semantic"`, `activity_id`, `artifact_prefix`, `started_at`, `completed_at`, and an `events` array.
 - **Events to capture:** step outputs (`step_id` + output summary), checkpoint responses (`checkpoint_id` + `selected_option_id` + effects applied), decision branches taken (`decision_id` + `branch_id` + condition evaluated), loop iterations (`loop_id` + iteration count + convergence info), variable changes (variable name + old value + new value).
 
-This complements the server's mechanical trace (tool call timing and validation) with the agent-side semantic context that the server cannot observe.
+This file is shared with the orchestrator, which appends mechanical trace entries (tool call timing) after each activity. The unified file provides a complete chronological record of the entire workflow session.
 
 ## Output Formats
 

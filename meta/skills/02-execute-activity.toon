@@ -44,7 +44,7 @@ protocol:
   update-readme-progress[1]:
     - "MANDATORY before report-completion. Update the planning folder README.md progress table (see resource 06 for details)"
   write-semantic-trace[1]:
-    - "MANDATORY before report-completion. Write {artifactPrefix}-semantic-trace.json to the planning folder (see resource 06 for format)"
+    - "MANDATORY before report-completion. Append semantic trace entry to {planning_folder_path}/workflow-trace.json (see resource 06 for format)"
   report-completion[2]:
     - "Compile structured result with result_type: activity_complete (see resource 06 for format)"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
