@@ -1,16 +1,11 @@
 id: agent-conduct
-version: 2.1.0
-capability: Define agent behavioral boundaries for code modification, communication, and operational discipline
+version: 2.2.0
+capability: Define agent behavioral boundaries for file sensitivity, communication, and operational discipline
 
-description: "Cross-cutting behavioral boundaries. Governs what agents can modify (code and file restrictions), how they communicate (professional standards and documentation style), and when they can act (tool call discipline and build priority)."
+description: "Cross-cutting behavioral boundaries. Governs which files require extra caution, how agents communicate (professional standards and documentation style), and when they can act (tool call discipline and build priority). Code modification permission is governed by the workflow and activity context, not by these rules."
 
 rules:
-  modification-boundaries[8]:
-    - "Do not modify code unless explicitly directed by the user."
-    - "Always request permission before making changes to existing code."
-    - "When modifications are requested, implement them precisely as specified."
-    - "Focus on factual observations rather than prescriptive changes."
-    - "Never add process attribution comments to code."
+  file-sensitivity[3]:
     - "Do not modify core configuration files without explicit user direction."
     - "Avoid changes to build scripts unless specifically requested."
     - "Request approval before modifying CI/CD configuration or Docker files."
