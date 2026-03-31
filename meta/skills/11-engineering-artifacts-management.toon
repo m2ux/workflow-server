@@ -1,0 +1,36 @@
+id: engineering-artifacts-management
+version: 1.0.0
+capability: Manage engineering artifact commits across regular directories and git submodules
+
+description: "Cross-cutting skill that governs how agents commit and push engineering artifacts stored in .engineering/. The directory contains a mix of regular files (artifacts/, AGENTS.md, scripts/) and git submodules (workflows/, history/). Each type requires a different commit workflow. Agents must read .engineering/AGENTS.md before committing to understand the git structure."
+
+protocol:
+  identify-path-type[2]:
+    - "Before committing, determine whether the path is a regular directory or a submodule"
+    - "Run 'git ls-tree HEAD <path>' — 160000 means submodule, 040000 means regular directory"
+  commit-regular-files[2]:
+    - "For .engineering/artifacts/, .engineering/AGENTS.md, .engineering/scripts/: git add <files> && git commit && git push"
+    - "These are regular files in the parent repo — no two-step workflow needed"
+  commit-submodule[4]:
+    - "Step 1: cd into the submodule (e.g., .engineering/workflows/) && git add <files> && git commit && git push origin <branch>"
+    - "Step 2: cd <repo-root> && git add <submodule-path> && git commit -m 'chore: update <submodule> submodule' && git push"
+    - "If you skip Step 2, the parent still points to the old submodule commit"
+    - "If you skip Step 1's push, the parent points to a commit that does not exist on the remote"
+  pre-commit-check[2]:
+    - "BEFORE committing engineering artifacts, ALWAYS read and follow .engineering/AGENTS.md"
+    - "The AGENTS.md file contains the definitive git structure diagram showing what is a submodule vs a regular directory"
+
+rules:
+  commit-after-activity: "The orchestrator MUST commit and push engineering artifacts after each completed activity, before evaluating transitions to the next activity."
+  read-agents-md-first: "BEFORE committing engineering artifacts, ALWAYS read and follow .engineering/AGENTS.md for the git structure diagram."
+  regular-vs-submodule: "Files in .engineering/artifacts/, .engineering/AGENTS.md, .engineering/scripts/ are regular files — commit directly. Files in .engineering/workflows/ and .engineering/history/ are SUBMODULES — use the two-step commit workflow."
+  submodule-push-required: "When committing submodule changes, push the submodule first (Step 1), then update the parent pointer (Step 2). Skipping either step leaves the repository in an inconsistent state."
+  path-identification: "To identify whether a path is a submodule: run 'git ls-tree HEAD <path>' — 160000 means submodule, 040000 means regular directory."
+
+errors:
+  submodule-desync:
+    cause: "Parent points to a submodule commit that doesn't exist on the remote (Step 1 push skipped)"
+    recovery: "cd into the submodule and push the missing commit, then verify the parent pointer resolves"
+  stale-pointer:
+    cause: "Submodule was committed and pushed but parent pointer not updated (Step 2 skipped)"
+    recovery: "cd to repo root, git add the submodule path, commit, and push"
