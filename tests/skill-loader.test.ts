@@ -22,7 +22,7 @@ describe('skill-loader', () => {
       const executeActivity = skills.find(s => s.id === 'execute-activity');
       
       expect(executeActivity).toBeDefined();
-      expect(executeActivity?.index).toBe('05');
+      expect(executeActivity?.index).toBe('02');
       expect(executeActivity?.name).toBe('Execute Activity');
       expect(executeActivity?.path).toContain('execute-activity.toon');
       expect(executeActivity?.workflowId).toBeUndefined();
