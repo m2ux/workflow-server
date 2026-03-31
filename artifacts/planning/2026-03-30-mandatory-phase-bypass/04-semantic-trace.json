@@ -1,0 +1,59 @@
+{
+  "activity_id": "research",
+  "workflow_id": "work-package",
+  "started_at": "2026-03-30T18:30:00Z",
+  "completed_at": "2026-03-30T19:00:00Z",
+  "events": [
+    {
+      "type": "step_output",
+      "step_id": "kb-research",
+      "output": "Investigated 4 areas: (1) workflow schema has no skills field, executionModel provides precedent, (2) get_skills requires activity_id, readSkill has universal fallback, (3) orchestrate-workflow dispatch and meta/rules.toon don't reference execute-activity by ID, (4) dead code: listUniversalSkills, listSkills, readSkillIndex, SkillIndex, SkillEntry, listWorkflowSkills — ~180 lines unused by server."
+    },
+    {
+      "type": "step_output",
+      "step_id": "web-research",
+      "output": "Not needed — problem domain is entirely internal to the workflow-server codebase."
+    },
+    {
+      "type": "step_output",
+      "step_id": "synthesize",
+      "output": "10-file change inventory: 2 schema, 1 server, 4 workflow data, 2 dead code cleanup, 1 documentation. Key design: add optional skills[] to WorkflowSchema, make get_skills activity_id optional, update orchestrate-workflow dispatch to include get_skills(workflow_id)."
+    },
+    {
+      "type": "step_output",
+      "step_id": "collect-assumptions",
+      "output": "1 new assumption collected: A-04-01 (workflow schema skills field should be optional)."
+    },
+    {
+      "type": "step_output",
+      "step_id": "document",
+      "output": "Created 04-kb-research.md with 4 sections: schema design, API extension, meta skill updates, dead code analysis."
+    },
+    {
+      "type": "step_output",
+      "step_id": "update-assumptions-log",
+      "output": "Updated 02-assumptions-log.md with A-04-01 (validated via code analysis)."
+    },
+    {
+      "type": "step_output",
+      "step_id": "reconcile-assumptions",
+      "output": "A-04-01 validated immediately (schema uses optional fields as standard pattern). No new open assumptions. 3 original open assumptions remain (A-02-04, A-02-05, A-02-07)."
+    },
+    {
+      "type": "step_output",
+      "step_id": "present-resolved-assumptions",
+      "output": "Presented A-04-01 as resolved. All research-phase assumptions code-verified."
+    },
+    {
+      "type": "step_output",
+      "step_id": "interview-open-assumptions",
+      "output": "3 open stakeholder-dependent assumptions remain from prior activities: A-02-04 (scope boundary — server src changes), A-02-05 (behavioral vs enforcement), A-02-07 (trace format standardization). User's scope direction from this turn resolves A-02-04: server source changes ARE in scope (confirmed by Path 1 direction)."
+    },
+    {
+      "type": "variable_change",
+      "variable": "needs_research",
+      "old_value": true,
+      "new_value": false
+    }
+  ]
+}

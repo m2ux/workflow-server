@@ -9,8 +9,8 @@
 
 ## Summary
 
-Total: 11 | Validated: 5 | Invalidated: 2 | Partially Validated: 1 | Open: 3  
-Convergence iterations: 2 | Newly surfaced: 1 (from design-philosophy)
+Total: 12 | Validated: 6 | Invalidated: 2 | Partially Validated: 1 | Resolved (user): 1 | Open: 2  
+Convergence iterations: 3 | Newly surfaced: 1 (from design-philosophy)
 
 ---
 
@@ -50,12 +50,12 @@ Convergence iterations: 2 | Newly surfaced: 1 (from design-philosophy)
 
 ### A-02-04: Changes limited to new skill files and rule updates
 
-**Status:** Open  
+**Status:** Resolved (user)  
 **Category:** Scope Boundary  
 **Resolvability:** Not code-resolvable  
 **Assumption:** The fix can be implemented without modifying server source (`src/`), schemas, or existing skill files.  
-**Risk if wrong:** The most effective fix may require modifying `get_skills` in `src/tools/resource-tools.ts` to automatically include universal meta-skills.  
-**What would resolve it:** Stakeholder decision on whether server-source changes are in scope or should be deferred to #65.
+**Resolution:** User confirmed server-source changes ARE in scope. Directed approach: add `skills` field to workflow schema, extend `get_skills` to accept workflow_id without activity_id, remove dead code from skill-loader.ts. This invalidates the original assumption — server changes are explicitly in scope.  
+**Resolved by:** User scope direction (research activity transition)
 
 ### A-02-05: Orchestrator pre-digestion is addressable through behavioral guidance
 
@@ -126,4 +126,14 @@ Convergence iterations: 2 | Newly surfaced: 1 (from design-philosophy)
 - **B:** Update `orchestrate-workflow` dispatch-activity and `meta/rules.toon` to instruct `get_skill('execute-activity')` — the skill is already servable via `readSkill` fallback.  
 - **C:** Both A and B for defense-in-depth.  
 **Evidence:** `src/loaders/skill-loader.ts:140-160` (`listUniversalSkills` exists), `src/tools/resource-tools.ts:100` (injection point for approach A), `workflows/meta/skills/04-orchestrate-workflow.toon:29-30` (dispatch-activity protocol, injection point for approach B).  
-**Resolution:** Validated — iteration 2.
+**Resolution:** Validated — iteration 2. User selected a variant of approach C: add workflow-level `skills` field + extend `get_skills` API + update meta skills and rules.
+
+### A-04-01: Workflow schema skills field should be optional
+
+**Status:** Validated  
+**Category:** Pattern Applicability  
+**Resolvability:** Code-analyzable  
+**Assumption:** The new `skills` field on the workflow schema should be optional to maintain backward compatibility with workflows that don't use workflow-level skills.  
+**Finding:** The workflow schema consistently uses optional fields for non-essential properties: `description`, `author`, `tags`, `rules`, `variables`, `modes`, `artifactLocations`, `initialActivity` are all optional. Only `id`, `version`, `title`, `executionModel`, and `activities` are required.  
+**Evidence:** `src/schema/workflow.schema.ts:54-71` — optional fields use `.optional()`; `schemas/workflow.schema.json:220` — required array has only 5 entries.  
+**Resolution:** Validated — iteration 3.
