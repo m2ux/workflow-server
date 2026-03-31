@@ -52,15 +52,16 @@ describe('mcp-server integration', () => {
   // ============== Bootstrap Tools ==============
 
   describe('tool: help', () => {
-    it('should return bootstrap procedure and session protocol', async () => {
+    it('should return bootstrap guide and available workflows', async () => {
       const result = await client.callTool({ name: 'help', arguments: {} });
       expect(result.isError).toBeFalsy();
       const guide = parseToolResponse(result);
-      expect(guide.bootstrap).toBeDefined();
-      expect(guide.bootstrap.step_1.tool).toBe('list_workflows');
-      expect(guide.bootstrap.step_2.tool).toBe('start_session');
-      expect(guide.session_protocol).toBeDefined();
-      expect(guide.session_protocol.validation).toBeDefined();
+      expect(guide.server).toBeDefined();
+      expect(guide.version).toBeDefined();
+      expect(guide.bootstrap_guide).toBeDefined();
+      expect(typeof guide.bootstrap_guide).toBe('string');
+      expect(guide.bootstrap_guide).toContain('start_session');
+      expect(guide.bootstrap_guide).toContain('get_skills');
       expect(guide.available_workflows.length).toBeGreaterThanOrEqual(2);
     });
   });

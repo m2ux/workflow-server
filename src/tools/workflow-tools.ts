@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, getTransitionList } from '../loaders/workflow-loader.js';
+import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
@@ -27,38 +28,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('help', 'How to use this server. Call this first. Returns the bootstrap procedure and session protocol.', {},
     withAuditLog('help', async () => {
       const workflows = await listWorkflows(config.workflowDir);
-      const guide = {
+      const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '09');
+      const guide: Record<string, unknown> = {
         server: config.serverName,
         version: config.serverVersion,
-        bootstrap: {
-          step_1: {
-            action: 'Call list_workflows to discover available workflows',
-            tool: 'list_workflows',
-            note: 'Match the user goal to a workflow from the returned list',
-          },
-          step_2: {
-            action: 'Call start_session with the chosen workflow_id',
-            tool: 'start_session',
-            params: { workflow_id: '<chosen workflow ID>' },
-            returns: 'Workflow metadata and an opaque session token',
-          },
-          step_3: {
-            action: 'Call get_skills to load behavioral protocols (session-protocol, agent-conduct, and workflow-specific skills)',
-            tool: 'get_skills',
-            params: { workflow_id: '<chosen workflow ID>', session_token: '<token from step 2>' },
-            returns: 'Skills with rules, protocols, and referenced resources',
-          },
-        },
-        session_protocol: {
-          token_usage: 'Pass the session_token to all subsequent tool calls alongside explicit workflow_id and activity_id parameters. The token enables server-side validation of call consistency.',
-          token_update: 'Every tool response includes an updated token in _meta.session_token. Use the updated token for the next call.',
-          token_opacity: 'Treat the token as opaque. Do not attempt to parse, decode, or fabricate tokens.',
-          validation: 'The server validates each call against the token: workflow consistency, activity transition validity, skill-activity association, and version drift. Warnings are returned in _meta.validation.',
-          efficiency: 'Use get_skills(workflow_id, activity_id) to load all skills for an activity in one call instead of multiple get_skill calls.',
-          exempt_tools: ['help', 'list_workflows', 'start_session', 'health_check'],
-        },
         available_workflows: workflows.map(w => ({ id: w.id, title: w.title, version: w.version })),
       };
+      if (bootstrapResult.success) {
+        guide['bootstrap_guide'] = bootstrapResult.value.content;
+      }
       return { content: [{ type: 'text' as const, text: JSON.stringify(guide) }] };
     }));
 
