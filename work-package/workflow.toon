@@ -10,7 +10,7 @@ tags[3]:
   - workflow
 rules[13]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
-  - "SKILL-LOADING BOUNDARY: The orchestrator MUST NOT call get_skill or get_skills to pre-load skills for worker activities. Skill loading is the worker's responsibility — the worker calls start_session, next_activity, and get_skills itself during self-bootstrap. The orchestrator's worker prompt contains ONLY: workflow_id, activity_id, state variables, planning_folder_path, and bootstrap instructions (the tool call sequence). Pre-loading skills at the orchestrator level and injecting content into the worker prompt bypasses the skill-mediated resource system and causes resource loss (e.g., templates, guides)."
+  - "SKILL-LOADING BOUNDARY: The orchestrator MUST NOT call get_skill or get_skills to pre-load skills for worker activities. Skill loading is the worker's responsibility — the worker calls start_session, next_activity, and get_skills itself during self-bootstrap. get_skills uses the session token to determine scope (workflow-level vs activity-level) — no activity_id parameter is needed. The orchestrator's worker prompt contains ONLY: workflow_id, activity_id, state variables, planning_folder_path, and bootstrap instructions. Pre-loading skills at the orchestrator level and injecting content into the worker prompt bypasses the skill-mediated resource system and causes resource loss (e.g., templates, guides)."
   - Agents must NOT proceed past checkpoints without user confirmation
   - "Ask, don't assume - Clarify requirements before acting"
   - "Summarize, then proceed - Provide brief status before asking to continue"
