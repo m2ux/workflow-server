@@ -30,8 +30,10 @@ protocol:
     - "Output any context from the worker result as a text message BEFORE the AskQuestion call"
     - "Present checkpoint via AskQuestion with ONLY the question and options (no contextual prose)"
     - "Resume worker with checkpoint_response including selected_option_id and effects_applied"
+  append-trace[1]:
+    - "MANDATORY after every activity_complete. Call get_trace to resolve accumulated trace tokens, then append a mechanical trace entry to {planning_folder_path}/workflow-trace.json (see resource 25 for format)"
   commit-artifacts[1]:
-    - "MANDATORY after every activity_complete. Commit engineering artifacts following .engineering/AGENTS.md procedures (see resource 25)"
+    - "MANDATORY after trace append. Commit engineering artifacts following .engineering/AGENTS.md procedures (see resource 25)"
   persist-state[1]:
     - "MANDATORY after commit. Call save_state to persist workflow state for cross-session resumption (see resource 25)"
   evaluate-transition[2]:
@@ -64,6 +66,10 @@ tools:
     when: "Presenting a yielded checkpoint to the user"
     params: "questions with id, prompt, options"
     returns: "User's selected option ID"
+  get_trace:
+    when: "After each activity_complete — resolve trace tokens for the completed activity"
+    params: "session_token, trace_tokens"
+    returns: "Mechanical trace events for the activity segment"
 
 errors:
   worker_timeout:

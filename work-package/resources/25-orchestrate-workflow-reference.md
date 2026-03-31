@@ -37,6 +37,22 @@ Reference material for the orchestrate-workflow skill. Contains detailed phase g
 5. Map `checkpoint_message` to prompt, `checkpoint_options` to selectable choices with `{id, label}`.
 6. Resume the worker with `checkpoint_response: { checkpoint_id, selected_option_id, effects_applied }`.
 
+## Phase: append-trace
+
+MANDATORY after every `activity_complete`. Appends mechanical trace data to the unified trace file.
+
+1. Call `get_trace({ session_token, trace_tokens })` to resolve accumulated trace tokens into mechanical events.
+2. Read `{planning_folder_path}/workflow-trace.json` (the worker has already appended its semantic trace entry for this activity).
+3. Append a new entry: `{ type: "mechanical", activity_id, event_count, events }`.
+4. Write the updated array back to disk.
+5. Clear the `trace_tokens` array for the next activity.
+
+The unified trace file (`workflow-trace.json`) is a JSON array where each entry is either:
+- `{ type: "semantic", activity_id, artifact_prefix, started_at, completed_at, events: [...] }` — written by the worker
+- `{ type: "mechanical", activity_id, event_count, events: [...] }` — written by the orchestrator
+
+Entries accumulate chronologically throughout the session. The file provides a complete record of both agent-side decisions and server-side tool call timing.
+
 ## Phase: commit-artifacts
 
 1. Run `git status --porcelain .engineering/artifacts/` to detect uncommitted changes.
@@ -65,6 +81,7 @@ Reference material for the orchestrate-workflow skill. Contains detailed phase g
 - **Returns:** Full nested state object as JSON
 
 ### get_trace
-- **When:** Resolving accumulated trace tokens at workflow end
-- **Params:** `session_token`, `trace_tokens` (array of opaque strings)
-- **Returns:** Full mechanical execution trace
+- **When:** After each activity_complete — resolve trace tokens for the completed segment
+- **Params:** `session_token`, `trace_tokens` (array of opaque strings accumulated from `next_activity` responses)
+- **Returns:** Mechanical trace events (tool calls, timing, validation warnings)
+- **Usage:** Append the returned events to `{planning_folder_path}/workflow-trace.json` as a mechanical trace entry. Clear `trace_tokens` after each call.
