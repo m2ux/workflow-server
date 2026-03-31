@@ -1,96 +1,23 @@
 id: state-management
-version: 3.0.0
+version: 3.1.0
 capability: Manage workflow execution state using activity IDs and step indices
-description: "Behavioral patterns for initializing, updating, and resuming workflow state. State structure and field definitions are in state.schema.json — this skill defines HOW to use the schema at runtime."
+description: "Behavioral patterns for initializing, updating, and resuming workflow state. Use attached resource 07 for initialization values, update patterns, and resumption procedure. State schema is in state.schema.json."
 
-numeric_format:
-  description: State uses activity IDs for navigation, step indices within activities
-  examples:
-    currentActivity: "'start-work-package' (activity ID from workflow)"
-    currentStep: "1 (1-based index within activity)"
-    completedActivities: "list of activity IDs, e.g. start-work-package, design-philosophy"
-    completedSteps: "map of activity ID to completed step indices, e.g. start-work-package: 1; design-philosophy: 1, 2, 3"
+protocol:
+  initialize[2]:
+    - "On workflow start, set all state fields to defaults (see resource 07 for field values)"
+    - "If resuming from saved state, load and validate against current workflow version"
+  update[2]:
+    - "After each step, checkpoint response, or activity transition, update the corresponding state fields"
+    - "Record every state change in the history array with timestamp and event type"
+  persist[2]:
+    - "After each completed activity, serialize state and call save_state"
+    - "State file at {planning_folder_path}/workflow-state.toon enables cross-session resumption"
 
-initialization:
-  trigger: On workflow start (get_workflow)
-  state:
-    workflowId: workflow.id
-    workflowVersion: workflow.version
-    stateVersion: 1
-    startedAt: now()
-    updatedAt: now()
-    currentActivity: workflow.initialActivity
-    currentStep: 1
-    completedActivities: []
-    skippedActivities: []
-    completedSteps: {}
-    checkpointResponses: {}
-    decisionOutcomes: {}
-    activeLoops: []
-    variables: workflow.variables.defaults
-    history:
-      - timestamp: now()
-        type: workflow_started
-        activity: workflow.initialActivity
-    status: running
+rules:
+  history-mandatory: "Every state mutation MUST be logged in the history array with a typed event entry"
+  version-check: "On resumption, compare saved workflowVersion against loaded workflow definition. Warn on mismatch."
+  variables-from-defaults: "Initialize all workflow variables to their declared defaultValue. Variables not in the schema are rejected."
 
-update_patterns:
-  activity_transition:
-    trigger: Moving to a new activity
-    actions:
-      - Add previous activity ID to completedActivities
-      - Set currentActivity to new activity ID
-      - Reset currentStep to 1
-      - Add history entry with type activity_entered
-  step_completion:
-    trigger: Completing a step
-    actions:
-      - Add step index to completedSteps[currentActivity]
-      - Increment currentStep
-      - Add history entry with type step_completed
-  checkpoint_response:
-    trigger: User responds to checkpoint
-    actions:
-      - Record in checkpointResponses with key "activity-checkpoint"
-      - Apply effects (setVariable, transitionTo, skipActivities)
-      - Add history entry with type checkpoint_response
-  decision_outcome:
-    trigger: Decision branch is taken
-    actions:
-      - Record in decisionOutcomes with key "activity-decision"
-      - Store branchId and transitionedTo
-      - Add history entry with type decision_branch_taken
-  workflow_completion:
-    trigger: Workflow finishes
-    actions:
-      - Set completedAt to now()
-      - Set status to completed
-      - Add history entry with type workflow_completed
-      - If parentWorkflow exists, return context to parent
-  workflow_trigger:
-    trigger: Activity triggers another workflow
-    actions:
-      - Set current workflow status to suspended
-      - Add history entry with type workflow_triggered
-      - Record in triggeredWorkflows with current position
-      - Initialize new workflow state with parentWorkflow reference
-      - Pass context variables specified in triggers.passContext
-  workflow_return:
-    trigger: Triggered workflow completes and returns to parent
-    actions:
-      - Update triggeredWorkflows entry with returnedContext
-      - Set parent workflow status back to running
-      - Resume at returnTo position (activity and step)
-      - Merge returnedContext into parent variables if needed
-      - Add history entry with type workflow_returned
-
-resumption:
-  description: To resume a workflow from persisted state
-  steps:
-    - Load the state object
-    - Verify workflowId and workflowVersion match available workflow
-    - Set status to running if it was paused
-    - Load the activity at currentActivity
-    - Continue from currentStep within that activity
-    - Present any pending checkpoints
-  note: The history array provides context for what was previously completed
+resources[1]:
+  - "07"
