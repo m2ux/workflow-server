@@ -61,7 +61,8 @@ describe('workflow-loader', () => {
 
       expect(manifests.length).toBeGreaterThanOrEqual(2);
       const ids = manifests.map(m => m.id);
-      expect(ids).toContain('meta');
+      expect(ids).toContain('work-package');
+      expect(ids).not.toContain('meta');
     });
 
     it('should include id, title, and version in each manifest entry', async () => {
