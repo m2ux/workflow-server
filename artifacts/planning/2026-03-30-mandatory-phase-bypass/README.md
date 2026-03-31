@@ -41,9 +41,9 @@ The changes span three layers: the schema (adding the field), the server (extend
 | 06 | [Work package plan](06-work-package-plan.md) | 8 tasks, execution order, risk register | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | 20 test cases across 6 areas | 15-30m | ✅ Complete |
 | — | Implementation | 8 tasks, 6 commits, 261 tests pass | 2-3h | ✅ Complete |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| 09 | [Change block index](09-change-block-index.md) | 9 change blocks, manual diff reviewed | 5-10m | ✅ Complete |
+| 09 | [Code review](09-code-review.md) | 5 findings, all low/informational | 10-20m | ✅ Complete |
+| 09 | [Test suite review](09-test-suite-review.md) | 261 tests, 6 new, adequate coverage | 10-20m | ✅ Complete |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | — | [Comprehension artifact](../../comprehension/workflow-server-schemas.md) | Augmented: §9 workflow-level skills | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
