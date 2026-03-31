@@ -21,7 +21,7 @@ protocol:
     - "The AGENTS.md file contains the definitive git structure diagram showing what is a submodule vs a regular directory"
 
 rules:
-  commit-after-activity: "The orchestrator MUST commit and push engineering artifacts after each completed activity, before evaluating transitions to the next activity."
+  commit-after-activity: "Engineering artifacts MUST be committed and pushed after each completed activity, before evaluating transitions to the next activity."
 
 errors:
   submodule-desync:
