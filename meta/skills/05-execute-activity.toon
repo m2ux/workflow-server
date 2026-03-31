@@ -13,6 +13,9 @@ inputs[3]:
     description: "Current workflow state variables"
 
 protocol:
+  bootstrap-workflow-skills[2]:
+    - "Call get_skills({ workflow_id }) WITHOUT activity_id to load workflow-level skills. This returns execute-activity (this skill) and any other workflow-level skills declared by the workflow."
+    - "Read the execute-activity protocol — it governs your entire execution lifecycle including mandatory phases (write-semantic-trace, update-readme-progress) that must execute before reporting completion."
   bootstrap-rules[1]:
     - "Call start_session(workflow_id) to load agent rules and obtain a session token. Follow these rules throughout execution."
   bootstrap-activity[2]:
