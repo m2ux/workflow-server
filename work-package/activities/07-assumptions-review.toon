@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.0.0
+version: 2.1.0
 name: Assumptions Review
 description: "Present each open assumption to the user one-at-a-time, interview-style, with a rationale paragraph that explains the context and helps the user decide. The user resolves each assumption directly (accept, reject with correction, or defer). After all assumptions are reviewed, optionally post a summary to the issue tracker."
 problem: Open assumptions need resolution before implementation begins
@@ -48,11 +48,17 @@ steps[4]:
     description: "Update assumptions-log.md with the user's decisions for each reviewed assumption. Mark accepted assumptions as 'validated', rejected as 'invalidated' with the user's correction, and deferred as 'deferred'. Set stakeholder_review_complete=true."
   - id: post-summary
     name: Post resolution summary to issue tracker
-    description: "Optionally post a brief summary of resolved assumptions to the issue tracker. Format: a flat bulleted list of each assumption with its resolution (accepted/rejected/deferred). Uses GitHub gh CLI or Jira API depending on issue_platform."
+    description: "Post a brief summary of assumption resolutions to the issue tracker ONLY when deferred assumptions exist that require external stakeholder attention. If all assumptions were accepted or rejected during the interview, skip posting — the decisions are recorded in the assumptions log and no external review is needed. Uses GitHub gh CLI or Jira API depending on issue_platform."
     condition:
-      type: simple
-      variable: issue_platform
-      operator: exists
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: issue_platform
+          operator: exists
+        - type: simple
+          variable: has_deferred_assumptions
+          operator: "=="
+          value: true
 loops[1]:
   - id: assumption-interview-loop
     name: Assumption Interview Loop
@@ -90,10 +96,16 @@ checkpoints[2]:
   - id: post-summary-review
     name: Post Summary Review
     condition:
-      type: simple
-      variable: issue_platform
-      operator: exists
-    message: "Post resolved assumptions summary to {issue_platform}? Posting in 30s unless you intervene."
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: issue_platform
+          operator: exists
+        - type: simple
+          variable: has_deferred_assumptions
+          operator: "=="
+          value: true
+    message: "Some assumptions were deferred and need external stakeholder attention. Post summary to {issue_platform}? Posting in 30s unless you intervene."
     blocking: false
     defaultOption: post-summary
     autoAdvanceMs: 30000
@@ -131,9 +143,10 @@ outcome[3]:
   - Each open assumption reviewed individually with user
   - Assumptions log updated with accept/reject/defer decisions
   - Resolution summary optionally posted to issue tracker
-context_to_preserve[5]:
+context_to_preserve[6]:
   - open_assumptions - List of open assumptions to review
   - assumption_decisions - Map of assumption ID to decision (accept/reject/defer)
+  - has_deferred_assumptions - Whether any assumptions were deferred (triggers issue tracker posting)
   - stakeholder_review_complete - Whether all assumptions have been reviewed
   - needs_further_discussion - Whether further discussion is needed
   - needs_plan_revision - Whether significant plan revision is needed
