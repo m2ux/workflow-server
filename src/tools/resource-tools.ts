@@ -83,21 +83,29 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get all skills and their associated resources for an activity in one call. Resources are returned as a structured array with index, id, version, and content fields.',
+    'Get all skills and their associated resources in one call. When activity_id is provided, returns skills declared by that activity. When activity_id is omitted, returns workflow-level skills declared in the workflow\'s skills field. Resources are returned as a structured array with index, id, version, and content fields.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
-      activity_id: z.string().describe('Activity ID to load skills for'),
+      activity_id: z.string().optional().describe('Activity ID to load skills for. When omitted, returns workflow-level skills.'),
     },
     withAuditLog('get_skills', async ({ session_token, workflow_id, activity_id }) => {
       const token = await decodeSessionToken(session_token);
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
-      const activity = getActivity(wfResult.value, activity_id);
-      if (!activity) throw new Error(`Activity not found: ${activity_id}`);
+      let skillIds: string[];
+      if (activity_id) {
+        const activity = getActivity(wfResult.value, activity_id);
+        if (!activity) throw new Error(`Activity not found: ${activity_id}`);
+        skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
+      } else {
+        skillIds = wfResult.value.skills ?? [];
+        if (skillIds.length === 0) {
+          throw new Error(`No workflow-level skills declared for workflow '${workflow_id}'`);
+        }
+      }
 
-      const skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
       const skills: Record<string, unknown> = {};
       const failedSkills: string[] = [];
       const allResources: StructuredResource[] = [];
@@ -127,13 +135,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const responseBody: Record<string, unknown> = { activity_id, skills, resources: allResources };
+      const responseBody: Record<string, unknown> = { activity_id: activity_id ?? null, skills, resources: allResources };
       if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
       if (duplicateIndices.length > 0) responseBody['duplicate_resource_indices'] = duplicateIndices;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseBody) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id ?? '' }), validation },
       };
     }, traceOpts)
   );
