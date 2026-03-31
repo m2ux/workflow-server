@@ -1,5 +1,5 @@
 id: agent-conduct
-version: 2.0.0
+version: 2.1.0
 capability: Define agent behavioral boundaries for code modification, communication, and operational discipline
 
 description: "Cross-cutting behavioral boundaries. Governs what agents can modify (code and file restrictions), how they communicate (professional standards and documentation style), and when they can act (tool call discipline and build priority)."
@@ -16,18 +16,20 @@ rules:
     - "Avoid changes to build scripts unless specifically requested."
     - "Be cautious with database migration files and schema changes."
     - "Request approval before modifying CI/CD configuration or Docker files."
-  professional-expression[11]:
+  communication-tone[5]:
     - "Use measured technical language appropriate for senior software engineering."
     - "Avoid hyperbolic statements and superlatives."
     - "Use precise descriptive language."
     - "Provide respectful constructive feedback focused on code quality."
     - "Focus on technical merit rather than emotional assessments."
+  attribution-prohibition[3]:
     - "Present design decisions directly without referencing their origin."
-    - "AVOID process attribution references in documentation."
-    - "Do not include citations referencing how code was generated."
+    - "Do not reference how code was generated or which tool created it."
+    - "Do not include process attribution in code comments or documentation."
+  code-commentary[3]:
     - "Comments should explain what code does and why it exists."
     - "Focus on self-documenting code and maintainability."
-    - "Explain why decisions were made, not what the code does."
+    - "Explain the technical rationale for design choices, not what the code does."
   operational-discipline[6]:
     - "NEVER call domain-specific tools during workflow bootstrap. URLs, issue keys, or other references in the user's request are context to be preserved — not triggers for immediate API calls."
     - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability."
