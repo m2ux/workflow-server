@@ -1,9 +1,9 @@
 id: agent-rules
-version: 1.0.0
+version: 2.0.0
 title: AI Agent Guidelines
 description: Global behavioral guidelines for AI agents executing workflows
 precedence: Workflow-specific rules override these global rules on conflict
-sections[16]:
+sections[11]:
   - id: session-protocol
     title: Session Protocol
     priority: critical
@@ -19,14 +19,11 @@ sections[16]:
       - "STEP MANIFEST: When transitioning to the next activity (calling next_activity), include a step_manifest parameter listing each step completed in the previous activity with its output summary. The server validates step completeness, ordering, and non-empty outputs."
       - "STEP COMPLETENESS: All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level."
       - "RESOURCE USAGE: Resources referenced by skills are returned as a structured array in the get_skill and get_skills responses. Each resource has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in the resources array of the skill response. Do not attempt to call a separate tool to load resources."
-  - id: workflow-fidelity
-    title: Workflow Execution Fidelity
+  - id: bootstrap
+    title: Skill Loading
     priority: critical
-    rules[4]:
-      - "CRITICAL: When following the workflow you *must* respect workflow fidelity as defined in the TOON files' semantics"
-      - Execute workflow activities in the defined sequence unless transitions explicitly allow alternatives
-      - "Honor all defined checkpoints within activities and await user confirmation at each checkpoint. Checkpoints are explicit constructs defined inside activity definitions — activity transitions are NOT checkpoints."
-      - "Activity transitions are deterministic and automatic. The orchestrator MUST NOT pause, prompt, or wait for user confirmation between activities. User interaction happens ONLY through checkpoints defined within activities."
+    rules[1]:
+      - "Call get_skills(workflow_id) to load behavioral protocols for your workflow. Workflow-level skills are auto-included on the first call. Activity-level skills are returned after calling next_activity."
   - id: code-modification
     title: Code Modification Boundaries
     priority: critical
@@ -37,16 +34,6 @@ sections[16]:
       - When modifications are requested implement them precisely as specified
       - Focus on factual observations rather than prescriptive changes
       - Never add process attribution comments to code
-  - id: implementation-workflow
-    title: Implementation Workflow Boundaries
-    priority: critical
-    scope: "Applies to code implementation tasks within a single activity. Does NOT apply to the orchestrator's activity-to-activity transitions, which are governed by the orchestration rules."
-    rules[5]:
-      - For complex implementations within an activity complete only ONE numbered task at a time
-      - Within an activity stop and ask user permission before proceeding to the next implementation item
-      - NEVER implement multiple recommendations in a single iteration within an activity
-      - Provide brief summary of completed work before asking to continue
-      - Break complex tasks into manageable specific steps
   - id: file-restrictions
     title: File and Directory Restrictions
     priority: high
@@ -106,69 +93,6 @@ sections[16]:
       - Propose concrete options with tradeoffs
       - Reference similar patterns in codebase for context
       - Do not guess at critical implementation details
-  - id: version-control
-    title: Version Control Practices
-    priority: high
-    commitStandards[4]:
-      - Follow the Conventional Commits specification for all commit messages
-      - Use format type followed by optional scope and description
-      - Common types are feat fix docs style refactor test chore build ci
-      - Reference issue numbers when applicable
-    branchManagement[4]:
-      - Understand project branching strategy before creating branches
-      - Follow naming conventions for feature branches
-      - Keep branches focused on specific features or fixes
-      - Regularly sync with main branch
-    destructiveOperations[4]:
-      - NEVER run destructive or irreversible operations without explicit request
-      - Examples include force push to protected branches and hard resets
-      - NEVER skip hooks unless explicitly requested
-      - NEVER commit changes unless user explicitly asks
-    preCommitVerification[2]:
-      - Verify user explicitly requested the commit
-      - For Rust projects run cargo fmt to format code before committing
-  - id: engineering-artifacts
-    title: Engineering Artifacts Management
-    priority: high
-    overview: "Engineering artifacts (planning documents, ADRs, reviews) are stored in '.engineering/'. Read .engineering/AGENTS.md for the complete git structure diagram and commit instructions."
-    critical[2]:
-      - "BEFORE committing engineering artifacts, ALWAYS read and follow .engineering/AGENTS.md"
-      - "The AGENTS.md file contains the definitive git structure diagram showing what is a submodule vs a regular directory"
-    rules[5]:
-      - "The orchestrator MUST commit and push engineering artifacts after each completed activity, before evaluating transitions to the next activity"
-      - "Files in .engineering/artifacts/, .engineering/AGENTS.md, .engineering/scripts/ are regular files — commit them directly in the parent repo"
-      - "Files in .engineering/workflows/ are in a SUBMODULE — commit inside the submodule first, push, then update the parent's submodule pointer"
-      - "Files in .engineering/history/ are in a SUBMODULE — same two-step commit as workflows"
-      - "To identify whether a path is a submodule: run 'git ls-tree HEAD <path>' — 160000 means submodule, 040000 means regular directory"
-    submoduleCommitWorkflow[4]:
-      - "Step 1: cd .engineering/workflows && git add <files> && git commit && git push origin workflows"
-      - "Step 2: cd <repo-root> && git add .engineering/workflows && git commit -m 'chore: update workflows submodule' && git push"
-      - "If you skip Step 2, the parent still points to the old submodule commit"
-      - "If you skip Step 1's push, the parent points to a commit that does not exist on the remote"
-    regularFileCommitWorkflow[2]:
-      - "For .engineering/artifacts/ and other non-submodule paths: git add .engineering/artifacts/<file> && git commit && git push"
-      - "These are regular files in the parent repo — no two-step submodule workflow needed"
-    commonPaths[3]:
-      - ".engineering/ — Regular directory in parent repo (NOT a submodule)"
-      - ".engineering/workflows/ — Submodule: m2ux/workflow-server.git, branch: workflows"
-      - ".engineering/history/ — Submodule: m2ux/ai-metadata.git, branch: midnight-platform-eng"
-  - id: github-cli
-    title: GitHub CLI Usage
-    priority: high
-    guidance: Use REST API for mutating operations as GraphQL fails due to Projects Classic deprecation
-    userApprovalRequired[1]:
-      - ALWAYS ask user before replying to PR comments or review feedback
-    avoid[2]:
-      - gh pr edit uses GraphQL which fails with Projects Classic deprecation error
-      - Any gh command that mutates PRs or issues via GraphQL
-    mutatingOperations[3]:
-      - Update PR description using gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f body=CONTENT
-      - Update PR title using gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f title=TITLE
-      - Add labels using gh api repos/OWNER/REPO/issues/NUMBER/labels -X POST -f labels=LABELS
-    readOperationsOk[3]:
-      - gh pr view for viewing PRs
-      - gh pr list for listing PRs
-      - gh issue list for listing issues
   - id: context-management
     title: Context Management Strategy
     priority: low
@@ -181,19 +105,6 @@ sections[16]:
       - Add a context document explaining the task and scope
       - Mention 2-4 key files that are most relevant
       - Let the agent search for the rest using semantic search
-  - id: orchestration
-    title: Orchestrator-Worker Execution Model
-    priority: critical
-    rules[9]:
-      - "Workflows that define an orchestrator/worker execution model MUST be executed with the receiving agent acting AS the orchestrator (inline, NOT as a sub-agent) and dispatching a persistent worker sub-agent. The orchestrator role runs at the top-level conversation so that AskQuestion calls render directly to the user. Spawning the orchestrator as a sub-agent is forbidden — sub-agent AskQuestion calls do not surface question bodies to the user, only a generic permission dialog."
-      - "The orchestrator (the top-level agent) loads the workflow via get_workflow (receiving the schema preamble), manages transitions, evaluates conditions, and tracks state. It MUST NOT execute activity steps, write code, review code, or produce artifacts."
-      - "The worker self-bootstraps each activity by calling next_activity (which sets token.act) then get_skills(workflow_id). The server uses the token to determine scope: the first get_skills call (before any activity is entered) returns workflow-level skills including execute-activity (the worker's execution protocol); subsequent calls return activity-level skills. The execute-activity skill defines mandatory phases (write-semantic-trace, update-readme-progress) that must complete before reporting results. The worker yields at blocking checkpoints (returning checkpoint_pending to the orchestrator) and reports structured results (variables_changed, checkpoints_responded, artifacts_produced, steps_completed) back to the orchestrator."
-      - "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): When a worker encounters a checkpoint defined in an activity, it MUST STOP IMMEDIATELY and return checkpoint_pending to the orchestrator with the checkpoint ID, message, and options. The worker MUST NOT auto-resolve checkpoints, select options on behalf of the user, or proceed past a checkpoint without the orchestrator confirming the user's selection. The orchestrator MUST present every checkpoint to the user via AskQuestion and wait for a response before resuming the worker. A worker that auto-resolves a checkpoint has violated workflow fidelity — this is a protocol error equivalent to executing the wrong activity. There are ZERO exceptions to this rule."
-      - "The worker MUST be resumed (not re-created) for each successive activity using the Task tool's resume parameter. This preserves accumulated codebase understanding and implementation context across the entire workflow."
-      - "All git operations (branch, commit, push, PR) MUST be performed inside the target_path directory specified by the workflow, not in the parent repo."
-      - "Check workflow.rules for the EXECUTION MODEL rule to determine whether a workflow uses this pattern. If absent, execute the workflow directly without the orchestrator/worker split."
-      - "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation."
-      - "USER INTERACTION BOUNDARY: The user interacts with the workflow ONLY through checkpoints defined within activities. The orchestrator presents checkpoints via AskQuestion at the top level. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
   - id: build-commands
     title: Build Command Priority
     priority: high
