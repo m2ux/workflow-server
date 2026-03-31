@@ -13,7 +13,7 @@ protocol:
     - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id and activity_id parameters. The token enables server-side validation of call consistency."
     - "Use the updated token from each response's _meta.session_token field for the next call."
     - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens. The token is cryptographically signed and tampered tokens will be rejected."
-    - "Token-exempt tools: help, list_workflows, start_session, and health_check do not require a session token."
+    - "Token-exempt tools: discovery, list_workflows, start_session, and health_check do not require a session token."
   validation[1]:
     - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies (workflow mismatch, invalid transition, skill not associated with activity, version drift, missing step manifest) and should be addressed but do not block execution."
   step-manifests[2]:
