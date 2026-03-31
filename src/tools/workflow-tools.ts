@@ -35,7 +35,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         available_workflows: workflows.map(w => ({ id: w.id, title: w.title, version: w.version })),
       };
       if (bootstrapResult.success) {
-        guide['bootstrap_guide'] = bootstrapResult.value.content;
+        guide['discovery'] = bootstrapResult.value.content;
       }
       return { content: [{ type: 'text' as const, text: JSON.stringify(guide) }] };
     }));

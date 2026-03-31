@@ -58,10 +58,10 @@ describe('mcp-server integration', () => {
       const guide = parseToolResponse(result);
       expect(guide.server).toBeDefined();
       expect(guide.version).toBeDefined();
-      expect(guide.bootstrap_guide).toBeDefined();
-      expect(typeof guide.bootstrap_guide).toBe('string');
-      expect(guide.bootstrap_guide).toContain('start_session');
-      expect(guide.bootstrap_guide).toContain('get_skills');
+      expect(guide.discovery).toBeDefined();
+      expect(typeof guide.discovery).toBe('string');
+      expect(guide.discovery).toContain('start_session');
+      expect(guide.discovery).toContain('get_skills');
       expect(guide.available_workflows.length).toBeGreaterThanOrEqual(2);
     });
   });
