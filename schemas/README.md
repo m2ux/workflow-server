@@ -576,7 +576,7 @@ Activities are the execution units of a workflow. Each activity contains steps, 
       "version": "1.0.0",
       "name": "Initial Activity",
       "description": "The first activity of the workflow",
-      "skills": { "primary": "workflow-execution" },
+      "skills": { "primary": "execute-activity" },
       "steps": [],
       "checkpoints": [],
       "transitions": []
@@ -1079,7 +1079,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "version": "1.0.0",
       "name": "Review",
       "description": "Initial review and approval",
-      "skills": { "primary": "workflow-execution" },
+      "skills": { "primary": "execute-activity" },
       "estimatedTime": "5-10m",
       "steps": [
         {
@@ -1131,7 +1131,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "process",
       "version": "1.0.0",
       "name": "Processing",
-      "skills": { "primary": "workflow-execution" },
+      "skills": { "primary": "execute-activity" },
       "steps": [
         {
           "id": "step-process",
@@ -1143,7 +1143,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "rejected",
       "version": "1.0.0",
       "name": "Rejection",
-      "skills": { "primary": "workflow-execution" },
+      "skills": { "primary": "execute-activity" },
       "steps": [
         {
           "id": "step-notify",
@@ -1210,15 +1210,15 @@ The activity schema (`activity.schema.json`) defines unified activities that com
   "problem": "The user wants to begin executing a new workflow from the beginning.",
   "recognition": ["Start a workflow", "Begin workflow", "Execute workflow"],
   "skills": {
-    "primary": "workflow-execution",
-    "supporting": ["activity-resolution", "state-management"]
+    "primary": "execute-activity",
+    "supporting": ["state-management"]
   },
   "steps": [
     { "id": "select", "name": "Select workflow" },
     { "id": "load", "name": "Load workflow definition" }
   ],
   "outcome": ["Workflow is selected and loaded", "Initial state is created"],
-  "context_to_preserve": ["workflowId", "currentActivity", "rules"]
+  "context_to_preserve": ["workflowId", "currentActivity"]
 }
 ```
 
@@ -1276,7 +1276,7 @@ A complete activity definition with workflow trigger:
   "description": "Execute each planned work package by triggering the work-package workflow",
   "problem": "Planned work packages need to be implemented one at a time",
   "skills": {
-    "primary": "workflow-execution"
+    "primary": "execute-activity"
   },
   "triggers": {
     "workflow": "work-package",
@@ -1320,9 +1320,9 @@ The skill schema (`skill.schema.json`) defines agent capabilities for workflow e
 
 ```json
 {
-  "id": "workflow-execution",
+  "id": "execute-activity",
   "version": "2.0.0",
-  "capability": "Execute workflows from start to completion with consistent tool usage",
+  "capability": "Bootstrap and execute a single workflow activity with consistent tool usage",
   "tools": {},
   "state": {},
   "errors": {}
@@ -1348,7 +1348,7 @@ The skill schema (`skill.schema.json`) defines agent capabilities for workflow e
 | `matching` | object | Goal-to-activity matching strategies |
 | `state` | object | State structure and update patterns |
 | `interpretation` | object | How to interpret workflow constructs |
-| `rules` | object | Flat name-value pairs: each key is a rule name (e.g. configuration-invariant); each value is a single rule string. |
+| `rules` | object | Name-value pairs: each key is a rule name (e.g. configuration-invariant); each value is a single rule string or an array of rule strings for grouped rules. |
 | `errors` | object | Error definitions and recovery strategies |
 | `inputs` | array | Inputs the skill expects from context: array of items. Each item has **id** (required; hyphen-delimited), optional **description**, **required**, **default**. When a protocol step uses an existing artifact (e.g. loads from a path), the skill MUST declare one or more associated input entries. Mirrors output structure. |
 | `protocol` | object | Phase-keyed steps only: each key is a step/phase id (e.g. `load-checklist[1]`), value is an array of imperative bullet strings. No `description` in protocol (use skill-level description). |
