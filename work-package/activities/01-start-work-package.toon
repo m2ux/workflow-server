@@ -148,7 +148,11 @@ steps[15]:
       value: false
   - id: check-pr
     name: Check for Existing PR
-    description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path."
+    description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path. If a PR is found, set pr_exists=true and capture the PR number in existing_pr_number. If no PR is found, pr_exists remains false."
+    actions[1]:
+      - action: set
+        target: pr_exists
+        description: "Set to true when an existing PR is found for the current branch"
   - id: create-pr
     name: Create Draft PR
     description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names."
@@ -167,6 +171,10 @@ steps[15]:
 checkpoints[8]:
   - id: issue-verification
     name: Issue Verification Checkpoint
+    condition:
+      type: simple
+      variable: issue_number
+      operator: notExists
     message: "I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?"
     options[3]:
       - id: provide-existing
@@ -332,10 +340,16 @@ checkpoints[8]:
   - id: pr-creation
     name: PR Creation Checkpoint
     condition:
-      type: simple
-      variable: issue_cancelled
-      operator: "=="
-      value: false
+      type: and
+      conditions:
+        - type: simple
+          variable: issue_cancelled
+          operator: "!="
+          value: true
+        - type: simple
+          variable: use_existing_pr
+          operator: "!="
+          value: true
     message: "Issue confirmed. Creating feature branch and draft PR in 30s unless you intervene."
     blocking: false
     defaultOption: proceed
