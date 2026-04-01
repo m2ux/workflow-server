@@ -13,7 +13,7 @@
 
 import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
 import { join, resolve, basename } from 'path';
-import { decodeToon } from '../src/utils/toon.js';
+import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
 import { safeValidateActivity } from '../src/schema/activity.schema.js';
 
 export interface ValidationResult {
