@@ -27,16 +27,9 @@ MANDATORY before returning `activity_complete`. Read the planning folder `README
 3. Update the footer status line to reflect the current workflow position (e.g., "Implementation complete — PR submitted for review").
 4. Write the updated `README.md` back to disk. The orchestrator will include it in the same commit as the activity's artifacts.
 
-## Phase: write-semantic-trace
+## Trace Writing
 
-MANDATORY before `report-completion`. Append semantic trace events to the unified trace file.
-
-- **File path:** `{planning_folder_path}/workflow-trace.json`
-- **Append, don't overwrite:** Read the existing file (if present), parse the JSON array, append new entries, write back. If the file doesn't exist, create it with a new array.
-- **Entry format:** JSON object with `type: "semantic"`, `activity_id`, `artifact_prefix`, `started_at`, `completed_at`, and an `events` array.
-- **Events to capture:** step outputs (`step_id` + output summary), checkpoint responses (`checkpoint_id` + `selected_option_id` + effects applied), decision branches taken (`decision_id` + `branch_id` + condition evaluated), loop iterations (`loop_id` + iteration count + convergence info), variable changes (variable name + old value + new value).
-
-This file is shared with the orchestrator, which appends mechanical trace entries (tool call timing) after each activity. The unified file provides a complete chronological record of the entire workflow session.
+Trace writing is the **orchestrator's responsibility**, not the worker's. The worker reports structured results (steps_completed, checkpoints_responded, variables_changed) and the orchestrator writes both semantic and mechanical trace entries to `{planning_folder_path}/workflow-trace.json` as part of processing each activity_complete result. The worker does NOT write to the trace file.
 
 ## Output Formats
 

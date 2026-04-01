@@ -1,5 +1,5 @@
 id: worker-management
-version: 1.0.0
+version: 1.1.0
 capability: "Consolidated management skill for the worker role — covers activity execution, session lifecycle, and behavioral boundaries"
 description: "Single-load management skill for the worker (sub-agent). Consolidates execute-activity, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
 
@@ -35,16 +35,10 @@ protocol:
   execute-loops[2]:
     - "forEach: iterate over the named collection, executing loop steps for each item"
     - "doWhile: execute steps, evaluate condition, repeat up to maxIterations"
-  produce-artifacts[3]:
-    - "Write artifacts to the planning folder using the activity's artifactPrefix convention"
-    - "Record each artifact produced: id, name, path"
-    - "Prepend the activity's artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
-  update-readme-progress[1]:
-    - "MANDATORY before report-completion. Update the planning folder README.md progress table (see resource meta/06 for details)"
-  write-semantic-trace[1]:
-    - "MANDATORY before report-completion. Append semantic trace entry to {planning_folder_path}/workflow-trace.json (see resource meta/06 for format)"
-  report-completion[2]:
-    - "Compile structured result with result_type: activity_complete (see resource meta/06 for format)"
+  finalize[4]:
+    - "Write artifacts to the planning folder using the activity's artifactPrefix convention. Record each artifact produced: id, name, path. Prepend the artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
+    - "MANDATORY: Update the planning folder README.md progress table (see resource meta/06 for details)"
+    - "Compile structured result with result_type: activity_complete (see resource meta/06 for format). Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
   session-protocol[5]:
     - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id and activity_id parameters."
