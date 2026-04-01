@@ -24,8 +24,8 @@ protocol:
     - "If is_review_mode is true, apply the activity's modeOverrides"
     - "If the activity is in mode.skipActivities, report back with a skip result"
   execute-steps[4]:
-    - "Execute each step sequentially. For steps with a skill field, call get_skill with the step_id to load the skill before executing."
-    - "Skip the get_skill call if the same skill was already loaded for a prior step and is still in context."
+    - "Execute each step sequentially. For steps with a skill field, call get_step_skill with the step_id to load the skill before executing."
+    - "Skip the get_step_skill call if the same skill was already loaded for a prior step and is still in context."
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
   yield-checkpoint[3]:
@@ -51,10 +51,10 @@ protocol:
     - "Use the updated token from each response's _meta.session_token field for the next call."
     - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens."
     - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
-    - "RESOURCE USAGE: Resources referenced by skills are returned in the get_skill response. When a step says 'use attached resource XX', find it by index or id in _resources. Do not load resources separately."
+    - "RESOURCE USAGE: Resources referenced by skills are returned in the get_step_skill response. When a step says 'use attached resource XX', find it by index or id in _resources. Do not load resources separately."
 
 rules:
-  self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity and get_skill. The workflow-server is the source of truth."
+  self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity and get_step_skill. The workflow-server is the source of truth."
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding persists across activities via Task resume parameter."
   complete-all-steps: "Execute all required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
@@ -74,7 +74,7 @@ rules:
     - "Comments should explain why code exists and the rationale for design choices — avoid narrating what the code does."
   operational-discipline[3]:
     - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability."
-    - "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_skill and get_skills."
+    - "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_step_skill and get_skills."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
 tools:
@@ -85,7 +85,7 @@ tools:
     when: "After receiving activity_id"
     params: "workflow_id, activity_id"
     returns: "Activity definition with steps, checkpoints, skills, transitions"
-  get_skill:
+  get_step_skill:
     when: "Before executing a step that declares a skill"
     params: "step_id, workflow_id"
     returns: "Skill definition with protocol, tools, rules, inputs, output"
