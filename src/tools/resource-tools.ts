@@ -6,7 +6,7 @@ import { withAuditLog } from '../logging.js';
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import type { StructuredResource } from '../loaders/resource-loader.js';
-import { readSkill, listUniversalSkillIds, listWorkflowSkillIds } from '../loaders/skill-loader.js';
+import { readSkill, listUniversalSkillIds } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
@@ -108,7 +108,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get all skills with resources nested under each skill. Before any activity is entered (token.act empty), returns workflow-level skills. When an activity is entered and agent_id is provided: if the agent_id differs from the last known agent (token.aid), returns universal meta skills + activity skills (first call for a new agent); if the agent_id matches, returns activity skills only. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
+    'Get skills with resources nested under each skill. Before any activity is entered (token.act empty), returns only the skills declared in the workflow\'s skills field. When an activity is entered and agent_id is provided: if the agent_id differs from the last known agent (token.aid), returns universal meta skills + activity skills (first call for a new agent); if the agent_id matches, returns activity skills only. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -126,11 +126,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const isNewAgent = agent_id !== undefined && agent_id !== token.aid;
 
       if (!activityId) {
-        const universalIds = await listUniversalSkillIds(config.workflowDir);
-        const workflowSpecificIds = await listWorkflowSkillIds(config.workflowDir, workflow_id);
-        const workflowDeclared = workflow.skills ?? [];
-        const combined = new Set([...universalIds, ...workflowSpecificIds, ...workflowDeclared]);
-        skillIds = [...combined];
+        skillIds = workflow.skills ?? [];
         scope = 'workflow';
       } else if (isNewAgent) {
         const activity = getActivity(workflow, activityId);

@@ -324,7 +324,7 @@ describe('mcp-server integration', () => {
   // ============== Token-Driven Skill Loading ==============
 
   describe('tool: get_skills', () => {
-    it('should return workflow-level skills before any activity is entered', async () => {
+    it('should return only declared workflow-level skills before any activity is entered', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken, workflow_id: 'work-package' },
@@ -333,8 +333,13 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       expect(response.activity_id).toBeNull();
-      expect(response.skills['orchestrate-workflow']).toBeDefined();
-      expect(response.skills['execute-activity']).toBeDefined();
+      const skillIds = Object.keys(response.skills);
+      expect(skillIds).toContain('orchestrate-workflow');
+      expect(skillIds).toContain('execute-activity');
+      expect(skillIds).toContain('session-protocol');
+      expect(skillIds).toContain('state-management');
+      expect(skillIds).not.toContain('create-issue');
+      expect(skillIds).not.toContain('knowledge-base-search');
     });
 
     it('should return activity skills after next_activity sets token.act', async () => {
@@ -377,7 +382,7 @@ describe('mcp-server integration', () => {
       expect(meta['session_token']).toBeDefined();
     });
 
-    it('should return universal meta skills even for workflows without declared skills', async () => {
+    it('should return empty skills for workflows without declared skills', async () => {
       const metaSession = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'meta' },
@@ -390,7 +395,7 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      expect(Object.keys(response.skills).length).toBeGreaterThanOrEqual(1);
+      expect(Object.keys(response.skills).length).toBe(0);
     });
   });
 
