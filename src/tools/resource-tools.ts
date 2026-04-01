@@ -151,17 +151,49 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
+    'Get a single skill by ID with its referenced resources. Resources are nested under the skill as _resources (the raw resources reference list is stripped).',
+    {
+      ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID'),
+      skill_id: z.string().describe('Skill ID (e.g., execute-activity, orchestrate-workflow)'),
+    },
+    withAuditLog('get_skill', async ({ session_token, workflow_id, skill_id }) => {
+      const token = await decodeSessionToken(session_token);
+      const result = await readSkill(skill_id, config.workflowDir, workflow_id);
+      if (!result.success) throw result.error;
+
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
+      );
+
+      const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
+
+      const response = {
+        skill: bundleSkillWithResources(result.value, resources),
+      };
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
+      };
+    }, traceOpts)
+  );
+
+  server.tool(
+    'get_step_skill',
     'Get the skill for a specific step. Resolves the skill from the activity definition using the step ID and current activity from the session token. Resources are nested under the skill as _resources.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
       step_id: z.string().describe('Step ID within the current activity (e.g., "define-problem", "create-plan")'),
     },
-    withAuditLog('get_skill', async ({ session_token, workflow_id, step_id }) => {
+    withAuditLog('get_step_skill', async ({ session_token, workflow_id, step_id }) => {
       const token = await decodeSessionToken(session_token);
 
       if (!token.act) {
-        throw new Error('No current activity in session. Call next_activity before get_skill.');
+        throw new Error('No current activity in session. Call next_activity before get_step_skill.');
       }
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
