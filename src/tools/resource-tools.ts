@@ -5,7 +5,6 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import type { StructuredResource } from '../loaders/resource-loader.js';
 import { readSkill } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion } from '../utils/validation.js';
@@ -25,34 +24,40 @@ function parseResourceRef(ref: string): { workflowId: string | undefined; index:
   return { workflowId: undefined, index: ref };
 }
 
-async function loadSkillResources(workflowDir: string, workflowId: string, skillValue: unknown): Promise<StructuredResource[]> {
+interface ResourceRef {
+  index: string;
+  id: string | undefined;
+  version: string | undefined;
+}
+
+async function loadSkillResourceRefs(workflowDir: string, workflowId: string, skillValue: unknown): Promise<ResourceRef[]> {
   if (typeof skillValue !== 'object' || skillValue === null) return [];
   const resources_field = (skillValue as Record<string, unknown>)['resources'];
   if (!Array.isArray(resources_field)) return [];
   const skillResources = resources_field.filter((v): v is string => typeof v === 'string');
 
-  const resources: StructuredResource[] = [];
+  const refs: ResourceRef[] = [];
   for (const ref of skillResources) {
     const parsed = parseResourceRef(ref);
     const targetWorkflow = parsed.workflowId ?? workflowId;
     const result = await readResourceStructured(workflowDir, targetWorkflow, parsed.index);
     if (result.success) {
-      resources.push({ ...result.value, index: ref });
+      refs.push({ index: ref, id: result.value.id, version: result.value.version });
     }
   }
-  return resources;
+  return refs;
 }
 
 /**
- * Strip the raw `resources` array from a skill value and attach resolved content.
- * Returns a new object with `_resources` containing the resolved content
- * and the original `resources` reference list removed.
+ * Strip the raw `resources` array from a skill value and attach lightweight refs.
+ * Returns a new object with `_resources` containing index/id/version refs
+ * (no content — use get_resource to load individually).
  */
-function bundleSkillWithResources(skillValue: unknown, resolvedResources: StructuredResource[]): unknown {
+function bundleSkillWithResourceRefs(skillValue: unknown, refs: ResourceRef[]): unknown {
   if (typeof skillValue !== 'object' || skillValue === null) return skillValue;
   const { resources: _stripped, ...rest } = skillValue as Record<string, unknown>;
-  if (resolvedResources.length > 0) {
-    return { ...rest, _resources: resolvedResources };
+  if (refs.length > 0) {
+    return { ...rest, _resources: refs };
   }
   return rest;
 }
@@ -108,7 +113,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get workflow-level skills with resources nested under each skill. Returns the skills declared in the workflow\'s skills field. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
+    'Get workflow-level skills. Returns skills declared in the workflow\'s skills field with resource references in _resources.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -127,8 +132,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       for (const sid of skillIds) {
         const result = await readSkill(sid, config.workflowDir, workflow_id);
         if (result.success) {
-          const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
-          skills[sid] = bundleSkillWithResources(result.value, resources);
+          const refs = await loadSkillResourceRefs(config.workflowDir, workflow_id, result.value);
+          skills[sid] = bundleSkillWithResourceRefs(result.value, refs);
         } else {
           failedSkills.push(sid);
         }
@@ -152,7 +157,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Get a single skill by ID with its referenced resources. Resources are nested under the skill as _resources (the raw resources reference list is stripped).',
+    'Get a single skill by ID with resource references in _resources.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -169,11 +174,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
       );
 
-      const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
+      const refs = await loadSkillResourceRefs(config.workflowDir, workflow_id, result.value);
       const advancedToken = await advanceToken(session_token, { wf: workflow_id, skill: skill_id });
 
       const response = {
-        skill: bundleSkillWithResources(result.value, resources),
+        skill: bundleSkillWithResourceRefs(result.value, refs),
         session_token: advancedToken,
       };
 
@@ -186,7 +191,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_step_skill',
-    'Get the skill for a specific step. Resolves the skill from the activity definition using the step ID and current activity from the session token. Resources are nested under the skill as _resources.',
+    'Get the skill for a specific step. Resolves the skill from the activity definition using the step ID and current activity from the session token.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -241,11 +246,47 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
+      const refs = await loadSkillResourceRefs(config.workflowDir, workflow_id, result.value);
       const advancedToken = await advanceToken(session_token, { wf: workflow_id, skill: skillId });
 
       const response = {
-        skill: bundleSkillWithResources(result.value, resources),
+        skill: bundleSkillWithResourceRefs(result.value, refs),
+        session_token: advancedToken,
+      };
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        _meta: { session_token: advancedToken, validation },
+      };
+    }, traceOpts)
+  );
+
+  server.tool(
+    'get_resource',
+    'Get a single resource by index. Supports cross-workflow references (e.g., "meta/04").',
+    {
+      ...sessionTokenParam,
+      workflow_id: z.string().describe('Workflow ID (used as default when resource_index has no prefix)'),
+      resource_index: z.string().describe('Resource index — bare (e.g., "23") resolves within workflow_id, prefixed (e.g., "meta/04") resolves from the specified workflow'),
+    },
+    withAuditLog('get_resource', async ({ session_token, workflow_id, resource_index }) => {
+      const token = await decodeSessionToken(session_token);
+
+      const parsed = parseResourceRef(resource_index);
+      const targetWorkflow = parsed.workflowId ?? workflow_id;
+      const result = await readResourceStructured(config.workflowDir, targetWorkflow, parsed.index);
+      if (!result.success) throw result.error;
+
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      const validation = buildValidation(
+        validateWorkflowConsistency(token, workflow_id),
+        wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
+      );
+
+      const advancedToken = await advanceToken(session_token, { wf: workflow_id });
+
+      const response = {
+        resource: { ...result.value, index: resource_index },
         session_token: advancedToken,
       };
 
