@@ -83,6 +83,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       const toonContent = encodeToon(saveFile as Record<string, unknown>);
       await writeFile(filePath, toonContent, 'utf-8');
 
+      const advancedToken = await advanceToken(session_token);
       const summary = {
         saved: true,
         path: filePath,
@@ -92,6 +93,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
         completedActivities: state.completedActivities.length,
         triggeredWorkflows: state.triggeredWorkflows.length,
         status: state.status,
+        session_token: advancedToken,
       };
       const validation = buildValidation(
         validateWorkflowConsistency(token, state.workflowId),
@@ -99,7 +101,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(summary) }],
-        _meta: { session_token: await advanceToken(session_token), validation },
+        _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts),
   );
@@ -137,13 +139,14 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
         }
       }
 
+      const advancedToken = await advanceToken(session_token);
       const validation = buildValidation(
         validateWorkflowConsistency(token, restored.state.workflowId),
       );
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(restored) }],
-        _meta: { session_token: await advanceToken(session_token), validation },
+        content: [{ type: 'text' as const, text: JSON.stringify({ ...restored, session_token: advancedToken }) }],
+        _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts),
   );

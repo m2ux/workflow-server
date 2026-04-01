@@ -66,6 +66,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content.push({ type: 'text', text: config.schemaPreamble });
       }
 
+      const advancedToken = await advanceToken(session_token, { wf: workflow_id });
+
       if (summary) {
         const wf = result.value;
         const summaryData = {
@@ -78,13 +80,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           executionModel: wf.executionModel,
           initialActivity: wf.initialActivity,
           activities: wf.activities.map(a => ({ id: a.id, name: a.name, required: a.required })),
+          session_token: advancedToken,
         };
         content.push({ type: 'text', text: JSON.stringify(summaryData) });
       } else {
-        content.push({ type: 'text', text: JSON.stringify(result.value) });
+        content.push({ type: 'text', text: JSON.stringify({ ...result.value, session_token: advancedToken }) });
       }
 
-      return { content, _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation } };
+      return { content, _meta: { session_token: advancedToken, validation } };
     }, traceOpts));
 
   server.tool('next_activity', 'Transition to the next activity. Validates step manifest for the leaving activity, validates transition legality, loads the target activity definition, and advances the session token.',
@@ -159,7 +162,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(activity) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ ...activity, session_token: advancedToken }) }],
         _meta: meta,
       };
     }, traceOpts));
@@ -183,9 +186,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, result.value),
       );
 
+      const advancedToken = await advanceToken(session_token, { wf: workflow_id, act: activity_id });
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(checkpoint) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, act: activity_id }), validation },
+        content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, session_token: advancedToken }) }],
+        _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));
 
@@ -204,13 +208,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, result.value),
       );
 
+      const advancedToken = await advanceToken(session_token, { wf: workflow_id });
       const response = {
         current_activity: token.act,
         transitions,
+        session_token: advancedToken,
       };
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
+        _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));
 
@@ -221,6 +227,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     },
     withAuditLog('get_trace', async ({ session_token, trace_tokens }) => {
       const token = await decodeSessionToken(session_token);
+      const advancedToken = await advanceToken(session_token);
 
       if (trace_tokens && trace_tokens.length > 0) {
         const allEvents: TraceEvent[] = [];
@@ -233,25 +240,25 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             errors.push(e instanceof Error ? e.message : String(e));
           }
         }
-        const result: Record<string, unknown> = { traceId: token.sid, source: 'tokens', event_count: allEvents.length, events: allEvents };
+        const result: Record<string, unknown> = { traceId: token.sid, source: 'tokens', event_count: allEvents.length, events: allEvents, session_token: advancedToken };
         if (errors.length > 0) result['token_errors'] = errors;
         return {
           content: [{ type: 'text' as const, text: JSON.stringify(result) }],
-          _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+          _meta: { session_token: advancedToken, validation: buildValidation() },
         };
       }
 
       if (!config.traceStore) {
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: false, event_count: 0, events: [] }) }],
-          _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: false, event_count: 0, events: [], session_token: advancedToken }) }],
+          _meta: { session_token: advancedToken, validation: buildValidation() },
         };
       }
 
       const events = config.traceStore.getEvents(token.sid);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: true, event_count: events.length, events }) }],
-        _meta: { session_token: await advanceToken(session_token), validation: buildValidation() },
+        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: true, event_count: events.length, events, session_token: advancedToken }) }],
+        _meta: { session_token: advancedToken, validation: buildValidation() },
       };
     }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 
