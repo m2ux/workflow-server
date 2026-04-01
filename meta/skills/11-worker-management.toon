@@ -45,7 +45,7 @@ protocol:
     - "Use the updated token from each response's _meta.session_token field for the next call."
     - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens."
     - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
-    - "RESOURCE USAGE: Resources referenced by skills are returned in the get_step_skill response. When a step says 'use attached resource XX', find it by index or id in _resources. Do not load resources separately."
+    - "RESOURCE LOADING: After calling get_step_skill or get_skills, check the response for _resources. For each entry, call get_resource with the entry's index to load the resource content. Resources are required by the skill but returned separately to manage payload size."
 
 rules:
   self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity and get_step_skill. The workflow-server is the source of truth."
@@ -68,7 +68,7 @@ rules:
     - "Comments should explain why code exists and the rationale for design choices — avoid narrating what the code does."
   operational-discipline[3]:
     - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability."
-    - "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_step_skill and get_skills."
+    - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
 tools:
@@ -82,11 +82,15 @@ tools:
   get_step_skill:
     when: "Before executing a step that declares a skill"
     params: "step_id, workflow_id"
-    returns: "Skill definition with protocol, tools, rules, inputs, output"
+    returns: "Skill definition with protocol, tools, rules, inputs, output, and _resources refs"
   get_skills:
     when: "Session bootstrap — load workflow-level management skills"
     params: "session_token, workflow_id"
-    returns: "Workflow-level skills with referenced resources attached"
+    returns: "Workflow-level skills with _resources refs"
+  get_resource:
+    when: "After get_step_skill or get_skills — for each entry in _resources"
+    params: "workflow_id, resource_index (from _resources entry index field)"
+    returns: "Resource content"
 
 errors:
   activity_not_found:
