@@ -108,7 +108,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get workflow-level skills with resources nested under each skill. Returns only the skills declared in the workflow\'s skills field — these are management and orchestration skills the agent needs regardless of which activity is active. Activity-specific skills are declared at step level and loaded via get_skill per step. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
+    'Get workflow-level skills with resources nested under each skill. Returns the skills declared in the workflow\'s skills field. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -151,7 +151,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Get a single skill with its referenced resources. Resources are nested under the skill as _resources (the raw resources reference list is stripped).',
+    'Get a single skill by ID with its referenced resources. Resources are nested under the skill as _resources (the raw resources reference list is stripped).',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
