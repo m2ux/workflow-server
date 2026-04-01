@@ -244,11 +244,17 @@ describe('mcp-server integration', () => {
 
   // ============== Resource Tools ==============
 
-  describe('tool: get_skill', () => {
-    it('should get skill with explicit workflow_id', async () => {
+  describe('tool: get_skill (step-scoped)', () => {
+    it('should resolve skill from step_id after entering an activity', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'create-issue' },
       });
       const response = parseToolResponse(result);
       expect(response.skill).toBeDefined();
@@ -256,13 +262,88 @@ describe('mcp-server integration', () => {
       expect(response.skill._resources).toBeDefined();
       expect(Array.isArray(response.skill._resources)).toBe(true);
     });
+
+    it('should error when no activity in session token', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', step_id: 'create-issue' },
+      });
+      expect(result.isError).toBe(true);
+    });
+
+    it('should error when step_id not found in activity', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'nonexistent-step' },
+      });
+      expect(result.isError).toBe(true);
+    });
+
+    it('should error when step has no associated skill', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'resolve-target' },
+      });
+      expect(result.isError).toBe(true);
+    });
+
+    it('should resolve skill from loop step', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'design-philosophy' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'targeted-analysis' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.skill).toBeDefined();
+      expect(response.skill.id).toBe('reconcile-assumptions');
+    });
+
+    it('should advance token with resolved skill ID', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'create-issue' },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      expect(meta['session_token']).toBeDefined();
+      expect(meta['session_token']).not.toBe(actToken);
+    });
   });
 
   describe('structured resources in skill responses', () => {
     it('get_skill should nest _resources under the skill with index/id/version/content', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -276,9 +357,15 @@ describe('mcp-server integration', () => {
     });
 
     it('get_skill should strip raw resources array from skill', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -303,9 +390,15 @@ describe('mcp-server integration', () => {
     });
 
     it('resource content should not contain frontmatter', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'create-issue' },
       });
       const response = parseToolResponse(result);
       for (const resource of response.skill._resources) {
@@ -397,29 +490,38 @@ describe('mcp-server integration', () => {
   // ============== Cross-Workflow Resource Resolution ==============
 
   describe('cross-workflow resource resolution', () => {
-    it('meta/NN prefix should resolve from meta workflow resources', async () => {
+    it('meta/NN prefix should resolve from meta workflow resources via get_skills', async () => {
       const result = await client.callTool({
-        name: 'get_skill',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'orchestrate-workflow' },
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const workerPrompt = response.skill._resources.find((r: { id: string }) => r.id === 'worker-prompt-template');
-      expect(workerPrompt).toBeDefined();
-      expect(workerPrompt.content.length).toBeGreaterThan(0);
-      expect(workerPrompt.index).toBe('meta/05');
+      const orchestrate = response.skills['orchestrate-workflow'];
+      expect(orchestrate).toBeDefined();
+      const crossWfResource = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/05');
+      expect(crossWfResource).toBeDefined();
+      expect(crossWfResource.id).toBe('worker-prompt-template');
+      expect(crossWfResource.content.length).toBeGreaterThan(0);
     });
 
-    it('bare index should still resolve from current workflow', async () => {
+    it('bare index should still resolve from current workflow via get_skill', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'requirements-elicitation' },
+      });
+      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'elicit-requirements' },
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'elicit-requirements' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const resource = response.skill._resources.find((r: { id: string }) => r.id === 'requirements-elicitation');
-      expect(resource).toBeDefined();
-      expect(resource.index).toBe('05');
+      expect(response.skill._resources).toBeDefined();
+      expect(response.skill._resources.length).toBeGreaterThan(0);
+      const bareResource = response.skill._resources.find((r: { index: string }) => !r.index.includes('/'));
+      expect(bareResource).toBeDefined();
     });
   });
 

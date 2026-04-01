@@ -3,12 +3,12 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
-import { loadWorkflow } from '../loaders/workflow-loader.js';
+import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import type { StructuredResource } from '../loaders/resource-loader.js';
 import { readSkill } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
+import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 
 /**
@@ -151,22 +151,59 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Get a single skill by ID with its referenced resources. Resources are nested under the skill as _resources (the raw resources reference list is stripped).',
+    'Get the skill for a specific step. Resolves the skill from the activity definition using the step ID and current activity from the session token. Resources are nested under the skill as _resources.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
-      skill_id: z.string().describe('Skill ID (e.g., execute-activity, orchestrate-workflow)'),
+      step_id: z.string().describe('Step ID within the current activity (e.g., "define-problem", "create-plan")'),
     },
-    withAuditLog('get_skill', async ({ session_token, workflow_id, skill_id }) => {
+    withAuditLog('get_skill', async ({ session_token, workflow_id, step_id }) => {
       const token = await decodeSessionToken(session_token);
-      const result = await readSkill(skill_id, config.workflowDir, workflow_id);
-      if (!result.success) throw result.error;
+
+      if (!token.act) {
+        throw new Error('No current activity in session. Call next_activity before get_skill.');
+      }
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!wfResult.success) throw wfResult.error;
+
+      const activity = getActivity(wfResult.value, token.act);
+      if (!activity) {
+        throw new Error(`Activity '${token.act}' not found in workflow '${workflow_id}'.`);
+      }
+
+      let skillId: string | undefined;
+      const step = activity.steps?.find(s => s.id === step_id);
+      if (step) {
+        skillId = step.skill;
+      } else if (activity.loops) {
+        for (const loop of activity.loops) {
+          const loopStep = loop.steps?.find(s => s.id === step_id);
+          if (loopStep) {
+            skillId = loopStep.skill;
+            break;
+          }
+        }
+      }
+
+      if (!step && !skillId) {
+        const allStepIds = [
+          ...(activity.steps?.map(s => s.id) ?? []),
+          ...(activity.loops?.flatMap(l => l.steps?.map(s => s.id) ?? []) ?? []),
+        ];
+        throw new Error(`Step '${step_id}' not found in activity '${token.act}'. Available steps: [${allStepIds.join(', ')}]`);
+      }
+
+      if (!skillId) {
+        throw new Error(`Step '${step_id}' in activity '${token.act}' has no associated skill.`);
+      }
+
+      const result = await readSkill(skillId, config.workflowDir, workflow_id);
+      if (!result.success) throw result.error;
+
       const validation = buildValidation(
         validateWorkflowConsistency(token, workflow_id),
-        wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
-        wfResult.success && token.act ? validateSkillAssociation(wfResult.value, token.act, skill_id) : null,
+        validateWorkflowVersion(token, wfResult.value),
       );
 
       const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
@@ -177,7 +214,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skillId }), validation },
       };
     }, traceOpts)
   );
