@@ -7,13 +7,13 @@ skills:
   primary: orchestrate-package-execution
   supporting[1]:
     - workflow-execution
-triggers:
-  workflow: work-package
-  description: "Each iteration starts the work-package workflow for one planned package"
-  passContext[3]:
-    - current_package
-    - initiative_name
-    - parent_workflow
+triggers[1]:
+  - workflow: work-package
+    description: "Each iteration starts the work-package workflow for one planned package"
+    passContext[3]:
+      - current_package
+      - initiative_name
+      - parent_workflow
 steps[1]:
   - id: initialize-iteration
     name: Initialize implementation iteration
