@@ -419,10 +419,8 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('orchestrate-workflow');
-      expect(skillIds).toContain('execute-activity');
-      expect(skillIds).toContain('session-protocol');
-      expect(skillIds).toContain('state-management');
+      expect(skillIds).toContain('orchestrator-management');
+      expect(skillIds).toContain('worker-management');
       expect(skillIds).not.toContain('create-issue');
       expect(skillIds).not.toContain('knowledge-base-search');
     });
@@ -441,7 +439,7 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('session-protocol');
+      expect(skillIds).toContain('orchestrator-management');
       expect(skillIds).not.toContain('create-issue');
     });
 
@@ -497,7 +495,7 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const orchestrate = response.skills['orchestrate-workflow'];
+      const orchestrate = response.skills['orchestrator-management'];
       expect(orchestrate).toBeDefined();
       const crossWfResource = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/05');
       expect(crossWfResource).toBeDefined();
