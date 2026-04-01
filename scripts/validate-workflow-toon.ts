@@ -7,7 +7,7 @@
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
-import { decodeToon } from '../src/utils/toon.js';
+import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
 import { safeValidateSkill } from '../src/schema/skill.schema.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { validateActivityFile } from './validate-activities.js';

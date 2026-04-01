@@ -5,4 +5,4 @@ alwaysApply: true
 
 # Overview
 
-For all workflow execution user requests, call the `help` tool on the workflow-server MCP server to learn the bootstrap procedure.
+For all workflow execution user requests, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure.
