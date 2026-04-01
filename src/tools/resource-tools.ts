@@ -139,12 +139,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const responseBody: Record<string, unknown> = { scope: 'workflow', skills };
+      const advancedToken = await advanceToken(session_token, { wf: workflow_id });
+      const responseBody: Record<string, unknown> = { scope: 'workflow', skills, session_token: advancedToken };
       if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseBody) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
+        _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
   );
@@ -169,14 +170,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
+      const advancedToken = await advanceToken(session_token, { wf: workflow_id, skill: skill_id });
 
       const response = {
         skill: bundleSkillWithResources(result.value, resources),
+        session_token: advancedToken,
       };
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skill_id }), validation },
+        _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
   );
@@ -239,14 +242,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       const resources = await loadSkillResources(config.workflowDir, workflow_id, result.value);
+      const advancedToken = await advanceToken(session_token, { wf: workflow_id, skill: skillId });
 
       const response = {
         skill: bundleSkillWithResources(result.value, resources),
+        session_token: advancedToken,
       };
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response) }],
-        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id, skill: skillId }), validation },
+        _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
   );

@@ -125,6 +125,65 @@ describe('mcp-server integration', () => {
       expect(validation.warnings).toHaveLength(0);
     });
 
+    it('tools should return session_token in content body', async () => {
+      const wfResult = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+      });
+      expect(parseToolResponse(wfResult).session_token).toBeDefined();
+
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actResponse = parseToolResponse(actResult);
+      expect(actResponse.session_token).toBeDefined();
+      expect(actResponse.id).toBe('start-work-package');
+
+      const skillsResult = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
+      });
+      expect(parseToolResponse(skillsResult).session_token).toBeDefined();
+
+      const skillResult = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', skill_id: 'create-issue' },
+      });
+      expect(parseToolResponse(skillResult).session_token).toBeDefined();
+
+      const cpResult = await client.callTool({
+        name: 'get_checkpoint',
+        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package', checkpoint_id: 'issue-verification' },
+      });
+      expect(parseToolResponse(cpResult).session_token).toBeDefined();
+    });
+
+    it('content-body token threading should work end-to-end (agent scenario)', async () => {
+      const startResult = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+      const startToken = parseToolResponse(startResult).session_token;
+
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: startToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
+      });
+      const actToken = parseToolResponse(actResult).session_token;
+      expect(actToken).toBeDefined();
+      expect(actToken).not.toBe(startToken);
+
+      const stepResult = await client.callTool({
+        name: 'get_step_skill',
+        arguments: { session_token: actToken, workflow_id: 'work-package', step_id: 'create-issue' },
+      });
+      expect(stepResult.isError).toBeFalsy();
+      const stepResponse = parseToolResponse(stepResult);
+      expect(stepResponse.skill.id).toBe('create-issue');
+      expect(stepResponse.session_token).toBeDefined();
+    });
+
     it('should reject tool call without session_token', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
@@ -1024,8 +1083,10 @@ describe('mcp-server integration', () => {
         name: 'get_trace',
         arguments: { session_token: sessionToken },
       });
-      const traceText = (result.content[0] as { type: 'text'; text: string }).text;
-      expect(traceText).not.toContain('session_token');
+      const trace = parseToolResponse(result);
+      for (const event of trace.events) {
+        expect(JSON.stringify(event)).not.toContain('session_token');
+      }
     });
 
     it('get_trace excludes itself from trace (IT-14)', async () => {
