@@ -402,7 +402,7 @@ describe('mcp-server integration', () => {
   // ============== Agent-ID Meta-Skill Loading ==============
 
   describe('agent_id meta-skill loading', () => {
-    it('new agent_id should include meta skills alongside activity skills', async () => {
+    it('new agent_id should include workflow-level skills alongside activity skills', async () => {
       const actResult = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
@@ -418,6 +418,8 @@ describe('mcp-server integration', () => {
       expect(response.skills['create-issue']).toBeDefined();
       expect(response.skills['session-protocol']).toBeDefined();
       expect(response.skills['agent-conduct']).toBeDefined();
+      expect(response.skills['knowledge-base-search']).toBeUndefined();
+      expect(response.skills['gitnexus-operations']).toBeUndefined();
     });
 
     it('same agent_id should return activity skills only', async () => {
@@ -444,7 +446,7 @@ describe('mcp-server integration', () => {
       expect(response.skills['session-protocol']).toBeUndefined();
     });
 
-    it('different agent_id should re-include meta skills', async () => {
+    it('different agent_id should re-include workflow-level skills', async () => {
       const actResult = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
@@ -467,7 +469,7 @@ describe('mcp-server integration', () => {
       expect(response.skills['session-protocol']).toBeDefined();
     });
 
-    it('omitted agent_id should use existing behavior (no meta skills)', async () => {
+    it('omitted agent_id should return activity skills only (no workflow-level skills)', async () => {
       const actResult = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },

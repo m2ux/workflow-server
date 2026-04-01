@@ -6,7 +6,7 @@ import { withAuditLog } from '../logging.js';
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import type { StructuredResource } from '../loaders/resource-loader.js';
-import { readSkill, listUniversalSkillIds } from '../loaders/skill-loader.js';
+import { readSkill } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateSkillAssociation } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
@@ -108,7 +108,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get skills with resources nested under each skill. Before any activity is entered (token.act empty), returns only the skills declared in the workflow\'s skills field. When an activity is entered and agent_id is provided: if the agent_id differs from the last known agent (token.aid), returns universal meta skills + activity skills (first call for a new agent); if the agent_id matches, returns activity skills only. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
+    'Get skills with resources nested under each skill. Before any activity is entered (token.act empty), returns only the skills declared in the workflow\'s skills field. When an activity is entered and agent_id is provided: if the agent_id differs from the last known agent (token.aid), returns workflow-level skills + activity skills (first call for a new agent); if the agent_id matches, returns activity skills only. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -131,9 +131,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       } else if (isNewAgent) {
         const activity = getActivity(workflow, activityId);
         if (!activity) throw new Error(`Activity not found: ${activityId}`);
-        const universalIds = await listUniversalSkillIds(config.workflowDir);
+        const workflowSkills = workflow.skills ?? [];
         const activitySkills = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
-        const combined = new Set([...universalIds, ...activitySkills]);
+        const combined = new Set([...workflowSkills, ...activitySkills]);
         skillIds = [...combined];
         scope = 'activity+meta';
       } else {
