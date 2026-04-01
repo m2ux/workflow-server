@@ -38,7 +38,7 @@ Alongside this change, the five separate management skills that agents previousl
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
+| — | Implementation | Code changes per plan | 1-4h | ✅ Complete |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
@@ -60,4 +60,4 @@ Alongside this change, the five separate management skills that agents previousl
 
 ---
 
-**Status:** Ready for implementation
+**Status:** Implementation complete — ready for review
