@@ -89,7 +89,7 @@ tools:
     returns: "Workflow-level skills with _resources refs"
   get_resource:
     when: "After get_step_skill or get_skills — for each entry in _resources"
-    params: "workflow_id, resource_index (from _resources entry index field)"
+    params: "session_token, workflow_id, resource_index (from _resources entry index field)"
     returns: "Resource content"
 
 errors:
