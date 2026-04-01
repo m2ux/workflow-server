@@ -25,7 +25,7 @@ protocol:
     - "Call next_activity to load the activity definition"
     - "Compose worker prompt using resource meta/05 (worker-prompt-template) — do NOT inject paraphrased skill content"
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
-    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
+    - "Do NOT call get_step_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
     - "For resumed workers: send only the new activity_id, updated state variables, and bootstrap instructions"
     - "If is_resuming is true (first dispatch after state restoration): include a resumption context block listing completedActivities, key variable values, and prior checkpoint decisions. After this dispatch completes, set is_resuming = false"
   process-result[4]:
@@ -78,7 +78,7 @@ rules:
     - "Present design decisions directly without referencing their origin."
     - "Do not include process attribution in code comments or documentation."
   operational-discipline[2]:
-    - "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_skill and get_skills."
+    - "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_step_skill and get_skills."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
 tools:
