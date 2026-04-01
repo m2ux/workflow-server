@@ -5,8 +5,9 @@ description: "Run schema validation on all TOON files, re-verify the scope manif
 problem: All workflow content must pass validation and the complete scope must be verified before committing
 skills:
   primary: workflow-design
-  supporting[1]:
+  supporting[2]:
     - toon-authoring
+    - version-control-protocol
 required: true
 estimatedTime: 10-15m
 rules[3]:
