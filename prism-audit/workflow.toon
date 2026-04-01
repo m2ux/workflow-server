@@ -77,6 +77,11 @@ artifactLocations:
     path: "{output_path}"
     gitignored: false
 
+skills[4]:
+  - session-protocol
+  - agent-conduct
+  - execute-activity
+  - state-management
 executionModel:
   roles[2]:
     - id: orchestrator

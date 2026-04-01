@@ -110,6 +110,12 @@ artifactLocations:
     path: "{output_path}"
     gitignored: false
 
+skills[5]:
+  - session-protocol
+  - agent-conduct
+  - execute-activity
+  - state-management
+  - orchestrate-prism
 executionModel:
   roles[2]:
     - id: orchestrator
