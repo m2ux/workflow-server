@@ -76,7 +76,7 @@ rules:
     - "Present design decisions directly without referencing their origin."
     - "Do not include process attribution in code comments or documentation."
   operational-discipline[2]:
-    - "Do NOT read workflow resource files directly from disk — resources are attached to skill responses via get_step_skill and get_skills."
+    - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
 tools:
@@ -108,6 +108,10 @@ tools:
     when: "Resuming a workflow from saved state"
     params: "file_path (path to workflow-state.toon)"
     returns: "Full nested state object as JSON"
+  get_resource:
+    when: "After get_skills — for each entry in _resources"
+    params: "workflow_id, resource_index (from _resources entry index field)"
+    returns: "Resource content"
 
 errors:
   worker_timeout:
