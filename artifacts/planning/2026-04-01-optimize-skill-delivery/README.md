@@ -44,7 +44,7 @@ Alongside this change, the five separate management skills that agents previousl
 | 09 | [Test suite review](09-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | — | [Comprehension artifact](../../comprehension/workflow-server.md) | Persistent codebase knowledge | 20-45m | ✅ Complete |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
@@ -60,4 +60,4 @@ Alongside this change, the five separate management skills that agents previousl
 
 ---
 
-**Status:** Post-implementation review complete — ready for validation
+**Status:** Validated — ready for strategic review
