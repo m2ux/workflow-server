@@ -1,7 +1,7 @@
 # Agent-ID Meta-Skill Loading — March 2026
 
 **Created:** 2026-03-31  
-**Status:** Planning  
+**Status:** In Progress  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -24,11 +24,9 @@ This means workers operate without foundational protocols. The gap went unnotice
 
 ## Solution Overview
 
-Two coordinated changes:
+The fix teaches the workflow server to recognize when a new worker agent calls in for the first time. When the server detects a new worker, it sends back the full set of foundational behavioral protocols alongside the task-specific skills the worker needs. On follow-up calls from the same worker, it skips the foundational protocols since the worker already has them — keeping responses lean. Workers that do not identify themselves continue to work exactly as before, so nothing breaks for existing setups.
 
-1. **Agent-id parameter for `get_skills`**: Add optional `agent_id`. Compare against `token.aid` — new agent gets meta skills + activity skills; returning agent gets activity skills only. Token field `aid` already exists but is unused.
-
-2. **Cross-workflow resource prefix**: Parse `workflow:index` notation in `loadSkillResources` — route `meta:05` to `meta/resources/`, bare `05` to current workflow (backward compatible).
+For the resource referencing problem, the server now understands that a reference like `meta/05` means "look in the meta workflow's resources folder for item 05" rather than treating the whole string as a filename. Plain references like `05` still work as they always did — they look in the current workflow's folder. Additionally, each skill's reference materials are now bundled directly with that skill rather than in a separate flat list, making it straightforward for consumers to find the resources that belong to a specific skill.
 
 ---
 
@@ -45,14 +43,22 @@ Two coordinated changes:
 
 ## Progress
 
-| # | Task | Est. | Status | Artifact |
-|---|------|------|--------|----------|
-| 1 | Implement cross-workflow resource prefix in `loadSkillResources` | 15m + 5m review | Not Started | `src/tools/resource-tools.ts` |
-| 2 | Add `agent_id` parameter to `get_skills` tool | 20m + 5m review | Not Started | `src/tools/resource-tools.ts` |
-| 3 | Wire `aid` field updates in session token | 10m + 5m review | Not Started | `src/utils/session.ts` |
-| 4 | Update `get_skills` tool description | 5m + 2m review | Not Started | `src/tools/resource-tools.ts` |
-| 5 | Add tests for agent-id meta-skill loading | 20m + 5m review | Not Started | `tests/mcp-server.test.ts` |
-| 6 | Add tests for cross-workflow resource resolution | 15m + 5m review | Not Started | `tests/mcp-server.test.ts` |
-| 7 | Update worker-prompt-template to pass agent_id | 10m + 5m review | Not Started | `workflows/meta/resources/05-worker-prompt-template.md` |
+| # | Item | Description | Estimate | Status |
+|---|------|-------------|----------|--------|
+| 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy, acceptance matrix | 10-15m | ✅ Complete |
+| 1 | Implement cross-workflow resource prefix in `loadSkillResources` | 15m + 5m review | ✅ Complete |
+| 2 | Add `agent_id` parameter to `get_skills` tool | 20m + 5m review | ✅ Complete |
+| 3 | Per-skill resource nesting (`bundleSkillWithResources`) | 10m + 5m review | ✅ Complete |
+| 4 | Update `get_skills` tool description | 5m + 2m review | ✅ Complete |
+| 5 | Add tests for agent-id meta-skill loading (4 cases) | 20m + 5m review | ✅ Complete |
+| 6 | Add tests for cross-workflow resource resolution (2 cases) | 15m + 5m review | ✅ Complete |
+| 7 | Add tests for nested resource structure (6 cases) | 10m + 5m review | ✅ Complete |
+| 09 | [Change block index](09-change-block-index.md) | File index for manual diff review | 5m | ✅ Complete |
+| 09 | [Code review](09-code-review.md) | Code quality findings (4 findings, all low/info) | 15m | ✅ Complete |
+| 09 | [Structural findings](09-structural-findings.md) | Conservation law, meta-law, bug table | 10m | ✅ Complete |
+| 09 | [Test suite review](09-test-suite-review.md) | Test quality, coverage gaps, recommendations | 10m | ✅ Complete |
 
 **Total estimate:** ~1h35m agentic + ~30m review
