@@ -245,12 +245,9 @@ variables[56]:
   - name: prism_artifact_paths
     type: array
     description: "Paths to prism structural analysis artifacts produced during post-impl-review. Single-pass produces one path; full-prism produces paths to structural, adversarial, and synthesis artifacts."
-skills[5]:
-  - session-protocol
-  - agent-conduct
-  - execute-activity
-  - state-management
-  - orchestrate-workflow
+skills[2]:
+  - orchestrator-management
+  - worker-management
 executionModel:
   roles[2]:
     - id: orchestrator
