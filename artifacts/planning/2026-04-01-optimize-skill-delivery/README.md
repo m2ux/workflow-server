@@ -24,7 +24,9 @@ This approach creates measurable overhead. Agents spend processing effort filter
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix changes how agents request skill content during workflow execution. Instead of asking the server for a skill by name — which requires the agent to first read the activity definition, find the right step, extract the skill name, and then make the request — agents now simply tell the server which step they are about to execute. The server looks up which skill belongs to that step and delivers it directly, along with any reference materials the skill needs. This eliminates the intermediate parsing work and ensures agents always receive exactly the right content for their current task.
+
+Alongside this change, the five separate management skills that agents previously had to load at startup are combined into two focused packages — one for the orchestrator role and one for the worker role. Each role now loads a single skill at bootstrap that gives it everything it needs to operate, rather than having to parse through multiple separate documents. The result is that agents make fewer requests, receive less irrelevant content, and can begin productive work sooner with clearer guidance.
 
 ---
 
@@ -34,8 +36,8 @@ This approach creates measurable overhead. Agents spend processing effort filter
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
@@ -58,4 +60,4 @@ This approach creates measurable overhead. Agents spend processing effort filter
 
 ---
 
-**Status:** Ready for plan-prepare
+**Status:** Ready for implementation
