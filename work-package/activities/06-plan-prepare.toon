@@ -7,13 +7,6 @@ recognition[3]:
   - plan implementation
   - create plan
   - prepare for implementation
-skills:
-  primary: create-plan
-  supporting[4]:
-    - classify-problem
-    - create-test-plan
-    - review-assumptions
-    - reconcile-assumptions
 required: true
 estimatedTime: 20-45m
 rules[1]:
@@ -22,15 +15,19 @@ steps[10]:
   - id: apply-design
     name: Apply design framework
     description: Use design framework skill to structure the approach
+    skill: classify-problem
   - id: create-plan
     name: Create work package plan
     description: "Create work package plan document"
+    skill: create-plan
   - id: create-test-plan
     name: Create test plan
     description: "Create test plan document"
+    skill: create-test-plan
   - id: present-solution-overview
     name: Present Solution Overview
     description: "Synthesize and present a plain-language solution overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the solution does and how it addresses the problem. The second paragraph should explain how the fix works at a high level — what changes are made and what guarantees they provide. Do not use jargon without explanation. Base the overview on the work package plan, test plan, and design decisions made during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Solution Overview' section."
+    skill: create-plan
     actions[1]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
@@ -67,9 +64,11 @@ loops[1]:
       - id: targeted-analysis
         name: Analyze code-resolvable assumptions
         description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+        skill: reconcile-assumptions
       - id: update-assumptions-and-artifact
         name: Update assumptions log and comprehension artifact
         description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+        skill: reconcile-assumptions
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."

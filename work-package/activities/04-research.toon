@@ -7,11 +7,6 @@ recognition[3]:
   - research best practices
   - knowledge base research
   - research patterns
-skills:
-  primary: research-knowledge-base
-  supporting[2]:
-    - review-assumptions
-    - reconcile-assumptions
 required: false
 estimatedTime: 20-45m
 rules[1]:
@@ -20,21 +15,27 @@ steps[9]:
   - id: kb-research
     name: Knowledge base research
     description: "Call get_guidance before making concept-rag MCP tool calls. Search for relevant patterns and practices."
+    skill: knowledge-base-search
   - id: web-research
     name: Web research
     description: "Search web for current information, documentation, and best practices"
+    skill: research-knowledge-base
   - id: synthesize
     name: Synthesize findings
     description: "Connect findings to requirements: which patterns apply, what modifications needed, risks, success metrics"
+    skill: research-knowledge-base
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during research synthesis. Categories: Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment."
+    skill: review-assumptions
   - id: document
     name: Create research document
     description: "Create knowledge base research document"
+    skill: manage-artifacts
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add research-phase assumptions to the assumptions log"
+    skill: review-assumptions
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
@@ -48,6 +49,7 @@ steps[9]:
   - id: interview-open-assumptions
     name: Interview open assumptions
     description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the research-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
+    skill: review-assumptions
 loops[2]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
@@ -62,12 +64,15 @@ loops[2]:
       - id: targeted-analysis
         name: Analyze code-resolvable assumptions
         description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+        skill: reconcile-assumptions
       - id: update-assumptions-and-artifact
         name: Update assumptions log and comprehension artifact
         description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+        skill: reconcile-assumptions
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+        skill: reconcile-assumptions
   - id: assumption-interview
     name: Assumption Interview Loop
     type: forEach
@@ -79,9 +84,11 @@ loops[2]:
       - id: present-assumption
         name: Present assumption to user
         description: "Present the current open assumption via the research-assumption-interview checkpoint. Include the assumption statement, category, and any partial evidence."
+        skill: review-assumptions
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md with the user's response: if resolved inline, mark as Resolved with the user's explanation. If deferred, mark as Deferred-to-Stakeholder."
+        skill: review-assumptions
 artifacts[1]:
   - id: research-document
     name: kb-research.md

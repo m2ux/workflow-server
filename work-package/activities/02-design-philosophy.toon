@@ -8,11 +8,6 @@ recognition[4]:
   - design philosophy
   - understand problem
   - determine approach
-skills:
-  primary: classify-problem
-  supporting[2]:
-    - review-assumptions
-    - reconcile-assumptions
 required: true
 estimatedTime: 10-20m
 rules[4]:
@@ -31,6 +26,7 @@ modeOverrides:
       - id: assess-ticket-completeness
         name: Assess Ticket Completeness
         description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
+        skill: classify-problem
       - id: set-review-mode-path
         name: Set Review Mode Path
         description: "Force needs_elicitation=false. Research may still be needed based on complexity."
@@ -74,9 +70,11 @@ steps[7]:
   - id: define-problem
     name: Identify and Define Problem
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
+    skill: classify-problem
   - id: classify-problem
     name: Classify Problem Type
     description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
+    skill: classify-problem
   - id: determine-path
     name: Determine Workflow Path
     description: "Based on problem complexity and clarity, determine which optional activities are needed."
@@ -88,15 +86,18 @@ steps[7]:
   - id: document-philosophy
     name: Document Design Philosophy
     description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
+    skill: classify-problem
     actions[1]:
       - action: message
         message: "Created: design-philosophy.md"
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during problem classification and path selection. Categories: Problem Interpretation, Complexity Assessment, Workflow Path."
+    skill: review-assumptions
   - id: create-assumptions-log
     name: Create assumptions log
     description: "Create the assumptions log with initial assumptions from this activity."
+    skill: review-assumptions
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
@@ -115,12 +116,15 @@ loops[1]:
       - id: targeted-analysis
         name: Analyze code-resolvable assumptions
         description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+        skill: reconcile-assumptions
       - id: update-assumptions-and-artifact
         name: Update assumptions log and comprehension artifact
         description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+        skill: reconcile-assumptions
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+        skill: reconcile-assumptions
 checkpoints[2]:
   - id: classification-confirmed
     name: Classification Checkpoint

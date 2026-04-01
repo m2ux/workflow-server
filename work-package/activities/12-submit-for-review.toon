@@ -8,10 +8,6 @@ recognition[4]:
   - update pr
   - mark pr ready
   - handle review feedback
-skills:
-  primary: update-pr
-  supporting[1]:
-    - respond-to-pr-review
 required: true
 estimatedTime: 30-60m
 rules[1]:
@@ -30,15 +26,18 @@ modeOverrides:
       - id: consolidate-review-findings
         name: Consolidate Review Findings
         description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
+        skill: review-code
       - id: generate-review-summary
         name: Generate Review Summary
         description: "Use attached resource 24 (review-mode) via get_skill (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
+        skill: review-code
       - id: present-summary-to-user
         name: Present Summary to User
         description: "Show the review summary for confirmation before posting."
       - id: post-pr-review
         name: Post PR Review
         description: "Post review to GitHub PR using 'gh pr review'. Include consolidated findings with severity ratings."
+        skill: github-cli-protocol
     skipSteps[3]:
       - push-commits
       - update-description
@@ -75,16 +74,20 @@ steps[8]:
   - id: verify-commit-signatures
     name: Verify and sign commits
     description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
+    skill: manage-git
     required: true
   - id: push-commits
     name: Push all commits
     description: "Push all local commits to remote branch."
+    skill: manage-git
   - id: update-description
     name: Update PR description
     description: "Update PR description with final implementation details. Apply automatically — user can edit the PR directly in GitHub/Jira if adjustments are needed."
+    skill: update-pr
   - id: mark-ready
     name: Mark PR ready for review
     description: "Mark the draft PR as ready for review using gh pr ready."
+    skill: github-cli-protocol
   - id: await-review
     name: Await Manual Review
     description: "Wait for PR to receive manual review from team members."

@@ -7,13 +7,6 @@ recognition[3]:
   - review implementation
   - post implementation review
   - quality review
-skills:
-  primary: review-diff
-  supporting[4]:
-    - review-code
-    - review-test-suite
-    - summarize-architecture
-    - structural-analysis
 required: true
 estimatedTime: 30-60m
 rules[4]:
@@ -205,6 +198,7 @@ loops[1]:
       - id: apply-fixes
         name: Apply Fixes
         description: "Implement the code review findings (needs_code_fixes) and/or test improvements (needs_test_improvements) selected by the user. Commit changes."
+        skill: version-control-protocol
         required: true
       - id: reset-fix-flags
         name: Reset Fix Flags
@@ -213,6 +207,7 @@ loops[1]:
       - id: regenerate-index
         name: Regenerate Change Block Index
         description: "Re-parse git diff and regenerate change-block-index.md reflecting the new changes."
+        skill: version-control-protocol
         required: true
       - id: re-manual-diff-review
         name: Re-run Manual Diff Review
