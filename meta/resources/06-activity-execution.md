@@ -27,10 +27,6 @@ MANDATORY before returning `activity_complete`. Read the planning folder `README
 3. Update the footer status line to reflect the current workflow position (e.g., "Implementation complete — PR submitted for review").
 4. Write the updated `README.md` back to disk. The orchestrator will include it in the same commit as the activity's artifacts.
 
-## Trace Writing
-
-Trace writing is the **orchestrator's responsibility**, not the worker's. The worker reports structured results (steps_completed, checkpoints_responded, variables_changed) and the orchestrator writes both semantic and mechanical trace entries to `{planning_folder_path}/workflow-trace.json` as part of processing each activity_complete result. The worker does NOT write to the trace file.
-
 ## Output Formats
 
 ### activity-complete
