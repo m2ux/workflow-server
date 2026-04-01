@@ -1,7 +1,7 @@
 id: execute-activity
 version: 3.1.0
 capability: Resolve user goals to workflows and execute workflow activities
-description: "Resolves user goals to workflows via the Goal → Workflow → Activity → Skill → Tools metamodel. Self-loads activity definitions and skills, executes steps, yields at blocking checkpoints, produces artifacts, writes semantic traces, and reports structured results. Use attached resource 06 for detailed phase guidance, output formats, and trace specification."
+description: "Resolves user goals to workflows via the Goal → Workflow → Activity → Skill → Tools metamodel. Self-loads activity definitions and skills, executes steps, yields at blocking checkpoints, produces artifacts, and reports structured results. Trace writing is the orchestrator's responsibility — the worker reports structured results and the orchestrator writes traces. Use attached resource 06 for detailed phase guidance and output formats."
 
 inputs[3]:
   - id: activity-id
@@ -39,16 +39,10 @@ protocol:
   execute-loops[2]:
     - "forEach: iterate over the named collection, executing loop steps for each item"
     - "doWhile: execute steps, evaluate condition, repeat up to maxIterations"
-  produce-artifacts[3]:
-    - "Write artifacts to the planning folder using the activity's artifactPrefix convention"
-    - "Record each artifact produced: id, name, path"
-    - "Prepend the activity's artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
-  update-readme-progress[1]:
-    - "MANDATORY before report-completion. Update the planning folder README.md progress table (see resource 06 for details)"
-  write-semantic-trace[1]:
-    - "MANDATORY before report-completion. Append semantic trace entry to {planning_folder_path}/workflow-trace.json (see resource 06 for format)"
-  report-completion[2]:
-    - "Compile structured result with result_type: activity_complete (see resource 06 for format)"
+  finalize[4]:
+    - "Write artifacts to the planning folder using the activity's artifactPrefix convention. Record each artifact produced: id, name, path. Prepend the artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
+    - "MANDATORY: Update the planning folder README.md progress table (see resource 06 for details)"
+    - "Compile structured result with result_type: activity_complete (see resource 06 for format). Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
 
 rules:

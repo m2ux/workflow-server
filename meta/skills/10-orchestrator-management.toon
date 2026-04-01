@@ -1,5 +1,5 @@
 id: orchestrator-management
-version: 1.1.0
+version: 1.2.0
 capability: "Consolidated management skill for the orchestrator role — covers workflow orchestration, session lifecycle, state management, and behavioral boundaries"
 description: "Single-load management skill for the orchestrator (top-level agent). Consolidates orchestrate-workflow, session-protocol, state-management, and agent-conduct into one skill. The orchestrator loads this once at bootstrap to become fully capable of coordinating workflow execution. MUST be executed inline — NEVER delegated to a sub-agent."
 
@@ -28,20 +28,18 @@ protocol:
     - "Do NOT call get_step_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
     - "For resumed workers: send only the new activity_id, updated state variables, and bootstrap instructions"
     - "If is_resuming is true (first dispatch after state restoration): include a resumption context block listing completedActivities, key variable values, and prior checkpoint decisions. After this dispatch completes, set is_resuming = false"
-  process-result[4]:
+  process-result[6]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
     - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required blocking checkpoints — resume worker to complete any missing items"
     - "Apply variables_changed to state, record in completedActivities"
     - "Check next_activity response _meta.trace_token — if present, append to the trace_tokens array"
+    - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
+    - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
   handle-checkpoint-yield[4]:
     - "Apply any partial_variables_changed to orchestrator state before presenting"
     - "Output any context from the worker result as a text message BEFORE the AskQuestion call"
     - "Present checkpoint via AskQuestion with ONLY the question and options (no contextual prose)"
     - "Resume worker with checkpoint_response including selected_option_id and effects_applied"
-  append-trace[3]:
-    - "MANDATORY after every activity_complete. Call get_trace({ session_token, trace_tokens }) to resolve accumulated trace tokens into mechanical events"
-    - "Read {planning_folder_path}/workflow-trace.json, append entry: { type: 'mechanical', activity_id, event_count, events }. Write back. Clear trace_tokens"
-    - "The trace file is a JSON array of alternating semantic entries (written by worker) and mechanical entries (written by orchestrator)"
   commit-artifacts[3]:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
