@@ -341,7 +341,7 @@ checkpoints[8]:
     name: PR Creation Checkpoint
     condition:
       type: and
-      conditions:
+      conditions[2]:
         - type: simple
           variable: issue_cancelled
           operator: "!="
