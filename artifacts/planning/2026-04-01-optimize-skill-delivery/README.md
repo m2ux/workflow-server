@@ -54,7 +54,7 @@ This approach creates measurable overhead. Agents spend processing effort filter
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#96](https://github.com/m2ux/workflow-server/issues/96) |
-| PR | *Created during start-work-package activity* |
+| PR | [#97](https://github.com/m2ux/workflow-server/pull/97) |
 
 ---
 
