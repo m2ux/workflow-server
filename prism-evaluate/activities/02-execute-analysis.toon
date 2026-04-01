@@ -12,15 +12,15 @@ entryActions[1]:
       type: simple
       variable: execution_groups
       operator: exists
-triggers:
-  workflow: prism
-  description: "Execute prism analytical pipeline for each execution group. Each trigger passes the target, output path, pipeline mode, selected lenses, and the dimension-specific analysis focus."
-  passContext[5]:
-    - target
-    - output_path
-    - pipeline_mode
-    - selected_lenses
-    - analysis_focus
+triggers[1]:
+  - workflow: prism
+    description: "Execute prism analytical pipeline for each execution group. Each trigger passes the target, output path, pipeline mode, selected lenses, and the dimension-specific analysis focus."
+    passContext[5]:
+      - target
+      - output_path
+      - pipeline_mode
+      - selected_lenses
+      - analysis_focus
 steps[1]:
   - id: log-execution-plan
     name: Log Execution Plan

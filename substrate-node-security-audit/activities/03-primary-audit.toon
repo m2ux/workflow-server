@@ -42,7 +42,7 @@ rules[28]:
   - "CALIBRATION BENCHMARKS IN AGENT PROMPTS: The orchestrator MUST include relevant calibration benchmark entries from resource 06 (target-profile) in each agent's prompt. Agents use these as severity anchors when scoring findings. This reduces the orchestrator's post-hoc calibration burden and produces more consistent severity ratings across agents."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
-steps[14]:
+steps[13]:
   - id: dispatch-all-agents
     name: "Dispatch All Primary Agents"
     required: true

@@ -19,14 +19,14 @@ entryActions[2]:
       variable: analysis_focus
       operator: "!="
       value: security audit
-triggers:
-  workflow: prism
-  description: "Execute prism analytical pipeline for each audit scope. Each trigger passes the target, output path, pipeline mode, and the generated audit prompt as analysis focus."
-  passContext[4]:
-    - target
-    - output_path
-    - pipeline_mode
-    - analysis_focus
+triggers[1]:
+  - workflow: prism
+    description: "Execute prism analytical pipeline for each audit scope. Each trigger passes the target, output path, pipeline mode, and the generated audit prompt as analysis focus."
+    passContext[4]:
+      - target
+      - output_path
+      - pipeline_mode
+      - analysis_focus
 steps[1]:
   - id: prepare-triggers
     name: Prepare Trigger Context

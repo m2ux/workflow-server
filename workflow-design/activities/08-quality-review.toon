@@ -102,7 +102,7 @@ steps[8]:
   - id: present-enforcement-findings
     name: Present Enforcement Findings
     description: "Present the rule-to-structure audit results: which rules are text-only, which are structurally enforced, and recommendations for adding structural enforcement where needed."
-checkpoints[3]:
+checkpoints[4]:
   - id: expressiveness-confirmed
     name: Expressiveness Review Checkpoint
     message: "Schema expressiveness review complete. {expressiveness_finding_count} findings. Accepting in 30s unless you intervene."
