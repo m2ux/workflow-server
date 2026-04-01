@@ -16,22 +16,22 @@ Key changes to validate:
 
 ---
 
-## Planned Test Cases
+## Test Cases
 
 | Test ID | Objective | Type |
 |---------|-----------|------|
-| PR97-TC-01 | Verify `get_skill` with valid `step_id` returns the correct skill | Unit |
-| PR97-TC-02 | Verify `get_skill` with `step_id` includes bundled resources | Unit |
-| PR97-TC-03 | Verify `get_skill` returns error when `step_id` not found in activity | Unit |
-| PR97-TC-04 | Verify `get_skill` returns error when no activity in session token | Unit |
-| PR97-TC-05 | Verify `get_skill` resolves skill from loop step | Unit |
-| PR97-TC-06 | Verify `get_skill` no longer accepts `skill_id` parameter | Unit |
-| PR97-TC-07 | Verify step validation catches nonexistent step IDs | Unit |
-| PR97-TC-08 | Verify `get_skills` continues to return workflow-level skills (backward compat) | Unit |
-| PR97-TC-09 | Verify consolidated orchestrator-management skill loads with all expected content | Unit |
-| PR97-TC-10 | Verify consolidated worker-management skill loads with all expected content | Unit |
-| PR97-TC-11 | Verify `get_skill` session token is advanced with resolved skill ID | Unit |
-| PR97-TC-12 | Verify `get_skill` with step that has a cross-workflow skill reference resolves correctly | Unit |
+| [PR97-TC-01](../../../tests/mcp-server.test.ts#L248) | Verify `get_skill` with valid `step_id` returns the correct skill | Unit |
+| [PR97-TC-02](../../../tests/mcp-server.test.ts#L337) | Verify `get_skill` with `step_id` includes bundled `_resources` | Unit |
+| [PR97-TC-03](../../../tests/mcp-server.test.ts#L274) | Verify `get_skill` returns error when `step_id` not found in activity | Unit |
+| [PR97-TC-04](../../../tests/mcp-server.test.ts#L266) | Verify `get_skill` returns error when no activity in session token | Unit |
+| [PR97-TC-05](../../../tests/mcp-server.test.ts#L302) | Verify `get_skill` resolves skill from loop step | Unit |
+| [PR97-TC-06](../../../tests/mcp-server.test.ts#L288) | Verify `get_skill` errors when step has no skill | Unit |
+| [PR97-TC-07](../../../tests/mcp-server.test.ts#L274) | Verify step not found error includes available step IDs | Unit |
+| [PR97-TC-08](../../../tests/mcp-server.test.ts#L420) | Verify `get_skills` returns consolidated workflow-level skills | Unit |
+| [PR97-TC-09](../../../tests/mcp-server.test.ts#L420) | Verify `orchestrator-management` in `get_skills` response | Unit |
+| [PR97-TC-10](../../../tests/mcp-server.test.ts#L420) | Verify `worker-management` in `get_skills` response | Unit |
+| [PR97-TC-11](../../../tests/mcp-server.test.ts#L319) | Verify `get_skill` token advanced with resolved skill ID | Unit |
+| [PR97-TC-12](../../../tests/mcp-server.test.ts#L510) | Verify bare-index resource resolves via step-scoped `get_skill` | Unit |
 
 ---
 
