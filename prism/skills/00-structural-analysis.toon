@@ -66,7 +66,6 @@ resources[1]:
   - "00"
 
 tools:
-    usage: "The lens prompt is the program — execute its operations against the code"
   read_file:
     when: Reading code files to analyze
     usage: Obtain the code content for lens application

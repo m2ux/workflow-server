@@ -123,7 +123,6 @@ resources[52]:
   - "61"
 
 tools:
-    usage: "Load each selected lens and apply independently to the artifact"
   read_file:
     when: Reading files to analyze
     usage: Obtain the artifact content for lens application

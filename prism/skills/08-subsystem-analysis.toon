@@ -50,7 +50,6 @@ resources[2]:
   - "64"
 
 tools:
-    usage: "Workers load prompts once; execute every operation in the prompt"
   task:
     when: "Dispatching fresh workers for calibration, each per-subsystem pass, and synthesis — do NOT resume prior workers"
     params: "description, prompt, subagent_type — N+2 workers total (1 + N subsystems + 1 synthesis)"

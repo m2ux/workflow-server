@@ -49,7 +49,6 @@ resources[3]:
   - "41"
 
 tools:
-    usage: "Workers load the lens for the pass type; execute every operation in the prompt"
   task:
     when: "Dispatching each analytical pass to a fresh sub-agent (initial L12, gap detection, corrected L12)"
     params: "description, prompt, subagent_type: generalPurpose — do NOT use resume"

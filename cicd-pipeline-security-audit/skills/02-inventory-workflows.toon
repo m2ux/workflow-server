@@ -13,17 +13,17 @@ protocol:
     - For each submodule, enumerate .github/workflows/*.yml and .github/workflows/*.yaml
     - Record file path, file size, and last modified date
   classify-triggers[2]:
-    - Parse each workflow YAML for the 'on:' block
+    - "Parse each workflow YAML for the 'on:' block"
     - Extract and classify trigger types with their configurations
   map-permissions[2]:
-    - Extract top-level 'permissions:' block (workflow-level defaults)
-    - Extract per-job 'permissions:' overrides
+    - "Extract top-level 'permissions:' block (workflow-level defaults)"
+    - "Extract per-job 'permissions:' overrides"
   identify-checkouts[3]:
     - Find all uses of actions/checkout in each workflow
-    - Extract the 'ref:' parameter value (if specified)
+    - "Extract the 'ref:' parameter value (if specified)"
     - Flag any checkout that references PR head SHA, head.ref, or merge commit
   identify-scripts[1]:
-    - Find all 'run:' blocks and referenced script files for later P7 scanning
+    - "Find all 'run:' blocks and referenced script files for later P7 scanning"
 
 output[1]:
   - id: workflow-inventory

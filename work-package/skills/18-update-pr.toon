@@ -40,8 +40,8 @@ resources[2]:
 
 rules:
   template-selection[2]:
-    - review-mode-template: "In review mode, use attached resource 24 for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there."
-    - initial-template: "When creating a PR before implementation (ADR-only), use the Initial template from resource 12. When updating after implementation, use the Final template."
+    - "review-mode-template: In review mode, use attached resource 24 for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there."
+    - "initial-template: When creating a PR before implementation (ADR-only), use the Initial template from resource 12. When updating after implementation, use the Final template."
   draft-first: "Create PRs as drafts initially. Convert to ready-for-review only at submit-for-review activity."
 
 tools:

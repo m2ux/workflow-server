@@ -17,31 +17,31 @@ protocol:
   load-patterns[1]:
     - Use attached resource 01 (injection-pattern-catalog) for grep patterns, untrusted context lists, and detection heuristics
   p1-expression-injection[5]:
-    - Search run: blocks for ${{ }} expressions
+    - "Search run: blocks for ${{ }} expressions"
     - Cross-reference each expression against the untrusted context variable list
-    - Distinguish safe contexts (if: conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)
+    - "Distinguish safe contexts (if: conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)"
     - For each unsafe expression, document the source context variable and the sink (run block, script, action)
     - "Expressions in if: conditions, env: key-value (not interpolated into shell), and action version pins are safe and should not be flagged"
   p2-pwn-request[3]:
     - Identify workflows with pull_request_target trigger
-    - Check for checkout of PR head (ref: github.event.pull_request.head.sha or head.ref)
-    - Check for code execution after checkout (run:, uses: with local action, build commands)
+    - "Check for checkout of PR head (ref: github.event.pull_request.head.sha or head.ref)"
+    - "Check for code execution after checkout (run:, uses: with local action, build commands)"
   p3-comment-trigger[3]:
     - Identify workflows triggered by issue_comment or pull_request_review_comment
     - Check for author_association filtering (MEMBER, OWNER, COLLABORATOR)
     - Flag workflows that execute privileged operations on any commenter's trigger
   p4-excessive-permissions[2]:
-    - Flag workflows with contents: write, pull-requests: write, or no permissions block
+    - "Flag workflows with contents: write, pull-requests: write, or no permissions block"
     - Check whether write permissions are justified by the workflow's purpose
   p5-fork-execution[3]:
     - Identify checkout of fork/PR code in any trigger context
-    - Check for subsequent execution commands (run:, build, test, go run, npm, cargo, python)
+    - "Check for subsequent execution commands (run:, build, test, go run, npm, cargo, python)"
     - Trace whether secrets are accessible in the execution context
   p6-ai-config[2]:
     - Check if AI config files (CLAUDE.md, AGENTS.md, .cursorrules) exist in the submodule
     - Verify they are listed in CODEOWNERS with mandatory review protection
   p7-dangerous-execution[3]:
-    - Search run: blocks for curl|bash, wget|sh, eval, and base64 decode + execute patterns
+    - "Search run: blocks for curl|bash, wget|sh, eval, and base64 decode + execute patterns"
     - Search referenced shell scripts for the same patterns
     - Flag dynamic script generation (echo commands building scripts then executing them)
 
@@ -65,7 +65,6 @@ resources[2]:
   - "04"
 
 tools:
-    when: Reading workflow YAML files and referenced scripts
   grep:
     when: Searching for injection patterns across workflow files
   shell:
