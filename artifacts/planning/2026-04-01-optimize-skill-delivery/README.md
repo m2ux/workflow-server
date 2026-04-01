@@ -42,7 +42,7 @@ Alongside this change, the five separate management skills that agents previousl
 | 09 | [Change block index](09-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
 | 09 | [Code review](09-code-review.md) | Automated code quality review | 10-20m | ✅ Complete |
 | 09 | [Test suite review](09-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/workflow-server.md) | Persistent codebase knowledge | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
@@ -60,4 +60,4 @@ Alongside this change, the five separate management skills that agents previousl
 
 ---
 
-**Status:** Validated — ready for strategic review
+**Status:** Strategic review complete — ready for submission
