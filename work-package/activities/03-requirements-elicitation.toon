@@ -7,12 +7,6 @@ recognition[3]:
   - elicit requirements
   - clarify requirements
   - gather requirements
-skills:
-  primary: elicit-requirements
-  supporting[3]:
-    - manage-artifacts
-    - review-assumptions
-    - reconcile-assumptions
 required: false
 estimatedTime: 15-30m
 rules[1]:
@@ -21,18 +15,23 @@ steps[6]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion
     description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
+    skill: elicit-requirements
   - id: elicit-requirements
     name: Elicit requirements through conversation
     description: "Iterate through question domains, asking one question at a time. Use stakeholder transcript as context."
+    skill: elicit-requirements
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
+    skill: review-assumptions
   - id: create-document
     name: Create requirements document
     description: "Create requirements document using elicitation output template"
+    skill: manage-artifacts
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add requirements-phase assumptions to the assumptions log"
+    skill: review-assumptions
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
@@ -55,12 +54,15 @@ loops[2]:
       - id: targeted-analysis
         name: Analyze code-resolvable assumptions
         description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+        skill: reconcile-assumptions
       - id: update-assumptions-and-artifact
         name: Update assumptions log and comprehension artifact
         description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+        skill: reconcile-assumptions
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+        skill: reconcile-assumptions
   - id: domain-iteration
     name: Question Domain Iteration
     type: forEach
@@ -71,9 +73,11 @@ loops[2]:
       - id: ask-question
         name: Ask domain question
         description: "Present ONE question from current domain. Wait for response before proceeding."
+        skill: elicit-requirements
       - id: record-response
         name: Record response
         description: "Capture answer or mark as skipped. Adapt follow-up based on response."
+        skill: elicit-requirements
 decisions[1]:
   - id: user-intent
     name: User Intent Check

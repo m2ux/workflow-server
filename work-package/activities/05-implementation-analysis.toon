@@ -7,12 +7,6 @@ recognition[3]:
   - analyze implementation
   - analyze current state
   - implementation analysis
-skills:
-  primary: analyze-implementation
-  supporting[3]:
-    - manage-artifacts
-    - review-assumptions
-    - reconcile-assumptions
 required: false
 estimatedTime: 10-20m
 rules[1]:
@@ -31,6 +25,7 @@ modeOverrides:
       - id: document-expected-changes
         name: Document Expected Changes
         description: "Based on ticket requirements and baseline analysis, document what changes SHOULD be made to fulfill requirements. This becomes the reference for evaluating the actual PR."
+        skill: analyze-implementation
       - id: return-to-pr-branch
         name: Return to PR Branch
         description: "Checkout the PR branch to continue workflow. Note the diff between base and PR branch for later comparison."
@@ -42,21 +37,26 @@ steps[9]:
   - id: review-implementation
     name: Review implementation
     description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture."
+    skill: analyze-implementation
   - id: evaluate-effectiveness
     name: Evaluate effectiveness
     description: "Gather evidence of existing performance: logs, metrics, tests, issues, comments"
+    skill: analyze-implementation
   - id: establish-baselines
     name: Establish baseline metrics
     description: "Establish quantitative measurements: performance, quality, usage, reliability"
+    skill: analyze-implementation
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during analysis. Categories: Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding."
   - id: document
     name: Create analysis document
     description: "Create implementation analysis document"
+    skill: manage-artifacts
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add analysis-phase assumptions to the assumptions log"
+    skill: manage-artifacts
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
@@ -70,6 +70,7 @@ steps[9]:
   - id: interview-open-assumptions
     name: Interview open assumptions
     description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the analysis-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
+    skill: review-assumptions
 loops[2]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
@@ -84,9 +85,11 @@ loops[2]:
       - id: targeted-analysis
         name: Analyze code-resolvable assumptions
         description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+        skill: reconcile-assumptions
       - id: update-assumptions-and-artifact
         name: Update assumptions log and comprehension artifact
         description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+        skill: manage-artifacts
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
@@ -101,9 +104,11 @@ loops[2]:
       - id: present-assumption
         name: Present assumption to user
         description: "Present the current open assumption via the analysis-assumption-interview checkpoint."
+        skill: review-assumptions
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
+        skill: manage-artifacts
 artifacts[1]:
   - id: analysis-document
     name: implementation-analysis.md

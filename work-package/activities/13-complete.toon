@@ -8,11 +8,6 @@ recognition[4]:
   - finalize documentation
   - workflow complete
   - finish work package
-skills:
-  primary: finalize-documentation
-  supporting[2]:
-    - create-adr
-    - conduct-retrospective
 required: true
 estimatedTime: 30-60m
 rules[1]:
@@ -64,6 +59,7 @@ steps[9]:
   - id: update-adr-status
     name: Update ADR status to Accepted
     description: "Update ADR status from Proposed to Accepted."
+    skill: create-adr
     condition:
       type: or
       conditions[2]:
@@ -78,6 +74,7 @@ steps[9]:
   - id: finalize-test-plan
     name: Finalize test plan with source links
     description: "Add hyperlinks to actual test source file locations in the test plan."
+    skill: finalize-documentation
   - id: create-complete-doc
     name: Create completion document
     description: "Create COMPLETE.md summarizing deliverables, test coverage, deferred items, and known limitations."
@@ -85,6 +82,7 @@ steps[9]:
   - id: ensure-docs
     name: Ensure inline documentation on public APIs
     description: "Verify public APIs have inline documentation — add missing doc comments."
+    skill: finalize-documentation
   - id: capture-history
     name: Capture session history
     description: "If metadata repository exists, capture session history. Private — never committed."

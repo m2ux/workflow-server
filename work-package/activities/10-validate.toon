@@ -7,8 +7,6 @@ recognition[3]:
   - validate implementation
   - run tests
   - verify build
-skills:
-  primary: validate-build
 required: true
 estimatedTime: 15-30m
 rules[1]:
@@ -24,9 +22,11 @@ modeOverrides:
       - id: document-failures
         name: Document Failures as Findings
         description: "Document all test/build/lint failures as review findings with severity (critical for test failures, high for build failures). Do NOT attempt to fix."
+        skill: validate-build
       - id: assess-test-coverage
         name: Assess Test Coverage
         description: "Evaluate whether the tests added are sufficient for the changes made. Check coverage of edge cases and error paths."
+        skill: validate-build
     skipSteps[1]:
       - fix-failures
     context_to_preserve[2]:
@@ -36,12 +36,15 @@ steps[5]:
   - id: run-tests
     name: Run all tests
     description: "Execute unit, integration, e2e tests. Observe and record results."
+    skill: validate-build
   - id: verify-build
     name: Verify build succeeds
     description: "Run build. Observe and record result."
+    skill: validate-build
   - id: check-lint
     name: Check for linter errors
     description: "Run linter. Observe and record results."
+    skill: validate-build
   - id: evaluate-results
     name: Evaluate validation results
     description: "Set has_failures to true if any test, build, or lint check failed. Set validation_passed to true if all checks passed."
@@ -57,6 +60,7 @@ steps[5]:
   - id: fix-failures
     name: Fix any failures
     description: "Analyze root cause of failures, fix, and re-validate."
+    skill: validate-build
     condition:
       type: simple
       variable: has_failures
@@ -76,12 +80,15 @@ steps[5]:
           - id: analyze-failure
             name: Analyze Failure Root Cause
             description: "Identify the root cause of each test/build/lint failure."
+            skill: validate-build
           - id: apply-fix
             name: Apply Fix
             description: "Implement the fix for the identified root cause."
+            skill: validate-build
           - id: revalidate
             name: Re-run Validation
             description: "Re-run the failing checks. Update has_failures based on results."
+            skill: validate-build
 transitions[1]{to,isDefault}:
   strategic-review,true
 exitActions[1]{action,message}:

@@ -7,13 +7,6 @@ recognition[3]:
   - implement tasks
   - start implementation
   - execute plan
-skills:
-  primary: implement-task
-  supporting[4]:
-    - review-assumptions
-    - reconcile-assumptions
-    - validate-build
-    - manage-git
 required: true
 estimatedTime: 1-4h
 rules[4]:
@@ -38,13 +31,17 @@ loops[3]:
     steps[5]:
       - id: implement-task
         name: Implement task
+        skill: implement-task
       - id: run-tests
         name: Run tests
+        skill: validate-build
       - id: commit
         name: Commit changes
+        skill: manage-git
       - id: self-review
         name: Self-review
         description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies; (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource 14 for verification checklist."
+        skill: implement-task
       - id: collect-assumptions
         name: Collect assumptions
         description: "Identify all assumptions made during this task. Accumulate — do not review yet."
@@ -61,9 +58,11 @@ loops[3]:
       - id: targeted-analysis
         name: Analyze code-resolvable assumptions
         description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
+        skill: reconcile-assumptions
       - id: update-assumptions-and-artifact
         name: Update assumptions log and comprehension artifact
         description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
+        skill: reconcile-assumptions
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
@@ -78,9 +77,11 @@ loops[3]:
       - id: present-assumption
         name: Present assumption to user
         description: "Present the current open assumption via the implementation-assumption-interview checkpoint."
+        skill: review-assumptions
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
+        skill: review-assumptions
 steps[4]:
   - id: reconcile-assumptions
     name: Reconcile assumptions
@@ -95,6 +96,7 @@ steps[4]:
   - id: interview-open-assumptions
     name: Interview open assumptions
     description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the implementation-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
+    skill: review-assumptions
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Record all implementation assumptions, reconciliation outcomes, and user interview responses in the assumptions log."
