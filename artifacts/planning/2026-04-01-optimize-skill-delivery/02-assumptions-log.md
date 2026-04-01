@@ -10,7 +10,7 @@
 
 | Total | Validated | Invalidated | Partially Validated | Open |
 |-------|-----------|-------------|---------------------|------|
-| 13 | 9 | 0 | 1 | 0 |
+| 13 | 10 | 0 | 0 | 0 |
 
 Convergence iterations: 2 (1 per activity phase)  
 Newly surfaced during planning: 6  
@@ -37,17 +37,15 @@ Resolved via checkpoint: 3 (A-02-06, A-02-07, A-06-02)
 **Resolution:** Validated — activity-level skill declarations are absent; all declarations are step-level.
 
 ### A-02-03: Management skills can be consolidated into a single skill
-**Status:** Partially Validated  
+**Status:** Validated (via approach confirmation)  
 **Resolvability:** Code-analyzable  
 **Assumption:** The five workflow-level management skills can be consolidated into a single cohesive management skill.  
-**Finding:** The 5 skills total ~210 lines of TOON. However, the workflow uses an orchestrator/worker execution model where roles have distinct responsibilities:  
-- **Orchestrator role** uses: orchestrate-workflow (work-package skill, loaded from `24-orchestrate-workflow.toon`), session-protocol (35 lines), state-management (18 lines), agent-conduct (27 lines)  
-- **Worker role** uses: execute-activity (105 lines), session-protocol (35 lines), agent-conduct (27 lines)  
-- session-protocol and agent-conduct are shared across both roles  
-Consolidation into a single skill per role is feasible. A single monolithic skill across both roles would include ~50% irrelevant content for each role (e.g., orchestrator doesn't need step execution protocols; worker doesn't need transition evaluation).  
-**Evidence:** `wc -l workflows/meta/skills/*.toon` for sizes. `workflow.toon:248` declares skills: session-protocol, agent-conduct, execute-activity, state-management, orchestrate-workflow. The `executionModel` defines orchestrator and worker roles.  
-**Resolution:** Partially Validated — consolidation is feasible per role (1 orchestrator skill, 1 worker skill) but a single cross-role skill would include irrelevant content. The user's requirement (#6) may need interpretation: one skill per role vs. one skill total.  
-**What would resolve it:** Stakeholder clarification on whether "a single skill" means one per execution role or one monolithic skill for all agents.
+**Finding:** The 5 skills total ~210 lines of TOON. The workflow uses an orchestrator/worker execution model where roles have distinct responsibilities:  
+- **Orchestrator role** uses: orchestrate-workflow, session-protocol, state-management, agent-conduct  
+- **Worker role** uses: execute-activity, session-protocol, agent-conduct  
+Consolidation into a single skill per role is feasible. A single monolithic skill across both roles would include ~50% irrelevant content per role.  
+**Evidence:** `wc -l workflows/meta/skills/*.toon` for sizes. `workflow.toon:248` declares 5 skills. `executionModel` defines orchestrator and worker roles.  
+**Resolution:** Validated — per-role consolidation (1 orchestrator-management skill, 1 worker-management skill) confirmed by user at approach-confirmed checkpoint during plan-prepare activity. Work Stream 3 in the implementation plan explicitly describes this approach.
 
 ## Complexity Assessment
 
