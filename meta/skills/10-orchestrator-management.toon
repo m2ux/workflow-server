@@ -1,5 +1,5 @@
 id: orchestrator-management
-version: 1.0.0
+version: 1.1.0
 capability: "Consolidated management skill for the orchestrator role — covers workflow orchestration, session lifecycle, state management, and behavioral boundaries"
 description: "Single-load management skill for the orchestrator (top-level agent). Consolidates orchestrate-workflow, session-protocol, state-management, and agent-conduct into one skill. The orchestrator loads this once at bootstrap to become fully capable of coordinating workflow execution. MUST be executed inline — NEVER delegated to a sub-agent."
 
@@ -15,30 +15,41 @@ protocol:
   load-workflow[2]:
     - "Call get_workflow({ workflow_id }) to receive schema preamble and workflow definition"
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
-  initialize-state[2]:
-    - "Check for saved state at {planning_folder_path}/workflow-state.toon — if found, call restore_state to resume (see resource meta/10)"
-    - "If no saved state: set variables to defaults, current_activity to initialActivity, detect mode from user request"
-  dispatch-activity[4]:
+  initialize-state[5]:
+    - "Determine planning_folder_path from workflow variables or user request context"
+    - "Check for saved state at {planning_folder_path}/workflow-state.toon — if found, call restore_state({ file_path }) to load persisted state"
+    - "If state was restored: compare state.workflowVersion against the loaded workflow version. Warn on mismatch. Adopt all restored fields (currentActivity, completedActivities, variables, checkpointResponses, history, status). Set is_resuming = true"
+    - "If no saved state: set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false"
+    - "Detect mode from user request (e.g., 'review PR' activates review mode). If resuming, restored variables already encode the active mode — do not override unless the user explicitly requests a mode change"
+  dispatch-activity[6]:
     - "Call next_activity to load the activity definition"
     - "Compose worker prompt using resource meta/05 (worker-prompt-template) — do NOT inject paraphrased skill content"
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
-    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap."
-  process-result[3]:
+    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
+    - "For resumed workers: send only the new activity_id, updated state variables, and bootstrap instructions"
+    - "If is_resuming is true (first dispatch after state restoration): include a resumption context block listing completedActivities, key variable values, and prior checkpoint decisions. After this dispatch completes, set is_resuming = false"
+  process-result[4]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
-    - "If activity_complete: validate steps_completed and checkpoints_responded against activity definition — reject if incomplete"
+    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required blocking checkpoints — resume worker to complete any missing items"
     - "Apply variables_changed to state, record in completedActivities"
-  handle-checkpoint-yield[3]:
+    - "Check next_activity response _meta.trace_token — if present, append to the trace_tokens array"
+  handle-checkpoint-yield[4]:
+    - "Apply any partial_variables_changed to orchestrator state before presenting"
     - "Output any context from the worker result as a text message BEFORE the AskQuestion call"
     - "Present checkpoint via AskQuestion with ONLY the question and options (no contextual prose)"
     - "Resume worker with checkpoint_response including selected_option_id and effects_applied"
-  append-trace[1]:
-    - "MANDATORY after every activity_complete. Call get_trace to resolve accumulated trace tokens, then append a mechanical trace entry to {planning_folder_path}/workflow-trace.json (see resource meta/10 for format)"
-  commit-artifacts[1]:
-    - "MANDATORY after trace append. Commit engineering artifacts following .engineering/AGENTS.md procedures (see resource meta/10)"
+  append-trace[3]:
+    - "MANDATORY after every activity_complete. Call get_trace({ session_token, trace_tokens }) to resolve accumulated trace tokens into mechanical events"
+    - "Read {planning_folder_path}/workflow-trace.json, append entry: { type: 'mechanical', activity_id, event_count, events }. Write back. Clear trace_tokens"
+    - "The trace file is a JSON array of alternating semantic entries (written by worker) and mechanical entries (written by orchestrator)"
+  commit-artifacts[3]:
+    - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
+    - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
+    - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
   persist-state[3]:
-    - "MANDATORY after commit. Call save_state to persist workflow state for cross-session resumption (see resource meta/10)"
-    - "After each step, checkpoint response, or activity transition, update the corresponding state fields"
-    - "Record every state change in the history array with timestamp and event type"
+    - "MANDATORY after commit. Construct state as JSON (workflowId, workflowVersion, stateVersion, timestamps, currentActivity, completedActivities, variables, checkpointResponses, history, status)"
+    - "Call save_state with state, planning_folder_path, and description"
+    - "If planning_folder_path is not set, skip silently"
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
     - "If no transitions exist, the workflow is complete"
@@ -46,11 +57,11 @@ protocol:
     - "If next activity determined: set current_activity, go to dispatch-activity"
     - "If workflow complete: report final state"
   session-protocol[5]:
-    - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id and activity_id parameters."
-    - "Use the updated token from each response's _meta.session_token field for the next call."
-    - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens."
-    - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
-    - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies but do not block execution."
+    - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id and activity_id parameters"
+    - "Use the updated token from each response's _meta.session_token field for the next call"
+    - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens"
+    - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token"
+    - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies but do not block execution"
 
 rules:
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
@@ -89,8 +100,16 @@ tools:
     returns: "User's selected option ID"
   get_trace:
     when: "After each activity_complete — resolve trace tokens for the completed activity"
-    params: "session_token, trace_tokens"
+    params: "session_token, trace_tokens (array of opaque strings from next_activity responses)"
     returns: "Mechanical trace events for the activity segment"
+  save_state:
+    when: "After every activity_complete, after artifacts committed"
+    params: "state (JSON string), planning_folder_path, description (optional)"
+    returns: "File path and summary"
+  restore_state:
+    when: "Resuming a workflow from saved state"
+    params: "file_path (path to workflow-state.toon)"
+    returns: "Full nested state object as JSON"
 
 errors:
   worker_timeout:
@@ -106,6 +125,5 @@ errors:
     cause: "Worker reports variable changes conflicting with orchestrator state"
     recovery: "Worker-reported values take precedence (worker has ground truth from user interaction)."
 
-resources[2]:
+resources[1]:
   - "meta/05"
-  - "meta/10"
