@@ -123,6 +123,11 @@ variables[15]:
   - name: current_file
     type: object
     description: "Current file being drafted during the content drafting loop"
+skills[4]:
+  - session-protocol
+  - agent-conduct
+  - execute-activity
+  - state-management
 executionModel:
   roles[1]:
     - id: agent

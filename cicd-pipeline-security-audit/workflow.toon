@@ -83,6 +83,11 @@ variables[14]:
     type: number
     description: "Number of High-severity findings"
     defaultValue: 0
+skills[4]:
+  - session-protocol
+  - agent-conduct
+  - execute-activity
+  - state-management
 executionModel:
   roles[4]:
     - id: orchestrator
