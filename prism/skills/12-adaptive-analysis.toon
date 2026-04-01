@@ -50,7 +50,6 @@ resources[4]:
   - "12"
 
 tools:
-    usage: "Workers load prompts once per pass; execute every operation in the prompt"
   task:
     when: "Dispatching fresh workers for SDL, optional L12, and optional full-prism triple pass — do NOT resume prior workers"
     params: "description, prompt, subagent_type — one Task per stage or per full-prism pass"

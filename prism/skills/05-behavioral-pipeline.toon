@@ -69,7 +69,6 @@ resources[5]:
   - "23"
 
 tools:
-    usage: "Load once, then execute every operation in the prompt"
   read_file:
     when: "Reading target code and prior behavioral artifacts (synthesis pass)"
     usage: "Read code files for analysis. For synthesis: read behavioral-errors.md, behavioral-costs.md, behavioral-changes.md, behavioral-promises.md"

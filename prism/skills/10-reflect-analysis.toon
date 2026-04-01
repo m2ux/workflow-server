@@ -44,7 +44,6 @@ resources[2]:
   - "07"
 
 tools:
-    usage: "Each worker loads its lens once, then executes every operation"
   task:
     when: Dispatching fresh workers for L12, meta-analysis, and synthesis passes
     params: "description, prompt, subagent_type — do NOT resume prior workers"

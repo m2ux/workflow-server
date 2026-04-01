@@ -48,7 +48,6 @@ resources[5]:
   - "62"
 
 tools:
-    usage: "Worker loads the prompt once, then executes every operation"
   task:
     when: Dispatching fresh workers for each pass
     params: "description, prompt, subagent_type — do NOT resume prior workers"

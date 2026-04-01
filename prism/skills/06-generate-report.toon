@@ -77,7 +77,7 @@ rules:
   factual-voice: "All findings are written in factual declarative voice. No attribution to analytical process, passes, or lenses."
   traceability-completeness: "The traceability appendix must have an entry for every finding ID in the report. Missing entries are a report integrity violation."
   blast-radius-is-evidence: "Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol."
-resources: []
+resources[0]:
 tools:
   read_file:
     when: "Reading analysis artifacts from the filesystem"

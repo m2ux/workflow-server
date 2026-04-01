@@ -71,7 +71,6 @@ resources[3]:
   - "02"
 
 tools:
-    usage: "Load once, then execute every operation in the prompt"
   read_file:
     when: "Reading prior pass artifacts and target content"
     usage: "Read structural-analysis.md and/or adversarial-analysis.md for context. Read target file if content is a path."
