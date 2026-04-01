@@ -16,7 +16,7 @@ protocol:
     - "Call get_workflow({ workflow_id }) to receive schema preamble and workflow definition"
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
   initialize-state[2]:
-    - "Check for saved state at {planning_folder_path}/workflow-state.toon — if found, call restore_state to resume (see resource 29)"
+    - "Check for saved state at {planning_folder_path}/workflow-state.toon — if found, call restore_state to resume (see resource meta/10)"
     - "If no saved state: set variables to defaults, current_activity to initialActivity, detect mode from user request"
   dispatch-activity[4]:
     - "Call next_activity to load the activity definition"
@@ -32,11 +32,11 @@ protocol:
     - "Present checkpoint via AskQuestion with ONLY the question and options (no contextual prose)"
     - "Resume worker with checkpoint_response including selected_option_id and effects_applied"
   append-trace[1]:
-    - "MANDATORY after every activity_complete. Call get_trace to resolve accumulated trace tokens, then append a mechanical trace entry to {planning_folder_path}/workflow-trace.json (see resource 29 for format)"
+    - "MANDATORY after every activity_complete. Call get_trace to resolve accumulated trace tokens, then append a mechanical trace entry to {planning_folder_path}/workflow-trace.json (see resource meta/10 for format)"
   commit-artifacts[1]:
-    - "MANDATORY after trace append. Commit engineering artifacts following .engineering/AGENTS.md procedures (see resource 29)"
+    - "MANDATORY after trace append. Commit engineering artifacts following .engineering/AGENTS.md procedures (see resource meta/10)"
   persist-state[3]:
-    - "MANDATORY after commit. Call save_state to persist workflow state for cross-session resumption (see resource 29)"
+    - "MANDATORY after commit. Call save_state to persist workflow state for cross-session resumption (see resource meta/10)"
     - "After each step, checkpoint response, or activity transition, update the corresponding state fields"
     - "Record every state change in the history array with timestamp and event type"
   evaluate-transition[2]:
@@ -108,4 +108,4 @@ errors:
 
 resources[2]:
   - "meta/05"
-  - "29"
+  - "meta/10"
