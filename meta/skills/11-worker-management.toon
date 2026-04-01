@@ -29,7 +29,7 @@ protocol:
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
   yield-checkpoint[3]:
-    - "At a blocking checkpoint, STOP and return checkpoint_pending"
+    - "At a blocking checkpoint, STOP and return checkpoint_pending (see resource meta/06 for format)"
     - "On resume with checkpoint_response, apply effects and continue from where paused"
     - "NEVER auto-resolve a blocking checkpoint"
   execute-loops[2]:
@@ -40,11 +40,11 @@ protocol:
     - "Record each artifact produced: id, name, path"
     - "Prepend the activity's artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
   update-readme-progress[1]:
-    - "MANDATORY before report-completion. Update the planning folder README.md progress table"
+    - "MANDATORY before report-completion. Update the planning folder README.md progress table (see resource meta/06 for details)"
   write-semantic-trace[1]:
-    - "MANDATORY before report-completion. Append semantic trace entry to {planning_folder_path}/workflow-trace.json"
+    - "MANDATORY before report-completion. Append semantic trace entry to {planning_folder_path}/workflow-trace.json (see resource meta/06 for format)"
   report-completion[2]:
-    - "Compile structured result with result_type: activity_complete"
+    - "Compile structured result with result_type: activity_complete (see resource meta/06 for format)"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
   session-protocol[5]:
     - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id and activity_id parameters."
@@ -109,4 +109,4 @@ errors:
     recovery: "Skip the checkpoint silently and note it in the result."
 
 resources[1]:
-  - "06"
+  - "meta/06"
