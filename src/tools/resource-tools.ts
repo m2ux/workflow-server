@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
-import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
+import { loadWorkflow } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import type { StructuredResource } from '../loaders/resource-loader.js';
 import { readSkill } from '../loaders/skill-loader.js';
@@ -108,40 +108,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get skills with resources nested under each skill. Before any activity is entered (token.act empty), returns only the skills declared in the workflow\'s skills field. When an activity is entered and agent_id is provided: if the agent_id differs from the last known agent (token.aid), returns workflow-level skills + activity skills (first call for a new agent); if the agent_id matches, returns activity skills only. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
+    'Get workflow-level skills with resources nested under each skill. Returns only the skills declared in the workflow\'s skills field — these are management and orchestration skills the agent needs regardless of which activity is active. Activity-specific skills are declared at step level and loaded via get_skill per step. Each skill\'s resolved resources appear in _resources; the raw reference list is stripped.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
-      agent_id: z.string().optional().describe('Agent identifier. When provided, the server detects new agents and includes universal/meta skills on their first call. Omit for backward-compatible behavior.'),
     },
-    withAuditLog('get_skills', async ({ session_token, workflow_id, agent_id }) => {
+    withAuditLog('get_skills', async ({ session_token, workflow_id }) => {
       const token = await decodeSessionToken(session_token);
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
       const workflow = wfResult.value;
-      const activityId = token.act || null;
-      let skillIds: string[];
-      let scope: string;
-      const isNewAgent = agent_id !== undefined && agent_id !== token.aid;
-
-      if (!activityId) {
-        skillIds = workflow.skills ?? [];
-        scope = 'workflow';
-      } else if (isNewAgent) {
-        const activity = getActivity(workflow, activityId);
-        if (!activity) throw new Error(`Activity not found: ${activityId}`);
-        const workflowSkills = workflow.skills ?? [];
-        const activitySkills = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
-        const combined = new Set([...workflowSkills, ...activitySkills]);
-        skillIds = [...combined];
-        scope = 'activity+meta';
-      } else {
-        const activity = getActivity(workflow, activityId);
-        if (!activity) throw new Error(`Activity not found: ${activityId}`);
-        skillIds = [activity.skills.primary, ...(activity.skills.supporting ?? [])];
-        scope = 'activity';
-      }
+      const skillIds = workflow.skills ?? [];
 
       const skills: Record<string, unknown> = {};
       const failedSkills: string[] = [];
@@ -161,15 +139,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const responseBody: Record<string, unknown> = { activity_id: activityId, scope, skills };
+      const responseBody: Record<string, unknown> = { scope: 'workflow', skills };
       if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
-
-      const tokenUpdates: { wf: string; aid?: string } = { wf: workflow_id };
-      if (isNewAgent) tokenUpdates.aid = agent_id;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseBody) }],
-        _meta: { session_token: await advanceToken(session_token, tokenUpdates), validation },
+        _meta: { session_token: await advanceToken(session_token, { wf: workflow_id }), validation },
       };
     }, traceOpts)
   );

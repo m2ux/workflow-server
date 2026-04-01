@@ -18,7 +18,7 @@ export interface ActivityEntry {
 
 export interface ActivityWithGuidance extends Activity {
   workflowId?: string;
-  next_action: {
+  next_action?: {
     tool: string;
     parameters: Record<string, string>;
   };
@@ -129,17 +129,18 @@ async function readActivityFromWorkflow(
     
     logInfo('Activity loaded', { id: activityId, workflowId, path: filePath });
     
-    // Add next_action guidance for the primary skill
-    const skillParams: Record<string, string> = { skill_id: activity.skills.primary };
-    if (workflowId) skillParams['workflow_id'] = workflowId;
-    
+    const primarySkill = activity.skills?.primary
+      ?? activity.steps?.find(s => s.skill)?.skill;
+
     const activityWithGuidance: ActivityWithGuidance = {
       ...activity,
       workflowId,
-      next_action: {
-        tool: 'get_skill',
-        parameters: skillParams,
-      },
+      ...(primarySkill ? {
+        next_action: {
+          tool: 'get_skill',
+          parameters: { skill_id: primarySkill, ...(workflowId ? { workflow_id: workflowId } : {}) },
+        },
+      } : {}),
     };
     
     return ok(activityWithGuidance);
@@ -203,8 +204,8 @@ export interface ActivityIndexEntry {
   id: string;
   workflowId: string;
   problem: string;
-  primary_skill: string;
-  next_action: {
+  primary_skill?: string;
+  next_action?: {
     tool: string;
     parameters: Record<string, string>;
   };
@@ -247,18 +248,20 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       const validation = safeValidateActivity(decoded);
       const activity = validation.success ? validation.data : decoded as Activity;
       
-      const indexSkillParams: Record<string, string> = { skill_id: activity.skills.primary };
-      if (entry.workflowId) indexSkillParams['workflow_id'] = entry.workflowId;
-      
+      const primarySkill = activity.skills?.primary
+        ?? activity.steps?.find(s => s.skill)?.skill;
+
       const activityEntry: ActivityIndex['activities'][number] = {
         id: activity.id,
         workflowId: entry.workflowId,
         problem: activity.problem ?? activity.description ?? activity.name,
-        primary_skill: activity.skills.primary,
-        next_action: {
-          tool: 'get_skill',
-          parameters: indexSkillParams,
-        },
+        ...(primarySkill ? {
+          primary_skill: primarySkill,
+          next_action: {
+            tool: 'get_skill',
+            parameters: { skill_id: primarySkill, ...(entry.workflowId ? { workflow_id: entry.workflowId } : {}) },
+          },
+        } : {}),
       };
       
       activities.push(activityEntry);

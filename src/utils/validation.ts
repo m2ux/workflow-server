@@ -44,14 +44,30 @@ export function validateSkillAssociation(workflow: Workflow, activityId: string,
   const activity = getActivity(workflow, activityId);
   if (!activity) return `Skill association check skipped: activity '${activityId}' not found in workflow`;
 
-  const { skills } = activity;
-  if (!skills) return `Activity '${activityId}' declares no skills`;
+  const declared = new Set<string>();
 
-  const declared: string[] = [skills.primary];
-  if (skills.supporting) declared.push(...skills.supporting);
+  if (activity.skills?.primary) declared.add(activity.skills.primary);
+  if (activity.skills?.supporting) activity.skills.supporting.forEach(s => declared.add(s));
 
-  if (!declared.includes(skillId)) {
-    return `Skill '${skillId}' is not declared by activity '${activityId}'. Declared skills: [${declared.join(', ')}]`;
+  if (activity.steps) {
+    for (const step of activity.steps) {
+      if (step.skill) declared.add(step.skill);
+    }
+  }
+  if (activity.loops) {
+    for (const loop of activity.loops) {
+      if (loop.steps) {
+        for (const step of loop.steps) {
+          if (step.skill) declared.add(step.skill);
+        }
+      }
+    }
+  }
+
+  if (declared.size === 0) return null;
+
+  if (!declared.has(skillId)) {
+    return `Skill '${skillId}' is not declared by activity '${activityId}'. Declared skills: [${[...declared].join(', ')}]`;
   }
   return null;
 }

@@ -286,25 +286,18 @@ describe('mcp-server integration', () => {
       expect(response.resources).toBeUndefined();
     });
 
-    it('get_skills should nest _resources under each skill', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+    it('get_skills should nest _resources under each workflow-level skill', async () => {
       const result = await client.callTool({
         name: 'get_skills',
-        arguments: { session_token: actToken, workflow_id: 'work-package' },
+        arguments: { session_token: sessionToken, workflow_id: 'work-package' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.resources).toBeUndefined();
-      const createIssue = response.skills['create-issue'];
-      expect(createIssue).toBeDefined();
-      expect(createIssue._resources.length).toBeGreaterThan(0);
-      expect(createIssue._resources[0].index).toBeDefined();
-      expect(createIssue._resources[0].content).toBeDefined();
-      expect(createIssue.resources).toBeUndefined();
+      const skillsWithResources = Object.values(response.skills).filter(
+        (s: unknown) => (s as Record<string, unknown>)._resources
+      );
+      expect(skillsWithResources.length).toBeGreaterThan(0);
       const meta = result._meta as Record<string, unknown>;
       expect(meta['session_token']).toBeDefined();
     });
@@ -324,7 +317,7 @@ describe('mcp-server integration', () => {
   // ============== Token-Driven Skill Loading ==============
 
   describe('tool: get_skills', () => {
-    it('should return only declared workflow-level skills before any activity is entered', async () => {
+    it('should always return only declared workflow-level skills', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken, workflow_id: 'work-package' },
@@ -332,7 +325,6 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      expect(response.activity_id).toBeNull();
       const skillIds = Object.keys(response.skills);
       expect(skillIds).toContain('orchestrate-workflow');
       expect(skillIds).toContain('execute-activity');
@@ -342,7 +334,7 @@ describe('mcp-server integration', () => {
       expect(skillIds).not.toContain('knowledge-base-search');
     });
 
-    it('should return activity skills after next_activity sets token.act', async () => {
+    it('should return workflow-level skills even after entering an activity', async () => {
       const actResult = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
@@ -354,10 +346,10 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.scope).toBe('activity');
-      expect(response.activity_id).toBe('start-work-package');
-      expect(response.skills['create-issue']).toBeDefined();
-      expect(response.skills['orchestrate-workflow']).toBeUndefined();
+      expect(response.scope).toBe('workflow');
+      const skillIds = Object.keys(response.skills);
+      expect(skillIds).toContain('session-protocol');
+      expect(skillIds).not.toContain('create-issue');
     });
 
     it('should nest resources under workflow-level skills', async () => {
@@ -399,92 +391,8 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // ============== Agent-ID Meta-Skill Loading ==============
-
-  describe('agent_id meta-skill loading', () => {
-    it('new agent_id should include workflow-level skills alongside activity skills', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: actToken, workflow_id: 'work-package', agent_id: 'worker-001' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.scope).toBe('activity+meta');
-      expect(response.skills['create-issue']).toBeDefined();
-      expect(response.skills['session-protocol']).toBeDefined();
-      expect(response.skills['agent-conduct']).toBeDefined();
-      expect(response.skills['knowledge-base-search']).toBeUndefined();
-      expect(response.skills['gitnexus-operations']).toBeUndefined();
-    });
-
-    it('same agent_id should return activity skills only', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
-
-      const first = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: actToken, workflow_id: 'work-package', agent_id: 'worker-001' },
-      });
-      const updatedToken = (first._meta as Record<string, unknown>)['session_token'] as string;
-
-      const second = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: updatedToken, workflow_id: 'work-package', agent_id: 'worker-001' },
-      });
-      expect(second.isError).toBeFalsy();
-      const response = parseToolResponse(second);
-      expect(response.scope).toBe('activity');
-      expect(response.skills['create-issue']).toBeDefined();
-      expect(response.skills['session-protocol']).toBeUndefined();
-    });
-
-    it('different agent_id should re-include workflow-level skills', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
-
-      const first = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: actToken, workflow_id: 'work-package', agent_id: 'worker-001' },
-      });
-      const updatedToken = (first._meta as Record<string, unknown>)['session_token'] as string;
-
-      const second = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: updatedToken, workflow_id: 'work-package', agent_id: 'worker-002' },
-      });
-      expect(second.isError).toBeFalsy();
-      const response = parseToolResponse(second);
-      expect(response.scope).toBe('activity+meta');
-      expect(response.skills['session-protocol']).toBeDefined();
-    });
-
-    it('omitted agent_id should return activity skills only (no workflow-level skills)', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, workflow_id: 'work-package', activity_id: 'start-work-package' },
-      });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_token: actToken, workflow_id: 'work-package' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.scope).toBe('activity');
-      expect(response.skills['session-protocol']).toBeUndefined();
-    });
-  });
+  // Agent-ID meta-skill loading tests removed — get_skills always returns workflow.skills only.
+  // Step-level skills are loaded via get_skill per step.
 
   // ============== Cross-Workflow Resource Resolution ==============
 

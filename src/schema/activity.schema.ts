@@ -4,9 +4,9 @@ import { SemanticVersionSchema } from './common.js';
 
 const TimeEstimateSchema = z.string().regex(/^\d+(-\d+)?\s*(m|min|h|hr|hours?|d|days?)?$/i).optional();
 
-// Skills reference
+// Skills reference (activity-level — optional when steps declare their own skills)
 export const SkillsReferenceSchema = z.object({
-  primary: z.string().describe('Primary skill ID for this activity'),
+  primary: z.string().optional().describe('Primary skill ID for this activity. Optional when steps declare individual skills.'),
   supporting: z.array(z.string()).optional().describe('Supporting skill IDs'),
 });
 export type SkillsReference = z.infer<typeof SkillsReferenceSchema>;
@@ -146,8 +146,8 @@ export const ActivitySchema = z.object({
   problem: z.string().optional().describe('Description of the user problem this activity addresses'),
   recognition: z.array(z.string()).optional().describe('Patterns to match user intent to this activity'),
   
-  // Skills (required)
-  skills: SkillsReferenceSchema,
+  // Skills (optional — omit when steps declare individual skills)
+  skills: SkillsReferenceSchema.optional(),
   
   // Execution
   steps: z.array(StepSchema).optional().describe('Ordered execution steps for this activity'),
