@@ -22,13 +22,14 @@ protocol:
     - "Call next_activity({ workflow_id, activity_id }) to load the activity definition"
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, modeOverrides, and artifactPrefix"
   bootstrap-skill[2]:
-    - "Call get_skills({ workflow_id }) to load skills and resources (token determines scope: pre-activity returns workflow skills, post-next_activity returns activity skills)"
+    - "Call get_skills({ workflow_id }) to load workflow-level management and orchestration skills"
     - "Read each skill's protocol, rules, tools, inputs, and output definitions. Resources are in the response's resources array."
   check-mode[2]:
     - "If is_review_mode is true, apply the activity's modeOverrides"
     - "If the activity is in mode.skipActivities, report back with a skip result"
-  execute-steps[3]:
-    - "Execute each step sequentially. For steps with a skill reference, load via get_skill."
+  execute-steps[4]:
+    - "Execute each step sequentially. For steps with a skill field, call get_skill to load the skill before executing the step."
+    - "Skip the get_skill call if the same skill was already loaded for a prior step and is still in context."
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
   yield-checkpoint[3]:
@@ -75,13 +76,13 @@ tools:
     params: "workflow_id, activity_id"
     returns: "Activity definition with steps, checkpoints, skills, transitions"
   get_skill:
-    when: "Per-step skill references during execution"
+    when: "Before executing a step that declares a skill, unless the same skill is already loaded from a prior step"
     params: "skill_id, workflow_id"
     returns: "Skill definition with protocol, tools, rules, inputs, output"
   get_skills:
-    when: "Activity bootstrap — load all skills and resources at once"
+    when: "Session bootstrap — load workflow-level management skills"
     params: "session_token, workflow_id"
-    returns: "Skills with referenced resources attached (scope from token state)"
+    returns: "Workflow-level skills with referenced resources attached"
 
 errors:
   no_matching_workflow:
