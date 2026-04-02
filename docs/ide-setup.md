@@ -3,18 +3,19 @@
 Paste the following into your IDE rules location:
 
 ```
-For all workflow execution user requests, call the `help` tool on the workflow-server MCP server to learn the bootstrap procedure.
+For all workflow execution user requests, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure.
 ```
 
 ## How It Works
 
-1. **Call help** - Learn the bootstrap procedure and session protocol
-2. **Discover workflows** - Call `list_workflows` to see available workflows and match the user's goal
-3. **Start session** - Call `start_session(workflow_id)` to load agent rules and obtain an opaque session token
-4. **Load workflow** - Call `get_workflow(workflow_id)` for the full definition
-5. **Load activity** - Call `next_activity(workflow_id, activity_id)` to transition and load activity details
-6. **Load skill** - Call `get_skill(workflow_id, skill_id)` referenced by the activity
-7. **Execute** - Follow the skill's tool orchestration guidance. Pass `session_token` and explicit `workflow_id`/`activity_id` to every call. Use the updated token from `_meta.session_token`. Accumulate `_meta.trace_token` for execution tracing. Check `_meta.validation` for warnings.
+1. **Discover** — Call `discover` to learn available workflows and the bootstrap procedure
+2. **Match workflow** — Call `list_workflows` to match the user's goal to a workflow
+3. **Start session** — Call `start_session(workflow_id)` to obtain a session token
+4. **Load skills** — Call `get_skills(workflow_id)` to load behavioral protocols (session-protocol, agent-conduct)
+5. **Load workflow** — Call `get_workflow(workflow_id, summary=true)` to get the activity list and `initialActivity`
+6. **Load activity** — Call `next_activity(workflow_id, activity_id)` with `initialActivity` to load the first activity definition
+7. **Execute steps** — For each step with a skill, call `get_step_skill(step_id)` to load the skill. Call `get_resource` for each `_resources` entry. Follow the skill's protocol.
+8. **Transition** — Read `transitions` from the activity response to determine the next activity. Call `next_activity` with a `step_manifest` summarizing completed steps.
 
 ## Available Resources
 
@@ -26,15 +27,17 @@ For all workflow execution user requests, call the `help` tool on the workflow-s
 
 | Tool | Purpose |
 |------|---------|
-| `help` | Bootstrap procedure and session protocol (no token required) |
-| `list_workflows` | List all workflows (no token required) |
-| `start_session` | Start session — returns rules, workflow metadata, and opaque token |
-| `get_workflow` | Get workflow definition (use summary=true for lightweight metadata) |
-| `next_activity` | Transition to an activity — validates transition, manifest, returns details and trace token |
-| `get_activities` | Get possible next activities with transition conditions |
-| `get_checkpoint` | Get checkpoint details |
-| `get_skills` | Get all skills and their referenced resources for an activity in one call |
-| `get_skill` | Get a single skill with its referenced resources attached |
-| `get_trace` | Resolve accumulated trace tokens into execution event data |
+| `discover` | Entry point — returns available workflows and bootstrap procedure (no token required) |
+| `list_workflows` | List all workflows with metadata (no token required) |
+| `start_session` | Start session — returns session token and basic workflow metadata |
+| `get_skills` | Load workflow-level behavioral protocols with `_resources` refs |
+| `get_workflow` | Load workflow definition — `initialActivity`, rules, variables, activity list |
+| `next_activity` | Transition to an activity — returns complete activity definition with steps, checkpoints, transitions |
+| `get_step_skill` | Load the skill for a specific step within the current activity |
+| `get_skill` | Load a single skill by ID |
+| `get_resource` | Load a resource's full content by index (from `_resources` refs) |
+| `get_activities` | Re-query transitions from the current activity |
+| `get_checkpoint` | Load full checkpoint details for presentation |
+| `get_trace` | Resolve trace tokens into execution event data |
 | `save_state` / `restore_state` | Persist/restore workflow state (encrypts token at rest) |
 | `health_check` | Server health (no token required) |
