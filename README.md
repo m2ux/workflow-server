@@ -44,7 +44,7 @@ workflows/                    # Worktree checkout
 
 ## Universal Skills ([meta/skills/](meta/skills/))
 
-Auto-included on the first `get_skills` call for any workflow session.
+Available for any workflow session.
 
 | Skill | Description |
 |-------|-------------|
