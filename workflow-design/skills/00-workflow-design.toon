@@ -107,11 +107,6 @@ tools:
     when: Examining resource organization in reference workflows
     params: workflow_id
     returns: List of all resources for a workflow
-  get_activities:
-    when: Verifying transition integrity in drafted content
-    params: "session_token, workflow_id"
-    returns: Transition list with conditions from current activity
-
 errors:
   schema_validation_failure:
     cause: "Drafted TOON file does not conform to its schema"
