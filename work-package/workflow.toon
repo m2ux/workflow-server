@@ -8,8 +8,9 @@ tags[3]:
   - implementation
   - engineering
   - workflow
-rules[8]:
+rules[9]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+  - "Agents MUST NOT proceed past checkpoints without user confirmation — auto-resolving a checkpoint is a protocol violation"
   - "Ask, don't assume - Clarify requirements before acting"
   - "Summarize, then proceed - Provide brief status before asking to continue"
   - One task at a time - Complete current work before starting new work

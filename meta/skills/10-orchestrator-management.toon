@@ -63,6 +63,9 @@ protocol:
 
 rules:
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): When a worker returns checkpoint_pending, the orchestrator MUST present the checkpoint to the user via AskQuestion and wait for a response before resuming the worker. The orchestrator MUST NOT auto-resolve checkpoints, select options on behalf of the user, or skip checkpoints for any reason. A checkpoint that is not presented to the user via AskQuestion is a protocol violation equivalent to executing the wrong activity. There are ZERO exceptions to this rule."
+  reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result. Empty checkpoints_responded on an activity with required blocking checkpoints is always a validation failure — no rationalization permitted."
+  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
   target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
   file-sensitivity[3]:
