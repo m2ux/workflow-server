@@ -74,6 +74,22 @@ Check the workflow against all 23 anti-patterns from resource 02. For each match
 
 Run the schema validator on every TOON file. Record pass/fail results.
 
+### Pass 6: Tool-Skill-Doc Consistency
+
+Audit the consistency boundary between tool descriptions, skill protocols, bootstrap resources, and documentation:
+
+| Check | What to verify |
+|---|---|
+| Tool name accuracy | Every tool referenced in skill `tools` sections and protocol phases exists as an actual MCP tool |
+| Return value accuracy | Skill `tools.returns` entries and protocol descriptions match what the tool actually returns |
+| Bootstrap completeness | The bootstrap sequence (bootstrap resource + session-protocol start-session phase) provides a complete path from session start to first activity execution with no gaps |
+| Cross-skill consistency | When multiple skills describe the same operation, they use the same tool name and parameter set |
+| Duplication audit | Behavioral guidance (token handling, resource loading, sequencing) is stated once authoritatively; other locations reference it rather than duplicating |
+| Tool surface overlap | No tool's output is a strict subset of another tool's response (redundant tools add selection ambiguity) |
+| Doc-implementation parity | README files, API reference, and IDE setup docs use current tool names, parameters, and return descriptions |
+
+Reference: anti-patterns 30–35 for specific violation patterns.
+
 ## Compliance Report Structure
 
 The compliance report follows this structure:
@@ -109,6 +125,9 @@ The compliance report follows this structure:
 
 ## Schema Validation Results
 (per-file pass/fail)
+
+## Tool-Skill-Doc Consistency Findings
+(per-check pass/fail with specific mismatches)
 
 ## Recommended Fixes
 (prioritized list of changes, grouped by severity)

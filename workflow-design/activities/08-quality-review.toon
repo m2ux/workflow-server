@@ -13,14 +13,14 @@ rules[3]:
   - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
 modeOverrides:
   review:
-    description: "Audit an existing workflow against all 14 design principles. Load every file in the target workflow and run all three review passes plus additional principle checks. Produce a structured compliance report and offer to fix issues."
+    description: "Audit an existing workflow against all 14 design principles. Load every file in the target workflow and run all review passes: principle compliance, anti-pattern scan, schema validation, and tool-skill-doc consistency. Produce a structured compliance report and offer to fix issues."
     rules[5]:
       - "Review the existing workflow content, not drafted content"
       - "Fetch workflow-server://schemas MCP resource and read schemas/README.md as the authoritative schema reference"
       - "Use attached resource 00 (design principles) and resource 01 (schema construct inventory) as the audit checklist"
       - "Use attached resource 02 (anti-patterns) and check each anti-pattern against the workflow"
       - "Produce a severity-rated compliance report as the primary output"
-    steps[7]:
+    steps[8]:
       - id: load-all-workflow-files
         name: Load All Workflow Files
         description: "Read every file in the target workflow directory: workflow.toon, all activity .toon files, all skill .toon files, all resource .md files, and README.md. Build a complete picture of the workflow content."
@@ -33,6 +33,9 @@ modeOverrides:
       - id: schema-validation-check
         name: Schema Validation Check
         description: "Validate every TOON file against its corresponding JSON schema (workflow.schema.json for workflow.toon, activity.schema.json for activity files, skill.schema.json for skill files). Use the schema validator script (npx tsx scripts/validate-workflow-toon.ts) or validate programmatically. Record pass/fail with specific error messages for each file."
+      - id: tool-skill-doc-consistency
+        name: Tool-Skill-Doc Consistency Audit
+        description: "Audit the consistency boundary between tool descriptions, skill protocols, bootstrap resources, and documentation. Check: (1) every tool name in skill tools/protocol sections exists as an actual tool, (2) return value descriptions match actual behavior, (3) bootstrap sequences provide a complete path with no gaps, (4) multiple skills describing the same operation use the same tool name, (5) behavioral guidance is not duplicated across skills and tool descriptions, (6) no tool's output is a strict subset of another's, (7) docs use current tool names and descriptions. Reference anti-patterns 30-35."
       - id: compile-compliance-report
         name: Compile Compliance Report
         description: "Compile all findings into a structured compliance report with sections: Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, and Recommended Fixes."
@@ -75,7 +78,7 @@ modeOverrides:
       - id: compliance-report
         name: "{target_workflow_id}-compliance-review.md"
         location: planning
-        description: "Severity-rated compliance report with findings across 5 audit passes"
+        description: "Severity-rated compliance report with findings across 6 audit passes"
         action: create
 steps[8]:
   - id: expressiveness-review
