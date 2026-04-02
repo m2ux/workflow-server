@@ -129,16 +129,15 @@ async function readActivityFromWorkflow(
     
     logInfo('Activity loaded', { id: activityId, workflowId, path: filePath });
     
-    const primarySkill = activity.skills?.primary
-      ?? activity.steps?.find(s => s.skill)?.skill;
+    const primaryStep = activity.steps?.find(s => s.skill);
 
     const activityWithGuidance: ActivityWithGuidance = {
       ...activity,
       workflowId,
-      ...(primarySkill ? {
+      ...(primaryStep ? {
         next_action: {
           tool: 'get_skill',
-          parameters: { skill_id: primarySkill, ...(workflowId ? { workflow_id: workflowId } : {}) },
+          parameters: { step_id: primaryStep.id },
         },
       } : {}),
     };
@@ -250,16 +249,17 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       
       const primarySkill = activity.skills?.primary
         ?? activity.steps?.find(s => s.skill)?.skill;
+      const primaryStep = activity.steps?.find(s => s.skill);
 
       const activityEntry: ActivityIndex['activities'][number] = {
         id: activity.id,
         workflowId: entry.workflowId,
         problem: activity.problem ?? activity.description ?? activity.name,
-        ...(primarySkill ? {
-          primary_skill: primarySkill,
+        ...(primarySkill ? { primary_skill: primarySkill } : {}),
+        ...(primaryStep ? {
           next_action: {
             tool: 'get_skill',
-            parameters: { skill_id: primarySkill, ...(entry.workflowId ? { workflow_id: entry.workflowId } : {}) },
+            parameters: { step_id: primaryStep.id },
           },
         } : {}),
       };

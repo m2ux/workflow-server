@@ -21,7 +21,7 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 
 1. **Discover** — The agent calls `discover` to learn available workflows and the bootstrap procedure
 2. **Start session** — `start_session` returns a session token; `get_skills` loads behavioral protocols; `get_workflow` reveals the workflow structure and which activity to start with
-3. **Navigate** — `next_activity` loads each activity's full definition (steps, checkpoints, transitions) and advances the session. `get_step_skill` loads the skill for each step
+3. **Navigate** — `next_activity` loads each activity's full definition (steps, checkpoints, transitions) and advances the session. `get_skill` loads the skill for each step
 4. **Execute** — The agent works through activities, with checkpoints for user decisions and transitions governing the flow between activities
 
 ### Architecture

@@ -14,7 +14,7 @@ For all workflow execution user requests, call the `discover` tool on the workfl
 4. **Load skills** — Call `get_skills` to load behavioral protocols (session-protocol, agent-conduct)
 5. **Load workflow** — Call `get_workflow(summary=true)` to get the activity list and `initialActivity`
 6. **Load activity** — Call `next_activity(activity_id)` with `initialActivity` to load the first activity definition
-7. **Execute steps** — For each step with a skill, call `get_step_skill(step_id)` to load the skill. Call `get_resource(resource_index)` for each `_resources` entry. Follow the skill's protocol.
+7. **Execute steps** — For each step with a skill, call `get_skill(step_id)` to load the skill. Call `get_resource(resource_index)` for each `_resources` entry. Follow the skill's protocol.
 8. **Transition** — Read `transitions` from the activity response to determine the next activity. Call `next_activity(activity_id)` with a `step_manifest` summarizing completed steps.
 
 ## Available Resources
@@ -33,7 +33,7 @@ For all workflow execution user requests, call the `discover` tool on the workfl
 | `get_skills` | Load workflow-level behavioral protocols with `_resources` refs |
 | `get_workflow` | Load workflow definition — `initialActivity`, rules, variables, activity list |
 | `next_activity` | Transition to an activity — returns complete activity definition with steps, checkpoints, transitions |
-| `get_step_skill` | Load the skill for a specific step within the current activity |
+| `get_skill` | Load the skill for a specific step within the current activity |
 | `get_skill` | Load a single skill by ID |
 | `get_resource` | Load a resource's full content by index (from `_resources` refs) |
 | `get_checkpoint` | Load full checkpoint details for presentation |

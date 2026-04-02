@@ -113,7 +113,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Load all workflow-level skills (behavioral protocols like session-protocol, agent-conduct). Call this after start_session to load the skills that govern session behavior. Returns a map of skill objects keyed by skill ID, each including its protocol phases, rules, and tool guidance. Resource references appear as lightweight entries in _resources (index, id, version only — use get_resource to load full content). These are workflow-scope skills; activity-level step skills are loaded separately via get_step_skill.',
+    'Load all workflow-level skills (behavioral protocols like session-protocol, agent-conduct). Call this after start_session to load the skills that govern session behavior. Returns a map of skill objects keyed by skill ID, each including its protocol phases, rules, and tool guidance. Resource references appear as lightweight entries in _resources (index, id, version only — use get_resource to load full content). These are workflow-scope skills; activity-level step skills are loaded separately via get_skill.',
     {
       ...sessionTokenParam,
     },
@@ -156,50 +156,17 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Load a single skill by its ID. Use this when you need to reload or reference a specific skill during execution. Returns the skill definition with protocol phases, rules, and tool guidance. Resource references appear as lightweight entries in _resources (index, id, version only — use get_resource to load full content). For loading the skill assigned to a specific step within the current activity, use get_step_skill instead.',
-    {
-      ...sessionTokenParam,
-      skill_id: z.string().describe('Skill ID (e.g., execute-activity, orchestrate-workflow)'),
-    },
-    withAuditLog('get_skill', async ({ session_token, skill_id }) => {
-      const token = await decodeSessionToken(session_token);
-      const workflow_id = token.wf;
-      const result = await readSkill(skill_id, config.workflowDir, workflow_id);
-      if (!result.success) throw result.error;
-
-      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
-      const validation = buildValidation(
-        wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
-      );
-
-      const refs = await loadSkillResourceRefs(config.workflowDir, workflow_id, result.value);
-      const advancedToken = await advanceToken(session_token, { skill: skill_id });
-
-      const response = {
-        skill: bundleSkillWithResourceRefs(result.value, refs),
-        session_token: advancedToken,
-      };
-
-      return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
-        _meta: { session_token: advancedToken, validation },
-      };
-    }, traceOpts)
-  );
-
-  server.tool(
-    'get_step_skill',
     'Load the skill assigned to a specific step within the current activity. Resolves the skill reference from the activity definition using the step_id and the current activity tracked in the session token. Requires next_activity to have been called first — the session token must have a current activity set. Returns the skill definition with resource references in _resources (index, id, version only — use get_resource for full content). If the step_id is not found, the error lists all available step IDs in the current activity.',
     {
       ...sessionTokenParam,
       step_id: z.string().describe('Step ID within the current activity (e.g., "define-problem", "create-plan")'),
     },
-    withAuditLog('get_step_skill', async ({ session_token, step_id }) => {
+    withAuditLog('get_skill', async ({ session_token, step_id }) => {
       const token = await decodeSessionToken(session_token);
       const workflow_id = token.wf;
 
       if (!token.act) {
-        throw new Error('No current activity in session. Call next_activity before get_step_skill.');
+        throw new Error('No current activity in session. Call next_activity before get_skill.');
       }
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);

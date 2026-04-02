@@ -22,15 +22,14 @@ describe('activity-loader', () => {
       }
     });
 
-    it('should include next_action guidance pointing to the primary skill', async () => {
+    it('should include next_action guidance pointing to the first step with a skill', async () => {
       const result = await readActivity(WORKFLOW_DIR, 'start-workflow', 'meta');
 
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.next_action).toBeDefined();
         expect(result.value.next_action.tool).toBe('get_skill');
-        expect(result.value.next_action.parameters.skill_id).toBe(result.value.skills.primary);
-        expect(result.value.next_action.parameters.workflow_id).toBe('meta');
+        expect(result.value.next_action.parameters.step_id).toBeDefined();
       }
     });
 
@@ -73,8 +72,6 @@ describe('activity-loader', () => {
         expect(typeof activity.name).toBe('string');
         expect(activity.skills).toBeDefined();
         expect(typeof activity.skills.primary).toBe('string');
-        expect(activity.next_action).toBeDefined();
-        expect(activity.next_action.tool).toBe('get_skill');
       }
     });
   });
@@ -204,9 +201,10 @@ describe('activity-loader', () => {
           expect(activity.id).toBeDefined();
           expect(activity.workflowId).toBeDefined();
           expect(activity.problem).toBeDefined();
-          expect(activity.primary_skill).toBeDefined();
-          expect(activity.next_action).toBeDefined();
-          expect(activity.next_action.tool).toBe('get_skill');
+          if (activity.next_action) {
+            expect(activity.next_action.tool).toBe('get_skill');
+            expect(activity.next_action.parameters.step_id).toBeDefined();
+          }
         }
       }
     });

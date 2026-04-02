@@ -35,8 +35,7 @@ All require `session_token`. The workflow is determined from the session token.
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `get_skills` | `session_token` | Load all workflow-level skills (behavioral protocols). Returns a map of skill objects with `_resources` containing lightweight references (index, id, version — no content) |
-| `get_skill` | `session_token`, `skill_id` | Load a single skill by ID with `_resources` references |
-| `get_step_skill` | `session_token`, `step_id` | Load the skill for a specific step within the current activity. Requires `next_activity` to have been called first |
+| `get_skill` | `session_token`, `step_id` | Load the skill for a specific step within the current activity. Requires `next_activity` to have been called first |
 | `get_resource` | `session_token`, `resource_index` | Load a resource's full content by index. Bare indices resolve within the session workflow; prefixed refs (e.g., `meta/04`) resolve from the named workflow |
 
 ### Trace Tools
@@ -66,7 +65,7 @@ The token payload carries: `wf` (workflow ID), `act` (current activity), `skill`
 4. Call `get_skills` to load behavioral protocols
 5. Call `get_workflow(summary=true)` to get the activity list and `initialActivity`
 6. Call `next_activity(initialActivity)` to load the first activity
-7. For each step with a skill, call `get_step_skill(step_id)` then `get_resource` for each `_resources` entry
+7. For each step with a skill, call `get_skill(step_id)` then `get_resource` for each `_resources` entry
 8. Read `transitions` from the activity response; call `next_activity` with a `step_manifest` to advance
 9. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
 
@@ -140,7 +139,7 @@ Skills provide structured guidance for agents to consistently execute workflows.
 
 ### Skill Resolution
 
-When calling `get_skill { skill_id }` or `get_step_skill { step_id }`:
+When calling `get_skill { step_id }`:
 1. First checks `{workflow}/skills/{NN}-{skill_id}.toon` (using the session's workflow)
 2. Falls back to `meta/skills/{NN}-{skill_id}.toon` (universal)
 
@@ -150,7 +149,7 @@ When calling `get_skill { skill_id }` or `get_step_skill { step_id }`:
 
 Session lifecycle protocol:
 - **Bootstrap**: `start_session(workflow_id)` → `get_skills` → `get_workflow` → `next_activity(initialActivity)`
-- **Per-step**: `get_step_skill(step_id)` → `get_resource(resource_index)` for each `_resources` entry
+- **Per-step**: `get_skill(step_id)` → `get_resource(resource_index)` for each `_resources` entry
 - **Transitions**: Read `transitions` from activity response → `next_activity(activity_id)` with `step_manifest`
 
 #### execute-activity (universal)

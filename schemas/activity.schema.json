@@ -392,7 +392,7 @@
         },
         "skills": {
           "$ref": "#/definitions/skills",
-          "description": "Skill references. Load the primary skill via get_skill to get execution protocol, tool guidance, and rules."
+          "description": "Skill references. Load step skills via get_skill(step_id) to get execution protocol, tool guidance, and rules."
         },
         "steps": {
           "type": "array",
