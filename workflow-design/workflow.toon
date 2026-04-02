@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.2.0
+version: 1.2.1
 title: Workflow Design Workflow
 description: "Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints."
 author: m2ux
@@ -66,8 +66,9 @@ modes[2]:
       - content-drafting
     defaults:
       is_review_mode: true
+      review_scope_confirmed: false
     resource: resources/04-review-mode-guide.md
-variables[15]:
+variables[16]:
   - name: planning_folder_path
     type: string
     description: "Path to the unique planning folder for this workflow execution (e.g., .engineering/artifacts/planning/workflow-design-{workflow_id})"
@@ -87,9 +88,13 @@ variables[15]:
     type: boolean
     description: "Whether the user opted to fix identified issues after review (transitions to update mode)"
     defaultValue: false
+  - name: review_scope_confirmed
+    type: boolean
+    description: "In review mode: whether the user confirmed the target workflow in intake — gates transition to quality-review"
+    defaultValue: false
   - name: target_workflow_id
     type: string
-    description: "For update mode: the ID of the existing workflow to modify"
+    description: "ID of the existing workflow to modify (update mode) or to audit (review mode)"
   - name: workflow_id
     type: string
     description: "The ID of the workflow being created or updated"

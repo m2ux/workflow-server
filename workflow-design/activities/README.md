@@ -25,7 +25,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Mode overrides:**
 - **Update:** Adds steps to load existing workflow, parse change request, and present current structure. Adds `change-request-confirmed` checkpoint.
-- **Review:** Adds steps to load target workflow, enumerate contents, and present review scope. Skips `accept-description`, `classify-operation`, `extract-design-intent`. No blocking checkpoint — proceeds directly after presenting scope.
+- **Review:** Adds steps to load target workflow, enumerate contents, and present review scope. Skips `accept-description`, `classify-operation`, `extract-design-intent`, `set-mode`. **`review-scope-confirmed` checkpoint** (blocking) sets `review_scope_confirmed` before continuing.
 
 ---
 
@@ -46,7 +46,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Checkpoints:** `format-literacy` (TOON format understanding), `constructs-confirmed` (schema constructs identified). In review mode, `format-literacy` is skipped and `constructs-confirmed` is adapted to audit context.
 
-**Transitions:** Default to [Requirements Refinement](#03-requirements-refinement) (gated by both confirmed variables). In review mode, `transitionOverride` to [Quality Review](#08-quality-review).
+**Transitions:** Default to [Requirements Refinement](#03-requirements-refinement) (gated by both confirmed variables). In review mode, to [Quality Review](#08-quality-review) when `is_review_mode` and `review_scope_confirmed` are true.
 
 ---
 

@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.2.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
+> v1.2.1 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
 
 ---
 
@@ -138,7 +138,8 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 | `planning_folder_path` | string | Path to the unique planning folder for this workflow execution |
 | `is_update_mode` | boolean | Whether update mode is active |
 | `is_review_mode` | boolean | Whether review mode is active |
-| `target_workflow_id` | string | For update/review: existing workflow ID |
+| `review_scope_confirmed` | boolean | Review mode: user confirmed audit target in intake; gates transition to quality-review |
+| `target_workflow_id` | string | Update/review: existing workflow ID |
 | `workflow_id` | string | ID of the workflow being created/updated |
 | `format_literacy_confirmed` | boolean | Gates content drafting |
 | `schema_constructs_confirmed` | boolean | Gates content drafting |
@@ -167,7 +168,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 ```
 workflows/workflow-design/
-├── workflow.toon                          # Workflow definition (3 modes, 15 variables, 14 rules)
+├── workflow.toon                          # Workflow definition (3 modes, 16 variables, 14 rules)
 ├── README.md                             # This file
 ├── activities/
 │   ├── README.md                         # Per-activity documentation

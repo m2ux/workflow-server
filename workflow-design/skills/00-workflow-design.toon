@@ -1,5 +1,5 @@
 id: workflow-design
-version: 1.0.0
+version: 1.0.1
 capability: Guide agents through designing and drafting workflow definitions that maximize schema expressiveness and follow established conventions
 
 description: "Primary skill for the workflow-design workflow. Provides design principles, schema construct awareness, quality review checklists, and structural enforcement guidance. Agents using this skill produce workflow definitions where every piece of structured information uses the most specific formal construct the schema provides."
@@ -8,7 +8,7 @@ inputs[2]:
   - id: user-description
     description: "Free-form description of the workflow the user wants to create or modify"
   - id: target-workflow-id
-    description: "For update mode: the ID of the existing workflow to modify"
+    description: "Existing workflow ID to modify (update mode) or to audit (review mode)"
     required: false
 
 protocol:
@@ -60,17 +60,9 @@ output[1]:
       readme: "Workflow README with description, activity table, and usage"
 
 rules:
-  formal-over-informal: "If the schema provides a dedicated construct for a piece of information, that construct must be used. Prose is only acceptable for description, problem, and recognition fields."
-  convention-first: "Search for existing naming conventions before introducing new patterns. Use NN-name.toon for activities and skills, NN-name.md for resources."
-  modular-always: "workflow.toon defines metadata and references only. Activities, skills, and resources live in their own files."
-  schema-immutable: "Never modify schemas during workflow creation. Fix content to match the schema, not the reverse."
-  plan-before-act: "Present approach and get confirmation before drafting each file."
-  structural-enforcement: "Critical constraints must be backed by checkpoints, conditions, or validate actions — not just rule text."
-  non-destructive: "For updates, compare new content against existing and flag any removals."
-  corrections-persist: "Record user corrections and verify compliance at every subsequent checkpoint."
-  scope-completeness: "Enumerate all files before starting and re-verify after completion."
-  no-speculative-execution: "Never execute changes to see how they look. Follow the confirmed plan."
-  defense-in-depth: "For highest-severity constraints, use multiple enforcement layers: rule text + checkpoint + validate action."
+  workflow-rules-authoritative: "Cross-cutting design invariants live in workflow.toon rules[] (14 items). Apply those as the single source of truth; this skill does not duplicate them."
+  resource-loading[1]:
+    - "Use get_resource(session_token, resource_index) for each entry in a skill's _resources after get_skills or get_skill — refs are lightweight until loaded."
 
 resources[5]:
   - "00"
@@ -80,15 +72,23 @@ resources[5]:
   - "04"
 
 tools:
+  start_session:
+    when: Beginning execution on the workflow-server MCP
+    params: workflow_id
+    returns: Workflow metadata plus session token — pass _meta.session_token to every subsequent call
+  get_skills:
+    when: Immediately after start_session — load session-protocol, agent-conduct, and workflow-level skills
+    params: session_token
+    returns: Skill map with _resources indices only (use get_resource for content)
   list_workflows:
     when: Surveying existing workflows during context loading
-    params: none
-    returns: List of all available workflow definitions
+    params: none (no session token required)
+    returns: Array of workflow summaries with metadata
     usage: Discover reference workflows for pattern analysis
   get_workflow:
-    when: Loading reference workflows or target workflow (update mode)
-    params: workflow_id
-    returns: Complete workflow definition
+    when: After start_session — load definition for the session's workflow
+    params: "session_token, summary (optional boolean, default true)"
+    returns: "summary=true: rules, variables, modes, initialActivity, activity id/name list; summary=false: full nested definition"
     preserve[5]:
       - id
       - rules
@@ -96,17 +96,17 @@ tools:
       - modes
       - initialActivity
   next_activity:
-    when: Examining activity structure in reference workflows
-    params: "workflow_id, activity_id"
-    returns: Full activity with steps, checkpoints, transitions
+    when: Loading the current or next activity for the session workflow
+    params: "session_token, activity_id (use initialActivity from get_workflow for the first call)"
+    returns: Full activity with steps, checkpoints, transitions, skills, rules
   get_skill:
-    when: Examining skill structure in reference workflows
-    params: skill_id
-    returns: Full skill with protocol, rules, inputs, output
-  list_resources:
-    when: Examining resource organization in reference workflows
-    params: workflow_id
-    returns: List of all resources for a workflow
+    when: Loading the skill bound to a step in the current activity
+    params: "session_token, step_id — requires next_activity first so the session has a current activity"
+    returns: Skill definition with _resources indices (use get_resource for content)
+  get_resource:
+    when: Loading full markdown or text for a resource index from _resources
+    params: "session_token, resource_index (bare index or cross-workflow prefix such as meta/04)"
+    returns: Resource id, version, and body content
 errors:
   schema_validation_failure:
     cause: "Drafted TOON file does not conform to its schema"
