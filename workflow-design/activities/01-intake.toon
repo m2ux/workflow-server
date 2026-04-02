@@ -1,5 +1,5 @@
 id: intake
-version: 1.0.0
+version: 1.0.1
 name: Intake
 description: "Accept the user's free-form workflow description, determine whether this is a create or update operation, and extract the initial design intent."
 problem: User wants to create or update a workflow and needs a guided process
@@ -98,7 +98,30 @@ steps[10]:
       variable: is_review_mode
       operator: "!="
       value: true
-checkpoints[2]:
+checkpoints[3]:
+  - id: review-scope-confirmed
+    name: Review Target Confirmation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+    message: "Compliance review is scoped to workflow '{target_workflow_id}'. Is this the correct target?"
+    required: true
+    blocking: true
+    options[2]:
+      - id: confirm-review-target
+        label: "Yes — audit this workflow"
+        description: Proceed with this target
+        effect:
+          setVariable:
+            review_scope_confirmed: true
+      - id: wrong-review-target
+        label: "No — wrong target"
+        description: Clarify the correct target_workflow_id before continuing; remains blocked until confirmed
+        effect:
+          setVariable:
+            review_scope_confirmed: false
   - id: mode-confirmation
     name: Mode Confirmation
     condition:
@@ -148,8 +171,9 @@ outcome[3]:
   - Operation classified as create or update
   - Initial design intent extracted and confirmed
   - Mode variables set correctly
-context_to_preserve[4]:
+context_to_preserve[5]:
   - workflow_id - The ID of the workflow being created or updated
   - is_update_mode - Whether this is an update operation
-  - target_workflow_id - For update mode, the existing workflow ID
+  - target_workflow_id - Existing workflow ID (update or review mode)
+  - review_scope_confirmed - Review target confirmed in intake (review mode)
   - design_intent - Summary of the user's design intent
