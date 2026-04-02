@@ -100,7 +100,7 @@ This separation allows workflow definitions to evolve independently from server 
 
 ## Deploying to Projects
 
-The **engineering branch pattern** uses a Git orphan branch to store planning artifacts, ADRs, and agent configuration alongside your code without polluting its commit history. When cloned locally, it appears as a `.engineering/` folder:
+The **engineering branch pattern** uses either a Git orphan branch or local folder in your project repo to store planning artifacts, ADRs, and agent configuration alongside your code without polluting its commit history. When cloned locally, it appears as a `.engineering/` folder:
 
 ```
 my-project/
