@@ -1,3 +1,8 @@
+---
+id: codebase-comprehension
+version: 1.0.0
+---
+
 # Codebase Comprehension Guide
 
 Resource for the `codebase-comprehension` activity. Provides the artifact template, comprehension techniques, and guidance for building persistent knowledge artifacts.

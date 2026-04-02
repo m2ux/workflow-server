@@ -10,8 +10,6 @@ recognition[4]:
   - finish work package
 required: true
 estimatedTime: 30-60m
-rules[1]:
-  - "Documentation finalization, ADR creation, and retrospective protocols are in the respective skills"
 modeOverrides:
   review:
     description: "In review mode, only conduct retrospective. Skip ADR creation and documentation finalization."
@@ -86,6 +84,7 @@ steps[9]:
   - id: capture-history
     name: Capture session history
     description: "If metadata repository exists, capture session history. Private — never committed."
+    skill: conduct-retrospective
   - id: retrospective
     name: Workflow retrospective
     description: "Conduct retrospective: what went well, what could improve, lessons learned. Skip if trivial session."
@@ -93,9 +92,11 @@ steps[9]:
   - id: update-status
     name: Update work package plan status
     description: "After PR merged, update work package plan status to reflect completion."
+    skill: conduct-retrospective
   - id: select-next
     name: Select next work package
     description: "Identify and select next work package if applicable. Prepare context for transition."
+    skill: conduct-retrospective
 exitActions[1]{action,message}:
   log,Work package workflow complete
 outcome[5]:

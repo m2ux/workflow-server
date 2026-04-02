@@ -5,11 +5,11 @@ capability: Iteratively resolve code-analyzable assumptions through targeted cod
 description: "Cross-cutting skill that closes the gap between assumption collection and user review. After an activity collects assumptions, this skill classifies each as code-resolvable or not, runs targeted analysis on the resolvable ones, captures newly surfaced assumptions, and repeats until convergence — the point where no open assumptions can be further reduced through code examination. The user then reviews only the irreducible set."
 
 inputs[3]:
-  - id: assumptions_log_path
+  - id: assumptions-log-path
     description: "Path to the current assumptions-log.md"
-  - id: target_path
+  - id: target-path
     description: "Path to the codebase to analyze"
-  - id: comprehension_artifact_path
+  - id: comprehension-artifact-path
     description: "Path to existing comprehension artifact to augment with findings. If absent, findings are recorded only in the assumptions log."
     required: false
 

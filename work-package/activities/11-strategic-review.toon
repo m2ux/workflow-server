@@ -9,8 +9,6 @@ recognition[3]:
   - review implementation
 required: true
 estimatedTime: 15-30m
-rules[1]:
-  - "Review protocol and domain rules are in the strategic-review skill"
 modeOverrides:
   review:
     description: "Evaluate as though code were newly written. Document findings as feedback for PR author."
@@ -95,23 +93,6 @@ checkpoints[1]:
       - id: more-review
         label: Need more review
         description: Additional areas need examination
-decisions[1]:
-  - id: review-result
-    name: Strategic Review Decision
-    description: Assess whether issues require re-planning
-    branches[2]:
-      - id: pass
-        label: Pass - Changes are minimal and focused
-        transitionTo: submit-for-review
-        condition:
-          type: simple
-          variable: review_passed
-          operator: ==
-          value: true
-      - id: issues
-        label: Issues found - Significant rework needed
-        transitionTo: plan-prepare
-        isDefault: true
 transitions[2]:
   - to: submit-for-review
     condition:

@@ -9,8 +9,6 @@ recognition[3]:
   - verify build
 required: true
 estimatedTime: 15-30m
-rules[1]:
-  - "Validation protocol and domain rules are in the validation skill"
 modeOverrides:
   review:
     description: "Run validation checks and document failures as review findings (do not fix)."

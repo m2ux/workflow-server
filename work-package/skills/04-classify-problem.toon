@@ -5,9 +5,9 @@ capability: Apply structured design framework to classify problems, assess compl
 description: "This skill serves the design-philosophy activity. It handles: creating clear problem statements with system understanding, impact, success criteria, constraints; classifying problem type (specific problem with cause known/unknown, inventive goal for improvement/prevention); assessing complexity (simple, moderate, complex); determining workflow path based on complexity: full (elicitation+research), elicitation-only, research-only, or skip optional activities; creating the design-philosophy.md artifact."
 
 inputs[2]:
-  - id: issue_details
+  - id: issue-details
     description: "Summary, description, and context from the linked issue"
-  - id: problem_context
+  - id: problem-context
     description: "Additional context about the problem from user or prior activities"
     required: false
 

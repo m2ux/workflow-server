@@ -9,8 +9,6 @@ recognition[3]:
   - gather requirements
 required: false
 estimatedTime: 15-30m
-rules[1]:
-  - "Elicitation protocol and domain rules are in the requirements-elicitation skill"
 steps[6]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion
@@ -81,21 +79,18 @@ loops[2]:
 decisions[1]:
   - id: user-intent
     name: User Intent Check
-    description: Check user response to determine next action
-    branches[4]:
-      - id: answered
-        label: User answered question
-        transitionTo: next-question
-      - id: skip-question
-        label: User said skip
-        transitionTo: next-question
-      - id: skip-domain
-        label: User said skip all domain
-        transitionTo: next-domain
+    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the elicit-requirements skill protocol within the loop — the skill interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
+    branches[2]:
+      - id: continue
+        label: Continue elicitation (answered or skipped)
+        isDefault: true
       - id: done
-        label: User said done with questions
-        transitionTo: collect-assumptions
-        isDefault: false
+        label: User signaled completion
+        condition:
+          type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
 checkpoints[2]:
   - id: stakeholder-transcript
     name: Stakeholder Discussion Checkpoint
@@ -130,9 +125,15 @@ checkpoints[2]:
       - id: revisit-domain
         label: Revisit a domain
         description: Ask more questions in a specific domain before finalizing
+        effect:
+          setVariable:
+            elicitation_complete: false
       - id: add-requirements
         label: Add additional requirements
         description: Capture requirements not covered by the question domains
+        effect:
+          setVariable:
+            elicitation_complete: false
 transitions[2]:
   - to: research
     condition:

@@ -21,16 +21,13 @@ modeOverrides:
       - Compare actual PR changes against 'expected_changes' documented in implementation analysis
       - Identify deviations - missing changes, unexpected changes, alternative approaches
       - Document findings as review comments for PR author, not fixes to apply
-entryActions[4]{action,message}:
+entryActions[1]{action,message}:
   log,Starting post-implementation review
-  validate,Ensure branch is up to date — run git pull before evaluating diffs
-  set,Parse git diff to extract list of changed files into change inventory
-  log,Create file index table with review time estimate and write to change-block-index.md
 artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"
     location: planning
-    description: "Indexed table of all change blocks (git diff hunks) for cross-reference during manual review"
+    description: "Indexed table of all change blocks (git diff hunks) with hyperlinked row numbers and per-block rationale paragraphs explaining intent and design choices, for cross-reference during manual review"
   - id: manual-diff-review-report
     name: "manual-diff-review.md"
     location: planning
@@ -216,12 +213,12 @@ loops[1]:
         required: true
       - id: re-code-review
         name: Re-run Code Review
-        description: "Re-run code review on the updated diff. Only required if needs_code_fixes triggered this iteration."
+        description: "Re-run code review on the updated diff to verify fixes resolved prior findings. May set needs_code_fixes if new issues are found."
         skill: review-code
         required: true
       - id: re-test-suite-review
         name: Re-run Test Suite Review
-        description: "Re-run test suite review on the updated tests. Only required if needs_test_improvements triggered this iteration."
+        description: "Re-run test suite review to verify fix quality. May set needs_test_improvements if new issues are found."
         skill: review-test-suite
         required: true
 decisions[1]:

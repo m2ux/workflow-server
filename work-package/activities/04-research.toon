@@ -9,8 +9,6 @@ recognition[3]:
   - research patterns
 required: false
 estimatedTime: 20-45m
-rules[1]:
-  - "Research protocol and domain rules are in the knowledge-research skill"
 steps[9]:
   - id: kb-research
     name: Knowledge base research
@@ -123,9 +121,15 @@ checkpoints[3]:
       - id: focus-provided
         label: Focus area provided
         description: Proceed with the specified research focus
+        effect:
+          setVariable:
+            needs_further_research: true
       - id: cancel-further
         label: Cancel — findings are sufficient after all
         description: Proceed without additional research
+        effect:
+          setVariable:
+            needs_further_research: false
   - id: research-assumption-interview
     name: Research Assumption Interview
     condition:

@@ -5,11 +5,11 @@ capability: Update PR with final implementation details and mark ready for revie
 description: "Handles the final PR lifecycle stages — pushing all commits, updating the PR description with implementation details, and marking the PR ready for review. In review mode, generates and posts consolidated PR review comments instead."
 
 inputs[3]:
-  - id: pr_number
+  - id: pr-number
     description: "PR number to update"
-  - id: branch_name
+  - id: branch-name
     description: "Branch name for push operations"
-  - id: planning_folder_path
+  - id: planning-folder-path
     description: "Path to planning folder for implementation summary context"
 
 protocol:

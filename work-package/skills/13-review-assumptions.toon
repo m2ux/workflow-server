@@ -5,9 +5,9 @@ capability: Collect, classify, and review assumptions made during workflow activ
 description: "Cross-cutting skill used by multiple activities (design-philosophy, requirements-elicitation, research, implementation-analysis, plan-prepare, implement) to systematically identify, document, and validate assumptions. Each activity generates assumptions in different categories; this skill provides the standard protocol for collection, presentation, and recording."
 
 inputs[2]:
-  - id: activity_context
+  - id: activity-context
     description: "Which activity is generating assumptions"
-  - id: existing_assumptions_log
+  - id: existing-assumptions-log
     description: "Path to assumptions-log.md if it exists"
     required: false
 
@@ -27,12 +27,13 @@ protocol:
     - "If no open assumptions remain after reconciliation, skip the judgement augmentation format and present a summary confirming all assumptions were resolved through code analysis"
     - "Focus trade-offs on measurable differences between alternatives, not uniform property lists. If two options are equivalent on a dimension, omit that dimension — it adds noise without aiding the decision"
     - "Flag decision reversibility: mark each assumption as easily-reversible (low-cost to change later) or path-committing (high-cost to reverse). This helps the user calibrate how much deliberation to invest"
-  present-for-review[5]:
-    - "Present all open assumptions together as a structured interview-style list — not one at a time. Order by decision impact: assumptions whose resolution most affects the implementation approach come first. Each entry should contain the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context."
+  present-for-review[6]:
+    - "This skill supports two presentation modes depending on the consuming activity's structure. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time via the activity's forEach loop and per-assumption checkpoint. The activity's steps, loops, and checkpoints determine which mode applies — follow the activity structure."
+    - "In both modes, each assumption should contain the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context. Order by decision impact: assumptions whose resolution most affects the implementation approach come first."
     - "Include a clickable markdown link to assumptions-log.md for full details and reconciliation history"
     - "Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping. The agent has already resolved everything it can."
     - "Do not present code-resolved assumptions for re-confirmation — they are already validated with evidence in the assumptions log"
-    - "When presenting 5 or more open assumptions, group related assumptions by theme or domain to reduce cognitive load. Present the group heading before its assumptions so the user can orient before diving into details."
+    - "When presenting 5 or more open assumptions in batch mode, group related assumptions by theme or domain to reduce cognitive load. Present the group heading before its assumptions so the user can orient before diving into details."
   record-outcomes[3]:
     - Mark each as confirmed, corrected, or needs-discussion
     - Update assumptions-log.md with outcomes and user responses

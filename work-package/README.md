@@ -12,7 +12,7 @@ This workflow guides the complete lifecycle of a single work package through fou
 |---|----------|----------|-------------|
 | 01 | [**Start Work Package**](activities/README.md#01-start-work-package) | yes | Verify/create issue, set up branch, PR, and planning folder |
 | 02 | [**Design Philosophy**](activities/README.md#02-design-philosophy) | yes | Classify problem, assess complexity, determine workflow path |
-| 14 | [**Codebase Comprehension**](activities/README.md#codebase-comprehension) | yes | Build/augment mental model of codebase via persistent knowledge artifacts |
+| 14 | [**Codebase Comprehension**](activities/README.md#codebase-comprehension) | no | Build/augment mental model of codebase via persistent knowledge artifacts |
 | 03 | [**Requirements Elicitation**](activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
 | 04 | [**Research**](activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
 | 05 | [**Implementation Analysis**](activities/README.md#05-implementation-analysis) | conditional | Understand current state, establish baselines |
@@ -89,13 +89,13 @@ graph TD
 | 03 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `03` |
 | 04 | [Research](activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions`, `reconcile-assumptions` | 2 | `04` |
 | 05 | [Implementation Analysis](activities/README.md#05-implementation-analysis) | `analyze-implementation` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `05` |
-| 06 | [Plan & Prepare](activities/README.md#06-plan--prepare) | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan`, `reconcile-assumptions` | 2 | `06` |
+| 06 | [Plan & Prepare](activities/README.md#06-plan--prepare) | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan`, `reconcile-assumptions` | 1 | `06` |
 | 07 | [Assumptions Review](activities/README.md#07-assumptions-review) | `review-assumptions` | `manage-artifacts`, `atlassian-operations` | 3 | `07` |
 | 08 | [Implement](activities/README.md#08-implement) | `implement-task` | `review-assumptions`, `reconcile-assumptions`, `validate-build`, `manage-git` | 4 | `08` |
 | 09 | [Post-Impl Review](activities/README.md#09-post-implementation-review) | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture`, `structural-analysis` | 3 | `09` |
 | 10 | [Validate](activities/README.md#10-validate) | `validate-build` | — | 0 | — |
 | 11 | [Strategic Review](activities/README.md#11-strategic-review) | `review-strategy` | — | 1 | `11` |
-| 12 | [Submit for Review](activities/README.md#12-submit-for-review) | `update-pr` | `respond-to-pr-review` | 2 | — |
+| 12 | [Submit for Review](activities/README.md#12-submit-for-review) | `update-pr` | `respond-to-pr-review` | 3 | — |
 | 13 | [Complete](activities/README.md#13-complete) | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 0 | `13` |
 
 See [activities/README.md](activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
@@ -236,9 +236,9 @@ graph LR
 
 ---
 
-## Variables (56)
+## Variables (65)
 
-The workflow declares 56 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
+The workflow declares 65 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
 
 ### Core Identifiers
 
@@ -323,20 +323,17 @@ See `workflow.toon` for the complete variable declarations with default values.
 
 ## Appendix: Workflow Rules
 
-The following 12 rules are declared at the workflow level and apply to all activities:
+The following 9 rules are declared at the workflow level and apply to all activities:
 
 1. **PREREQUISITE:** Agents MUST read and follow `AGENTS.md` before starting any work.
-2. Agents must NOT proceed past checkpoints without user confirmation.
+2. Agents MUST NOT skip or auto-resolve blocking checkpoints (`blocking: true`) — these require explicit user selection. Advisory checkpoints (`blocking: false` with `autoAdvanceMs` and `defaultOption`) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input.
 3. Ask, don't assume — Clarify requirements before acting.
 4. Summarize, then proceed — Provide brief status before asking to continue.
 5. One task at a time — Complete current work before starting new work.
 6. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
 7. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-8. **AUTOMATIC TRANSITION RULE:** The orchestrator MUST advance between activities automatically without asking the user. After an activity completes and artifacts are committed, evaluate the transition table and immediately dispatch the next activity. User interaction occurs ONLY at defined checkpoints within activities, NEVER between activities.
-9. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The receiving agent acts AS the orchestrator inline — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints via AskQuestion at top level. A persistent worker sub-agent executes activity steps and produces artifacts.
-10. **ORCHESTRATOR DISCIPLINE:** The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. It coordinates only. All domain work is delegated to the worker sub-agent.
-11. **CHECKPOINT YIELD RULE:** When a checkpoint references generated content, the worker MUST include that content in the `context` field of the checkpoint_pending yield. The orchestrator presents context before the AskQuestion call.
-12. **README PROGRESS RULE:** After each completed activity, the orchestrator MUST update the planning folder README.md: mark produced artifacts as complete, update status.
+8. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `orchestrator-management`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user via AskQuestion at the top-level conversation. A persistent worker sub-agent (skill: `worker-management`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user via AskQuestion, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker). The orchestrator must run at the top level because sub-agent AskQuestion calls do not surface question content to the user.
+9. **CHECKPOINT YIELD RULE:** When a checkpoint message references generated content (analyses, findings, documents, drafted issues, assumptions, plans, review summaries, or any artifact the user must evaluate), the worker MUST include that content in the `context` field of the `checkpoint_pending` yield. The orchestrator presents context as a text message BEFORE the AskQuestion call. Without this, the user sees only the question with no content to evaluate. The worker MUST NOT call AskQuestion directly — all user interaction flows through checkpoint yields to the orchestrator.
 
 ---
 

@@ -45,6 +45,7 @@ loops[3]:
       - id: collect-assumptions
         name: Collect assumptions
         description: "Identify all assumptions made during this task. Accumulate — do not review yet."
+        skill: review-assumptions
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
     type: while
@@ -127,6 +128,9 @@ checkpoints[4]:
       - id: revise-plan
         label: Revise plan first
         description: Return to plan-prepare to adjust the approach before implementing
+        effect:
+          setVariable:
+            needs_plan_revision: true
   - id: implementation-assumption-interview
     name: Implementation Assumption Interview
     condition:

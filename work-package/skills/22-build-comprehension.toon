@@ -5,11 +5,11 @@ capability: Build or augment codebase comprehension through progressive analysis
 description: "This skill serves the codebase-comprehension activity. It handles: discovering existing comprehension artifacts and recommending them; performing hierarchical codebase analysis (architecture → modules → abstractions → design rationale); creating and augmenting persistent comprehension artifacts in .engineering/artifacts/comprehension/; facilitating user-driven deep-dive exploration into specific areas."
 
 inputs[3]:
-  - id: problem_statement
+  - id: problem-statement
     description: "Problem statement from design philosophy — focuses the comprehension on relevant areas"
-  - id: target_path
+  - id: target-path
     description: "Path to the target codebase directory"
-  - id: project_type
+  - id: project-type
     description: "Detected project type (rust-substrate|other)"
     required: false
 
@@ -53,12 +53,11 @@ protocol:
     - "For selected area: trace data flows, examine implementation details, document edge cases"
     - "When GitNexus is available: use context() to trace callers/callees, read process resources for full execution traces, and cypher() for custom call chain queries"
     - "Append findings as dedicated subsections in the comprehension artifact"
-  question-management[5]:
+  question-management[4]:
     - "The 'Open Questions' section is a markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section"
     - "After each deep-dive iteration, mark resolved questions as 'Resolved' with a one-line summary and cross-reference to the deep-dive section that answered them"
     - "Add new questions discovered during investigation with status 'Open' — questions naturally emerge from tracing data flows, examining edge cases, and reading adjacent code"
     - "Below the table, maintain a 'Remaining follow-up items (out of scope)' list for questions identified but explicitly out of scope for the current work package"
-    - "The Open Questions table is generated content the user must evaluate — per the workflow's CHECKPOINT YIELD RULE, include it in the yield context."
 
 output[1]:
   - id: comprehension-artifact

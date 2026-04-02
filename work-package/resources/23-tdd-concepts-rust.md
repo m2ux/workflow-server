@@ -1,3 +1,8 @@
+---
+id: tdd-concepts-rust
+version: 1.0.0
+---
+
 # Test-Driven Development for Rust
 
 Comprehensive lexicon of TDD concepts from ["Test Driven Development for Embedded C" by James W. Grenning](https://www.amazon.com/Driven-Development-Embedded-Pragmatic-Programmers/dp/193435662X) with direct translations to Rust idioms and practices. The concepts described are adapted from embedded C contexts, and occasional C/C++ specific references may persist where they provide valuable historical or conceptual context.
