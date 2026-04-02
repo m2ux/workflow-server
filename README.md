@@ -92,11 +92,7 @@ This creates a `.engineering/` folder with workflows and artifact directories. S
 
 ### Setup IDE Rule
 
-Add the following to your IDE 'always-applied' rule-set (see [`docs/ide-setup.md`](docs/ide-setup.md) for details):
-
-```
-For all workflow execution user requests, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure.
-```
+Add the following to your IDE 'always-applied' rule-set: [`docs/ide-setup.md`](docs/ide-setup.md).
 
 ### Execute a Workflow
 
