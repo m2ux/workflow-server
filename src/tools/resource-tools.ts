@@ -69,7 +69,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'start_session',
-    'Start a workflow session. Accepts a workflow ID (from list_workflows). Returns workflow metadata and an opaque session token for all subsequent tool calls. Call get_skills after this to load behavioral protocols.',
+    'Start a new workflow session for the given workflow_id. Returns a session token (required for all subsequent tool calls) and basic workflow metadata (id, version, title, description). The session token is opaque and cryptographically signed — pass it to every subsequent call and use the updated token from each response\'s _meta.session_token. After starting a session, call get_skills to load behavioral protocols, then call get_workflow (summary=true) to see the activity list and initialActivity field which tells you which activity to load first with next_activity. Does not return the activity list or initialActivity — use get_workflow for that.',
     {
       workflow_id: z.string().describe('Workflow ID to start a session for (e.g., "work-package")'),
     },
@@ -113,7 +113,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Get workflow-level skills. Returns skills declared in the workflow\'s skills field with resource references in _resources.',
+    'Load all workflow-level skills (behavioral protocols like session-protocol, agent-conduct). Call this after start_session to load the skills that govern session behavior. Returns a map of skill objects keyed by skill ID, each including its protocol phases, rules, and tool guidance. Resource references appear as lightweight entries in _resources (index, id, version only — use get_resource to load full content). These are workflow-scope skills; activity-level step skills are loaded separately via get_step_skill.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -157,7 +157,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Get a single skill by ID with resource references in _resources.',
+    'Load a single skill by its ID. Use this when you need to reload or reference a specific skill during execution. Returns the skill definition with protocol phases, rules, and tool guidance. Resource references appear as lightweight entries in _resources (index, id, version only — use get_resource to load full content). For loading the skill assigned to a specific step within the current activity, use get_step_skill instead.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -191,7 +191,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_step_skill',
-    'Get the skill for a specific step. Resolves the skill from the activity definition using the step ID and current activity from the session token.',
+    'Load the skill assigned to a specific step within the current activity. Resolves the skill reference from the activity definition using the step_id and the current activity tracked in the session token. Requires next_activity to have been called first — the session token must have a current activity set. Returns the skill definition with resource references in _resources (index, id, version only — use get_resource for full content). If the step_id is not found, the error lists all available step IDs in the current activity.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -263,7 +263,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Get a single resource by index. Supports cross-workflow references (e.g., "meta/04").',
+    'Load a single resource\'s full content by its index. Use this to fetch resources referenced in skill _resources arrays. The resource_index can be a bare index (e.g., "05") which resolves within the specified workflow_id, or a prefixed cross-workflow reference (e.g., "meta/04") which resolves from the named workflow. Returns the resource content, id, and version.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID (used as default when resource_index has no prefix)'),

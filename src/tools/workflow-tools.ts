@@ -25,7 +25,7 @@ const activityManifestSchema = z.array(z.object({
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
 
-  server.tool('discover', 'Discover this server. Call this first. Returns available workflows and bootstrap procedure.', {},
+  server.tool('discover', 'Entry point for this server. Call this before any other tool to learn the available workflows and the bootstrap procedure for starting a session. Returns the server name, version, a list of available workflows (each with id, title, and version), and the bootstrap guide explaining the full tool-calling sequence. No parameters required and no session token needed.', {},
     withAuditLog('discover', async () => {
       const workflows = await listWorkflows(config.workflowDir);
       const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '00');
@@ -40,12 +40,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: JSON.stringify(guide) }] };
     }));
 
-  server.tool('list_workflows', 'List all available workflow definitions. Call this after discover to choose a workflow.', {},
+  server.tool('list_workflows', 'List all available workflow definitions with their full metadata. Use this when you need more detail about available workflows than what discover provides, or to refresh the workflow list during an existing session. Returns an array of workflow summaries. Does not require a session token.', {},
     withAuditLog('list_workflows', async () => ({
       content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir)) }],
     })));
 
-  server.tool('get_workflow', 'Get a workflow definition. Use summary=true for lightweight metadata (rules, variables, activity stubs) to reduce context usage.',
+  server.tool('get_workflow', 'Load the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, execution model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the full definition including complete activity details. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID (e.g., "work-package")'),
@@ -90,12 +90,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content, _meta: { session_token: advancedToken, validation } };
     }, traceOpts));
 
-  server.tool('next_activity', 'Transition to the next activity. Validates step manifest for the leaving activity, validates transition legality, loads the target activity definition, and advances the session token.',
+  server.tool('next_activity', 'Load and transition to the specified activity. This is the primary tool for progressing through a workflow. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and skill references — everything needed to execute the activity. Also advances the session token to track the current activity. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field in the previous activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
-      activity_id: z.string().describe('Activity ID to load'),
-      transition_condition: z.string().optional().describe('The condition that caused this transition (from get_activities output). Enables server-side validation of condition-activity consistency.'),
+      activity_id: z.string().describe('Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.'),
+      transition_condition: z.string().optional().describe('The transition condition that led to this activity (from the transitions field of the previous activity). Enables server-side validation of condition-activity consistency.'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
     },
@@ -167,7 +167,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('get_checkpoint', 'Get checkpoint details for an activity',
+  server.tool('get_checkpoint', 'Load the full details of a specific checkpoint within an activity. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any blocking or auto-advance configuration. Use this when you need to present a checkpoint interaction to the user. Checkpoint summaries are included in the activity definition from next_activity — use this tool when you need complete details for presentation.',
     {
       ...sessionTokenParam,
       workflow_id: z.string().describe('Workflow ID'),
@@ -193,7 +193,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('get_activities', 'Get the list of possible next activities with their transition conditions. Returns transitions from the current activity (token.act) so the agent can match conditions against its state variables.',
+  server.tool('get_activities', 'Get the available transitions from the current activity. Returns the current activity ID and its transition list (target activity IDs with conditions) so you can match conditions against state variables. Requires next_activity to have been called first — the session must have a current activity set. Note: the same transition information is already included in the activity definition returned by next_activity, so this tool is only needed when you want to re-query transitions without reloading the full activity definition.',
     { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID') },
     withAuditLog('get_activities', async ({ session_token, workflow_id }) => {
       const token = await decodeSessionToken(session_token);
@@ -220,7 +220,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('get_trace', 'Retrieve execution trace for a workflow session. Accepts accumulated trace_tokens from next_activity responses, or returns the full in-memory trace for the current session.',
+  server.tool('get_trace', 'Retrieve the execution trace for the current workflow session. Accepts an optional array of trace_tokens accumulated from next_activity _meta.trace_token responses to reconstruct a specific trace segment. If no trace_tokens are provided, returns the full in-memory trace for the current session (requires server-side tracing to be enabled). Use this for debugging, auditing, or reviewing the sequence of tool calls made during the session.',
     {
       ...sessionTokenParam,
       trace_tokens: z.array(z.string()).optional().describe('Accumulated trace tokens from next_activity _meta.trace_token responses. If not provided, returns the full in-memory trace for the current session.'),
@@ -262,7 +262,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 
-  server.tool('health_check', 'Check server health', {},
+  server.tool('health_check', 'Check server health and availability. Returns server status, name, version, number of available workflows, and uptime in seconds. Does not require a session token. Use this to verify the server is running before starting a workflow.', {},
     withAuditLog('health_check', async () => {
       const workflows = await listWorkflows(config.workflowDir);
       return {

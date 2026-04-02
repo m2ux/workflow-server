@@ -35,7 +35,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
 
   server.tool(
     'save_state',
-    'Save workflow execution state to a TOON file in the planning folder for cross-session resumption.',
+    'Save the current workflow execution state to a TOON file for resumption in a later session. Writes a workflow-state.toon file to the specified planning folder. The state JSON must conform to the NestedWorkflowStateSchema (including workflowId, currentActivity, completedActivities, variables, and status). Session tokens in the state are automatically encrypted at rest. Use this before ending a session that should be resumable.',
     {
       ...sessionTokenParam,
       state: z.string().describe('Workflow state as a JSON string (validated against NestedWorkflowStateSchema)'),
@@ -108,7 +108,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
 
   server.tool(
     'restore_state',
-    'Restore workflow execution state from a previously saved TOON file. Returns the full nested state object for resumption.',
+    'Restore workflow execution state from a previously saved workflow-state.toon file. Returns the full nested state object including workflow ID, current activity, completed activities, variables, and status — everything needed to resume where the previous session left off. Encrypted session tokens are automatically decrypted. The state file must have been created by save_state with the current server key; key rotation invalidates saved tokens.',
     {
       ...sessionTokenParam,
       file_path: z.string().describe('Path to the workflow-state.toon file'),
