@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
-import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, getTransitionList } from '../loaders/workflow-loader.js';
+import { listWorkflows, loadWorkflow, getActivity, getCheckpoint } from '../loaders/workflow-loader.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
@@ -189,33 +189,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const advancedToken = await advanceToken(session_token, { wf: workflow_id, act: activity_id });
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, session_token: advancedToken }) }],
-        _meta: { session_token: advancedToken, validation },
-      };
-    }, traceOpts));
-
-  server.tool('get_activities', 'Get the available transitions from the current activity. Returns the current activity ID and its transition list (target activity IDs with conditions) so you can match conditions against state variables. Requires next_activity to have been called first — the session must have a current activity set. Note: the same transition information is already included in the activity definition returned by next_activity, so this tool is only needed when you want to re-query transitions without reloading the full activity definition.',
-    { ...sessionTokenParam, workflow_id: z.string().describe('Workflow ID') },
-    withAuditLog('get_activities', async ({ session_token, workflow_id }) => {
-      const token = await decodeSessionToken(session_token);
-      if (!token.act) throw new Error('No current activity in session token. Call next_activity first.');
-
-      const result = await loadWorkflow(config.workflowDir, workflow_id);
-      if (!result.success) throw result.error;
-
-      const transitions = getTransitionList(result.value, token.act);
-      const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
-        validateWorkflowVersion(token, result.value),
-      );
-
-      const advancedToken = await advanceToken(session_token, { wf: workflow_id });
-      const response = {
-        current_activity: token.act,
-        transitions,
-        session_token: advancedToken,
-      };
-      return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));

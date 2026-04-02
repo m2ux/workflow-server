@@ -79,7 +79,7 @@ When an agent makes a tool call, the server compares the token's recorded state 
 
 ### Layer 3: Transition Condition Tracking
 
-When calling `next_activity` to transition to a new activity, agents can include a `transition_condition` parameter — the condition string (from `get_activities` output) that caused the transition.
+When calling `next_activity` to transition to a new activity, agents can include a `transition_condition` parameter — the condition string (from the `transitions` field of the current activity's definition) that caused the transition.
 
 **What it enforces:**
 - The claimed condition actually maps to the target activity in the transition table
@@ -175,13 +175,12 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 `get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, and activity stubs without consuming its context window with step-level detail.
 
-### Server-Side Transition List
+### Transitions in Activity Definitions
 
-`get_activities` returns the transition list for the current activity with human-readable conditions. The agent matches conditions against its state variables using a fresh list from the server, rather than referencing a workflow definition loaded many exchanges ago.
+`next_activity` returns the complete activity definition including its `transitions` field with human-readable conditions. The agent matches conditions against its state variables to determine the next activity:
 
 ```json
 {
-  "current_activity": "codebase-comprehension",
   "transitions": [
     { "to": "requirements-elicitation", "condition": "needs_elicitation == true" },
     { "to": "implementation-analysis", "isDefault": true }
@@ -189,13 +188,13 @@ Beyond enforcement, the server reduces the context burden on agents:
 }
 ```
 
-### Batch Skill Loading
+### Skill and Resource Loading
 
-`get_skills(workflow_id, activity_id)` returns all skills and their referenced resources as a structured array. Each resource has `index`, `id`, `version`, and `content` fields — agents match resources by index or id, eliminating ambiguity. `get_skill` returns the same structured format for individual skill loads.
+`get_skills` returns workflow-level behavioral protocols with `_resources` containing lightweight references (index, id, version). `get_step_skill` loads the skill for a specific step. Call `get_resource` with the resource index to load full content.
 
 ### Self-Describing Bootstrap
 
-The `help` tool returns the complete bootstrap procedure and session protocol. Agents learn how to use the server from the server itself, reducing reliance on IDE-side configuration that may go stale.
+The `discover` tool returns the complete bootstrap procedure and available workflows. Agents learn how to use the server from the server itself, reducing reliance on IDE-side configuration that may go stale.
 
 ### Trace Token Efficiency
 

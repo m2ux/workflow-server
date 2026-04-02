@@ -18,8 +18,7 @@ All workflow tools require `session_token` and explicit `workflow_id`. Each resp
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `get_workflow` | `session_token`, `workflow_id`, `summary?` | Get workflow definition. Use `summary=true` for lightweight metadata |
-| `next_activity` | `session_token`, `workflow_id`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Transition to an activity. Validates the transition, step manifest, and activity manifest. Returns activity details, updated token, and a trace token in `_meta.trace_token` |
-| `get_activities` | `session_token`, `workflow_id` | Get possible next activities with transition conditions from current activity (token.act) |
+| `next_activity` | `session_token`, `workflow_id`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Transition to an activity. Validates the transition, step manifest, and activity manifest. Returns complete activity definition (steps, checkpoints, transitions), updated token, and a trace token in `_meta.trace_token` |
 | `get_checkpoint` | `session_token`, `workflow_id`, `activity_id`, `checkpoint_id` | Get checkpoint details |
 
 ### Skill Tools
@@ -139,8 +138,8 @@ When calling `get_skill { workflow_id, skill_id }`:
 
 Primary skill for workflow navigation:
 - **Start**: `list_workflows` → `start_session` → `get_workflow`
-- **Per-activity**: `next_activity` → `get_skills` (includes skills + resources) → `get_checkpoint`
-- **Transitions**: `get_activities` (query options) → `next_activity` (commit transition)
+- **Per-activity**: `next_activity` → `get_step_skill` (step skills + resources) → `get_checkpoint`
+- **Transitions**: Read `transitions` from `next_activity` response → `next_activity` (transition to next)
 
 #### activity-resolution (universal)
 

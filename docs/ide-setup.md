@@ -36,7 +36,6 @@ For all workflow execution user requests, call the `discover` tool on the workfl
 | `get_step_skill` | Load the skill for a specific step within the current activity |
 | `get_skill` | Load a single skill by ID |
 | `get_resource` | Load a resource's full content by index (from `_resources` refs) |
-| `get_activities` | Re-query transitions from the current activity |
 | `get_checkpoint` | Load full checkpoint details for presentation |
 | `get_trace` | Resolve trace tokens into execution event data |
 | `save_state` / `restore_state` | Persist/restore workflow state (encrypts token at rest) |

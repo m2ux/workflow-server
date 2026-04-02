@@ -66,7 +66,7 @@ workflow-server/
 │   │   ├── rules-loader.ts
 │   │   └── schema-loader.ts
 │   ├── tools/                # MCP tool implementations
-│   │   ├── workflow-tools.ts # next_activity, get_activities, get_trace, etc.
+│   │   ├── workflow-tools.ts # next_activity, get_workflow, get_trace, etc.
 │   │   ├── resource-tools.ts # start_session, get_skill, get_skills
 │   │   └── state-tools.ts    # save_state, restore_state
 │   └── utils/                # Utility functions
