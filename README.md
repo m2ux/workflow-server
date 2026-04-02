@@ -48,17 +48,18 @@ Auto-included on the first `get_skills` call for any workflow session.
 
 | Skill | Description |
 |-------|-------------|
-| [`00-session-protocol`](meta/skills/00-session-protocol.toon) | Session lifecycle protocol: token handling, step manifests, resource usage, skill loading bootstrap |
-| [`01-agent-conduct`](meta/skills/01-agent-conduct.toon) | Agent behavioral boundaries: code modification, file restrictions, communication, documentation |
-| [`02-execute-activity`](meta/skills/02-execute-activity.toon) | Bootstrap and execute a single workflow activity |
-| [`03-state-management`](meta/skills/03-state-management.toon) | Manage workflow state across sessions |
-| [`04-artifact-management`](meta/skills/04-artifact-management.toon) | Manage planning artifact folder structure |
+| [`00-session-protocol`](meta/skills/00-session-protocol.toon) | Session lifecycle protocol: bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
+| [`01-agent-conduct`](meta/skills/01-agent-conduct.toon) | Agent behavioral boundaries: file sensitivity, communication tone, resource loading discipline |
+| [`02-execute-activity`](meta/skills/02-execute-activity.toon) | Bootstrap and execute a single workflow activity using get_step_skill for step-level skill loading |
+| [`03-state-management`](meta/skills/03-state-management.toon) | Manage workflow state across sessions via save_state/restore_state |
+| [`04-artifact-management`](meta/skills/04-artifact-management.toon) | Manage planning artifact folder structure and commit workflows |
 | [`05-version-control-protocol`](meta/skills/05-version-control-protocol.toon) | Conventional commits, branch management, destructive operation guardrails |
-| [`04-artifact-management`](meta/skills/04-artifact-management.toon) | Planning folders, regular file + submodule commit workflows |
-| [`07-github-cli-protocol`](meta/skills/07-github-cli-protocol.toon) | GitHub CLI usage: GraphQL deprecation workarounds, REST API for mutations |
-| [`08-knowledge-base-search`](meta/skills/08-knowledge-base-search.toon) | Optimise knowledge base searches via pre-indexed domain map |
-| [`09-atlassian-operations`](meta/skills/09-atlassian-operations.toon) | Perform Atlassian Jira and Confluence operations via MCP |
-| [`10-gitnexus-operations`](meta/skills/10-gitnexus-operations.toon) | Query codebases via knowledge graph for impact analysis, debugging, refactoring |
+| [`06-github-cli-protocol`](meta/skills/06-github-cli-protocol.toon) | GitHub CLI usage: GraphQL deprecation workarounds, REST API for mutations |
+| [`07-knowledge-base-search`](meta/skills/07-knowledge-base-search.toon) | Optimise knowledge base searches via pre-indexed domain map |
+| [`08-atlassian-operations`](meta/skills/08-atlassian-operations.toon) | Perform Atlassian Jira and Confluence operations via MCP |
+| [`09-gitnexus-operations`](meta/skills/09-gitnexus-operations.toon) | Query codebases via knowledge graph for impact analysis, debugging, refactoring |
+| [`10-orchestrator-management`](meta/skills/10-orchestrator-management.toon) | Consolidated orchestrator skill: workflow coordination, state management, worker dispatch, checkpoint presentation |
+| [`11-worker-management`](meta/skills/11-worker-management.toon) | Consolidated worker skill: activity execution, step-level skill loading, checkpoint yielding, artifact production |
 
 ## Worktree Setup
 

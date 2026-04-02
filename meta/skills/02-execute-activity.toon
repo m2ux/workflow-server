@@ -23,13 +23,13 @@ protocol:
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, modeOverrides, and artifactPrefix"
   bootstrap-skill[2]:
     - "Call get_skills({ workflow_id }) to load workflow-level management and orchestration skills"
-    - "Read each skill's protocol, rules, tools, inputs, and output definitions. Resources are in the response's resources array."
+    - "Read each skill's protocol, rules, tools, inputs, and output definitions. For each entry in _resources, call get_resource to load content."
   check-mode[2]:
     - "If is_review_mode is true, apply the activity's modeOverrides"
     - "If the activity is in mode.skipActivities, report back with a skip result"
   execute-steps[4]:
-    - "Execute each step sequentially. For steps with a skill field, call get_skill to load the skill before executing the step."
-    - "Skip the get_skill call if the same skill was already loaded for a prior step and is still in context."
+    - "Execute each step sequentially. For steps with a skill field, call get_step_skill with the step_id to load the skill before executing."
+    - "Skip the get_step_skill call if the same skill was already loaded for a prior step and is still in context."
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
   yield-checkpoint[3]:
@@ -46,7 +46,7 @@ protocol:
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
 
 rules:
-  self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity and get_skills. The workflow-server is the source of truth."
+  self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity, get_skills, and get_step_skill. The workflow-server is the source of truth."
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding persists across activities via Task resume parameter. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
@@ -56,27 +56,24 @@ rules:
 
 tools:
   discover:
-    when: "Agent needs to learn how to use this server"
-    returns: "Available workflows and bootstrap procedure"
+    when: "First action — learn server usage and available workflows"
   list_workflows:
-    when: "Discovering available workflows to match user goal"
-    returns: "List of workflow definitions with id, title, version, description"
+    when: "Matching user goal to a workflow"
     next: "start_session with chosen workflow_id"
   start_session:
     when: "First action on initial dispatch (not needed on resume)"
-    returns: "Workflow metadata and session token"
-  next_activity:
-    when: "After receiving activity_id"
-    params: "workflow_id, activity_id"
-    returns: "Activity definition with steps, checkpoints, skills, transitions"
-  get_skill:
-    when: "Before executing a step that declares a skill, unless the same skill is already loaded from a prior step"
-    params: "skill_id, workflow_id"
-    returns: "Skill definition with protocol, tools, rules, inputs, output"
   get_skills:
-    when: "Session bootstrap — load workflow-level management skills"
-    params: "session_token, workflow_id"
-    returns: "Workflow-level skills with referenced resources attached"
+    when: "Session bootstrap — load workflow-level behavioral protocols"
+  get_workflow:
+    when: "After start_session — load workflow structure and initialActivity"
+  next_activity:
+    when: "Transitioning to the first or next activity"
+    params: "activity_id from initialActivity (first call) or transitions (subsequent calls)"
+  get_step_skill:
+    when: "Before executing a step that declares a skill, unless the same skill is already loaded from a prior step"
+    params: "step_id, workflow_id"
+  get_resource:
+    when: "After get_step_skill or get_skills — loading content for entries in _resources"
 
 errors:
   no_matching_workflow:
@@ -86,8 +83,8 @@ errors:
     cause: "next_activity returned error for the given activity_id"
     recovery: "Report error in result. Check activity_id spelling against workflow definition."
   skill_not_found:
-    cause: "get_skill returned error for the activity's primary skill"
-    recovery: "Report error in result. Check skill ID in the activity's skills.primary field."
+    cause: "get_step_skill returned error for the step's declared skill"
+    recovery: "Report error in result. Check skill ID in the step's skill field."
   step_failure:
     cause: "A step could not be completed (e.g., test failure, build error)"
     recovery: "Attempt to fix per the skill's error handling. If unresolvable, report failure with error details."
