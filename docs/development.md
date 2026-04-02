@@ -67,7 +67,7 @@ workflow-server/
 │   │   └── schema-loader.ts
 │   ├── tools/                # MCP tool implementations
 │   │   ├── workflow-tools.ts # next_activity, get_workflow, get_trace, etc.
-│   │   ├── resource-tools.ts # start_session, get_skill, get_skills
+│   │   ├── resource-tools.ts # start_session, get_skills, get_skill, get_step_skill, get_resource
 │   │   └── state-tools.ts    # save_state, restore_state
 │   └── utils/                # Utility functions
 │       ├── toon.ts           # TOON format parser
@@ -81,7 +81,7 @@ workflow-server/
 ├── tests/                    # Test suites
 ├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow (manages other workflows)
-│   │   ├── meta.toon             # Meta workflow definition
+│   │   ├── workflow.toon          # Meta workflow definition
 │   │   ├── activities/           # All activities (indexed, no separate index file)
 │   │   │   └── {NN}-{id}.toon    # Individual activities (01-start-workflow, etc.)
 │   │   └── skills/               # Universal skills (indexed)
@@ -91,7 +91,7 @@ workflow-server/
 │       ├── activities/           # Activity subdirectory (if activitiesDir used)
 │       │   └── {NN}-{id}.toon    # Activities (indexed)
 │       ├── resources/            # Resource subdirectory
-│       │   └── {NN}-{name}.toon  # Resources (indexed)
+│       │   └── {NN}-{name}.md    # Resources (indexed, markdown)
 │       └── skills/               # Workflow-specific skills (indexed)
 │           └── {NN}-{id}.toon    # Skills for this workflow
 └── docs/                     # Documentation
@@ -206,7 +206,7 @@ Resources are stored in a `resources/` subdirectory within each workflow:
 1. Create `{NN}-{name}.toon` or `{NN}-{name}.md` in `workflows/{workflow-id}/resources/`
 2. Use sequential index (00, 01, 02, etc.)
 3. Resources are auto-discovered - no manifest update needed
-4. Access via: `get_skill` or `get_skills` (resources are attached to skill responses)
+4. Access via: `get_resource` with the resource index (referenced from skill `_resources`)
 5. Commit to the `workflows` branch
 
 Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
@@ -222,7 +222,7 @@ Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 1. Create `{NN}-{skill-id}.toon` in `workflows/meta/skills/`
 2. Use sequential index (00, 01, 02, etc.)
 3. Access via: `get_skill { skill_id: "{skill-id}" }`
-4. Examples: `00-activity-resolution`, `01-workflow-execution`
+4. Examples: `00-session-protocol`, `01-agent-conduct`, `02-execute-activity`
 5. Commit to the `workflows` branch
 
 ### Workflow-Specific Skills
