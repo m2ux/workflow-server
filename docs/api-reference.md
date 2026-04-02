@@ -4,29 +4,38 @@
 
 ### Bootstrap Tools
 
+No session token required.
+
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `help` | - | How to use this server. Returns bootstrap procedure and session protocol |
-| `list_workflows` | - | List all available workflow definitions |
-| `start_session` | `workflow_id` | Start a workflow session. Returns agent rules, workflow metadata, and opaque session token |
-| `health_check` | - | Check server health and available workflows |
+| `discover` | - | Entry point. Returns server name, version, available workflows, and the bootstrap procedure |
+| `list_workflows` | - | List all available workflow definitions with full metadata |
+| `health_check` | - | Server health, version, workflow count, and uptime |
+
+### Session Tools
+
+| Tool | Parameters | Description |
+|------|------------|-------------|
+| `start_session` | `workflow_id` | Start a new workflow session. Returns a session token and basic workflow metadata (id, version, title, description). Does not return the activity list — use `get_workflow` for that |
 
 ### Workflow Tools
 
-All workflow tools require `session_token` and explicit `workflow_id`. Each response includes an updated token and validation result in `_meta`.
+All require `session_token` and `workflow_id`. Each response includes an updated token and validation result in `_meta`.
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_workflow` | `session_token`, `workflow_id`, `summary?` | Get workflow definition. Use `summary=true` for lightweight metadata |
-| `next_activity` | `session_token`, `workflow_id`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Transition to an activity. Validates the transition, step manifest, and activity manifest. Returns complete activity definition (steps, checkpoints, transitions), updated token, and a trace token in `_meta.trace_token` |
-| `get_checkpoint` | `session_token`, `workflow_id`, `activity_id`, `checkpoint_id` | Get checkpoint details |
+| `get_workflow` | `session_token`, `workflow_id`, `summary?` | Load the workflow definition. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
+| `next_activity` | `session_token`, `workflow_id`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Load and transition to an activity. Returns the complete activity definition (steps, checkpoints, transitions, mode overrides, rules, skill references). Also returns a trace token in `_meta.trace_token` |
+| `get_checkpoint` | `session_token`, `workflow_id`, `activity_id`, `checkpoint_id` | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation |
 
 ### Skill Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_skills` | `session_token`, `workflow_id`, `activity_id` | Get all skills and resources for an activity. Resources returned as structured array `[{index, id, version, content}]` |
-| `get_skill` | `session_token`, `workflow_id`, `skill_id` | Get a single skill with resources. Response: `{skill, resources: [{index, id, version, content}]}` |
+| `get_skills` | `session_token`, `workflow_id` | Load all workflow-level skills (behavioral protocols). Returns a map of skill objects with `_resources` containing lightweight references (index, id, version — no content) |
+| `get_skill` | `session_token`, `workflow_id`, `skill_id` | Load a single skill by ID with `_resources` references |
+| `get_step_skill` | `session_token`, `workflow_id`, `step_id` | Load the skill for a specific step within the current activity. Requires `next_activity` to have been called first |
+| `get_resource` | `session_token`, `workflow_id`, `resource_index` | Load a resource's full content by index. Supports cross-workflow refs (e.g., `meta/04`). Use this to fetch resources listed in `_resources` |
 
 ### Trace Tools
 
@@ -38,8 +47,8 @@ All workflow tools require `session_token` and explicit `workflow_id`. Each resp
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `save_state` | `session_token`, `state`, `planning_folder_path`, `description?` | Save workflow state (encrypts session token at rest) |
-| `restore_state` | `session_token`, `file_path` | Restore workflow state (decrypts session token) |
+| `save_state` | `session_token`, `state`, `planning_folder_path`, `description?` | Save workflow execution state to a TOON file (encrypts session token at rest) |
+| `restore_state` | `session_token`, `file_path` | Restore workflow state from a saved file (decrypts session token) |
 
 ## Session Token
 
@@ -49,12 +58,15 @@ The token payload carries: `wf` (workflow ID), `act` (current activity), `skill`
 
 ### Lifecycle
 
-1. Call `help` to learn the bootstrap procedure
-2. Call `list_workflows` to see available workflows
-3. Call `start_session(workflow_id)` to get rules + opaque token
-4. Pass `session_token` alongside explicit `workflow_id`/`activity_id` params to every subsequent tool call
-5. Use the updated token from `_meta.session_token` in the next call
-6. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
+1. Call `discover` to learn the bootstrap procedure and available workflows
+2. Call `list_workflows` to match the user's goal to a workflow
+3. Call `start_session(workflow_id)` to get a session token
+4. Call `get_skills(workflow_id)` to load behavioral protocols
+5. Call `get_workflow(workflow_id, summary=true)` to get the activity list and `initialActivity`
+6. Call `next_activity(workflow_id, initialActivity)` to load the first activity
+7. For each step with a skill, call `get_step_skill(step_id)` then `get_resource` for each `_resources` entry
+8. Read `transitions` from the activity response; call `next_activity` with a `step_manifest` to advance
+9. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
 
 ### Validation
 
@@ -76,7 +88,6 @@ The server validates each call against the token's recorded state. Validation re
 Validation checks:
 - **Workflow consistency** — the token's workflow matches the explicit `workflow_id`
 - **Activity transition** — the requested activity is a valid transition from the token's last activity
-- **Skill association** — the requested skill is declared by the current activity
 - **Version drift** — the workflow version hasn't changed since the session started
 - **Step completion** — when `step_manifest` is provided, validates all steps present, in order, with outputs
 - **Activity manifest** — when `activity_manifest` is provided, validates activity IDs exist in the workflow (advisory)
@@ -120,7 +131,7 @@ Each `next_activity` call returns an HMAC-signed trace token in `_meta.trace_tok
 
 ### Token-exempt tools
 
-- `help`, `list_workflows`, `start_session`, `health_check`
+- `discover`, `list_workflows`, `start_session`, `health_check`
 
 ## Skills
 
@@ -128,29 +139,26 @@ Skills provide structured guidance for agents to consistently execute workflows.
 
 ### Skill Resolution
 
-When calling `get_skill { workflow_id, skill_id }`:
+When calling `get_skill { workflow_id, skill_id }` or `get_step_skill { step_id }`:
 1. First checks `{workflow_id}/skills/{NN}-{skill_id}.toon`
 2. Falls back to `meta/skills/{NN}-{skill_id}.toon` (universal)
 
 ### Key Skills
 
-#### workflow-execution (universal)
+#### session-protocol (universal)
 
-Primary skill for workflow navigation:
-- **Start**: `list_workflows` → `start_session` → `get_workflow`
-- **Per-activity**: `next_activity` → `get_step_skill` (step skills + resources) → `get_checkpoint`
-- **Transitions**: Read `transitions` from `next_activity` response → `next_activity` (transition to next)
+Session lifecycle protocol:
+- **Bootstrap**: `start_session` → `get_skills` → `get_workflow` → `next_activity(initialActivity)`
+- **Per-step**: `get_step_skill(step_id)` → `get_resource` for each `_resources` entry
+- **Transitions**: Read `transitions` from activity response → `next_activity` with `step_manifest`
 
-#### activity-resolution (universal)
+#### execute-activity (universal)
 
-Bootstrap skill for agent initialization:
-- **Bootstrap**: `help` → `list_workflows` → `start_session`
-- **Skill loading**: `get_skill`
+Activity execution protocol for workers:
+- **Goal resolution**: `discover` → `list_workflows` → match user goal
+- **Bootstrap**: `start_session` → `get_skills` → `next_activity`
+- **Execution**: Steps → checkpoints (yield to orchestrator) → artifacts → structured result
 
-## Available Workflows
+#### orchestrator-management / worker-management (universal)
 
-| Workflow | Activities | Description |
-|----------|------------|-------------|
-| `meta` | 3 | Bootstrap workflow - independent activities for workflow lifecycle |
-| `work-package` | 14 | Single work package from issue to merged PR |
-| `work-packages` | 7 | Plan and coordinate multiple related work packages |
+Consolidated role-based skills for the orchestrator (top-level agent) and worker (sub-agent). The orchestrator manages workflow lifecycle, dispatches workers, and presents checkpoints. The worker self-bootstraps, executes steps, and reports structured results.
