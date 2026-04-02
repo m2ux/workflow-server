@@ -9,8 +9,6 @@ recognition[3]:
   - prepare for implementation
 required: true
 estimatedTime: 20-45m
-rules[1]:
-  - "Planning protocol and domain rules are in the planning skill"
 steps[10]:
   - id: apply-design
     name: Apply design framework
@@ -34,6 +32,7 @@ steps[10]:
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during planning. Categories: Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions."
+    skill: review-assumptions
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add planning-phase assumptions to the assumptions log"
@@ -44,12 +43,15 @@ steps[10]:
   - id: create-todos
     name: Create TODO list from plan
     description: "Break down plan into actionable tasks and add to assumptions log for review"
+    skill: create-plan
   - id: sync-branch
     name: Sync feature branch with main
     description: Ensure feature branch is up to date with main
+    skill: manage-git
   - id: update-pr
     name: Update PR description
     description: "Update PR description with planning information. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template and populate with planning details (summary, motivation, planned changes, checklist, fork strategy)."
+    skill: update-pr
 loops[1]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop

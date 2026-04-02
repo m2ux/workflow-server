@@ -7,9 +7,9 @@ description: "This skill serves the implementation-analysis activity. It handles
 inputs[3]:
   - id: requirements
     description: "Elicited requirements from the elicitation activity"
-  - id: problem_statement
+  - id: problem-statement
     description: "Problem statement from design philosophy"
-  - id: target_submodule
+  - id: target-submodule
     description: "Target submodule for the work package (e.g., midnight-node, midnight-ledger)"
 
 protocol:

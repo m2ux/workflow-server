@@ -10,8 +10,6 @@ recognition[4]:
   - handle review feedback
 required: true
 estimatedTime: 30-60m
-rules[1]:
-  - "PR submission and review response protocols are in the update-pr and respond-to-pr-review skills"
 modeOverrides:
   review:
     description: "Generate and post consolidated PR review comments with findings from all review stages, then await reviewer response."
@@ -91,6 +89,7 @@ steps[8]:
   - id: await-review
     name: Await Manual Review
     description: "Wait for PR to receive manual review from team members."
+    skill: respond-to-pr-review
   - id: process-review-comments
     name: Process Review Comments
     description: "Analyze and respond to PR review feedback."
@@ -98,6 +97,7 @@ steps[8]:
   - id: determine-review-outcome
     name: Determine Review Outcome
     description: "Based on review feedback, determine whether changes are needed."
+    skill: respond-to-pr-review
   - id: analyze-review-outcome
     name: Analyze Review Outcome
     description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly."
@@ -105,7 +105,7 @@ steps[8]:
       - action: set
         target: recommended_outcome
         description: "Set to the recommended review-outcome option based on comment analysis"
-checkpoints[2]:
+checkpoints[3]:
   - id: review-received
     name: Review Received Checkpoint
     message: "Has the PR received manual review feedback?"
@@ -141,6 +141,17 @@ checkpoints[2]:
         effect:
           setVariable:
             review_requires_changes: true
+  - id: review-ready
+    name: Review Ready Check
+    message: "Has the PR received review feedback from a human reviewer?"
+    blocking: true
+    options[2]:
+      - id: feedback-available
+        label: Yes — review comments are available
+        description: Proceed to process review comments
+      - id: still-waiting
+        label: Not yet — still waiting
+        description: Pause and check back when review is available
 transitions[2]:
   - to: complete
     condition:

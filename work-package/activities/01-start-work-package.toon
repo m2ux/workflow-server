@@ -182,6 +182,9 @@ checkpoints[8]:
       - id: provide-existing
         label: Provide existing issue
         description: Share the issue number or URL (GitHub #N or Jira PROJ-N)
+        effect:
+          setVariable:
+            needs_issue_creation: false
       - id: create-issue
         label: Create new issue
         description: Create a new issue in GitHub or Jira
@@ -333,6 +336,9 @@ checkpoints[8]:
       - id: edit
         label: Edit issue
         description: Make changes before creating
+        effect:
+          setVariable:
+            issue_approved: false
       - id: cancel
         label: Cancel issue creation
         description: Do not create the issue
@@ -360,6 +366,9 @@ checkpoints[8]:
       - id: proceed
         label: Create branch and PR
         description: Create feature branch and draft PR linked to issue
+        effect:
+          setVariable:
+            pr_skipped: false
       - id: skip-pr
         label: Skip PR for now
         description: Continue without creating PR (can create later)

@@ -11,7 +11,7 @@ recognition[5]:
   - familiarize with code
 required: false
 estimatedTime: 20-45m
-rules[8]:
+rules[7]:
   - "Comprehension artifacts are persistent — they live in .engineering/artifacts/comprehension/ and are reused across work packages"
   - "Always check for existing comprehension artifacts before creating new ones"
   - "Augment existing artifacts with new details rather than duplicating content"
@@ -19,7 +19,6 @@ rules[8]:
   - "Comprehension is sufficient when all open questions have been resolved through code analysis. If unresolved questions remain after the initial deep-dive, present them with the 30s auto-advance pattern — the user can intervene to explore further or let it proceed."
   - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after the initial deep-dive and after each subsequent deep-dive iteration"
   - "SUFFICIENCY RULE: After the initial deep-dive, count unresolved open questions. If zero remain, set needs_comprehension to false and skip the comprehension-sufficient checkpoint entirely — comprehension is objectively sufficient. If unresolved questions remain, present them at the checkpoint with 30s auto-advance."
-  - "The Open Questions table is generated content the user must evaluate at the comprehension-sufficient checkpoint — per the CHECKPOINT YIELD RULE, it must be in the yield context"
 steps[12]:
   - id: check-existing-artifacts
     name: Check Existing Comprehension Artifacts

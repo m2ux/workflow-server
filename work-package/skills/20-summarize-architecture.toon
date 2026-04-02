@@ -5,11 +5,11 @@ capability: Create high-level architecture summary with diagrams for management 
 description: "Produces a stakeholder-facing architecture summary document with Mermaid C4 diagrams (system context, container, component) and sequence diagrams for key flows affected by the changes. Intended for non-technical stakeholders who need to understand the impact and scope of changes."
 
 inputs[3]:
-  - id: changed_files
+  - id: changed-files
     description: "List of files changed in the implementation"
-  - id: planning_folder_path
+  - id: planning-folder-path
     description: "Path to planning folder for context"
-  - id: design_philosophy_doc
+  - id: design-philosophy-doc
     description: "Design philosophy with scope and rationale"
     required: false
 

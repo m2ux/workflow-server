@@ -5,14 +5,14 @@ capability: Finalize documentation — update ADRs, complete test plans, create 
 description: "Handles the finalization of all documentation after implementation is complete. Updates ADR status, adds source links to test plans, creates a COMPLETE.md summary document, and verifies public APIs have inline documentation."
 
 inputs[4]:
-  - id: planning_folder_path
+  - id: planning-folder-path
     description: "Path to planning folder containing test plan and artifacts"
-  - id: adr_path
+  - id: adr-path
     description: "Path to ADR if one was created for this work package"
     required: false
-  - id: test_plan_path
+  - id: test-plan-path
     description: "Path to test plan artifact"
-  - id: pr_number
+  - id: pr-number
     description: "PR number for cross-referencing"
 
 protocol:

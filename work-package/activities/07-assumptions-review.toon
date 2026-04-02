@@ -88,12 +88,22 @@ checkpoints[2]:
       - id: accept
         label: Accept assumption
         description: "This assumption is valid — proceed with it"
+        effect:
+          setVariable:
+            assumption_resolved_inline: true
       - id: reject
         label: Reject assumption
         description: "This assumption is wrong — provide a correction"
+        effect:
+          setVariable:
+            assumption_resolved_inline: true
       - id: defer
         label: Defer
         description: "Not enough information to decide now — revisit later"
+        effect:
+          setVariable:
+            assumption_deferred: true
+            has_deferred_assumptions: true
   - id: post-summary-review
     name: Post Summary Review
     condition:
@@ -117,6 +127,9 @@ checkpoints[2]:
       - id: skip-posting
         label: Skip posting
         description: "Do not post to issue tracker"
+        effect:
+          setVariable:
+            post_jira_comment: false
 transitions[4]:
   - to: codebase-comprehension
     condition:

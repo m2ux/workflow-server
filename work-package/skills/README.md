@@ -37,13 +37,16 @@ The workflow uses 25 workflow-specific skills organized by capability, plus 3 cr
 
 ### Cross-Workflow Skill References
 
-The following skills are referenced by activities but defined in other workflows:
+The following skills are referenced by activities but defined in other workflows. They are resolved at runtime via `get_skill` with the source workflow ID.
 
-| Skill ID | Source Workflow | Used By |
-|----------|----------------|---------|
-| `atlassian-operations` | [meta](../../meta/skills/07-atlassian-operations.toon) | Start Work Package, Assumptions Review |
-| `structural-analysis` | [prism](../../prism/skills/00-structural-analysis.toon) | Post-Implementation Review |
-| `portfolio-analysis` | [prism](../../prism/skills/02-portfolio-analysis.toon) | Codebase Comprehension |
+| Skill ID | Source Workflow | Source File | Used By |
+|----------|----------------|-------------|---------|
+| `atlassian-operations` | [meta](../../meta/skills/08-atlassian-operations.toon) | `08-atlassian-operations.toon` | Start Work Package, Assumptions Review |
+| `github-cli-protocol` | [meta](../../meta/skills/06-github-cli-protocol.toon) | `06-github-cli-protocol.toon` | Start Work Package, Submit for Review |
+| `knowledge-base-search` | [meta](../../meta/skills/07-knowledge-base-search.toon) | `07-knowledge-base-search.toon` | Research |
+| `version-control-protocol` | [meta](../../meta/skills/05-version-control-protocol.toon) | `05-version-control-protocol.toon` | Post-Implementation Review |
+| `structural-analysis` | [prism](../../prism/skills/00-structural-analysis.toon) | `00-structural-analysis.toon` | Post-Implementation Review |
+| `portfolio-analysis` | [prism](../../prism/skills/02-portfolio-analysis.toon) | `02-portfolio-analysis.toon` | Codebase Comprehension |
 
 ---
 

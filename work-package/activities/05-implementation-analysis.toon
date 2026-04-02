@@ -9,8 +9,6 @@ recognition[3]:
   - implementation analysis
 required: false
 estimatedTime: 10-20m
-rules[1]:
-  - "Analysis protocol and domain rules are in the implementation-analysis skill"
 modeOverrides:
   review:
     description: "Analyze the pre-change baseline state from the base branch to establish reference for PR evaluation."
@@ -49,6 +47,7 @@ steps[9]:
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during analysis. Categories: Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding."
+    skill: review-assumptions
   - id: document
     name: Create analysis document
     description: "Create implementation analysis document"

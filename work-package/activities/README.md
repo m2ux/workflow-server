@@ -40,8 +40,8 @@ Each activity section below includes its purpose, skills, steps, checkpoints, tr
 | `platform-selection` | Choose GitHub or Jira for issue creation | yes |
 | `jira-project-selection` | Select Jira project (if Jira chosen) | yes |
 | `issue-type-selection` | Choose issue type: Feature, Bug, Task, Enhancement, Epic | yes |
-| `issue-review` | Confirm drafted issue before creation | yes |
-| `pr-creation` | Confirm branch and PR creation | yes |
+| `issue-review` | Confirm drafted issue before creation | no (autoAdvance 30s) |
+| `pr-creation` | Confirm branch and PR creation | no (autoAdvance 30s) |
 
 **Transitions:** Default transition to `design-philosophy`.
 
@@ -104,8 +104,8 @@ graph TD
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `classification-confirmed` | Confirm problem type and complexity assessment | yes |
-| `workflow-path-selected` | Select workflow path: full, elicit-only, research-only, or skip | yes |
+| `classification-confirmed` | Confirm problem type and complexity assessment | no (autoAdvance 30s) |
+| `workflow-path-selected` | Select workflow path: full, elicit-only, research-only, or skip | no (autoAdvance 30s) |
 
 **Transitions:**
 
@@ -113,7 +113,7 @@ graph TD
 |-----------|--------|
 | default | codebase-comprehension |
 
-Codebase comprehension is mandatory — the activity always transitions to codebase-comprehension. Subsequent routing (to elicitation, research, or plan-prepare) is handled by codebase-comprehension's own transitions.
+Design philosophy always transitions to codebase-comprehension (`required: false` on that activity in the workflow definition). Subsequent routing (to elicitation, research, or plan-prepare) is handled by codebase-comprehension's own transitions.
 
 **Artifacts:** `design-philosophy.md`, `assumptions-log.md` (both in planning folder).
 
@@ -308,12 +308,13 @@ graph TD
 
 **Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
 
-**Checkpoints (2):**
+**Checkpoints (3):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `research-findings` | Confirm research findings | no (autoAdvance 30s) |
-| `research-assumptions-review` | Review research assumptions | no (autoAdvance 30s) |
+| `research-focus` | Specify additional research focus (conditional: `needs_further_research`) | yes |
+| `research-assumption-interview` | Resolve or defer open assumptions (conditional: `has_open_assumptions`) | yes |
 
 **Transitions:** Default to `implementation-analysis`.
 
@@ -374,7 +375,7 @@ graph TD
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `analysis-confirmed` | Confirm analysis findings are correct | no (autoAdvance 30s) |
-| `analysis-assumptions-review` | Review assumptions about current behavior and gaps | no (autoAdvance 30s) |
+| `analysis-assumption-interview` | Resolve or defer open assumptions (conditional: `has_open_assumptions`) | yes |
 
 **Transitions:** Default to `plan-prepare`.
 
@@ -423,12 +424,11 @@ graph TD
 7. **sync-branch** — Ensure feature branch is up to date with `main`.
 8. **update-pr** — Update PR with planning information.
 
-**Checkpoints (2):**
+**Checkpoints (1):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `approach-confirmed` | Confirm implementation approach | no (autoAdvance 30s) |
-| `assumptions-log-final` | Final review of accumulated assumptions before implementation | yes |
 
 **Transitions:** Default to `assumptions-review`.
 
@@ -445,16 +445,10 @@ graph TD
     createTestPlan --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> updateLog["Update assumptions log"]
     updateLog --> createTodos["Create TODO list from plan"]
-    createTodos --> cpAssumptions{"assumptions-review checkpoint"}
-    cpAssumptions -->|"confirmed"| syncBranch["Sync branch with main"]
-    cpAssumptions -->|"corrections"| collectAssumptions
+    createTodos --> syncBranch["Sync branch with main"]
 
     syncBranch --> updatePR["Update PR description"]
-    updatePR --> cpFinal{"assumptions-log-final checkpoint"}
-
-    cpFinal -->|"acceptable"| exitNode(["assumptions-review"])
-    cpFinal -->|"revisit"| collectAssumptions
-    cpFinal -->|"document concerns"| exitNode
+    updatePR --> exitNode(["assumptions-review"])
 ```
 
 ---
@@ -477,13 +471,12 @@ graph TD
 3. **await-stakeholder-response** — Wait for stakeholder feedback on posted comment.
 4. **update-assumptions-log** — Update assumptions log with stakeholder review outcomes.
 
-**Checkpoints (3):**
+**Checkpoints (2):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `comment-review` | Review prepared comment before posting to issue tracker | yes |
-| `stakeholder-response` | Provide stakeholder feedback or confirm approval | yes |
-| `feedback-triage` | Determine level of revision needed based on stakeholder feedback | yes |
+| `assumption-decision` | Accept, reject, or defer each assumption in the interview loop | yes |
+| `post-summary-review` | Confirm posting deferred-assumption summary to issue tracker (conditional: `issue_platform` set and `has_deferred_assumptions`) | no (autoAdvance 30s) |
 
 **Transitions:**
 
@@ -554,10 +547,10 @@ graph TD
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `switch-model-pre-impl` | Switch model before implementation | yes |
-| `confirm-implementation` | Confirm task implementation | yes |
-| `implementation-assumptions-review` | Review implementation assumptions | no (autoAdvance 30s) |
-| `switch-model-post-impl` | Switch model after implementation | yes |
+| `switch-model-pre-impl` | Switch model before implementation | no (autoAdvance 10s) |
+| `confirm-implementation` | Confirm start of implementation (all tasks) | no (autoAdvance 30s) |
+| `implementation-assumption-interview` | Resolve or defer open assumptions (conditional: `has_open_assumptions`) | yes |
+| `switch-model-post-impl` | Switch model after implementation | no (autoAdvance 10s) |
 
 **Transitions:** Default to `post-impl-review`.
 
@@ -763,12 +756,13 @@ graph TD
 4. **await-review** — Wait for PR to receive manual review.
 5. **process-review-comments** — Analyze and respond to review feedback using `respond-to-pr-review` skill.
 
-**Checkpoints (2):**
+**Checkpoints (3):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `review-received` | Confirm that review comments have been received | yes |
-| `review-outcome` | Determine outcome: approved, minor changes, or significant changes | yes |
+| `review-outcome` | Determine outcome: approved, minor changes, or significant changes | no (autoAdvance 30s) |
+| `review-ready` | Confirm human review feedback is available before processing comments | yes |
 
 **Transitions:**
 

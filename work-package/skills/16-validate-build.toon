@@ -5,9 +5,9 @@ capability: Validate implementation through test execution, build verification, 
 description: "Runs the full validation suite: unit/integration/e2e tests, build verification, and linter checks. Analyzes failures, applies fixes, and re-runs until all pass. Provides observable results — does not ask user about test/build outcomes."
 
 inputs[2]:
-  - id: project_type
+  - id: project-type
     description: "Project type (rust-substrate, other) — determines commands"
-  - id: target_submodule
+  - id: target-submodule
     description: "Target submodule path (e.g., midnight-node, midnight-ledger)"
 
 protocol:

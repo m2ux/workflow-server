@@ -5,12 +5,12 @@ capability: Discover and clarify requirements through structured sequential conv
 description: "This skill serves the requirements-elicitation activity. It handles: prompting user for stakeholder discussion transcript; iterating through question domains one question at a time; recording responses and adapting follow-up questions; preparing assumptions as Jira comments for stakeholder review; awaiting and incorporating stakeholder feedback; creating requirements-elicitation.md artifact."
 
 inputs[3]:
-  - id: stakeholder_transcript
+  - id: stakeholder-transcript
     description: "Transcript or summary from user's discussion with key stakeholders"
     required: false
-  - id: issue_platform
+  - id: issue-platform
     description: "Platform where issue lives (github or jira) — determines if assumptions go to Jira"
-  - id: issue_number
+  - id: issue-number
     description: "Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)"
 
 protocol:

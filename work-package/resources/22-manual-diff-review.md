@@ -39,19 +39,19 @@ The review process produces:
 
 ### Table Format
 
-Generate a table with one row per changed file, sorted alphabetically by path:
+Generate a table with one row per changed file, sorted alphabetically by path. Each row number is a markdown hyperlink to its rationale section further down the document:
 
 ```markdown
 | Row | Path | File |
 |-----|------|------|
-| 1 | src/api/ | handlers.rs |
-| 2 | src/api/ | routes.rs |
-| 3 | src/core/ | processor.rs |
-| 4 | tests/ | integration_test.rs |
+| [1](#block-1) | src/api/ | handlers.rs |
+| [2](#block-2) | src/api/ | routes.rs |
+| [3](#block-3) | src/core/ | processor.rs |
+| [4](#block-4) | tests/ | integration_test.rs |
 ```
 
 **Column definitions:**
-- **Row**: Sequential number for reference (1, 2, 3...)
+- **Row**: Sequential number hyperlinked to its Block Rationale section (e.g., `[1](#block-1)`)
 - **Path**: Directory path (without filename)
 - **File**: Filename only
 
@@ -70,6 +70,7 @@ Include summary statistics at the top of the index file:
 ## Instructions
 
 Review changes in your side-by-side diff tool using this index for reference.
+Click any row number to jump to its rationale paragraph for context on why the change was made.
 Report row numbers for files with issues (e.g., "3, 7, 12") or "none" if all looks good.
 ```
 
@@ -84,6 +85,38 @@ To count hunks:
 ```bash
 git diff <base-branch>...HEAD | grep -c "^@@"
 ```
+
+### Block Rationale Sections
+
+Below the index table, generate a **Block Rationale** section. Each block gets a subsection with a descriptive paragraph explaining what the change does and why. The primary purpose is to give reviewers meaningful context before they inspect the raw diff.
+
+```markdown
+## Block Rationale
+
+### Block 1
+
+This change adds input validation to the API handler to prevent malformed
+payloads from reaching the processing layer. Previously, invalid data would
+propagate silently and cause cryptic errors downstream. The validation uses
+the same Zod schema already defined for the public API contract, ensuring
+consistency between the endpoint documentation and runtime enforcement.
+
+### Block 2
+
+The route registration was refactored to use a declarative table-driven
+approach instead of individual `app.get()`/`app.post()` calls. This reduces
+boilerplate and makes it easier to audit which endpoints exist, what methods
+they accept, and which middleware they use — all visible in a single array.
+
+### Block 3
+...
+```
+
+**Rationale guidance:**
+- Each paragraph should be 3–5 sentences covering intent, context, and any non-obvious design choices
+- Focus on *why* the change exists, not just *what* it does — reviewers can see the *what* in the diff
+- Mention relevant prior state, trade-offs, or constraints that informed the approach
+- Use plain technical language; avoid vague descriptions like "various improvements"
 
 ---
 

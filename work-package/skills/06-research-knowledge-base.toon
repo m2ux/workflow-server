@@ -7,7 +7,7 @@ description: "This skill serves the research activity. It handles: searching the
 inputs[2]:
   - id: requirements
     description: "Elicited requirements from the elicitation activity"
-  - id: problem_statement
+  - id: problem-statement
     description: "Problem statement from design philosophy"
 
 protocol:
