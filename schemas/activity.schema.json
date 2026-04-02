@@ -492,66 +492,6 @@
             "type": "string"
           },
           "description": "Activity-level rules and constraints (string array of ordered imperative directives) that agents MUST follow during this activity. Domain-specific rules are on the skill; sequencing rules are here. Note: skill schemas use a different format (object with named key-value rule pairs)."
-        },
-        "modeOverrides": {
-          "type": "object",
-          "description": "Mode-specific behavior overrides. Keys are mode IDs from workflow.modes",
-          "additionalProperties": {
-            "type": "object",
-            "properties": {
-              "description": {
-                "type": "string",
-                "description": "Mode-specific activity description"
-              },
-              "rules": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Mode-specific rules and constraints"
-              },
-              "steps": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/step"
-                },
-                "description": "Additional steps for this mode (merged with base steps)"
-              },
-              "skipSteps": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Step IDs to skip in this mode"
-              },
-              "skipCheckpoints": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Checkpoint IDs to skip in this mode"
-              },
-              "checkpoints": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/checkpoint"
-                },
-                "description": "Additional checkpoints for this mode"
-              },
-              "transitionOverride": {
-                "type": "string",
-                "description": "Override default transition target in this mode"
-              },
-              "context_to_preserve": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Additional context to preserve in this mode"
-              }
-            },
-            "additionalProperties": false
-          }
         }
       },
       "required": ["id", "version", "name", "skills"],

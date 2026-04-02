@@ -93,5 +93,4 @@ export {
   type Transition,
   type Action,
   type SkillsReference,
-  type ModeOverride,
 } from './activity.schema.js';

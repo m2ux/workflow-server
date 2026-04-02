@@ -338,7 +338,6 @@ A unified activity combines intent matching (problem, recognition) with workflow
 | `rules`           | string[]          | Activity-level execution rules             |
 | `artifacts`       | Artifact[]        | Artifacts produced or updated              |
 | `artifactPrefix`  | string            | Server-computed numeric prefix from filename |
-| `modeOverrides`   | object            | Mode-specific behavior overrides           |
 
 #### Step
 
@@ -715,7 +714,6 @@ Activities are the execution units of a workflow. Each activity contains steps, 
 | `rules` | array | Activity-level execution rules and constraints |
 | `artifacts` | array | Artifacts produced or updated by this activity |
 | `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
-| `modeOverrides` | object | Mode-specific behavior overrides (keyed by mode ID) |
 
 ### Steps
 
@@ -1380,7 +1378,6 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | `rules` | string[] | Activity-level execution rules and constraints |
 | `artifacts` | Artifact[] | Artifacts produced or updated by this activity |
 | `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
-| `modeOverrides` | object | Mode-specific behavior overrides (keyed by mode ID) |
 
 ### Activity Types
 

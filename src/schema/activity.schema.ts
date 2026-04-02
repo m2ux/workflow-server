@@ -119,19 +119,6 @@ export const ArtifactSchema = z.object({
 });
 export type Artifact = z.infer<typeof ArtifactSchema>;
 
-// Mode override schema - mode-specific behavior overrides for an activity
-export const ModeOverrideSchema = z.object({
-  description: z.string().optional().describe('Mode-specific activity description'),
-  rules: z.array(z.string()).optional().describe('Mode-specific rules and constraints'),
-  steps: z.array(StepSchema).optional().describe('Additional steps for this mode (merged with base steps)'),
-  skipSteps: z.array(z.string()).optional().describe('Step IDs to skip in this mode'),
-  skipCheckpoints: z.array(z.string()).optional().describe('Checkpoint IDs to skip in this mode'),
-  checkpoints: z.array(CheckpointSchema).optional().describe('Additional checkpoints for this mode'),
-  transitionOverride: z.string().optional().describe('Override default transition target in this mode'),
-  context_to_preserve: z.array(z.string()).optional().describe('Additional context to preserve in this mode'),
-});
-export type ModeOverride = z.infer<typeof ModeOverrideSchema>;
-
 // Unified Activity schema
 export const ActivitySchema = z.object({
   // Identity (required)
@@ -171,9 +158,6 @@ export const ActivitySchema = z.object({
   rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
   artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.toon). Server-computed — do not set in TOON files.'),
   artifacts: z.array(ArtifactSchema).optional().describe('Output artifacts produced by this activity. Bare filenames are prefixed with artifactPrefix at write time (e.g., design-philosophy.md → 02-design-philosophy.md).'),
-  
-  // Mode overrides (optional)
-  modeOverrides: z.record(ModeOverrideSchema).optional().describe('Mode-specific behavior overrides. Keys are mode IDs from workflow.modes'),
 });
 
 export type Activity = z.infer<typeof ActivitySchema>;

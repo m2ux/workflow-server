@@ -10,7 +10,6 @@ export type {
   Loop, 
   SkillsReference,
   WorkflowTrigger,
-  ModeOverride,
   Activity,
 } from '../schema/activity.schema.js';
 
@@ -25,7 +24,6 @@ export {
   LoopSchema, 
   SkillsReferenceSchema,
   WorkflowTriggerSchema,
-  ModeOverrideSchema,
   ActivitySchema,
   validateActivity, 
   safeValidateActivity,
