@@ -47,26 +47,45 @@ modes[1]:
     resource: resources/24-review-mode.md
 ```
 
-### Activity-Level Overrides
+### Activity-Level Behavior
 
-Each activity can define mode-specific behavior using `modeOverrides`:
+Activities express review-mode behavior through standard conditions on steps, checkpoints, and transitions:
 
-```
-modeOverrides:
-  review:
-    description: "Mode-specific activity description"
-    notes[N]:
-      - Mode-specific notes
-    steps[N]:
-      - Mode-specific steps
-    skipSteps[N]:
-      - Steps to skip in this mode
-    checkpoints[N]:
-      - Mode-specific checkpoints
-    transitionOverride: target-activity
-    context_to_preserve[N]:
-      - Mode-specific context
-```
+- **Review-only steps** have `condition: is_review_mode == true` — they only execute in review mode
+- **Create-only steps** have `condition: is_review_mode != true` — they are skipped in review mode
+- **Review-only checkpoints** have `condition: is_review_mode == true`
+- **Review-mode transitions** are conditioned on `is_review_mode == true` and evaluated before default transitions
+
+---
+
+## Per-Activity Review Guidance
+
+### start-work-package
+Capture PR reference and extract associated Jira ticket. Skip branch/PR creation — use existing PR from review target.
+
+### design-philosophy
+Assess ticket completeness and determine workflow path. Always skip elicitation — requirements come solely from the ticket. Assess the ticket using Jira Issue Creation Guide checklist. Research may still be needed based on complexity assessment.
+
+### implementation-analysis
+Analyze the pre-change baseline state from the base branch to establish reference for PR evaluation. Checkout base branch to analyze PRE-change state (what existed before the PR). Document what would need to change to fulfill requirements (the expected changes). This baseline becomes the reference for evaluating what the PR actually changed.
+
+### assumptions-review
+Skip the assumption interview and issue tracker posting. The review plan is for the reviewer's own use. Set `stakeholder_review_complete=true` and proceed directly to the next activity.
+
+### post-impl-review
+Compare PR changes against expected changes from implementation analysis. Document findings for PR author. Identify deviations — missing changes, unexpected changes, alternative approaches.
+
+### validate
+Run validation checks and document failures as review findings (do not fix). Run existing tests to verify they pass as claimed by the PR. Document failures as review findings — do NOT fix them (that's the PR author's job). Failures become critical findings in the review summary.
+
+### strategic-review
+Evaluate as though code were newly written. Document findings as feedback for PR author. Document findings as review comments, do not apply cleanup (PR author's responsibility). Focus on identifying issues for feedback, not on rework transitions.
+
+### submit-for-review
+Generate and post consolidated PR review comments with findings from all review stages. Use structured format: Summary, Code Review, Test Review, Doc Review, Recommendations. Include severity ratings and actionable items for PR author.
+
+### complete
+In review mode, only conduct retrospective. Skip ADR creation and documentation finalization.
 
 ---
 

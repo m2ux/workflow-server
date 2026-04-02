@@ -9,28 +9,7 @@ recognition[3]:
   - verify build
 required: true
 estimatedTime: 15-30m
-modeOverrides:
-  review:
-    description: "Run validation checks and document failures as review findings (do not fix)."
-    rules[3]:
-      - Run existing tests to verify they pass as claimed by the PR
-      - Document failures as review findings - do NOT fix them (that's the PR author's job)
-      - Failures become critical findings in the review summary
-    steps[2]:
-      - id: document-failures
-        name: Document Failures as Findings
-        description: "Document all test/build/lint failures as review findings with severity (critical for test failures, high for build failures). Do NOT attempt to fix."
-        skill: validate-build
-      - id: assess-test-coverage
-        name: Assess Test Coverage
-        description: "Evaluate whether the tests added are sufficient for the changes made. Check coverage of edge cases and error paths."
-        skill: validate-build
-    skipSteps[1]:
-      - fix-failures
-    context_to_preserve[2]:
-      - validation_failures - List of failures documented as findings
-      - test_coverage_assessment - Evaluation of test sufficiency
-steps[5]:
+steps[7]:
   - id: run-tests
     name: Run all tests
     description: "Execute unit, integration, e2e tests. Observe and record results."
@@ -55,15 +34,39 @@ steps[5]:
         target: validation_passed
         value: true
         message: "Set to true if all checks passed; false otherwise"
+  - id: document-failures
+    name: Document Failures as Findings
+    description: "Document all test/build/lint failures as review findings with severity (critical for test failures, high for build failures). Do NOT attempt to fix."
+    skill: validate-build
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: assess-test-coverage
+    name: Assess Test Coverage
+    description: "Evaluate whether the tests added are sufficient for the changes made. Check coverage of edge cases and error paths."
+    skill: validate-build
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
   - id: fix-failures
     name: Fix any failures
     description: "Analyze root cause of failures, fix, and re-validate."
     skill: validate-build
     condition:
-      type: simple
-      variable: has_failures
-      operator: ==
-      value: true
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: has_failures
+          operator: ==
+          value: true
     loops[1]:
       - id: fix-revalidate-cycle
         name: Fix and Revalidate Cycle

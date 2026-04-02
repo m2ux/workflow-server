@@ -20,15 +20,21 @@ Each activity section below includes its purpose, skills, steps, checkpoints, tr
 
 **Steps:**
 
-1. **detect-project-type** — Auto-detect project type from `Cargo.toml` (Substrate dependencies: `sp-*`, `frame-*`, `pallet-*`). Set `project_type` to `rust-substrate` if found, otherwise `other`.
-2. **check-issue** — Verify whether an issue has been specified by user or in context.
-3. **create-issue** — If needed, create issue in selected platform (GitHub or Jira) via platform-selection checkpoint.
-4. **check-branch** — Check if already on a feature branch (not `main`/`master`).
-5. **create-branch** — Create feature branch: `type/issue-number-short-description`.
-6. **check-pr** — Check if PR already exists for current branch via `gh pr list --head <branch>`.
-7. **create-pr** — Create draft PR linked to issue.
-8. **initialize-planning-folder** — Create planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/`.
-9. **determine-next-activity** — Based on issue details, determine if requirements elicitation is needed.
+1. **resolve-target** — Read `target_path` from state variables and verify the directory exists.
+2. **initialize-target** — Fetch origin and checkout the default branch inside `target_path`.
+3. **detect-project-type** — Auto-detect project type from `Cargo.toml` (Substrate dependencies: `sp-*`, `frame-*`, `pallet-*`). Set `project_type` to `rust-substrate` if found, otherwise `other`.
+4. **check-issue** — Verify whether an issue has been specified by user or in context. Detect platform from key format.
+5. **verify-jira-issue** — Load Jira issue via Atlassian MCP (conditional: `issue_platform == jira`).
+6. **verify-github-issue** — Verify GitHub issue via `gh issue view` (conditional: `issue_platform == github`).
+7. **create-issue** — If needed, create issue in selected platform (GitHub or Jira) via platform-selection checkpoint.
+8. **activate-issue** — Transition issue to In Progress and assign to current user.
+9. **present-problem-overview** — Synthesize a plain-language problem overview for stakeholder reference.
+10. **check-branch** — Check if already on a feature branch (not `main`/`master`).
+11. **create-branch** — Create feature branch: `type/issue-number-short-description`.
+12. **check-pr** — Check if PR already exists for current branch via `gh pr list --head <branch>`.
+13. **create-pr** — Create draft PR linked to issue.
+14. **initialize-planning-folder** — Create planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/`.
+15. **determine-next-activity** — Based on issue details, determine if requirements elicitation is needed.
 
 **Checkpoints (8):**
 

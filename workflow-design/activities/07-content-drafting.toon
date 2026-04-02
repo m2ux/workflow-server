@@ -15,50 +15,6 @@ rules[5]:
   - "Validate each TOON file against its schema immediately after drafting"
   - "In update mode, compare new content against existing content and flag any material being removed"
   - "Draft files in the confirmed order: workflow.toon first, then activities, then skills, then resources, then README"
-modeOverrides:
-  update:
-    description: "Modify existing files without per-file checkpoint interruptions. The approach and preservation were already confirmed in scope-and-structure and impact-analysis. A single batch-review checkpoint at the end replaces per-file confirmations."
-    rules[2]:
-      - "Execute all file modifications without per-file checkpoints — approach and preservation were confirmed in earlier activities"
-      - "Present a single batch summary of all changes for review after all files are modified"
-    skipCheckpoints[2]:
-      - file-approach-confirmed
-      - file-review
-    checkpoints[2]:
-      - id: preservation-check
-        name: Content Preservation Check
-        condition:
-          type: simple
-          variable: has_unflagged_removals
-          operator: "=="
-          value: true
-        message: "Content removal detected that was not flagged during impact analysis. Review the diff and confirm."
-        options[3]:
-          - id: proceed
-            label: "Proceed with changes"
-            description: Apply the modifications as shown
-          - id: preserve-more
-            label: "Preserve more content"
-            description: Keep some of the content marked for removal
-          - id: rewrite
-            label: "Rewrite approach"
-            description: Take a different approach to this file
-      - id: batch-review
-        name: Batch Content Review
-        message: "All {file_count} files modified. Here is the change summary. Proceeding in 30s unless you intervene."
-        blocking: false
-        defaultOption: accepted
-        autoAdvanceMs: 30000
-        options[3]:
-          - id: accepted
-            label: "All changes accepted"
-            description: Proceed with all modifications as applied
-          - id: revise-specific
-            label: "Revise a specific file"
-            description: Go back and modify one particular file
-          - id: redraft-all
-            label: "Redraft all changes"
-            description: Start content drafting over from scratch
 entryActions[1]:
   - action: validate
     target: scope_manifest_confirmed
@@ -95,9 +51,14 @@ loops[1]:
         name: Validate content against schema
       - id: present-for-review
         name: Present content for user review
-checkpoints[2]:
+checkpoints[4]:
   - id: file-approach-confirmed
     name: File Approach Checkpoint
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
     message: "Here is my approach for drafting '{current_file}'. Does this look right?"
     options[2]:
       - id: confirmed
@@ -108,6 +69,11 @@ checkpoints[2]:
         description: Take a different approach to this file
   - id: file-review
     name: File Review Checkpoint
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
     message: "Here is the drafted content for '{current_file}'. Is this acceptable?"
     options[3]:
       - id: accepted
@@ -119,6 +85,51 @@ checkpoints[2]:
       - id: redraft
         label: "Redraft from scratch"
         description: Start over with a different approach
+  - id: preservation-check
+    name: Content Preservation Check
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_update_mode
+          operator: "=="
+          value: true
+        - type: simple
+          variable: has_unflagged_removals
+          operator: "=="
+          value: true
+    message: "Content removal detected that was not flagged during impact analysis. Review the diff and confirm."
+    options[3]:
+      - id: proceed
+        label: "Proceed with changes"
+        description: Apply the modifications as shown
+      - id: preserve-more
+        label: "Preserve more content"
+        description: Keep some of the content marked for removal
+      - id: rewrite
+        label: "Rewrite approach"
+        description: Take a different approach to this file
+  - id: batch-review
+    name: Batch Content Review
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
+    message: "All {file_count} files modified. Here is the change summary. Proceeding in 30s unless you intervene."
+    blocking: false
+    defaultOption: accepted
+    autoAdvanceMs: 30000
+    options[3]:
+      - id: accepted
+        label: "All changes accepted"
+        description: Proceed with all modifications as applied
+      - id: revise-specific
+        label: "Revise a specific file"
+        description: Go back and modify one particular file
+      - id: redraft-all
+        label: "Redraft all changes"
+        description: Start content drafting over from scratch
 transitions[1]:
   - to: quality-review
     isDefault: true

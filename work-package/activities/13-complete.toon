@@ -10,17 +10,6 @@ recognition[4]:
   - finish work package
 required: true
 estimatedTime: 30-60m
-modeOverrides:
-  review:
-    description: "In review mode, only conduct retrospective. Skip ADR creation and documentation finalization."
-    skipSteps[5]:
-      - create-adr
-      - update-adr-status
-      - finalize-test-plan
-      - create-complete-doc
-      - ensure-docs
-    context_to_preserve[1]:
-      - retrospective_notes - Notes from retrospective
 artifacts[4]:
   - id: adr
     name: "NNNN-{decision-title}.md"
@@ -44,43 +33,70 @@ steps[9]:
     description: "Create ADR at .engineering/artifacts/adr/ documenting the architectural decision, rationale, and alternatives."
     skill: create-adr
     condition:
-      type: or
+      type: and
       conditions[2]:
         - type: simple
-          variable: complexity
-          operator: ==
-          value: moderate
-        - type: simple
-          variable: complexity
-          operator: ==
-          value: complex
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: or
+          conditions[2]:
+            - type: simple
+              variable: complexity
+              operator: ==
+              value: moderate
+            - type: simple
+              variable: complexity
+              operator: ==
+              value: complex
   - id: update-adr-status
     name: Update ADR status to Accepted
     description: "Update ADR status from Proposed to Accepted."
     skill: create-adr
     condition:
-      type: or
+      type: and
       conditions[2]:
         - type: simple
-          variable: complexity
-          operator: ==
-          value: moderate
-        - type: simple
-          variable: complexity
-          operator: ==
-          value: complex
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: or
+          conditions[2]:
+            - type: simple
+              variable: complexity
+              operator: ==
+              value: moderate
+            - type: simple
+              variable: complexity
+              operator: ==
+              value: complex
   - id: finalize-test-plan
     name: Finalize test plan with source links
     description: "Add hyperlinks to actual test source file locations in the test plan."
     skill: finalize-documentation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: create-complete-doc
     name: Create completion document
     description: "Create COMPLETE.md summarizing deliverables, test coverage, deferred items, and known limitations."
     skill: finalize-documentation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: ensure-docs
     name: Ensure inline documentation on public APIs
     description: "Verify public APIs have inline documentation — add missing doc comments."
     skill: finalize-documentation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: capture-history
     name: Capture session history
     description: "If metadata repository exists, capture session history. Private — never committed."

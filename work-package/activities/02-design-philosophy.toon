@@ -15,48 +15,6 @@ rules[4]:
   - "Simple bug fixes with clear scope may skip elicitation and research"
   - "Complex features typically require full elicitation and research"
   - "Problem classification informs all subsequent activities"
-modeOverrides:
-  review:
-    description: "Assess ticket completeness and determine workflow path. Always skip elicitation."
-    rules[3]:
-      - Always skip elicitation - requirements come solely from the ticket
-      - Assess ticket completeness using Jira Issue Creation Guide checklist
-      - Research may still be needed based on complexity assessment
-    steps[2]:
-      - id: assess-ticket-completeness
-        name: Assess Ticket Completeness
-        description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
-        skill: classify-problem
-      - id: set-review-mode-path
-        name: Set Review Mode Path
-        description: "Force needs_elicitation=false. Research may still be needed based on complexity."
-    checkpoints[1]:
-      - id: ticket-completeness
-        name: Ticket Completeness Checkpoint
-        message: "Would you like to refactor the ticket based on the gaps found?"
-        options[3]:
-          - id: refactor-ticket
-            label: Refactor ticket
-            description: Update the ticket to address identified gaps
-            effect:
-              setVariable:
-                ticket_refactor_needed: true
-          - id: proceed-with-gaps
-            label: Proceed with gaps noted
-            description: "Document gaps in assumptions-log.md and continue review with gaps as tracked findings"
-            effect:
-              setVariable:
-                ticket_refactor_needed: false
-                ticket_gaps_documented: true
-          - id: no-gaps
-            label: Ticket is complete
-            description: No significant gaps were found
-            effect:
-              setVariable:
-                ticket_refactor_needed: false
-    context_to_preserve[2]:
-      - ticket_gaps - List of ticket completeness gaps found
-      - ticket_refactor_needed - Whether ticket needs refactoring
 artifacts[2]:
   - id: design-philosophy-doc
     name: design-philosophy.md
@@ -66,7 +24,7 @@ artifacts[2]:
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
-steps[7]:
+steps[9]:
   - id: define-problem
     name: Identify and Define Problem
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
@@ -102,6 +60,23 @@ steps[7]:
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
     skill: reconcile-assumptions
+  - id: assess-ticket-completeness
+    name: Assess Ticket Completeness
+    description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
+    skill: classify-problem
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: set-review-mode-path
+    name: Set Review Mode Path
+    description: "Force needs_elicitation=false. Research may still be needed based on complexity."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
 loops[1]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
@@ -125,7 +100,7 @@ loops[1]:
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
         skill: reconcile-assumptions
-checkpoints[2]:
+checkpoints[3]:
   - id: classification-confirmed
     name: Classification Checkpoint
     message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Confirming in 30s unless you intervene."
@@ -182,6 +157,34 @@ checkpoints[2]:
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
+  - id: ticket-completeness
+    name: Ticket Completeness Checkpoint
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+    message: "Would you like to refactor the ticket based on the gaps found?"
+    options[3]:
+      - id: refactor-ticket
+        label: Refactor ticket
+        description: Update the ticket to address identified gaps
+        effect:
+          setVariable:
+            ticket_refactor_needed: true
+      - id: proceed-with-gaps
+        label: Proceed with gaps noted
+        description: "Document gaps in assumptions-log.md and continue review with gaps as tracked findings"
+        effect:
+          setVariable:
+            ticket_refactor_needed: false
+            ticket_gaps_documented: true
+      - id: no-gaps
+        label: Ticket is complete
+        description: No significant gaps were found
+        effect:
+          setVariable:
+            ticket_refactor_needed: false
 transitions[1]:
   - to: codebase-comprehension
     isDefault: true

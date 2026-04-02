@@ -11,11 +11,6 @@ rules[3]:
   - "The scope manifest must include every file to be created, modified, or removed — no implicit files"
   - "Verify the workflows worktree is checked out and on the correct branch before defining paths"
   - "Present the structural design compared against adopted patterns from pattern analysis"
-modeOverrides:
-  update:
-    description: "Scope is derived from impact analysis. Focus on modified and added files rather than full structure design."
-    skipSteps[1]:
-      - design-folder-structure
 steps[5]:
   - id: verify-worktree
     name: Verify Workflows Worktree
@@ -23,6 +18,11 @@ steps[5]:
   - id: design-folder-structure
     name: Design Folder Structure
     description: "Based on requirements and adopted patterns, define the folder structure: workflow-{id}/ with activities/, skills/, resources/ subfolders. Determine the file naming scheme (NN-name.toon for activities and skills, NN-name.md for resources)."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
   - id: enumerate-files
     name: Enumerate File Manifest
     description: "Create the complete file manifest. For each file, specify: full path relative to workflows/, action (create/modify/remove), file type (workflow/activity/skill/resource/readme), and a one-line description. Include workflow.toon, all activity files, all skill files, all resource files, and README.md."

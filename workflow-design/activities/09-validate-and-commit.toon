@@ -14,45 +14,67 @@ rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
   - "The scope manifest must be fully addressed — every item checked off"
   - "Commit to the workflows worktree, not the main repository"
-modeOverrides:
-  review:
-    description: "In review mode, save the compliance report as an artifact. If the user opted to fix issues, transition back to the intake activity in update mode."
-    skipSteps[4]:
-      - run-schema-validation
-      - verify-scope-manifest
-      - generate-readme
-      - update-readme
-    steps[2]:
-      - id: save-compliance-report
-        name: Save Compliance Report
-        description: "Save the compliance report as a markdown file in the planning folder ({planning_folder_path}) with naming convention: YYYY-MM-DD-{workflow-id}-compliance-review.md"
-      - id: commit-report
-        name: Commit Report
-        description: "Stage and commit the compliance report to the parent repository (planning folder is a regular directory, not a submodule)."
-    checkpoints[0]:
-steps[6]:
+steps[8]:
+  - id: save-compliance-report
+    name: Save Compliance Report
+    description: "Save the compliance report as a markdown file in the planning folder ({planning_folder_path}) with naming convention: YYYY-MM-DD-{workflow-id}-compliance-review.md"
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: commit-report
+    name: Commit Report
+    description: "Stage and commit the compliance report to the parent repository (planning folder is a regular directory, not a submodule)."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
   - id: run-schema-validation
     name: Run Schema Validation
     description: "For each TOON file (workflow.toon, all activity files, all skill files), run the schema validator. Record pass/fail for each file. If any file fails, fix the error and re-validate before proceeding."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: verify-scope-manifest
     name: Verify Scope Manifest
     description: "Re-read the scope manifest from the scope-and-structure activity. For each item, verify: the file exists at the specified path, the action (create/modify/remove) was performed, and the content matches the reviewed draft. Flag any items not addressed."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: generate-readme
     name: Generate README
     description: "For create mode: generate README.md with workflow title, description, activity sequence table, mode descriptions, usage instructions, and links to resources. For update mode: update the existing README if the changes affect the documented structure."
     condition:
-      type: simple
-      variable: is_update_mode
-      operator: ==
-      value: false
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_update_mode
+          operator: ==
+          value: false
   - id: update-readme
     name: Update README
     description: "For update mode: update the existing README.md to reflect any structural changes (new activities, modified activity descriptions, changed modes)."
     condition:
-      type: simple
-      variable: is_update_mode
-      operator: ==
-      value: true
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_update_mode
+          operator: ==
+          value: true
   - id: stage-and-commit
     name: Stage and Commit
     description: "Stage all created/modified files in the workflows worktree. Commit with a descriptive message following the convention: 'feat(workflow-design): create workflow-design workflow' for create mode, or 'fix(workflow-design): <change description>' for update mode. Sign the commit."
@@ -62,6 +84,11 @@ steps[6]:
 checkpoints[2]:
   - id: validation-passed
     name: Validation Results Checkpoint
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     message: "Schema validation results: {pass_count} passed, {fail_count} failed. Proceeding in 30s unless you intervene."
     blocking: false
     defaultOption: proceed
@@ -78,6 +105,11 @@ checkpoints[2]:
         description: Go back and fix validation failures before committing
   - id: scope-verified
     name: Scope Verification Checkpoint
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     message: "Scope manifest verification: {addressed_count}/{total_count} items addressed. Proceeding in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed

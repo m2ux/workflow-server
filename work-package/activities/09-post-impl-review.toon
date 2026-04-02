@@ -14,13 +14,6 @@ rules[4]:
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
   - "All three automated reviews (code, test suite, architecture) should be completed"
   - "Adoption workflows must still complete quality reviews"
-modeOverrides:
-  review:
-    description: "Compare PR changes against expected changes from implementation analysis. Document findings for PR author."
-    rules[3]:
-      - Compare actual PR changes against 'expected_changes' documented in implementation analysis
-      - Identify deviations - missing changes, unexpected changes, alternative approaches
-      - Document findings as review comments for PR author, not fixes to apply
 entryActions[1]{action,message}:
   log,Starting post-implementation review
 artifacts[6]:

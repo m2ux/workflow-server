@@ -11,76 +11,6 @@ rules[3]:
   - "One question at a time — present each checkpoint independently and wait for the response before proceeding"
   - "Show what was captured so far before asking the next question"
   - "Do not assume answers — if the user's description is ambiguous, ask for clarification"
-modeOverrides:
-  update:
-    description: "Elicit change scope rather than full design. Focus on what specifically is being modified and why."
-    skipSteps[3]:
-      - elicit-activity-model
-      - elicit-variables
-      - elicit-skills
-    checkpoints[5]:
-      - id: purpose-confirmed
-        name: Purpose Confirmation
-        message: "Here is the workflow purpose and domain I've captured. Confirming in 30s unless you intervene."
-        blocking: false
-        defaultOption: confirmed
-        autoAdvanceMs: 30000
-        options[2]:
-          - id: confirmed
-            label: "Yes, that's right"
-            description: Purpose is accurately captured
-          - id: refine
-            label: "Needs refinement"
-            description: Let me clarify the purpose
-      - id: activities-confirmed
-        name: Activity List Confirmation
-        message: "Here is the activity list I've captured. Confirming in 30s unless you intervene."
-        blocking: false
-        defaultOption: confirmed
-        autoAdvanceMs: 30000
-        options[2]:
-          - id: confirmed
-            label: "Yes, this is complete"
-            description: Activity list is accurate and complete
-          - id: refine
-            label: "Needs changes"
-            description: Add, remove, or modify activities
-      - id: checkpoints-confirmed
-        name: Checkpoints Confirmation
-        message: "Here are the checkpoints I've defined for each activity with their options and effects. Do these cover all necessary user decision points?"
-        options[2]:
-          - id: confirmed
-            label: "Yes, checkpoints are complete"
-            description: Checkpoint coverage is adequate
-          - id: refine
-            label: "Needs changes"
-            description: Add, remove, or modify checkpoints
-      - id: artifacts-confirmed
-        name: Artifacts Confirmation
-        message: "Here are the artifacts each activity produces. Confirming in 30s unless you intervene."
-        blocking: false
-        defaultOption: confirmed
-        autoAdvanceMs: 30000
-        options[2]:
-          - id: confirmed
-            label: "Yes, artifacts are complete"
-            description: Artifact list is accurate
-          - id: refine
-            label: "Needs changes"
-            description: Add, remove, or modify artifacts
-      - id: rules-confirmed
-        name: Rules Confirmation
-        message: "Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?"
-        options[2]:
-          - id: confirmed
-            label: "Yes, rules are complete"
-            description: Rule list is accurate
-            effect:
-              setVariable:
-                requirements_confirmed: true
-          - id: refine
-            label: "Needs changes"
-            description: Add, remove, or modify rules
 steps[8]:
   - id: elicit-purpose
     name: Elicit Workflow Purpose
@@ -91,6 +21,11 @@ steps[8]:
   - id: elicit-activity-model
     name: Elicit Activity Model
     description: "Determine whether activities are sequential (connected by transitions, requiring initialActivity) or independent (matched via recognition patterns). Present examples of each from existing workflows."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
   - id: elicit-checkpoints
     name: Elicit Checkpoints
     description: "For each activity, identify where user decision points should occur. For each checkpoint, capture: what question is being asked, what options the user has, and what effects each option has (setVariable, transitionTo, skipActivities)."
@@ -100,9 +35,19 @@ steps[8]:
   - id: elicit-variables
     name: Elicit Variables
     description: "Identify workflow-level variables needed for state tracking. For each variable, capture: name, type, description, defaultValue, and whether it's required."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
   - id: elicit-skills
     name: Elicit Skills
     description: "Identify what skills are needed. For each skill, capture: capability description, which activities use it (primary or supporting), and what tools/protocol/rules it needs."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
   - id: elicit-rules
     name: Elicit Rules
     description: "Capture workflow-level rules that govern execution across all activities. For each rule, discuss whether it should be backed by structural enforcement (checkpoint, condition, validate action) or is guidance-only."
@@ -129,6 +74,11 @@ checkpoints[8]:
         description: Add, remove, or modify activities
   - id: model-confirmed
     name: Activity Model Confirmation
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
     message: "Based on our discussion, this workflow uses a {sequential/independent} activity model. Is this correct?"
     options[2]:
       - id: confirmed
@@ -159,6 +109,11 @@ checkpoints[8]:
         description: Add, remove, or modify artifacts
   - id: variables-confirmed
     name: Variables Confirmation
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
     message: "Here are the workflow variables I've identified for state tracking. Is this complete?"
     options[2]:
       - id: confirmed
@@ -169,6 +124,11 @@ checkpoints[8]:
         description: Add, remove, or modify variables
   - id: skills-confirmed
     name: Skills Confirmation
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
     message: "Here are the skills needed by this workflow. Is this complete?"
     options[2]:
       - id: confirmed
