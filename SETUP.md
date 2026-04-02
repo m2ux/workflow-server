@@ -155,15 +155,3 @@ cd .engineering
 # Update only metadata
 ./scripts/update.sh --metadata
 ```
-
-### Starting a Workflow
-
-In your AI assistant chat, add the workflow entry point and describe your task:
-
-```
-@.engineering/agent/workflows/work-package/_START_HERE.md
-
-I want to implement [describe your feature, bug fix, or enhancement here]
-```
-
-The agent will read the mandatory rules and guide you through the workflow phases.
