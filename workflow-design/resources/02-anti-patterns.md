@@ -56,6 +56,20 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 
 29. **"persist-output" rule on a skill with a "write-artifact" step** — A rule that applies to only one protocol step is not a cross-cutting constraint — it's step-level guidance masquerading as a rule. Move the content into the step's description prose and delete the rule. Skill-level rules should span multiple protocol phases.
 
+## Tool-Skill-Doc Consistency Anti-Patterns
+
+30. **"Resources are in the response"** (but they aren't) — Skill protocols or tool sections that describe return values inaccurately. If a skill says a tool returns resource content but the tool actually returns lightweight refs, agents will skip the `get_resource` call. Skill tool sections must match actual tool behavior.
+
+31. **"Call start_session, then call next_activity"** (skipping the map) — Bootstrap sequences that omit a tool needed to discover the next step. If `start_session` doesn't return `initialActivity` and the bootstrap doesn't mention `get_workflow`, agents must guess. Every bootstrap sequence must provide a complete path from session start to first meaningful action.
+
+32. **"get_skill" in one skill, "get_step_skill" in another** — Multiple skills describing the same operation using different tool names. When execute-activity says `get_skill` and worker-management says `get_step_skill`, agents get contradictory guidance. Each operation must be described with one consistent tool name across all skills.
+
+33. **"Pass token to all calls" (repeated in 4 skills)** — Behavioral guidance duplicated across skills and tool descriptions. When the same token-handling instruction appears in session-protocol, worker-management, orchestrator-management, AND the tool description, updates to one create silent drift in the others. Guidance belongs in one authoritative location; others reference it.
+
+34. **"Returns: Activity definition"** (but it returns everything) — Tool descriptions or skill tool sections that describe mechanics instead of value. A description that says "transitions to the next activity" without mentioning it returns the complete activity definition with steps, checkpoints, and transitions undersells the tool and forces agents to discover the return value experimentally.
+
+35. **Two tools that return the same data** — A tool whose output is a strict subset of another tool's response adds selection ambiguity without adding value. If `next_activity` returns transitions and `get_activities` returns only transitions (requiring `next_activity` to have been called first), the second tool is redundant.
+
 ## Execution Anti-Patterns
 
 17. **"I'll just start implementing"** — Present approach and receive confirmation before any modification.
