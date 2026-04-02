@@ -5,7 +5,7 @@ import { listWorkflows, loadWorkflow, getActivity, getCheckpoint } from '../load
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
+import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 import { createTraceToken, decodeTraceToken } from '../trace.js';
 import type { TraceEvent, TraceTokenPayload } from '../trace.js';
@@ -45,19 +45,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir)) }],
     })));
 
-  server.tool('get_workflow', 'Load the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, execution model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the full definition including complete activity details. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
+  server.tool('get_workflow', 'Load the workflow definition for the current session. Use summary=true (the default) to get lightweight metadata including rules, variables, execution model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the full definition including complete activity details. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
     {
       ...sessionTokenParam,
-      workflow_id: z.string().describe('Workflow ID (e.g., "work-package")'),
       summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the full definition.'),
     },
-    withAuditLog('get_workflow', async ({ session_token, workflow_id, summary }) => {
+    withAuditLog('get_workflow', async ({ session_token, summary }) => {
       const token = await decodeSessionToken(session_token);
+      const workflow_id = token.wf;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
       const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
         validateWorkflowVersion(token, result.value),
       );
 
@@ -66,7 +65,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content.push({ type: 'text', text: config.schemaPreamble });
       }
 
-      const advancedToken = await advanceToken(session_token, { wf: workflow_id });
+      const advancedToken = await advanceToken(session_token);
 
       if (summary) {
         const wf = result.value;
@@ -93,14 +92,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('next_activity', 'Load and transition to the specified activity. This is the primary tool for progressing through a workflow. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and skill references — everything needed to execute the activity. Also advances the session token to track the current activity. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field in the previous activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
     {
       ...sessionTokenParam,
-      workflow_id: z.string().describe('Workflow ID'),
       activity_id: z.string().describe('Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.'),
       transition_condition: z.string().optional().describe('The transition condition that led to this activity (from the transitions field of the previous activity). Enables server-side validation of condition-activity consistency.'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
     },
-    withAuditLog('next_activity', async ({ session_token, workflow_id, activity_id, transition_condition, step_manifest, activity_manifest }) => {
+    withAuditLog('next_activity', async ({ session_token, activity_id, transition_condition, step_manifest, activity_manifest }) => {
       const token = await decodeSessionToken(session_token);
+      const workflow_id = token.wf;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       const activity = getActivity(result.value, activity_id);
@@ -129,7 +128,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
         validateActivityTransition(token, result.value, activity_id),
         validateWorkflowVersion(token, result.value),
         condWarning,
@@ -137,7 +135,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...activityManifestWarnings,
       );
 
-      const advancedToken = await advanceToken(session_token, { wf: workflow_id, act: activity_id, cond: transition_condition ?? '' });
+      const advancedToken = await advanceToken(session_token, { act: activity_id, cond: transition_condition ?? '' });
 
       const meta: Record<string, unknown> = { session_token: advancedToken, validation };
 
@@ -170,23 +168,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('get_checkpoint', 'Load the full details of a specific checkpoint within an activity. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any blocking or auto-advance configuration. Use this when you need to present a checkpoint interaction to the user. Checkpoint summaries are included in the activity definition from next_activity — use this tool when you need complete details for presentation.',
     {
       ...sessionTokenParam,
-      workflow_id: z.string().describe('Workflow ID'),
       activity_id: z.string().describe('Activity ID containing the checkpoint'),
       checkpoint_id: z.string().describe('Checkpoint ID'),
     },
-    withAuditLog('get_checkpoint', async ({ session_token, workflow_id, activity_id, checkpoint_id }) => {
+    withAuditLog('get_checkpoint', async ({ session_token, activity_id, checkpoint_id }) => {
       const token = await decodeSessionToken(session_token);
+      const workflow_id = token.wf;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
       if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id}`);
 
       const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
         validateWorkflowVersion(token, result.value),
       );
 
-      const advancedToken = await advanceToken(session_token, { wf: workflow_id, act: activity_id });
+      const advancedToken = await advanceToken(session_token, { act: activity_id });
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, session_token: advancedToken }) }],
         _meta: { session_token: advancedToken, validation },

@@ -7,7 +7,7 @@ import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { readSkill } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
-import { buildValidation, validateWorkflowConsistency, validateWorkflowVersion } from '../utils/validation.js';
+import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 
 /**
@@ -116,10 +116,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'Load all workflow-level skills (behavioral protocols like session-protocol, agent-conduct). Call this after start_session to load the skills that govern session behavior. Returns a map of skill objects keyed by skill ID, each including its protocol phases, rules, and tool guidance. Resource references appear as lightweight entries in _resources (index, id, version only — use get_resource to load full content). These are workflow-scope skills; activity-level step skills are loaded separately via get_step_skill.',
     {
       ...sessionTokenParam,
-      workflow_id: z.string().describe('Workflow ID'),
     },
-    withAuditLog('get_skills', async ({ session_token, workflow_id }) => {
+    withAuditLog('get_skills', async ({ session_token }) => {
       const token = await decodeSessionToken(session_token);
+      const workflow_id = token.wf;
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
@@ -140,11 +140,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const advancedToken = await advanceToken(session_token, { wf: workflow_id });
+      const advancedToken = await advanceToken(session_token);
       const responseBody: Record<string, unknown> = { scope: 'workflow', skills, session_token: advancedToken };
       if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
 
@@ -160,22 +159,21 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'Load a single skill by its ID. Use this when you need to reload or reference a specific skill during execution. Returns the skill definition with protocol phases, rules, and tool guidance. Resource references appear as lightweight entries in _resources (index, id, version only — use get_resource to load full content). For loading the skill assigned to a specific step within the current activity, use get_step_skill instead.',
     {
       ...sessionTokenParam,
-      workflow_id: z.string().describe('Workflow ID'),
       skill_id: z.string().describe('Skill ID (e.g., execute-activity, orchestrate-workflow)'),
     },
-    withAuditLog('get_skill', async ({ session_token, workflow_id, skill_id }) => {
+    withAuditLog('get_skill', async ({ session_token, skill_id }) => {
       const token = await decodeSessionToken(session_token);
+      const workflow_id = token.wf;
       const result = await readSkill(skill_id, config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
         wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
       );
 
       const refs = await loadSkillResourceRefs(config.workflowDir, workflow_id, result.value);
-      const advancedToken = await advanceToken(session_token, { wf: workflow_id, skill: skill_id });
+      const advancedToken = await advanceToken(session_token, { skill: skill_id });
 
       const response = {
         skill: bundleSkillWithResourceRefs(result.value, refs),
@@ -194,11 +192,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'Load the skill assigned to a specific step within the current activity. Resolves the skill reference from the activity definition using the step_id and the current activity tracked in the session token. Requires next_activity to have been called first — the session token must have a current activity set. Returns the skill definition with resource references in _resources (index, id, version only — use get_resource for full content). If the step_id is not found, the error lists all available step IDs in the current activity.',
     {
       ...sessionTokenParam,
-      workflow_id: z.string().describe('Workflow ID'),
       step_id: z.string().describe('Step ID within the current activity (e.g., "define-problem", "create-plan")'),
     },
-    withAuditLog('get_step_skill', async ({ session_token, workflow_id, step_id }) => {
+    withAuditLog('get_step_skill', async ({ session_token, step_id }) => {
       const token = await decodeSessionToken(session_token);
+      const workflow_id = token.wf;
 
       if (!token.act) {
         throw new Error('No current activity in session. Call next_activity before get_step_skill.');
@@ -242,12 +240,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!result.success) throw result.error;
 
       const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
         validateWorkflowVersion(token, wfResult.value),
       );
 
       const refs = await loadSkillResourceRefs(config.workflowDir, workflow_id, result.value);
-      const advancedToken = await advanceToken(session_token, { wf: workflow_id, skill: skillId });
+      const advancedToken = await advanceToken(session_token, { skill: skillId });
 
       const response = {
         skill: bundleSkillWithResourceRefs(result.value, refs),
@@ -263,14 +260,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a single resource\'s full content by its index. Use this to fetch resources referenced in skill _resources arrays. The resource_index can be a bare index (e.g., "05") which resolves within the specified workflow_id, or a prefixed cross-workflow reference (e.g., "meta/04") which resolves from the named workflow. Returns the resource content, id, and version.',
+    'Load a single resource\'s full content by its index. Use this to fetch resources referenced in skill _resources arrays. The resource_index can be a bare index (e.g., "05") which resolves within the session\'s workflow, or a prefixed cross-workflow reference (e.g., "meta/04") which resolves from the named workflow. Returns the resource content, id, and version.',
     {
       ...sessionTokenParam,
-      workflow_id: z.string().describe('Workflow ID (used as default when resource_index has no prefix)'),
-      resource_index: z.string().describe('Resource index — bare (e.g., "23") resolves within workflow_id, prefixed (e.g., "meta/04") resolves from the specified workflow'),
+      resource_index: z.string().describe('Resource index — bare (e.g., "23") resolves within the session workflow, prefixed (e.g., "meta/04") resolves from the specified workflow'),
     },
-    withAuditLog('get_resource', async ({ session_token, workflow_id, resource_index }) => {
+    withAuditLog('get_resource', async ({ session_token, resource_index }) => {
       const token = await decodeSessionToken(session_token);
+      const workflow_id = token.wf;
 
       const parsed = parseResourceRef(resource_index);
       const targetWorkflow = parsed.workflowId ?? workflow_id;
@@ -279,11 +276,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       const validation = buildValidation(
-        validateWorkflowConsistency(token, workflow_id),
         wfResult.success ? validateWorkflowVersion(token, wfResult.value) : null,
       );
 
-      const advancedToken = await advanceToken(session_token, { wf: workflow_id });
+      const advancedToken = await advanceToken(session_token);
 
       const response = {
         resource: { ...result.value, index: resource_index },

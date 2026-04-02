@@ -221,7 +221,7 @@ Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
 1. Create `{NN}-{skill-id}.toon` in `workflows/meta/skills/`
 2. Use sequential index (00, 01, 02, etc.)
-3. Access via: `get_skill { skill_id: "{skill-id}" }`
+3. Access via: `get_skill { session_token, skill_id: "{skill-id}" }`
 4. Examples: `00-session-protocol`, `01-agent-conduct`, `02-execute-activity`
 5. Commit to the `workflows` branch
 
@@ -232,11 +232,11 @@ Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
 1. Create `{NN}-{skill-id}.toon` in `workflows/{workflow-id}/skills/`
 2. Use sequential index (00, 01, 02, etc.)
 3. Skills are auto-discovered - no manifest update needed
-4. Access via: `get_skill { skill_id: "{skill-id}", workflow_id: "{workflow-id}" }`
+4. Access via: `get_skill { session_token, skill_id: "{skill-id}" }`
 5. Commit to the `workflows` branch
 
 ### Skill Resolution
 
-When loading a skill with `workflow_id`:
-1. First checks `{workflow-id}/skills/{NN}-{skill-id}.toon`
+When loading a skill, the workflow is determined from the session token:
+1. First checks `{workflow}/skills/{NN}-{skill-id}.toon`
 2. Falls back to `meta/skills/{NN}-{skill-id}.toon` (universal)

@@ -10,12 +10,12 @@ For all workflow execution user requests, call the `discover` tool on the workfl
 
 1. **Discover** — Call `discover` to learn available workflows and the bootstrap procedure
 2. **Match workflow** — Call `list_workflows` to match the user's goal to a workflow
-3. **Start session** — Call `start_session(workflow_id)` to obtain a session token
-4. **Load skills** — Call `get_skills(workflow_id)` to load behavioral protocols (session-protocol, agent-conduct)
-5. **Load workflow** — Call `get_workflow(workflow_id, summary=true)` to get the activity list and `initialActivity`
-6. **Load activity** — Call `next_activity(workflow_id, activity_id)` with `initialActivity` to load the first activity definition
-7. **Execute steps** — For each step with a skill, call `get_step_skill(step_id)` to load the skill. Call `get_resource` for each `_resources` entry. Follow the skill's protocol.
-8. **Transition** — Read `transitions` from the activity response to determine the next activity. Call `next_activity` with a `step_manifest` summarizing completed steps.
+3. **Start session** — Call `start_session(workflow_id)` to obtain a session token (workflow is bound to the session)
+4. **Load skills** — Call `get_skills` to load behavioral protocols (session-protocol, agent-conduct)
+5. **Load workflow** — Call `get_workflow(summary=true)` to get the activity list and `initialActivity`
+6. **Load activity** — Call `next_activity(activity_id)` with `initialActivity` to load the first activity definition
+7. **Execute steps** — For each step with a skill, call `get_step_skill(step_id)` to load the skill. Call `get_resource(resource_index)` for each `_resources` entry. Follow the skill's protocol.
+8. **Transition** — Read `transitions` from the activity response to determine the next activity. Call `next_activity(activity_id)` with a `step_manifest` summarizing completed steps.
 
 ## Available Resources
 

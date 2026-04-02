@@ -267,7 +267,7 @@ A workflow is the top-level container representing a complete process definition
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | string[]   | Execution guidelines                                       |
 | `executionModel`  | ExecutionModel | Agent roles and execution model for this workflow (required) |
-| `skills`          | string[]   | Workflow-level skill IDs (returned by `get_skills` without `activity_id`) |
+| `skills`          | string[]   | Workflow-level skill IDs (returned by `get_skills`) |
 | `variables`       | Variable[] | State variables                                            |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
 | `activitiesDir`   | string     | Directory containing external activity files               |
@@ -492,7 +492,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
 | `rules` | string[] | Execution rules/guidelines |
-| `skills` | string[] | Workflow-level skill IDs (loaded by `get_skills` when called without `activity_id`) |
+| `skills` | string[] | Workflow-level skill IDs (loaded by `get_skills`) |
 | `variables` | array | Variable definitions with types and defaults |
 | `initialActivity` | string | ID of first activity (required for sequential workflows) |
 | `activitiesDir` | string | Directory containing external activity TOON files |

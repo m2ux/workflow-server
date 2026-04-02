@@ -20,22 +20,24 @@ No session token required.
 
 ### Workflow Tools
 
-All require `session_token` and `workflow_id`. Each response includes an updated token and validation result in `_meta`.
+All require `session_token`. The workflow is determined from the session token (set at `start_session`). Each response includes an updated token and validation result in `_meta`.
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_workflow` | `session_token`, `workflow_id`, `summary?` | Load the workflow definition. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
-| `next_activity` | `session_token`, `workflow_id`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Load and transition to an activity. Returns the complete activity definition (steps, checkpoints, transitions, mode overrides, rules, skill references). Also returns a trace token in `_meta.trace_token` |
-| `get_checkpoint` | `session_token`, `workflow_id`, `activity_id`, `checkpoint_id` | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation |
+| `get_workflow` | `session_token`, `summary?` | Load the workflow definition for the current session. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
+| `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Load and transition to an activity. Returns the complete activity definition (steps, checkpoints, transitions, mode overrides, rules, skill references). Also returns a trace token in `_meta.trace_token` |
+| `get_checkpoint` | `session_token`, `activity_id`, `checkpoint_id` | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation |
 
 ### Skill Tools
 
+All require `session_token`. The workflow is determined from the session token.
+
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `get_skills` | `session_token`, `workflow_id` | Load all workflow-level skills (behavioral protocols). Returns a map of skill objects with `_resources` containing lightweight references (index, id, version — no content) |
-| `get_skill` | `session_token`, `workflow_id`, `skill_id` | Load a single skill by ID with `_resources` references |
-| `get_step_skill` | `session_token`, `workflow_id`, `step_id` | Load the skill for a specific step within the current activity. Requires `next_activity` to have been called first |
-| `get_resource` | `session_token`, `workflow_id`, `resource_index` | Load a resource's full content by index. Supports cross-workflow refs (e.g., `meta/04`). Use this to fetch resources listed in `_resources` |
+| `get_skills` | `session_token` | Load all workflow-level skills (behavioral protocols). Returns a map of skill objects with `_resources` containing lightweight references (index, id, version — no content) |
+| `get_skill` | `session_token`, `skill_id` | Load a single skill by ID with `_resources` references |
+| `get_step_skill` | `session_token`, `step_id` | Load the skill for a specific step within the current activity. Requires `next_activity` to have been called first |
+| `get_resource` | `session_token`, `resource_index` | Load a resource's full content by index. Bare indices resolve within the session workflow; prefixed refs (e.g., `meta/04`) resolve from the named workflow |
 
 ### Trace Tools
 
@@ -60,10 +62,10 @@ The token payload carries: `wf` (workflow ID), `act` (current activity), `skill`
 
 1. Call `discover` to learn the bootstrap procedure and available workflows
 2. Call `list_workflows` to match the user's goal to a workflow
-3. Call `start_session(workflow_id)` to get a session token
-4. Call `get_skills(workflow_id)` to load behavioral protocols
-5. Call `get_workflow(workflow_id, summary=true)` to get the activity list and `initialActivity`
-6. Call `next_activity(workflow_id, initialActivity)` to load the first activity
+3. Call `start_session(workflow_id)` to get a session token (workflow is bound to the session from this point)
+4. Call `get_skills` to load behavioral protocols
+5. Call `get_workflow(summary=true)` to get the activity list and `initialActivity`
+6. Call `next_activity(initialActivity)` to load the first activity
 7. For each step with a skill, call `get_step_skill(step_id)` then `get_resource` for each `_resources` entry
 8. Read `transitions` from the activity response; call `next_activity` with a `step_manifest` to advance
 9. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
@@ -86,7 +88,6 @@ The server validates each call against the token's recorded state. Validation re
 ```
 
 Validation checks:
-- **Workflow consistency** — the token's workflow matches the explicit `workflow_id`
 - **Activity transition** — the requested activity is a valid transition from the token's last activity
 - **Version drift** — the workflow version hasn't changed since the session started
 - **Step completion** — when `step_manifest` is provided, validates all steps present, in order, with outputs
@@ -139,8 +140,8 @@ Skills provide structured guidance for agents to consistently execute workflows.
 
 ### Skill Resolution
 
-When calling `get_skill { workflow_id, skill_id }` or `get_step_skill { step_id }`:
-1. First checks `{workflow_id}/skills/{NN}-{skill_id}.toon`
+When calling `get_skill { skill_id }` or `get_step_skill { step_id }`:
+1. First checks `{workflow}/skills/{NN}-{skill_id}.toon` (using the session's workflow)
 2. Falls back to `meta/skills/{NN}-{skill_id}.toon` (universal)
 
 ### Key Skills
@@ -148,9 +149,9 @@ When calling `get_skill { workflow_id, skill_id }` or `get_step_skill { step_id 
 #### session-protocol (universal)
 
 Session lifecycle protocol:
-- **Bootstrap**: `start_session` → `get_skills` → `get_workflow` → `next_activity(initialActivity)`
-- **Per-step**: `get_step_skill(step_id)` → `get_resource` for each `_resources` entry
-- **Transitions**: Read `transitions` from activity response → `next_activity` with `step_manifest`
+- **Bootstrap**: `start_session(workflow_id)` → `get_skills` → `get_workflow` → `next_activity(initialActivity)`
+- **Per-step**: `get_step_skill(step_id)` → `get_resource(resource_index)` for each `_resources` entry
+- **Transitions**: Read `transitions` from activity response → `next_activity(activity_id)` with `step_manifest`
 
 #### execute-activity (universal)
 
