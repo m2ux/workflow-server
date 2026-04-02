@@ -50,7 +50,7 @@ rules:
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding persists across activities via Task resume parameter. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
-  checkpoint-yield: "All blocking checkpoints MUST cause execution to yield. NEVER auto-resolve. Present checkpoints as interactive selection dialogues, not plain text."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): When a checkpoint is reached, execution MUST STOP IMMEDIATELY and yield checkpoint_pending with the checkpoint ID, message, and options. NEVER auto-resolve checkpoints, select options on behalf of the user, or proceed past a checkpoint without the user's confirmed selection. Auto-resolving a checkpoint is a protocol violation equivalent to executing the wrong activity. There are ZERO exceptions to this rule."
 
   workflow-fidelity: "Respect TOON semantics. Execute activities in sequence unless transitions allow alternatives. Activity transitions are automatic — never pause for user confirmation between activities."
 
