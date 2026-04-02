@@ -19,7 +19,7 @@ protocol:
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, modeOverrides, and artifactPrefix"
   bootstrap-skill[2]:
     - "Call get_skills({ workflow_id }) to load workflow-level management skills"
-    - "Read each skill's protocol, rules, tools, inputs, and output definitions. Resources are in the response's resources array."
+    - "Read each skill's protocol, rules, tools, inputs, and output definitions. For each entry in _resources, call get_resource to load content."
   check-mode[2]:
     - "If is_review_mode is true, apply the activity's modeOverrides"
     - "If the activity is in mode.skipActivities, report back with a skip result"
@@ -40,12 +40,8 @@ protocol:
     - "MANDATORY: Update the planning folder README.md progress table (see resource meta/06 for details)"
     - "Compile structured result with result_type: activity_complete (see resource meta/06 for format). Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
-  session-protocol[5]:
-    - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id and activity_id parameters."
-    - "Use the updated token from each response's _meta.session_token field for the next call."
-    - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens."
-    - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
-    - "RESOURCE LOADING: After calling get_step_skill or get_skills, check the response for _resources. For each entry, call get_resource with the entry's index to load the resource content. Resources are required by the skill but returned separately to manage payload size."
+  session-protocol[1]:
+    - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
 rules:
   self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity and get_step_skill. The workflow-server is the source of truth."
@@ -74,30 +70,27 @@ rules:
 tools:
   start_session:
     when: "First action on initial dispatch (not needed on resume)"
-    returns: "Workflow metadata and session token"
+  get_skills:
+    when: "Session bootstrap — load workflow-level behavioral protocols"
+  get_workflow:
+    when: "After start_session — load workflow structure and initialActivity"
+    params: "workflow_id, summary=true"
   next_activity:
-    when: "After receiving activity_id"
-    params: "workflow_id, activity_id"
-    returns: "Activity definition with steps, checkpoints, skills, transitions"
+    when: "Transitioning to the first or next activity"
+    params: "activity_id from initialActivity (first call) or transitions (subsequent calls)"
   get_step_skill:
     when: "Before executing a step that declares a skill"
     params: "step_id, workflow_id"
-    returns: "Skill definition with protocol, tools, rules, inputs, output, and _resources refs"
-  get_skills:
-    when: "Session bootstrap — load workflow-level management skills"
-    params: "session_token, workflow_id"
-    returns: "Workflow-level skills with _resources refs"
   get_resource:
-    when: "After get_step_skill or get_skills — for each entry in _resources"
-    params: "session_token, workflow_id, resource_index (from _resources entry index field)"
-    returns: "Resource content"
+    when: "After get_step_skill or get_skills — loading content for entries in _resources"
+    params: "workflow_id, resource_index"
 
 errors:
   activity_not_found:
     cause: "next_activity returned error for the given activity_id"
     recovery: "Report error in result. Check activity_id spelling against workflow definition."
   skill_not_found:
-    cause: "get_skill returned error for the step's declared skill"
+    cause: "get_step_skill returned error for the step's declared skill"
     recovery: "Report error in result. Check skill ID in the step's skill field."
   step_failure:
     cause: "A step could not be completed (e.g., test failure, build error)"

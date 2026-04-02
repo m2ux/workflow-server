@@ -5,31 +5,33 @@ capability: Govern session lifecycle — token handling, step manifests, resourc
 description: "Cross-cutting skill defining the protocol for workflow sessions. Covers session token mechanics (passing, updating, opacity), step manifest requirements for activity transitions, resource consumption patterns, and the bootstrap sequence for loading skills."
 
 protocol:
-  start-session[3]:
-    - "Call start_session with the chosen workflow_id. The response contains workflow metadata and an HMAC-signed opaque session token."
-    - "Call get_skills(workflow_id) to load behavioral protocols. Workflow-level skills are auto-included on the first call. Activity-level skills are returned after calling next_activity."
+  start-session[4]:
+    - "Call start_session with the chosen workflow_id to obtain a session token."
+    - "Call get_skills(workflow_id) to load behavioral protocols (session-protocol, agent-conduct, and workflow-specific skills)."
+    - "Call get_workflow(workflow_id, summary=true) to load the workflow structure. The response includes initialActivity (which activity to load first) and the full activity list."
     - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
-  token-management[4]:
-    - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id and activity_id parameters. The token enables server-side validation of call consistency."
-    - "Use the updated token from each response's _meta.session_token field for the next call."
-    - "Treat the session token as opaque — do not attempt to parse, decode, or fabricate tokens. The token is cryptographically signed and tampered tokens will be rejected."
+  token-management[2]:
+    - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id parameters. Use the updated token from each response's _meta.session_token field for the next call."
     - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
   validation[1]:
-    - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies (workflow mismatch, invalid transition, skill not associated with activity, version drift, missing step manifest) and should be addressed but do not block execution."
+    - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies (workflow mismatch, invalid transition, version drift, missing step manifest) and should be addressed but do not block execution."
   step-manifests[2]:
-    - "STEP MANIFEST: When transitioning to the next activity (calling next_activity), include a step_manifest parameter listing each step completed in the previous activity with its output summary. The server validates step completeness, ordering, and non-empty outputs."
+    - "STEP MANIFEST: When transitioning to the next activity (calling next_activity), include a step_manifest parameter listing each step completed in the previous activity with its output summary."
     - "STEP COMPLETENESS: All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level."
   resource-usage[1]:
-    - "RESOURCE USAGE: Resources referenced by skills are returned as a structured array in the get_skill and get_skills responses. Each resource has index, id, version, and content fields. When a step says 'use attached resource XX', find it by index or id in the resources array of the skill response. Do not attempt to call a separate tool to load resources."
+    - "RESOURCE LOADING: Skills return _resources as lightweight references (index, id, version — no content). Call get_resource with the resource index to load the full content. When a step says 'use attached resource XX', find the matching entry in _resources and call get_resource."
 
 tools:
   start_session:
     when: "Beginning a new workflow session"
-    returns: "Workflow metadata and session token"
   get_skills:
-    when: "Loading behavioral protocols after start_session or next_activity"
-    returns: "Skills and referenced resources for the current scope"
+    when: "Loading behavioral protocols after start_session"
+  get_workflow:
+    when: "After start_session — loading workflow structure and initialActivity"
   next_activity:
-    when: "Transitioning between activities"
-    params: "workflow_id, activity_id, step_manifest"
-    returns: "Activity definition and advanced token"
+    when: "Transitioning to the first or next activity"
+    params: "activity_id from initialActivity (first call) or transitions (subsequent calls), step_manifest"
+  get_step_skill:
+    when: "Before executing a step that declares a skill"
+  get_resource:
+    when: "After get_skills or get_step_skill — loading content for entries in _resources"
