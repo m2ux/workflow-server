@@ -67,6 +67,7 @@ loops[3]:
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+        skill: reconcile-assumptions
   - id: assumption-interview
     name: Assumption Interview Loop
     type: forEach

@@ -17,70 +17,95 @@ estimatedTime: 5-10m
 rules[2]:
   - "Do not begin drafting content during intake — this activity only captures intent"
   - "For update mode, always load the existing workflow before proceeding"
-modeOverrides:
-  review:
-    description: "Load the target workflow for compliance review. Present the workflow structure and confirm the review scope."
-    steps[3]:
-      - id: load-target-workflow
-        name: Load Target Workflow
-        description: "Call get_workflow with target_workflow_id to load the full workflow definition. Call next_activity for each activity to get complete details including steps, checkpoints, transitions, and modeOverrides."
-      - id: enumerate-workflow-contents
-        name: Enumerate Workflow Contents
-        description: "List all files in the target workflow directory (workflow.toon, activities, skills, resources, README). Record file count, activity count, skill count, resource count, checkpoint count, and transition count."
-      - id: present-review-scope
-        name: Present Review Scope
-        description: "Present the workflow structure summary to the user. Show the activity sequence, checkpoint locations, skill assignments, and resource index. Confirm this is the workflow to review."
-    skipSteps[4]:
-      - accept-description
-      - classify-operation
-      - extract-design-intent
-      - set-mode
-    checkpoints[0]:
-  update:
-    description: "Load the existing target workflow and parse the user's change request. Present the current workflow structure before proceeding."
-    steps[3]:
-      - id: load-existing-workflow
-        name: Load Existing Workflow
-        description: "Call get_workflow with target_workflow_id to load the full workflow definition. Present the workflow structure (activities, skills, resources) to the user."
-      - id: parse-change-request
-        name: Parse Change Request
-        description: "Extract what the user wants to change from their description. Categorize as: add activity, modify activity, add/modify skill, add/modify resource, change workflow metadata, or structural refactoring."
-      - id: present-current-structure
-        name: Present Current Structure
-        description: "Display the current workflow's activity sequence, checkpoint locations, skill references, and resource index. This establishes the baseline for impact analysis."
-    checkpoints[1]:
-      - id: change-request-confirmed
-        name: Change Request Confirmation
-        message: "Here is the existing workflow structure and my understanding of your requested changes. Is this correct?"
-        options[3]:
-          - id: confirmed
-            label: "Yes, that's correct"
-            description: Proceed with these changes
-          - id: refine
-            label: "Needs refinement"
-            description: Let me clarify what I want changed
-          - id: cancel
-            label: "Cancel — create new instead"
-            description: Switch to create mode
-            effect:
-              setVariable:
-                is_update_mode: false
-steps[4]:
+steps[10]:
+  - id: load-target-workflow
+    name: Load Target Workflow
+    description: "Call get_workflow with target_workflow_id to load the full workflow definition. Call next_activity for each activity to get complete details including steps, checkpoints, and transitions."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: enumerate-workflow-contents
+    name: Enumerate Workflow Contents
+    description: "List all files in the target workflow directory (workflow.toon, activities, skills, resources, README). Record file count, activity count, skill count, resource count, checkpoint count, and transition count."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: present-review-scope
+    name: Present Review Scope
+    description: "Present the workflow structure summary to the user. Show the activity sequence, checkpoint locations, skill assignments, and resource index. Confirm this is the workflow to review."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: load-existing-workflow
+    name: Load Existing Workflow
+    description: "Call get_workflow with target_workflow_id to load the full workflow definition. Present the workflow structure (activities, skills, resources) to the user."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
+  - id: parse-change-request
+    name: Parse Change Request
+    description: "Extract what the user wants to change from their description. Categorize as: add activity, modify activity, add/modify skill, add/modify resource, change workflow metadata, or structural refactoring."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
+  - id: present-current-structure
+    name: Present Current Structure
+    description: "Display the current workflow's activity sequence, checkpoint locations, skill references, and resource index. This establishes the baseline for impact analysis."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
   - id: accept-description
     name: Accept User Description
     description: "Receive the user's free-form description of the workflow they want to create. Acknowledge receipt and summarize the key points."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: classify-operation
     name: Classify Operation
     description: "Determine whether this is a create or update operation based on user intent. If the user references an existing workflow by name or ID, classify as update. Otherwise, classify as create."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: extract-design-intent
     name: Extract Design Intent
     description: "From the user's description, extract: the workflow's purpose, domain, rough activity count, whether it is sequential or independent, and any mentioned constraints or requirements. Present this summary to the user."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: set-mode
     name: Set Mode Variable
     description: "Set is_update_mode and workflow_id variables based on classification. For update mode, also set target_workflow_id."
-checkpoints[1]:
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+checkpoints[2]:
   - id: mode-confirmation
     name: Mode Confirmation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     message: "I've classified this as a {create/update} operation for workflow '{workflow_id}'. Is this correct?"
     options[2]:
       - id: confirm-create
@@ -95,6 +120,27 @@ checkpoints[1]:
         effect:
           setVariable:
             is_update_mode: true
+  - id: change-request-confirmed
+    name: Change Request Confirmation
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
+    message: "Here is the existing workflow structure and my understanding of your requested changes. Is this correct?"
+    options[3]:
+      - id: confirmed
+        label: "Yes, that's correct"
+        description: Proceed with these changes
+      - id: refine
+        label: "Needs refinement"
+        description: Let me clarify what I want changed
+      - id: cancel
+        label: "Cancel — create new instead"
+        description: Switch to create mode
+        effect:
+          setVariable:
+            is_update_mode: false
 transitions[1]:
   - to: context-and-literacy
     isDefault: true

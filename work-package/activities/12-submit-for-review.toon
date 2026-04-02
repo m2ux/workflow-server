@@ -10,65 +10,44 @@ recognition[4]:
   - handle review feedback
 required: true
 estimatedTime: 30-60m
-modeOverrides:
-  review:
-    description: "Generate and post consolidated PR review comments with findings from all review stages, then await reviewer response."
-    rules[6]:
-      - Generate consolidated review summary from all review stages
-      - Post PR review comments using GitHub PR review API (gh pr review)
-      - "Use structured format: Summary → Code Review → Test Review → Doc Review → Recommendations"
-      - Include severity ratings and actionable items for PR author
-      - "Section titles for Code Review Findings and Test Review Findings must be hyperlinks to the corresponding engineering artifact reports (code-review.md, test-suite-review.md) in the planning folder"
-      - "Reviewers field must list each contributing agent role (Code Review Agent, Test Suite Review Agent, Validation Agent, Strategic Review Agent) with each name hyperlinked to its workflow .toon file"
-    steps[4]:
-      - id: consolidate-review-findings
-        name: Consolidate Review Findings
-        description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
-        skill: review-code
-      - id: generate-review-summary
-        name: Generate Review Summary
-        description: "Use attached resource 24 (review-mode) via get_skill (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
-        skill: review-code
-      - id: present-summary-to-user
-        name: Present Summary to User
-        description: "Show the review summary for confirmation before posting."
-      - id: post-pr-review
-        name: Post PR Review
-        description: "Post review to GitHub PR using 'gh pr review'. Include consolidated findings with severity ratings."
-        skill: github-cli-protocol
-    skipSteps[3]:
-      - push-commits
-      - update-description
-      - mark-ready
-    checkpoints[1]:
-      - id: review-summary-approval
-        name: Review Summary Approval Checkpoint
-        message: "Here is the consolidated review summary. Ready to post to the PR?"
-        options[3]:
-          - id: post-review
-            label: Post review to PR
-            description: Post the review summary as a PR comment
-            effect:
-              setVariable:
-                review_posted: true
-          - id: refine
-            label: Refine summary
-            description: Adjust the review summary before posting
-          - id: skip-posting
-            label: Skip posting to PR
-            description: Keep the summary local, don't post to GitHub
-            effect:
-              setVariable:
-                review_posted: false
-    transitionOverride: complete
-    context_to_preserve[4]:
-      - review_summary - Consolidated review summary text
-      - review_posted - Whether review was posted to PR
-      - review_severity - Overall review severity rating
-      - actionable_items - List of specific items for PR author to address
 entryActions[1]{action,message}:
   log,Submitting PR for review
-steps[8]:
+steps[12]:
+  - id: consolidate-review-findings
+    name: Consolidate Review Findings
+    description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
+    skill: review-code
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: generate-review-summary
+    name: Generate Review Summary
+    description: "Use attached resource 24 (review-mode) via get_skill (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
+    skill: review-code
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: present-summary-to-user
+    name: Present Summary to User
+    description: "Show the review summary for confirmation before posting."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: post-pr-review
+    name: Post PR Review
+    description: "Post review to GitHub PR using 'gh pr review'. Include consolidated findings with severity ratings."
+    skill: github-cli-protocol
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
   - id: verify-commit-signatures
     name: Verify and sign commits
     description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
@@ -78,14 +57,29 @@ steps[8]:
     name: Push all commits
     description: "Push all local commits to remote branch."
     skill: manage-git
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: update-description
     name: Update PR description
     description: "Update PR description with final implementation details. Apply automatically — user can edit the PR directly in GitHub/Jira if adjustments are needed."
     skill: update-pr
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: mark-ready
     name: Mark PR ready for review
     description: "Mark the draft PR as ready for review using gh pr ready."
     skill: github-cli-protocol
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: await-review
     name: Await Manual Review
     description: "Wait for PR to receive manual review from team members."
@@ -105,7 +99,7 @@ steps[8]:
       - action: set
         target: recommended_outcome
         description: "Set to the recommended review-outcome option based on comment analysis"
-checkpoints[3]:
+checkpoints[4]:
   - id: review-received
     name: Review Received Checkpoint
     message: "Has the PR received manual review feedback?"
@@ -152,7 +146,37 @@ checkpoints[3]:
       - id: still-waiting
         label: Not yet — still waiting
         description: Pause and check back when review is available
-transitions[2]:
+  - id: review-summary-approval
+    name: Review Summary Approval Checkpoint
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+    message: "Here is the consolidated review summary. Ready to post to the PR?"
+    options[3]:
+      - id: post-review
+        label: Post review to PR
+        description: Post the review summary as a PR comment
+        effect:
+          setVariable:
+            review_posted: true
+      - id: refine
+        label: Refine summary
+        description: Adjust the review summary before posting
+      - id: skip-posting
+        label: Skip posting to PR
+        description: Keep the summary local, don't post to GitHub
+        effect:
+          setVariable:
+            review_posted: false
+transitions[3]:
+  - to: complete
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
   - to: complete
     condition:
       type: simple

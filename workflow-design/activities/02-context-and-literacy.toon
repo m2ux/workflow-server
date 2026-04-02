@@ -13,30 +13,7 @@ rules[3]:
   - "Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true"
   - "Read at least two existing workflows of similar type to establish pattern baseline"
   - "Present the schema construct summary to the user for confirmation"
-modeOverrides:
-  review:
-    description: "Load schemas and construct inventory as the reference baseline for the compliance audit. Skip format literacy verification since no content will be drafted."
-    skipSteps[2]:
-      - read-toon-examples
-      - present-convention-summary
-    checkpoints[0]:
-    transitionOverride: quality-review
-  update:
-    description: "Skip format literacy verification in update mode — agent demonstrated TOON understanding during intake by loading and analyzing the target workflow."
-    skipSteps[2]:
-      - read-toon-examples
-      - present-convention-summary
-    skipCheckpoints[2]:
-      - format-literacy
-      - constructs-confirmed
-    entryActions[2]:
-      - action: set
-        target: format_literacy_confirmed
-        value: true
-      - action: set
-        target: schema_constructs_confirmed
-        value: true
-steps[6]:
+steps[7]:
   - id: load-schemas
     name: Load Schema Definitions
     description: "Fetch the workflow-server://schemas MCP resource to load all five JSON schema definitions (workflow.schema.json, activity.schema.json, skill.schema.json, condition.schema.json, state.schema.json). These are the authoritative definitions that all workflow content must conform to."
@@ -49,15 +26,63 @@ steps[6]:
   - id: read-toon-examples
     name: Read TOON File Examples
     description: "Read at least one workflow.toon, one activity .toon, and one skill .toon from the surveyed workflows. Confirm understanding of TOON syntax: key-value pairs, arrays with [N] suffix, nested objects, quoted strings with colons, inline object shorthand with {keys}."
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_update_mode
+          operator: "!="
+          value: true
   - id: identify-applicable-constructs
     name: Identify Applicable Constructs
     description: "Based on the design intent from intake and the schema documentation, identify which schema constructs are applicable. Cross-reference the schema field tables to confirm correct field names, types, required properties, and valid values. Present the construct inventory with examples from the surveyed workflows."
+  - id: auto-confirm-literacy
+    name: Auto-confirm format literacy
+    description: "In update mode, the agent demonstrated format understanding during intake by loading and analyzing the target workflow."
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
+    actions[2]:
+      - action: set
+        target: format_literacy_confirmed
+        value: true
+      - action: set
+        target: schema_constructs_confirmed
+        value: true
   - id: present-convention-summary
     name: Present Convention Summary
     description: "Summarize the conventions observed: file naming (NN-name.toon), folder structure (activities/, skills/, resources/), field ordering, version format, transition patterns, checkpoint structure. Present to user for confirmation."
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_update_mode
+          operator: "!="
+          value: true
 checkpoints[2]:
   - id: format-literacy
     name: Format Literacy Checkpoint
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_update_mode
+          operator: "!="
+          value: true
     message: "I've reviewed existing TOON files and understand the format conventions. Here is my summary of TOON syntax rules and project conventions. Does this look correct?"
     options[2]:
       - id: confirmed
@@ -71,6 +96,17 @@ checkpoints[2]:
         description: There are errors in the format understanding
   - id: constructs-confirmed
     name: Schema Constructs Checkpoint
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_update_mode
+          operator: "!="
+          value: true
     message: "Here are the schema constructs I've identified as applicable to this workflow. Does this coverage look right?"
     options[2]:
       - id: confirmed
@@ -82,7 +118,13 @@ checkpoints[2]:
       - id: adjust
         label: "Needs adjustment"
         description: Add or remove constructs from the list
-transitions[1]:
+transitions[2]:
+  - to: quality-review
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
   - to: requirements-refinement
     condition:
       type: and

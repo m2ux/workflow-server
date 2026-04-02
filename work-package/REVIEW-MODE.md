@@ -1,6 +1,6 @@
 # Review Mode
 
-Review mode adapts the work-package workflow for **reviewing existing implementations** rather than creating new ones. It is formally defined in the workflow schema using the `modes` and `modeOverrides` constructs.
+Review mode adapts the work-package workflow for **reviewing existing implementations** rather than creating new ones. It is formally defined in the workflow schema using the `modes` construct and conditional steps/checkpoints/transitions.
 
 ---
 
@@ -41,31 +41,16 @@ modes[1]:
 | `defaults` | Default variable values when mode is active |
 | `resource` | Link to detailed guide document |
 
-### Activity-Level Overrides
+### Activity-Level Behavior
 
-Each activity can define mode-specific behavior using `modeOverrides`:
+Activities express review-mode behavior through standard conditions on steps, checkpoints, and transitions:
 
-```
-modeOverrides:
-  review:
-    description: "Mode-specific activity description"
-    notes: [...]
-    steps: [...]
-    skipSteps: [...]
-    checkpoints: [...]
-    transitionOverride: target-activity
-    context_to_preserve: [...]
-```
+- **Review-only steps** have `condition: is_review_mode == true`
+- **Create-only steps** have `condition: is_review_mode != true`
+- **Review-only checkpoints** have `condition: is_review_mode == true`
+- **Review-mode transitions** are conditioned on `is_review_mode == true`
 
-| Property | Purpose |
-|----------|---------|
-| `description` | Mode-specific description |
-| `notes` | Mode-specific guidance notes |
-| `steps` | Additional steps for this mode |
-| `skipSteps` | Step IDs to skip in this mode |
-| `checkpoints` | Additional checkpoints for this mode |
-| `transitionOverride` | Override default transition target |
-| `context_to_preserve` | Additional context for this mode |
+Per-activity review guidance is in `resources/24-review-mode.md`.
 
 ---
 

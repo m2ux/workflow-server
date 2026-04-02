@@ -9,29 +9,32 @@ recognition[3]:
   - implementation analysis
 required: false
 estimatedTime: 10-20m
-modeOverrides:
-  review:
-    description: "Analyze the pre-change baseline state from the base branch to establish reference for PR evaluation."
-    rules[3]:
-      - Checkout base branch to analyze PRE-change state (what existed before the PR)
-      - Document what would need to change to fulfill requirements (the expected changes)
-      - This baseline becomes the reference for evaluating what the PR actually changed
-    steps[3]:
-      - id: checkout-baseline
-        name: Checkout Baseline State
-        description: "Checkout the base branch (PR target) to analyze the pre-change state. Record the base commit SHA for reference."
-      - id: document-expected-changes
-        name: Document Expected Changes
-        description: "Based on ticket requirements and baseline analysis, document what changes SHOULD be made to fulfill requirements. This becomes the reference for evaluating the actual PR."
-        skill: analyze-implementation
-      - id: return-to-pr-branch
-        name: Return to PR Branch
-        description: "Checkout the PR branch to continue workflow. Note the diff between base and PR branch for later comparison."
-    context_to_preserve[3]:
-      - base_commit_sha - SHA of base branch at time of analysis
-      - expected_changes - What changes should be made per requirements
-      - pr_diff_summary - Summary of changes between base and PR branch
-steps[9]:
+steps[12]:
+  - id: checkout-baseline
+    name: Checkout Baseline State
+    description: "Checkout the base branch (PR target) to analyze the pre-change state. Record the base commit SHA for reference."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: document-expected-changes
+    name: Document Expected Changes
+    description: "Based on ticket requirements and baseline analysis, document what changes SHOULD be made to fulfill requirements. This becomes the reference for evaluating the actual PR."
+    skill: analyze-implementation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: return-to-pr-branch
+    name: Return to PR Branch
+    description: "Checkout the PR branch to continue workflow. Note the diff between base and PR branch for later comparison."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
   - id: review-implementation
     name: Review implementation
     description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture."
@@ -88,10 +91,11 @@ loops[2]:
       - id: update-assumptions-and-artifact
         name: Update assumptions log and comprehension artifact
         description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
-        skill: manage-artifacts
+        skill: reconcile-assumptions
       - id: reclassify-resolvability
         name: Reclassify open assumptions
         description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+        skill: reconcile-assumptions
   - id: assumption-interview
     name: Assumption Interview Loop
     type: forEach

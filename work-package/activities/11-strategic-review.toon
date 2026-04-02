@@ -9,24 +9,6 @@ recognition[3]:
   - review implementation
 required: true
 estimatedTime: 15-30m
-modeOverrides:
-  review:
-    description: "Evaluate as though code were newly written. Document findings as feedback for PR author."
-    rules[3]:
-      - Evaluate the PR as though you implemented it - same standards apply
-      - Document findings as review comments, do not apply cleanup (PR author's responsibility)
-      - Focus on identifying issues for feedback, not on rework transitions
-    steps[1]:
-      - id: document-cleanup-recommendations
-        name: Document Cleanup Recommendations
-        description: "Document recommended cleanup actions as review feedback. Do NOT apply changes."
-        skill: review-strategy
-    skipSteps[1]:
-      - apply-cleanup
-    transitionOverride: submit-for-review
-    context_to_preserve[2]:
-      - cleanup_recommendations - Cleanup suggestions for PR author
-      - strategic_review_severity - Overall severity assessment of findings
 artifacts[2]:
   - id: strategic-review-doc
     name: "strategic-review-{n}.md"
@@ -36,7 +18,7 @@ artifacts[2]:
     name: "architecture-summary.md"
     location: planning
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
-steps[6]:
+steps[7]:
   - id: diff-review
     name: Review diff
     description: "Examine all changes in the PR for scope and relevance"
@@ -49,10 +31,24 @@ steps[6]:
     name: Document findings
     description: "Create strategic-review-{n}.md with items that should be removed or simplified"
     skill: review-strategy
+  - id: document-cleanup-recommendations
+    name: Document Cleanup Recommendations
+    description: "Document recommended cleanup actions as review feedback. Do NOT apply changes."
+    skill: review-strategy
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
   - id: apply-cleanup
     name: Apply cleanup
     description: "If cleanup needed, remove identified artifacts and update review document with actions taken"
     skill: review-strategy
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: create-architecture-summary
     name: Create architecture summary
     description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
@@ -93,7 +89,13 @@ checkpoints[1]:
       - id: more-review
         label: Need more review
         description: Additional areas need examination
-transitions[2]:
+transitions[3]:
+  - to: submit-for-review
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
   - to: submit-for-review
     condition:
       type: simple

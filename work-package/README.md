@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> v3.4.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.5.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
@@ -142,7 +142,7 @@ sequenceDiagram
 - MUST NOT execute steps, write code, or produce artifacts
 
 **Worker** (skill: `execute-activity`):
-- Self-bootstraps from `get_workflow_activity` and `get_skill`
+- Self-bootstraps from `next_activity` and `get_step_skill`
 - Executes activity steps sequentially using the skill protocol
 - Handles all checkpoints and user interaction directly
 - Produces artifacts with `artifactPrefix` convention
@@ -155,7 +155,7 @@ This separation prevents context saturation in the orchestrator (which stays lea
 
 ## Review Mode
 
-This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. When activated, the workflow adapts its behavior using the formal `modes` and `modeOverrides` schema constructs.
+This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. When activated, the workflow adapts its behavior using the formal `modes` schema construct and conditional steps/checkpoints/transitions.
 
 **Activation:** Detected from user intent patterns such as "start review work package", "review PR #123", or "review existing implementation". Sets `is_review_mode = true`.
 
