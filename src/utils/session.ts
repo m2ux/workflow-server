@@ -105,5 +105,5 @@ export async function advanceToken(token: string, updates?: SessionAdvance, deco
 export const sessionTokenParam = {
   session_token: z.string()
     .min(1, 'Session token is required')
-    .describe('Opaque session token from start_session'),
+    .describe('REQUIRED. The session token string returned by start_session (or the updated token from the previous tool response). Every tool call after start_session must include this parameter.'),
 };
