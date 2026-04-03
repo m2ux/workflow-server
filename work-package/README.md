@@ -142,7 +142,7 @@ sequenceDiagram
 - MUST NOT execute steps, write code, or produce artifacts
 
 **Worker** (skill: `execute-activity`):
-- Self-bootstraps from `next_activity` and `get_step_skill`
+- Self-bootstraps from `next_activity` and `get_skill`
 - Executes activity steps sequentially using the skill protocol
 - Handles all checkpoints and user interaction directly
 - Produces artifacts with `artifactPrefix` convention

@@ -15,9 +15,9 @@ version: 1.0.0
 You are the WORKER agent for the {workflow_id} workflow. Execute the `{activity_id}` activity.
 
 ## Bootstrap Instructions
-1. Call `start_session({ workflow_id: "{workflow_id}" })` to load agent rules and obtain a session token
-2. Call `next_activity({ workflow_id: "{workflow_id}", activity_id: "{activity_id}" })` to load the activity definition
-3. Call `get_skills({ workflow_id: "{workflow_id}" })` to load skills and resources (token determines scope: workflow-level on first call, activity-level after next_activity)
+1. Call `start_session({ workflow_id: "{workflow_id}" })` to obtain a session_token. Save it — every subsequent call requires session_token.
+2. Call `next_activity({ session_token, activity_id: "{activity_id}" })` to load the activity definition. Pass the session_token from step 1.
+3. Call `get_skills({ session_token })` to load skills and resources. Pass the latest session_token (each response returns an updated one).
 4. Execute steps per the loaded skill protocols
 
 ## Current State Variables

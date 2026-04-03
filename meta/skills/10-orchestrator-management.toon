@@ -13,7 +13,7 @@ inputs[3]:
 
 protocol:
   load-workflow[2]:
-    - "Call get_workflow({ workflow_id, summary: true }) to load the workflow structure"
+    - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. Pass the session_token from start_session — there is no workflow_id parameter on get_workflow."
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
   initialize-state[5]:
     - "Determine planning_folder_path from workflow variables or user request context"
@@ -25,7 +25,7 @@ protocol:
     - "Call next_activity to load the activity definition"
     - "Compose worker prompt using resource meta/05 (worker-prompt-template) — do NOT inject paraphrased skill content"
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
-    - "Do NOT call get_step_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
+    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
     - "For resumed workers: send only the new activity_id, updated state variables, and bootstrap instructions"
     - "If is_resuming is true (first dispatch after state restoration): include a resumption context block listing completedActivities, key variable values, and prior checkpoint decisions. After this dispatch completes, set is_resuming = false"
   process-result[6]:
@@ -82,10 +82,10 @@ rules:
 tools:
   get_workflow:
     when: "Once at workflow start — load workflow structure and initialActivity"
-    params: "workflow_id, summary=true"
+    params: "session_token, summary=true (no workflow_id — it is encoded in the token)"
   next_activity:
     when: "Before dispatching each activity"
-    params: "activity_id from initialActivity (first call) or transitions (subsequent calls)"
+    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls)"
   task:
     when: "Dispatching or resuming the worker sub-agent"
     params: "description, prompt, subagent_type, resume"
@@ -97,13 +97,13 @@ tools:
     params: "session_token, trace_tokens"
   save_state:
     when: "After every activity_complete, after artifacts committed"
-    params: "state (JSON string), planning_folder_path, description (optional)"
+    params: "session_token, state (JSON string), planning_folder_path, description (optional)"
   restore_state:
     when: "Resuming a workflow from saved state"
-    params: "file_path (path to workflow-state.toon)"
+    params: "session_token, file_path (path to workflow-state.toon)"
   get_resource:
     when: "After get_skills — loading content for entries in _resources"
-    params: "workflow_id, resource_index"
+    params: "session_token, resource_index"
 
 errors:
   worker_timeout:

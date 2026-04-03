@@ -191,7 +191,7 @@ Meta defines universal skills used by all workflows:
 |-------|------------|-------------|
 | `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
 | `agent-conduct` | Agent behavioral boundaries | File sensitivity, communication tone, resource loading discipline, build command priority |
-| `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps using get_step_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
+| `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
 | `state-management` | Manage workflow state | Initialize, update, and persist state across sessions via save_state/restore_state |
 | `artifact-management` | Manage planning artifacts | Planning folder creation, regular file and submodule commit workflows |
 | `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
@@ -200,7 +200,7 @@ Meta defines universal skills used by all workflows:
 | `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
 | `gitnexus-operations` | Query codebases via knowledge graph | GitNexus MCP tools for impact analysis, debugging, refactoring |
 | `orchestrator-management` | Consolidated orchestrator skill | Workflow coordination, state management, worker dispatch, checkpoint presentation. Inline-only — never delegated to a sub-agent. |
-| `worker-management` | Consolidated worker skill | Activity execution, step-level skill loading via get_step_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
+| `worker-management` | Consolidated worker skill | Activity execution, step-level skill loading via get_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
 
 > **Note:** `workflow-execution` was absorbed into `execute-activity`. `orchestrator-management` and `worker-management` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
 
