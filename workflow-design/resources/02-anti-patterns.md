@@ -62,7 +62,7 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 
 31. **"Call start_session, then call next_activity"** (skipping the map) — Bootstrap sequences that omit a tool needed to discover the next step. If `start_session` doesn't return `initialActivity` and the bootstrap doesn't mention `get_workflow`, agents must guess. Every bootstrap sequence must provide a complete path from session start to first meaningful action.
 
-32. **"get_skill" in one skill, "get_step_skill" in another** — Multiple skills describing the same operation using different tool names. When execute-activity says `get_skill` and worker-management says `get_step_skill`, agents get contradictory guidance. Each operation must be described with one consistent tool name across all skills.
+32. **Inconsistent tool names across skills** — Multiple skills describing the same operation using different tool names. When one skill says `get_skill` and another says `get_step_skill`, agents get contradictory guidance. Each operation must be described with one consistent tool name across all skills. The canonical name is `get_skill`.
 
 33. **"Pass token to all calls" (repeated in 4 skills)** — Behavioral guidance duplicated across skills and tool descriptions. When the same token-handling instruction appears in session-protocol, worker-management, orchestrator-management, AND the tool description, updates to one create silent drift in the others. Guidance belongs in one authoritative location; others reference it.
 

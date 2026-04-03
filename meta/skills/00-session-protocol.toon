@@ -6,12 +6,13 @@ description: "Cross-cutting skill defining the protocol for workflow sessions. C
 
 protocol:
   start-session[4]:
-    - "Call start_session with the chosen workflow_id to obtain a session token."
-    - "Call get_skills(workflow_id) to load behavioral protocols (session-protocol, agent-conduct, and workflow-specific skills)."
-    - "Call get_workflow(workflow_id, summary=true) to load the workflow structure. The response includes initialActivity (which activity to load first) and the full activity list."
+    - "Call start_session({ workflow_id }) to obtain a session_token. This is the ONLY tool that takes workflow_id."
+    - "Call get_skills({ session_token }) to load behavioral protocols (session-protocol, agent-conduct, and workflow-specific skills). Pass the session_token from start_session."
+    - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. The response includes initialActivity (which activity to load first) and the full activity list."
     - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
-  token-management[2]:
-    - "Pass the session token to ALL subsequent tool calls alongside explicit workflow_id parameters. Use the updated token from each response's _meta.session_token field for the next call."
+  token-management[3]:
+    - "CRITICAL: After start_session, EVERY tool call requires a session_token parameter. There is NO workflow_id parameter on any tool except start_session — the workflow identity is encoded inside the token."
+    - "Use the updated session_token from each response for the next call. Tokens are returned both in the response body and in _meta.session_token."
     - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
   validation[1]:
     - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies (workflow mismatch, invalid transition, version drift, missing step manifest) and should be addressed but do not block execution."
@@ -24,14 +25,19 @@ protocol:
 tools:
   start_session:
     when: "Beginning a new workflow session"
+    params: "workflow_id"
   get_skills:
     when: "Loading behavioral protocols after start_session"
+    params: "session_token"
   get_workflow:
     when: "After start_session — loading workflow structure and initialActivity"
+    params: "session_token, summary"
   next_activity:
     when: "Transitioning to the first or next activity"
-    params: "activity_id from initialActivity (first call) or transitions (subsequent calls), step_manifest"
-  get_step_skill:
+    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls), step_manifest"
+  get_skill:
     when: "Before executing a step that declares a skill"
+    params: "session_token, step_id"
   get_resource:
-    when: "After get_skills or get_step_skill — loading content for entries in _resources"
+    when: "After get_skills or get_skill — loading content for entries in _resources"
+    params: "session_token, resource_index"
