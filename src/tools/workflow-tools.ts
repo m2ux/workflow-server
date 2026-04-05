@@ -99,9 +99,31 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     },
     withAuditLog('next_activity', async ({ session_token, activity_id, transition_condition, step_manifest, activity_manifest }) => {
       const token = await decodeSessionToken(session_token);
+
       const workflow_id = token.wf;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
+
+      if (token.pcp.length > 0 && activity_id !== token.act) {
+        const fromActivity = getActivity(result.value, token.act);
+        const cpDetails = token.pcp.map(cpId => {
+          const cp = fromActivity?.checkpoints?.find(c => c.id === cpId);
+          if (!cp) return `  - respond_checkpoint({ checkpoint_id: "${cpId}", option_id: "<user_choice>" })`;
+          if (cp.condition) {
+            return `  - respond_checkpoint({ checkpoint_id: "${cpId}", option_id: "<user_choice>" })  — or condition_not_met: true if condition not met (conditional checkpoint)`;
+          }
+          if (cp.blocking === false && cp.defaultOption && cp.autoAdvanceMs) {
+            return `  - respond_checkpoint({ checkpoint_id: "${cpId}", option_id: "<user_choice>" })  — or auto_advance: true after ${cp.autoAdvanceMs}ms (non-blocking, default: "${cp.defaultOption}")`;
+          }
+          const optionIds = cp.options.map(o => o.id);
+          return `  - respond_checkpoint({ checkpoint_id: "${cpId}", option_id: "<user_choice>" })  — blocking, options: [${optionIds.join(', ')}]`;
+        });
+        throw new Error(
+          `Cannot transition to '${activity_id}': ${token.pcp.length} unresolved checkpoint(s) ` +
+          `on activity '${token.act}'. Resolve each by calling respond_checkpoint with the current session_token:\n` +
+          cpDetails.join('\n')
+        );
+      }
       const activity = getActivity(result.value, activity_id);
       if (!activity) throw new Error(`Activity not found: ${activity_id}`);
 
@@ -135,7 +157,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...activityManifestWarnings,
       );
 
-      const advancedToken = await advanceToken(session_token, { act: activity_id, cond: transition_condition ?? '' });
+      const requiredCps = (activity.checkpoints ?? [])
+        .filter(c => c.required !== false)
+        .map(c => c.id);
+
+      const advancedToken = await advanceToken(session_token, {
+        act: activity_id,
+        cond: transition_condition ?? '',
+        pcp: requiredCps,
+        pcpt: requiredCps.length > 0 ? Math.floor(Date.now() / 1000) : 0,
+      });
 
       const meta: Record<string, unknown> = { session_token: advancedToken, validation };
 
@@ -186,6 +217,119 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const advancedToken = await advanceToken(session_token, { act: activity_id });
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, session_token: advancedToken }) }],
+        _meta: { session_token: advancedToken, validation },
+      };
+    }, traceOpts));
+
+  const MIN_RESPONSE_SECONDS = config.minCheckpointResponseSeconds ?? 3;
+
+  server.tool('respond_checkpoint',
+    'Submit a checkpoint response to clear the checkpoint gate. When next_activity loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token and block further transitions until resolved. Call this tool for each pending checkpoint before calling next_activity for the next activity. ' +
+    'Exactly one of option_id, auto_advance, or condition_not_met must be provided. ' +
+    'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
+    'auto_advance: use the checkpoint\'s defaultOption (only for non-blocking checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
+    'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field).',
+    {
+      ...sessionTokenParam,
+      checkpoint_id: z.string().describe('The checkpoint ID to respond to. Must be one of the pending checkpoint IDs from the current token.'),
+      option_id: z.string().optional().describe('The option ID selected by the user. Must match one of the checkpoint\'s defined options.'),
+      auto_advance: z.boolean().optional().describe('Set to true to auto-advance a non-blocking checkpoint using its defaultOption. Only valid for checkpoints with blocking=false, defaultOption, and autoAdvanceMs. The server enforces the autoAdvanceMs timer.'),
+      condition_not_met: z.boolean().optional().describe('Set to true to dismiss a conditional checkpoint whose condition was not met. Only valid for checkpoints that have a condition field.'),
+    },
+    withAuditLog('respond_checkpoint', async ({ session_token, checkpoint_id, option_id, auto_advance, condition_not_met }) => {
+      const token = await decodeSessionToken(session_token);
+
+      if (!token.pcp.includes(checkpoint_id)) {
+        throw new Error(
+          `Checkpoint '${checkpoint_id}' is not pending. Pending checkpoints: [${token.pcp.join(', ')}]`
+        );
+      }
+
+      const modeCount = [option_id, auto_advance, condition_not_met].filter(v => v !== undefined).length;
+      if (modeCount !== 1) {
+        throw new Error('Exactly one of option_id, auto_advance, or condition_not_met must be provided.');
+      }
+
+      const result = await loadWorkflow(config.workflowDir, token.wf);
+      if (!result.success) throw result.error;
+      const checkpoint = getCheckpoint(result.value, token.act, checkpoint_id);
+      if (!checkpoint) throw new Error(`Checkpoint definition not found: ${checkpoint_id} in activity ${token.act}`);
+
+      const now = Math.floor(Date.now() / 1000);
+      const elapsed = now - token.pcpt;
+      let resolvedOptionId: string | undefined;
+      let effect: Record<string, unknown> | undefined;
+
+      if (option_id !== undefined) {
+        if (elapsed < MIN_RESPONSE_SECONDS) {
+          throw new Error(
+            `Checkpoint response too fast (${elapsed}s < ${MIN_RESPONSE_SECONDS}s minimum). ` +
+            `Present the checkpoint to the user before responding.`
+          );
+        }
+        const option = checkpoint.options.find(o => o.id === option_id);
+        if (!option) {
+          const validIds = checkpoint.options.map(o => o.id);
+          throw new Error(`Invalid option '${option_id}' for checkpoint '${checkpoint_id}'. Valid options: [${validIds.join(', ')}]`);
+        }
+        resolvedOptionId = option_id;
+        effect = option.effect as Record<string, unknown> | undefined;
+      } else if (auto_advance) {
+        if (checkpoint.blocking !== false) {
+          throw new Error(
+            `Cannot auto-advance blocking checkpoint '${checkpoint_id}'. ` +
+            `Blocking checkpoints require an explicit option_id from the user.`
+          );
+        }
+        if (!checkpoint.defaultOption || !checkpoint.autoAdvanceMs) {
+          throw new Error(
+            `Cannot auto-advance checkpoint '${checkpoint_id}': missing defaultOption or autoAdvanceMs.`
+          );
+        }
+        const requiredSeconds = Math.ceil(checkpoint.autoAdvanceMs / 1000);
+        if (elapsed < requiredSeconds) {
+          throw new Error(
+            `Auto-advance timer not elapsed for checkpoint '${checkpoint_id}' ` +
+            `(${elapsed}s < ${requiredSeconds}s). Wait for the full autoAdvanceMs (${checkpoint.autoAdvanceMs}ms) before auto-advancing.`
+          );
+        }
+        const defaultOpt = checkpoint.options.find(o => o.id === checkpoint.defaultOption);
+        if (!defaultOpt) {
+          throw new Error(`Default option '${checkpoint.defaultOption}' not found in checkpoint '${checkpoint_id}'.`);
+        }
+        resolvedOptionId = checkpoint.defaultOption;
+        effect = defaultOpt.effect as Record<string, unknown> | undefined;
+      } else if (condition_not_met) {
+        if (!checkpoint.condition) {
+          throw new Error(
+            `Cannot dismiss checkpoint '${checkpoint_id}': it has no condition field. ` +
+            `Only conditional checkpoints can be dismissed with condition_not_met.`
+          );
+        }
+      }
+
+      const remainingPcp = token.pcp.filter(id => id !== checkpoint_id);
+      const advancedToken = await advanceToken(session_token, {
+        pcp: remainingPcp,
+        pcpt: remainingPcp.length > 0 ? token.pcpt : 0,
+      }, token);
+
+      const validation = buildValidation(
+        validateWorkflowVersion(token, result.value),
+      );
+
+      const responseData: Record<string, unknown> = {
+        checkpoint_id,
+        resolved: true,
+        session_token: advancedToken,
+        remaining_checkpoints: remainingPcp,
+      };
+      if (resolvedOptionId !== undefined) responseData['resolved_option'] = resolvedOptionId;
+      if (effect !== undefined) responseData['effect'] = effect;
+      if (condition_not_met) responseData['dismissed'] = true;
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(responseData) }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));

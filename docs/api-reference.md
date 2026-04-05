@@ -25,8 +25,9 @@ All require `session_token`. The workflow is determined from the session token (
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `get_workflow` | `session_token`, `summary?` | Load the workflow definition for the current session. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
-| `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Load and transition to an activity. Returns the complete activity definition (steps, checkpoints, transitions, mode overrides, rules, skill references). Also returns a trace token in `_meta.trace_token` |
+| `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Load and transition to an activity. Returns the complete activity definition (steps, checkpoints, transitions, mode overrides, rules, skill references). Also returns a trace token in `_meta.trace_token`. **Embeds required checkpoint IDs in the token — hard-rejects transition to a different activity until all are resolved via `respond_checkpoint`** |
 | `get_checkpoint` | `session_token`, `activity_id`, `checkpoint_id` | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation |
+| `respond_checkpoint` | `session_token`, `checkpoint_id`, `option_id?`, `auto_advance?`, `condition_not_met?` | Resolve a pending checkpoint. Exactly one of: `option_id` (user's selection), `auto_advance` (use `defaultOption` after `autoAdvanceMs` elapses, non-blocking only), or `condition_not_met` (dismiss conditional checkpoint). Returns effects and updated token with the checkpoint removed from `pcp` |
 
 ### Skill Tools
 
@@ -55,7 +56,7 @@ All require `session_token`. The workflow is determined from the session token.
 
 The session token is an opaque string returned by `start_session`. It captures the context of each call (workflow, activity, skill) so the server can validate subsequent calls for consistency.
 
-The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), and `aid` (agent ID).
+The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), `aid` (agent ID), `pcp` (pending checkpoint IDs), and `pcpt` (checkpoint issuance timestamp).
 
 ### Lifecycle
 
@@ -66,8 +67,9 @@ The token payload carries: `wf` (workflow ID), `act` (current activity), `skill`
 5. Call `get_workflow(summary=true)` to get the activity list and `initialActivity`
 6. Call `next_activity(initialActivity)` to load the first activity
 7. For each step with a skill, call `get_skill(step_id)` then `get_resource` for each `_resources` entry
-8. Read `transitions` from the activity response; call `next_activity` with a `step_manifest` to advance
-9. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
+8. Call `respond_checkpoint` for each required checkpoint before transitioning
+9. Read `transitions` from the activity response; call `next_activity` with a `step_manifest` to advance
+10. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
 
 ### Validation
 
@@ -94,6 +96,24 @@ Validation checks:
 - **HMAC integrity** — token signature is verified on every call (rejects fabricated/tampered tokens)
 
 Warnings do not block execution — the tool still returns its result. They enable agent self-correction. All validation warnings are captured in the execution trace.
+
+### Checkpoint Enforcement
+
+When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the token's `pcp` field. **Calling `next_activity` for a different activity while `pcp` is non-empty produces a hard error** (not a warning).
+
+To clear the gate, call `respond_checkpoint` for each pending checkpoint:
+
+```json
+{ "session_token": "...", "checkpoint_id": "confirm-implementation", "option_id": "proceed" }
+```
+
+Three resolution modes:
+
+- **`option_id`** — the user's selected option. Validated against the checkpoint definition. Minimum response time enforced (default 3s since checkpoint issuance).
+- **`auto_advance: true`** — use the checkpoint's `defaultOption`. Only valid for non-blocking checkpoints (`blocking: false`). The server enforces the full `autoAdvanceMs` timer.
+- **`condition_not_met: true`** — dismiss a conditional checkpoint whose condition evaluated to false. Only valid when the checkpoint has a `condition` field.
+
+The response includes any effects from the selected option (`setVariable`, `transitionTo`, `skipActivities`), the remaining pending checkpoints, and an updated token.
 
 ### Step Completion Manifest
 

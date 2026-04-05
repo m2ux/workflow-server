@@ -9,6 +9,22 @@ function parseToolResponse(result: { content: unknown[] }): any {
   return JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function resolveCheckpoints(client: Client, token: string, activityResponse: any): Promise<string> {
+  let currentToken = token;
+  const checkpoints = activityResponse.checkpoints ?? [];
+  for (const cp of checkpoints) {
+    if (cp.required === false) continue;
+    const result = await client.callTool({
+      name: 'respond_checkpoint',
+      arguments: { session_token: currentToken, checkpoint_id: cp.id, option_id: cp.options[0].id },
+    });
+    if (result.isError) throw new Error(`Failed to resolve checkpoint ${cp.id}`);
+    currentToken = parseToolResponse(result).session_token;
+  }
+  return currentToken;
+}
+
 const SEMVER_RE = /^\d+\.\d+\.\d+$/;
 
 describe('mcp-server integration', () => {
@@ -22,6 +38,7 @@ describe('mcp-server integration', () => {
       schemasDir: resolve(import.meta.dirname, '../schemas'),
       serverName: 'test-workflow-server',
       serverVersion: '1.0.0',
+      minCheckpointResponseSeconds: 0,
     };
 
     const server = createServer(config);
@@ -622,7 +639,9 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAfterStart = actMeta['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      let tokenAfterStart = actMeta['session_token'] as string;
+      tokenAfterStart = await resolveCheckpoints(client, tokenAfterStart, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -641,9 +660,10 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAfterStart = actMeta['session_token'] as string;
-
       const actContent = parseToolResponse(actResult);
+      let tokenAfterStart = actMeta['session_token'] as string;
+      tokenAfterStart = await resolveCheckpoints(client, tokenAfterStart, actContent);
+
       const manifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
 
       const result = await client.callTool({
@@ -667,7 +687,8 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'codebase-comprehension' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAtComprehension = actMeta['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const tokenAtComprehension = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -690,7 +711,8 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'codebase-comprehension' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAtComprehension = actMeta['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const tokenAtComprehension = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -713,7 +735,8 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAtStart = actMeta['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const tokenAtStart = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -736,7 +759,8 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'codebase-comprehension' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAtComprehension = actMeta['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const tokenAtComprehension = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -761,7 +785,8 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAfterAct = actMeta['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const tokenAfterAct = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -779,7 +804,8 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAfterAct = actMeta['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const tokenAfterAct = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -801,9 +827,9 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAfterAct = actMeta['session_token'] as string;
-
       const actContent = parseToolResponse(actResult);
+      const tokenAfterAct = await resolveCheckpoints(client, actMeta['session_token'] as string, actContent);
+
       const reversedManifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'done' })).reverse();
 
       const result = await client.callTool({
@@ -826,7 +852,8 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = actResult._meta as Record<string, unknown>;
-      const tokenAfterAct = actMeta['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const tokenAfterAct = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -999,9 +1026,12 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const meta1 = act1._meta as Record<string, unknown>;
-      const updatedToken = meta1['session_token'] as string;
+      const act1Response = parseToolResponse(act1);
+      let updatedToken = meta1['session_token'] as string;
       const traceToken1 = meta1['trace_token'] as string;
       expect(traceToken1).toBeDefined();
+
+      updatedToken = await resolveCheckpoints(client, updatedToken, act1Response);
 
       const act2 = await client.callTool({
         name: 'next_activity',
@@ -1102,6 +1132,231 @@ describe('mcp-server integration', () => {
       const traceData = parseToolResponse(trace2);
       const names = traceData.events.map((e: { name: string }) => e.name);
       expect(names).not.toContain('next_activity');
+    });
+  });
+
+  // ============== Checkpoint Enforcement ==============
+
+  describe('checkpoint enforcement', () => {
+    it('next_activity should populate pcp for activities with required checkpoints', async () => {
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      expect(result.isError).toBeFalsy();
+      const activity = parseToolResponse(result);
+      const requiredCps = (activity.checkpoints ?? []).filter((c: { required?: boolean }) => c.required !== false);
+      expect(requiredCps.length).toBeGreaterThan(0);
+    });
+
+    it('next_activity should hard-reject when pcp is non-empty and transitioning to different activity', async () => {
+      const act1 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actMeta = act1._meta as Record<string, unknown>;
+      const tokenWithPcp = actMeta['session_token'] as string;
+
+      const act2 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: tokenWithPcp, activity_id: 'design-philosophy' },
+      });
+      expect(act2.isError).toBe(true);
+      const errorText = (act2.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('unresolved checkpoint');
+      expect(errorText).toContain('respond_checkpoint');
+      expect(errorText).toContain('checkpoint_id');
+      expect(errorText).toContain('option_id');
+    });
+
+    it('next_activity should allow re-entry to same activity with non-empty pcp', async () => {
+      const act1 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actMeta = act1._meta as Record<string, unknown>;
+      const tokenWithPcp = actMeta['session_token'] as string;
+
+      const act2 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: tokenWithPcp, activity_id: 'start-work-package' },
+      });
+      expect(act2.isError).toBeFalsy();
+      expect(parseToolResponse(act2).id).toBe('start-work-package');
+    });
+
+    it('respond_checkpoint should clear a checkpoint from pcp', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const actResponse = parseToolResponse(act);
+      const token = actMeta['session_token'] as string;
+      const firstCp = actResponse.checkpoints[0];
+
+      const cpResult = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_token: token, checkpoint_id: firstCp.id, option_id: firstCp.options[0].id },
+      });
+      expect(cpResult.isError).toBeFalsy();
+      const response = parseToolResponse(cpResult);
+      expect(response.resolved).toBe(true);
+      expect(response.remaining_checkpoints).not.toContain(firstCp.id);
+    });
+
+    it('respond_checkpoint should reject invalid option_id', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const actResponse = parseToolResponse(act);
+      const token = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_token: token, checkpoint_id: actResponse.checkpoints[0].id, option_id: 'nonexistent-option' },
+      });
+      expect(result.isError).toBe(true);
+      const errorText = (result.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('Invalid option');
+    });
+
+    it('respond_checkpoint should reject checkpoint not in pcp', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const token = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_token: token, checkpoint_id: 'nonexistent-cp', option_id: 'some-opt' },
+      });
+      expect(result.isError).toBe(true);
+      const errorText = (result.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('not pending');
+    });
+
+    it('respond_checkpoint with auto_advance should reject on blocking checkpoint', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const actResponse = parseToolResponse(act);
+      const token = actMeta['session_token'] as string;
+      const blockingCp = actResponse.checkpoints.find((c: { blocking?: boolean }) => c.blocking !== false);
+
+      const result = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_token: token, checkpoint_id: blockingCp.id, auto_advance: true },
+      });
+      expect(result.isError).toBe(true);
+      const errorText = (result.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('blocking');
+    });
+
+    it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const actResponse = parseToolResponse(act);
+      const token = actMeta['session_token'] as string;
+      const unconditionalCp = actResponse.checkpoints.find((c: { condition?: unknown }) => !c.condition);
+
+      const result = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_token: token, checkpoint_id: unconditionalCp.id, condition_not_met: true },
+      });
+      expect(result.isError).toBe(true);
+      const errorText = (result.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('no condition');
+    });
+
+    it('respond_checkpoint with condition_not_met should accept conditional checkpoint', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const actResponse = parseToolResponse(act);
+      const token = actMeta['session_token'] as string;
+      const conditionalCp = actResponse.checkpoints.find((c: { condition?: unknown }) => c.condition);
+      if (!conditionalCp) return;
+
+      const result = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_token: token, checkpoint_id: conditionalCp.id, condition_not_met: true },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.dismissed).toBe(true);
+    });
+
+    it('respond_checkpoint should return effects from selected option', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const actResponse = parseToolResponse(act);
+      const token = actMeta['session_token'] as string;
+      const cpWithEffects = actResponse.checkpoints.find(
+        (c: { options: Array<{ effect?: unknown }> }) => c.options.some((o: { effect?: unknown }) => o.effect)
+      );
+      if (!cpWithEffects) return;
+      const optionWithEffect = cpWithEffects.options.find((o: { effect?: unknown }) => o.effect);
+
+      const result = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_token: token, checkpoint_id: cpWithEffects.id, option_id: optionWithEffect.id },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.effect).toBeDefined();
+    });
+
+    it('full flow: next_activity -> resolve all checkpoints -> next_activity succeeds', async () => {
+      const act1 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const act1Meta = act1._meta as Record<string, unknown>;
+      const act1Response = parseToolResponse(act1);
+      let token = act1Meta['session_token'] as string;
+
+      token = await resolveCheckpoints(client, token, act1Response);
+
+      const act2 = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: token, activity_id: 'design-philosophy' },
+      });
+      expect(act2.isError).toBeFalsy();
+      expect(parseToolResponse(act2).id).toBe('design-philosophy');
+    });
+
+    it('respond_checkpoint should require exactly one resolution mode', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const actResponse = parseToolResponse(act);
+      const token = actMeta['session_token'] as string;
+      const cpId = actResponse.checkpoints[0].id;
+
+      const result = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_token: token, checkpoint_id: cpId, option_id: 'confirmed', auto_advance: true },
+      });
+      expect(result.isError).toBe(true);
+      const errorText = (result.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('Exactly one');
     });
   });
 });

@@ -12,6 +12,8 @@ export interface SessionPayload {
   ts: number;
   sid: string;
   aid: string;
+  pcp: string[];
+  pcpt: number;
 }
 
 export interface SessionAdvance {
@@ -20,6 +22,8 @@ export interface SessionAdvance {
   skill?: string;
   cond?: string;
   aid?: string;
+  pcp?: string[];
+  pcpt?: number;
 }
 
 async function encode(payload: SessionPayload): Promise<string> {
@@ -40,6 +44,8 @@ const SessionPayloadSchema = z.object({
   ts: z.number(),
   sid: z.string(),
   aid: z.string(),
+  pcp: z.array(z.string()),
+  pcpt: z.number(),
 });
 
 async function decode(token: string): Promise<SessionPayload> {
@@ -80,6 +86,8 @@ export async function createSessionToken(workflowId: string, workflowVersion: st
     ts: Math.floor(Date.now() / 1000),
     sid: randomUUID(),
     aid: '',
+    pcp: [],
+    pcpt: 0,
   });
 }
 
@@ -98,6 +106,8 @@ export async function advanceToken(token: string, updates?: SessionAdvance, deco
     ...(updates?.skill !== undefined && { skill: updates.skill }),
     ...(updates?.cond !== undefined && { cond: updates.cond }),
     ...(updates?.aid !== undefined && { aid: updates.aid }),
+    ...(updates?.pcp !== undefined && { pcp: updates.pcp }),
+    ...(updates?.pcpt !== undefined && { pcpt: updates.pcpt }),
   };
   return encode(advanced);
 }

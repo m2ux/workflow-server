@@ -10,6 +10,8 @@ export interface ServerConfig {
   schemaPreamble?: string;
   /** In-process trace store for execution tracing. Created by createServer(). */
   traceStore?: TraceStore;
+  /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
+  minCheckpointResponseSeconds?: number;
 }
 
 /** Config shape after startup — schemaPreamble and traceStore are guaranteed present. */

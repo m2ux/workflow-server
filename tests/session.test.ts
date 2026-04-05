@@ -165,6 +165,53 @@ describe('session token utilities', () => {
     });
   });
 
+  describe('pending checkpoints (pcp/pcpt)', () => {
+    it('should default pcp to empty array', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const payload = await decodeSessionToken(token);
+      expect(payload.pcp).toEqual([]);
+      expect(payload.pcpt).toBe(0);
+    });
+
+    it('should set pcp via advanceToken', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const advanced = await advanceToken(token, { pcp: ['cp-1', 'cp-2'], pcpt: 1000 });
+      const payload = await decodeSessionToken(advanced);
+      expect(payload.pcp).toEqual(['cp-1', 'cp-2']);
+      expect(payload.pcpt).toBe(1000);
+    });
+
+    it('pcp should persist across advance when not updated', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const step1 = await advanceToken(token, { pcp: ['cp-1'], pcpt: 500 });
+      const step2 = await advanceToken(step1, { act: 'some-activity' });
+      const payload = await decodeSessionToken(step2);
+      expect(payload.pcp).toEqual(['cp-1']);
+      expect(payload.pcpt).toBe(500);
+    });
+
+    it('pcp should be clearable', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const withCp = await advanceToken(token, { pcp: ['cp-1'], pcpt: 500 });
+      const cleared = await advanceToken(withCp, { pcp: [], pcpt: 0 });
+      const payload = await decodeSessionToken(cleared);
+      expect(payload.pcp).toEqual([]);
+      expect(payload.pcpt).toBe(0);
+    });
+
+    it('tampering with pcp should fail HMAC verification', async () => {
+      const token = await createSessionToken('work-package', '3.4.0');
+      const advanced = await advanceToken(token, { pcp: ['cp-1'], pcpt: 100 });
+      const [b64] = advanced.split('.');
+      const json = Buffer.from(b64!, 'base64url').toString('utf8');
+      const payload = JSON.parse(json);
+      payload.pcp = [];
+      const tampered = Buffer.from(JSON.stringify(payload)).toString('base64url');
+      const sig = advanced.split('.')[1];
+      await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('signature verification failed');
+    });
+  });
+
   describe('token opacity and HMAC', () => {
     it('token should not contain readable workflow id', async () => {
       const token = await createSessionToken('work-package', '3.4.0');

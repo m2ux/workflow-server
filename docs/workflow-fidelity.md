@@ -18,19 +18,22 @@ The workflow server addresses these through six layers of enforcement, each oper
 │  Layer 1: Token Integrity (HMAC)            │
 │  Every call — prevents fabrication           │
 ├─────────────────────────────────────────────┤
-│  Layer 2: Cross-Activity Validation          │
+│  Layer 2: Checkpoint Gate                    │
+│  At transitions — blocks until resolved      │
+├─────────────────────────────────────────────┤
+│  Layer 3: Cross-Activity Validation          │
 │  Between activities — checks consistency     │
 ├─────────────────────────────────────────────┤
-│  Layer 3: Transition Condition Tracking      │
+│  Layer 4: Transition Condition Tracking      │
 │  At transitions — verifies condition logic   │
 ├─────────────────────────────────────────────┤
-│  Layer 4: Step Completion Manifest           │
+│  Layer 5: Step Completion Manifest           │
 │  Within activities — verifies completeness   │
 ├─────────────────────────────────────────────┤
-│  Layer 5: Activity Manifest                  │
+│  Layer 6: Activity Manifest                  │
 │  Across activities — tracks workflow journey  │
 ├─────────────────────────────────────────────┤
-│  Layer 6: Execution Trace                    │
+│  Layer 7: Execution Trace                    │
 │  Entire session — mechanical audit trail      │
 └─────────────────────────────────────────────┘
 ```
@@ -52,6 +55,8 @@ The token payload carries:
 | `ts` | Creation timestamp |
 | `sid` | Session UUID — uniquely identifies this execution session across all tool calls |
 | `aid` | Agent ID — identifies which agent (orchestrator vs. worker) made the call |
+| `pcp` | Pending checkpoint IDs — gates activity transitions until resolved |
+| `pcpt` | Checkpoint issuance timestamp — enables timing enforcement |
 
 **What it enforces:**
 - Agents cannot fabricate tokens — the server rejects any token it didn't issue
@@ -59,10 +64,36 @@ The token payload carries:
 - Each tool call produces a new token with an incremented counter, ensuring tokens are unique per exchange
 - The `sid` field binds all tool calls to a single session, enabling trace correlation
 - The `aid` field distinguishes orchestrator from worker calls in multi-agent execution patterns
+- The `pcp` field blocks activity transitions until all required checkpoints are resolved via `respond_checkpoint`
 
 **How it works:** The server verifies the HMAC signature on every tool call before processing. Invalid signatures cause immediate rejection.
 
-### Layer 2: Cross-Activity Validation
+### Layer 2: Checkpoint Gate
+
+When `next_activity` loads an activity with required checkpoints (`required: true`, the default), the server embeds those checkpoint IDs in the token's `pcp` field and records the issuance time in `pcpt`. The token then **hard-blocks** any transition to a different activity until all pending checkpoints are resolved.
+
+**Resolution via `respond_checkpoint`:**
+
+The agent must call `respond_checkpoint` for each pending checkpoint, using exactly one of three resolution modes:
+
+| Mode | When to use | Timing enforcement |
+|------|-------------|-------------------|
+| `option_id` | User selected an option | Minimum response time (default 3s since `pcpt`) |
+| `auto_advance` | Non-blocking checkpoint timer elapsed | Full `autoAdvanceMs` must elapse since `pcpt` |
+| `condition_not_met` | Conditional checkpoint's condition is false | None (but checkpoint must have a `condition` field) |
+
+**What it enforces:**
+- Agents cannot skip checkpoints — `next_activity` throws a hard error if `pcp` is non-empty when transitioning to a different activity
+- Agents cannot forge responses — `option_id` is validated against the checkpoint definition
+- Agents cannot instant-auto-resolve — the server enforces minimum elapsed time for user-answered checkpoints and the full `autoAdvanceMs` timer for auto-advanced ones
+- Agents cannot dismiss unconditional checkpoints — `condition_not_met` is rejected unless the checkpoint has a `condition` field
+- Agents cannot tamper with `pcp` — the field is in the HMAC-signed token payload
+
+**How it works:** `next_activity` populates `pcp` on the outgoing token. The agent calls `respond_checkpoint` for each entry, which removes it from `pcp` and returns effects (setVariable, transitionTo, skipActivities). Only when `pcp` is empty can the agent transition to the next activity.
+
+**Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `next_activity` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The `pcpt` timestamp is set once when `pcp` is populated and persists across all token advances until cleared.
+
+### Layer 3: Cross-Activity Validation
 
 When an agent makes a tool call, the server compares the token's recorded state (from the previous call) against the current call's explicit parameters. Warnings are returned in `_meta.validation`.
 
@@ -75,9 +106,9 @@ When an agent makes a tool call, the server compares the token's recorded state 
 | Skill association | Agent loaded a skill not declared by the current activity |
 | Version drift | Workflow definition changed on disk since the session started |
 
-**Design principle:** Warnings don't block execution — the tool still returns its result. This allows agents to self-correct rather than being hard-blocked, while making violations visible. All validation warnings are captured in the execution trace (Layer 6).
+**Design principle:** Warnings don't block execution — the tool still returns its result. This allows agents to self-correct rather than being hard-blocked, while making violations visible. All validation warnings are captured in the execution trace (Layer 7).
 
-### Layer 3: Transition Condition Tracking
+### Layer 4: Transition Condition Tracking
 
 When calling `next_activity` to transition to a new activity, agents can include a `transition_condition` parameter — the condition string (from the `transitions` field of the current activity's definition) that caused the transition.
 
@@ -88,7 +119,7 @@ When calling `next_activity` to transition to a new activity, agents can include
 
 **What it cannot verify in real-time:** Whether the condition is actually true in the agent's state. However, conditions are typically set by user choices at checkpoints, which are logged. Post-hoc review can cross-reference claimed conditions against checkpoint responses and trace data.
 
-### Layer 4: Step Completion Manifest
+### Layer 5: Step Completion Manifest
 
 When transitioning between activities via `next_activity`, agents include a `step_manifest` parameter — a structured summary of each step completed in the previous activity.
 
@@ -109,7 +140,7 @@ When transitioning between activities via `next_activity`, agents include a `ste
 
 **Design constraint:** All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level. This simplifies enforcement — the validator checks for exact match against the expected step sequence.
 
-### Layer 5: Activity Manifest
+### Layer 6: Activity Manifest
 
 When transitioning between activities via `next_activity`, agents can include an `activity_manifest` — a structured summary of activities completed so far in the workflow.
 
@@ -128,9 +159,9 @@ When transitioning between activities via `next_activity`, agents can include an
 - Outcomes are non-empty
 - The activity sequence is plausible given the transition table
 
-**Design principle:** Activity manifest validation is advisory — it produces warnings, not rejections. This matches the design principle of Layer 2. The manifest provides a workflow-level audit trail that complements the step-level detail of Layer 4, particularly in orchestrator/worker patterns where the orchestrator tracks the workflow journey and the worker tracks step execution.
+**Design principle:** Activity manifest validation is advisory — it produces warnings, not rejections. This matches the design principle of Layer 3. The manifest provides a workflow-level audit trail that complements the step-level detail of Layer 5, particularly in orchestrator/worker patterns where the orchestrator tracks the workflow journey and the worker tracks step execution.
 
-### Layer 6: Execution Trace
+### Layer 7: Execution Trace
 
 The server automatically captures a mechanical trace of every tool call in a session. Trace data is packaged as HMAC-signed trace tokens — opaque, compact references that the agent accumulates and can resolve via `get_trace`.
 
@@ -208,6 +239,8 @@ When workflow state is persisted via `save_state`, the session token is encrypte
 
 - **Step execution is not provable** — the manifest validates that the agent *reported* each step, not that it *performed* the work. The output descriptions are agent-generated. However, the mechanical trace independently confirms which tool calls were made, providing corroborating evidence.
 - **Condition truth is not verified** — the server checks that a claimed condition maps to the target activity, but cannot verify whether the condition is actually true in the agent's state. Post-hoc audit via checkpoint logs and trace data can cross-reference claimed conditions against observed behavior.
+- **Checkpoint user presence is not provable** — the checkpoint gate ensures the agent *calls* `respond_checkpoint` with a valid option, but cannot prove a human saw the checkpoint. The timing enforcement raises the bar (instant auto-resolve is rejected), and the trace records all checkpoint interactions for audit. However, an agent could wait the minimum time and then submit a fabricated response. This is an inherent limitation of agent-mediated systems where the agent controls the communication channel.
+- **Conditional checkpoint dismissal relies on agent honesty** — when an agent calls `respond_checkpoint` with `condition_not_met`, the server validates that the checkpoint has a `condition` field but cannot verify the condition is actually false. The trace records the dismissal for post-hoc audit.
 - **Replay is not detected** — an agent could present an old valid token. The HMAC proves authenticity but not freshness (the server is stateless). The `sid` field makes replay across sessions detectable, but within-session replay remains possible.
 - **Warnings are advisory** — a confused agent may ignore validation warnings. The enforcement is detection-oriented, not prevention-oriented. Validation warnings are now captured in the execution trace, making ignored warnings visible in post-hoc review.
 - **In-memory trace lifespan** — the `TraceStore` lives in server memory. On server restart, accumulated events are lost. Trace tokens issued before the restart remain valid as self-contained attestations (event data is embedded), but ad-hoc `get_trace` queries without tokens return empty results for prior sessions.
