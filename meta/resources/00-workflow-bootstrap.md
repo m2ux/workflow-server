@@ -4,7 +4,7 @@
 
 `start_session` returns a `session_token`. **Every tool call after `start_session` requires `session_token` as a parameter.** Each tool response returns an updated token — always use the most recent one. There is no `workflow_id` parameter on these tools; the workflow is encoded inside the token.
 
-## Steps
+## Starting a New Session
 
 1. **discover** — Call first (no parameters). Returns the server info, available workflows, and this bootstrap procedure.
 2. **list_workflows** — Match the user's goal to a workflow from the returned list. No session token needed.
@@ -12,6 +12,23 @@
 4. **get_skills(`session_token`)** — Pass the `session_token` from step 3. Returns behavioral protocols (session-protocol, agent-conduct) and workflow-specific skills. Save the updated `session_token` from the response.
 5. **get_workflow(`session_token`, `summary=true`)** — Pass the latest `session_token`. Returns the workflow structure including `initialActivity` (which activity to load first) and the full activity list. Save the updated `session_token`.
 6. **next_activity(`session_token`, `activity_id`)** — Pass the latest `session_token` and the `initialActivity` value from step 5 as `activity_id`. Loads the first activity definition and begins execution.
+
+## Mid-Session Calls
+
+If the user already has an active session — indicated by a `session_token`, explicit bootstrap instructions, or a direct request to call a tool like `next_activity` — **do not call `start_session` again**. Calling `start_session` creates a brand-new session and discards all prior session state.
+
+Instead, use the provided `session_token` and call the requested tool directly (e.g., `next_activity`, `get_workflow`, `get_skill`). Continue passing the latest token from each response as usual.
+
+## Checkpoint Resolution
+
+When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **You cannot call `next_activity` for a different activity until all checkpoints are resolved.** Attempting to do so produces a hard error listing the pending checkpoints and how to resolve each one.
+
+- **respond_checkpoint(`session_token`, `checkpoint_id`, ...)** — Resolve a pending checkpoint. Exactly one of:
+  - `option_id` — the user's selected option (present the checkpoint to the user first)
+  - `auto_advance: true` — use the checkpoint's default option (only for non-blocking checkpoints after the `autoAdvanceMs` timer elapses)
+  - `condition_not_met: true` — dismiss a conditional checkpoint whose condition was not met
+
+The response includes any effects from the selected option and the updated session token with the checkpoint removed from the pending list.
 
 ## Loading Skills and Resources
 
