@@ -15,17 +15,11 @@ protocol:
   load-workflow[2]:
     - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. Pass the session_token from start_session — there is no workflow_id parameter on get_workflow."
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
-  discover-session[4]:
-    - "Only triggered when the user explicitly requests to RESUME a workflow (e.g., 'resume', 'continue', 'pick up where we left off'). If the user is starting new work, skip to initialize-state."
-    - "Extract a ticket identifier from the user request (GitHub issue number, Jira key like PROJ-123, or work package name). Search .engineering/artifacts/planning/ for directories containing a workflow-state.json whose saved variables match the ticket (issue_number, branch_name, or directory name contains the identifier)."
-    - "If a matching state file is found: read it, extract the saved session_token and variables. Call start_session({ workflow_id, session_token }) to resume. Set planning_folder_path to the matched directory. Set is_resuming = true. Skip initialize-state."
-    - "If no match found: inform the user that no previous session was found for that identifier. Fall through to initialize-state for a fresh start."
-  initialize-state[5]:
-    - "Determine planning_folder_path from workflow variables or user request context"
-    - "If planning_folder_path is known and {planning_folder_path}/workflow-state.json exists: read the file and parse token + variables. Call start_session with the saved session_token to resume the session position. Set is_resuming = true."
-    - "If state was restored: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables."
-    - "If no saved state: set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false"
-    - "Detect mode from user request (e.g., 'review PR' activates review mode). If resuming, restored variables already encode the active mode — do not override unless the user explicitly requests a mode change"
+  initialize-state[4]:
+    - "Session discovery for resume was handled during bootstrap (step 3 of the bootstrap procedure). If start_session was called with a saved token, is_resuming is true and the session already has the restored position. Read the state file's variables and adopt them."
+    - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
+    - "If fresh session (no saved token): determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
+    - "Detect mode from user request (e.g., 'review PR' activates review mode)."
   dispatch-activity[7]:
     - "Call next_activity to load the activity definition"
     - "Compose worker prompt using resource meta/05 (worker-prompt-template) — do NOT inject paraphrased skill content"
