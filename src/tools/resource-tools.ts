@@ -6,7 +6,7 @@ import { withAuditLog } from '../logging.js';
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { readSkill } from '../loaders/skill-loader.js';
-import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
+import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 
@@ -119,6 +119,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     },
     withAuditLog('get_skills', async ({ session_token }) => {
       const token = await decodeSessionToken(session_token);
+      assertCheckpointsResolved(token);
       const workflow_id = token.wf;
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
@@ -168,14 +169,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!token.act) {
         throw new Error('No current activity in session. Call next_activity before get_skill.');
       }
-
-      if (token.pcp.length > 0) {
-        throw new Error(
-          `Cannot load skill: ${token.pcp.length} unresolved checkpoint(s) on activity '${token.act}' ` +
-          `[${token.pcp.join(', ')}]. Resolve all checkpoints via respond_checkpoint before executing steps. ` +
-          `Use get_checkpoint to load checkpoint details for presentation to the user.`
-        );
-      }
+      assertCheckpointsResolved(token);
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
@@ -242,6 +236,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     },
     withAuditLog('get_resource', async ({ session_token, resource_index }) => {
       const token = await decodeSessionToken(session_token);
+      assertCheckpointsResolved(token);
       const workflow_id = token.wf;
 
       const parsed = parseResourceRef(resource_index);

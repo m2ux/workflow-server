@@ -117,3 +117,20 @@ export const sessionTokenParam = {
     .min(1, 'Session token is required')
     .describe('REQUIRED. The session token string returned by start_session (or the updated token from the previous tool response). Every tool call after start_session must include this parameter.'),
 };
+
+/**
+ * Throws if the token has unresolved checkpoints.
+ * Call this in every tool handler that accepts session_token,
+ * EXCEPT respond_checkpoint (the resolution mechanism) and
+ * get_checkpoint (needed to load checkpoint details for presentation).
+ */
+export function assertCheckpointsResolved(token: SessionPayload): void {
+  if (token.pcp.length > 0) {
+    throw new Error(
+      `Blocked: ${token.pcp.length} unresolved checkpoint(s) on activity '${token.act}' ` +
+      `[${token.pcp.join(', ')}]. ` +
+      `All tools are gated until every checkpoint is resolved via respond_checkpoint. ` +
+      `Use get_checkpoint to load checkpoint details for presentation to the user.`
+    );
+  }
+}

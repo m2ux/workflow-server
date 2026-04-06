@@ -537,7 +537,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: actToken },
@@ -1051,9 +1052,12 @@ describe('mcp-server integration', () => {
         arguments: { session_token: updatedToken, activity_id: 'design-philosophy' },
       });
       const meta2 = act2._meta as Record<string, unknown>;
-      const updatedToken2 = meta2['session_token'] as string;
+      const act2Response = parseToolResponse(act2);
+      let updatedToken2 = meta2['session_token'] as string;
       const traceToken2 = meta2['trace_token'] as string;
       expect(traceToken2).toBeDefined();
+
+      updatedToken2 = await resolveCheckpoints(client, updatedToken2, act2Response);
 
       const resolved = await client.callTool({
         name: 'get_trace',

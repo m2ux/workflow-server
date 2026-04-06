@@ -7,7 +7,7 @@ import { NestedWorkflowStateSchema, StateSaveFileSchema } from '../schema/state.
 import type { StateSaveFile } from '../schema/state.schema.js';
 import { decodeToonRaw, encodeToon } from '../utils/toon.js';
 import { withAuditLog } from '../logging.js';
-import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
+import { decodeSessionToken, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import { buildValidation, validateWorkflowConsistency } from '../utils/validation.js';
 import { getOrCreateServerKey, encryptToken, decryptToken } from '../utils/crypto.js';
 
@@ -44,6 +44,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
     },
     withAuditLog('save_state', async ({ session_token, state: stateJson, planning_folder_path, description }) => {
       const token = await decodeSessionToken(session_token);
+      assertCheckpointsResolved(token);
 
       let parsed: unknown;
       try {
@@ -115,6 +116,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
     },
     withAuditLog('restore_state', async ({ session_token, file_path }) => {
       const token = await decodeSessionToken(session_token);
+      assertCheckpointsResolved(token);
 
       const validatedPath = validateStatePath(file_path);
       const content = await readFile(validatedPath, 'utf-8');

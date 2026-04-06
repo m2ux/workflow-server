@@ -4,7 +4,7 @@ import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint } from '../loaders/workflow-loader.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
-import { decodeSessionToken, advanceToken, sessionTokenParam } from '../utils/session.js';
+import { decodeSessionToken, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 import { createTraceToken, decodeTraceToken } from '../trace.js';
@@ -52,6 +52,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     },
     withAuditLog('get_workflow', async ({ session_token, summary }) => {
       const token = await decodeSessionToken(session_token);
+      assertCheckpointsResolved(token);
       const workflow_id = token.wf;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
@@ -341,6 +342,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     },
     withAuditLog('get_trace', async ({ session_token, trace_tokens }) => {
       const token = await decodeSessionToken(session_token);
+      assertCheckpointsResolved(token);
       const advancedToken = await advanceToken(session_token);
 
       if (trace_tokens && trace_tokens.length > 0) {
