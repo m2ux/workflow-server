@@ -231,9 +231,9 @@ The `discover` tool returns the complete bootstrap procedure and available workf
 
 Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-activity session produces ~3KB of accumulated tokens (~3,200 LLM tokens) — approximately 1.6% of a 200K context window. The agent stores tokens as opaque strings without parsing, keeping the mechanical trace out of the reasoning context until explicitly resolved via `get_trace`.
 
-## At-Rest Token Security
+## State Persistence
 
-When workflow state is persisted via `save_state`, the session token is encrypted using AES-256-GCM before writing to disk. `restore_state` decrypts it transparently. This prevents token extraction from state files.
+State persistence is agent-managed. The orchestrator writes the session token (opaque, HMAC-signed) and its variable state to disk using its own file tools. To resume, the saved token is passed to `start_session(session_token=saved_token)`. The trace provides the audit trail via `get_trace`.
 
 ## Limitations
 

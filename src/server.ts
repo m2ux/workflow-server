@@ -3,7 +3,7 @@ import type { ServerConfig, ResolvedServerConfig } from './config.js';
 import { TraceStore } from './trace.js';
 import { registerWorkflowTools } from './tools/workflow-tools.js';
 import { registerResourceTools } from './tools/resource-tools.js';
-import { registerStateTools } from './tools/state-tools.js';
+
 import { registerSchemaResources } from './resources/schema-resources.js';
 import { logInfo } from './logging.js';
 
@@ -21,7 +21,6 @@ export function createServer(config: ServerConfig): McpServer {
   logInfo('Creating workflow server', { name: resolvedConfig.serverName, version: resolvedConfig.serverVersion, workflowDir: resolvedConfig.workflowDir });
   registerWorkflowTools(server, resolvedConfig);
   registerResourceTools(server, resolvedConfig);
-  registerStateTools(server, resolvedConfig);
   registerSchemaResources(server, resolvedConfig);
   logInfo('Server configured', { resources: ['workflow-server://schemas'] });
   return server;

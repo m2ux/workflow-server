@@ -67,8 +67,7 @@ workflow-server/
 │   │   └── schema-loader.ts
 │   ├── tools/                # MCP tool implementations
 │   │   ├── workflow-tools.ts # next_activity, get_workflow, get_trace, etc.
-│   │   ├── resource-tools.ts # start_session, get_skills, get_skill, get_resource
-│   │   └── state-tools.ts    # save_state, restore_state
+│   │   └── resource-tools.ts # start_session, get_skills, get_skill, get_resource
 │   └── utils/                # Utility functions
 │       ├── toon.ts           # TOON format parser
 │       ├── session.ts        # Session token create/decode/advance (HMAC)

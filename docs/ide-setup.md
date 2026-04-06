@@ -38,5 +38,5 @@ For all workflow execution user requests, call the `discover` tool on the workfl
 | `get_resource` | Load a resource's full content by index (from `_resources` refs) |
 | `get_checkpoint` | Load full checkpoint details for presentation |
 | `get_trace` | Resolve trace tokens into execution event data |
-| `save_state` / `restore_state` | Persist/restore workflow state (encrypts token at rest) |
+| `respond_checkpoint` | Resolve a pending checkpoint (required before other tools when checkpoints are pending) |
 | `health_check` | Server health (no token required) |

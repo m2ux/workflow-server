@@ -1157,21 +1157,6 @@ The `history` array tracks all workflow events:
 - `loop_started`, `loop_iteration`, `loop_completed`, `loop_break`
 - `variable_set`, `error`
 
-### State Save Files
-
-The state schema also defines a `stateSaveFile` wrapper for persisting workflow state to disk (used by `save_state`/`restore_state` tools). It wraps the full state with metadata:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Unique save identifier |
-| `savedAt` | datetime | When state was saved |
-| `description` | string | Human-readable description of the save point |
-| `workflowId` | string | Top-level workflow ID |
-| `workflowVersion` | string | Top-level workflow version |
-| `planningFolder` | string | Path to planning folder |
-| `sessionTokenEncrypted` | boolean | Whether the session token is encrypted |
-| `state` | State | Full nested workflow execution state |
-
 ---
 
 ## Complete Example

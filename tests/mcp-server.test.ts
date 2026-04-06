@@ -1534,33 +1534,4 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // ============== State Tool Deprecation ==============
-
-  describe('state tool deprecation', () => {
-    it('save_state response should include deprecation notice', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const clearedToken = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
-
-      const state = JSON.stringify({
-        workflowId: 'work-package', workflowVersion: '3.5.0', stateVersion: 1,
-        startedAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
-        currentActivity: 'start-work-package', completedActivities: [], skippedActivities: [],
-        completedSteps: {}, checkpointResponses: {}, decisionOutcomes: {},
-        activeLoops: [], variables: {}, history: [], status: 'running', triggeredWorkflows: [],
-      });
-      const result = await client.callTool({
-        name: 'save_state',
-        arguments: { session_token: clearedToken, state, planning_folder_path: '.engineering/artifacts/planning/test-deprecation' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.deprecated).toBeDefined();
-      expect(response.deprecated).toContain('deprecated');
-    });
-  });
 });

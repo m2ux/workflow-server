@@ -45,12 +45,6 @@ All require `session_token`. The workflow is determined from the session token.
 |------|------------|-------------|
 | `get_trace` | `session_token`, `trace_tokens?` | Resolve accumulated trace tokens into full event data. Without tokens, returns the in-memory trace for the current session |
 
-### State Tools (deprecated)
-
-| Tool | Parameters | Description |
-|------|------------|-------------|
-| `save_state` | `session_token`, `state`, `planning_folder_path`, `description?` | **Deprecated.** Save workflow execution state to a TOON file. Use agent-managed persistence instead: write the session token + variables via agent file tools, and call `get_trace` for audit data. |
-| `restore_state` | `session_token`, `file_path` | **Deprecated.** Restore workflow state from a saved file. Use `start_session(session_token=saved_token)` to resume from a saved token instead. |
 
 ## Session Token
 
