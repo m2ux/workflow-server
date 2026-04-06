@@ -9,7 +9,7 @@ AI agents executing multi-step workflows face two reliability challenges:
 1. **Context degradation** — as conversations grow, earlier instructions (including workflow definitions) fall out of the model's effective attention window, leading to skipped steps, wrong transitions, and hallucinated procedures
 2. **Behavioral drift** — without enforcement, agents may take shortcuts, skip checkpoints, or fabricate state rather than following the defined execution path
 
-The workflow server addresses these through six layers of enforcement, each operating at a different granularity.
+The workflow server addresses these through seven layers of enforcement, each operating at a different granularity.
 
 ## Enforcement Layers
 
@@ -37,6 +37,83 @@ The workflow server addresses these through six layers of enforcement, each oper
 │  Entire session — mechanical audit trail      │
 └─────────────────────────────────────────────┘
 ```
+
+### Enforcement Flow
+
+The following diagram shows a typical two-activity progression through a workflow, annotating where each enforcement layer activates. Hard gates (blocking) are marked with solid borders; advisory checks (warnings) are marked with dashed borders.
+
+```mermaid
+flowchart TD
+    subgraph bootstrap [Session Bootstrap]
+        startSession["start_session(workflow_id)"]
+        getWorkflow["get_workflow(summary=true)"]
+        startSession -->|"L1: HMAC signed token issued"| getWorkflow
+    end
+
+    subgraph actA [Activity A]
+        nextA["next_activity(activity_id=A)"]
+        cpGateA{{"L2: pcp populated
+        with required checkpoints"}}
+        toolsBlocked["All tools BLOCKED
+        except get_checkpoint
+        and respond_checkpoint"]
+        respondCp["respond_checkpoint
+        for each pending checkpoint"]
+        cpTiming{{"L2: Timing enforced
+        option validated against definition"}}
+        pcpClear["pcp cleared — tools unblocked"]
+        getSkill["get_skill(step_id) + get_resource"]
+        executeSteps["Execute activity steps"]
+    end
+
+    subgraph transition [Transition A to B]
+        nextB["next_activity(activity_id=B,
+        step_manifest, activity_manifest,
+        transition_condition)"]
+        hardGate{{"L2: pcp empty?
+        HARD GATE"}}
+        transCheck["L3: A→B in transition graph?"]
+        condCheck["L4: condition matches table?"]
+        stepCheck["L5: step_manifest complete?"]
+        actCheck["L6: activity_manifest valid?"]
+        tracePackage["L7: Trace token packaged
+        for Activity A"]
+    end
+
+    subgraph actB [Activity B]
+        cpGateB{{"L2: pcp populated
+        for Activity B checkpoints"}}
+        continueB["Resolve checkpoints,
+        execute steps..."]
+    end
+
+    getWorkflow -->|"L7: trace event"| nextA
+    nextA --> cpGateA
+    cpGateA --> toolsBlocked
+    toolsBlocked --> respondCp
+    respondCp --> cpTiming
+    cpTiming -->|"Each checkpoint resolved"| respondCp
+    cpTiming -->|"All checkpoints resolved"| pcpClear
+    pcpClear --> getSkill
+    getSkill -->|"L1: HMAC verified"| executeSteps
+
+    executeSteps --> nextB
+    nextB --> hardGate
+    hardGate -->|"pcp non-empty"| toolsBlocked
+    hardGate -->|"pcp empty"| transCheck
+    transCheck -.- condCheck
+    condCheck -.- stepCheck
+    stepCheck -.- actCheck
+    actCheck --> tracePackage
+    tracePackage --> cpGateB
+    cpGateB --> continueB
+```
+
+**Legend:**
+- Double-bordered nodes (`{{...}}`) are hard enforcement gates — they block execution until satisfied
+- Dashed lines (`-.-`) indicate advisory validation that produces warnings but does not block
+- `L1` through `L7` reference the enforcement layers described below
+- Every tool call in the diagram verifies the HMAC signature (L1) and records a trace event (L7); only the first occurrence is annotated to avoid clutter
 
 ### Layer 1: Token Integrity
 
