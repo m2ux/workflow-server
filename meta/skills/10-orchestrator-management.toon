@@ -21,9 +21,10 @@ protocol:
     - "If state was restored: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Set is_resuming = true"
     - "If no saved state: set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false"
     - "Detect mode from user request (e.g., 'review PR' activates review mode). If resuming, restored variables already encode the active mode — do not override unless the user explicitly requests a mode change"
-  dispatch-activity[6]:
+  dispatch-activity[7]:
     - "Call next_activity to load the activity definition"
     - "Compose worker prompt using resource meta/05 (worker-prompt-template) — do NOT inject paraphrased skill content"
+    - "Include the current session_token in the worker prompt so the worker can call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
     - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
     - "For resumed workers: send only the new activity_id, updated state variables, and bootstrap instructions"
