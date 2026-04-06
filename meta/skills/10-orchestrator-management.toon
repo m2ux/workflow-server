@@ -17,8 +17,8 @@ protocol:
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
   initialize-state[5]:
     - "Determine planning_folder_path from workflow variables or user request context"
-    - "Check for saved state at {planning_folder_path}/workflow-state.toon — if found, call restore_state({ file_path }) to load persisted state"
-    - "If state was restored: compare state.workflowVersion against the loaded workflow version. Warn on mismatch. Adopt all restored fields (currentActivity, completedActivities, variables, checkpointResponses, history, status). Set is_resuming = true"
+    - "Check for saved state at {planning_folder_path}/workflow-state.json — if found, read the file and parse token + variables. Call start_session with the saved session_token to resume the session position"
+    - "If state was restored: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Set is_resuming = true"
     - "If no saved state: set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false"
     - "Detect mode from user request (e.g., 'review PR' activates review mode). If resuming, restored variables already encode the active mode — do not override unless the user explicitly requests a mode change"
   dispatch-activity[6]:
@@ -45,8 +45,8 @@ protocol:
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
   persist-state[3]:
-    - "MANDATORY after commit. Construct state as JSON (workflowId, workflowVersion, stateVersion, timestamps, currentActivity, completedActivities, variables, checkpointResponses, history, status)"
-    - "Call save_state with state, planning_folder_path, and description"
+    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), variable state (JSON), and activity trace (from get_trace)"
+    - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
     - "If planning_folder_path is not set, skip silently"
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
@@ -95,12 +95,9 @@ tools:
   get_trace:
     when: "After each activity_complete — resolve trace tokens for the completed activity"
     params: "session_token, trace_tokens"
-  save_state:
-    when: "After every activity_complete, after artifacts committed"
-    params: "session_token, state (JSON string), planning_folder_path, description (optional)"
-  restore_state:
-    when: "Resuming a workflow from saved state"
-    params: "session_token, file_path (path to workflow-state.toon)"
+  start_session:
+    when: "Resuming a workflow from saved state — pass the saved token"
+    params: "workflow_id, session_token (saved token), agent_id (optional)"
   get_resource:
     when: "After get_skills — loading content for entries in _resources"
     params: "session_token, resource_index"

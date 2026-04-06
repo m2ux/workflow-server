@@ -192,7 +192,7 @@ Meta defines universal skills used by all workflows:
 | `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
 | `agent-conduct` | Agent behavioral boundaries | File sensitivity, communication tone, resource loading discipline, build command priority |
 | `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
-| `state-management` | Manage workflow state | Initialize, update, and persist state across sessions via save_state/restore_state |
+| `state-management` | Manage workflow state | Initialize, update, and persist state across sessions. Agent writes session token + variables + trace to disk; resumes via start_session(session_token) |
 | `artifact-management` | Manage planning artifacts | Planning folder creation, regular file and submodule commit workflows |
 | `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
 | `github-cli-protocol` | GitHub CLI usage | GraphQL deprecation workarounds, REST API for mutations |

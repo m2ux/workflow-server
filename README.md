@@ -51,7 +51,7 @@ Available for any workflow session.
 | [`00-session-protocol`](meta/skills/00-session-protocol.toon) | Session lifecycle protocol: bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
 | [`01-agent-conduct`](meta/skills/01-agent-conduct.toon) | Agent behavioral boundaries: file sensitivity, communication tone, resource loading discipline |
 | [`02-execute-activity`](meta/skills/02-execute-activity.toon) | Bootstrap and execute a single workflow activity using get_skill for step-level skill loading |
-| [`03-state-management`](meta/skills/03-state-management.toon) | Manage workflow state across sessions via save_state/restore_state |
+| [`03-state-management`](meta/skills/03-state-management.toon) | Manage workflow state across sessions (agent writes token + variables + trace; resumes via start_session) |
 | [`04-artifact-management`](meta/skills/04-artifact-management.toon) | Manage planning artifact folder structure and commit workflows |
 | [`05-version-control-protocol`](meta/skills/05-version-control-protocol.toon) | Conventional commits, branch management, destructive operation guardrails |
 | [`06-github-cli-protocol`](meta/skills/06-github-cli-protocol.toon) | GitHub CLI usage: GraphQL deprecation workarounds, REST API for mutations |

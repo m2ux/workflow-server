@@ -10,9 +10,10 @@ protocol:
   update[2]:
     - "After each step, checkpoint response, or activity transition, update the corresponding state fields"
     - "Record every state change in the history array with timestamp and event type"
-  persist[2]:
-    - "After each completed activity, serialize state and call save_state"
-    - "State file at {planning_folder_path}/workflow-state.toon enables cross-session resumption"
+  persist[3]:
+    - "After each completed activity, write a state file containing: the current session_token, variable state, and activity trace (from get_trace)"
+    - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
+    - "To resume, pass the saved session_token to start_session. Restore variables from the state file."
 
 resources[1]:
   - "07"

@@ -24,7 +24,7 @@ steps[13]:
     skill: workflow-execution
   - id: check-saved-state
     name: Check for saved state
-    description: "If planning_folder_path is known or can be derived, check for {planning_folder_path}/workflow-state.toon. If found, call restore_state to load it and present the saved-state-found checkpoint. If not found, proceed to initialize fresh state."
+    description: "If planning_folder_path is known or can be derived, check for {planning_folder_path}/workflow-state.json. If found, read the file and extract the saved session_token and variables. Call start_session({ workflow_id, session_token }) to resume. Present the saved-state-found checkpoint. If not found, proceed to initialize fresh state."
   - id: initialize-state
     name: Initialize state
     description: "If resuming from saved state, adopt the restored state fields. If starting fresh, initialize workflow state with variable defaults and set currentActivity per the orchestrate-workflow skill's initialize-state protocol."
