@@ -58,7 +58,7 @@ variables[13]:
     defaultValue: false
   - name: has_saved_state
     type: boolean
-    description: Whether a workflow-state.toon file was found and successfully restored
+    description: Whether a workflow-state.json file was found and successfully restored
     defaultValue: false
 executionModel:
   roles[1]:
