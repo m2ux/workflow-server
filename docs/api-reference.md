@@ -16,7 +16,7 @@ No session token required.
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `start_session` | `workflow_id` | Start a new workflow session. Returns a session token and basic workflow metadata (id, version, title, description). Does not return the activity list — use `get_workflow` for that |
+| `start_session` | `workflow_id`, `session_token?`, `agent_id?` | Start a new session or inherit an existing one. For fresh sessions, provide only `workflow_id`. For worker dispatch or resume, also provide `session_token` — the returned token inherits all state (`sid`, `act`, `pcp`, `pcpt`, `cond`, `v`) with `agent_id` stamped into the signed `aid` field. `workflow_id` is validated against the token's workflow. |
 
 ### Workflow Tools
 
@@ -45,18 +45,18 @@ All require `session_token`. The workflow is determined from the session token.
 |------|------------|-------------|
 | `get_trace` | `session_token`, `trace_tokens?` | Resolve accumulated trace tokens into full event data. Without tokens, returns the in-memory trace for the current session |
 
-### State Tools
+### State Tools (deprecated)
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `save_state` | `session_token`, `state`, `planning_folder_path`, `description?` | Save workflow execution state to a TOON file (encrypts session token at rest) |
-| `restore_state` | `session_token`, `file_path` | Restore workflow state from a saved file (decrypts session token) |
+| `save_state` | `session_token`, `state`, `planning_folder_path`, `description?` | **Deprecated.** Save workflow execution state to a TOON file. Use agent-managed persistence instead: write the session token + variables via agent file tools, and call `get_trace` for audit data. |
+| `restore_state` | `session_token`, `file_path` | **Deprecated.** Restore workflow state from a saved file. Use `start_session(session_token=saved_token)` to resume from a saved token instead. |
 
 ## Session Token
 
 The session token is an opaque string returned by `start_session`. It captures the context of each call (workflow, activity, skill) so the server can validate subsequent calls for consistency.
 
-The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), `aid` (agent ID), `pcp` (pending checkpoint IDs), and `pcpt` (checkpoint issuance timestamp).
+The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), `aid` (agent ID — set via `start_session(agent_id)`), `pcp` (pending checkpoint IDs), and `pcpt` (checkpoint issuance timestamp). When `start_session` is called with an existing `session_token`, all fields are inherited (including `sid`, `pcp`, `act`) and `aid` is stamped with the new agent identity.
 
 ### Lifecycle
 

@@ -69,11 +69,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'start_session',
-    'Start a new workflow session for the given workflow_id. Returns a session token (required for all subsequent tool calls) and basic workflow metadata (id, version, title, description). The session token is opaque and cryptographically signed — pass it to every subsequent call and use the updated token from each response\'s _meta.session_token. After starting a session, call get_skills to load behavioral protocols, then call get_workflow (summary=true) to see the activity list and initialActivity field which tells you which activity to load first with next_activity. Does not return the activity list or initialActivity — use get_workflow for that.',
+    'Start a new workflow session or inherit an existing one. Returns a session token (required for all subsequent tool calls) and basic workflow metadata. ' +
+    'For a fresh session, provide only workflow_id. For worker dispatch or resume, also provide session_token from the parent/previous session — the returned token inherits all state (current activity, pending checkpoints, session ID) with a new agent_id stamped into the signed payload. ' +
+    'The agent_id parameter sets the aid field inside the HMAC-signed token, distinguishing orchestrator from worker calls in the trace.',
     {
       workflow_id: z.string().describe('Workflow ID to start a session for (e.g., "work-package")'),
+      session_token: z.string().optional().describe('Optional. An existing session token to inherit. When provided, the returned token preserves sid, act, pcp, pcpt, cond, v, and all state from the parent token. Used for worker dispatch (pass the orchestrator token) or resume (pass a saved token).'),
+      agent_id: z.string().optional().describe('Optional. Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace.'),
     },
-    withAuditLog('start_session', async ({ workflow_id }) => {
+    withAuditLog('start_session', async ({ workflow_id, session_token, agent_id }) => {
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
@@ -81,19 +85,44 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!workflow.version) {
         console.warn(`[start_session] Workflow '${workflow_id}' has no version defined; version drift detection will be unreliable.`);
       }
-      const token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0');
 
-      if (config.traceStore) {
-        const decoded = await decodeSessionToken(token);
-        config.traceStore.initSession(decoded.sid);
-        const event = createTraceEvent(
-          decoded.sid, 'start_session', 0, 'ok',
-          workflow_id, '', '',
-        );
-        config.traceStore.append(decoded.sid, event);
+      let token: string;
+
+      if (session_token) {
+        const parentToken = await decodeSessionToken(session_token);
+        if (parentToken.wf !== workflow_id) {
+          throw new Error(
+            `Workflow mismatch: session token is for '${parentToken.wf}' but '${workflow_id}' was requested. ` +
+            `Use the same workflow_id as the parent session, or omit session_token to start a fresh session.`
+          );
+        }
+        token = await advanceToken(session_token, { aid: agent_id ?? '' }, parentToken);
+
+        if (config.traceStore) {
+          const event = createTraceEvent(
+            parentToken.sid, 'start_session', 0, 'ok',
+            workflow_id, parentToken.act, agent_id ?? '',
+          );
+          config.traceStore.append(parentToken.sid, event);
+        }
+      } else {
+        token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0');
+        if (agent_id) {
+          token = await advanceToken(token, { aid: agent_id });
+        }
+
+        if (config.traceStore) {
+          const decoded = await decodeSessionToken(token);
+          config.traceStore.initSession(decoded.sid);
+          const event = createTraceEvent(
+            decoded.sid, 'start_session', 0, 'ok',
+            workflow_id, '', agent_id ?? '',
+          );
+          config.traceStore.append(decoded.sid, event);
+        }
       }
 
-      const response = {
+      const response: Record<string, unknown> = {
         workflow: {
           id: workflow.id,
           version: workflow.version,
@@ -102,6 +131,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         },
         session_token: token,
       };
+      if (session_token) {
+        response['inherited'] = true;
+      }
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response) }],
         _meta: { session_token: token },

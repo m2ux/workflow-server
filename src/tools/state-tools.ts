@@ -95,6 +95,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
         triggeredWorkflows: state.triggeredWorkflows.length,
         status: state.status,
         session_token: advancedToken,
+        deprecated: 'save_state is deprecated. Use the state-management skill to persist state via agent file operations. The session token + get_trace provide all data needed for resume and audit.',
       };
       const validation = buildValidation(
         validateWorkflowConsistency(token, state.workflowId),
@@ -102,7 +103,7 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(summary) }],
-        _meta: { session_token: advancedToken, validation },
+        _meta: { session_token: advancedToken, validation, deprecated: 'save_state is deprecated. Use agent-managed persistence with the session token and get_trace.' },
       };
     }, traceOpts),
   );
@@ -147,8 +148,8 @@ export function registerStateTools(server: McpServer, config: ServerConfig): voi
       );
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ ...restored, session_token: advancedToken }) }],
-        _meta: { session_token: advancedToken, validation },
+        content: [{ type: 'text' as const, text: JSON.stringify({ ...restored, session_token: advancedToken, deprecated: 'restore_state is deprecated. Use start_session with a saved session_token to resume. Variables and trace are managed by the agent via the state-management skill.' }) }],
+        _meta: { session_token: advancedToken, validation, deprecated: 'restore_state is deprecated. Use start_session(session_token=saved_token) to resume.' },
       };
     }, traceOpts),
   );

@@ -1411,4 +1411,156 @@ describe('mcp-server integration', () => {
       expect(errorText).toContain('Exactly one');
     });
   });
+
+  // ============== Token Inheritance ==============
+
+  describe('start_session token inheritance', () => {
+    it('inherited session should preserve pcp from parent token', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const parentToken = (act._meta as Record<string, unknown>)['session_token'] as string;
+
+      const inherited = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', session_token: parentToken, agent_id: 'worker-1' },
+      });
+      expect(inherited.isError).toBeFalsy();
+      const response = parseToolResponse(inherited);
+      expect(response.inherited).toBe(true);
+
+      const skillResult = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: response.session_token, step_id: 'create-issue' },
+      });
+      expect(skillResult.isError).toBe(true);
+      const errorText = (skillResult.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('unresolved checkpoint');
+    });
+
+    it('inherited session should set aid from agent_id parameter', async () => {
+      const inherited = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', session_token: sessionToken, agent_id: 'worker-42' },
+      });
+      expect(inherited.isError).toBeFalsy();
+    });
+
+    it('inherited session should preserve sid from parent', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const parentToken = (act._meta as Record<string, unknown>)['session_token'] as string;
+
+      const inherited = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', session_token: parentToken, agent_id: 'worker-1' },
+      });
+      const childToken = parseToolResponse(inherited).session_token;
+
+      const parentTrace = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: sessionToken },
+      });
+      const childTrace = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_token: sessionToken },
+      });
+      const parentTraceId = parseToolResponse(parentTrace).traceId;
+      const childTraceId = parseToolResponse(childTrace).traceId;
+      expect(childTraceId).toBe(parentTraceId);
+    });
+
+    it('should reject workflow mismatch between token and workflow_id', async () => {
+      const metaSession = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'meta' },
+      });
+      const metaToken = parseToolResponse(metaSession).session_token;
+
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', session_token: metaToken },
+      });
+      expect(result.isError).toBe(true);
+      const errorText = (result.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('Workflow mismatch');
+    });
+
+    it('fresh session should still work without session_token', async () => {
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.workflow.id).toBe('work-package');
+      expect(response.session_token).toBeDefined();
+      expect(response.inherited).toBeUndefined();
+    });
+
+    it('fresh session should accept agent_id without session_token', async () => {
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+      });
+      expect(result.isError).toBeFalsy();
+      expect(parseToolResponse(result).session_token).toBeDefined();
+    });
+
+    it('inherited session should preserve act from parent', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const parentToken = (act._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(act);
+      const clearedToken = await resolveCheckpoints(client, parentToken, actResponse);
+
+      const inherited = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', session_token: clearedToken, agent_id: 'worker-1' },
+      });
+      const childToken = parseToolResponse(inherited).session_token;
+
+      const skillResult = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: childToken, step_id: 'create-issue' },
+      });
+      expect(skillResult.isError).toBeFalsy();
+      expect(parseToolResponse(skillResult).skill.id).toBe('create-issue');
+    });
+  });
+
+  // ============== State Tool Deprecation ==============
+
+  describe('state tool deprecation', () => {
+    it('save_state response should include deprecation notice', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actResponse = parseToolResponse(actResult);
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const clearedToken = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+
+      const state = JSON.stringify({
+        workflowId: 'work-package', workflowVersion: '3.5.0', stateVersion: 1,
+        startedAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+        currentActivity: 'start-work-package', completedActivities: [], skippedActivities: [],
+        completedSteps: {}, checkpointResponses: {}, decisionOutcomes: {},
+        activeLoops: [], variables: {}, history: [], status: 'running', triggeredWorkflows: [],
+      });
+      const result = await client.callTool({
+        name: 'save_state',
+        arguments: { session_token: clearedToken, state, planning_folder_path: '.engineering/artifacts/planning/test-deprecation' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.deprecated).toBeDefined();
+      expect(response.deprecated).toContain('deprecated');
+    });
+  });
 });
