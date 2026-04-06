@@ -72,7 +72,7 @@ workflow-server/
 │       ├── toon.ts           # TOON format parser
 │       ├── session.ts        # Session token create/decode/advance (HMAC)
 │       ├── validation.ts     # Transition, manifest, and activity validation
-│       └── crypto.ts         # HMAC signing and AES encryption
+│       └── crypto.ts         # HMAC signing for session and trace tokens
 ├── schemas/                  # Generated JSON schemas
 ├── scripts/                  # Build scripts
 │   ├── generate-schemas.ts

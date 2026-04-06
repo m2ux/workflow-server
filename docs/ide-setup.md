@@ -29,14 +29,13 @@ For all workflow execution user requests, call the `discover` tool on the workfl
 |------|---------|
 | `discover` | Entry point — returns available workflows and bootstrap procedure (no token required) |
 | `list_workflows` | List all workflows with metadata (no token required) |
-| `start_session` | Start session — returns session token and basic workflow metadata |
+| `start_session` | Start session or inherit an existing one — returns session token and workflow metadata |
 | `get_skills` | Load workflow-level behavioral protocols with `_resources` refs |
 | `get_workflow` | Load workflow definition — `initialActivity`, rules, variables, activity list |
 | `next_activity` | Transition to an activity — returns complete activity definition with steps, checkpoints, transitions |
 | `get_skill` | Load the skill for a specific step within the current activity |
-| `get_skill` | Load a single skill by ID |
 | `get_resource` | Load a resource's full content by index (from `_resources` refs) |
 | `get_checkpoint` | Load full checkpoint details for presentation |
-| `get_trace` | Resolve trace tokens into execution event data |
 | `respond_checkpoint` | Resolve a pending checkpoint (required before other tools when checkpoints are pending) |
+| `get_trace` | Resolve trace tokens into execution event data |
 | `health_check` | Server health (no token required) |
