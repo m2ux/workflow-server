@@ -32,10 +32,9 @@ protocol:
     - "Skip the get_skill call if the same skill was already loaded for a prior step and is still in context."
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
-  yield-checkpoint[3]:
-    - "At a blocking checkpoint, STOP and return checkpoint_pending (see resource 06 for format)"
+  yield-checkpoint[2]:
+    - "At a checkpoint, STOP and return checkpoint_pending to the orchestrator (see resource 06 for format). The worker does not call respond_checkpoint — the orchestrator handles checkpoint resolution."
     - "On resume with checkpoint_response, apply effects and continue from where paused"
-    - "NEVER auto-resolve a blocking checkpoint"
   execute-loops[2]:
     - "forEach: iterate over the named collection, executing loop steps for each item"
     - "doWhile: execute steps, evaluate condition, repeat up to maxIterations"
@@ -50,7 +49,7 @@ rules:
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding persists across activities via Task resume parameter. Use this context to inform subsequent activities."
   complete-all-steps: "Execute all required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
-  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): When a checkpoint is reached, execution MUST STOP IMMEDIATELY and yield checkpoint_pending with the checkpoint ID, message, and options. NEVER auto-resolve checkpoints, select options on behalf of the user, or proceed past a checkpoint without the user's confirmed selection. Auto-resolving a checkpoint is a protocol violation equivalent to executing the wrong activity. There are ZERO exceptions to this rule."
+  checkpoint-enforcement: "When a checkpoint is reached, STOP and yield checkpoint_pending to the orchestrator. The worker does NOT call respond_checkpoint — checkpoint resolution is the orchestrator's responsibility. If the server blocks a tool call due to pending checkpoints, yield back to the orchestrator."
 
   workflow-fidelity: "Respect TOON semantics. Execute activities in sequence unless transitions allow alternatives. Activity transitions are automatic — never pause for user confirmation between activities."
 

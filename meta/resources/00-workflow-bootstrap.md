@@ -23,16 +23,9 @@ When the orchestrator dispatches a worker, the worker should call `start_session
 
 This ensures the worker cannot bypass checkpoint obligations — pending checkpoints from `next_activity` carry over into the inherited token.
 
-## Checkpoint Resolution
+## Checkpoint Gate
 
-When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **You cannot call `next_activity` for a different activity until all checkpoints are resolved.** Attempting to do so produces a hard error listing the pending checkpoints and how to resolve each one.
-
-- **respond_checkpoint(`session_token`, `checkpoint_id`, ...)** — Resolve a pending checkpoint. Exactly one of:
-  - `option_id` — the user's selected option (present the checkpoint to the user first)
-  - `auto_advance: true` — use the checkpoint's default option (only for non-blocking checkpoints after the `autoAdvanceMs` timer elapses)
-  - `condition_not_met: true` — dismiss a conditional checkpoint whose condition was not met
-
-The response includes any effects from the selected option and the updated session token with the checkpoint removed from the pending list.
+When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **All tools are blocked until every checkpoint is resolved via `respond_checkpoint`.** The behavioral rules for how and when to resolve checkpoints are in the role-specific management skills loaded at step 4.
 
 ## Loading Skills and Resources
 
