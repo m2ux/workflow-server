@@ -1,0 +1,62 @@
+id: discover-session
+version: 1.0.0
+name: Discover Session
+description: "Search for an existing workflow session to resume. Scans planning folders for workflow-state.json files matching the user's request (ticket ID, branch name, or work package name). If a match is found, presents a checkpoint asking whether to resume. Always runs before starting a target workflow."
+problem: "Determine whether to resume an existing workflow session or start fresh"
+recognition[4]:
+  - start a workflow
+  - resume a workflow
+  - continue a workflow
+  - work on
+required: true
+estimatedTime: 1-2m
+skills:
+  primary: state-management
+steps[4]:
+  - id: identify-target
+    name: Identify target workflow and context
+    description: "Extract from the user request: the target workflow ID (e.g., 'work-package'), and any identifying context — ticket number (GitHub #N, Jira PROJ-123), branch name, PR number, or work package description. These are used to match against saved state files."
+  - id: scan-planning-folders
+    name: Scan planning folders for saved sessions
+    description: "List directories under .engineering/artifacts/planning/. For each directory that contains a workflow-state.json, read the file and extract: the saved session_token, workflow_id, current activity, and key variables (issue_number, branch_name, pr_number). Collect all matches."
+  - id: match-session
+    name: Match saved session to user request
+    description: "Compare the identifying context from step 1 against the saved sessions from step 2. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. If multiple matches, prefer the most recently updated. If no matches, set has_saved_state = false."
+  - id: prepare-result
+    name: Prepare session result
+    description: "If a match was found: set has_saved_state = true, extract the saved session_token and planning_folder_path. If no match: set has_saved_state = false. Present the appropriate checkpoint."
+checkpoints[1]:
+  - id: resume-session
+    name: Resume Previous Session
+    condition:
+      type: simple
+      variable: has_saved_state
+      operator: ==
+      value: true
+    message: "Found a previous session matching your request. Would you like to resume from where you left off?"
+    options[2]:
+      - id: resume
+        label: Resume previous session
+        description: "Continue from the saved activity position with all prior progress preserved"
+        effect:
+          setVariable:
+            is_resuming: true
+      - id: fresh
+        label: Start fresh
+        description: "Ignore the saved session and begin a new workflow from scratch"
+        effect:
+          setVariable:
+            is_resuming: false
+            has_saved_state: false
+transitions[1]:
+  - to: start-workflow
+    isDefault: true
+outcome[3]:
+  - Target workflow identified
+  - Existing session found and resume decision made, or no session found
+  - Ready to proceed to start-workflow with or without a saved token
+context_to_preserve[4]:
+  - target_workflow_id - The workflow to start or resume
+  - has_saved_state - Whether a saved session was found
+  - is_resuming - Whether the user chose to resume
+  - planning_folder_path - Path to the matched planning folder
