@@ -163,9 +163,12 @@ describe('mcp-server integration', () => {
       });
       expect(parseToolResponse(skillsResult).session_token).toBeDefined();
 
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const clearedToken = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+
       const skillResult = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: actResponse.session_token, step_id: 'create-issue' },
+        arguments: { session_token: clearedToken, step_id: 'create-issue' },
       });
       expect(parseToolResponse(skillResult).session_token).toBeDefined();
 
@@ -187,7 +190,9 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: startToken, activity_id: 'start-work-package' },
       });
-      const actToken = parseToolResponse(actResult).session_token;
+      const actResponse = parseToolResponse(actResult);
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const actToken = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
       expect(actToken).toBeDefined();
       expect(actToken).not.toBe(startToken);
 
@@ -317,7 +322,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -343,7 +349,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -357,7 +364,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -371,7 +379,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -388,7 +397,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -407,7 +417,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -428,7 +439,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -603,7 +615,8 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'requirements-elicitation' },
       });
-      const actToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+      const actResponse = parseToolResponse(actResult);
+      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -1338,6 +1351,41 @@ describe('mcp-server integration', () => {
       });
       expect(act2.isError).toBeFalsy();
       expect(parseToolResponse(act2).id).toBe('design-philosophy');
+    });
+
+    it('get_skill should be gated when checkpoints are pending', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const token = actMeta['session_token'] as string;
+
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: token, step_id: 'create-issue' },
+      });
+      expect(result.isError).toBe(true);
+      const errorText = (result.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('unresolved checkpoint');
+      expect(errorText).toContain('respond_checkpoint');
+    });
+
+    it('get_skill should work after all checkpoints resolved', async () => {
+      const act = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actMeta = act._meta as Record<string, unknown>;
+      const actResponse = parseToolResponse(act);
+      const clearedToken = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: clearedToken, step_id: 'create-issue' },
+      });
+      expect(result.isError).toBeFalsy();
+      expect(parseToolResponse(result).skill.id).toBe('create-issue');
     });
 
     it('respond_checkpoint should require exactly one resolution mode', async () => {
