@@ -8,16 +8,12 @@
 
 1. **discover** — Call first (no parameters). Returns the server info, available workflows, and this bootstrap procedure.
 2. **list_workflows** — Match the user's goal to a workflow from the returned list. No session token needed.
-3. **Session discovery (resume only)** — If the user explicitly requests to resume a workflow (e.g., "resume", "continue", "pick up where I left off"), search for a saved session **before** calling `start_session`:
-   - Extract a ticket identifier from the user request (GitHub issue `#N`, Jira key `PROJ-123`, branch name, or work package name).
-   - Search `.engineering/artifacts/planning/` for directories containing a `workflow-state.json`.
-   - Read matching state files to find one whose saved `issue_number`, `branch_name`, or directory name matches the identifier.
-   - If found: extract the saved `session_token` and `planning_folder_path` from the file. Proceed to step 4 with this token.
-   - If not found: inform the user no previous session was found. Proceed to step 4 without a token (fresh session).
-4. **start_session(`workflow_id`, `session_token?`)** — If step 3 found a saved token, pass it to inherit the previous session position. Otherwise call with only `workflow_id` for a fresh session. Save the returned `session_token`.
-5. **get_skills(`session_token`)** — Load behavioral protocols and workflow-specific skills.
-6. **get_workflow(`session_token`, `summary=true`)** — Load the workflow structure including `initialActivity` and the activity list.
-7. **next_activity(`session_token`, `activity_id`)** — For fresh sessions, use `initialActivity` from step 6. For resumed sessions, use the restored `currentActivity` from the state file. If resuming, also restore variables from the state file.
+3. **start_session(`workflow_id: "meta"`)** — Start a meta session. This provides a token for the session discovery activity.
+4. **get_skills(`session_token`)** — Load behavioral protocols.
+5. **next_activity(`session_token`, `activity_id: "discover-session"`)** — Run the session discovery activity. This searches `.engineering/artifacts/planning/` for saved workflow sessions matching the user's request (ticket ID, branch name, etc.). If a match is found, a checkpoint asks the user whether to resume. The activity resolves with a saved `session_token` (if resuming) or signals a fresh start.
+6. **start_session(`workflow_id`, `session_token?`)** — Start the target workflow session. If discover-session found a saved token, pass it to inherit the previous session position. Otherwise call with only `workflow_id` for a fresh session.
+7. **get_workflow(`session_token`, `summary=true`)** — Load the target workflow structure including `initialActivity` and the activity list.
+8. **next_activity(`session_token`, `activity_id`)** — For fresh sessions, use `initialActivity` from step 7. For resumed sessions, use the restored `currentActivity` from the state file. If resuming, also restore variables from the state file.
 
 ## Worker Dispatch (Token Inheritance)
 
