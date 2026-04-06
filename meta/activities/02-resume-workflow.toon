@@ -2,7 +2,7 @@ id: resume-workflow
 version: 5.0.0
 name: Resume Workflow
 problem: The user wants to continue a workflow that was previously started.
-description: "Resume a workflow using persisted state as the primary mechanism. Checks for a workflow-state.toon file in the planning folder and restores from it. Falls back to manual reconstruction from external evidence only when no saved state exists."
+description: "Resume a workflow using persisted state as the primary mechanism. Checks for a workflow-state.json file in the planning folder and resumes via start_session(session_token=saved_token). Falls back to manual reconstruction from external evidence only when no saved state exists."
 recognition[6]:
   - Resume workflow
   - Continue workflow
