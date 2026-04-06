@@ -216,16 +216,19 @@ This PR adds some improvements to search.
 Always link to related artifacts on the same line for easy scanning:
 
 ```markdown
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering]({ENG_REPO_URL}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan]({TARGET_REPO_URL}/blob/{BRANCH_NAME}/docs/tests/test-plan.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan]({TARGET_REPO_URL}/blob/{BRANCH_NAME}/docs/tests/test-plan.md)
 ```
 
 #### CRITICAL: Resolving Link Placeholders
 
-**NEVER guess or infer repository URLs.** Always resolve them from git remotes:
+**NEVER guess or infer repository URLs or branch names.** Always resolve them from git remotes:
 
 ```bash
 # Engineering repo URL (parent repo where .engineering/ lives):
 ENG_REPO_URL=$(git -C <parent-repo-path> remote get-url origin | sed 's/\.git$//')
+
+# Engineering repo branch (the branch where planning artifacts are committed):
+ENG_BRANCH=$(git -C <parent-repo-path> branch --show-current)
 
 # Target repo URL (submodule where the PR is created):
 TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
@@ -234,7 +237,7 @@ TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
 # git@github.com:org/repo.git → https://github.com/org/repo
 ```
 
-The `ENG_REPO_URL` comes from the **parent repo** (the repo containing `.engineering/`), not the target submodule. These are different repositories with different owners.
+The `ENG_REPO_URL` comes from the **parent repo** (the repo containing `.engineering/`), not the target submodule. These are different repositories with different owners. The `ENG_BRANCH` is the current branch of the parent repo — do NOT assume `main`; the engineering artifacts may live on a different branch (e.g., `engineering`, a user branch, or a feature branch).
 
 **When to include each link:**
 - **Ticket** - Always include if work is tracked in a ticket
@@ -246,7 +249,7 @@ The `ENG_REPO_URL` comes from the **parent repo** (the repo containing `.enginee
 - ✅ `https://github.com/OWNER/REPO/blob/feat/hybrid-search/docs/decisions/adr-hybrid-search.md`
 - ❌ `docs/decisions/adr-hybrid-search.md` (resolves to main, which won't have the file yet)
 
-**Note:** Engineering links point to the engineering artifacts repository (not the target repo), typically on `main` since artifacts are committed there directly.
+**Note:** Engineering links point to the engineering artifacts repository (not the target repo), on whatever branch the parent repo uses for engineering artifacts. Resolve the branch from `git branch --show-current` in the parent repo — do not assume `main`.
 
 ### Motivation
 
@@ -524,7 +527,7 @@ gh pr ready
 Implement content-aware chunking that preserves semantic boundaries, reducing retrieval errors by 40% on the evaluation dataset.
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/tests/test-plan-content-chunking.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/tests/test-plan-content-chunking.md)
 ```
 
 ### Good Motivation Section
@@ -577,7 +580,7 @@ Before submitting a PR, verify:
 ### Format
 - [ ] Engineering link resolves to a committed file on the remote
 - [ ] No process attribution comments
-- [ ] Links use branch URLs, not relative paths to main
+- [ ] Links use branch URLs resolved from git, not hardcoded to main
 
 ---
 
