@@ -16,8 +16,9 @@ protocol:
     - "Call discover to learn server usage and available workflows"
     - "Call list_workflows and match user goal to a workflow by comparing to descriptions"
     - "If no workflow matches, inform the user — this is a design gap, not a user error"
-  bootstrap-session[1]:
-    - "Call start_session({ workflow_id }) to obtain workflow metadata and a session_token. Save the session_token — every subsequent tool call requires it."
+  bootstrap-session[2]:
+    - "If dispatched with a parent session_token (from the orchestrator), call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This preserves checkpoint obligations and trace correlation."
+    - "If no parent token provided, call start_session({ workflow_id }) to create a fresh session. Save the session_token — every subsequent tool call requires it."
   bootstrap-activity[2]:
     - "Call next_activity({ session_token, activity_id }) to load the activity definition. Pass session_token, not workflow_id."
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, and artifactPrefix"
@@ -60,7 +61,8 @@ tools:
     when: "Matching user goal to a workflow"
     next: "start_session with chosen workflow_id"
   start_session:
-    when: "First action on initial dispatch (not needed on resume)"
+    when: "First action on initial dispatch — pass parent session_token if provided by orchestrator"
+    params: "workflow_id, session_token (optional, from orchestrator), agent_id (optional)"
   get_skills:
     when: "Session bootstrap — load workflow-level behavioral protocols"
     params: "session_token"
