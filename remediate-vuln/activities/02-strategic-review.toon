@@ -1,0 +1,150 @@
+id: strategic-review
+version: 1.0.0
+name: Strategic Review
+description: "Review the implementation to ensure changes are minimal and focused. Validates that the final branch contains only the changes required for the solution. Confirms GPG signatures on commits (with user consent before history rewrite) and ensures a changelog fragment exists when the target repo uses a root-level changes/ convention."
+problem: User needs to ensure changes are minimal and focused
+recognition[3]:
+  - strategic review
+  - review changes
+  - review implementation
+required: true
+estimatedTime: 15-30m
+artifacts[2]:
+  - id: strategic-review-doc
+    name: "strategic-review-{n}.md"
+    location: planning
+    description: "Documents review findings, identified artifacts, and cleanup actions. NN follows artifact numbering sequence, n increments on successive reviews."
+  - id: architecture-summary-doc
+    name: "architecture-summary.md"
+    location: planning
+    description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
+steps[9]:
+  - id: diff-review
+    name: Review diff
+    description: "Examine all changes on the branch for scope and relevance"
+    skill: review-strategy
+  - id: resign-unsigned-commits
+    name: Re-sign unsigned commits
+    description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_branch to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
+    skill: manage-git
+    condition:
+      type: simple
+      variable: resign_unsigned_commits_requested
+      operator: ==
+      value: true
+  - id: identify-artifacts
+    name: Identify artifacts
+    description: "Find investigation artifacts, over-engineering, orphaned infrastructure"
+    skill: review-strategy
+  - id: ensure-changes-folder-entry
+    name: Ensure changes/ fragment when required
+    description: "If a directory named changes exists at the repository root of target_path (Towncrier, release notes fragments, or similar), inspect existing fragment filenames and bodies. Determine whether this work package already has a matching fragment (same issue/ticket id in the name or clearly linked content). If not, add one new fragment under changes/ that matches the naming pattern and structure (sections, bullets, RST/Markdown style) of the existing files. Commit it on the feature branch if appropriate. If there is no changes/ directory, skip this step."
+    skill: review-strategy
+  - id: document-findings
+    name: Document findings
+    description: "Create strategic-review-{n}.md with items that should be removed or simplified"
+    skill: review-strategy
+  - id: document-cleanup-recommendations
+    name: Document Cleanup Recommendations
+    description: "Document recommended cleanup actions as review feedback. Do NOT apply changes."
+    skill: review-strategy
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - id: apply-cleanup
+    name: Apply cleanup
+    description: "If cleanup needed, remove identified artifacts and update review document with actions taken"
+    skill: review-strategy
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - id: create-architecture-summary
+    name: Create architecture summary
+    description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
+    skill: review-strategy
+  - id: analyze-strategic-findings
+    name: Analyze Strategic Findings
+    description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly."
+    actions[1]:
+      - action: set
+        target: recommended_strategic_option
+        description: "Set to the recommended strategic review option based on findings analysis"
+checkpoints[2]:
+  - id: unsigned-commits-prompt
+    name: Unsigned or unverified commits
+    message: "Preflight scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-sign all unsigned commits now? This rewrites branch history and may require force-with-lease push."
+    condition:
+      type: simple
+      variable: unsigned_commits_in_branch
+      operator: ==
+      value: true
+    blocking: true
+    options[2]:
+      - id: resign-all
+        label: Yes — re-sign all unsigned commits
+        description: Rewrites commits with GPG signatures using git rebase; confirm signing key is available
+        effect:
+          setVariable:
+            resign_unsigned_commits_requested: true
+      - id: decline-resign
+        label: No — proceed without re-signing
+        description: Keep history as-is; note unsigned commits in strategic-review documentation
+        effect:
+          setVariable:
+            resign_unsigned_commits_requested: false
+  - id: review-findings
+    name: Strategic Review Findings Checkpoint
+    message: "Strategic review complete. Based on findings analysis, the recommended action is {recommended_strategic_option}. Auto-advancing in 30s."
+    blocking: false
+    defaultOption: acceptable
+    autoAdvanceMs: 30000
+    options[4]:
+      - id: acceptable
+        label: All acceptable
+        description: Findings noted but no changes needed (default — auto-accepts after 30s)
+        effect:
+          setVariable:
+            review_passed: true
+      - id: fix-findings
+        label: Fix findings before proceeding
+        description: Address strategic review findings now
+        effect:
+          setVariable:
+            needs_strategic_fixes: true
+      - id: defer-findings
+        label: Defer findings
+        description: Note findings for future but proceed now
+        effect:
+          setVariable:
+            review_passed: true
+      - id: more-review
+        label: Need more review
+        description: Additional areas need examination
+transitions[2]:
+  - to: submit
+    condition:
+      type: simple
+      variable: review_passed
+      operator: ==
+      value: true
+  - to: plan-prepare
+    isDefault: true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete.
+outcome[6]:
+  - Changes validated as minimal and focused
+  - Investigation artifacts and over-engineering removed
+  - Review findings documented in strategic-review-{n}.md
+  - Architecture summary created in architecture-summary.md for stakeholder communication
+  - Commit GPG signature expectations addressed (resign completed or user declined with documentation)
+  - Changelog fragment added when target repo uses root changes/ and none existed for this work
+context_to_preserve[5]:
+  - review_findings - Findings from strategic review
+  - review_passed - Whether review passed
+  - items_removed - List of items removed during cleanup
+  - unsigned_commits_in_branch - Whether any unsigned commits remained after strategic review
+  - resign_unsigned_commits_requested - Whether user requested resign at checkpoint
