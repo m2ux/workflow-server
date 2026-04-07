@@ -6,3 +6,5 @@ alwaysApply: true
 # Overview
 
 For workflow execution requests, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure.
+
+If the user provides a `session_token`, explicit bootstrap instructions, or asks you to call a specific tool like `next_activity` directly, follow those instructions — the session is already active and `start_session` must not be called again without passing the existing token.
