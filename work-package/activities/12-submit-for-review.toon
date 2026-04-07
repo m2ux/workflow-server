@@ -12,7 +12,7 @@ required: true
 estimatedTime: 30-60m
 entryActions[1]{action,message}:
   log,Submitting PR for review
-steps[12]:
+steps[13]:
   - id: consolidate-review-findings
     name: Consolidate Review Findings
     description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
@@ -53,55 +53,127 @@ steps[12]:
     description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
     skill: manage-git
     required: true
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "!="
+      value: true
   - id: push-commits
     name: Push all commits
     description: "Push all local commits to remote branch."
     skill: manage-git
     condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_sec_vuln_mode
+          operator: "!="
+          value: true
+  - id: push-sec-vuln-commits
+    name: Push security vulnerability commits
+    description: "Push all local commits to the 'security' remote. Run 'git push security HEAD'. This ensures the fix is only pushed to the designated private fork and never to the public origin."
+    skill: manage-git
+    condition:
       type: simple
-      variable: is_review_mode
-      operator: "!="
+      variable: is_sec_vuln_mode
+      operator: "=="
       value: true
   - id: update-description
     name: Update PR description
     description: "Update PR description with final implementation details. Apply automatically — user can edit the PR directly in GitHub/Jira if adjustments are needed."
     skill: update-pr
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_sec_vuln_mode
+          operator: "!="
+          value: true
   - id: mark-ready
     name: Mark PR ready for review
     description: "Mark the draft PR as ready for review using gh pr ready."
     skill: github-cli-protocol
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_sec_vuln_mode
+          operator: "!="
+          value: true
   - id: await-review
     name: Await Manual Review
     description: "Wait for PR to receive manual review from team members."
     skill: respond-to-pr-review
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "!="
+      value: true
   - id: process-review-comments
     name: Process Review Comments
     description: "Analyze and respond to PR review feedback."
     skill: respond-to-pr-review
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "!="
+      value: true
   - id: determine-review-outcome
     name: Determine Review Outcome
     description: "Based on review feedback, determine whether changes are needed."
     skill: respond-to-pr-review
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "!="
+      value: true
   - id: analyze-review-outcome
     name: Analyze Review Outcome
     description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly."
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "!="
+      value: true
     actions[1]:
       - action: set
         target: recommended_outcome
         description: "Set to the recommended review-outcome option based on comment analysis"
-checkpoints[4]:
+checkpoints[5]:
+  - id: sec-vuln-skip-review
+    name: Security Vulnerability Skip Review Checkpoint
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "=="
+      value: true
+    message: "Security vulnerability mode detected. Bypassing PR creation and review process."
+    options[1]:
+      - id: proceed
+        label: Proceed
+        description: Proceed to workflow completion
+        effect:
+          setVariable:
+            review_requires_changes: false
   - id: review-received
     name: Review Received Checkpoint
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "!="
+      value: true
     message: "Has the PR received manual review feedback?"
     options[2]:
       - id: yes-review
@@ -112,6 +184,11 @@ checkpoints[4]:
         description: Continue waiting for review
   - id: review-outcome
     name: Review Outcome Checkpoint
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "!="
+      value: true
     message: "Based on review comment analysis, the recommended outcome is {recommended_outcome}. Auto-advancing in 30s."
     blocking: false
     defaultOption: approved
@@ -137,6 +214,11 @@ checkpoints[4]:
             review_requires_changes: true
   - id: review-ready
     name: Review Ready Check
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "!="
+      value: true
     message: "Has the PR received review feedback from a human reviewer?"
     blocking: true
     options[2]:
