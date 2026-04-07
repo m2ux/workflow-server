@@ -59,13 +59,6 @@ variables[69]:
   - name: branch_name
     type: string
     description: Feature branch name
-  - name: project_type
-    type: string
-    description: "Detected project type (rust-substrate|other). Set by detect-project-type step."
-  - name: is_review_mode
-    type: boolean
-    description: "Whether review mode is active (set by mode detection)"
-    defaultValue: false
   - name: review_pr_url
     type: string
     description: "URL of the PR being reviewed (review mode only)"
