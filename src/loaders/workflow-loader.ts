@@ -77,6 +77,51 @@ function resolveWorkflowPath(workflowDir: string, workflowId: string): string | 
   return null;
 }
 
+/**
+ * Resolve a shorthand activity reference like "work-package/02-design-philosophy.toon"
+ */
+async function resolveActivityReference(workflowDir: string, ref: string): Promise<Activity | null> {
+  const parts = ref.split('/');
+  if (parts.length < 2) return null;
+  
+  const targetWorkflowId = parts[0];
+  const filename = parts.slice(1).join('/');
+  
+  // Assumes the standard structure: workflows/{workflowId}/activities/{filename}
+  // The shorthand usually omits 'activities/', so we add it if missing
+  const isActivitiesDirIncluded = filename.startsWith('activities/');
+  const activityPath = isActivitiesDirIncluded
+    ? join(workflowDir, targetWorkflowId, filename)
+    : join(workflowDir, targetWorkflowId, 'activities', filename);
+    
+  if (!existsSync(activityPath)) return null;
+  
+  try {
+    const content = await readFile(activityPath, 'utf-8');
+    const decoded = decodeToonRaw(content);
+    
+    const validation = safeValidateActivity(decoded);
+    if (!validation.success) {
+      logWarn('Invalid referenced activity', { ref, errors: validation.error.issues });
+      return null;
+    }
+    
+    const activity = validation.data;
+    
+    // Attempt to parse prefix from filename
+    const actualFilename = filename.split('/').pop() || '';
+    const parsed = parseActivityFilename(actualFilename);
+    if (parsed) {
+      activity.artifactPrefix = parsed.index;
+    }
+    
+    return activity;
+  } catch (error) {
+    logWarn('Failed to load referenced activity', { ref, error: error instanceof Error ? error.message : 'Unknown error' });
+    return null;
+  }
+}
+
 export async function loadWorkflow(workflowDir: string, workflowId: string): Promise<Result<Workflow, WorkflowNotFoundError | WorkflowValidationError>> {
   const filePath = resolveWorkflowPath(workflowDir, workflowId);
   if (!filePath) return err(new WorkflowNotFoundError(workflowId));
@@ -85,10 +130,26 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
     const content = await readFile(filePath, 'utf-8');
     const rawWorkflow = decodeToonRaw(content) as RawWorkflow;
     
-    // Load activities from directory if not inline
-    // Default to 'activities/' subfolder, or use activitiesDir if specified
-    const existingActivities = rawWorkflow['activities'] as Activity[] | undefined;
-    if (!existingActivities || existingActivities.length === 0) {
+    // Load activities from directory if not inline or resolve shorthand string refs
+    const existingActivities = rawWorkflow['activities'] as (Activity | string)[] | undefined;
+    
+    if (existingActivities && existingActivities.length > 0) {
+      // Resolve any string shorthand references to full Activity objects
+      const resolvedActivities = await Promise.all(
+        existingActivities.map(async (activityOrRef) => {
+          if (typeof activityOrRef === 'string') {
+            const resolved = await resolveActivityReference(workflowDir, activityOrRef);
+            if (!resolved) {
+              throw new Error(`Failed to resolve activity reference: ${activityOrRef}`);
+            }
+            return resolved;
+          }
+          return activityOrRef;
+        })
+      );
+      rawWorkflow['activities'] = resolvedActivities;
+    } else {
+      // Original logic: default to 'activities/' subfolder
       const workflowDirPath = dirname(filePath);
       const activitiesDirName = rawWorkflow.activitiesDir ?? 'activities';
       const activitiesPath = join(workflowDirPath, activitiesDirName);

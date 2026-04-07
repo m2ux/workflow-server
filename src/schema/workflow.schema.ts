@@ -68,6 +68,9 @@ export const WorkflowSchema = z.object({
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual TOON files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.
+  // The shorthand string references are resolved into fully typed Activity objects during load,
+  // but we allow strings in the intermediate raw schema before transformation.
+  // However, the final Workflow type expects Activity[] to avoid type errors across the codebase.
   activities: z.array(ActivitySchema).min(1).describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points.'),
 }).refine(
   (wf) => {
