@@ -40,7 +40,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[65]:
+variables[69]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -231,7 +231,7 @@ variables[65]:
     type: array
     description: "List of change block indices flagged by user during manual diff review"
   - name: current_block_index
-    type: integer
+    type: number
     description: "Current block index during manual diff review loop (from flagged_block_indices)"
     defaultValue: 0
   - name: question_domains
