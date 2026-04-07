@@ -38,6 +38,7 @@ modes[2]:
       needs_issue_creation: false
       pr_skipped: true
       issue_skipped: true
+    initialActivity: start-vuln-remediation
   - id: review
     name: Review Mode
     description: "Review existing PRs rather than implementing new code. Analyzes pre-change baseline, skips implementation, and generates structured PR review comments."
