@@ -142,10 +142,22 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
     
     // Load activities from directory if not inline or resolve shorthand string refs
     const existingActivities = rawWorkflow['activities'] as (Activity | string)[] | undefined;
+    let resolvedActivities: Activity[] = [];
     
+    // Always attempt to load from local activities directory first
+    const workflowDirPath = dirname(filePath);
+    const activitiesDirName = rawWorkflow.activitiesDir ?? 'activities';
+    const activitiesPath = join(workflowDirPath, activitiesDirName);
+    
+    const localActivities = await loadActivitiesFromDir(activitiesPath);
+    if (localActivities.length > 0) {
+      resolvedActivities = [...localActivities];
+      logInfo('Loaded local activities from directory', { workflowId, activitiesDir: activitiesDirName, count: localActivities.length });
+    }
+
     if (existingActivities && existingActivities.length > 0) {
       // Resolve any string shorthand references to full Activity objects
-      const resolvedActivities = await Promise.all(
+      const explicitlyReferencedActivities = await Promise.all(
         existingActivities.map(async (activityOrRef) => {
           if (typeof activityOrRef === 'string') {
             const resolved = await resolveActivityReference(workflowDir, workflowId, activityOrRef);
@@ -157,23 +169,22 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
           return activityOrRef;
         })
       );
-      rawWorkflow['activities'] = resolvedActivities;
-    } else {
-      // Original logic: default to 'activities/' subfolder
-      const workflowDirPath = dirname(filePath);
-      const activitiesDirName = rawWorkflow.activitiesDir ?? 'activities';
-      const activitiesPath = join(workflowDirPath, activitiesDirName);
       
-      const activities = await loadActivitiesFromDir(activitiesPath);
-      if (activities.length > 0) {
-        rawWorkflow['activities'] = activities;
-        logInfo('Loaded activities from directory', { workflowId, activitiesDir: activitiesDirName, count: activities.length });
+      // Add explicitly referenced activities, avoiding duplicates based on ID
+      for (const explicitActivity of explicitlyReferencedActivities) {
+        if (!resolvedActivities.some(a => a.id === explicitActivity.id)) {
+          resolvedActivities.push(explicitActivity);
+        }
       }
-      
-      // Clean up non-schema property
-      if (rawWorkflow.activitiesDir) {
-        delete rawWorkflow.activitiesDir;
-      }
+    }
+    
+    if (resolvedActivities.length > 0) {
+       rawWorkflow['activities'] = resolvedActivities;
+    }
+
+    // Clean up non-schema property
+    if (rawWorkflow.activitiesDir) {
+      delete rawWorkflow.activitiesDir;
     }
     
     const result = safeValidateWorkflow(rawWorkflow);
