@@ -1,8 +1,8 @@
 id: agent-conduct
-version: 2.2.0
-capability: Define agent behavioral boundaries for file sensitivity, communication, and operational discipline
+version: 2.3.0
+capability: Define agent behavioral boundaries for file sensitivity, communication, operational discipline, and checkpoint resolution
 
-description: "Cross-cutting behavioral boundaries. Governs which files require extra caution, how agents communicate (professional standards and documentation style), and when they can act (tool call discipline and build priority). Code modification permission is governed by the workflow and activity context, not by these rules."
+description: "Cross-cutting behavioral boundaries. Governs which files require extra caution, how agents communicate (professional standards and documentation style), when they can act (tool call discipline and build priority), and how checkpoints must be resolved."
 
 rules:
   file-sensitivity[3]:
@@ -20,6 +20,9 @@ rules:
     - "Do not include process attribution in code comments or documentation."
   code-commentary[1]:
     - "Comments should explain why code exists and the rationale for design choices — avoid narrating what the code does."
+  checkpoint-discipline[2]:
+    - "Checkpoints are explicit user decision gates. You MUST NOT call respond_checkpoint with an option_id unless the user has explicitly selected that option."
+    - "Never fabricate an option_id, assume the user's intent, or auto-resolve blocking checkpoints on behalf of the user, even if you believe you have the context."
   operational-discipline[4]:
     - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls."
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."

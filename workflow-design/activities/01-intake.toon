@@ -130,6 +130,7 @@ checkpoints[3]:
       operator: "!="
       value: true
     message: "I've classified this as a {create/update} operation for workflow '{workflow_id}'. Is this correct?"
+    blocking: true
     options[2]:
       - id: confirm-create
         label: "Yes, create a new workflow"
@@ -151,6 +152,7 @@ checkpoints[3]:
       operator: "=="
       value: true
     message: "Here is the existing workflow structure and my understanding of your requested changes. Is this correct?"
+    blocking: true
     options[3]:
       - id: confirmed
         label: "Yes, that's correct"
