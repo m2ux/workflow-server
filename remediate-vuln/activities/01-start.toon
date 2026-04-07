@@ -44,7 +44,18 @@ steps[8]:
     name: Finalize Security Setup
     description: "Verify that 'origin' remote is not being tracked by the current branch."
     skill: manage-git
-checkpoints[2]:
+checkpoints[3]:
+  - id: confirm-security-remote
+    name: Confirm Security Remote
+    message: "CRITICAL: Isolation check. You MUST confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
+    blocking: true
+    options[2]:
+      - id: confirmed
+        label: "Yes, security remote is private"
+        description: "Confirmed security remote is correctly configured for isolation"
+      - id: wrong-remote
+        label: "No, fix remote"
+        description: "Remote is incorrect; must be fixed before proceeding"
   - id: verify-isolation
     name: Verify Isolation Checkpoint
     message: "I have configured the 'security' remote and local branch. I will NOT create a public PR or Issue. Is the private remote URL {sec_vuln_url} correct and authorized?"

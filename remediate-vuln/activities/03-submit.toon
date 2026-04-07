@@ -28,7 +28,18 @@ steps[4]:
   - id: log-completion
     name: Log Completion
     description: "Log that the security fix has been securely pushed."
-checkpoints[1]:
+checkpoints[2]:
+  - id: verify-private-remote
+    name: Verify Private Remote
+    message: "FINAL ISOLATION CHECK: You are about to push to '{sec_vuln_url}'. Is this the private security remote? (NEVER push to origin in this workflow)."
+    blocking: true
+    options[2]:
+      - id: confirmed
+        label: "Yes, push to private remote"
+        description: "Proceed with push to verified private remote"
+      - id: abort
+        label: "No, abort push"
+        description: "Push aborted due to remote verification failure"
   - id: confirm-push
     name: Confirm Push Checkpoint
     message: "Ready to push the security fix to the private remote '{sec_vuln_url}'. Confirm to proceed?"

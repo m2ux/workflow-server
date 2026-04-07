@@ -1,6 +1,6 @@
 "$schema": "../../schemas/workflow.schema.json"
 id: remediate-vuln
-version: 1.0.0
+version: 1.0.1
 title: Security Vulnerability Remediation Workflow
 description: "A highly isolated workflow for remediating security vulnerabilities without public disclosure. Bypasses all public issue tracking and PR creation, operating exclusively on a private security remote."
 author: m2ux
