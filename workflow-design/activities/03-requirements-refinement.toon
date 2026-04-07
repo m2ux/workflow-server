@@ -55,6 +55,7 @@ checkpoints[8]:
   - id: purpose-confirmed
     name: Purpose Confirmation
     message: "Here is the workflow purpose and domain I've captured. Is this accurate?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, that's right"
@@ -65,6 +66,7 @@ checkpoints[8]:
   - id: activities-confirmed
     name: Activity List Confirmation
     message: "Here is the activity list I've captured with names, purposes, and expected artifacts. Is this complete?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, this is complete"
@@ -80,6 +82,7 @@ checkpoints[8]:
       operator: "!="
       value: true
     message: "Based on our discussion, this workflow uses a {sequential/independent} activity model. Is this correct?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, correct model"
@@ -90,6 +93,7 @@ checkpoints[8]:
   - id: checkpoints-confirmed
     name: Checkpoints Confirmation
     message: "Here are the checkpoints I've defined for each activity with their options and effects. Do these cover all necessary user decision points?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, checkpoints are complete"
@@ -100,6 +104,7 @@ checkpoints[8]:
   - id: artifacts-confirmed
     name: Artifacts Confirmation
     message: "Here are the artifacts each activity produces. Is this complete?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, artifacts are complete"
@@ -115,6 +120,7 @@ checkpoints[8]:
       operator: "!="
       value: true
     message: "Here are the workflow variables I've identified for state tracking. Is this complete?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, variables are complete"
@@ -130,6 +136,7 @@ checkpoints[8]:
       operator: "!="
       value: true
     message: "Here are the skills needed by this workflow. Is this complete?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, skills are complete"
@@ -140,6 +147,7 @@ checkpoints[8]:
   - id: rules-confirmed
     name: Rules Confirmation
     message: "Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, rules are complete"
