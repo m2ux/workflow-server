@@ -124,7 +124,13 @@ checkpoints[2]:
       - id: more-review
         label: Need more review
         description: Additional areas need examination
-transitions[3]:
+transitions[4]:
+  - to: submit-vuln-remediation
+    condition:
+      type: simple
+      variable: is_sec_vuln_mode
+      operator: "=="
+      value: true
   - to: submit-for-review
     condition:
       type: simple

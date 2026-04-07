@@ -1,0 +1,155 @@
+"$schema": ../../schemas/workflow.schema.json
+id: remediate-vuln
+version: 1.0.0
+title: Security Vulnerability Remediation Workflow
+description: "A highly isolated workflow for remediating security vulnerabilities without public disclosure. Bypasses all public issue tracking and PR creation, operating exclusively on a private security remote."
+author: m2ux
+tags[3]:
+  - security
+  - implementation
+  - workflow
+rules[8]:
+  - "Agents MUST NOT skip or auto-resolve blocking checkpoints (blocking: true) — these require explicit user selection."
+  - "STRICT ISOLATION: The agent MUST NOT use any public GitHub tools (e.g. gh pr create, gh issue create) during this workflow."
+  - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
+  - "Ask, don't assume - Clarify requirements before acting"
+  - "Summarize, then proceed - Provide brief status before asking to continue"
+  - "One task at a time - Complete current work before starting new work"
+  - "Explicit approval - Get clear 'yes' or 'proceed' before major actions"
+  - "EXECUTION MODEL: This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: orchestrator-management from meta/skills) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: worker-management from meta/skills) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. CONSTRAINT: Only ONE level of sub-agent indirection (the worker)."
+artifactLocations:
+  planning:
+    path: "{planning_folder_path}"
+  reviews:
+    path: ".engineering/artifacts/reviews"
+  adr:
+    path: ".engineering/artifacts/adr"
+  comprehension:
+    path: ".engineering/artifacts/comprehension"
+variables[27]:
+  - name: target_path
+    type: string
+    description: "Path to the target directory. All git operations (branch, push) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
+  - name: planning_folder_path
+    type: string
+    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}"
+  - name: branch_name
+    type: string
+    description: Feature branch name (e.g. vuln/remediate-...)
+  - name: project_type
+    type: string
+    description: "Detected project type (rust-substrate|other). Set by detect-project-type step."
+  - name: is_sec_vuln_mode
+    type: boolean
+    description: "Always true for this workflow. Used to bypass specific logic in shared activities."
+    defaultValue: true
+  - name: sec_vuln_url
+    type: string
+    description: "URL of the vulnerability advisory to remediate"
+  - name: is_review_mode
+    type: boolean
+    description: "Always false for this workflow."
+    defaultValue: false
+  - name: needs_elicitation
+    type: boolean
+    description: Whether requirements elicitation is needed
+    defaultValue: false
+  - name: needs_research
+    type: boolean
+    description: Whether research phase is needed
+    defaultValue: false
+  - name: skip_optional_activities
+    type: boolean
+    description: Whether to skip optional discovery activities (elicitation and research)
+    defaultValue: false
+  - name: needs_comprehension
+    type: boolean
+    description: Whether codebase comprehension is needed. Always true after design-philosophy.
+    defaultValue: true
+  - name: complexity
+    type: string
+    description: "Problem complexity assessed during design-philosophy (simple|moderate|complex)."
+  - name: validation_passed
+    type: boolean
+    description: Whether validation phase passed
+    defaultValue: false
+  - name: has_failures
+    type: boolean
+    description: Whether test/build/lint failures were detected during validation
+    defaultValue: false
+  - name: review_passed
+    type: boolean
+    description: Whether strategic review passed
+    defaultValue: false
+  - name: needs_code_fixes
+    type: boolean
+    description: Whether code review findings require fixes before proceeding
+    defaultValue: false
+  - name: needs_test_improvements
+    type: boolean
+    description: Whether test suite needs improvements before proceeding
+    defaultValue: false
+  - name: has_stakeholder_input
+    type: boolean
+    description: Whether stakeholder discussion transcript was provided
+    defaultValue: false
+  - name: stakeholder_review_complete
+    type: boolean
+    description: Whether stakeholder review of assumptions is complete
+    defaultValue: false
+  - name: needs_further_discussion
+    type: boolean
+    description: Whether further stakeholder discussion is needed
+    defaultValue: false
+  - name: has_flagged_blocks
+    type: boolean
+    description: Whether user flagged any change blocks during manual diff review
+    defaultValue: false
+  - name: has_critical_blocker
+    type: boolean
+    description: Whether any flagged block is a critical blocker
+    defaultValue: false
+  - name: needs_strategic_fixes
+    type: boolean
+    description: Whether strategic review findings require fixes
+    defaultValue: false
+  - name: needs_cleanup
+    type: boolean
+    description: Whether minor cleanup is needed from strategic review
+    defaultValue: false
+  - name: unsigned_commits_in_pr
+    type: boolean
+    description: "True when any commit has no valid GPG signature."
+    defaultValue: false
+  - name: resign_unsigned_commits_requested
+    type: boolean
+    description: "User chose to re-sign unsigned commits at the strategic-review checkpoint."
+    defaultValue: false
+  - name: unsigned_commit_list_summary
+    type: string
+    description: "Short human-readable summary of unsigned commits."
+skills[2]:
+  - orchestrator-management
+  - worker-management
+executionModel:
+  roles[2]:
+    - id: orchestrator
+      description: "Coordinates workflow execution, manages activity transitions, presents checkpoints to the user, and delegates all domain work to the worker"
+    - id: worker
+      description: "Executes activity steps, produces artifacts, and yields checkpoint results to the orchestrator"
+initialActivity: start-vuln-remediation
+activities[14]:
+  - $ref: "activities/start-vuln-remediation.toon"
+  - $ref: "../work-package/activities/02-design-philosophy.toon"
+  - $ref: "../work-package/activities/03-requirements-elicitation.toon"
+  - $ref: "../work-package/activities/04-research.toon"
+  - $ref: "../work-package/activities/05-implementation-analysis.toon"
+  - $ref: "../work-package/activities/06-plan-prepare.toon"
+  - $ref: "../work-package/activities/07-assumptions-review.toon"
+  - $ref: "../work-package/activities/08-implement.toon"
+  - $ref: "../work-package/activities/09-post-impl-review.toon"
+  - $ref: "../work-package/activities/10-validate.toon"
+  - $ref: "../work-package/activities/11-strategic-review.toon"
+  - $ref: "activities/submit-vuln-remediation.toon"
+  - $ref: "../work-package/activities/13-complete.toon"
+  - $ref: "../work-package/activities/14-codebase-comprehension.toon"
