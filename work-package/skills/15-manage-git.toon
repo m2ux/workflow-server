@@ -1,5 +1,5 @@
 id: manage-git
-version: 1.0.0
+version: 1.1.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 
 description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE target_path. Branches and PRs are created against the target's upstream."
@@ -33,6 +33,10 @@ protocol:
   push-commits[2]:
     - Push all local commits to remote
     - Verify push succeeded
+  gpg-resign-range[3]:
+    - Resolve MERGE_BASE against default branch (same order as validate strategic preflight)
+    - Re-sign each commit in MERGE_BASE..HEAD via rebase --exec 'git commit --amend --no-edit -S' (GPG); ensure user.signingkey and gpg agent are available
+    - After rewrite, verify with git log --format='%h %G?' MERGE_BASE..HEAD; push with --force-with-lease only when appropriate for the PR branch
 
 output[1]:
   - id: branch-and-pr

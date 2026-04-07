@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: work-package
-version: 3.5.0
+version: 3.6.1
 title: Work Package Implementation Workflow
 description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
 author: m2ux
@@ -8,16 +8,14 @@ tags[3]:
   - implementation
   - engineering
   - workflow
-rules[9]:
-  - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+rules[7]:
   - "Agents MUST NOT skip or auto-resolve blocking checkpoints (blocking: true) — these require explicit user selection. Advisory checkpoints (blocking: false with autoAdvanceMs and defaultOption) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input."
   - "Ask, don't assume - Clarify requirements before acting"
   - "Summarize, then proceed - Provide brief status before asking to continue"
   - One task at a time - Complete current work before starting new work
   - "Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)"
   - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
-  - "EXECUTION MODEL: This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: orchestrator-management) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user via AskQuestion at the top-level conversation. A persistent worker sub-agent (skill: worker-management) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user via AskQuestion, then resumes the worker with the response. The worker is resumed across activities to preserve context. CONSTRAINT: Only ONE level of sub-agent indirection (the worker). The orchestrator must run at the top level because sub-agent AskQuestion calls do not surface question content to the user."
-  - "CHECKPOINT YIELD RULE: When a checkpoint message references generated content (analyses, findings, documents, drafted issues, assumptions, plans, review summaries, or any artifact the user must evaluate), the worker MUST include that content in the 'context' field of the checkpoint_pending yield. The orchestrator presents context as a text message BEFORE the AskQuestion call. Without this, the user sees only the question with no content to evaluate. The worker MUST NOT call AskQuestion directly — all user interaction flows through checkpoint yields to the orchestrator."
+  - "EXECUTION MODEL: This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: orchestrator-management from meta/skills) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: worker-management from meta/skills) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. CONSTRAINT: Only ONE level of sub-agent indirection (the worker)."
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
@@ -232,6 +230,10 @@ variables[65]:
   - name: flagged_block_indices
     type: array
     description: "List of change block indices flagged by user during manual diff review"
+  - name: current_block_index
+    type: integer
+    description: "Current block index during manual diff review loop (from flagged_block_indices)"
+    defaultValue: 0
   - name: question_domains
     type: array
     description: "Question domains for requirements elicitation iteration"
@@ -279,6 +281,17 @@ variables[65]:
   - name: recommended_strategic_option
     type: string
     description: "Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by analyze-strategic-findings step."
+  - name: unsigned_commits_in_pr
+    type: boolean
+    description: "True when any commit in merge-base..HEAD has no valid GPG signature (%G? N or B). Set during validate (pre-strategic scan) so strategic-review can gate resign consent before the worker runs."
+    defaultValue: false
+  - name: resign_unsigned_commits_requested
+    type: boolean
+    description: "User chose to re-sign unsigned commits at the strategic-review checkpoint. Drives the resign-unsigned-pr-commits step."
+    defaultValue: false
+  - name: unsigned_commit_list_summary
+    type: string
+    description: "Short human-readable summary of unsigned or bad-signature commits (e.g. hashes and subjects) for checkpoint messaging."
   - name: recommended_outcome
     type: string
     description: "Agent-recommended PR review outcome (approved|minor-changes|significant-changes). Set by analyze-review-outcome step."
