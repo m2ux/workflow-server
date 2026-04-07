@@ -79,13 +79,23 @@ function resolveWorkflowPath(workflowDir: string, workflowId: string): string | 
 
 /**
  * Resolve a shorthand activity reference like "work-package/02-design-philosophy.toon"
+ * or local references like "01-start-work-package.toon".
  */
-async function resolveActivityReference(workflowDir: string, ref: string): Promise<Activity | null> {
+async function resolveActivityReference(workflowDir: string, workflowId: string, ref: string): Promise<Activity | null> {
   const parts = ref.split('/');
-  if (parts.length < 2) return null;
   
-  const targetWorkflowId = parts[0];
-  const filename = parts.slice(1).join('/');
+  let targetWorkflowId: string;
+  let filename: string;
+  
+  if (parts.length === 1) {
+    // Local reference within the same workflow (e.g., "01-start.toon")
+    targetWorkflowId = workflowId;
+    filename = parts[0] || '';
+  } else {
+    // Cross-workflow reference (e.g., "work-package/02-design.toon" or "work-package/activities/02-design.toon")
+    targetWorkflowId = parts[0] || '';
+    filename = parts.slice(1).join('/');
+  }
   
   // Assumes the standard structure: workflows/{workflowId}/activities/{filename}
   // The shorthand usually omits 'activities/', so we add it if missing
@@ -138,7 +148,7 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
       const resolvedActivities = await Promise.all(
         existingActivities.map(async (activityOrRef) => {
           if (typeof activityOrRef === 'string') {
-            const resolved = await resolveActivityReference(workflowDir, activityOrRef);
+            const resolved = await resolveActivityReference(workflowDir, workflowId, activityOrRef);
             if (!resolved) {
               throw new Error(`Failed to resolve activity reference: ${activityOrRef}`);
             }
