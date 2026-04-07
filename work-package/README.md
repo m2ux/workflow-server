@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> v3.5.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.6.1 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
@@ -236,9 +236,9 @@ graph LR
 
 ---
 
-## Variables (65)
+## Variables (66)
 
-The workflow declares 65 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
+The workflow declares 66 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
 
 ### Core Identifiers
 
@@ -316,6 +316,7 @@ The workflow declares 65 variables that drive control flow, store checkpoint sta
 | `question_domains` | array | Question domains for requirements elicitation iteration |
 | `task_assumptions` | array | Assumptions collected during current task |
 | `flagged_block_indices` | array | Change block indices flagged by user during diff review |
+| `current_block_index` | integer | Current block index during manual diff review loop |
 
 See `workflow.toon` for the complete variable declarations with default values.
 
@@ -323,17 +324,15 @@ See `workflow.toon` for the complete variable declarations with default values.
 
 ## Appendix: Workflow Rules
 
-The following 9 rules are declared at the workflow level and apply to all activities:
+The following 7 rules are declared at the workflow level and apply to all activities:
 
-1. **PREREQUISITE:** Agents MUST read and follow `AGENTS.md` before starting any work.
-2. Agents MUST NOT skip or auto-resolve blocking checkpoints (`blocking: true`) — these require explicit user selection. Advisory checkpoints (`blocking: false` with `autoAdvanceMs` and `defaultOption`) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input.
-3. Ask, don't assume — Clarify requirements before acting.
-4. Summarize, then proceed — Provide brief status before asking to continue.
-5. One task at a time — Complete current work before starting new work.
-6. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
-7. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-8. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `orchestrator-management`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user via AskQuestion at the top-level conversation. A persistent worker sub-agent (skill: `worker-management`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user via AskQuestion, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker). The orchestrator must run at the top level because sub-agent AskQuestion calls do not surface question content to the user.
-9. **CHECKPOINT YIELD RULE:** When a checkpoint message references generated content (analyses, findings, documents, drafted issues, assumptions, plans, review summaries, or any artifact the user must evaluate), the worker MUST include that content in the `context` field of the `checkpoint_pending` yield. The orchestrator presents context as a text message BEFORE the AskQuestion call. Without this, the user sees only the question with no content to evaluate. The worker MUST NOT call AskQuestion directly — all user interaction flows through checkpoint yields to the orchestrator.
+1. Agents MUST NOT skip or auto-resolve blocking checkpoints (`blocking: true`) — these require explicit user selection. Advisory checkpoints (`blocking: false` with `autoAdvanceMs` and `defaultOption`) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input.
+2. Ask, don't assume — Clarify requirements before acting.
+3. Summarize, then proceed — Provide brief status before asking to continue.
+4. One task at a time — Complete current work before starting new work.
+5. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
+6. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
+7. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `orchestrator-management` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `worker-management` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
 
 ---
 

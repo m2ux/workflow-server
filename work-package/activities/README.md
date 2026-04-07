@@ -670,7 +670,12 @@ graph TD
 1. **run-tests** — Execute unit, integration, and e2e tests. Observe and record results.
 2. **verify-build** — Run build. Observe and record result.
 3. **check-lint** — Run linter. Observe and record results.
-4. **fix-failures** — If tests/build/lint fail, analyze root cause, fix, and re-run. Repeat until all pass. (Skipped in review mode.)
+4. **evaluate-results** — Set `has_failures` and `validation_passed` from observed outcomes.
+5. **document-failures** / **assess-test-coverage** — Review mode only: document failures and assess coverage.
+6. **fix-failures** — If tests/build/lint fail, analyze root cause, fix, and re-run. Repeat until all pass. (Skipped in review mode.)
+7. **scan-commit-signatures-for-strategic** — Preflight GPG scan for `merge-base..HEAD`; sets `unsigned_commits_in_pr` and `unsigned_commit_list_summary` for strategic review.
+
+**Supporting skill:** `manage-git` (signature scan step).
 
 **Checkpoints (0):** This activity has no checkpoints. Test/build/lint results are observable and do not require user confirmation.
 
@@ -681,9 +686,11 @@ graph TD
     entryNode(["Entry"]) --> runTests["Run all tests"]
     runTests --> verifyBuild["Verify build succeeds"]
     verifyBuild --> checkLint["Check for linter errors"]
-    checkLint --> evaluateResults{"Any failures?"}
-    evaluateResults -->|"no"| exitNode(["strategic-review"])
-    evaluateResults -->|"yes"| fixFailures["Analyze and fix failures"]
+    checkLint --> evaluateResults["Evaluate results"]
+    evaluateResults --> scanSigs["Scan commit signatures preflight"]
+    scanSigs --> fixBranch{"Failures and not review mode?"}
+    fixBranch -->|"no"| exitNode(["strategic-review"])
+    fixBranch -->|"yes"| fixFailures["Fix and revalidate loop"]
     fixFailures --> runTests
 ```
 
@@ -691,7 +698,7 @@ graph TD
 
 ### 11. Strategic Review
 
-**Purpose:** Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. Creates strategic review document and architecture summary. In review mode: documents cleanup recommendations without applying them.
+**Purpose:** Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. GPG signature preflight runs in validate; if unsigned commits exist, a blocking checkpoint asks whether to re-sign before the worker continues. When the target repo has a root-level `changes/` directory, ensures a matching changelog fragment exists. Creates strategic review document and architecture summary. In review mode: documents cleanup recommendations without applying them.
 
 **Artifact prefix:** `11`
 
@@ -700,22 +707,28 @@ graph TD
 | Role | Skill ID |
 |------|----------|
 | primary | `review-strategy` |
+| supporting | `manage-git` (re-sign step when user opts in) |
 
 **Steps:**
 
 1. **diff-review** — Examine all changes in the PR for scope and relevance.
-2. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure.
-3. **document-findings** — Create `11-strategic-review-{n}.md` with items that should be removed or simplified.
-4. **apply-cleanup** — If cleanup needed, remove identified artifacts and update review document. (Skipped in review mode.)
-5. **create-architecture-summary** — Create `11-architecture-summary.md` using the architecture summary resource template.
+2. **resign-unsigned-pr-commits** — Only if `resign_unsigned_commits_requested`: GPG re-sign via rebase in `target_path`, re-verify, force-with-lease push if needed.
+3. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure.
+4. **ensure-changes-folder-entry** — If `changes/` exists at repo root, add a fragment matching existing conventions when none exists for this work.
+5. **document-findings** — Create `11-strategic-review-{n}.md` with items that should be removed or simplified.
+6. **document-cleanup-recommendations** — Review mode only.
+7. **apply-cleanup** — Remove identified artifacts when not in review mode.
+8. **create-architecture-summary** — Create `11-architecture-summary.md` using the architecture summary resource template.
+9. **analyze-strategic-findings** — Set `recommended_strategic_option`.
 
-**Checkpoints (1):**
+**Checkpoints (2):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
+| `unsigned-commits-prompt` | Ask whether to re-sign unsigned PR commits (conditional on `unsigned_commits_in_pr`) | yes |
 | `review-findings` | Confirm strategic review findings | no (autoAdvance 30s) |
 
-**Decision:** `review-result` — If `review_passed == true`, transition to `submit-for-review`. Otherwise loop back to `plan-prepare`.
+**Transitions:** To `submit-for-review` when `is_review_mode` or `review_passed`; default to `plan-prepare`.
 
 **Artifacts (prefixed with `11-`):**
 
@@ -726,19 +739,17 @@ graph TD
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> diffReview["Review diff for scope"]
-    diffReview --> identifyArtifacts["Identify investigation artifacts"]
-    identifyArtifacts --> documentFindings["Document findings"]
-    documentFindings --> cpFindings{"review-findings checkpoint"}
-    cpFindings -->|"confirmed"| applyCleanup["Apply cleanup"]
-    cpFindings -->|"disagree"| documentFindings
-    cpFindings -->|"more review"| diffReview
-
-    applyCleanup --> createArchSummary["Create architecture summary"]
-    createArchSummary --> cpResult{"review-result checkpoint"}
-    cpResult -->|"pass"| exitSubmit(["submit-for-review"])
-    cpResult -->|"minor cleanup"| applyCleanup
-    cpResult -->|"significant rework"| exitPlan(["plan-prepare"])
+    entryNode(["Entry"]) --> cpUnsigned{"unsigned-commits-prompt if needed"}
+    cpUnsigned --> diffReview["Review diff"]
+    diffReview --> resign["Re-sign commits if requested"]
+    resign --> identifyArtifacts["Identify artifacts"]
+    identifyArtifacts --> changesFrag["Ensure changes/ fragment if repo uses it"]
+    changesFrag --> documentFindings["Document findings"]
+    documentFindings --> applyCleanup["Apply cleanup or review-mode doc"]
+    applyCleanup --> createArchSummary["Architecture summary"]
+    createArchSummary --> analyze["Analyze strategic findings"]
+    analyze --> cpFindings["review-findings checkpoint"]
+    cpFindings --> exitSubmit(["submit-for-review or plan-prepare"])
 ```
 
 ---

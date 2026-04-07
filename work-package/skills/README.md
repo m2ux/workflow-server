@@ -23,7 +23,7 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 12 | `review-strategy` | Strategic review ensuring minimal and focused changes | Strategic Review |
 | 13 | `review-assumptions` | Assumption collection, classification, and structured review | All planning and implementation activities |
 | 14 | `manage-artifacts` | Planning folder creation and artifact numbering management | Start Work Package, Requirements Elicitation, Implementation Analysis |
-| 15 | `manage-git` | Git branching, PR lifecycle, branch sync operations | Start Work Package, Implement |
+| 15 | `manage-git` | Git branching, PR lifecycle, branch sync, GPG re-sign | Start Work Package, Implement, Validate, Strategic Review |
 | 16 | `validate-build` | Test execution, build verification, lint checking | Validate, Implement |
 | 17 | `finalize-documentation` | ADR updates, test plan finalization, COMPLETE.md creation | Complete |
 | 18 | `update-pr` | PR description update, push commits, mark ready for review | Submit for Review |
@@ -33,7 +33,7 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
 | 23 | `reconcile-assumptions` | Iterative assumption reconciliation through targeted code analysis | Design Philosophy, Requirements Elicitation, Research, Implementation Analysis, Plan & Prepare, Implement |
 
-> Skill `execute-activity` is a **universal skill** in [meta/skills/](../../meta/skills/). The orchestrator/worker execution model is defined in the workflow's `executionModel` and `rules` fields — not as a separate skill file.
+> Skills `execute-activity`, `orchestrate-workflow`, `orchestrator-management`, and `worker-management` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
 
 ### Cross-Workflow Skill References
 

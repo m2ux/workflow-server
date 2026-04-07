@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.1.0
+version: 2.1.1
 name: Assumptions Review
 description: "Present each open assumption to the user one-at-a-time, interview-style, with a rationale paragraph that explains the context and helps the user decide. The user resolves each assumption directly (accept, reject with correction, or defer). After all assumptions are reviewed, optionally post a summary to the issue tracker."
 problem: Open assumptions need resolution before implementation begins
@@ -9,11 +9,6 @@ recognition[3]:
   - validate assumptions
 required: true
 estimatedTime: 10-20m
-rules[4]:
-  - "INTERVIEW PATTERN: Present each assumption individually as a checkpoint yield. Include a rationale paragraph (2-4 sentences) that explains why this assumption was made, what evidence supports or undermines it, and what changes if the assumption is wrong. The user should be able to make an informed decision from the checkpoint context alone."
-  - "ONE-AT-A-TIME: Never batch assumptions. Each assumption is its own checkpoint_pending yield with its own rationale and options."
-  - "AUTO-SKIP RULE: If has_open_assumptions is false after evaluation (all resolved through code analysis), set stakeholder_review_complete=true and skip the interview loop entirely."
-  - "CORRECTION CAPTURE: When the user rejects an assumption, capture their correction text and update the assumptions log with the corrected understanding."
 steps[4]:
   - id: evaluate-open-assumptions
     name: Evaluate which assumptions are open

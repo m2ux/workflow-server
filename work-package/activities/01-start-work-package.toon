@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.2.0
+version: 3.2.1
 name: Start Work Package
 description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR, and create planning folder. Establishes traceability from requirements through implementation."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -12,13 +12,11 @@ recognition[6]:
   - create github issue
 required: true
 estimatedTime: 10-20m
-rules[3]:
-  - "Domain rules for issue authoring are in the issue-management skill — load skill for guidance"
+rules[1]:
   - "PREREQUISITE: Before calling ANY Jira tool (getJiraIssue, searchJiraIssuesUsingJql, etc.), the agent MUST first call getAccessibleAtlassianResources to obtain the cloudId. Load the atlassian-operations supporting skill for the full protocol."
-  - "ISSUE VERIFICATION ORDER: When the user provides a Jira issue key, do NOT immediately call getJiraIssue. First detect the platform from the key format, then resolve cloudId, then verify the issue. The check-issue step description contains the full protocol."
-entryActions[2]{action,message}:
-  validate,PREREQUISITE: Agent must read and follow AGENTS.md before starting any work
-  log,Starting issue management
+entryActions[1]:
+  - action: log
+    message: Starting issue management
 steps[17]:
   - id: detect-review-mode
     name: Detect Review Mode

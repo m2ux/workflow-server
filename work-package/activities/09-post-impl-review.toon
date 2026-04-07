@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.7.0
+version: 1.7.1
 name: Post-Implementation Review
 description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
 problem: User needs to review implementation quality before validation
@@ -230,13 +230,7 @@ decisions[1]:
       - id: no-blocker
         label: No critical blockers — proceed to validate
         isDefault: true
-transitions[2]:
-  - to: implement
-    condition:
-      type: simple
-      variable: has_critical_blocker
-      operator: ==
-      value: true
+transitions[1]:
   - to: validate
     isDefault: true
 outcome[6]:

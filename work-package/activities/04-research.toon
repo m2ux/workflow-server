@@ -1,5 +1,5 @@
 id: research
-version: 2.3.0
+version: 2.3.1
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
@@ -57,19 +57,11 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterates until all code-resolvable assumptions are resolved. Each cycle analyzes resolvable assumptions, updates the log with evidence-based resolutions, captures newly surfaced assumptions, and reclassifies. Exits when no open assumption can be further reduced through code examination."
-    steps[3]:
-      - id: targeted-analysis
-        name: Analyze code-resolvable assumptions
-        description: "For each code-resolvable assumption, perform focused codebase investigation. Trace relevant code paths, examine implementations, diff between versions. Record evidence with file paths and line numbers. Determine resolution: Validated, Invalidated, or Partially Validated."
-        skill: reconcile-assumptions
-      - id: update-assumptions-and-artifact
-        name: Update assumptions log and comprehension artifact
-        description: "Update assumptions-log.md with findings and resolution statuses. Add any newly surfaced assumptions as Open. If a comprehension artifact exists, append findings as a numbered deep-dive section."
-        skill: reconcile-assumptions
-      - id: reclassify-resolvability
-        name: Reclassify open assumptions
-        description: "Re-classify all remaining open assumptions. If any are code-resolvable (including newly surfaced ones), set has_resolvable_assumptions to true for another iteration. If none remain code-resolvable, set has_resolvable_assumptions to false — convergence reached."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions skill protocol."
+    steps[1]:
+      - id: reconcile-iteration
+        name: Execute Reconciliation Iteration
+        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
         skill: reconcile-assumptions
   - id: assumption-interview
     name: Assumption Interview Loop
