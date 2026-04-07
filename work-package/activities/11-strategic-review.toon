@@ -125,7 +125,7 @@ checkpoints[2]:
         label: Need more review
         description: Additional areas need examination
 transitions[4]:
-  - to: submit-vuln-remediation
+  - to: submit
     condition:
       type: simple
       variable: is_sec_vuln_mode

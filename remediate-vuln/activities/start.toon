@@ -1,4 +1,4 @@
-id: start-vuln-remediation
+id: start
 version: 1.0.0
 name: Start Security Vulnerability Remediation
 description: "Initialize a high-sensitivity security fix. Configures private remotes and local branches without any public issue or PR tracking. This activity is STRICTLY ISOLATED from public CI/CD and PR infrastructure."
