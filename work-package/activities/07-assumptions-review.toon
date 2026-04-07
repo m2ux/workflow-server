@@ -20,13 +20,9 @@ steps[4]:
     skill: review-assumptions
     condition:
       type: and
-      conditions[3]:
+      conditions[2]:
         - type: simple
           variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
           operator: "!="
           value: true
         - type: simple
@@ -43,13 +39,9 @@ steps[4]:
     skill: atlassian-operations
     condition:
       type: and
-      conditions[4]:
+      conditions[3]:
         - type: simple
           variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
           operator: "!="
           value: true
         - type: simple
@@ -114,13 +106,9 @@ checkpoints[2]:
     name: Post Summary Review
     condition:
       type: and
-      conditions[4]:
+      conditions[3]:
         - type: simple
           variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
           operator: "!="
           value: true
         - type: simple

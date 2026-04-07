@@ -17,32 +17,7 @@ rules[1]:
 entryActions[1]:
   - action: log
     message: Starting issue management
-steps[20]:
-  - id: detect-sec-vuln-mode
-    name: Detect Security Vulnerability Mode
-    description: "Check if user request indicates remediation of a security advisory. If detected, set is_sec_vuln_mode=true and prompt for vulnerability URL."
-    condition:
-      type: simple
-      variable: is_sec_vuln_mode
-      operator: "=="
-      value: true
-  - id: capture-sec-vuln-url
-    name: Capture Security Vulnerability URL
-    description: "Get the security advisory URL."
-    condition:
-      type: simple
-      variable: is_sec_vuln_mode
-      operator: "=="
-      value: true
-  - id: configure-sec-vuln-remote
-    name: Configure Security Vulnerability Remote
-    description: "INSIDE target_path: Parse the sec_vuln_url to extract the repository path, then add it as a git remote named 'security' using 'git remote add security <url>'. If the remote already exists, update its URL using 'git remote set-url security <url>'."
-    skill: manage-git
-    condition:
-      type: simple
-      variable: is_sec_vuln_mode
-      operator: "=="
-      value: true
+steps[17]:
   - id: detect-review-mode
     name: Detect Review Mode
     description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
@@ -72,11 +47,6 @@ steps[20]:
   - id: check-issue
     name: Check for Existing Issue
     description: "Check whether the user provided an issue key or URL. If no issue reference found, present the issue-verification checkpoint. If a key is provided, detect the platform from the format: '#N' or bare number → GitHub, 'PROJ-N' → Jira."
-    condition:
-      type: simple
-      variable: is_sec_vuln_mode
-      operator: "!="
-      value: true
     actions[1]:
       - action: set
         variable: issue_platform
@@ -86,31 +56,19 @@ steps[20]:
     description: "Load the atlassian-operations supporting skill. Call getAccessibleAtlassianResources to obtain cloudId, then call getJiraIssue to verify the issue exists. Capture issue_number and issue_url."
     skill: atlassian-operations
     condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: issue_platform
-          operator: "=="
-          value: jira
-        - type: simple
-          variable: is_sec_vuln_mode
-          operator: "!="
-          value: true
+      type: simple
+      variable: issue_platform
+      operator: "=="
+      value: jira
   - id: verify-github-issue
     name: Verify GitHub Issue
     description: "Run 'gh issue view <number>' to verify the issue exists. Capture issue_number and issue_url."
     skill: github-cli-protocol
     condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: issue_platform
-          operator: "=="
-          value: github
-        - type: simple
-          variable: is_sec_vuln_mode
-          operator: "!="
-          value: true
+      type: simple
+      variable: issue_platform
+      operator: "=="
+      value: github
   - id: create-issue
     name: Create Issue
     description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
@@ -125,16 +83,10 @@ steps[20]:
     description: "Transition the issue to 'In Progress' and assign it to the current user. (1) For Jira: call atlassianUserInfo to get the current user's account ID, then call editJiraIssue to set the assignee field to { accountId: <current_user_account_id> }. Next, call getTransitionsForJiraIssue to discover available transitions, find the one targeting 'In Progress' (or equivalent active status), and call transitionJiraIssue with that transition ID. (2) For GitHub: run 'gh issue edit <number> --add-assignee @me' to self-assign. Skip transition for GitHub (no built-in status workflow). (3) If the issue is already in progress or already assigned, skip the respective operation silently."
     skill: atlassian-operations
     condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: issue_skipped
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
-          operator: "!="
-          value: true
+      type: simple
+      variable: issue_skipped
+      operator: "!="
+      value: true
   - id: present-problem-overview
     name: Present Problem Overview
     description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Problem Overview' section."
@@ -151,13 +103,9 @@ steps[20]:
     skill: manage-git
     condition:
       type: and
-      conditions[3]:
+      conditions[2]:
         - type: simple
           variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
           operator: "!="
           value: true
         - type: simple
@@ -169,16 +117,10 @@ steps[20]:
     description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path. If a PR is found, set pr_exists=true and capture the PR number in existing_pr_number. If no PR is found, pr_exists remains false."
     skill: github-cli-protocol
     condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
-          operator: "!="
-          value: true
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     actions[1]:
       - action: set
         target: pr_exists
@@ -189,13 +131,9 @@ steps[20]:
     skill: github-cli-protocol
     condition:
       type: and
-      conditions[3]:
+      conditions[2]:
         - type: simple
           variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
           operator: "!="
           value: true
         - type: simple
@@ -209,7 +147,7 @@ steps[20]:
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"
-checkpoints[12]:
+checkpoints[10]:
   - id: issue-verification
     name: Issue Verification Checkpoint
     condition:
@@ -260,16 +198,10 @@ checkpoints[12]:
   - id: pr-check
     name: PR Check Checkpoint
     condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: pr_exists
-          operator: "=="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
-          operator: "!="
-          value: true
+      type: simple
+      variable: pr_exists
+      operator: "=="
+      value: true
     message: "Found existing PR #{existing_pr_number} for this branch. Would you like to use it or create a new one?"
     options[2]:
       - id: use-existing
@@ -394,17 +326,13 @@ checkpoints[12]:
     name: PR Creation Checkpoint
     condition:
       type: and
-      conditions[3]:
+      conditions[2]:
         - type: simple
           variable: issue_cancelled
           operator: "!="
           value: true
         - type: simple
           variable: use_existing_pr
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_sec_vuln_mode
           operator: "!="
           value: true
     message: "Issue confirmed. Creating feature branch and draft PR in 30s unless you intervene."
@@ -424,45 +352,6 @@ checkpoints[12]:
         effect:
           setVariable:
             pr_skipped: true
-  - id: sec-vuln-mode-detection
-    name: Security Vulnerability Mode Detection Checkpoint
-    condition:
-      type: simple
-      variable: is_sec_vuln_mode
-      operator: "=="
-      value: true
-    message: "This appears to be a security vulnerability remediation. No PR or issue will be created. Is that correct?"
-    options[2]:
-      - id: confirm-sec-vuln
-        label: "Yes, security vulnerability"
-        description: Remediate security advisory
-        effect:
-          setVariable:
-            is_sec_vuln_mode: true
-      - id: new-implementation
-        label: "No, new implementation"
-        description: This is new work, not a vulnerability remediation
-        effect:
-          setVariable:
-            is_sec_vuln_mode: false
-  - id: sec-vuln-url
-    name: Security Vulnerability URL Checkpoint
-    condition:
-      type: simple
-      variable: is_sec_vuln_mode
-      operator: "=="
-      value: true
-    message: "Please provide the security advisory URL:"
-    options[2]:
-      - id: url-provided
-        label: URL provided
-        description: Proceed with the specified vulnerability URL
-      - id: cancel-sec-vuln
-        label: Cancel security vulnerability mode
-        description: Switch to standard work package mode
-        effect:
-          setVariable:
-            is_sec_vuln_mode: false
   - id: review-mode-detection
     name: Review Mode Detection Checkpoint
     condition:
