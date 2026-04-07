@@ -137,9 +137,9 @@ executionModel:
       description: "Coordinates workflow execution, manages activity transitions, presents checkpoints to the user, and delegates all domain work to the worker"
     - id: worker
       description: "Executes activity steps, produces artifacts, and yields checkpoint results to the orchestrator"
-initialActivity: start-vuln-remediation
+initialActivity: start
 activities[14]:
-  - $ref: "activities/start-vuln-remediation.toon"
+  - $ref: "activities/start.toon"
   - $ref: "../work-package/activities/02-design-philosophy.toon"
   - $ref: "../work-package/activities/03-requirements-elicitation.toon"
   - $ref: "../work-package/activities/04-research.toon"
@@ -150,6 +150,6 @@ activities[14]:
   - $ref: "../work-package/activities/09-post-impl-review.toon"
   - $ref: "../work-package/activities/10-validate.toon"
   - $ref: "../work-package/activities/11-strategic-review.toon"
-  - $ref: "activities/submit-vuln-remediation.toon"
+  - $ref: "activities/submit.toon"
   - $ref: "../work-package/activities/13-complete.toon"
   - $ref: "../work-package/activities/14-codebase-comprehension.toon"
