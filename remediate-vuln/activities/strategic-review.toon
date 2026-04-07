@@ -1,7 +1,7 @@
 id: strategic-review
-version: 2.5.1
+version: 1.0.0
 name: Strategic Review
-description: "Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. Confirms GPG signatures on PR commits (with user consent before history rewrite) and ensures a changelog fragment exists when the target repo uses a root-level changes/ convention."
+description: "Review the implementation to ensure changes are minimal and focused. Validates that the final branch contains only the changes required for the solution. Confirms GPG signatures on commits (with user consent before history rewrite) and ensures a changelog fragment exists when the target repo uses a root-level changes/ convention."
 problem: User needs to ensure changes are minimal and focused
 recognition[3]:
   - strategic review
@@ -21,11 +21,11 @@ artifacts[2]:
 steps[9]:
   - id: diff-review
     name: Review diff
-    description: "Examine all changes in the PR for scope and relevance"
+    description: "Examine all changes on the branch for scope and relevance"
     skill: review-strategy
-  - id: resign-unsigned-pr-commits
+  - id: resign-unsigned-commits
     name: Re-sign unsigned commits
-    description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_pr to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
+    description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_branch to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
     skill: manage-git
     condition:
       type: simple
@@ -76,10 +76,10 @@ steps[9]:
 checkpoints[2]:
   - id: unsigned-commits-prompt
     name: Unsigned or unverified commits
-    message: "Preflight scan reports one or more commits without a valid GPG signature in this PR range: {unsigned_commit_list_summary}. Re-sign all unsigned commits now? This rewrites branch history and may require force-with-lease push."
+    message: "Preflight scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-sign all unsigned commits now? This rewrites branch history and may require force-with-lease push."
     condition:
       type: simple
-      variable: unsigned_commits_in_pr
+      variable: unsigned_commits_in_branch
       operator: ==
       value: true
     blocking: true
@@ -124,14 +124,8 @@ checkpoints[2]:
       - id: more-review
         label: Need more review
         description: Additional areas need examination
-transitions[3]:
-  - to: submit-for-review
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-  - to: submit-for-review
+transitions[2]:
+  - to: submit
     condition:
       type: simple
       variable: review_passed
@@ -146,11 +140,11 @@ outcome[6]:
   - Investigation artifacts and over-engineering removed
   - Review findings documented in strategic-review-{n}.md
   - Architecture summary created in architecture-summary.md for stakeholder communication
-  - PR commit GPG signature expectations addressed (resign completed or user declined with documentation)
+  - Commit GPG signature expectations addressed (resign completed or user declined with documentation)
   - Changelog fragment added when target repo uses root changes/ and none existed for this work
 context_to_preserve[5]:
   - review_findings - Findings from strategic review
   - review_passed - Whether review passed
   - items_removed - List of items removed during cleanup
-  - unsigned_commits_in_pr - Whether any unsigned commits remained after strategic review
+  - unsigned_commits_in_branch - Whether any unsigned commits remained after strategic review
   - resign_unsigned_commits_requested - Whether user requested resign at checkpoint
