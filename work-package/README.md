@@ -184,6 +184,20 @@ start-work-package → design-philosophy → [research →] implementation-analy
 
 ---
 
+## Security Vulnerability Mode
+
+This workflow supports **security vulnerability mode** for remediating security advisories where **PUBLIC DISCLOSURE IS STRICTLY PROHIBITED**. 
+
+**Activation:** Detected from user intent patterns such as "start sec-vuln", "remediate vulnerability", or "security advisory". Sets `is_sec_vuln_mode = true`.
+
+**Behavioral overrides:**
+- **NO ISSUE CREATION:** The workflow will not create a GitHub or Jira issue.
+- **NO PR CREATION:** The workflow will not create or push a PR to the remote repository.
+- **URL CAPTURE:** Prompts for the specific vulnerability disclosure URL. This URL is used to configure a `security` git remote (the private fork).
+- **PUSH TO PRIVATE FORK:** Commits are pushed exclusively to the `security` remote to ensure changes are not publicly disclosed prematurely.
+
+---
+
 ## Artifact Prefixing
 
 Each review and documentation activity declares an `artifactPrefix` matching its activity number. Skills produce bare artifact names (e.g., `code-review.md`) and the activity's prefix is prepended at write time.
