@@ -384,7 +384,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: actToken, step_id: 'targeted-analysis' },
+        arguments: { session_token: actToken, step_id: 'reconcile-iteration' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
