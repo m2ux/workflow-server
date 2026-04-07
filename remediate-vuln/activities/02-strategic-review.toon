@@ -133,8 +133,9 @@ transitions[2]:
       value: true
   - to: plan-prepare
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete.
+exitActions[1]:
+  - action: log
+    message: "README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete."
 outcome[6]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
