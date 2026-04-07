@@ -25,19 +25,7 @@ artifactLocations:
     path: ".engineering/artifacts/adr"
   comprehension:
     path: ".engineering/artifacts/comprehension"
-modes[2]:
-  - id: sec-vuln
-    name: Security Vulnerability Remediation Mode
-    description: "Remediate a security advisory. Adheres to strict NO PUBLIC DISCLOSURE rules. Skips PR and issue creation."
-    activationVariable: is_sec_vuln_mode
-    recognition[3]:
-      - start sec-vuln
-      - remediate vulnerability
-      - security advisory
-    defaults:
-      needs_issue_creation: false
-      pr_skipped: true
-      issue_skipped: true
+modes[1]:
   - id: review
     name: Review Mode
     description: "Review existing PRs rather than implementing new code. Analyzes pre-change baseline, skips implementation, and generates structured PR review comments."
@@ -52,7 +40,7 @@ modes[2]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[71]:
+variables[69]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -74,13 +62,6 @@ variables[71]:
   - name: project_type
     type: string
     description: "Detected project type (rust-substrate|other). Set by detect-project-type step."
-  - name: is_sec_vuln_mode
-    type: boolean
-    description: "Whether security vulnerability remediation mode is active"
-    defaultValue: false
-  - name: sec_vuln_url
-    type: string
-    description: "URL of the vulnerability advisory to remediate"
   - name: is_review_mode
     type: boolean
     description: "Whether review mode is active (set by mode detection)"
