@@ -1,5 +1,5 @@
 id: validate
-version: 2.4.0
+version: 2.4.1
 name: Verify & Validate Design
 description: "Validate the implementation through testing and build verification. Test suite quality was already reviewed in implement phase."
 problem: User needs to validate the implementation passes all tests
@@ -101,8 +101,9 @@ steps[8]:
       - action: set
         target: unsigned_commit_list_summary
         message: "Comma-separated short lines (hash + subject) for unsigned/bad commits, or empty string if none"
-transitions[1]{to,isDefault}:
-  strategic-review,true
+transitions[1]:
+  - to: strategic-review
+    isDefault: true
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark validation results as ✅ Complete.
 outcome[2]:

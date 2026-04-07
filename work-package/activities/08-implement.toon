@@ -1,5 +1,5 @@
 id: implement
-version: 2.6.1
+version: 2.6.2
 name: Implement Tasks
 description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task, reconciled through code analysis after all tasks complete, and only unresolvable assumptions are presented to the user."
 problem: User needs to implement the planned tasks
@@ -156,8 +156,9 @@ checkpoints[4]:
       - id: continue-current
         label: Continue with current model
         description: Proceed with the current model without switching
-transitions[1]{to,isDefault}:
-  post-impl-review,true
+transitions[1]:
+  - to: post-impl-review
+    isDefault: true
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — set Status to In Progress and mark implementation artifacts.
 outcome[2]:

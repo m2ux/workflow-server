@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.5.1
+version: 2.5.2
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
@@ -147,8 +147,9 @@ checkpoints[2]:
         effect:
           setVariable:
             assumption_deferred: true
-transitions[1]{to,isDefault}:
-  plan-prepare,true
+transitions[1]:
+  - to: plan-prepare
+    isDefault: true
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark implementation analysis artifacts as ✅ Complete.
 outcome[3]:

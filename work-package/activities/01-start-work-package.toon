@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.2.1
+version: 3.2.2
 name: Start Work Package
 description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR, and create planning folder. Establishes traceability from requirements through implementation."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -505,8 +505,9 @@ checkpoints[12]:
         effect:
           setVariable:
             is_review_mode: false
-transitions[1]{to,isDefault}:
-  design-philosophy,true
+transitions[1]:
+  - to: design-philosophy
+    isDefault: true
 exitActions[1]{action,message}:
   log,"Issue management complete - issue verified/created, PR ready"
 outcome[5]:
