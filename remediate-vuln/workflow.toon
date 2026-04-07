@@ -138,16 +138,4 @@ executionModel:
     - id: worker
       description: "Executes activity steps, produces artifacts, and yields checkpoint results to the orchestrator"
 initialActivity: start
-activities[12]:
-  - "work-package/02-design-philosophy.toon"
-  - "work-package/03-requirements-elicitation.toon"
-  - "work-package/04-research.toon"
-  - "work-package/05-implementation-analysis.toon"
-  - "work-package/06-plan-prepare.toon"
-  - "work-package/07-assumptions-review.toon"
-  - "work-package/08-implement.toon"
-  - "work-package/09-post-impl-review.toon"
-  - "work-package/10-validate.toon"
-  - "work-package/11-strategic-review.toon"
-  - "work-package/13-complete.toon"
-  - "work-package/14-codebase-comprehension.toon"
+
