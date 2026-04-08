@@ -1,4 +1,4 @@
-id: meta-orchestrator
+id: workflow-orchestrator
 version: 1.0.0
 capability: "Management skill for a workflow orchestrator (sub-agent) managing a dispatched client workflow — handles workflow lifecycle, state management, and yields checkpoints to the parent orchestrator"
 description: "Single-load management skill for the workflow orchestrator. Manages a dispatched client workflow. Unlike the top-level meta orchestrator, this agent runs as a sub-agent and MUST NOT use AskQuestion. It yields checkpoint_pending results up to the parent orchestrator, and returns workflow_complete when all activities are done."
