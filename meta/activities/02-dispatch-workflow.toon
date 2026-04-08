@@ -1,0 +1,100 @@
+id: dispatch-workflow
+title: Dispatch Client Workflow
+description: |
+  Dispatch the resolved target workflow to a client agent (sub-agent). Creates an independent
+  client session, spawns a client agent with the dispatch package, and manages the client
+  lifecycle inline — processing results, handling checkpoint yields, and evaluating transitions.
+  This activity replaces the former start-workflow activity and follows the same inline
+  dispatch-and-manage pattern used by the orchestrator-management skill for workers.
+
+orchestrator:
+  role: Orchestrator manages the dispatch lifecycle
+  dispatches: client agent (sub-agent via Task)
+  monitors: inline — awaits client result, processes checkpoint yields, evaluates transitions
+  does_not: execute client workflow activities directly
+
+steps:
+  - id: resolve-target
+    name: Resolve target workflow
+    instruction: |
+      The target workflow has already been resolved by the discover-session activity.
+      The `target_workflow` variable should be set. Verify it exists before proceeding.
+      If missing, return to discover-session.
+
+  - id: create-client-session
+    name: Create client session
+    instruction: |
+      Call `dispatch_workflow` with:
+      - workflow_id: the target_workflow variable value
+      - parent_session_token: your current (meta) session token
+      - variables: any initial variables for the client workflow (if applicable)
+
+      Extract from the response:
+      - client_session_token: the token the client agent will use
+      - client_session_id: the sid for trace correlation
+      - initial_activity: the first activity the client should execute
+      - worker_prompt: the pre-composed prompt for the client agent
+
+  - id: compose-dispatch-prompt
+    name: Compose dispatch prompt
+    instruction: |
+      The dispatch_workflow tool returns a worker_prompt. Use it as-is to dispatch
+      the client agent. If you need to add context (e.g., user-provided variables,
+      specific constraints), append them to the worker_prompt before dispatch.
+
+      Save the client_session_token and client_session_id in your session state
+      so you can reference them later for status checks or checkpoint handling.
+
+  - id: dispatch-client
+    name: Dispatch client agent
+    instruction: |
+      Spawn a new agent (Task/sub-agent) with the worker_prompt.
+      The client agent runs the target workflow using its own session token.
+      Wait for the client agent to return a result.
+
+      Expected result types:
+      - activity_complete: the client finished an activity
+      - checkpoint_pending: the client needs user input before continuing
+
+  - id: await-result
+    name: Await client result
+    instruction: |
+      Wait for the client agent to return. The result will be one of:
+      - activity_complete with variables_changed, artifacts_produced, steps_completed
+      - checkpoint_pending with checkpoint data requiring user input
+
+      Do NOT proceed without receiving a result from the client agent.
+
+  - id: process-result
+    name: Process client result
+    instruction: |
+      If checkpoint_pending:
+        1. Present the checkpoint to the user via AskQuestion
+        2. Receive the user's response
+        3. Resume the client agent with checkpoint_response containing the user's answer
+        4. Return to await-result
+
+      If activity_complete:
+        1. Apply variables_changed from the client session
+        2. Record the completed activity in session state
+        3. Proceed to evaluate-transition
+
+  - id: evaluate-transition
+    name: Evaluate client transition
+    instruction: |
+      Determine if the client workflow has more activities to execute.
+      Call get_workflow_status to check the client's current state.
+
+      If the client workflow has more activities:
+        - Return to dispatch-client with the next activity
+        - The client agent continues using the same client session token
+
+      If the client workflow is complete:
+        - Record the final result in session state
+        - Proceed to end-workflow
+
+transitions:
+  - to: end-workflow
+    condition: client workflow completed (all activities done)
+  - to: dispatch-workflow
+    condition: client workflow has remaining activities (loop back)
