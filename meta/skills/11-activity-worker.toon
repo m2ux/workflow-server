@@ -1,7 +1,7 @@
-id: worker-management
+id: activity-worker
 version: 1.1.0
-capability: "Consolidated management skill for the worker role — covers activity execution, session lifecycle, and behavioral boundaries"
-description: "Single-load management skill for the worker (sub-agent). Consolidates execute-activity, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
+capability: "Consolidated management skill for the activity-worker role — covers activity execution, session lifecycle, and behavioral boundaries"
+description: "Single-load management skill for the activity-worker (sub-agent). Consolidates execute-activity, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
 
 inputs[3]:
   - id: activity-id
