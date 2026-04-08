@@ -14,7 +14,6 @@ export interface SessionPayload {
   aid: string;
   pcp: string[];
   pcpt: number;
-  /** Sid of the parent (meta) session — for trace correlation in hierarchical dispatch. Metadata only; does not grant access to the parent session. */
   psid?: string | undefined;
 }
 
