@@ -1,0 +1,24 @@
+id: state-2026-04-06T09-50-39-886Z
+savedAt: "2026-04-06T09:50:39.886Z"
+description: null
+workflowId: work-package
+workflowVersion: 3.5.0
+planningFolder: /home/mike/projects/dev/workflow-server/.engineering/artifacts/planning/test-deprecation
+sessionTokenEncrypted: false
+state:
+  workflowId: work-package
+  workflowVersion: 3.5.0
+  stateVersion: 1
+  startedAt: "2026-04-06T09:50:39.885Z"
+  updatedAt: "2026-04-06T09:50:39.885Z"
+  currentActivity: start-work-package
+  completedActivities[0]:
+  skippedActivities[0]:
+  completedSteps:
+  checkpointResponses:
+  decisionOutcomes:
+  activeLoops[0]:
+  variables:
+  history[0]:
+  status: running
+  triggeredWorkflows[0]:
