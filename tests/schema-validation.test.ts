@@ -18,7 +18,7 @@ import { ConditionSchema } from '../src/schema/condition.schema.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { readActivity } from '../src/loaders/activity-loader.js';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../.engineering/workflows');
 
 describe('schema-validation', () => {
   describe('ConditionSchema', () => {
