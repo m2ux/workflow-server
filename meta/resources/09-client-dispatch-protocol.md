@@ -51,6 +51,8 @@ When the `workflow-orchestrator` (or its worker) needs user input:
 
 **Checkpoint yield chain:** Sub-agents NEVER call `AskQuestion` directly. Checkpoints bubble up: `activity-worker` → `workflow-orchestrator` → `meta-orchestrator` → User.
 
+**Strict Anti-Automation:** Agents MUST NEVER auto-resolve blocking checkpoints. No matter how "obvious" an answer seems based on context or state, if a checkpoint is `blocking: true`, it requires the user's explicit confirmation. Auto-resolving by fabricating an `option_id` is a strict protocol violation.
+
 ## 3. Recursion
 
 The model supports recursion. If a client workflow (e.g., `work-package`) needs to dispatch a sub-workflow:
