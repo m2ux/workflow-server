@@ -4,7 +4,7 @@ import { resolve, join } from 'node:path';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../.engineering/workflows');
 
 describe('activity-loader', () => {
   describe('readActivity', () => {

@@ -11,7 +11,7 @@ import {
 import type { Workflow } from '../src/schema/workflow.schema.js';
 import { resolve } from 'node:path';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+const WORKFLOW_DIR = resolve(import.meta.dirname, '../.engineering/workflows');
 
 async function loadMetaWorkflow(): Promise<Workflow> {
   const result = await loadWorkflow(WORKFLOW_DIR, 'meta');
