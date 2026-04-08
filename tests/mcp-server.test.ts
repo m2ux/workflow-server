@@ -898,8 +898,6 @@ describe('mcp-server integration', () => {
       expect(wf.version).toMatch(SEMVER_RE);
       expect(wf.rules).toBeDefined();
       expect(wf.variables).toBeDefined();
-      expect(wf.executionModel).toBeDefined();
-      expect(wf.executionModel.roles).toBeDefined();
       expect(wf.activities).toBeDefined();
       expect(wf.activities[0].id).toBeDefined();
       expect(wf.activities[0].steps).toBeUndefined();

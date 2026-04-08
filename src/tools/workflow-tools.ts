@@ -77,7 +77,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           description: wf.description,
           rules: wf.rules,
           variables: wf.variables,
-          executionModel: wf.executionModel,
           initialActivity: wf.initialActivity,
           activities: wf.activities.map(a => ({ id: a.id, name: a.name, required: a.required })),
           session_token: advancedToken,
