@@ -1,3 +1,8 @@
+---
+id: worker-prompt-template
+version: 1.0.0
+---
+
 # Worker Prompt Template
 
 Used by `dispatch_workflow` to generate the prompt for a client agent (sub-agent).

@@ -1,3 +1,8 @@
+---
+id: client-dispatch-protocol
+version: 1.0.0
+---
+
 # Client Dispatch Protocol
 
 Documents the dispatch → monitor → complete lifecycle for client workflows in the hierarchical orchestrator model.

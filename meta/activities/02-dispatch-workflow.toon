@@ -1,5 +1,6 @@
 id: dispatch-workflow
-title: Dispatch Client Workflow
+version: 1.0.0
+name: Dispatch Client Workflow
 description: |
   Dispatch the resolved target workflow to a client agent (sub-agent). Creates an independent
   client session, spawns a client agent with the dispatch package, and manages the client

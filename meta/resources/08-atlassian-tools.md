@@ -1,3 +1,8 @@
+---
+id: atlassian-tools
+version: 1.0.0
+---
+
 # Atlassian MCP Tool Reference
 
 Complete reference for Atlassian MCP server tools. Organized by product.

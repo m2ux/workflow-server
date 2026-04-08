@@ -1,3 +1,8 @@
+---
+id: workflow-bootstrap
+version: 1.0.0
+---
+
 # Bootstrap Procedure
 
 ## Session Token Rule
