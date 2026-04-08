@@ -367,7 +367,7 @@ describe('schema-validation', () => {
       expect(result.success).toBe(false);
     });
 
-    it('should reject workflow without executionModel', () => {
+    it('should accept workflow without executionModel (deprecated field)', () => {
       const workflow = {
         id: 'test-workflow',
         version: '1.0.0',
@@ -376,7 +376,7 @@ describe('schema-validation', () => {
         activities: [minimalActivity],
       };
       const result = safeValidateWorkflow(workflow);
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
   });
 
