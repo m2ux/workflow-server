@@ -1,5 +1,5 @@
 ---
-id: meta-orchestrator-prompt
+id: workflow-orchestrator-prompt
 version: 1.0.0
 ---
 
