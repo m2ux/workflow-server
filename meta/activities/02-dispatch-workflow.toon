@@ -15,11 +15,6 @@ skills:
   primary: workflow-orchestrator
   supporting:
     - state-management
-rules:
-  - "Do NOT execute client workflow activities directly — all execution is delegated to the activity-orchestrator"
-  - "The sub-agent handles its own transitions. Wait only for checkpoint_pending or workflow_complete."
-  - "Present checkpoint_pending yields to the user via AskQuestion — never fabricate responses"
-  - "Save client_session_token and client_session_id in session state for correlation"
 steps:
   - id: resolve-target
     name: Resolve target workflow
@@ -33,7 +28,7 @@ steps:
       Call dispatch_workflow with workflow_id (from target_workflow variable),
       parent_session_token (your current meta session token), and any initial variables.
       Extract client_session_token, client_session_id, initial_activity, and worker_prompt
-      from the response.
+      from the response. Save client_session_token and client_session_id in session state for correlation.
     required: true
   - id: dispatch-client
     name: Dispatch activity-orchestrator
@@ -41,12 +36,15 @@ steps:
       Spawn a new agent (Task/sub-agent) with the worker_prompt from dispatch_workflow.
       The activity-orchestrator runs the target workflow using its own session token.
       Wait for the agent to return a result — either checkpoint_pending or workflow_complete.
+      Do NOT execute client workflow activities directly — all execution is delegated to the activity-orchestrator.
+      The activity-orchestrator handles its own transitions. Wait only for checkpoint_pending or workflow_complete.
     required: true
   - id: process-result
     name: Process client result
     description: |
       If checkpoint_pending: present the checkpoint to the user via AskQuestion, receive the
       response, and resume the sub-agent with the chosen option_id. Loop back to wait for the next result.
+      Present checkpoint_pending yields to the user via AskQuestion — *never* fabricate responses.
       If workflow_complete: apply any final variables_changed, set client_workflow_completed to true.
     required: true
 transitions:
