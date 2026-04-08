@@ -133,13 +133,12 @@ sequenceDiagram
     Note over Orch: Continue for all activities...
 ```
 
-**Orchestrator** (skill: `meta-orchestrator` or `workflow-orchestrator`):
+**Orchestrator** (skill: `workflow-orchestrator`):
 - Loads the workflow definition via `get_workflow` (receives schema preamble with all five JSON Schemas)
 - Initializes state variables, detects mode
 - Dispatches activities to the worker one at a time
 - Evaluates transition conditions between activities
 - Manages rework loops (transitions back to earlier activities)
-- MUST NOT execute steps, write code, or produce artifacts
 
 **Worker** (skill: `execute-activity`):
 - Self-bootstraps from `next_activity` and `get_skill`

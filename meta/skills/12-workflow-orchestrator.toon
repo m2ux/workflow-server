@@ -42,7 +42,7 @@ protocol:
     - "Apply returned effects (setVariable, transitionTo, skipActivities) to orchestrator state."
   handle-checkpoint-yield[4]:
     - "When a worker yields checkpoint_pending mid-activity, or if the current activity has blocking checkpoints pending: yield checkpoint_pending up to the parent orchestrator."
-    - "You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. Do NOT output prose questions."
+    - "You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. You SHOULD include prose contextual information BEFORE the JSON block."
     - "DO NOT use the AskQuestion tool. You are a sub-agent; your questions will not be visible to the user."
     - "The parent orchestrator will parse your JSON yield, present the question via AskQuestion, and resume you with the user's response. Then call respond_checkpoint({ checkpoint_id, option_id })."
   commit-artifacts[3]:
