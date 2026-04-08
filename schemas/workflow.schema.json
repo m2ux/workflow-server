@@ -82,38 +82,6 @@
       "required": ["id", "name", "activationVariable"],
       "additionalProperties": false
     },
-    "agentRole": {
-      "type": "object",
-      "description": "An agent role that participates in workflow execution",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique role identifier within this workflow"
-        },
-        "description": {
-          "type": "string",
-          "description": "What this role does in the workflow execution"
-        }
-      },
-      "required": ["id", "description"],
-      "additionalProperties": false
-    },
-    "executionModel": {
-      "type": "object",
-      "description": "Declares the agent roles that participate in workflow execution",
-      "properties": {
-        "roles": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/agentRole"
-          },
-          "minItems": 1,
-          "description": "Agent roles that participate in this workflow"
-        }
-      },
-      "required": ["roles"],
-      "additionalProperties": false
-    },
     "artifactLocation": {
       "type": "object",
       "description": "Defines a named artifact storage location referenced by activity artifacts",
@@ -199,10 +167,6 @@
               { "$ref": "#/definitions/artifactLocation" }
             ]
           }
-        },
-        "executionModel": {
-          "$ref": "#/definitions/executionModel",
-          "description": "Declares the agent roles that participate in workflow execution (deprecated — roles are expressed in skill definitions)"
         },
         "skills": {
           "type": "array",
