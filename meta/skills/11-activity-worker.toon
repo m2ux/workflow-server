@@ -28,7 +28,7 @@ protocol:
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
   yield-checkpoint[2]:
-    - "At a checkpoint, STOP and yield checkpoint_pending to the orchestrator. You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. Do NOT output prose questions. The worker does not call respond_checkpoint — the orchestrator handles checkpoint resolution."
+    - "At a checkpoint, STOP and yield checkpoint_pending to the orchestrator. You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. You SHOULD include prose contextual information BEFORE the JSON block. The worker does not call respond_checkpoint — the orchestrator handles checkpoint resolution."
     - "On resume with checkpoint_response, apply effects and continue from where paused"
   execute-loops[2]:
     - "forEach: iterate over the named collection, executing loop steps for each item"

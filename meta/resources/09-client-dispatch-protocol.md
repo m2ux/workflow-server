@@ -51,7 +51,7 @@ When the `workflow-orchestrator` (or its worker) needs user input:
 5. Resume the `workflow-orchestrator` with the user's chosen option.
 6. Return to awaiting the next result.
 
-**Checkpoint yield chain:** Sub-agents NEVER call `AskQuestion` directly, and they MUST NOT output conversational questions in prose. Checkpoints are yielded strictly as `<checkpoint_yield>` JSON blocks up the chain: `activity-worker` → `workflow-orchestrator` → `meta-orchestrator` → User (via `AskQuestion`).
+**Checkpoint yield chain:** Sub-agents NEVER call `AskQuestion` directly, and they MUST format the actual question strictly as `<checkpoint_yield>` JSON blocks. They SHOULD, however, output contextual prose before the JSON block to explain *why* the checkpoint is needed. The yield bubbles up the chain: `activity-worker` → `workflow-orchestrator` → `meta-orchestrator` → User (via `AskQuestion`).
 
 **Strict Anti-Automation:** Agents MUST NEVER auto-resolve blocking checkpoints. No matter how "obvious" an answer seems based on context or state, if a checkpoint is `blocking: true`, it requires the user's explicit confirmation. Auto-resolving by fabricating an `option_id` is a strict protocol violation.
 
