@@ -465,6 +465,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           `- Report back with structured result: result_type (activity_complete or checkpoint_pending), variables_changed, checkpoints_responded, artifacts_produced, steps_completed.`;
       }
 
+      const response: Record<string, unknown> = {
+        client_session_token: advancedClientToken,
+        client_session_id: decodedClient.sid,
+        parent_session_id: parentToken.sid,
+        workflow: {
+          id: workflow.id,
+          version: workflow.version,
+          title: workflow.title,
+          description: workflow.description,
+        },
+        initial_activity: initialActivity,
+        worker_prompt: workerPrompt,
+      };
+
       if (variables && Object.keys(variables).length > 0) {
         response['variables'] = variables;
       }

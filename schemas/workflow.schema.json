@@ -202,7 +202,7 @@
         },
         "executionModel": {
           "$ref": "#/definitions/executionModel",
-          "description": "Declares the agent roles that participate in workflow execution"
+          "description": "Declares the agent roles that participate in workflow execution (deprecated — roles are expressed in skill definitions)"
         },
         "skills": {
           "type": "array",
@@ -224,7 +224,7 @@
           "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points."
         }
       },
-      "required": ["id", "version", "title", "executionModel", "activities"],
+      "required": ["id", "version", "title", "activities"],
       "additionalProperties": false
     }
   }

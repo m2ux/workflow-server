@@ -63,7 +63,7 @@ export const WorkflowSchema = z.object({
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
   modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
   artifactLocations: z.record(ArtifactLocationValueSchema).optional().describe('Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions.'),
-  executionModel: ExecutionModelSchema.describe('Declares the agent roles that participate in workflow execution'),
+  executionModel: ExecutionModelSchema.optional().describe('Declares the agent roles that participate in workflow execution (deprecated — roles are expressed in skill definitions)'),
   skills: z.array(z.string()).optional().describe('Workflow-level skill IDs. Returned by get_skills when called without activity_id.'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual TOON files where activities are separate files.
@@ -74,6 +74,7 @@ export const WorkflowSchema = z.object({
   activities: z.array(ActivitySchema).min(1).describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points.'),
 }).refine(
   (wf) => {
+    if (!wf.executionModel) return true;
     const ids = wf.executionModel.roles.map(r => r.id);
     return new Set(ids).size === ids.length;
   },
