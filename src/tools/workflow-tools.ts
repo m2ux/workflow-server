@@ -440,19 +440,30 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const decodedClient = await decodeSessionToken(advancedClientToken);
       const initialActivity = workflow.initialActivity || (workflow.activities.length > 0 ? (workflow.activities[0]?.id ?? '') : '');
 
-      const response: Record<string, unknown> = {
-        client_session_token: advancedClientToken,
-        client_session_id: decodedClient.sid,
-        parent_session_id: parentToken.sid,
-        workflow: {
-          id: workflow.id,
-          version: workflow.version,
-          title: workflow.title,
-          description: workflow.description,
-        },
-        initial_activity: initialActivity,
-        worker_prompt: `You are the WORKER agent for the ${workflow_id} workflow. Execute the \`${initialActivity}\` activity.\n\n## Bootstrap Instructions\n1. Call \`start_session({ workflow_id: "${workflow_id}", session_token: "${advancedClientToken}", agent_id: "${decodedClient.aid}" })\` to activate the session.\n2. Call \`next_activity({ session_token: "<token>", activity_id: "${initialActivity}" })\` to load the activity definition.\n3. Call \`get_skills({ session_token: "<token>" })\` to load skills and resources.\n4. Execute steps per the loaded skill protocols.\n\n## Important\n- Do NOT call AskQuestion directly — yield checkpoint_pending results to the orchestrator.\n- Use only the client session token provided above. Do NOT reference any other session token.\n- Report back with structured result: result_type (activity_complete or checkpoint_pending), variables_changed, checkpoints_responded, artifacts_produced, steps_completed.`,
-      };
+      // Load the worker prompt template from the workflow resource (meta/05)
+      // rather than hardcoding it in the tool implementation.
+      let workerPrompt: string;
+      const templateResult = await readResourceRaw(config.workflowDir, 'meta', '05');
+      if (templateResult.success) {
+        const template = templateResult.value.content;
+        workerPrompt = template
+          .replace(/\{workflow_id\}/g, workflow_id)
+          .replace(/\{activity_id\}/g, initialActivity)
+          .replace(/\{client_session_token\}/g, advancedClientToken)
+          .replace(/\{agent_id\}/g, decodedClient.aid);
+      } else {
+        // Fallback: if the template resource is missing, compose a minimal prompt
+        workerPrompt = `You are an autonomous worker agent executing the ${workflow_id} workflow. Execute the \`${initialActivity}\` activity.\n\n` +
+          `## Bootstrap Instructions\n` +
+          `1. Call \`start_session({ workflow_id: "${workflow_id}", session_token: "${advancedClientToken}", agent_id: "${decodedClient.aid}" })\` to activate the session.\n` +
+          `2. Call \`next_activity({ session_token: "<token>", activity_id: "${initialActivity}" })\` to load the activity definition.\n` +
+          `3. Call \`get_skills({ session_token: "<token>" })\` to load skills and resources.\n` +
+          `4. Execute steps per the loaded skill protocols.\n\n` +
+          `## Important\n` +
+          `- Do NOT call AskQuestion directly — yield checkpoint_pending results to the orchestrator.\n` +
+          `- Use only the client session token provided above. Do NOT reference any other session token.\n` +
+          `- Report back with structured result: result_type (activity_complete or checkpoint_pending), variables_changed, checkpoints_responded, artifacts_produced, steps_completed.`;
+      }
 
       if (variables && Object.keys(variables).length > 0) {
         response['variables'] = variables;
