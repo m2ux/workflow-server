@@ -2,7 +2,7 @@ id: dispatch-workflow
 version: 1.1.0
 name: Dispatch Client Workflow
 description: |
-  Dispatch the resolved target workflow to an workflow-orchestrator (sub-agent). Creates an independent
+  Dispatch the resolved target workflow to a workflow-orchestrator (sub-agent). Creates an independent
   client session via dispatch_workflow, spawns the sub-agent with the dispatch package, and
   acts as a router for checkpoints bubbled up from the sub-agent. The meta-orchestrator does not
   manage client activity transitions; it only waits for checkpoint_pending or workflow_complete.
