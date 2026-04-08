@@ -67,11 +67,5 @@ skills[4]:
   - agent-conduct
   - execute-activity
   - state-management
-executionModel:
-  roles[2]:
-    - id: orchestrator
-      description: "Coordinates the update workflow, managing transitions between change discovery and application"
-    - id: worker
-      description: "Executes update activities — discovering changes and applying updates"
 initialActivity: discover-changes
 activitiesDir: activities

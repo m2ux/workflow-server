@@ -133,8 +133,4 @@ skills[4]:
   - agent-conduct
   - execute-activity
   - state-management
-executionModel:
-  roles[1]:
-    - id: agent
-      description: "Single agent that executes workflow design activities directly"
 initialActivity: intake
