@@ -1,7 +1,7 @@
-id: orchestrator-management
-version: 1.2.0
-capability: "Consolidated management skill for the orchestrator role — covers workflow orchestration, session lifecycle, state management, and behavioral boundaries"
-description: "Single-load management skill for the orchestrator (top-level agent). Consolidates orchestrate-workflow, session-protocol, state-management, and agent-conduct into one skill. The orchestrator loads this once at bootstrap to become fully capable of coordinating workflow execution. MUST be executed inline — NEVER delegated to a sub-agent."
+id: workflow-orchestrator
+version: 1.3.0
+capability: "Consolidated management skill for the top-level workflow orchestrator role — covers meta-workflow orchestration, session lifecycle, state management, and behavioral boundaries"
+description: "Single-load management skill for the workflow orchestrator (top-level agent). Consolidates orchestrate-workflow, session-protocol, state-management, and agent-conduct into one skill. The orchestrator loads this once at bootstrap to become fully capable of coordinating workflow execution. MUST be executed inline — NEVER delegated to a sub-agent."
 
 inputs[3]:
   - id: workflow-id
@@ -22,30 +22,30 @@ protocol:
     - "Detect mode from user request (e.g., 'review PR' activates review mode)."
   dispatch-activity[7]:
     - "Call next_activity to load the activity definition"
-    - "Compose worker prompt using resource meta/05 (worker-prompt-template) — do NOT inject paraphrased skill content"
-    - "Include the current session_token in the worker prompt so the worker can call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
+    - "Compose the prompt using the appropriate resource (e.g. meta/10 for activity-orchestrator) — do NOT inject paraphrased skill content"
+    - "Include the current session_token in the prompt so the sub-agent can call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
-    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
-    - "For resumed workers: send only the new activity_id, updated state variables, and bootstrap instructions"
+    - "Do NOT call get_skill or get_skills to pre-load skills for activities. The sub-agent loads its own skills during self-bootstrap"
+    - "For resumed sub-agents: send only the new activity_id, updated state variables, and bootstrap instructions"
     - "If is_resuming is true (first dispatch after state restoration): include a resumption context block listing completedActivities, key variable values, and prior checkpoint decisions. After this dispatch completes, set is_resuming = false"
   process-result[6]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
-    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required blocking checkpoints — resume worker to complete any missing items"
+    - "If activity_complete or workflow_complete: validate steps_completed against required steps and checkpoints_responded against required blocking checkpoints — resume sub-agent to complete any missing items"
     - "Apply variables_changed to state, record in completedActivities"
     - "Check next_activity response _meta.trace_token — if present, append to the trace_tokens array"
-    - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
+    - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the sub-agent's steps_completed, checkpoints_responded, and variables_changed. Write back"
     - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
   resolve-checkpoints[5]:
-    - "After next_activity, the token has pending checkpoints (pcp). Resolve ALL of them BEFORE dispatching the worker — the worker receives a cleared token."
+    - "After next_activity, the token has pending checkpoints (pcp). Resolve ALL of them BEFORE dispatching the sub-agent — the sub-agent receives a cleared token."
     - "For blocking checkpoints: present to user via AskQuestion, then call respond_checkpoint({ checkpoint_id, option_id }) with the user's actual selection. The option_id MUST come from the AskQuestion response — never fabricated."
     - "For non-blocking checkpoints (autoAdvanceMs): wait for the timer to elapse, then call respond_checkpoint({ checkpoint_id, auto_advance: true }). If the server rejects (timer not elapsed), WAIT and retry — do NOT fall back to option_id."
     - "For conditional checkpoints whose condition is not met: call respond_checkpoint({ checkpoint_id, condition_not_met: true })."
     - "Apply returned effects (setVariable, transitionTo, skipActivities) to orchestrator state."
   handle-checkpoint-yield[4]:
-    - "When a worker yields checkpoint_pending mid-activity: apply any partial_variables_changed to orchestrator state before presenting"
-    - "Output any context from the worker result as a text message BEFORE the AskQuestion call"
+    - "When a sub-agent yields checkpoint_pending mid-activity: apply any partial_variables_changed to orchestrator state before presenting"
+    - "Output any context from the sub-agent result as a text message BEFORE the AskQuestion call"
     - "Present checkpoint via AskQuestion with ONLY the question and options (no contextual prose)"
-    - "Call respond_checkpoint({ checkpoint_id, option_id }) with the user's selection. Resume worker with checkpoint_response including selected_option_id and effects_applied."
+    - "Call respond_checkpoint({ checkpoint_id, option_id }) with the user's selection. Resume sub-agent with checkpoint_response including selected_option_id and effects_applied."
   commit-artifacts[3]:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
@@ -65,11 +65,11 @@ protocol:
 
 rules:
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
-  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): The orchestrator resolves all checkpoints via respond_checkpoint BEFORE dispatching the worker. For blocking checkpoints, option_id MUST come from the user via AskQuestion — never fabricated, never selected on behalf of the user. For non-blocking checkpoints, use auto_advance after the timer elapses. If auto_advance is rejected by the server (timer not elapsed), WAIT and retry — using option_id to bypass a timing rejection is a protocol violation. There are ZERO exceptions."
-  reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result. Empty checkpoints_responded on an activity with required blocking checkpoints is always a validation failure — no rationalization permitted."
-  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): The orchestrator resolves all checkpoints via respond_checkpoint BEFORE dispatching the sub-agent. For blocking checkpoints, option_id MUST come from the user via AskQuestion — never fabricated, never selected on behalf of the user. For non-blocking checkpoints, use auto_advance after the timer elapses. If auto_advance is rejected by the server (timer not elapsed), WAIT and retry — using option_id to bypass a timing rejection is a protocol violation. There are ZERO exceptions."
+  reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the sub-agent returns checkpoints_responded as empty, REJECT the result. Empty checkpoints_responded on an activity with required blocking checkpoints is always a validation failure — no rationalization permitted."
+  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the sub-agent. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
-  no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
+  no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the sub-agent."
   target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
   file-sensitivity[3]:
     - "Do not modify core configuration files without explicit user direction."
@@ -93,7 +93,7 @@ tools:
     when: "Before dispatching each activity"
     params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls)"
   task:
-    when: "Dispatching or resuming the worker sub-agent"
+    when: "Dispatching or resuming the sub-agent"
     params: "description, prompt, subagent_type, resume"
   AskQuestion:
     when: "Presenting a yielded checkpoint to the user"
@@ -110,17 +110,17 @@ tools:
 
 errors:
   worker_timeout:
-    cause: "Worker sub-agent did not return within expected time"
-    recovery: "Check terminal output. Resume if still running. If stuck, create new worker and re-dispatch."
+    cause: "Sub-agent did not return within expected time"
+    recovery: "Check terminal output. Resume if still running. If stuck, create new sub-agent and re-dispatch."
   transition_ambiguous:
     cause: "Multiple transition conditions evaluate to true"
     recovery: "Take the first matching transition. Log a warning."
   worker_incomplete:
-    cause: "Worker reports fewer steps than the activity defines"
-    recovery: "Resume the worker with instructions to complete remaining steps."
+    cause: "Sub-agent reports fewer steps than the activity defines"
+    recovery: "Resume the sub-agent with instructions to complete remaining steps."
   state_desync:
-    cause: "Worker reports variable changes conflicting with orchestrator state"
-    recovery: "Worker-reported values take precedence (worker has ground truth from user interaction)."
+    cause: "Sub-agent reports variable changes conflicting with orchestrator state"
+    recovery: "Sub-agent-reported values take precedence (sub-agent has ground truth from user interaction)."
 
 resources[1]:
   - "meta/05"

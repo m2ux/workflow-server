@@ -1,24 +1,23 @@
 id: dispatch-workflow
-version: 1.0.0
+version: 1.1.0
 name: Dispatch Client Workflow
 description: |
-  Dispatch the resolved target workflow to a client agent (sub-agent). Creates an independent
-  client session via dispatch_workflow, spawns a client agent with the dispatch package, and
-  manages the client lifecycle inline — processing results, handling checkpoint yields, and
-  evaluating transitions. The orchestrator does not execute client workflow activities directly;
-  all domain work is delegated to the client agent.
+  Dispatch the resolved target workflow to an activity-orchestrator (sub-agent). Creates an independent
+  client session via dispatch_workflow, spawns the sub-agent with the dispatch package, and
+  acts as a router for checkpoints bubbled up from the sub-agent. The workflow-orchestrator does not
+  manage client activity transitions; it only waits for checkpoint_pending or workflow_complete.
 problem: Create and manage an independent client workflow session for the resolved target workflow
 recognition:
   - dispatch the workflow
   - start the target workflow
   - begin the client workflow
 skills:
-  primary: orchestrator-management
+  primary: workflow-orchestrator
   supporting:
     - state-management
 rules:
-  - "Do NOT execute client workflow activity steps directly — all domain work is delegated to the client agent"
-  - "Use only dispatch_workflow and get_workflow_status tools for client lifecycle management"
+  - "Do NOT execute client workflow activities directly — all execution is delegated to the activity-orchestrator"
+  - "The sub-agent handles its own transitions. Wait only for checkpoint_pending or workflow_complete."
   - "Present checkpoint_pending yields to the user via AskQuestion — never fabricate responses"
   - "Save client_session_token and client_session_id in session state for correlation"
 steps:
@@ -37,26 +36,18 @@ steps:
       from the response.
     required: true
   - id: dispatch-client
-    name: Dispatch client agent
+    name: Dispatch activity-orchestrator
     description: |
       Spawn a new agent (Task/sub-agent) with the worker_prompt from dispatch_workflow.
-      The client agent runs the target workflow using its own session token.
-      Wait for the client agent to return a result — either activity_complete or checkpoint_pending.
+      The activity-orchestrator runs the target workflow using its own session token.
+      Wait for the agent to return a result — either checkpoint_pending or workflow_complete.
     required: true
   - id: process-result
     name: Process client result
     description: |
       If checkpoint_pending: present the checkpoint to the user via AskQuestion, receive the
-      response, and resume the client agent with checkpoint_response. Return to await-result.
-      If activity_complete: apply variables_changed, record the completed activity, and
-      proceed to evaluate-transition.
-    required: true
-  - id: evaluate-transition
-    name: Evaluate client transition
-    description: |
-      Call get_workflow_status to check the client's current state. If more activities remain,
-      loop back to dispatch-client with the same client session token. If the client workflow
-      is complete, record the final result and proceed to end-workflow.
+      response, and resume the sub-agent with the chosen option_id. Loop back to wait for the next result.
+      If workflow_complete: apply any final variables_changed, set client_workflow_completed to true.
     required: true
 transitions:
   - to: end-workflow
@@ -65,8 +56,6 @@ transitions:
       variable: client_workflow_completed
       operator: ==
       value: true
-  - to: dispatch-workflow
-    isDefault: true
 outcome:
   - Client workflow session created with independent session token
   - Client agent dispatched and lifecycle managed inline
