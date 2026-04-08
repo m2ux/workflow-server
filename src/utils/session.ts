@@ -14,6 +14,8 @@ export interface SessionPayload {
   aid: string;
   pcp: string[];
   pcpt: number;
+  /** Sid of the parent (meta) session — for trace correlation in hierarchical dispatch. Metadata only; does not grant access to the parent session. */
+  psid?: string | undefined;
 }
 
 export interface SessionAdvance {
@@ -24,6 +26,7 @@ export interface SessionAdvance {
   aid?: string;
   pcp?: string[];
   pcpt?: number;
+  psid?: string;
 }
 
 async function encode(payload: SessionPayload): Promise<string> {
@@ -46,6 +49,7 @@ const SessionPayloadSchema = z.object({
   aid: z.string(),
   pcp: z.array(z.string()),
   pcpt: z.number(),
+  psid: z.string().optional(),
 });
 
 async function decode(token: string): Promise<SessionPayload> {
@@ -75,8 +79,8 @@ async function decode(token: string): Promise<SessionPayload> {
   }
 }
 
-export async function createSessionToken(workflowId: string, workflowVersion: string): Promise<string> {
-  return encode({
+export async function createSessionToken(workflowId: string, workflowVersion: string, parentSid?: string): Promise<string> {
+  const payload: SessionPayload = {
     wf: workflowId,
     act: '',
     skill: '',
@@ -88,7 +92,11 @@ export async function createSessionToken(workflowId: string, workflowVersion: st
     aid: '',
     pcp: [],
     pcpt: 0,
-  });
+  };
+  if (parentSid !== undefined) {
+    payload.psid = parentSid;
+  }
+  return encode(payload);
 }
 
 export async function decodeSessionToken(token: string): Promise<SessionPayload> {
@@ -108,6 +116,7 @@ export async function advanceToken(token: string, updates?: SessionAdvance, deco
     ...(updates?.aid !== undefined && { aid: updates.aid }),
     ...(updates?.pcp !== undefined && { pcp: updates.pcp }),
     ...(updates?.pcpt !== undefined && { pcpt: updates.pcpt }),
+    ...(updates?.psid !== undefined && { psid: updates.psid }),
   };
   return encode(advanced);
 }
