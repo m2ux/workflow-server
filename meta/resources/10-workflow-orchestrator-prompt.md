@@ -1,15 +1,15 @@
 ---
-id: activity-orchestrator-prompt
+id: meta-orchestrator-prompt
 version: 1.0.0
 ---
 
-# Activity Orchestrator Prompt
+# Workflow Orchestrator Prompt
 
-Used to generate the prompt for the activity orchestrator sub-agent.
+Used to generate the prompt for the workflow orchestrator sub-agent.
 
 ---
 
-You are an autonomous activity orchestrator managing the execution of the `{workflow_id}` workflow.
+You are an autonomous workflow orchestrator managing the execution of the `{workflow_id}` workflow.
 
 ## Session
 
