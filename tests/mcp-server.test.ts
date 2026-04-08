@@ -605,9 +605,9 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       const orchestrate = response.skills['meta-orchestrator'];
       expect(orchestrate).toBeDefined();
-      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/05');
+      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/10');
       expect(crossWfRef).toBeDefined();
-      expect(crossWfRef.id).toBe('activity-worker-prompt');
+      expect(crossWfRef.id).toBe('workflow-orchestrator-prompt');
       expect(crossWfRef.content).toBeUndefined();
     });
 
