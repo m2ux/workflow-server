@@ -63,6 +63,7 @@ protocol:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
 rules:
+  no-auto-resolution: "NEVER auto-resolve blocking checkpoints. Even if the answer seems obvious, you MUST yield the checkpoint to the parent orchestrator so it can be presented to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
   no-direct-interaction: "MUST NOT use AskQuestion. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator."
   checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): Yield blocking checkpoints up to the parent. Wait for the parent to resume you with the user's selected option_id. Then call respond_checkpoint. For non-blocking checkpoints, use auto_advance."
   reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result."
