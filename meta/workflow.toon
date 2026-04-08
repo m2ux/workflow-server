@@ -7,7 +7,7 @@ tags[3]:
   - meta
   - bootstrap
   - workflow-management
-variables[13]:
+variables[14]:
   - name: is_monorepo
     type: boolean
     description: Whether the target repository is a submodule monorepo
