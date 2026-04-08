@@ -1,3 +1,8 @@
+---
+id: activity-execution
+version: 1.0.0
+---
+
 # Execute Activity Reference
 
 Reference material for the execute-activity skill. Contains the metamodel, goal resolution strategy, detailed phase guidance, output format specifications, and semantic trace format.
