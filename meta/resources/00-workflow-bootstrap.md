@@ -20,26 +20,26 @@ version: 1.1.0
 
 ## Sub-Agent Dispatch and Initialization
 
-The orchestration model uses a 3-tier hierarchy: `workflow-orchestrator` (meta), `activity-orchestrator` (client workflow), and `activity-worker` (activity execution).
+The orchestration model uses a 3-tier hierarchy: `meta-orchestrator` (meta), `workflow-orchestrator` (client workflow), and `activity-worker` (activity execution).
 
 ### Dispatching an Activity Orchestrator
 
-The top-level `workflow-orchestrator` starts a client workflow by calling `dispatch_workflow`:
+The top-level `meta-orchestrator` starts a client workflow by calling `dispatch_workflow`:
 - **dispatch_workflow(`workflow_id`, `parent_session_token`, `variables`)** — Creates a new, independent client session. It returns a dispatch package containing the `client_session_token`, `initial_activity`, and a pre-composed `worker_prompt`.
-- **Note:** The `activity-orchestrator` does NOT inherit the `workflow-orchestrator`'s token. They are independent sessions correlated in the trace.
+- **Note:** The `workflow-orchestrator` does NOT inherit the `meta-orchestrator`'s token. They are independent sessions correlated in the trace.
 
 ### Dispatching an Activity Worker (Token Inheritance)
 
-When the `activity-orchestrator` dispatches an `activity-worker` to execute an activity, the worker **must inherit the orchestrator's token** to share the session state:
-- **start_session(`workflow_id`, `session_token`, `agent_id`)** — The worker calls this using the `activity-orchestrator`'s token. The returned token inherits `sid`, `act`, `pcp`, `pcpt`, and all state from the parent. The `agent_id` is stamped into the signed `aid` field (e.g., `"worker-1"`).
+When the `workflow-orchestrator` dispatches an `activity-worker` to execute an activity, the worker **must inherit the orchestrator's token** to share the session state:
+- **start_session(`workflow_id`, `session_token`, `agent_id`)** — The worker calls this using the `workflow-orchestrator`'s token. The returned token inherits `sid`, `act`, `pcp`, `pcpt`, and all state from the parent. The `agent_id` is stamped into the signed `aid` field (e.g., `"worker-1"`).
 - This ensures the worker cannot bypass checkpoint obligations — pending checkpoints from `next_activity` carry over into the inherited token.
 
 ## Checkpoint Gate
 
 When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **All tools are blocked until every checkpoint is resolved via `respond_checkpoint`.** 
 
-- **Sub-agents (`activity-orchestrator` and `activity-worker`) NEVER call AskQuestion.** They must yield `checkpoint_pending` to their parent orchestrator.
-- The top-level `workflow-orchestrator` is the only agent permitted to call `AskQuestion`. It receives bubbled checkpoints, presents them to the user, and calls `respond_checkpoint`.
+- **Sub-agents (`workflow-orchestrator` and `activity-worker`) NEVER call AskQuestion.** They must yield `checkpoint_pending` to their parent orchestrator.
+- The top-level `meta-orchestrator` is the only agent permitted to call `AskQuestion`. It receives bubbled checkpoints, presents them to the user, and calls `respond_checkpoint`.
 
 ## Loading Skills and Resources
 

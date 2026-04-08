@@ -2,9 +2,9 @@ id: dispatch-workflow
 version: 1.1.0
 name: Dispatch Client Workflow
 description: |
-  Dispatch the resolved target workflow to an activity-orchestrator (sub-agent). Creates an independent
+  Dispatch the resolved target workflow to an workflow-orchestrator (sub-agent). Creates an independent
   client session via dispatch_workflow, spawns the sub-agent with the dispatch package, and
-  acts as a router for checkpoints bubbled up from the sub-agent. The workflow-orchestrator does not
+  acts as a router for checkpoints bubbled up from the sub-agent. The meta-orchestrator does not
   manage client activity transitions; it only waits for checkpoint_pending or workflow_complete.
 problem: Create and manage an independent client workflow session for the resolved target workflow
 recognition:
@@ -12,7 +12,7 @@ recognition:
   - start the target workflow
   - begin the client workflow
 skills:
-  primary: workflow-orchestrator
+  primary: meta-orchestrator
   supporting:
     - state-management
 steps:
@@ -31,13 +31,13 @@ steps:
       from the response. Save client_session_token and client_session_id in session state for correlation.
     required: true
   - id: dispatch-client
-    name: Dispatch activity-orchestrator
+    name: Dispatch workflow-orchestrator
     description: |
       Spawn a new agent (Task/sub-agent) with the worker_prompt from dispatch_workflow.
-      The activity-orchestrator runs the target workflow using its own session token.
+      The workflow-orchestrator runs the target workflow using its own session token.
       Wait for the agent to return a result — either checkpoint_pending or workflow_complete.
-      Do NOT execute client workflow activities directly — all execution is delegated to the activity-orchestrator.
-      The activity-orchestrator handles its own transitions. Wait only for checkpoint_pending or workflow_complete.
+      Do NOT execute client workflow activities directly — all execution is delegated to the workflow-orchestrator.
+      The workflow-orchestrator handles its own transitions. Wait only for checkpoint_pending or workflow_complete.
     required: true
   - id: process-result
     name: Process client result
