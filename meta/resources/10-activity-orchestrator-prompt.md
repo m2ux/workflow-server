@@ -5,7 +5,7 @@ version: 1.0.0
 
 # Activity Orchestrator Prompt
 
-Used by `dispatch_workflow` to generate the prompt for the activity orchestrator sub-agent.
+Used to generate the prompt for the activity orchestrator sub-agent.
 
 ---
 
