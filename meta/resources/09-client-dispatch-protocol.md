@@ -44,12 +44,14 @@ When the `workflow-orchestrator` finishes all activities:
 ### Result: checkpoint_pending
 
 When the `workflow-orchestrator` (or its worker) needs user input:
-1. Present the bubbled checkpoint to the user via `AskQuestion`.
-2. Receive the user's response.
-3. Resume the `workflow-orchestrator` with the user's chosen option.
-4. Return to awaiting the next result.
+1. It yields a raw JSON block wrapped in `<checkpoint_yield>` tags.
+2. The `meta-orchestrator` parses this JSON block.
+3. The `meta-orchestrator` populates and calls the `AskQuestion` tool using the parsed JSON.
+4. Receive the user's response from the tool.
+5. Resume the `workflow-orchestrator` with the user's chosen option.
+6. Return to awaiting the next result.
 
-**Checkpoint yield chain:** Sub-agents NEVER call `AskQuestion` directly. Checkpoints bubble up: `activity-worker` → `workflow-orchestrator` → `meta-orchestrator` → User.
+**Checkpoint yield chain:** Sub-agents NEVER call `AskQuestion` directly, and they MUST NOT output conversational questions in prose. Checkpoints are yielded strictly as `<checkpoint_yield>` JSON blocks up the chain: `activity-worker` → `workflow-orchestrator` → `meta-orchestrator` → User (via `AskQuestion`).
 
 **Strict Anti-Automation:** Agents MUST NEVER auto-resolve blocking checkpoints. No matter how "obvious" an answer seems based on context or state, if a checkpoint is `blocking: true`, it requires the user's explicit confirmation. Auto-resolving by fabricating an `option_id` is a strict protocol violation.
 

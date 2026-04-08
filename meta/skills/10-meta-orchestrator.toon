@@ -44,7 +44,7 @@ protocol:
   handle-checkpoint-yield[4]:
     - "When a sub-agent yields checkpoint_pending mid-activity: apply any partial_variables_changed to orchestrator state before presenting"
     - "Output any context from the sub-agent result as a text message BEFORE the AskQuestion call"
-    - "Present checkpoint via AskQuestion with ONLY the question and options (no contextual prose)"
+    - "CRITICAL: Parse the <checkpoint_yield> JSON block and present it via the AskQuestion tool. You MUST use AskQuestion with ONLY the question and options. DO NOT output the checkpoint question as plain text."
     - "Call respond_checkpoint({ checkpoint_id, option_id }) with the user's selection. Resume sub-agent with checkpoint_response including selected_option_id and effects_applied."
   commit-artifacts[3]:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
