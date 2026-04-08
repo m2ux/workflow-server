@@ -60,10 +60,16 @@ variables[13]:
     type: boolean
     description: Whether a workflow-state.json file was found and successfully restored
     defaultValue: false
+  - name: client_workflow_completed
+    type: boolean
+    description: Whether the dispatched client workflow has completed all activities
+    defaultValue: false
 executionModel:
-  roles[1]:
-    - id: agent
-      description: "Single agent that executes workflow activities directly"
+  roles[2]:
+    - id: orchestrator
+      description: "Meta agent that discovers sessions, dispatches client workflows, and manages the client lifecycle inline — resolves checkpoints via user interaction and evaluates transitions"
+    - id: client
+      description: "Independent sub-agent that executes a dispatched target workflow using its own session token — self-bootstraps from workflow-server tools and yields checkpoints to the orchestrator"
 rules[3]:
   - This workflow is the entrypoint for all workflow operations
   - Each activity is matched independently via recognition patterns in list_workflows
