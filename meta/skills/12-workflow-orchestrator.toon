@@ -1,7 +1,7 @@
 id: workflow-orchestrator
 version: 1.0.0
 capability: "Management skill for a workflow orchestrator (sub-agent) managing a dispatched client workflow — handles workflow lifecycle, state management, and yields checkpoints to the parent orchestrator"
-description: "Single-load management skill for the workflow orchestrator. Manages a dispatched client workflow. Unlike the top-level meta orchestrator, this agent runs as a sub-agent and MUST NOT use AskQuestion. It yields checkpoint_pending results up to the parent orchestrator, and returns workflow_complete when all activities are done."
+description: "Single-load management skill for the workflow orchestrator. Manages a dispatched client workflow. Unlike the top-level meta orchestrator, this agent runs as a sub-agent. It yields checkpoint_pending results up to the parent orchestrator, and returns workflow_complete when all activities are done."
 
 inputs[3]:
   - id: workflow-id
@@ -44,7 +44,7 @@ protocol:
     - "When a worker yields checkpoint_pending mid-activity, or if the current activity has blocking checkpoints pending: yield ONE checkpoint_pending up to the parent orchestrator."
     - "You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. You SHOULD include prose contextual information BEFORE the JSON block."
     - "If there are multiple pending checkpoints, you MUST only yield the first one. Stop and wait for the parent to resume you with the response before proceeding."
-    - "DO NOT use the AskQuestion tool. You are a sub-agent; your questions will not be visible to the user."
+    - "DO NOT attempt to ask questions yourself. You are a sub-agent; your questions will not be visible to the user."
   commit-artifacts[3]:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
@@ -64,10 +64,10 @@ protocol:
 
 rules:
   no-auto-resolution: "NEVER auto-resolve blocking checkpoints. Even if the answer seems obvious, you MUST yield the checkpoint to the parent orchestrator so it can be presented to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
-  no-direct-interaction: "MUST NOT use AskQuestion. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator."
+  no-direct-interaction: "MUST NOT attempt to directly ask the user. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator."
   checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): Yield blocking checkpoints up to the parent. Wait for the parent to resume you with the user's selected option_id. Then call respond_checkpoint. For non-blocking checkpoints, use auto_advance."
   reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result."
-  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
+  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via the parent orchestrator. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
   no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
   target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
