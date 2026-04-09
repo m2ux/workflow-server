@@ -32,9 +32,6 @@ function makeWorkflow(overrides: Partial<Workflow> = {}): Workflow {
     id: 'test-wf',
     version: '1.0.0',
     title: 'Test Workflow',
-    executionModel: {
-      roles: [{ id: 'agent', description: 'Default test agent' }],
-    },
     activities: [
       {
         id: 'planning',

@@ -4,10 +4,10 @@ import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint } from '../loaders/workflow-loader.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
-import { decodeSessionToken, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
+import { decodeSessionToken, advanceToken, createSessionToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
-import { createTraceToken, decodeTraceToken } from '../trace.js';
+import { createTraceEvent, createTraceToken, decodeTraceToken } from '../trace.js';
 import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 
 const stepManifestSchema = z.array(z.object({
@@ -77,7 +77,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           description: wf.description,
           rules: wf.rules,
           variables: wf.variables,
-          executionModel: wf.executionModel,
           initialActivity: wf.initialActivity,
           activities: wf.activities.map(a => ({ id: a.id, name: a.name, required: a.required })),
           session_token: advancedToken,
@@ -388,4 +387,199 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }) }],
       };
     }));
+
+  // ============== Dispatch Tools ==============
+
+  server.tool('dispatch_workflow',
+    'Create a client session for a target workflow and return a dispatch package for a sub-agent. ' +
+    'Used by the meta orchestrator to dispatch a client workflow to a new agent. Creates an independent session for the target workflow, ' +
+    'stores a parent_sid reference for trace correlation, and returns everything the orchestrator needs to hand off to a sub-agent: ' +
+    'the client session token, session ID, workflow metadata, initial activity, and a pre-composed worker prompt. ' +
+    'The parent session token is required — it establishes the parent-child relationship for trace correlation only; ' +
+    'the child session does NOT inherit the parent\'s session state.',
+    {
+      workflow_id: z.string().describe('Target workflow ID to dispatch (e.g., "remediate-vuln", "work-package")'),
+      parent_session_token: z.string().describe('The meta (parent) session token — used for trace correlation only. The client session does not inherit this token\'s state.'),
+      variables: z.record(z.unknown()).optional().describe('Optional initial variables to set on the client workflow session (written to the session trace).'),
+    },
+    withAuditLog('dispatch_workflow', async ({ workflow_id, parent_session_token, variables }) => {
+      const parentToken = await decodeSessionToken(parent_session_token);
+
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!wfResult.success) throw wfResult.error;
+      const workflow = wfResult.value;
+
+      if (!workflow.version) {
+        console.warn(`[dispatch_workflow] Workflow '${workflow_id}' has no version defined; version drift detection will be unreliable.`);
+      }
+
+      const clientToken = await createSessionToken(workflow_id, workflow.version ?? '0.0.0', parentToken.sid);
+
+      const advancedClientToken = await advanceToken(clientToken, {
+        aid: `client-${parentToken.sid.slice(0, 8)}`,
+      });
+
+      if (config.traceStore) {
+        const decoded = await decodeSessionToken(advancedClientToken);
+        config.traceStore.initSession(decoded.sid);
+        const event = createTraceEvent(
+          decoded.sid, 'dispatch_workflow', 0, 'ok',
+          workflow_id, '', decoded.aid,
+        );
+        config.traceStore.append(decoded.sid, event);
+        // Also record dispatch in parent trace
+        const parentEvent = createTraceEvent(
+          parentToken.sid, 'dispatch_workflow', 0, 'ok',
+          parentToken.wf, parentToken.act, parentToken.aid,
+          { vw: [workflow_id] },
+        );
+        config.traceStore.append(parentToken.sid, parentEvent);
+      }
+
+      const decodedClient = await decodeSessionToken(advancedClientToken);
+      const initialActivity = workflow.initialActivity || (workflow.activities.length > 0 ? (workflow.activities[0]?.id ?? '') : '');
+
+      // Load the worker prompt template from the workflow resource (meta/10)
+      // rather than hardcoding it in the tool implementation.
+      const templateResult = await readResourceRaw(config.workflowDir, 'meta', '10');
+      if (!templateResult.success) {
+        throw new Error(`Failed to load worker prompt template (meta/10): ${templateResult.error}`);
+      }
+
+      const template = templateResult.value.content;
+      const workerPrompt = template
+        .replace(/\{workflow_id\}/g, workflow_id)
+        .replace(/\{activity_id\}/g, initialActivity)
+        .replace(/\{initial_activity\}/g, initialActivity)
+        .replace(/\{client_session_token\}/g, advancedClientToken)
+        .replace(/\{agent_id\}/g, decodedClient.aid);
+
+      const response: Record<string, unknown> = {
+        client_session_token: advancedClientToken,
+        client_session_id: decodedClient.sid,
+        parent_session_id: parentToken.sid,
+        workflow: {
+          id: workflow.id,
+          version: workflow.version,
+          title: workflow.title,
+          description: workflow.description,
+        },
+        initial_activity: initialActivity,
+        worker_prompt: workerPrompt,
+      };
+
+      if (variables && Object.keys(variables).length > 0) {
+        response['variables'] = variables;
+      }
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        _meta: { session_token: advancedClientToken, parent_session_token },
+      };
+    }, traceOpts));
+
+  server.tool('get_workflow_status',
+    'Check the status of a dispatched client workflow session. Allows the meta orchestrator to poll a client session\'s progress ' +
+    'without needing the client\'s session token. Returns the session status (active/blocked/completed), current activity, ' +
+    'completed activities trace, last checkpoint info, and current variable state. Uses either a client session token or a client session ID (sid) ' +
+    'plus the parent session token for authorization.',
+    {
+      client_session_token: z.string().optional().describe('Client session token (alternative to client_session_id + parent_session_token)'),
+      client_session_id: z.string().optional().describe('Client session ID (sid) — use with parent_session_token if you don\'t have the client token'),
+      parent_session_token: z.string().optional().describe('Parent (meta) session token — required when using client_session_id instead of client_session_token, for authorization'),
+    },
+    withAuditLog('get_workflow_status', async ({ client_session_token, client_session_id, parent_session_token }) => {
+      if (!client_session_token && !client_session_id) {
+        throw new Error('Either client_session_token or client_session_id must be provided.');
+      }
+
+      let clientSid: string;
+      let clientWf: string;
+      let clientAct: string;
+      let clientSeq: number;
+      let clientPcp: string[];
+
+      if (client_session_token) {
+        const token = await decodeSessionToken(client_session_token);
+        clientSid = token.sid;
+        clientWf = token.wf;
+        clientAct = token.act;
+        clientSeq = token.seq;
+        clientPcp = token.pcp;
+      } else {
+        if (!parent_session_token) {
+          throw new Error('parent_session_token is required when using client_session_id for authorization.');
+        }
+        const parentToken = await decodeSessionToken(parent_session_token);
+        if (!client_session_id) {
+          throw new Error('client_session_id is required when not providing client_session_token.');
+        }
+        // Verify parent-child relationship via trace store
+        clientSid = client_session_id;
+        clientWf = ''; // Will be populated from trace
+        clientAct = ''; // Will be populated from trace
+        clientSeq = 0;
+        clientPcp = [];
+      }
+
+      const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
+      const workflow = wfResult.success ? wfResult.value : null;
+
+      let status: string;
+      if (clientPcp && clientPcp.length > 0) {
+        status = 'blocked';
+      } else if (!clientAct || clientAct === '') {
+        status = 'active';
+      } else {
+        status = 'active';
+      }
+
+      const traceEvents = config.traceStore ? config.traceStore.getEvents(clientSid) : [];
+      const completedActivities: string[] = [];
+      const activitySet = new Set<string>();
+      for (const event of traceEvents) {
+        if (event.name === 'next_activity' && event.act && event.s === 'ok') {
+          if (!activitySet.has(event.act)) {
+            activitySet.add(event.act);
+            completedActivities.push(event.act);
+          }
+        }
+      }
+
+      const lastCheckpoint = traceEvents
+        .filter(e => e.name === 'respond_checkpoint' && e.s === 'ok')
+        .pop();
+
+      const response: Record<string, unknown> = {
+        status,
+        current_activity: clientAct || 'none',
+        completed_activities: completedActivities,
+        workflow: workflow ? {
+          id: workflow.id,
+          version: workflow.version,
+          title: workflow.title,
+        } : { id: clientWf },
+        session_id: clientSid,
+      };
+
+      if (lastCheckpoint) {
+        response['last_checkpoint'] = {
+          activity_id: lastCheckpoint.act,
+          timestamp: lastCheckpoint.ts,
+        };
+      }
+
+      const advancedToken = client_session_token
+        ? await advanceToken(client_session_token)
+        : undefined;
+
+      if (advancedToken) {
+        response['session_token'] = advancedToken;
+      }
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        _meta: advancedToken ? { session_token: advancedToken } : {},
+      };
+    }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 }

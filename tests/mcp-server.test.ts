@@ -526,8 +526,8 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('orchestrator-management');
-      expect(skillIds).toContain('worker-management');
+      expect(skillIds).toContain('meta-orchestrator');
+      expect(skillIds).toContain('activity-worker');
       expect(skillIds).not.toContain('create-issue');
       expect(skillIds).not.toContain('knowledge-base-search');
     });
@@ -547,7 +547,7 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('orchestrator-management');
+      expect(skillIds).toContain('meta-orchestrator');
       expect(skillIds).not.toContain('create-issue');
     });
 
@@ -603,11 +603,11 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const orchestrate = response.skills['orchestrator-management'];
+      const orchestrate = response.skills['meta-orchestrator'];
       expect(orchestrate).toBeDefined();
-      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/05');
+      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/10');
       expect(crossWfRef).toBeDefined();
-      expect(crossWfRef.id).toBe('worker-prompt-template');
+      expect(crossWfRef.id).toBe('workflow-orchestrator-prompt');
       expect(crossWfRef.content).toBeUndefined();
     });
 
@@ -639,7 +639,7 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource.id).toBe('worker-prompt-template');
+      expect(response.resource.id).toBe('activity-worker-prompt');
       expect(response.resource.content.length).toBeGreaterThan(0);
     });
   });
@@ -898,8 +898,6 @@ describe('mcp-server integration', () => {
       expect(wf.version).toMatch(SEMVER_RE);
       expect(wf.rules).toBeDefined();
       expect(wf.variables).toBeDefined();
-      expect(wf.executionModel).toBeDefined();
-      expect(wf.executionModel.roles).toBeDefined();
       expect(wf.activities).toBeDefined();
       expect(wf.activities[0].id).toBeDefined();
       expect(wf.activities[0].steps).toBeUndefined();
