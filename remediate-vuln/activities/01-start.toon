@@ -95,7 +95,7 @@ checkpoints[4]:
         label: "URL Provided"
         description: "Proceed with this URL"
 transitions[1]:
-  - to: proxy-design-philosophy
+  - to: design-philosophy
     isDefault: true
 exitActions[1]:
   - action: log
