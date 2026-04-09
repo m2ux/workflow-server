@@ -8,7 +8,7 @@ No session token required.
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `discover` | - | Entry point. Returns server name, version, available workflows, and the bootstrap procedure |
+| `discover` | - | Entry point. Returns server name, version, and the bootstrap procedure. Use list_workflows to list workflows. |
 | `list_workflows` | - | List all available workflow definitions with full metadata |
 | `health_check` | - | Server health, version, workflow count, and uptime |
 
