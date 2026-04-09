@@ -165,7 +165,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       for (const sid of skillIds) {
         const result = await readSkill(sid, config.workflowDir, workflow_id);
         if (result.success) {
-          const refs = await loadSkillResourceRefs(config.workflowDir, workflow_id, result.value);
+          const parsedSkillId = parseResourceRef(sid);
+          const skillWorkflowId = parsedSkillId.workflowId ?? workflow_id;
+          const refs = await loadSkillResourceRefs(config.workflowDir, skillWorkflowId, result.value);
           skills[sid] = bundleSkillWithResourceRefs(result.value, refs);
         } else {
           failedSkills.push(sid);
@@ -189,7 +191,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Load the skill assigned to a specific step within the current activity. Resolves the skill reference from the activity definition using the step_id and the current activity tracked in the session token. Requires next_activity to have been called first — the session token must have a current activity set. Returns the skill definition with resource references in _resources (index, id, version only — use get_resource for full content). If the step_id is not found, the error lists all available step IDs in the current activity.',
+    'Load the skill assigned to a specific step within the current activity. Resolves the skill reference from the activity definition using the step_id and the current activity tracked in the session token. Requires next_activity to have been called first — the session token must have a current activity set. Returns the skill definition with resource references in _resources (index, id, version only — use get_resource for full content). If the step_id is not found, the error lists all available step IDs in the current activity. IMPORTANT: Do not call this tool for steps that do not explicitly define a "skill" property; execute those steps directly based on their description.',
     {
       ...sessionTokenParam,
       step_id: z.string().describe('Step ID within the current activity (e.g., "define-problem", "create-plan")'),
@@ -244,7 +246,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const refs = await loadSkillResourceRefs(config.workflowDir, workflow_id, result.value);
+      const parsedSkillId = parseResourceRef(skillId);
+      const skillWorkflowId = parsedSkillId.workflowId ?? workflow_id;
+
+      const refs = await loadSkillResourceRefs(config.workflowDir, skillWorkflowId, result.value);
       const advancedToken = await advanceToken(session_token, { skill: skillId });
 
       const response = {

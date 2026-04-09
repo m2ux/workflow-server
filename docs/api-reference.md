@@ -60,7 +60,7 @@ The token payload carries: `wf` (workflow ID), `act` (current activity), `skill`
 4. Call `get_skills` to load behavioral protocols
 5. Call `get_workflow(summary=true)` to get the activity list and `initialActivity`
 6. Call `next_activity(initialActivity)` to load the first activity
-7. For each step with a skill, call `get_skill(step_id)` then `get_resource` for each `_resources` entry
+7. For each step with a `skill` property, call `get_skill(step_id)` then `get_resource` for each `_resources` entry. Do NOT call `get_skill` for steps without a skill.
 8. Call `respond_checkpoint` for each required checkpoint before transitioning
 9. Read `transitions` from the activity response; call `next_activity` with a `step_manifest` to advance
 10. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
