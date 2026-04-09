@@ -39,7 +39,7 @@ protocol:
     - "After next_activity, the token has pending checkpoints (pcp). Resolve non-blocking and conditional checkpoints, but YIELD blocking checkpoints up to the parent."
     - "For non-blocking checkpoints (autoAdvanceMs): wait for the timer to elapse, then call respond_checkpoint({ checkpoint_id, auto_advance: true }). If the server rejects (timer not elapsed), WAIT and retry."
     - "For conditional checkpoints whose condition is not met: call respond_checkpoint({ checkpoint_id, condition_not_met: true })."
-    - "Apply returned effects (setVariable, transitionTo, skipActivities) to orchestrator state."
+    - "CRITICAL: You MUST NOT call respond_checkpoint for blocking checkpoints. Yield them and wait for the parent to provide the option_id."
   handle-checkpoint-yield[4]:
     - "When a worker yields checkpoint_pending mid-activity, or if the current activity has blocking checkpoints pending: yield ONE checkpoint_pending up to the parent orchestrator."
     - "You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. You SHOULD include prose contextual information BEFORE the JSON block."
