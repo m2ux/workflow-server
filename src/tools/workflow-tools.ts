@@ -25,14 +25,12 @@ const activityManifestSchema = z.array(z.object({
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
 
-  server.tool('discover', 'Entry point for this server. Call this before any other tool to learn the available workflows and the bootstrap procedure for starting a session. Returns the server name, version, a list of available workflows (each with id, title, and version), and the bootstrap guide explaining the full tool-calling sequence. No parameters required and no session token needed.', {},
+  server.tool('discover', 'Entry point for this server. Call this before any other tool to learn the bootstrap procedure for starting a session. Returns the server name, version, and the bootstrap guide explaining the full tool-calling sequence. Use list_workflows to discover available workflows. No parameters required and no session token needed.', {},
     withAuditLog('discover', async () => {
-      const workflows = await listWorkflows(config.workflowDir);
       const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '00');
       const guide: Record<string, unknown> = {
         server: config.serverName,
         version: config.serverVersion,
-        available_workflows: workflows.map(w => ({ id: w.id, title: w.title, version: w.version })),
       };
       if (bootstrapResult.success) {
         guide['discovery'] = bootstrapResult.value.content;

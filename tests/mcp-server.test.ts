@@ -79,7 +79,7 @@ describe('mcp-server integration', () => {
       expect(typeof guide.discovery).toBe('string');
       expect(guide.discovery).toContain('start_session');
       expect(guide.discovery).toContain('get_skills');
-      expect(guide.available_workflows.length).toBeGreaterThanOrEqual(2);
+      expect(guide.available_workflows).toBeUndefined();
     });
   });
 
