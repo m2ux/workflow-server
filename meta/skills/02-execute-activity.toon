@@ -64,7 +64,7 @@ tools:
   get_skills:
     when: "Session bootstrap — load workflow-level behavioral protocols"
   get_workflow:
-    when: "After start_session — load workflow structure and initialActivity"
+    when: "After start_session — load workflow structure and initialActivity (optional, if worker needs full workflow context)"
   next_activity:
     when: "Transitioning to the first or next activity"
   get_skill:
