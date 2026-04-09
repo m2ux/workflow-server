@@ -1,21 +1,20 @@
 ---
-id: workflow-server-tools
-version: 2.0.0
+id: workflow-orchestration-tools
+version: 1.0.0
 ---
 
-# Workflow Server MCP Tool Reference
+# Workflow Orchestration MCP Tool Reference
 
-Checklists, tool parameter details, and step-by-step procedures for interacting with the workflow-server MCP. For orchestrator prompts and behavioral constraints, refer to the relevant protocol skills (e.g., `00-session-protocol`, `10-meta-orchestrator`, `11-activity-worker`).
+Checklists, tool parameter details, and step-by-step procedures for interacting with the workflow-server MCP, specifically tailored for the **workflow-orchestrator** role.
 
 ---
 
 ## Contents
 
-1. [Quick Reference](#1-quick-reference) — Core tools and their purposes
+1. [Quick Reference](#1-quick-reference) — Core tools for orchestration
 2. [Session Bootstrapping](#2-session-bootstrapping) — Initializing a workflow execution
 3. [Activity Navigation](#3-activity-navigation) — Transitioning between workflow states
 4. [Checkpoint Resolution](#4-checkpoint-resolution) — Handling interactive pauses
-5. [Resource Loading](#5-resource-loading) — Fetching skills and text content
 
 ---
 
@@ -27,7 +26,6 @@ Checklists, tool parameter details, and step-by-step procedures for interacting 
 |------|-------------|------------|---------|
 | `discover` | First action to learn server usage and available workflows | none | Server info and bootstrap procedure |
 | `list_workflows` | Matching user goal to a workflow | none | Available workflows |
-| `health_check` | Verify server availability | none | Server status |
 
 ### Core Session Operations (Token Required)
 
@@ -39,7 +37,6 @@ Every call after `start_session` requires the `session_token` parameter, which e
 | `get_workflow` | Loading workflow structure | `session_token`, optional `summary` | Workflow details including `initialActivity` |
 | `get_skills` | Loading workflow-level behavioral protocols | `session_token` | Universal and workflow-level skills |
 | `next_activity` | Transitioning to the first or next activity | `session_token`, `activity_id` (MUST use `initialActivity` ID from `get_workflow` on first call; transitions for subsequent calls), optional `step_manifest` | Activity definition, trace token, embedded checkpoints |
-| `get_skill` | Loading a specific step's skill | `session_token`, `step_id` | Skill details and resource references |
 | `get_resource` | Fetching text content for a resource reference | `session_token`, `resource_index` | Full resource text content |
 
 ---
@@ -131,34 +128,4 @@ Every call after `start_session` requires the `session_token` parameter, which e
 - [ ] User selects an option.
 - [ ] Orchestrator calls `respond_checkpoint({ session_token, checkpoint_id, option_id })`.
 - [ ] Orchestrator resumes the worker sub-agent with the checkpoint response and effects.
-```
-
-*Note: The activity worker MUST NOT call `respond_checkpoint` itself.*
-
----
-
-## 5. Resource Loading
-
-### When to Use
-
-- You need to read the full text of a skill or resource referenced by an index.
-- A step definition declares a skill that you haven't loaded yet.
-
-### Checklist
-
-```
-- [ ] Note the `step_id` requiring a skill, or the `resource_index` from a `_resources` list.
-- [ ] Call `get_skill({ session_token, step_id })` to load the skill definition.
-- [ ] For any `_resources` references inside the skill (e.g., `"04"`), call `get_resource({ session_token, resource_index: "04" })`.
-- [ ] Read the returned text content directly. DO NOT attempt to read the file from disk using a shell command.
-```
-
-### Example: Loading a Step's Skill and its Resources
-
-```
-1. Step "analyze-impact" declares skill "gitnexus-operations"
-2. get_skill({ session_token: "tok_123...", step_id: "analyze-impact" })
-   → Returns skill protocol, rules, and _resources: ["04"]
-3. get_resource({ session_token: "tok_123...", resource_index: "04" })
-   → Returns the full markdown text of the gitnexus-reference resource.
 ```
