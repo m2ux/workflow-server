@@ -17,8 +17,9 @@ protocol:
   bootstrap-activity[2]:
     - "Call next_activity({ session_token, activity_id }) to load the activity definition. Pass session_token, not workflow_id."
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, and artifactPrefix"
-  bootstrap-skill[2]:
+  bootstrap-skill[3]:
     - "Call get_skills({ session_token }) to load workflow-level management skills. Pass session_token, not workflow_id."
+    - "If the activity defines a primary skill, call get_skill({ session_token }) (omitting step_id) to load the overarching context and knowledge for this activity."
     - "Read each skill's protocol, rules, tools, inputs, and output definitions. For each entry in _resources, call get_resource({ session_token, resource_index }) to load content."
   check-mode[1]:
     - "If the activity is in mode.skipActivities, report back with a skip result"
@@ -83,8 +84,8 @@ tools:
     when: "Transitioning to the first or next activity"
     params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls)"
   get_skill:
-    when: "Before executing a step that declares a skill"
-    params: "session_token, step_id"
+    when: "Loading the activity's primary context skill (no step_id), or before executing a step that declares a specific skill"
+    params: "session_token, optional step_id"
   get_resource:
     when: "After get_skill or get_skills — loading content for entries in _resources"
     params: "session_token, resource_index"

@@ -27,9 +27,8 @@ Every call after `start_session` requires the `session_token` parameter, which e
 |------|-------------|------------|---------|
 | `start_session` | Initial dispatch to inherit a session from the orchestrator | `workflow_id`, `session_token` (from orchestrator), `agent_id` | Initial `session_token` and metadata |
 | `get_skills` | Loading workflow-level behavioral protocols | `session_token` | Universal and workflow-level skills |
-| `get_workflow` | Loading workflow structure (typically done by orchestrator, but available to worker) | `session_token`, optional `summary` | Workflow details including `initialActivity` |
 | `next_activity` | Transitioning to the first or next activity | `session_token`, `activity_id` (MUST use `initialActivity` ID from `get_workflow` on first call; transitions for subsequent calls) | Activity definition, trace token, embedded checkpoints |
-| `get_skill` | Loading a specific step's skill | `session_token`, `step_id` | Skill details and resource references |
+| `get_skill` | Loading a specific step's skill, or the activity's primary skill | `session_token`, optional `step_id` | Skill details and resource references |
 | `get_resource` | Fetching text content for a resource reference | `session_token`, `resource_index` | Full resource text content |
 
 ---
@@ -64,16 +63,26 @@ Every call after `start_session` requires the `session_token` parameter, which e
 
 ### When to Use
 
+- You need overarching context for the current activity (its primary skill).
 - You need to read the full text of a skill or resource referenced by an index.
 - A step definition declares a skill that you haven't loaded yet.
 
 ### Checklist
 
 ```
+- [ ] If the activity has a primary skill you need to understand, call `get_skill({ session_token })` without a `step_id`.
 - [ ] Note the `step_id` requiring a skill, or the `resource_index` from a `_resources` list.
-- [ ] Call `get_skill({ session_token, step_id })` to load the skill definition.
+- [ ] Call `get_skill({ session_token, step_id })` to load a step's specific skill definition.
 - [ ] For any `_resources` references inside the skill (e.g., `"04"`), call `get_resource({ session_token, resource_index: "04" })`.
 - [ ] Read the returned text content directly. DO NOT attempt to read the file from disk using a shell command.
+```
+
+### Example: Loading the Activity's Primary Skill
+
+```
+1. Activity specifies a primary skill for context.
+2. get_skill({ session_token: "tok_worker456..." }) // omitted step_id
+   → Returns the activity's primary skill protocol and resources.
 ```
 
 ### Example: Loading a Step's Skill and its Resources
