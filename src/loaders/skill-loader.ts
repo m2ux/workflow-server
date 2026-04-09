@@ -115,6 +115,7 @@ export async function listWorkflowSkillIds(workflowDir: string, workflowId: stri
 /**
  * Read a skill by ID, with optional workflow context.
  * Resolution order:
+ * 0. If skillId is prefixed with a workflow (e.g. 'work-package/manage-git'), search only that workflow
  * 1. If workflowId provided: check {workflowDir}/{workflowId}/skills/NN-{skillId}.toon
  * 2. Universal: check {workflowDir}/meta/skills/NN-{skillId}.toon
  * 3. If no workflowId: search all workflow skill directories
@@ -124,6 +125,20 @@ export async function readSkill(
   workflowDir: string, 
   workflowId?: string
 ): Promise<Result<Skill, SkillNotFoundError>> {
+  // Handle explicitly prefixed skills (e.g. "work-package/manage-git")
+  if (skillId.includes('/')) {
+    const [targetWorkflow, actualSkillId] = skillId.split('/', 2);
+    if (!targetWorkflow || !actualSkillId) {
+      return err(new SkillNotFoundError(skillId));
+    }
+    const skill = await tryLoadSkill(getWorkflowSkillDir(workflowDir, targetWorkflow), actualSkillId);
+    if (skill) {
+      logInfo('Skill loaded (explicit prefix)', { id: skillId, targetWorkflow });
+      return ok(skill);
+    }
+    return err(new SkillNotFoundError(skillId));
+  }
+
   // Try workflow-specific skill first
   if (workflowId && workflowId !== META_WORKFLOW_ID) {
     const skill = await tryLoadSkill(getWorkflowSkillDir(workflowDir, workflowId), skillId);

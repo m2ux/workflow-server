@@ -298,7 +298,7 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 ### Skill and Resource Loading
 
-`get_skills` returns workflow-level behavioral protocols with `_resources` containing lightweight references (index, id, version). `get_skill` loads the skill for a specific step. Call `get_resource` with the resource index to load full content.
+`get_skills` returns workflow-level behavioral protocols with `_resources` containing lightweight references (index, id, version). `get_skill` loads the skill for a specific step. Call `get_resource` with the resource index to load full content. Do not call `get_skill` on steps that lack a `skill` property.
 
 ### Self-Describing Bootstrap
 
