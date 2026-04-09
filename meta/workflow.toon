@@ -7,7 +7,7 @@ tags[3]:
   - meta
   - bootstrap
   - workflow-management
-variables[13]:
+variables[14]:
   - name: is_monorepo
     type: boolean
     description: Whether the target repository is a submodule monorepo
@@ -60,10 +60,10 @@ variables[13]:
     type: boolean
     description: Whether a workflow-state.json file was found and successfully restored
     defaultValue: false
-executionModel:
-  roles[1]:
-    - id: agent
-      description: "Single agent that executes workflow activities directly"
+  - name: client_workflow_completed
+    type: boolean
+    description: Whether the dispatched client workflow has completed all activities
+    defaultValue: false
 rules[3]:
   - This workflow is the entrypoint for all workflow operations
   - Each activity is matched independently via recognition patterns in list_workflows

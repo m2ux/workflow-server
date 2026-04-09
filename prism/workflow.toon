@@ -116,10 +116,4 @@ skills[5]:
   - execute-activity
   - state-management
   - orchestrate-prism
-executionModel:
-  roles[2]:
-    - id: orchestrator
-      description: "Coordinates analytical passes, captures output, and forwards results between isolated workers"
-    - id: worker
-      description: "Executes a single analytical pass in a fresh context window, producing structured analysis output"
 initialActivity: select-mode

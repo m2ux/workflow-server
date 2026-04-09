@@ -82,10 +82,4 @@ skills[4]:
   - agent-conduct
   - execute-activity
   - state-management
-executionModel:
-  roles[2]:
-    - id: orchestrator
-      description: "Coordinates audit activities, triggers prism workflows, and passes context between phases"
-    - id: worker
-      description: "Executes audit activities in fresh contexts — prompt generation, analysis, and post-processing"
 initialActivity: scope-definition

@@ -1,0 +1,123 @@
+id: workflow-orchestrator
+version: 1.0.0
+capability: "Management skill for a workflow orchestrator (sub-agent) managing a dispatched client workflow — handles workflow lifecycle, state management, and yields checkpoints to the parent orchestrator"
+description: "Single-load management skill for the workflow orchestrator. Manages a dispatched client workflow. Unlike the top-level meta orchestrator, this agent runs as a sub-agent and MUST NOT use AskQuestion. It yields checkpoint_pending results up to the parent orchestrator, and returns workflow_complete when all activities are done."
+
+inputs[3]:
+  - id: workflow-id
+    description: "Workflow to orchestrate (e.g., 'work-package')"
+  - id: user-request
+    description: "The user's initial request, used to detect mode and extract target"
+  - id: target-path
+    description: "Path to the target directory for all git operations"
+
+protocol:
+  load-workflow[2]:
+    - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. Pass the session_token from start_session — there is no workflow_id parameter on get_workflow."
+    - "Extract initialActivity, variables, rules, modes, and artifactLocations"
+  initialize-state[4]:
+    - "Session discovery was handled by the discover-session activity during bootstrap. If the user chose to resume, start_session was called with a saved token and is_resuming is true. Read the state file's variables and adopt them."
+    - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
+    - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
+    - "Detect mode from user request (e.g., 'review PR' activates review mode)."
+  dispatch-activity[7]:
+    - "Call next_activity to load the activity definition"
+    - "Compose worker prompt using resource meta/05 (worker-prompt-template) — do NOT inject paraphrased skill content"
+    - "Include the current session_token in the worker prompt so the worker can call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
+    - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
+    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
+    - "For resumed workers: send only the new activity_id, updated state variables, and bootstrap instructions"
+    - "If is_resuming is true (first dispatch after state restoration): include a resumption context block listing completedActivities, key variable values, and prior checkpoint decisions. After this dispatch completes, set is_resuming = false"
+  process-result[6]:
+    - "If checkpoint_pending: present to user via handle-checkpoint-yield"
+    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required blocking checkpoints — resume worker to complete any missing items"
+    - "Apply variables_changed to state, record in completedActivities"
+    - "Check next_activity response _meta.trace_token — if present, append to the trace_tokens array"
+    - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
+    - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
+  resolve-checkpoints[4]:
+    - "After next_activity, the token has pending checkpoints (pcp). Resolve non-blocking and conditional checkpoints, but YIELD blocking checkpoints up to the parent."
+    - "For non-blocking checkpoints (autoAdvanceMs): wait for the timer to elapse, then call respond_checkpoint({ checkpoint_id, auto_advance: true }). If the server rejects (timer not elapsed), WAIT and retry."
+    - "For conditional checkpoints whose condition is not met: call respond_checkpoint({ checkpoint_id, condition_not_met: true })."
+    - "Apply returned effects (setVariable, transitionTo, skipActivities) to orchestrator state."
+  handle-checkpoint-yield[4]:
+    - "When a worker yields checkpoint_pending mid-activity, or if the current activity has blocking checkpoints pending: yield ONE checkpoint_pending up to the parent orchestrator."
+    - "You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. You SHOULD include prose contextual information BEFORE the JSON block."
+    - "If there are multiple pending checkpoints, you MUST only yield the first one. Stop and wait for the parent to resume you with the response before proceeding."
+    - "DO NOT use the AskQuestion tool. You are a sub-agent; your questions will not be visible to the user."
+  commit-artifacts[3]:
+    - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
+    - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
+    - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
+  persist-state[3]:
+    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), variable state (JSON), and activity trace (from get_trace)"
+    - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
+    - "If planning_folder_path is not set, skip silently"
+  evaluate-transition[2]:
+    - "Evaluate transition conditions against state variables — take first matching or default"
+    - "If no transitions exist, the workflow is complete"
+  advance-or-complete[2]:
+    - "If next activity determined: set current_activity, go to dispatch-activity"
+    - "If workflow complete: return { status: 'workflow_complete', final_state: ... } to the parent orchestrator."
+  session-protocol[1]:
+    - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
+
+rules:
+  no-auto-resolution: "NEVER auto-resolve blocking checkpoints. Even if the answer seems obvious, you MUST yield the checkpoint to the parent orchestrator so it can be presented to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
+  no-direct-interaction: "MUST NOT use AskQuestion. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): Yield blocking checkpoints up to the parent. Wait for the parent to resume you with the user's selected option_id. Then call respond_checkpoint. For non-blocking checkpoints, use auto_advance."
+  reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result."
+  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
+  automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
+  no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
+  target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
+  file-sensitivity[3]:
+    - "Do not modify core configuration files without explicit user direction."
+    - "Avoid changes to build scripts unless specifically requested."
+    - "Request approval before modifying CI/CD configuration or Docker files."
+  communication-tone[2]:
+    - "Use measured technical language appropriate for senior software engineering."
+    - "Focus on technical merit rather than emotional assessments."
+  attribution-prohibition[2]:
+    - "Present design decisions directly without referencing their origin."
+    - "Do not include process attribution in code comments or documentation."
+  operational-discipline[2]:
+    - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
+    - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
+
+tools:
+  get_workflow:
+    when: "Once at workflow start"
+    params: "session_token, summary=true"
+  next_activity:
+    when: "Before dispatching each activity"
+    params: "session_token, activity_id"
+  task:
+    when: "Dispatching or resuming the activity-worker sub-agent"
+    params: "description, prompt, subagent_type, resume"
+  get_trace:
+    when: "After each activity_complete"
+    params: "session_token, trace_tokens"
+  start_session:
+    when: "Bootstrapping or resuming"
+    params: "workflow_id, session_token, agent_id"
+  get_resource:
+    when: "After get_skills"
+    params: "session_token, resource_index"
+
+errors:
+  worker_timeout:
+    cause: "Worker sub-agent did not return within expected time"
+    recovery: "Check terminal output. Resume if still running. If stuck, create new worker and re-dispatch."
+  transition_ambiguous:
+    cause: "Multiple transition conditions evaluate to true"
+    recovery: "Take the first matching transition. Log a warning."
+  worker_incomplete:
+    cause: "Worker reports fewer steps than the activity defines"
+    recovery: "Resume the worker with instructions to complete remaining steps."
+  state_desync:
+    cause: "Worker reports variable changes conflicting with orchestrator state"
+    recovery: "Worker-reported values take precedence (worker has ground truth from user interaction)."
+
+resources[1]:
+  - "meta/05"

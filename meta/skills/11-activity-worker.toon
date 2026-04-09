@@ -1,7 +1,7 @@
-id: worker-management
+id: activity-worker
 version: 1.1.0
-capability: "Consolidated management skill for the worker role — covers activity execution, session lifecycle, and behavioral boundaries"
-description: "Single-load management skill for the worker (sub-agent). Consolidates execute-activity, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
+capability: "Consolidated management skill for the activity-worker role — covers activity execution, session lifecycle, and behavioral boundaries"
+description: "Single-load management skill for the activity-worker (sub-agent). Consolidates execute-activity, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
 
 inputs[3]:
   - id: activity-id
@@ -27,8 +27,10 @@ protocol:
     - "Skip the get_skill call if the same skill was already loaded for a prior step and is still in context."
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
-  yield-checkpoint[2]:
-    - "At a checkpoint, STOP and return checkpoint_pending to the orchestrator (see resource meta/06 for format). The worker does not call respond_checkpoint — the orchestrator handles checkpoint resolution."
+  yield-checkpoint[3]:
+    - "At a checkpoint, STOP and yield checkpoint_pending to the orchestrator. You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. You SHOULD include prose contextual information BEFORE the JSON block."
+    - "If multiple checkpoints are pending, you MUST yield ONLY the first one. Stop and wait for the parent to resume you with the response before proceeding."
+    - "The worker does not call respond_checkpoint — the orchestrator handles checkpoint resolution."
     - "On resume with checkpoint_response, apply effects and continue from where paused"
   execute-loops[2]:
     - "forEach: iterate over the named collection, executing loop steps for each item"
@@ -46,7 +48,7 @@ rules:
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding persists across activities via Task resume parameter."
   complete-all-steps: "Execute all required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
-  checkpoint-enforcement: "When the worker encounters a checkpoint, it MUST STOP and yield checkpoint_pending to the orchestrator. The worker does NOT call respond_checkpoint — checkpoint resolution is the orchestrator's responsibility. If the server blocks a tool call due to pending checkpoints, yield back to the orchestrator."
+  checkpoint-enforcement: "When the worker encounters a checkpoint, it MUST STOP and yield checkpoint_pending to the orchestrator formatted strictly as a <checkpoint_yield> JSON block. The worker does NOT call respond_checkpoint — checkpoint resolution is the orchestrator's responsibility. If the server blocks a tool call due to pending checkpoints, yield back to the orchestrator."
   workflow-fidelity: "Respect TOON semantics. Execute activities in sequence unless transitions allow alternatives."
   file-sensitivity[3]:
     - "Do not modify core configuration files without explicit user direction."

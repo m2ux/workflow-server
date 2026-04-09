@@ -1,3 +1,8 @@
+---
+id: workflow-bootstrap
+version: 1.1.0
+---
+
 # Bootstrap Procedure
 
 ## Session Token Rule
@@ -8,26 +13,36 @@
 
 1. **discover** — Call first (no parameters). Returns the server info, available workflows, and this bootstrap procedure.
 2. **list_workflows** — Match the user's goal to a workflow from the returned list. No session token needed.
-3. **start_session(`workflow_id: "meta"`)** — Start a meta session. This provides a token for the session discovery activity.
-4. **get_skills(`session_token`)** — Load behavioral protocols.
-5. **next_activity(`session_token`, `activity_id: "discover-session"`)** — Run the session discovery activity. This searches `.engineering/artifacts/planning/` for saved workflow sessions matching the user's request (ticket ID, branch name, etc.). If a match is found, a checkpoint asks the user whether to resume. The activity resolves with a saved `session_token` (if resuming) or signals a fresh start.
-6. **start_session(`workflow_id`, `session_token?`)** — Start the target workflow session. If discover-session found a saved token, pass it to inherit the previous session position. Otherwise call with only `workflow_id` for a fresh session.
-7. **get_workflow(`session_token`, `summary=true`)** — Load the target workflow structure including `initialActivity` and the activity list.
-8. **next_activity(`session_token`, `activity_id`)** — For fresh sessions, use `initialActivity` from step 7. For resumed sessions, use the restored `currentActivity` from the state file. If resuming, also restore variables from the state file.
+3. **start_session(`workflow_id: "meta"`)** — Start a meta session.
+4. **get_skills(`session_token`)** — Load behavioral protocols for the meta session.
+5. **get_workflow(`session_token`, `summary=true`)** — Load the meta workflow structure.
+6. **next_activity(`session_token`, `activity_id`)** — Execute either `start-workflow` or `resume-workflow` based on the user's intent. These activities handle discovering target submodules, loading state, and dispatching the client workflow via `dispatch_workflow`.
 
-## Worker Dispatch (Token Inheritance)
+## Sub-Agent Dispatch and Initialization
 
-When the orchestrator dispatches a worker, the worker should call `start_session` with the orchestrator's token to inherit the session state:
+The orchestration model uses a 3-tier hierarchy: `meta-orchestrator` (meta), `workflow-orchestrator` (client workflow), and `activity-worker` (activity execution).
 
-- **start_session(`workflow_id`, `session_token`, `agent_id`)** — The returned token inherits `sid`, `act`, `pcp`, `pcpt`, and all state from the parent. The `agent_id` is stamped into the signed `aid` field (e.g., `"worker-1"`). The worker shares the same session and is subject to the same checkpoint gate.
+### Dispatching an Activity Orchestrator
 
-This ensures the worker cannot bypass checkpoint obligations — pending checkpoints from `next_activity` carry over into the inherited token.
+The top-level `meta-orchestrator` starts a client workflow by calling `dispatch_workflow`:
+- **dispatch_workflow(`workflow_id`, `parent_session_token`, `variables`)** — Creates a new, independent client session. It returns a dispatch package containing the `client_session_token`, `initial_activity`, and a pre-composed `worker_prompt`.
+- **Note:** The `workflow-orchestrator` does NOT inherit the `meta-orchestrator`'s token. They are independent sessions correlated in the trace.
+
+### Dispatching an Activity Worker (Token Inheritance)
+
+When the `workflow-orchestrator` dispatches an `activity-worker` to execute an activity, the worker **must inherit the orchestrator's token** to share the session state:
+- **start_session(`workflow_id`, `session_token`, `agent_id`)** — The worker calls this using the `workflow-orchestrator`'s token. The returned token inherits `sid`, `act`, `pcp`, `pcpt`, and all state from the parent. The `agent_id` is stamped into the signed `aid` field (e.g., `"worker-1"`).
+- This ensures the worker cannot bypass checkpoint obligations — pending checkpoints from `next_activity` carry over into the inherited token.
 
 ## Checkpoint Gate
 
-When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **All tools are blocked until every checkpoint is resolved via `respond_checkpoint`.** The behavioral rules for how and when to resolve checkpoints are in the role-specific management skills loaded at step 4.
+When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **All tools are blocked until every checkpoint is resolved via `respond_checkpoint`.** 
+
+- **Sub-agents (`workflow-orchestrator` and `activity-worker`) NEVER call AskQuestion.** They must yield `checkpoint_pending` to their parent orchestrator.
+- The top-level `meta-orchestrator` is the only agent permitted to call `AskQuestion`. It receives bubbled checkpoints, presents them to the user, and calls `respond_checkpoint`.
 
 ## Loading Skills and Resources
 
-- **get_skill(`session_token`, `step_id`)** — Load the skill for a specific step. Returns the skill definition with `_resources` containing lightweight references (index, id, version — no content).
+- **get_skills(`session_token`)** — Load all workflow-level behavioral protocols (e.g. session-protocol).
+- **get_skill(`session_token`, `step_id`)** — Load the specific skill for a step during activity execution. Returns the skill definition with `_resources` containing lightweight references (index, id, version — no content).
 - **get_resource(`session_token`, `resource_index`)** — Load a resource's full content by index. Call this for each entry in `_resources` to load the content the skill requires. Supports cross-workflow refs (e.g., `meta/04`).

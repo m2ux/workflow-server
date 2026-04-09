@@ -85,8 +85,4 @@ skills[5]:
   - execute-activity
   - state-management
   - orchestrate-package-execution
-executionModel:
-  roles[1]:
-    - id: agent
-      description: "Single agent that manages the multi-work-package initiative lifecycle"
 initialActivity: scope-assessment

@@ -33,7 +33,7 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
 | 23 | `reconcile-assumptions` | Iterative assumption reconciliation through targeted code analysis | Design Philosophy, Requirements Elicitation, Research, Implementation Analysis, Plan & Prepare, Implement |
 
-> Skills `execute-activity`, `orchestrate-workflow`, `orchestrator-management`, and `worker-management` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
+> Skills `execute-activity`, `meta-orchestrator`, `workflow-orchestrator`, and `activity-worker` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
 
 ### Cross-Workflow Skill References
 

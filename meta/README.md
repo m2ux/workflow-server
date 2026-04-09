@@ -11,6 +11,54 @@ Meta is the **skill and resource repository** for the workflow server. It provid
 - Skills are universal and auto-included on the first `get_skills` call for any session
 - Activities are independent entry points matched via recognition patterns (not sequential flow)
 
+## Hierarchical Execution Model
+
+The workflow-server implements a 3-tier hierarchical orchestration model. The top-level `meta-orchestrator` manages the outer session and user interaction, while client workflows are delegated to a `workflow-orchestrator` sub-agent, which in turn dispatches an `activity-worker` for discrete task execution.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Meta as meta-orchestrator<br/>(Top-level Agent)
+    participant Client as workflow-orchestrator<br/>(Client Workflow Sub-agent)
+    participant Worker as activity-worker<br/>(Task Execution Sub-agent)
+
+    User->>Meta: "start work package"
+    Note over Meta: Loads meta workflow,<br/>starts session
+    Meta->>Meta: Runs start-workflow activity
+
+    Note over Meta: Calls dispatch_workflow<br/>(creates independent client session)
+    Meta->>Client: Task(prompt: resource meta/10)
+
+    Note over Client: Calls start_session(client_token)<br/>Loads client workflow
+    
+    Client->>Worker: Task(prompt: resource meta/05)
+    Note over Worker: Calls start_session(client_token)<br/>Inherits session
+    
+    Note over Worker: Executes activity steps
+
+    Worker-->>Client: yields checkpoint_pending
+    Client-->>Meta: bubbles checkpoint_pending
+    Meta->>User: AskQuestion (presents checkpoint)
+    User->>Meta: Selects Option
+    Meta->>Meta: respond_checkpoint
+    
+    Meta->>Client: Task(resume)
+    Client->>Worker: Task(resume)
+    
+    Note over Worker: Finishes steps, writes artifacts
+    Worker-->>Client: activity_complete
+
+    Note over Client: Evaluates transitions,<br/>dispatches next activity
+    
+    Client->>Worker: Task(resume, next_activity)
+    Note over Worker: Executes next activity...
+    Worker-->>Client: activity_complete
+    
+    Note over Client: No more transitions
+    Client-->>Meta: workflow_complete
+    Note over Meta: Records completion,<br/>runs end-workflow activity
+```
+
 ## Workflow Structure
 
 ```mermaid

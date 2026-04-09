@@ -1,0 +1,65 @@
+id: dispatch-workflow
+version: 1.1.0
+name: Dispatch Client Workflow
+description: |
+  Dispatch the resolved target workflow to a workflow-orchestrator (sub-agent). Creates an independent
+  client session via dispatch_workflow, spawns the sub-agent with the dispatch package, and
+  acts as a router for checkpoints bubbled up from the sub-agent. The meta-orchestrator does not
+  manage client activity transitions; it only waits for checkpoint_pending or workflow_complete.
+problem: Create and manage an independent client workflow session for the resolved target workflow
+recognition:
+  - dispatch the workflow
+  - start the target workflow
+  - begin the client workflow
+skills:
+  primary: meta-orchestrator
+  supporting:
+    - state-management
+steps:
+  - id: resolve-target
+    name: Resolve target workflow
+    description: |
+      The target workflow has already been resolved by the discover-session activity.
+      Verify the `target_workflow` variable is set. If missing, return to discover-session.
+    required: true
+  - id: create-client-session
+    name: Create client session
+    description: |
+      Call dispatch_workflow with workflow_id (from target_workflow variable),
+      parent_session_token (your current meta session token), and any initial variables.
+      Extract client_session_token, client_session_id, initial_activity, and worker_prompt
+      from the response. Save client_session_token and client_session_id in session state for correlation.
+    required: true
+  - id: dispatch-client
+    name: Dispatch workflow-orchestrator
+    description: |
+      Spawn a new agent (Task/sub-agent) with the worker_prompt from dispatch_workflow.
+      The workflow-orchestrator runs the target workflow using its own session token.
+      Wait for the agent to return a result — either checkpoint_pending or workflow_complete.
+      Do NOT execute client workflow activities directly — all execution is delegated to the workflow-orchestrator.
+      The workflow-orchestrator handles its own transitions. Wait only for checkpoint_pending or workflow_complete.
+    required: true
+  - id: process-result
+    name: Process client result
+    description: |
+      If checkpoint_pending: present the checkpoint to the user via AskQuestion, receive the
+      response, and resume the sub-agent with the chosen option_id. Loop back to wait for the next result.
+      Present checkpoint_pending yields to the user via AskQuestion — *never* fabricate responses.
+      If workflow_complete: apply any final variables_changed, set client_workflow_completed to true.
+    required: true
+transitions:
+  - to: end-workflow
+    condition:
+      type: simple
+      variable: client_workflow_completed
+      operator: ==
+      value: true
+outcome:
+  - Client workflow session created with independent session token
+  - Client agent dispatched and lifecycle managed inline
+  - Checkpoint yields presented to user and responses forwarded
+  - Client workflow completed or blocked awaiting user input
+context_to_preserve:
+  - client_session_token - The client agent's session token
+  - client_session_id - The client session SID for trace correlation
+  - target_workflow - The workflow ID that was dispatched

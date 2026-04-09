@@ -1,3 +1,8 @@
+---
+id: state-management
+version: 1.0.0
+---
+
 # State Management Reference
 
 Reference material for workflow state initialization, update patterns, and resumption. State structure and field definitions are in `state.schema.json` — this document defines HOW to use the schema at runtime.
