@@ -133,6 +133,7 @@ skills[2]:
   - activity-worker
 initialActivity: start
 activities[12]:
+  - "01-start.toon"
   - "work-package/02-design-philosophy.toon"
   - "work-package/03-requirements-elicitation.toon"
   - "work-package/04-research.toon"
@@ -142,6 +143,7 @@ activities[12]:
   - "work-package/08-implement.toon"
   - "work-package/09-post-impl-review.toon"
   - "work-package/10-validate.toon"
-  - "work-package/11-strategic-review.toon"
+  - "02-strategic-review.toon"
+  - "03-submit.toon"
   - "work-package/13-complete.toon"
   - "work-package/14-codebase-comprehension.toon"
