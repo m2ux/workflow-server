@@ -132,7 +132,7 @@ skills[2]:
   - meta-orchestrator
   - activity-worker
 initialActivity: start
-activities[12]:
+activities[14]:
   - "01-start.toon"
   - "work-package/02-design-philosophy.toon"
   - "work-package/03-requirements-elicitation.toon"
