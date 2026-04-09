@@ -88,22 +88,17 @@ rules:
 tools:
   get_workflow:
     when: "Once at workflow start"
-    params: "session_token, summary=true"
   next_activity:
     when: "Before dispatching each activity"
-    params: "session_token, activity_id"
   task:
     when: "Dispatching or resuming the activity-worker sub-agent"
-    params: "description, prompt, subagent_type, resume"
   get_trace:
     when: "After each activity_complete"
-    params: "session_token, trace_tokens"
   start_session:
     when: "Bootstrapping or resuming"
-    params: "workflow_id, session_token, agent_id"
   get_resource:
     when: "After get_skills"
-    params: "session_token, resource_index"
+
 
 errors:
   worker_timeout:
@@ -119,5 +114,6 @@ errors:
     cause: "Worker reports variable changes conflicting with orchestrator state"
     recovery: "Worker-reported values take precedence (worker has ground truth from user interaction)."
 
-resources[1]:
+resources[2]:
   - "meta/05"
+  - "meta/11"

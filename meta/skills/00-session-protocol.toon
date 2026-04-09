@@ -25,19 +25,17 @@ protocol:
 tools:
   start_session:
     when: "Beginning a new workflow session"
-    params: "workflow_id"
   get_skills:
     when: "Loading behavioral protocols after start_session"
-    params: "session_token"
   get_workflow:
     when: "After start_session — loading workflow structure and initialActivity"
-    params: "session_token, summary"
   next_activity:
     when: "Transitioning to the first or next activity"
-    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls), step_manifest"
   get_skill:
     when: "Before executing a step that declares a skill"
-    params: "session_token, step_id"
   get_resource:
     when: "After get_skills or get_skill — loading content for entries in _resources"
-    params: "session_token, resource_index"
+
+resources[1]:
+  - "meta/11"
+

@@ -61,22 +61,16 @@ tools:
     next: "start_session with chosen workflow_id"
   start_session:
     when: "First action on initial dispatch — pass parent session_token if provided by orchestrator"
-    params: "workflow_id, session_token (optional, from orchestrator), agent_id (optional)"
   get_skills:
     when: "Session bootstrap — load workflow-level behavioral protocols"
-    params: "session_token"
   get_workflow:
     when: "After start_session — load workflow structure and initialActivity"
-    params: "session_token, summary"
   next_activity:
     when: "Transitioning to the first or next activity"
-    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls)"
   get_skill:
     when: "Before executing a step that declares a skill, unless the same skill is already loaded from a prior step"
-    params: "session_token, step_id"
   get_resource:
     when: "After get_skill or get_skills — loading content for entries in _resources"
-    params: "session_token, resource_index"
 
 errors:
   no_matching_workflow:
@@ -95,5 +89,6 @@ errors:
     cause: "A checkpoint's prerequisite condition was not met"
     recovery: "Skip the checkpoint silently and note it in the result."
 
-resources[1]:
+resources[2]:
   - "06"
+  - "11"
