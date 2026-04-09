@@ -77,7 +77,7 @@ tools:
     when: "Session bootstrap — load workflow-level behavioral protocols"
     params: "session_token"
   get_workflow:
-    when: "After start_session — load workflow structure and initialActivity"
+    when: "After start_session — load workflow structure and initialActivity (optional, if worker needs full workflow context)"
     params: "session_token, summary"
   next_activity:
     when: "Transitioning to the first or next activity"
