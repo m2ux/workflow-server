@@ -16,7 +16,7 @@ version: 1.1.0
 3. **start_session(`workflow_id: "meta"`)** — Start a meta session.
 4. **get_skills(`session_token`)** — Load behavioral protocols for the meta session.
 5. **get_workflow(`session_token`, `summary=true`)** — Load the meta workflow structure.
-6. **next_activity(`session_token`, `activity_id`)** — Execute either `start-workflow` or `resume-workflow` based on the user's intent. These activities handle discovering target submodules, loading state, and dispatching the client workflow via `dispatch_workflow`.
+6. **next_activity(`session_token`, `activity_id`)** — Execute either `start-workflow` or `resume-workflow` based on the user's intent. MUST use the initialActivity ID from `get_workflow` for the first call. These activities handle discovering target submodules, loading state, and dispatching the client workflow via `dispatch_workflow`.
 
 ## Sub-Agent Dispatch and Initialization
 

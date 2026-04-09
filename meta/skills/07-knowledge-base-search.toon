@@ -40,24 +40,15 @@ output[1]:
 tools:
   Read:
     when: Loading the domain knowledge index before searching
-    params: "path: .engineering/resources/{domain}-knowledge-index.md"
-    returns: "Domain knowledge index with source registry, concept mappings, topic clusters, and search strategies"
   chunks_search:
     when: Searching within a known document after resolving its path via catalog_search
-    params: "text: mapped concept term, source: resolved path from catalog_search"
-    returns: "Top chunks from the specified document"
   broad_chunks_search:
     when: Searching across all documents when no single source is identified
-    params: "text: mapped concept term from index"
-    returns: "Ranked chunks from all documents"
   catalog_search:
     when: "Resolving a document name from the index to its full path, or as fallback when the index has no mapping"
-    params: "text: document name or search topic"
-    returns: "Matching documents by title and content with full source paths"
   concept_search:
     when: Following up on related concepts identified in the index
-    params: "concept: related concept from index"
-    returns: "Chunks organised by concept across sources"
+
 
 errors:
   no_index_for_domain:

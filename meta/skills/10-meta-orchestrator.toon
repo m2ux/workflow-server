@@ -89,25 +89,19 @@ rules:
 tools:
   get_workflow:
     when: "Once at workflow start — load workflow structure and initialActivity"
-    params: "session_token, summary=true (no workflow_id — it is encoded in the token)"
   next_activity:
     when: "Before dispatching each activity"
-    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls)"
   task:
     when: "Dispatching or resuming the sub-agent"
-    params: "description, prompt, subagent_type, resume"
   AskQuestion:
     when: "Presenting a yielded checkpoint to the user"
-    params: "questions with id, prompt, options"
   get_trace:
     when: "After each activity_complete — resolve trace tokens for the completed activity"
-    params: "session_token, trace_tokens"
   start_session:
     when: "Resuming a workflow from saved state — pass the saved token"
-    params: "workflow_id, session_token (saved token), agent_id (optional)"
   get_resource:
     when: "After get_skills — loading content for entries in _resources"
-    params: "session_token, resource_index"
+
 
 errors:
   worker_timeout:
@@ -123,5 +117,6 @@ errors:
     cause: "Sub-agent reports variable changes conflicting with orchestrator state"
     recovery: "Sub-agent-reported values take precedence (sub-agent has ground truth from user interaction)."
 
-resources[1]:
+resources[2]:
   - "meta/10"
+  - "meta/11"

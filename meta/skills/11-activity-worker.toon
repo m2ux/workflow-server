@@ -22,8 +22,10 @@ protocol:
     - "Read each skill's protocol, rules, tools, inputs, and output definitions. For each entry in _resources, call get_resource({ session_token, resource_index }) to load content."
   check-mode[1]:
     - "If the activity is in mode.skipActivities, report back with a skip result"
-  execute-steps[4]:
-    - "Execute each step sequentially. For steps with a skill field, call get_skill({ session_token, step_id }) to load the skill before executing."
+  execute-steps[6]:
+    - "Execute each step sequentially. Check if the step object explicitly has a 'skill' field before calling get_skill."
+    - "CRITICAL: If the step does NOT have a 'skill' field, DO NOT call get_skill. Execute the step directly using your general capabilities and the step's description."
+    - "For steps with a skill field, call get_skill({ session_token, step_id }) to load the skill before executing."
     - "Skip the get_skill call if the same skill was already loaded for a prior step and is still in context."
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
@@ -45,6 +47,7 @@ protocol:
 
 rules:
   self-bootstrap: "Always load activity and skill definitions from the workflow-server via next_activity and get_skill. The workflow-server is the source of truth."
+  strict-skill-loading: "CRITICAL: Never call get_skill for a step unless that step explicitly defines a 'skill' property. For steps without a skill, execute them directly based on their description."
   report-state-changes: "Every variable change from checkpoint effects or step set actions MUST be included in the result. Callers depend on this for transition evaluation."
   preserve-context: "Accumulated codebase understanding persists across activities via Task resume parameter."
   complete-all-steps: "Execute all required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
@@ -100,5 +103,6 @@ errors:
     cause: "A checkpoint's prerequisite condition was not met"
     recovery: "Skip the checkpoint silently and note it in the result."
 
-resources[1]:
+resources[2]:
   - "meta/06"
+  - "meta/11"
