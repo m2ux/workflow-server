@@ -11,7 +11,7 @@ version: 1.1.0
 
 ## Starting a Session
 
-1. **discover** — Call first (no parameters). Returns the server info, available workflows, and this bootstrap procedure.
+1. **discover** — Call first (no parameters). Returns the server info and this bootstrap procedure.
 2. **list_workflows** — Match the user's goal to a workflow from the returned list. No session token needed.
 3. **start_session(`workflow_id: "meta"`)** — Start a meta session.
 4. **get_skills(`session_token`)** — Load behavioral protocols for the meta session.
