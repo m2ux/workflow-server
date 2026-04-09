@@ -27,7 +27,7 @@ protocol:
     - "Skip the get_skill call if the same skill was already loaded for a prior step and is still in context."
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
-  yield-checkpoint[3]:
+  yield-checkpoint[4]:
     - "At a checkpoint, STOP and yield checkpoint_pending to the orchestrator. You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. You SHOULD include prose contextual information BEFORE the JSON block."
     - "If multiple checkpoints are pending, you MUST yield ONLY the first one. Stop and wait for the parent to resume you with the response before proceeding."
     - "CRITICAL: The worker MUST NOT call respond_checkpoint or AskQuestion. Checkpoint resolution is solely the orchestrator's responsibility."
