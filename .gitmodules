@@ -2,3 +2,7 @@
 	path = .engineering
 	url = https://github.com/m2ux/workflow-server.git
 	branch = engineering
+[submodule "workflows"]
+	path = workflows
+	url = https://github.com/m2ux/workflow-server.git
+	branch = workflows

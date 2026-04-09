@@ -4,8 +4,7 @@ node_modules/
 # Build output
 dist/
 
-# Worktree for workflows branch
-workflows/
+# Worktree for workflows branch (now a submodule)
 
 # IDE
 .idea/
