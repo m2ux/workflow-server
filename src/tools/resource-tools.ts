@@ -191,10 +191,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Load the skill assigned to a specific step within the current activity. Resolves the skill reference from the activity definition using the step_id and the current activity tracked in the session token. Requires next_activity to have been called first — the session token must have a current activity set. Returns the skill definition with resource references in _resources (index, id, version only — use get_resource for full content). If the step_id is not found, the error lists all available step IDs in the current activity. IMPORTANT: Do not call this tool for steps that do not explicitly define a "skill" property; execute those steps directly based on their description.',
+    'Load a skill within the current activity. Resolves the skill reference from the activity definition using the current activity tracked in the session token. If step_id is provided, it loads the skill explicitly assigned to that step. If step_id is omitted, it loads the primary skill for the entire activity. Requires next_activity to have been called first. Returns the skill definition with resource references in _resources.',
     {
       ...sessionTokenParam,
-      step_id: z.string().describe('Step ID within the current activity (e.g., "define-problem", "create-plan")'),
+      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary skill for the activity.'),
     },
     withAuditLog('get_skill', async ({ session_token, step_id }) => {
       const token = await decodeSessionToken(session_token);
@@ -214,29 +214,37 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       let skillId: string | undefined;
-      const step = activity.steps?.find(s => s.id === step_id);
-      if (step) {
-        skillId = step.skill;
-      } else if (activity.loops) {
-        for (const loop of activity.loops) {
-          const loopStep = loop.steps?.find(s => s.id === step_id);
-          if (loopStep) {
-            skillId = loopStep.skill;
-            break;
+
+      if (!step_id) {
+        skillId = activity.skills?.primary;
+        if (!skillId) {
+          throw new Error(`Activity '${token.act}' does not define a primary skill.`);
+        }
+      } else {
+        const step = activity.steps?.find(s => s.id === step_id);
+        if (step) {
+          skillId = step.skill;
+        } else if (activity.loops) {
+          for (const loop of activity.loops) {
+            const loopStep = loop.steps?.find(s => s.id === step_id);
+            if (loopStep) {
+              skillId = loopStep.skill;
+              break;
+            }
           }
         }
-      }
 
-      if (!step && !skillId) {
-        const allStepIds = [
-          ...(activity.steps?.map(s => s.id) ?? []),
-          ...(activity.loops?.flatMap(l => l.steps?.map(s => s.id) ?? []) ?? []),
-        ];
-        throw new Error(`Step '${step_id}' not found in activity '${token.act}'. Available steps: [${allStepIds.join(', ')}]`);
-      }
+        if (!step && !skillId) {
+          const allStepIds = [
+            ...(activity.steps?.map(s => s.id) ?? []),
+            ...(activity.loops?.flatMap(l => l.steps?.map(s => s.id) ?? []) ?? []),
+          ];
+          throw new Error(`Step '${step_id}' not found in activity '${token.act}'. Available steps: [${allStepIds.join(', ')}]`);
+        }
 
-      if (!skillId) {
-        throw new Error(`Step '${step_id}' in activity '${token.act}' has no associated skill.`);
+        if (!skillId) {
+          throw new Error(`Step '${step_id}' in activity '${token.act}' has no associated skill.`);
+        }
       }
 
       const result = await readSkill(skillId, config.workflowDir, workflow_id);
