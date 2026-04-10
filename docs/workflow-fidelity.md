@@ -45,7 +45,7 @@ The following diagram shows a typical two-activity progression through a workflo
 ```mermaid
 flowchart TD
     subgraph bootstrap [Session Bootstrap]
-        startSession["start_session(workflow_id)"]
+        startSession["start_session(workflow_id, agent_id)"]
         getWorkflow["get_workflow(summary=true)"]
         startSession -->|"L1: HMAC signed token issued"| getWorkflow
     end
