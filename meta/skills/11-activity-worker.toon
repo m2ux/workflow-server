@@ -105,5 +105,5 @@ errors:
     recovery: "Skip the checkpoint silently and note it in the result."
 
 resources[2]:
-  - "meta/06"
-  - "meta/12"
+  - "meta/03"
+  - "meta/02"

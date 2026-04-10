@@ -37,5 +37,5 @@ tools:
     when: "After get_skills or get_skill — loading content for entries in _resources"
 
 resources[1]:
-  - "meta/11"
+  - "meta/03"
 

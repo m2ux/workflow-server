@@ -27,13 +27,13 @@ steps:
     description: |
       Call dispatch_workflow with workflow_id (from target_workflow variable),
       parent_session_token (your current meta session token), and any initial variables.
-      Extract client_session_token, client_session_id, initial_activity, and worker_prompt
+      Extract client_session_token, client_session_id, initial_activity, and client_prompt
       from the response. Save client_session_token and client_session_id in session state for correlation.
     required: true
   - id: dispatch-client
     name: Dispatch workflow-orchestrator
     description: |
-      Spawn a new agent (Task/sub-agent) with the worker_prompt from dispatch_workflow.
+      Spawn a new agent (Task/sub-agent) with the client_prompt from dispatch_workflow.
       The workflow-orchestrator runs the target workflow using its own session token.
       Wait for the agent to return a result — either checkpoint_pending or workflow_complete.
       Do NOT execute client workflow activities directly — all execution is delegated to the workflow-orchestrator.

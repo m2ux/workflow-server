@@ -247,10 +247,10 @@ Meta defines universal skills used by all workflows:
 | `knowledge-base-search` | Optimise knowledge base searches | Pre-indexes domain maps before querying concept-rag |
 | `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
 | `gitnexus-operations` | Query codebases via knowledge graph | GitNexus MCP tools for impact analysis, debugging, refactoring |
-| `orchestrator-management` | Consolidated orchestrator skill | Workflow coordination, state management, worker dispatch, checkpoint presentation. Inline-only — never delegated to a sub-agent. |
-| `worker-management` | Consolidated worker skill | Activity execution, step-level skill loading via get_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
+| `10-meta-orchestrator` | Consolidated orchestrator skill | Workflow coordination, state management, worker dispatch, checkpoint presentation. Inline-only — never delegated to a sub-agent. |
+| `11-activity-worker` | Consolidated worker skill | Activity execution, step-level skill loading via get_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
 
-> **Note:** `workflow-execution` was absorbed into `execute-activity`. `orchestrator-management` and `worker-management` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
+> **Note:** `workflow-execution` was absorbed into `execute-activity`. `10-meta-orchestrator`, `11-workflow-orchestrator`, and `12-activity-worker` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
 
 ---
 
