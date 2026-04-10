@@ -437,11 +437,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const decodedClient = await decodeSessionToken(advancedClientToken);
       const initialActivity = workflow.initialActivity || (workflow.activities.length > 0 ? (workflow.activities[0]?.id ?? '') : '');
 
-      // Load the client prompt template from the workflow resource (meta/10)
+      // Load the client prompt template from the workflow resource
       // rather than hardcoding it in the tool implementation.
-      const templateResult = await readResourceRaw(config.workflowDir, 'meta', '10');
+      const templateResult = await readResourceRaw(config.workflowDir, 'meta', '07');
       if (!templateResult.success) {
-        throw new Error(`Failed to load client prompt template (meta/10): ${templateResult.error}`);
+        throw new Error(`Failed to load client prompt template: ${templateResult.error}`);
       }
 
       const template = templateResult.value.content;
