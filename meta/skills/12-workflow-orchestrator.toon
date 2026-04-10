@@ -6,13 +6,10 @@ description: "Single-load management skill for the workflow orchestrator. Manage
 inputs[3]:
   - id: workflow-id
     description: "Workflow to orchestrate (e.g., 'work-package')"
-    required: true
   - id: user-request
     description: "The user's initial request, used to detect mode and extract target"
-    required: true
   - id: target-path
     description: "Path to the target directory for all git operations"
-    required: true
 
 protocol:
   load-workflow[2]:
@@ -44,7 +41,7 @@ protocol:
     - "When a worker yields a checkpoint, or if there are blocking checkpoints pending, yield ONE checkpoint_pending up to your parent orchestrator."
     - "Format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing ONLY the checkpoint_handle."
     - "Wait for the parent to resolve the checkpoint and resume you."
-    - "When resumed by the parent, call respond_checkpoint using the checkpoint_handle to unblock the token and retrieve the updated variables, then resume the worker with the effects."
+    - "When resumed by the parent, it will provide the updated variables (effects) that resulted from resolving the checkpoint. You MUST update your internal state with these variables and then resume the worker, passing these effects down."
   commit-artifacts[3]:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
@@ -65,7 +62,7 @@ protocol:
 rules:
   no-auto-resolution: "NEVER auto-resolve blocking checkpoints. Even if the answer seems obvious, you MUST yield the checkpoint to the parent orchestrator so it can be presented to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
   no-direct-interaction: "MUST NOT attempt to directly ask the user. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator."
-  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): Yield blocking checkpoints up to the parent containing the checkpoint_handle. Wait for the parent to resume you. Then call respond_checkpoint. For non-blocking checkpoints, use auto_advance."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): Yield blocking checkpoints up to the parent containing the checkpoint_handle. Wait for the parent to resolve it and resume you with the effects. You MUST NOT call respond_checkpoint yourself. For non-blocking checkpoints, use auto_advance."
   reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result."
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via the parent orchestrator. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
@@ -98,8 +95,8 @@ tools:
     when: "Bootstrapping or resuming"
   get_resource:
     when: "After get_skills"
-  respond_checkpoint:
-    when: "After the parent orchestrator resumes you with the user's decision, use this to record the decision and unblock the token"
+  start_session:
+    when: "Bootstrapping or resuming"
 
 
 errors:
