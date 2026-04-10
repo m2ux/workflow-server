@@ -6,46 +6,46 @@
 
 No session token required.
 
-| Tool | Parameters | Description | Returns |
-|------|------------|-------------|---------|
-| `discover` | - | Entry point. Returns server name, version, and the bootstrap procedure. Use list_workflows to list workflows. | Server info and `discovery` instructions |
-| `list_workflows` | - | List all available workflow definitions with full metadata | Array of workflow definitions |
-| `health_check` | - | Server health, version, workflow count, and uptime | Server status and stats |
+| Tool | Parameters | Returns | Description |
+|------|------------|---------|-------------|
+| `discover` | - | Server info and `discovery` instructions | Entry point. Returns server name, version, and the bootstrap procedure. Use list_workflows to list workflows. |
+| `list_workflows` | - | Array of workflow definitions | List all available workflow definitions with full metadata |
+| `health_check` | - | Server status and stats | Server health, version, workflow count, and uptime |
 
 ### Session Tools
 
-| Tool | Parameters | Description | Returns |
-|------|------------|-------------|---------|
-| `start_session` | `workflow_id`, `agent_id`, `session_token?` | Start a new session or inherit an existing one. For fresh sessions, provide `workflow_id` and `agent_id`. For worker dispatch or resume, also provide `session_token` — the returned token inherits all state (`sid`, `act`, `pcp`, `pcpt`, `cond`, `v`) with `agent_id` stamped into the signed `aid` field. `workflow_id` is validated against the token's workflow. | `session_token`, workflow info, and `inherited` flag (if resuming) |
-| `dispatch_workflow` | `workflow_id`, `parent_session_token`, `variables?` | Create a client session for a target workflow and return a dispatch package for a sub-agent. The client session is independent and does NOT inherit state from the parent session. | `client_session_token`, `client_session_id`, `parent_session_id`, workflow metadata, `initial_activity`, and a pre-composed `worker_prompt` |
-| `get_workflow_status` | `client_session_token?`, `client_session_id?`, `parent_session_token?` | Check the status of a dispatched client workflow session. Requires either `client_session_token`, or `client_session_id` + `parent_session_token` for authorization. | `status` (active/blocked/completed), `current_activity`, `completed_activities`, `last_checkpoint` info, and variables |
+| Tool | Parameters | Returns | Description |
+|------|------------|---------|-------------|
+| `start_session` | `workflow_id`, `agent_id`, `session_token?` | `session_token`, workflow info, and `inherited` flag (if resuming) | Start a new session or inherit an existing one. For fresh sessions, provide `workflow_id` and `agent_id`. For worker dispatch or resume, also provide `session_token` — the returned token inherits all state (`sid`, `act`, `pcp`, `pcpt`, `cond`, `v`) with `agent_id` stamped into the signed `aid` field. `workflow_id` is validated against the token's workflow. |
+| `dispatch_workflow` | `workflow_id`, `parent_session_token`, `variables?` | `client_session_token`, `client_session_id`, `parent_session_id`, workflow metadata, `initial_activity`, and a pre-composed `worker_prompt` | Create a client session for a target workflow and return a dispatch package for a sub-agent. The client session is independent and does NOT inherit state from the parent session. |
+| `get_workflow_status` | `client_session_token?`, `client_session_id?`, `parent_session_token?` | `status` (active/blocked/completed), `current_activity`, `completed_activities`, `last_checkpoint` info, and variables | Check the status of a dispatched client workflow session. Requires either `client_session_token`, or `client_session_id` + `parent_session_token` for authorization. |
 
 ### Workflow Tools
 
 All require `session_token`. The workflow is determined from the session token (set at `start_session`). Each response includes an updated token and validation result in `_meta`.
 
-| Tool | Parameters | Description | Returns |
-|------|------------|-------------|---------|
-| `get_workflow` | `session_token`, `summary?` | Load the workflow definition for the current session. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition | Complete workflow definition or summary metadata |
-| `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Load and transition to an activity. **Embeds required checkpoint IDs in the token — hard-rejects transition to a different activity until all are resolved via `respond_checkpoint`** | Complete activity definition and trace token in `_meta` |
-| `get_checkpoint` | `session_token`, `activity_id`, `checkpoint_id` | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation | Full checkpoint definition |
-| `respond_checkpoint` | `session_token`, `checkpoint_id`, `option_id?`, `auto_advance?`, `condition_not_met?` | Resolve a pending checkpoint. Exactly one of: `option_id` (user's selection), `auto_advance` (use `defaultOption` after `autoAdvanceMs` elapses, non-blocking only), or `condition_not_met` (dismiss conditional checkpoint). | Resolution status, remaining `pcp`, and any defined `effect` |
+| Tool | Parameters | Returns | Description |
+|------|------------|---------|-------------|
+| `get_workflow` | `session_token`, `summary?` | Complete workflow definition or summary metadata | Load the workflow definition for the current session. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
+| `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Complete activity definition and trace token in `_meta` | Load and transition to an activity. **Embeds required checkpoint IDs in the token — hard-rejects transition to a different activity until all are resolved via `respond_checkpoint`** |
+| `get_checkpoint` | `session_token`, `activity_id`, `checkpoint_id` | Full checkpoint definition | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation |
+| `respond_checkpoint` | `session_token`, `checkpoint_id`, `option_id?`, `auto_advance?`, `condition_not_met?` | Resolution status, remaining `pcp`, and any defined `effect` | Resolve a pending checkpoint. Exactly one of: `option_id` (user's selection), `auto_advance` (use `defaultOption` after `autoAdvanceMs` elapses, non-blocking only), or `condition_not_met` (dismiss conditional checkpoint). |
 
 ### Skill Tools
 
 All require `session_token`. The workflow is determined from the session token.
 
-| Tool | Parameters | Description | Returns |
-|------|------------|-------------|---------|
-| `get_skills` | `session_token` | Load all workflow-level skills (behavioral protocols). | Map of skill objects with lightweight `_resources` references |
-| `get_skill` | `session_token`, `step_id` | Load the skill for a specific step within the current activity. Requires `next_activity` to have been called first | Skill definition object |
-| `get_resource` | `session_token`, `resource_index` | Load a resource's full content by index. Bare indices resolve within the session workflow; prefixed refs (e.g., `meta/04`) resolve from the named workflow | Resource content, id, and version |
+| Tool | Parameters | Returns | Description |
+|------|------------|---------|-------------|
+| `get_skills` | `session_token` | Map of skill objects with lightweight `_resources` references | Load all workflow-level skills (behavioral protocols). |
+| `get_skill` | `session_token`, `step_id` | Skill definition object | Load the skill for a specific step within the current activity. Requires `next_activity` to have been called first |
+| `get_resource` | `session_token`, `resource_index` | Resource content, id, and version | Load a resource's full content by index. Bare indices resolve within the session workflow; prefixed refs (e.g., `meta/04`) resolve from the named workflow |
 
 ### Trace Tools
 
-| Tool | Parameters | Description | Returns |
-|------|------------|-------------|---------|
-| `get_trace` | `session_token`, `trace_tokens?` | Resolve accumulated trace tokens into full event data. Without tokens, returns the in-memory trace for the current session | Trace source, event count, and array of events |
+| Tool | Parameters | Returns | Description |
+|------|------------|---------|-------------|
+| `get_trace` | `session_token`, `trace_tokens?` | Trace source, event count, and array of events | Resolve accumulated trace tokens into full event data. Without tokens, returns the in-memory trace for the current session |
 
 
 ## Session Token
