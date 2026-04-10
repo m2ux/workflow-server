@@ -7,9 +7,9 @@ recognition[2]:
   - scan submodule workflows
   - run detection patterns
 skills:
-  primary: execute-sub-agent
-  supporting[1]:
-    - scan-injection-patterns
+  primary: 11-activity-worker
+  supporting:
+    - execute-sub-agent
 required: false
 estimatedTime: 10-20m
 rules[8]:

@@ -8,9 +8,9 @@ recognition[3]:
   - run detection
   - primary scan
 skills:
-  primary: execute-cicd-audit
-  supporting[1]:
-    - dispatch-scanners
+  primary: 11-activity-worker
+  supporting:
+    - execute-cicd-audit
 required: true
 estimatedTime: 20-40m
 rules[8]:

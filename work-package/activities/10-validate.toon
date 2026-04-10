@@ -9,6 +9,8 @@ recognition[3]:
   - verify build
 required: true
 estimatedTime: 15-30m
+skills:
+  primary: 11-activity-worker
 steps[8]:
   - id: run-tests
     name: Run all tests

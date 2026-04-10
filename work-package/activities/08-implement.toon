@@ -9,6 +9,8 @@ recognition[3]:
   - execute plan
 required: true
 estimatedTime: 1-4h
+skills:
+  primary: 11-activity-worker
 rules[1]:
   - "SYMBOL VERIFICATION: Every symbol introduced or referenced in code or documentation MUST have provenance — exists in codebase, in a declared dependency, or is newly created by the current task. Never fabricate symbols."
 artifacts[1]:

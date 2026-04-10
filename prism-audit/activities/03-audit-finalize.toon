@@ -4,7 +4,9 @@ name: Audit Report Finalization
 description: "Post-process the REPORT.md produced by the triggered prism workflow(s) into audit-specific deliverables. Splits the report into a summary document (AUDIT-REPORT.md) and a detailed findings document (DETAILED-FINDINGS.md), generates a design trade-off analysis (DESIGN-TRADE-OFFS.md) from conservation laws and meta-laws in the raw synthesis artifacts, and applies audit-specific formatting rules."
 problem: "The prism workflow produces a single clean REPORT.md with definitive findings. Security audits require three deliverables: a summary report with hyperlinked domain tables, a detailed findings document with expanded write-ups for every finding organised by severity, and a design trade-off analysis distilled from the conservation laws surfaced during the prism passes."
 skills:
-  primary: compose-audit-prompt
+  primary: 11-activity-worker
+  supporting:
+    - compose-audit-prompt
 steps[7]:
   - id: locate-artifacts
     name: Locate Analysis Artifacts

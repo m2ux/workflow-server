@@ -12,9 +12,10 @@ recognition:
   - start the target workflow
   - begin the client workflow
 skills:
-  primary: meta-orchestrator
+  primary: 11-activity-worker
   supporting:
-    - state-management
+    - state
+    - meta-orchestrator
 steps:
   - id: resolve-target
     name: Resolve target workflow

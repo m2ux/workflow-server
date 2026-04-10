@@ -13,10 +13,14 @@ rules[5]:
   - "Ask, don't assume - Clarify scope and priorities before planning"
   - User controls priorities - Never assume priority order without confirmation
   - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
+skills:
+  primary: 12-workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
     description: "Planning folder for initiative documentation and work package plans"
+skills:
+  primary: 12-workflow-orchestrator
 variables[20]:
   - name: initiative_name
     type: string

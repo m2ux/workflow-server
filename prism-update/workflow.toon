@@ -8,6 +8,8 @@ tags[3]:
   - maintenance
   - sync
 
+skills:
+  primary: 12-workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
@@ -24,6 +26,8 @@ rules[6]:
   - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
   - "AUTOMATIC TRANSITIONS: Transitions between activities are automatic. User interaction occurs only at defined checkpoints within activities."
 
+skills:
+  primary: 12-workflow-orchestrator
 variables[10]:
   - name: planning_folder_path
     type: string

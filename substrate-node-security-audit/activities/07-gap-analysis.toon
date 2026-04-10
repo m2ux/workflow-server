@@ -8,10 +8,9 @@ recognition[3]:
   - gap analysis
   - benchmark against professional report
 skills:
-  primary: execute-audit
-  supporting[2]:
-    - compare-finding-sets
-    - write-gap-analysis
+  primary: 11-activity-worker
+  supporting:
+    - execute-audit
 required: false
 estimatedTime: 30-60m
 rules[5]:

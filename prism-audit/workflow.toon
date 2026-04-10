@@ -16,6 +16,8 @@ rules[6]:
   - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
 
+skills:
+  primary: 12-workflow-orchestrator
 variables[16]:
   - name: audit_description
     type: string
@@ -72,6 +74,8 @@ variables[16]:
     description: "Whether the user confirmed the audit scope at the confirm-scope checkpoint"
     defaultValue: false
 
+skills:
+  primary: 12-workflow-orchestrator
 artifactLocations:
   audit:
     path: "{output_path}"

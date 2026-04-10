@@ -8,9 +8,9 @@ recognition[3]:
   - reconnaissance
   - map triggers
 skills:
-  primary: execute-cicd-audit
-  supporting[1]:
-    - inventory-workflows
+  primary: 11-activity-worker
+  supporting:
+    - execute-cicd-audit
 required: true
 estimatedTime: 10-20m
 rules[5]:

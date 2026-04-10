@@ -8,10 +8,9 @@ recognition[3]:
   - consolidate findings
   - finalize report
 skills:
-  primary: execute-cicd-audit
-  supporting[2]:
-    - score-cicd-severity
-    - write-cicd-report
+  primary: 11-activity-worker
+  supporting:
+    - execute-cicd-audit
 required: true
 estimatedTime: 15-30m
 rules[5]:

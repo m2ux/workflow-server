@@ -27,6 +27,8 @@ artifacts[4]:
     name: "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md"
     location: reviews
     description: "PR review analysis document"
+skills:
+  primary: 11-activity-worker
 steps[9]:
   - id: create-adr
     name: Create Architecture Decision Record

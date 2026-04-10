@@ -8,9 +8,9 @@ recognition[3]:
   - second model audit
   - multi-model merge
 skills:
-  primary: execute-audit
-  supporting[1]:
-    - score-severity
+  primary: 11-activity-worker
+  supporting:
+    - execute-audit
 required: false
 estimatedTime: 60-90m
 rules[9]:

@@ -9,7 +9,9 @@ recognition[4]:
   - run security review
   - security audit setup
 skills:
-  primary: execute-audit
+  primary: 11-activity-worker
+  supporting:
+    - execute-audit
 required: true
 estimatedTime: 5-15m
 rules[5]:

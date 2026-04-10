@@ -7,6 +7,8 @@ tags[3]:
   - meta
   - bootstrap
   - workflow-management
+skills:
+  primary: 10-meta-orchestrator
 variables[14]:
   - name: is_monorepo
     type: boolean

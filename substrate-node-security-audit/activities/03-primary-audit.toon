@@ -8,7 +8,9 @@ recognition[3]:
   - dispatch audit agents
   - execute audit template
 skills:
-  primary: execute-audit
+  primary: 11-activity-worker
+  supporting:
+    - execute-audit
 required: true
 estimatedTime: 60-120m
 rules[28]:

@@ -11,7 +11,9 @@ recognition[6]:
   - update workflow
   - modify workflow
 skills:
-  primary: workflow-design
+  primary: 11-activity-worker
+  supporting:
+    - workflow-design
 required: true
 estimatedTime: 5-10m
 rules[2]:

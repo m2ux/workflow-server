@@ -9,6 +9,8 @@ recognition[3]:
   - implementation analysis
 required: false
 estimatedTime: 10-20m
+skills:
+  primary: 11-activity-worker
 steps[12]:
   - id: checkout-baseline
     name: Checkout Baseline State

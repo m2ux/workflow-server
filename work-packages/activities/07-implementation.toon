@@ -4,9 +4,9 @@ name: Implementation
 description: Execute each planned work package in priority order by triggering the work-package workflow
 problem: Planned work packages need to be implemented one at a time according to the roadmap
 skills:
-  primary: orchestrate-package-execution
-  supporting[1]:
-    - workflow-execution
+  primary: 11-activity-worker
+  supporting:
+    - orchestrate-package-execution
 triggers[1]:
   - workflow: work-package
     description: "Each iteration starts the work-package workflow for one planned package"

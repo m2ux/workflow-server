@@ -8,10 +8,9 @@ recognition[3]:
   - map architecture
   - build function registry
 skills:
-  primary: map-codebase
-  supporting[2]:
-    - build-function-registry
-    - extract-invariants
+  primary: 11-activity-worker
+  supporting:
+    - map-codebase
 required: false
 estimatedTime: 10-20m
 

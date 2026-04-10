@@ -8,7 +8,9 @@ recognition[3]:
   - output verification
   - check completeness
 skills:
-  primary: verify-sub-agent-output
+  primary: 11-activity-worker
+  supporting:
+    - verify-sub-agent-output
 required: false
 estimatedTime: 10-20m
 

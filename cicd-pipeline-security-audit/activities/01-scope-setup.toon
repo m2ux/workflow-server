@@ -9,9 +9,9 @@ recognition[4]:
   - scan github actions
   - cicd security audit
 skills:
-  primary: execute-cicd-audit
-  supporting[1]:
-    - inventory-workflows
+  primary: 11-activity-worker
+  supporting:
+    - execute-cicd-audit
 required: true
 estimatedTime: 5-10m
 rules[4]:

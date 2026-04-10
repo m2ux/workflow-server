@@ -4,7 +4,9 @@ name: Import Resources
 description: "Apply all approved resource file changes: sync modified, apply renames, import new, remove deleted. Each change type is committed separately."
 problem: Resource files need to be created, updated, renamed, or removed to match upstream
 skills:
-  primary: sync-resources
+  primary: 11-activity-worker
+  supporting:
+    - sync-resources
 
 entryActions[1]:
   - action: validate

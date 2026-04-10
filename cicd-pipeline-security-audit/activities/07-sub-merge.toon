@@ -7,9 +7,9 @@ recognition[2]:
   - merge findings
   - consolidate scan results
 skills:
-  primary: execute-sub-agent
-  supporting[1]:
-    - merge-scan-findings
+  primary: 11-activity-worker
+  supporting:
+    - execute-sub-agent
 required: false
 estimatedTime: 5-15m
 rules[6]:

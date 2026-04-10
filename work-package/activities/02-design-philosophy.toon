@@ -10,6 +10,8 @@ recognition[4]:
   - determine approach
 required: true
 estimatedTime: 10-20m
+skills:
+  primary: 11-activity-worker
 rules[4]:
   - "Design philosophy determines the path through the workflow"
   - "Simple bug fixes with clear scope may skip elicitation and research"

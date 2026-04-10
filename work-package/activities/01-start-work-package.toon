@@ -12,6 +12,8 @@ recognition[6]:
   - create github issue
 required: true
 estimatedTime: 10-20m
+skills:
+  primary: 11-activity-worker
 rules[1]:
   - "PREREQUISITE: Before calling ANY Jira tool (getJiraIssue, searchJiraIssuesUsingJql, etc.), the agent MUST first call getAccessibleAtlassianResources to obtain the cloudId. Load the atlassian-operations supporting skill for the full protocol."
 entryActions[1]:

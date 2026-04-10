@@ -5,6 +5,8 @@ description: "Initialize a high-sensitivity security fix. Configures private rem
 problem: User needs to remediate a security vulnerability without public disclosure
 required: true
 estimatedTime: 10-15m
+skills:
+  primary: 11-activity-worker
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR or Issue creation tools (gh pr create, gh issue create)."
   - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
