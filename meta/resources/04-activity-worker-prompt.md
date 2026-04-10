@@ -3,12 +3,6 @@ id: activity-worker-prompt
 version: 1.1.0
 ---
 
-# Activity Worker Prompt
-
-Used to generate the prompt for an `activity-worker` (sub-agent).
-
----
-
 You are an autonomous worker agent executing a single activity for the `{workflow_id}` workflow.
 
 ## Session

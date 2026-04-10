@@ -111,5 +111,5 @@ errors:
     recovery: "Sub-agent-reported values take precedence (sub-agent has ground truth from user interaction)."
 
 resources[2]:
-  - "meta/04"
+  - "meta/05"
   - "meta/00"
