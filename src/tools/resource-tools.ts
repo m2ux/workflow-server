@@ -169,7 +169,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!wfResult.success) throw wfResult.error;
 
       const workflow = wfResult.value;
-      const skillIds = workflow.skills ?? [];
+      const skillIds = workflow.skills ? [workflow.skills.primary] : [];
 
       const skills: Record<string, unknown> = {};
       const failedSkills: string[] = [];
@@ -203,36 +203,42 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skill',
-    'Load a skill within the current activity. Resolves the skill reference from the activity definition using the current activity tracked in the session token. If step_id is provided, it loads the skill explicitly assigned to that step. If step_id is omitted, it loads the primary skill for the entire activity. Requires next_activity to have been called first. Returns the skill definition with resource references in _resources.',
+    'Load a skill within the current workflow or activity. If called before next_activity (no current activity in session), it loads the primary skill for the workflow. If called during an activity, it resolves the skill reference from the activity definition. If step_id is provided, it loads the skill explicitly assigned to that step. If step_id is omitted during an activity, it loads the primary skill for the entire activity. Returns the skill definition with resource references in _resources.',
     {
       ...sessionTokenParam,
-      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary skill for the activity.'),
+      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary skill for the activity, or the workflow primary skill if no activity is active.'),
     },
     withAuditLog('get_skill', async ({ session_token, step_id }) => {
       const token = await decodeSessionToken(session_token);
       const workflow_id = token.wf;
 
-      if (!token.act) {
-        throw new Error('No current activity in session. Call next_activity before get_skill.');
-      }
       assertCheckpointsResolved(token);
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
-      const activity = getActivity(wfResult.value, token.act);
-      if (!activity) {
-        throw new Error(`Activity '${token.act}' not found in workflow '${workflow_id}'.`);
-      }
-
       let skillId: string | undefined;
 
-      if (!step_id) {
-        skillId = activity.skills?.primary;
+      if (!token.act) {
+        if (step_id) {
+          throw new Error('Cannot provide step_id when no activity is active. Call next_activity first.');
+        }
+        skillId = wfResult.value.skills?.primary;
         if (!skillId) {
-          throw new Error(`Activity '${token.act}' does not define a primary skill.`);
+          throw new Error(`Workflow '${workflow_id}' does not define a primary skill.`);
         }
       } else {
+        const activity = getActivity(wfResult.value, token.act);
+        if (!activity) {
+          throw new Error(`Activity '${token.act}' not found in workflow '${workflow_id}'.`);
+        }
+
+        if (!step_id) {
+          skillId = activity.skills?.primary;
+          if (!skillId) {
+            throw new Error(`Activity '${token.act}' does not define a primary skill.`);
+          }
+        } else {
         const step = activity.steps?.find(s => s.id === step_id);
         if (step) {
           skillId = step.skill;
@@ -257,6 +263,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         if (!skillId) {
           throw new Error(`Step '${step_id}' in activity '${token.act}' has no associated skill.`);
         }
+      }
       }
 
       const result = await readSkill(skillId, config.workflowDir, workflow_id);

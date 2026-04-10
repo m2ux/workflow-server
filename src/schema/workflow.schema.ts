@@ -38,6 +38,11 @@ export const ModeSchema = z.object({
 });
 export type Mode = z.infer<typeof ModeSchema>;
 
+export const WorkflowSkillsSchema = z.object({
+  primary: z.string().describe('Primary skill ID for this workflow'),
+});
+export type WorkflowSkillsReference = z.infer<typeof WorkflowSkillsSchema>;
+
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
   id: z.string().describe('Unique workflow identifier'),
@@ -50,7 +55,7 @@ export const WorkflowSchema = z.object({
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
   modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
   artifactLocations: z.record(ArtifactLocationValueSchema).optional().describe('Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions.'),
-  skills: z.array(z.string()).optional().describe('Workflow-level skill IDs. Returned by get_skills when called without activity_id.'),
+  skills: WorkflowSkillsSchema.optional().describe('Workflow-level skill IDs. Returned by get_skills when called without activity_id.'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual TOON files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.

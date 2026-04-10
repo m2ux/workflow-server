@@ -368,12 +368,34 @@ describe('mcp-server integration', () => {
       expect(Array.isArray(response.skill._resources)).toBe(true);
     });
 
-    it('should error when no activity in session token', async () => {
+    it('should error when step_id is provided but no activity in session token', async () => {
       const result = await client.callTool({
         name: 'get_skill',
         arguments: { session_token: sessionToken, step_id: 'create-issue' },
       });
       expect(result.isError).toBe(true);
+    });
+
+    it('should return workflow primary skill when no activity in session token', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: sessionToken },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.skill.id).toBe('workflow-orchestrator');
+    });
+
+    it('should return workflow primary skill even when no activity in session token', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.scope).toBe('workflow');
+      const skillIds = Object.keys(response.skills);
+      expect(skillIds).toContain('workflow-orchestrator');
     });
 
     it('should error when step_id not found in activity', async () => {
@@ -558,8 +580,8 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('meta-orchestrator');
-      expect(skillIds).toContain('activity-worker');
+      expect(skillIds).toContain('workflow-orchestrator');
+      expect(skillIds).not.toContain('meta-orchestrator');
       expect(skillIds).not.toContain('create-issue');
       expect(skillIds).not.toContain('knowledge-base-search');
     });
@@ -579,7 +601,6 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('meta-orchestrator');
       expect(skillIds).not.toContain('create-issue');
     });
 
@@ -635,11 +656,11 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const orchestrate = response.skills['meta-orchestrator'];
+      const orchestrate = response.skills['workflow-orchestrator'];
       expect(orchestrate).toBeDefined();
-      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/10');
+      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/05');
       expect(crossWfRef).toBeDefined();
-      expect(crossWfRef.id).toBe('workflow-orchestrator-prompt');
+      expect(crossWfRef.id).toBe('activity-worker-prompt');
       expect(crossWfRef.content).toBeUndefined();
     });
 

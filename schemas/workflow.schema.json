@@ -5,6 +5,17 @@
   "description": "Workflow definition schema - orchestrates activities",
   "$ref": "#/definitions/workflow",
   "definitions": {
+    "skills": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string",
+          "description": "Primary skill ID for this workflow"
+        }
+      },
+      "required": ["primary"],
+      "additionalProperties": false
+    },
     "variable": {
       "type": "object",
       "properties": {
@@ -169,11 +180,8 @@
           }
         },
         "skills": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Workflow-level skill IDs. Returned by get_skills when called without activity_id."
+          "$ref": "#/definitions/skills",
+          "description": "Workflow-level skill references. Returned by get_skills when called without activity_id."
         },
         "initialActivity": {
           "type": "string",
