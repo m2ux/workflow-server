@@ -21,10 +21,10 @@ Hierarchical dispatch allows a "meta orchestrator" workflow to dispatch and mana
 
 | Construct | Role |
 | :--- | :--- |
-| `dispatch_workflow` | Tool to start a sub-workflow. Takes `workflow_id` and `parent_session_token`. Returns a new `client_session_token`, IDs, and a `worker_prompt`. |
+| `dispatch_workflow` | Tool to start a sub-workflow. Takes `workflow_id` and `parent_session_token`. Returns a new `client_session_token`, IDs, and a `client_prompt`. |
 | `get_workflow_status` | Tool to poll a sub-workflow. Takes `client_session_token` (or ID + parent token). Returns `status` (active/blocked), `current_activity`, and trace-derived `completed_activities`. |
 | Parent Session Token | Used for trace correlation during dispatch. The child token is completely separate. |
-| Client Session Token | The new token generated for the sub-workflow. Passed to the sub-agent via the generated `worker_prompt`. |
+| Client Session Token | The new token generated for the sub-workflow. Passed to the sub-agent via the generated `client_prompt`. |
 
 ## Design Rationale
 
@@ -42,7 +42,7 @@ Hierarchical dispatch allows a "meta orchestrator" workflow to dispatch and mana
 | :--- | :--- | :--- |
 | Meta Orchestrator | Agent calling `dispatch_workflow` | The parent workflow managing sub-workflows. |
 | Client Workflow | The workflow specified in `workflow_id` | The sub-workflow being dispatched. |
-| Sub-Agent | The agent receiving the `worker_prompt` | The agent executing the client workflow. |
+| Sub-Agent | The agent receiving the `client_prompt` | The agent executing the client workflow. |
 | Worker Prompt | Template `meta/10` populated with vars | Instructions for the sub-agent to bootstrap itself. |
 
 ## Open Questions
