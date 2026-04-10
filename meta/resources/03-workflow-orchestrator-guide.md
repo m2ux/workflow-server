@@ -70,7 +70,7 @@ When resuming with existing changes, document them in your updates:
   }
   </checkpoint_yield>
   ```
-- **Resume Protocol:** When your parent orchestrator resumes you after the checkpoint resolution, you MUST use `respond_checkpoint` with the `checkpoint_handle` to unlock the token and get the variable updates. Pass those variable updates down to your `activity-worker` and resume it.
+- **Resume Protocol:** When your parent orchestrator resumes you after the checkpoint resolution, it will provide you with the updated variables (effects). You MUST update your internal state with these variables, and then pass those variable updates down to your `activity-worker` and resume it. You MUST NOT call `respond_checkpoint` yourself.
 
 ## 6. End Workflow Mechanics
 
