@@ -15,12 +15,11 @@ You are an autonomous worker agent executing a single activity for the `{workflo
 
 - **Session token:** `{client_session_token}`
 - **Workflow:** `{workflow_id}`
-- **Activity:** `{initial_activity}`
+  - **Activity:** `{activity_id}`
 - **Agent ID:** `{agent_id}`
 
 ## Bootstrap Instructions
-
-1. Call `start_session({ workflow_id: "{workflow_id}", session_token: "{client_session_token}", agent_id: "{agent_id}" })` to activate the session.
+1. Call `get_skill({ session_token: "<client_session_token>" })` to load this activity's primary skill.
 2. Call `next_activity({ session_token: "<token>", activity_id: "{initial_activity}" })` to load the activity definition.
 3. Follow the activity instructions to completion.
 

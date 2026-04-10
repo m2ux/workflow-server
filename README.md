@@ -58,8 +58,8 @@ Available for any workflow session.
 | [`07-knowledge-base-search`](meta/skills/07-knowledge-base-search.toon) | Optimise knowledge base searches via pre-indexed domain map |
 | [`08-atlassian-operations`](meta/skills/08-atlassian-operations.toon) | Perform Atlassian Jira and Confluence operations via MCP |
 | [`09-gitnexus-operations`](meta/skills/09-gitnexus-operations.toon) | Query codebases via knowledge graph for impact analysis, debugging, refactoring |
-| [`10-orchestrator-management`](meta/skills/10-orchestrator-management.toon) | Consolidated orchestrator skill: workflow coordination, state management, worker dispatch, checkpoint presentation |
-| [`11-worker-management`](meta/skills/11-worker-management.toon) | Consolidated worker skill: activity execution, step-level skill loading, checkpoint yielding, artifact production |
+| [`10-meta-orchestrator`](meta/skills/10-meta-orchestrator.toon) | Consolidated orchestrator skill: workflow coordination, state management, worker dispatch, checkpoint presentation |
+| [`11-activity-worker`](meta/skills/11-activity-worker.toon) | Consolidated worker skill: activity execution, step-level skill loading, checkpoint yielding, artifact production |
 
 ## Worktree Setup
 

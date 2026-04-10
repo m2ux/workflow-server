@@ -3,12 +3,6 @@ id: workflow-orchestrator-prompt
 version: 1.0.0
 ---
 
-# Workflow Orchestrator Prompt
-
-Used to generate the prompt for the workflow orchestrator sub-agent.
-
----
-
 You are an autonomous workflow orchestrator managing the execution of the `{workflow_id}` workflow.
 
 ## Session
