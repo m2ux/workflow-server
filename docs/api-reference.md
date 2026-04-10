@@ -27,9 +27,11 @@ All require `session_token`. The workflow is determined from the session token (
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
 | `get_workflow` | `session_token`, `summary?` | Complete workflow definition or summary metadata | Load the workflow definition for the current session. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
-| `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Complete activity definition and trace token in `_meta` | Load and transition to an activity. **Embeds required checkpoint IDs in the token — hard-rejects transition to a different activity until all are resolved via `respond_checkpoint`** |
-| `get_checkpoint` | `session_token`, `checkpoint_id` | Full checkpoint definition | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation from the current activity |
-| `respond_checkpoint` | `session_token`, `checkpoint_id`, `option_id?`, `auto_advance?`, `condition_not_met?` | Resolution status, remaining `pcp`, and any defined `effect` | Resolve a pending checkpoint. Exactly one of: `option_id` (user's selection), `auto_advance` (use `defaultOption` after `autoAdvanceMs` elapses, non-blocking only), or `condition_not_met` (dismiss conditional checkpoint). |
+| `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Complete activity definition and trace token in `_meta` | Load and transition to an activity. Also advances the session token to track the current activity. |
+| `yield_checkpoint` | `session_token`, `checkpoint_id` | Status, `checkpoint_handle`, and instructions | Yield execution to the orchestrator at a checkpoint step. Returns a `checkpoint_handle` that the worker must yield to the orchestrator via a `<checkpoint_yield>` block. |
+| `resume_checkpoint` | `session_token` | Status and instructions | Resume execution after the orchestrator resolves a checkpoint. Validates the checkpoint was resolved and advances the token sequence. |
+| `present_checkpoint` | `checkpoint_handle` | Full checkpoint definition | Used by the orchestrator. Load full checkpoint details (message, options with effects, blocking/auto-advance config) from a worker's yielded `checkpoint_handle` for presentation to the user. |
+| `respond_checkpoint` | `checkpoint_handle`, `option_id?`, `auto_advance?`, `condition_not_met?` | Resolution status and any defined `effect` | Used by the orchestrator. Resolve a yielded checkpoint. Exactly one of: `option_id` (user's selection), `auto_advance` (use `defaultOption` after `autoAdvanceMs` elapses, non-blocking only), or `condition_not_met` (dismiss conditional checkpoint). Unblocks the worker's token. |
 
 ### Skill Tools
 
@@ -52,7 +54,7 @@ All require `session_token`. The workflow is determined from the session token.
 
 The session token is an opaque string returned by `start_session`. It captures the context of each call (workflow, activity, skill) so the server can validate subsequent calls for consistency.
 
-The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), `aid` (agent ID — set via `start_session`'s `agent_id` parameter), `pcp` (pending checkpoint IDs), and `pcpt` (checkpoint issuance timestamp). When `start_session` is called with an existing `session_token`, all fields are inherited (including `sid`, `pcp`, `act`) and `aid` is stamped with the new agent identity.
+The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), `aid` (agent ID — set via `start_session`'s `agent_id` parameter), and `bcp` (active blocking checkpoint ID, if any). When `start_session` is called with an existing `session_token`, all fields are inherited (including `sid`, `act`) and `aid` is stamped with the new agent identity.
 
 ### Lifecycle
 
@@ -63,7 +65,7 @@ The token payload carries: `wf` (workflow ID), `act` (current activity), `skill`
 5. Call `get_workflow(summary=true)` to get the activity list and `initialActivity`
 6. Call `next_activity(initialActivity)` to load the first activity
 7. For each step with a `skill` property, call `get_skill(step_id)` then `get_resource` for each `_resources` entry. Do NOT call `get_skill` for steps without a skill.
-8. Call `respond_checkpoint` for each required checkpoint before transitioning
+8. When encountering a checkpoint step, call `yield_checkpoint`, yield to the orchestrator, and wait to be resumed via `resume_checkpoint`.
 9. Read `transitions` from the activity response; call `next_activity` with a `step_manifest` to advance
 10. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
 
@@ -95,12 +97,12 @@ Warnings do not block execution — the tool still returns its result. They enab
 
 ### Checkpoint Enforcement
 
-When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the token's `pcp` field. **Calling `next_activity` for a different activity while `pcp` is non-empty produces a hard error** (not a warning).
+When a worker encounters a checkpoint step during activity execution, it calls `yield_checkpoint`. This sets the `bcp` (blocking checkpoint) field in the token and returns a `checkpoint_handle`. **Calling `next_activity` while `bcp` is set produces a hard error** (not a warning).
 
-To clear the gate, call `respond_checkpoint` for each pending checkpoint:
+The worker yields the `checkpoint_handle` to the orchestrator. To clear the gate, the orchestrator calls `respond_checkpoint` using the handle:
 
 ```json
-{ "session_token": "...", "checkpoint_id": "confirm-implementation", "option_id": "proceed" }
+{ "checkpoint_handle": "...", "option_id": "proceed" }
 ```
 
 Three resolution modes:
@@ -109,7 +111,7 @@ Three resolution modes:
 - **`auto_advance: true`** — use the checkpoint's `defaultOption`. Only valid for non-blocking checkpoints (`blocking: false`). The server enforces the full `autoAdvanceMs` timer.
 - **`condition_not_met: true`** — dismiss a conditional checkpoint whose condition evaluated to false. Only valid when the checkpoint has a `condition` field.
 
-The response includes any effects from the selected option (`setVariable`, `transitionTo`, `skipActivities`), the remaining pending checkpoints, and an updated token.
+The response includes any effects from the selected option (`setVariable`, `transitionTo`, `skipActivities`). The orchestrator relays these updates back to the worker, which then calls `resume_checkpoint` to proceed.
 
 ### Step Completion Manifest
 

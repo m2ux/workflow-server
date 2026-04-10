@@ -49,15 +49,11 @@ describe('get_workflow_status: token-based status extraction', () => {
     const clientToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', parent.sid);
     const advancedClient = await advanceToken(clientToken, {
       act: 'assess-vuln',
-      pcp: ['cp-1'],
-      pcpt: 1,
+      bcp: 'cp-1',
     });
     const client = await decodeSessionToken(advancedClient);
 
-    expect(client.pcp).toEqual(['cp-1']);
-    expect(client.pcpt).toBe(1);
-    // Blocked = pending checkpoints exist
-    expect(client.pcp.length).toBeGreaterThan(0);
+    expect(client.bcp).toEqual('cp-1');
   });
 
   it('detects active status when no checkpoints pending', async () => {
@@ -68,8 +64,7 @@ describe('get_workflow_status: token-based status extraction', () => {
     const advancedClient = await advanceToken(clientToken, { act: 'assess-vuln' });
     const client = await decodeSessionToken(advancedClient);
 
-    expect(client.pcp).toEqual([]);
-    expect(client.pcp.length).toBe(0);
+    expect(client.bcp).toBeUndefined();
   });
 });
 
