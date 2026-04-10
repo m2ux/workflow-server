@@ -4,7 +4,7 @@ name: Apply Accepted Mitigations
 description: "Apply the accepted mitigations from the resolution dialogue to the target document. Reads the MITIGATION-PLAN.md, applies changes in priority order, and verifies each change was applied correctly."
 problem: "The mitigation plan contains accepted changes ranging from single-word corrections to multi-paragraph additions. These must be applied precisely to the target without introducing errors, in the correct priority order, with verification after each change."
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - resolve-findings
 steps[5]:

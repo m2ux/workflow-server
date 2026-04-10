@@ -36,7 +36,7 @@ rules[26]:
   - "FINDING COUNT RECONCILIATION: M produces a reconciliation table where Unaccounted MUST equal zero for every agent. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
   - "OBSERVATION ELEVATION: M reviews all agent reconnaissance_leads and additional_observations, PLUS S agent emergent_domains from s-architectural-analysis.json and R agent leads from r-reconnaissance-data.json. Emergent domains are architectural vulnerability hypotheses — each MUST be dispositioned as captured, elevated, or not-applicable. Security-relevant observations (divergent code paths, missing validation, error-path persistence, silent errors, trust boundary amplification) MUST be elevated to findings or explicitly mapped to existing findings. Silent observation loss is a regression source."
 skills:
-  primary: 12-workflow-orchestrator
+  primary: workflow-orchestrator
 variables[19]:
   - name: target_submodule
     type: string
@@ -108,9 +108,4 @@ variables[19]:
     type: boolean
     description: "Phase 1b merge gate — merge sub-agent (M) dispatched, reconciliation table produced with zero Unaccounted."
     defaultValue: false
-skills[4]:
-  - session-protocol
-  - agent-conduct
-  - execute-activity
-  - state-management
 initialActivity: scope-setup

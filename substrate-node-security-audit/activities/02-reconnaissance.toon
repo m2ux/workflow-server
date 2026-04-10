@@ -8,7 +8,7 @@ recognition[3]:
   - codebase reconnaissance
   - identify crates and trust boundaries
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - execute-audit
 required: true

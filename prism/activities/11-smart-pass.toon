@@ -4,7 +4,7 @@ name: Smart Analysis Pass
 description: "Adaptive chain engine that automatically composes the analysis pipeline based on input characteristics. Runs prereq scan, fills knowledge gaps, selects subsystem or L12 based on code structure, runs dispute for self-correction, and updates the codebase profile. 5+ fresh workers. The only mode where the system decides the pipeline topology."
 problem: "Users must manually select the right pipeline mode. Smart mode removes this burden by composing the pipeline automatically based on what the input needs."
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - smart-analysis
 artifacts[3]:

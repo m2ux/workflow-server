@@ -8,7 +8,7 @@ recognition[3]:
   - group d sub-agent
   - per-function checklist
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - execute-sub-agent
 required: false

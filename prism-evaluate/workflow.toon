@@ -20,7 +20,7 @@ rules[9]:
   - "RESOLUTION DIALOGUE: After evaluation delivery, the user may opt into a resolution dialogue that iterates through findings one-by-one, proposing mitigations and collecting user decisions. Each finding is presented individually — never in batches. For non-trivial findings, the worker proposes a novel solution that preserves the original claim where possible. Absolutely non-feasible claims are flagged explicitly."
 
 skills:
-  primary: 12-workflow-orchestrator
+  primary: workflow-orchestrator
 variables[21]:
   - name: evaluation_description
     type: string
@@ -94,16 +94,9 @@ variables[21]:
     type: array
     description: "Array of accepted mitigation decisions: { finding_id, finding_severity, mitigation_type, mitigation_summary, user_decision }"
 
-skills:
-  primary: 12-workflow-orchestrator
 artifactLocations:
   evaluation:
     path: "{output_path}"
     gitignored: false
 
-skills[4]:
-  - session-protocol
-  - agent-conduct
-  - execute-activity
-  - state-management
 initialActivity: scope-definition

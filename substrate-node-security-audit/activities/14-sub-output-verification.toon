@@ -8,7 +8,7 @@ recognition[3]:
   - output verification
   - check completeness
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - verify-sub-agent-output
 required: false

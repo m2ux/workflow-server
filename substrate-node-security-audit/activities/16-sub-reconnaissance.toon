@@ -8,7 +8,7 @@ recognition[3]:
   - map architecture
   - build function registry
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - map-codebase
 required: false

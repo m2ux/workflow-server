@@ -10,7 +10,7 @@ recognition[3]:
 required: true
 estimatedTime: 10-20m
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
 steps[4]:
   - id: evaluate-open-assumptions
     name: Evaluate which assumptions are open

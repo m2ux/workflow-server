@@ -4,7 +4,7 @@ name: Prioritization
 description: Prioritize work packages based on dependencies, value, risk, and effort
 problem: Need to determine execution order for work packages
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - prioritize-packages
 steps[4]:

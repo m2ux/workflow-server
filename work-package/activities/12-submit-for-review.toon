@@ -13,7 +13,7 @@ estimatedTime: 30-60m
 entryActions[1]{action,message}:
   log,Submitting PR for review
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
 steps[12]:
   - id: consolidate-review-findings
     name: Consolidate Review Findings
