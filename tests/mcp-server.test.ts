@@ -57,7 +57,7 @@ describe('mcp-server integration', () => {
   beforeEach(async () => {
     const sessionResult = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package' },
+      arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
     });
     sessionToken = parseToolResponse(sessionResult).session_token;
   });
@@ -99,7 +99,7 @@ describe('mcp-server integration', () => {
     it('should return workflow metadata and opaque token (no rules payload)', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -112,7 +112,7 @@ describe('mcp-server integration', () => {
     it('should reject unknown workflow_id', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'non-existent' },
+        arguments: { workflow_id: 'non-existent', agent_id: 'test-agent' },
       });
       expect(result.isError).toBe(true);
     });
@@ -182,7 +182,7 @@ describe('mcp-server integration', () => {
     it('content-body token threading should work end-to-end (agent scenario)', async () => {
       const startResult = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       const startToken = parseToolResponse(startResult).session_token;
 
@@ -576,7 +576,7 @@ describe('mcp-server integration', () => {
     it('should return empty skills for workflows without declared skills', async () => {
       const metaSession = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'meta' },
+        arguments: { workflow_id: 'meta', agent_id: 'test-agent' },
       });
       const metaToken = parseToolResponse(metaSession).session_token;
       const result = await client.callTool({
@@ -1097,11 +1097,11 @@ describe('mcp-server integration', () => {
     it('operations on one session should not affect another', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       const s2 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
 
       const token1 = parseToolResponse(s1).session_token as string;
@@ -1125,11 +1125,11 @@ describe('mcp-server integration', () => {
     it('traces from different sessions should be isolated', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       const s2 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
 
       const token1 = parseToolResponse(s1).session_token as string;
@@ -1413,6 +1413,21 @@ describe('mcp-server integration', () => {
   // ============== Token Inheritance ==============
 
   describe('start_session token inheritance', () => {
+    it('should return a warning when agent_id does not match inherited session token', async () => {
+      const inherited = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', session_token: sessionToken, agent_id: 'different-agent' },
+      });
+      expect(inherited.isError).toBeFalsy();
+      const response = parseToolResponse(inherited);
+      expect(response.warning).toBeDefined();
+      expect(response.warning).toContain("does not match the inherited session token's agent_id");
+      
+      const meta = inherited._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings[0]).toContain("does not match the inherited session token's agent_id");
+    });
     it('inherited session should preserve pcp from parent token', async () => {
       const act = await client.callTool({
         name: 'next_activity',
@@ -1474,13 +1489,13 @@ describe('mcp-server integration', () => {
     it('should reject workflow mismatch between token and workflow_id', async () => {
       const metaSession = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'meta' },
+        arguments: { workflow_id: 'meta', agent_id: 'test-agent' },
       });
       const metaToken = parseToolResponse(metaSession).session_token;
 
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', session_token: metaToken },
+        arguments: { workflow_id: 'work-package', session_token: metaToken, agent_id: 'test-agent' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1490,7 +1505,7 @@ describe('mcp-server integration', () => {
     it('fresh session should still work without session_token', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);

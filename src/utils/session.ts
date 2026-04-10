@@ -78,7 +78,7 @@ async function decode(token: string): Promise<SessionPayload> {
   }
 }
 
-export async function createSessionToken(workflowId: string, workflowVersion: string, parentSid?: string): Promise<string> {
+export async function createSessionToken(workflowId: string, workflowVersion: string, agentId: string, parentSid?: string): Promise<string> {
   const payload: SessionPayload = {
     wf: workflowId,
     act: '',
@@ -88,7 +88,7 @@ export async function createSessionToken(workflowId: string, workflowVersion: st
     seq: 0,
     ts: Math.floor(Date.now() / 1000),
     sid: randomUUID(),
-    aid: '',
+    aid: agentId,
     pcp: [],
     pcpt: 0,
   };

@@ -70,12 +70,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'start_session',
     'Start a new workflow session or inherit an existing one. Returns a session token (required for all subsequent tool calls) and basic workflow metadata. ' +
-    'For a fresh session, provide only workflow_id. For worker dispatch or resume, also provide session_token from the parent/previous session — the returned token inherits all state (current activity, pending checkpoints, session ID) with a new agent_id stamped into the signed payload. ' +
-    'The agent_id parameter sets the aid field inside the HMAC-signed token, distinguishing orchestrator from worker calls in the trace.',
+    'For a fresh session, provide workflow_id and agent_id. For worker dispatch or resume, also provide session_token from the parent/previous session — the returned token inherits all state (current activity, pending checkpoints, session ID) with the provided agent_id stamped into the signed payload. ' +
+    'The agent_id parameter is required and sets the aid field inside the HMAC-signed token, distinguishing orchestrator from worker calls in the trace.',
     {
       workflow_id: z.string().describe('Workflow ID to start a session for (e.g., "work-package")'),
       session_token: z.string().optional().describe('Optional. An existing session token to inherit. When provided, the returned token preserves sid, act, pcp, pcpt, cond, v, and all state from the parent token. Used for worker dispatch (pass the orchestrator token) or resume (pass a saved token).'),
-      agent_id: z.string().optional().describe('Optional. Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace.'),
+      agent_id: z.string().describe('REQUIRED. Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace.'),
     },
     withAuditLog('start_session', async ({ workflow_id, session_token, agent_id }) => {
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
@@ -87,6 +87,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       let token: string;
+      let mismatchWarning: string | undefined;
 
       if (session_token) {
         const parentToken = await decodeSessionToken(session_token);
@@ -96,27 +97,29 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             `Use the same workflow_id as the parent session, or omit session_token to start a fresh session.`
           );
         }
-        token = await advanceToken(session_token, { aid: agent_id ?? '' }, parentToken);
+        
+        if (parentToken.aid && parentToken.aid !== agent_id) {
+          mismatchWarning = `Warning: The provided agent_id '${agent_id}' does not match the inherited session token's agent_id '${parentToken.aid}'. The session has been transitioned to '${agent_id}'.`;
+        }
+
+        token = await advanceToken(session_token, { aid: agent_id }, parentToken);
 
         if (config.traceStore) {
           const event = createTraceEvent(
             parentToken.sid, 'start_session', 0, 'ok',
-            workflow_id, parentToken.act, agent_id ?? '',
+            workflow_id, parentToken.act, agent_id,
           );
           config.traceStore.append(parentToken.sid, event);
         }
       } else {
-        token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0');
-        if (agent_id) {
-          token = await advanceToken(token, { aid: agent_id });
-        }
+        token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0', agent_id);
 
         if (config.traceStore) {
           const decoded = await decodeSessionToken(token);
           config.traceStore.initSession(decoded.sid);
           const event = createTraceEvent(
             decoded.sid, 'start_session', 0, 'ok',
-            workflow_id, '', agent_id ?? '',
+            workflow_id, '', agent_id,
           );
           config.traceStore.append(decoded.sid, event);
         }
@@ -134,9 +137,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (session_token) {
         response['inherited'] = true;
       }
+      if (mismatchWarning) {
+        response['warning'] = mismatchWarning;
+      }
+      
+      const _meta: Record<string, unknown> = { session_token: token };
+      if (mismatchWarning) {
+        _meta['validation'] = { status: 'warning', warnings: [mismatchWarning] };
+      }
+
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response) }],
-        _meta: { session_token: token },
+        _meta,
       };
     })
   );
