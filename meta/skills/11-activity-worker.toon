@@ -41,8 +41,8 @@ protocol:
     - "doWhile: execute steps, evaluate condition, repeat up to maxIterations"
   finalize[4]:
     - "Write artifacts to the planning folder using the activity's artifactPrefix convention. Record each artifact produced: id, name, path. Prepend the artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
-    - "MANDATORY: Update the planning folder README.md progress table (see resource meta/06 for details)"
-    - "Compile structured result with result_type: activity_complete (see resource meta/06 for format). Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
+    - "MANDATORY: Update the planning folder README.md progress table (see resource meta/04 for details)"
+    - "Compile structured result with result_type: activity_complete (see resource meta/04 for format). Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."

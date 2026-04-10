@@ -7,29 +7,6 @@ version: 1.1.0
 
 This guide is exclusively for the **meta-orchestrator** (the top-level agent running the `meta` workflow).
 
-## 1. 3-Tier Hierarchy
-
-The orchestration model uses a strict hierarchy:
-
-1. **`meta-orchestrator`**: The top-level agent. It manages session state, dispatches client workflows, and is the ONLY agent permitted to interact with the user via `AskQuestion`.
-2. **`workflow-orchestrator`**: Dispatched by the `meta-orchestrator`. It manages a single client workflow, evaluating transitions and dispatching activities.
-3. **`activity-worker`**: Dispatched by the `workflow-orchestrator`. It executes a single activity to completion.
-
-## 2. Bootstrapping a Meta Session
-
-1. **discover** — Call first (no parameters). Returns the server info and this bootstrap procedure.
-2. **list_workflows** — Match the user's goal to a workflow from the returned list. No session token needed.
-3. **start_session(`workflow_id: "meta"`,`"agent_id: "meta"`)** — Start a meta session.
-4. **get_workflow(`session_token`, `summary=true`)** — Load the meta workflow structure.
-5  **next_activity(`session_token`, `activity_id`)** — Execute either `start-workflow` or `resume-workflow` based on the user's intent. MUST use the initialActivity ID from `get_workflow` for the first call. 
-
-## 3. Workflow Discovery and Goal Resolution
-
-When the user does not specify a workflow:
-1. Call `list_workflows` to get available workflows.
-2. Compare the user's goal to workflow descriptions. If multiple workflows could match, ask the user to clarify. NEVER skip workflow matching to use a skill directly. If no workflow matches, inform the user — this is a design gap.
-3. Present workflows with title, description, and tags and let the user select one.
-
 ## 4. Dispatching a Client Workflow
 
 The top-level `meta-orchestrator` starts a client workflow by calling `dispatch_workflow`:

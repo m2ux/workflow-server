@@ -22,7 +22,7 @@ protocol:
     - "Detect mode from user request (e.g., 'review PR' activates review mode)."
   dispatch-activity[6]:
     - "Call next_activity to load the activity definition"
-    - "Compose worker prompt using resource meta/06 (activity-worker-prompt) — do NOT inject paraphrased skill content"
+    - "Compose worker prompt using resource meta/04 (activity-worker-prompt) — do NOT inject paraphrased skill content"
     - "Include your session_token in the worker prompt. The worker MUST call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
     - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
@@ -117,4 +117,4 @@ errors:
 
 resources[2]:
   - "meta/03"
-  - "meta/01"
+  - "meta/04"

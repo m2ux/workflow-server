@@ -31,7 +31,7 @@ sequenceDiagram
 
     Note over Client: Calls start_session(client_token)<br/>Loads client workflow
     
-    Client->>Worker: Task(prompt: resource meta/05)
+    Client->>Worker: Task(prompt: resource meta/04)
     Note over Worker: Calls start_session(client_token)<br/>Inherits session
     
     Note over Worker: Executes activity steps
