@@ -20,14 +20,13 @@ protocol:
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
     - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "Detect mode from user request (e.g., 'review PR' activates review mode)."
-  dispatch-activity[7]:
+  dispatch-activity[6]:
     - "Call next_activity to load the activity definition"
-    - "Compose worker prompt using resource meta/05 (worker-prompt-template) — do NOT inject paraphrased skill content"
-    - "Include the current session_token in the worker prompt so the worker can call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
+    - "Compose worker prompt using resource meta/06 (activity-worker-prompt) — do NOT inject paraphrased skill content"
+    - "Include your session_token in the worker prompt. The worker MUST call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
     - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
-    - "For resumed workers: send only the new activity_id, updated state variables, and bootstrap instructions"
-    - "If is_resuming is true (first dispatch after state restoration): include a resumption context block listing completedActivities, key variable values, and prior checkpoint decisions. After this dispatch completes, set is_resuming = false"
+    - "For resumed workers: send only the updated state variables and context"
   process-result[6]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
     - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required blocking checkpoints — resume worker to complete any missing items"
@@ -35,16 +34,14 @@ protocol:
     - "Check next_activity response _meta.trace_token — if present, append to the trace_tokens array"
     - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
     - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
-  resolve-checkpoints[4]:
-    - "After next_activity, the token has pending checkpoints (pcp). Resolve non-blocking and conditional checkpoints, but YIELD blocking checkpoints up to the parent."
-    - "For non-blocking checkpoints (autoAdvanceMs): wait for the timer to elapse, then call respond_checkpoint({ checkpoint_id, auto_advance: true }). If the server rejects (timer not elapsed), WAIT and retry."
-    - "For conditional checkpoints whose condition is not met: call respond_checkpoint({ checkpoint_id, condition_not_met: true })."
-    - "CRITICAL: You MUST NOT call respond_checkpoint for blocking checkpoints. Yield them and wait for the parent to provide the option_id."
+  resolve-checkpoints[2]:
+    - "When the activity-worker encounters a checkpoint, it yields checkpoint_pending to you."
+    - "You must catch this yield, use present_checkpoint to load the full details using the checkpoint_handle, and yield it up to the meta-orchestrator."
   handle-checkpoint-yield[4]:
-    - "When a worker yields checkpoint_pending mid-activity, or if the current activity has blocking checkpoints pending: yield ONE checkpoint_pending up to the parent orchestrator."
-    - "You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details. You SHOULD include prose contextual information BEFORE the JSON block."
-    - "If there are multiple pending checkpoints, you MUST only yield the first one. Stop and wait for the parent to resume you with the response before proceeding."
-    - "DO NOT attempt to ask questions yourself. You are a sub-agent; your questions will not be visible to the user."
+    - "When a worker yields a checkpoint, or if there are blocking checkpoints pending, yield ONE checkpoint_pending up to your parent orchestrator."
+    - "Format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details."
+    - "Wait for the parent to resolve the checkpoint and resume you."
+    - "When resumed by the parent, call respond_checkpoint using the checkpoint_handle to record the decision and unblock the token, then resume the worker with the effects."
   commit-artifacts[3]:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
@@ -98,6 +95,10 @@ tools:
     when: "Bootstrapping or resuming"
   get_resource:
     when: "After get_skills"
+  present_checkpoint:
+    when: "To load full details of a checkpoint yielded by the worker using its checkpoint_handle before yielding it up to the parent orchestrator"
+  respond_checkpoint:
+    when: "After the parent orchestrator resumes you with the user's decision, use this to record the decision and unblock the token"
 
 
 errors:
