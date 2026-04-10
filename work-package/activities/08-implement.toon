@@ -10,7 +10,7 @@ recognition[3]:
 required: true
 estimatedTime: 1-4h
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
 rules[1]:
   - "SYMBOL VERIFICATION: Every symbol introduced or referenced in code or documentation MUST have provenance — exists in codebase, in a declared dependency, or is newly created by the current task. Never fabricate symbols."
 artifacts[1]:

@@ -4,7 +4,7 @@ name: Execute Prism Analyses
 description: "Trigger one or more prism workflows to perform the analytical passes for each execution group. Each group triggers a separate prism run with its own pipeline mode, lens selection, and output subdirectory. The orchestrator suspends while each triggered prism workflow executes to completion, then collects the results."
 problem: "The evaluation analysis must be executed through the prism workflow's analytical pipeline rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-evaluate controls the evaluation-specific context passed to each run."
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - plan-evaluation
 entryActions[1]:

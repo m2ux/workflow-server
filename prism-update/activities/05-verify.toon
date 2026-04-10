@@ -4,7 +4,7 @@ name: Verify Consistency
 description: "Check for consistency issues across resources, skills, and documentation. Detect stale references, routing mismatches, count errors, and duplicate indices."
 problem: Changes across multiple files may leave inconsistencies
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - verify-prism-consistency
 

@@ -7,7 +7,7 @@ recognition[2]:
   - verify scan results
   - check scan completeness
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - execute-sub-agent
 required: false

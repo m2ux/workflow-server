@@ -8,7 +8,7 @@ recognition[3]:
   - consolidate findings
   - finalize report
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - execute-audit
 required: true

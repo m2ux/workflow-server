@@ -4,7 +4,7 @@ name: Define Evaluation Scope
 description: "Collect the evaluation target, user's description of what to evaluate, and output path. Classify the target type, derive or validate evaluation dimensions, and present the scope for confirmation before proceeding to dimension planning."
 problem: "The evaluation requires a confirmed target, a clear description of evaluation goals, validated dimensions, and an organised output directory before analysis planning can begin."
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
   supporting:
     - plan-evaluation
 steps[5]:

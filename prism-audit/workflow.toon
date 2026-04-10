@@ -17,7 +17,7 @@ rules[6]:
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
 
 skills:
-  primary: 12-workflow-orchestrator
+  primary: workflow-orchestrator
 variables[16]:
   - name: audit_description
     type: string
@@ -74,16 +74,9 @@ variables[16]:
     description: "Whether the user confirmed the audit scope at the confirm-scope checkpoint"
     defaultValue: false
 
-skills:
-  primary: 12-workflow-orchestrator
 artifactLocations:
   audit:
     path: "{output_path}"
     gitignored: false
 
-skills[4]:
-  - session-protocol
-  - agent-conduct
-  - execute-activity
-  - state-management
 initialActivity: scope-definition

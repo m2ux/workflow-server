@@ -10,7 +10,7 @@ recognition[3]:
 required: true
 estimatedTime: 20-45m
 skills:
-  primary: 11-activity-worker
+  primary: activity-worker
 steps[10]:
   - id: apply-design
     name: Apply design framework
