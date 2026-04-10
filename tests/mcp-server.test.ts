@@ -174,7 +174,7 @@ describe('mcp-server integration', () => {
 
       const cpResult = await client.callTool({
         name: 'get_checkpoint',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package', checkpoint_id: 'issue-verification' },
+        arguments: { session_token: actMeta['session_token'] as string, checkpoint_id: 'issue-verification' },
       });
       expect(parseToolResponse(cpResult).session_token).toBeDefined();
     });
@@ -290,11 +290,17 @@ describe('mcp-server integration', () => {
 
   describe('tool: get_checkpoint', () => {
     it('should get checkpoint with explicit params', async () => {
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+      });
+      const actMeta = actResult._meta as Record<string, unknown>;
+      const tokenWithPcp = actMeta['session_token'] as string;
+
       const result = await client.callTool({
         name: 'get_checkpoint',
         arguments: {
-          session_token: sessionToken,
-          activity_id: 'start-work-package',
+          session_token: tokenWithPcp,
           checkpoint_id: 'issue-verification',
         },
       });

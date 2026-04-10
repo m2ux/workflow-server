@@ -28,7 +28,7 @@ All require `session_token`. The workflow is determined from the session token (
 |------|------------|---------|-------------|
 | `get_workflow` | `session_token`, `summary?` | Complete workflow definition or summary metadata | Load the workflow definition for the current session. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
 | `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Complete activity definition and trace token in `_meta` | Load and transition to an activity. **Embeds required checkpoint IDs in the token — hard-rejects transition to a different activity until all are resolved via `respond_checkpoint`** |
-| `get_checkpoint` | `session_token`, `activity_id`, `checkpoint_id` | Full checkpoint definition | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation |
+| `get_checkpoint` | `session_token`, `checkpoint_id` | Full checkpoint definition | Load full checkpoint details (message, options with effects, blocking/auto-advance config) for presentation from the current activity |
 | `respond_checkpoint` | `session_token`, `checkpoint_id`, `option_id?`, `auto_advance?`, `condition_not_met?` | Resolution status, remaining `pcp`, and any defined `effect` | Resolve a pending checkpoint. Exactly one of: `option_id` (user's selection), `auto_advance` (use `defaultOption` after `autoAdvanceMs` elapses, non-blocking only), or `condition_not_met` (dismiss conditional checkpoint). |
 
 ### Skill Tools

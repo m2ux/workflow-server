@@ -194,15 +194,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('get_checkpoint', 'Load the full details of a specific checkpoint within an activity. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any blocking or auto-advance configuration. Use this when you need to present a checkpoint interaction to the user. Checkpoint summaries are included in the activity definition from next_activity — use this tool when you need complete details for presentation.',
+  server.tool('get_checkpoint', 'Load the full details of a specific checkpoint within the current activity. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any blocking or auto-advance configuration. Use this when you need to present a checkpoint interaction to the user. Checkpoint summaries are included in the activity definition from next_activity — use this tool when you need complete details for presentation.',
     {
       ...sessionTokenParam,
-      activity_id: z.string().describe('Activity ID containing the checkpoint'),
       checkpoint_id: z.string().describe('Checkpoint ID'),
     },
-    withAuditLog('get_checkpoint', async ({ session_token, activity_id, checkpoint_id }) => {
+    withAuditLog('get_checkpoint', async ({ session_token, checkpoint_id }) => {
       const token = await decodeSessionToken(session_token);
       const workflow_id = token.wf;
+      const activity_id = token.act;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
@@ -212,7 +212,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, result.value),
       );
 
-      const advancedToken = await advanceToken(session_token, { act: activity_id });
+      const advancedToken = await advanceToken(session_token);
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, session_token: advancedToken }) }],
         _meta: { session_token: advancedToken, validation },
