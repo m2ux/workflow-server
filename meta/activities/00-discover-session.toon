@@ -11,7 +11,9 @@ recognition[4]:
 required: true
 estimatedTime: 1-2m
 skills:
-  primary: state-management
+  primary: 11-activity-worker
+  supporting:
+    - state-management
 steps[4]:
   - id: identify-target
     name: Identify target workflow and context

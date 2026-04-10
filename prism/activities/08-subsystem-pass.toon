@@ -4,7 +4,9 @@ name: Subsystem Analysis Pass
 description: "AST-decompose source code into structural subsystems, assign different prisms per subsystem via calibration, execute per-subsystem analysis, then synthesize cross-subsystem findings. N+2 fresh workers (1 calibration + N per-subsystem + 1 synthesis). Code-only mode."
 problem: "Whole-file analysis with a single prism misses bugs that exist BETWEEN subsystems and structural properties that span class boundaries. Different code regions benefit from different analytical lenses."
 skills:
-  primary: subsystem-analysis
+  primary: 11-activity-worker
+  supporting:
+    - subsystem-analysis
 artifacts[2]:
   - id: subsystem-output
     name: "subsystem-{name}.md"

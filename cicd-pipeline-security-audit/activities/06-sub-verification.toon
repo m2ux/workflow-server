@@ -7,9 +7,9 @@ recognition[2]:
   - verify scan results
   - check scan completeness
 skills:
-  primary: execute-sub-agent
-  supporting[1]:
-    - verify-scan-output
+  primary: 11-activity-worker
+  supporting:
+    - execute-sub-agent
 required: false
 estimatedTime: 5-10m
 rules[5]:

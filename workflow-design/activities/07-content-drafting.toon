@@ -4,9 +4,9 @@ name: Content Drafting
 description: "Draft or modify each file in the scope manifest. Each file gets an approach checkpoint before drafting and a review checkpoint after. All TOON files are validated against the schema immediately after drafting."
 problem: Content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
 skills:
-  primary: workflow-design
-  supporting[1]:
-    - toon-authoring
+  primary: 11-activity-worker
+  supporting:
+    - workflow-design
 required: true
 estimatedTime: 30-60m
 rules[5]:

@@ -9,6 +9,8 @@ recognition[3]:
   - quality review
 required: true
 estimatedTime: 30-60m
+skills:
+  primary: 11-activity-worker
 rules[4]:
   - "This activity runs after implement, whether code was new or adopted"
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"

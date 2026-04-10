@@ -4,9 +4,9 @@ name: Prioritization
 description: Prioritize work packages based on dependencies, value, risk, and effort
 problem: Need to determine execution order for work packages
 skills:
-  primary: prioritize-packages
-  supporting[1]:
-    - workflow-execution
+  primary: 11-activity-worker
+  supporting:
+    - prioritize-packages
 steps[4]:
   - id: analyze-dependencies
     name: Analyze dependencies

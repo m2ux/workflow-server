@@ -4,7 +4,9 @@ name: Pattern Analysis
 description: "Audit existing workflows of similar type to extract reusable structural patterns. Present extracted patterns alongside the proposed structure for the new workflow."
 problem: New workflows must follow established conventions and reuse proven structural patterns
 skills:
-  primary: workflow-design
+  primary: 11-activity-worker
+  supporting:
+    - workflow-design
 required: false
 estimatedTime: 10-15m
 rules[2]:

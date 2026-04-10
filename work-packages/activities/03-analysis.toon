@@ -4,9 +4,9 @@ name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
 problem: Need to understand context before detailed work package planning
 skills:
-  primary: analyze-initiative-context
-  supporting[1]:
-    - workflow-execution
+  primary: 11-activity-worker
+  supporting:
+    - analyze-initiative-context
 steps[3]:
   - id: perform-analysis
     name: Perform analysis

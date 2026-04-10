@@ -8,10 +8,9 @@ recognition[3]:
   - consolidate findings
   - finalize report
 skills:
-  primary: execute-audit
-  supporting[2]:
-    - score-severity
-    - write-report
+  primary: 11-activity-worker
+  supporting:
+    - execute-audit
 required: true
 estimatedTime: 20-40m
 rules[7]:

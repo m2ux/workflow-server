@@ -8,7 +8,9 @@ recognition[3]:
   - threat model construction
   - architectural decomposition
 skills:
-  primary: execute-sub-agent
+  primary: 11-activity-worker
+  supporting:
+    - execute-sub-agent
 required: false
 estimatedTime: 10-20m
 

@@ -8,7 +8,9 @@ recognition[3]:
   - group d sub-agent
   - per-function checklist
 skills:
-  primary: execute-sub-agent
+  primary: 11-activity-worker
+  supporting:
+    - execute-sub-agent
 required: false
 estimatedTime: 20-30m
 

@@ -8,7 +8,9 @@ recognition[3]:
   - structured merge
   - reconcile finding counts
 skills:
-  primary: merge-findings
+  primary: 11-activity-worker
+  supporting:
+    - merge-findings
 required: false
 estimatedTime: 10-15m
 

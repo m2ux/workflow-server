@@ -16,7 +16,9 @@ recognition[11]:
   - error resilience
   - behavioral analysis
 skills:
-  primary: plan-analysis
+  primary: 11-activity-worker
+  supporting:
+    - plan-analysis
 steps[3]:
   - id: plan
     name: Plan the Analysis

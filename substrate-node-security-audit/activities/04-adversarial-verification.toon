@@ -8,7 +8,9 @@ recognition[3]:
   - adversarial review
   - check pass items
 skills:
-  primary: execute-audit
+  primary: 11-activity-worker
+  supporting:
+    - execute-audit
 required: true
 estimatedTime: 30-60m
 rules[2]:

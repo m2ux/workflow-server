@@ -4,7 +4,9 @@ name: Resolution Dialogue
 description: "Iterate through evaluation findings one-by-one, proposing mitigations for each. For each finding, the worker reads both the evaluation report and the original target, classifies the finding by mitigation difficulty, proposes a specific mitigation, and presents it to the user for decision. The dialogue produces a MITIGATION-PLAN.md artifact documenting all accepted changes."
 problem: "Evaluation findings require targeted mitigations that range from simple text corrections to novel architectural proposals. Each finding needs individual consideration — the appropriate mitigation depends on the finding's nature, the target's content, and the user's intent. Batch presentation loses nuance; one-by-one dialogue preserves it."
 skills:
-  primary: resolve-findings
+  primary: 11-activity-worker
+  supporting:
+    - resolve-findings
 steps[5]:
   - id: load-sources
     name: Load Evaluation Report and Target

@@ -20,6 +20,8 @@ rules[10]:
   - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '[BLOCKER]: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
 
+skills:
+  primary: 12-workflow-orchestrator
 variables[26]:
   - name: target
     type: string
@@ -105,6 +107,8 @@ variables[26]:
     type: string
     description: "For adaptive mode: signal quality assessment at current stage (adequate or insufficient)"
 
+skills:
+  primary: 12-workflow-orchestrator
 artifactLocations:
   analysis:
     path: "{output_path}"

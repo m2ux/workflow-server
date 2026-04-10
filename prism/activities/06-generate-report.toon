@@ -4,7 +4,9 @@ name: Generate Final Report
 description: "Read all analysis artifacts produced by prior passes and generate a clean final report (REPORT.md) that presents definitive findings without methodology-specific language. The report uses unified finding identifiers, organises by severity, and contains only conclusions — not the analytical process that produced them. Works across all pipeline modes."
 problem: "Analysis artifacts (structural-analysis.md, adversarial-analysis.md, synthesis.md, portfolio-*.md, behavioral-synthesis.md) contain methodology-specific language (conservation laws, meta-laws, analysis scorecards, dispute resolutions) that is valuable for analytical rigour but obscures the definitive results for readers who need actionable findings."
 skills:
-  primary: generate-report
+  primary: 11-activity-worker
+  supporting:
+    - generate-report
 steps[5]:
   - id: collect-artifacts
     name: Collect All Analysis Artifacts
