@@ -6,10 +6,13 @@ description: "Single-load management skill for the workflow orchestrator. Manage
 inputs[3]:
   - id: workflow-id
     description: "Workflow to orchestrate (e.g., 'work-package')"
+    required: true
   - id: user-request
     description: "The user's initial request, used to detect mode and extract target"
+    required: true
   - id: target-path
     description: "Path to the target directory for all git operations"
+    required: true
 
 protocol:
   load-workflow[2]:
