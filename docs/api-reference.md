@@ -38,7 +38,7 @@ All require `session_token`. The workflow is determined from the session token.
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
 | `get_skills` | `session_token` | Map of skill objects with lightweight `_resources` references | Load all workflow-level skills (behavioral protocols). |
-| `get_skill` | `session_token`, `step_id` | Skill definition object | Load the skill for a specific step within the current activity. Requires `next_activity` to have been called first |
+| `get_skill` | `session_token`, `step_id?` | Skill definition object | Load the skill for a specific step within the current activity. If `step_id` is omitted, loads the primary skill for the activity. Requires `next_activity` to have been called first |
 | `get_resource` | `session_token`, `resource_index` | Resource content, id, and version | Load a resource's full content by index. Bare indices resolve within the session workflow; prefixed refs (e.g., `meta/04`) resolve from the named workflow |
 
 ### Trace Tools
