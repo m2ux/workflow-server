@@ -12,10 +12,8 @@ inputs[3]:
     description: "Current workflow state variables"
 
 protocol:
-  bootstrap-session[1]:
-    - "Call start_session({ workflow_id, session_token, agent_id }) using the token provided in your prompt to inherit the session state. Save the returned session_token — every subsequent tool call requires it."
   bootstrap-activity[2]:
-    - "Call next_activity({ session_token, activity_id }) to load the activity definition. Pass session_token, not workflow_id."
+    - "Call next_activity({ session_token, activity_id }) using the token provided in your prompt to load the activity definition. Pass session_token, not workflow_id."
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, and artifactPrefix"
   bootstrap-skill[3]:
     - "Call get_skills({ session_token }) to load workflow-level management skills. Pass session_token, not workflow_id."
