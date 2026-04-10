@@ -9,8 +9,6 @@ recognition[3]:
   - gather requirements
 required: false
 estimatedTime: 15-30m
-skills:
-  primary: activity-worker
 steps[6]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion

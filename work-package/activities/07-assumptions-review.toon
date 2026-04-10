@@ -9,8 +9,6 @@ recognition[3]:
   - validate assumptions
 required: true
 estimatedTime: 10-20m
-skills:
-  primary: activity-worker
 steps[4]:
   - id: evaluate-open-assumptions
     name: Evaluate which assumptions are open

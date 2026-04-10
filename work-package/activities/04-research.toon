@@ -9,8 +9,6 @@ recognition[3]:
   - research patterns
 required: false
 estimatedTime: 20-45m
-skills:
-  primary: activity-worker
 steps[9]:
   - id: kb-research
     name: Knowledge base research
