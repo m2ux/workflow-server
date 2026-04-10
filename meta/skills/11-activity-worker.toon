@@ -70,9 +70,7 @@ rules:
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
-tools:
-  start_session:
-    when: "First action on initial dispatch (not needed on resume)"
+  tools:
   get_skills:
     when: "Session bootstrap — load workflow-level behavioral protocols"
     params: "session_token"

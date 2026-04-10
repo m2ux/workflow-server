@@ -61,9 +61,3 @@ Intermediate result when a blocking checkpoint is reached (execution paused).
 - `steps_completed_so_far`: Steps completed before this checkpoint
 - `partial_variables_changed`: Any variables changed by steps before this checkpoint
 - `artifacts_produced_so_far`: Any artifacts produced before this checkpoint
-
-## 5. Resource Loading Procedure
-1. Call `get_skill` to load an activity's primary skill, or a specific step's skill (`step_id`).
-2. Examine the returned skill definition. If it contains a `_resources` array (e.g., `["04", "08"]`), these are lightweight index references.
-3. Call `get_resource({ session_token, resource_index: "04" })` to fetch the full text content for each required resource.
-4. Read the returned text content directly. DO NOT attempt to read the file from disk using a shell command.
