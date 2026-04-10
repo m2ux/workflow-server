@@ -16,7 +16,7 @@ No session token required.
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
-| `start_session` | `workflow_id`, `session_token?`, `agent_id?` | Start a new session or inherit an existing one. For fresh sessions, provide only `workflow_id`. For worker dispatch or resume, also provide `session_token` — the returned token inherits all state (`sid`, `act`, `pcp`, `pcpt`, `cond`, `v`) with `agent_id` stamped into the signed `aid` field. `workflow_id` is validated against the token's workflow. |
+| `start_session` | `workflow_id`, `agent_id`, `session_token?` | Start a new session or inherit an existing one. For fresh sessions, provide `workflow_id` and `agent_id`. For worker dispatch or resume, also provide `session_token` — the returned token inherits all state (`sid`, `act`, `pcp`, `pcpt`, `cond`, `v`) with `agent_id` stamped into the signed `aid` field. `workflow_id` is validated against the token's workflow. |
 
 ### Workflow Tools
 
@@ -50,13 +50,13 @@ All require `session_token`. The workflow is determined from the session token.
 
 The session token is an opaque string returned by `start_session`. It captures the context of each call (workflow, activity, skill) so the server can validate subsequent calls for consistency.
 
-The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), `aid` (agent ID — set via `start_session(agent_id)`), `pcp` (pending checkpoint IDs), and `pcpt` (checkpoint issuance timestamp). When `start_session` is called with an existing `session_token`, all fields are inherited (including `sid`, `pcp`, `act`) and `aid` is stamped with the new agent identity.
+The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), `aid` (agent ID — set via `start_session`'s `agent_id` parameter), `pcp` (pending checkpoint IDs), and `pcpt` (checkpoint issuance timestamp). When `start_session` is called with an existing `session_token`, all fields are inherited (including `sid`, `pcp`, `act`) and `aid` is stamped with the new agent identity.
 
 ### Lifecycle
 
 1. Call `discover` to learn the bootstrap procedure and available workflows
 2. Call `list_workflows` to match the user's goal to a workflow
-3. Call `start_session(workflow_id)` to get a session token (workflow is bound to the session from this point)
+3. Call `start_session(workflow_id, agent_id)` to get a session token (workflow is bound to the session from this point)
 4. Call `get_skills` to load behavioral protocols
 5. Call `get_workflow(summary=true)` to get the activity list and `initialActivity`
 6. Call `next_activity(initialActivity)` to load the first activity
@@ -162,7 +162,7 @@ When calling `get_skill { step_id }`:
 #### session-protocol (universal)
 
 Session lifecycle protocol:
-- **Bootstrap**: `start_session(workflow_id)` → `get_skills` → `get_workflow` → `next_activity(initialActivity)`
+- **Bootstrap**: `start_session(workflow_id, agent_id)` → `get_skills` → `get_workflow` → `next_activity(initialActivity)`
 - **Per-step**: `get_skill(step_id)` → `get_resource(resource_index)` for each `_resources` entry
 - **Transitions**: Read `transitions` from activity response → `next_activity(activity_id)` with `step_manifest`
 
