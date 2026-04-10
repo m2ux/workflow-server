@@ -24,10 +24,12 @@ sequenceDiagram
 
     User->>Meta: "start work package"
     Note over Meta: Loads meta workflow,<br/>starts session
-    Meta->>Meta: Runs start-workflow activity
+    Meta->>Meta: Runs discover-session activity
+    Note over Meta: Matches context,<br/>sets target_workflow
+    Meta->>Meta: Runs dispatch-workflow activity
 
     Note over Meta: Calls dispatch_workflow<br/>(creates independent client session)
-    Meta->>Client: Task(prompt: resource meta/10)
+    Meta->>Client: Task(prompt: resource meta/05)
 
     Note over Client: Calls start_session(client_token)<br/>Loads client workflow
     
@@ -63,21 +65,18 @@ sequenceDiagram
 
 ```mermaid
 graph TD
-    subgraph meta[Meta Workflow - Independent Entry Points]
+    subgraph meta[Meta Workflow]
         Start([User Intent])
         
-        Start -->|"start/begin/execute workflow"| SW[start-workflow]
-        Start -->|"resume/continue workflow"| RW[resume-workflow]
-        Start -->|"end/finish/complete workflow"| EW[end-workflow]
+        Start -->|"start/resume/continue"| DS[00-discover-session]
         
-        SW --> WF([Workflow Loaded])
-        RW --> WF
-        EW --> Done([Workflow Complete])
+        DS -->|"has target_workflow"| DW[01-dispatch-workflow]
+        
+        DW --> Done([Client Workflow Managed])
     end
     
-    style SW fill:#e1f5fe
-    style RW fill:#e1f5fe
-    style EW fill:#e1f5fe
+    style DS fill:#e1f5fe
+    style DW fill:#e1f5fe
 ```
 
 ## Activities
@@ -260,6 +259,5 @@ Activities are matched via these patterns:
 
 | Pattern | Activity |
 |---------|----------|
-| start a workflow, begin workflow, execute workflow, run workflow | `start-workflow` |
-| resume workflow, continue workflow, pick up where I left off | `resume-workflow` |
-| end workflow, finish workflow, complete workflow, we're done | `end-workflow` |
+| start a workflow, resume a workflow, continue a workflow, work on | `discover-session` |
+| dispatch the workflow, start the target workflow, begin the client workflow | `dispatch-workflow` |
