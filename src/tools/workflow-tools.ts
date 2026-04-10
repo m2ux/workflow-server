@@ -392,7 +392,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'Create a client session for a target workflow and return a dispatch package for a sub-agent. ' +
     'Used by the meta orchestrator to dispatch a client workflow to a new agent. Creates an independent session for the target workflow, ' +
     'stores a parent_sid reference for trace correlation, and returns everything the orchestrator needs to hand off to a sub-agent: ' +
-    'the client session token, session ID, workflow metadata, initial activity, and a pre-composed worker prompt. ' +
+    'the client session token, session ID, workflow metadata, initial activity, and a pre-composed client prompt. ' +
     'The parent session token is required — it establishes the parent-child relationship for trace correlation only; ' +
     'the child session does NOT inherit the parent\'s session state.',
     {
@@ -437,15 +437,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const decodedClient = await decodeSessionToken(advancedClientToken);
       const initialActivity = workflow.initialActivity || (workflow.activities.length > 0 ? (workflow.activities[0]?.id ?? '') : '');
 
-      // Load the worker prompt template from the workflow resource (meta/10)
+      // Load the client prompt template from the workflow resource (meta/10)
       // rather than hardcoding it in the tool implementation.
       const templateResult = await readResourceRaw(config.workflowDir, 'meta', '10');
       if (!templateResult.success) {
-        throw new Error(`Failed to load worker prompt template (meta/10): ${templateResult.error}`);
+        throw new Error(`Failed to load client prompt template (meta/10): ${templateResult.error}`);
       }
 
       const template = templateResult.value.content;
-      const workerPrompt = template
+      const clientPrompt = template
         .replace(/\{workflow_id\}/g, workflow_id)
         .replace(/\{activity_id\}/g, initialActivity)
         .replace(/\{initial_activity\}/g, initialActivity)
@@ -463,7 +463,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           description: workflow.description,
         },
         initial_activity: initialActivity,
-        worker_prompt: workerPrompt,
+        client_prompt: clientPrompt,
       };
 
       if (variables && Object.keys(variables).length > 0) {
