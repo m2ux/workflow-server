@@ -51,6 +51,10 @@
           "$ref": "condition.schema.json",
           "description": "Condition that must be true for this step to execute. If false, the step is skipped."
         },
+        "checkpoint": {
+          "type": "string",
+          "description": "Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step."
+        },
         "required": {
           "type": "boolean",
           "default": true

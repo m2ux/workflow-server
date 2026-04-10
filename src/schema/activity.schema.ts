@@ -26,6 +26,7 @@ export const StepSchema = z.object({
   name: z.string().describe('Human-readable step name'),
   description: z.string().optional().describe('Detailed guidance for executing this step'),
   skill: z.string().optional().describe('Skill ID to apply for this step'),
+  checkpoint: z.string().optional().describe('Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step.'),
   required: z.boolean().default(true),
   condition: ConditionSchema.optional().describe('Condition that must be true for this step to execute'),
   actions: z.array(ActionSchema).optional(),
