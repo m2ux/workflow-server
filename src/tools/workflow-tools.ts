@@ -411,7 +411,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         console.warn(`[dispatch_workflow] Workflow '${workflow_id}' has no version defined; version drift detection will be unreliable.`);
       }
 
-      const clientToken = await createSessionToken(workflow_id, workflow.version ?? '0.0.0', parentToken.sid);
+      const clientToken = await createSessionToken(workflow_id, workflow.version ?? '0.0.0', `client-${parentToken.sid.slice(0, 8)}`, parentToken.sid);
 
       const advancedClientToken = await advanceToken(clientToken, {
         aid: `client-${parentToken.sid.slice(0, 8)}`,
