@@ -140,7 +140,7 @@ The token payload carries:
 - Agents cannot tamper with token fields — modifying any field invalidates the signature
 - Each tool call produces a new token with an incremented counter, ensuring tokens are unique per exchange
 - The `sid` field binds all tool calls to a single session, enabling trace correlation
-- The `aid` field distinguishes orchestrator from worker calls in multi-agent execution patterns
+- The `aid` field distinguishes orchestrator from worker calls in multi-agent execution patterns. The `dispatch_workflow` tool creates distinct sessions linked to a parent `sid` to ensure cross-agent execution trace isolation.
 - The `pcp` field blocks activity transitions until all required checkpoints are resolved via `respond_checkpoint`
 
 **How it works:** The server verifies the HMAC signature on every tool call before processing. Invalid signatures cause immediate rejection.

@@ -17,6 +17,8 @@ No session token required.
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `start_session` | `workflow_id`, `agent_id`, `session_token?` | Start a new session or inherit an existing one. For fresh sessions, provide `workflow_id` and `agent_id`. For worker dispatch or resume, also provide `session_token` — the returned token inherits all state (`sid`, `act`, `pcp`, `pcpt`, `cond`, `v`) with `agent_id` stamped into the signed `aid` field. `workflow_id` is validated against the token's workflow. |
+| `dispatch_workflow` | `workflow_id`, `parent_session_token`, `variables?` | Create a client session for a target workflow and return a dispatch package for a sub-agent. The client session is independent and does NOT inherit state from the parent session. Returns the `client_session_token`, `client_session_id`, `parent_session_id`, workflow metadata, `initial_activity`, and a pre-composed `worker_prompt`. |
+| `get_workflow_status` | `client_session_token?`, `client_session_id?`, `parent_session_token?` | Check the status of a dispatched client workflow session. Returns status (active/blocked/completed), current activity, completed activities, last checkpoint info, and current variable state. Requires either `client_session_token`, or `client_session_id` + `parent_session_token` for authorization. |
 
 ### Workflow Tools
 
