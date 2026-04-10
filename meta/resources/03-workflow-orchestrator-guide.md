@@ -12,10 +12,10 @@ This guide is exclusively for the **workflow-orchestrator** (the sub-agent manag
 Your role is to manage a complete client workflow. You evaluate transitions, dispatch `activity-worker`s to execute activities, and bubble checkpoints up to your parent (`meta-orchestrator`).
 
 **Bootstrapping Checklist:**
-1. Call `start_session` (pass the `session_token` provided to you in your prompt by the meta-orchestrator).
-2. Save the returned `session_token` — it is required for all subsequent calls.
-3. Call `get_skills` to load the behavioral protocols.
-4. Call `get_workflow` to understand the structure and locate the `initialActivity`.
+1. Call `start_session({ workflow_id: "{workflow_id}", session_token: "{client_session_token}", agent_id: "{agent_id}" })` to activate the session.
+2. Call `get_skill({ session_token: "<token>" })` to load your overarching orchestration instructions.
+3. Call `get_workflow({ session_token: "<token>", summary: true })` to load the workflow structure.
+4. Begin the orchestration loop at `{initial_activity}` by calling `next_activity({ session_token: "<token>", activity_id: "{initial_activity}" })`.
 
 ## 2. Start Workflow Mechanics
 
@@ -60,12 +60,17 @@ When resuming with existing changes, document them in your updates:
 
 ## 5. Checkpoint Handling
 
-- You **must not** call `yield_checkpoint`. Checkpoints are yielded by the worker.
-- When an `activity-worker` encounters a checkpoint, it will yield `checkpoint_pending` to you, including a `checkpoint_handle`.
-- You must catch this yield, use `present_checkpoint` to load the full details using the `checkpoint_handle`, and yield it **up** to the `meta-orchestrator` in exactly the same format (`<checkpoint_yield>`).
-- When the `meta-orchestrator` resolves the checkpoint, it will pass the response back to you.
-- You must call `respond_checkpoint` using the `checkpoint_handle` to record the decision and unblock the token.
-- You must pass the variable updates (effects) returned by `respond_checkpoint` back down to the `activity-worker` so it can update its state and resume.
+- You **must not** call `respond_checkpoint`. You are a sub-agent. If your worker yields a checkpoint to you, you MUST yield `checkpoint_pending` up to your parent orchestrator in your final text response containing the handle. You MUST NOT try to resolve it yourself using `respond_checkpoint` or call `present_checkpoint`.
+- **Yield Format (CRITICAL):** You MUST yield exactly ONE checkpoint at a time. If multiple are pending, pick the first one and STOP. To yield a checkpoint, you MUST output a raw JSON block wrapped in `<checkpoint_yield>` tags containing ONLY the `checkpoint_handle`. You SHOULD include prose contextual information to the orchestrator BEFORE the JSON block. Wait for the parent to resume you. Do NOT attempt to yield multiple checkpoints in a single response.
+  Example:
+  ```json
+  <checkpoint_yield>
+  {
+    "checkpoint_handle": "..."
+  }
+  </checkpoint_yield>
+  ```
+- **Resume Protocol:** When your parent orchestrator resumes you after the checkpoint resolution, you MUST use `respond_checkpoint` with the `checkpoint_handle` to unlock the token and get the variable updates. Pass those variable updates down to your `activity-worker` and resume it.
 
 ## 6. End Workflow Mechanics
 
@@ -101,32 +106,3 @@ If a client workflow needs to dispatch a sub-workflow:
 2. Spawn a NEW `workflow-orchestrator` for the sub-workflow.
 3. Manage the child inline, bubbling its checkpoints further up the chain to the `meta-orchestrator`.
 
-## 9. Activity Worker Prompt Template
-
-Used to generate the prompt for dispatching an `activity-worker`.
-
-```
-You are an autonomous worker agent executing a single activity for the `{workflow_id}` workflow.
-
-## Session
-
-- **Workflow ID:** `{workflow_id}`
-- **Agent ID:** `{agent_id}`
-- **Activity:** `{initial_activity}`
-
-## Bootstrap Instructions
-
-1. Call `start_session` passing the provided `workflow_id` and `agent_id` and **no** session token to start a fresh session.
-2. Save the returned `session_token` — it is required for all subsequent calls.
-3. Call `get_skill` to load the activity's primary skill
-
-## Rules
-
-- **Use ONLY the client session token provided above.** Do NOT reference or use any other session token.
-- **FORBIDDEN TOOL CALLS:** You are an activity worker. You MUST NEVER call `respond_checkpoint`.
-- **Yield Format (CRITICAL):** When you encounter a blocking checkpoint, you MUST call `yield_checkpoint`. To yield the checkpoint to the orchestrator, you MUST output a raw JSON block wrapped in `<checkpoint_yield>` tags containing the checkpoint details and the `checkpoint_handle`. You SHOULD include prose contextual information to the orchestrator BEFORE the JSON block. Wait for the orchestrator to resolve the checkpoint.
-- **Resume Protocol:** When the orchestrator resumes you with the decision, you MUST call `resume_checkpoint` using the `checkpoint_handle` to confirm the lock is cleared. Apply any variable updates provided by the orchestrator and proceed.
-- When the activity completes, report `activity_complete` to the orchestrator with `variables_changed`, `artifacts_produced`, `steps_completed`, and `checkpoints_responded`.
-
-You are responsible for executing this specific activity *ONLY*. Do NOT evaluate transitions or continue to the next activity.
-```

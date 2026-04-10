@@ -32,7 +32,7 @@ protocol:
     - "If a step specifies a 'checkpoint' ID, you MUST yield that checkpoint to the orchestrator BEFORE executing the step's logic."
     - "Track completed steps in a steps_completed list"
   yield-checkpoint[4]:
-    - "Before executing a step that defines a 'checkpoint' ID, call yield_checkpoint({ session_token, checkpoint_id }). STOP and yield checkpoint_pending to the orchestrator. You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint details and the checkpoint_handle returned by yield_checkpoint. You SHOULD include prose contextual information BEFORE the JSON block."
+    - "Before executing a step that defines a 'checkpoint' ID, call yield_checkpoint({ session_token, checkpoint_id }). STOP and yield checkpoint_pending to the orchestrator. You MUST format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing ONLY the checkpoint_handle returned by yield_checkpoint. You SHOULD include prose contextual information BEFORE the JSON block."
     - "If multiple checkpoints are pending, you MUST yield ONLY the first one. Stop and wait for the parent to resume you with the response before proceeding."
     - "CRITICAL: The worker MUST NOT call respond_checkpoint. Checkpoint resolution is solely the orchestrator's responsibility."
     - "On resume with checkpoint_response, call resume_checkpoint({ session_token: checkpoint_handle }). Apply effects and continue from where paused"
