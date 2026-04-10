@@ -12,8 +12,7 @@ export interface SessionPayload {
   ts: number;
   sid: string;
   aid: string;
-  pcp: string[];
-  pcpt: number;
+  bcp?: string | undefined;
   psid?: string | undefined;
 }
 
@@ -23,8 +22,7 @@ export interface SessionAdvance {
   skill?: string;
   cond?: string;
   aid?: string;
-  pcp?: string[];
-  pcpt?: number;
+  bcp?: string | null; // using null to allow clearing the optional field
   psid?: string;
 }
 
@@ -46,8 +44,7 @@ const SessionPayloadSchema = z.object({
   ts: z.number(),
   sid: z.string(),
   aid: z.string(),
-  pcp: z.array(z.string()),
-  pcpt: z.number(),
+  bcp: z.string().optional(),
   psid: z.string().optional(),
 });
 
@@ -89,8 +86,6 @@ export async function createSessionToken(workflowId: string, workflowVersion: st
     ts: Math.floor(Date.now() / 1000),
     sid: randomUUID(),
     aid: agentId,
-    pcp: [],
-    pcpt: 0,
   };
   if (parentSid !== undefined) {
     payload.psid = parentSid;
@@ -113,8 +108,7 @@ export async function advanceToken(token: string, updates?: SessionAdvance, deco
     ...(updates?.skill !== undefined && { skill: updates.skill }),
     ...(updates?.cond !== undefined && { cond: updates.cond }),
     ...(updates?.aid !== undefined && { aid: updates.aid }),
-    ...(updates?.pcp !== undefined && { pcp: updates.pcp }),
-    ...(updates?.pcpt !== undefined && { pcpt: updates.pcpt }),
+    ...(updates?.bcp !== undefined && { bcp: updates.bcp === null ? undefined : updates.bcp }),
     ...(updates?.psid !== undefined && { psid: updates.psid }),
   };
   return encode(advanced);
@@ -127,18 +121,16 @@ export const sessionTokenParam = {
 };
 
 /**
- * Throws if the token has unresolved checkpoints.
+ * Throws if the token has an active blocking checkpoint.
  * Call this in every tool handler that accepts session_token,
- * EXCEPT respond_checkpoint (the resolution mechanism) and
- * get_checkpoint (needed to load checkpoint details for presentation).
+ * EXCEPT present_checkpoint (the resolution mechanism) and
+ * respond_checkpoint.
  */
 export function assertCheckpointsResolved(token: SessionPayload): void {
-  if (token.pcp.length > 0) {
+  if (token.bcp) {
     throw new Error(
-      `Blocked: ${token.pcp.length} unresolved checkpoint(s) on activity '${token.act}' ` +
-      `[${token.pcp.join(', ')}]. ` +
-      `All tools are gated until every checkpoint is resolved via respond_checkpoint. ` +
-      `Use get_checkpoint to load checkpoint details for presentation to the user.`
+      `Blocked: Active checkpoint '${token.bcp}' on activity '${token.act}'. ` +
+      `All tools are gated until the checkpoint is resolved.`
     );
   }
 }

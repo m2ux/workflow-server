@@ -165,47 +165,43 @@ describe('session token utilities', () => {
     });
   });
 
-  describe('pending checkpoints (pcp/pcpt)', () => {
-    it('should default pcp to empty array', async () => {
+  describe('active blocking checkpoint (bcp)', () => {
+    it('should default bcp to undefined', async () => {
       const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
       const payload = await decodeSessionToken(token);
-      expect(payload.pcp).toEqual([]);
-      expect(payload.pcpt).toBe(0);
+      expect(payload.bcp).toBeUndefined();
     });
 
-    it('should set pcp via advanceToken', async () => {
+    it('should set bcp via advanceToken', async () => {
       const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token, { pcp: ['cp-1', 'cp-2'], pcpt: 1000 });
+      const advanced = await advanceToken(token, { bcp: 'cp-1' });
       const payload = await decodeSessionToken(advanced);
-      expect(payload.pcp).toEqual(['cp-1', 'cp-2']);
-      expect(payload.pcpt).toBe(1000);
+      expect(payload.bcp).toEqual('cp-1');
     });
 
-    it('pcp should persist across advance when not updated', async () => {
+    it('bcp should persist across advance when not updated', async () => {
       const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const step1 = await advanceToken(token, { pcp: ['cp-1'], pcpt: 500 });
+      const step1 = await advanceToken(token, { bcp: 'cp-1' });
       const step2 = await advanceToken(step1, { act: 'some-activity' });
       const payload = await decodeSessionToken(step2);
-      expect(payload.pcp).toEqual(['cp-1']);
-      expect(payload.pcpt).toBe(500);
+      expect(payload.bcp).toEqual('cp-1');
     });
 
-    it('pcp should be clearable', async () => {
+    it('bcp should be clearable using null', async () => {
       const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const withCp = await advanceToken(token, { pcp: ['cp-1'], pcpt: 500 });
-      const cleared = await advanceToken(withCp, { pcp: [], pcpt: 0 });
+      const withCp = await advanceToken(token, { bcp: 'cp-1' });
+      const cleared = await advanceToken(withCp, { bcp: null });
       const payload = await decodeSessionToken(cleared);
-      expect(payload.pcp).toEqual([]);
-      expect(payload.pcpt).toBe(0);
+      expect(payload.bcp).toBeUndefined();
     });
 
-    it('tampering with pcp should fail HMAC verification', async () => {
+    it('tampering with bcp should fail HMAC verification', async () => {
       const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token, { pcp: ['cp-1'], pcpt: 100 });
+      const advanced = await advanceToken(token, { bcp: 'cp-1' });
       const [b64] = advanced.split('.');
       const json = Buffer.from(b64!, 'base64url').toString('utf8');
       const payload = JSON.parse(json);
-      payload.pcp = [];
+      payload.bcp = undefined;
       const tampered = Buffer.from(JSON.stringify(payload)).toString('base64url');
       const sig = advanced.split('.')[1];
       await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('signature verification failed');

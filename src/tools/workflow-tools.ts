@@ -102,24 +102,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
-      if (token.pcp.length > 0 && activity_id !== token.act) {
-        const fromActivity = getActivity(result.value, token.act);
-        const cpDetails = token.pcp.map(cpId => {
-          const cp = fromActivity?.checkpoints?.find(c => c.id === cpId);
-          if (!cp) return `  - respond_checkpoint({ checkpoint_id: "${cpId}", option_id: "<user_choice>" })`;
-          if (cp.condition) {
-            return `  - respond_checkpoint({ checkpoint_id: "${cpId}", option_id: "<user_choice>" })  — or condition_not_met: true if condition not met (conditional checkpoint)`;
-          }
-          if (cp.blocking === false && cp.defaultOption && cp.autoAdvanceMs) {
-            return `  - respond_checkpoint({ checkpoint_id: "${cpId}", option_id: "<user_choice>" })  — or auto_advance: true after ${cp.autoAdvanceMs}ms (non-blocking, default: "${cp.defaultOption}")`;
-          }
-          const optionIds = cp.options.map(o => o.id);
-          return `  - respond_checkpoint({ checkpoint_id: "${cpId}", option_id: "<user_choice>" })  — blocking, options: [${optionIds.join(', ')}]`;
-        });
+      if (token.bcp) {
         throw new Error(
-          `Cannot transition to '${activity_id}': ${token.pcp.length} unresolved checkpoint(s) ` +
-          `on activity '${token.act}'. Resolve each by calling respond_checkpoint with the current session_token:\n` +
-          cpDetails.join('\n')
+          `Cannot transition to '${activity_id}': Active checkpoint '${token.bcp}' ` +
+          `on activity '${token.act}'. The orchestrator must resolve it by calling respond_checkpoint.`
         );
       }
       const activity = getActivity(result.value, activity_id);
@@ -155,15 +141,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...activityManifestWarnings,
       );
 
-      const requiredCps = (activity.checkpoints ?? [])
-        .filter(c => c.required !== false)
-        .map(c => c.id);
-
       const advancedToken = await advanceToken(session_token, {
         act: activity_id,
         cond: transition_condition ?? '',
-        pcp: requiredCps,
-        pcpt: requiredCps.length > 0 ? Math.floor(Date.now() / 1000) : 0,
+        bcp: null, // Clear any blocking checkpoint on transition
       });
 
       const meta: Record<string, unknown> = { session_token: advancedToken, validation };
@@ -194,53 +175,118 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('get_checkpoint', 'Load the full details of a specific checkpoint within the current activity. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any blocking or auto-advance configuration. Use this when you need to present a checkpoint interaction to the user. Checkpoint summaries are included in the activity definition from next_activity — use this tool when you need complete details for presentation.',
+  server.tool('yield_checkpoint', 'Yield execution to the orchestrator at a checkpoint. Call this tool when you encounter a checkpoint step during activity execution. It returns a checkpoint_handle that you MUST yield back to the orchestrator via a <checkpoint_yield> block.',
     {
       ...sessionTokenParam,
-      checkpoint_id: z.string().describe('Checkpoint ID'),
+      checkpoint_id: z.string().describe('The ID of the checkpoint being yielded.'),
     },
-    withAuditLog('get_checkpoint', async ({ session_token, checkpoint_id }) => {
+    withAuditLog('yield_checkpoint', async ({ session_token, checkpoint_id }) => {
       const token = await decodeSessionToken(session_token);
+      
+      if (token.bcp) {
+        throw new Error(`Cannot yield checkpoint '${checkpoint_id}': Checkpoint '${token.bcp}' is already active and awaiting orchestrator resolution.`);
+      }
+
       const workflow_id = token.wf;
       const activity_id = token.act;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
+      
       const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
-      if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id}`);
+      if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id} in activity ${activity_id}`);
 
       const validation = buildValidation(
         validateWorkflowVersion(token, result.value),
       );
 
-      const advancedToken = await advanceToken(session_token);
+      const advancedToken = await advanceToken(session_token, { bcp: checkpoint_id });
+      
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, session_token: advancedToken }) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ 
+          status: 'yielded',
+          checkpoint_id,
+          checkpoint_handle: advancedToken,
+          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this checkpoint_handle to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.` 
+        }) }],
         _meta: { session_token: advancedToken, validation },
+      };
+    }, traceOpts));
+
+  server.tool('resume_checkpoint', 'Resume execution after the orchestrator resolves a checkpoint. Call this tool when the orchestrator resumes you with a checkpoint response. It verifies the checkpoint was resolved and returns any variable updates you need to apply to your state.',
+    {
+      ...sessionTokenParam,
+    },
+    withAuditLog('resume_checkpoint', async ({ session_token }) => {
+      const token = await decodeSessionToken(session_token);
+      
+      if (token.bcp) {
+        throw new Error(`Cannot resume: Checkpoint '${token.bcp}' is still active and has not been resolved by the orchestrator.`);
+      }
+
+      const validation = buildValidation();
+      const advancedToken = await advanceToken(session_token);
+      
+      // Note: The orchestrator passes variable effects directly in its prompt when resuming the worker.
+      // This tool exists to verify the lock is cleared and advance the token sequence.
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify({ 
+          status: 'resumed',
+          message: `Checkpoint cleared. You may proceed to the next step. Note any variable updates provided by the orchestrator.` 
+        }) }],
+        _meta: { session_token: advancedToken, validation },
+      };
+    }, traceOpts));
+
+  server.tool('present_checkpoint', 'Load the full details of a specific checkpoint yielded by a worker. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any blocking or auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield.',
+    {
+      checkpoint_handle: z.string().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint.'),
+    },
+    withAuditLog('present_checkpoint', async ({ checkpoint_handle }) => {
+      // The handle is just the worker's session token encoded.
+      const token = await decodeSessionToken(checkpoint_handle);
+      const workflow_id = token.wf;
+      const activity_id = token.act;
+      const checkpoint_id = token.bcp;
+      
+      if (!checkpoint_id) {
+        throw new Error(`The provided checkpoint_handle does not have an active checkpoint (bcp is empty). The worker must yield a checkpoint first.`);
+      }
+
+      const result = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!result.success) throw result.error;
+      const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
+      if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id} in activity ${activity_id}`);
+
+      const validation = buildValidation(
+        validateWorkflowVersion(token, result.value),
+      );
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, checkpoint_handle }) }],
+        _meta: { validation },
       };
     }, traceOpts));
 
   const MIN_RESPONSE_SECONDS = config.minCheckpointResponseSeconds ?? 3;
 
   server.tool('respond_checkpoint',
-    'Submit a checkpoint response to clear the checkpoint gate. When next_activity loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token and block further transitions until resolved. Call this tool for each pending checkpoint before calling next_activity for the next activity. ' +
+    'Submit a checkpoint response to clear the checkpoint gate. Call this tool after presenting a yielded checkpoint to the user. This unblocks the worker and returns the variable updates (effects) you must communicate back to the worker. ' +
     'Exactly one of option_id, auto_advance, or condition_not_met must be provided. ' +
     'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
     'auto_advance: use the checkpoint\'s defaultOption (only for non-blocking checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
     'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field).',
     {
-      ...sessionTokenParam,
-      checkpoint_id: z.string().describe('The checkpoint ID to respond to. Must be one of the pending checkpoint IDs from the current token.'),
+      checkpoint_handle: z.string().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint.'),
       option_id: z.string().optional().describe('The option ID selected by the user. Must match one of the checkpoint\'s defined options.'),
       auto_advance: z.boolean().optional().describe('Set to true to auto-advance a non-blocking checkpoint using its defaultOption. Only valid for checkpoints with blocking=false, defaultOption, and autoAdvanceMs. The server enforces the autoAdvanceMs timer.'),
       condition_not_met: z.boolean().optional().describe('Set to true to dismiss a conditional checkpoint whose condition was not met. Only valid for checkpoints that have a condition field.'),
     },
-    withAuditLog('respond_checkpoint', async ({ session_token, checkpoint_id, option_id, auto_advance, condition_not_met }) => {
-      const token = await decodeSessionToken(session_token);
+    withAuditLog('respond_checkpoint', async ({ checkpoint_handle, option_id, auto_advance, condition_not_met }) => {
+      const token = await decodeSessionToken(checkpoint_handle);
+      const checkpoint_id = token.bcp;
 
-      if (!token.pcp.includes(checkpoint_id)) {
-        throw new Error(
-          `Checkpoint '${checkpoint_id}' is not pending. Pending checkpoints: [${token.pcp.join(', ')}]`
-        );
+      if (!checkpoint_id) {
+        throw new Error(`The provided checkpoint_handle does not have an active checkpoint (bcp is empty). The worker must yield a checkpoint first.`);
       }
 
       const modeCount = [option_id, auto_advance, condition_not_met].filter(v => v !== undefined).length;
@@ -254,7 +300,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!checkpoint) throw new Error(`Checkpoint definition not found: ${checkpoint_id} in activity ${token.act}`);
 
       const now = Math.floor(Date.now() / 1000);
-      const elapsed = now - token.pcpt;
+      // We don't have pcpt anymore, so we estimate elapsed time since the token sequence was advanced (yield time)
+      const elapsed = now - token.ts;
       let resolvedOptionId: string | undefined;
       let effect: Record<string, unknown> | undefined;
 
@@ -306,11 +353,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      const remainingPcp = token.pcp.filter(id => id !== checkpoint_id);
-      const advancedToken = await advanceToken(session_token, {
-        pcp: remainingPcp,
-        pcpt: remainingPcp.length > 0 ? token.pcpt : 0,
-      }, token);
+      const advancedToken = await advanceToken(checkpoint_handle, { bcp: null });
 
       const validation = buildValidation(
         validateWorkflowVersion(token, result.value),
@@ -319,8 +362,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const responseData: Record<string, unknown> = {
         checkpoint_id,
         resolved: true,
-        session_token: advancedToken,
-        remaining_checkpoints: remainingPcp,
+        checkpoint_handle: advancedToken,
       };
       if (resolvedOptionId !== undefined) responseData['resolved_option'] = resolvedOptionId;
       if (effect !== undefined) responseData['effect'] = effect;
@@ -495,7 +537,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       let clientWf: string;
       let clientAct: string;
       let clientSeq: number;
-      let clientPcp: string[];
+      let clientBcp: string | undefined;
 
       if (client_session_token) {
         const token = await decodeSessionToken(client_session_token);
@@ -503,7 +545,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         clientWf = token.wf;
         clientAct = token.act;
         clientSeq = token.seq;
-        clientPcp = token.pcp;
+        clientBcp = token.bcp;
       } else {
         if (!parent_session_token) {
           throw new Error('parent_session_token is required when using client_session_id for authorization.');
@@ -517,14 +559,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         clientWf = ''; // Will be populated from trace
         clientAct = ''; // Will be populated from trace
         clientSeq = 0;
-        clientPcp = [];
+        clientBcp = undefined;
       }
 
       const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
       const workflow = wfResult.success ? wfResult.value : null;
 
       let status: string;
-      if (clientPcp && clientPcp.length > 0) {
+      if (clientBcp) {
         status = 'blocked';
       } else if (!clientAct || clientAct === '') {
         status = 'active';
