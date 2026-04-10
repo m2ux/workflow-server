@@ -21,6 +21,7 @@ steps[17]:
   - id: detect-review-mode
     name: Detect Review Mode
     description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
+    checkpoint: review-mode-detection
     condition:
       type: simple
       variable: is_review_mode
@@ -29,6 +30,7 @@ steps[17]:
   - id: capture-pr-reference
     name: Capture PR Reference
     description: "Get PR number/URL, checkout PR branch, extract associated Jira ticket from PR body or commits."
+    checkpoint: review-pr-reference
     condition:
       type: simple
       variable: is_review_mode
@@ -47,6 +49,7 @@ steps[17]:
   - id: check-issue
     name: Check for Existing Issue
     description: "Check whether the user provided an issue key or URL. If no issue reference found, present the issue-verification checkpoint. If a key is provided, detect the platform from the format: '#N' or bare number → GitHub, 'PROJ-N' → Jira."
+    checkpoint: issue-verification
     actions[1]:
       - action: set
         variable: issue_platform
@@ -73,6 +76,7 @@ steps[17]:
     name: Create Issue
     description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
     skill: create-issue
+    checkpoint: platform-selection
     condition:
       type: simple
       variable: needs_issue_creation
@@ -101,6 +105,7 @@ steps[17]:
     name: Create Feature Branch
     description: "INSIDE target_path: Create feature branch from the default branch with naming convention: type/issue-number-short-description."
     skill: manage-git
+    checkpoint: branch-check
     condition:
       type: and
       conditions[2]:
@@ -116,6 +121,7 @@ steps[17]:
     name: Check for Existing PR
     description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path. If a PR is found, set pr_exists=true and capture the PR number in existing_pr_number. If no PR is found, pr_exists remains false."
     skill: github-cli-protocol
+    checkpoint: pr-check
     condition:
       type: simple
       variable: is_review_mode
@@ -129,6 +135,7 @@ steps[17]:
     name: Create Draft PR
     description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names."
     skill: github-cli-protocol
+    checkpoint: pr-creation
     condition:
       type: and
       conditions[2]:

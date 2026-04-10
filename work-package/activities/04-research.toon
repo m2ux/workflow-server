@@ -22,10 +22,12 @@ steps[9]:
     name: Synthesize findings
     description: "Connect findings to requirements: which patterns apply, what modifications needed, risks, success metrics"
     skill: research-knowledge-base
+    checkpoint: research-findings
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during research synthesis. Categories: Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment."
     skill: review-assumptions
+    checkpoint: research-focus
   - id: document
     name: Create research document
     description: "Create knowledge base research document"
@@ -75,6 +77,7 @@ loops[2]:
         name: Present assumption to user
         description: "Present the current open assumption via the research-assumption-interview checkpoint. Include the assumption statement, category, and any partial evidence."
         skill: review-assumptions
+        checkpoint: research-assumption-interview
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md with the user's response: if resolved inline, mark as Resolved with the user's explanation. If deferred, mark as Deferred-to-Stakeholder."

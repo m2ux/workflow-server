@@ -48,6 +48,7 @@ steps[12]:
     name: Create or Augment Comprehension Artifact
     description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary. Initialize the 'Open Questions' section (markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section) between Domain Concept Mapping and Deep-Dive Sections. Populate it with questions and gaps identified during the architecture survey — do not leave it empty."
     skill: manage-artifacts
+    checkpoint: architecture-confirmed
     actions[1]:
       - action: message
         message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name})"
@@ -147,6 +148,7 @@ loops[1]:
         name: Revise open questions
         description: "Review findings from this iteration (including portfolio lens findings) against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation — including structural properties revealed by the lenses. Write the updated section to the artifact. If all questions are now Resolved, set has_open_questions to false and needs_comprehension to false — loop exits. Otherwise present the revised table as context for the sufficiency checkpoint."
         skill: build-comprehension
+        checkpoint: comprehension-sufficient
 transitions[4]:
   - to: requirements-elicitation
     condition:

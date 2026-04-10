@@ -47,6 +47,7 @@ steps[7]:
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
     skill: review-diff
     required: true
+    checkpoint: file-index-table
   - id: code-review
     name: Code Review
     description: "Perform comprehensive code review of all implementation changes. Create code-review.md report."
@@ -98,6 +99,7 @@ steps[7]:
   - id: analyze-review-findings
     name: Analyze Review Findings
     description: "Analyze the severity of code review and test suite review findings. If critical or high-severity findings exist, recommend fix-code or improve-tests. If all findings are low/informational, recommend all-acceptable. Set recommended_review_option accordingly."
+    checkpoint: review-findings
     actions[1]:
       - action: set
         target: recommended_review_option

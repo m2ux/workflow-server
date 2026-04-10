@@ -19,10 +19,9 @@ The orchestration model uses a strict hierarchy:
 
 1. **discover** — Call first (no parameters). Returns the server info and this bootstrap procedure.
 2. **list_workflows** — Match the user's goal to a workflow from the returned list. No session token needed.
-3. **start_session(`workflow_id: "meta"`)** — Start a meta session.
-4. **get_skills(`session_token`)** — Load behavioral protocols for the meta session.
-5. **get_workflow(`session_token`, `summary=true`)** — Load the meta workflow structure.
-6. **next_activity(`session_token`, `activity_id`)** — Execute either `start-workflow` or `resume-workflow` based on the user's intent. MUST use the initialActivity ID from `get_workflow` for the first call. 
+3. **start_session(`workflow_id: "meta"`,`"agent_id: "meta"`)** — Start a meta session.
+4. **get_workflow(`session_token`, `summary=true`)** — Load the meta workflow structure.
+5  **next_activity(`session_token`, `activity_id`)** — Execute either `start-workflow` or `resume-workflow` based on the user's intent. MUST use the initialActivity ID from `get_workflow` for the first call. 
 
 ## 3. Workflow Discovery and Goal Resolution
 
@@ -48,7 +47,7 @@ The `meta-orchestrator` does NOT manage transitions or poll. It dispatches the `
 
 ## 5. The Checkpoint Gate
 
-**The top-level `meta-orchestrator` is the ONLY agent permitted to call `AskQuestion`.**
+**The top-level `meta-orchestrator` is the ONLY agent permitted to call `AskQuestion` (Cursor) or `AskUserQuestion` (Claude Code) .**
 
 When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **All tools are blocked until every checkpoint is resolved via `respond_checkpoint`.**
 
