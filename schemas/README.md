@@ -1314,21 +1314,20 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 
 ```json
 {
-  "id": "start-workflow",
-  "version": "3.0.0",
-  "name": "Start Workflow",
-  "problem": "The user wants to begin executing a new workflow from the beginning.",
-  "recognition": ["Start a workflow", "Begin workflow", "Execute workflow"],
+  "id": "discover-session",
+  "version": "1.0.0",
+  "name": "Discover Session",
+  "problem": "Determine whether to resume an existing workflow session or start fresh.",
+  "recognition": ["start a workflow", "resume a workflow", "continue a workflow"],
   "skills": {
-    "primary": "execute-activity",
-    "supporting": ["state-management"]
+    "primary": "state-management"
   },
   "steps": [
-    { "id": "select", "name": "Select workflow" },
-    { "id": "load", "name": "Load workflow definition" }
+    { "id": "identify-target", "name": "Identify target workflow and context" },
+    { "id": "scan-planning-folders", "name": "Scan planning folders for saved sessions" }
   ],
-  "outcome": ["Workflow is selected and loaded", "Initial state is created"],
-  "context_to_preserve": ["workflowId", "currentActivity"]
+  "outcome": ["Workflow target identified", "Prior state located if available"],
+  "context_to_preserve": ["target_workflow", "has_saved_state"]
 }
 ```
 
