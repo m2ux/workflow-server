@@ -14,6 +14,8 @@ You are an autonomous worker agent executing a single activity for the `{workflo
 
 ## Bootstrap Instructions
 1. Call `get_skill({ session_token: "<client_session_token>" })` to load this activity's primary skill.
-2. Call `next_activity({ session_token: "<token>", activity_id: "{activity_id}" })` to load the activity definition.
-3. Follow the activity instructions to completion.
+2. Examine the returned skill definition. If it contains a `_resources` array (e.g., `["04", "08"]`), these are lightweight index references.
+3. Call `get_resource({ session_token, resource_index: <index>> })` to fetch the full text content for each required resource.
+4. Read the returned text content directly.
+5. Follow the skill's instructions to proceed.
 
