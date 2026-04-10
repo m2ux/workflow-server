@@ -29,6 +29,7 @@ loops[3]:
       - id: implement-task
         name: Implement task
         skill: implement-task
+        checkpoint: switch-model-pre-impl
       - id: run-tests
         name: Run tests
         skill: validate-build
@@ -69,6 +70,7 @@ loops[3]:
         name: Present assumption to user
         description: "Present the current open assumption via the implementation-assumption-interview checkpoint."
         skill: review-assumptions
+        checkpoint: implementation-assumption-interview
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
@@ -78,6 +80,7 @@ steps[4]:
     name: Reconcile assumptions
     description: "Classify all accumulated implementation assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
     skill: reconcile-assumptions
+    checkpoint: confirm-implementation
   - id: present-resolved-assumptions
     name: Present resolved assumptions
     description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."
@@ -91,6 +94,7 @@ steps[4]:
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Record all implementation assumptions, reconciliation outcomes, and user interview responses in the assumptions log."
+    checkpoint: switch-model-post-impl
 checkpoints[4]:
   - id: switch-model-pre-impl
     name: Switch Model for Implementation

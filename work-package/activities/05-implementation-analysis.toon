@@ -55,6 +55,7 @@ steps[12]:
     name: Create analysis document
     description: "Create implementation analysis document"
     skill: manage-artifacts
+    checkpoint: analysis-confirmed
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add analysis-phase assumptions to the assumptions log"
@@ -100,6 +101,7 @@ loops[2]:
         name: Present assumption to user
         description: "Present the current open assumption via the analysis-assumption-interview checkpoint."
         skill: review-assumptions
+        checkpoint: analysis-assumption-interview
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."

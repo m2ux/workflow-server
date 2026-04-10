@@ -14,10 +14,12 @@ steps[6]:
     name: Stakeholder Discussion
     description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
     skill: elicit-requirements
+    checkpoint: stakeholder-transcript
   - id: elicit-requirements
     name: Elicit requirements through conversation
     description: "Iterate through question domains, asking one question at a time. Use stakeholder transcript as context."
     skill: elicit-requirements
+    checkpoint: domain-iteration
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
@@ -34,6 +36,7 @@ steps[6]:
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
     skill: reconcile-assumptions
+    checkpoint: elicitation-complete
 artifacts[1]:
   - id: requirements-document
     name: requirements-elicitation.md

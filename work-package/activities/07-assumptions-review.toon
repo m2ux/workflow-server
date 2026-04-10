@@ -37,6 +37,7 @@ steps[4]:
     name: Post resolution summary to issue tracker
     description: "Post a brief summary of assumption resolutions to the issue tracker ONLY when deferred assumptions exist that require external stakeholder attention. If all assumptions were accepted or rejected during the interview, skip posting — the decisions are recorded in the assumptions log and no external review is needed. Uses GitHub gh CLI or Jira API depending on issue_platform."
     skill: atlassian-operations
+    checkpoint: post-summary-review
     condition:
       type: and
       conditions[3]:
@@ -62,6 +63,7 @@ loops[1]:
         name: Present assumption with rationale
         description: "Yield checkpoint_pending for the current assumption. The context must include: the assumption ID, the assumption statement, and a rationale paragraph (2-4 sentences) that explains why this assumption was made, what evidence supports it, and what happens if it's wrong."
         skill: review-assumptions
+        checkpoint: assumption-decision
       - id: record-decision
         name: Record user decision
         description: "Record the user's response for this assumption. If rejected, capture the correction text."

@@ -34,6 +34,7 @@ steps[12]:
   - id: present-summary-to-user
     name: Present Summary to User
     description: "Show the review summary for confirmation before posting."
+    checkpoint: review-summary-approval
     condition:
       type: simple
       variable: is_review_mode
@@ -84,6 +85,7 @@ steps[12]:
     name: Await Manual Review
     description: "Wait for PR to receive manual review from team members."
     skill: respond-to-pr-review
+    checkpoint: review-received
   - id: process-review-comments
     name: Process Review Comments
     description: "Analyze and respond to PR review feedback."
@@ -95,6 +97,7 @@ steps[12]:
   - id: analyze-review-outcome
     name: Analyze Review Outcome
     description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly."
+    checkpoint: review-outcome
     actions[1]:
       - action: set
         target: recommended_outcome

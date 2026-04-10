@@ -33,9 +33,11 @@ steps[9]:
     name: Classify Problem Type
     description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
     skill: classify-problem
+    checkpoint: classification-confirmed
   - id: determine-path
     name: Determine Workflow Path
     description: "Based on problem complexity and clarity, determine which optional activities are needed."
+    checkpoint: workflow-path-selected
     actions[1]:
       - action: set
         variable: needs_comprehension
@@ -64,6 +66,7 @@ steps[9]:
     name: Assess Ticket Completeness
     description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
     skill: classify-problem
+    checkpoint: ticket-completeness
     condition:
       type: simple
       variable: is_review_mode
