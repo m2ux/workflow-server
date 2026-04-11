@@ -22,18 +22,3 @@ The top-level `meta-orchestrator` starts a client workflow by calling `dispatch_
 The `meta-orchestrator` does NOT manage transitions or poll. It dispatches the `workflow-orchestrator` and awaits the result:
 - **workflow_complete:** Apply `variables_changed` to session state, record completion, proceed to end-workflow.
 
-## 5. The Checkpoint Gate
-
-**The top-level `meta-orchestrator` is the ONLY agent permitted to call `AskQuestion` (Cursor) or `AskUserQuestion` (Claude Code) .**
-
-When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **All tools are blocked until every checkpoint is resolved via `respond_checkpoint`.**
-
-When the `workflow-orchestrator` (or its worker) needs user input, it yields a raw JSON block wrapped in `<checkpoint_yield>` tags.
-
-1. The `meta-orchestrator` parses this JSON block.
-2. The `meta-orchestrator` populates and calls the `AskQuestion` tool using the parsed JSON.
-3. Receive the user's response from the tool.
-4. Call `respond_checkpoint({ session_token, checkpoint_id, option_id })`.
-5. Resume the `workflow-orchestrator` with the user's chosen option.
-
-**Strict Anti-Automation:** Agents MUST NEVER auto-resolve blocking checkpoints. If a checkpoint is `blocking: true`, it requires the user's explicit confirmation.
