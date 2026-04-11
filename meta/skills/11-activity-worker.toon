@@ -1,7 +1,7 @@
 id: activity-worker
 version: 1.1.0
 capability: "Consolidated management skill for the activity-worker role — covers activity execution, session lifecycle, and behavioral boundaries"
-description: "Single-load management skill for the activity-worker (sub-agent). Consolidates execute-activity, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
+description: "Single-load management skill for the activity-worker (sub-agent). Consolidates 11-activity-worker, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
 
 inputs[3]:
   - id: activity-id
@@ -13,7 +13,7 @@ inputs[3]:
 
 protocol:
   bootstrap-activity[2]:
-    - "Call next_activity({ session_token, activity_id }) using the token provided in your prompt to load the activity definition. Pass session_token, not workflow_id."
+    - "Call next_activity({ session_token, activity_id }) using the token provided in your prompt to load the activity definition. Pass session_token, not workflow_id. DO NOT call start_session."
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, and artifactPrefix"
   bootstrap-skill[3]:
     - "Call get_skills({ session_token }) to load workflow-level management skills. Pass session_token, not workflow_id."
@@ -77,11 +77,11 @@ rules:
     when: "Session bootstrap — load workflow-level behavioral protocols"
     params: "session_token"
   get_workflow:
-    when: "After start_session — load workflow structure and initialActivity (optional, if worker needs full workflow context)"
+    when: "After session dispatch — load workflow structure and initialActivity (optional, if worker needs full workflow context)"
     params: "session_token, summary"
   next_activity:
     when: "Transitioning to the first or next activity"
-    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls)"
+    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls), optional step_manifest and transition_condition"
   get_skill:
     when: "Loading the activity's primary context skill (no step_id), or before executing a step that declares a specific skill"
     params: "session_token, optional step_id"
