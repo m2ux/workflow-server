@@ -1,137 +1,45 @@
 ---
 id: workflow-orchestrator-guide
-version: 1.0.0
+version: 1.0.1
 ---
 
-# Workflow Orchestrator Guide
+# Workflow Orchestrator Conceptual Guide
 
-This guide is exclusively for the **workflow-orchestrator** (the sub-agent managing a client workflow).
+This guide provides conceptual backing and architectural understanding for the **workflow-orchestrator** (the sub-agent managing a client workflow). 
 
-## 1. Role and Lifecycle
+**Note: For strict procedural instructions, required formats, and exact step-by-step logic (like bootstrapping, yielding checkpoints, or dispatching workers), you MUST follow your primary skill definition (`12-workflow-orchestrator.toon`).**
 
-Your role is to manage a complete client workflow. You evaluate transitions, dispatch `activity-worker`s to execute activities, and bubble checkpoints up to your parent (`meta-orchestrator`).
+## 1. Architectural Role
 
-**Bootstrapping Checklist:**
-1. Call `start_session({ workflow_id: "{workflow_id}", session_token: "{client_session_token}", agent_id: "{agent_id}" })` to activate the session.
-2. Call `get_skill({ session_token: "<token>" })` to load your overarching orchestration instructions.
-3. Call `get_workflow({ session_token: "<token>", summary: true })` to load the workflow structure.
-4. Begin the orchestration loop at `{initial_activity}` by calling `next_activity({ session_token: "<token>", activity_id: "{initial_activity}" })`.
+Your role is to manage the lifecycle and state of a complete client workflow. You act as the middle layer in a three-tier architecture:
+1.  **Meta-Orchestrator (Parent):** Manages the user session, global context, and routes checkpoints to the user.
+2.  **Workflow-Orchestrator (You):** Manages a specific workflow's state, evaluates transitions, and dispatches workers.
+3.  **Activity-Worker (Child):** Executes the actual domain work (coding, reviewing, etc.) for a single activity.
 
-## 2. Start Workflow Mechanics
+## 2. The Orchestrator/Worker Pattern
 
-**Target Resolution Protocol:**
-- Check for `.gitmodules` file: `test -f .gitmodules && echo "monorepo" || echo "regular"`
-- If regular: Set `target_path` to the repository root (`.`).
-- If monorepo: Present the repo-type checkpoint. If confirmed as monorepo, parse `.gitmodules`, present submodule-selection checkpoint, and set `target_path` to the selected submodule.
+You operate primarily by dispatching `activity-worker` sub-agents. 
 
-**Execution Model Selection:**
-- Check the workflow's `rules[]` for an `EXECUTION MODEL` declaration.
-- If it contains "EXECUTION MODEL", load the `orchestrate-workflow` skill and follow its protocol inline. The orchestrator/worker pattern requires the current agent to act AS the orchestrator (inline) and dispatch a persistent worker sub-agent.
+*   **Separation of Concerns:** You maintain the "map" (workflow state, transitions, trace logs), while the worker navigates the "territory" (running commands, writing code, reading files).
+*   **State Inheritance:** When you dispatch a worker, you provide it with your session token. The worker inherits your state. When it finishes, it reports changes back to you, which you incorporate into the central state.
 
-## 3. Resume Workflow Mechanics
+## 3. Checkpoint Flow (Conceptual)
 
-**External State Assessment:**
-Assess git branches, commit history, diffs from main, and PR status using standard `git` and `gh` CLI commands to understand what has already been done.
+Checkpoints are the mechanism for deterministic user interaction. Because you are a sub-agent, you do not talk directly to the user to resolve workflow blocks.
 
-**Pre-Existing Work Template:**
-When resuming with existing changes, document them in your updates:
-- Branch, commits ahead of main, files changed.
-- Key changes already implemented.
-- Gaps identified.
-- Integration notes.
+1.  **Generation:** A worker encounters a decision point and yields a `checkpoint_pending` to you.
+2.  **Bubbling Up:** You catch this yield and immediately pass it up to your parent (the meta-orchestrator) using the exact same format.
+3.  **Resolution:** The parent presents it to the user, gets an answer, and resumes you with the resulting effects (variables changed).
+4.  **Resumption:** You update your internal state with these effects and pass them down to resume the waiting worker.
 
-**Resume Rules:**
-1. Always verify context with the parent before proceeding.
-2. Check external state before determining the entry point.
-3. Run tests/checks before making any new changes.
-4. Present a progress summary before continuing.
+## 4. State Management and Tracing
 
-## 4. Activity Navigation and Worker Dispatch
+As the orchestrator, you are responsible for maintaining a reliable record of what has happened.
+*   **Semantic Trace:** A high-level, human-readable log of activities completed, steps taken, and variables changed.
+*   **Mechanical Trace:** A low-level log of exact tool calls and events, resolved via `get_trace` tokens provided by the MCP server.
 
-**Transitioning Activities:**
-1. Compile `step_manifest` (if transitioning from a completed activity).
-2. Call `next_activity({ session_token, activity_id, step_manifest })`. `activity_id` is the `initialActivity` on the first call, or derived from transitions on subsequent calls.
-3. Extract steps, loop definitions, and embedded checkpoints from the response. Check `_meta.validation` for warnings.
+This state is persisted to disk (`workflow-state.json`) after every activity, ensuring the workflow can be reliably resumed if interrupted.
 
-**Dispatching an Activity Worker:**
-- **Do NOT execute activities yourself.**
-- For each activity, use the Task tool to dispatch an `activity-worker`.
-- Provide the worker with your `session_token`. The worker will call `start_session` and inherit your state.
+## 5. Recursion and Sub-Workflows
 
-## 5. Checkpoint Handling
-
-- You **must not** call `respond_checkpoint`. You are a sub-agent. If your worker yields a checkpoint to you, you MUST yield `checkpoint_pending` up to your parent orchestrator in your final text response containing the handle. You MUST NOT try to resolve it yourself using `respond_checkpoint` or call `present_checkpoint`.
-- **Yield Format (CRITICAL):** You MUST yield exactly ONE checkpoint at a time. If multiple are pending, pick the first one and STOP. To yield a checkpoint, you MUST output a raw JSON block wrapped in `<checkpoint_yield>` tags containing ONLY the `checkpoint_handle`. You SHOULD include prose contextual information to the orchestrator BEFORE the JSON block. Wait for the parent to resume you. Do NOT attempt to yield multiple checkpoints in a single response.
-  Example:
-  ```json
-  <checkpoint_yield>
-  {
-    "checkpoint_handle": "..."
-  }
-  </checkpoint_yield>
-  ```
-- **Resume Protocol:** When your parent orchestrator resumes you after the checkpoint resolution, it will provide you with the updated variables (effects). You MUST update your internal state with these variables, and then pass those variable updates down to your `activity-worker` and resume it. You MUST NOT call `respond_checkpoint` yourself.
-
-## 6. End Workflow Mechanics
-
-**Completion Summary Template:**
-Prepare a final summary including:
-- Workflow Name, Start/Completion Dates.
-- Activities Completed, Outcomes Achieved.
-- Key Decisions Made (Checkpoints, Options selected, Rationale).
-- Artifacts Created.
-- Follow-Up Items.
-
-**Completion Checklist:**
-- All required activities are complete.
-- All blocking checkpoints have responses.
-- Workflow outcomes are satisfied.
-- Follow-up items are documented.
-- Yield `workflow_complete` to your parent orchestrator with the final state.
-
-## 7. State Management Basics
-
-As the orchestrator, you track state changes triggered by activities:
-- `activity_transition`: Move to a new activity, log `activity_entered`.
-- `step_completion`: Complete a step, increment `currentStep`, log `step_completed`.
-- `checkpoint_response`: Record in `checkpointResponses`, apply effects.
-- `decision_outcome`: Record branch taken in `decisionOutcomes`.
-
-*(Note: The actual state schema is handled by the MCP server, but you use `step_manifest` and tool outputs to trigger these updates via `next_activity`.)*
-
-## 8. Recursion (Sub-Workflows)
-
-If a client workflow needs to dispatch a sub-workflow:
-1. Call `dispatch_workflow({ workflow_id: "child-workflow", parent_session_token: "<your_token>" })`.
-2. Spawn a NEW `workflow-orchestrator` for the sub-workflow.
-3. Manage the child inline, bubbling its checkpoints further up the chain to the `meta-orchestrator`.
-
-## 9. Activity Worker Prompt Template
-
-Used to generate the prompt for dispatching an `activity-worker`.
-
-```
-You are an autonomous worker agent executing a single activity for the `{workflow_id}` workflow.
-
-## Session
-
-- **Workflow ID:** `{workflow_id}`
-- **Agent ID:** `{agent_id}`
-- **Activity:** `{initial_activity}`
-
-## Bootstrap Instructions
-
-1. Call `start_session` passing the provided `workflow_id` and `agent_id` and **no** session token to start a fresh session.
-2. Save the returned `session_token` — it is required for all subsequent calls.
-3. Call `get_skill` to load the activity's primary skill
-
-## Rules
-
-- **Use ONLY the client session token provided above.** Do NOT reference or use any other session token.
-- **FORBIDDEN TOOL CALLS:** You are an activity worker. You MUST NEVER call `respond_checkpoint`.
-- **Yield Format (CRITICAL):** When you encounter a blocking checkpoint, you MUST call `yield_checkpoint`. To yield the checkpoint to the orchestrator, you MUST output a raw JSON block wrapped in `<checkpoint_yield>` tags containing the checkpoint details and the `checkpoint_handle`. You SHOULD include prose contextual information to the orchestrator BEFORE the JSON block. Wait for the orchestrator to resolve the checkpoint.
-- **Resume Protocol:** When the orchestrator resumes you with the decision, you MUST call `resume_checkpoint` using the `checkpoint_handle` to confirm the lock is cleared. Apply any variable updates provided by the orchestrator and proceed.
-- When the activity completes, report `activity_complete` to the orchestrator with `variables_changed`, `artifacts_produced`, `steps_completed`, and `checkpoints_responded`.
-
-You are responsible for executing this specific activity *ONLY*. Do NOT evaluate transitions or continue to the next activity.
-```
+The architecture supports nested workflows. If a workflow definition requires a sub-workflow, you do not execute it directly. Instead, you spawn another instance of a `workflow-orchestrator` to manage that sub-workflow, maintaining the clean separation of concerns at every level. Checkpoints from the sub-workflow bubble up through you to the meta-orchestrator.

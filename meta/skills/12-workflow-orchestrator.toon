@@ -12,14 +12,25 @@ inputs[3]:
     description: "Path to the target directory for all git operations"
 
 protocol:
+  resolve-target[3]:
+    - "Check for .gitmodules file: test -f .gitmodules && echo 'monorepo' || echo 'regular'"
+    - "If regular: Set target_path to the repository root (.)."
+    - "If monorepo: Present the repo-type checkpoint. If confirmed as monorepo, parse .gitmodules, present submodule-selection checkpoint, and set target_path to the selected submodule."
+  check-execution-model[2]:
+    - "Check the workflow's rules[] for an 'EXECUTION MODEL' declaration."
+    - "If it contains 'EXECUTION MODEL', load the orchestrate-workflow skill and follow its protocol inline. The orchestrator/worker pattern requires the current agent to act AS the orchestrator (inline) and dispatch a persistent worker sub-agent."
   load-workflow[2]:
     - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. Pass the session_token from start_session — there is no workflow_id parameter on get_workflow."
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
-  initialize-state[4]:
+  initialize-state[8]:
     - "Session discovery was handled by the discover-session activity during bootstrap. If the user chose to resume, start_session was called with a saved token and is_resuming is true. Read the state file's variables and adopt them."
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
+    - "If is_resuming, perform external state assessment: assess git branches, commit history, diffs from main, and PR status using standard git and gh CLI commands to understand what has already been done."
+    - "If is_resuming, apply resume rules: verify context with parent, check external state before determining entry point, run tests/checks before new changes, and present a progress summary."
+    - "When resuming with existing changes, use this template for updates: Branch, commits ahead of main, files changed; Key changes already implemented; Gaps identified; Integration notes."
     - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "Detect mode from user request (e.g., 'review PR' activates review mode)."
+    - "Track state changes triggered by activities: activity_transition logs activity_entered, step_completion increments currentStep and logs step_completed, decision_outcome records branch taken in decisionOutcomes."
   dispatch-activity[6]:
     - "Call next_activity({ session_token, activity_id, step_manifest, transition_condition }) to load the activity definition"
     - "Compose worker prompt using resource meta/04 (activity-worker-prompt) — do NOT inject paraphrased skill content"
@@ -53,9 +64,15 @@ protocol:
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
     - "If no transitions exist, the workflow is complete"
-  advance-or-complete[2]:
+  advance-or-complete[4]:
     - "If next activity determined: set current_activity, go to dispatch-activity"
+    - "If workflow complete, verify completion checklist: all required activities complete, all blocking checkpoints have responses, workflow outcomes satisfied, follow-up items documented."
+    - "If workflow complete, prepare final summary including: Workflow Name, Start/Completion Dates; Activities Completed, Outcomes Achieved; Key Decisions Made (Checkpoints, Options, Rationale); Artifacts Created; Follow-Up Items."
     - "If workflow complete: return { status: 'workflow_complete', final_state: ... } to the parent orchestrator."
+  handle-sub-workflows[3]:
+    - "If a client workflow needs to dispatch a sub-workflow, call dispatch_workflow({ workflow_id: 'child-workflow', parent_session_token: '<your_token>' })."
+    - "Spawn a NEW workflow-orchestrator for the sub-workflow using the task tool."
+    - "Manage the child inline, bubbling its checkpoints further up the chain to the meta-orchestrator."
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
