@@ -679,7 +679,7 @@ Activities are the execution units of a workflow. Each activity contains steps, 
       "version": "1.0.0",
       "name": "Initial Activity",
       "description": "The first activity of the workflow",
-      "skills": { "primary": "execute-activity" },
+      "skills": { "primary": "11-activity-worker" },
       "steps": [],
       "checkpoints": [],
       "transitions": []
@@ -1189,7 +1189,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "version": "1.0.0",
       "name": "Review",
       "description": "Initial review and approval",
-      "skills": { "primary": "execute-activity" },
+      "skills": { "primary": "11-activity-worker" },
       "estimatedTime": "5-10m",
       "steps": [
         {
@@ -1241,7 +1241,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "process",
       "version": "1.0.0",
       "name": "Processing",
-      "skills": { "primary": "execute-activity" },
+      "skills": { "primary": "11-activity-worker" },
       "steps": [
         {
           "id": "step-process",
@@ -1253,7 +1253,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "rejected",
       "version": "1.0.0",
       "name": "Rejection",
-      "skills": { "primary": "execute-activity" },
+      "skills": { "primary": "11-activity-worker" },
       "steps": [
         {
           "id": "step-notify",
@@ -1387,7 +1387,7 @@ A complete activity definition with workflow trigger:
   "description": "Execute each planned work package by triggering the work-package workflow",
   "problem": "Planned work packages need to be implemented one at a time",
   "skills": {
-    "primary": "execute-activity"
+    "primary": "11-activity-worker"
   },
   "triggers": [
     {
@@ -1433,7 +1433,7 @@ The skill schema (`skill.schema.json`) defines agent capabilities for workflow e
 
 ```json
 {
-  "id": "execute-activity",
+  "id": "11-activity-worker",
   "version": "2.0.0",
   "capability": "Bootstrap and execute a single workflow activity with consistent tool usage",
   "tools": {},
