@@ -7,18 +7,3 @@ version: 1.1.0
 
 This guide is exclusively for the **meta-orchestrator** (the top-level agent running the `meta` workflow).
 
-## 4. Dispatching a Client Workflow
-
-The top-level `meta-orchestrator` starts a client workflow by calling `dispatch_workflow`:
-- **dispatch_workflow(`workflow_id`, `parent_session_token`, `variables`)** — Creates a new, independent client session. It returns a dispatch package containing:
-  - `client_session_token` — the token the `workflow-orchestrator` uses
-  - `client_session_id` — the sid for trace correlation
-  - `initial_activity` — the first activity to execute
-  - `client_prompt` — the pre-composed prompt for the `workflow-orchestrator`
-- Save `client_session_token` and `client_session_id` in session state.
-- Spawn a new agent (Task/sub-agent) with the `client_prompt`.
-- **Note:** The `workflow-orchestrator` does NOT inherit the `meta-orchestrator`'s token. They are independent sessions.
-
-The `meta-orchestrator` does NOT manage transitions or poll. It dispatches the `workflow-orchestrator` and awaits the result:
-- **workflow_complete:** Apply `variables_changed` to session state, record completion, proceed to end-workflow.
-
