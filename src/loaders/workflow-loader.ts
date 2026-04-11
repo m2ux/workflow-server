@@ -326,7 +326,12 @@ function conditionToString(condition: { type: string; variable?: string; operato
 /** Validate a transition between activities */
 export function validateTransition(workflow: Workflow, fromActivityId: string, toActivityId: string): { valid: boolean; reason?: string } {
   if (!getActivity(workflow, fromActivityId)) return { valid: false, reason: `Source activity not found: ${fromActivityId}` };
-  if (!getActivity(workflow, toActivityId)) return { valid: false, reason: `Target activity not found: ${toActivityId}` };
+  
+  // end-workflow is a special terminal state, not an actual activity
+  if (toActivityId !== 'end-workflow' && !getActivity(workflow, toActivityId)) {
+    return { valid: false, reason: `Target activity not found: ${toActivityId}` };
+  }
+  
   const valid = getValidTransitions(workflow, fromActivityId);
   if (!valid.includes(toActivityId)) return { valid: false, reason: `No valid transition. Valid: ${valid.join(', ') || 'none'}` };
   return { valid: true };

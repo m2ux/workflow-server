@@ -97,7 +97,7 @@ describe('mcp-server integration', () => {
       expect(guide.discovery).toBeDefined();
       expect(typeof guide.discovery).toBe('string');
       expect(guide.discovery).toContain('start_session');
-      expect(guide.discovery).toContain('get_skills');
+      expect(guide.discovery).toContain('get_skill');
       expect(guide.available_workflows).toBeUndefined();
     });
   });
@@ -395,7 +395,7 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('workflow-orchestrator');
+      expect(skillIds).toContain('meta/workflow-orchestrator');
     });
 
     it('should error when step_id not found in activity', async () => {
@@ -546,7 +546,7 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.resource.index).toBe('meta/04');
-      expect(response.resource.id).toBe('04-gitnexus-reference');
+      expect(response.resource.id).toBe('activity-worker-prompt');
       expect(response.resource.content.length).toBeGreaterThan(0);
     });
 
@@ -580,8 +580,8 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('workflow-orchestrator');
-      expect(skillIds).not.toContain('meta-orchestrator');
+      expect(skillIds).toContain('meta/workflow-orchestrator');
+      expect(skillIds).not.toContain('meta/meta-orchestrator');
       expect(skillIds).not.toContain('create-issue');
       expect(skillIds).not.toContain('knowledge-base-search');
     });
@@ -656,7 +656,7 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const orchestrate = response.skills['workflow-orchestrator'];
+      const orchestrate = response.skills['meta/workflow-orchestrator'];
       expect(orchestrate).toBeDefined();
       const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/04');
       expect(crossWfRef).toBeDefined();

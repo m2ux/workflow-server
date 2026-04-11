@@ -8,8 +8,8 @@ const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
 describe('skill-loader', () => {
   describe('readSkill', () => {
-    it('should load a universal skill from meta workflow', async () => {
-      const result = await readSkill('state-management', WORKFLOW_DIR);
+    it('should load a meta skill directly', async () => {
+      const result = await readSkill('meta/state-management', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -18,8 +18,8 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should load 11-activity-worker as universal skill', async () => {
-      const result = await readSkill('11-activity-worker', WORKFLOW_DIR);
+    it('should load 11-activity-worker directly', async () => {
+      const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -40,7 +40,7 @@ describe('skill-loader', () => {
     });
 
     it('should load 11-activity-worker skill with protocol and tools', async () => {
-      const result = await readSkill('11-activity-worker', WORKFLOW_DIR);
+      const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -61,7 +61,7 @@ describe('skill-loader', () => {
     });
 
     it('should have tool guidance with when field', async () => {
-      const result = await readSkill('11-activity-worker', WORKFLOW_DIR);
+      const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -72,7 +72,7 @@ describe('skill-loader', () => {
     });
 
     it('should have error recovery patterns', async () => {
-      const result = await readSkill('11-activity-worker', WORKFLOW_DIR);
+      const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
