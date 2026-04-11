@@ -1,5 +1,5 @@
 ---
-id: 04-gitnexus-reference
+id: gitnexus-reference
 version: 2.0.0
 ---
 
