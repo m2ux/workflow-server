@@ -2,7 +2,7 @@ id: knowledge-base-search
 version: 1.2.0
 capability: Optimise knowledge base searches by loading a pre-indexed domain map before querying concept-rag
 
-description: "This skill reduces concept-rag tool calls from 3-5 exploratory calls down to 2 targeted calls. Activity workers load a domain knowledge index from the local project's .engineering/resources/ directory, then use the pre-mapped source paths, concept terms, and search strategies to make a single targeted query. Domain indexes bridge the gap between natural terminology and the indexed concept strings in concept-rag. This is a domain skill to be executed by activity workers, not orchestrators."
+description: "This skill reduces concept-rag tool calls from 3-5 exploratory calls down to 2 targeted calls. Agents load a domain knowledge index from the local project's .engineering/resources/ directory, then use the pre-mapped source paths, concept terms, and search strategies to make a single targeted query. Domain indexes bridge the gap between natural terminology and the indexed concept strings in concept-rag."
 
 inputs[2]:
   - id: search-topic
