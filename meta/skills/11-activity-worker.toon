@@ -37,10 +37,12 @@ protocol:
   execute-loops[2]:
     - "forEach: iterate over the named collection, executing loop steps for each item"
     - "doWhile: execute steps, evaluate condition, repeat up to maxIterations"
-  finalize[4]:
+  finalize[6]:
     - "Write artifacts to the planning folder using the activity's artifactPrefix convention. Record each artifact produced: id, name, path. Prepend the artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
-    - "MANDATORY: Update the planning folder README.md progress table (see resource meta/02 for details)"
-    - "Compile structured result with result_type: activity_complete (see resource meta/02 for format). Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
+    - "MANDATORY: Update the planning folder README.md progress table."
+    - "In the Progress table, mark each artifact produced by this activity as '✅ Complete'."
+    - "Update descriptive text in the Status column and update the footer status line to reflect current progress."
+    - "Compile structured result with result_type: activity_complete. Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
@@ -107,6 +109,5 @@ errors:
     cause: "A checkpoint's prerequisite condition was not met"
     recovery: "Skip the checkpoint silently and note it in the result."
 
-resources[2]:
+resources[1]:
   - "meta/03"
-  - "meta/02"
