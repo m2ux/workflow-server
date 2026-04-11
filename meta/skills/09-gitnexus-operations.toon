@@ -38,7 +38,6 @@ output[1]:
       recommendations: "Suggested next steps based on findings"
 
 rules:
-  worker-context: "This skill is designed for execution by an activity-worker during active task execution, not during initial workflow planning."
   query-not-grep: "Use GitNexus query() when you need execution flows and relationships, not just file matches. GitNexus complements grep/search — it finds how code works together."
   resource-reference: "Use attached resource 06 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
 

@@ -33,7 +33,6 @@ output[1]:
       result_summary: "Brief outcome summary"
 
 rules:
-  no-eager-calls: "NEVER call Atlassian tools during workflow bootstrap. This skill is meant to be executed by an activity-worker. Jira URLs in the user's request are context to preserve, not triggers for immediate API calls."
   content-format: "Set contentFormat to 'markdown' for Confluence create/update/read operations."
   account-id-for-users: "User fields require account IDs. Use lookupJiraAccountId to resolve names/emails."
 
