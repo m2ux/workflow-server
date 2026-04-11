@@ -170,10 +170,9 @@ Session lifecycle protocol:
 - **Per-step**: `get_skill(step_id)` → `get_resource(resource_index)` for each `_resources` entry
 - **Transitions**: Read `transitions` from activity response → `next_activity(activity_id)` with `step_manifest`
 
-#### execute-activity (universal)
+#### 11-activity-worker (universal)
 
 Activity execution protocol for workers:
-- **Goal resolution**: `discover` → `list_workflows` → match user goal
 - **Bootstrap**: `start_session` → `get_skills` → `next_activity`
 - **Execution**: Steps → checkpoints (yield to orchestrator) → artifacts → structured result
 

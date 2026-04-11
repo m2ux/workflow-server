@@ -658,7 +658,7 @@ describe('mcp-server integration', () => {
       const response = parseToolResponse(result);
       const orchestrate = response.skills['workflow-orchestrator'];
       expect(orchestrate).toBeDefined();
-      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/05');
+      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/04');
       expect(crossWfRef).toBeDefined();
       expect(crossWfRef.id).toBe('activity-worker-prompt');
       expect(crossWfRef.content).toBeUndefined();
@@ -688,7 +688,7 @@ describe('mcp-server integration', () => {
     it('get_resource should load cross-workflow resource content by ref', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_token: sessionToken, resource_index: 'meta/05' },
+        arguments: { session_token: sessionToken, resource_index: 'meta/04' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
