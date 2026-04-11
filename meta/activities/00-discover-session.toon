@@ -11,8 +11,8 @@ recognition[4]:
 required: true
 estimatedTime: 1-2m
 skills:
-  primary: activity-worker
-  supporting:
+  primary: meta/activity-worker
+  supporting[1]:
     - state-management
 steps[4]:
   - id: identify-target
@@ -51,7 +51,7 @@ checkpoints[1]:
             is_resuming: false
             has_saved_state: false
 transitions[1]:
-  - to: start-workflow
+  - to: dispatch-workflow
     isDefault: true
 outcome[3]:
   - Target workflow identified

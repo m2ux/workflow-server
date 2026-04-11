@@ -4,7 +4,7 @@ name: Quality Review
 description: "Create/update mode: four review passes over drafted content — schema expressiveness, convention conformance, rule hygiene (restatements, contradictions, cross-level duplications, prefix patterns), and rule-to-structure — each with a checkpoint. Review mode: six audit areas on the existing workflow (principles, anti-patterns, schema validation, tool-skill-doc consistency, compliance report, disposition) per resources/04-review-mode-guide.md."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - workflow-design
 required: true

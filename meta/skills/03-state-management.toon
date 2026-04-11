@@ -1,19 +1,16 @@
 id: state-management
-version: 3.1.0
-capability: Manage workflow execution state using activity IDs and step indices
-description: "Behavioral patterns for initializing, updating, and resuming workflow state. Use attached resource 07 for initialization values, update patterns, and resumption procedure. State schema is in state.schema.json."
+version: 3.2.0
+capability: Manage workflow execution state tracking and persistence
+description: "Behavioral patterns for initializing, updating, and resuming workflow state across the orchestrator hierarchy. The meta-orchestrator handles session persistence and resumption, while the workflow-orchestrator inherits the session and variables via dispatch_workflow. State schema is defined in state.schema.json."
 
 protocol:
   initialize[2]:
-    - "On workflow start, set all state fields to defaults (see resource 07 for field values)"
-    - "If resuming from saved state, load and validate against current workflow version"
+    - "On workflow start, the meta-orchestrator initializes state. If resuming from saved state, load and validate against current workflow version"
+    - "If a fresh meta session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections."
   update[2]:
-    - "After each step, checkpoint response, or activity transition, update the corresponding state fields"
+    - "After each step, checkpoint response, or activity transition, the orchestrator updates the corresponding state fields in the session"
     - "Record every state change in the history array with timestamp and event type"
   persist[3]:
-    - "After each completed activity, write a state file containing: the current session_token, variable state, and activity trace (from get_trace)"
+    - "After each completed activity, the meta-orchestrator writes a state file containing: the current session_token, variable state, and activity trace"
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
-    - "To resume, pass the saved session_token to start_session. Restore variables from the state file."
-
-resources[1]:
-  - "07"
+    - "To resume, the meta-orchestrator passes the saved session_token to start_session. The workflow-orchestrator then inherits this session via dispatch_workflow."

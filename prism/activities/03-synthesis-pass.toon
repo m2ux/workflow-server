@@ -3,7 +3,7 @@ version: 2.0.0
 name: Synthesis Pass
 description: "Iterate over analysis_units that were assigned full-prism mode and run the synthesis lens against each unit's structural and adversarial artifacts. Each worker runs in a fresh context. Writes synthesis.md per unit."
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - full-prism
 artifacts[1]:

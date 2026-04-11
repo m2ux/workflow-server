@@ -9,7 +9,7 @@ tags[3]:
   - sync
 
 skills:
-  primary: workflow-orchestrator
+  primary: meta/workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"

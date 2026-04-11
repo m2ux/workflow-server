@@ -7,7 +7,7 @@ recognition[2]:
   - verify scan results
   - check scan completeness
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - execute-sub-agent
 required: false

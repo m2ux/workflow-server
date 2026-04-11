@@ -85,7 +85,7 @@ graph TD
 
 **Purpose:** Begin executing a new workflow from the beginning.
 
-**Primary Skill:** `execute-activity`  
+**Primary Skill:** `11-activity-worker`  
 **Supporting Skills:** `state-management`
 
 ```mermaid
@@ -107,7 +107,7 @@ graph TD
         s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> s11 --> s12
     end
     
-    skill1((execute-activity))
+    skill1((11-activity-worker))
     skill3((state-management))
     
     s3 -.-> skill3
@@ -141,7 +141,7 @@ graph TD
 
 **Purpose:** Continue a workflow that was previously started.
 
-**Primary Skill:** `execute-activity`  
+**Primary Skill:** `11-activity-worker`  
 **Supporting Skills:** `state-management`
 
 ```mermaid
@@ -160,7 +160,7 @@ graph TD
         r1 --> r2 --> r3 --> r4 --> r5 --> r6 --> r7 --> r8 --> r9
     end
     
-    skill1((execute-activity))
+    skill1((11-activity-worker))
     skill3((state-management))
     
     r4 -.-> skill3
@@ -191,7 +191,7 @@ graph TD
 
 **Purpose:** Complete and finalize a workflow execution.
 
-**Primary Skill:** `execute-activity`  
+**Primary Skill:** `11-activity-worker`  
 **Supporting Skills:** `state-management`
 
 ```mermaid
@@ -207,7 +207,7 @@ graph TD
         e1 --> e2 --> e3 --> e4 --> e5 --> e6
     end
     
-    skill1((execute-activity))
+    skill1((11-activity-worker))
     skill3((state-management))
     
     e1 -.-> skill1
@@ -238,7 +238,7 @@ Meta defines universal skills used by all workflows:
 |-------|------------|-------------|
 | `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
 | `agent-conduct` | Agent behavioral boundaries | File sensitivity, communication tone, resource loading discipline, build command priority |
-| `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
+| `11-activity-worker` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
 | `state-management` | Manage workflow state | Initialize, update, and persist state across sessions. Agent writes session token + variables + trace to disk; resumes via start_session(session_token) |
 | `artifact-management` | Manage planning artifacts | Planning folder creation, regular file and submodule commit workflows |
 | `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
@@ -249,7 +249,7 @@ Meta defines universal skills used by all workflows:
 | `10-meta-orchestrator` | Consolidated orchestrator skill | Workflow coordination, state management, worker dispatch, checkpoint presentation. Inline-only — never delegated to a sub-agent. |
 | `11-activity-worker` | Consolidated worker skill | Activity execution, step-level skill loading via get_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
 
-> **Note:** `workflow-execution` was absorbed into `execute-activity`. `10-meta-orchestrator`, `11-workflow-orchestrator`, and `12-activity-worker` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
+> **Note:** `workflow-execution` was absorbed into `11-activity-worker`. `10-meta-orchestrator`, `11-workflow-orchestrator`, and `12-activity-worker` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
 
 ---
 

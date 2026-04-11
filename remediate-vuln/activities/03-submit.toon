@@ -6,7 +6,7 @@ problem: User needs to submit a security fix without public disclosure
 required: true
 estimatedTime: 5-10m
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR tools (gh pr review, gh pr ready)."
   - "PRIVATE REMOTE ONLY: All git push operations must target the 'security' remote."

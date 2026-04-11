@@ -4,7 +4,7 @@ name: Validate and Commit
 description: "Run schema validation on all TOON files, re-verify the scope manifest, generate README if creating a new workflow, and commit all changes to the workflows worktree."
 problem: All workflow content must pass validation and the complete scope must be verified before committing
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - workflow-design
 required: true

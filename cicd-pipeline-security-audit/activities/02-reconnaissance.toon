@@ -8,7 +8,7 @@ recognition[3]:
   - reconnaissance
   - map triggers
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - execute-cicd-audit
 required: true

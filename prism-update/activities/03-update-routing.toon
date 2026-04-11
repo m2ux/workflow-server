@@ -4,7 +4,7 @@ name: Update Routing
 description: "Update all prism workflow skills to reflect resource changes: fix renamed references, add goal-mapping entries, expand catalogs, update resource lists."
 problem: Skill routing tables reference prism names and indices that may have changed
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - update-skill-routing
 

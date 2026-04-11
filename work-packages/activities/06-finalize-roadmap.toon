@@ -4,8 +4,8 @@ name: Finalize Roadmap
 description: Complete roadmap documentation with timeline, navigation, and success criteria
 problem: Need to finalize planning documentation before implementation begins
 skills:
-  primary: activity-worker
-  supporting:
+  primary: meta/activity-worker
+  supporting[1]:
     - document-roadmap
 steps[5]:
   - id: update-start-here

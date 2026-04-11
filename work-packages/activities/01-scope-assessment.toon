@@ -9,8 +9,8 @@ recognition[4]:
   - Multi-package initiative
   - Related work items needing coordination
 skills:
-  primary: activity-worker
-  supporting:
+  primary: meta/activity-worker
+  supporting[1]:
     - assess-initiative-scope
 entryActions[1]:
   - action: validate

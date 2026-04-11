@@ -7,7 +7,7 @@ recognition[2]:
   - merge findings
   - consolidate scan results
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - execute-sub-agent
 required: false

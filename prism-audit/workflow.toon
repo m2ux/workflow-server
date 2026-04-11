@@ -17,7 +17,7 @@ rules[6]:
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
 
 skills:
-  primary: workflow-orchestrator
+  primary: meta/workflow-orchestrator
 variables[16]:
   - name: audit_description
     type: string
