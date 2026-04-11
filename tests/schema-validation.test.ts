@@ -277,7 +277,7 @@ describe('schema-validation', () => {
     });
 
     it('loaded activity should pass ActivitySchema validation', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'start-workflow');
+      const result = await readActivity(WORKFLOW_DIR, 'discover-session', 'meta');
       expect(result.success).toBe(true);
       if (result.success) {
         const validation = safeValidateActivity(result.value);

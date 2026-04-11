@@ -9,9 +9,6 @@ import type { Skill } from '../schema/skill.schema.js';
 import { safeValidateSkill } from '../schema/skill.schema.js';
 import { parseActivityFilename as parseSkillFilename } from './filename-utils.js';
 
-/** The meta workflow contains universal skills */
-const META_WORKFLOW_ID = 'meta';
-
 /** Find skill file by ID in a directory (handles NN- prefix) */
 async function findSkillFile(skillDir: string, skillId: string): Promise<string | null> {
   if (!existsSync(skillDir)) return null;
@@ -29,17 +26,12 @@ async function findSkillFile(skillDir: string, skillId: string): Promise<string 
   }
 }
 
-/** Get the universal skills directory (meta workflow skills/) */
-function getUniversalSkillDir(workflowDir: string): string {
-  return join(workflowDir, META_WORKFLOW_ID, 'skills');
-}
-
 /** Get the workflow-specific skills directory */
 function getWorkflowSkillDir(workflowDir: string, workflowId: string): string {
   return join(workflowDir, workflowId, 'skills');
 }
 
-/** Find all workflows that have a skills folder (excluding meta, which is searched separately as universal) */
+/** Find all workflows that have a skills folder */
 async function findWorkflowsWithSkills(workflowDir: string): Promise<string[]> {
   if (!existsSync(workflowDir)) return [];
 
@@ -48,7 +40,7 @@ async function findWorkflowsWithSkills(workflowDir: string): Promise<string[]> {
     const workflowIds: string[] = [];
 
     for (const entry of entries) {
-      if (entry.isDirectory() && entry.name !== META_WORKFLOW_ID) {
+      if (entry.isDirectory()) {
         const skillDir = getWorkflowSkillDir(workflowDir, entry.name);
         if (existsSync(skillDir)) {
           workflowIds.push(entry.name);
@@ -99,13 +91,6 @@ async function listSkillIdsInDir(skillDir: string): Promise<string[]> {
 }
 
 /**
- * List all universal skill IDs from meta/skills/.
- */
-export async function listUniversalSkillIds(workflowDir: string): Promise<string[]> {
-  return listSkillIdsInDir(getUniversalSkillDir(workflowDir));
-}
-
-/**
  * List skill IDs from a specific workflow's skills/ directory.
  */
 export async function listWorkflowSkillIds(workflowDir: string, workflowId: string): Promise<string[]> {
@@ -117,8 +102,7 @@ export async function listWorkflowSkillIds(workflowDir: string, workflowId: stri
  * Resolution order:
  * 0. If skillId is prefixed with a workflow (e.g. 'work-package/manage-git'), search only that workflow
  * 1. If workflowId provided: check {workflowDir}/{workflowId}/skills/NN-{skillId}.toon
- * 2. Universal: check {workflowDir}/meta/skills/NN-{skillId}.toon
- * 3. If no workflowId: search all workflow skill directories
+ * 2. If no workflowId: search all workflow skill directories
  */
 export async function readSkill(
   skillId: string, 
@@ -140,19 +124,12 @@ export async function readSkill(
   }
 
   // Try workflow-specific skill first
-  if (workflowId && workflowId !== META_WORKFLOW_ID) {
+  if (workflowId) {
     const skill = await tryLoadSkill(getWorkflowSkillDir(workflowDir, workflowId), skillId);
     if (skill) {
       logInfo('Skill loaded (workflow-specific)', { id: skillId, workflowId });
       return ok(skill);
     }
-  }
-  
-  // Try universal skill (from meta workflow)
-  const universalSkill = await tryLoadSkill(getUniversalSkillDir(workflowDir), skillId);
-  if (universalSkill) {
-    logInfo('Skill loaded (universal)', { id: skillId });
-    return ok(universalSkill);
   }
   
   // If no workflowId was specified, search all workflow skill directories
