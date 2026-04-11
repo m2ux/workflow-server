@@ -21,7 +21,7 @@ protocol:
     - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "Detect mode from user request (e.g., 'review PR' activates review mode)."
   dispatch-activity[6]:
-    - "Call next_activity to load the activity definition"
+    - "Call next_activity({ session_token, activity_id, step_manifest, transition_condition }) to load the activity definition"
     - "Compose worker prompt using resource meta/04 (activity-worker-prompt) — do NOT inject paraphrased skill content"
     - "Include your session_token in the worker prompt. The worker MUST call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
     - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
@@ -56,9 +56,6 @@ protocol:
   advance-or-complete[2]:
     - "If next activity determined: set current_activity, go to dispatch-activity"
     - "If workflow complete: return { status: 'workflow_complete', final_state: ... } to the parent orchestrator."
-  end-workflow[2]:
-    - "When all transitions evaluate and no next activity remains, compile a final summary including completion dates, outcomes, key decisions, artifacts, and follow-ups."
-    - "Yield workflow_complete to your parent orchestrator, including the final variable state and the summary."
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
