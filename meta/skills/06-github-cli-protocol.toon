@@ -1,8 +1,8 @@
 id: github-cli-protocol
-version: 1.0.0
+version: 1.1.0
 capability: Enforce correct GitHub CLI usage patterns including GraphQL deprecation workarounds
 
-description: "Cross-cutting skill that governs how agents use the GitHub CLI (gh). Mutating operations on PRs and issues must use the REST API because gh commands that use GraphQL fail due to Projects Classic deprecation. Read operations via gh CLI are safe."
+description: "Cross-cutting skill that governs how activity workers use the GitHub CLI (gh) to avoid domain work bleeding into orchestrators. Mutating operations on PRs and issues must use the REST API because gh commands that use GraphQL fail due to Projects Classic deprecation. Read operations via gh CLI are safe."
 
 protocol:
   mutating-operations[3]:
@@ -19,6 +19,7 @@ protocol:
 rules:
   no-graphql-mutations: "Do not use gh CLI commands that mutate PRs/issues via GraphQL (e.g., gh pr edit) — they fail due to Projects Classic deprecation. Use gh api with REST endpoints for all mutating operations instead."
   read-ops-safe: "Read operations via gh CLI (gh pr view, gh pr list, gh issue list) are safe and preferred."
+  worker-execution-only: "This skill is for use by activity workers during domain-specific activities, not orchestrators tracking workflow state."
 
 errors:
   graphql-deprecation:

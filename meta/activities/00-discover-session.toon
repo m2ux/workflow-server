@@ -12,7 +12,7 @@ required: true
 estimatedTime: 1-2m
 skills:
   primary: activity-worker
-  supporting:
+  supporting[1]:
     - state-management
 steps[4]:
   - id: identify-target

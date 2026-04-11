@@ -1,7 +1,7 @@
 id: atlassian-operations
 version: 1.1.0
 capability: Perform common Atlassian Jira and Confluence operations via the Atlassian MCP server
-description: "Guides agents through the correct sequence of Atlassian MCP tool calls. Most tools require a cloudId from getAccessibleAtlassianResources. Covers Jira issue lifecycle, Confluence page lifecycle, and cross-product search. Use attached resource 08 for the complete tool parameter reference."
+    description: "Guides agents through the correct sequence of Atlassian MCP tool calls. Most tools require a cloudId from getAccessibleAtlassianResources. Covers Jira issue lifecycle, Confluence page lifecycle, and cross-product search. Use attached resource 07 for the complete tool parameter reference."
 
 inputs[2]:
   - id: operation-type
@@ -18,7 +18,7 @@ protocol:
     - "For search: use Rovo for broad natural-language queries, JQL/CQL for precise filtering"
     - "For create/update: gather required metadata first (project key, issue type, space ID)"
   execute[2]:
-    - "Call the appropriate tool with cloudId and operation-specific params (see resource 08 for tool reference)"
+    - "Call the appropriate tool with cloudId and operation-specific params (see resource 07 for tool reference)"
     - "For transitions: always call getTransitionsForJiraIssue first to discover available transition IDs"
   verify-result[1]:
     - "After mutating operations, verify by fetching the entity to confirm the change was applied"
@@ -33,12 +33,12 @@ output[1]:
       result_summary: "Brief outcome summary"
 
 rules:
-  no-eager-calls: "NEVER call Atlassian tools during workflow bootstrap. Jira URLs in the user's request are context to preserve, not triggers for immediate API calls."
+  no-eager-calls: "NEVER call Atlassian tools during workflow bootstrap. This skill is meant to be executed by an activity-worker. Jira URLs in the user's request are context to preserve, not triggers for immediate API calls."
   content-format: "Set contentFormat to 'markdown' for Confluence create/update/read operations."
   account-id-for-users: "User fields require account IDs. Use lookupJiraAccountId to resolve names/emails."
 
 resources[1]:
-  - "08"
+  - "07"
 
 errors:
   missing_cloud_id:
