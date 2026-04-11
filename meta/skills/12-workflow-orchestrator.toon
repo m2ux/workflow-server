@@ -42,9 +42,6 @@ protocol:
     - "Format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing ONLY the checkpoint_handle."
     - "Wait for the parent to resolve the checkpoint and resume you."
     - "When resumed by the parent, it will provide the updated variables (effects) that resulted from resolving the checkpoint. You MUST update your internal state with these variables and then resume the worker, passing these effects down."
-  end-workflow[2]:
-    - "When all transitions evaluate and no next activity remains, compile a final summary including completion dates, outcomes, key decisions, artifacts, and follow-ups."
-    - "Yield workflow_complete to your parent orchestrator, including the final variable state and the summary."
   commit-artifacts[3]:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
@@ -101,8 +98,6 @@ tools:
     when: "Bootstrapping or resuming"
   get_resource:
     when: "After get_skills"
-  start_session:
-    when: "Bootstrapping or resuming"
 
 
 errors:
