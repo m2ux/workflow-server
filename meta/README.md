@@ -11,7 +11,7 @@ Meta is the **skill and resource repository** for the workflow server. It provid
 - Skills are universal and auto-included on the first `get_skills` call for any session
 - Activities are independent entry points matched via recognition patterns (not sequential flow)
 
-## Hierarchical Execution Model
+## Hierarchical Orchestration Model
 
 The workflow-server implements a 3-tier hierarchical orchestration model. The top-level `meta-orchestrator` manages the outer session and user interaction, while client workflows are delegated to a `workflow-orchestrator` sub-agent, which in turn dispatches an `activity-worker` for discrete task execution.
 
@@ -95,23 +95,22 @@ graph TD
         s2([Load workflow])
         s3([Initialize state])
         s4([Load skills])
-        s5([Detect execution model])
-        s6([Discover target])
-        s7([Read submodules])
-        s8([Discover resources])
-        s9([Load start resource])
-        s10([Get initial activity])
-        s11([Present activity])
-        s12([Prepare checkpoints])
+        s5([Discover target])
+        s6([Read submodules])
+        s7([Discover resources])
+        s8([Load start resource])
+        s9([Get initial activity])
+        s10([Present activity])
+        s11([Prepare checkpoints])
         
-        s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> s11 --> s12
+        s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> s11
     end
     
     skill1((11-activity-worker))
     skill3((state-management))
     
     s3 -.-> skill3
-    s10 -.-> skill1
+    s9 -.-> skill1
 ```
 
 | Step | Description |
@@ -120,7 +119,6 @@ graph TD
 | Load workflow | Load the selected workflow definition and extract metadata |
 | Initialize state | Initialize workflow state with variable defaults |
 | Load skills | Load behavioral protocols via get_skills (session-protocol, agent-conduct, workflow skills) |
-| Detect execution model | Check for EXECUTION MODEL rule; load orchestrate-workflow skill if present |
 | Discover target | Check for .gitmodules to determine repository type and resolve target_path |
 | Read submodules | Parse .gitmodules for submodule selection (only when is_monorepo is true) |
 | Discover resources | Load the workflow resource index for reference |

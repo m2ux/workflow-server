@@ -95,7 +95,7 @@ All transitions after confirm-plan are automatic.
 
 ---
 
-## Execution Model
+## Orchestration Model
 
 This workflow uses an **orchestrator with disposable workers**. The orchestrator manages transitions and triggers prism workflows. Workers execute activities in fresh contexts.
 

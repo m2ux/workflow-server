@@ -16,9 +16,6 @@ protocol:
     - "Check for .gitmodules file: test -f .gitmodules && echo 'monorepo' || echo 'regular'"
     - "If regular: Set target_path to the repository root (.)."
     - "If monorepo: Present the repo-type checkpoint. If confirmed as monorepo, parse .gitmodules, present submodule-selection checkpoint, and set target_path to the selected submodule."
-  check-execution-model[2]:
-    - "Check the workflow's rules[] for an 'EXECUTION MODEL' declaration."
-    - "If it contains 'EXECUTION MODEL', load the orchestrate-workflow skill and follow its protocol inline. The orchestrator/worker pattern requires the current agent to act AS the orchestrator (inline) and dispatch a persistent worker sub-agent."
   load-workflow[2]:
     - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. Pass the session_token from start_session — there is no workflow_id parameter on get_workflow."
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
