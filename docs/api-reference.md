@@ -26,7 +26,7 @@ All require `session_token`. The workflow is determined from the session token (
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `get_workflow` | `session_token`, `summary?` | Complete workflow definition or summary metadata | Load the workflow definition for the current session. `summary=true` (default) returns rules, variables, execution model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
+| `get_workflow` | `session_token`, `summary?` | Complete workflow definition or summary metadata | Load the workflow definition for the current session. `summary=true` (default) returns rules, variables, orchestration model, `initialActivity`, and activity stubs. `summary=false` returns the full definition |
 | `next_activity` | `session_token`, `activity_id`, `transition_condition?`, `step_manifest?`, `activity_manifest?` | Complete activity definition and trace token in `_meta` | Load and transition to an activity. Also advances the session token to track the current activity. |
 | `yield_checkpoint` | `session_token`, `checkpoint_id` | Status, `checkpoint_handle`, and instructions | Yield execution to the orchestrator at a checkpoint step. Returns a `checkpoint_handle` that the worker must yield to the orchestrator via a `<checkpoint_yield>` block. |
 | `resume_checkpoint` | `session_token` | Status and instructions | Resume execution after the orchestrator resolves a checkpoint. Validates the checkpoint was resolved and advances the token sequence. |

@@ -43,7 +43,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir)) }],
     })));
 
-  server.tool('get_workflow', 'Load the workflow definition for the current session. Use summary=true (the default) to get lightweight metadata including rules, variables, execution model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the full definition including complete activity details. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
+  server.tool('get_workflow', 'Load the workflow definition for the current session. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the full definition including complete activity details. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
     {
       ...sessionTokenParam,
       summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the full definition.'),

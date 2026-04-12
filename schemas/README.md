@@ -297,7 +297,7 @@ A workflow is the top-level container representing a complete process definition
 | `author`          | string     | Creator of the workflow                                    |
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | string[]   | Execution guidelines                                       |
-| `executionModel`  | ExecutionModel | Agent roles and execution model for this workflow (required) |
+| `executionModel`  | ExecutionModel | Agent roles and orchestration model for this workflow (required) |
 | `skills`          | string[]   | Workflow-level skill IDs (returned by `get_skills`) |
 | `variables`       | Variable[] | State variables                                            |
 | `modes`           | Mode[]     | Execution modes that modify standard workflow behavior     |
@@ -562,7 +562,7 @@ Variables store state that persists across activities. Define them at the workfl
 
 **Variable Types:** `string`, `number`, `boolean`, `array`, `object`
 
-### Execution Model
+### Orchestration Model
 
 Every workflow must declare an `executionModel` that defines the agent roles participating in its execution. Each workflow defines its own role vocabulary — role IDs are validated for uniqueness within the workflow.
 
