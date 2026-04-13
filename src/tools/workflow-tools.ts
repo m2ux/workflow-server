@@ -270,7 +270,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   const MIN_RESPONSE_SECONDS = config.minCheckpointResponseSeconds ?? 3;
 
   server.tool('respond_checkpoint',
-    'Submit a checkpoint response to clear the checkpoint gate. Call this tool after presenting a yielded checkpoint to the user. This unblocks the worker and returns the variable updates (effects) you must communicate back to the worker. ' +
+    'Submit a checkpoint response to clear the checkpoint gate. *MUST* wait for user input if the checkpoint is blocking. ' +
     'Exactly one of option_id, auto_advance, or condition_not_met must be provided. ' +
     'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
     'auto_advance: use the checkpoint\'s defaultOption (only for non-blocking checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
