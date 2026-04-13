@@ -24,6 +24,8 @@ artifacts[2]:
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
+skills:
+  primary: activity-worker
 steps[9]:
   - id: define-problem
     name: Identify and Define Problem
