@@ -5,7 +5,7 @@ import { createServer } from '../src/server.js';
 import { resolve } from 'node:path';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function parseToolResponse(result: { content: unknown[] }): any {
+function parseToolResponse(result: any): any {
   return JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
 }
 
@@ -1303,18 +1303,18 @@ describe('mcp-server integration', () => {
       expect(errorText).toContain('does not have an active checkpoint');
     });
 
-    it('respond_checkpoint with auto_advance should reject on blocking checkpoint', async () => {
+    it('respond_checkpoint with auto_advance should reject if no autoAdvanceMs config is present', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_token'] as string;
-      const blockingCpId = 'issue-verification';
+      const normalCpId = 'issue-verification';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
-        arguments: { session_token: tokenWithAct, checkpoint_id: blockingCpId },
+        arguments: { session_token: tokenWithAct, checkpoint_id: normalCpId },
       });
       const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
@@ -1324,7 +1324,7 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('blocking');
+      expect(errorText).toContain('missing defaultOption or autoAdvanceMs');
     });
 
     it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {

@@ -165,7 +165,7 @@ describe('session token utilities', () => {
     });
   });
 
-  describe('active blocking checkpoint (bcp)', () => {
+  describe('active yielded checkpoint (bcp)', () => {
     it('should default bcp to undefined', async () => {
       const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
       const payload = await decodeSessionToken(token);

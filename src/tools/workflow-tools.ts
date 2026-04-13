@@ -144,7 +144,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const advancedToken = await advanceToken(session_token, {
         act: activity_id,
         cond: transition_condition ?? '',
-        bcp: null, // Clear any blocking checkpoint on transition
+        bcp: null, // Clear any active checkpoint on transition
       });
 
       const meta: Record<string, unknown> = { session_token: advancedToken, validation };
@@ -237,7 +237,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('present_checkpoint', 'Load the full details of a specific checkpoint yielded by a worker. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any blocking or auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield.',
+  server.tool('present_checkpoint', 'Load the full details of a specific checkpoint yielded by a worker. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield.',
     {
       checkpoint_handle: z.string().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint.'),
     },
@@ -270,15 +270,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   const MIN_RESPONSE_SECONDS = config.minCheckpointResponseSeconds ?? 3;
 
   server.tool('respond_checkpoint',
-    'Submit a checkpoint response to clear the checkpoint gate. *MUST* wait for user input if the checkpoint is blocking. ' +
+    'Submit a checkpoint response to clear the checkpoint gate. *MUST* present the checkpoint to the user and wait for their input. ' +
     'Exactly one of option_id, auto_advance, or condition_not_met must be provided. ' +
     'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
-    'auto_advance: use the checkpoint\'s defaultOption (only for non-blocking checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
+    'auto_advance: use the checkpoint\'s defaultOption (only for checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
     'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field).',
     {
       checkpoint_handle: z.string().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint.'),
       option_id: z.string().optional().describe('The option ID selected by the user. Must match one of the checkpoint\'s defined options.'),
-      auto_advance: z.boolean().optional().describe('Set to true to auto-advance a non-blocking checkpoint using its defaultOption. Only valid for checkpoints with blocking=false, defaultOption, and autoAdvanceMs. The server enforces the autoAdvanceMs timer.'),
+      auto_advance: z.boolean().optional().describe('Set to true to auto-advance a checkpoint using its defaultOption. Only valid for checkpoints with defaultOption and autoAdvanceMs. The server enforces the autoAdvanceMs timer. If you use auto_advance, present a message to the user that you are proceeding with the default option because no input was provided.'),
       condition_not_met: z.boolean().optional().describe('Set to true to dismiss a conditional checkpoint whose condition was not met. Only valid for checkpoints that have a condition field.'),
     },
     withAuditLog('respond_checkpoint', async ({ checkpoint_handle, option_id, auto_advance, condition_not_met }) => {
@@ -320,12 +320,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         resolvedOptionId = option_id;
         effect = option.effect as Record<string, unknown> | undefined;
       } else if (auto_advance) {
-        if (checkpoint.blocking !== false) {
-          throw new Error(
-            `Cannot auto-advance blocking checkpoint '${checkpoint_id}'. ` +
-            `Blocking checkpoints require an explicit option_id from the user.`
-          );
-        }
         if (!checkpoint.defaultOption || !checkpoint.autoAdvanceMs) {
           throw new Error(
             `Cannot auto-advance checkpoint '${checkpoint_id}': missing defaultOption or autoAdvanceMs.`

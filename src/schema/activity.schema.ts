@@ -53,8 +53,6 @@ export const CheckpointSchema = z.object({
   message: z.string().describe('Message to present to user at checkpoint'),
   condition: ConditionSchema.optional().describe('Condition that must be true before presenting this checkpoint. If false, the checkpoint is skipped.'),
   options: z.array(CheckpointOptionSchema).min(1),
-  required: z.boolean().default(true),
-  blocking: z.boolean().default(true),
   defaultOption: z.string().optional().describe('Option ID to auto-select when autoAdvanceMs elapses without user intervention'),
   autoAdvanceMs: z.number().int().positive().optional().describe('Milliseconds to wait before auto-selecting defaultOption'),
 });
@@ -141,7 +139,7 @@ export const ActivitySchema = z.object({
   steps: z.array(StepSchema).optional().describe('Ordered execution steps for this activity'),
   
   // Control flow (optional)
-  checkpoints: z.array(CheckpointSchema).optional().describe('Blocking user decision points'),
+  checkpoints: z.array(CheckpointSchema).optional().describe('User decision points'),
   decisions: z.array(DecisionSchema).optional().describe('Conditional branching points'),
   loops: z.array(LoopSchema).optional().describe('Iteration constructs'),
   transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities'),

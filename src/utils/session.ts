@@ -121,7 +121,7 @@ export const sessionTokenParam = {
 };
 
 /**
- * Throws if the token has an active blocking checkpoint.
+ * Throws if the token has an active checkpoint.
  * Call this in every tool handler that accepts session_token,
  * EXCEPT present_checkpoint (the resolution mechanism) and
  * respond_checkpoint.
