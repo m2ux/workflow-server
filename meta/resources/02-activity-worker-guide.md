@@ -25,9 +25,9 @@ When all steps and checkpoints are done, the worker finalizes the activity. The 
 - `transition_override`: Activity ID to transition to (if a checkpoint effect specified `transitionTo`)
 
 ### The `checkpoint_pending` Yield
-When a blocking checkpoint is reached, execution pauses. The worker yields control back to the orchestrator using the `yield_checkpoint` tool, which registers the state:
+When a checkpoint is reached, execution pauses. The worker yields control back to the orchestrator using the `yield_checkpoint` tool, which registers the state:
 - `result_type`: `"checkpoint_pending"`
-- `checkpoint_id`: ID of the blocking checkpoint
+- `checkpoint_id`: ID of the checkpoint
 - `checkpoint_message`: The checkpoint prompt text
 - `checkpoint_options`: Array of options with id, label, description, effect
 - `steps_completed_so_far`: Steps completed before this checkpoint

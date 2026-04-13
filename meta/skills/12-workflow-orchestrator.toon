@@ -37,7 +37,7 @@ protocol:
     - "For resumed workers: send only the updated state variables and context"
   process-result[6]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
-    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required blocking checkpoints — resume worker to complete any missing items"
+    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required checkpoints — resume worker to complete any missing items"
     - "Apply variables_changed to state, record in completedActivities"
     - "Check next_activity response _meta.trace_token — if present, append to the trace_tokens array"
     - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
@@ -46,7 +46,7 @@ protocol:
     - "When the activity-worker encounters a checkpoint, it yields checkpoint_pending to you with a checkpoint_handle."
     - "You must catch this yield and immediately yield it up to the meta-orchestrator using the EXACT same <checkpoint_yield> JSON format containing the checkpoint_handle."
   handle-checkpoint-yield[4]:
-    - "When a worker yields a checkpoint, or if there are blocking checkpoints pending, yield ONE checkpoint_pending up to your parent orchestrator."
+    - "When a worker yields a checkpoint, or if there are checkpoints pending, yield ONE checkpoint_pending up to your parent orchestrator."
     - "Format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing ONLY the checkpoint_handle."
     - "Wait for the parent to resolve the checkpoint and resume you."
     - "When resumed by the parent, it will provide the updated variables (effects) that resulted from resolving the checkpoint. You MUST update your internal state with these variables and then resume the worker, passing these effects down."
@@ -63,7 +63,7 @@ protocol:
     - "If no transitions exist, the workflow is complete"
   advance-or-complete[4]:
     - "If next activity determined: set current_activity, go to dispatch-activity"
-    - "If workflow complete, verify completion checklist: all required activities complete, all blocking checkpoints have responses, workflow outcomes satisfied, follow-up items documented."
+    - "If workflow complete, verify completion checklist: all required activities complete, all checkpoints have responses, workflow outcomes satisfied, follow-up items documented."
     - "If workflow complete, prepare final summary including: Workflow Name, Start/Completion Dates; Activities Completed, Outcomes Achieved; Key Decisions Made (Checkpoints, Options, Rationale); Artifacts Created; Follow-Up Items."
     - "If workflow complete: return { status: 'workflow_complete', final_state: ... } to the parent orchestrator."
   handle-sub-workflows[3]:
@@ -74,10 +74,10 @@ protocol:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
 rules:
-  no-auto-resolution: "NEVER auto-resolve blocking checkpoints. Even if the answer seems obvious, you MUST yield the checkpoint to the parent orchestrator so it can be presented to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
+  no-auto-resolution: "NEVER auto-resolve checkpoints without defaultOption capabilities. Even if the answer seems obvious, you MUST yield the checkpoint to the parent orchestrator so it can be presented to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
   no-direct-interaction: "MUST NOT attempt to directly ask the user. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator."
-  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): Yield blocking checkpoints up to the parent containing the checkpoint_handle. Wait for the parent to resolve it and resume you with the effects. You MUST NOT call respond_checkpoint yourself. For non-blocking checkpoints, use auto_advance."
-  reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): Yield checkpoints up to the parent containing the checkpoint_handle. Wait for the parent to resolve it and resume you with the effects. You MUST NOT call respond_checkpoint yourself. For non-advisory checkpoints, use auto_advance."
+  reject-empty-checkpoints: "If an activity defines mandatory checkpoints and the worker returns checkpoints_responded as empty, REJECT the result."
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via the parent orchestrator. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
   no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."

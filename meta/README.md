@@ -125,7 +125,7 @@ graph TD
 | Load start resource | Load the index-00 start resource if available |
 | Get initial activity | Load the activity at initialActivity to begin execution |
 | Present activity | Present first activity to user with steps and entry actions |
-| Prepare checkpoints | Identify blocking checkpoints for presentation when reached |
+| Prepare checkpoints | Identify checkpoints for presentation when reached |
 
 **Outcome:**
 - Workflow is selected and loaded
@@ -215,7 +215,7 @@ graph TD
 | Step | Description |
 |------|-------------|
 | Verify completion | Verify all required activities are complete |
-| Check checkpoints | Ensure all blocking checkpoints have responses |
+| Check checkpoints | Ensure all checkpoints have responses |
 | Execute exit actions | Execute any exit actions from final activity |
 | Update state | Set workflow status to 'completed' with timestamp |
 | Present summary | Present completion summary to user |
