@@ -9,7 +9,6 @@ inputs[2]:
     description: "Which activity is generating assumptions"
   - id: existing-assumptions-log
     description: "Path to assumptions-log.md if it exists"
-    required: false
 
 protocol:
   collect-assumptions[2]:

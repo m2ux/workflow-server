@@ -9,7 +9,6 @@ inputs[3]:
     description: "The code or text to analyze (file path or inline content)"
   - id: target-type
     description: "Whether the input is 'code' or 'general'"
-    required: false
     default: code
   - id: output-path
     description: "Directory to write verified-initial.md, verified-gaps.md, and verified-corrected.md"

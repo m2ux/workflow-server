@@ -7,13 +7,10 @@ description: "Given a target codebase path and a user's audit description, surve
 inputs[3]:
   - id: target_path
     description: "Path to the codebase or directory to audit"
-    required: true
   - id: audit_description
     description: "User's description of what to audit, focus areas, and specific concerns"
-    required: true
   - id: output_path
     description: "Directory to write the audit prompt artifact"
-    required: true
 
 protocol:
   survey-structure[8]:

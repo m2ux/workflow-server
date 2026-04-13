@@ -7,7 +7,6 @@ recognition[3]:
   - plan implementation
   - create plan
   - prepare for implementation
-required: true
 estimatedTime: 20-45m
 steps[10]:
   - id: apply-design
@@ -78,7 +77,6 @@ checkpoints[1]:
   - id: approach-confirmed
     name: Approach Checkpoint
     message: "Approach presented above. Confirming in 30s unless you want to revise."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[2]:

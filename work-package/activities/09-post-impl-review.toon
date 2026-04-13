@@ -7,7 +7,6 @@ recognition[3]:
   - review implementation
   - post implementation review
   - quality review
-required: true
 estimatedTime: 30-60m
 rules[4]:
   - "This activity runs after implement, whether code was new or adopted"
@@ -46,17 +45,14 @@ steps[7]:
     name: Manual Diff Review
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
     skill: review-diff
-    required: true
   - id: code-review
     name: Code Review
     description: "Perform comprehensive code review of all implementation changes. Create code-review.md report."
     skill: review-code
-    required: true
   - id: structural-analysis-inline
     name: Structural Analysis (Single Pass)
     description: "Load the L12 structural lens from the prism workflow (prism resource 00 — attached to skill response via get_skill) and apply it to the changed files. Produces conservation law, meta-law, and classified bug table. Write findings to structural-findings.md. This inline pass runs for simple and moderate complexity work packages."
     skill: structural-analysis
-    required: true
     condition:
       type: not
       condition:
@@ -67,7 +63,6 @@ steps[7]:
   - id: dispatch-prism
     name: Structural Analysis (Full Prism)
     description: "For complex work packages, trigger the prism workflow with full-prism pipeline mode. The prism workflow runs the 3-pass isolated pipeline (structural → adversarial → synthesis) autonomously and returns artifact paths."
-    required: true
     triggers:
       workflow: prism
       description: "Dispatch full 3-pass prism structural analysis for complex work packages"
@@ -84,12 +79,10 @@ steps[7]:
     name: Test Suite Review
     description: "Review test quality and create test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
     skill: review-test-suite
-    required: true
   - id: architecture-summary
     name: Architecture Summary
     description: "Create architecture-summary.md if the diff introduces new modules, changes dependency structure, or modifies public interfaces. Skipped for minor changes, documentation, or configuration."
     skill: summarize-architecture
-    required: false
     condition:
       type: simple
       variable: skip_architecture_summary
@@ -106,7 +99,6 @@ checkpoints[3]:
   - id: file-index-table
     name: File Index Checkpoint
     message: "File index written to {change_block_index_path}. Please review the diff in your side-by-side app using the index for reference, then provide row numbers for any files with issues (e.g., '24, 31, 106') or 'none' if all looks good."
-    blocking: true
     options[2]:
       - id: has-issues
         label: Issues found - provide indices
@@ -125,7 +117,6 @@ checkpoints[3]:
       operator: "=="
       value: true
     message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. What's the issue with this change?"
-    blocking: true
     options[3]:
       - id: issue-recorded
         label: Issue recorded - continue
@@ -142,7 +133,6 @@ checkpoints[3]:
   - id: review-findings
     name: Review Findings Checkpoint
     message: "Code review and test quality reports complete. Based on findings analysis, the recommended action is {recommended_review_option}. Auto-advancing in 30s."
-    blocking: false
     defaultOption: all-acceptable
     autoAdvanceMs: 30000
     options[4]:
@@ -189,31 +179,25 @@ loops[1]:
         name: Apply Fixes
         description: "Implement the code review findings (needs_code_fixes) and/or test improvements (needs_test_improvements) selected by the user. Commit changes."
         skill: version-control-protocol
-        required: true
       - id: reset-fix-flags
         name: Reset Fix Flags
         description: "Reset needs_code_fixes and needs_test_improvements to false before re-review."
-        required: true
       - id: regenerate-index
         name: Regenerate Change Block Index
         description: "Re-parse git diff and regenerate change-block-index.md reflecting the new changes."
         skill: version-control-protocol
-        required: true
       - id: re-manual-diff-review
         name: Re-run Manual Diff Review
         description: "Present updated file index to user for manual diff review of the fix changes."
         skill: review-diff
-        required: true
       - id: re-code-review
         name: Re-run Code Review
         description: "Re-run code review on the updated diff to verify fixes resolved prior findings. May set needs_code_fixes if new issues are found."
         skill: review-code
-        required: true
       - id: re-test-suite-review
         name: Re-run Test Suite Review
         description: "Re-run test suite review to verify fix quality. May set needs_test_improvements if new issues are found."
         skill: review-test-suite
-        required: true
 decisions[1]:
   - id: blocker-gate
     name: Critical Blocker Gate

@@ -60,7 +60,6 @@ checkpoints[2]:
         effect:
           setVariable:
             analysis_type: context
-    blocking: true
   - id: analysis-confirmed
     name: Analysis Confirmation
     message: "Analysis complete. Does this context look correct?"

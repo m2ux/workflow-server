@@ -44,12 +44,12 @@ Final result when all steps and checkpoints are done.
 
 ### checkpoint-pending
 
-Intermediate result when a blocking checkpoint is reached — execution is paused.
+Intermediate result when a checkpoint is reached — execution is paused.
 
 | Field | Description |
 |-------|-------------|
 | `result_type` | `"checkpoint_pending"` |
-| `checkpoint_id` | ID of the blocking checkpoint |
+| `checkpoint_id` | ID of the checkpoint |
 | `checkpoint_message` | The checkpoint prompt text |
 | `checkpoint_options` | Array of options with id, label, description, effect |
 | `steps_completed_so_far` | Steps completed before this checkpoint |

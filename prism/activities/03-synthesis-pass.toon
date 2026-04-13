@@ -22,7 +22,6 @@ loops[1]:
       - id: check-mode
         name: Check Unit Mode
         description: "Skip this unit if current_unit.pipeline_mode is not 'full-prism'."
-        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -31,7 +30,6 @@ loops[1]:
       - id: load-lens
         name: Load Synthesis Lens
         description: "Load the synthesis lens resource 02 (works for all target types)"
-        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -40,7 +38,6 @@ loops[1]:
       - id: execute-lens
         name: Execute Synthesis Operations
         description: "Apply the synthesis lens against current_unit.target + structural-analysis.md (ANALYSIS 1) + adversarial-analysis.md (ANALYSIS 2). Produce the final corrected result."
-        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -49,7 +46,6 @@ loops[1]:
       - id: write-artifact
         name: Write Synthesis Artifact
         description: "Write the synthesis output to {unit_output_dir}/synthesis.md. Append path to all_artifact_paths."
-        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode

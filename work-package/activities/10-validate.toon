@@ -7,7 +7,6 @@ recognition[3]:
   - validate implementation
   - run tests
   - verify build
-required: true
 estimatedTime: 15-30m
 steps[8]:
   - id: run-tests

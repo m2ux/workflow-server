@@ -11,7 +11,6 @@ inputs[3]:
     description: "Pre-classified trigger, permission, and checkout data from reconnaissance"
   - id: ai-config-inventory
     description: "AI configuration files found in the submodule"
-    required: false
 
 protocol:
   load-patterns[1]:

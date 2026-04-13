@@ -21,15 +21,12 @@ steps[3]:
   - id: plan
     name: Plan the Analysis
     description: "Execute the plan-analysis skill protocol: detect scope from the target, classify units if multi-scope, recommend pipeline_mode and lens selection, resolve output_path."
-    required: true
   - id: summarize
     name: Summarize Configuration
     description: "Present the recommended configuration: scope, target, target_type, pipeline_mode, selected_lenses (if portfolio), output_path, and rationale. This is the checkpoint context."
-    required: true
   - id: apply-plan
     name: Apply Plan
     description: "Apply the selected pipeline_mode and any lens selections to workflow state variables."
-    required: true
     actions[2]:
       - action: set
         variable: pipeline_mode
@@ -109,8 +106,6 @@ checkpoints[1]:
         effect:
           setVariable:
             pipeline_mode: adaptive
-    required: true
-    blocking: true
 transitions[7]:
   - to: dispute-pass
     condition:

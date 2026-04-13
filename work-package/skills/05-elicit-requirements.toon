@@ -7,7 +7,6 @@ description: "This skill serves the requirements-elicitation activity. It handle
 inputs[3]:
   - id: stakeholder-transcript
     description: "Transcript or summary from user's discussion with key stakeholders"
-    required: false
   - id: issue-platform
     description: "Platform where issue lives (github or jira) — determines if assumptions go to Jira"
   - id: issue-number

@@ -23,7 +23,6 @@ loops[1]:
       - id: check-mode
         name: Check Unit Mode
         description: "Skip this unit if current_unit.pipeline_mode is not 'full-prism'. Only full-prism units get adversarial passes."
-        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -32,7 +31,6 @@ loops[1]:
       - id: load-lens
         name: Load Adversarial Lens
         description: "Load the adversarial lens resource 01 (works for all target types)"
-        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -41,7 +39,6 @@ loops[1]:
       - id: execute-lens
         name: Execute Adversarial Operations
         description: "Apply the adversarial lens against current_unit.target + the unit's structural-analysis.md artifact (provided as ANALYSIS 1). Find wrong predictions, overclaims, underclaims."
-        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -50,7 +47,6 @@ loops[1]:
       - id: write-artifact
         name: Write Adversarial Artifact
         description: "Write the adversarial output to {unit_output_dir}/adversarial-analysis.md. Append path to all_artifact_paths."
-        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode

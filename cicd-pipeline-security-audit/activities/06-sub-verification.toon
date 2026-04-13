@@ -10,7 +10,6 @@ skills:
   primary: execute-sub-agent
   supporting[1]:
     - verify-scan-output
-required: false
 estimatedTime: 5-10m
 rules[5]:
   - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"

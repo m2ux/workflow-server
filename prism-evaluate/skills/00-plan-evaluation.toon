@@ -7,16 +7,12 @@ description: "Given a target path and evaluation description, classify the targe
 inputs[4]:
   - id: target_path
     description: "Path to the document, proposal, codebase, or artifact set to evaluate"
-    required: true
   - id: evaluation_description
     description: "User's description of what to evaluate, evaluation goals, focus areas, and concerns"
-    required: true
   - id: output_path
     description: "Directory to write the evaluation plan artifact"
-    required: true
   - id: lens_overrides
     description: "Optional user-specified lens overrides per dimension. Keys are dimension names, values are { pipeline_mode, lenses }"
-    required: false
 
 protocol:
   classify-target[5]:

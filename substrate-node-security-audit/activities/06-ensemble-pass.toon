@@ -11,7 +11,6 @@ skills:
   primary: execute-audit
   supporting[1]:
     - score-severity
-required: false
 estimatedTime: 60-90m
 rules[9]:
   - "This activity is OPTIONAL — only runs when ensemble_enabled is true"
@@ -29,7 +28,6 @@ steps[5]:
     description: "Scope the second pass to priority-1/2 components. Include blind-spot checklist and supplementary files per target profile."
   - id: verify-blind-spots
     name: "Verify Known Blind Spots"
-    required: true
     description: "Apply universal blind-spot items (1-4) plus target-specific items from the target profile. Each produces CONFIRMED/REFUTED/INSUFFICIENT verdict."
   - id: execute-second-pass
     name: Execute Second Pass

@@ -20,15 +20,12 @@ variables[16]:
   - name: audit_description
     type: string
     description: "User's description of what to audit and any specific focus areas or concerns"
-    required: true
   - name: target_path
     type: string
     description: "Path to the codebase or directory to audit"
-    required: true
   - name: output_path
     type: string
     description: "Directory to write all audit artifacts (prompt, analysis, reports)"
-    required: true
   - name: audit_prompt
     type: string
     description: "Generated audit prompt text produced by the prompt-generation activity"

@@ -12,7 +12,6 @@ skills:
   primary: execute-cicd-audit
   supporting[1]:
     - inventory-workflows
-required: true
 estimatedTime: 5-10m
 rules[4]:
   - "At least one target submodule MUST be specified in the initial request, or 'all' to scan every submodule with .github/workflows/"

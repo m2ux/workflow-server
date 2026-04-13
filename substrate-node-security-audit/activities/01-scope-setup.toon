@@ -10,7 +10,6 @@ recognition[4]:
   - security audit setup
 skills:
   primary: execute-audit
-required: true
 estimatedTime: 5-15m
 rules[5]:
   - "The target submodule MUST be specified in the initial request — if not provided, fail with an error describing the required format"

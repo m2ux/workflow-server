@@ -7,7 +7,6 @@ recognition[3]:
   - review assumptions with stakeholders
   - resolve assumptions
   - validate assumptions
-required: true
 estimatedTime: 10-20m
 steps[4]:
   - id: evaluate-open-assumptions
@@ -81,7 +80,6 @@ checkpoints[2]:
       operator: "!="
       value: true
     message: "Assumption {current_assumption.id}: {current_assumption.statement}"
-    blocking: true
     options[3]:
       - id: accept
         label: Accept assumption
@@ -119,7 +117,6 @@ checkpoints[2]:
           operator: "=="
           value: true
     message: "Some assumptions were deferred and need external stakeholder attention. Post summary to {issue_platform}? Posting in 30s unless you intervene."
-    blocking: false
     defaultOption: post-summary
     autoAdvanceMs: 30000
     options[2]:

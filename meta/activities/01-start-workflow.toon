@@ -70,7 +70,7 @@ steps[13]:
     skill: workflow-execution
   - id: prepare-checkpoints
     name: Prepare checkpoints
-    description: Identify blocking checkpoints in the current activity for presentation when reached
+    description: Identify checkpoints in the current activity for presentation when reached
     skill: workflow-execution
 checkpoints[3]:
   - id: saved-state-found
@@ -91,7 +91,6 @@ checkpoints[3]:
         effect:
           setVariable:
             is_resuming: false
-    blocking: true
   - id: repo-type
     name: Repository Type
     message: "Is this a regular repository or a submodule monorepo?"
@@ -113,7 +112,6 @@ checkpoints[3]:
         effect:
           setVariable:
             is_monorepo: true
-    blocking: true
   - id: submodule-selection
     name: Submodule Selection
     condition:
@@ -125,7 +123,6 @@ checkpoints[3]:
     options[1]:
       - id: dynamic
         label: "Dynamically populated from .gitmodules by the read-submodules step"
-    blocking: true
 outcome[6]:
   - Workflow is selected and loaded
   - Saved state is restored if available and user chooses to resume

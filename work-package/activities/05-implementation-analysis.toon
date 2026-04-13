@@ -7,7 +7,6 @@ recognition[3]:
   - analyze implementation
   - analyze current state
   - implementation analysis
-required: false
 estimatedTime: 10-20m
 steps[12]:
   - id: checkout-baseline
@@ -112,7 +111,6 @@ checkpoints[2]:
   - id: analysis-confirmed
     name: Analysis Confirmation Checkpoint
     message: "Implementation analysis complete. Proceeding in 30s unless you intervene."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[3]:
@@ -133,7 +131,6 @@ checkpoints[2]:
       operator: "=="
       value: true
     message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
-    blocking: true
     options[2]:
       - id: resolve-inline
         label: Resolve now

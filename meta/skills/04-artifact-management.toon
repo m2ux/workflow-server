@@ -8,7 +8,6 @@ inputs[1]:
   - id: planning-base-path
     description: "Base directory for planning artifacts"
     default: ".engineering/artifacts/planning"
-    required: false
 
 protocol:
   initialize-folder[4]:

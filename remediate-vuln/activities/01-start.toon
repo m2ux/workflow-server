@@ -3,7 +3,6 @@ version: 1.0.0
 name: Start Security Vulnerability Remediation
 description: "Initialize a high-sensitivity security fix. Configures private remotes and local branches without any public issue or PR tracking. This activity is STRICTLY ISOLATED from public CI/CD and PR infrastructure."
 problem: User needs to remediate a security vulnerability without public disclosure
-required: true
 estimatedTime: 10-15m
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR or Issue creation tools (gh pr create, gh issue create)."
@@ -48,7 +47,6 @@ checkpoints[3]:
   - id: confirm-security-remote
     name: Confirm Security Remote
     message: "CRITICAL: Isolation check. You MUST confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
-    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, security remote is private"
@@ -59,7 +57,6 @@ checkpoints[3]:
   - id: verify-isolation
     name: Verify Isolation Checkpoint
     message: "I have configured the 'security' remote and local branch. I will NOT create a public PR or Issue. Is the private remote URL {sec_vuln_url} correct and authorized?"
-    blocking: true
     options[2]:
       - id: authorized
         label: "Yes, proceed"
@@ -74,7 +71,6 @@ checkpoints[3]:
       variable: sec_vuln_url
       operator: notExists
     message: "Please provide the private security advisory URL:"
-    blocking: true
     options[1]:
       - id: provided
         label: "URL Provided"

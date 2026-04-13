@@ -8,7 +8,6 @@ recognition[4]:
   - design philosophy
   - understand problem
   - determine approach
-required: true
 estimatedTime: 10-20m
 rules[4]:
   - "Design philosophy determines the path through the workflow"
@@ -96,7 +95,6 @@ checkpoints[3]:
   - id: classification-confirmed
     name: Classification Checkpoint
     message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Confirming in 30s unless you intervene."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[2]:
@@ -109,7 +107,6 @@ checkpoints[3]:
   - id: workflow-path-selected
     name: Workflow Path Checkpoint
     message: "Given the {complexity} classification, the recommended path is shown as default. Auto-advancing in 30s. For simple: skip optional, moderate: research only, complex: full workflow."
-    blocking: false
     defaultOption: skip-optional
     autoAdvanceMs: 30000
     options[4]:

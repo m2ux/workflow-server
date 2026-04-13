@@ -9,7 +9,6 @@ inputs[2]:
     description: "The task to implement from the plan (provided by the activity loop iterator)"
   - id: test-plan
     description: "Test plan with strategy and acceptance criteria for guidance"
-    required: false
 
 protocol:
   understand-context[3]:

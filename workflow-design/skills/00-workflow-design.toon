@@ -9,7 +9,6 @@ inputs[2]:
     description: "Free-form description of the workflow the user wants to create or modify"
   - id: target-workflow-id
     description: "Existing workflow ID to modify (update mode) or to audit (review mode)"
-    required: false
 
 protocol:
   intake[3]:

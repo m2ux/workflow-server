@@ -326,13 +326,13 @@ See `workflow.toon` for the complete variable declarations with default values.
 
 The following 7 rules are declared at the workflow level and apply to all activities:
 
-1. Agents MUST NOT skip or auto-resolve blocking checkpoints (`blocking: true`) — these require explicit user selection. Advisory checkpoints (`blocking: false` with `autoAdvanceMs` and `defaultOption`) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input.
+1. Agents MUST NOT skip checkpoints. All checkpoints require explicit user selection, UNLESS they are advisory checkpoints (with `autoAdvanceMs` and `defaultOption`), which present a recommendation with a timed default; the user may override before the timer elapses.
 2. Ask, don't assume — Clarify requirements before acting.
 3. Summarize, then proceed — Provide brief status before asking to continue.
 4. One task at a time — Complete current work before starting new work.
 5. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
 6. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-7. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `orchestrator-management` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `worker-management` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
+7. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `orchestrator-management` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `worker-management` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
 
 ---
 

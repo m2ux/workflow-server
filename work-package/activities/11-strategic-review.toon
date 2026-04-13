@@ -7,7 +7,6 @@ recognition[3]:
   - strategic review
   - review changes
   - review implementation
-required: true
 estimatedTime: 15-30m
 artifacts[2]:
   - id: strategic-review-doc
@@ -82,7 +81,6 @@ checkpoints[2]:
       variable: unsigned_commits_in_pr
       operator: ==
       value: true
-    blocking: true
     options[2]:
       - id: resign-all
         label: Yes — re-sign all unsigned commits
@@ -99,7 +97,6 @@ checkpoints[2]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
     message: "Strategic review complete. Based on findings analysis, the recommended action is {recommended_strategic_option}. Auto-advancing in 30s."
-    blocking: false
     defaultOption: acceptable
     autoAdvanceMs: 30000
     options[4]:

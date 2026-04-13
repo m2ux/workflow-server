@@ -31,7 +31,6 @@ variables[10]:
   - name: upstream_path
     type: string
     description: "Path to the upstream prisms directory (e.g., /path/to/agi-in-md/prisms/)"
-    required: true
   - name: resource_path
     type: string
     description: "Path to the prism workflow resources directory"

@@ -10,7 +10,7 @@ tags[3]:
 
 rules[9]:
   - "EXECUTION MODEL: This workflow uses an orchestrator with disposable workers. The orchestrator manages transitions and triggers. Workers execute activities in fresh contexts. Prism workflows are triggered via the trigger-workflow mechanism, not called inline."
-  - "Agents MUST NOT proceed past blocking checkpoints without user confirmation — auto-resolving a checkpoint is a protocol violation"
+  - "Agents MUST NOT proceed past checkpoints without user confirmation — auto-resolving a checkpoint is a protocol violation"
   - "TRIGGER ISOLATION: When triggering prism, the orchestrator sets analysis_focus to the dimension-specific evaluation guidance produced by the dimension-planning activity. It MUST NOT set analysis_focus to bare labels such as 'security audit', 'audit', 'security review', or any string that would activate prism's built-in audit-finalize activity. All evaluation-specific post-processing is handled by this workflow's own consolidate-report activity."
   - "DIMENSION PLANNING: The dimension-planning activity analyses the target and maps each evaluation dimension to prism modes and lenses. This mapping drives lens selection and analytical depth when prism workflows are triggered."
   - "MULTI-GROUP SUPPORT: The execute-analysis activity supports triggering multiple prism workflows via the execution_groups array. Each group triggers a separate prism run with its own pipeline mode, lens selection, and output subdirectory. Dimensions sharing the same pipeline mode are grouped together."
@@ -23,15 +23,12 @@ variables[21]:
   - name: evaluation_description
     type: string
     description: "User's description of what to evaluate, the evaluation goals, and any specific focus areas or concerns"
-    required: true
   - name: target_path
     type: string
     description: "Path to the document, proposal, codebase, or artifact set to evaluate"
-    required: true
   - name: output_path
     type: string
     description: "Directory to write all evaluation artifacts (plan, analysis, report)"
-    required: true
   - name: target_type
     type: string
     description: "Classification of the target: 'document' (single file), 'document-set' (directory of documents), 'codebase' (directory with build files), or 'mixed'"

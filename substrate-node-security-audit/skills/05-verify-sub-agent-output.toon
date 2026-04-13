@@ -14,13 +14,10 @@ inputs[5]:
     description: "Per-agent list of required tables, coverage criteria, and completeness checks"
   - id: file-inventory
     description: "List of files that must be covered (for coverage gate verification)"
-    required: false
   - id: dispatch-manifest
     description: "Dispatch manifest from the dispatch-sub-agents skill showing assigned vs dispatched agents"
-    required: false
   - id: agent-assignments
     description: "Crate-to-agent-group assignments from reconnaissance"
-    required: false
 
 protocol:
   check-dispatch-completeness[1]:

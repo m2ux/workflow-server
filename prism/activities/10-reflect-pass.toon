@@ -25,19 +25,15 @@ steps[4]:
   - id: run-l12
     name: Run L12 Structural Analysis
     description: "Create a FRESH worker with L12 resource (00). Worker analyzes the target and writes to {output_path}/reflect-l12.md."
-    required: true
   - id: run-meta
     name: Run Meta-analysis
     description: "Create a FRESH worker with claim resource (07). Worker applies the claim prism to the L12 OUTPUT (treating the analysis as a text artifact to interrogate). Writes to {output_path}/reflect-meta.md."
-    required: true
   - id: run-synthesis
     name: Run Constraint Synthesis
     description: "Create a FRESH worker. Worker receives: L12 output, meta-analysis output, and any prior constraint history. Synthesizes recurring patterns, unexplored dimensions, known false positives, and the next best scan recommendation. Writes to {output_path}/reflect-synthesis.md."
-    required: true
   - id: collect-paths
     name: Collect Artifact Paths
     description: "Add reflect-l12.md, reflect-meta.md, reflect-synthesis.md to all_artifact_paths."
-    required: true
 transitions[1]:
   - to: generate-report
     isDefault: true

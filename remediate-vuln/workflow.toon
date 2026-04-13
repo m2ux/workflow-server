@@ -9,14 +9,14 @@ tags[3]:
   - implementation
   - workflow
 rules[8]:
-  - "Agents MUST NOT skip or auto-resolve blocking checkpoints (blocking: true) — these require explicit user selection."
+  - "Agents MUST present all checkpoints to the user. Advisory checkpoints with autoAdvanceMs and defaultOption present a recommendation with a timed default; the user may override before the timer elapses."
   - "STRICT ISOLATION: The agent MUST NOT use any public GitHub tools (e.g. gh pr create, gh issue create) during this workflow."
   - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
   - "Ask, don't assume - Clarify requirements before acting"
   - "Summarize, then proceed - Provide brief status before asking to continue"
   - "One task at a time - Complete current work before starting new work"
   - "Explicit approval - Get clear 'yes' or 'proceed' before major actions"
-  - "EXECUTION MODEL: This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: orchestrator-management from meta/skills) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: worker-management from meta/skills) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. CONSTRAINT: Only ONE level of sub-agent indirection (the worker)."
+  - "EXECUTION MODEL: This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: orchestrator-management from meta/skills) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: worker-management from meta/skills) executes activity steps and produces artifacts. When the worker reaches a checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. CONSTRAINT: Only ONE level of sub-agent indirection (the worker)."
 artifactLocations:
   planning:
     path: "{planning_folder_path}"

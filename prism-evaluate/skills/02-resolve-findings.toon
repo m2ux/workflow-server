@@ -7,16 +7,12 @@ description: "Given an evaluation report and its target, classify each finding b
 inputs[4]:
   - id: evaluation_report_path
     description: "Path to the EVALUATION-REPORT.md produced by the consolidate-report activity"
-    required: true
   - id: target_path
     description: "Path to the original document, proposal, or artifact set that was evaluated"
-    required: true
   - id: output_path
     description: "Directory for writing the MITIGATION-PLAN.md artifact"
-    required: true
   - id: evaluation_description
     description: "Original evaluation description for context"
-    required: true
 
 protocol:
   load-and-classify[5]:

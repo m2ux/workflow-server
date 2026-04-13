@@ -12,7 +12,6 @@ skills:
   supporting[2]:
     - score-severity
     - write-report
-required: true
 estimatedTime: 20-40m
 rules[7]:
   - "The structured merge table from the merge agent (M) is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
@@ -41,7 +40,6 @@ steps[6]:
     description: "Re-evaluate ALL findings (not just High/Critical) against the calibration benchmark table. For every finding, search for a matching benchmark pattern. If divergence >= 1 level, flag for review. If divergence >= 2 levels, the benchmark severity is the floor. This catches both over-rating AND under-rating. The merge agent (M) performs initial calibration; this step verifies M's scoring after adversarial results are integrated."
   - id: coverage-gate
     name: "Verify Coverage Gate (BLOCKING)"
-    required: true
     skill: verify-sub-agent-output
     description: "Re-verify file coverage before report generation. Block if any file is UNREAD."
   - id: verify-elevation-completeness

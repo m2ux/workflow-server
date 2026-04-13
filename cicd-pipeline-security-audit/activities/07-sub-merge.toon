@@ -10,7 +10,6 @@ skills:
   primary: execute-sub-agent
   supporting[1]:
     - merge-scan-findings
-required: false
 estimatedTime: 5-15m
 rules[6]:
   - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"

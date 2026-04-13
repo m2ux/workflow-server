@@ -7,7 +7,6 @@ recognition[3]:
   - elicit requirements
   - clarify requirements
   - gather requirements
-required: false
 estimatedTime: 15-30m
 steps[6]:
   - id: stakeholder-discussion
@@ -87,7 +86,6 @@ checkpoints[2]:
   - id: stakeholder-transcript
     name: Stakeholder Discussion Checkpoint
     message: "Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here."
-    blocking: true
     options[2]:
       - id: provide-transcript
         label: Provide transcript/summary
@@ -104,7 +102,6 @@ checkpoints[2]:
   - id: elicitation-complete
     name: Elicitation Complete Checkpoint
     message: "All question domains have been covered. Proceeding in 30s unless you want to revisit."
-    blocking: false
     defaultOption: complete
     autoAdvanceMs: 30000
     options[3]:

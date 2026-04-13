@@ -7,7 +7,6 @@ description: "Handles the creation and organization of planning artifacts in the
 inputs[2]:
   - id: planning-folder-path
     description: "Path to planning folder (or parent for creation)"
-    required: false
   - id: issue-title
     description: "Issue title for deriving initiative name"
 

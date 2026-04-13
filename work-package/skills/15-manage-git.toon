@@ -13,7 +13,6 @@ inputs[4]:
     description: "Platform where issue lives (github or jira)"
   - id: branch-name
     description: "Optional — for existing branches"
-    required: false
 
 protocol:
   create-branch[3]:

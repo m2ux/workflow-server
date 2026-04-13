@@ -9,20 +9,15 @@ inputs[6]:
     description: "What to analyze. Can be: a file path, a directory path, inline text, a question, a concept, or a topic. The skill detects the scope from the form of the input."
   - id: analytical-goal
     description: "What the caller wants to understand (e.g., 'find hidden bugs', 'assess maintainability', 'understand design trade-offs', 'security review', 'explore the implications of X', 'evaluate this strategy')"
-    required: false
   - id: target-type
     description: "Whether the input is 'code' or 'general'. If omitted, inferred from the target: file paths with code extensions → code, everything else → general."
-    required: false
   - id: budget
     description: "Analysis budget: 'quick' (minimize passes, skip low-risk), 'standard' (balanced depth and coverage), 'thorough' (full coverage, full-prism on high-risk). Default: standard"
-    required: false
     default: standard
   - id:   depth-preference
     description: "Override for pipeline mode when scope is query or file: 'single', 'pipeline', 'portfolio', or 'behavioral'. Ignored for multi-unit scopes where mode is determined per-unit by risk classification."
-    required: false
   - id: output-path
     description: "Directory to write the analysis plan artifact. If omitted, the plan is returned but not persisted."
-    required: false
 
 protocol:
   detect-scope[7]:

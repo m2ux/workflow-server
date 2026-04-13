@@ -25,7 +25,7 @@ This ensures the worker cannot bypass checkpoint obligations — pending checkpo
 
 ## Checkpoint Gate
 
-When `next_activity` loads an activity with required checkpoints, those checkpoint IDs are embedded in the session token. **All tools are blocked until every checkpoint is resolved via `respond_checkpoint`.** The behavioral rules for how and when to resolve checkpoints are in the role-specific management skills loaded at step 4.
+When `next_activity` loads an activity with checkpoints, those checkpoint IDs are embedded in the session token. **All tools are blocked until every checkpoint is resolved via `respond_checkpoint`.** The behavioral rules for how and when to resolve checkpoints are in the role-specific management skills loaded at step 4.
 
 ## Loading Skills and Resources
 

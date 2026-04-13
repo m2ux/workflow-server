@@ -4,7 +4,7 @@
 
 ## Activities (5)
 
-Linear activity sequence with two blocking checkpoints.
+Linear activity sequence with two checkpoints.
 
 | # | ID | Name | Skill | Checkpoint | Artifacts |
 |---|-----|------|-------|------------|-----------|

@@ -26,27 +26,21 @@ steps[6]:
   - id: run-prereq
     name: Run Prerequisite Scan
     description: "Create a FRESH worker with prereq resource (59). Worker identifies knowledge gaps and atomic questions. Writes to {output_path}/smart-prereq.md. Extract questions for knowledge fill."
-    required: true
   - id: fill-knowledge
     name: Fill Knowledge Gaps
     description: "If questions were extracted, attempt to fill via available knowledge sources. Construct verified_knowledge context block. Skip if no questions extracted."
-    required: false
   - id: select-analysis-mode
     name: Select Analysis Mode
     description: "Determine analysis approach: if target is code, attempt AST decomposition — if multi-subsystem, use subsystem mode; otherwise use L12. If target is general, use 3-pass full-prism. Record decision in smart_pipeline_steps."
-    required: true
   - id: run-analysis
     name: Run Selected Analysis
     description: "Execute the selected analysis approach (subsystem-pass logic or L12 single pass) with enriched content (verified facts injected). Writes to {output_path}/smart-analysis.md (or subsystem-*.md)."
-    required: true
   - id: run-dispute
     name: Run Dispute Self-correction
     description: "If analysis produced sufficient output (>200 chars), run dispute mode on the enriched content for self-correction. Writes to {output_path}/smart-dispute-*.md. Skip if analysis output is insufficient."
-    required: false
   - id: collect-paths
     name: Collect Artifact Paths
     description: "Add all produced artifacts to all_artifact_paths. Record smart_pipeline_steps for reporting."
-    required: true
 transitions[1]:
   - to: generate-report
     isDefault: true

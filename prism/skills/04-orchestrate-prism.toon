@@ -9,19 +9,15 @@ inputs[5]:
     description: "The code or text to analyze — file path or inline content"
   - id: target-type
     description: "Whether the input is 'code' or 'general'"
-    required: false
     default: code
   - id: pipeline-mode
     description: "Analysis mode: 'single', 'full-prism', 'portfolio', or 'behavioral'"
-    required: false
     default: single
   - id: output-path
     description: "Directory to write analysis artifacts. Workers write artifacts here; the orchestrator passes the path to each worker."
-    required: false
     default: "."
   - id: selected-lenses
     description: "For portfolio mode: array of lens names"
-    required: false
 
 protocol:
   load-workflow[2]:

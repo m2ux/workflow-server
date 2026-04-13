@@ -12,7 +12,6 @@ inputs[3]:
     default: "prism/resources/"
   - id: exclusions
     description: "Upstream filenames to exclude from the diff"
-    required: false
     default: []
 
 protocol:

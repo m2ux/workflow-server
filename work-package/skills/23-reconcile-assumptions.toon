@@ -11,7 +11,6 @@ inputs[3]:
     description: "Path to the codebase to analyze"
   - id: comprehension-artifact-path
     description: "Path to existing comprehension artifact to augment with findings. If absent, findings are recorded only in the assumptions log."
-    required: false
 
 protocol:
   classify-resolvability[4]:

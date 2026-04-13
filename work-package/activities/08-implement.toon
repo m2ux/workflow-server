@@ -7,7 +7,6 @@ recognition[3]:
   - implement tasks
   - start implementation
   - execute plan
-required: true
 estimatedTime: 1-4h
 rules[1]:
   - "SYMBOL VERIFICATION: Every symbol introduced or referenced in code or documentation MUST have provenance — exists in codebase, in a declared dependency, or is newly created by the current task. Never fabricate symbols."
@@ -95,7 +94,6 @@ checkpoints[4]:
   - id: switch-model-pre-impl
     name: Switch Model for Implementation
     message: "Implementation requires the full model for code generation. You may switch to your preferred implementation model. Proceeding in 10s."
-    blocking: false
     defaultOption: continue-current
     autoAdvanceMs: 10000
     options[2]:
@@ -108,7 +106,6 @@ checkpoints[4]:
   - id: confirm-implementation
     name: Confirm Implementation Start
     message: "Planning and assumptions review complete. Ready to begin implementation of {plan.task_count} tasks. Proceeding in 30s unless you intervene."
-    blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options[2]:
@@ -129,7 +126,6 @@ checkpoints[4]:
       operator: "=="
       value: true
     message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
-    blocking: true
     options[2]:
       - id: resolve-inline
         label: Resolve now
@@ -146,7 +142,6 @@ checkpoints[4]:
   - id: switch-model-post-impl
     name: Switch Model for Review
     message: "Implementation complete. You may switch to a lower-cost model for the review phases. Proceeding in 10s."
-    blocking: false
     defaultOption: continue-current
     autoAdvanceMs: 10000
     options[2]:

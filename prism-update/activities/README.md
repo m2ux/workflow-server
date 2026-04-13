@@ -7,11 +7,11 @@
 | # | Activity | Skill | Checkpoints | Transitions |
 |---|----------|-------|-------------|-------------|
 | 00 | **Discover Changes** | `diff-upstream` | — | → review-changes |
-| 01 | **Review Changes** | `diff-upstream` | `change-review` (blocking) | → import-resources |
+| 01 | **Review Changes** | `diff-upstream` | `change-review` | → import-resources |
 | 02 | **Import Resources** | `sync-resources` | — | → update-routing |
 | 03 | **Update Routing** | `update-skill-routing` | — | → update-docs |
 | 04 | **Update Docs** | `update-prism-docs` | — | → verify |
-| 05 | **Verify** | `verify-prism-consistency` | `verification-result` (non-blocking) | → commit-and-submit (no issues) / → import-resources (issues) |
+| 05 | **Verify** | `verify-prism-consistency` | `verification-result` | → commit-and-submit (no issues) / → import-resources (issues) |
 | 06 | **Commit and Submit** | `sync-resources` | — | — (terminal) |
 
 ## Flow

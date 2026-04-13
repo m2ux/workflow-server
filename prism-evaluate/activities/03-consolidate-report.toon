@@ -9,19 +9,15 @@ steps[6]:
   - id: locate-artifacts
     name: Locate Analysis Artifacts
     description: "For each dimension in dimension_plan, locate the prism output artifacts in the corresponding output_subdir. Full-prism dimensions produce: structural-analysis.md, adversarial-analysis.md, synthesis.md. Portfolio dimensions produce one artifact per lens (named by lens type). Use completed_analyses and all_artifact_paths to locate files."
-    required: true
   - id: extract-findings
     name: Extract Per-Dimension Findings
     description: "For each dimension, read the terminal artifact (synthesis.md for full-prism, individual lens artifacts for portfolio). Extract definitive findings with: ID (using dimension prefix convention — CON-xx, VER-xx, PLB-xx, FEA-xx, or derived prefix for custom dimensions), severity (CRITICAL, HIGH, MEDIUM, LOW), title, and description. For full-prism dimensions, use the synthesis document's definitive classification. For portfolio dimensions, extract key findings and assign severity using Impact x Feasibility."
-    required: true
   - id: identify-patterns
     name: Identify Cross-Dimensional Patterns
     description: "Compare findings across all dimensions. Identify: (1) the core finding — the single deepest insight explaining the most findings across dimensions, with a testable prediction. (2) Cross-cutting patterns — systemic issues surfacing in multiple dimensions, reinforcing risks, and asymmetries. Record the core finding and cross-dimensional patterns."
-    required: true
   - id: compose-report
     name: Compose Evaluation Report
     description: "Write the evaluation report artifact to {output_path}. Structure: Executive Summary (target, total findings, core finding, overall assessment), The Core Finding (expanded with testable prediction), Per-Dimension Findings (one subsection per dimension with severity table and key findings), Cross-Cutting Patterns, Corrections and Recommendations (immediate, short-term, structural). NO methodology metadata."
-    required: true
     actions[1]:
       - action: set
         target: evaluation_report_path
@@ -29,11 +25,9 @@ steps[6]:
   - id: verify-report
     name: Verify Report
     description: "Verify: (1) all finding IDs are unique and follow the prefix convention, (2) severity counts in the executive summary match per-dimension details, (3) the report contains no methodology metadata — no lens names, pass types, pipeline modes, or analytical process descriptions."
-    required: true
   - id: report-artifact
     name: Report Artifact Verification
     description: "Report the written artifact: file path, file size (KB), format validation status."
-    required: true
 rules[3]:
   - "FINDING ID CONVENTION: Finding IDs use a 3-letter dimension prefix followed by a dash and two-digit number. Standard prefixes: CON (Consistency), VER (Veracity), PLB (Plausibility), FEA (Feasibility). For custom dimensions, derive a 3-letter prefix from the dimension name."
   - "SEVERITY RUBRIC: All severity labels must be computed from Impact x Feasibility. CRITICAL — directly undermines the target's core purpose. HIGH — degrades significant guarantees or creates major gaps. MEDIUM — limited scope or conditional. LOW — informational."

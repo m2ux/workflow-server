@@ -7,7 +7,6 @@ recognition[3]:
   - research best practices
   - knowledge base research
   - research patterns
-required: false
 estimatedTime: 20-45m
 steps[9]:
   - id: kb-research
@@ -87,7 +86,6 @@ checkpoints[3]:
   - id: research-findings
     name: Research Findings Checkpoint
     message: "Here are the combined findings from knowledge base and web research. Proceeding in 30s unless you want changes."
-    blocking: false
     defaultOption: sufficient
     autoAdvanceMs: 30000
     options[2]:
@@ -108,7 +106,6 @@ checkpoints[3]:
       operator: "=="
       value: true
     message: "What additional research is needed? Describe the focus area or questions to investigate."
-    blocking: true
     options[2]:
       - id: focus-provided
         label: Focus area provided
@@ -130,7 +127,6 @@ checkpoints[3]:
       operator: "=="
       value: true
     message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
-    blocking: true
     options[2]:
       - id: resolve-inline
         label: Resolve now

@@ -8,7 +8,6 @@ skills:
   supporting[2]:
     - toon-authoring
     - version-control-protocol
-required: true
 estimatedTime: 10-15m
 rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
@@ -90,7 +89,6 @@ checkpoints[2]:
       operator: "!="
       value: true
     message: "Schema validation results: {pass_count} passed, {fail_count} failed. Proceeding in 30s unless you intervene."
-    blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options[2]:
@@ -111,7 +109,6 @@ checkpoints[2]:
       operator: "!="
       value: true
     message: "Scope manifest verification: {addressed_count}/{total_count} items addressed. Proceeding in 30s unless you intervene."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[2]:

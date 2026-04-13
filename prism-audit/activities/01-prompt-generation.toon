@@ -9,15 +9,12 @@ steps[8]:
   - id: survey-structure
     name: Survey Codebase Structure
     description: "Explore the target codebase at target_path. Identify: (1) primary language(s) and build system, (2) module/crate/package layout, (3) total size (lines of code), (4) per-module size and purpose, (5) dependency graph (from build files), (6) test coverage structure. Record the structural inventory."
-    required: true
   - id: identify-security-characteristics
     name: Identify Security-Relevant Characteristics
     description: "Scan for security-relevant patterns: (1) cryptographic operations (hashing, signing, encryption, key management), (2) authentication and authorisation boundaries, (3) network-exposed surfaces (HTTP, RPC, WebSocket), (4) state management (databases, caches, persistent storage), (5) serialisation/deserialisation of untrusted input, (6) feature flags that gate security-critical behaviour, (7) unsafe code blocks or FFI boundaries, (8) WASM compilation targets, (9) custom virtual machines or interpreters, (10) zero-knowledge proof systems. Record each characteristic with its location."
-    required: true
   - id: map-trust-boundaries
     name: Map Trust Boundaries via Graph
     description: "Use gitnexus_cypher to find cross-community call edges, gitnexus_query with security-focused queries to identify security-critical execution flows, and gitnexus_impact(direction: upstream) on security-critical symbols to map blast radii. Record trust boundary crossings and blast radii as input for domain mapping."
-    required: true
     condition:
       type: simple
       variable: gitnexus_available
@@ -26,23 +23,18 @@ steps[8]:
   - id: map-audit-domains
     name: Map Audit Domains
     description: "From the identified characteristics and trust boundary data (if available), define audit domains. Each domain has: (1) name and scope, (2) risk level (CRITICAL, HIGH, MEDIUM), (3) rationale for the risk level, (4) specific patterns and code paths to examine, (5) key questions the audit should answer. Domains containing trust-boundary-crossing code get elevated risk. Include specific cross-community call edges as patterns to examine. Order domains by risk level (CRITICAL first)."
-    required: true
   - id: identify-cross-cutting-concerns
     name: Identify Cross-Cutting Concerns
     description: "Identify concerns that span multiple domains: (1) error handling patterns (panic vs Result, silent degradation), (2) feature flag discipline (test/mock features in production builds), (3) trust boundary consistency, (4) logging and observability gaps, (5) dependency risk (unmaintained or vulnerable dependencies)."
-    required: true
   - id: compose-prompt
     name: Compose Audit Prompt
     description: "Compose the full audit prompt document. Structure: (1) Codebase Overview — architecture, size, language, module layout. (2) Audit Domains — per-domain sections with risk level, scope, focus areas, specific patterns to check. (3) Trust Boundary Map — cross-community call edges and security-critical blast radii from GitNexus (if available; omit section if GitNexus was unavailable). (4) Cross-Cutting Concerns — patterns spanning all domains. (5) Output Requirements — expected deliverable format, severity rubric, evidence requirements. Incorporate the user's audit_description as additional context and focus direction."
-    required: true
   - id: build-audit-scopes
     name: Build Audit Scopes
     description: "From the audit domains, build the audit_scopes array. For a single-codebase audit, this is typically one scope entry with the full codebase as target. For large codebases with clearly separable security boundaries, multiple scopes may be defined (each triggering a separate prism run with a focused prompt). Each scope: { target, output_subdir, pipeline_mode, analysis_focus }."
-    required: true
   - id: write-prompt-artifact
     name: Write Audit Prompt Artifact
     description: "Write the composed prompt to {output_path}/audit-prompt.md."
-    required: true
     actions[3]:
       - action: set
         variable: audit_prompt
@@ -71,8 +63,6 @@ checkpoints[1]:
         description: "Stop the audit workflow"
         effect:
           transitionTo: deliver-audit
-    required: true
-    blocking: true
 artifacts[1]:
   - id: audit-prompt
     name: "audit-prompt.md"

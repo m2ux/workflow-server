@@ -13,7 +13,6 @@ inputs[4]:
     description: "Codebase paths to search against"
   - id: exclusions
     description: "Paths or file patterns to exclude (e.g., test, mock, bench files)"
-    required: false
 
 protocol:
   load-catalog[1]:

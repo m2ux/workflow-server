@@ -9,15 +9,12 @@ steps[5]:
   - id: collect-inputs
     name: Collect Audit Inputs
     description: "Extract from the user's request: (1) target_path, (2) audit_description, (3) output_path. If output_path is not specified, derive it from the target name and current date."
-    required: true
   - id: validate-target
     name: Validate Target Path
     description: "Verify that target_path exists and contains analysable files. Check for project markers (Cargo.toml, package.json, go.mod, pyproject.toml) to confirm it is a codebase. Report the top-level structure and estimated size."
-    required: true
   - id: index-codebase
     name: Index Codebase with GitNexus
     description: "Run 'npx gitnexus analyze {target_path}' to index the target codebase for structural analysis. Set gitnexus_available to true on success, false on failure. GitNexus is optional — the workflow falls back to directory-based analysis if unavailable."
-    required: true
     actions[1]:
       - action: set
         variable: gitnexus_available
@@ -25,11 +22,9 @@ steps[5]:
   - id: summarize-scope
     name: Summarize Audit Scope
     description: "Present a summary of the audit scope: target codebase, detected language/framework, estimated size, GitNexus indexing status, user's audit description and focus areas, output directory."
-    required: true
   - id: create-output-directory
     name: Create Output Directory
     description: "Create the output_path directory if it does not exist."
-    required: true
 checkpoints[1]:
   - id: confirm-scope
     name: Audit Scope Confirmation
@@ -46,8 +41,6 @@ checkpoints[1]:
         description: "Modify the target, description, or output path before proceeding"
         effect:
           transitionTo: scope-definition
-    required: true
-    blocking: true
 outcome[2]:
   - "Audit scope confirmed with validated target path and output directory"
   - "GitNexus indexing status recorded in gitnexus_available"

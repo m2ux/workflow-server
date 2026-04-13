@@ -7,7 +7,6 @@ skills:
   primary: workflow-design
   supporting[1]:
     - toon-authoring
-required: true
 estimatedTime: 30-60m
 rules[5]:
   - "Present approach for each file before drafting — what constructs will be used, what patterns followed"
@@ -117,7 +116,6 @@ checkpoints[4]:
       operator: "=="
       value: true
     message: "All {file_count} files modified. Here is the change summary. Proceeding in 30s unless you intervene."
-    blocking: false
     defaultOption: accepted
     autoAdvanceMs: 30000
     options[3]:

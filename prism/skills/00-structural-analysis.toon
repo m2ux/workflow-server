@@ -9,11 +9,9 @@ inputs[3]:
     description: "The code to analyze. Can be a file path (agent reads it), a diff, or inline code."
   - id: output-path
     description: "Directory to write the analysis artifact. Defaults to current working directory."
-    required: false
     default: "."
   - id: analysis-focus
     description: "Optional focus area to guide the analysis (e.g., 'error handling', 'state management', 'concurrency')"
-    required: false
 
 protocol:
   load-lens[2]:

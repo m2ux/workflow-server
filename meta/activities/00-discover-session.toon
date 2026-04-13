@@ -8,7 +8,6 @@ recognition[4]:
   - resume a workflow
   - continue a workflow
   - work on
-required: true
 estimatedTime: 1-2m
 skills:
   primary: state-management

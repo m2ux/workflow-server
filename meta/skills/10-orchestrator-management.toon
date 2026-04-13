@@ -30,15 +30,15 @@ protocol:
     - "If is_resuming is true (first dispatch after state restoration): include a resumption context block listing completedActivities, key variable values, and prior checkpoint decisions. After this dispatch completes, set is_resuming = false"
   process-result[6]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
-    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required blocking checkpoints — resume worker to complete any missing items"
+    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against checkpoints — resume worker to complete any missing items"
     - "Apply variables_changed to state, record in completedActivities"
     - "Check next_activity response _meta.trace_token — if present, append to the trace_tokens array"
     - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
     - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
   resolve-checkpoints[5]:
     - "After next_activity, the token has pending checkpoints (pcp). Resolve ALL of them BEFORE dispatching the worker — the worker receives a cleared token."
-    - "For blocking checkpoints: present to user via AskQuestion, then call respond_checkpoint({ checkpoint_id, option_id }) with the user's actual selection. The option_id MUST come from the AskQuestion response — never fabricated."
-    - "For non-blocking checkpoints (autoAdvanceMs): wait for the timer to elapse, then call respond_checkpoint({ checkpoint_id, auto_advance: true }). If the server rejects (timer not elapsed), WAIT and retry — do NOT fall back to option_id."
+    - "For checkpoints without autoAdvanceMs: present to user via AskQuestion, then call respond_checkpoint({ checkpoint_id, option_id }) with the user's actual selection. The option_id MUST come from the AskQuestion response — never fabricated."
+    - "For advisory checkpoints (autoAdvanceMs): wait for the timer to elapse, then call respond_checkpoint({ checkpoint_id, auto_advance: true }). If the server rejects (timer not elapsed), WAIT and retry — do NOT fall back to option_id."
     - "For conditional checkpoints whose condition is not met: call respond_checkpoint({ checkpoint_id, condition_not_met: true })."
     - "Apply returned effects (setVariable, transitionTo, skipActivities) to orchestrator state."
   handle-checkpoint-yield[4]:
@@ -65,8 +65,8 @@ protocol:
 
 rules:
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
-  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): The orchestrator resolves all checkpoints via respond_checkpoint BEFORE dispatching the worker. For blocking checkpoints, option_id MUST come from the user via AskQuestion — never fabricated, never selected on behalf of the user. For non-blocking checkpoints, use auto_advance after the timer elapses. If auto_advance is rejected by the server (timer not elapsed), WAIT and retry — using option_id to bypass a timing rejection is a protocol violation. There are ZERO exceptions."
-  reject-empty-checkpoints: "If an activity defines required blocking checkpoints and the worker returns checkpoints_responded as empty, REJECT the result. Empty checkpoints_responded on an activity with required blocking checkpoints is always a validation failure — no rationalization permitted."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): The orchestrator resolves all checkpoints via respond_checkpoint BEFORE dispatching the worker. The option_id MUST come from the user via AskQuestion — never fabricated, never selected on behalf of the user. For advisory checkpoints, use auto_advance after the timer elapses. If auto_advance is rejected by the server (timer not elapsed), WAIT and retry — using option_id to bypass a timing rejection is a protocol violation. There are ZERO exceptions."
+  reject-empty-checkpoints: "If an activity defines checkpoints and the worker returns checkpoints_responded as empty, REJECT the result. Empty checkpoints_responded on an activity with checkpoints is always a validation failure — no rationalization permitted."
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
   no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."

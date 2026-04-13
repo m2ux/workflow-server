@@ -1,7 +1,7 @@
 id: execute-activity
 version: 3.1.0
 capability: Resolve user goals to workflows and execute workflow activities
-description: "Resolves user goals to workflows via the Goal → Workflow → Activity → Skill → Tools metamodel. Self-loads activity definitions and skills, executes steps, yields at blocking checkpoints, produces artifacts, and reports structured results. Trace writing is the orchestrator's responsibility — the worker reports structured results and the orchestrator writes traces. Use attached resource 06 for detailed phase guidance and output formats."
+description: "Resolves user goals to workflows via the Goal → Workflow → Activity → Skill → Tools metamodel. Self-loads activity definitions and skills, executes steps, yields at checkpoints, produces artifacts, and reports structured results. Trace writing is the orchestrator's responsibility — the worker reports structured results and the orchestrator writes traces. Use attached resource 06 for detailed phase guidance and output formats."
 
 inputs[3]:
   - id: activity-id

@@ -11,7 +11,6 @@ inputs[3]:
     description: "Code files to read for independent verification"
   - id: verification-gaps
     description: "Gap report from the verification sub-agent (V). Lists §3 categories with incomplete coverage, missing tables, or unmet target profile obligations. PASS items in flagged categories are auto-included in the adversarial queue."
-    required: false
 
 rules:
   refute-role: "Refute safety claims, not confirm them."

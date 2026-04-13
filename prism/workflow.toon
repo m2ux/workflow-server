@@ -24,7 +24,6 @@ variables[26]:
   - name: target
     type: string
     description: "What to analyze -- a file path, directory path, inline text, question, or concept"
-    required: true
   - name: target_type
     type: string
     description: "Whether the input is 'code' or 'general' (determines which lens set to use)"

@@ -11,10 +11,8 @@ inputs[4]:
     description: "Elicited requirements from elicitation activity"
   - id: analysis-findings
     description: "Implementation analysis findings (baselines, gaps)"
-    required: false
   - id: research-findings
     description: "Research findings from knowledge base and web"
-    required: false
 
 protocol:
   verify-inputs[2]:

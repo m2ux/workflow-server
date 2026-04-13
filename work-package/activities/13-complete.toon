@@ -8,7 +8,6 @@ recognition[4]:
   - finalize documentation
   - workflow complete
   - finish work package
-required: true
 estimatedTime: 30-60m
 artifacts[4]:
   - id: adr

@@ -13,7 +13,6 @@ inputs[4]:
     description: "Directory to write the analysis artifact"
   - id: prior-artifact-paths
     description: "For synthesis pass only: map of role labels to artifact file paths. Keys: ERRORS, COSTS, CHANGES, PROMISES. Empty for independent lens passes."
-    required: false
 
 protocol:
   load-lens[2]:

@@ -5,7 +5,6 @@ description: "For update mode: enumerate all files in the existing workflow, ide
 problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan skills and resources
 skills:
   primary: workflow-design
-required: false
 estimatedTime: 10-20m
 entryActions[1]:
   - action: validate

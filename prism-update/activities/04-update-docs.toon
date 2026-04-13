@@ -15,19 +15,15 @@ steps[4]:
   - id: update-resources-readme
     name: Update resources README
     description: "Rebuild the full catalog table organized by family."
-    required: true
   - id: update-workflow-readme
     name: Update workflow README
     description: "Update resource table, model sensitivity, prompt guide entries, and file structure."
-    required: true
   - id: update-skills-readme
     name: Update skills README
     description: "Update resource counts in skill descriptions."
-    required: true
   - id: commit-docs
     name: Commit documentation
     description: "Stage and commit all modified documentation files."
-    required: true
 
 artifacts[1]:
   - id: docs-commit
@@ -40,7 +36,6 @@ transitions[1]:
   - to: verify
     isDefault: true
 
-required: true
 estimatedTime: "5-10m"
 
 outcome[1]:

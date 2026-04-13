@@ -7,16 +7,12 @@ description: "Given completed prism analysis artifacts organised by evaluation d
 inputs[4]:
   - id: output_path
     description: "Directory containing all evaluation artifacts and where the report will be written"
-    required: true
   - id: dimension_plan
     description: "The dimension-to-lens mapping from dimension-planning, used to locate and interpret artifacts"
-    required: true
   - id: completed_analyses
     description: "Array of completed prism run references with output paths and status"
-    required: true
   - id: evaluation_description
     description: "Original evaluation description, used for report context"
-    required: true
 
 protocol:
   locate-artifacts[4]:

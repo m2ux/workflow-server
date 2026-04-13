@@ -9,7 +9,6 @@ inputs[3]:
     description: "One or more structured finding lists to merge"
   - id: existing-table
     description: "An existing merge table to extend (for integration mode)"
-    required: false
   - id: merge-strategy
     description: "One of: structured-merge (concat + dedup), integrate (add to existing), union-merge (two-run consensus)"
 

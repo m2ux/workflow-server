@@ -7,7 +7,6 @@ inputs[5]:
     description: "The pipeline mode that produced the artifacts: 'single', 'full-prism', 'portfolio', or 'behavioral'. Determines which artifacts are authoritative."
   - id: analysis-focus
     description: "The analytical goal that guided the analysis. Used for dimension-based finding ID prefixes and to determine whether findings warrant a Corrections Required section."
-    required: false
   - id: all-artifact-paths
     description: "Array of all artifact file paths produced by prior passes. The worker reads these to extract findings."
   - id: output-path

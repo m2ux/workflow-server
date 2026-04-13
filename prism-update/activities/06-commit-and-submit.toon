@@ -10,21 +10,16 @@ steps[4]:
   - id: check-branch
     name: Check current branch
     description: "Create feature branch from workflows if not already on one."
-    required: true
   - id: push-commits
     name: Push commits
     description: "Push all commits to the remote branch."
-    required: true
   - id: create-pr
     name: Create pull request
     description: "Create a PR against workflows with a change summary title and body."
-    required: true
   - id: report-completion
     name: Report completion
     description: "Present the PR URL and summary of changes applied."
-    required: true
 
-required: true
 estimatedTime: "3-5m"
 
 artifacts[1]:

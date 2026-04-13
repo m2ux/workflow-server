@@ -5,7 +5,6 @@ description: "Create/update mode: four review passes over drafted content — sc
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
 skills:
   primary: workflow-design
-required: true
 estimatedTime: 15-25m
 rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"
@@ -149,7 +148,6 @@ checkpoints[5]:
       operator: "!="
       value: true
     message: "Schema expressiveness review complete. {expressiveness_finding_count} findings. Accepting in 30s unless you intervene."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[2]:
@@ -167,7 +165,6 @@ checkpoints[5]:
       operator: "!="
       value: true
     message: "Convention conformance review complete. {conformance_finding_count} divergences found. Accepting in 30s unless you intervene."
-    blocking: false
     defaultOption: accept-as-is
     autoAdvanceMs: 30000
     options[3]:
@@ -188,7 +185,6 @@ checkpoints[5]:
       operator: "!="
       value: true
     message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings (restatements, contradictions, duplications, prefix patterns). Accepting in 30s unless you intervene."
-    blocking: false
     defaultOption: fix-all
     autoAdvanceMs: 30000
     options[2]:
@@ -206,7 +202,6 @@ checkpoints[5]:
       operator: "!="
       value: true
     message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Accepting in 30s unless you intervene."
-    blocking: false
     defaultOption: accept-text-only
     autoAdvanceMs: 30000
     options[2]:

@@ -10,7 +10,6 @@ skills:
   primary: execute-sub-agent
   supporting[1]:
     - scan-injection-patterns
-required: false
 estimatedTime: 10-20m
 rules[8]:
   - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"

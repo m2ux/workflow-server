@@ -9,7 +9,6 @@ recognition[3]:
   - check pass items
 skills:
   primary: execute-audit
-required: true
 estimatedTime: 30-60m
 rules[2]:
   - "Apply the decompose-safety-claims skill rules for adversarial verification."

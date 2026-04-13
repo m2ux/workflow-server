@@ -9,18 +9,14 @@ steps[4]:
   - id: read-audit-report
     name: Read Audit Report Summary
     description: "Read AUDIT-REPORT.md from audit_report_path. Extract the executive summary section including: total findings by severity, scope summary, core finding (if present), and top-priority remediation items."
-    required: true
   - id: compile-metrics
     name: Compile Audit Metrics
     description: "From the audit report, compile: (1) finding count by severity (Critical, High, Medium, Low, Informational), (2) domain coverage (which domains were analysed), (3) number of prism runs triggered, (4) total analysis artifacts produced."
-    required: true
   - id: present-results
     name: Present Audit Results
     description: "Present the audit results to the user in a structured format: (1) Audit summary with finding counts, (2) Core finding highlight (if applicable), (3) Top-priority remediation items, (4) Document index with paths to all deliverables: AUDIT-REPORT.md, DETAILED-FINDINGS.md, DESIGN-TRADE-OFFS.md, audit-prompt.md, and all underlying analysis artifacts."
-    required: true
   - id: report-artifact-paths
     name: Report All Artifact Paths
     description: "List every artifact produced during the audit with its path."
-    required: true
 outcome[1]:
   - "Audit results presented to user with finding metrics and complete artifact index"

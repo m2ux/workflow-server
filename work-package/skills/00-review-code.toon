@@ -9,7 +9,6 @@ inputs[2]:
     description: "List of files changed in the work package (from git diff)"
   - id: project-type
     description: "Detected project type (rust-substrate or other)"
-    required: false
     default: other
 
 protocol:

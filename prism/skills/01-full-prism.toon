@@ -11,12 +11,10 @@ inputs[5]:
     description: "Resource index to load from the prism workflow (00 for structural, 01 for adversarial, 02 for synthesis)"
   - id: prior-artifact-paths
     description: "File paths to prior pass artifacts. Adversarial receives [structural-analysis.md]. Synthesis receives [structural-analysis.md, adversarial-analysis.md]. Empty for the structural pass."
-    required: false
   - id: output-path
     description: "Directory to write the analysis artifact"
   - id: target-type
     description: "Whether the input is 'code' or 'general'"
-    required: false
     default: code
 
 protocol:

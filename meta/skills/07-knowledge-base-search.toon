@@ -9,7 +9,6 @@ inputs[2]:
     description: "The topic or question the agent needs to find in the knowledge base"
   - id: domain-hint
     description: "Optional domain hint to select the correct index resource (e.g., substrate, blockchain)"
-    required: false
 
 protocol:
   identify-domain[2]:

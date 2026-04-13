@@ -49,7 +49,7 @@ Use this template when presenting the final summary:
 Before ending any workflow, verify:
 
 - [ ] All required activities are complete
-- [ ] All blocking checkpoints have responses
+- [ ] All checkpoints have responses
 - [ ] Workflow outcomes are satisfied
 - [ ] Any external state is in expected condition
 - [ ] Follow-up items are documented
@@ -64,7 +64,7 @@ A well-ended workflow leaves a clear trail for future reference and ensures noth
 ## Completion Rules
 
 1. **Never end with incomplete required activities**
-2. **Ensure all blocking checkpoints have responses**
+2. **Ensure all checkpoints have responses**
 3. **Verify workflow outcomes are satisfied**
 4. **Document any deferred or out-of-scope items**
 5. **Present clear summary before finalizing**

@@ -9,7 +9,6 @@ inputs[4]:
     description: "Path to planning folder containing test plan and artifacts"
   - id: adr-path
     description: "Path to ADR if one was created for this work package"
-    required: false
   - id: test-plan-path
     description: "Path to test plan artifact"
   - id: pr-number

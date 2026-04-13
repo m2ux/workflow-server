@@ -12,7 +12,6 @@ skills:
   supporting[2]:
     - compare-finding-sets
     - write-gap-analysis
-required: false
 estimatedTime: 30-60m
 rules[5]:
   - "This activity is OPTIONAL — only runs when has_reference_report is true"

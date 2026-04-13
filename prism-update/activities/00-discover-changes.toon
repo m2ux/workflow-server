@@ -9,23 +9,18 @@ steps[5]:
   - id: list-upstream
     name: List upstream prisms
     description: "Enumerate all .md files in upstream_path, filtering out exclusions."
-    required: true
   - id: list-current
     name: List current resources
     description: "Enumerate all resource files, extracting index prefix and prism name from each."
-    required: true
   - id: diff-and-categorize
     name: Diff and categorize
     description: "Compare the two file lists. Categorize each upstream file as new, modified, renamed, or deleted."
-    required: true
   - id: classify-new
     name: Classify new prisms
     description: "Read each new prism's YAML frontmatter. Extract metadata and classify into family."
-    required: true
   - id: determine-next-index
     name: Determine next index
     description: "Set next_index to highest existing resource index + 1."
-    required: true
     actions[1]:
       - action: set
         target: next_index
@@ -34,7 +29,6 @@ transitions[1]:
   - to: review-changes
     isDefault: true
 
-required: true
 estimatedTime: "3-5m"
 
 outcome[3]:

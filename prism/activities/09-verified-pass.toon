@@ -25,23 +25,18 @@ steps[5]:
   - id: run-initial-l12
     name: Run Initial L12 Analysis
     description: "Create a FRESH worker with L12 resource (00). Worker analyzes the target and writes to {output_path}/verified-initial.md."
-    required: true
   - id: run-gap-detection
     name: Run Gap Detection
     description: "Create a FRESH worker. Worker loads knowledge_boundary (resource 41) and knowledge_audit (resource 40) prisms. Applies both to the L12 output (not the source code). Writes combined gap analysis to {output_path}/verified-gaps.md."
-    required: true
   - id: extract-gaps
     name: Extract Structured Gaps
     description: "Parse the gap detection output to extract structured gap data. Set verified_gap_data variable."
-    required: true
   - id: run-corrected-analysis
     name: Run Corrected Re-analysis
     description: "Create a FRESH worker with L12 resource (00). Worker receives the original target content with gap context injected as <verified_knowledge> tags. Produces corrected output that marks unverifiable claims. Writes to {output_path}/verified-corrected.md."
-    required: true
   - id: collect-paths
     name: Collect Artifact Paths
     description: "Add verified-initial.md, verified-gaps.md, verified-corrected.md to all_artifact_paths."
-    required: true
 transitions[1]:
   - to: generate-report
     isDefault: true

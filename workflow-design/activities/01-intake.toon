@@ -12,7 +12,6 @@ recognition[6]:
   - modify workflow
 skills:
   primary: workflow-design
-required: true
 estimatedTime: 5-10m
 rules[2]:
   - "Do not begin drafting content during intake — this activity only captures intent"
@@ -107,8 +106,6 @@ checkpoints[3]:
       operator: "=="
       value: true
     message: "Compliance review is scoped to workflow '{target_workflow_id}'. Is this the correct target?"
-    required: true
-    blocking: true
     options[2]:
       - id: confirm-review-target
         label: "Yes — audit this workflow"
@@ -130,7 +127,6 @@ checkpoints[3]:
       operator: "!="
       value: true
     message: "I've classified this as a {create/update} operation for workflow '{workflow_id}'. Is this correct?"
-    blocking: true
     options[2]:
       - id: confirm-create
         label: "Yes, create a new workflow"
@@ -152,7 +148,6 @@ checkpoints[3]:
       operator: "=="
       value: true
     message: "Here is the existing workflow structure and my understanding of your requested changes. Is this correct?"
-    blocking: true
     options[3]:
       - id: confirmed
         label: "Yes, that's correct"

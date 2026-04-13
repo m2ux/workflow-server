@@ -23,7 +23,7 @@ steps[6]:
     description: "Verify all required activities are complete; check for any skipped required activities"
   - id: check-checkpoints
     name: Check checkpoints
-    description: "Ensure all blocking checkpoints have responses; identify any pending decisions"
+    description: "Ensure all checkpoints have responses; identify any pending decisions"
   - id: verify-outcomes
     name: Verify outcomes
     description: "Check that workflow outcomes are satisfied; verify external state if applicable (tests, builds, PRs)"
