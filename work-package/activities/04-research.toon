@@ -10,7 +10,7 @@ recognition[3]:
 required: false
 estimatedTime: 20-45m
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
 steps[9]:
   - id: kb-research
     name: Knowledge base research

@@ -10,7 +10,7 @@ recognition[3]:
 required: false
 estimatedTime: 15-30m
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
 steps[6]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion

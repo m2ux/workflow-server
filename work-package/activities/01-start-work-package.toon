@@ -18,7 +18,7 @@ entryActions[1]:
   - action: log
     message: Starting issue management
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
 steps[17]:
   - id: detect-review-mode
     name: Detect Review Mode

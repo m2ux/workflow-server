@@ -17,7 +17,7 @@ rules[4]:
 entryActions[1]{action,message}:
   log,Starting post-implementation review
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
 artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"
