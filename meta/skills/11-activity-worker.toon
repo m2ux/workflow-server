@@ -1,5 +1,5 @@
 id: activity-worker
-version: 1.1.0
+version: 1.2.0
 capability: "Consolidated management skill for the activity-worker role — covers activity execution, session lifecycle, and behavioral boundaries"
 description: "Single-load management skill for the activity-worker (sub-agent). Consolidates 11-activity-worker, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
 
@@ -44,6 +44,10 @@ protocol:
     - "Update descriptive text in the Status column and update the footer status line to reflect current progress."
     - "Compile structured result with result_type: activity_complete. Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
+  persist-state[3]:
+    - "After finalize, read the existing {planning_folder_path}/workflow-state.json (path from state-variables). If the file does not exist, skip silently — the orchestrator handles initial creation."
+    - "Update sessionToken with the current session_token, set savedAt and state.updatedAt to the current ISO 8601 timestamp, increment state.stateVersion by 1, set state.completedSteps[activity_id] to the completed step indices, and set description to 'State after {activity_id}'."
+    - "Write the updated JSON back. Preserve all other fields unchanged. See the workflow-state-format resource for the full file structure."
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
@@ -109,5 +113,6 @@ errors:
     cause: "A checkpoint's prerequisite condition was not met"
     recovery: "Skip the checkpoint silently and note it in the result."
 
-resources[1]:
+resources[2]:
   - "meta/03"
+  - "meta/08"
