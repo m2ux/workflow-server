@@ -1,6 +1,19 @@
 # Workflows
 
-This orphan branch contains workflow definitions, activities, skills, and resources for the MCP Workflow Server.
+This branch contains workflow definitions, activities, skills, and resources for the MCP Workflow Server.
+
+## Available Workflows
+
+| Workflow | Description |
+|----------|-------------|
+| [`work-package`](work-package/) | Single work package implementation (issue → PR → merge) |
+| [`work-packages`](work-packages/) | Multi-package planning for large initiatives |
+| [`substrate-node-security-audit`](substrate-node-security-audit/) | Fully automated multi-phase AI security audit for Substrate-based node codebases |
+| [`cicd-pipeline-security-audit`](cicd-pipeline-security-audit/) | Fully automated CI/CD pipeline security audit detecting source-to-sink injection vulnerabilities in GitHub Actions |
+| [`prism`](prism/) | Structural analysis through cognitive lenses — 46 prisms across 11 families, 4 pipeline modes |
+| [`prism-update`](prism-update/) | Sync the prism workflow's resources and routing with upstream agi-in-md changes |
+| [`prism-evaluate`](prism-evaluate/) | Multi-dimensional evaluation of proposals, documents, or codebases through configurable analytical dimensions mapped to prism lenses |
+| [`workflow-design`](workflow-design/) | Create or update workflow definitions with guided elicitation, schema expressiveness enforcement, and convention conformance |
 
 ## Branch Structure
 
@@ -28,19 +41,6 @@ workflows/                    # Worktree checkout
 │   └── skills/               # Workflow-specific skills (indexed)
 │       └── {NN}-{id}.toon    # Skills for this workflow
 ```
-
-## Available Workflows
-
-| Workflow | Description |
-|----------|-------------|
-| [`work-package`](work-package/) | Single work package implementation (issue → PR → merge) |
-| [`work-packages`](work-packages/) | Multi-package planning for large initiatives |
-| [`substrate-node-security-audit`](substrate-node-security-audit/) | Fully automated multi-phase AI security audit for Substrate-based node codebases |
-| [`cicd-pipeline-security-audit`](cicd-pipeline-security-audit/) | Fully automated CI/CD pipeline security audit detecting source-to-sink injection vulnerabilities in GitHub Actions |
-| [`prism`](prism/) | Structural analysis through cognitive lenses — 46 prisms across 11 families, 4 pipeline modes |
-| [`prism-update`](prism-update/) | Sync the prism workflow's resources and routing with upstream agi-in-md changes |
-| [`prism-evaluate`](prism-evaluate/) | Multi-dimensional evaluation of proposals, documents, or codebases through configurable analytical dimensions mapped to prism lenses |
-| [`workflow-design`](workflow-design/) | Create or update workflow definitions with guided elicitation, schema expressiveness enforcement, and convention conformance |
 
 ## Worktree Setup
 
