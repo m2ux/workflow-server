@@ -3,7 +3,7 @@ version: 2.0.0
 name: Adversarial Analysis Pass
 description: "Iterate over analysis_units that were assigned full-prism mode and run the adversarial lens against each unit's structural analysis artifact. Each worker runs in a fresh context. Writes adversarial-analysis.md per unit."
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - full-prism
 artifacts[1]:

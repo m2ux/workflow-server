@@ -26,7 +26,7 @@ rules[14]:
   - "Non-destructive updates — compare new content against existing content and flag any material being removed"
   - "Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/). Root README documents the workflow overview, modes, activity sequence, variables, and file structure. Subfolder READMEs document the contents of that folder with tables and protocol details. Follow the style established by the prism workflow."
 skills:
-  primary: workflow-orchestrator
+  primary: meta/workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"

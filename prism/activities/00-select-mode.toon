@@ -16,7 +16,7 @@ recognition[11]:
   - error resilience
   - behavioral analysis
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - plan-analysis
 steps[3]:

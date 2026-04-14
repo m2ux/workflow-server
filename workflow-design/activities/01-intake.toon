@@ -11,7 +11,7 @@ recognition[6]:
   - update workflow
   - modify workflow
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - workflow-design
 required: true

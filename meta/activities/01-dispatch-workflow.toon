@@ -12,7 +12,7 @@ recognition:
   - start the target workflow
   - begin the client workflow
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - state
     - meta-orchestrator

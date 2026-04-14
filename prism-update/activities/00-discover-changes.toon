@@ -4,7 +4,7 @@ name: Discover Changes
 description: "Diff upstream prisms directory against current workflow resources. Categorize each prism as new, modified, renamed, or deleted. Classify new prisms by family and determine the next available resource index."
 problem: Need to understand what changed upstream before importing
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - diff-upstream
 steps[5]:

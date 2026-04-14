@@ -8,7 +8,7 @@ recognition[3]:
   - pattern-based search
   - mechanical checks
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - execute-sub-agent
 required: false

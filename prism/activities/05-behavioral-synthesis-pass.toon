@@ -3,7 +3,7 @@ version: 1.0.0
 name: Behavioral Synthesis Pass
 description: "Iterate over analysis_units that were assigned behavioral mode and run the behavioral synthesis lens against each unit's 4 behavioral artifacts. Each worker runs in a fresh context. Writes behavioral-synthesis.md per unit."
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - behavioral-pipeline
 artifacts[1]:

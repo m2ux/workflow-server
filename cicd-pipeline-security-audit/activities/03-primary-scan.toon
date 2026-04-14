@@ -8,7 +8,7 @@ recognition[3]:
   - run detection
   - primary scan
 skills:
-  primary: activity-worker
+  primary: meta/activity-worker
   supporting:
     - execute-cicd-audit
 required: true
