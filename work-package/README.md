@@ -101,7 +101,7 @@ graph TD
 See [activities/README.md](activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
 
 ---
-## Execution Model
+## Orchestration Model
 
 This workflow uses an **orchestrator/worker two-agent pattern**.
 
@@ -331,7 +331,7 @@ The following 7 rules are declared at the workflow level and apply to all activi
 4. One task at a time — Complete current work before starting new work.
 5. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
 6. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-7. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `meta-orchestrator` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `activity-worker` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
+7. **ORCHESTRATION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `meta-orchestrator` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `activity-worker` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
 
 ---
 

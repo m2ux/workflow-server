@@ -217,7 +217,7 @@ Domain-neutral variants (24–26) have a ~0.5–0.7 quality gap vs code-specific
 
 ---
 
-## Execution Model
+## Orchestration Model
 
 This workflow uses an **orchestrator with disposable workers**. Each analytical pass is dispatched to a **fresh sub-agent** (never resumed) to guarantee context isolation.
 

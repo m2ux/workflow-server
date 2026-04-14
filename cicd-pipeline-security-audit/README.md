@@ -33,7 +33,7 @@ Sub-Agent Model (Phase 3):
     M      : Merge agent (dedup + reconciliation)
 ```
 
-### Execution Model
+### Orchestration Model
 
 - **Fully automated** — no user checkpoints; phase gates via `exitActions`
 - **Per-submodule dispatch** — each scanner applies all 7 patterns to one submodule

@@ -11,7 +11,7 @@ The workflow-design workflow provides 2 skills. The primary skill (`workflow-des
 | 00 | `workflow-design` | Design and draft workflow definitions that maximize schema expressiveness | [All activities](../activities/README.md) (primary) |
 | 01 | `toon-authoring` | Author syntactically valid TOON files that pass schema validation | [Context and Literacy](../activities/README.md#02-context-and-literacy), [Content Drafting](../activities/README.md#07-content-drafting), [Validate and Commit](../activities/README.md#09-validate-and-commit) (supporting) |
 
-> The universal skills `orchestrate-workflow` and `11-activity-worker` from [meta/skills/](../../meta/skills/) apply to this workflow's execution model.
+> The universal skills `orchestrate-workflow` and `11-activity-worker` from [meta/skills/](../../meta/skills/) apply to this workflow's orchestration model.
 
 ---
 

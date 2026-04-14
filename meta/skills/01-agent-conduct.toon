@@ -20,9 +20,11 @@ rules:
     - "Do not include process attribution in code comments or documentation."
   code-commentary[1]:
     - "Comments should explain why code exists and the rationale for design choices — avoid narrating what the code does."
-  checkpoint-discipline[2]:
-    - "Checkpoints are explicit user decision gates. You MUST NOT call respond_checkpoint with an option_id unless the user has explicitly selected that option."
-    - "Never fabricate an option_id, assume the user's intent, or auto-resolve blocking checkpoints on behalf of the user, even if you believe you have the context."
+  checkpoint-discipline[4]:
+    - "Workers MUST NOT call respond_checkpoint. When hitting a checkpoint, workers output <checkpoint_yield>checkpoint_handle</checkpoint_yield> and stop."
+    - "Workflow-orchestrators MUST NOT call respond_checkpoint. They bubble up the checkpoint_handle yielded by the worker to the meta-orchestrator."
+    - "Meta-orchestrators use AskQuestion, present_checkpoint, and respond_checkpoint. No one else calls respond_checkpoint."
+    - "Checkpoints are explicit user decision gates. The meta-orchestrator MUST NOT call respond_checkpoint with an option_id unless the user has explicitly selected that option. Never fabricate an option_id or auto-resolve."
   operational-discipline[4]:
     - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls."
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."

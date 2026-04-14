@@ -2,7 +2,7 @@ id: gitnexus-operations
 version: 1.0.0
 capability: Query and navigate codebases using the GitNexus knowledge graph MCP server
 
-description: "This skill guides agents through the correct use of GitNexus MCP tools for codebase understanding, impact analysis, debugging, and refactoring. GitNexus builds a knowledge graph from source code — indexing symbols, call relationships, execution flows (processes), and functional areas (communities). Agents should use GitNexus when they need to understand how code works together (not just where text appears), trace execution flows, assess blast radius before changes, or perform safe multi-file renames. Use attached resource 04 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands."
+description: "This skill guides agents through the correct use of GitNexus MCP tools for codebase understanding, impact analysis, debugging, and refactoring. GitNexus builds a knowledge graph from source code — indexing symbols, call relationships, execution flows (processes), and functional areas (communities). Agents should use GitNexus when they need to understand how code works together (not just where text appears), trace execution flows, assess blast radius before changes, or perform safe multi-file renames. Use attached resource 06 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands."
 
 inputs[2]:
   - id: task-type
@@ -39,10 +39,10 @@ output[1]:
 
 rules:
   query-not-grep: "Use GitNexus query() when you need execution flows and relationships, not just file matches. GitNexus complements grep/search — it finds how code works together."
-  resource-reference: "Use attached resource 04 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
+  resource-reference: "Use attached resource 06 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
 
 resources[1]:
-  - "04"
+  - "06"
 
 tools:
   query:

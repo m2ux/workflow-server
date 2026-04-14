@@ -1,5 +1,5 @@
 ---
-id: workflow-bootstrap
+id: bootstrap-protocol
 version: 1.1.0
 ---
 

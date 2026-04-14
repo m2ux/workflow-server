@@ -16,6 +16,8 @@ rules[4]:
   - "Adoption workflows must still complete quality reviews"
 entryActions[1]{action,message}:
   log,Starting post-implementation review
+skills:
+  primary: meta/activity-worker
 artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"

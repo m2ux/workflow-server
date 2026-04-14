@@ -13,7 +13,7 @@ inputs[3]:
 
 protocol:
   bootstrap-activity[2]:
-    - "Call next_activity({ session_token, activity_id }) using the token provided in your prompt to load the activity definition. Pass session_token, not workflow_id."
+    - "Call next_activity({ session_token, activity_id }) using the token provided in your prompt to load the activity definition. Pass session_token, not workflow_id. DO NOT call start_session."
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, and artifactPrefix"
   bootstrap-skill[3]:
     - "Call get_skills({ session_token }) to load workflow-level management skills. Pass session_token, not workflow_id."
@@ -37,10 +37,12 @@ protocol:
   execute-loops[2]:
     - "forEach: iterate over the named collection, executing loop steps for each item"
     - "doWhile: execute steps, evaluate condition, repeat up to maxIterations"
-  finalize[4]:
+  finalize[6]:
     - "Write artifacts to the planning folder using the activity's artifactPrefix convention. Record each artifact produced: id, name, path. Prepend the artifactPrefix to bare filenames (e.g., '08' + 'code-review.md' = '08-code-review.md')"
-    - "MANDATORY: Update the planning folder README.md progress table (see resource meta/02 for details)"
-    - "Compile structured result with result_type: activity_complete (see resource meta/02 for format). Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
+    - "MANDATORY: Update the planning folder README.md progress table."
+    - "In the Progress table, mark each artifact produced by this activity as '✅ Complete'."
+    - "Update descriptive text in the Status column and update the footer status line to reflect current progress."
+    - "Compile structured result with result_type: activity_complete. Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
@@ -75,11 +77,11 @@ tools:
     when: "Session bootstrap — load workflow-level behavioral protocols"
     params: "session_token"
   get_workflow:
-    when: "After start_session — load workflow structure and initialActivity (optional, if worker needs full workflow context)"
+    when: "After session dispatch — load workflow structure and initialActivity (optional, if worker needs full workflow context)"
     params: "session_token, summary"
   next_activity:
     when: "Transitioning to the first or next activity"
-    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls)"
+    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls), optional step_manifest and transition_condition"
   get_skill:
     when: "Loading the activity's primary context skill (no step_id), or before executing a step that declares a specific skill"
     params: "session_token, optional step_id"
@@ -107,6 +109,5 @@ errors:
     cause: "A checkpoint's prerequisite condition was not met"
     recovery: "Skip the checkpoint silently and note it in the result."
 
-resources[2]:
+resources[1]:
   - "meta/03"
-  - "meta/02"

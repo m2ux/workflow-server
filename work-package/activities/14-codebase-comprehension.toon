@@ -11,6 +11,8 @@ recognition[5]:
   - familiarize with code
 required: false
 estimatedTime: 20-45m
+skills:
+  primary: meta/activity-worker
 rules[7]:
   - "Comprehension artifacts are persistent — they live in .engineering/artifacts/comprehension/ and are reused across work packages"
   - "Always check for existing comprehension artifacts before creating new ones"

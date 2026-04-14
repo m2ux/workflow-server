@@ -9,6 +9,8 @@ recognition[3]:
   - prepare for implementation
 required: true
 estimatedTime: 20-45m
+skills:
+  primary: meta/activity-worker
 steps[10]:
   - id: apply-design
     name: Apply design framework
