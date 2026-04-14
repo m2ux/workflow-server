@@ -58,7 +58,7 @@ steps[7]:
   - id: structural-analysis-inline
     name: Structural Analysis (Single Pass)
     description: "Load the L12 structural lens from the prism workflow (prism resource 00 — attached to skill response via get_skill) and apply it to the changed files. Produces conservation law, meta-law, and classified bug table. Write findings to structural-findings.md. This inline pass runs for simple and moderate complexity work packages."
-    skill: structural-analysis
+    skill: prism/structural-analysis
     required: true
     condition:
       type: not
