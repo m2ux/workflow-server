@@ -5,7 +5,7 @@ description: Create planning folder structure with initial documentation skeleto
 problem: Need organized folder structure for multi-package planning artifacts
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - workflow-execution
 steps[4]:
   - id: create-folder

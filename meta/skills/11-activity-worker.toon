@@ -21,7 +21,7 @@ protocol:
     - "Read each skill's protocol, rules, tools, inputs, and output definitions. For each entry in _resources, call get_resource({ session_token, resource_index }) to load content."
   check-mode[1]:
     - "If the activity is in mode.skipActivities, report back with a skip result"
-  execute-steps[6]:
+  execute-steps[7]:
     - "Execute each step sequentially. Check if the step object explicitly has a 'skill' field before calling get_skill."
     - "CRITICAL: If the step does NOT have a 'skill' field, DO NOT call get_skill. Execute the step directly using your general capabilities and the step's description."
     - "For steps with a skill field, call get_skill({ session_token, step_id }) to load the skill before executing."
@@ -72,7 +72,7 @@ rules:
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
-  tools:
+tools:
   get_skills:
     when: "Session bootstrap — load workflow-level behavioral protocols"
     params: "session_token"

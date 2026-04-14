@@ -236,10 +236,18 @@ Meta defines universal skills used by all workflows:
 |-------|------------|-------------|
 | `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
 | `agent-conduct` | Agent behavioral boundaries | File sensitivity, communication tone, resource loading discipline, build command priority |
+| `11-activity-worker` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
+| `state-management` | Manage workflow state | Initialize, update, and persist state across sessions. Agent writes session token + variables + trace to disk; resumes via start_session(session_token) |
+| `artifact-management` | Manage planning artifacts | Planning folder creation, regular file and submodule commit workflows |
+| `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
+| `github-cli-protocol` | GitHub CLI usage | GraphQL deprecation workarounds, REST API for mutations |
+| `knowledge-base-search` | Optimise knowledge base searches | Pre-indexes domain maps before querying concept-rag |
+| `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
+| `gitnexus-operations` | Query codebases via knowledge graph | GitNexus MCP tools for impact analysis, debugging, refactoring |
 | `10-meta-orchestrator` | Consolidated orchestrator skill | Workflow coordination, state management, worker dispatch, checkpoint presentation. Inline-only — never delegated to a sub-agent. |
 | `11-activity-worker` | Consolidated worker skill | Activity execution, step-level skill loading via get_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
 
-> **Note:** `11-activity-worker` was replaced by `11-activity-worker`. `10-meta-orchestrator`, `11-workflow-orchestrator`, and `11-activity-worker` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
+> **Note:** `workflow-execution` was absorbed into `11-activity-worker`. `10-meta-orchestrator`, `11-workflow-orchestrator`, and `12-activity-worker` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
 
 ---
 

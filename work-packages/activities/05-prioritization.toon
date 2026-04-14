@@ -5,7 +5,7 @@ description: Prioritize work packages based on dependencies, value, risk, and ef
 problem: Need to determine execution order for work packages
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - prioritize-packages
 steps[4]:
   - id: analyze-dependencies

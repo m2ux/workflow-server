@@ -5,7 +5,7 @@ description: Define scope, dependencies, effort, and success criteria for each w
 problem: Each work package needs detailed planning before prioritization
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - plan-work-package-scope
 steps[1]:
   - id: present-planning-overview

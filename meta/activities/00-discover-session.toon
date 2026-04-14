@@ -51,7 +51,7 @@ checkpoints[1]:
             is_resuming: false
             has_saved_state: false
 transitions[1]:
-  - to: start-workflow
+  - to: dispatch-workflow
     isDefault: true
 outcome[3]:
   - Target workflow identified
