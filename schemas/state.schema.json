@@ -124,6 +124,10 @@
           "type": "string",
           "description": "Path to the planning folder where this state file resides"
         },
+        "sessionToken": {
+          "type": "string",
+          "description": "Current session token for resuming the workflow (opaque HMAC-signed string). Updated by the activity worker after each completed activity and by the orchestrator during full state persistence."
+        },
         "sessionTokenEncrypted": {
           "type": "boolean",
           "description": "Whether the session token in this save file is encrypted"
@@ -133,7 +137,7 @@
           "description": "The full nested workflow execution state"
         }
       },
-      "required": ["id", "savedAt", "workflowId", "workflowVersion", "planningFolder", "sessionTokenEncrypted", "state"],
+      "required": ["id", "savedAt", "workflowId", "workflowVersion", "planningFolder", "sessionToken", "sessionTokenEncrypted", "state"],
       "additionalProperties": false
     },
     "state": {
