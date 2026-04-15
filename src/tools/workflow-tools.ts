@@ -28,14 +28,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('discover', 'Entry point for this server. Call this before any other tool to learn the bootstrap procedure for starting a session. Returns the server name, version, and the bootstrap guide explaining the full tool-calling sequence. Use list_workflows to discover available workflows. No parameters required and no session token needed.', {},
     withAuditLog('discover', async () => {
       const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '00');
-      const guide: Record<string, unknown> = {
-        server: config.serverName,
-        version: config.serverVersion,
-      };
+      const lines = [
+        `server: ${config.serverName}`,
+        `version: ${config.serverVersion}`,
+      ];
       if (bootstrapResult.success) {
-        guide['discovery'] = bootstrapResult.value.content;
+        lines.push('', bootstrapResult.value.content);
       }
-      return { content: [{ type: 'text' as const, text: JSON.stringify(guide, null, 2) }] };
+      return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
     }));
 
   server.tool('list_workflows', 'List all available workflow definitions with their full metadata. Use this when you need more detail about available workflows than what discover provides, or to refresh the workflow list during an existing session. Returns an array of workflow summaries. Does not require a session token.', {},
@@ -485,7 +485,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         .replace(/\{client_session_token\}/g, advancedClientToken)
         .replace(/\{agent_id\}/g, decodedClient.aid);
 
-      const response: Record<string, unknown> = {
+      const metadata: Record<string, unknown> = {
         client_session_token: advancedClientToken,
         client_session_id: decodedClient.sid,
         parent_session_id: parentToken.sid,
@@ -496,15 +496,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           description: workflow.description,
         },
         initial_activity: initialActivity,
-        client_prompt: clientPrompt,
       };
 
       if (variables && Object.keys(variables).length > 0) {
-        response['variables'] = variables;
+        metadata['variables'] = variables;
       }
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(metadata, null, 2) + '\n\n' + clientPrompt }],
         _meta: { session_token: advancedClientToken, parent_session_token },
       };
     }, traceOpts));

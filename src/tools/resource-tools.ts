@@ -315,13 +315,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const advancedToken = await advanceToken(session_token);
 
-      const response = {
-        resource: { ...result.value, index: resource_index },
-        session_token: advancedToken,
-      };
+      const { content: resourceContent, ...meta } = result.value;
+      const lines = [
+        `resource_index: ${resource_index}`,
+        ...(meta.id ? [`id: ${meta.id}`] : []),
+        ...(meta.version ? [`version: ${meta.version}`] : []),
+        `session_token: ${advancedToken}`,
+        '',
+        resourceContent,
+      ];
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        content: [{ type: 'text' as const, text: lines.join('\n') }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
