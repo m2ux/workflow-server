@@ -45,8 +45,6 @@ rules:
 resources[1]:
   - "04"
 
-tools:
-
 errors:
   circular_dependencies:
     cause: Dependency graph contains cycles

@@ -60,11 +60,6 @@ rules:
 resources[1]:
   - "09"
 
-tools:
-  read_file:
-    when: Reviewing issue content or Cargo.toml for project context
-    usage: Examine files for problem context and project type
-
 errors:
   unclear_problem:
     cause: Problem statement too vague

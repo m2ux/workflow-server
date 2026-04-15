@@ -42,18 +42,6 @@ rules:
   complexity-gate: "Only create ADRs for moderate or complex implementations — simple changes do not warrant ADRs"
   alternatives-required: "Every ADR must document at least one alternative that was considered"
 
-tools:
-  read_file:
-    when: Reading design philosophy and existing ADR files
-    usage: Gather context and determine next ADR number
-  write_file:
-    when: Creating the ADR file
-    usage: Write to .engineering/artifacts/adr/
-  shell:
-    when: Listing existing ADR files for numbering
-    params: "ls .engineering/artifacts/adr/"
-    returns: Existing ADR filenames for sequential numbering
-
 errors:
   adr_numbering:
     cause: Cannot determine next ADR number

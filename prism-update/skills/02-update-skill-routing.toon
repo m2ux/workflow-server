@@ -36,16 +36,6 @@ output[1]:
 rules:
   coverage: "Every routing surface must be updated: goal-mapping-matrix, code-vs-general, model-sensitivity, neutral-variant-routing, resource lists, lens catalogs, selection guides."
 
-tools:
-  read_file:
-    when: "Reading skill TOON files"
-  write_file:
-    when: "Writing updated skill files"
-  grep:
-    when: "Finding all occurrences of old prism names"
-  shell:
-    when: "Committing changes"
-
 errors:
   missing_skill:
     cause: "Expected skill file not found"

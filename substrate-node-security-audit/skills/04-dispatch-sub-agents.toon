@@ -26,12 +26,6 @@ output[1]:
       dispatch_summary: "agents dispatched, failures encountered"
       dispatch_manifest: "per-agent table with assigned/dispatched/returned status"
 
-tools:
-  task:
-    when: "Dispatching each sub-agent"
-    params: "description, prompt, subagent_type, model"
-    returns: "Sub-agent output text"
-
 errors:
   agent_timeout:
     cause: "Sub-agent did not return within expected time"

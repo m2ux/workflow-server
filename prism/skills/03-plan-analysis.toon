@@ -168,29 +168,6 @@ resources[58]:
   - "60"
   - "61"
 
-tools:
-  glob:
-    when: "Surveying codebase or directory structure (codebase/document-set scopes only)"
-    usage: "Discover files and directories to determine scope and module boundaries"
-  read_file:
-    when: "Reading project markers or target files"
-    usage: "Examine build configuration for workspace/package definitions; read single-file targets"
-  gitnexus_query:
-    when: "GitNexus is available — discovering functional areas and execution flows for better module classification"
-    params: "query: relevant to the analytical goal"
-    returns: "Processes ranked by relevance with symbols and file locations"
-  gitnexus_context:
-    when: "GitNexus is available — checking fan-in for risk assessment"
-    params: "name: module or symbol name"
-    returns: "Callers, callees, process participation"
-  gitnexus_list_repos:
-    when: "Checking whether GitNexus is available for the target codebase"
-    returns: "List of indexed repositories"
-  write_file:
-    when: "Writing the analysis plan artifact (only when output-path is provided)"
-    params: "path: {output-path}/analysis-plan.md"
-    usage: "Persist the plan for the orchestrator to execute"
-
 errors:
   empty_directory:
     cause: "Target directory contains no analyzable files"

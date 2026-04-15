@@ -37,19 +37,6 @@ output[1]:
       sources: "Source documents and paths used"
       related_concepts: "Related concepts from the index that may warrant follow-up"
 
-tools:
-  Read:
-    when: Loading the domain knowledge index before searching
-  chunks_search:
-    when: Searching within a known document after resolving its path via catalog_search
-  broad_chunks_search:
-    when: Searching across all documents when no single source is identified
-  catalog_search:
-    when: "Resolving a document name from the index to its full path, or as fallback when the index has no mapping"
-  concept_search:
-    when: Following up on related concepts identified in the index
-
-
 errors:
   no_index_for_domain:
     cause: "No knowledge index file found in .engineering/resources/ for the requested domain"

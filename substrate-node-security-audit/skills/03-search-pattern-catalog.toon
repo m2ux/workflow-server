@@ -36,20 +36,6 @@ output[1]:
       results_table: "one row per hit, with fields determined by the invoking activity step (typically: category/check ID, pattern, file:line, hit content, triage/verdict)"
       zero_hit_verdicts: "one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification"
 
-tools:
-  grep:
-    when: "Executing grep-based patterns from the catalog"
-    params: "pattern, scope, exclusions"
-    returns: "Matching lines with file paths and line numbers"
-  read_file:
-    when: "Verification-based patterns that require reading code context beyond the grep hit (e.g., tracing a variable to its definition, verifying field completeness in an Ord implementation)"
-    params: "file_path, offset, limit"
-    returns: "File contents for manual verification"
-  shell:
-    when: "Executing search patterns that require shell commands (e.g., find + wc for file enumeration, complex regex that exceed grep tool capabilities)"
-    params: "command"
-    returns: "Command output"
-
 resources[1]:
   - "05"
 

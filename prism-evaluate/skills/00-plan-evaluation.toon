@@ -76,27 +76,6 @@ output[2]:
     components:
       plan: "Array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }"
 
-tools:
-  glob:
-    when: "Surveying target structure"
-    usage: "Discover files, directories, and project/document markers"
-  read_file:
-    when: "Reading documents, build configuration, or source files for structural understanding"
-    usage: "Examine target content to inform analysis focus values"
-  grep:
-    when: "Scanning for patterns relevant to specific dimensions"
-    usage: "Search for claims, assumptions, architectural decisions, or other dimension-relevant content"
-  write_file:
-    when: "Writing the evaluation plan artifact"
-    params: "path: {output_path}/evaluation-plan.md"
-  gitnexus_list_repos:
-    when: "Checking whether GitNexus has indexed the target (codebase targets only)"
-    returns: "List of indexed repositories with names and paths"
-  gitnexus_query:
-    when: "Discovering functional areas and module clusters for codebase targets"
-    params: "query: relevant to evaluation dimensions"
-    returns: "Processes ranked by relevance with symbols and file locations"
-
 resources[2]:
   - "00"
   - "01"

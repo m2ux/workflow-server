@@ -122,18 +122,6 @@ resources[52]:
   - "60"
   - "61"
 
-tools:
-  read_file:
-    when: Reading files to analyze
-    usage: Obtain the artifact content for lens application
-  write_file:
-    when: Writing per-lens and synthesis artifacts
-    params: "path: {output-path}/portfolio-{lens-name}.md"
-    usage: "Persist each lens output and the cross-lens synthesis"
-  grep:
-    when: Verifying findings against the codebase
-    usage: Confirm cited patterns and locations
-
 errors:
   single_lens_selected:
     cause: Only one portfolio lens was requested

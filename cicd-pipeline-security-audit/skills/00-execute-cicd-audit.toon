@@ -42,17 +42,6 @@ rules:
   orchestrator-discipline: "Coordinate only — never analyze workflow files directly"
   phase-gates: "Enforce exitAction gates before advancing phases"
 
-tools:
-  get_workflow:
-    when: Loading workflow definition at audit start
-    params: "workflow_id: cicd-pipeline-security-audit"
-  next_activity:
-    when: Loading each activity for execution
-    params: "workflow_id, activity_id"
-    when: "Discovering workflow files, checking submodule paths"
-  read_file:
-    when: "Loading scanner output JSON files"
-
 resources[1]:
   - "00"
 

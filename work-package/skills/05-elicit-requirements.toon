@@ -54,11 +54,6 @@ rules:
 resources[1]:
   - "05"
 
-tools:
-  addCommentToJiraIssue:
-    when: Posting assumptions for stakeholder review
-    usage: Add assumptions summary as Jira comment for stakeholder feedback
-
 errors:
   no_stakeholder_input:
     cause: User skipped stakeholder discussion

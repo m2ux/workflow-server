@@ -40,18 +40,8 @@ rules:
   committed-to-parent: "Planning artifacts are regular files in the parent repo (.engineering/artifacts/). They MUST be committed and pushed to the parent repo before any PR or issue references them via URL, otherwise the link will 404."
   push-before-linking: "Any engineering link included in a PR body (📐 Engineering) MUST resolve to a committed file on the remote. Commit and push the planning folder BEFORE creating or updating the PR."
 
-tools:
-  shell:
-    when: Creating directory, listing files
-    params: "mkdir, ls"
-    usage: mkdir for folder creation, ls to verify existing artifacts
-  write_file:
-    when: Writing artifact content
-    usage: Write artifacts to prefixed paths
-  read_file:
-    when: Loading existing artifacts or verifying content
-    usage: Read artifact files for context
-
+  tool-usage:
+    - "use shell: mkdir for folder creation, ls to verify existing artifacts"
 resources[1]:
   - "01"
 

@@ -55,17 +55,6 @@ rules:
   diagrams-required: "Every summary must include at least a system context diagram — other diagrams as warranted by change scope"
   mermaid-format: "Use Mermaid diagram syntax for all diagrams — ensures they render in GitHub and Confluence"
 
-tools:
-  read_file:
-    when: Understanding changed files and module structure
-    usage: Parse source and design docs
-  write_file:
-    when: Creating architecture-summary.md
-    usage: Write summary document
-  grep:
-    when: Understanding module structure and dependencies
-    usage: Map modules, imports, and boundaries
-
 errors:
   no_significant_changes:
     cause: Changes are too minor for architectural summary

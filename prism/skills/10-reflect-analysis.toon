@@ -39,20 +39,8 @@ output[1]:
 rules:
   model-selection: "L12 uses its optimal model. Claim uses its optimal model. Synthesis uses sonnet."
 
+  tool-usage:
+    - "task params: description, prompt, subagent_type — do NOT resume prior workers"
 resources[2]:
   - "00"
   - "07"
-
-tools:
-  task:
-    when: Dispatching fresh workers for L12, meta-analysis, and synthesis passes
-    params: "description, prompt, subagent_type — do NOT resume prior workers"
-    returns: "Worker result with artifact path confirmation"
-    usage: "One Task per pass; each sub-agent is new"
-  read_file:
-    when: Reading target for L12; reading reflect-l12.md for meta worker; reading L12 and meta outputs plus constraint history for synthesis; verifying writes
-    usage: "Meta worker reads L12 output from disk; synthesis worker reads both artifacts and optional constraint history"
-  write_file:
-    when: Each worker persists its markdown artifact under output-path
-    params: "path: {output-path}/reflect-l12.md | reflect-meta.md | reflect-synthesis.md"
-    usage: "L12 worker writes reflect-l12.md; claim worker writes reflect-meta.md; synthesis worker writes reflect-synthesis.md"

@@ -50,20 +50,8 @@ resources[1]:
 rules:
   completion-timing: "COMPLETE.md is created after implementation is complete and PR is merged. It captures the final delivered state — what was built, tested, and deferred. Update if post-merge changes occur."
 
-tools:
-  read_file:
-    when: Loading test plan, ADR, or source files
-    usage: Read artifacts and source for documentation
-  write_file:
-    when: Creating COMPLETE.md, updating ADR or test plan
-    usage: Write documentation artifacts
-  grep:
-    when: Finding public API definitions
-    usage: Locate pub fn, pub struct, pub enum definitions
-  shell:
-    when: Verifying doc coverage in codebase
-    usage: Run cargo doc or similar to check documentation
-
+  tool-usage:
+    - "use shell: Run cargo doc or similar to check documentation"
 errors:
   no_adr:
     cause: No ADR was created for this work package

@@ -24,18 +24,5 @@ protocol:
   resource-usage[1]:
     - "RESOURCE LOADING: Skills return _resources as lightweight references (index, id, version — no content). Call get_resource with the resource index to load the full content. When a step says 'use attached resource XX', find the matching entry in _resources and call get_resource."
 
-tools:
-  start_session:
-    when: "Meta-orchestrator beginning a new workflow session"
-  get_workflow:
-    when: "Loading workflow structure and initialActivity"
-  next_activity:
-    when: "Transitioning to the first or next activity using next_activity({ session_token, activity_id, step_manifest })"
-  get_skill:
-    when: "Loading primary skills (workflow-orchestrator, activity-worker) or specific skills"
-  get_resource:
-    when: "After get_skills or get_skill — loading content for entries in _resources"
-
 resources[1]:
   - "meta/00"
-

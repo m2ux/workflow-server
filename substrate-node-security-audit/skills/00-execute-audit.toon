@@ -37,28 +37,6 @@ protocol:
     - Verify elevation completeness via merge table mapping
     - Include reconciliation table in report as auditable evidence of zero finding loss
 
-tools:
-  read_file:
-    when: Reading source code files for manual review
-    params: file_path
-    returns: File contents
-    usage: Read every .rs file in assigned crate; prioritize files >200 lines
-  grep:
-    when: Running §2 static analysis patterns and mechanical checks
-    params: pattern, scope, exclusions
-    returns: Matching lines with file paths and line numbers
-    usage: Run against FULL in-scope directory set, not selectively
-  shell:
-    when: Running cargo audit, cargo deny, git operations, file inventory
-    params: command
-    returns: Command output
-    usage: Capture and save output to planning folder
-  task:
-    when: Dispatching sub-agents for crate-level review or analysis
-    params: description, prompt, subagent_type
-    returns: Sub-agent findings and scratchpad
-    usage: Use generalPurpose for deep review agents; explore for quick searches
-
 state:
   track[6]:
     - current_phase - Which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)

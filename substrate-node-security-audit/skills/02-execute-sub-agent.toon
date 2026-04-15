@@ -54,12 +54,3 @@ errors:
   workflow_server_unavailable:
     cause: "MCP tool calls fail"
     recovery: "Fall back to the prompt instructions. Note in output that workflow-server was not available."
-
-tools:
-  start_session:
-    when: "Bootstrap — first call"
-    returns: "Agent rules, workflow metadata, and session token"
-  next_activity:
-    when: "Bootstrap — second call"
-    params: "workflow_id, activity_id"
-    returns: "Activity definition with steps, rules, outcome"

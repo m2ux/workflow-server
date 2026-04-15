@@ -100,27 +100,8 @@ rules:
   automatic-pipeline: "The full pipeline runs without user interaction. No checkpoints, no confirmation between passes."
   verify-artifacts: "After each pass, verify the artifact was written before dispatching the next pass."
 
-tools:
-  get_workflow:
-    when: Once at workflow start
-    params: "workflow_id: prism"
-    returns: "Workflow definition with variables, rules, activities"
-  next_activity:
-    when: Before dispatching each pass
-    params: "workflow_id: prism, activity_id: structural-pass | adversarial-pass | synthesis-pass"
-    returns: Activity definition with artifact declarations
-  task:
-    when: "Dispatching each pass to a fresh sub-agent"
-    params: "description, prompt, subagent_type: generalPurpose — NEVER use resume parameter"
-    returns: "Worker result with artifact path"
-    usage: "Each call creates a new agent. Include resolved_content + prior artifact paths + resource index + output-path in the prompt."
-  read_file:
-    when: "Resolving a file path to content, and verifying artifacts were written"
-    usage: Read the target file before dispatching; verify artifact existence after each pass
-  shell:
-    when: "Creating the output directory if it does not exist"
-    params: "mkdir -p {output-path}"
-
+  tool-usage:
+    - "task params: description, prompt, subagent_type: generalPurpose — NEVER use resume parameter"
 errors:
   worker_incomplete:
     cause: "A pass worker returned without writing its artifact"

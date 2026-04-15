@@ -64,12 +64,6 @@ resources[2]:
   - "01"
   - "04"
 
-tools:
-  grep:
-    when: Searching for injection patterns across workflow files
-  shell:
-    when: Running multi-file pattern searches
-
 errors:
   pattern_catalog_unavailable:
     cause: "Resource 01 could not be loaded"

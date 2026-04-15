@@ -50,12 +50,6 @@ output[1]:
 resources[1]:
   - "12"
 
-tools:
-  shell:
-    when: Git operations and gh CLI
-    params: "git checkout, git branch, git push, git pull, git rebase, gh pr create, gh pr edit, gh pr ready"
-    usage: Full git workflow including branch creation, sync, push, and PR lifecycle
-
 errors:
   branch_exists:
     cause: Branch already exists

@@ -48,14 +48,6 @@ output[1]:
 resources[1]:
   - "10"
 
-tools:
-  read_file:
-    when: Reviewing design philosophy, requirements, analysis, research artifacts
-    usage: Load prerequisite inputs
-  write_file:
-    when: Creating work-package-plan.md
-    usage: Write planning artifact
-
 errors:
   missing_inputs:
     cause: Design philosophy or analysis not completed

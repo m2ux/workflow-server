@@ -48,12 +48,6 @@ rules:
 resources[1]:
   - "06"
 
-tools:
-  get_workflow:
-    when: Triggering the work-package workflow for each package
-    params: "workflow_id: work-package"
-    returns: Complete work-package workflow definition
-
 errors:
   workflow_trigger_failure:
     cause: Unable to load or start the work-package workflow

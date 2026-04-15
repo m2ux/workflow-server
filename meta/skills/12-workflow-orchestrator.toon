@@ -96,21 +96,6 @@ rules:
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
-tools:
-  get_workflow:
-    when: "Once at workflow start"
-  next_activity:
-    when: "Before dispatching each activity"
-  task:
-    when: "Dispatching or resuming the activity-worker sub-agent"
-  get_trace:
-    when: "After each activity_complete"
-  start_session:
-    when: "Bootstrapping or resuming"
-  get_resource:
-    when: "After get_skills"
-
-
 errors:
   worker_timeout:
     cause: "Worker sub-agent did not return within expected time"

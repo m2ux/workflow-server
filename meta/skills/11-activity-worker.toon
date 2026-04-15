@@ -76,29 +76,6 @@ rules:
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
-tools:
-  get_skills:
-    when: "Session bootstrap — load workflow-level behavioral protocols"
-    params: "session_token"
-  get_workflow:
-    when: "After session dispatch — load workflow structure and initialActivity (optional, if worker needs full workflow context)"
-    params: "session_token, summary"
-  next_activity:
-    when: "Transitioning to the first or next activity"
-    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls), optional step_manifest and transition_condition"
-  get_skill:
-    when: "Loading the activity's primary context skill (no step_id), or before executing a step that declares a specific skill"
-    params: "session_token, optional step_id"
-  get_resource:
-    when: "After get_skill or get_skills — loading content for entries in _resources"
-    params: "session_token, resource_index"
-  yield_checkpoint:
-    when: "When a checkpoint step is reached"
-    params: "session_token, checkpoint_id"
-  resume_checkpoint:
-    when: "When the orchestrator resumes you after resolving a checkpoint"
-    params: "session_token (specifically, the checkpoint_handle provided by the orchestrator)"
-
 errors:
   activity_not_found:
     cause: "next_activity returned error for the given activity_id"

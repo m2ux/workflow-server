@@ -43,15 +43,6 @@ output[1]:
 rules:
   no-duplicate-review: "Test suite quality was already reviewed in post-impl-review — this activity validates execution only"
 
-tools:
-  shell:
-    when: Running tests, build, and linter
-    params: "nice -n 19 cargo test, nice -n 19 cargo build, nice -n 19 cargo clippy, nice -n 19 npm test, nice -n 19 npm run build — based on project type"
-    usage: Execute validation commands in target submodule
-  read_file:
-    when: Analyzing failure output
-    usage: Parse error messages and stack traces for root cause
-
 errors:
   persistent_failure:
     cause: Tests fail repeatedly after fixes

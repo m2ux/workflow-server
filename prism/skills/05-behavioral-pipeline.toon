@@ -68,33 +68,6 @@ resources[5]:
   - "22"
   - "23"
 
-tools:
-  read_file:
-    when: "Reading target code and prior behavioral artifacts (synthesis pass)"
-    usage: "Read code files for analysis. For synthesis: read behavioral-errors.md, behavioral-costs.md, behavioral-changes.md, behavioral-promises.md"
-  write_file:
-    when: "Writing the behavioral analysis artifact"
-    params: "path: {output-path}/{artifact-filename}"
-    usage: "Persist the analysis as a markdown artifact"
-  grep:
-    when: "Verifying findings against the codebase"
-    usage: "Confirm that cited patterns exist at the claimed locations"
-  gitnexus_list_repos:
-    when: "Checking GitNexus availability before graph augmentation (independent lens passes only)"
-    returns: "List of indexed repositories"
-  gitnexus_context:
-    when: "Error-resilience (19): checking whether all callers of error-returning functions handle the error"
-    params: "name: error-returning function name"
-    returns: "Categorised incoming/outgoing references including callers"
-  gitnexus_impact:
-    when: "Evolution (21): measuring blast radius of identified coupling points"
-    params: "target: coupling point symbol, direction: upstream"
-    returns: "Affected symbols by depth, affected processes, risk rating"
-  gitnexus_cypher:
-    when: "API-surface (22): enumerating exported symbols with caller counts from the graph"
-    params: "query: Cypher query targeting public symbols and their callers"
-    returns: "Query results as markdown table"
-
 errors:
   lens_not_loaded:
     cause: "resource not found in skill response for the given index"

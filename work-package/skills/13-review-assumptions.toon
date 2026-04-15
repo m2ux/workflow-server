@@ -53,14 +53,6 @@ rules:
   elevate-implicit: "Make implicit decisions explicit — assumptions should be elevated for validation"
   categorize-per-activity: "Use categories appropriate to the current activity phase"
 
-tools:
-  read_file:
-    when: Loading existing assumptions log
-    usage: Read assumptions-log.md to load prior assumptions
-  write_file:
-    when: Recording outcomes and updating assumptions log
-    usage: Update assumptions-log.md after review checkpoint
-
 errors:
   no_assumptions:
     cause: No significant assumptions identified

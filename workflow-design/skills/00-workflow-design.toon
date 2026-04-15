@@ -64,6 +64,8 @@ rules:
   resource-loading[1]:
     - "Use get_resource(session_token, resource_index) for each entry in a skill's _resources after get_skills or get_skill — refs are lightweight until loaded."
 
+  tool-usage:
+    - "list_workflows params: none (no session token required)"
 resources[5]:
   - "00"
   - "01"
@@ -71,42 +73,6 @@ resources[5]:
   - "03"
   - "04"
 
-tools:
-  start_session:
-    when: Beginning execution on the workflow-server MCP
-    params: workflow_id
-    returns: Workflow metadata plus session token — pass _meta.session_token to every subsequent call
-  get_skills:
-    when: Immediately after start_session — load session-protocol, agent-conduct, and workflow-level skills
-    params: session_token
-    returns: Skill map with _resources indices only (use get_resource for content)
-  list_workflows:
-    when: Surveying existing workflows during context loading
-    params: none (no session token required)
-    returns: Array of workflow summaries with metadata
-    usage: Discover reference workflows for pattern analysis
-  get_workflow:
-    when: After start_session — load definition for the session's workflow
-    params: "session_token, summary (optional boolean, default true)"
-    returns: "summary=true: rules, variables, modes, initialActivity, activity id/name list; summary=false: full nested definition"
-    preserve[5]:
-      - id
-      - rules
-      - variables
-      - modes
-      - initialActivity
-  next_activity:
-    when: Loading the current or next activity for the session workflow
-    params: "session_token, activity_id (use initialActivity from get_workflow for the first call)"
-    returns: Full activity with steps, checkpoints, transitions, skills, rules
-  get_skill:
-    when: Loading the skill bound to a step in the current activity
-    params: "session_token, step_id — requires next_activity first so the session has a current activity"
-    returns: Skill definition with _resources indices (use get_resource for content)
-  get_resource:
-    when: Loading full markdown or text for a resource index from _resources
-    params: "session_token, resource_index (bare index or cross-workflow prefix such as meta/04)"
-    returns: Resource id, version, and body content
 errors:
   schema_validation_failure:
     cause: "Drafted TOON file does not conform to its schema"

@@ -40,23 +40,11 @@ rules:
   isolation: "Each lens runs in a fresh context; neither sees the other's output"
   model-selection: "Each prism uses its optimal model from YAML frontmatter. Synthesis uses sonnet."
 
+  tool-usage:
+    - "task params: description, prompt, subagent_type — do NOT resume prior workers"
 resources[5]:
   - "00"
   - "07"
   - "17"
   - "18"
   - "62"
-
-tools:
-  task:
-    when: Dispatching fresh workers for each pass
-    params: "description, prompt, subagent_type — do NOT resume prior workers"
-    returns: "Worker result with artifact path confirmation"
-    usage: "One Task per prism pass and one for synthesis; each sub-agent is new"
-  read_file:
-    when: Reading target content and verifying dispute-lens-a.md, dispute-lens-b.md before synthesis; verifying dispute-synthesis.md after
-    usage: "Synthesis worker reads both lens artifacts from disk; orchestrator verifies writes"
-  write_file:
-    when: Each worker persists its markdown artifact under output-path
-    params: "path: {output-path}/dispute-lens-a.md | dispute-lens-b.md | dispute-synthesis.md"
-    usage: "Lens workers write A and B; synthesis worker writes dispute-synthesis.md"

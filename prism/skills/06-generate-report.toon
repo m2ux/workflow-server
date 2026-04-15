@@ -78,23 +78,6 @@ rules:
   traceability-completeness: "The traceability appendix must have an entry for every finding ID in the report. Missing entries are a report integrity violation."
   blast-radius-is-evidence: "Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol."
 resources[0]:
-tools:
-  read_file:
-    when: "Reading analysis artifacts from the filesystem"
-    usage: "Read synthesis.md, structural-analysis.md, adversarial-analysis.md, portfolio-*.md, behavioral-synthesis.md from the paths in all-artifact-paths"
-  write_file:
-    when: "Writing the final report"
-    params: "path: {output-path}/REPORT.md"
-    usage: "Persist the clean report as a markdown artifact"
-    returns: "List of indexed repositories"
-  gitnexus_impact:
-    when: "Computing measured blast radius for findings that reference specific symbols"
-    params: "target: symbol name from finding, direction: upstream"
-    returns: "Affected symbols by depth, affected processes, affected modules, risk rating"
-  gitnexus_context:
-    when: "Determining which execution flows a finding's primary symbol participates in"
-    params: "name: symbol name from finding"
-    returns: "Categorised references, process participation"
 errors:
   missing_artifacts:
     cause: "One or more artifact paths in all-artifact-paths do not exist on the filesystem"

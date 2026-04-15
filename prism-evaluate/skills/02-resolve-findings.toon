@@ -65,20 +65,6 @@ output[2]:
   - id: modified-target
     description: "The target document with accepted mitigations applied"
 
-tools:
-  read_file:
-    when: "Reading the evaluation report and target document"
-    usage: "Extract findings and identify target text for each finding"
-  write_file:
-    when: "Writing the MITIGATION-PLAN.md artifact"
-    params: "path: {output_path}/MITIGATION-PLAN.md"
-  str_replace:
-    when: "Applying individual mitigations to the target document"
-    usage: "Replace specific text in the target with mitigation text"
-  ask_question:
-    when: "Presenting each finding to the user and collecting their decision"
-    usage: "One question per finding with options: accept, modify, skip, discuss"
-
 errors:
   finding_not_located:
     cause: "A finding references target text that cannot be located in the current target"

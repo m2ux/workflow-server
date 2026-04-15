@@ -53,8 +53,6 @@ rules:
 resources[1]:
   - "03"
 
-tools:
-
 errors:
   circular_dependency:
     cause: Two packages depend on each other

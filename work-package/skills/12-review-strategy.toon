@@ -67,21 +67,6 @@ resources[2]:
   - "18"
   - "15"
 
-tools:
-  shell:
-    when: Examining PR changes
-    params: "git diff, git log"
-    usage: Extract changed files and commit history
-  read_file:
-    when: Reviewing changed file contents
-    usage: Examine implementation for scope and artifacts
-  grep:
-    when: Searching for patterns (logging, debug, TODO, commented code)
-    usage: Find investigation artifacts and orphaned code
-  edit:
-    when: Applying cleanup after user approval
-    usage: Remove identified artifacts from codebase
-
 errors:
   scope_creep:
     cause: PR contains changes unrelated to the work package

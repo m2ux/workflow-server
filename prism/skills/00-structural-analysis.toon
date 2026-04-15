@@ -65,29 +65,6 @@ rules:
 resources[1]:
   - "00"
 
-tools:
-  read_file:
-    when: Reading code files to analyze
-    usage: Obtain the code content for lens application
-  write_file:
-    when: Writing the analysis artifact to the output directory
-    params: "path: {output-path}/structural-analysis.md"
-    usage: Persist the complete analysis as a markdown artifact
-  grep:
-    when: Verifying findings against the codebase
-    usage: Confirm that cited patterns exist at the claimed locations
-  gitnexus_list_repos:
-    when: "Checking whether GitNexus has indexed the target codebase (gather-structural-context step)"
-    returns: "List of indexed repositories — if empty or target not indexed, skip graph context gathering"
-  gitnexus_query:
-    when: "Discovering execution flows through the target code during gather-structural-context"
-    params: "query: derived from target module name, key functions, or analysis-focus"
-    returns: "Processes ranked by relevance with symbols and file locations"
-  gitnexus_context:
-    when: "Obtaining caller/callee maps for primary entry points and exported symbols during gather-structural-context"
-    params: "name: symbol name from the target code"
-    returns: "Categorised incoming/outgoing references, process participation"
-
 errors:
   empty_code:
     cause: No code content provided or file not found

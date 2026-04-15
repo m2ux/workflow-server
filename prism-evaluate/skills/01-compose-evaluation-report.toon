@@ -73,17 +73,6 @@ output[1]:
       cross_cutting: "Cross-dimensional patterns"
       recommendations: "Prioritised corrections and recommendations"
 
-tools:
-  read_file:
-    when: "Reading prism output artifacts and dimension analysis files"
-    usage: "Extract findings, conservation laws, and evidence from analysis artifacts"
-  write_file:
-    when: "Writing the evaluation report"
-    params: "path: {output_path}/EVALUATION-REPORT.md"
-  glob:
-    when: "Discovering analysis artifacts in output subdirectories"
-    usage: "Find all .md files produced by prism runs"
-
 errors:
   missing_artifacts:
     cause: "Expected prism output artifacts are missing for one or more dimensions"

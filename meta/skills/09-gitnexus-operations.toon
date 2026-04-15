@@ -44,28 +44,6 @@ rules:
 resources[1]:
   - "06"
 
-tools:
-  query:
-    when: "Understanding how code works — finding execution flows related to a concept, function, or module"
-  context:
-    when: "Deep-diving on a specific symbol — seeing all callers, callees, and process participation"
-  impact:
-    when: "Assessing blast radius before code changes — what will break at each depth"
-  detect_changes:
-    when: "Pre-commit review — mapping uncommitted git changes to affected execution flows"
-  rename:
-    when: "Safe multi-file rename using the knowledge graph plus text search"
-
-  cypher:
-    when: "Complex structural queries that other tools cannot answer — read gitnexus://repo/{name}/schema first"
-    params: "query: Cypher query string"
-    returns: "Results formatted as markdown table"
-    schema: "Nodes: File, Function, Class, Interface, Method, Community, Process. Edges via CodeRelation.type: CALLS, IMPORTS, EXTENDS, IMPLEMENTS, DEFINES, MEMBER_OF, STEP_IN_PROCESS."
-  list_repos:
-    when: "Discovering which repositories are indexed and available"
-    params: none
-    returns: "Indexed repos with names, paths, stats"
-
 errors:
   index_not_found:
     cause: "No GitNexus index exists for the target repository"
