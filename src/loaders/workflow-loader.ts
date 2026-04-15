@@ -4,7 +4,7 @@ import { join, dirname } from 'node:path';
 import { type Workflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
 import { type Activity, safeValidateActivity } from '../schema/activity.schema.js';
 import { type Result, ok, err } from '../result.js';
-import { WorkflowNotFoundError, WorkflowValidationError } from '../errors.js';
+import { WorkflowNotFoundError, WorkflowValidationError, ActivityNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
 import { decodeToonRaw } from '../utils/toon.js';
 import { parseActivityFilename } from './filename-utils.js';
@@ -335,5 +335,56 @@ export function validateTransition(workflow: Workflow, fromActivityId: string, t
   const valid = getValidTransitions(workflow, fromActivityId);
   if (!valid.includes(toActivityId)) return { valid: false, reason: `No valid transition. Valid: ${valid.join(', ') || 'none'}` };
   return { valid: true };
+}
+
+/** Read raw activity TOON by ID. Validates but returns the original file content. */
+export async function readActivityRaw(
+  workflowDir: string,
+  workflowId: string,
+  activityId: string,
+): Promise<Result<string, ActivityNotFoundError>> {
+  const filePath = resolveWorkflowPath(workflowDir, workflowId);
+  if (!filePath) return err(new ActivityNotFoundError(activityId, workflowId));
+
+  const activitiesDir = join(dirname(filePath), 'activities');
+  if (!existsSync(activitiesDir)) return err(new ActivityNotFoundError(activityId, workflowId));
+
+  try {
+    const files = await readdir(activitiesDir);
+    for (const file of files) {
+      const parsed = parseActivityFilename(file);
+      if (!parsed || parsed.id !== activityId) continue;
+
+      const content = await readFile(join(activitiesDir, file), 'utf-8');
+      const decoded = decodeToonRaw(content);
+      const validation = safeValidateActivity(decoded);
+      if (!validation.success) {
+        logWarn('Activity validation failed (raw read)', { activityId, errors: validation.error.issues });
+        return err(new ActivityNotFoundError(activityId, workflowId));
+      }
+      return ok(content);
+    }
+  } catch (error) {
+    logWarn('Failed to read activity raw', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
+  }
+
+  return err(new ActivityNotFoundError(activityId, workflowId));
+}
+
+/** Read raw workflow.toon file content. */
+export async function readWorkflowRaw(
+  workflowDir: string,
+  workflowId: string,
+): Promise<Result<string, WorkflowNotFoundError>> {
+  const filePath = resolveWorkflowPath(workflowDir, workflowId);
+  if (!filePath) return err(new WorkflowNotFoundError(workflowId));
+
+  try {
+    const content = await readFile(filePath, 'utf-8');
+    return ok(content);
+  } catch (error) {
+    logWarn('Failed to read workflow raw', { workflowId, error: error instanceof Error ? error.message : String(error) });
+    return err(new WorkflowNotFoundError(workflowId));
+  }
 }
 

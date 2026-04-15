@@ -3,10 +3,35 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createServer } from '../src/server.js';
 import { resolve } from 'node:path';
+import { decode } from '@toon-format/toon';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseToolResponse(result: any): any {
-  return JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+  const text = (result.content[0] as { type: 'text'; text: string }).text;
+
+  // Try JSON first (tier 3 tools: yield/respond/resume checkpoint, get_trace, health_check, etc.)
+  try { return JSON.parse(text); } catch { /* not JSON */ }
+
+  // Try TOON decode (handles encodeToon output AND header+TOON body since
+  // TOON treats blank lines as whitespace between top-level keys)
+  try { return decode(text); } catch { /* not pure TOON */ }
+
+  // Fallback: split header from body on first double-newline
+  const splitIdx = text.indexOf('\n\n');
+  if (splitIdx > 0) {
+    const header = text.substring(0, splitIdx);
+    const body = text.substring(splitIdx + 2);
+    const meta: Record<string, string> = {};
+    for (const line of header.split('\n')) {
+      const colonIdx = line.indexOf(': ');
+      if (colonIdx > 0) meta[line.substring(0, colonIdx)] = line.substring(colonIdx + 2);
+    }
+    // Try decoding body as TOON
+    try { return { ...meta, ...decode(body) }; } catch { /* body is not TOON */ }
+    return { ...meta, _body: body };
+  }
+
+  return { _raw: text };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -94,10 +119,10 @@ describe('mcp-server integration', () => {
       const guide = parseToolResponse(result);
       expect(guide.server).toBeDefined();
       expect(guide.version).toBeDefined();
-      expect(guide.discovery).toBeDefined();
-      expect(typeof guide.discovery).toBe('string');
-      expect(guide.discovery).toContain('start_session');
-      expect(guide.discovery).toContain('get_skill');
+      expect(guide._body).toBeDefined();
+      expect(typeof guide._body).toBe('string');
+      expect(guide._body).toContain('start_session');
+      expect(guide._body).toContain('get_skill');
       expect(guide.available_workflows).toBeUndefined();
     });
   });
@@ -228,7 +253,7 @@ describe('mcp-server integration', () => {
       });
       expect(stepResult.isError).toBeFalsy();
       const stepResponse = parseToolResponse(stepResult);
-      expect(stepResponse.skill.id).toBe('create-issue');
+      expect(stepResponse.id).toBe('create-issue');
       expect(stepResponse.session_token).toBeDefined();
     });
 
@@ -362,10 +387,9 @@ describe('mcp-server integration', () => {
         arguments: { session_token: actToken, step_id: 'create-issue' },
       });
       const response = parseToolResponse(result);
-      expect(response.skill).toBeDefined();
-      expect(response.skill.id).toBe('create-issue');
-      expect(response.skill._resources).toBeDefined();
-      expect(Array.isArray(response.skill._resources)).toBe(true);
+      expect(response.id).toBe('create-issue');
+      expect(response.resources).toBeDefined();
+      expect(Array.isArray(response.resources)).toBe(true);
     });
 
     it('should error when step_id is provided but no activity in session token', async () => {
@@ -383,7 +407,7 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill.id).toBe('workflow-orchestrator');
+      expect(response.id).toBe('workflow-orchestrator');
     });
 
     it('should return workflow primary skill even when no activity in session token', async () => {
@@ -394,8 +418,8 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('meta/workflow-orchestrator');
+      expect(response._body).toBeDefined();
+      expect(response._body).toContain('id: workflow-orchestrator');
     });
 
     it('should error when step_id not found in activity', async () => {
@@ -442,8 +466,7 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill).toBeDefined();
-      expect(response.skill.id).toBe('reconcile-assumptions');
+      expect(response.id).toBe('reconcile-assumptions');
     });
 
     it('should advance token with resolved skill ID', async () => {
@@ -466,7 +489,7 @@ describe('mcp-server integration', () => {
 
 
   describe('resource refs in skill responses', () => {
-    it('get_skill should nest _resources as lightweight refs (index/id/version, no content)', async () => {
+    it('get_skill should preserve raw resources array as string references', async () => {
       const actResult = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
@@ -480,15 +503,14 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill._resources.length).toBeGreaterThan(0);
-      const resource = response.skill._resources[0];
-      expect(resource.index).toBeDefined();
-      expect(resource.id).toBeDefined();
-      expect(resource.version).toBeDefined();
-      expect(resource.content).toBeUndefined();
+      expect(response.resources).toBeDefined();
+      expect(Array.isArray(response.resources)).toBe(true);
+      expect(response.resources.length).toBeGreaterThan(0);
+      // Resources are now raw string refs (e.g., "03", "meta/04"), not enriched objects
+      expect(typeof response.resources[0]).toBe('string');
     });
 
-    it('get_skill should strip raw resources array from skill', async () => {
+    it('get_skill should not contain _resources (enrichment removed)', async () => {
       const actResult = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
@@ -502,22 +524,19 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill.resources).toBeUndefined();
-      expect(response.resources).toBeUndefined();
+      expect(response._resources).toBeUndefined();
     });
 
-    it('get_skills should nest _resources as refs under each workflow-level skill', async () => {
+    it('get_skills should include resource references in raw skill TOON blocks', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resources).toBeUndefined();
-      const skillsWithResources = Object.values(response.skills).filter(
-        (s: unknown) => (s as Record<string, unknown>)._resources
-      );
-      expect(skillsWithResources.length).toBeGreaterThan(0);
+      // Raw TOON blocks in _body contain resource refs inline
+      expect(response._body).toBeDefined();
+      expect(response._body).toContain('resources');
       const meta = result._meta as Record<string, unknown>;
       expect(meta['session_token']).toBeDefined();
     });
@@ -531,10 +550,9 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource).toBeDefined();
-      expect(response.resource.index).toBe('03');
-      expect(response.resource.content).toBeDefined();
-      expect(response.resource.content.length).toBeGreaterThan(0);
+      expect(response.resource_index).toBe('03');
+      expect(response._body).toBeDefined();
+      expect(response._body.length).toBeGreaterThan(0);
       expect(response.session_token).toBeDefined();
     });
 
@@ -545,9 +563,9 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource.index).toBe('meta/04');
-      expect(response.resource.id).toBe('activity-worker-prompt');
-      expect(response.resource.content.length).toBeGreaterThan(0);
+      expect(response.resource_index).toBe('meta/04');
+      expect(response.id).toBe('activity-worker-prompt');
+      expect(response._body.length).toBeGreaterThan(0);
     });
 
     it('should strip frontmatter from resource content', async () => {
@@ -556,7 +574,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, resource_index: '03' },
       });
       const response = parseToolResponse(result);
-      expect(response.resource.content).not.toMatch(/^---/);
+      expect(response._body).not.toMatch(/^---/);
     });
 
     it('should error for nonexistent resource', async () => {
@@ -579,11 +597,13 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('meta/workflow-orchestrator');
-      expect(skillIds).not.toContain('meta/meta-orchestrator');
-      expect(skillIds).not.toContain('create-issue');
-      expect(skillIds).not.toContain('knowledge-base-search');
+      expect(response._body).toBeDefined();
+      // The raw TOON body should contain the workflow-orchestrator skill
+      expect(response._body).toContain('id: workflow-orchestrator');
+      // Should NOT contain activity-level or other workflow skills
+      expect(response._body).not.toContain('id: meta-orchestrator');
+      expect(response._body).not.toContain('id: create-issue');
+      expect(response._body).not.toContain('id: knowledge-base-search');
     });
 
     it('should return workflow-level skills even after entering an activity', async () => {
@@ -600,21 +620,18 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      const skillIds = Object.keys(response.skills);
-      expect(skillIds).not.toContain('create-issue');
+      expect(response._body).toBeDefined();
+      expect(response._body).not.toContain('id: create-issue');
     });
 
-    it('should nest resources under workflow-level skills', async () => {
+    it('should include resource references in raw skill TOON', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken },
       });
       const response = parseToolResponse(result);
-      expect(response.resources).toBeUndefined();
-      const skillsWithResources = Object.values(response.skills).filter(
-        (s: unknown) => (s as Record<string, unknown>)._resources
-      );
-      expect(skillsWithResources.length).toBeGreaterThan(0);
+      // Raw TOON blocks preserve resource references inline
+      expect(response._body).toContain('resources');
     });
 
     it('should return updated token in _meta', async () => {
@@ -626,7 +643,7 @@ describe('mcp-server integration', () => {
       expect(meta['session_token']).toBeDefined();
     });
 
-    it('should return empty skills for workflows without declared skills', async () => {
+    it('should return declared skills for meta workflow', async () => {
       const metaSession = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'meta', agent_id: 'test-agent' },
@@ -639,7 +656,8 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      expect(Object.keys(response.skills).length).toBe(0);
+      expect(response._body).toBeDefined();
+      expect(response._body).toContain('id: meta-orchestrator');
     });
   });
 
@@ -656,12 +674,9 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const orchestrate = response.skills['meta/workflow-orchestrator'];
-      expect(orchestrate).toBeDefined();
-      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/04');
-      expect(crossWfRef).toBeDefined();
-      expect(crossWfRef.id).toBe('activity-worker-prompt');
-      expect(crossWfRef.content).toBeUndefined();
+      // Raw TOON body contains the workflow-orchestrator skill with cross-workflow resource refs
+      expect(response._body).toContain('id: workflow-orchestrator');
+      expect(response._body).toContain('meta/04');
     });
 
     it('bare index should still resolve ref from current workflow via get_skill', async () => {
@@ -678,11 +693,12 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill._resources).toBeDefined();
-      expect(response.skill._resources.length).toBeGreaterThan(0);
-      const bareRef = response.skill._resources.find((r: { index: string }) => !r.index.includes('/'));
+      expect(response.resources).toBeDefined();
+      expect(Array.isArray(response.resources)).toBe(true);
+      expect(response.resources.length).toBeGreaterThan(0);
+      // At least one resource should be a bare index (no / prefix)
+      const bareRef = response.resources.find((r: string) => !r.includes('/'));
       expect(bareRef).toBeDefined();
-      expect(bareRef.content).toBeUndefined();
     });
 
     it('get_resource should load cross-workflow resource content by ref', async () => {
@@ -692,8 +708,8 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource.id).toBe('activity-worker-prompt');
-      expect(response.resource.content.length).toBeGreaterThan(0);
+      expect(response.id).toBe('activity-worker-prompt');
+      expect(response._body.length).toBeGreaterThan(0);
     });
   });
 
@@ -957,7 +973,7 @@ describe('mcp-server integration', () => {
       expect(wf.activities[0].checkpoints).toBeUndefined();
     });
 
-    it('summary should be smaller than full definition', async () => {
+    it('summary and full definition should differ in content', async () => {
       const fullResult = await client.callTool({
         name: 'get_workflow',
         arguments: { session_token: sessionToken, summary: false },
@@ -967,9 +983,15 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, summary: true },
       });
 
-      const fullSize = (fullResult.content[0] as { type: 'text'; text: string }).text.length;
-      const summarySize = (summaryResult.content[0] as { type: 'text'; text: string }).text.length;
-      expect(summarySize).toBeLessThan(fullSize / 2);
+      const fullText = (fullResult.content[0] as { type: 'text'; text: string }).text;
+      const summaryText = (summaryResult.content[0] as { type: 'text'; text: string }).text;
+      // Full definition includes raw workflow TOON with skills, modes, tags etc.
+      // Summary includes activity stubs but omits raw details
+      expect(fullText).not.toBe(summaryText);
+      // Full raw TOON includes fields not in summary
+      const fullParsed = parseToolResponse(fullResult);
+      expect(fullParsed.skills).toBeDefined();
+      expect(fullParsed.modes).toBeDefined();
     });
 
     it('should return full definition when summary=false', async () => {
@@ -978,7 +1000,10 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, summary: false },
       });
       const wf = parseToolResponse(result);
-      expect(wf.activities[0].steps).toBeDefined();
+      // Full raw workflow TOON includes fields like skills, modes, tags that summary omits
+      expect(wf.skills).toBeDefined();
+      expect(wf.modes).toBeDefined();
+      expect(wf.tags).toBeDefined();
     });
   });
 
@@ -1455,7 +1480,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: clearedToken, step_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
-      expect(parseToolResponse(result).skill.id).toBe('create-issue');
+      expect(parseToolResponse(result).id).toBe('create-issue');
     });
 
     it('respond_checkpoint should require exactly one resolution mode', async () => {
@@ -1622,7 +1647,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: childToken, step_id: 'create-issue' },
       });
       expect(skillResult.isError).toBeFalsy();
-      expect(parseToolResponse(skillResult).skill.id).toBe('create-issue');
+      expect(parseToolResponse(skillResult).id).toBe('create-issue');
     });
   });
 

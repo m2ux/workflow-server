@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { readSkill } from '../loaders/skill-loader.js';
+import { readSkillRaw } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
@@ -24,43 +24,6 @@ function parseResourceRef(ref: string): { workflowId: string | undefined; index:
   return { workflowId: undefined, index: ref };
 }
 
-interface ResourceRef {
-  index: string;
-  id: string | undefined;
-  version: string | undefined;
-}
-
-async function loadSkillResourceRefs(workflowDir: string, workflowId: string, skillValue: unknown): Promise<ResourceRef[]> {
-  if (typeof skillValue !== 'object' || skillValue === null) return [];
-  const resources_field = (skillValue as Record<string, unknown>)['resources'];
-  if (!Array.isArray(resources_field)) return [];
-  const skillResources = resources_field.filter((v): v is string => typeof v === 'string');
-
-  const refs: ResourceRef[] = [];
-  for (const ref of skillResources) {
-    const parsed = parseResourceRef(ref);
-    const targetWorkflow = parsed.workflowId ?? workflowId;
-    const result = await readResourceStructured(workflowDir, targetWorkflow, parsed.index);
-    if (result.success) {
-      refs.push({ index: ref, id: result.value.id, version: result.value.version });
-    }
-  }
-  return refs;
-}
-
-/**
- * Strip the raw `resources` array from a skill value and attach lightweight refs.
- * Returns a new object with `_resources` containing index/id/version refs
- * (no content — use get_resource to load individually).
- */
-function bundleSkillWithResourceRefs(skillValue: unknown, refs: ResourceRef[]): unknown {
-  if (typeof skillValue !== 'object' || skillValue === null) return skillValue;
-  const { resources: _stripped, ...rest } = skillValue as Record<string, unknown>;
-  if (refs.length > 0) {
-    return { ...rest, _resources: refs };
-  }
-  return rest;
-}
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
@@ -157,7 +120,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Load all workflow-level skills (behavioral protocols like session-protocol, agent-conduct). Call this after start_session to load the skills that govern session behavior. Returns a map of skill objects keyed by skill ID, each including its protocol phases, rules, and tool guidance. Resource references appear as lightweight entries in _resources (index, id, version only — use get_resource to load full content). These are workflow-scope skills; activity-level step skills are loaded separately via get_skill.',
+    'Load all workflow-level skills (behavioral protocols like session-protocol, agent-conduct). Call this after start_session to load the skills that govern session behavior. Returns raw TOON skill definitions separated by --- fences. These are workflow-scope skills; activity-level step skills are loaded separately via get_skill.',
     {
       ...sessionTokenParam,
     },
@@ -171,16 +134,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const workflow = wfResult.value;
       const skillIds = workflow.skills ? [workflow.skills.primary] : [];
 
-      const skills: Record<string, unknown> = {};
+      const rawBlocks: string[] = [];
       const failedSkills: string[] = [];
 
       for (const sid of skillIds) {
-        const result = await readSkill(sid, config.workflowDir, workflow_id);
-        if (result.success) {
-          const parsedSkillId = parseResourceRef(sid);
-          const skillWorkflowId = parsedSkillId.workflowId ?? workflow_id;
-          const refs = await loadSkillResourceRefs(config.workflowDir, skillWorkflowId, result.value);
-          skills[sid] = bundleSkillWithResourceRefs(result.value, refs);
+        const rawResult = await readSkillRaw(sid, config.workflowDir, workflow_id);
+        if (rawResult.success) {
+          rawBlocks.push(rawResult.value);
         } else {
           failedSkills.push(sid);
         }
@@ -191,11 +151,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       const advancedToken = await advanceToken(session_token);
-      const responseBody: Record<string, unknown> = { scope: 'workflow', skills, session_token: advancedToken };
-      if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
+      const header = [
+        `scope: workflow`,
+        `session_token: ${advancedToken}`,
+        ...(failedSkills.length > 0 ? [`failed_skills: ${failedSkills.join(', ')}`] : []),
+      ];
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(responseBody, null, 2) }],
+        content: [{ type: 'text' as const, text: header.join('\n') + '\n\n---\n\n' + rawBlocks.join('\n\n---\n\n') }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
@@ -266,26 +229,17 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
       }
 
-      const result = await readSkill(skillId, config.workflowDir, workflow_id);
-      if (!result.success) throw result.error;
+      const rawResult = await readSkillRaw(skillId, config.workflowDir, workflow_id);
+      if (!rawResult.success) throw rawResult.error;
 
       const validation = buildValidation(
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const parsedSkillId = parseResourceRef(skillId);
-      const skillWorkflowId = parsedSkillId.workflowId ?? workflow_id;
-
-      const refs = await loadSkillResourceRefs(config.workflowDir, skillWorkflowId, result.value);
       const advancedToken = await advanceToken(session_token, { skill: skillId });
 
-      const response = {
-        skill: bundleSkillWithResourceRefs(result.value, refs),
-        session_token: advancedToken,
-      };
-
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        content: [{ type: 'text' as const, text: `session_token: ${advancedToken}\n\n${rawResult.value}` }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)

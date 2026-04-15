@@ -75,6 +75,26 @@ async function tryLoadSkill(skillDir: string, skillId: string): Promise<Skill | 
   }
 }
 
+/** Try to read raw skill TOON from a directory, validating but returning the raw string */
+async function tryReadSkillRaw(skillDir: string, skillId: string): Promise<string | null> {
+  const filePath = await findSkillFile(skillDir, skillId);
+  if (!filePath) return null;
+
+  try {
+    const content = await readFile(filePath, 'utf-8');
+    const decoded = decodeToonRaw(content);
+    const result = safeValidateSkill(decoded);
+    if (!result.success) {
+      logWarn('Skill validation failed', { skillId, path: filePath, errors: result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`) });
+      return null;
+    }
+    return content;
+  } catch (error) {
+    logWarn('Failed to decode skill TOON', { skillId, path: filePath, error: error instanceof Error ? error.message : String(error) });
+    return null;
+  }
+}
+
 async function listSkillIdsInDir(skillDir: string): Promise<string[]> {
   if (!existsSync(skillDir)) return [];
 
@@ -144,5 +164,49 @@ export async function readSkill(
     }
   }
   
+  return err(new SkillNotFoundError(skillId));
+}
+
+/**
+ * Read raw skill TOON by ID, with the same resolution as readSkill.
+ * Validates the content but returns the original TOON string.
+ */
+export async function readSkillRaw(
+  skillId: string,
+  workflowDir: string,
+  workflowId?: string
+): Promise<Result<string, SkillNotFoundError>> {
+  if (skillId.includes('/')) {
+    const [targetWorkflow, actualSkillId] = skillId.split('/', 2);
+    if (!targetWorkflow || !actualSkillId) {
+      return err(new SkillNotFoundError(skillId));
+    }
+    const raw = await tryReadSkillRaw(getWorkflowSkillDir(workflowDir, targetWorkflow), actualSkillId);
+    if (raw) {
+      logInfo('Skill loaded raw (explicit prefix)', { id: skillId, targetWorkflow });
+      return ok(raw);
+    }
+    return err(new SkillNotFoundError(skillId));
+  }
+
+  if (workflowId) {
+    const raw = await tryReadSkillRaw(getWorkflowSkillDir(workflowDir, workflowId), skillId);
+    if (raw) {
+      logInfo('Skill loaded raw (workflow-specific)', { id: skillId, workflowId });
+      return ok(raw);
+    }
+  }
+
+  if (!workflowId) {
+    const workflowIds = await findWorkflowsWithSkills(workflowDir);
+    for (const wfId of workflowIds) {
+      const raw = await tryReadSkillRaw(getWorkflowSkillDir(workflowDir, wfId), skillId);
+      if (raw) {
+        logInfo('Skill loaded raw (cross-workflow search)', { id: skillId, foundIn: wfId });
+        return ok(raw);
+      }
+    }
+  }
+
   return err(new SkillNotFoundError(skillId));
 }
