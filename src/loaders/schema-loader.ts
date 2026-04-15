@@ -38,6 +38,22 @@ export async function readAllSchemas(schemasDir: string): Promise<Result<AllSche
 }
 
 /**
+ * Read a single schema file by ID.
+ */
+export async function readSchema(schemasDir: string, schemaId: string): Promise<Result<object>> {
+  if (!SCHEMA_IDS.includes(schemaId as typeof SCHEMA_IDS[number])) {
+    return err(new Error(`Unknown schema ID '${schemaId}'. Valid IDs: ${SCHEMA_IDS.join(', ')}`));
+  }
+  const filepath = join(schemasDir, `${schemaId}.schema.json`);
+  try {
+    const content = await readFile(filepath, 'utf-8');
+    return ok(JSON.parse(content));
+  } catch (error) {
+    return err(new Error(`Failed to read schema '${schemaId}': ${error instanceof Error ? error.message : String(error)}`));
+  }
+}
+
+/**
  * List available schema IDs.
  */
 export function listSchemaIds(): readonly string[] {

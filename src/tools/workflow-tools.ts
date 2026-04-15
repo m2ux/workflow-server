@@ -60,9 +60,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       const content: Array<{ type: 'text'; text: string }> = [];
-      if (config.schemaPreamble) {
-        content.push({ type: 'text', text: config.schemaPreamble });
-      }
 
       const advancedToken = await advanceToken(session_token);
 
