@@ -36,15 +36,13 @@ protocol:
     - Verify coverage gate (§5.14)
     - Verify elevation completeness via merge table mapping
     - Include reconciliation table in report as auditable evidence of zero finding loss
-
-state:
   track[6]:
-    - current_phase - Which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
-    - agent_status - Status of dispatched sub-agents
-    - findings_count - Running count of identified findings
-    - pass_count - Running count of PASS items in scratchpads
-    - coverage_files - List of files read by agents
-    - checklist_coverage - §3 coverage matrix showing per-item evaluation status
+    - Track current_phase — which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
+    - Track agent_status — status of dispatched sub-agents
+    - Track findings_count — running count of identified findings
+    - Track pass_count — running count of PASS items in scratchpads
+    - Track coverage_files — list of files read by agents
+    - Track checklist_coverage — §3 coverage matrix showing per-item evaluation status
 
 resources[3]:
   - "00"
