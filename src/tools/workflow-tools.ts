@@ -35,12 +35,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (bootstrapResult.success) {
         guide['discovery'] = bootstrapResult.value.content;
       }
-      return { content: [{ type: 'text' as const, text: JSON.stringify(guide) }] };
+      return { content: [{ type: 'text' as const, text: JSON.stringify(guide, null, 2) }] };
     }));
 
   server.tool('list_workflows', 'List all available workflow definitions with their full metadata. Use this when you need more detail about available workflows than what discover provides, or to refresh the workflow list during an existing session. Returns an array of workflow summaries. Does not require a session token.', {},
     withAuditLog('list_workflows', async () => ({
-      content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir)) }],
+      content: [{ type: 'text' as const, text: JSON.stringify(await listWorkflows(config.workflowDir), null, 2) }],
     })));
 
   server.tool('get_workflow', 'Load the workflow definition for the current session. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the full definition including complete activity details. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
@@ -76,9 +76,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           activities: wf.activities.map(a => ({ id: a.id, name: a.name, required: a.required })),
           session_token: advancedToken,
         };
-        content.push({ type: 'text', text: JSON.stringify(summaryData) });
+        content.push({ type: 'text', text: JSON.stringify(summaryData, null, 2) });
       } else {
-        content.push({ type: 'text', text: JSON.stringify({ ...result.value, session_token: advancedToken }) });
+        content.push({ type: 'text', text: JSON.stringify({ ...result.value, session_token: advancedToken }, null, 2) });
       }
 
       return { content, _meta: { session_token: advancedToken, validation } };
@@ -167,7 +167,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ ...activity, session_token: advancedToken }) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ ...activity, session_token: advancedToken }, null, 2) }],
         _meta: meta,
       };
     }, traceOpts));
@@ -199,12 +199,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const advancedToken = await advanceToken(session_token, { bcp: checkpoint_id });
       
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ 
+        content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'yielded',
           checkpoint_id,
           checkpoint_handle: advancedToken,
-          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this checkpoint_handle to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.` 
-        }) }],
+          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this checkpoint_handle to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
+        }, null, 2) }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));
@@ -226,10 +226,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Note: The orchestrator passes variable effects directly in its prompt when resuming the worker.
       // This tool exists to verify the lock is cleared and advance the token sequence.
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ 
+        content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'resumed',
-          message: `Checkpoint cleared. You may proceed to the next step. Note any variable updates provided by the orchestrator.` 
-        }) }],
+          message: `Checkpoint cleared. You may proceed to the next step. Note any variable updates provided by the orchestrator.`
+        }, null, 2) }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));
@@ -259,7 +259,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, checkpoint_handle }) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ ...checkpoint, checkpoint_handle }, null, 2) }],
         _meta: { validation },
       };
     }, traceOpts));
@@ -360,7 +360,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (condition_not_met) responseData['dismissed'] = true;
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(responseData) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(responseData, null, 2) }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));
@@ -389,21 +389,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const result: Record<string, unknown> = { traceId: token.sid, source: 'tokens', event_count: allEvents.length, events: allEvents, session_token: advancedToken };
         if (errors.length > 0) result['token_errors'] = errors;
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify(result) }],
+          content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
           _meta: { session_token: advancedToken, validation: buildValidation() },
         };
       }
 
       if (!config.traceStore) {
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: false, event_count: 0, events: [], session_token: advancedToken }) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: false, event_count: 0, events: [], session_token: advancedToken }, null, 2) }],
           _meta: { session_token: advancedToken, validation: buildValidation() },
         };
       }
 
       const events = config.traceStore.getEvents(token.sid);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: true, event_count: events.length, events, session_token: advancedToken }) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: true, event_count: events.length, events, session_token: advancedToken }, null, 2) }],
         _meta: { session_token: advancedToken, validation: buildValidation() },
       };
     }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
@@ -415,7 +415,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'healthy', server: config.serverName, version: config.serverVersion,
           workflows_available: workflows.length, uptime_seconds: Math.floor(process.uptime()),
-        }) }],
+        }, null, 2) }],
       };
     }));
 
@@ -504,7 +504,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta: { session_token: advancedClientToken, parent_session_token },
       };
     }, traceOpts));
@@ -609,7 +609,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta: advancedToken ? { session_token: advancedToken } : {},
       };
     }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));

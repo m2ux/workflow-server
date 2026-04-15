@@ -147,7 +147,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta,
       };
     })
@@ -195,7 +195,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (failedSkills.length > 0) responseBody['failed_skills'] = failedSkills;
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(responseBody) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(responseBody, null, 2) }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
@@ -285,7 +285,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       };
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
@@ -321,7 +321,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       };
 
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
