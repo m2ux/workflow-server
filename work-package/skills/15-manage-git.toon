@@ -1,5 +1,5 @@
 id: manage-git
-version: 1.1.0
+version: 1.2.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 
 description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE target_path. Branches and PRs are created against the target's upstream."
@@ -20,12 +20,13 @@ protocol:
     - "cd into target_path before any git operations"
     - Create feature branch from the default branch (main/master)
     - Use naming convention type/issue-number-short-description
-  create-pr[5]:
+  create-pr[6]:
     - "Use attached resource 12 (pr-description) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource."
     - "BEFORE creating the PR: commit and push the planning folder to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote."
     - Create draft PR linked to issue using gh pr create
     - Ensure PR title and body reference issue number
     - Keep PR as draft until implementation and review complete
+    - "After PR creation, assign it to the current GitHub user: run gh pr edit <number> --add-assignee @me in target_path"
   sync-branch[3]:
     - Fetch and rebase/merge from main to keep branch current
     - Resolve merge conflicts if any
