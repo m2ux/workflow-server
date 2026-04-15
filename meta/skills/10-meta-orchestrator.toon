@@ -24,8 +24,8 @@ protocol:
   dispatch-activity[7]:
     - "Call dispatch_workflow({ workflow_id, parent_session_token, variables }) to create an independent client session for the workflow-orchestrator. Wait for the dispatch package response."
     - "Compose the prompt using the client_prompt returned in the dispatch package — do NOT inject paraphrased skill content."
-    - "Spawn the workflow-orchestrator using the Task tool with subagent_type=generalPurpose (or resume if continuing). Pass the client_prompt as the initial task prompt."
-    - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
+    - "Spawn the workflow-orchestrator sub-agent using the harness-compat::spawn-agent. Pass the client_prompt as the prompt. If continuing an existing workflow-orchestrator, use the continue-agent operation instead."
+    - "First dispatch: harness-compat::spawn-agent. Subsequent dispatches: harness-compat::continue-agent."
     - "Do NOT call get_skill or get_skills to pre-load skills for activities. The sub-agent loads its own skills during self-bootstrap"
     - "For resumed sub-agents: send only the updated state variables and bootstrap instructions"
     - "The workflow-orchestrator runs in an independent session. It does NOT inherit the meta-orchestrator token."

@@ -2,7 +2,7 @@ id: execute-sub-agent
 version: 1.0.0
 capability: "Bootstrap the workflow-server, load an assigned activity, follow its steps sequentially, and return structured output"
 
-description: "This skill defines how a sub-agent (dispatched by the orchestrator during primary-scan) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the Task prompt."
+description: "This skill defines how a sub-agent (dispatched by the orchestrator during primary-scan) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the spawn-agent prompt (harness-compat)."
 
 resources[1]:
   - "04"

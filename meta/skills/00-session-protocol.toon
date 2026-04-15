@@ -7,7 +7,7 @@ description: "Cross-cutting skill defining the protocol for workflow sessions. C
 protocol:
   session-initiation[4]:
     - "The meta-orchestrator calls start_session({ workflow_id }) to obtain a session_token. This is the ONLY tool that takes workflow_id."
-    - "Workflow-orchestrators and workers DO NOT call start_session. They receive their session_token via their Task prompt."
+    - "Workflow-orchestrators and workers DO NOT call start_session. They receive their session_token via their spawn-agent or continue-agent prompt (harness-compat)."
     - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. The response includes initialActivity and the full activity list."
     - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
   skill-loading[1]:

@@ -20,7 +20,7 @@ sequenceDiagram
     participant User
     participant Meta as meta-orchestrator<br/>(Top-level Agent)
     participant Client as workflow-orchestrator<br/>(Client Workflow Sub-agent)
-    participant Worker as activity-worker<br/>(Task Execution Sub-agent)
+    participant Worker as activity-worker<br/>(Sub-agent)
 
     User->>Meta: "start work package"
     Note over Meta: Loads meta workflow,<br/>starts session
@@ -29,11 +29,11 @@ sequenceDiagram
     Meta->>Meta: Runs dispatch-workflow activity
 
     Note over Meta: Calls dispatch_workflow<br/>(creates independent client session)
-    Meta->>Client: Task(prompt: resource meta/05)
+    Meta->>Client: spawn-agent(prompt: resource meta/05)
 
     Note over Client: Calls start_session(client_token)<br/>Loads client workflow
     
-    Client->>Worker: Task(prompt: resource meta/04)
+    Client->>Worker: spawn-agent(prompt: resource meta/04)
     Note over Worker: Calls start_session(client_token)<br/>Inherits session
     
     Note over Worker: Executes activity steps
@@ -44,15 +44,15 @@ sequenceDiagram
     User->>Meta: Selects Option
     Meta->>Meta: respond_checkpoint
     
-    Meta->>Client: Task(resume)
-    Client->>Worker: Task(resume)
+    Meta->>Client: continue-agent
+    Client->>Worker: continue-agent
     
     Note over Worker: Finishes steps, writes artifacts
     Worker-->>Client: activity_complete
 
     Note over Client: Evaluates transitions,<br/>dispatches next activity
     
-    Client->>Worker: Task(resume, next_activity)
+    Client->>Worker: continue-agent(next_activity)
     Note over Worker: Executes next activity...
     Worker-->>Client: activity_complete
     

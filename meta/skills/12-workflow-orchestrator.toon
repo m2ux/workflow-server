@@ -32,7 +32,7 @@ protocol:
     - "Call next_activity({ session_token, activity_id, step_manifest, transition_condition }) to load the activity definition"
     - "Compose worker prompt using resource meta/04 (activity-worker-prompt) — do NOT inject paraphrased skill content"
     - "Include your session_token in the worker prompt. The worker MUST call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
-    - "First dispatch: Task with subagent_type=generalPurpose. Subsequent: Task with resume=worker_agent_id"
+    - "First dispatch: harness-compat::spawn-agent. Subsequent dispatches: harness-compat::continue-agent."
     - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
     - "For resumed workers: send only the updated state variables and context"
   process-result[6]:
@@ -68,7 +68,7 @@ protocol:
     - "If workflow complete: return { status: 'workflow_complete', final_state: ... } to the parent orchestrator."
   handle-sub-workflows[3]:
     - "If a client workflow needs to dispatch a sub-workflow, call dispatch_workflow({ workflow_id: 'child-workflow', parent_session_token: '<your_token>' })."
-    - "Spawn a NEW workflow-orchestrator for the sub-workflow using the task tool."
+    - "Spawn a NEW workflow-orchestrator for the sub-workflow using harness-compat::spawn-agent."
     - "Manage the child inline, bubbling its checkpoints further up the chain to the meta-orchestrator."
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."

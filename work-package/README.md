@@ -113,19 +113,19 @@ sequenceDiagram
     participant Worker as Worker
 
     User->>Caller: "start work package for midnight-node"
-    Caller->>Orch: "Task(orchestrate-workflow)"
+    Caller->>Orch: "spawn-agent(orchestrate-workflow)"
 
     Note over Orch: get_workflow -> schema preamble + definition
     Note over Orch: Initialize state, detect mode
 
-    Orch->>Worker: "Task(activity: start-work-package, state)"
+    Orch->>Worker: "spawn-agent(activity: start-work-package, state)"
     Worker->>User: Checkpoints
     User->>Worker: Responses
     Worker-->>Orch: Result + variable changes
 
     Note over Orch: Evaluate transitions
 
-    Orch->>Worker: "Task(resume, activity: design-philosophy, state)"
+    Orch->>Worker: "continue-agent(activity: design-philosophy, state)"
     Worker->>User: Checkpoints
     User->>Worker: Responses
     Worker-->>Orch: Result + variable changes
@@ -146,7 +146,7 @@ sequenceDiagram
 - Handles all checkpoints and user interaction directly
 - Produces artifacts with `artifactPrefix` convention
 - Reports structured results (variable changes, checkpoints, artifacts, steps completed)
-- **Persists across activities** via Task `resume` — preserves codebase understanding, file locations, and implementation decisions
+- **Persists across activities** via harness-compat::continue-agent — preserves codebase understanding, file locations, and implementation decisions
 
 This separation prevents context saturation in the orchestrator (which stays lean managing flow) while the worker accumulates rich domain context across the entire workflow.
 

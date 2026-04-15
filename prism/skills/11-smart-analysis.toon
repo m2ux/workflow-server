@@ -46,7 +46,7 @@ rules:
   model-selection: "Each sub-step uses the optimal model for its prism. Prereq uses sonnet. Analysis uses the selected prism's optimal model. Dispute synthesis uses sonnet."
 
   tool-usage:
-    - "use task: Smart mode never resumes; each sub-step uses a new worker"
+    - "use harness-compat::spawn-agent: Smart mode never uses continue-agent; each sub-step uses a new worker"
     - "use read_file: Orchestrator reads artifacts to decide conditionals and inject verified_knowledge"
 resources[5]:
   - "00"

@@ -41,7 +41,7 @@ rules:
   model-selection: "Each prism uses its optimal model from YAML frontmatter. Synthesis uses sonnet."
 
   tool-usage:
-    - "task params: description, prompt, subagent_type — do NOT resume prior workers"
+    - "spawn-agent: description, prompt (harness-compat) — do NOT use continue-agent on prior workers"
 resources[5]:
   - "00"
   - "07"

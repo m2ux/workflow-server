@@ -251,7 +251,7 @@ graph TD
 | `dispatch-portfolio-passes` | Create parallel FRESH workers (up to 4 concurrent), one per lens |
 | `present-result` | Read and present final artifacts; report all artifact paths |
 
-**Key rules:** NEVER use Task `resume` between passes. Pass artifact paths, not inline text. Verify artifacts were written before dispatching subsequent passes.
+**Key rules:** NEVER use continue-agent between passes (harness-compat). Pass artifact paths, not inline text. Verify artifacts were written before dispatching subsequent passes.
 
 ---
 
