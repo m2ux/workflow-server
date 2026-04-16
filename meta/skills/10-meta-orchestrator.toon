@@ -47,7 +47,7 @@ protocol:
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
   persist-state[4]:
-    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), sessionId (the 'sid' field from the token payload — extract by base64-decoding the payload before the first dot), variable state (JSON), and activity trace (from get_trace)"
+    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), sessionId (from the session_id field returned by start_session or dispatch_workflow — NEVER decode the token payload), variable state (JSON), and activity trace (from get_trace)"
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
     - "If planning_folder_path is not set, skip silently"
     - "sessionId enables stale-session detection on resume: if the server restarted, start_session will return a different sid, signaling that state must be reconstructed from the saved variables rather than inherited via token"

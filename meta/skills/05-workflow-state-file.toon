@@ -15,7 +15,7 @@ protocol:
     - "If the file does not exist, return null — the orchestrator creates it on first persist"
   update-token[5]:
     - "Parse the existing JSON and update sessionToken to the current session_token"
-    - "Extract sessionId from the session_token payload (base64-decode the portion before the first dot, parse the JSON, read the 'sid' field). Set the top-level sessionId field to this value."
+    - "Set sessionId from the session_id field returned by start_session or dispatch_workflow. NEVER decode the session_token payload — obtain session_id from the API response instead."
     - "Set savedAt to the current ISO 8601 timestamp"
     - "Increment state.stateVersion by 1"
     - "Set state.updatedAt to the current ISO 8601 timestamp"
@@ -30,7 +30,7 @@ protocol:
 rules:
   read-before-write: "Always read the existing file before writing. Never overwrite with a partial state — merge into the existing file."
   skip-if-missing: "If the state file does not exist and this is a worker update, skip silently. The orchestrator creates the file on first persist."
-  token-is-opaque: "Treat the session token as an opaque string. Never parse, decode, or modify its contents — except to extract the sessionId for the dedicated sessionId field."
+  token-is-opaque: "Treat the session token as an opaque string. NEVER parse, decode, or modify its contents. Obtain session_id from the start_session or dispatch_workflow API response — do NOT extract it by decoding the token."
   preserve-unmodified: "When updating specific fields, preserve all other fields unchanged."
 
 resources[1]:

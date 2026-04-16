@@ -41,8 +41,8 @@ protocol:
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
   persist-state[6]:
     - "Track state changes triggered by activities: activity_transition logs activity_entered, step_completion increments currentStep and logs step_completed, decision_outcome records branch taken in decisionOutcomes."
-    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), sessionId (the 'sid' field from the token payload), variable state (JSON), and activity trace (from get_trace)"
-    - "Update state sessionToken with the current session_token, set sessionId from the token payload, set savedAt and state.updatedAt to the current ISO 8601 timestamp, increment state.stateVersion by 1, set state.completedSteps[activity_id] to the completed step indices, and set description to 'State after {activity_id}'."
+    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), sessionId (from the session_id field returned by start_session or dispatch_workflow — NEVER decode the token payload), variable state (JSON), and activity trace (from get_trace)"
+    - "Update state sessionToken with the current session_token, set sessionId from the session_id field returned by start_session or dispatch_workflow (NEVER decode the token payload), set savedAt and state.updatedAt to the current ISO 8601 timestamp, increment state.stateVersion by 1, set state.completedSteps[activity_id] to the completed step indices, and set description to 'State after {activity_id}'."
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
     - "If planning_folder_path is not set, skip silently"
     - "sessionId enables stale-session detection on resume: if the server restarted, start_session will return a different sid, signaling that state must be reconstructed from the saved variables rather than inherited via token"
