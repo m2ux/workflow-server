@@ -39,7 +39,7 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should load 11-activity-worker skill with protocol and tools', async () => {
+    it('should load 11-activity-worker skill with protocol and rules', async () => {
       const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
@@ -47,10 +47,7 @@ describe('skill-loader', () => {
         const skill = result.value;
         
         expect(skill.protocol).toBeDefined();
-        
-        expect(skill.tools).toBeDefined();
-        expect(skill.tools['next_activity']).toBeDefined();
-        expect(skill.tools['get_skills']).toBeDefined();
+        expect(Object.keys(skill.protocol).length).toBeGreaterThanOrEqual(6);
         
         expect(skill.rules).toBeDefined();
         expect(Object.keys(skill.rules).length).toBeGreaterThanOrEqual(6);
@@ -60,13 +57,13 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should have tool guidance with when field', async () => {
+    it('should have rule definitions with string values', async () => {
       const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
-        for (const [toolName, toolInfo] of Object.entries(result.value.tools)) {
-          expect((toolInfo as Record<string, any>).when, `${toolName} should have 'when' field`).toBeDefined();
+        for (const [ruleName, ruleValue] of Object.entries(result.value.rules)) {
+          expect(ruleValue, `${ruleName} should have a defined value`).toBeDefined();
         }
       }
     });

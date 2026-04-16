@@ -9,7 +9,7 @@ import { logInfo, logError, logWarn } from '../logging.js';
 import { decodeToonRaw } from '../utils/toon.js';
 import { parseActivityFilename } from './filename-utils.js';
 
-export interface WorkflowManifestEntry { id: string; title: string; version: string; description?: string | undefined; }
+export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
 
 const META_WORKFLOW_ID = 'meta';
 
@@ -226,7 +226,7 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
           const content = await readFile(toonPath, 'utf-8');
           const raw = decodeToonRaw(content) as RawWorkflow;
           if (raw.id && raw.title && raw.version) {
-            manifests.push({ id: raw.id, title: raw.title, version: raw.version, description: raw.description });
+            manifests.push({ id: raw.id, title: raw.title, version: raw.version, tags: Array.isArray(raw['tags']) ? raw['tags'] as string[] : undefined });
           }
         } catch (error) {
           logWarn('Failed to read workflow manifest', { path: toonPath, error: error instanceof Error ? error.message : String(error) });

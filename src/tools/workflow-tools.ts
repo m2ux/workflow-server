@@ -39,7 +39,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
     }));
 
-  server.tool('list_workflows', 'List all available workflow definitions with their full metadata. Use this when you need more detail about available workflows than what discover provides, or to refresh the workflow list during an existing session. Returns an array of workflow summaries. Does not require a session token.', {},
+  server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. Does not require a session token.', {},
     withAuditLog('list_workflows', async () => ({
       content: [{ type: 'text' as const, text: encodeToon(await listWorkflows(config.workflowDir)) }],
     })));
