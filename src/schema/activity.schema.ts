@@ -17,8 +17,22 @@ export const ActionSchema = z.object({
   target: z.string().optional(),
   message: z.string().optional(),
   value: z.unknown().optional(),
+  description: z.string().optional().describe('Human-readable description of what this action does'),
+  condition: ConditionSchema.optional().describe('Condition that must be true for this action to execute'),
 });
 export type Action = z.infer<typeof ActionSchema>;
+
+// Forward-declare step and loop schemas for circular references
+// StepSchema references LoopSchema (via loops) and WorkflowTriggerSchema (via triggers)
+// LoopSchema references StepSchema (via steps)
+
+// Workflow trigger schema - allows an activity or step to trigger another workflow
+export const WorkflowTriggerSchema = z.object({
+  workflow: z.string().describe('ID of the workflow to trigger'),
+  description: z.string().optional().describe('Description of when/why this workflow is triggered'),
+  passContext: z.array(z.string()).optional().describe('Context variables to pass to the triggered workflow'),
+});
+export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
 // Step schema
 export const StepSchema = z.object({
@@ -30,6 +44,8 @@ export const StepSchema = z.object({
   required: z.boolean().default(true),
   condition: ConditionSchema.optional().describe('Condition that must be true for this step to execute'),
   actions: z.array(ActionSchema).optional(),
+  triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this step'),
+  skill_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Arguments to pass to the skill when executing this step'),
 });
 export type Step = z.infer<typeof StepSchema>;
 
@@ -86,6 +102,7 @@ export const LoopSchema = z.object({
   over: z.string().optional(),
   condition: ConditionSchema.optional(),
   maxIterations: z.number().int().positive().default(100),
+  description: z.string().optional().describe('Human-readable description of what this loop does'),
   breakCondition: ConditionSchema.optional(),
   steps: z.array(StepSchema).optional(),
   activities: z.array(z.string()).optional().describe('Activity IDs to execute in loop'),
@@ -99,14 +116,6 @@ export const TransitionSchema = z.object({
   isDefault: z.boolean().default(false),
 });
 export type Transition = z.infer<typeof TransitionSchema>;
-
-// Workflow trigger schema - allows an activity to trigger another workflow
-export const WorkflowTriggerSchema = z.object({
-  workflow: z.string().describe('ID of the workflow to trigger'),
-  description: z.string().optional().describe('Description of when/why this workflow is triggered'),
-  passContext: z.array(z.string()).optional().describe('Context variables to pass to the triggered workflow'),
-});
-export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
 // Artifact schema - defines outputs produced by an activity
 export const ArtifactSchema = z.object({

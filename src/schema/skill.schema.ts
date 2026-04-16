@@ -118,6 +118,7 @@ export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefiniti
 
 export const OutputArtifactSchema = z.object({
   name: z.string().describe('Artifact filename when this output is persisted (e.g. 01-audit-report.md).'),
+  action: z.enum(['create', 'update']).default('create').optional().describe('Whether this output creates a new artifact or updates an existing one'),
 });
 export type OutputArtifact = z.infer<typeof OutputArtifactSchema>;
 

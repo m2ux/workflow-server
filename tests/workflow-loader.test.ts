@@ -124,15 +124,14 @@ describe('workflow-loader', () => {
     });
 
     it('should include targets from decisions branches', async () => {
-      const workflow = await loadMetaWorkflow();
-      // Need a workflow with decisions. Let's use work-package/plan-package which has them.
-      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'prism-audit');
+      // work-package/post-impl-review has a decision (blocker-gate) that branches to 'implement'
+      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'work-package');
       if (wpResult.success) {
         const wpWorkflow = wpResult.value;
         const transitions = getTransitionList(wpWorkflow, 'post-impl-review');
         
         const targets = transitions.map(t => t.to);
-        // plan-package has decisions that branch to implementation
+        // post-impl-review has a decision that branches to implement
         expect(targets).toContain('implement');
       }
     });

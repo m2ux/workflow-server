@@ -163,7 +163,7 @@ export function validateActivityManifest(
   manifest: ActivityManifestEntry[],
   workflow: Workflow,
 ): string[] {
-  const activityIds = workflow.activities.map(a => a.id);
+  const activityIds = (workflow.activities ?? []).map(a => a.id);
   const warnings: string[] = [];
 
   for (const entry of manifest) {

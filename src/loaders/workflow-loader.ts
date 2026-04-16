@@ -192,7 +192,7 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
       return err(new WorkflowValidationError(workflowId, result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`)));
     }
     
-    logInfo('Workflow loaded', { workflowId, version: result.data.version, activityCount: result.data.activities.length });
+    logInfo('Workflow loaded', { workflowId, version: result.data.version, activityCount: result.data.activities?.length ?? 0 });
     return ok(result.data);
   } catch (error) {
     logError('Failed to load workflow', error instanceof Error ? error : undefined, { workflowId });
@@ -243,7 +243,7 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
 
 /** Get an activity from a workflow by ID */
 export function getActivity(workflow: Workflow, activityId: string): Activity | undefined { 
-  return workflow.activities.find(a => a.id === activityId); 
+  return workflow.activities?.find(a => a.id === activityId);
 }
 
 /** Get a checkpoint from an activity */

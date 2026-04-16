@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw } from '../loaders/workflow-loader.js';
+import { readSkillRaw } from '../loaders/skill-loader.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
@@ -44,7 +45,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       content: [{ type: 'text' as const, text: encodeToon(await listWorkflows(config.workflowDir)) }],
     })));
 
-  server.tool('get_workflow', 'Load the workflow definition for the current session. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
+  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the workflow\'s primary skill (raw TOON), followed by the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
     {
       ...sessionTokenParam,
       summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the raw workflow definition.'),
@@ -54,17 +55,28 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       assertCheckpointsResolved(token);
       const workflow_id = token.wf;
 
+      const result = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!result.success) throw result.error;
+      const wf = result.value;
+
+      const validation = buildValidation(
+        validateWorkflowVersion(token, wf),
+      );
+
       const advancedToken = await advanceToken(session_token);
 
+      const primarySkillId = wf.skills?.primary;
+      let primarySkillContent = '';
+      if (primarySkillId) {
+        const skillResult = await readSkillRaw(primarySkillId, config.workflowDir, workflow_id);
+        if (skillResult.success) {
+          primarySkillContent = skillResult.value;
+        }
+      }
+
+      const skillSection = primarySkillContent ? primarySkillContent + '\n\n---\n\n' : '';
+
       if (summary) {
-        const result = await loadWorkflow(config.workflowDir, workflow_id);
-        if (!result.success) throw result.error;
-
-        const validation = buildValidation(
-          validateWorkflowVersion(token, result.value),
-        );
-
-        const wf = result.value;
         const summaryData = {
           id: wf.id,
           version: wf.version,
@@ -73,31 +85,26 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           rules: wf.rules,
           variables: wf.variables,
           initialActivity: wf.initialActivity,
-          activities: wf.activities.map((a: { id: string; name?: string; required?: boolean }) => ({ id: a.id, name: a.name, required: a.required })),
+          activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean }) => ({ id: a.id, name: a.name, required: a.required })) ?? [],
           session_token: advancedToken,
         };
 
         return {
-          content: [{ type: 'text' as const, text: encodeToon(summaryData) }],
+          content: [{ type: 'text' as const, text: skillSection + encodeToon(summaryData) }],
           _meta: { session_token: advancedToken, validation },
         };
       } else {
         const rawResult = await readWorkflowRaw(config.workflowDir, workflow_id);
         if (!rawResult.success) throw rawResult.error;
 
-        const result = await loadWorkflow(config.workflowDir, workflow_id);
-        const validation = buildValidation(
-          result.success ? validateWorkflowVersion(token, result.value) : null,
-        );
-
         return {
-          content: [{ type: 'text' as const, text: `session_token: ${advancedToken}\n\n${rawResult.value}` }],
+          content: [{ type: 'text' as const, text: skillSection + `session_token: ${advancedToken}\n\n${rawResult.value}` }],
           _meta: { session_token: advancedToken, validation },
         };
       }
     }, traceOpts));
 
-  server.tool('next_activity', 'Load and transition to the specified activity. This is the primary tool for progressing through a workflow. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and skill references — everything needed to execute the activity. Also advances the session token to track the current activity. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field in the previous activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
+  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session token, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and skill references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
     {
       ...sessionTokenParam,
       activity_id: z.string().describe('Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.'),
@@ -179,12 +186,44 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
+      const responseData: Record<string, unknown> = {
+        activity_id,
+        name: activity.name,
+        session_token: advancedToken,
+      };
+
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(responseData, null, 2) }],
+        _meta: meta,
+      };
+    }, traceOpts));
+  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and skill references — everything needed to execute the activity. The activity is determined from the session token, so no activity_id parameter is needed.',
+    {
+      ...sessionTokenParam,
+    },
+    withAuditLog('get_activity', async ({ session_token }) => {
+      const token = await decodeSessionToken(session_token);
+      assertCheckpointsResolved(token);
+
+      const activity_id = token.act;
+      if (!activity_id) {
+        throw new Error('No current activity in session token. Call next_activity first.');
+      }
+
+      const workflow_id = token.wf;
       const rawResult = await readActivityRaw(config.workflowDir, workflow_id, activity_id);
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
 
+      const advancedToken = await advanceToken(session_token);
+
+      const result = await loadWorkflow(config.workflowDir, workflow_id);
+      const validation = buildValidation(
+        result.success ? validateWorkflowVersion(token, result.value) : null,
+      );
+
       return {
         content: [{ type: 'text' as const, text: `session_token: ${advancedToken}\n\n${rawResult.value}` }],
-        _meta: meta,
+        _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));
 
@@ -484,7 +523,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const decodedClient = await decodeSessionToken(advancedClientToken);
-      const initialActivity = workflow.initialActivity || (workflow.activities.length > 0 ? (workflow.activities[0]?.id ?? '') : '');
+      const initialActivity = workflow.initialActivity || ((workflow.activities?.length ?? 0) > 0 ? (workflow.activities![0]?.id ?? '') : '');
 
       // Load the client prompt template from the workflow resource
       // rather than hardcoding it in the tool implementation.

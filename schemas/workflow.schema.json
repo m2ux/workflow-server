@@ -190,13 +190,16 @@
         "activities": {
           "type": "array",
           "items": {
-            "$ref": "activity.schema.json"
+            "oneOf": [
+              { "type": "string", "description": "Activity filename (e.g., '01-start.toon' or 'work-package/02-design-philosophy.toon') resolved by the workflow loader" },
+              { "$ref": "activity.schema.json" }
+            ]
           },
           "minItems": 1,
-          "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points."
+          "description": "Activities that comprise this workflow. May be specified as filenames (resolved by the workflow loader at runtime) or inline activity objects."
         }
       },
-      "required": ["id", "version", "title", "activities"],
+      "required": ["id", "version", "title"],
       "additionalProperties": false
     }
   }

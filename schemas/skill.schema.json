@@ -78,7 +78,8 @@
     "outputArtifact": {
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Artifact filename when this output is persisted (e.g. 01-audit-report.md)." }
+        "name": { "type": "string", "description": "Artifact filename when this output is persisted (e.g. 01-audit-report.md)." },
+        "action": { "type": "string", "enum": ["create", "update"], "default": "create", "description": "Whether this output creates a new artifact or updates an existing one" }
       },
       "required": [ "name" ],
       "additionalProperties": false,
@@ -100,6 +101,39 @@
       "type": "array",
       "items": { "$ref": "#/definitions/outputItemDefinition" },
       "description": "What the skill produces: one or more named outputs, each with optional name, description, and components"
+    },
+    "operationDefinition": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "What this operation does"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "description": "Positional input entries — each item is a single-key object mapping input name to its description"
+        },
+        "harness": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Harness-specific implementations keyed by harness name (cursor, cline, generic, …)"
+        },
+        "note": {
+          "type": "string",
+          "description": "Additional notes about the operation"
+        }
+      },
+      "additionalProperties": false,
+      "description": "A single named operation with description, inputs, harness implementations, and optional notes"
+    },
+    "operationsDefinition": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/operationDefinition" },
+      "description": "Named harness-independent operations, each with a description, inputs, harness implementations, and optional notes. Used by capability skills (e.g. harness-compat) to define abstract operations that other skills reference."
     },
     "skill": {
       "type": "object",
@@ -134,6 +168,7 @@
         "inputs": { "$ref": "#/definitions/inputsDefinition" },
         "protocol": { "$ref": "#/definitions/protocolDefinition" },
         "output": { "$ref": "#/definitions/outputDefinition" },
+        "operations": { "$ref": "#/definitions/operationsDefinition" },
         "resources": {
           "type": "array",
           "items": { "type": "string" },

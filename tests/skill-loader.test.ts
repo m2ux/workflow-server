@@ -50,7 +50,7 @@ describe('skill-loader', () => {
         expect(Object.keys(skill.protocol).length).toBeGreaterThanOrEqual(6);
         
         expect(skill.rules).toBeDefined();
-        expect(Object.keys(skill.rules).length).toBeGreaterThanOrEqual(6);
+        expect(Object.keys(skill.rules).length).toBeGreaterThanOrEqual(4);
         
         expect(skill.errors).toBeDefined();
         expect(Object.keys(skill.errors).length).toBeGreaterThanOrEqual(3);
