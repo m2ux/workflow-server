@@ -10,7 +10,8 @@ protocol:
   update[2]:
     - "After each step, checkpoint response, or activity transition, the orchestrator updates the corresponding state fields in the session"
     - "Record every state change in the history array with timestamp and event type"
-  persist[3]:
-    - "After each completed activity, the meta-orchestrator writes a state file containing: the current session_token, variable state, and activity trace"
+  persist[4]:
+    - "After each completed activity, the meta-orchestrator writes a state file containing: the current session_token, sessionId (the 'sid' field from the token payload), variable state, and activity trace"
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
     - "To resume, the meta-orchestrator passes the saved session_token to start_session. The workflow-orchestrator then inherits this session via dispatch_workflow."
+    - "STALE SESSION DETECTION: When resuming, compare the saved sessionId against the session returned by start_session. If the sessionIds differ, the session was not inherited — state must be reconstructed manually from the saved variables and completedActivities. This happens when the workflow server was restarted (new HMAC signing key) and start_session fell back to creating a fresh session."

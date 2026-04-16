@@ -16,12 +16,14 @@ protocol:
     - "Check for .gitmodules file: test -f .gitmodules && echo 'monorepo' || echo 'regular'"
     - "If regular: Set target_path to the repository root (.)."
     - "If monorepo: Present the repo-type checkpoint. If confirmed as monorepo, parse .gitmodules, present submodule-selection checkpoint, and set target_path to the selected submodule."
-  initialize-state[5]:
+  initialize-state[7]:
     - "Call discover-session tool. If the user chose to resume, start_session was called with a saved token and is_resuming is true. Read the state file's variables and adopt them."
+    - "If is_resuming and token_may_be_stale is true: call health_check to confirm server uptime. If the server restarted after savedAt, the saved token is stale — skip token inheritance and proceed to fresh-session recovery."
+    - "If is_resuming and the saved token appears valid: call start_session({ workflow_id, session_token: saved_token }) to resume. If start_session returns an HMAC signature verification error, do NOT retry with the same token — proceed to fresh-session recovery."
+    - "Fresh-session recovery: call start_session({ workflow_id }) without a session_token to create a new session. Compare the new session's sid with the saved sessionId — if they differ, state must be reconstructed manually. Transition to the currentActivity from the state file via next_activity, and restore variables from the state file. The completedActivities and completedSteps from the state file provide the activity history — the server will not have this, but the orchestrator tracks it independently."
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
     - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
-    - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
-    - "Detect mode from user request (e.g., 'review PR' activates review mode)."
+    - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, sessionId, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
   dispatch-workflow[6]:
     - "Call dispatch_workflow({ workflow_id, parent_session_token, variables }) to create an independent client session for the workflow-orchestrator. Wait for the dispatch package response."
     - "Compose the prompt using the client_prompt returned in the dispatch package — do NOT inject paraphrased skill content."
@@ -44,10 +46,11 @@ protocol:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
-  persist-state[3]:
-    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), variable state (JSON), and activity trace (from get_trace)"
+  persist-state[4]:
+    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), sessionId (the 'sid' field from the token payload — extract by base64-decoding the payload before the first dot), variable state (JSON), and activity trace (from get_trace)"
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
     - "If planning_folder_path is not set, skip silently"
+    - "sessionId enables stale-session detection on resume: if the server restarted, start_session will return a different sid, signaling that state must be reconstructed from the saved variables rather than inherited via token"
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
     - "If no transitions exist, the workflow is complete"
@@ -80,6 +83,9 @@ rules:
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
 errors:
+  stale_token:
+    cause: "Server restarted and generated a new HMAC signing key, invalidating the saved session token"
+    recovery: "Call start_session({ workflow_id }) without a saved token to get a fresh session. Reconstruct state by transitioning to the currentActivity from the state file and restoring variables manually."
   worker_timeout:
     cause: "Sub-agent did not return within expected time"
     recovery: "Check terminal output. Resume if still running. If stuck, create new sub-agent and re-dispatch."

@@ -18,6 +18,7 @@ The `workflow-state.json` file persists workflow execution state to disk, enabli
 | `workflowVersion` | string | yes | Workflow version |
 | `planningFolder` | string | yes | Absolute path to the planning folder |
 | `sessionToken` | string | yes | Current session token (opaque HMAC-signed string) |
+| `sessionId` | string | yes | Server session ID (the 'sid' field from the token payload). Enables stale-session detection on resume — if the server restarts, a new session will have a different sid, signaling that state must be reconstructed. |
 | `sessionTokenEncrypted` | boolean | yes | Whether the token is encrypted |
 | `state` | object | yes | Full nested execution state |
 
@@ -54,6 +55,7 @@ After completing all steps and writing artifacts, the activity worker persists i
 2. **If the file does not exist**, skip silently. The orchestrator creates the file on first persist.
 3. **Update** these fields on the parsed object:
    - `sessionToken` — set to the worker's current `session_token`
+   - `sessionId` — extract from the session_token payload (base64-decode the portion before the first dot, parse the JSON, read the 'sid' field)
    - `savedAt` — set to the current ISO 8601 timestamp
    - `description` — set to `"State after {activity_id}"`
    - `state.updatedAt` — set to the current ISO 8601 timestamp
@@ -64,7 +66,7 @@ After completing all steps and writing artifacts, the activity worker persists i
 ### Constraints
 
 - **Read before write.** Never overwrite with a partial state — always merge into the existing file.
-- **Token is opaque.** Never parse, decode, or modify the session token string.
+- **Token is opaque.** Never parse, decode, or modify the session token string — except to extract the sessionId for the dedicated `sessionId` field.
 - **Preserve unmodified fields.** Only touch the fields listed above; leave everything else unchanged.
 - **No file creation.** Workers do not create the state file — they only update an existing one.
 
@@ -79,6 +81,7 @@ After completing all steps and writing artifacts, the activity worker persists i
   "workflowVersion": "1.2.0",
   "planningFolder": "/path/to/.engineering/artifacts/planning/2026-04-14-feature-xyz",
   "sessionToken": "eyJ3Zi...<opaque>...signature",
+  "sessionId": "9ef82af4-7752-4c0a-9c60-ab8d5c03dcdf",
   "sessionTokenEncrypted": false,
   "state": {
     "workflowId": "work-package",
@@ -107,3 +110,12 @@ After completing all steps and writing artifacts, the activity worker persists i
   }
 }
 ```
+
+## Stale Session Detection
+
+When the workflow server restarts, it generates a new HMAC signing key, invalidating all saved session tokens. The `sessionId` field enables detection of this condition:
+
+1. On resume, call `start_session({ workflow_id, session_token: saved_token })` to attempt token inheritance.
+2. If the call returns an HMAC error, call `start_session({ workflow_id })` to create a fresh session.
+3. Compare the new session's `sid` with the saved `sessionId`. If they differ, the session was not inherited — state must be reconstructed from the saved variables and `completedActivities`.
+4. Proactively, before attempting token inheritance, call `health_check`. If `uptime_seconds` is less than the time since `savedAt`, the token is guaranteed stale.

@@ -39,12 +39,13 @@ protocol:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
-  persist-state[5]:
+  persist-state[6]:
     - "Track state changes triggered by activities: activity_transition logs activity_entered, step_completion increments currentStep and logs step_completed, decision_outcome records branch taken in decisionOutcomes."
-    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), variable state (JSON), and activity trace (from get_trace)"
-    - "Update state sessionToken with the current session_token, set savedAt and state.updatedAt to the current ISO 8601 timestamp, increment state.stateVersion by 1, set state.completedSteps[activity_id] to the completed step indices, and set description to 'State after {activity_id}'."
+    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), sessionId (the 'sid' field from the token payload), variable state (JSON), and activity trace (from get_trace)"
+    - "Update state sessionToken with the current session_token, set sessionId from the token payload, set savedAt and state.updatedAt to the current ISO 8601 timestamp, increment state.stateVersion by 1, set state.completedSteps[activity_id] to the completed step indices, and set description to 'State after {activity_id}'."
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
     - "If planning_folder_path is not set, skip silently"
+    - "sessionId enables stale-session detection on resume: if the server restarted, start_session will return a different sid, signaling that state must be reconstructed from the saved variables rather than inherited via token"
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
     - "If no transitions exist, the workflow is complete"
@@ -86,6 +87,9 @@ rules:
     - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
 
 errors:
+  stale_token:
+    cause: "Server restarted and generated a new HMAC signing key, invalidating the saved session token"
+    recovery: "Call start_session({ workflow_id }) without a saved token to get a fresh session. Reconstruct state by transitioning to the currentActivity from the state file and restoring variables manually."
   worker_timeout:
     cause: "Worker sub-agent did not return within expected time"
     recovery: "Check terminal output. Resume if still running. If stuck, create new worker and re-dispatch."
