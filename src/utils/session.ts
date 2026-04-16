@@ -50,14 +50,27 @@ const SessionPayloadSchema = z.object({
 
 async function decode(token: string): Promise<SessionPayload> {
   const dotIndex = token.lastIndexOf('.');
-  if (dotIndex === -1) throw new Error('Invalid session token: missing signature');
+  if (dotIndex === -1) {
+    throw new Error(
+      'Invalid session token: the token is malformed (missing signature segment). ' +
+      'A valid session token must contain a "." separator between the payload and HMAC signature. ' +
+      'This usually means the token was truncated, corrupted, or the value passed is not a session token at all. ' +
+      'To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls.'
+    );
+  }
 
   const b64 = token.substring(0, dotIndex);
   const sig = token.substring(dotIndex + 1);
 
   const key = await getOrCreateServerKey();
   if (!hmacVerify(b64, sig, key)) {
-    throw new Error('Invalid session token: signature verification failed');
+    throw new Error(
+      'Invalid session token: HMAC signature verification failed. ' +
+      'The token was either signed by a different server instance (e.g., the server was restarted and generated a new signing key), ' +
+      'or the token has been tampered with, or you are using a stale token from a previous session. ' +
+      'To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls. ' +
+      'If you are passing a checkpoint_handle (from yield_checkpoint), you must re-yield the checkpoint first to get a valid handle.'
+    );
   }
 
   try {
@@ -66,12 +79,20 @@ async function decode(token: string): Promise<SessionPayload> {
     const result = SessionPayloadSchema.safeParse(parsed);
     if (!result.success) {
       const issues = result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
-      throw new Error(`Missing or invalid token fields: ${issues}`);
+      throw new Error(
+        `Invalid session token: payload is missing required fields (${issues}). ` +
+        `The token signature is valid but the embedded data is incomplete or corrupt. ` +
+        `To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls.`
+      );
     }
     return result.data;
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    throw new Error(`Invalid session token: ${msg}`);
+    throw new Error(
+      `Invalid session token: failed to decode payload (${msg}). ` +
+      `The token signature is valid but the payload could not be parsed. ` +
+      `To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls.`
+    );
   }
 }
 
@@ -130,7 +151,8 @@ export function assertCheckpointsResolved(token: SessionPayload): void {
   if (token.bcp) {
     throw new Error(
       `Blocked: Active checkpoint '${token.bcp}' on activity '${token.act}'. ` +
-      `All tools are gated until the checkpoint is resolved.`
+      `All tools are gated until the checkpoint is resolved. ` +
+      `The orchestrator must call respond_checkpoint with the checkpoint_handle to clear the gate before any other tool calls can proceed.`
     );
   }
 }

@@ -41,7 +41,7 @@ describe('session token utilities', () => {
     });
 
     it('should throw on garbage input', async () => {
-      await expect(decodeSessionToken('not-valid')).rejects.toThrow('Invalid session token');
+      await expect(decodeSessionToken('not-valid')).rejects.toThrow('malformed (missing signature segment)');
     });
 
     it('should throw on empty string', async () => {
@@ -50,7 +50,7 @@ describe('session token utilities', () => {
 
     it('should throw on valid base64 with wrong structure', async () => {
       const bad = Buffer.from(JSON.stringify({ foo: 'bar' })).toString('base64url') + '.fakesig';
-      await expect(decodeSessionToken(bad)).rejects.toThrow('signature verification failed');
+      await expect(decodeSessionToken(bad)).rejects.toThrow('HMAC signature verification failed');
     });
 
     it('should throw on tampered payload', async () => {
@@ -58,7 +58,7 @@ describe('session token utilities', () => {
       const payload = await decodeSessionToken(token);
       const [, sig] = token.split('.');
       const tampered = Buffer.from(JSON.stringify({ ...payload, wf: 'hacked' })).toString('base64url');
-      await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('signature verification failed');
+      await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('HMAC signature verification failed');
     });
   });
 
@@ -204,7 +204,7 @@ describe('session token utilities', () => {
       payload.bcp = undefined;
       const tampered = Buffer.from(JSON.stringify(payload)).toString('base64url');
       const sig = advanced.split('.')[1];
-      await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('signature verification failed');
+      await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('HMAC signature verification failed');
     });
   });
 
@@ -223,7 +223,7 @@ describe('session token utilities', () => {
     it('should reject token with modified signature', async () => {
       const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
       const corrupted = token.slice(0, -4) + 'dead';
-      await expect(decodeSessionToken(corrupted)).rejects.toThrow('signature verification failed');
+      await expect(decodeSessionToken(corrupted)).rejects.toThrow('HMAC signature verification failed');
     });
   });
 });
