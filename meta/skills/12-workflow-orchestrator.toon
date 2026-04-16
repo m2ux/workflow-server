@@ -1,7 +1,7 @@
 id: workflow-orchestrator
-version: 1.0.0
-capability: "Management skill for a workflow orchestrator (sub-agent) managing a dispatched client workflow — handles workflow lifecycle, state management, and yields checkpoints to the parent orchestrator"
-description: "Single-load management skill for the workflow orchestrator. Manages a dispatched client workflow. Unlike the top-level meta orchestrator, this agent runs as a sub-agent. It yields checkpoint_pending results up to the parent orchestrator, and returns workflow_complete when all activities are done."
+version: 1.1.0
+capability: "Management skill for a workflow orchestrator managing a dispatched client workflow — handles workflow lifecycle, state management, and checkpoint resolution. Operates either inline (the top-level agent acts as orchestrator) or as a sub-agent that yields checkpoints upward."
+description: "Single-load management skill for the workflow orchestrator. Manages a dispatched client workflow. Can run inline (the top-level agent acts as both meta-orchestrator and workflow-orchestrator) or as a sub-agent. In inline mode, the orchestrator resolves checkpoints directly via present_checkpoint and respond_checkpoint. In sub-agent mode, it yields checkpoint_pending results up to the parent orchestrator and returns workflow_complete when all activities are done."
 
 inputs[3]:
   - id: workflow-id
@@ -28,10 +28,10 @@ protocol:
     - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
     - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
   resolve-checkpoints[2]:
-    - "When the activity-worker encounters a checkpoint, it yields checkpoint_pending to you with a checkpoint_handle."
-    - "You must catch this yield and immediately yield it up to the meta-orchestrator using the EXACT same <checkpoint_yield> JSON format containing the checkpoint_handle."
+    - "When the activity-worker encounters a checkpoint, it calls yield_checkpoint and yields a checkpoint_pending result containing a checkpoint_handle. The checkpoint_handle is an HMAC-signed token string (contains a '.' separator) — it is NOT the same as the checkpoint_id (a short name like 'classification-confirmed')."
+    - "INLINE MODE: If you are the top-level agent (running inline as both meta-orchestrator and workflow-orchestrator), resolve checkpoints directly: call present_checkpoint({ checkpoint_handle }) to load the checkpoint details, then call respond_checkpoint({ checkpoint_handle, option_id }) or respond_checkpoint({ checkpoint_handle, auto_advance: true }) to resolve it. Both present_checkpoint and respond_checkpoint require the checkpoint_handle, NOT your session_token or the checkpoint_id."
   handle-checkpoint-yield[4]:
-    - "When a worker yields a checkpoint, or if there are checkpoints pending, yield ONE checkpoint_pending up to your parent orchestrator."
+    - "SUB-AGENT MODE ONLY: When running as a sub-agent and a worker yields a checkpoint, yield ONE checkpoint_pending up to your parent orchestrator using a <checkpoint_yield> block containing ONLY the checkpoint_handle."
     - "Format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing ONLY the checkpoint_handle."
     - "Wait for the parent to resolve the checkpoint and resume you."
     - "When resumed by the parent, it will provide the updated variables (effects) that resulted from resolving the checkpoint. You MUST update your internal state with these variables and then resume the worker, passing these effects down."
@@ -61,9 +61,10 @@ protocol:
     - "Follow session-protocol skill (0) for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
 rules:
-  no-auto-resolution: "NEVER auto-resolve checkpoints without defaultOption capabilities. Even if the answer seems obvious, you MUST yield the checkpoint to the parent orchestrator so it can be presented to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
-  no-direct-interaction: "MUST NOT attempt to directly ask the user. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator."
-  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): Yield checkpoints up to the parent containing the checkpoint_handle. Wait for the parent to resolve it and resume you with the effects. You MUST NOT call respond_checkpoint yourself. For non-advisory checkpoints, use auto_advance."
+  no-auto-resolution: "NEVER auto-resolve checkpoints without defaultOption capabilities. Even if the answer seems obvious, you MUST present the checkpoint to the user (inline mode: via present_checkpoint then respond_checkpoint; sub-agent mode: yield up to parent). Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
+  no-direct-interaction: "SUB-AGENT MODE ONLY: MUST NOT attempt to directly ask the user. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator. In inline mode, you present checkpoints directly via present_checkpoint/respond_checkpoint."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): In inline mode, call present_checkpoint({ checkpoint_handle }) then respond_checkpoint({ checkpoint_handle, ... }) to resolve. In sub-agent mode, yield the checkpoint_handle up to the parent. You MUST NOT call respond_checkpoint with your own session_token — always use the checkpoint_handle from the worker's yield. For advisory checkpoints with autoAdvanceMs and defaultOption, use respond_checkpoint({ checkpoint_handle, auto_advance: true })."
+  checkpoint-token-discipline: "CHECKPOINT TOKEN DISCIPLINE: present_checkpoint and respond_checkpoint both take a checkpoint_handle parameter — this is the HMAC-signed token returned by yield_checkpoint (a long string containing a '.'). Do NOT pass your session_token, the checkpoint_id, or any other value as the checkpoint_handle. If you get an 'Invalid session token' or 'missing signature' error from a checkpoint tool, you are passing the wrong value — use the checkpoint_handle from the worker's yield_checkpoint response."
   reject-empty-checkpoints: "If an activity defines mandatory checkpoints and the worker returns checkpoints_responded as empty, REJECT the result."
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via the parent orchestrator. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."

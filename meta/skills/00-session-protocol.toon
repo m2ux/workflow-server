@@ -1,14 +1,19 @@
 id: session-protocol
-version: 1.0.0
-capability: Govern session lifecycle — token handling, step manifests, resource usage, and skill loading
+version: 1.1.0
+capability: Govern session lifecycle — token handling, step manifests, checkpoint token discipline, resource usage, and skill loading
 
-description: "Cross-cutting skill defining the protocol for workflow sessions. Covers session token mechanics (passing, updating, opacity), step manifest requirements for activity transitions, resource consumption patterns, and the bootstrap sequence for loading skills."
+description: "Cross-cutting skill defining the protocol for workflow sessions. Covers session token mechanics (passing, updating, opacity), checkpoint token discipline (checkpoint_handle vs session_token), step manifest requirements for activity transitions, resource consumption patterns, and the bootstrap sequence for loading skills."
 
 protocol:
   token-management[3]:
     - "CRITICAL: EVERY tool call requires a session_token parameter. There is NO workflow_id parameter on any tool except start_session — the workflow identity is encoded inside the token."
     - "Use the updated session_token from each response for the next call. Tokens are returned both in the response body and in _meta.session_token."
     - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
+  checkpoint-token-discipline[4]:
+    - "CHECKPOINT TOKENS ARE DISTINCT FROM SESSION TOKENS. yield_checkpoint returns a checkpoint_handle — an HMAC-signed token string (contains a '.' separator) that encodes the checkpoint state. This is NOT the same as the checkpoint_id (a short name like 'classification-confirmed')."
+    - "present_checkpoint and respond_checkpoint take a checkpoint_handle parameter, NOT a session_token. Never pass your session_token or checkpoint_id as the checkpoint_handle."
+    - "yield_checkpoint and resume_checkpoint take a session_token parameter. For resume_checkpoint, pass the checkpoint_handle as the session_token value (the checkpoint_handle IS the worker's advanced session token with the checkpoint encoded)."
+    - "If you receive 'Invalid session token' or 'missing signature' errors from present_checkpoint or respond_checkpoint, you are passing the wrong value as checkpoint_handle — use the exact string returned by yield_checkpoint in the checkpoint_handle field of the response."
   validation[1]:
     - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies (workflow mismatch, invalid transition, version drift, missing step manifest) and should be addressed but do not block execution."
   step-manifests[2]:
