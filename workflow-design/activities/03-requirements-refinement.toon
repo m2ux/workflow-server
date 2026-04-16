@@ -5,7 +5,7 @@ description: "Systematically elicit workflow design details from the user, one q
 problem: The user's free-form description needs to be refined into a complete workflow specification
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - workflow-design
 required: true
 estimatedTime: 15-30m

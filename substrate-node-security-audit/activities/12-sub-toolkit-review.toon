@@ -9,7 +9,7 @@ recognition[3]:
   - per-function checklist
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-sub-agent
 required: false
 estimatedTime: 20-30m

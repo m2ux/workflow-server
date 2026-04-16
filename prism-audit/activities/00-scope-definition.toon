@@ -5,7 +5,7 @@ description: "Collect the audit target, user's description of what to audit, and
 problem: "The audit requires a confirmed target codebase, a clear description of audit goals and focus areas, and an organised output directory before analysis can begin."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - compose-audit-prompt
 steps[5]:
   - id: collect-inputs
@@ -22,7 +22,7 @@ steps[5]:
     required: true
     actions[1]:
       - action: set
-        variable: gitnexus_available
+        target: gitnexus_available
         description: "Set to true if indexing succeeds, false otherwise"
   - id: summarize-scope
     name: Summarize Audit Scope

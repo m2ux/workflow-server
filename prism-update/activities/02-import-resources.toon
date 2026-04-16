@@ -5,7 +5,7 @@ description: "Apply all approved resource file changes: sync modified, apply ren
 problem: Resource files need to be created, updated, renamed, or removed to match upstream
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - sync-resources
 
 entryActions[1]:

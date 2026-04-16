@@ -52,7 +52,7 @@ sequenceDiagram
 
     Note over Client: Evaluates transitions,<br/>dispatches next activity
     
-    Client->>Worker: continue-agent(next_activity)
+    Client->>Worker: continue-agent(next_activity, get_activity)
     Note over Worker: Executes next activity...
     Worker-->>Client: activity_complete
     
@@ -234,7 +234,7 @@ Meta defines universal skills used by all workflows:
 
 | Skill | Capability | Description |
 |-------|------------|-------------|
-| `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
+| `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity → get_activity), token handling, step manifests, resource loading via get_resource |
 | `agent-conduct` | Agent behavioral boundaries | File sensitivity, communication tone, resource loading discipline, build command priority |
 | `11-activity-worker` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
 | `state-management` | Manage workflow state | Initialize, update, and persist state across sessions. Agent writes session token + variables + trace to disk; resumes via start_session(session_token) |

@@ -5,7 +5,7 @@ description: "Load the schema system, read existing workflows to understand conv
 problem: Agent must internalize the schema system and format conventions before producing any workflow content
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - workflow-design
 required: true
 estimatedTime: 10-15m

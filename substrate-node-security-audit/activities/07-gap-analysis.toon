@@ -9,7 +9,7 @@ recognition[3]:
   - benchmark against professional report
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-audit
 required: false
 estimatedTime: 30-60m

@@ -5,13 +5,6 @@ capability: Govern session lifecycle — token handling, step manifests, resourc
 description: "Cross-cutting skill defining the protocol for workflow sessions. Covers session token mechanics (passing, updating, opacity), step manifest requirements for activity transitions, resource consumption patterns, and the bootstrap sequence for loading skills."
 
 protocol:
-  session-initiation[4]:
-    - "The meta-orchestrator calls start_session({ workflow_id }) to obtain a session_token. This is the ONLY tool that takes workflow_id."
-    - "Workflow-orchestrators and workers DO NOT call start_session. They receive their session_token via their spawn-agent or continue-agent prompt (harness-compat)."
-    - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. The response includes initialActivity and the full activity list."
-    - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
-  skill-loading[1]:
-    - "Call get_skill({ session_token, skill_id }) to load primary skills. Workflows use 'workflow-orchestrator'. Activities use 'activity-worker'."
   token-management[3]:
     - "CRITICAL: EVERY tool call requires a session_token parameter. There is NO workflow_id parameter on any tool except start_session — the workflow identity is encoded inside the token."
     - "Use the updated session_token from each response for the next call. Tokens are returned both in the response body and in _meta.session_token."

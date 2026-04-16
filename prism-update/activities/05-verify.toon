@@ -5,7 +5,7 @@ description: "Check for consistency issues across resources, skills, and documen
 problem: Changes across multiple files may leave inconsistencies
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - verify-prism-consistency
 
 steps[6]:

@@ -54,7 +54,7 @@ steps[17]:
     checkpoint: issue-verification
     actions[1]:
       - action: set
-        variable: issue_platform
+        target: issue_platform
         description: "Set to 'github' or 'jira' based on key format detection"
   - id: verify-jira-issue
     name: Verify Jira Issue

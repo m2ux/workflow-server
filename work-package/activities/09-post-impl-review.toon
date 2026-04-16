@@ -71,13 +71,13 @@ steps[7]:
     name: Structural Analysis (Full Prism)
     description: "For complex work packages, trigger the prism workflow with full-prism pipeline mode. The prism workflow runs the 3-pass isolated pipeline (structural → adversarial → synthesis) autonomously and returns artifact paths."
     required: true
-    triggers:
-      workflow: prism
-      description: "Dispatch full 3-pass prism structural analysis for complex work packages"
-      passContext[3]:
-        - target
-        - output_path
-        - pipeline_mode
+    triggers[1]:
+      - workflow: prism
+        description: "Dispatch full 3-pass prism structural analysis for complex work packages"
+        passContext[3]:
+          - target
+          - output_path
+          - pipeline_mode
     condition:
       type: simple
       variable: complexity

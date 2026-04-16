@@ -5,7 +5,7 @@ description: "Create/update mode: four review passes over drafted content — sc
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - workflow-design
 required: true
 estimatedTime: 15-25m

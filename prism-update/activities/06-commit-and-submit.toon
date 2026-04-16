@@ -5,7 +5,7 @@ description: "Create a feature branch if needed, push all commits, and create a 
 problem: Changes need to be submitted as a PR for review
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - sync-resources
 
 steps[4]:

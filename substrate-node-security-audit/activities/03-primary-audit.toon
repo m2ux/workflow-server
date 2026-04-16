@@ -9,7 +9,7 @@ recognition[3]:
   - execute audit template
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-audit
 required: true
 estimatedTime: 60-120m

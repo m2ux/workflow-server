@@ -5,7 +5,7 @@ description: "L12 structural analysis followed by meta-analysis (claim prism app
 problem: "Single-pass analysis cannot examine its own blind spots. Reflect uses the claim prism to attack the L12 output as a text artifact, revealing hidden assumptions in the analysis itself, not just the code."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - reflect-analysis
 artifacts[3]:
   - id: reflect-l12

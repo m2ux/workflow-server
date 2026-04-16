@@ -73,29 +73,6 @@ steps[9]:
           variable: has_failures
           operator: ==
           value: true
-    loops[1]:
-      - id: fix-revalidate-cycle
-        name: Fix and Revalidate Cycle
-        type: doWhile
-        condition:
-          type: simple
-          variable: has_failures
-          operator: "=="
-          value: true
-        maxIterations: 10
-        steps[3]:
-          - id: analyze-failure
-            name: Analyze Failure Root Cause
-            description: "Identify the root cause of each test/build/lint failure."
-            skill: validate-build
-          - id: apply-fix
-            name: Apply Fix
-            description: "Implement the fix for the identified root cause."
-            skill: validate-build
-          - id: revalidate
-            name: Re-run Validation
-            description: "Re-run the failing checks. Update has_failures based on results."
-            skill: validate-build
   - id: scan-commit-signatures-for-strategic
     name: Scan PR commit signatures (preflight)
     description: "In target_path, resolve MERGE_BASE against the default branch (try origin/main, origin/master, main, master in order). Run git log --format='%h %G? %s' MERGE_BASE..HEAD. If ANY line has %G? of N (no signature) or B (bad), set unsigned_commits_in_pr to true and populate unsigned_commit_list_summary with a concise list of affected commits; otherwise set unsigned_commits_in_pr to false and clear the summary. Review mode uses the same branch/PR under review. This runs before strategic-review so the orchestrator can resolve the unsigned-commits checkpoint with accurate state."
@@ -107,6 +84,29 @@ steps[9]:
       - action: set
         target: unsigned_commit_list_summary
         message: "Comma-separated short lines (hash + subject) for unsigned/bad commits, or empty string if none"
+loops[1]:
+  - id: fix-revalidate-cycle
+    name: Fix and Revalidate Cycle
+    type: doWhile
+    condition:
+      type: simple
+      variable: has_failures
+      operator: "=="
+      value: true
+    maxIterations: 10
+    steps[3]:
+      - id: analyze-failure
+        name: Analyze Failure Root Cause
+        description: "Identify the root cause of each test/build/lint failure."
+        skill: validate-build
+      - id: apply-fix
+        name: Apply Fix
+        description: "Implement the fix for the identified root cause."
+        skill: validate-build
+      - id: revalidate
+        name: Re-run Validation
+        description: "Re-run the failing checks. Update has_failures based on results."
+        skill: validate-build
 transitions[1]:
   - to: strategic-review
     isDefault: true

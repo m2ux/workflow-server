@@ -9,7 +9,7 @@ recognition[3]:
   - build function registry
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - map-codebase
 required: false
 estimatedTime: 10-20m

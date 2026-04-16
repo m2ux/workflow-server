@@ -9,7 +9,7 @@ recognition[3]:
   - check completeness
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - verify-sub-agent-output
 required: false
 estimatedTime: 10-20m

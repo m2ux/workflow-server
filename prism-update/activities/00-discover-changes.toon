@@ -5,7 +5,7 @@ description: "Diff upstream prisms directory against current workflow resources.
 problem: Need to understand what changed upstream before importing
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - diff-upstream
 steps[5]:
   - id: list-upstream

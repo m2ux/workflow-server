@@ -9,7 +9,7 @@ recognition[3]:
   - check pass items
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-audit
 required: true
 estimatedTime: 30-60m

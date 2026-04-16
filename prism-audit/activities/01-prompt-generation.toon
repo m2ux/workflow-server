@@ -5,7 +5,7 @@ description: "Analyse the target codebase structure and compose a detailed audit
 problem: "Generic audit prompts miss codebase-specific security characteristics. A blockchain ledger codebase needs different audit domains than a web service or CI/CD pipeline. The prompt must be tailored to the codebase's architecture, language, dependencies, and trust boundaries to produce meaningful findings."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - compose-audit-prompt
 steps[8]:
   - id: survey-structure
@@ -47,13 +47,13 @@ steps[8]:
     required: true
     actions[3]:
       - action: set
-        variable: audit_prompt
+        target: audit_prompt
         description: "Set to the composed prompt text"
       - action: set
-        variable: audit_prompt_path
+        target: audit_prompt_path
         description: "Set to the written file path"
       - action: set
-        variable: audit_scopes
+        target: audit_scopes
         description: "Set to the array of scope objects built in build-audit-scopes"
 checkpoints[1]:
   - id: no-security-characteristics

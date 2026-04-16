@@ -5,7 +5,7 @@ description: "Adaptive chain engine that automatically composes the analysis pip
 problem: "Users must manually select the right pipeline mode. Smart mode removes this burden by composing the pipeline automatically based on what the input needs."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - smart-analysis
 artifacts[3]:
   - id: smart-prereq

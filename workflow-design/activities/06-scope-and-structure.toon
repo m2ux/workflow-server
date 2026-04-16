@@ -5,7 +5,7 @@ description: "Define the complete file manifest and structural design for the wo
 problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution begins
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - workflow-design
 required: true
 estimatedTime: 10-20m

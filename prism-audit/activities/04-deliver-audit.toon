@@ -5,7 +5,7 @@ description: "Present the final audit deliverables to the user. Reads and summar
 problem: "The audit produces multiple documents across potentially multiple prism runs. The user needs a clear summary of what was produced, key metrics (finding counts by severity), and paths to all deliverables."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - compose-audit-prompt
 steps[4]:
   - id: read-audit-report

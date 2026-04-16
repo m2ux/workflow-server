@@ -17,7 +17,7 @@ recognition[11]:
   - behavioral analysis
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - plan-analysis
 steps[3]:
   - id: plan
@@ -34,10 +34,10 @@ steps[3]:
     required: true
     actions[2]:
       - action: set
-        variable: pipeline_mode
+        target: pipeline_mode
         description: "Set pipeline_mode from checkpoint selection or plan recommendation"
       - action: set
-        variable: analysis_units
+        target: analysis_units
         description: "Set analysis_units from the plan-analysis skill output"
 checkpoints[1]:
   - id: confirm-mode

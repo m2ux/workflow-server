@@ -5,7 +5,7 @@ description: "Draft or modify each file in the scope manifest. Each file gets an
 problem: Content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - workflow-design
 required: true
 estimatedTime: 30-60m

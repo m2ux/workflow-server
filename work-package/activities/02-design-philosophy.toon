@@ -42,7 +42,7 @@ steps[9]:
     checkpoint: workflow-path-selected
     actions[1]:
       - action: set
-        variable: needs_comprehension
+        target: needs_comprehension
         value: true
         description: "Codebase comprehension is mandatory before planning"
   - id: document-philosophy

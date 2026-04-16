@@ -9,7 +9,7 @@ recognition[3]:
   - identify crates and trust boundaries
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-audit
 required: true
 estimatedTime: 15-30m

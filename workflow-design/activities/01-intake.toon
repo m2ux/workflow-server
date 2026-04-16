@@ -12,7 +12,7 @@ recognition[6]:
   - modify workflow
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - workflow-design
 required: true
 estimatedTime: 5-10m

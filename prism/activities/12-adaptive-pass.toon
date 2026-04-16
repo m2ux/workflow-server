@@ -5,7 +5,7 @@ description: "Cost-minimizing depth escalation. Starts with the cheapest analysi
 problem: "Users often don't know how deep an analysis needs to be. Running full-prism on every target is wasteful. Adaptive starts cheap and escalates only when needed."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - adaptive-analysis
 artifacts[5]:
   - id: adaptive-stage1

@@ -5,7 +5,7 @@ description: "AST-decompose source code into structural subsystems, assign diffe
 problem: "Whole-file analysis with a single prism misses bugs that exist BETWEEN subsystems and structural properties that span class boundaries. Different code regions benefit from different analytical lenses."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - subsystem-analysis
 artifacts[2]:
   - id: subsystem-output

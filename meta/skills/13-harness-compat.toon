@@ -7,7 +7,7 @@ description: "Defines three canonical operations (spawn-agent, continue-agent, s
 operations:
   spawn-agent:
     description: "Dispatch a new isolated sub-agent with no prior context"
-    inputs:
+    inputs[2]:
       - prompt: "Full task prompt for the new agent"
       - description: "Short label for the agent's role (optional; useful for tracing)"
     harness:
@@ -17,7 +17,7 @@ operations:
 
   continue-agent:
     description: "Resume or extend an existing worker, preserving accumulated context where possible. The workflow-server session_token provides complete workflow-state continuity regardless of harness — server-side state (activity, variables, checkpoints) is always recoverable from the token. Harness-level resume additionally preserves the agent's context window (accumulated codebase understanding, tool results) — a beneficial optimisation, not a correctness requirement."
-    inputs:
+    inputs[3]:
       - agent_id: "Harness-assigned identifier for the worker to resume (harness-specific; may be unavailable on some harnesses)"
       - session_token: "Workflow-server session token — ALWAYS include in the prompt for workflow-state continuity"
       - prompt: "Updated instructions or continuation context"
@@ -28,7 +28,7 @@ operations:
 
   spawn-concurrent:
     description: "Dispatch multiple independent agents simultaneously"
-    inputs:
+    inputs[1]:
       - agents: "Array of {description, prompt} objects — each becomes an independent sub-agent"
     harness:
       cursor: "Multiple Task calls in a single response turn — the harness executes them in parallel"

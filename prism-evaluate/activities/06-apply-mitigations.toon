@@ -5,7 +5,7 @@ description: "Apply the accepted mitigations from the resolution dialogue to the
 problem: "The mitigation plan contains accepted changes ranging from single-word corrections to multi-paragraph additions. These must be applied precisely to the target without introducing errors, in the correct priority order, with verification after each change."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - resolve-findings
 steps[5]:
   - id: read-mitigation-plan

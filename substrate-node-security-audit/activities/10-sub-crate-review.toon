@@ -9,7 +9,7 @@ recognition[3]:
   - checklist review
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-sub-agent
 required: false
 estimatedTime: 20-40m

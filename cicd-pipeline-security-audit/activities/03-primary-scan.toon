@@ -9,7 +9,7 @@ recognition[3]:
   - primary scan
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-cicd-audit
 required: true
 estimatedTime: 20-40m

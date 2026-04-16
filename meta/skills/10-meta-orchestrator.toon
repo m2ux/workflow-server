@@ -12,21 +12,21 @@ inputs[3]:
     description: "Path to the target directory for all git operations"
 
 protocol:
-  load-workflow[2]:
-    - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. Pass the session_token from start_session — there is no workflow_id parameter on get_workflow."
-    - "Extract initialActivity, variables, rules, modes, and artifactLocations"
+  resolve-target[3]:
+    - "Check for .gitmodules file: test -f .gitmodules && echo 'monorepo' || echo 'regular'"
+    - "If regular: Set target_path to the repository root (.)."
+    - "If monorepo: Present the repo-type checkpoint. If confirmed as monorepo, parse .gitmodules, present submodule-selection checkpoint, and set target_path to the selected submodule."
   initialize-state[5]:
-    - "Session discovery was handled by the discover-session activity during bootstrap. If the user chose to resume, start_session was called with a saved token and is_resuming is true. Read the state file's variables and adopt them."
+    - "Call discover-session tool. If the user chose to resume, start_session was called with a saved token and is_resuming is true. Read the state file's variables and adopt them."
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
     - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
     - "Detect mode from user request (e.g., 'review PR' activates review mode)."
-  dispatch-activity[7]:
+  dispatch-workflow[6]:
     - "Call dispatch_workflow({ workflow_id, parent_session_token, variables }) to create an independent client session for the workflow-orchestrator. Wait for the dispatch package response."
     - "Compose the prompt using the client_prompt returned in the dispatch package — do NOT inject paraphrased skill content."
     - "Spawn the workflow-orchestrator sub-agent using the harness-compat::spawn-agent. Pass the client_prompt as the prompt. If continuing an existing workflow-orchestrator, use the continue-agent operation instead."
     - "First dispatch: harness-compat::spawn-agent. Subsequent dispatches: harness-compat::continue-agent."
-    - "Do NOT call get_skill or get_skills to pre-load skills for activities. The sub-agent loads its own skills during self-bootstrap"
     - "For resumed sub-agents: send only the updated state variables and bootstrap instructions"
     - "The workflow-orchestrator runs in an independent session. It does NOT inherit the meta-orchestrator token."
   process-result[2]:
@@ -51,8 +51,7 @@ protocol:
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
     - "If no transitions exist, the workflow is complete"
-  advance-or-complete[2]:
-    - "If next activity determined: set current_activity, go to dispatch-activity"
+  advance-or-complete[1]:
     - "If workflow complete: report final state"
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
@@ -94,7 +93,6 @@ errors:
     cause: "Sub-agent reports variable changes conflicting with orchestrator state"
     recovery: "Sub-agent-reported values take precedence (sub-agent has ground truth from user interaction)."
 
-resources[3]:
-  - "meta/04"
-  - "meta/00"
-  - "meta/08"
+resources[2]:
+  - "meta/01"
+  - "meta/05"

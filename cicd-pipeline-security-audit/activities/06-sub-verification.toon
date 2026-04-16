@@ -8,7 +8,7 @@ recognition[2]:
   - check scan completeness
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-sub-agent
 required: false
 estimatedTime: 5-10m

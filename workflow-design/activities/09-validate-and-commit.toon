@@ -5,7 +5,7 @@ description: "Run schema validation on all TOON files, re-verify the scope manif
 problem: All workflow content must pass validation and the complete scope must be verified before committing
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - workflow-design
 required: true
 estimatedTime: 10-15m

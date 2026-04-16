@@ -8,7 +8,7 @@ recognition[2]:
   - run detection patterns
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-sub-agent
 required: false
 estimatedTime: 10-20m

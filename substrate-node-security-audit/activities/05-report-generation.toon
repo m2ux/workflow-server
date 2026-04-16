@@ -9,7 +9,7 @@ recognition[3]:
   - finalize report
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-audit
 required: true
 estimatedTime: 20-40m

@@ -5,7 +5,7 @@ description: "Update all prism workflow skills to reflect resource changes: fix 
 problem: Skill routing tables reference prism names and indices that may have changed
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - update-skill-routing
 
 entryActions[1]:

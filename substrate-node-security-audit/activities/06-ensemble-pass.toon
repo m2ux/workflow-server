@@ -9,7 +9,7 @@ recognition[3]:
   - multi-model merge
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-audit
 required: false
 estimatedTime: 60-90m

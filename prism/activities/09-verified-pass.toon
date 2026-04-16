@@ -5,7 +5,7 @@ description: "L12 structural analysis followed by gap detection (knowledge_bound
 problem: "Single-pass analysis may confabulate claims that depend on facts the model cannot verify. Verified mode detects these gaps and re-runs with corrections."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - verified-analysis
 artifacts[3]:
   - id: verified-initial

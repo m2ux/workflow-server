@@ -9,7 +9,7 @@ recognition[3]:
   - reconcile finding counts
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - merge-findings
 required: false
 estimatedTime: 10-15m

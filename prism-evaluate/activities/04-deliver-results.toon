@@ -5,7 +5,7 @@ description: "Present the final evaluation results to the user. Reads and summar
 problem: "The evaluation produces multiple artifacts across multiple prism runs. The user needs a clear summary of what was produced, key metrics (finding counts by dimension and severity), the core finding, and paths to all deliverables. The user may also want to proceed with proposing mitigations for the findings."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - compose-evaluation-report
 steps[4]:
   - id: read-evaluation-report

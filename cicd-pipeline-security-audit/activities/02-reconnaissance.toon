@@ -9,7 +9,7 @@ recognition[3]:
   - map triggers
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-cicd-audit
 required: true
 estimatedTime: 10-20m

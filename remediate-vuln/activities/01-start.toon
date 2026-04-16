@@ -19,7 +19,7 @@ steps[9]:
     description: "Ensure is_sec_vuln_mode is set to true and logged."
     actions[1]:
       - action: set
-        variable: is_sec_vuln_mode
+        target: is_sec_vuln_mode
         value: true
   - id: capture-sec-vuln-url
     name: Capture Security Advisory URL

@@ -5,7 +5,7 @@ description: "Update prism workflow documentation to reflect the current resourc
 problem: Documentation references resource counts, family groupings, and prism names that have changed
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - update-prism-docs
 
 entryActions[1]:

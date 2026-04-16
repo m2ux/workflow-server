@@ -5,7 +5,7 @@ description: Perform completion or context analysis depending on whether continu
 problem: Need to understand context before detailed work package planning
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - analyze-initiative-context
 steps[3]:
   - id: perform-analysis

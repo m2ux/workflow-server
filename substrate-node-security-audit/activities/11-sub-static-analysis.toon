@@ -9,7 +9,7 @@ recognition[3]:
   - mechanical checks
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - execute-sub-agent
 required: false
 estimatedTime: 15-30m

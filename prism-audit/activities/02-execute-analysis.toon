@@ -5,7 +5,7 @@ description: "Trigger one or more prism workflows to perform the analytical pass
 problem: "The audit analysis must be executed through the prism workflow's analytical pipeline (structural, adversarial, synthesis passes) rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-audit controls the audit-specific context passed to each run."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - compose-audit-prompt
 entryActions[2]:
   - action: validate

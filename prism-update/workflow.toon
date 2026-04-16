@@ -65,4 +65,3 @@ variables[10]:
     defaultValue: []
 
 initialActivity: discover-changes
-activitiesDir: activities

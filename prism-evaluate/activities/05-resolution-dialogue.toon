@@ -5,7 +5,7 @@ description: "Iterate through evaluation findings one-by-one, proposing mitigati
 problem: "Evaluation findings require targeted mitigations that range from simple text corrections to novel architectural proposals. Each finding needs individual consideration — the appropriate mitigation depends on the finding's nature, the target's content, and the user's intent. Batch presentation loses nuance; one-by-one dialogue preserves it."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - resolve-findings
 steps[5]:
   - id: load-sources
@@ -26,7 +26,7 @@ steps[5]:
     required: true
     actions[1]:
       - action: set
-        variable: mitigation_plan_path
+        target: mitigation_plan_path
         description: "Set to the path of the written MITIGATION-PLAN.md"
   - id: verify-plan
     name: Verify Mitigation Plan

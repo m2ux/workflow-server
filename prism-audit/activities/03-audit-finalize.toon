@@ -5,7 +5,7 @@ description: "Post-process the REPORT.md produced by the triggered prism workflo
 problem: "The prism workflow produces a single clean REPORT.md with definitive findings. Security audits require three deliverables: a summary report with hyperlinked domain tables, a detailed findings document with expanded write-ups for every finding organised by severity, and a design trade-off analysis distilled from the conservation laws surfaced during the prism passes."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - compose-audit-prompt
 steps[7]:
   - id: locate-artifacts
@@ -43,13 +43,13 @@ steps[7]:
     required: true
     actions[3]:
       - action: set
-        variable: audit_report_path
+        target: audit_report_path
         description: "Path to AUDIT-REPORT.md"
       - action: set
-        variable: detailed_findings_path
+        target: detailed_findings_path
         description: "Path to DETAILED-FINDINGS.md"
       - action: set
-        variable: trade_offs_path
+        target: trade_offs_path
         description: "Path to DESIGN-TRADE-OFFS.md"
 rules[6]:
   - "REPORT SPLIT: REPORT.md (from triggered prism workflow) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md."

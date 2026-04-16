@@ -5,7 +5,7 @@ description: "Collect the evaluation target, user's description of what to evalu
 problem: "The evaluation requires a confirmed target, a clear description of evaluation goals, validated dimensions, and an organised output directory before analysis planning can begin."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - plan-evaluation
 steps[5]:
   - id: collect-inputs

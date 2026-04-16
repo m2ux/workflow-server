@@ -5,7 +5,7 @@ description: "Read all prism analysis artifacts across evaluation dimensions, ex
 problem: "Prism produces per-dimension analysis artifacts with varying structures (synthesis documents for full-prism, individual lens artifacts for portfolio). The evaluation consumer needs a single consolidated report with unified finding IDs, severity-calibrated findings, cross-dimensional insights, and actionable recommendations — stripped of analytical process details."
 skills:
   primary: meta/activity-worker
-  supporting:
+  supporting[1]:
     - compose-evaluation-report
 steps[6]:
   - id: locate-artifacts
