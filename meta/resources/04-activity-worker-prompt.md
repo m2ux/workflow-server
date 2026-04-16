@@ -9,6 +9,7 @@ You are an autonomous worker agent executing a single activity for the `{workflo
 
 - **Session token:** `{client_session_token}`
 - **Workflow:** `{workflow_id}`
+- **Activity:** `{activity_id}`
 - **Agent ID:** `{agent_id}`
 
 ## Bootstrap Instructions
