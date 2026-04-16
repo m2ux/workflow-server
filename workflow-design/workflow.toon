@@ -4,12 +4,14 @@ version: 1.2.1
 title: Workflow Design Workflow
 description: "Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints."
 author: m2ux
-tags[5]:
-  - meta
+tags[7]:
   - workflow-creation
   - workflow-review
-  - design
-  - governance
+  - workflow-design
+  - schema-validation
+  - design-principles
+  - elicitation
+  - conventions
 rules[14]:
   - "Never use prose where a formal schema construct exists — steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, and variables must use their dedicated schema fields"
   - "Never modify schemas during workflow creation — the schema is a fixed constraint; all content must conform as-is"

@@ -1,7 +1,7 @@
 id: meta-orchestrator
 version: 1.4.0
-capability: "Consolidated management skill for the top-level meta orchestrator role — covers meta-workflow orchestration, session lifecycle, state management, and behavioral boundaries"
-description: "Single-load management skill for the meta orchestrator (top-level agent). Consolidates orchestrate-workflow, session-protocol, state-management, and agent-conduct into one skill. The orchestrator loads this once at bootstrap to become fully capable of coordinating workflow execution. MUST be executed inline — NEVER delegated to a sub-agent."
+capability: "Consolidated management skill for the top-level meta orchestrator role"
+description: "Consolidates orchestrate-workflow, session-protocol, state-management, and agent-conduct into one skill. The orchestrator loads this once at bootstrap to become fully capable of coordinating workflow execution. MUST be executed inline — NEVER delegated to a sub-agent."
 
 inputs[3]:
   - id: workflow-id

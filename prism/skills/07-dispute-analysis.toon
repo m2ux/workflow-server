@@ -40,8 +40,7 @@ rules:
   isolation: "Each lens runs in a fresh context; neither sees the other's output"
   model-selection: "Each prism uses its optimal model from YAML frontmatter. Synthesis uses sonnet."
 
-  tool-usage:
-    - "spawn-agent: description, prompt (harness-compat) — do NOT use continue-agent on prior workers"
+  tool-usage: "spawn-agent via harness-compat for description and prompt — do NOT use continue-agent on prior workers"
 resources[5]:
   - "00"
   - "07"

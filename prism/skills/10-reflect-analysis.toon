@@ -39,8 +39,7 @@ output[1]:
 rules:
   model-selection: "L12 uses its optimal model. Claim uses its optimal model. Synthesis uses sonnet."
 
-  tool-usage:
-    - "spawn-agent: description, prompt (harness-compat) — do NOT use continue-agent on prior workers"
+  tool-usage: "spawn-agent via harness-compat for description and prompt — do NOT use continue-agent on prior workers"
 resources[2]:
   - "00"
   - "07"

@@ -28,12 +28,9 @@ protocol:
     - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "Detect mode from user request (e.g., 'review PR' activates review mode)."
     - "Track state changes triggered by activities: activity_transition logs activity_entered, step_completion increments currentStep and logs step_completed, decision_outcome records branch taken in decisionOutcomes."
-  dispatch-activity[6]:
-    - "Call next_activity({ session_token, activity_id, step_manifest, transition_condition }) to load the activity definition"
-    - "Compose worker prompt using resource meta/04 (activity-worker-prompt) — do NOT inject paraphrased skill content"
-    - "Include your session_token in the worker prompt. The worker MUST call start_session({ workflow_id, session_token, agent_id }) to inherit the session. This ensures checkpoint obligations carry over."
-    - "First dispatch: harness-compat::spawn-agent. Subsequent dispatches: harness-compat::continue-agent."
-    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
+  dispatch-activity[3]:
+    - "Compose worker prompt using resource meta/04 (activity-worker-prompt) including population of the dynamic front-matter variables"
+    - "Dispatch using harness-compat::spawn-agent"
     - "For resumed workers: send only the updated state variables and context"
   process-result[6]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
@@ -71,7 +68,7 @@ protocol:
     - "Spawn a NEW workflow-orchestrator for the sub-workflow using harness-compat::spawn-agent."
     - "Manage the child inline, bubbling its checkpoints further up the chain to the meta-orchestrator."
   session-protocol[1]:
-    - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
+    - "Follow session-protocol skill (0) for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
 rules:
   no-auto-resolution: "NEVER auto-resolve checkpoints without defaultOption capabilities. Even if the answer seems obvious, you MUST yield the checkpoint to the parent orchestrator so it can be presented to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
@@ -92,9 +89,10 @@ rules:
   attribution-prohibition[2]:
     - "Present design decisions directly without referencing their origin."
     - "Do not include process attribution in code comments or documentation."
-  operational-discipline[2]:
+  operational-discipline[3]:
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
+    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
 
 errors:
   worker_timeout:

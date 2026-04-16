@@ -44,8 +44,7 @@ rules:
     - "initial-template: When creating a PR before implementation (ADR-only), use the Initial template from resource 12. When updating after implementation, use the Final template."
   draft-first: "Create PRs as drafts initially. Convert to ready-for-review only at submit-for-review activity."
 
-  tool-usage:
-    - "use shell: Push commits and manage PR via gh CLI"
+  tool-usage: "use shell to push commits and manage PR via gh CLI"
 errors:
   push_failed:
     cause: Remote branch has diverged

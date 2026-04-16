@@ -100,8 +100,7 @@ rules:
   automatic-pipeline: "The full pipeline runs without user interaction. No checkpoints, no confirmation between passes."
   verify-artifacts: "After each pass, verify the artifact was written before dispatching the next pass."
 
-  tool-usage:
-    - "spawn-agent: description, prompt (harness-compat) — NEVER use continue-agent"
+  tool-usage: "spawn-agent via harness-compat for description and prompt — NEVER use continue-agent"
 errors:
   worker_incomplete:
     cause: "A pass worker returned without writing its artifact"

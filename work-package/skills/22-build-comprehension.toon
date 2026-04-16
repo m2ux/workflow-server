@@ -83,8 +83,7 @@ rules:
   cross-reference: "Cross-reference related comprehension artifacts and note dependencies between codebase areas"
   question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
 
-  tool-usage:
-    - "use glob: Map directory structure, find module files, locate test files"
+  tool-usage: "use glob to map directory structure, find module files, and locate test files"
 resources[2]:
   - "25"
   - "meta/06"

@@ -54,9 +54,7 @@ rules:
   no-user-interaction: "The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result at the activity's assumptions checkpoint."
   classification-transparency: "When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis."
 
-  tool-usage:
-    - "use glob: Locate test suites, find related source files"
-    - "use semantic_search: Locate relevant code when exact symbols are unknown"
+  tool-usage: "use glob to locate test suites and find related source files; use semantic_search to locate relevant code when exact symbols are unknown"
 resources[1]:
   - "26"
 

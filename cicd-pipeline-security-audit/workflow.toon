@@ -4,10 +4,13 @@ version: 1.0.0
 title: CI/CD Pipeline Security Audit Workflow
 description: "Fully automated multi-phase AI security audit for GitHub Actions CI/CD pipelines. Detects source-to-sink injection vulnerabilities exploited by autonomous attack agents (hackerbot-claw campaign, Feb 2026). The orchestrator coordinates but does not analyze — all workflow file analysis is delegated to per-submodule scanner sub-agents (S1-Sn), each applying seven detection patterns (P1-P7). V agent verifies scan completeness. M agent merges and deduplicates findings. Phases: scope setup, reconnaissance, concurrent primary scan (S1-Sn + V + M), severity-calibrated report generation."
 author: m2ux
-tags[3]:
+tags[6]:
   - security
   - cicd
-  - workflow
+  - github-actions
+  - injection-detection
+  - automated
+  - multi-phase
 rules[19]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: At least one target submodule MUST be specified before the workflow begins. If 'all' is specified, scan every submodule that contains .github/workflows/."

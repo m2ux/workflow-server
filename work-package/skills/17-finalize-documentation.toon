@@ -50,8 +50,7 @@ resources[1]:
 rules:
   completion-timing: "COMPLETE.md is created after implementation is complete and PR is merged. It captures the final delivered state — what was built, tested, and deferred. Update if post-merge changes occur."
 
-  tool-usage:
-    - "use shell: Run cargo doc or similar to check documentation"
+  tool-usage: "use shell to run cargo doc or similar to check documentation"
 errors:
   no_adr:
     cause: No ADR was created for this work package

@@ -43,8 +43,7 @@ rules:
   stop-early: "Stop escalating as soon as signal quality is adequate. Do not run deeper stages for marginal improvement."
   model-escalation: "Stage 1: Haiku. Stage 2: Sonnet. Stage 3: per-prism optimal models."
 
-  tool-usage:
-    - "use harness-compat::spawn-agent: Adaptive mode uses a new worker for each stage via spawn-agent; never skip stage ordering"
+  tool-usage: "use harness-compat spawn-agent — adaptive mode uses a new worker for each stage via spawn-agent and never skips stage ordering"
 resources[4]:
   - "00"
   - "01"

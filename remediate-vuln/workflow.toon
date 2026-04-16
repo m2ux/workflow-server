@@ -4,10 +4,12 @@ version: 1.0.1
 title: Security Vulnerability Remediation Workflow
 description: "A highly isolated workflow for remediating security vulnerabilities without public disclosure. Bypasses all public issue tracking and PR creation, operating exclusively on a private security remote."
 author: m2ux
-tags[3]:
+tags[5]:
   - security
   - implementation
-  - workflow
+  - vulnerability
+  - remediation
+  - private
 rules[8]:
   - "Agents MUST NOT skip or auto-resolve blocking checkpoints (blocking: true) — these require explicit user selection."
   - "STRICT ISOLATION: The agent MUST NOT use any public GitHub tools (e.g. gh pr create, gh issue create) during this workflow."

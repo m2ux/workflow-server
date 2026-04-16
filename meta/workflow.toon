@@ -3,10 +3,12 @@ version: 2.0.0
 title: Meta Workflow
 description: "Bootstrap workflow for the workflow-server. Provides self-contained activities for workflow lifecycle management (start, resume, end). Each activity is an independent entry point matched via recognition patterns."
 author: m2ux
-tags[3]:
+tags[5]:
   - meta
   - bootstrap
   - workflow-management
+  - lifecycle
+  - session
 skills:
   primary: meta-orchestrator
 variables[14]:

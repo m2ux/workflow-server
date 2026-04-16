@@ -64,8 +64,7 @@ rules:
   resource-loading[1]:
     - "Use get_resource(session_token, resource_index) for each entry in a skill's _resources after get_skills or get_skill — refs are lightweight until loaded."
 
-  tool-usage:
-    - "list_workflows params: none (no session token required)"
+  tool-usage: "list_workflows requires no params and no session token"
 resources[5]:
   - "00"
   - "01"

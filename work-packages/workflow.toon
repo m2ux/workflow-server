@@ -3,10 +3,12 @@ version: 3.0.0
 title: Work Packages Workflow
 description: "Plan and coordinate multiple related work packages, then execute each in turn by triggering the work-package workflow. Use when you have multiple related features, a roadmap spanning several weeks/months, or features with shared context. This workflow handles planning and prioritization; execution triggers the work-package workflow for each package."
 author: m2ux
-tags[3]:
+tags[5]:
   - planning
   - roadmap
   - multi-package
+  - coordination
+  - prioritization
 rules[5]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - Agents must NOT proceed past checkpoints without user confirmation

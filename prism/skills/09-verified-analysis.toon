@@ -43,9 +43,7 @@ rules:
   isolation: "Corrected re-analysis worker does not see the initial L12 output — only the target content + gap context"
   model-selection: "L12 passes use optimal model from YAML frontmatter. Gap detection uses sonnet."
 
-  tool-usage:
-    - "use harness-compat::spawn-agent: Three worker dispatches for verified mode; gap-detection worker runs both boundary and audit prisms in one context. Orchestrator never uses continue-agent on prior workers."
-    - "spawn-agent: description, prompt (harness-compat) — do NOT use continue-agent"
+  tool-usage: "use harness-compat spawn-agent for three worker dispatches in verified mode; gap-detection worker runs both boundary and audit prisms in one context; orchestrator never uses continue-agent on prior workers; spawn-agent via harness-compat for description and prompt — do NOT use continue-agent"
 resources[3]:
   - "00"
   - "40"
