@@ -6,7 +6,7 @@ import { withAuditLog } from '../logging.js';
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { readSkillRaw } from '../loaders/skill-loader.js';
-import { createSessionToken, decodeSessionToken, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
+import { createSessionToken, decodeSessionToken, decodePayloadOnly, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 
@@ -51,28 +51,92 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       let token: string;
       let mismatchWarning: string | undefined;
+      let tokenAdoptedWarning: string | undefined;
+      let tokenRecoveryWarning: string | undefined;
 
       if (session_token) {
-        const parentToken = await decodeSessionToken(session_token);
-        if (parentToken.wf !== workflow_id) {
-          throw new Error(
-            `Workflow mismatch: session token is for '${parentToken.wf}' but '${workflow_id}' was requested. ` +
-            `Use the same workflow_id as the parent session, or omit session_token to start a fresh session.`
-          );
-        }
-        
-        if (parentToken.aid && parentToken.aid !== agent_id) {
-          mismatchWarning = `Warning: The provided agent_id '${agent_id}' does not match the inherited session token's agent_id '${parentToken.aid}'. The session has been transitioned to '${agent_id}'.`;
-        }
+        try {
+          const parentToken = await decodeSessionToken(session_token);
+          if (parentToken.wf !== workflow_id) {
+            throw new Error(
+              `Workflow mismatch: session token is for '${parentToken.wf}' but '${workflow_id}' was requested. ` +
+              `Use the same workflow_id as the parent session, or omit session_token to start a fresh session.`
+            );
+          }
+          
+          if (parentToken.aid && parentToken.aid !== agent_id) {
+            mismatchWarning = `Warning: The provided agent_id '${agent_id}' does not match the inherited session token's agent_id '${parentToken.aid}'. The session has been transitioned to '${agent_id}'.`;
+          }
 
-        token = await advanceToken(session_token, { aid: agent_id }, parentToken);
+          token = await advanceToken(session_token, { aid: agent_id }, parentToken);
 
-        if (config.traceStore) {
-          const event = createTraceEvent(
-            parentToken.sid, 'start_session', 0, 'ok',
-            workflow_id, parentToken.act, agent_id,
-          );
-          config.traceStore.append(parentToken.sid, event);
+          if (config.traceStore) {
+            const event = createTraceEvent(
+              parentToken.sid, 'start_session', 0, 'ok',
+              workflow_id, parentToken.act, agent_id,
+            );
+            config.traceStore.append(parentToken.sid, event);
+          }
+        } catch (err: unknown) {
+          const errMsg = err instanceof Error ? err.message : String(err);
+          const isTokenError = errMsg.includes('HMAC signature verification failed') ||
+            errMsg.includes('missing signature segment') ||
+            errMsg.includes('failed to decode payload') ||
+            errMsg.includes('payload is missing required fields');
+
+          if (!isTokenError) {
+            // Re-throw non-token errors (e.g., workflow mismatch)
+            throw err;
+          }
+
+          // HMAC verification failed — the token may be stale (server restart)
+          // or corrupted. Try to adopt the payload by re-signing it.
+          const payload = await decodePayloadOnly(session_token);
+
+          if (payload && payload.wf === workflow_id) {
+            // Payload is structurally valid and matches the workflow.
+            // Re-sign it with the current key and adopt the session.
+            console.warn(`[start_session] Re-signing stale token for session '${payload.sid}' (HMAC key changed).`);
+            tokenAdoptedWarning =
+              `The provided session_token had an invalid signature (the server was likely restarted). ` +
+              `The session state has been adopted and re-signed — session ID, activity position, and variables are preserved. ` +
+              `Original error: ${errMsg}`;
+
+            token = await advanceToken(session_token, { aid: agent_id }, payload);
+
+            if (config.traceStore) {
+              config.traceStore.initSession(payload.sid);
+              const event = createTraceEvent(
+                payload.sid, 'start_session', 0, 'ok',
+                workflow_id, payload.act, agent_id,
+                { err: 'adopted:re-signed_stale_token' },
+              );
+              config.traceStore.append(payload.sid, event);
+            }
+          } else {
+            // Payload is also corrupted or workflow mismatch.
+            // Fall back to a fresh session.
+            console.warn(`[start_session] Provided session_token is invalid and payload is not recoverable. Creating a fresh session for workflow '${workflow_id}'.`);
+            tokenRecoveryWarning =
+              `The provided session_token could not be verified and the payload could not be recovered. ` +
+              `A fresh session has been created instead. The previous session state (activity position, variables) was NOT inherited. ` +
+              `You must reconstruct the session state from your saved workflow-state.json: ` +
+              `call next_activity to transition to the currentActivity, and restore variables manually. ` +
+              `Original error: ${errMsg}`;
+
+            token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0', agent_id);
+
+            if (config.traceStore) {
+              const decoded = await decodeSessionToken(token);
+              config.traceStore.initSession(decoded.sid);
+              const event = createTraceEvent(
+                decoded.sid, 'start_session', 0, 'ok',
+                workflow_id, '', agent_id,
+                { err: 'recovered:invalid_session_token' },
+              );
+              config.traceStore.append(decoded.sid, event);
+            }
+          }
         }
       } else {
         token = await createSessionToken(workflow_id, workflow.version ?? '0.0.0', agent_id);
@@ -97,16 +161,32 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         },
         session_token: token,
       };
-      if (session_token) {
+
+      // Return session_id so callers never need to decode the token.
+      // Decode the fresh token (always valid since we just created/advanced it).
+      const decodedToken = await decodeSessionToken(token);
+      response['session_id'] = decodedToken.sid;
+
+      if (session_token && !tokenRecoveryWarning) {
         response['inherited'] = true;
       }
-      if (mismatchWarning) {
+      if (tokenAdoptedWarning) {
+        response['adopted'] = true;
+        response['warning'] = tokenAdoptedWarning;
+      } else if (tokenRecoveryWarning) {
+        response['recovered'] = true;
+        response['warning'] = tokenRecoveryWarning;
+      } else if (mismatchWarning) {
         response['warning'] = mismatchWarning;
       }
       
       const _meta: Record<string, unknown> = { session_token: token };
-      if (mismatchWarning) {
-        _meta['validation'] = { status: 'warning', warnings: [mismatchWarning] };
+      const warnings: string[] = [];
+      if (tokenAdoptedWarning) warnings.push(tokenAdoptedWarning);
+      if (tokenRecoveryWarning) warnings.push(tokenRecoveryWarning);
+      if (mismatchWarning) warnings.push(mismatchWarning);
+      if (warnings.length > 0) {
+        _meta['validation'] = { status: 'warning', warnings };
       }
 
       return {

@@ -143,7 +143,7 @@ The token payload carries:
 - The `aid` field distinguishes orchestrator from worker calls in multi-agent execution patterns. The `dispatch_workflow` tool creates distinct sessions linked to a parent `sid` to ensure cross-agent execution trace isolation.
 - The `pcp` field blocks activity transitions until all required checkpoints are resolved via `respond_checkpoint`
 
-**How it works:** The server verifies the HMAC signature on every tool call before processing. Invalid signatures cause immediate rejection.
+**How it works:** The server verifies the HMAC signature on every tool call before processing. Invalid signatures cause immediate rejection — with one exception: `start_session` implements **token adoption** to handle server restarts gracefully. When a saved session token is passed to `start_session` but fails HMAC verification (because the server was restarted and generated a new signing key), the server decodes the payload without signature verification. If the payload is structurally valid and the workflow matches, the server re-signs it with the current key and returns `adopted: true` — the session state (ID, activity position) is fully preserved. If the payload is also corrupted, the server falls back to a fresh session and returns `recovered: true` — the previous state was NOT inherited and must be reconstructed from `workflow-state.json`. This recovery mechanism prevents the common failure mode where a server restart makes all saved tokens permanently unusable.
 
 ### Layer 2: Checkpoint Gate
 
@@ -310,7 +310,7 @@ Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-ac
 
 ## State Persistence
 
-State persistence is agent-managed. The orchestrator writes the session token (opaque, HMAC-signed) and its variable state to disk using its own file tools. To resume, the saved token is passed to `start_session(session_token=saved_token)`. The trace provides the audit trail via `get_trace`.
+State persistence is agent-managed. The orchestrator writes the session token (opaque, HMAC-signed), `session_id` (from the `session_id` field returned by `start_session` or `dispatch_workflow` — never decoded from the token payload), and its variable state to disk using its own file tools. To resume, the saved token is passed to `start_session(session_token=saved_token)`. If the server has restarted since the token was saved, `start_session` will adopt the token (re-sign with the current key) and return `adopted: true`, preserving the session state. If the token is corrupted, `start_session` returns `recovered: true` with a fresh session, and the agent must reconstruct state from the saved variables in `workflow-state.json`. The `session_id` field in the state file enables stale-session detection: if the `session_id` returned by `start_session` differs from the saved `sessionId`, the session was not inherited and state must be reconstructed. The trace provides the audit trail via `get_trace`.
 
 ## Limitations
 

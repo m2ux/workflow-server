@@ -44,6 +44,8 @@ transitions:
 **The Rule of Determinism:** The Workflow Orchestrator *must not* ask the user or the LLM what to do next. It evaluates the transitions in array order against its current internal variable state. The first condition that evaluates to `true` determines the next activity ID. It then automatically calls `next_activity` with that ID.
 
 ## 4. Persistence (`workflow-state.json`)
-After each activity completion and state mutation, the Workflow Orchestrator must persist the current variable dictionary, sequence counters, and trace tokens to a `workflow-state.json` file inside the planning folder. 
+After each activity completion and state mutation, the Workflow Orchestrator must persist the current variable dictionary, session token, session ID, sequence counters, and trace tokens to a `workflow-state.json` file inside the planning folder. 
 
-This enables the session to be safely paused, terminated, or resumed at any point without losing its place in the state machine. If a session is resumed, the Workflow Orchestrator reads `workflow-state.json`, adopts the variables, and continues evaluation.
+The `sessionId` field is populated from the `session_id` field returned by `start_session` or `dispatch_workflow` — agents must never decode the token payload to extract it (decoding tokens risks corruption). 
+
+This enables the session to be safely paused, terminated, or resumed at any point without losing its place in the state machine. If a session is resumed, the Workflow Orchestrator reads `workflow-state.json`, passes the saved `sessionToken` to `start_session(session_token=saved_token)`, and the server either inherits the session (HMAC valid), adopts it by re-signing (HMAC invalid due to server restart, but payload intact — returns `adopted: true`), or falls back to a fresh session (payload corrupted — returns `recovered: true`). When `recovered: true` is returned, the orchestrator must reconstruct state by transitioning to the `currentActivity` and restoring variables from the saved state file.

@@ -114,6 +114,34 @@ export async function createSessionToken(workflowId: string, workflowVersion: st
   return encode(payload);
 }
 
+/**
+ * Decode and validate the token payload WITHOUT verifying the HMAC signature.
+ * Used by start_session to attempt session adoption when the HMAC key has changed
+ * (e.g., server restart) but the payload is structurally intact.
+ *
+ * Returns the decoded payload if valid, or null if the payload is corrupted/malformed.
+ */
+export async function decodePayloadOnly(token: string): Promise<SessionPayload | null> {
+  const dotIndex = token.lastIndexOf('.');
+  if (dotIndex === -1) {
+    return null;
+  }
+
+  const b64 = token.substring(0, dotIndex);
+
+  try {
+    const json = Buffer.from(b64, 'base64url').toString('utf8');
+    const parsed = JSON.parse(json);
+    const result = SessionPayloadSchema.safeParse(parsed);
+    if (!result.success) {
+      return null;
+    }
+    return result.data;
+  } catch {
+    return null;
+  }
+}
+
 export async function decodeSessionToken(token: string): Promise<SessionPayload> {
   return decode(token);
 }
