@@ -1,28 +1,28 @@
 id: harness-compat
-version: 1.0.0
+version: 1.1.0
 capability: "Abstract sub-agent dispatch operations — harness-independent vocabulary for spawning, continuing, and concurrently dispatching agents"
 
 description: "Defines three canonical operations (spawn-agent, continue-agent, spawn-concurrent) with harness-specific implementation notes. All skills and activities reference these operation names rather than harness-specific tool syntax. The workflow-server session_token provides complete workflow-state continuity regardless of harness — harness-level resume is a context-window optimisation only, not a correctness requirement."
 
 operations:
   spawn-agent:
-    description: "Dispatch a new isolated sub-agent with no prior context"
+    description: "Dispatch a new isolated sub-agent with no prior context. ALWAYS dispatched as foreground — the calling orchestrator must block and wait for the result before proceeding."
     inputs[2]:
       - prompt: "Full task prompt for the new agent"
       - description: "Short label for the agent's role (optional; useful for tracing)"
     harness:
-      cursor: "Task(subagent_type=generalPurpose, description=<description>, prompt=<prompt>)"
+      cursor: "Task(subagent_type=generalPurpose, description=<description>, prompt=<prompt>) — omit run_in_background or set it to false. Foreground dispatch is required so checkpoint yields surface to the orchestrator."
       cline: "use_subagents({ prompt_1: <prompt> })"
-      generic: "Any mechanism the harness provides to start a new agent with the given prompt"
+      generic: "Any mechanism the harness provides to start a new agent with the given prompt, blocking until the agent yields or completes."
 
   continue-agent:
-    description: "Resume or extend an existing worker, preserving accumulated context where possible. The workflow-server session_token provides complete workflow-state continuity regardless of harness — server-side state (activity, variables, checkpoints) is always recoverable from the token. Harness-level resume additionally preserves the agent's context window (accumulated codebase understanding, tool results) — a beneficial optimisation, not a correctness requirement."
+    description: "Resume or extend an existing worker, preserving accumulated context where possible. ALWAYS dispatched as foreground. The workflow-server session_token provides complete workflow-state continuity regardless of harness — server-side state (activity, variables, checkpoints) is always recoverable from the token. Harness-level resume additionally preserves the agent's context window (accumulated codebase understanding, tool results) — a beneficial optimisation, not a correctness requirement."
     inputs[3]:
       - agent_id: "Harness-assigned identifier for the worker to resume (harness-specific; may be unavailable on some harnesses)"
       - session_token: "Workflow-server session token — ALWAYS include in the prompt for workflow-state continuity"
       - prompt: "Updated instructions or continuation context"
     harness:
-      cursor: "Task(resume=<agent_id>) — preserves context window. Include session_token in the prompt for workflow-state continuity."
+      cursor: "Task(resume=<agent_id>) — preserves context window. Include session_token in the prompt for workflow-state continuity. Never set run_in_background."
       generic: "spawn-agent with session_token prepended to prompt. Full workflow state is preserved by the token; the agent rebuilds codebase context from artifacts and tool calls."
     note: "The session_token encodes complete workflow state. Server-side continuity is fully provided by the token — no harness dependency. Harness-level resume (context window preservation) is an optimisation only."
 
@@ -38,5 +38,6 @@ operations:
 rules:
   harness-independence: "All skills and activities MUST reference operation names from this skill (spawn-agent, continue-agent, spawn-concurrent) rather than harness-specific tool syntax. Harness-specific implementation details belong in this skill only."
   token-always-included: "ALWAYS include the session_token in the prompt for continue-agent calls, and for any spawn-agent call that inherits a workflow session. Server state is preserved by the token, not by the harness."
+  foreground-always: "CRITICAL: spawn-agent and continue-agent MUST always be dispatched as foreground (blocking). Never set run_in_background (or equivalent) for workflow sub-agents. The entire checkpoint architecture depends on the orchestrator blocking until the sub-agent yields a checkpoint or completes — background dispatch silently breaks checkpoint delivery."
   resume-is-optimisation: "Harness-level resume (e.g. Cursor Task resume) preserves the context window — useful but not required for correctness. Workflows must be correct without it."
   parallelism-is-optimisation: "Concurrent dispatch reduces wall-clock time but is not required for correctness. Sequential fallback is always valid."
