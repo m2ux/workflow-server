@@ -527,7 +527,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // Load the client prompt template from the workflow resource
       // rather than hardcoding it in the tool implementation.
-      const templateResult = await readResourceRaw(config.workflowDir, 'meta', '07');
+      const templateResult = await readResourceRaw(config.workflowDir, 'meta', '05');
       if (!templateResult.success) {
         throw new Error(`Failed to load client prompt template: ${templateResult.error}`);
       }
