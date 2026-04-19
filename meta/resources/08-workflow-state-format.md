@@ -1,6 +1,6 @@
 ---
 id: workflow-state-format
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Workflow State File Format
@@ -17,8 +17,10 @@ The `workflow-state.json` file persists workflow execution state to disk, enabli
 | `workflowId` | string | yes | Workflow ID (e.g., `work-package`) |
 | `workflowVersion` | string | yes | Workflow version |
 | `planningFolder` | string | yes | Absolute path to the planning folder |
-| `sessionToken` | string | yes | Current session token (opaque HMAC-signed string) |
-| `sessionId` | string | yes | Server session ID (from the `session_id` field returned by start_session or dispatch_workflow). Enables stale-session detection on resume — if the server restarts, a new session will have a different sid, signaling that state must be reconstructed. |
+| `sessionToken` | string | yes | Meta session token (opaque HMAC-signed string) — the meta-orchestrator's own session token for the `meta` workflow. |
+| `sessionId` | string | yes | Meta session ID (from the `session_id` field returned by start_session). Enables stale-session detection on resume. |
+| `clientSessionToken` | string | no | Client session token for the dispatched workflow-orchestrator — set by the meta-orchestrator after `dispatch_workflow`. This is the token the workflow-orchestrator and activity-workers share. MUST be preserved on resume to avoid creating a new session. |
+| `clientSessionId` | string | no | Client session ID corresponding to `clientSessionToken`. |
 | `sessionTokenEncrypted` | boolean | yes | Whether the token is encrypted |
 | `state` | object | yes | Full nested execution state |
 
@@ -80,8 +82,10 @@ After completing all steps and writing artifacts, the activity worker persists i
   "workflowId": "work-package",
   "workflowVersion": "1.2.0",
   "planningFolder": "/path/to/.engineering/artifacts/planning/2026-04-14-feature-xyz",
-  "sessionToken": "eyJ3Zi...<opaque>...signature",
+  "sessionToken": "eyJ3Zi...<opaque-meta-token>...signature",
   "sessionId": "9ef82af4-7752-4c0a-9c60-ab8d5c03dcdf",
+  "clientSessionToken": "eyJ3Zi...<opaque-client-token>...signature",
+  "clientSessionId": "3ba91c7d-2e44-4b8a-a1f2-cd9e04b12345",
   "sessionTokenEncrypted": false,
   "state": {
     "workflowId": "work-package",

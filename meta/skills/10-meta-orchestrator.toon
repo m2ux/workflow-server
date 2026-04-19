@@ -24,12 +24,14 @@ protocol:
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
     - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, sessionId, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
-  dispatch-workflow[6]:
-    - "Call dispatch_workflow({ workflow_id, parent_session_token, variables }) to create an independent client session for the workflow-orchestrator. Wait for the dispatch package response."
+  dispatch-workflow[8]:
+    - "RESUME CHECK (evaluate first): If is_resuming = true AND the state file contains a clientSessionToken field: do NOT call dispatch_workflow. The clientSessionToken IS the workflow-orchestrator's session token. Use harness-compat::continue-agent with a prompt that includes the clientSessionToken as {client_session_token}, the currentActivity from the state file, all restored state variables, and is_resuming: true. The workflow-orchestrator will call start_session({ workflow_id, session_token: clientSessionToken }) to adopt the saved session and resume at the saved activity. Set is_resuming = false after this dispatch."
+    - "FRESH DISPATCH: If is_resuming = false (or state file has no clientSessionToken): call dispatch_workflow({ workflow_id, parent_session_token, variables }) to create an independent client session for the workflow-orchestrator. Wait for the dispatch package response."
+    - "After calling dispatch_workflow: immediately write clientSessionToken and clientSessionId from the response into the state file. This ensures the client session can be recovered on restart. Do not wait for the first activity to complete — write these values now."
     - "Compose the prompt using the client_prompt returned in the dispatch package — do NOT inject paraphrased skill content."
     - "Spawn the workflow-orchestrator sub-agent using the harness-compat::spawn-agent. Pass the client_prompt as the prompt. If continuing an existing workflow-orchestrator, use the continue-agent operation instead."
     - "First dispatch: harness-compat::spawn-agent. Subsequent dispatches: harness-compat::continue-agent."
-    - "For resumed sub-agents: send only the updated state variables and bootstrap instructions"
+    - "For resumed sub-agents: the continuation prompt MUST include clientSessionToken as {client_session_token}, the currentActivity from the state file, and all restored state variables. The sub-agent uses start_session({ workflow_id, session_token: clientSessionToken }) to adopt the session."
     - "The workflow-orchestrator runs in an independent session. It does NOT inherit the meta-orchestrator token."
   process-result[2]:
     - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via AskQuestion, then respond_checkpoint."
@@ -46,9 +48,10 @@ protocol:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
-  persist-state[4]:
-    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), sessionId (from the session_id field returned by start_session or dispatch_workflow — NEVER decode the token payload), variable state (JSON), and activity trace (from get_trace)"
+  persist-state[5]:
+    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string, meta session), sessionId (from the session_id field returned by start_session — NEVER decode the token payload), variable state (JSON), and activity trace (from get_trace)"
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
+    - "CRITICAL: Preserve clientSessionToken and clientSessionId fields when writing the state file. Perform a read-modify-write: read the existing file, update only the meta session fields (sessionToken, sessionId, savedAt, state, description), and write back. Never overwrite clientSessionToken with the meta session token."
     - "If planning_folder_path is not set, skip silently"
     - "sessionId enables stale-session detection on resume: if the server restarted, start_session will return a different sid, signaling that state must be reconstructed from the saved variables rather than inherited via token"
   evaluate-transition[2]:
