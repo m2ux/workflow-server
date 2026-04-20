@@ -20,13 +20,13 @@ steps[4]:
     description: "Extract from the user request: the target workflow ID (e.g., 'work-package'), and any identifying context — ticket number (GitHub #N, Jira PROJ-123), branch name, PR number, or work package description. These are used to match against saved state files."
   - id: scan-planning-folders
     name: Scan planning folders for saved sessions
-    description: "List directories under .engineering/artifacts/planning/. For each directory that contains a workflow-state.json, read the file and extract: the saved session_token, sessionId, workflow_id, current activity, and key variables (issue_number, branch_name, pr_number). Collect all matches."
+    description: "List directories under .engineering/artifacts/planning/. For each directory that contains a workflow-state.json, read the file and extract: the saved session_token, workflow_id, current activity, and key variables (issue_number, branch_name, pr_number). Collect all matches."
   - id: match-session
     name: Match saved session to user request
     description: "Compare the identifying context from step 1 against the saved sessions from step 2. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. If multiple matches, prefer the most recently updated. If no matches, set has_saved_state = false."
   - id: prepare-result
     name: Prepare session result
-    description: "If a match was found: set has_saved_state = true, extract the saved session_token, sessionId, and planning_folder_path. Before returning, call health_check to check server uptime. If the server restarted after the state was saved (uptime_seconds < now - savedAt), set token_may_be_stale = true. If no match: set has_saved_state = false. Present the appropriate checkpoint."
+    description: "If a match was found: set has_saved_state = true, extract the saved session_token and planning_folder_path. Before returning, call health_check to check server uptime. If the server restarted after the state was saved (uptime_seconds < now - savedAt), set token_may_be_stale = true. If no match: set has_saved_state = false. Present the appropriate checkpoint."
 checkpoints[1]:
   - id: resume-session
     name: Resume Previous Session
@@ -57,10 +57,9 @@ outcome[3]:
   - Target workflow identified
   - Existing session found and resume decision made, or no session found
   - Ready to proceed to start-workflow with or without a saved token
-context_to_preserve[6]:
+context_to_preserve[5]:
   - target_workflow_id - The workflow to start or resume
   - has_saved_state - Whether a saved session was found
   - is_resuming - Whether the user chose to resume
   - planning_folder_path - Path to the matched planning folder
-  - sessionId - Server session ID from the state file (for stale-session detection)
   - token_may_be_stale - Whether the server may have restarted since the state was saved

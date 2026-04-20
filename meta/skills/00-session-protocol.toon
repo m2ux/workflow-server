@@ -6,10 +6,10 @@ description: "Cross-cutting skill defining the protocol for workflow sessions. C
 
 protocol:
   token-management[5]:
-    - "CRITICAL: EVERY tool call requires a session_token parameter. There is NO workflow_id parameter on any tool except start_session — the workflow identity is encoded inside the token."
+    - "CRITICAL: EVERY tool call requires a session_token parameter. There is NO workflow_id parameter on start_session — the workflow is derived from the token's embedded wf field, or defaults to 'meta' for fresh sessions."
     - "Use the updated session_token from each response for the next call. Tokens are returned both in the response body and in _meta.session_token. ALWAYS prefer the token from the most recent response — do not reuse a token from an earlier call in the same session."
     - "TOKEN SUCCESSION: Each tool call that accepts a session_token returns a NEW token in its response. The old token is consumed and MUST NOT be reused. If you call two tools sequentially, the second call MUST use the token returned by the first call — not the token you passed to the first call. Failure to follow token succession causes HMAC signature verification failures."
-    - "STALE TOKEN RECOVERY: If any tool call returns 'HMAC signature verification failed', the server has restarted and generated a new signing key. Do NOT retry with the same token. Instead: call start_session({ workflow_id }) to get a fresh token, then reconstruct state by transitioning to the correct activity. See meta-orchestrator initialize-state protocol for the full recovery procedure."
+    - "STALE TOKEN RECOVERY: If any tool call returns 'HMAC signature verification failed', the server has restarted and generated a new signing key. Do NOT retry with the same token. Instead: call start_session({ agent_id }) to get a fresh token (defaults to meta workflow), then reconstruct state by transitioning to the correct activity. See meta-orchestrator initialize-state protocol for the full recovery procedure."
     - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
   checkpoint-token-discipline[4]:
     - "CHECKPOINT TOKENS ARE DISTINCT FROM SESSION TOKENS. yield_checkpoint returns a checkpoint_handle — an HMAC-signed token string (contains a '.' separator) that encodes the checkpoint state. This is NOT the same as the checkpoint_id (a short name like 'classification-confirmed')."
