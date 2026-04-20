@@ -1,5 +1,5 @@
 id: discover-session
-version: 1.0.0
+version: 2.0.0
 name: Discover Session
 description: "Search for an existing workflow session to resume. Scans planning folders for workflow-state.json files matching the user's request (ticket ID, branch name, or work package name). If a match is found, presents a checkpoint asking whether to resume. Always runs before starting a target workflow."
 problem: "Determine whether to resume an existing workflow session or start fresh"
@@ -26,7 +26,7 @@ steps[4]:
     description: "Compare the identifying context from step 1 against the saved sessions from step 2. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. If multiple matches, prefer the most recently updated. If no matches, set has_saved_state = false."
   - id: prepare-result
     name: Prepare session result
-    description: "If a match was found: set has_saved_state = true, extract the saved session_token and planning_folder_path. Before returning, call health_check to check server uptime. If the server restarted after the state was saved (uptime_seconds < now - savedAt), set token_may_be_stale = true. If no match: set has_saved_state = false. Present the appropriate checkpoint."
+    description: "If a match was found: set has_saved_state = true, extract the saved session_token and planning_folder_path. The server auto-detects token staleness during start_session — no manual health_check is needed. If no match: set has_saved_state = false. Present the appropriate checkpoint."
 checkpoints[1]:
   - id: resume-session
     name: Resume Previous Session
@@ -57,9 +57,8 @@ outcome[3]:
   - Target workflow identified
   - Existing session found and resume decision made, or no session found
   - Ready to proceed to start-workflow with or without a saved token
-context_to_preserve[5]:
+context_to_preserve[4]:
   - target_workflow_id - The workflow to start or resume
   - has_saved_state - Whether a saved session was found
   - is_resuming - Whether the user chose to resume
   - planning_folder_path - Path to the matched planning folder
-  - token_may_be_stale - Whether the server may have restarted since the state was saved

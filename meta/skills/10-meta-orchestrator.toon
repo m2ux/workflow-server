@@ -1,5 +1,5 @@
 id: meta-orchestrator
-version: 1.4.0
+version: 2.0.0
 capability: "Consolidated management skill for the top-level meta orchestrator role"
 description: "Consolidates orchestrate-workflow, session-protocol, state-management, and agent-conduct into one skill. The orchestrator loads this once at bootstrap to become fully capable of coordinating workflow execution. MUST be executed inline — NEVER delegated to a sub-agent."
 
@@ -16,23 +16,17 @@ protocol:
     - "Check for .gitmodules file: test -f .gitmodules && echo 'monorepo' || echo 'regular'"
     - "If regular: Set target_path to the repository root (.)."
     - "If monorepo: Present the repo-type checkpoint. If confirmed as monorepo, parse .gitmodules, present submodule-selection checkpoint, and set target_path to the selected submodule."
-  initialize-state[7]:
-    - "Call discover-session tool. If the user chose to resume, start_session was called with a saved token and is_resuming is true. Read the state file's variables and adopt them."
-    - "If is_resuming and token_may_be_stale is true: call health_check to confirm server uptime. If the server restarted after savedAt, the saved token is stale — skip token inheritance and proceed to fresh-session recovery."
-    - "If is_resuming and the saved token appears valid: call start_session({ session_token: saved_token }) to resume. The workflow is derived from the token. If start_session returns an HMAC signature verification error, do NOT retry with the same token — proceed to fresh-session recovery."
-    - "Fresh-session recovery: call start_session({ agent_id }) without a session_token to create a new session (defaults to meta workflow). The new session will have a different sid. State must be reconstructed manually. Transition to the currentActivity from the state file via next_activity, and restore variables from the state file. The completedActivities and completedSteps from the state file provide the activity history — the server will not have this, but the orchestrator tracks it independently."
-    - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
-    - "If fresh session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
+  initialize-state[5]:
+    - "If resuming: call start_session({ session_token: saved_token, agent_id }) to resume the session. The workflow is derived from the token. The server auto-detects staleness and re-signs stale tokens. If start_session returns recovered: true (unrecoverable token), proceed to fresh-session recovery."
+    - "Fresh-session recovery: call start_session({ workflow_id, agent_id }) without a session_token to create a new session for the target workflow. State must be reconstructed manually. Transition to the currentActivity from the state file via next_activity, and restore variables from the state file."
+    - "If fresh session: call start_session({ workflow_id, agent_id }) to create a session for the target workflow. Determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
-  dispatch-workflow[8]:
-    - "RESUME CHECK (evaluate first): If is_resuming = true AND the state file contains a clientSessionToken field: do NOT call dispatch_workflow. The clientSessionToken IS the workflow-orchestrator's session token. Use harness-compat::continue-agent with a prompt that includes the clientSessionToken as {client_session_token}, the currentActivity from the state file, all restored state variables, and is_resuming: true. The workflow-orchestrator will call start_session({ session_token: clientSessionToken, agent_id }) to adopt the saved session and resume at the saved activity. Set is_resuming = false after this dispatch."
-    - "FRESH DISPATCH: If is_resuming = false (or state file has no clientSessionToken): call dispatch_workflow({ workflow_id, parent_session_token, variables }) to create an independent client session for the workflow-orchestrator. Wait for the dispatch package response."
-    - "After calling dispatch_workflow: immediately write clientSessionToken from the response into the state file. This ensures the client session can be recovered on restart. Do not wait for the first activity to complete — write this value now."
-    - "Compose the prompt using the client_prompt returned in the dispatch package — do NOT inject paraphrased skill content."
-    - "Spawn the workflow-orchestrator sub-agent using the harness-compat::spawn-agent. Pass the client_prompt as the prompt. If continuing an existing workflow-orchestrator, use the continue-agent operation instead. ALWAYS foreground — never background. The meta-orchestrator blocks waiting for checkpoint yields."
-    - "First dispatch: harness-compat::spawn-agent. Subsequent dispatches: harness-compat::continue-agent."
-    - "For resumed sub-agents: the continuation prompt MUST include clientSessionToken as {client_session_token}, the currentActivity from the state file, and all restored state variables. The sub-agent uses start_session({ session_token: clientSessionToken, agent_id }) to adopt the session."
-    - "The workflow-orchestrator runs in an independent session. It does NOT inherit the meta-orchestrator token."
+    - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
+  dispatch-workflow[4]:
+    - "FRESH DISPATCH: If is_resuming = false: the orchestrator already has a session_token for the target workflow from initialize-state. Compose the worker prompt using the template from get_resource('meta/05'). Fill in placeholders: workflow_id, activity_id (from initialActivity), state_variables_block, planning_folder_path, workspace_root, todays_date. Also include session_token as {session_token} so the worker can adopt the session via start_session({ session_token, agent_id })."
+    - "RESUME DISPATCH: If is_resuming = true: the orchestrator has the restored session_token. Compose the worker prompt with the same template, using the currentActivity from the state file and all restored state variables. Include session_token as {session_token}. The worker calls start_session({ session_token, agent_id }) to adopt the session and resume at the saved activity. Set is_resuming = false after this dispatch."
+    - "Spawn the workflow-orchestrator sub-agent using harness-compat::spawn-agent. Pass the composed prompt. If continuing an existing workflow-orchestrator, use harness-compat::continue-agent instead. ALWAYS foreground — never background. The meta-orchestrator blocks waiting for checkpoint yields."
+    - "The workflow-orchestrator runs in the same session as the meta-orchestrator — there is one unified session token for the target workflow."
   process-result[2]:
     - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via AskQuestion, then respond_checkpoint."
     - "If workflow_complete: apply variables_changed to session state, record completion, proceed to end-workflow."
@@ -48,10 +42,9 @@ protocol:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
-  persist-state[4]:
-    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string, meta session), variable state (JSON), and activity trace (from get_trace)"
+  persist-state[3]:
+    - "MANDATORY after commit. Construct state file containing: the current session_token, variable state (JSON), and activity trace (from get_trace)"
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
-    - "CRITICAL: Preserve clientSessionToken field when writing the state file. Perform a read-modify-write: read the existing file, update only the meta session fields (sessionToken, savedAt, state, description), and write back. Never overwrite clientSessionToken with the meta session token."
     - "If planning_folder_path is not set, skip silently"
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
@@ -87,7 +80,7 @@ rules:
 errors:
   stale_token:
     cause: "Server restarted and generated a new HMAC signing key, invalidating the saved session token"
-    recovery: "Call start_session({ agent_id }) without a saved token to get a fresh session (defaults to meta workflow). Reconstruct state by transitioning to the currentActivity from the state file and restoring variables manually."
+    recovery: "The server auto-detects staleness and re-signs tokens. If start_session returns recovered: true (unrecoverable payload), call start_session({ workflow_id, agent_id }) to create a fresh session and reconstruct state from the state file."
   worker_timeout:
     cause: "Sub-agent did not return within expected time"
     recovery: "Check terminal output. Resume if still running. If stuck, create new sub-agent and re-dispatch."

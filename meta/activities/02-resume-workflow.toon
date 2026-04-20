@@ -1,8 +1,8 @@
 id: resume-workflow
-version: 5.0.0
+version: 6.0.0
 name: Resume Workflow
 problem: The user wants to continue a workflow that was previously started.
-description: "Resume a workflow using persisted state as the primary mechanism. Checks for a workflow-state.json file in the planning folder and resumes via start_session(session_token=saved_token). Falls back to manual reconstruction from external evidence only when no saved state exists."
+description: "Resume a workflow using persisted state. Checks for a workflow-state.json file in the planning folder and resumes via start_session(session_token=saved_token). Falls back to manual reconstruction from external evidence only when no saved state exists."
 recognition[6]:
   - Resume workflow
   - Continue workflow
@@ -26,7 +26,7 @@ steps[6]:
     description: "Collect required information: workflow ID, planning folder path, and any user-provided context about where they left off"
   - id: restore-saved-state
     name: Restore saved state
-    description: "Check for {planning_folder_path}/workflow-state.json. If found, read the file and extract the saved session_token and variables. Call start_session({ workflow_id, session_token }) to resume the session position. Restore variables from the file. Present a summary to the user: workflow ID, current activity, key variable values. If the file does not exist, set has_saved_state = false and proceed to manual reconstruction."
+    description: "Check for {planning_folder_path}/workflow-state.json. If found, read the file and extract the saved session_token and variables. Call start_session({ session_token: saved_token, agent_id }) to resume the session. The server auto-detects staleness and re-signs stale tokens. Restore variables from the file. Present a summary to the user: workflow ID, current activity, key variable values. If the file does not exist, set has_saved_state = false and proceed to manual reconstruction."
   - id: manual-reconstruction
     name: Manual state reconstruction
     description: "Fallback when no saved state exists. Reconstruct progress from workflow artifacts, external state (git branches, PRs, planning folder contents), and user recall. Build a state object manually."

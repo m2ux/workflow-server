@@ -1,6 +1,6 @@
 ---
 id: workflow-state-format
-version: 1.1.0
+version: 2.0.0
 ---
 
 # Workflow State File Format
@@ -17,8 +17,7 @@ The `workflow-state.json` file persists workflow execution state to disk, enabli
 | `workflowId` | string | yes | Workflow ID (e.g., `work-package`) |
 | `workflowVersion` | string | yes | Workflow version |
 | `planningFolder` | string | yes | Absolute path to the planning folder |
-| `sessionToken` | string | yes | Meta session token (opaque HMAC-signed string) — the meta-orchestrator's own session token for the `meta` workflow. The session identity is embedded within the token. |
-| `clientSessionToken` | string | no | Client session token for the dispatched workflow-orchestrator — set by the meta-orchestrator after `dispatch_workflow`. This is the token the workflow-orchestrator and activity-workers share. MUST be preserved on resume to avoid creating a new session. The session identity is embedded within the token. |
+| `sessionToken` | string | yes | Unified session token (opaque HMAC-signed string) for the target workflow. Both orchestrator and worker share this token. The session identity is embedded within the token. |
 | `sessionTokenEncrypted` | boolean | yes | Whether the token is encrypted |
 | `state` | object | yes | Full nested execution state |
 
@@ -79,8 +78,7 @@ After completing all steps and writing artifacts, the activity worker persists i
   "workflowId": "work-package",
   "workflowVersion": "1.2.0",
   "planningFolder": "/path/to/.engineering/artifacts/planning/2026-04-14-feature-xyz",
-  "sessionToken": "eyJ3Zi...<opaque-meta-token>...signature",
-  "clientSessionToken": "eyJ3Zi...<opaque-client-token>...signature",
+  "sessionToken": "eyJ3Zi...<opaque-unified-token>...signature",
   "sessionTokenEncrypted": false,
   "state": {
     "workflowId": "work-package",
@@ -112,8 +110,7 @@ After completing all steps and writing artifacts, the activity worker persists i
 
 ## Stale Session Detection
 
-When the workflow server restarts, it generates a new HMAC signing key, invalidating all saved session tokens. The token itself enables detection of this condition:
+When the workflow server restarts, it generates a new HMAC signing key, invalidating all saved session tokens. The server now auto-detects this condition:
 
-1. On resume, call `start_session({ session_token: saved_token })` to attempt token inheritance. The workflow is derived from the token's embedded workflow ID. If the server was restarted, the server will automatically re-sign the token and adopt the session (returning `adopted: true` with preserved state).
-2. If the token payload is corrupted and cannot be adopted, the server will return `recovered: true` with a fresh session. In this case, state must be reconstructed from the saved variables and `completedActivities`.
-3. Proactively, before attempting token inheritance, call `health_check`. If `uptime_seconds` is less than the time since `savedAt`, the token is guaranteed stale (but will be auto-adopted by the server).
+1. On resume, call `start_session({ session_token: saved_token, agent_id })` to attempt token inheritance. The server compares the token's timestamp against its own uptime. If the server started after the token was created, it automatically re-signs the token and adopts the session (returning `adopted: true` with preserved state).
+2. If the token payload is corrupted and cannot be adopted, the server will return `recovered: true` with a fresh session. In this case, state must be reconstructed from the saved variables and `completedActivities`. Call `start_session({ workflow_id, agent_id })` to create a fresh session for the target workflow, then transition to the currentActivity via `next_activity`.

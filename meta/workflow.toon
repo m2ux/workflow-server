@@ -1,5 +1,5 @@
 id: meta
-version: 2.0.0
+version: 3.0.0
 title: Meta Workflow
 description: "Bootstrap workflow for the workflow-server. Provides self-contained activities for workflow lifecycle management (start, resume, end). Each activity is an independent entry point matched via recognition patterns."
 author: m2ux
