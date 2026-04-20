@@ -7,6 +7,7 @@ import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { readSkillRaw } from '../loaders/skill-loader.js';
 import { createSessionToken, decodeSessionToken, decodePayloadOnly, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
+import type { ParentContext } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 
@@ -33,16 +34,20 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'start_session',
     'Start a new workflow session or inherit an existing one. Returns a session token (required for all subsequent tool calls) and basic workflow metadata. ' +
-    'For a fresh session, provide agent_id only — the workflow defaults to "meta" (the bootstrap orchestration workflow). ' +
+    'For a fresh session, provide agent_id only (defaults to "meta" workflow) or specify workflow_id for a different workflow. ' +
+    'For nested workflow dispatch, provide workflow_id and parent_session_token — this creates a new child session with parent context fields (pwf, pact, pv, psid) embedded for trace correlation and resume routing. ' +
     'For worker dispatch or resume, provide session_token and agent_id — the returned token inherits all state (current activity, pending checkpoints, session ID) from the token, and the workflow is derived from the token\'s embedded workflow ID. ' +
     'The agent_id parameter is required and sets the aid field inside the HMAC-signed token, distinguishing orchestrator from worker calls in the trace.',
     {
+      workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). When omitted and no session_token is provided, defaults to "meta". When session_token is provided, the workflow is derived from the token and this parameter is used only as a fallback for fresh-session recovery.'),
+      parent_session_token: z.string().optional().describe('Optional. When creating a fresh session with workflow_id, provide the parent session token to establish a parent-child relationship. The parent\'s workflow ID, current activity, version, and session ID are embedded in the new token for trace correlation and resume routing. Ignored when session_token is provided.'),
       session_token: z.string().optional().describe('Optional. An existing session token to inherit. When provided, the returned token preserves sid, act, bcp, cond, v, and all state from the parent token. The workflow is derived from the token\'s embedded workflow ID. Used for worker dispatch (pass the orchestrator token) or resume (pass a saved token).'),
       agent_id: z.string().describe('REQUIRED. Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace.'),
     },
-    withAuditLog('start_session', async ({ session_token, agent_id }) => {
+    withAuditLog('start_session', async ({ workflow_id, parent_session_token, session_token, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
       let effectiveWorkflowId: string;
+      let effectiveWorkflowVersion: string;
       let token: string;
       let aidMismatchWarning: string | undefined;
       let tokenAdoptedWarning: string | undefined;
@@ -52,7 +57,19 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // Decode the token FIRST to determine the authoritative workflow ID.
         try {
           const parentToken = await decodeSessionToken(session_token);
+
+          // Auto-detect staleness: if the server started after the token was created,
+          // the HMAC key has changed. Skip verification and go directly to re-signing.
+          const serverUptimeSeconds = Math.floor(process.uptime());
+          const tokenAgeSeconds = Math.floor(Date.now() / 1000) - parentToken.ts;
+          if (tokenAgeSeconds > serverUptimeSeconds + 5) { // 5s grace period
+            // Token predates server startup — it WILL fail HMAC verification.
+            // Throw to trigger the re-signing path below.
+            throw new Error('Invalid session token: HMAC signature verification failed. Auto-detected stale token (server restarted since token was created).');
+          }
+
           effectiveWorkflowId = parentToken.wf;
+          effectiveWorkflowVersion = parentToken.v;
 
           if (parentToken.aid && parentToken.aid !== agent_id) {
             aidMismatchWarning = `Warning: The provided agent_id '${agent_id}' does not match the inherited session token's agent_id '${parentToken.aid}'. The session has been transitioned to '${agent_id}'.`;
@@ -72,7 +89,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           const isTokenError = errMsg.includes('HMAC signature verification failed') ||
             errMsg.includes('missing signature segment') ||
             errMsg.includes('failed to decode payload') ||
-            errMsg.includes('payload is missing required fields');
+            errMsg.includes('payload is missing required fields') ||
+            errMsg.includes('Auto-detected stale token');
 
           if (!isTokenError) {
             // Re-throw non-token errors
@@ -86,6 +104,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           if (payload) {
             // Payload is structurally valid. Use its wf as the workflow ID.
             effectiveWorkflowId = payload.wf;
+            effectiveWorkflowVersion = payload.v;
 
             console.warn(`[start_session] Re-signing stale token for session '${payload.sid}' (HMAC key changed).`);
             tokenAdoptedWarning =
@@ -105,24 +124,26 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
               config.traceStore.append(payload.sid, event);
             }
           } else {
-            // Payload is also corrupted. Fall back to a fresh session with the default workflow.
-            effectiveWorkflowId = DEFAULT_WORKFLOW_ID;
-            console.warn(`[start_session] Provided session_token is invalid and payload is not recoverable. Creating a fresh session for workflow '${DEFAULT_WORKFLOW_ID}'.`);
+            // Payload is also corrupted. Fall back to a fresh session.
+            // Use workflow_id if provided, otherwise default to meta.
+            effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
+            effectiveWorkflowVersion = '';
+            console.warn(`[start_session] Provided session_token is invalid and payload is not recoverable. Creating a fresh session for workflow '${effectiveWorkflowId}'.`);
             tokenRecoveryWarning =
               `The provided session_token could not be verified and the payload could not be recovered. ` +
-              `A fresh session has been created instead (workflow: '${DEFAULT_WORKFLOW_ID}'). The previous session state (activity position, variables) was NOT inherited. ` +
+              `A fresh session has been created instead (workflow: '${effectiveWorkflowId}'). The previous session state (activity position, variables) was NOT inherited. ` +
               `You must reconstruct the session state from your saved workflow-state.json: ` +
               `call next_activity to transition to the currentActivity, and restore variables manually. ` +
               `Original error: ${errMsg}`;
 
-            token = await createSessionToken(DEFAULT_WORKFLOW_ID, '', agent_id);
+            token = await createSessionToken(effectiveWorkflowId, effectiveWorkflowVersion, agent_id);
 
             if (config.traceStore) {
               const decoded = await decodeSessionToken(token);
               config.traceStore.initSession(decoded.sid);
               const event = createTraceEvent(
                 decoded.sid, 'start_session', 0, 'ok',
-                DEFAULT_WORKFLOW_ID, '', agent_id,
+                effectiveWorkflowId, '', agent_id,
                 { err: 'recovered:invalid_session_token' },
               );
               config.traceStore.append(decoded.sid, event);
@@ -130,17 +151,46 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           }
         }
       } else {
-        // Fresh session — default to the meta (bootstrap) workflow.
-        effectiveWorkflowId = DEFAULT_WORKFLOW_ID;
+        // Fresh session — use workflow_id if provided, otherwise default to meta.
+        effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
+        effectiveWorkflowVersion = '';
 
-        token = await createSessionToken(DEFAULT_WORKFLOW_ID, '', agent_id);
+        // If parent_session_token is provided, extract parent context for trace correlation.
+        let parentContext: ParentContext | undefined;
+        if (parent_session_token) {
+          try {
+            const parentToken = await decodeSessionToken(parent_session_token);
+            parentContext = {
+              psid: parentToken.sid,
+              pwf: parentToken.wf,
+              pact: parentToken.act,
+              pv: parentToken.v,
+            };
+
+            if (config.traceStore) {
+              const parentEvent = createTraceEvent(
+                parentToken.sid, 'start_session', 0, 'ok',
+                parentToken.wf, parentToken.act, parentToken.aid,
+                { vw: [effectiveWorkflowId] },
+              );
+              config.traceStore.append(parentToken.sid, parentEvent);
+            }
+          } catch {
+            // Parent token is invalid — proceed without parent context.
+            // The child session is still valid, just unlinked.
+            console.warn(`[start_session] parent_session_token is invalid; creating child session without parent context.`);
+          }
+        }
+
+        token = await createSessionToken(effectiveWorkflowId, effectiveWorkflowVersion, agent_id, parentContext);
 
         if (config.traceStore) {
           const decoded = await decodeSessionToken(token);
           config.traceStore.initSession(decoded.sid);
           const event = createTraceEvent(
             decoded.sid, 'start_session', 0, 'ok',
-            DEFAULT_WORKFLOW_ID, '', agent_id,
+            effectiveWorkflowId, '', agent_id,
+            parentContext ? { psid: parentContext.psid } : undefined,
           );
           config.traceStore.append(decoded.sid, event);
         }

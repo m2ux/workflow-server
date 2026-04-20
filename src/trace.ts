@@ -15,6 +15,7 @@ export interface TraceEvent {
   aid: string;
   err?: string;
   vw?: string[];
+  psid?: string;
 }
 
 /** HMAC-signed trace token payload containing full event data for a segment. */
@@ -41,7 +42,7 @@ export function createTraceEvent(
   wf: string,
   act: string,
   aid: string,
-  options?: { err?: string; vw?: string[] },
+  options?: { err?: string; vw?: string[]; psid?: string },
 ): TraceEvent {
   return {
     traceId,
@@ -55,6 +56,7 @@ export function createTraceEvent(
     aid,
     ...(options?.err !== undefined ? { err: options.err } : {}),
     ...(options?.vw !== undefined && options.vw.length > 0 ? { vw: options.vw } : {}),
+    ...(options?.psid !== undefined ? { psid: options.psid } : {}),
   };
 }
 
