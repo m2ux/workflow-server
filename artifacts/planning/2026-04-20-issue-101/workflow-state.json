@@ -1,0 +1,28 @@
+{
+  "sessionToken": "eyJ3ZiI6Im1ldGEiLCJhY3QiOiIiLCJza2lsbCI6Im1ldGEtb3JjaGVzdHJhdG9yIiwiY29uZCI6IiIsInYiOiIyLjAuMCIsInNlcSI6MiwidHMiOjE3NzY2NzM2ODAsInNpZCI6IjA5YzlkYTFkLTYxNmQtNDdiMS04OGUwLTJkNWQ3NTRlM2JhYiIsImFpZCI6Im1ldGEifQ.fc434424dc4ce9bb45a3ab2fd532afaf71d22bb58153e3e46ca89cb3ef2e773e",
+  "sessionId": "09c9da1d-616d-47b1-88e0-2d5d754e3bab",
+  "clientSessionToken": "eyJ3ZiI6IndvcmstcGFja2FnZSIsImFjdCI6IiIsInNraWxsIjoiIiwiY29uZCI6IiIsInYiOiIzLjcuMCIsInNlcSI6MSwidHMiOjE3NzY2NzM3NTgsInNpZCI6IjhmNGNlODE2LTZjM2YtNDdiOC05YmUzLWJlNTE1MDJmNGUzNSIsImFpZCI6ImNsaWVudC0wOWM5ZGExZCIsInBzaWQiOiIwOWM5ZGExZC02MTZkLTQ3YjEtODhlMC0yZDVkNzU0ZTNiYWIifQ.388d4b819f906fdf4d6dec319c9c31c8b4cbe09906201f5c4f3f45f00a17f090",
+  "clientSessionId": "8f4ce816-6c3f-47b8-9be3-be51502f4e35",
+  "savedAt": "2026-04-20T00:00:00Z",
+  "workflow": {
+    "id": "work-package",
+    "version": "3.7.0",
+    "title": "Work Package Implementation Workflow"
+  },
+  "currentActivity": "start-work-package",
+  "completedActivities": [],
+  "completedSteps": [],
+  "state": {
+    "issue_url": "https://github.com/m2ux/workflow-server/issues/101",
+    "issue_number": "101",
+    "issue_platform": "github",
+    "target_path": ".",
+    "workspace_root": "/home/mike/projects/dev/workflow-server",
+    "planning_folder_path": "/home/mike/projects/dev/workflow-server/.engineering/artifacts/planning/2026-04-20-issue-101",
+    "branch_name": "feat/101-http-sse-transport",
+    "pr_number": "103",
+    "pr_url": "https://github.com/m2ux/workflow-server/pull/103",
+    "pr_skipped": false
+  },
+  "description": "Work package for issue #101 in workflow-server"
+}
