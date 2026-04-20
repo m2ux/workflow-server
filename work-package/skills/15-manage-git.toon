@@ -1,5 +1,5 @@
 id: manage-git
-version: 1.2.0
+version: 1.3.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 
 description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE target_path. Branches and PRs are created against the target's upstream."
@@ -38,6 +38,11 @@ protocol:
     - Resolve MERGE_BASE against default branch (same order as validate strategic preflight)
     - Re-sign each commit in MERGE_BASE..HEAD via rebase --exec 'git commit --amend --no-edit -S' (GPG); ensure user.signingkey and gpg agent are available
     - After rewrite, verify with git log --format='%h %G?' MERGE_BASE..HEAD; push with --force-with-lease only when appropriate for the PR branch
+  artifact-commits[4]:
+    - "ALL planning artifact commits to the parent (engineering) repo MUST use --no-gpg-sign: git add <files> && git commit --no-gpg-sign -m 'docs(work-package): <activity> artifacts for <issue-key>' && git push origin <branch>"
+    - "Commit after each workflow activity completes. Use the message pattern: docs(work-package): <activity-name> artifacts for <issue-key>"
+    - "The --no-gpg-sign flag is mandatory on all intermediate artifact commits so the workflow can proceed unattended without a GPG pinentry prompt"
+    - "EXCEPTION: the sign-final-commit step in the complete activity — that step uses git commit -S instead of --no-gpg-sign to produce the one signed commit in the artifact history"
 
 output[1]:
   - id: branch-and-pr
