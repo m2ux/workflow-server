@@ -54,7 +54,7 @@ protocol:
     - "If workflow complete, prepare final summary including: Workflow Name, Start/Completion Dates; Activities Completed, Outcomes Achieved; Key Decisions Made (Checkpoints, Options, Rationale); Artifacts Created; Follow-Up Items."
     - "If workflow complete: return { status: 'workflow_complete', final_state: ... } to the parent orchestrator."
   handle-sub-workflows[3]:
-    - "If a client workflow needs to dispatch a sub-workflow, call dispatch_workflow({ workflow_id: 'child-workflow', parent_session_token: '<your_token>' })."
+    - "If a client workflow needs to dispatch a sub-workflow, call start_session({ workflow_id: 'child-workflow', parent_session_token: '<your_token>', agent_id: 'orchestrator' })."
     - "Spawn a NEW workflow-orchestrator for the sub-workflow using harness-compat::spawn-agent."
     - "Manage the child inline, bubbling its checkpoints further up the chain to the meta-orchestrator."
   session-protocol[1]:
@@ -88,7 +88,7 @@ rules:
 errors:
   stale_token:
     cause: "Server restarted and generated a new HMAC signing key, invalidating the saved session token"
-    recovery: "Call start_session({ agent_id }) without a saved token to get a fresh session (defaults to meta workflow). Reconstruct state by transitioning to the currentActivity from the state file and restoring variables manually."
+    recovery: "The server auto-detects staleness and re-signs tokens. If start_session returns recovered: true (unrecoverable payload), call start_session({ workflow_id, agent_id }) to create a fresh session and reconstruct state from the state file."
   worker_timeout:
     cause: "Worker sub-agent did not return within expected time"
     recovery: "Check terminal output. Resume if still running. If stuck, create new worker and re-dispatch."
