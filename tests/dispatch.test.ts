@@ -1,96 +1,125 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createSessionToken, decodeSessionToken, advanceToken } from '../src/utils/session.js';
 
-describe('dispatch_workflow tool: session creation', () => {
-  it('creates a client session token with psid referencing the parent', async () => {
-    const parentToken = await createSessionToken('meta', '1.0.0', 'test-agent');
-    const parent = await decodeSessionToken(parentToken);
+describe('start_session with workflow_id: session creation', () => {
+  it('creates a session token for the specified workflow', async () => {
+    const token = await createSessionToken('work-package', '3.7.0', 'test-agent');
+    const decoded = await decodeSessionToken(token);
 
-    const clientToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', parent.sid);
-    const client = await decodeSessionToken(clientToken);
-
-    expect(client.wf).toBe('remediate-vuln');
-    expect(client.psid).toBe(parent.sid);
-    expect(client.sid).not.toBe(parent.sid);
-    expect(client.seq).toBe(0);
+    expect(decoded.wf).toBe('work-package');
+    expect(decoded.v).toBe('3.7.0');
+    expect(decoded.sid).toBeDefined();
+    expect(decoded.seq).toBe(0);
+    expect(decoded.psid).toBeUndefined();
   });
 
-  it('client session is independent — no shared state with parent', async () => {
-    const parentToken = await createSessionToken('meta', '1.0.0', 'test-agent');
+  it('creates a session with parent context via parent_session_token', async () => {
+    const parentToken = await createSessionToken('work-package', '3.7.0', 'orchestrator');
     const parent = await decodeSessionToken(parentToken);
 
-    const clientToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', parent.sid);
-    const client = await decodeSessionToken(clientToken);
+    const childToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', {
+      psid: parent.sid,
+      pwf: parent.wf,
+      pact: parent.act,
+      pv: parent.v,
+    });
+    const child = await decodeSessionToken(childToken);
 
-    expect(client.wf).not.toBe(parent.wf);
-    expect(client.sid).not.toBe(parent.sid);
-    expect(client.seq).toBe(0);
+    expect(child.wf).toBe('remediate-vuln');
+    expect(child.psid).toBe(parent.sid);
+    expect(child.pwf).toBe(parent.wf);
+    expect(child.pact).toBe(parent.act);
+    expect(child.pv).toBe(parent.v);
+    expect(child.sid).not.toBe(parent.sid);
+    expect(child.seq).toBe(0);
+  });
+
+  it('child session is independent — no shared state with parent', async () => {
+    const parentToken = await createSessionToken('work-package', '3.7.0', 'orchestrator');
+    const parent = await decodeSessionToken(parentToken);
+
+    const childToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', {
+      psid: parent.sid,
+      pwf: parent.wf,
+      pact: parent.act,
+      pv: parent.v,
+    });
+    const child = await decodeSessionToken(childToken);
+
+    expect(child.wf).not.toBe(parent.wf);
+    expect(child.sid).not.toBe(parent.sid);
+    expect(child.seq).toBe(0);
     expect(parent.seq).toBe(0);
   });
 });
 
 describe('get_workflow_status: token-based status extraction', () => {
-  it('extracts current activity from client token', async () => {
-    const parentToken = await createSessionToken('meta', '1.0.0', 'test-agent');
-    const parent = await decodeSessionToken(parentToken);
+  it('extracts current activity from token', async () => {
+    const token = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent');
+    const advancedToken = await advanceToken(token, { act: 'assess-vuln' });
+    const decoded = await decodeSessionToken(advancedToken);
 
-    const clientToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', parent.sid);
-    const advancedClient = await advanceToken(clientToken, { act: 'assess-vuln' });
-    const client = await decodeSessionToken(advancedClient);
-
-    expect(client.act).toBe('assess-vuln');
-    expect(client.psid).toBe(parent.sid);
+    expect(decoded.act).toBe('assess-vuln');
   });
 
   it('detects blocked status from pending checkpoints', async () => {
-    const parentToken = await createSessionToken('meta', '1.0.0', 'test-agent');
-    const parent = await decodeSessionToken(parentToken);
-
-    const clientToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', parent.sid);
-    const advancedClient = await advanceToken(clientToken, {
+    const token = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent');
+    const advancedToken = await advanceToken(token, {
       act: 'assess-vuln',
       bcp: 'cp-1',
     });
-    const client = await decodeSessionToken(advancedClient);
+    const decoded = await decodeSessionToken(advancedToken);
 
-    expect(client.bcp).toEqual('cp-1');
+    expect(decoded.bcp).toEqual('cp-1');
   });
 
   it('detects active status when no checkpoints pending', async () => {
-    const parentToken = await createSessionToken('meta', '1.0.0', 'test-agent');
-    const parent = await decodeSessionToken(parentToken);
+    const token = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent');
+    const advancedToken = await advanceToken(token, { act: 'assess-vuln' });
+    const decoded = await decodeSessionToken(advancedToken);
 
-    const clientToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', parent.sid);
-    const advancedClient = await advanceToken(clientToken, { act: 'assess-vuln' });
-    const client = await decodeSessionToken(advancedClient);
-
-    expect(client.bcp).toBeUndefined();
+    expect(decoded.bcp).toBeUndefined();
   });
 });
 
 describe('parent-child session correlation', () => {
   it('parent can find children via psid', async () => {
-    const parentToken = await createSessionToken('meta', '1.0.0', 'test-agent');
+    const parentToken = await createSessionToken('work-package', '3.7.0', 'orchestrator');
     const parent = await decodeSessionToken(parentToken);
 
-    const child1Token = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', parent.sid);
+    const child1Token = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', {
+      psid: parent.sid,
+      pwf: parent.wf,
+      pact: parent.act,
+      pv: parent.v,
+    });
     const child1 = await decodeSessionToken(child1Token);
 
-    const child2Token = await createSessionToken('work-package', '1.0.0', 'test-agent', parent.sid);
+    const child2Token = await createSessionToken('prism-update', '1.0.0', 'test-agent', {
+      psid: parent.sid,
+      pwf: parent.wf,
+      pact: parent.act,
+      pv: parent.v,
+    });
     const child2 = await decodeSessionToken(child2Token);
 
     expect(child1.psid).toBe(parent.sid);
     expect(child2.psid).toBe(parent.sid);
     expect(child1.sid).not.toBe(child2.sid);
     expect(child1.wf).toBe('remediate-vuln');
-    expect(child2.wf).toBe('work-package');
+    expect(child2.wf).toBe('prism-update');
   });
 
   it('psid does not grant access to parent session', async () => {
-    const parentToken = await createSessionToken('meta', '1.0.0', 'test-agent');
+    const parentToken = await createSessionToken('work-package', '3.7.0', 'orchestrator');
     const parent = await decodeSessionToken(parentToken);
 
-    const childToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', parent.sid);
+    const childToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', {
+      psid: parent.sid,
+      pwf: parent.wf,
+      pact: parent.act,
+      pv: parent.v,
+    });
     const child = await decodeSessionToken(childToken);
 
     // Child only has the parent's sid as metadata — cannot decode the parent token
@@ -102,13 +131,23 @@ describe('parent-child session correlation', () => {
   });
 
   it('recursive dispatch: child can be a parent too', async () => {
-    const metaToken = await createSessionToken('meta', '1.0.0', 'test-agent');
+    const metaToken = await createSessionToken('work-package', '3.7.0', 'orchestrator');
     const meta = await decodeSessionToken(metaToken);
 
-    const clientToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', meta.sid);
+    const clientToken = await createSessionToken('remediate-vuln', '1.2.0', 'test-agent', {
+      psid: meta.sid,
+      pwf: meta.wf,
+      pact: meta.act,
+      pv: meta.v,
+    });
     const client = await decodeSessionToken(clientToken);
 
-    const subClientToken = await createSessionToken('prism-update', '1.0.0', 'test-agent', client.sid);
+    const subClientToken = await createSessionToken('prism-update', '1.0.0', 'test-agent', {
+      psid: client.sid,
+      pwf: client.wf,
+      pact: client.act,
+      pv: client.v,
+    });
     const subClient = await decodeSessionToken(subClientToken);
 
     expect(subClient.psid).toBe(client.sid);
@@ -116,6 +155,6 @@ describe('parent-child session correlation', () => {
     // Full chain: subClient → client → meta
     expect(subClient.wf).toBe('prism-update');
     expect(client.wf).toBe('remediate-vuln');
-    expect(meta.wf).toBe('meta');
+    expect(meta.wf).toBe('work-package');
   });
 });

@@ -14,6 +14,9 @@ export interface SessionPayload {
   aid: string;
   bcp?: string | undefined;
   psid?: string | undefined;
+  pwf?: string | undefined;
+  pact?: string | undefined;
+  pv?: string | undefined;
 }
 
 export interface SessionAdvance {
@@ -24,6 +27,9 @@ export interface SessionAdvance {
   aid?: string;
   bcp?: string | null; // using null to allow clearing the optional field
   psid?: string;
+  pwf?: string | null;
+  pact?: string | null;
+  pv?: string | null;
 }
 
 async function encode(payload: SessionPayload): Promise<string> {
@@ -46,6 +52,9 @@ const SessionPayloadSchema = z.object({
   aid: z.string(),
   bcp: z.string().optional(),
   psid: z.string().optional(),
+  pwf: z.string().optional(),
+  pact: z.string().optional(),
+  pv: z.string().optional(),
 });
 
 async function decode(token: string): Promise<SessionPayload> {
@@ -96,7 +105,14 @@ async function decode(token: string): Promise<SessionPayload> {
   }
 }
 
-export async function createSessionToken(workflowId: string, workflowVersion: string, agentId: string, parentSid?: string): Promise<string> {
+export interface ParentContext {
+  psid: string;
+  pwf: string;
+  pact: string;
+  pv: string;
+}
+
+export async function createSessionToken(workflowId: string, workflowVersion: string, agentId: string, parent?: ParentContext): Promise<string> {
   const payload: SessionPayload = {
     wf: workflowId,
     act: '',
@@ -108,8 +124,11 @@ export async function createSessionToken(workflowId: string, workflowVersion: st
     sid: randomUUID(),
     aid: agentId,
   };
-  if (parentSid !== undefined) {
-    payload.psid = parentSid;
+  if (parent) {
+    payload.psid = parent.psid;
+    payload.pwf = parent.pwf;
+    payload.pact = parent.pact;
+    payload.pv = parent.pv;
   }
   return encode(payload);
 }
@@ -159,6 +178,9 @@ export async function advanceToken(token: string, updates?: SessionAdvance, deco
     ...(updates?.aid !== undefined && { aid: updates.aid }),
     ...(updates?.bcp !== undefined && { bcp: updates.bcp === null ? undefined : updates.bcp }),
     ...(updates?.psid !== undefined && { psid: updates.psid }),
+    ...(updates?.pwf !== undefined && { pwf: updates.pwf === null ? undefined : updates.pwf }),
+    ...(updates?.pact !== undefined && { pact: updates.pact === null ? undefined : updates.pact }),
+    ...(updates?.pv !== undefined && { pv: updates.pv === null ? undefined : updates.pv }),
   };
   return encode(advanced);
 }

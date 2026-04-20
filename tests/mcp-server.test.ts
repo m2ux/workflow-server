@@ -138,17 +138,17 @@ describe('mcp-server integration', () => {
   });
 
   beforeEach(async () => {
+    const result = await client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: 'work-package', agent_id: 'test-worker' },
+    });
+    sessionToken = parseToolResponse(result).session_token;
+
     const metaResult = await client.callTool({
       name: 'start_session',
       arguments: { agent_id: 'test-orchestrator' },
     });
     metaToken = parseToolResponse(metaResult).session_token;
-
-    const dispatchResult = await client.callTool({
-      name: 'dispatch_workflow',
-      arguments: { workflow_id: 'work-package', parent_session_token: metaToken },
-    });
-    sessionToken = parseToolResponse(dispatchResult).client_session_token;
   });
 
   afterAll(async () => {
@@ -275,17 +275,12 @@ describe('mcp-server integration', () => {
     });
 
     it('content-body token threading should work end-to-end (agent scenario)', async () => {
-      // Get a work-package session via dispatch_workflow
-      const metaResult = await client.callTool({
+      // Get a work-package session directly via start_session
+      const result = await client.callTool({
         name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
-      const metaToken = parseToolResponse(metaResult).session_token;
-      const dispatchResult = await client.callTool({
-        name: 'dispatch_workflow',
-        arguments: { workflow_id: 'work-package', parent_session_token: metaToken },
-      });
-      const startToken = parseToolResponse(dispatchResult).client_session_token;
+      const startToken = parseToolResponse(result).session_token;
 
       const { nextToken, actResponse } = await transitionToActivity(client, startToken, 'start-work-package');
       const actToken = await resolveCheckpoints(client, nextToken, actResponse);
@@ -1026,8 +1021,8 @@ describe('mcp-server integration', () => {
       const trace = parseToolResponse(result);
       expect(trace.source).toBe('memory');
       expect(trace.events.length).toBeGreaterThanOrEqual(1);
-      // sessionToken is from dispatch_workflow, so the first event is dispatch_workflow
-      expect(trace.events[0].name).toBe('dispatch_workflow');
+      // sessionToken is from start_session with workflow_id
+      expect(trace.events[0].name).toBe('start_session');
     });
 
     it('next_activity returns _meta.trace_token (IT-7)', async () => {
@@ -1174,25 +1169,15 @@ describe('mcp-server integration', () => {
     it('operations on one session should not affect another', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent-1' },
       });
-      const metaToken1 = parseToolResponse(s1).session_token;
-      const d1 = await client.callTool({
-        name: 'dispatch_workflow',
-        arguments: { workflow_id: 'work-package', parent_session_token: metaToken1 },
-      });
-      const token1 = parseToolResponse(d1).client_session_token;
+      const token1 = parseToolResponse(s1).session_token;
 
       const s2 = await client.callTool({
         name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent-2' },
       });
-      const metaToken2 = parseToolResponse(s2).session_token;
-      const d2 = await client.callTool({
-        name: 'dispatch_workflow',
-        arguments: { workflow_id: 'work-package', parent_session_token: metaToken2 },
-      });
-      const token2 = parseToolResponse(d2).client_session_token;
+      const token2 = parseToolResponse(s2).session_token;
 
       const act1 = await client.callTool({
         name: 'next_activity',
@@ -1212,25 +1197,15 @@ describe('mcp-server integration', () => {
     it('traces from different sessions should be isolated', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent-1' },
       });
-      const metaToken1 = parseToolResponse(s1).session_token;
-      const d1 = await client.callTool({
-        name: 'dispatch_workflow',
-        arguments: { workflow_id: 'work-package', parent_session_token: metaToken1 },
-      });
-      const token1 = parseToolResponse(d1).client_session_token;
+      const token1 = parseToolResponse(s1).session_token;
 
       const s2 = await client.callTool({
         name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent-2' },
       });
-      const metaToken2 = parseToolResponse(s2).session_token;
-      const d2 = await client.callTool({
-        name: 'dispatch_workflow',
-        arguments: { workflow_id: 'work-package', parent_session_token: metaToken2 },
-      });
-      const token2 = parseToolResponse(d2).client_session_token;
+      const token2 = parseToolResponse(s2).session_token;
 
       await client.callTool({
         name: 'next_activity',
@@ -1654,6 +1629,77 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       expect(parseToolResponse(result).session_token).toBeDefined();
+    });
+
+    it('fresh session should accept workflow_id for non-meta workflow', async () => {
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.workflow.id).toBe('work-package');
+      expect(response.session_token).toBeDefined();
+      expect(response.inherited).toBeUndefined();
+    });
+
+    it('fresh session with workflow_id and parent_session_token should embed parent context', async () => {
+      // Create a parent session for work-package
+      const parentResult = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+      });
+      const parentToken = parseToolResponse(parentResult).session_token;
+
+      // Transition parent to an activity so pact is set
+      const actResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_token: parentToken, activity_id: 'start-work-package' },
+      });
+      const advancedParentToken = (actResult._meta as Record<string, unknown>)['session_token'] as string;
+
+      // Create child session with parent context
+      const childResult = await client.callTool({
+        name: 'start_session',
+        arguments: {
+          workflow_id: 'remediate-vuln',
+          parent_session_token: advancedParentToken,
+          agent_id: 'worker-1',
+        },
+      });
+      expect(childResult.isError).toBeFalsy();
+      const childResponse = parseToolResponse(childResult);
+      expect(childResponse.workflow.id).toBe('remediate-vuln');
+      expect(childResponse.session_token).toBeDefined();
+      expect(childResponse.inherited).toBeUndefined();
+    });
+
+    it('workflow_id is ignored when session_token is provided', async () => {
+      // Create a work-package session
+      const wpResult = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
+      });
+      const wpToken = parseToolResponse(wpResult).session_token;
+
+      // Inherit with a different workflow_id — should use the token's workflow
+      const inherited = await client.callTool({
+        name: 'start_session',
+        arguments: { session_token: wpToken, agent_id: 'test-agent' },
+      });
+      expect(inherited.isError).toBeFalsy();
+      const response = parseToolResponse(inherited);
+      expect(response.workflow.id).toBe('work-package');
+      expect(response.inherited).toBe(true);
+    });
+
+    it('dispatch_workflow tool should not exist', async () => {
+      // Verify the deprecated tool is not registered
+      const result = await client.callTool({
+        name: 'dispatch_workflow',
+        arguments: { workflow_id: 'work-package', parent_session_token: sessionToken },
+      });
+      expect(result.isError).toBe(true);
     });
 
     it('inherited session should preserve act from parent', async () => {
