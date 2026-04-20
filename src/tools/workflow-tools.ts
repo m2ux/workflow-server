@@ -542,8 +542,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const metadata: Record<string, unknown> = {
         client_session_token: advancedClientToken,
-        client_session_id: decodedClient.sid,
-        parent_session_id: parentToken.sid,
         workflow: {
           id: workflow.id,
           version: workflow.version,
@@ -566,46 +564,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('get_workflow_status',
     'Check the status of a dispatched client workflow session. Allows the meta orchestrator to poll a client session\'s progress ' +
     'without needing the client\'s session token. Returns the session status (active/blocked/completed), current activity, ' +
-    'completed activities trace, last checkpoint info, and current variable state. Uses either a client session token or a client session ID (sid) ' +
-    'plus the parent session token for authorization.',
+    'completed activities trace, last checkpoint info, and current variable state. Requires the client session token.',
     {
-      client_session_token: z.string().optional().describe('Client session token (alternative to client_session_id + parent_session_token)'),
-      client_session_id: z.string().optional().describe('Client session ID (sid) — use with parent_session_token if you don\'t have the client token'),
-      parent_session_token: z.string().optional().describe('Parent (meta) session token — required when using client_session_id instead of client_session_token, for authorization'),
+      client_session_token: z.string().describe('Client session token for the dispatched workflow session'),
     },
-    withAuditLog('get_workflow_status', async ({ client_session_token, client_session_id, parent_session_token }) => {
-      if (!client_session_token && !client_session_id) {
-        throw new Error('Either client_session_token or client_session_id must be provided.');
-      }
-
-      let clientSid: string;
-      let clientWf: string;
-      let clientAct: string;
-      let clientSeq: number;
-      let clientBcp: string | undefined;
-
-      if (client_session_token) {
-        const token = await decodeSessionToken(client_session_token);
-        clientSid = token.sid;
-        clientWf = token.wf;
-        clientAct = token.act;
-        clientSeq = token.seq;
-        clientBcp = token.bcp;
-      } else {
-        if (!parent_session_token) {
-          throw new Error('parent_session_token is required when using client_session_id for authorization.');
-        }
-        const parentToken = await decodeSessionToken(parent_session_token);
-        if (!client_session_id) {
-          throw new Error('client_session_id is required when not providing client_session_token.');
-        }
-        // Verify parent-child relationship via trace store
-        clientSid = client_session_id;
-        clientWf = ''; // Will be populated from trace
-        clientAct = ''; // Will be populated from trace
-        clientSeq = 0;
-        clientBcp = undefined;
-      }
+    withAuditLog('get_workflow_status', async ({ client_session_token }) => {
+      const token = await decodeSessionToken(client_session_token);
+      const clientSid = token.sid;
+      const clientWf = token.wf;
+      const clientAct = token.act;
+      const clientBcp = token.bcp;
 
       const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
       const workflow = wfResult.success ? wfResult.value : null;
@@ -613,8 +581,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       let status: string;
       if (clientBcp) {
         status = 'blocked';
-      } else if (!clientAct || clientAct === '') {
-        status = 'active';
       } else {
         status = 'active';
       }
@@ -644,7 +610,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           version: workflow.version,
           title: workflow.title,
         } : { id: clientWf },
-        session_id: clientSid,
       };
 
       if (lastCheckpoint) {
@@ -654,17 +619,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         };
       }
 
-      const advancedToken = client_session_token
-        ? await advanceToken(client_session_token)
-        : undefined;
-
-      if (advancedToken) {
-        response['session_token'] = advancedToken;
-      }
+      const advancedToken = await advanceToken(client_session_token);
+      response['session_token'] = advancedToken;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
-        _meta: advancedToken ? { session_token: advancedToken } : {},
+        _meta: { session_token: advancedToken },
       };
     }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 }

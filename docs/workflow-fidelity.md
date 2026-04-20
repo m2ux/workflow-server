@@ -45,14 +45,14 @@ The following diagram shows a typical two-activity progression through a workflo
 ```mermaid
 flowchart TD
     subgraph bootstrap [Session Bootstrap]
-        startSession["start_session(workflow_id, agent_id)"]
+        startSession["start_session(agent_id)"]
         getWorkflow["get_workflow(summary=true)"]
         startSession -->|"L1: HMAC signed token issued"| getWorkflow
     end
 
     subgraph actA [Activity A]
         nextA["next_activity(activity_id=A)"]
-        cpGateA{{"L2: pcp populated
+        cpGateA{{"L2: bcp populated
         with required checkpoints"}}
         toolsBlocked["All tools BLOCKED
         except get_checkpoint
@@ -61,7 +61,7 @@ flowchart TD
         for each pending checkpoint"]
         cpTiming{{"L2: Timing enforced
         option validated against definition"}}
-        pcpClear["pcp cleared — tools unblocked"]
+        bcpClear["bcp cleared — tools unblocked"]
         getSkill["get_skill(step_id) + get_resource"]
         executeSteps["Execute activity steps"]
     end
@@ -70,7 +70,7 @@ flowchart TD
         nextB["next_activity(activity_id=B,
         step_manifest, activity_manifest,
         transition_condition)"]
-        hardGate{{"L2: pcp empty?
+        hardGate{{"L2: bcp empty?
         HARD GATE"}}
         transCheck["L3: A→B in transition graph?"]
         condCheck["L4: condition matches table?"]
@@ -81,7 +81,7 @@ flowchart TD
     end
 
     subgraph actB [Activity B]
-        cpGateB{{"L2: pcp populated
+        cpGateB{{"L2: bcp populated
         for Activity B checkpoints"}}
         continueB["Resolve checkpoints,
         execute steps..."]
@@ -93,14 +93,14 @@ flowchart TD
     toolsBlocked --> respondCp
     respondCp --> cpTiming
     cpTiming -->|"Each checkpoint resolved"| respondCp
-    cpTiming -->|"All checkpoints resolved"| pcpClear
-    pcpClear --> getSkill
+    cpTiming -->|"All checkpoints resolved"| bcpClear
+    bcpClear --> getSkill
     getSkill -->|"L1: HMAC verified"| executeSteps
 
     executeSteps --> nextB
     nextB --> hardGate
-    hardGate -->|"pcp non-empty"| toolsBlocked
-    hardGate -->|"pcp empty"| transCheck
+    hardGate -->|"bcp non-empty"| toolsBlocked
+    hardGate -->|"bcp empty"| transCheck
     transCheck -.- condCheck
     condCheck -.- stepCheck
     stepCheck -.- actCheck
@@ -132,8 +132,7 @@ The token payload carries:
 | `ts` | Creation timestamp |
 | `sid` | Session UUID — uniquely identifies this execution session across all tool calls |
 | `aid` | Agent ID — identifies which agent (orchestrator vs. worker) made the call |
-| `pcp` | Pending checkpoint IDs — gates activity transitions until resolved |
-| `pcpt` | Checkpoint issuance timestamp — enables timing enforcement |
+| `bcp` | Active blocking checkpoint ID — gates activity transitions until resolved |
 
 **What it enforces:**
 - Agents cannot fabricate tokens — the server rejects any token it didn't issue
@@ -141,13 +140,13 @@ The token payload carries:
 - Each tool call produces a new token with an incremented counter, ensuring tokens are unique per exchange
 - The `sid` field binds all tool calls to a single session, enabling trace correlation
 - The `aid` field distinguishes orchestrator from worker calls in multi-agent execution patterns. The `dispatch_workflow` tool creates distinct sessions linked to a parent `sid` to ensure cross-agent execution trace isolation.
-- The `pcp` field blocks activity transitions until all required checkpoints are resolved via `respond_checkpoint`
+- The `bcp` field blocks activity transitions until the checkpoint is resolved via `respond_checkpoint`
 
 **How it works:** The server verifies the HMAC signature on every tool call before processing. Invalid signatures cause immediate rejection — with one exception: `start_session` implements **token adoption** to handle server restarts gracefully. When a saved session token is passed to `start_session` but fails HMAC verification (because the server was restarted and generated a new signing key), the server decodes the payload without signature verification. If the payload is structurally valid and the workflow matches, the server re-signs it with the current key and returns `adopted: true` — the session state (ID, activity position) is fully preserved. If the payload is also corrupted, the server falls back to a fresh session and returns `recovered: true` — the previous state was NOT inherited and must be reconstructed from `workflow-state.json`. This recovery mechanism prevents the common failure mode where a server restart makes all saved tokens permanently unusable.
 
 ### Layer 2: Checkpoint Gate
 
-When `next_activity` loads an activity with required checkpoints (`required: true`, the default), the server embeds those checkpoint IDs in the token's `pcp` field and records the issuance time in `pcpt`. The token then **hard-blocks** any transition to a different activity until all pending checkpoints are resolved.
+When `next_activity` loads an activity with required checkpoints (`required: true`, the default), the server embeds the checkpoint ID in the token's `bcp` field. The token then **hard-blocks** any transition to a different activity until the checkpoint is resolved. Timing enforcement uses the token's `ts` (timestamp) field to estimate elapsed time since the checkpoint was yielded.
 
 **Resolution via `respond_checkpoint`:**
 
@@ -155,20 +154,20 @@ The agent must call `respond_checkpoint` for each pending checkpoint, using exac
 
 | Mode | When to use | Timing enforcement |
 |------|-------------|-------------------|
-| `option_id` | User selected an option | Minimum response time (default 3s since `pcpt`) |
-| `auto_advance` | Non-blocking checkpoint timer elapsed | Full `autoAdvanceMs` must elapse since `pcpt` |
+| `option_id` | User selected an option | Minimum response time (default 3s since token timestamp) |
+| `auto_advance` | Non-blocking checkpoint timer elapsed | Full `autoAdvanceMs` must elapse since token timestamp |
 | `condition_not_met` | Conditional checkpoint's condition is false | None (but checkpoint must have a `condition` field) |
 
 **What it enforces:**
-- Agents cannot skip checkpoints — `next_activity` throws a hard error if `pcp` is non-empty when transitioning to a different activity
+- Agents cannot skip checkpoints — `next_activity` throws a hard error if `bcp` is set when transitioning to a different activity
 - Agents cannot forge responses — `option_id` is validated against the checkpoint definition
 - Agents cannot instant-auto-resolve — the server enforces minimum elapsed time for user-answered checkpoints and the full `autoAdvanceMs` timer for auto-advanced ones
 - Agents cannot dismiss unconditional checkpoints — `condition_not_met` is rejected unless the checkpoint has a `condition` field
-- Agents cannot tamper with `pcp` — the field is in the HMAC-signed token payload
+- Agents cannot tamper with `bcp` — the field is in the HMAC-signed token payload
 
-**How it works:** `next_activity` populates `pcp` on the outgoing token. The agent calls `respond_checkpoint` for each entry, which removes it from `pcp` and returns effects (setVariable, transitionTo, skipActivities). Only when `pcp` is empty can the agent transition to the next activity.
+**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with the checkpoint handle, which clears `bcp` and returns effects (setVariable, transitionTo, skipActivities). Only when `bcp` is cleared can the agent transition to the next activity.
 
-**Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `next_activity` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The `pcpt` timestamp is set once when `pcp` is populated and persists across all token advances until cleared.
+**Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `next_activity` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The token's `ts` timestamp is used to estimate elapsed time since the checkpoint was yielded.
 
 ### Layer 3: Cross-Activity Validation
 
@@ -310,7 +309,7 @@ Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-ac
 
 ## State Persistence
 
-State persistence is agent-managed. The orchestrator writes the session token (opaque, HMAC-signed), `session_id` (from the `session_id` field returned by `start_session` or `dispatch_workflow` — never decoded from the token payload), and its variable state to disk using its own file tools. To resume, the saved token is passed to `start_session(session_token=saved_token)`. If the server has restarted since the token was saved, `start_session` will adopt the token (re-sign with the current key) and return `adopted: true`, preserving the session state. If the token is corrupted, `start_session` returns `recovered: true` with a fresh session, and the agent must reconstruct state from the saved variables in `workflow-state.json`. The `session_id` field in the state file enables stale-session detection: if the `session_id` returned by `start_session` differs from the saved `sessionId`, the session was not inherited and state must be reconstructed. The trace provides the audit trail via `get_trace`.
+State persistence is agent-managed. The orchestrator writes the session token (opaque, HMAC-signed) and its variable state to disk using its own file tools. Session identity is embedded within the token — there is no separate `session_id` field. To resume, the saved token is passed to `start_session(agent_id, session_token=saved_token)`. If the server has restarted since the token was saved, `start_session` will adopt the token (re-sign with the current key) and return `adopted: true`, preserving the session state. If the token is corrupted, `start_session` returns `recovered: true` with a fresh session, and the agent must reconstruct state from the saved variables in `workflow-state.json`. Stale-session detection is handled by the server: the `adopted` and `recovered` flags in the `start_session` response indicate whether the session was inherited, adopted (re-signed), or recovered (fresh session). The trace provides the audit trail via `get_trace`.
 
 ## Limitations
 
