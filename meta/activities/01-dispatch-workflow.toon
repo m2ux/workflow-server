@@ -19,7 +19,7 @@ steps[4]:
     required: true
   - id: create-client-session
     name: Create client session
-    description: "Call dispatch_workflow with workflow_id (from target_workflow variable), parent_session_token (your current meta session token), and any initial variables. Extract client_session_token, client_session_id, initial_activity, and client_prompt from the response. Save client_session_token and client_session_id in session state for correlation."
+    description: "Call dispatch_workflow with workflow_id (from target_workflow variable), parent_session_token (your current meta session token), and any initial variables. Extract client_session_token, initial_activity, and client_prompt from the response. Save client_session_token in session state for correlation."
     required: true
   - id: dispatch-client
     name: Dispatch workflow-orchestrator
@@ -41,7 +41,6 @@ outcome[4]:
   - Client agent dispatched and lifecycle managed inline
   - Checkpoint yields presented to user and responses forwarded
   - Client workflow completed or blocked awaiting user input
-context_to_preserve[3]:
-  - client_session_token - The client agent's session token
-  - client_session_id - The client session SID for trace correlation
+context_to_preserve[2]:
+  - client_session_token - The client agent's session token (session identity is embedded within)
   - target_workflow - The workflow ID that was dispatched
