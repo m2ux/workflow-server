@@ -4,9 +4,10 @@ name: Context and Literacy
 description: "Load the schema system, read existing workflows to understand conventions, and verify TOON format comprehension. This activity gates all subsequent content production."
 problem: Agent must internalize the schema system and format conventions before producing any workflow content
 skills:
-  primary: workflow-design
+  primary: meta/activity-worker
   supporting[1]:
-    - toon-authoring
+    - workflow-design
+required: true
 estimatedTime: 10-15m
 rules[3]:
   - "Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true"

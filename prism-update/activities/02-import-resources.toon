@@ -4,7 +4,9 @@ name: Import Resources
 description: "Apply all approved resource file changes: sync modified, apply renames, import new, remove deleted. Each change type is committed separately."
 problem: Resource files need to be created, updated, renamed, or removed to match upstream
 skills:
-  primary: sync-resources
+  primary: meta/activity-worker
+  supporting[1]:
+    - sync-resources
 
 entryActions[1]:
   - action: validate
@@ -15,18 +17,23 @@ steps[5]:
   - id: sync-modified
     name: Sync modified resources
     description: "Overwrite each modified resource with upstream content. Commit."
+    required: true
   - id: apply-renames
     name: Apply renames
     description: "Git mv each renamed resource, then overwrite with upstream content. Commit."
+    required: true
   - id: import-new
     name: Import new resources
     description: "Copy each new upstream prism to resource_path with indexed filename. Commit."
+    required: true
   - id: remove-deleted
     name: Remove deleted resources
     description: "Remove each deleted resource file. Commit if any were removed."
+    required: true
   - id: verify-file-count
     name: Verify file count
     description: "Confirm resource count matches: previous - deleted + new = current."
+    required: true
 
 artifacts[1]:
   - id: import-commits
@@ -39,6 +46,7 @@ transitions[1]:
   - to: update-routing
     isDefault: true
 
+required: true
 estimatedTime: "5-10m"
 
 outcome[2]:

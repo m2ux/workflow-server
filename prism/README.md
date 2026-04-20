@@ -217,7 +217,7 @@ Domain-neutral variants (24–26) have a ~0.5–0.7 quality gap vs code-specific
 
 ---
 
-## Execution Model
+## Orchestration Model
 
 This workflow uses an **orchestrator with disposable workers**. Each analytical pass is dispatched to a **fresh sub-agent** (never resumed) to guarantee context isolation.
 
@@ -233,16 +233,16 @@ sequenceDiagram
     User->>Orch: "Analyze /path/to/code using full prism"
     Note over Orch: select-mode → full-prism
 
-    Orch->>W1: Task(structural lens, target)
+    Orch->>W1: spawn-agent(structural lens, target)
     W1-->>Orch: structural-analysis.md
 
-    Orch->>W2: Task(adversarial lens, structural artifact)
+    Orch->>W2: spawn-agent(adversarial lens, structural artifact)
     W2-->>Orch: adversarial-analysis.md
 
-    Orch->>W3: Task(synthesis lens, both artifacts)
+    Orch->>W3: spawn-agent(synthesis lens, both artifacts)
     W3-->>Orch: synthesis.md
 
-    Orch->>W4: Task(generate report, all artifacts)
+    Orch->>W4: spawn-agent(generate report, all artifacts)
     W4-->>Orch: REPORT.md
 
     Orch->>User: REPORT.md + all artifact paths

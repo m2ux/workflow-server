@@ -8,7 +8,10 @@ recognition[3]:
   - codebase reconnaissance
   - identify crates and trust boundaries
 skills:
-  primary: execute-audit
+  primary: meta/activity-worker
+  supporting[1]:
+    - execute-audit
+required: true
 estimatedTime: 15-30m
 rules[5]:
   - "ORCHESTRATOR ROLE: The orchestrator dispatches sub-agents and reads their file outputs. It does NOT read source code, scan directories, or build registries during reconnaissance."
@@ -21,17 +24,21 @@ entryActions[1]{action,message}:
 steps[7]:
   - id: dispatch-reconnaissance-agent
     name: "Dispatch Reconnaissance Sub-Agent (R)"
+    required: true
     skill: dispatch-sub-agents
     description: "Dispatch the reconnaissance sub-agent (R) following the sub-reconnaissance activity. R receives: target_submodule, target_commit, in_scope, out_of_scope, planning_folder_path, target profile (resource 06). R writes r-crate-map.json, r-function-registry.json, and r-reconnaissance-data.json to the planning folder."
   - id: verify-reconnaissance-files
     name: "Verify Reconnaissance Output Files"
+    required: true
     description: "Verify that R produced all required output files in the planning folder: r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json. If any file is missing, re-dispatch R."
   - id: dispatch-security-architecture-agent
     name: "Dispatch Security Architecture Sub-Agent (S)"
+    required: true
     skill: dispatch-sub-agents
     description: "Dispatch the security architecture sub-agent (S) following the sub-architectural-analysis activity. S receives R's output files from the planning folder (r-crate-map.json, r-reconnaissance-data.json) plus the file inventory. S writes s-architectural-analysis.json to the planning folder."
   - id: verify-security-architecture-file
     name: "Verify Security Architecture Output File"
+    required: true
     description: "Verify that S produced s-architectural-analysis.json in the planning folder. If missing, re-dispatch S."
   - id: map-vulnerability-domains
     name: Map Vulnerability Domains

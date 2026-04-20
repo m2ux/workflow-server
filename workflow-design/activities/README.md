@@ -25,7 +25,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Mode overrides:**
 - **Update:** Adds steps to load existing workflow, parse change request, and present current structure. Adds `change-request-confirmed` checkpoint.
-- **Review:** Adds steps to load target workflow, enumerate contents, and present review scope. Skips `accept-description`, `classify-operation`, `extract-design-intent`, `set-mode`. **`review-scope-confirmed` checkpoint** sets `review_scope_confirmed` before continuing.
+- **Review:** Adds steps to load target workflow, enumerate contents, and present review scope. Skips `accept-description`, `classify-operation`, `extract-design-intent`, `set-mode`. **`review-scope-confirmed` checkpoint** (blocking) sets `review_scope_confirmed` before continuing.
 
 ---
 

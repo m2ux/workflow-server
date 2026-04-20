@@ -12,9 +12,9 @@ inputs[2]:
 
 protocol:
   compose-scanner-prompts[1]:
-    - "For each agent in the roster, build a Task prompt containing: (1) workflow-server bootstrap instructions — 'call start_session(workflow_id) then call next_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: <assigned-activity-id> }), follow the activity steps sequentially'; (2) context variables — submodule path, workflow file list, scanner designator (S1-Sn), planning_folder_path, reconnaissance data for the assigned submodule; (3) output format requirement — 'write structured output to s{n}-{submodule}.json conforming to the output schema in resource 04'"
+    - "For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat skill) containing: (1) workflow-server bootstrap instructions — 'call start_session(workflow_id) then call next_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: <assigned-activity-id> }), follow the activity steps sequentially'; (2) context variables — submodule path, workflow file list, scanner designator (S1-Sn), planning_folder_path, reconnaissance data for the assigned submodule; (3) output format requirement — 'write structured output to s{n}-{submodule}.json conforming to the output schema in resource 04'"
   dispatch-scanners[2]:
-    - "Submit all scanner agents in the roster as concurrent Task calls in a single batch. Each Task call uses subagent_type=generalPurpose with the composed prompt from step 1."
+    - "Dispatch all scanner agents in the roster using harness-compat::spawn-concurrent with the composed prompt from step 1."
     - "All scanner agents MUST be dispatched in a single batch"
   collect-results[1]:
     - "Wait for all scanners to return. Collect structured output from each. If any scanner fails or times out, record the failure and proceed with available results."
@@ -22,9 +22,9 @@ protocol:
     - "Compare the scanner roster (input) against the dispatched scanner list. Every scanner in the roster must have been dispatched and returned a result. Produce a dispatch manifest table: scanner_id, assigned_submodule, dispatched (yes/no), returned (yes/no), status. If any scanner was NOT dispatched, flag as INCOMPLETE and return the manifest for re-dispatch. Set scanners_dispatched count."
     - "Verify scanners_dispatched equals scanners_assigned before proceeding"
   dispatch-verification[1]:
-    - "After all scanners return and dispatch completeness verified, compose V agent context with: all scanner output file paths, the workflow file inventory from scope-setup, and bootstrap instructions — 'call start_session(workflow_id) then call next_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: sub-verification })'. Dispatch V agent with subagent_type=generalPurpose."
+    - "After all scanners return and dispatch completeness verified, compose V agent context with: all scanner output file paths, the workflow file inventory from scope-setup, and bootstrap instructions — 'call start_session(workflow_id) then call next_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: sub-verification })'. Dispatch V agent using harness-compat::spawn-agent."
   dispatch-merge[1]:
-    - "After V returns, compose M agent context with: all scanner output file paths, the verification report, severity rubric (resource 02), and bootstrap instructions — 'call start_session(workflow_id) then call next_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: sub-merge })'. Dispatch M agent with subagent_type=generalPurpose."
+    - "After V returns, compose M agent context with: all scanner output file paths, the verification report, severity rubric (resource 02), and bootstrap instructions — 'call start_session(workflow_id) then call next_activity({ workflow_id: cicd-pipeline-security-audit, activity_id: sub-merge })'. Dispatch M agent using harness-compat::spawn-agent."
 
 output[1]:
   - id: dispatch-status
@@ -37,10 +37,3 @@ output[1]:
 
 rules:
   sequential-coordination: "V dispatches after scanners; M dispatches after V"
-
-tools:
-  task:
-    when: Dispatching sub-agents
-    usage: "Use Task tool with subagent_type generalPurpose for each scanner, V, and M agent"
-  read_file:
-    when: Loading scanner output files for verification and merge agent context

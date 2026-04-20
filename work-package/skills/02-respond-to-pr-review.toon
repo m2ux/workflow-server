@@ -51,18 +51,6 @@ rules:
 resources[1]:
   - "28"
 
-tools:
-  shell:
-    when: Fetching PR comments and posting responses
-    params: "gh api repos/{owner}/{repo}/pulls/{number}/comments"
-    usage: Fetch comments, post responses, push commits
-  read_file:
-    when: Reviewing code referenced by comments
-    usage: Understand context of review feedback
-  edit:
-    when: Implementing requested changes
-    usage: Make code modifications
-
 errors:
   no_comments:
     cause: No review comments found

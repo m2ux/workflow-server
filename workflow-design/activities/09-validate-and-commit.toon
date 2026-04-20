@@ -4,10 +4,10 @@ name: Validate and Commit
 description: "Run schema validation on all TOON files, re-verify the scope manifest, generate README if creating a new workflow, and commit all changes to the workflows worktree."
 problem: All workflow content must pass validation and the complete scope must be verified before committing
 skills:
-  primary: workflow-design
-  supporting[2]:
-    - toon-authoring
-    - version-control-protocol
+  primary: meta/activity-worker
+  supporting[1]:
+    - workflow-design
+required: true
 estimatedTime: 10-15m
 rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
@@ -89,6 +89,7 @@ checkpoints[2]:
       operator: "!="
       value: true
     message: "Schema validation results: {pass_count} passed, {fail_count} failed. Proceeding in 30s unless you intervene."
+    blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options[2]:
@@ -109,6 +110,7 @@ checkpoints[2]:
       operator: "!="
       value: true
     message: "Scope manifest verification: {addressed_count}/{total_count} items addressed. Proceeding in 30s unless you intervene."
+    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[2]:

@@ -1,5 +1,5 @@
 id: manage-git
-version: 1.1.0
+version: 1.4.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 
 description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE target_path. Branches and PRs are created against the target's upstream."
@@ -13,18 +13,20 @@ inputs[4]:
     description: "Platform where issue lives (github or jira)"
   - id: branch-name
     description: "Optional — for existing branches"
+    required: false
 
 protocol:
   create-branch[3]:
     - "cd into target_path before any git operations"
     - Create feature branch from the default branch (main/master)
     - Use naming convention type/issue-number-short-description
-  create-pr[5]:
+  create-pr[6]:
     - "Use attached resource 12 (pr-description) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource."
     - "BEFORE creating the PR: commit and push the planning folder to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote."
     - Create draft PR linked to issue using gh pr create
     - Ensure PR title and body reference issue number
     - Keep PR as draft until implementation and review complete
+    - "After PR creation, assign it to the current GitHub user: run gh pr edit <number> --add-assignee @me in target_path"
   sync-branch[3]:
     - Fetch and rebase/merge from main to keep branch current
     - Resolve merge conflicts if any
@@ -36,6 +38,10 @@ protocol:
     - Resolve MERGE_BASE against default branch (same order as validate strategic preflight)
     - Re-sign each commit in MERGE_BASE..HEAD via rebase --exec 'git commit --amend --no-edit -S' (GPG); ensure user.signingkey and gpg agent are available
     - After rewrite, verify with git log --format='%h %G?' MERGE_BASE..HEAD; push with --force-with-lease only when appropriate for the PR branch
+  artifact-commits[3]:
+    - "ALL planning artifact commits to the parent (engineering) repo MUST use --no-gpg-sign: git add <files> && git commit --no-gpg-sign -m 'docs(work-package): <activity> artifacts for <issue-key>' && git push origin <branch>"
+    - "Commit after each workflow activity completes. Use the message pattern: docs(work-package): <activity-name> artifacts for <issue-key>"
+    - "The --no-gpg-sign flag is mandatory on all intermediate artifact commits so the workflow can proceed unattended without a GPG pinentry prompt. At completion, resign-artifact-commits in the complete activity re-signs the full history via gpg-resign-range"
 
 output[1]:
   - id: branch-and-pr
@@ -47,12 +53,6 @@ output[1]:
 
 resources[1]:
   - "12"
-
-tools:
-  shell:
-    when: Git operations and gh CLI
-    params: "git checkout, git branch, git push, git pull, git rebase, gh pr create, gh pr edit, gh pr ready"
-    usage: Full git workflow including branch creation, sync, push, and PR lifecycle
 
 errors:
   branch_exists:

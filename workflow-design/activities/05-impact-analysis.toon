@@ -4,7 +4,10 @@ name: Impact Analysis
 description: "For update mode: enumerate all files in the existing workflow, identify which are affected by the change, check for side-effects, and flag content that will be removed."
 problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan skills and resources
 skills:
-  primary: workflow-design
+  primary: meta/activity-worker
+  supporting[1]:
+    - workflow-design
+required: false
 estimatedTime: 10-20m
 entryActions[1]:
   - action: validate

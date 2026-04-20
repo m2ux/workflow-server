@@ -9,7 +9,10 @@ recognition[5]:
   - code comprehension
   - learn the codebase
   - familiarize with code
+required: false
 estimatedTime: 20-45m
+skills:
+  primary: meta/activity-worker
 rules[7]:
   - "Comprehension artifacts are persistent — they live in .engineering/artifacts/comprehension/ and are reused across work packages"
   - "Always check for existing comprehension artifacts before creating new ones"
@@ -47,6 +50,7 @@ steps[12]:
     name: Create or Augment Comprehension Artifact
     description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary. Initialize the 'Open Questions' section (markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section) between Domain Concept Mapping and Deep-Dive Sections. Populate it with questions and gaps identified during the architecture survey — do not leave it empty."
     skill: manage-artifacts
+    checkpoint: architecture-confirmed
     actions[1]:
       - action: message
         message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name})"
@@ -79,6 +83,7 @@ checkpoints[2]:
   - id: architecture-confirmed
     name: Architecture Survey Checkpoint
     message: "Comprehension artifact: {comprehension_artifact_path}. Here is my understanding of the codebase architecture, key abstractions, and design rationale. Confirming in 30s unless you intervene."
+    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[3]:
@@ -99,6 +104,7 @@ checkpoints[2]:
       operator: "=="
       value: true
     message: "Open questions remain after deep-dive (see above). Proceeding in 30s — intervene to explore further."
+    blocking: false
     defaultOption: sufficient
     autoAdvanceMs: 30000
     options[3]:
@@ -144,6 +150,7 @@ loops[1]:
         name: Revise open questions
         description: "Review findings from this iteration (including portfolio lens findings) against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation — including structural properties revealed by the lenses. Write the updated section to the artifact. If all questions are now Resolved, set has_open_questions to false and needs_comprehension to false — loop exits. Otherwise present the revised table as context for the sufficiency checkpoint."
         skill: build-comprehension
+        checkpoint: comprehension-sufficient
 transitions[4]:
   - to: requirements-elicitation
     condition:

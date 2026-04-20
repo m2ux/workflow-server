@@ -42,14 +42,6 @@ rules:
 resources[1]:
   - "11"
 
-tools:
-  read_file:
-    when: Reading requirements and plan artifacts
-    usage: Load inputs for test case design
-  write_file:
-    when: Creating test-plan.md
-    usage: Write test plan artifact to planning folder
-
 errors:
   no_requirements:
     cause: Requirements not available

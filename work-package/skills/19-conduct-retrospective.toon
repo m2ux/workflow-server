@@ -44,18 +44,6 @@ rules:
 resources[1]:
   - "20"
 
-tools:
-  write_file:
-    when: Creating retrospective document
-    usage: Write artifact to planning folder
-  read_file:
-    when: Loading planning artifacts for reflection
-    usage: Review what was planned vs what was delivered
-  shell:
-    when: Checking PR merge status
-    params: "gh pr view {pr_number}"
-    usage: Verify PR has been merged
-
 errors:
   pr_not_merged:
     cause: PR has not been merged yet

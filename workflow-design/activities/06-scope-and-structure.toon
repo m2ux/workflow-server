@@ -4,7 +4,10 @@ name: Scope and Structure
 description: "Define the complete file manifest and structural design for the workflow. Enumerates every file to be created, modified, or removed, and proposes the folder structure, activity decomposition, and file layout."
 problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution begins
 skills:
-  primary: workflow-design
+  primary: meta/activity-worker
+  supporting[1]:
+    - workflow-design
+required: true
 estimatedTime: 10-20m
 rules[3]:
   - "The scope manifest must include every file to be created, modified, or removed — no implicit files"
@@ -35,6 +38,7 @@ checkpoints[1]:
   - id: scope-and-structure-confirmed
     name: Scope and Structure Confirmation
     message: "Here is the complete file manifest and implementation order. Proceeding in 30s unless you want to revise."
+    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[2]:

@@ -36,5 +36,3 @@ rules:
 
 resources[1]:
   - "02"
-
-tools:

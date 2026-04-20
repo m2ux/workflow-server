@@ -4,7 +4,9 @@ name: Execute Prism Analyses
 description: "Trigger one or more prism workflows to perform the analytical passes for each execution group. Each group triggers a separate prism run with its own pipeline mode, lens selection, and output subdirectory. The orchestrator suspends while each triggered prism workflow executes to completion, then collects the results."
 problem: "The evaluation analysis must be executed through the prism workflow's analytical pipeline rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-evaluate controls the evaluation-specific context passed to each run."
 skills:
-  primary: plan-evaluation
+  primary: meta/activity-worker
+  supporting[1]:
+    - plan-evaluation
 entryActions[1]:
   - action: validate
     message: "Verify execution_groups is non-empty before starting the trigger loop"
@@ -25,6 +27,7 @@ steps[1]:
   - id: log-execution-plan
     name: Log Execution Plan
     description: "Log the number of execution groups, their pipeline modes, and the total dimensions covered. This provides a pre-loop summary for traceability before the group-iteration loop begins."
+    required: true
 loops[1]:
   - id: group-iteration
     name: Execution Group Iteration
@@ -36,15 +39,19 @@ loops[1]:
       - id: set-trigger-context
         name: Set Trigger Context for Current Group
         description: "Map current_group fields to the variables expected by prism: target = target_path, target_type per the TARGET TYPE MAPPING rule, output_path = {output_path}/{current_group.output_subdir}, pipeline_mode = current_group.pipeline_mode, selected_lenses = current_group.lenses, analysis_focus = current_group.analysis_focus."
+        required: true
       - id: trigger-prism
         name: Trigger Prism Workflow
         description: "Trigger the prism workflow via get_workflow and execute it for the current group. The prism workflow runs its full pipeline (select-mode → structural-pass → [adversarial-pass → synthesis-pass] for full-prism, or select-mode → structural-pass for portfolio) and returns its analysis artifacts."
+        required: true
       - id: collect-results
         name: Collect Prism Results
         description: "After the triggered prism workflow completes, collect: (1) all analysis artifact paths produced, (2) the REPORT.md path if generated, (3) status (success or error). Map artifacts back to their source dimensions. Append to completed_analyses and all_artifact_paths."
+        required: true
       - id: verify-completion
         name: Verify Prism Completion
         description: "Verify the triggered prism workflow completed successfully: expected analysis artifacts exist and contain substantive content. If verification fails, record the failure in completed_analyses with status 'error' and the failure reason."
+        required: true
 rules[3]:
   - "PIPELINE MODE FIDELITY: Each execution group's pipeline_mode and lenses must match exactly what dimension-planning specified. Do not change modes or lenses during execution."
   - "SEQUENTIAL EXECUTION: Execution groups are triggered sequentially (one prism run at a time). This ensures each prism run has full system resources and avoids context interference between concurrent analyses."

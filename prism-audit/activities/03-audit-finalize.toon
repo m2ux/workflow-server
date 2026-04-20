@@ -4,14 +4,18 @@ name: Audit Report Finalization
 description: "Post-process the REPORT.md produced by the triggered prism workflow(s) into audit-specific deliverables. Splits the report into a summary document (AUDIT-REPORT.md) and a detailed findings document (DETAILED-FINDINGS.md), generates a design trade-off analysis (DESIGN-TRADE-OFFS.md) from conservation laws and meta-laws in the raw synthesis artifacts, and applies audit-specific formatting rules."
 problem: "The prism workflow produces a single clean REPORT.md with definitive findings. Security audits require three deliverables: a summary report with hyperlinked domain tables, a detailed findings document with expanded write-ups for every finding organised by severity, and a design trade-off analysis distilled from the conservation laws surfaced during the prism passes."
 skills:
-  primary: compose-audit-prompt
+  primary: meta/activity-worker
+  supporting[1]:
+    - compose-audit-prompt
 steps[7]:
   - id: locate-artifacts
     name: Locate Analysis Artifacts
     description: "Identify all analysis artifacts from completed prism runs: REPORT.md (from generate-report), structural-analysis.md, adversarial-analysis.md, synthesis.md (from full-prism runs), portfolio-*.md (from portfolio runs), behavioral-synthesis.md (from behavioral runs). Use completed_analyses and all_analysis_artifact_paths to locate files. For multi-scope audits, consolidate findings across all prism runs."
+    required: true
   - id: enrich-findings-with-graph
     name: Enrich Findings with Graph Data
     description: "For each finding in REPORT.md that references a specific symbol, use gitnexus_impact to compute measured blast radius and gitnexus_context to determine execution flow participation. Write enrichment data as annotations for DETAILED-FINDINGS.md per-finding 'Graph Evidence' subsections."
+    required: true
     condition:
       type: simple
       variable: gitnexus_available
@@ -20,27 +24,32 @@ steps[7]:
   - id: split-report
     name: Split Report into Summary + Detailed Findings
     description: "Read REPORT.md. Write AUDIT-REPORT.md containing everything except the inline detailed findings section. Replace that section with a reference line: '*Detailed write-ups for all findings organised by severity are in [DETAILED-FINDINGS.md](DETAILED-FINDINGS.md).*' Renumber subsequent sections to fill the gap. Fix internal cross-references to old section numbers."
+    required: true
   - id: create-detailed-findings
     name: Create DETAILED-FINDINGS.md
     description: "Create a document containing an expanded write-up for every finding that appears in the domain tables — not just Critical and High. Organise by severity (Critical, High, Medium, Low). For each finding, extract from the source analysis artifact: Description, Impact, Location, Recommendation, Adversarial confirmation (if full-prism). Group findings within each severity section under domain sub-headings. Finding headings use ### {ID}: {Title} format."
+    required: true
   - id: create-trade-off-analysis
     name: Create DESIGN-TRADE-OFFS.md
     description: "Read all synthesis documents and extract the Refined Conservation Law and Refined Meta-Law from each domain. Only include laws that SURVIVED or were REFINED through adversarial challenge — rejected laws are excluded. Produce three parts: (1) Trade-Off Catalogue — one entry per domain with constraint, current operating point, shift prediction, and design questions. (2) Cross-Domain Interactions — map which trade-offs compound. (3) Design Decision Register — table of implicit decisions that should be made explicit, with current choice, alternative, governing trade-off, and documentation status."
+    required: true
   - id: apply-formatting-rules
     name: Apply Audit Formatting Rules
     description: "Apply formatting rules to AUDIT-REPORT.md: (1) Update all finding ID hyperlinks to point to DETAILED-FINDINGS.md per-finding anchors. (2) Convert 'Full details' lines to hyperlinks. (3) Ensure all priority remediation tables include an Impact column. (4) Hyperlink all paths in artifact reference tables. (5) Add Design Trade-Offs row to the introductory metadata table. (6) Verify zero old-style links remain."
+    required: true
   - id: verify-artifacts
     name: Verify All Artifacts
     description: "Verify that all three documents exist and are internally consistent. Check that all cross-document hyperlinks resolve to actual headings."
+    required: true
     actions[3]:
       - action: set
-        variable: audit_report_path
+        target: audit_report_path
         description: "Path to AUDIT-REPORT.md"
       - action: set
-        variable: detailed_findings_path
+        target: detailed_findings_path
         description: "Path to DETAILED-FINDINGS.md"
       - action: set
-        variable: trade_offs_path
+        target: trade_offs_path
         description: "Path to DESIGN-TRADE-OFFS.md"
 rules[6]:
   - "REPORT SPLIT: REPORT.md (from triggered prism workflow) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md."

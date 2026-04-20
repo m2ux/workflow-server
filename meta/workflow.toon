@@ -3,11 +3,15 @@ version: 2.0.0
 title: Meta Workflow
 description: "Bootstrap workflow for the workflow-server. Provides self-contained activities for workflow lifecycle management (start, resume, end). Each activity is an independent entry point matched via recognition patterns."
 author: m2ux
-tags[3]:
+tags[5]:
   - meta
   - bootstrap
   - workflow-management
-variables[13]:
+  - lifecycle
+  - session
+skills:
+  primary: meta-orchestrator
+variables[14]:
   - name: is_monorepo
     type: boolean
     description: Whether the target repository is a submodule monorepo
@@ -60,10 +64,10 @@ variables[13]:
     type: boolean
     description: Whether a workflow-state.json file was found and successfully restored
     defaultValue: false
-executionModel:
-  roles[1]:
-    - id: agent
-      description: "Single agent that executes workflow activities directly"
+  - name: client_workflow_completed
+    type: boolean
+    description: Whether the dispatched client workflow has completed all activities
+    defaultValue: false
 rules[3]:
   - This workflow is the entrypoint for all workflow operations
   - Each activity is matched independently via recognition patterns in list_workflows

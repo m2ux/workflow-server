@@ -4,7 +4,10 @@ name: Post-Update Review
 description: "Automatically runs after an update commit. Reloads the updated workflow from the workflow-server and runs the 5 audit passes (principle compliance, anti-pattern scan, schema validation, expressiveness, conformance, rule enforcement) to verify the update did not introduce new compliance issues."
 problem: Updates can introduce new compliance issues that are invisible without a post-commit audit against the full design principles and anti-pattern catalog
 skills:
-  primary: workflow-design
+  primary: meta/activity-worker
+  supporting[1]:
+    - workflow-design
+required: true
 estimatedTime: 10-15m
 rules[2]:
   - "Load the updated workflow from the workflow-server, not from cached data — the audit must verify the committed state"

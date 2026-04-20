@@ -12,7 +12,7 @@ Review mode is activated by recognition patterns: "review workflow", "audit work
 
 Review mode follows a shortened activity sequence:
 
-1. **Intake** — Load the target workflow, enumerate its contents, then **`review-scope-confirmed` checkpoint**: user confirms `target_workflow_id` before continuing
+1. **Intake** — Load the target workflow, enumerate its contents, then **`review-scope-confirmed` checkpoint** (blocking): user confirms `target_workflow_id` before continuing
 2. **Context and Literacy** — Load schemas and construct inventory as the audit baseline
 3. **Quality Review** — Run all audit passes against the existing workflow (core of review mode)
 4. **Validate and Commit** — Save the compliance report as an artifact

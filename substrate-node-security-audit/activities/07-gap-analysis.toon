@@ -8,10 +8,10 @@ recognition[3]:
   - gap analysis
   - benchmark against professional report
 skills:
-  primary: execute-audit
-  supporting[2]:
-    - compare-finding-sets
-    - write-gap-analysis
+  primary: meta/activity-worker
+  supporting[1]:
+    - execute-audit
+required: false
 estimatedTime: 30-60m
 rules[5]:
   - "This activity is OPTIONAL — only runs when has_reference_report is true"

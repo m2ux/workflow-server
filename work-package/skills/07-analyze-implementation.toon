@@ -51,18 +51,6 @@ rules:
 resources[1]:
   - "06"
 
-tools:
-  read_file:
-    when: Examining implementation files and test output
-    usage: Read source code, logs, configuration files
-  grep:
-    when: Searching for patterns across codebase
-    usage: Find usage, dependencies, related code
-  shell:
-    when: Running existing tests or benchmarks
-    params: "nice -n 19 cargo test, nice -n 19 cargo bench, or project-specific commands"
-    usage: Execute tests and benchmarks to establish baseline metrics
-
 errors:
   no_existing_impl:
     cause: No current implementation exists (new feature)

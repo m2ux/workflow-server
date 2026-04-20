@@ -39,7 +39,3 @@ output[2]:
 
 rules:
   observation-retention: "Observations are preserved even if they don't rise to finding level"
-
-tools:
-  read_file:
-    when: Loading scanner output JSON files

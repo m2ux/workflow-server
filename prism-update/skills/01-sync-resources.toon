@@ -41,11 +41,6 @@ output[1]:
       total_count: "Final resource count"
       commits: "List of commit SHAs"
 
-tools:
-  shell:
-    when: "File operations and git commands"
-    usage: "cp, git mv, git add, git rm, git commit"
-
 errors:
   copy_failed:
     cause: "File copy operation failed"

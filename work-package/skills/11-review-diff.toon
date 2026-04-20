@@ -58,18 +58,6 @@ output[2]:
 resources[1]:
   - "22"
 
-tools:
-  shell:
-    when: Git operations
-    params: "git pull, git diff"
-    usage: Sync branch and extract diff for parsing
-  write_file:
-    when: Creating change block index and review report
-    usage: Persist change-block-index.md and manual-diff-review.md
-  read_file:
-    when: Reading diff output or existing artifacts
-    usage: Examine parsed diff content
-
 errors:
   no_diff:
     cause: No changes found in diff

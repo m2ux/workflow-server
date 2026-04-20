@@ -29,14 +29,6 @@ output[1]:
       files_updated: "List of modified files"
       prompt_guide_entries_added: "Number of new prompt guide rows"
 
-tools:
-  read_file:
-    when: "Reading documentation files"
-  write_file:
-    when: "Writing updated documentation"
-  shell:
-    when: "Committing changes"
-
 errors:
   readme_not_found:
     cause: "Expected README file not found"

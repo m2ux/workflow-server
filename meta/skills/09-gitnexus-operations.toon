@@ -2,7 +2,7 @@ id: gitnexus-operations
 version: 1.0.0
 capability: Query and navigate codebases using the GitNexus knowledge graph MCP server
 
-description: "This skill guides agents through the correct use of GitNexus MCP tools for codebase understanding, impact analysis, debugging, and refactoring. GitNexus builds a knowledge graph from source code — indexing symbols, call relationships, execution flows (processes), and functional areas (communities). Agents should use GitNexus when they need to understand how code works together (not just where text appears), trace execution flows, assess blast radius before changes, or perform safe multi-file renames. Use attached resource 04 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands."
+description: "This skill guides agents through the correct use of GitNexus MCP tools for codebase understanding, impact analysis, debugging, and refactoring. GitNexus builds a knowledge graph from source code — indexing symbols, call relationships, execution flows (processes), and functional areas (communities). Agents should use GitNexus when they need to understand how code works together (not just where text appears), trace execution flows, assess blast radius before changes, or perform safe multi-file renames. Use attached resource 06 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands."
 
 inputs[2]:
   - id: task-type
@@ -39,41 +39,10 @@ output[1]:
 
 rules:
   query-not-grep: "Use GitNexus query() when you need execution flows and relationships, not just file matches. GitNexus complements grep/search — it finds how code works together."
-  resource-reference: "Use attached resource 04 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
+  resource-reference: "Use attached resource 06 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
 
 resources[1]:
-  - "04"
-
-tools:
-  query:
-    when: "Understanding how code works — finding execution flows related to a concept, function, or module"
-    params: "query: natural language or keyword, optional goal and task_context for ranking"
-    returns: "Processes (execution flows) ranked by relevance, with symbols and file locations"
-  context:
-    when: "Deep-diving on a specific symbol — seeing all callers, callees, and process participation"
-    params: "name: symbol name, optional file_path for disambiguation, optional uid for zero-ambiguity"
-    returns: "Categorized incoming/outgoing references, process participation, file location"
-  impact:
-    when: "Assessing blast radius before code changes — what will break at each depth"
-    params: "target: symbol name, direction: upstream (dependents) or downstream (dependencies)"
-    returns: "Affected symbols grouped by depth (d=1 WILL BREAK, d=2 LIKELY, d=3 MAY NEED TESTING), risk level, affected processes and modules"
-  detect_changes:
-    when: "Pre-commit review — mapping uncommitted git changes to affected execution flows"
-    params: "scope: unstaged (default), staged, all, or compare"
-    returns: "Changed symbols, affected processes, risk summary"
-  rename:
-    when: "Safe multi-file rename using the knowledge graph plus text search"
-    params: "symbol_name: current name, new_name: target name, dry_run: true (preview) or false (apply)"
-    returns: "Edits tagged with confidence: 'graph' (high, safe) or 'text_search' (lower, review carefully)"
-  cypher:
-    when: "Complex structural queries that other tools cannot answer — read gitnexus://repo/{name}/schema first"
-    params: "query: Cypher query string"
-    returns: "Results formatted as markdown table"
-    schema: "Nodes: File, Function, Class, Interface, Method, Community, Process. Edges via CodeRelation.type: CALLS, IMPORTS, EXTENDS, IMPLEMENTS, DEFINES, MEMBER_OF, STEP_IN_PROCESS."
-  list_repos:
-    when: "Discovering which repositories are indexed and available"
-    params: none
-    returns: "Indexed repos with names, paths, stats"
+  - "06"
 
 errors:
   index_not_found:

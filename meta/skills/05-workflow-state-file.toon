@@ -1,0 +1,37 @@
+id: workflow-state-file
+version: 1.0.0
+capability: "Read-modify-write operations on the workflow-state.json persistence file"
+description: "Concrete file I/O skill for the workflow state persistence file. Provides a read-modify-write pattern for activity workers to persist the current session token after each completed activity, and for orchestrators to perform full state persistence. The file format is documented in the workflow-state-format resource."
+
+inputs[2]:
+  - id: planning-folder-path
+    description: "Absolute path to the planning folder (from state variable planning_folder_path)"
+  - id: session-token
+    description: "Current session token to persist (opaque HMAC-signed string)"
+
+protocol:
+  read-state[2]:
+    - "Read {planning_folder_path}/workflow-state.json using agent file tools"
+    - "If the file does not exist, return null — the orchestrator creates it on first persist"
+  update-token[5]:
+    - "Parse the existing JSON and update sessionToken to the current session_token"
+    - "Set sessionId from the session_id field returned by start_session or dispatch_workflow. NEVER decode the session_token payload — obtain session_id from the API response instead."
+    - "Set savedAt to the current ISO 8601 timestamp"
+    - "Increment state.stateVersion by 1"
+    - "Set state.updatedAt to the current ISO 8601 timestamp"
+  update-progress[3]:
+    - "Set description to 'State after {activity_id}'"
+    - "Set state.completedSteps[activity_id] to the array of completed step indices from the activity result"
+    - "Orchestrators performing full persist also update: state.currentActivity, state.completedActivities, state.variables, state.checkpointResponses, and state.history"
+  write-state[2]:
+    - "Write the updated JSON back to {planning_folder_path}/workflow-state.json"
+    - "If planning_folder_path is not set or not known, skip silently"
+
+rules:
+  read-before-write: "Always read the existing file before writing. Never overwrite with a partial state — merge into the existing file."
+  skip-if-missing: "If the state file does not exist and this is a worker update, skip silently. The orchestrator creates the file on first persist."
+  token-is-opaque: "Treat the session token as an opaque string. NEVER parse, decode, or modify its contents. Obtain session_id from the start_session or dispatch_workflow API response — do NOT extract it by decoding the token."
+  preserve-unmodified: "When updating specific fields, preserve all other fields unchanged."
+
+resources[1]:
+  - "meta/08"

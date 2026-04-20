@@ -34,15 +34,6 @@ output[1]:
       permission_map: "Per-workflow permission scopes"
       checkout_patterns: "Per-workflow checkout configurations"
 
-tools:
-  shell:
-    when: "Enumerating files with glob patterns"
-    usage: "find {submodule}/.github/workflows/ -name '*.yml' -o -name '*.yaml'"
-  read_file:
-    when: "Parsing workflow YAML files"
-  grep:
-    when: "Searching for trigger patterns, permission blocks, checkout actions"
-
 errors:
   no_workflows:
     cause: "Submodule has no .github/workflows/ directory"

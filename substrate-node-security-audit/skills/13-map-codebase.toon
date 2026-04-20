@@ -11,6 +11,7 @@ inputs[3]:
     description: "Paths to include in the analysis"
   - id: out-of-scope
     description: "Paths to exclude"
+    required: false
 
 protocol:
   enumerate-components[1]:

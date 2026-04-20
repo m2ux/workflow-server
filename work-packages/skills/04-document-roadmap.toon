@@ -50,8 +50,6 @@ rules:
 resources[1]:
   - "05"
 
-tools:
-
 errors:
   missing_plans:
     cause: Not all packages have completed plan documents

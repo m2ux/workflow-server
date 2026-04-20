@@ -10,7 +10,7 @@ output[1]:
     components:
       header_table: "The report MUST begin with a markdown table containing: Target, Commit, Date (YYYY-MM-DD HH:MM UTC), Workflow version, Agents (using single-letter designators: R, S, A1-A7, B, D1, D2, V, M), and Ensemble status. This table is separated from the Executive Summary by a horizontal rule (---). Example: | Field | Value |\\n|-------|-------|\\n| Date | 2026-02-11 13:19 UTC |"
       executive_summary: "Severity distribution table, top findings summary, methodology overview"
-    methodology: "Phases executed, agent count, template version, ensemble status"
+      methodology: "Phases executed, agent count, template version, ensemble status"
       crate_inventory: "Table of all in-scope crates with classification, priority, and reviewing agent"
       findings: "All numbered findings. Each: title, severity (I and F with one-sentence justifications), category, affected files with line numbers, description, suggested remediation"
       severity_distribution: "Summary table: Critical/High/Medium/Low/Informational counts"
@@ -27,5 +27,5 @@ protocol:
     - Organize findings by severity (Critical first, then High, Medium, Low)
   write-sections[1]:
     - Write each section per the structure above
-  verify-count:
+  verify-count[1]:
     - Verify the finding count in the executive summary matches the findings section

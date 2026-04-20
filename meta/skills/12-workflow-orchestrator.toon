@@ -1,0 +1,109 @@
+id: workflow-orchestrator
+version: 1.1.0
+capability: "Management skill for a workflow orchestrator managing a dispatched client workflow — handles workflow lifecycle, state management, and checkpoint resolution. Operates either inline (the top-level agent acts as orchestrator) or as a sub-agent that yields checkpoints upward."
+description: "Single-load management skill for the workflow orchestrator. Manages a dispatched client workflow. Can run inline (the top-level agent acts as both meta-orchestrator and workflow-orchestrator) or as a sub-agent. In inline mode, the orchestrator resolves checkpoints directly via present_checkpoint and respond_checkpoint. In sub-agent mode, it yields checkpoint_pending results up to the parent orchestrator and returns workflow_complete when all activities are done."
+
+inputs[3]:
+  - id: workflow-id
+    description: "Workflow to orchestrate (e.g., 'work-package')"
+  - id: user-request
+    description: "The user's initial request, used to detect mode and extract target"
+  - id: target-path
+    description: "Path to the target directory for all git operations"
+
+protocol:
+
+  load-workflow[1]:
+    - "Extract initialActivity, variables, rules, modes, and artifactLocations"
+  dispatch-activity[4]:
+    - "Compose worker prompt using resource meta/04 (activity-worker-prompt) including population of the dynamic front-matter variables. The worker prompt instructs the worker to call next_activity then get_activity to load the activity definition."
+    - "Dispatch using harness-compat::spawn-agent"
+    - "For resumed workers: send only the updated state variables and context"
+    - "Upon activity completion, update the planning folder README.md progress table."
+  process-result[6]:
+    - "If checkpoint_pending: present to user via handle-checkpoint-yield"
+    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required checkpoints — resume worker to complete any missing items"
+    - "Apply variables_changed to state, record in completedActivities"
+    - "Check next_activity _meta.trace_token — if present, append to the trace_tokens array. Note: next_activity only returns activity_id and name; the worker calls get_activity separately to load the activity definition."
+    - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
+    - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
+  resolve-checkpoints[2]:
+    - "When the activity-worker encounters a checkpoint, it calls yield_checkpoint and yields a checkpoint_pending result containing a checkpoint_handle. The checkpoint_handle is an HMAC-signed token string (contains a '.' separator) — it is NOT the same as the checkpoint_id (a short name like 'classification-confirmed')."
+    - "INLINE MODE: If you are the top-level agent (running inline as both meta-orchestrator and workflow-orchestrator), resolve checkpoints directly: call present_checkpoint({ checkpoint_handle }) to load the checkpoint details, then call respond_checkpoint({ checkpoint_handle, option_id }) or respond_checkpoint({ checkpoint_handle, auto_advance: true }) to resolve it. Both present_checkpoint and respond_checkpoint require the checkpoint_handle, NOT your session_token or the checkpoint_id."
+  handle-checkpoint-yield[4]:
+    - "SUB-AGENT MODE ONLY: When running as a sub-agent and a worker yields a checkpoint, yield ONE checkpoint_pending up to your parent orchestrator using a <checkpoint_yield> block containing ONLY the checkpoint_handle."
+    - "Format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing ONLY the checkpoint_handle."
+    - "Wait for the parent to resolve the checkpoint and resume you."
+    - "When resumed by the parent, it will provide the updated variables (effects) that resulted from resolving the checkpoint. You MUST update your internal state with these variables and then resume the worker, passing these effects down."
+  commit-artifacts[3]:
+    - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
+    - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
+    - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
+  persist-state[6]:
+    - "Track state changes triggered by activities: activity_transition logs activity_entered, step_completion increments currentStep and logs step_completed, decision_outcome records branch taken in decisionOutcomes."
+    - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), sessionId (from the session_id field returned by start_session or dispatch_workflow — NEVER decode the token payload), variable state (JSON), and activity trace (from get_trace)"
+    - "Update state sessionToken with the current session_token, set sessionId from the session_id field returned by start_session or dispatch_workflow (NEVER decode the token payload), set savedAt and state.updatedAt to the current ISO 8601 timestamp, increment state.stateVersion by 1, set state.completedSteps[activity_id] to the completed step indices, and set description to 'State after {activity_id}'."
+    - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
+    - "If planning_folder_path is not set, skip silently"
+    - "sessionId enables stale-session detection on resume: if the server restarted, start_session will return a different sid, signaling that state must be reconstructed from the saved variables rather than inherited via token"
+  evaluate-transition[2]:
+    - "Evaluate transition conditions against state variables — take first matching or default"
+    - "If no transitions exist, the workflow is complete"
+  advance-or-complete[4]:
+    - "If next activity determined: set current_activity, go to dispatch-activity"
+    - "If workflow complete, verify completion checklist: all required activities complete, all checkpoints have responses, workflow outcomes satisfied, follow-up items documented."
+    - "If workflow complete, prepare final summary including: Workflow Name, Start/Completion Dates; Activities Completed, Outcomes Achieved; Key Decisions Made (Checkpoints, Options, Rationale); Artifacts Created; Follow-Up Items."
+    - "If workflow complete: return { status: 'workflow_complete', final_state: ... } to the parent orchestrator."
+  handle-sub-workflows[3]:
+    - "If a client workflow needs to dispatch a sub-workflow, call dispatch_workflow({ workflow_id: 'child-workflow', parent_session_token: '<your_token>' })."
+    - "Spawn a NEW workflow-orchestrator for the sub-workflow using harness-compat::spawn-agent."
+    - "Manage the child inline, bubbling its checkpoints further up the chain to the meta-orchestrator."
+  session-protocol[1]:
+    - "Follow session-protocol skill (0) for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
+
+rules:
+  no-auto-resolution: "NEVER auto-resolve checkpoints without defaultOption capabilities. Even if the answer seems obvious, you MUST present the checkpoint to the user (inline mode: via present_checkpoint then respond_checkpoint; sub-agent mode: yield up to parent). Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
+  no-direct-interaction: "SUB-AGENT MODE ONLY: MUST NOT attempt to directly ask the user. You are a sub-agent. Surface checkpoints by yielding up to the parent orchestrator. In inline mode, you present checkpoints directly via present_checkpoint/respond_checkpoint."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL): In inline mode, call present_checkpoint({ checkpoint_handle }) then respond_checkpoint({ checkpoint_handle, ... }) to resolve. In sub-agent mode, yield the checkpoint_handle up to the parent. You MUST NOT call respond_checkpoint with your own session_token — always use the checkpoint_handle from the worker's yield. For advisory checkpoints with autoAdvanceMs and defaultOption, use respond_checkpoint({ checkpoint_handle, auto_advance: true })."
+  checkpoint-token-discipline: "CHECKPOINT TOKEN DISCIPLINE: present_checkpoint and respond_checkpoint both take a checkpoint_handle parameter — this is the HMAC-signed token returned by yield_checkpoint (a long string containing a '.'). Do NOT pass your session_token, the checkpoint_id, or any other value as the checkpoint_handle. If you get an 'Invalid session token' or 'missing signature' error from a checkpoint tool, you are passing the wrong value — use the checkpoint_handle from the worker's yield_checkpoint response."
+  reject-empty-checkpoints: "If an activity defines mandatory checkpoints and the worker returns checkpoints_responded as empty, REJECT the result."
+  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via the parent orchestrator. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
+  automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
+  no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
+  target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
+  file-sensitivity[3]:
+    - "Do not modify core configuration files without explicit user direction."
+    - "Avoid changes to build scripts unless specifically requested."
+    - "Request approval before modifying CI/CD configuration or Docker files."
+  communication-tone[2]:
+    - "Use measured technical language appropriate for senior software engineering."
+    - "Focus on technical merit rather than emotional assessments."
+  attribution-prohibition[2]:
+    - "Present design decisions directly without referencing their origin."
+    - "Do not include process attribution in code comments or documentation."
+  operational-discipline[3]:
+    - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
+    - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
+    - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
+
+errors:
+  stale_token:
+    cause: "Server restarted and generated a new HMAC signing key, invalidating the saved session token"
+    recovery: "Call start_session({ workflow_id }) without a saved token to get a fresh session. Reconstruct state by transitioning to the currentActivity from the state file and restoring variables manually."
+  worker_timeout:
+    cause: "Worker sub-agent did not return within expected time"
+    recovery: "Check terminal output. Resume if still running. If stuck, create new worker and re-dispatch."
+  transition_ambiguous:
+    cause: "Multiple transition conditions evaluate to true"
+    recovery: "Take the first matching transition. Log a warning."
+  worker_incomplete:
+    cause: "Worker reports fewer steps than the activity defines"
+    recovery: "Resume the worker with instructions to complete remaining steps."
+  state_desync:
+    cause: "Worker reports variable changes conflicting with orchestrator state"
+    recovery: "Worker-reported values take precedence (worker has ground truth from user interaction)."
+
+resources[3]:
+  - "meta/03"
+  - "meta/04"
+  - "meta/08"

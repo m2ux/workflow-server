@@ -9,6 +9,7 @@ inputs[2]:
     description: "The task to implement from the plan (provided by the activity loop iterator)"
   - id: test-plan
     description: "Test plan with strategy and acceptance criteria for guidance"
+    required: false
 
 protocol:
   understand-context[3]:
@@ -37,21 +38,6 @@ rules:
 resources[2]:
   - "14"
   - "23"
-
-tools:
-  read_file:
-    when: Reading plan tasks, source files, and test plan
-    usage: Understand context and examine existing code
-  edit:
-    when: Making code modifications
-    usage: Apply implementation changes to source files
-  grep:
-    when: Searching for patterns across codebase
-    usage: Find relevant code, usages, and dependencies
-  shell:
-    when: Running quick compilation checks
-    params: "nice -n 19 cargo check, nice -n 19 cargo build"
-    usage: Verify changes compile before handing off to test/commit
 
 errors:
   compilation_failure:

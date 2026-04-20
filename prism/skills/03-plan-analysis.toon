@@ -9,15 +9,20 @@ inputs[6]:
     description: "What to analyze. Can be: a file path, a directory path, inline text, a question, a concept, or a topic. The skill detects the scope from the form of the input."
   - id: analytical-goal
     description: "What the caller wants to understand (e.g., 'find hidden bugs', 'assess maintainability', 'understand design trade-offs', 'security review', 'explore the implications of X', 'evaluate this strategy')"
+    required: false
   - id: target-type
     description: "Whether the input is 'code' or 'general'. If omitted, inferred from the target: file paths with code extensions → code, everything else → general."
+    required: false
   - id: budget
     description: "Analysis budget: 'quick' (minimize passes, skip low-risk), 'standard' (balanced depth and coverage), 'thorough' (full coverage, full-prism on high-risk). Default: standard"
+    required: false
     default: standard
   - id:   depth-preference
     description: "Override for pipeline mode when scope is query or file: 'single', 'pipeline', 'portfolio', or 'behavioral'. Ignored for multi-unit scopes where mode is determined per-unit by risk classification."
+    required: false
   - id: output-path
     description: "Directory to write the analysis plan artifact. If omitted, the plan is returned but not persisted."
+    required: false
 
 protocol:
   detect-scope[7]:
@@ -162,29 +167,6 @@ resources[58]:
   - "59"
   - "60"
   - "61"
-
-tools:
-  glob:
-    when: "Surveying codebase or directory structure (codebase/document-set scopes only)"
-    usage: "Discover files and directories to determine scope and module boundaries"
-  read_file:
-    when: "Reading project markers or target files"
-    usage: "Examine build configuration for workspace/package definitions; read single-file targets"
-  gitnexus_query:
-    when: "GitNexus is available — discovering functional areas and execution flows for better module classification"
-    params: "query: relevant to the analytical goal"
-    returns: "Processes ranked by relevance with symbols and file locations"
-  gitnexus_context:
-    when: "GitNexus is available — checking fan-in for risk assessment"
-    params: "name: module or symbol name"
-    returns: "Callers, callees, process participation"
-  gitnexus_list_repos:
-    when: "Checking whether GitNexus is available for the target codebase"
-    returns: "List of indexed repositories"
-  write_file:
-    when: "Writing the analysis plan artifact (only when output-path is provided)"
-    params: "path: {output-path}/analysis-plan.md"
-    usage: "Persist the plan for the orchestrator to execute"
 
 errors:
   empty_directory:

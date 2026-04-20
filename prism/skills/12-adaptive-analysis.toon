@@ -43,22 +43,9 @@ rules:
   stop-early: "Stop escalating as soon as signal quality is adequate. Do not run deeper stages for marginal improvement."
   model-escalation: "Stage 1: Haiku. Stage 2: Sonnet. Stage 3: per-prism optimal models."
 
+  tool-usage: "use harness-compat spawn-agent — adaptive mode uses a new worker for each stage via spawn-agent and never skips stage ordering"
 resources[4]:
   - "00"
   - "01"
   - "02"
   - "12"
-
-tools:
-  task:
-    when: "Dispatching fresh workers for SDL, optional L12, and optional full-prism triple pass — do NOT resume prior workers"
-    params: "description, prompt, subagent_type — one Task per stage or per full-prism pass"
-    returns: "Worker completion and artifact path confirmation"
-    usage: "Adaptive mode uses a new worker for each stage; never skip stage ordering"
-  read_file:
-    when: "Reading target content, stage outputs for signal assessment, prior artifacts for full-prism passes, verifying writes"
-    usage: "Orchestrator reads adaptive-stage*.md to evaluate adaptive_signal_quality before escalating"
-  write_file:
-    when: "Workers persist adaptive-stage1.md, adaptive-stage2.md, structural-analysis.md, adversarial-analysis.md, synthesis.md under output-path"
-    params: "path: {output-path}/adaptive-stage1.md | adaptive-stage2.md | structural-analysis.md | adversarial-analysis.md | synthesis.md"
-    usage: "Collect all paths into artifact_paths; set adaptive_stage for reporting"

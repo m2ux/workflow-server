@@ -9,6 +9,7 @@ inputs[2]:
     description: "List of .rs files to enumerate (a crate, a set of crates, or a full scope)"
   - id: include-subdirectories
     description: "Whether to traverse into submodules (versions/, common/, api/, internal/, impl/)"
+    required: false
     default: true
 
 protocol:

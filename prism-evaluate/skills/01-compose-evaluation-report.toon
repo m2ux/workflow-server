@@ -7,12 +7,16 @@ description: "Given completed prism analysis artifacts organised by evaluation d
 inputs[4]:
   - id: output_path
     description: "Directory containing all evaluation artifacts and where the report will be written"
+    required: true
   - id: dimension_plan
     description: "The dimension-to-lens mapping from dimension-planning, used to locate and interpret artifacts"
+    required: true
   - id: completed_analyses
     description: "Array of completed prism run references with output paths and status"
+    required: true
   - id: evaluation_description
     description: "Original evaluation description, used for report context"
+    required: true
 
 protocol:
   locate-artifacts[4]:
@@ -68,17 +72,6 @@ output[1]:
       dimension_findings: "Per-dimension findings with severity tables"
       cross_cutting: "Cross-dimensional patterns"
       recommendations: "Prioritised corrections and recommendations"
-
-tools:
-  read_file:
-    when: "Reading prism output artifacts and dimension analysis files"
-    usage: "Extract findings, conservation laws, and evidence from analysis artifacts"
-  write_file:
-    when: "Writing the evaluation report"
-    params: "path: {output_path}/EVALUATION-REPORT.md"
-  glob:
-    when: "Discovering analysis artifacts in output subdirectories"
-    usage: "Find all .md files produced by prism runs"
 
 errors:
   missing_artifacts:

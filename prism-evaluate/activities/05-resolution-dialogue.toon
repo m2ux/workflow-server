@@ -4,27 +4,34 @@ name: Resolution Dialogue
 description: "Iterate through evaluation findings one-by-one, proposing mitigations for each. For each finding, the worker reads both the evaluation report and the original target, classifies the finding by mitigation difficulty, proposes a specific mitigation, and presents it to the user for decision. The dialogue produces a MITIGATION-PLAN.md artifact documenting all accepted changes."
 problem: "Evaluation findings require targeted mitigations that range from simple text corrections to novel architectural proposals. Each finding needs individual consideration — the appropriate mitigation depends on the finding's nature, the target's content, and the user's intent. Batch presentation loses nuance; one-by-one dialogue preserves it."
 skills:
-  primary: resolve-findings
+  primary: meta/activity-worker
+  supporting[1]:
+    - resolve-findings
 steps[5]:
   - id: load-sources
     name: Load Evaluation Report and Target
     description: "Read the EVALUATION-REPORT.md from evaluation_report_path and the original target from target_path. Extract the full findings list with IDs, severities, titles, and descriptions. Extract the target's structure and key sections referenced by findings."
+    required: true
   - id: classify-findings
     name: Classify Findings by Mitigation Difficulty
     description: "For each finding, classify into one of four tiers: (T1) Direct Correction — wrong numbers, incorrect terminology, simple text edits. (T2) Reframing & Caveating — claims needing qualification, honest language, or precision. (T3) Novel Mitigation — non-trivial findings needing new content, architectural proposals, or mechanism design. (T4) Structural / Immovable — findings that cannot be resolved within the target itself, requiring acknowledgement rather than correction. Present the classification summary to the user before beginning the dialogue."
+    required: true
   - id: present-classification
     name: Present Finding Classification
     description: "Present the tier classification summary: how many findings in each tier, which findings are in each tier. This sets expectations for the dialogue — T1 findings will be quick, T3 findings will involve novel proposals."
+    required: true
   - id: compile-mitigation-plan
     name: Compile Mitigation Plan
     description: "After all findings have been presented and decisions collected, compile the MITIGATION-PLAN.md artifact to {output_path}. Structure: Summary table (finding ID, severity, mitigation type, user decision), detailed mitigations grouped by tier, implementation priority order. Record mitigation_plan_path."
+    required: true
     actions[1]:
       - action: set
-        variable: mitigation_plan_path
+        target: mitigation_plan_path
         description: "Set to the path of the written MITIGATION-PLAN.md"
   - id: verify-plan
     name: Verify Mitigation Plan
     description: "Verify: (1) every finding from the evaluation report has a corresponding entry in the plan (accepted, modified, or skipped), (2) finding IDs match between the evaluation report and the plan, (3) the artifact was written successfully. Report file path, size, and format status."
+    required: true
 loops[1]:
   - id: finding-iteration
     name: Finding Iteration
@@ -36,15 +43,19 @@ loops[1]:
       - id: present-finding
         name: Present Finding
         description: "Present the current finding to the user: finding ID, severity, the claim from the target (with location), the evaluation's critique, and the mitigation tier classification."
+        required: true
       - id: propose-mitigation
         name: Propose Mitigation
         description: "Based on the tier: (T1) propose specific replacement text. (T2) propose qualified wording or added caveats. (T3) propose a novel solution that attempts to preserve the original claim — describe the mechanism, show proposed new text, explain how it addresses the critique. (T4) explain why the finding is immovable and propose an acknowledgement. For all tiers, show the proposed change in context."
+        required: true
       - id: collect-decision
         name: Collect User Decision
         description: "Present the proposed mitigation and collect the user's decision via the finding-decision checkpoint. Record the decision in accepted_mitigations."
+        required: true
       - id: handle-discussion
         name: Handle Discussion
         description: "If the user selects 'discuss', engage in clarifying dialogue. The user may provide context that changes the mitigation approach. After discussion, present a revised proposal and re-collect the decision."
+        required: true
 checkpoints[1]:
   - id: finding-decision
     name: Finding Mitigation Decision
@@ -62,6 +73,8 @@ checkpoints[1]:
       - id: discuss
         label: Discuss
         description: "Discuss this finding further before deciding"
+    required: true
+    blocking: true
 rules[5]:
   - "ONE FINDING AT A TIME: Each finding is presented individually. Never batch findings, even within the same tier. The dialogue is sequential — present finding, propose mitigation, collect decision, advance."
   - "NOVEL SOLUTIONS OVER DELETION: For T3 findings, the default approach is to propose a novel mechanism that preserves the original claim while addressing the critique. Striking a claim is a last resort, reserved for T4 (absolutely non-feasible) findings."

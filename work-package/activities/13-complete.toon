@@ -1,5 +1,5 @@
 id: complete
-version: 1.1.0
+version: 1.3.0
 name: Complete Work Package
 description: "After PR is merged, wrap up the work package: create ADR (if applicable), finalize documentation, conduct retrospective, update status, and prepare for next work package."
 problem: User needs to finalize all documentation and close out the work package after PR merge
@@ -8,6 +8,7 @@ recognition[4]:
   - finalize documentation
   - workflow complete
   - finish work package
+required: true
 estimatedTime: 30-60m
 artifacts[4]:
   - id: adr
@@ -26,6 +27,8 @@ artifacts[4]:
     name: "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md"
     location: reviews
     description: "PR review analysis document"
+skills:
+  primary: meta/activity-worker
 steps[9]:
   - id: create-adr
     name: Create Architecture Decision Record
@@ -108,17 +111,27 @@ steps[9]:
     name: Update work package plan status
     description: "After PR merged, update work package plan status to reflect completion."
     skill: conduct-retrospective
+  - id: resign-artifact-commits
+    name: Re-sign all planning artifact commits
+    description: "Apply gpg-resign-range to the parent (engineering) repo to re-sign every unsigned artifact commit made during this work package. Resolve MERGE_BASE as the point where the current engineering branch diverged from its default branch. Run: git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE in the engineering repo root. Verify all commits show G with git log --format='%h %G? %s' MERGE_BASE..HEAD, then push with --force-with-lease. This converts the full unsigned artifact history to a signed history in one operation. Requires the GPG agent to be unlocked — the user is present at this stage for post-review work."
+    skill: manage-git
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: select-next
     name: Select next work package
     description: "Identify and select next work package if applicable. Prepare context for transition."
     skill: conduct-retrospective
 exitActions[1]{action,message}:
   log,Work package workflow complete
-outcome[5]:
+outcome[6]:
   - ADR created and accepted (if moderate/complex)
   - Documentation finalized (test plan, COMPLETE.md, API docs)
   - Retrospective completed with lessons learned
   - Work package status updated
+  - All planning artifact commits re-signed via gpg-resign-range and force-pushed
   - Ready for next work package
 context_to_preserve[6]:
   - planning_folder_path - Path to this work package's planning folder (returned to parent workflow via returnedContext)

@@ -3,7 +3,10 @@ version: 1.0.0
 name: Submit Security Vulnerability Remediation
 description: "Finalize a high-sensitivity security fix. Pushes commits strictly to the private security remote. Bypasses all public PR and review infrastructure."
 problem: User needs to submit a security fix without public disclosure
+required: true
 estimatedTime: 5-10m
+skills:
+  primary: meta/activity-worker
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR tools (gh pr review, gh pr ready)."
   - "PRIVATE REMOTE ONLY: All git push operations must target the 'security' remote."
@@ -19,6 +22,7 @@ steps[4]:
     name: Verify and sign commits
     description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them."
     skill: manage-git
+    required: true
   - id: push-sec-vuln-commits
     name: Push security vulnerability commits
     description: "Push all local commits to the 'security' remote. Run 'git push security HEAD'. This ensures the fix is only pushed to the designated private fork."
@@ -30,6 +34,7 @@ checkpoints[2]:
   - id: verify-private-remote
     name: Verify Private Remote
     message: "FINAL ISOLATION CHECK: You are about to push to '{sec_vuln_url}'. Is this the private security remote? (NEVER push to origin in this workflow)."
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, push to private remote"
@@ -40,6 +45,7 @@ checkpoints[2]:
   - id: confirm-push
     name: Confirm Push Checkpoint
     message: "Ready to push the security fix to the private remote '{sec_vuln_url}'. Confirm to proceed?"
+    blocking: true
     options[2]:
       - id: confirm
         label: "Confirm push"

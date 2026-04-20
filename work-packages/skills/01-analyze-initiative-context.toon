@@ -49,8 +49,6 @@ resources[2]:
   - "01"
   - "02"
 
-tools:
-
 errors:
   ambiguous_type:
     cause: User is unsure whether this is continuing or new

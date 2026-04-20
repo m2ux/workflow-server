@@ -9,6 +9,7 @@ inputs[2]:
     description: "Summary, description, and context from the linked issue"
   - id: problem-context
     description: "Additional context about the problem from user or prior activities"
+    required: false
 
 protocol:
   load-framework[2]:
@@ -58,11 +59,6 @@ rules:
 
 resources[1]:
   - "09"
-
-tools:
-  read_file:
-    when: Reviewing issue content or Cargo.toml for project context
-    usage: Examine files for problem context and project type
 
 errors:
   unclear_problem:

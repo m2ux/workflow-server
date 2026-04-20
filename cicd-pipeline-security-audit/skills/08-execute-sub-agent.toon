@@ -2,7 +2,7 @@ id: execute-sub-agent
 version: 1.0.0
 capability: "Bootstrap the workflow-server, load an assigned activity, follow its steps sequentially, and return structured output"
 
-description: "This skill defines how a sub-agent (dispatched by the orchestrator during primary-scan) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the Task prompt."
+description: "This skill defines how a sub-agent (dispatched by the orchestrator during primary-scan) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the spawn-agent prompt (harness-compat)."
 
 resources[1]:
   - "04"
@@ -50,22 +50,3 @@ errors:
   workflow_server_unavailable:
     cause: "MCP tool calls fail"
     recovery: "Fall back to the prompt instructions. Note in output that workflow-server was not available."
-
-tools:
-  start_session:
-    when: "Bootstrap — first call"
-    returns: "Agent rules, workflow metadata, and session token"
-  next_activity:
-    when: "Bootstrap — second call"
-    params: "workflow_id: cicd-pipeline-security-audit, activity_id"
-    returns: "Activity definition with steps, rules, outcome"
-  get_skill:
-    when: "Loading step-level skill references"
-    params: "skill_id, workflow_id: cicd-pipeline-security-audit"
-    returns: "Skill definition with protocol, tools, rules"
-  read_file:
-    when: "Reading workflow YAML files, scripts, CODEOWNERS"
-  grep:
-    when: "Searching for injection patterns across workflow files"
-  shell:
-    when: "Running multi-file pattern searches, file enumeration"
