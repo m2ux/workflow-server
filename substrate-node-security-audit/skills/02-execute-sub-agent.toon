@@ -9,9 +9,9 @@ resources[1]:
 
 protocol:
   bootstrap-get-rules[1]:
-    - Call start_session(workflow_id) to load agent rules and obtain a session token
+    - Call start_session(session_token, agent_id) to inherit the dispatched session and obtain a session token. The workflow is derived from the token.
   bootstrap-get-activity[1]:
-    - "Call next_activity({ workflow_id: 'substrate-node-security-audit', activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps"
+    - "Call next_activity({ activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps"
   exec-read-steps[1]:
     - Read the activity's steps array in order
   exec-per-step-description[1]:

@@ -29,7 +29,7 @@ artifacts[4]:
     description: "PR review analysis document"
 skills:
   primary: meta/activity-worker
-steps[9]:
+steps[10]:
   - id: create-adr
     name: Create Architecture Decision Record
     description: "Create ADR at .engineering/artifacts/adr/ documenting the architectural decision, rationale, and alternatives."
