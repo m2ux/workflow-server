@@ -1,6 +1,6 @@
 ---
 id: worker-prompt-template
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Worker Prompt Template
@@ -15,7 +15,7 @@ version: 1.0.0
 You are the WORKER agent for the {workflow_id} workflow. Execute the `{activity_id}` activity.
 
 ## Bootstrap Instructions
-1. Call `start_session({ workflow_id: "{workflow_id}" })` to obtain a session_token. Save it — every subsequent call requires session_token.
+1. Call `start_session({ session_token: "{session_token}", agent_id: "worker" })` to adopt the session. Save the returned token — every subsequent call requires it.
 2. Call `next_activity({ session_token, activity_id: "{activity_id}" })` to load the activity definition. Pass the session_token from step 1.
 3. Call `get_skills({ session_token })` to load skills and resources. Pass the latest session_token (each response returns an updated one).
 4. Execute steps per the loaded skill protocols
@@ -44,6 +44,7 @@ You are the WORKER agent for the {workflow_id} workflow. Execute the `{activity_
 |-------------|--------|
 | `{workflow_id}` | Workflow being orchestrated (e.g., `work-package`) |
 | `{activity_id}` | Current activity to execute (e.g., `start-work-package`) |
+| `{session_token}` | The unified session token for the target workflow (from start_session) |
 | `{state_variables_block}` | YAML or key-value list of all current state variables with their values |
 | `{planning_folder_path}` | Path to the planning folder (may be "not yet set" for first activity) |
 | `{workspace_root}` | Absolute path to the workspace root directory |

@@ -1,8 +1,8 @@
 id: dispatch-workflow
-version: 1.1.0
+version: 2.0.0
 name: Dispatch Client Workflow
-description: "Dispatch the resolved target workflow to a workflow-orchestrator (sub-agent). Creates an independent client session via dispatch_workflow, spawns the sub-agent with the dispatch package, and acts as a router for checkpoints bubbled up from the sub-agent."
-problem: Create and manage an independent client workflow session for the resolved target workflow
+description: "Dispatch the resolved target workflow to a workflow-orchestrator (sub-agent). Creates a session for the target workflow via start_session({ workflow_id }), spawns the sub-agent with the composed prompt, and acts as a router for checkpoints bubbled up from the sub-agent."
+problem: Create and manage a workflow session for the resolved target workflow
 recognition[3]:
   - dispatch the workflow
   - start the target workflow
@@ -16,14 +16,13 @@ steps[4]:
   - id: resolve-target
     name: Resolve target workflow
     description: "The target workflow has already been resolved by the discover-session activity. Verify the `target_workflow` variable is set. If missing, return to discover-session."
-    required: true
-  - id: create-client-session
-    name: Create client session
-    description: "Call dispatch_workflow with workflow_id (from target_workflow variable), parent_session_token (your current meta session token), and any initial variables. Extract client_session_token, initial_activity, and client_prompt from the response. Save client_session_token in session state for correlation."
+  - id: create-session
+    name: Create workflow session
+    description: "Call start_session({ workflow_id, agent_id }) to create a session for the target workflow. Extract session_token from the response. Save session_token in session state. No separate client session is needed — the unified token serves both orchestrator and worker."
     required: true
   - id: dispatch-client
     name: Dispatch workflow-orchestrator
-    description: "Spawn a new agent (Task/sub-agent) with the client_prompt from dispatch_workflow. The workflow-orchestrator runs the target workflow using its own session token. Wait for the agent to return a result — either checkpoint_pending or workflow_complete. Do NOT execute client workflow activities directly — all execution is delegated to the workflow-orchestrator."
+    description: "Compose the worker prompt using the template from get_resource('meta/05'). Spawn a new agent (Task/sub-agent) with the composed prompt. The workflow-orchestrator runs the target workflow using the same session token. Wait for the agent to return a result — either checkpoint_pending or workflow_complete. Do NOT execute client workflow activities directly — all execution is delegated to the workflow-orchestrator."
     required: true
   - id: process-result
     name: Process client result
@@ -37,10 +36,10 @@ transitions[1]:
       operator: ==
       value: true
 outcome[4]:
-  - Client workflow session created with independent session token
+  - Workflow session created with unified session token
   - Client agent dispatched and lifecycle managed inline
   - Checkpoint yields presented to user and responses forwarded
   - Client workflow completed or blocked awaiting user input
 context_to_preserve[2]:
-  - client_session_token - The client agent's session token (session identity is embedded within)
+  - session_token - The unified session token for the target workflow
   - target_workflow - The workflow ID that was dispatched
