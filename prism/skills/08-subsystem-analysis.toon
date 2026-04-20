@@ -48,17 +48,3 @@ rules:
 resources[2]:
   - "63"
   - "64"
-
-tools:
-  task:
-    when: "Dispatching fresh workers for calibration, each per-subsystem pass, and synthesis — do NOT resume prior workers"
-    params: "description, prompt, subagent_type — N+2 workers total (1 + N subsystems + 1 synthesis)"
-    returns: "Worker completion and artifact path confirmation"
-    usage: "One Task per calibration, one per subsystem analysis, one for cross-subsystem synthesis"
-  read_file:
-    when: "Reading target source, per-subsystem outputs before synthesis, verifying writes"
-    usage: "Synthesis worker reads all subsystem-{name}.md from disk; orchestrator verifies files exist"
-  write_file:
-    when: "Workers persist per-subsystem and synthesis markdown under output-path"
-    params: "path: {output-path}/subsystem-{name}.md | subsystem-synthesis.md"
-    usage: "Subsystem workers write one file each; synthesis worker writes subsystem-synthesis.md"

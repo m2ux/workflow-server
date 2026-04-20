@@ -7,6 +7,7 @@ recognition[3]:
   - strategic review
   - review changes
   - review implementation
+required: true
 estimatedTime: 15-30m
 artifacts[2]:
   - id: strategic-review-doc
@@ -17,6 +18,8 @@ artifacts[2]:
     name: "architecture-summary.md"
     location: planning
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
+skills:
+  primary: meta/activity-worker
 steps[9]:
   - id: diff-review
     name: Review diff
@@ -24,7 +27,7 @@ steps[9]:
     skill: review-strategy
   - id: resign-unsigned-commits
     name: Re-sign unsigned commits
-    description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_branch to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
+    description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_pr to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
     skill: manage-git
     condition:
       type: simple
@@ -78,9 +81,10 @@ checkpoints[2]:
     message: "Preflight scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-sign all unsigned commits now? This rewrites branch history and may require force-with-lease push."
     condition:
       type: simple
-      variable: unsigned_commits_in_branch
+      variable: unsigned_commits_in_pr
       operator: ==
       value: true
+    blocking: true
     options[2]:
       - id: resign-all
         label: Yes — re-sign all unsigned commits
@@ -97,6 +101,7 @@ checkpoints[2]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
     message: "Strategic review complete. Based on findings analysis, the recommended action is {recommended_strategic_option}. Auto-advancing in 30s."
+    blocking: false
     defaultOption: acceptable
     autoAdvanceMs: 30000
     options[4]:
@@ -144,5 +149,5 @@ context_to_preserve[5]:
   - review_findings - Findings from strategic review
   - review_passed - Whether review passed
   - items_removed - List of items removed during cleanup
-  - unsigned_commits_in_branch - Whether any unsigned commits remained after strategic review
+  - unsigned_commits_in_pr - Whether any unsigned commits remained after strategic review
   - resign_unsigned_commits_requested - Whether user requested resign at checkpoint

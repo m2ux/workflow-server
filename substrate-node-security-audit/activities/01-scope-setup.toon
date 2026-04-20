@@ -9,7 +9,10 @@ recognition[4]:
   - run security review
   - security audit setup
 skills:
-  primary: execute-audit
+  primary: meta/activity-worker
+  supporting[1]:
+    - execute-audit
+required: true
 estimatedTime: 5-15m
 rules[5]:
   - "The target submodule MUST be specified in the initial request — if not provided, fail with an error describing the required format"

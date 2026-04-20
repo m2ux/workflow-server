@@ -11,10 +11,12 @@ inputs[5]:
     description: "Resource index to load from the prism workflow (00 for structural, 01 for adversarial, 02 for synthesis)"
   - id: prior-artifact-paths
     description: "File paths to prior pass artifacts. Adversarial receives [structural-analysis.md]. Synthesis receives [structural-analysis.md, adversarial-analysis.md]. Empty for the structural pass."
+    required: false
   - id: output-path
     description: "Directory to write the analysis artifact"
   - id: target-type
     description: "Whether the input is 'code' or 'general'"
+    required: false
     default: code
 
 protocol:
@@ -67,33 +69,6 @@ resources[3]:
   - "00"
   - "01"
   - "02"
-
-tools:
-  read_file:
-    when: "Reading prior pass artifacts and target content"
-    usage: "Read structural-analysis.md and/or adversarial-analysis.md for context. Read target file if content is a path."
-  write_file:
-    when: "Writing the analysis artifact"
-    params: "path: {output-path}/{artifact-filename}"
-    usage: "Persist the analysis as a markdown artifact for downstream consumption"
-  grep:
-    when: "Verifying findings against the codebase"
-    usage: "Confirm that cited patterns exist at the claimed locations"
-  gitnexus_list_repos:
-    when: "Checking GitNexus availability before graph verification (adversarial pass only)"
-    returns: "List of indexed repositories"
-  gitnexus_context:
-    when: "Verifying claimed call chains during adversarial graph verification — checking whether callers/callees are actually connected"
-    params: "name: symbol name from a structural claim being challenged"
-    returns: "Categorised incoming/outgoing references, process participation"
-  gitnexus_impact:
-    when: "Mechanically verifying blast-radius claims during adversarial graph verification"
-    params: "target: symbol name, direction: upstream"
-    returns: "Affected symbols by depth, affected processes, affected modules, risk rating"
-  gitnexus_cypher:
-    when: "Finding counter-evidence for dead-code or unused-path claims during adversarial graph verification"
-    params: "query: Cypher query against the code knowledge graph"
-    returns: "Query results as markdown table"
 
 errors:
   lens_not_loaded:

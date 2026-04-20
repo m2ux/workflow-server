@@ -11,6 +11,7 @@ inputs[3]:
     description: "Pre-classified trigger, permission, and checkout data from reconnaissance"
   - id: ai-config-inventory
     description: "AI configuration files found in the submodule"
+    required: false
 
 protocol:
   load-patterns[1]:
@@ -62,12 +63,6 @@ rules:
 resources[2]:
   - "01"
   - "04"
-
-tools:
-  grep:
-    when: Searching for injection patterns across workflow files
-  shell:
-    when: Running multi-file pattern searches
 
 errors:
   pattern_catalog_unavailable:

@@ -8,7 +8,10 @@ recognition[3]:
   - group a sub-agent
   - checklist review
 skills:
-  primary: execute-sub-agent
+  primary: meta/activity-worker
+  supporting[1]:
+    - execute-sub-agent
+required: false
 estimatedTime: 20-40m
 
 rules[11]:
@@ -26,41 +29,49 @@ rules[11]:
 steps[8]:
   - id: read-all-files
     name: Read All Crate Files
+    required: true
     skill_args:
       output_format: "| File | Lines | Read? |"
     description: "Read all .rs files in crate path and supplementary files per target profile."
   - id: build-function-registry
     name: Build Function Registry
+    required: true
     skill: build-function-registry
     description: "Enumerate all functions in this crate by type and priority."
   - id: extract-invariants
     name: Extract Invariants for Priority-1 Functions
+    required: true
     skill: extract-invariants
     description: "Extract invariants for each priority-1 function."
   - id: apply-checklist
     name: Apply §3 Checklist Items
+    required: true
     skill: apply-checklist
     skill_args:
       output_format: "| Item | Verdict | Evidence | Finding ID |"
     description: "Evaluate every checklist item against this crate."
   - id: produce-required-tables
     name: Produce Mandatory Analysis Tables
+    required: true
     skill: apply-checklist
     skill_args:
       output_format: "| Table | Produced? | Justification |"
     description: "Produce required evidence tables per apply-checklist skill, or N/A with justification."
   - id: cross-function-comparison
     name: Cross-Function Invariant Comparison
+    required: true
     skill: scan-storage-lifecycle
     skill_args:
       verify_invariants: true
     description: "Scan all storage maps in this crate with cross-function invariant verification."
   - id: verify-completeness
     name: Verify Completeness
+    required: true
     skill: verify-sub-agent-output
     description: "Verify all required outputs from prior steps are complete."
   - id: format-output
     name: Format Structured Output
+    required: true
     skill: execute-sub-agent
     description: "Format all findings and tables as structured output."
 outcome[4]:

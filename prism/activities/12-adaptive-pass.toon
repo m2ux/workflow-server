@@ -4,7 +4,9 @@ name: Adaptive Depth Pass
 description: "Cost-minimizing depth escalation. Starts with the cheapest analysis (SDL deep_scan on Haiku) and escalates to deeper modes only if signal quality is insufficient. Stops at the first stage that produces adequate analytical depth. 1-3+ fresh workers depending on escalation."
 problem: "Users often don't know how deep an analysis needs to be. Running full-prism on every target is wasteful. Adaptive starts cheap and escalates only when needed."
 skills:
-  primary: adaptive-analysis
+  primary: meta/activity-worker
+  supporting[1]:
+    - adaptive-analysis
 artifacts[5]:
   - id: adaptive-stage1
     name: "adaptive-stage1.md"
@@ -33,9 +35,11 @@ steps[4]:
   - id: run-stage-1
     name: "Run Stage 1: SDL Quick Scan"
     description: "Create a FRESH worker with deep_scan resource (12). Worker runs on Haiku for fastest/cheapest result. Writes to {output_path}/adaptive-stage1.md. Assess signal quality: conservation law presence, word count > 300, and bug table presence."
+    required: true
   - id: run-stage-2
     name: "Run Stage 2: L12 Deep"
     description: "If stage 1 signal is insufficient, create a FRESH worker with L12 resource (00) on Sonnet. Writes to {output_path}/adaptive-stage2.md. Assess signal quality. Skip if stage 1 was adequate."
+    required: true
     condition:
       type: simple
       variable: adaptive_signal_quality
@@ -44,6 +48,7 @@ steps[4]:
   - id: run-stage-3
     name: "Run Stage 3: Full Pipeline"
     description: "If stage 2 signal is still insufficient, run the full-prism 3-pass pipeline (structural + adversarial + synthesis). Writes standard full-prism artifacts. Skip if earlier stage was adequate."
+    required: true
     condition:
       type: simple
       variable: adaptive_signal_quality
@@ -52,6 +57,7 @@ steps[4]:
   - id: collect-paths
     name: Collect Artifact Paths
     description: "Add all produced artifacts to all_artifact_paths. Record adaptive_stage and adaptive_signal_quality."
+    required: true
 transitions[1]:
   - to: generate-report
     isDefault: true

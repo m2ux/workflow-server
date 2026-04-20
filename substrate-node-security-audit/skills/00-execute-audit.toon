@@ -36,37 +36,13 @@ protocol:
     - Verify coverage gate (§5.14)
     - Verify elevation completeness via merge table mapping
     - Include reconciliation table in report as auditable evidence of zero finding loss
-
-tools:
-  read_file:
-    when: Reading source code files for manual review
-    params: file_path
-    returns: File contents
-    usage: Read every .rs file in assigned crate; prioritize files >200 lines
-  grep:
-    when: Running §2 static analysis patterns and mechanical checks
-    params: pattern, scope, exclusions
-    returns: Matching lines with file paths and line numbers
-    usage: Run against FULL in-scope directory set, not selectively
-  shell:
-    when: Running cargo audit, cargo deny, git operations, file inventory
-    params: command
-    returns: Command output
-    usage: Capture and save output to planning folder
-  task:
-    when: Dispatching sub-agents for crate-level review or analysis
-    params: description, prompt, subagent_type
-    returns: Sub-agent findings and scratchpad
-    usage: Use generalPurpose for deep review agents; explore for quick searches
-
-state:
   track[6]:
-    - current_phase - Which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
-    - agent_status - Status of dispatched sub-agents
-    - findings_count - Running count of identified findings
-    - pass_count - Running count of PASS items in scratchpads
-    - coverage_files - List of files read by agents
-    - checklist_coverage - §3 coverage matrix showing per-item evaluation status
+    - Track current_phase — which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
+    - Track agent_status — status of dispatched sub-agents
+    - Track findings_count — running count of identified findings
+    - Track pass_count — running count of PASS items in scratchpads
+    - Track coverage_files — list of files read by agents
+    - Track checklist_coverage — §3 coverage matrix showing per-item evaluation status
 
 resources[3]:
   - "00"

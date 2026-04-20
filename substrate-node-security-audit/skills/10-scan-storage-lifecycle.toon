@@ -9,6 +9,7 @@ inputs[2]:
     description: "Directory scope to scan (a single crate for per-crate review, or full in-scope paths for global scan)"
   - id: verify-invariants
     description: "Whether to perform cross-function invariant comparison (e.g., do paired insert/remove functions maintain the same conditions?)"
+    required: false
     default: false
 
 protocol:

@@ -4,10 +4,13 @@ version: 4.16.0
 title: Security Audit Workflow
 description: "Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. The orchestrator coordinates but does not analyze — all codebase analysis is delegated to sub-agents (R, S, A1-A7, B, D1, D2, V, M), each following a dedicated workflow activity. Sub-agents write structured output to JSON files in the planning folder using the {designator}-{scope}.json naming convention. The orchestrator reads files, dispatches agents, and performs coordination-only tasks (domain mapping, agent assignment, lead routing). Phases: reconnaissance (R+S), concurrent primary audit (A1-A7+B+D1+D2), verification (V), merge (M), adversarial verification, severity-calibrated reporting, optional ensemble, and gap analysis."
 author: m2ux
-tags[3]:
+tags[6]:
   - security
   - audit
-  - workflow
+  - blockchain
+  - substrate
+  - automated
+  - multi-phase
 rules[26]:
   - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
   - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
@@ -35,6 +38,8 @@ rules[26]:
   - "MERGE AGENT GATE: After verification and re-dispatch, the orchestrator MUST dispatch a merge sub-agent (M) following the sub-structured-merge activity. M performs the structured merge, deduplication, severity scoring with bidirectional calibration, reconciliation, and observation elevation in a fresh context window. The orchestrator MUST NOT perform the merge inline — inline merge under context saturation is the primary cause of finding regression across runs."
   - "FINDING COUNT RECONCILIATION: M produces a reconciliation table where Unaccounted MUST equal zero for every agent. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
   - "OBSERVATION ELEVATION: M reviews all agent reconnaissance_leads and additional_observations, PLUS S agent emergent_domains from s-architectural-analysis.json and R agent leads from r-reconnaissance-data.json. Emergent domains are architectural vulnerability hypotheses — each MUST be dispositioned as captured, elevated, or not-applicable. Security-relevant observations (divergent code paths, missing validation, error-path persistence, silent errors, trust boundary amplification) MUST be elevated to findings or explicitly mapped to existing findings. Silent observation loss is a regression source."
+skills:
+  primary: meta/workflow-orchestrator
 variables[19]:
   - name: target_submodule
     type: string
@@ -106,25 +111,4 @@ variables[19]:
     type: boolean
     description: "Phase 1b merge gate — merge sub-agent (M) dispatched, reconciliation table produced with zero Unaccounted."
     defaultValue: false
-skills[4]:
-  - session-protocol
-  - agent-conduct
-  - execute-activity
-  - state-management
-executionModel:
-  roles[7]:
-    - id: orchestrator
-      description: "Coordinates all audit phases, dispatches agents, enforces coverage and dispatch gates, and manages structured output collection"
-    - id: reconnaissance
-      description: "Performs initial codebase reconnaissance (R) and scope mapping (S) to identify security-relevant structures"
-    - id: auditor
-      description: "Applies section 3 security checklist to assigned crate groups (A1-A7), producing per-scope findings"
-    - id: dependency-reviewer
-      description: "Reviews build dependencies (B) and dependency configurations (D1, D2) for supply-chain risks"
-    - id: verifier
-      description: "Verification agent (V) that validates coverage completeness and produces gap reports"
-    - id: merger
-      description: "Merge agent (M) that performs structured deduplication, severity scoring, and reconciliation"
-    - id: adversarial
-      description: "Adversarial verification agent that challenges PASS findings and tests for false negatives"
 initialActivity: scope-setup

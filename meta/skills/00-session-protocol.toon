@@ -1,43 +1,28 @@
 id: session-protocol
-version: 1.0.0
-capability: Govern session lifecycle — token handling, step manifests, resource usage, and skill loading
+version: 1.1.0
+capability: Govern session lifecycle — token handling, step manifests, checkpoint token discipline, resource usage, and skill loading
 
-description: "Cross-cutting skill defining the protocol for workflow sessions. Covers session token mechanics (passing, updating, opacity), step manifest requirements for activity transitions, resource consumption patterns, and the bootstrap sequence for loading skills."
+description: "Cross-cutting skill defining the protocol for workflow sessions. Covers session token mechanics (passing, updating, opacity), checkpoint token discipline (checkpoint_handle vs session_token), step manifest requirements for activity transitions, resource consumption patterns, and the bootstrap sequence for loading skills."
 
 protocol:
-  start-session[4]:
-    - "Call start_session({ workflow_id }) to obtain a session_token. This is the ONLY tool that takes workflow_id."
-    - "Call get_skills({ session_token }) to load behavioral protocols (session-protocol, agent-conduct, and workflow-specific skills). Pass the session_token from start_session."
-    - "Call get_workflow({ session_token, summary: true }) to load the workflow structure. The response includes initialActivity (which activity to load first) and the full activity list."
-    - "Fetch the workflow-server://schemas resource to load TOON schema definitions before interpreting any workflow content."
-  token-management[3]:
-    - "CRITICAL: After start_session, EVERY tool call requires a session_token parameter. There is NO workflow_id parameter on any tool except start_session — the workflow identity is encoded inside the token."
-    - "Use the updated session_token from each response for the next call. Tokens are returned both in the response body and in _meta.session_token."
+  token-management[5]:
+    - "CRITICAL: EVERY tool call requires a session_token parameter. There is NO workflow_id parameter on any tool except start_session — the workflow identity is encoded inside the token."
+    - "Use the updated session_token from each response for the next call. Tokens are returned both in the response body and in _meta.session_token. ALWAYS prefer the token from the most recent response — do not reuse a token from an earlier call in the same session."
+    - "TOKEN SUCCESSION: Each tool call that accepts a session_token returns a NEW token in its response. The old token is consumed and MUST NOT be reused. If you call two tools sequentially, the second call MUST use the token returned by the first call — not the token you passed to the first call. Failure to follow token succession causes HMAC signature verification failures."
+    - "STALE TOKEN RECOVERY: If any tool call returns 'HMAC signature verification failed', the server has restarted and generated a new signing key. Do NOT retry with the same token. Instead: call start_session({ workflow_id }) to get a fresh token, then reconstruct state by transitioning to the correct activity. See meta-orchestrator initialize-state protocol for the full recovery procedure."
     - "Token-exempt tools: discover, list_workflows, start_session, and health_check do not require a session token."
+  checkpoint-token-discipline[4]:
+    - "CHECKPOINT TOKENS ARE DISTINCT FROM SESSION TOKENS. yield_checkpoint returns a checkpoint_handle — an HMAC-signed token string (contains a '.' separator) that encodes the checkpoint state. This is NOT the same as the checkpoint_id (a short name like 'classification-confirmed')."
+    - "present_checkpoint and respond_checkpoint take a checkpoint_handle parameter, NOT a session_token. Never pass your session_token or checkpoint_id as the checkpoint_handle."
+    - "yield_checkpoint and resume_checkpoint take a session_token parameter. For resume_checkpoint, pass the checkpoint_handle as the session_token value (the checkpoint_handle IS the worker's advanced session token with the checkpoint encoded)."
+    - "If you receive 'Invalid session token' or 'missing signature' errors from present_checkpoint or respond_checkpoint, you are passing the wrong value as checkpoint_handle — use the exact string returned by yield_checkpoint in the checkpoint_handle field of the response."
   validation[1]:
     - "Check _meta.validation in each response for warnings. Warnings indicate inconsistencies (workflow mismatch, invalid transition, version drift, missing step manifest) and should be addressed but do not block execution."
   step-manifests[2]:
-    - "STEP MANIFEST: When transitioning to the next activity (calling next_activity), include a step_manifest parameter listing each step completed in the previous activity with its output summary."
+    - "STEP MANIFEST: When transitioning to the next activity (calling next_activity({ session_token, activity_id, step_manifest })), include a step_manifest parameter listing each step completed in the previous activity with its output summary."
     - "STEP COMPLETENESS: All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level."
   resource-usage[1]:
     - "RESOURCE LOADING: Skills return _resources as lightweight references (index, id, version — no content). Call get_resource with the resource index to load the full content. When a step says 'use attached resource XX', find the matching entry in _resources and call get_resource."
 
-tools:
-  start_session:
-    when: "Beginning a new workflow session"
-    params: "workflow_id"
-  get_skills:
-    when: "Loading behavioral protocols after start_session"
-    params: "session_token"
-  get_workflow:
-    when: "After start_session — loading workflow structure and initialActivity"
-    params: "session_token, summary"
-  next_activity:
-    when: "Transitioning to the first or next activity"
-    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls), step_manifest"
-  get_skill:
-    when: "Before executing a step that declares a skill"
-    params: "session_token, step_id"
-  get_resource:
-    when: "After get_skills or get_skill — loading content for entries in _resources"
-    params: "session_token, resource_index"
+resources[1]:
+  - "meta/00"

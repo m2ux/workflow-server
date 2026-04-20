@@ -8,7 +8,10 @@ recognition[3]:
   - adversarial review
   - check pass items
 skills:
-  primary: execute-audit
+  primary: meta/activity-worker
+  supporting[1]:
+    - execute-audit
+required: true
 estimatedTime: 30-60m
 rules[2]:
   - "Apply the decompose-safety-claims skill rules for adversarial verification."

@@ -9,6 +9,7 @@ inputs[2]:
     description: "List of files changed in the work package (from git diff)"
   - id: project-type
     description: "Detected project type (rust-substrate or other)"
+    required: false
     default: other
 
 protocol:
@@ -42,14 +43,6 @@ rules:
 
 resources[1]:
   - "16"
-
-tools:
-  read_file:
-    when: Reviewing each changed file
-    usage: Examine implementation details
-  grep:
-    when: Searching for patterns across codebase
-    usage: Find related code, check consistency
 
 errors:
   no_changes:

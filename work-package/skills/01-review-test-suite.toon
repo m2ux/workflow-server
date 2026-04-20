@@ -44,17 +44,6 @@ resources[2]:
   - "17"
   - "23"
 
-tools:
-  shell:
-    when: Running test suite
-    usage: Execute tests to verify they pass
-  read_file:
-    when: Reviewing test implementations
-    usage: Examine test structure and assertions
-  grep:
-    when: Searching for test patterns
-    usage: Find test files, check coverage patterns
-
 errors:
   tests_fail:
     cause: Test suite not passing

@@ -4,7 +4,9 @@ name: Update Routing
 description: "Update all prism workflow skills to reflect resource changes: fix renamed references, add goal-mapping entries, expand catalogs, update resource lists."
 problem: Skill routing tables reference prism names and indices that may have changed
 skills:
-  primary: update-skill-routing
+  primary: meta/activity-worker
+  supporting[1]:
+    - update-skill-routing
 
 entryActions[1]:
   - action: validate
@@ -15,18 +17,23 @@ steps[5]:
   - id: update-plan-analysis
     name: Update plan-analysis skill
     description: "Add goal-mapping entries for new prisms. Fix renamed references. Update resource list and rules."
+    required: true
   - id: update-portfolio-analysis
     name: Update portfolio-analysis skill
     description: "Expand lens catalog and selection guide. Fix renamed references. Update resource list."
+    required: true
   - id: update-behavioral-pipeline
     name: Update behavioral-pipeline skill
     description: "Fix any renamed references to behavioral lens names."
+    required: true
   - id: update-orchestrate-prism
     name: Update orchestrate-prism skill
     description: "Update index mappings and fix renamed references."
+    required: true
   - id: commit-routing
     name: Commit routing updates
     description: "Stage and commit all modified skill files."
+    required: true
 
 artifacts[1]:
   - id: routing-commit
@@ -39,6 +46,7 @@ transitions[1]:
   - to: update-docs
     isDefault: true
 
+required: true
 estimatedTime: "10-20m"
 
 outcome[2]:

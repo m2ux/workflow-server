@@ -1,8 +1,8 @@
 id: dispatch-sub-agents
 version: 1.2.0
-capability: "Compose sub-agent Task prompts with workflow-server bootstrap instructions, context variables, and supplementary files; dispatch all agents concurrently"
+capability: "Compose sub-agent prompts with workflow-server bootstrap instructions, context variables, and supplementary files; dispatch all agents concurrently"
 
-description: "Defines the procedure for dispatching sub-agents during a multi-agent orchestrated workflow. The orchestrator provides the agent roster (IDs, activities, context); this skill defines how to compose the Task prompt, include bootstrap instructions, attach context variables and cross-scope supplementary files, and dispatch all agents concurrently in a single batch."
+description: "Defines the procedure for dispatching sub-agents during a multi-agent orchestrated workflow. The orchestrator provides the agent roster (IDs, activities, context); this skill defines how to compose the sub-agent prompt, include bootstrap instructions, attach context variables and cross-scope supplementary files, and dispatch all agents concurrently. See harness-compat skill for spawn-agent and spawn-concurrent operations."
 
 inputs[1]:
   - id: agent-roster
@@ -10,9 +10,9 @@ inputs[1]:
 
 protocol:
   compose-prompts[1]:
-    - "For each agent in the roster, build a Task prompt containing: (1) workflow-server bootstrap instructions — 'call start_session(workflow_id) then call next_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the output schema resource.'"
+    - "For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat skill) containing: (1) workflow-server bootstrap instructions — 'call start_session(workflow_id) then call next_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the output schema resource.'"
   dispatch-all[1]:
-    - "Submit all agents in the roster as concurrent Task calls in a single batch. Each Task call uses the composed prompt from step 1."
+    - "Dispatch all agents in the roster using harness-compat::spawn-concurrent. Each agent uses the composed prompt from step 1."
   collect-all[1]:
     - "Wait for all agents to return. Collect structured output from each. If any agent fails or times out, record the failure and proceed with available results."
   verify-dispatch-completeness[1]:
@@ -25,12 +25,6 @@ output[1]:
       per_agent_output: "Per-agent structured output (conforming to the output schema resource)"
       dispatch_summary: "agents dispatched, failures encountered"
       dispatch_manifest: "per-agent table with assigned/dispatched/returned status"
-
-tools:
-  task:
-    when: "Dispatching each sub-agent"
-    params: "description, prompt, subagent_type, model"
-    returns: "Sub-agent output text"
 
 errors:
   agent_timeout:

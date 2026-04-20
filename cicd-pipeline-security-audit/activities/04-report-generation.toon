@@ -8,10 +8,10 @@ recognition[3]:
   - consolidate findings
   - finalize report
 skills:
-  primary: execute-cicd-audit
-  supporting[2]:
-    - score-cicd-severity
-    - write-cicd-report
+  primary: meta/activity-worker
+  supporting[1]:
+    - execute-cicd-audit
+required: true
 estimatedTime: 15-30m
 rules[5]:
   - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless verification_complete=true AND merge_complete=true. If either is unmet, return to primary-scan."
@@ -32,6 +32,7 @@ steps[5]:
     description: "Validate severity assignments against known campaign outcomes. A pull_request_target + fork checkout + token exfiltration chain (the Trivy pattern) is the calibration anchor for Critical severity."
   - id: coverage-gate
     name: "Verify Coverage Gate (BLOCKING)"
+    required: true
     skill: verify-scan-output
     description: "Re-verify that every workflow file in scope was scanned. Block report generation if any file is uncovered."
   - id: attach-remediation

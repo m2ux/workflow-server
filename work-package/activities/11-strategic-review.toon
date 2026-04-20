@@ -7,7 +7,10 @@ recognition[3]:
   - strategic review
   - review changes
   - review implementation
+required: true
 estimatedTime: 15-30m
+skills:
+  primary: meta/activity-worker
 artifacts[2]:
   - id: strategic-review-doc
     name: "strategic-review-{n}.md"
@@ -22,6 +25,7 @@ steps[9]:
     name: Review diff
     description: "Examine all changes in the PR for scope and relevance"
     skill: review-strategy
+    checkpoint: unsigned-commits-prompt
   - id: resign-unsigned-pr-commits
     name: Re-sign unsigned commits
     description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_pr to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
@@ -68,6 +72,7 @@ steps[9]:
   - id: analyze-strategic-findings
     name: Analyze Strategic Findings
     description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly."
+    checkpoint: review-findings
     actions[1]:
       - action: set
         target: recommended_strategic_option
@@ -81,6 +86,7 @@ checkpoints[2]:
       variable: unsigned_commits_in_pr
       operator: ==
       value: true
+    blocking: true
     options[2]:
       - id: resign-all
         label: Yes — re-sign all unsigned commits
@@ -97,6 +103,7 @@ checkpoints[2]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint
     message: "Strategic review complete. Based on findings analysis, the recommended action is {recommended_strategic_option}. Auto-advancing in 30s."
+    blocking: false
     defaultOption: acceptable
     autoAdvanceMs: 30000
     options[4]:

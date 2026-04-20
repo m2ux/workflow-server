@@ -36,14 +36,6 @@ output[1]:
       duplicate_indices: "Array of { index, files }"
       has_issues: "Boolean"
 
-tools:
-  grep:
-    when: "Searching for stale name references"
-  read_file:
-    when: "Reading README and skill files for verification"
-  shell:
-    when: "Counting files, extracting index prefixes"
-
 errors:
   parse_failure:
     cause: "Could not parse prompt guide table or goal-mapping matrix"

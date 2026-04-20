@@ -53,20 +53,6 @@ resources[2]:
   - "07"
   - "08"
 
-tools:
-  broad_chunks_search:
-    when: Searching for specific content across document chunks
-    usage: Hybrid search for phrases, keywords, technical terms across all documents
-  concept_search:
-    when: Finding conceptually-tagged content on a topic
-    usage: Search by concept (e.g., innovation, leadership) with synonym expansion
-  catalog_search:
-    when: Discovering relevant documents by title or topic
-    usage: Find documents before drilling into chunks
-  WebSearch:
-    when: Needing current information not in knowledge base
-    usage: Search web for documentation, best practices, recent updates
-
 errors:
   no_kb_results:
     cause: Knowledge base has no relevant content

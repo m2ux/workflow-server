@@ -11,6 +11,7 @@ inputs[3]:
     description: "Path to the codebase to analyze"
   - id: comprehension-artifact-path
     description: "Path to existing comprehension artifact to augment with findings. If absent, findings are recorded only in the assumptions log."
+    required: false
 
 protocol:
   classify-resolvability[4]:
@@ -53,27 +54,7 @@ rules:
   no-user-interaction: "The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result at the activity's assumptions checkpoint."
   classification-transparency: "When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis."
 
-tools:
-  read_file:
-    when: Examining source code, assumptions log, comprehension artifact
-    usage: Read source files to trace assumptions to evidence
-  grep:
-    when: Searching for specific patterns, types, function calls referenced in assumptions
-    usage: Find implementations, test coverage, usage patterns
-  glob:
-    when: Discovering test files, module structure, configuration files
-    usage: Locate test suites, find related source files
-  shell:
-    when: Read-only git operations for history and diff analysis
-    params: "git log, git diff, git show, git tag"
-    usage: Compare behavior across versions, trace when changes were introduced
-  write_file:
-    when: Updating assumptions log and comprehension artifact with findings
-    usage: Write resolved assumptions and deep-dive sections
-  semantic_search:
-    when: Finding code by meaning when tracing assumptions about behavior
-    usage: Locate relevant code when exact symbols are unknown
-
+  tool-usage: "use glob to locate test suites and find related source files; use semantic_search to locate relevant code when exact symbols are unknown"
 resources[1]:
   - "26"
 

@@ -9,15 +9,19 @@ inputs[5]:
     description: "The code or text to analyze — file path or inline content"
   - id: target-type
     description: "Whether the input is 'code' or 'general'"
+    required: false
     default: code
   - id: pipeline-mode
     description: "Analysis mode: 'single', 'full-prism', 'portfolio', or 'behavioral'"
+    required: false
     default: single
   - id: output-path
     description: "Directory to write analysis artifacts. Workers write artifacts here; the orchestrator passes the path to each worker."
+    required: false
     default: "."
   - id: selected-lenses
     description: "For portfolio mode: array of lens names"
+    required: false
 
 protocol:
   load-workflow[2]:
@@ -35,40 +39,40 @@ protocol:
     - "Domain-neutral variants (general targets in portfolio): error-resilience-neutral=24, api-surface-neutral=25, evolution-neutral=26"
     - "Compressed variants (model-specific): error-resilience-compact=27, error-resilience-70w=28"
   dispatch-structural-pass[6]:
-    - "Create a FRESH sub-agent using Task tool (subagent_type=generalPurpose, do NOT use resume)"
+    - "Dispatch a fresh sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent."
     - "Worker prompt must include: (1) the resolved_content, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the output-path to write its artifact, (5) instruction to load the lens via get_skill (resources attached), execute every operation, and write to {output-path}/structural-analysis.md"
     - "Worker prompt must NOT include any prior analysis — this is the first pass"
     - "Capture the artifact path from the worker's response: structural_output_path = {output-path}/structural-analysis.md"
     - "Verify the artifact was written by reading its first line"
     - "If pipeline_mode is 'single', go to present-result"
   dispatch-adversarial-pass[6]:
-    - "Create a NEW FRESH sub-agent (subagent_type=generalPurpose, do NOT resume the structural worker)"
+    - "Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on the structural worker."
     - "Worker prompt must include: (1) the resolved_content, (2) structural_output_path — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the output-path, (5) instruction to write to {output-path}/adversarial-analysis.md"
     - "CRITICAL: Do NOT include the structural analysis text inline. Pass only the file path. The worker reads the artifact from the filesystem."
     - "CRITICAL: Do NOT include any information about how the structural analysis was generated"
     - "Capture adversarial_output_path = {output-path}/adversarial-analysis.md"
     - "Proceed to dispatch-synthesis-pass"
   dispatch-synthesis-pass[5]:
-    - "Create a NEW FRESH sub-agent (subagent_type=generalPurpose, do NOT resume any prior worker)"
+    - "Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on any prior worker."
     - "Worker prompt must include: (1) the resolved_content, (2) structural_output_path and adversarial_output_path — the worker reads both files, (3) the synthesis lens resource index, (4) the output-path, (5) instruction to write to {output-path}/synthesis.md"
     - "Capture synthesis_output_path = {output-path}/synthesis.md"
     - "Verify the artifact was written"
     - "Proceed to present-result"
   dispatch-portfolio-passes[5]:
-    - "For each selected lens, create a FRESH sub-agent with: the resolved_content, that lens's resource index, and the output-path"
+    - "For each selected lens, dispatch a fresh sub-agent using harness-compat::spawn-agent with: the resolved_content, that lens's resource index, and the output-path"
     - "Each worker writes to {output-path}/portfolio-{lens-name}.md"
     - "Portfolio workers can be dispatched in parallel (up to 4 concurrent) since they are independent"
     - "Capture all artifact paths in portfolio_output_paths keyed by lens name"
     - "After all complete, proceed to present-result with a cross-lens synthesis"
   dispatch-behavioral-passes[6]:
-    - "For behavioral mode: dispatch 4 independent behavioral lens passes. Each is a FRESH sub-agent."
+    - "For behavioral mode: dispatch 4 independent behavioral lens passes. Each is a fresh sub-agent via harness-compat::spawn-agent."
     - "Pass 1 (ERRORS): resource 19 (error-resilience). Worker writes to {output-path}/behavioral-errors.md"
     - "Pass 2 (COSTS): resource 20 (optim). Worker writes to {output-path}/behavioral-costs.md"
     - "Pass 3 (CHANGES): resource 21 (evolution). Worker writes to {output-path}/behavioral-changes.md"
     - "Pass 4 (PROMISES): resource 22 (api-surface). Worker writes to {output-path}/behavioral-promises.md"
     - "All 4 passes are independent — they can be dispatched in parallel (up to 4 concurrent). Capture all 4 artifact paths in behavioral_output_paths."
   dispatch-behavioral-synthesis[5]:
-    - "After all 4 behavioral passes complete, dispatch the synthesis pass to a FRESH sub-agent"
+    - "After all 4 behavioral passes complete, dispatch the synthesis pass to a fresh sub-agent via harness-compat::spawn-agent."
     - "Worker prompt must include: (1) the resolved_content, (2) all 4 behavioral artifact paths with role labels (ERRORS, COSTS, CHANGES, PROMISES), (3) resource index 23 (behavioral-synthesis), (4) the output-path"
     - "Worker reads each artifact and constructs labeled sections: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES"
     - "Worker writes to {output-path}/behavioral-synthesis.md"
@@ -89,34 +93,14 @@ output[1]:
       pipeline_mode: "Which mode was used"
 
 rules:
-  never-resume: "NEVER use Task resume between passes. Each pass MUST be a fresh sub-agent. This is the core isolation guarantee."
+  never-resume: "NEVER use continue-agent between passes (harness-compat). Each pass MUST be a fresh sub-agent dispatched via spawn-agent. This is the core isolation guarantee."
   artifact-mediated: "Pass outputs between workers via filesystem artifacts, not inline text. The orchestrator provides artifact paths; workers read and write files. This keeps prompts focused and artifacts as the source of truth."
   no-analysis: "The orchestrator MUST NOT generate analysis, evaluate findings, or produce structural observations. It dispatches, captures paths, and presents results."
   lens-not-forwarded: "The orchestrator tells workers which resource index to load — it does NOT load the lens resource and include it in the prompt."
   automatic-pipeline: "The full pipeline runs without user interaction. No checkpoints, no confirmation between passes."
   verify-artifacts: "After each pass, verify the artifact was written before dispatching the next pass."
 
-tools:
-  get_workflow:
-    when: Once at workflow start
-    params: "workflow_id: prism"
-    returns: "Workflow definition with variables, rules, activities"
-  next_activity:
-    when: Before dispatching each pass
-    params: "workflow_id: prism, activity_id: structural-pass | adversarial-pass | synthesis-pass"
-    returns: Activity definition with artifact declarations
-  task:
-    when: "Dispatching each pass to a fresh sub-agent"
-    params: "description, prompt, subagent_type: generalPurpose — NEVER use resume parameter"
-    returns: "Worker result with artifact path"
-    usage: "Each call creates a new agent. Include resolved_content + prior artifact paths + resource index + output-path in the prompt."
-  read_file:
-    when: "Resolving a file path to content, and verifying artifacts were written"
-    usage: Read the target file before dispatching; verify artifact existence after each pass
-  shell:
-    when: "Creating the output directory if it does not exist"
-    params: "mkdir -p {output-path}"
-
+  tool-usage: "spawn-agent via harness-compat for description and prompt — NEVER use continue-agent"
 errors:
   worker_incomplete:
     cause: "A pass worker returned without writing its artifact"

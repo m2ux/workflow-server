@@ -101,7 +101,7 @@ graph TD
 See [activities/README.md](activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
 
 ---
-## Execution Model
+## Orchestration Model
 
 This workflow uses an **orchestrator/worker two-agent pattern**.
 
@@ -113,19 +113,19 @@ sequenceDiagram
     participant Worker as Worker
 
     User->>Caller: "start work package for midnight-node"
-    Caller->>Orch: "Task(orchestrate-workflow)"
+    Caller->>Orch: "spawn-agent(orchestrate-workflow)"
 
     Note over Orch: get_workflow -> schema preamble + definition
     Note over Orch: Initialize state, detect mode
 
-    Orch->>Worker: "Task(activity: start-work-package, state)"
+    Orch->>Worker: "spawn-agent(activity: start-work-package, state)"
     Worker->>User: Checkpoints
     User->>Worker: Responses
     Worker-->>Orch: Result + variable changes
 
     Note over Orch: Evaluate transitions
 
-    Orch->>Worker: "Task(resume, activity: design-philosophy, state)"
+    Orch->>Worker: "continue-agent(activity: design-philosophy, state)"
     Worker->>User: Checkpoints
     User->>Worker: Responses
     Worker-->>Orch: Result + variable changes
@@ -133,21 +133,20 @@ sequenceDiagram
     Note over Orch: Continue for all activities...
 ```
 
-**Orchestrator** (skill: `orchestrate-workflow`):
+**Orchestrator** (skill: `workflow-orchestrator`):
 - Loads the workflow definition via `get_workflow` (receives schema preamble with all five JSON Schemas)
 - Initializes state variables, detects mode
 - Dispatches activities to the worker one at a time
 - Evaluates transition conditions between activities
 - Manages rework loops (transitions back to earlier activities)
-- MUST NOT execute steps, write code, or produce artifacts
 
-**Worker** (skill: `execute-activity`):
+**Worker** (skill: `11-activity-worker`):
 - Self-bootstraps from `next_activity` and `get_skill`
 - Executes activity steps sequentially using the skill protocol
 - Handles all checkpoints and user interaction directly
 - Produces artifacts with `artifactPrefix` convention
 - Reports structured results (variable changes, checkpoints, artifacts, steps completed)
-- **Persists across activities** via Task `resume` — preserves codebase understanding, file locations, and implementation decisions
+- **Persists across activities** via harness-compat::continue-agent — preserves codebase understanding, file locations, and implementation decisions
 
 This separation prevents context saturation in the orchestrator (which stays lean managing flow) while the worker accumulates rich domain context across the entire workflow.
 
@@ -326,13 +325,13 @@ See `workflow.toon` for the complete variable declarations with default values.
 
 The following 7 rules are declared at the workflow level and apply to all activities:
 
-1. Agents MUST NOT skip checkpoints. All checkpoints require explicit user selection, UNLESS they are advisory checkpoints (with `autoAdvanceMs` and `defaultOption`), which present a recommendation with a timed default; the user may override before the timer elapses.
+1. Agents MUST NOT skip or auto-resolve blocking checkpoints (`blocking: true`) — these require explicit user selection. Advisory checkpoints (`blocking: false` with `autoAdvanceMs` and `defaultOption`) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input.
 2. Ask, don't assume — Clarify requirements before acting.
 3. Summarize, then proceed — Provide brief status before asking to continue.
 4. One task at a time — Complete current work before starting new work.
 5. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
 6. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-7. **EXECUTION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `orchestrator-management` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `worker-management` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
+7. **ORCHESTRATION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `meta-orchestrator` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `activity-worker` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
 
 ---
 

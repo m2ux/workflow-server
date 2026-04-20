@@ -1,5 +1,5 @@
 id: github-cli-protocol
-version: 1.0.0
+version: 1.1.0
 capability: Enforce correct GitHub CLI usage patterns including GraphQL deprecation workarounds
 
 description: "Cross-cutting skill that governs how agents use the GitHub CLI (gh). Mutating operations on PRs and issues must use the REST API because gh commands that use GraphQL fail due to Projects Classic deprecation. Read operations via gh CLI are safe."

@@ -3,34 +3,40 @@ version: 1.0.0
 name: Start Security Vulnerability Remediation
 description: "Initialize a high-sensitivity security fix. Configures private remotes and local branches without any public issue or PR tracking. This activity is STRICTLY ISOLATED from public CI/CD and PR infrastructure."
 problem: User needs to remediate a security vulnerability without public disclosure
+required: true
 estimatedTime: 10-15m
+skills:
+  primary: meta/activity-worker
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR or Issue creation tools (gh pr create, gh issue create)."
   - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
 entryActions[1]:
   - action: log
     message: "ENTERING SECURITY VULNERABILITY MODE - ISOLATION ACTIVE"
-steps[8]:
+steps[9]:
   - id: set-security-mode
     name: Confirm Security Mode
     description: "Ensure is_sec_vuln_mode is set to true and logged."
     actions[1]:
       - action: set
-        variable: is_sec_vuln_mode
+        target: is_sec_vuln_mode
         value: true
   - id: capture-sec-vuln-url
     name: Capture Security Advisory URL
     description: "Get the security advisory URL (private/restricted access)."
+  - id: capture-private-fork-url
+    name: Capture Private Fork URL
+    description: "Ask the user for the private fork URL for the security vulnerability fix."
   - id: resolve-target
     name: Resolve Target Directory
     description: "Read target_path from state variables and verify directory exists."
   - id: configure-sec-vuln-remote
     name: Configure Security Remote
-    description: "INSIDE target_path: Add the security advisory URL as a git remote named 'security'. If it exists, update it."
+    description: "INSIDE target_path: Add the private fork URL as a git remote named 'security'. If it exists, update it. For monorepos, ensure the submodule remote is updated as well."
     skill: manage-git
   - id: initialize-security-branch
     name: Initialize Security Branch
-    description: "Fetch from 'security' remote and checkout a new local branch: vuln/remediate-{short_id}."
+    description: "Fetch from 'security' remote and checkout a new local branch from the private fork: vuln/remediate-{short_id}."
     skill: manage-git
   - id: initialize-planning-folder
     name: Initialize Private Planning Folder
@@ -43,10 +49,11 @@ steps[8]:
     name: Finalize Security Setup
     description: "Verify that 'origin' remote is not being tracked by the current branch."
     skill: manage-git
-checkpoints[3]:
+checkpoints[4]:
   - id: confirm-security-remote
     name: Confirm Security Remote
     message: "CRITICAL: Isolation check. You MUST confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
+    blocking: true
     options[2]:
       - id: confirmed
         label: "Yes, security remote is private"
@@ -57,6 +64,7 @@ checkpoints[3]:
   - id: verify-isolation
     name: Verify Isolation Checkpoint
     message: "I have configured the 'security' remote and local branch. I will NOT create a public PR or Issue. Is the private remote URL {sec_vuln_url} correct and authorized?"
+    blocking: true
     options[2]:
       - id: authorized
         label: "Yes, proceed"
@@ -71,12 +79,25 @@ checkpoints[3]:
       variable: sec_vuln_url
       operator: notExists
     message: "Please provide the private security advisory URL:"
+    blocking: true
+    options[1]:
+      - id: provided
+        label: "URL Provided"
+        description: "Proceed with this URL"
+  - id: private-fork-url-input
+    name: Private Fork URL Input
+    condition:
+      type: simple
+      variable: private_fork_url
+      operator: notExists
+    message: "Please provide the private fork URL for the security vulnerability fix:"
+    blocking: true
     options[1]:
       - id: provided
         label: "URL Provided"
         description: "Proceed with this URL"
 transitions[1]:
-  - to: proxy-design-philosophy
+  - to: design-philosophy
     isDefault: true
 exitActions[1]:
   - action: log
@@ -86,7 +107,8 @@ outcome[4]:
   - "Private 'security' remote configured"
   - "Local vuln/ branch created"
   - "Private planning folder initialized"
-context_to_preserve[3]:
+context_to_preserve[4]:
   - is_sec_vuln_mode
   - sec_vuln_url
+  - private_fork_url
   - branch_name

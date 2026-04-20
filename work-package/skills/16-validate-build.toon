@@ -1,5 +1,5 @@
 id: validate-build
-version: 1.0.0
+version: 1.1.0
 capability: Validate implementation through test execution, build verification, and lint checking
 
 description: "Runs the full validation suite: unit/integration/e2e tests, build verification, and linter checks. Analyzes failures, applies fixes, and re-runs until all pass. Provides observable results — does not ask user about test/build outcomes."
@@ -18,6 +18,10 @@ protocol:
   verify-build[2]:
     - Run build command
     - Observe and record result
+  check-format[3]:
+    - "Run the canonical formatting check: nice -n 19 cargo fmt --all -- --check (Rust) or equivalent for the project type"
+    - "This MUST match the exact command CI runs — for Rust/Substrate projects, this is cargo fmt --all -- --check which checks ALL workspace members"
+    - Record any formatting diffs as failures
   check-lint[2]:
     - Run linter
     - Observe and record results
@@ -38,15 +42,6 @@ output[1]:
 
 rules:
   no-duplicate-review: "Test suite quality was already reviewed in post-impl-review — this activity validates execution only"
-
-tools:
-  shell:
-    when: Running tests, build, and linter
-    params: "nice -n 19 cargo test, nice -n 19 cargo build, nice -n 19 cargo clippy, nice -n 19 npm test, nice -n 19 npm run build — based on project type"
-    usage: Execute validation commands in target submodule
-  read_file:
-    when: Analyzing failure output
-    usage: Parse error messages and stack traces for root cause
 
 errors:
   persistent_failure:

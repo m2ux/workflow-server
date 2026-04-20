@@ -7,6 +7,7 @@ recognition[3]:
   - implement tasks
   - start implementation
   - execute plan
+required: true
 estimatedTime: 1-4h
 rules[1]:
   - "SYMBOL VERIFICATION: Every symbol introduced or referenced in code or documentation MUST have provenance — exists in codebase, in a declared dependency, or is newly created by the current task. Never fabricate symbols."
@@ -18,6 +19,8 @@ artifacts[1]:
     action: update
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
+skills:
+  primary: meta/activity-worker
 loops[3]:
   - id: task-cycle
     name: Task Implementation Cycle
@@ -28,6 +31,7 @@ loops[3]:
       - id: implement-task
         name: Implement task
         skill: implement-task
+        checkpoint: switch-model-pre-impl
       - id: run-tests
         name: Run tests
         skill: validate-build
@@ -68,6 +72,7 @@ loops[3]:
         name: Present assumption to user
         description: "Present the current open assumption via the implementation-assumption-interview checkpoint."
         skill: review-assumptions
+        checkpoint: implementation-assumption-interview
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
@@ -77,6 +82,7 @@ steps[4]:
     name: Reconcile assumptions
     description: "Classify all accumulated implementation assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
     skill: reconcile-assumptions
+    checkpoint: confirm-implementation
   - id: present-resolved-assumptions
     name: Present resolved assumptions
     description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."
@@ -90,10 +96,12 @@ steps[4]:
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Record all implementation assumptions, reconciliation outcomes, and user interview responses in the assumptions log."
+    checkpoint: switch-model-post-impl
 checkpoints[4]:
   - id: switch-model-pre-impl
     name: Switch Model for Implementation
     message: "Implementation requires the full model for code generation. You may switch to your preferred implementation model. Proceeding in 10s."
+    blocking: false
     defaultOption: continue-current
     autoAdvanceMs: 10000
     options[2]:
@@ -106,6 +114,7 @@ checkpoints[4]:
   - id: confirm-implementation
     name: Confirm Implementation Start
     message: "Planning and assumptions review complete. Ready to begin implementation of {plan.task_count} tasks. Proceeding in 30s unless you intervene."
+    blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options[2]:
@@ -126,6 +135,7 @@ checkpoints[4]:
       operator: "=="
       value: true
     message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
+    blocking: true
     options[2]:
       - id: resolve-inline
         label: Resolve now
@@ -142,6 +152,7 @@ checkpoints[4]:
   - id: switch-model-post-impl
     name: Switch Model for Review
     message: "Implementation complete. You may switch to a lower-cost model for the review phases. Proceeding in 10s."
+    blocking: false
     defaultOption: continue-current
     autoAdvanceMs: 10000
     options[2]:

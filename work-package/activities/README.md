@@ -119,7 +119,7 @@ graph TD
 |-----------|--------|
 | default | codebase-comprehension |
 
-Design philosophy always transitions to codebase-comprehension. Subsequent routing (to elicitation, research, or plan-prepare) is handled by codebase-comprehension's own transitions.
+Design philosophy always transitions to codebase-comprehension (`required: false` on that activity in the workflow definition). Subsequent routing (to elicitation, research, or plan-prepare) is handled by codebase-comprehension's own transitions.
 
 **Artifacts:** `design-philosophy.md`, `assumptions-log.md` (both in planning folder).
 
@@ -698,7 +698,7 @@ graph TD
 
 ### 11. Strategic Review
 
-**Purpose:** Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. GPG signature preflight runs in validate; if unsigned commits exist, a checkpoint asks whether to re-sign before the worker continues. When the target repo has a root-level `changes/` directory, ensures a matching changelog fragment exists. Creates strategic review document and architecture summary. In review mode: documents cleanup recommendations without applying them.
+**Purpose:** Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. GPG signature preflight runs in validate; if unsigned commits exist, a blocking checkpoint asks whether to re-sign before the worker continues. When the target repo has a root-level `changes/` directory, ensures a matching changelog fragment exists. Creates strategic review document and architecture summary. In review mode: documents cleanup recommendations without applying them.
 
 **Artifact prefix:** `11`
 

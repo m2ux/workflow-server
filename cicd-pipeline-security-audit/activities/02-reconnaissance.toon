@@ -8,9 +8,10 @@ recognition[3]:
   - reconnaissance
   - map triggers
 skills:
-  primary: execute-cicd-audit
+  primary: meta/activity-worker
   supporting[1]:
-    - inventory-workflows
+    - execute-cicd-audit
+required: true
 estimatedTime: 10-20m
 rules[5]:
   - "The orchestrator performs classification and agent assignment ONLY — it MUST NOT apply detection patterns or produce findings"

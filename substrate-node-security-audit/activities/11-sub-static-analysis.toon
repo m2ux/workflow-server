@@ -8,9 +8,10 @@ recognition[3]:
   - pattern-based search
   - mechanical checks
 skills:
-  primary: execute-sub-agent
+  primary: meta/activity-worker
   supporting[1]:
-    - search-pattern-catalog
+    - execute-sub-agent
+required: false
 estimatedTime: 15-30m
 
 rules[6]:
@@ -23,6 +24,7 @@ rules[6]:
 steps[6]:
   - id: run-grep-patterns
     name: Run All Grep Patterns
+    required: true
     skill: search-pattern-catalog
     skill_args:
       resource_id: 05-static-analysis-patterns
@@ -31,6 +33,7 @@ steps[6]:
     description: "Apply the 'Grep Patterns' catalog section against the full in-scope directory set, excluding test/mock/bench files."
   - id: run-mechanical-checks
     name: Run Mechanical Checks
+    required: true
     skill: search-pattern-catalog
     skill_args:
       resource_id: 05-static-analysis-patterns
@@ -39,21 +42,25 @@ steps[6]:
     description: "Apply the 'Mechanical Checks' catalog section."
   - id: run-storage-lifecycle-scan
     name: Run Storage Lifecycle Pairing Scan
+    required: true
     skill: scan-storage-lifecycle
     skill_args:
       output_format: "| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
     description: "Scan all storage maps in the full in-scope codebase."
   - id: produce-zero-hit-audit
     name: Produce Zero-Hit Pattern Audit
+    required: true
     skill: search-pattern-catalog
     skill_args:
       output_format: "| Pattern | Category | Hits | Verdict | Justification |"
     description: "Compile zero-hit verdicts from steps 1 and 2 into a single table."
   - id: aggregate-findings
     name: Aggregate Hits Into Distinct Findings
+    required: true
     description: "Aggregate hits into distinct findings per resource 05 aggregation rules."
   - id: format-output
     name: Format Structured Output
+    required: true
     skill: execute-sub-agent
     description: "Format all findings and tables as structured output."
 outcome[4]:

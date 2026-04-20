@@ -11,25 +11,72 @@ Meta is the **skill and resource repository** for the workflow server. It provid
 - Skills are universal and auto-included on the first `get_skills` call for any session
 - Activities are independent entry points matched via recognition patterns (not sequential flow)
 
+## Hierarchical Orchestration Model
+
+The workflow-server implements a 3-tier hierarchical orchestration model. The top-level `meta-orchestrator` manages the outer session and user interaction, while client workflows are delegated to a `workflow-orchestrator` sub-agent, which in turn dispatches an `activity-worker` for discrete task execution.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Meta as meta-orchestrator<br/>(Top-level Agent)
+    participant Client as workflow-orchestrator<br/>(Client Workflow Sub-agent)
+    participant Worker as activity-worker<br/>(Sub-agent)
+
+    User->>Meta: "start work package"
+    Note over Meta: Loads meta workflow,<br/>starts session
+    Meta->>Meta: Runs discover-session activity
+    Note over Meta: Matches context,<br/>sets target_workflow
+    Meta->>Meta: Runs dispatch-workflow activity
+
+    Note over Meta: Calls dispatch_workflow<br/>(creates independent client session)
+    Meta->>Client: spawn-agent(prompt: resource meta/05)
+
+    Note over Client: Calls start_session(client_token)<br/>Loads client workflow
+    
+    Client->>Worker: spawn-agent(prompt: resource meta/04)
+    Note over Worker: Calls start_session(client_token)<br/>Inherits session
+    
+    Note over Worker: Executes activity steps
+
+    Worker-->>Client: yields checkpoint_pending
+    Client-->>Meta: bubbles checkpoint_pending
+    Meta->>User: AskQuestion (presents checkpoint)
+    User->>Meta: Selects Option
+    Meta->>Meta: respond_checkpoint
+    
+    Meta->>Client: continue-agent
+    Client->>Worker: continue-agent
+    
+    Note over Worker: Finishes steps, writes artifacts
+    Worker-->>Client: activity_complete
+
+    Note over Client: Evaluates transitions,<br/>dispatches next activity
+    
+    Client->>Worker: continue-agent(next_activity, get_activity)
+    Note over Worker: Executes next activity...
+    Worker-->>Client: activity_complete
+    
+    Note over Client: No more transitions
+    Client-->>Meta: workflow_complete
+    Note over Meta: Records completion,<br/>runs end-workflow activity
+```
+
 ## Workflow Structure
 
 ```mermaid
 graph TD
-    subgraph meta[Meta Workflow - Independent Entry Points]
+    subgraph meta[Meta Workflow]
         Start([User Intent])
         
-        Start -->|"start/begin/execute workflow"| SW[start-workflow]
-        Start -->|"resume/continue workflow"| RW[resume-workflow]
-        Start -->|"end/finish/complete workflow"| EW[end-workflow]
+        Start -->|"start/resume/continue"| DS[00-discover-session]
         
-        SW --> WF([Workflow Loaded])
-        RW --> WF
-        EW --> Done([Workflow Complete])
+        DS -->|"has target_workflow"| DW[01-dispatch-workflow]
+        
+        DW --> Done([Client Workflow Managed])
     end
     
-    style SW fill:#e1f5fe
-    style RW fill:#e1f5fe
-    style EW fill:#e1f5fe
+    style DS fill:#e1f5fe
+    style DW fill:#e1f5fe
 ```
 
 ## Activities
@@ -38,7 +85,7 @@ graph TD
 
 **Purpose:** Begin executing a new workflow from the beginning.
 
-**Primary Skill:** `execute-activity`  
+**Primary Skill:** `11-activity-worker`  
 **Supporting Skills:** `state-management`
 
 ```mermaid
@@ -48,23 +95,22 @@ graph TD
         s2([Load workflow])
         s3([Initialize state])
         s4([Load skills])
-        s5([Detect execution model])
-        s6([Discover target])
-        s7([Read submodules])
-        s8([Discover resources])
-        s9([Load start resource])
-        s10([Get initial activity])
-        s11([Present activity])
-        s12([Prepare checkpoints])
+        s5([Discover target])
+        s6([Read submodules])
+        s7([Discover resources])
+        s8([Load start resource])
+        s9([Get initial activity])
+        s10([Present activity])
+        s11([Prepare checkpoints])
         
-        s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> s11 --> s12
+        s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> s11
     end
     
-    skill1((execute-activity))
+    skill1((11-activity-worker))
     skill3((state-management))
     
     s3 -.-> skill3
-    s10 -.-> skill1
+    s9 -.-> skill1
 ```
 
 | Step | Description |
@@ -73,7 +119,6 @@ graph TD
 | Load workflow | Load the selected workflow definition and extract metadata |
 | Initialize state | Initialize workflow state with variable defaults |
 | Load skills | Load behavioral protocols via get_skills (session-protocol, agent-conduct, workflow skills) |
-| Detect execution model | Check for EXECUTION MODEL rule; load orchestrate-workflow skill if present |
 | Discover target | Check for .gitmodules to determine repository type and resolve target_path |
 | Read submodules | Parse .gitmodules for submodule selection (only when is_monorepo is true) |
 | Discover resources | Load the workflow resource index for reference |
@@ -94,7 +139,7 @@ graph TD
 
 **Purpose:** Continue a workflow that was previously started.
 
-**Primary Skill:** `execute-activity`  
+**Primary Skill:** `11-activity-worker`  
 **Supporting Skills:** `state-management`
 
 ```mermaid
@@ -113,7 +158,7 @@ graph TD
         r1 --> r2 --> r3 --> r4 --> r5 --> r6 --> r7 --> r8 --> r9
     end
     
-    skill1((execute-activity))
+    skill1((11-activity-worker))
     skill3((state-management))
     
     r4 -.-> skill3
@@ -144,7 +189,7 @@ graph TD
 
 **Purpose:** Complete and finalize a workflow execution.
 
-**Primary Skill:** `execute-activity`  
+**Primary Skill:** `11-activity-worker`  
 **Supporting Skills:** `state-management`
 
 ```mermaid
@@ -160,7 +205,7 @@ graph TD
         e1 --> e2 --> e3 --> e4 --> e5 --> e6
     end
     
-    skill1((execute-activity))
+    skill1((11-activity-worker))
     skill3((state-management))
     
     e1 -.-> skill1
@@ -189,9 +234,9 @@ Meta defines universal skills used by all workflows:
 
 | Skill | Capability | Description |
 |-------|------------|-------------|
-| `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
+| `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity → get_activity), token handling, step manifests, resource loading via get_resource |
 | `agent-conduct` | Agent behavioral boundaries | File sensitivity, communication tone, resource loading discipline, build command priority |
-| `execute-activity` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
+| `11-activity-worker` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
 | `state-management` | Manage workflow state | Initialize, update, and persist state across sessions. Agent writes session token + variables + trace to disk; resumes via start_session(session_token) |
 | `artifact-management` | Manage planning artifacts | Planning folder creation, regular file and submodule commit workflows |
 | `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
@@ -199,10 +244,10 @@ Meta defines universal skills used by all workflows:
 | `knowledge-base-search` | Optimise knowledge base searches | Pre-indexes domain maps before querying concept-rag |
 | `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
 | `gitnexus-operations` | Query codebases via knowledge graph | GitNexus MCP tools for impact analysis, debugging, refactoring |
-| `orchestrator-management` | Consolidated orchestrator skill | Workflow coordination, state management, worker dispatch, checkpoint presentation. Inline-only — never delegated to a sub-agent. |
-| `worker-management` | Consolidated worker skill | Activity execution, step-level skill loading via get_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
+| `10-meta-orchestrator` | Consolidated orchestrator skill | Workflow coordination, state management, worker dispatch, checkpoint presentation. Inline-only — never delegated to a sub-agent. |
+| `11-activity-worker` | Consolidated worker skill | Activity execution, step-level skill loading via get_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
 
-> **Note:** `workflow-execution` was absorbed into `execute-activity`. `orchestrator-management` and `worker-management` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
+> **Note:** `workflow-execution` was absorbed into `11-activity-worker`. `10-meta-orchestrator`, `11-workflow-orchestrator`, and `12-activity-worker` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
 
 ---
 
@@ -212,6 +257,5 @@ Activities are matched via these patterns:
 
 | Pattern | Activity |
 |---------|----------|
-| start a workflow, begin workflow, execute workflow, run workflow | `start-workflow` |
-| resume workflow, continue workflow, pick up where I left off | `resume-workflow` |
-| end workflow, finish workflow, complete workflow, we're done | `end-workflow` |
+| start a workflow, resume a workflow, continue a workflow, work on | `discover-session` |
+| dispatch the workflow, start the target workflow, begin the client workflow | `dispatch-workflow` |

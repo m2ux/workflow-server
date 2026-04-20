@@ -4,14 +4,18 @@ name: Plan Dimension Analysis
 description: "Survey the target to understand its structure and content, map each evaluation dimension to prism pipeline modes and lenses, group dimensions by pipeline mode for execution, and write the evaluation plan artifact."
 problem: "Generic evaluation prompts miss target-specific content. A blockchain proposal needs different analytical focus than a product strategy document or a codebase architecture review. The dimension-to-lens mapping must be informed by the target's actual structure, claims, and content to produce meaningful findings."
 skills:
-  primary: plan-evaluation
+  primary: meta/activity-worker
+  supporting[1]:
+    - plan-evaluation
 steps[5]:
   - id: survey-target
     name: Survey Target Structure
     description: "Read and analyse the target at target_path. For documents: identify sections, key claims, stated goals, architectural decisions, resource assumptions, timeline commitments, cross-references. For codebases: identify modules, build system, dependencies, architecture patterns. Record a structural inventory and key topics that will inform the analysis_focus values for each dimension."
+    required: true
   - id: map-dimensions
     name: Map Dimensions to Lenses
     description: "For each dimension, use attached resource 01 (dimension-lens-mapping) and match against the standard and custom mapping tables. Select pipeline_mode, lenses, analysis_focus, and output_subdir. Apply lens_overrides where provided. Build the dimension_plan array."
+    required: true
     actions[1]:
       - action: set
         target: dimension_plan
@@ -19,6 +23,7 @@ steps[5]:
   - id: group-dimensions
     name: Group Dimensions for Execution
     description: "Group dimensions by pipeline mode into execution_groups. Full-prism dimensions each get their own group. Portfolio dimensions are combined into a single group with merged lens sets. Record execution order: full-prism groups first (deepest analysis), then portfolio groups."
+    required: true
     actions[1]:
       - action: set
         target: execution_groups
@@ -26,6 +31,7 @@ steps[5]:
   - id: write-plan
     name: Write Evaluation Plan Artifact
     description: "Write the evaluation plan artifact to {output_path}. Include: target overview, dimension-to-lens mapping table, execution groups with estimated sub-agent dispatch count, and analysis focus summaries per dimension."
+    required: true
     actions[1]:
       - action: set
         target: evaluation_plan_path
@@ -33,6 +39,7 @@ steps[5]:
   - id: present-plan
     name: Present Dimension Plan
     description: "Present the dimension plan summary: which dimensions map to which prism modes and lenses, execution group structure, and total estimated sub-agent dispatches."
+    required: true
 checkpoints[1]:
   - id: confirm-plan
     name: Dimension Plan Confirmation
@@ -49,6 +56,8 @@ checkpoints[1]:
         description: "Modify the lens mapping, pipeline modes, or execution grouping"
         effect:
           transitionTo: dimension-planning
+    required: true
+    blocking: true
 rules[3]:
   - "EVIDENCE-BASED FOCUS: Every analysis_focus value must reference specific content from the target discovered during survey-target. Do not use generic focus descriptions. If a proposal makes specific claims about market size, name those claims in the Veracity dimension's analysis_focus."
   - "TRIGGER ISOLATION: No analysis_focus value may contain the strings 'security audit', 'security review', or the bare word 'audit' as the primary descriptor. These would activate prism's built-in audit-finalize activity. Use descriptive evaluation language: 'evaluate consistency of...', 'assess veracity of claims regarding...', 'analyse feasibility constraints for...'."

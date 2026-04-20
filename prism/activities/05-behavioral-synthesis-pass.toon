@@ -3,7 +3,9 @@ version: 1.0.0
 name: Behavioral Synthesis Pass
 description: "Iterate over analysis_units that were assigned behavioral mode and run the behavioral synthesis lens against each unit's 4 behavioral artifacts. Each worker runs in a fresh context. Writes behavioral-synthesis.md per unit."
 skills:
-  primary: behavioral-pipeline
+  primary: meta/activity-worker
+  supporting[1]:
+    - behavioral-pipeline
 artifacts[1]:
   - id: behavioral-synthesis
     name: "{unit_output_subdir}behavioral-synthesis.md"
@@ -23,6 +25,7 @@ loops[1]:
       - id: check-mode
         name: Check Unit Mode
         description: "Skip this unit if current_unit.pipeline_mode is not 'behavioral'."
+        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -31,6 +34,7 @@ loops[1]:
       - id: load-lens
         name: Load Behavioral Synthesis Lens
         description: "Load the behavioral synthesis lens resource 23."
+        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -39,6 +43,7 @@ loops[1]:
       - id: execute-lens
         name: Execute Behavioral Synthesis
         description: "Read 4 behavioral artifacts from the unit output directory: behavioral-errors.md, behavioral-costs.md, behavioral-changes.md, behavioral-promises.md. Construct labeled input with ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES headings separated by horizontal rules. Apply the behavioral synthesis lens against this constructed input. Find convergence points, blind spots, and the unified conservation law."
+        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -47,6 +52,7 @@ loops[1]:
       - id: write-artifact
         name: Write Behavioral Synthesis Artifact
         description: "Write the synthesis output to {unit_output_dir}/behavioral-synthesis.md. Append path to all_artifact_paths."
+        required: true
         condition:
           type: simple
           variable: current_unit.pipeline_mode

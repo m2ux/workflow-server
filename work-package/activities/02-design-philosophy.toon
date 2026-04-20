@@ -8,6 +8,7 @@ recognition[4]:
   - design philosophy
   - understand problem
   - determine approach
+required: true
 estimatedTime: 10-20m
 rules[4]:
   - "Design philosophy determines the path through the workflow"
@@ -23,6 +24,8 @@ artifacts[2]:
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
+skills:
+  primary: meta/activity-worker
 steps[9]:
   - id: define-problem
     name: Identify and Define Problem
@@ -32,12 +35,14 @@ steps[9]:
     name: Classify Problem Type
     description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
     skill: classify-problem
+    checkpoint: classification-confirmed
   - id: determine-path
     name: Determine Workflow Path
     description: "Based on problem complexity and clarity, determine which optional activities are needed."
+    checkpoint: workflow-path-selected
     actions[1]:
       - action: set
-        variable: needs_comprehension
+        target: needs_comprehension
         value: true
         description: "Codebase comprehension is mandatory before planning"
   - id: document-philosophy
@@ -63,6 +68,7 @@ steps[9]:
     name: Assess Ticket Completeness
     description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
     skill: classify-problem
+    checkpoint: ticket-completeness
     condition:
       type: simple
       variable: is_review_mode
@@ -95,6 +101,7 @@ checkpoints[3]:
   - id: classification-confirmed
     name: Classification Checkpoint
     message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Confirming in 30s unless you intervene."
+    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[2]:
@@ -107,6 +114,7 @@ checkpoints[3]:
   - id: workflow-path-selected
     name: Workflow Path Checkpoint
     message: "Given the {complexity} classification, the recommended path is shown as default. Auto-advancing in 30s. For simple: skip optional, moderate: research only, complex: full workflow."
+    blocking: false
     defaultOption: skip-optional
     autoAdvanceMs: 30000
     options[4]:

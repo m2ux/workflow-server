@@ -4,9 +4,9 @@ name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
 problem: Need to understand context before detailed work package planning
 skills:
-  primary: analyze-initiative-context
+  primary: meta/activity-worker
   supporting[1]:
-    - workflow-execution
+    - analyze-initiative-context
 steps[3]:
   - id: perform-analysis
     name: Perform analysis
@@ -60,6 +60,7 @@ checkpoints[2]:
         effect:
           setVariable:
             analysis_type: context
+    blocking: true
   - id: analysis-confirmed
     name: Analysis Confirmation
     message: "Analysis complete. Does this context look correct?"

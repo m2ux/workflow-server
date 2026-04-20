@@ -11,8 +11,10 @@ inputs[4]:
     description: "Elicited requirements from elicitation activity"
   - id: analysis-findings
     description: "Implementation analysis findings (baselines, gaps)"
+    required: false
   - id: research-findings
     description: "Research findings from knowledge base and web"
+    required: false
 
 protocol:
   verify-inputs[2]:
@@ -45,14 +47,6 @@ output[1]:
 
 resources[1]:
   - "10"
-
-tools:
-  read_file:
-    when: Reviewing design philosophy, requirements, analysis, research artifacts
-    usage: Load prerequisite inputs
-  write_file:
-    when: Creating work-package-plan.md
-    usage: Write planning artifact
 
 errors:
   missing_inputs:

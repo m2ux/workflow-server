@@ -44,7 +44,3 @@ rules:
 
 resources[1]:
   - "03"
-
-tools:
-  read_file:
-    when: Loading merged findings and coverage data

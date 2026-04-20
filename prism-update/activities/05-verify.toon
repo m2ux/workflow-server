@@ -4,27 +4,35 @@ name: Verify Consistency
 description: "Check for consistency issues across resources, skills, and documentation. Detect stale references, routing mismatches, count errors, and duplicate indices."
 problem: Changes across multiple files may leave inconsistencies
 skills:
-  primary: verify-prism-consistency
+  primary: meta/activity-worker
+  supporting[1]:
+    - verify-prism-consistency
 
 steps[6]:
   - id: verify-content-integrity
     name: Verify content integrity
     description: "For each modified and newly imported resource, diff against the upstream original. Flag any content differences beyond the expected filename change."
+    required: true
   - id: check-stale-references
     name: Check for stale references
     description: "Grep .toon files for old prism names from renames and deletions."
+    required: true
   - id: verify-prompt-routing
     name: Verify prompt guide routing
     description: "Trace each prompt guide entry through the goal-mapping matrix. Flag mismatches."
+    required: true
   - id: verify-resource-counts
     name: Verify resource counts
     description: "Compare actual resource file count against documented counts."
+    required: true
   - id: check-duplicate-indices
     name: Check for duplicate indices
     description: "Extract numeric prefixes from resource filenames. Flag duplicates."
+    required: true
   - id: set-result
     name: Set verification result
     description: "Set has_issues based on findings."
+    required: true
     actions[1]:
       - action: set
         target: has_issues
@@ -51,6 +59,8 @@ checkpoints[1]:
         description: "Stop the workflow without submitting"
         effect:
           transitionTo: workflow-end
+    required: true
+    blocking: false
 
 transitions[2]:
   - to: commit-and-submit
@@ -67,6 +77,7 @@ transitions[2]:
       operator: "=="
       value: true
 
+required: true
 estimatedTime: "3-5m"
 
 outcome[1]:

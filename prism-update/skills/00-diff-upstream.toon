@@ -12,6 +12,7 @@ inputs[3]:
     default: "prism/resources/"
   - id: exclusions
     description: "Upstream filenames to exclude from the diff"
+    required: false
     default: []
 
 protocol:
@@ -41,15 +42,6 @@ output[1]:
       renamed: "Array of { old_name, new_name, old_resource_file, upstream_file }"
       deleted: "Array of { name, resource_file }"
       next_index: "Next available resource index"
-
-tools:
-  shell:
-    when: "Listing files, running content diffs"
-    usage: "ls, diff, git diff --name-status"
-  read_file:
-    when: "Reading upstream prisms to extract YAML frontmatter"
-  grep:
-    when: "Detecting renames via content similarity"
 
 errors:
   upstream_not_found:

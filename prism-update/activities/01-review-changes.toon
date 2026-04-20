@@ -4,14 +4,18 @@ name: Review Changes
 description: "Present discovered changes to the user for approval. User confirms scope and adjusts exclusions before import begins."
 problem: User needs to review and approve which upstream changes to import
 skills:
-  primary: diff-upstream
+  primary: meta/activity-worker
+  supporting[1]:
+    - diff-upstream
 steps[2]:
   - id: present-summary
     name: Present change summary
     description: "Display categorized change table with per-file detail for new prisms."
+    required: true
   - id: apply-exclusions
     name: Apply exclusion adjustments
     description: "Update the changes variable to reflect any user-requested exclusions."
+    required: true
 
 checkpoints[1]:
   - id: change-review
@@ -32,11 +36,14 @@ checkpoints[1]:
         description: "Do not import any changes"
         effect:
           transitionTo: workflow-end
+    required: true
+    blocking: true
 
 transitions[1]:
   - to: import-resources
     isDefault: true
 
+required: true
 estimatedTime: "2-5m"
 
 outcome[1]:

@@ -3,29 +3,37 @@ version: 1.0.0
 title: Security Audit Workflow
 description: "Orchestrate security audits by generating tailored audit prompts from user descriptions and triggering prism workflow(s) for analysis. A user provides an audit description and target codebase; the workflow analyses the codebase structure to identify security-relevant characteristics, composes a detailed audit prompt, triggers one or more prism analytical pipelines, and post-processes the results into audit-specific deliverables (AUDIT-REPORT.md, DETAILED-FINDINGS.md, DESIGN-TRADE-OFFS.md). Audit-specific customisation is isolated here, keeping the prism workflow generic."
 author: m2ux
-tags[3]:
+tags[6]:
   - audit
   - security
   - prism
+  - codebase-analysis
+  - vulnerability-assessment
+  - report-generation
 
 rules[6]:
-  - "EXECUTION MODEL: This workflow uses an orchestrator with disposable workers. The orchestrator manages transitions and triggers. Workers execute activities in fresh contexts. Prism workflows are triggered via the trigger-workflow mechanism, not called inline."
+  - "ORCHESTRATION MODEL: This workflow uses an orchestrator with disposable workers. The orchestrator manages transitions and triggers. Workers execute activities in fresh contexts. Prism workflows are triggered via the trigger-workflow mechanism, not called inline."
   - "TRIGGER ISOLATION: When triggering prism, the orchestrator sets analysis_focus to the audit prompt content but does NOT set it to the literal string 'security audit'. This prevents prism's built-in audit-finalize activity from running — all audit-specific post-processing is handled by this workflow's own audit-finalize activity."
   - "PROMPT GENERATION: The prompt-generation activity analyses the target codebase and produces a detailed audit prompt. This prompt becomes the analysis_focus for the triggered prism workflow, guiding lens selection and analytical depth."
   - "MULTI-SCOPE SUPPORT: The execute-analysis activity supports triggering multiple prism workflows via the audit_scopes array. Each scope entry triggers a separate prism run with its own target, pipeline mode, and output subdirectory. For single-codebase audits, there is one scope entry."
   - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
 
+skills:
+  primary: meta/workflow-orchestrator
 variables[16]:
   - name: audit_description
     type: string
     description: "User's description of what to audit and any specific focus areas or concerns"
+    required: true
   - name: target_path
     type: string
     description: "Path to the codebase or directory to audit"
+    required: true
   - name: output_path
     type: string
     description: "Directory to write all audit artifacts (prompt, analysis, reports)"
+    required: true
   - name: audit_prompt
     type: string
     description: "Generated audit prompt text produced by the prompt-generation activity"
@@ -74,15 +82,4 @@ artifactLocations:
     path: "{output_path}"
     gitignored: false
 
-skills[4]:
-  - session-protocol
-  - agent-conduct
-  - execute-activity
-  - state-management
-executionModel:
-  roles[2]:
-    - id: orchestrator
-      description: "Coordinates audit activities, triggers prism workflows, and passes context between phases"
-    - id: worker
-      description: "Executes audit activities in fresh contexts — prompt generation, analysis, and post-processing"
 initialActivity: scope-definition

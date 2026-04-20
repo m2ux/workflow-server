@@ -39,7 +39,3 @@ output[1]:
 
 resources[1]:
   - "04"
-
-tools:
-  read_file:
-    when: Loading scanner output JSON files

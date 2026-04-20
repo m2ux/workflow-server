@@ -7,10 +7,13 @@ description: "Given a target codebase path and a user's audit description, surve
 inputs[3]:
   - id: target_path
     description: "Path to the codebase or directory to audit"
+    required: true
   - id: audit_description
     description: "User's description of what to audit, focus areas, and specific concerns"
+    required: true
   - id: output_path
     description: "Directory to write the audit prompt artifact"
+    required: true
 
 protocol:
   survey-structure[8]:
@@ -84,42 +87,6 @@ output[2]:
     description: "Array of scope objects for triggering prism workflows"
     components:
       scopes: "Array of { target, output_subdir, pipeline_mode, analysis_focus }"
-
-tools:
-  glob:
-    when: "Surveying codebase structure"
-    usage: "Discover files, directories, and project markers"
-  read_file:
-    when: "Reading build configuration, source files for characteristic identification"
-    usage: "Examine Cargo.toml, package.json, key source files"
-  grep:
-    when: "Scanning for security-relevant patterns"
-    usage: "Search for crypto imports, unsafe blocks, feature flags, network handlers"
-  write_file:
-    when: "Writing the audit prompt artifact"
-    params: "path: {output_path}/audit-prompt.md"
-  shell:
-    when: "Running npx gitnexus analyze during scope-definition (not during prompt generation)"
-    usage: "Index the target codebase for GitNexus structural queries"
-  gitnexus_list_repos:
-    when: "Checking whether GitNexus has indexed the target codebase"
-    returns: "List of indexed repositories with names and paths"
-  gitnexus_query:
-    when: "Discovering functional areas, execution flows, and module clusters for better audit domain mapping"
-    params: "query: relevant to security characteristics being surveyed"
-    returns: "Processes ranked by relevance with symbols and file locations"
-  gitnexus_context:
-    when: "Checking fan-in for risk calibration — modules with many callers have larger blast radius"
-    params: "name: module or symbol name"
-    returns: "Callers, callees, process participation"
-  gitnexus_impact:
-    when: "Mapping blast radius of security-critical symbols during trust boundary analysis"
-    params: "target: security-critical symbol name, direction: upstream"
-    returns: "Affected symbols by depth, affected processes, affected modules, risk rating"
-  gitnexus_cypher:
-    when: "Querying cross-community call edges for trust boundary mapping"
-    params: "query: Cypher query targeting cross-community CALLS edges"
-    returns: "Query results as markdown table"
 
 errors:
   empty_codebase:

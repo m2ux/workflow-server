@@ -7,7 +7,10 @@ recognition[3]:
   - analyze implementation
   - analyze current state
   - implementation analysis
+required: false
 estimatedTime: 10-20m
+skills:
+  primary: meta/activity-worker
 steps[12]:
   - id: checkout-baseline
     name: Checkout Baseline State
@@ -54,6 +57,7 @@ steps[12]:
     name: Create analysis document
     description: "Create implementation analysis document"
     skill: manage-artifacts
+    checkpoint: analysis-confirmed
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add analysis-phase assumptions to the assumptions log"
@@ -99,6 +103,7 @@ loops[2]:
         name: Present assumption to user
         description: "Present the current open assumption via the analysis-assumption-interview checkpoint."
         skill: review-assumptions
+        checkpoint: analysis-assumption-interview
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
@@ -111,6 +116,7 @@ checkpoints[2]:
   - id: analysis-confirmed
     name: Analysis Confirmation Checkpoint
     message: "Implementation analysis complete. Proceeding in 30s unless you intervene."
+    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options[3]:
@@ -131,6 +137,7 @@ checkpoints[2]:
       operator: "=="
       value: true
     message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
+    blocking: true
     options[2]:
       - id: resolve-inline
         label: Resolve now

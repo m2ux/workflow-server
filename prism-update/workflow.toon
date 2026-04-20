@@ -8,6 +8,8 @@ tags[3]:
   - maintenance
   - sync
 
+skills:
+  primary: meta/workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
@@ -31,6 +33,7 @@ variables[10]:
   - name: upstream_path
     type: string
     description: "Path to the upstream prisms directory (e.g., /path/to/agi-in-md/prisms/)"
+    required: true
   - name: resource_path
     type: string
     description: "Path to the prism workflow resources directory"
@@ -61,16 +64,4 @@ variables[10]:
     description: "List of stale name references found during verification"
     defaultValue: []
 
-skills[4]:
-  - session-protocol
-  - agent-conduct
-  - execute-activity
-  - state-management
-executionModel:
-  roles[2]:
-    - id: orchestrator
-      description: "Coordinates the update workflow, managing transitions between change discovery and application"
-    - id: worker
-      description: "Executes update activities — discovering changes and applying updates"
 initialActivity: discover-changes
-activitiesDir: activities

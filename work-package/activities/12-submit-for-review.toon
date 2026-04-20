@@ -8,9 +8,12 @@ recognition[4]:
   - update pr
   - mark pr ready
   - handle review feedback
+required: true
 estimatedTime: 30-60m
 entryActions[1]{action,message}:
   log,Submitting PR for review
+skills:
+  primary: meta/activity-worker
 steps[12]:
   - id: consolidate-review-findings
     name: Consolidate Review Findings
@@ -33,6 +36,7 @@ steps[12]:
   - id: present-summary-to-user
     name: Present Summary to User
     description: "Show the review summary for confirmation before posting."
+    checkpoint: review-summary-approval
     condition:
       type: simple
       variable: is_review_mode
@@ -51,6 +55,7 @@ steps[12]:
     name: Verify and sign commits
     description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
     skill: manage-git
+    required: true
   - id: push-commits
     name: Push all commits
     description: "Push all local commits to remote branch."
@@ -82,6 +87,7 @@ steps[12]:
     name: Await Manual Review
     description: "Wait for PR to receive manual review from team members."
     skill: respond-to-pr-review
+    checkpoint: review-received
   - id: process-review-comments
     name: Process Review Comments
     description: "Analyze and respond to PR review feedback."
@@ -93,6 +99,7 @@ steps[12]:
   - id: analyze-review-outcome
     name: Analyze Review Outcome
     description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly."
+    checkpoint: review-outcome
     actions[1]:
       - action: set
         target: recommended_outcome
@@ -111,6 +118,7 @@ checkpoints[4]:
   - id: review-outcome
     name: Review Outcome Checkpoint
     message: "Based on review comment analysis, the recommended outcome is {recommended_outcome}. Auto-advancing in 30s."
+    blocking: false
     defaultOption: approved
     autoAdvanceMs: 30000
     options[3]:
@@ -135,6 +143,7 @@ checkpoints[4]:
   - id: review-ready
     name: Review Ready Check
     message: "Has the PR received review feedback from a human reviewer?"
+    blocking: true
     options[2]:
       - id: feedback-available
         label: Yes — review comments are available

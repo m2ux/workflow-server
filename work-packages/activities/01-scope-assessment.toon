@@ -9,9 +9,9 @@ recognition[4]:
   - Multi-package initiative
   - Related work items needing coordination
 skills:
-  primary: assess-initiative-scope
+  primary: meta/activity-worker
   supporting[1]:
-    - workflow-execution
+    - assess-initiative-scope
 entryActions[1]:
   - action: validate
     target: agents_md_read

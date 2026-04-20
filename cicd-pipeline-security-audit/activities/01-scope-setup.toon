@@ -9,9 +9,10 @@ recognition[4]:
   - scan github actions
   - cicd security audit
 skills:
-  primary: execute-cicd-audit
+  primary: meta/activity-worker
   supporting[1]:
-    - inventory-workflows
+    - execute-cicd-audit
+required: true
 estimatedTime: 5-10m
 rules[4]:
   - "At least one target submodule MUST be specified in the initial request, or 'all' to scan every submodule with .github/workflows/"

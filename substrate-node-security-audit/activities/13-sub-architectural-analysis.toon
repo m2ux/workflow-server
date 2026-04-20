@@ -8,7 +8,10 @@ recognition[3]:
   - threat model construction
   - architectural decomposition
 skills:
-  primary: execute-sub-agent
+  primary: meta/activity-worker
+  supporting[1]:
+    - execute-sub-agent
+required: false
 estimatedTime: 10-20m
 
 rules[6]:
@@ -22,15 +25,19 @@ rules[6]:
 steps[4]:
   - id: build-interaction-model
     name: Build Component Interaction Model
+    required: true
     description: "For each pair of interacting components (crates, modules, or subsystems), document: (a) what data flows between them and in which direction, (b) what trust assumptions exist at the boundary (does the consumer validate input from the producer?), (c) what security property must hold for the interaction to be safe (e.g., 'cursor must advance monotonically', 'pool must not be exhaustible by external consumers'). Focus on cross-crate interactions — intra-crate interactions are covered by Group A agents."
   - id: build-privilege-map
     name: Build Privilege and Authority Map
+    required: true
     description: "For each state-modifying operation category (block production, inherent injection, extrinsic dispatch, genesis construction, configuration loading, external data ingestion), document: (a) what authority is required, (b) where that authority is verified in code, (c) what happens if verification is absent, bypassable, or inconsistent across code paths. Pay attention to operations that appear to require authority but are actually unrestricted (e.g., inherent data controlled by block author, config values from unvalidated files). Additionally, enumerate runtime configuration constants (parameter_types!, Config trait associated types) that affect security boundaries — existential deposits, maximum block weight, session lengths, pool sizes. For each, document the configured value, whether it is appropriate for the threat model, and whether it can be changed post-genesis."
   - id: identify-candidate-points
     name: Identify Candidate Points
+    required: true
     description: "Identify locations where code complexity concentrates and bugs cluster. Candidate points include: functions with multiple lock acquisitions, nested match on external/deserialized data, unsafe blocks, error-handling switch points (match on Result/Option with mixed propagation), codec deserialization sites, and functions that bridge architectural layers (host API calls, FFI boundaries, RPC-to-storage paths). Rank by estimated security relevance: a candidate point at a trust boundary outranks one in internal logic."
   - id: identify-emergent-domains
     name: Identify Emergent Vulnerability Domains
+    required: true
     description: "From the interaction model and privilege map, identify vulnerability domains that do NOT map to any existing §3 checklist item. Use resource 07 (vulnerability pattern vocabulary) as a recognition aid for known cross-project patterns. For each domain, document: the property, why it matters, which components are involved, and a suggested verification approach. These become ad-hoc review assignments for Group A agents, supplementing the §3 checklist."
 
 outcome[4]:

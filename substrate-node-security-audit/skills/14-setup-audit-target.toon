@@ -33,16 +33,6 @@ output[1]:
       file_inventory: "File inventory sorted by size"
       reference_document_paths: "Reference document paths (if any, quarantined for later phases)"
 
-tools:
-  shell:
-    when: "Checking out revisions, running dependency scanners, generating file inventories"
-    params: "command"
-    returns: "Command output"
-  read_file:
-    when: "Extracting dependency manifests when scanning tools are unavailable"
-    params: "file_path"
-    returns: "File contents"
-
 errors:
   target_not_specified:
     cause: "No target component identified in the user request"

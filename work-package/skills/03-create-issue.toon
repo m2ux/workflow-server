@@ -47,46 +47,10 @@ rules:
   traceability: "Every work package should be linked to a GitHub or Jira issue for traceability"
   clarity: "Issues should be clear to someone without prior context"
 
+  tool-usage: "gh_issue_create after call — Capture issue_number and issue_url from output; gh_issue_create sequence — call gh_issue_view next; getAccessibleAtlassianResources after call — Preserve cloudId as jira_cloud_id; getAccessibleAtlassianResources sequence — call getVisibleJiraProjects next; getVisibleJiraProjects sequence — call getJiraProjectIssueTypesMetadata next; getJiraProjectIssueTypesMetadata sequence — call createJiraIssue next; createJiraIssue after call — Capture issue_number and issue_url from response"
 resources[2]:
   - "03"
   - "04"
-
-tools:
-  gh_issue_create:
-    when: Creating a GitHub issue
-    params: "gh issue create --title <title> --body <body> [--label <label>] [--assignee <user>] [--milestone <name>] [--project <name>]"
-    returns: Issue number and URL
-    next: gh_issue_view
-    action: Capture issue_number and issue_url from output
-  gh_issue_view:
-    when: Verifying GitHub issue was created correctly
-    params: "gh issue view <number>"
-    returns: Issue details for verification
-  getAccessibleAtlassianResources:
-    when: First step of Jira issue creation
-    params: none
-    returns: cloudId for Atlassian API calls
-    action: Preserve cloudId as jira_cloud_id
-    next: getVisibleJiraProjects
-  getVisibleJiraProjects:
-    when: User needs to select Jira project
-    params: "cloudId, action: create"
-    returns: List of available Jira projects
-    next: getJiraProjectIssueTypesMetadata
-  getJiraProjectIssueTypesMetadata:
-    when: Resolving available issue types for selected project
-    params: "cloudId, projectIdOrKey"
-    returns: Available issue types for the project
-    next: createJiraIssue
-  createJiraIssue:
-    when: Creating issue in Jira
-    params: "cloudId, projectKey, issueTypeName, summary, description"
-    returns: Created issue key and URL
-    action: Capture issue_number and issue_url from response
-  lookupJiraAccountId:
-    when: Assignee specified for Jira issue
-    params: "cloudId, searchString"
-    returns: Jira account ID for assignee field
 
 errors:
   no_platform_selected:

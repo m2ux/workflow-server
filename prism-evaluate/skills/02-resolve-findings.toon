@@ -7,12 +7,16 @@ description: "Given an evaluation report and its target, classify each finding b
 inputs[4]:
   - id: evaluation_report_path
     description: "Path to the EVALUATION-REPORT.md produced by the consolidate-report activity"
+    required: true
   - id: target_path
     description: "Path to the original document, proposal, or artifact set that was evaluated"
+    required: true
   - id: output_path
     description: "Directory for writing the MITIGATION-PLAN.md artifact"
+    required: true
   - id: evaluation_description
     description: "Original evaluation description for context"
+    required: true
 
 protocol:
   load-and-classify[5]:
@@ -60,20 +64,6 @@ output[2]:
       implementation_priority: "Ordered list of changes for application"
   - id: modified-target
     description: "The target document with accepted mitigations applied"
-
-tools:
-  read_file:
-    when: "Reading the evaluation report and target document"
-    usage: "Extract findings and identify target text for each finding"
-  write_file:
-    when: "Writing the MITIGATION-PLAN.md artifact"
-    params: "path: {output_path}/MITIGATION-PLAN.md"
-  str_replace:
-    when: "Applying individual mitigations to the target document"
-    usage: "Replace specific text in the target with mitigation text"
-  ask_question:
-    when: "Presenting each finding to the user and collecting their decision"
-    usage: "One question per finding with options: accept, modify, skip, discuss"
 
 errors:
   finding_not_located:

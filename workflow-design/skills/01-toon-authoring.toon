@@ -9,6 +9,7 @@ inputs[2]:
     description: "Which schema applies to this file — one of: workflow (schemas/workflow.schema.json), activity (schemas/activity.schema.json), skill (schemas/skill.schema.json)"
   - id: reference-file
     description: "Path to an existing valid TOON file of the same type to use as a syntax reference"
+    required: false
 
 protocol:
   read-reference[3]:

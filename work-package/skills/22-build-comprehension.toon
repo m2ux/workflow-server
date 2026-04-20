@@ -11,6 +11,7 @@ inputs[3]:
     description: "Path to the target codebase directory"
   - id: project-type
     description: "Detected project type (rust-substrate|other)"
+    required: false
 
 protocol:
   discover-existing[3]:
@@ -19,7 +20,7 @@ protocol:
     - Summarize relevant artifacts with coverage scope and last-updated date
   check-gitnexus[3]:
     - "Check if the target codebase has a GitNexus index: call list_repos or read gitnexus://repo/{name}/context"
-    - "If indexed: use attached resource meta/04 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill."
+    - "If indexed: use attached resource meta/06 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill."
     - "If not indexed or stale: fall back to grep/read/glob for all exploration steps."
   architecture-survey[6]:
     - "Top-down survey: start with project root structure, build system, entry points"
@@ -72,7 +73,7 @@ output[1]:
 
 rules:
   gitnexus-usage[2]:
-    - "gitnexus-first: When the target codebase has a GitNexus index, the agent MUST use gitnexus query() and context() as the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for specific text patterns, string literals, and codebases without a GitNexus index. This is not a preference — it is a requirement. Use attached resource meta/04 (gitnexus-reference) for checklists, pattern tables, and worked examples."
+    - "gitnexus-first: When the target codebase has a GitNexus index, the agent MUST use gitnexus query() and context() as the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for specific text patterns, string literals, and codebases without a GitNexus index. This is not a preference — it is a requirement. Use attached resource meta/06 (gitnexus-reference) for checklists, pattern tables, and worked examples."
     - "gitnexus-skill: For GitNexus-based analysis, the gitnexus-operations skill (meta workflow) provides the full task-oriented protocol — explore, impact-analysis, debug, refactor. Load it via get_skill skill_id: 'gitnexus-operations', workflow_id: 'meta' when performing codebase exploration or impact analysis with a GitNexus index."
   persistent-artifacts: "Comprehension artifacts persist across work packages — they are cumulative knowledge, not disposable planning documents"
   augment-not-replace: "When existing artifacts cover the same area, augment them with new sections and deeper detail rather than replacing"
@@ -82,42 +83,10 @@ rules:
   cross-reference: "Cross-reference related comprehension artifacts and note dependencies between codebase areas"
   question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
 
+  tool-usage: "use glob to map directory structure, find module files, and locate test files"
 resources[2]:
   - "25"
-  - "meta/04"
-
-tools:
-  gitnexus_query:
-    when: "REQUIRED for architecture survey and exploration when a GitNexus index is available. Finds execution flows related to a concept."
-    params: "query: natural language or keyword, optional goal and task_context for ranking"
-    returns: "Processes (execution flows) ranked by relevance, with symbols and file locations"
-  gitnexus_context:
-    when: "REQUIRED for abstractions, rationale, and deep-dives when a GitNexus index is available. 360-degree symbol view."
-    params: "name: symbol name, optional file_path for disambiguation, optional uid for zero-ambiguity"
-    returns: "Categorized incoming/outgoing references, process participation, file location"
-  gitnexus_cypher:
-    when: "Custom structural queries for call chains, dependency trees, or module relationships when GitNexus is available"
-    params: "query: Cypher query against the knowledge graph"
-    returns: "Results formatted as markdown table"
-  read_file:
-    when: Examining source code, project configuration, existing artifacts
-    usage: Read source files, Cargo.toml, module declarations, existing comprehension artifacts
-  grep:
-    when: "Searching for specific text patterns, string literals, or codebases without a GitNexus index. Use gitnexus query/context instead when structural relationships are needed."
-    usage: Find type definitions, trait implementations, cross-module references, domain terms
-  glob:
-    when: Discovering project structure and file layout
-    usage: Map directory structure, find module files, locate test files
-  shell:
-    when: Running dependency analysis, git history inspection
-    params: "cargo tree, git log, git shortlog"
-    usage: Dependency graphs, change history for understanding evolution
-  write_file:
-    when: Creating or updating comprehension artifacts
-    usage: Write to .engineering/artifacts/comprehension/
-  semantic_search:
-    when: Finding code by meaning when exact terms are unknown
-    usage: Explore unfamiliar areas by describing what you're looking for
+  - "meta/06"
 
 errors:
   no_existing_artifacts:
