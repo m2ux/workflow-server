@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: work-package
-version: 3.6.2
+version: 3.7.0
 title: Work Package Implementation Workflow
 description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
 author: m2ux
@@ -45,7 +45,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[67]:
+variables[70]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -117,6 +117,17 @@ variables[67]:
   - name: needs_issue_creation
     type: boolean
     description: Whether a new issue needs to be created
+    defaultValue: false
+  - name: github_issue_found
+    type: boolean
+    description: Whether a GitHub issue linked to the Jira ticket was found in the target repo
+    defaultValue: false
+  - name: github_issue_number
+    type: string
+    description: GitHub issue number linked to the Jira ticket (found via search or freshly created)
+  - name: needs_github_issue_creation
+    type: boolean
+    description: Whether a GitHub issue should be created to mirror the Jira ticket
     defaultValue: false
   - name: issue_skipped
     type: boolean
