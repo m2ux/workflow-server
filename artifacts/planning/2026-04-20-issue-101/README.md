@@ -22,7 +22,9 @@ Switch the MCP server from stdio to HTTP/SSE transport so that workflow session 
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The workflow server currently embeds a signed session token — a 500+ character string — in the text content of every tool response. Because the server uses stdio transport, which has no way to carry data outside the message body, this token is visible to the LLM and accumulates in its context window across every turn of a workflow session. The solution switches the server to HTTP/SSE transport, which provides a separate metadata channel (`_meta`) that is accessible to SDK-level client tooling but not shown to the LLM. The token is removed entirely from response content, eliminating the per-call context bloat while keeping the token available via `_meta.session_token` for clients that need it. The stdio transport is retained for local development via a `TRANSPORT` environment variable.
+
+The fix works by adding `StreamableHTTPServerTransport` (already present in the MCP TypeScript SDK) as an alternative to `StdioServerTransport`, selected by the `TRANSPORT=http` environment variable. In both transport modes, `session_token` and `checkpoint_handle` are removed from all 17 content body locations across the two tool files. The token remains as a required tool parameter that agents pass explicitly, and `_meta.session_token` continues to carry it for SDK-level auto-threading. The server stays fully stateless — no session store is added — and the existing test suite passes without modification because it uses an in-memory transport that is independent of the stdio/HTTP choice.
 
 ---
 
@@ -30,10 +32,10 @@ Switch the MCP server from stdio to HTTP/SSE transport so that workflow session 
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
-| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 01 | [Design philosophy](design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 01 | [Assumptions log](assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Transport switch, header plumbing, entrypoint config | 1-3h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
@@ -55,4 +57,4 @@ Switch the MCP server from stdio to HTTP/SSE transport so that workflow session 
 
 ---
 
-**Status:** Planning folder initialized — ready for design philosophy
+**Status:** Plan & Prepare — plan and test plan complete, ready for implementation
