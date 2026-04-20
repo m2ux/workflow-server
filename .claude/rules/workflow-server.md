@@ -42,4 +42,6 @@ Activate workflow execution when the user request matches ANY of these patterns:
 
 # Bootstrap Sequence
 
+CRITICAL: Do NOT fetch any external resources (GitHub issues, URLs, files, APIs) before completing the bootstrap sequence. The workflow skill contains the rules that govern how those resources are accessed. Fetching them first violates rule order and may cause tool call failures.
+
 For workflow execution requests, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure.
