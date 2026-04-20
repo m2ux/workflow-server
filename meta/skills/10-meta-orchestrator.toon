@@ -17,7 +17,7 @@ protocol:
     - "If regular: Set target_path to the repository root (.)."
     - "If monorepo: Present the repo-type checkpoint. If confirmed as monorepo, parse .gitmodules, present submodule-selection checkpoint, and set target_path to the selected submodule."
   initialize-state[5]:
-    - "If resuming: call start_session({ session_token: saved_token, agent_id }) to resume the session. The workflow is derived from the token. The server auto-detects staleness and re-signs stale tokens. If start_session returns recovered: true (unrecoverable token), proceed to fresh-session recovery."
+    - "If resuming: call start_session({ session_token: saved_token, agent_id }) to resume the session. The workflow is derived from the token. If start_session returns recovered: true, proceed to fresh-session recovery."
     - "Fresh-session recovery: call start_session({ workflow_id, agent_id }) without a session_token to create a new session for the target workflow. State must be reconstructed manually. Transition to the currentActivity from the state file via next_activity, and restore variables from the state file."
     - "If fresh session: call start_session({ workflow_id, agent_id }) to create a session for the target workflow. Determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
@@ -80,9 +80,8 @@ rules:
 errors:
   stale_token:
     cause: "Server restarted and generated a new HMAC signing key, invalidating the saved session token"
-    recovery: "The server auto-detects staleness and re-signs tokens. If start_session returns recovered: true (unrecoverable payload), call start_session({ workflow_id, agent_id }) to create a fresh session and reconstruct state from the state file."
+    recovery: "If start_session returns recovered: true, call start_session({ workflow_id, agent_id }) to create a fresh session and reconstruct state from the state file."
   worker_timeout:
-    cause: "Sub-agent did not return within expected time"
     recovery: "Check terminal output. Resume if still running. If stuck, create new sub-agent and re-dispatch."
   transition_ambiguous:
     cause: "Multiple transition conditions evaluate to true"

@@ -26,7 +26,7 @@ steps[6]:
     description: "Collect required information: workflow ID, planning folder path, and any user-provided context about where they left off"
   - id: restore-saved-state
     name: Restore saved state
-    description: "Check for {planning_folder_path}/workflow-state.json. If found, read the file and extract the saved session_token and variables. Call start_session({ session_token: saved_token, agent_id }) to resume the session. The server auto-detects staleness and re-signs stale tokens. Restore variables from the file. Present a summary to the user: workflow ID, current activity, key variable values. If the file does not exist, set has_saved_state = false and proceed to manual reconstruction."
+    description: "Check for {planning_folder_path}/workflow-state.json. If found, read the file and extract the saved session_token and variables. Call start_session({ session_token: saved_token, agent_id }) to resume the session. If start_session returns recovered: true, proceed to manual reconstruction. Restore variables from the file. Present a summary to the user: workflow ID, current activity, key variable values. If the file does not exist, set has_saved_state = false and proceed to manual reconstruction."
   - id: manual-reconstruction
     name: Manual state reconstruction
     description: "Fallback when no saved state exists. Reconstruct progress from workflow artifacts, external state (git branches, PRs, planning folder contents), and user recall. Build a state object manually."

@@ -26,7 +26,7 @@ steps[4]:
     description: "Compare the identifying context from step 1 against the saved sessions from step 2. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. If multiple matches, prefer the most recently updated. If no matches, set has_saved_state = false."
   - id: prepare-result
     name: Prepare session result
-    description: "If a match was found: set has_saved_state = true, extract the saved session_token and planning_folder_path. The server auto-detects token staleness during start_session — no manual health_check is needed. If no match: set has_saved_state = false. Present the appropriate checkpoint."
+    description: "If a match was found: set has_saved_state = true, extract the saved session_token and planning_folder_path. If no match: set has_saved_state = false. Present the appropriate checkpoint."
 checkpoints[1]:
   - id: resume-session
     name: Resume Previous Session

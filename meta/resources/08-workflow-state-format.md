@@ -110,7 +110,4 @@ After completing all steps and writing artifacts, the activity worker persists i
 
 ## Stale Session Detection
 
-When the workflow server restarts, it generates a new HMAC signing key, invalidating all saved session tokens. The server now auto-detects this condition:
-
-1. On resume, call `start_session({ session_token: saved_token, agent_id })` to attempt token inheritance. The server compares the token's timestamp against its own uptime. If the server started after the token was created, it automatically re-signs the token and adopts the session (returning `adopted: true` with preserved state).
-2. If the token payload is corrupted and cannot be adopted, the server will return `recovered: true` with a fresh session. In this case, state must be reconstructed from the saved variables and `completedActivities`. Call `start_session({ workflow_id, agent_id })` to create a fresh session for the target workflow, then transition to the currentActivity via `next_activity`.
+On resume, call `start_session({ session_token: saved_token, agent_id })`. If the server restarted, it will either re-sign and adopt the session (returning `adopted: true`) or return `recovered: true` with a fresh session. In the latter case, reconstruct state from saved variables and `completedActivities` by calling `start_session({ workflow_id, agent_id })` then transitioning via `next_activity`.

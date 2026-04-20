@@ -88,7 +88,7 @@ rules:
 errors:
   stale_token:
     cause: "Server restarted and generated a new HMAC signing key, invalidating the saved session token"
-    recovery: "The server auto-detects staleness and re-signs tokens. If start_session returns recovered: true (unrecoverable payload), call start_session({ workflow_id, agent_id }) to create a fresh session and reconstruct state from the state file."
+    recovery: "If start_session returns recovered: true, call start_session({ workflow_id, agent_id }) to create a fresh session and reconstruct state from the state file."
   worker_timeout:
     cause: "Worker sub-agent did not return within expected time"
     recovery: "Check terminal output. Resume if still running. If stuck, create new worker and re-dispatch."
