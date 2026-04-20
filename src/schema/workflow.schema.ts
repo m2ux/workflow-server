@@ -38,18 +38,10 @@ export const ModeSchema = z.object({
 });
 export type Mode = z.infer<typeof ModeSchema>;
 
-// Agent role - declares a named participant in the workflow's execution model
-export const AgentRoleSchema = z.object({
-  id: z.string().describe('Unique role identifier within this workflow'),
-  description: z.string().describe('What this role does in the workflow execution'),
-}).strict();
-export type AgentRole = z.infer<typeof AgentRoleSchema>;
-
-// Execution model - declares the agent roles that participate in workflow execution
-export const ExecutionModelSchema = z.object({
-  roles: z.array(AgentRoleSchema).min(1).describe('Agent roles that participate in this workflow'),
-}).strict();
-export type ExecutionModel = z.infer<typeof ExecutionModelSchema>;
+export const WorkflowSkillsSchema = z.object({
+  primary: z.string().describe('Primary skill ID for this workflow'),
+});
+export type WorkflowSkillsReference = z.infer<typeof WorkflowSkillsSchema>;
 
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
@@ -63,22 +55,15 @@ export const WorkflowSchema = z.object({
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
   modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
   artifactLocations: z.record(ArtifactLocationValueSchema).optional().describe('Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions.'),
-  executionModel: ExecutionModelSchema.describe('Declares the agent roles that participate in workflow execution'),
-  skills: z.array(z.string()).optional().describe('Workflow-level skill IDs. Returned by get_skills when called without activity_id.'),
+  skills: WorkflowSkillsSchema.optional().describe('Workflow-level skill IDs. Returned by get_skills when called without activity_id.'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual TOON files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.
   // The shorthand string references are resolved into fully typed Activity objects during load,
   // but we allow strings in the intermediate raw schema before transformation.
   // However, the final Workflow type expects Activity[] to avoid type errors across the codebase.
-  activities: z.array(ActivitySchema).min(1).describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points.'),
-}).refine(
-  (wf) => {
-    const ids = wf.executionModel.roles.map(r => r.id);
-    return new Set(ids).size === ids.length;
-  },
-  { message: 'executionModel.roles must have unique IDs', path: ['executionModel', 'roles'] },
-);
+  activities: z.array(ActivitySchema).min(1).optional().describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in TOON files where activities are separate files.'),
+});
 export type Workflow = z.infer<typeof WorkflowSchema>;
 
 export function validateWorkflow(data: unknown): Workflow { return WorkflowSchema.parse(data); }

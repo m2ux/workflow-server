@@ -3,10 +3,54 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createServer } from '../src/server.js';
 import { resolve } from 'node:path';
+import { decode } from '@toon-format/toon';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function parseToolResponse(result: { content: unknown[] }): any {
-  return JSON.parse((result.content[0] as { type: 'text'; text: string }).text);
+function parseToolResponse(result: any): any {
+  const text = (result.content[0] as { type: 'text'; text: string }).text;
+
+  // Try JSON first (tier 3 tools: yield/respond/resume checkpoint, get_trace, health_check, etc.)
+  try { return JSON.parse(text); } catch { /* not JSON */ }
+
+  // Try TOON decode (handles encodeToon output AND header+TOON body since
+  // TOON treats blank lines as whitespace between top-level keys)
+  try { return decode(text); } catch { /* not pure TOON */ }
+
+  // Fallback: split header from body on first double-newline
+  const splitIdx = text.indexOf('\n\n');
+  if (splitIdx > 0) {
+    const header = text.substring(0, splitIdx);
+    const body = text.substring(splitIdx + 2);
+    const meta: Record<string, string> = {};
+    for (const line of header.split('\n')) {
+      const colonIdx = line.indexOf(': ');
+      if (colonIdx > 0) meta[line.substring(0, colonIdx)] = line.substring(colonIdx + 2);
+    }
+    // Try decoding body as TOON
+    try { return { ...meta, ...decode(body) }; } catch { /* body is not TOON */ }
+    return { ...meta, _body: body };
+  }
+
+  return { _raw: text };
+}
+
+/**
+ * Parse a get_workflow response which may contain a primary skill section
+ * followed by a --- separator and the workflow definition.
+ * Returns the workflow portion as a parsed object.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseWorkflowResponse(result: any): any {
+  const text = (result.content[0] as { type: 'text'; text: string }).text;
+  // Split on --- separator (skill comes first, workflow after)
+  const sepIdx = text.indexOf('\n\n---\n\n');
+  const workflowText = sepIdx >= 0 ? text.substring(sepIdx + 5) : text;
+  // Try JSON first
+  try { return JSON.parse(workflowText); } catch { /* not JSON */ }
+  // Try TOON decode
+  try { return decode(workflowText); } catch { /* not pure TOON */ }
+  // Fallback to parseToolResponse on the workflow portion
+  return parseToolResponse({ content: [{ type: 'text' as const, text: workflowText }] });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,14 +59,52 @@ async function resolveCheckpoints(client: Client, token: string, activityRespons
   const checkpoints = activityResponse.checkpoints ?? [];
   for (const cp of checkpoints) {
     if (cp.required === false) continue;
+    
+    // 1. Yield the checkpoint (simulating worker)
+    const yieldResult = await client.callTool({
+      name: 'yield_checkpoint',
+      arguments: { session_token: currentToken, checkpoint_id: cp.id },
+    });
+    if (yieldResult.isError) throw new Error(`Failed to yield checkpoint ${cp.id}`);
+    const cpHandle = parseToolResponse(yieldResult).checkpoint_handle;
+    
+    // 2. Respond to the checkpoint (simulating orchestrator)
     const result = await client.callTool({
       name: 'respond_checkpoint',
-      arguments: { session_token: currentToken, checkpoint_id: cp.id, option_id: cp.options[0].id },
+      arguments: { checkpoint_handle: cpHandle, option_id: cp.options[0].id },
     });
     if (result.isError) throw new Error(`Failed to resolve checkpoint ${cp.id}`);
-    currentToken = parseToolResponse(result).session_token;
+    const resolvedHandle = parseToolResponse(result).checkpoint_handle;
+
+    // 3. Resume the checkpoint (simulating worker)
+    const resumeResult = await client.callTool({
+      name: 'resume_checkpoint',
+      arguments: { session_token: resolvedHandle },
+    });
+    if (resumeResult.isError) throw new Error(`Failed to resume checkpoint ${cp.id}`);
+
+    currentToken = (resumeResult._meta as Record<string, unknown>)['session_token'] as string;
   }
   return currentToken;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function transitionToActivity(client: Client, token: string, activityId: string, extra?: Record<string, any>): Promise<{ actMeta: Record<string, unknown>; nextToken: string; actResponse: any }> {
+  const args: Record<string, unknown> = { session_token: token, activity_id: activityId };
+  if (extra?.transition_condition) args.transition_condition = extra.transition_condition;
+  if (extra?.step_manifest) args.step_manifest = extra.step_manifest;
+  if (extra?.activity_manifest) args.activity_manifest = extra.activity_manifest;
+
+  const actResult = await client.callTool({ name: 'next_activity', arguments: args });
+  if (actResult.isError) throw new Error(`next_activity failed: ${(actResult.content[0] as { type: string; text: string }).text}`);
+  const actMeta = actResult._meta as Record<string, unknown>;
+  const nextToken = actMeta['session_token'] as string;
+
+  const getResult = await client.callTool({ name: 'get_activity', arguments: { session_token: nextToken } });
+  if (getResult.isError) throw new Error(`get_activity failed: ${(getResult.content[0] as { type: string; text: string }).text}`);
+  const actResponse = parseToolResponse(getResult);
+
+  return { actMeta, nextToken, actResponse };
 }
 
 const SEMVER_RE = /^\d+\.\d+\.\d+$/;
@@ -57,7 +139,7 @@ describe('mcp-server integration', () => {
   beforeEach(async () => {
     const sessionResult = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package' },
+      arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
     });
     sessionToken = parseToolResponse(sessionResult).session_token;
   });
@@ -75,11 +157,11 @@ describe('mcp-server integration', () => {
       const guide = parseToolResponse(result);
       expect(guide.server).toBeDefined();
       expect(guide.version).toBeDefined();
-      expect(guide.discovery).toBeDefined();
-      expect(typeof guide.discovery).toBe('string');
-      expect(guide.discovery).toContain('start_session');
-      expect(guide.discovery).toContain('get_skills');
-      expect(guide.available_workflows.length).toBeGreaterThanOrEqual(2);
+      expect(guide._body).toBeDefined();
+      expect(typeof guide._body).toBe('string');
+      expect(guide._body).toContain('start_session');
+      expect(guide._body).toContain('get_skill');
+      expect(guide.available_workflows).toBeUndefined();
     });
   });
 
@@ -99,7 +181,7 @@ describe('mcp-server integration', () => {
     it('should return workflow metadata and opaque token (no rules payload)', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -112,7 +194,7 @@ describe('mcp-server integration', () => {
     it('should reject unknown workflow_id', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'non-existent' },
+        arguments: { workflow_id: 'non-existent', agent_id: 'test-agent' },
       });
       expect(result.isError).toBe(true);
     });
@@ -147,13 +229,9 @@ describe('mcp-server integration', () => {
         name: 'get_workflow',
         arguments: { session_token: sessionToken },
       });
-      expect(parseToolResponse(wfResult).session_token).toBeDefined();
+      expect(parseWorkflowResponse(wfResult).session_token).toBeDefined();
 
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
+      const { actMeta, nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
       expect(actResponse.session_token).toBeDefined();
       expect(actResponse.id).toBe('start-work-package');
 
@@ -163,8 +241,7 @@ describe('mcp-server integration', () => {
       });
       expect(parseToolResponse(skillsResult).session_token).toBeDefined();
 
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const clearedToken = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const clearedToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const skillResult = await client.callTool({
         name: 'get_skill',
@@ -173,26 +250,28 @@ describe('mcp-server integration', () => {
       expect(parseToolResponse(skillResult).session_token).toBeDefined();
 
       const cpResult = await client.callTool({
-        name: 'get_checkpoint',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package', checkpoint_id: 'issue-verification' },
+        name: 'yield_checkpoint',
+        arguments: { session_token: actMeta['session_token'] as string, checkpoint_id: 'issue-verification' },
       });
-      expect(parseToolResponse(cpResult).session_token).toBeDefined();
+      const cpMeta = cpResult._meta as Record<string, unknown>;
+      const cpHandle = cpMeta['session_token'] as string;
+
+      const presentResult = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { checkpoint_handle: cpHandle },
+      });
+      expect(parseToolResponse(presentResult).checkpoint_handle).toBeDefined();
     });
 
     it('content-body token threading should work end-to-end (agent scenario)', async () => {
       const startResult = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       const startToken = parseToolResponse(startResult).session_token;
 
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: startToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actToken = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, startToken, 'start-work-package');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
       expect(actToken).toBeDefined();
       expect(actToken).not.toBe(startToken);
 
@@ -202,7 +281,7 @@ describe('mcp-server integration', () => {
       });
       expect(stepResult.isError).toBeFalsy();
       const stepResponse = parseToolResponse(stepResult);
-      expect(stepResponse.skill.id).toBe('create-issue');
+      expect(stepResponse.id).toBe('create-issue');
       expect(stepResponse.session_token).toBeDefined();
     });
 
@@ -262,7 +341,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken },
       });
       expect(result.content).toBeDefined();
-      const workflow = parseToolResponse(result);
+      const workflow = parseWorkflowResponse(result);
       expect(workflow.id).toBe('work-package');
       expect(workflow.version).toMatch(SEMVER_RE);
     });
@@ -274,9 +353,9 @@ describe('mcp-server integration', () => {
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const activity = parseToolResponse(result);
-      expect(activity.id).toBe('start-work-package');
-      expect(activity.name).toBe('Start Work Package');
+      const nextAct = parseToolResponse(result);
+      expect(nextAct.activity_id).toBe('start-work-package');
+      expect(nextAct.name).toBe('Start Work Package');
     });
 
     it('should return error for non-existent activity', async () => {
@@ -288,19 +367,61 @@ describe('mcp-server integration', () => {
     });
   });
 
-  describe('tool: get_checkpoint', () => {
-    it('should get checkpoint with explicit params', async () => {
+  describe('tool: get_activity', () => {
+    it('should return complete activity definition after next_activity', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+
       const result = await client.callTool({
-        name: 'get_checkpoint',
+        name: 'get_activity',
+        arguments: { session_token: nextToken },
+      });
+      expect(result.isError).toBeFalsy();
+      const activity = parseToolResponse(result);
+      expect(activity.id).toBe('start-work-package');
+      expect(activity.steps).toBeDefined();
+      expect(Array.isArray(activity.steps)).toBe(true);
+      expect(activity.checkpoints).toBeDefined();
+      expect(activity.transitions).toBeDefined();
+      expect(activity.session_token).toBeDefined();
+    });
+
+    it('should error when no activity in session token', async () => {
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: sessionToken },
+      });
+      expect(result.isError).toBe(true);
+      const errorText = (result.content[0] as { type: string; text: string }).text;
+      expect(errorText).toContain('No current activity');
+    });
+
+    it('should return updated token in _meta', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_token: nextToken },
+      });
+      const meta = result._meta as Record<string, unknown>;
+      expect(meta['session_token']).toBeDefined();
+      expect(meta['session_token']).not.toBe(nextToken);
+    });
+  });
+
+  describe('tool: yield_checkpoint', () => {
+    it('should yield checkpoint with explicit params', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
         arguments: {
-          session_token: sessionToken,
-          activity_id: 'start-work-package',
+          session_token: nextToken,
           checkpoint_id: 'issue-verification',
         },
       });
-      const checkpoint = parseToolResponse(result);
-      expect(checkpoint.id).toBe('issue-verification');
-      expect(checkpoint.options.length).toBeGreaterThan(0);
+      const content = parseToolResponse(result);
+      expect(content.status).toBe('yielded');
+      expect(content.checkpoint_handle).toBeDefined();
     });
   });
 
@@ -318,25 +439,20 @@ describe('mcp-server integration', () => {
 
   describe('tool: get_skill', () => {
     it('should resolve skill from step_id after entering an activity', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
         arguments: { session_token: actToken, step_id: 'create-issue' },
       });
       const response = parseToolResponse(result);
-      expect(response.skill).toBeDefined();
-      expect(response.skill.id).toBe('create-issue');
-      expect(response.skill._resources).toBeDefined();
-      expect(Array.isArray(response.skill._resources)).toBe(true);
+      expect(response.id).toBe('create-issue');
+      expect(response.resources).toBeDefined();
+      expect(Array.isArray(response.resources)).toBe(true);
     });
 
-    it('should error when no activity in session token', async () => {
+    it('should error when step_id is provided but no activity in session token', async () => {
       const result = await client.callTool({
         name: 'get_skill',
         arguments: { session_token: sessionToken, step_id: 'create-issue' },
@@ -344,13 +460,31 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBe(true);
     });
 
-    it('should error when step_id not found in activity', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
+    it('should return workflow primary skill when no activity in session token', async () => {
+      const result = await client.callTool({
+        name: 'get_skill',
+        arguments: { session_token: sessionToken },
       });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.id).toBe('workflow-orchestrator');
+    });
+
+    it('should return workflow primary skill even when no activity in session token', async () => {
+      const result = await client.callTool({
+        name: 'get_skills',
+        arguments: { session_token: sessionToken },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.scope).toBe('workflow');
+      expect(response._body).toBeDefined();
+      expect(response._body).toContain('id: workflow-orchestrator');
+    });
+
+    it('should error when step_id not found in activity', async () => {
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -360,12 +494,8 @@ describe('mcp-server integration', () => {
     });
 
     it('should error when step has no associated skill', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -375,12 +505,8 @@ describe('mcp-server integration', () => {
     });
 
     it('should resolve skill from loop step', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'design-philosophy');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -388,17 +514,12 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill).toBeDefined();
-      expect(response.skill.id).toBe('reconcile-assumptions');
+      expect(response.id).toBe('reconcile-assumptions');
     });
 
     it('should advance token with resolved skill ID', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -412,13 +533,9 @@ describe('mcp-server integration', () => {
 
 
   describe('resource refs in skill responses', () => {
-    it('get_skill should nest _resources as lightweight refs (index/id/version, no content)', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+    it('get_skill should preserve raw resources array as string references', async () => {
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -426,21 +543,16 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill._resources.length).toBeGreaterThan(0);
-      const resource = response.skill._resources[0];
-      expect(resource.index).toBeDefined();
-      expect(resource.id).toBeDefined();
-      expect(resource.version).toBeDefined();
-      expect(resource.content).toBeUndefined();
+      expect(response.resources).toBeDefined();
+      expect(Array.isArray(response.resources)).toBe(true);
+      expect(response.resources.length).toBeGreaterThan(0);
+      // Resources are now raw string refs (e.g., "03", "meta/04"), not enriched objects
+      expect(typeof response.resources[0]).toBe('string');
     });
 
-    it('get_skill should strip raw resources array from skill', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+    it('get_skill should not contain _resources (enrichment removed)', async () => {
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -448,22 +560,19 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill.resources).toBeUndefined();
-      expect(response.resources).toBeUndefined();
+      expect(response._resources).toBeUndefined();
     });
 
-    it('get_skills should nest _resources as refs under each workflow-level skill', async () => {
+    it('get_skills should include resource references in raw skill TOON blocks', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resources).toBeUndefined();
-      const skillsWithResources = Object.values(response.skills).filter(
-        (s: unknown) => (s as Record<string, unknown>)._resources
-      );
-      expect(skillsWithResources.length).toBeGreaterThan(0);
+      // Raw TOON blocks in _body contain resource refs inline
+      expect(response._body).toBeDefined();
+      expect(response._body).toContain('resources');
       const meta = result._meta as Record<string, unknown>;
       expect(meta['session_token']).toBeDefined();
     });
@@ -477,10 +586,9 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource).toBeDefined();
-      expect(response.resource.index).toBe('03');
-      expect(response.resource.content).toBeDefined();
-      expect(response.resource.content.length).toBeGreaterThan(0);
+      expect(response.resource_index).toBe('03');
+      expect(response._body).toBeDefined();
+      expect(response._body.length).toBeGreaterThan(0);
       expect(response.session_token).toBeDefined();
     });
 
@@ -491,9 +599,9 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource.index).toBe('meta/04');
-      expect(response.resource.id).toBe('04-gitnexus-reference');
-      expect(response.resource.content.length).toBeGreaterThan(0);
+      expect(response.resource_index).toBe('meta/04');
+      expect(response.id).toBe('activity-worker-prompt');
+      expect(response._body.length).toBeGreaterThan(0);
     });
 
     it('should strip frontmatter from resource content', async () => {
@@ -502,7 +610,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, resource_index: '03' },
       });
       const response = parseToolResponse(result);
-      expect(response.resource.content).not.toMatch(/^---/);
+      expect(response._body).not.toMatch(/^---/);
     });
 
     it('should error for nonexistent resource', async () => {
@@ -525,20 +633,18 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('orchestrator-management');
-      expect(skillIds).toContain('worker-management');
-      expect(skillIds).not.toContain('create-issue');
-      expect(skillIds).not.toContain('knowledge-base-search');
+      expect(response._body).toBeDefined();
+      // The raw TOON body should contain the workflow-orchestrator skill
+      expect(response._body).toContain('id: workflow-orchestrator');
+      // Should NOT contain activity-level or other workflow skills
+      expect(response._body).not.toContain('id: meta-orchestrator');
+      expect(response._body).not.toContain('id: create-issue');
+      expect(response._body).not.toContain('id: knowledge-base-search');
     });
 
     it('should return workflow-level skills even after entering an activity', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: actToken },
@@ -546,22 +652,18 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      const skillIds = Object.keys(response.skills);
-      expect(skillIds).toContain('orchestrator-management');
-      expect(skillIds).not.toContain('create-issue');
+      expect(response._body).toBeDefined();
+      expect(response._body).not.toContain('id: create-issue');
     });
 
-    it('should nest resources under workflow-level skills', async () => {
+    it('should include resource references in raw skill TOON', async () => {
       const result = await client.callTool({
         name: 'get_skills',
         arguments: { session_token: sessionToken },
       });
       const response = parseToolResponse(result);
-      expect(response.resources).toBeUndefined();
-      const skillsWithResources = Object.values(response.skills).filter(
-        (s: unknown) => (s as Record<string, unknown>)._resources
-      );
-      expect(skillsWithResources.length).toBeGreaterThan(0);
+      // Raw TOON blocks preserve resource references inline
+      expect(response._body).toContain('resources');
     });
 
     it('should return updated token in _meta', async () => {
@@ -573,10 +675,10 @@ describe('mcp-server integration', () => {
       expect(meta['session_token']).toBeDefined();
     });
 
-    it('should return empty skills for workflows without declared skills', async () => {
+    it('should return declared skills for meta workflow', async () => {
       const metaSession = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'meta' },
+        arguments: { workflow_id: 'meta', agent_id: 'test-agent' },
       });
       const metaToken = parseToolResponse(metaSession).session_token;
       const result = await client.callTool({
@@ -586,7 +688,8 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      expect(Object.keys(response.skills).length).toBe(0);
+      expect(response._body).toBeDefined();
+      expect(response._body).toContain('id: meta-orchestrator');
     });
   });
 
@@ -603,21 +706,14 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      const orchestrate = response.skills['orchestrator-management'];
-      expect(orchestrate).toBeDefined();
-      const crossWfRef = orchestrate._resources?.find((r: { index: string }) => r.index === 'meta/05');
-      expect(crossWfRef).toBeDefined();
-      expect(crossWfRef.id).toBe('worker-prompt-template');
-      expect(crossWfRef.content).toBeUndefined();
+      // Raw TOON body contains the workflow-orchestrator skill with cross-workflow resource refs
+      expect(response._body).toContain('id: workflow-orchestrator');
+      expect(response._body).toContain('meta/04');
     });
 
     it('bare index should still resolve ref from current workflow via get_skill', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'requirements-elicitation' },
-      });
-      const actResponse = parseToolResponse(actResult);
-      const actToken = await resolveCheckpoints(client, (actResult._meta as Record<string, unknown>)['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'requirements-elicitation');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
@@ -625,22 +721,23 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.skill._resources).toBeDefined();
-      expect(response.skill._resources.length).toBeGreaterThan(0);
-      const bareRef = response.skill._resources.find((r: { index: string }) => !r.index.includes('/'));
+      expect(response.resources).toBeDefined();
+      expect(Array.isArray(response.resources)).toBe(true);
+      expect(response.resources.length).toBeGreaterThan(0);
+      // At least one resource should be a bare index (no / prefix)
+      const bareRef = response.resources.find((r: string) => !r.includes('/'));
       expect(bareRef).toBeDefined();
-      expect(bareRef.content).toBeUndefined();
     });
 
     it('get_resource should load cross-workflow resource content by ref', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_token: sessionToken, resource_index: 'meta/05' },
+        arguments: { session_token: sessionToken, resource_index: 'meta/04' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource.id).toBe('worker-prompt-template');
-      expect(response.resource.content.length).toBeGreaterThan(0);
+      expect(response.id).toBe('activity-worker-prompt');
+      expect(response._body.length).toBeGreaterThan(0);
     });
   });
 
@@ -648,14 +745,8 @@ describe('mcp-server integration', () => {
 
   describe('token validation', () => {
     it('should warn on invalid activity transition', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(actResult);
-      let tokenAfterStart = actMeta['session_token'] as string;
-      tokenAfterStart = await resolveCheckpoints(client, tokenAfterStart, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      let tokenAfterStart = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -669,16 +760,10 @@ describe('mcp-server integration', () => {
     });
 
     it('should not warn on valid activity transition with manifest', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actContent = parseToolResponse(actResult);
-      let tokenAfterStart = actMeta['session_token'] as string;
-      tokenAfterStart = await resolveCheckpoints(client, tokenAfterStart, actContent);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      let tokenAfterStart = await resolveCheckpoints(client, nextToken, actResponse);
 
-      const manifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
+      const manifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -696,13 +781,8 @@ describe('mcp-server integration', () => {
 
   describe('transition condition validation', () => {
     it('should accept correct condition-activity pairing', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'codebase-comprehension' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(actResult);
-      const tokenAtComprehension = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
+      const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -720,13 +800,8 @@ describe('mcp-server integration', () => {
     });
 
     it('should warn on mismatched condition for activity', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'codebase-comprehension' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(actResult);
-      const tokenAtComprehension = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
+      const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -744,13 +819,8 @@ describe('mcp-server integration', () => {
     });
 
     it('should accept default transition with empty condition', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(actResult);
-      const tokenAtStart = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const tokenAtStart = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -768,13 +838,8 @@ describe('mcp-server integration', () => {
     });
 
     it('condition should not block execution', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'codebase-comprehension' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(actResult);
-      const tokenAtComprehension = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
+      const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -785,8 +850,8 @@ describe('mcp-server integration', () => {
         },
       });
       expect(result.isError).toBeFalsy();
-      const activity = parseToolResponse(result);
-      expect(activity.id).toBe('requirements-elicitation');
+      const nextAct = parseToolResponse(result);
+      expect(nextAct.activity_id).toBe('requirements-elicitation');
     });
   });
 
@@ -794,13 +859,8 @@ describe('mcp-server integration', () => {
 
   describe('step completion manifest', () => {
     it('should warn when no manifest provided for previous activity', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(actResult);
-      const tokenAfterAct = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const tokenAfterAct = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -813,13 +873,8 @@ describe('mcp-server integration', () => {
     });
 
     it('should warn on missing steps in manifest', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(actResult);
-      const tokenAfterAct = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const tokenAfterAct = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -836,15 +891,10 @@ describe('mcp-server integration', () => {
     });
 
     it('should warn on wrong step order in manifest', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actContent = parseToolResponse(actResult);
-      const tokenAfterAct = await resolveCheckpoints(client, actMeta['session_token'] as string, actContent);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const tokenAfterAct = await resolveCheckpoints(client, nextToken, actResponse);
 
-      const reversedManifest = actContent.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'done' })).reverse();
+      const reversedManifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'done' })).reverse();
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -861,13 +911,8 @@ describe('mcp-server integration', () => {
     });
 
     it('manifest validation should not block execution', async () => {
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = actResult._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(actResult);
-      const tokenAfterAct = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const tokenAfterAct = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'next_activity',
@@ -878,14 +923,29 @@ describe('mcp-server integration', () => {
         },
       });
       expect(result.isError).toBeFalsy();
-      const activity = parseToolResponse(result);
-      expect(activity.id).toBe('design-philosophy');
+      const nextAct = parseToolResponse(result);
+      expect(nextAct.activity_id).toBe('design-philosophy');
     });
   });
 
   // ============== Workflow Summary Mode ==============
 
   describe('tool: get_workflow (summary mode)', () => {
+    it('should include primary skill at the beginning of the response', async () => {
+      const result = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_token: sessionToken, summary: true },
+      });
+      expect(result.isError).toBeFalsy();
+      const text = (result.content[0] as { type: 'text'; text: string }).text;
+      // The primary skill (workflow-orchestrator) should appear before the --- separator
+      const sepIdx = text.indexOf('\n\n---\n\n');
+      expect(sepIdx).toBeGreaterThan(0);
+      const skillText = text.substring(0, sepIdx);
+      const skill = decode(skillText);
+      expect(skill.id).toBe('workflow-orchestrator');
+    });
+
     it('should return lightweight summary by default', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
@@ -893,20 +953,18 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
 
-      const wf = parseToolResponse(result);
+      const wf = parseWorkflowResponse(result);
       expect(wf.id).toBe('work-package');
       expect(wf.version).toMatch(SEMVER_RE);
       expect(wf.rules).toBeDefined();
       expect(wf.variables).toBeDefined();
-      expect(wf.executionModel).toBeDefined();
-      expect(wf.executionModel.roles).toBeDefined();
       expect(wf.activities).toBeDefined();
       expect(wf.activities[0].id).toBeDefined();
       expect(wf.activities[0].steps).toBeUndefined();
       expect(wf.activities[0].checkpoints).toBeUndefined();
     });
 
-    it('summary should be smaller than full definition', async () => {
+    it('summary and full definition should differ in content', async () => {
       const fullResult = await client.callTool({
         name: 'get_workflow',
         arguments: { session_token: sessionToken, summary: false },
@@ -916,9 +974,15 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, summary: true },
       });
 
-      const fullSize = (fullResult.content[0] as { type: 'text'; text: string }).text.length;
-      const summarySize = (summaryResult.content[0] as { type: 'text'; text: string }).text.length;
-      expect(summarySize).toBeLessThan(fullSize / 2);
+      const fullText = (fullResult.content[0] as { type: 'text'; text: string }).text;
+      const summaryText = (summaryResult.content[0] as { type: 'text'; text: string }).text;
+      // Full definition includes raw workflow TOON with skills, modes, tags etc.
+      // Summary includes activity stubs but omits raw details
+      expect(fullText).not.toBe(summaryText);
+      // Full raw TOON includes fields not in summary
+      const fullParsed = parseWorkflowResponse(fullResult);
+      expect(fullParsed.skills).toBeDefined();
+      expect(fullParsed.modes).toBeDefined();
     });
 
     it('should return full definition when summary=false', async () => {
@@ -926,8 +990,11 @@ describe('mcp-server integration', () => {
         name: 'get_workflow',
         arguments: { session_token: sessionToken, summary: false },
       });
-      const wf = parseToolResponse(result);
-      expect(wf.activities[0].steps).toBeDefined();
+      const wf = parseWorkflowResponse(result);
+      // Full raw workflow TOON includes fields like skills, modes, tags that summary omits
+      expect(wf.skills).toBeDefined();
+      expect(wf.modes).toBeDefined();
+      expect(wf.tags).toBeDefined();
     });
   });
 
@@ -1035,25 +1102,15 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken },
       });
 
-      const act1 = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const meta1 = act1._meta as Record<string, unknown>;
-      const act1Response = parseToolResponse(act1);
-      let updatedToken = meta1['session_token'] as string;
+      const { actMeta: meta1, nextToken: nextToken1, actResponse: act1Response } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      let updatedToken = nextToken1;
       const traceToken1 = meta1['trace_token'] as string;
       expect(traceToken1).toBeDefined();
 
       updatedToken = await resolveCheckpoints(client, updatedToken, act1Response);
 
-      const act2 = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: updatedToken, activity_id: 'design-philosophy' },
-      });
-      const meta2 = act2._meta as Record<string, unknown>;
-      const act2Response = parseToolResponse(act2);
-      let updatedToken2 = meta2['session_token'] as string;
+      const { actMeta: meta2, nextToken: nextToken2, actResponse: act2Response } = await transitionToActivity(client, updatedToken, 'design-philosophy');
+      let updatedToken2 = nextToken2;
       const traceToken2 = meta2['trace_token'] as string;
       expect(traceToken2).toBeDefined();
 
@@ -1099,11 +1156,11 @@ describe('mcp-server integration', () => {
     it('operations on one session should not affect another', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       const s2 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
 
       const token1 = parseToolResponse(s1).session_token as string;
@@ -1120,18 +1177,18 @@ describe('mcp-server integration', () => {
 
       expect(act1.isError).toBeFalsy();
       expect(act2.isError).toBeFalsy();
-      expect(parseToolResponse(act1).id).toBe('design-philosophy');
-      expect(parseToolResponse(act2).id).toBe('start-work-package');
+      expect(parseToolResponse(act1).activity_id).toBe('design-philosophy');
+      expect(parseToolResponse(act2).activity_id).toBe('start-work-package');
     });
 
     it('traces from different sessions should be isolated', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       const s2 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
 
       const token1 = parseToolResponse(s1).session_token as string;
@@ -1155,71 +1212,60 @@ describe('mcp-server integration', () => {
   // ============== Checkpoint Enforcement ==============
 
   describe('checkpoint enforcement', () => {
-    it('next_activity should populate pcp for activities with required checkpoints', async () => {
+    it('next_activity should not fail when bcp is empty', async () => {
       const result = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       expect(result.isError).toBeFalsy();
-      const activity = parseToolResponse(result);
-      const requiredCps = (activity.checkpoints ?? []).filter((c: { required?: boolean }) => c.required !== false);
-      expect(requiredCps.length).toBeGreaterThan(0);
     });
 
-    it('next_activity should hard-reject when pcp is non-empty and transitioning to different activity', async () => {
+    it('next_activity should hard-reject when bcp is non-empty and transitioning', async () => {
       const act1 = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = act1._meta as Record<string, unknown>;
-      const tokenWithPcp = actMeta['session_token'] as string;
+      const tokenWithAct = actMeta['session_token'] as string;
+
+      const cpResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: 'issue-verification' },
+      });
+      const tokenWithBcp = (cpResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const act2 = await client.callTool({
         name: 'next_activity',
-        arguments: { session_token: tokenWithPcp, activity_id: 'design-philosophy' },
+        arguments: { session_token: tokenWithBcp, activity_id: 'design-philosophy' },
       });
       expect(act2.isError).toBe(true);
       const errorText = (act2.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('unresolved checkpoint');
+      expect(errorText).toContain('Active checkpoint');
       expect(errorText).toContain('respond_checkpoint');
-      expect(errorText).toContain('checkpoint_id');
-      expect(errorText).toContain('option_id');
     });
 
-    it('next_activity should allow re-entry to same activity with non-empty pcp', async () => {
-      const act1 = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = act1._meta as Record<string, unknown>;
-      const tokenWithPcp = actMeta['session_token'] as string;
-
-      const act2 = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: tokenWithPcp, activity_id: 'start-work-package' },
-      });
-      expect(act2.isError).toBeFalsy();
-      expect(parseToolResponse(act2).id).toBe('start-work-package');
-    });
-
-    it('respond_checkpoint should clear a checkpoint from pcp', async () => {
+    it('respond_checkpoint should clear a checkpoint from bcp', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
       });
       const actMeta = act._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(act);
-      const token = actMeta['session_token'] as string;
-      const firstCp = actResponse.checkpoints[0];
+      const tokenWithAct = actMeta['session_token'] as string;
+      const firstCpId = 'classification-confirmed'; // Known from the workflow
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: firstCpId },
+      });
+      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const cpResult = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_token: token, checkpoint_id: firstCp.id, option_id: firstCp.options[0].id },
+        arguments: { checkpoint_handle: cpHandle, option_id: 'confirmed' }, // Assumes 'confirmed' is a valid option
       });
       expect(cpResult.isError).toBeFalsy();
       const response = parseToolResponse(cpResult);
       expect(response.resolved).toBe(true);
-      expect(response.remaining_checkpoints).not.toContain(firstCp.id);
     });
 
     it('respond_checkpoint should reject invalid option_id', async () => {
@@ -1228,19 +1274,25 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
       });
       const actMeta = act._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(act);
-      const token = actMeta['session_token'] as string;
+      const tokenWithAct = actMeta['session_token'] as string;
+      const firstCpId = 'classification-confirmed';
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: firstCpId },
+      });
+      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_token: token, checkpoint_id: actResponse.checkpoints[0].id, option_id: 'nonexistent-option' },
+        arguments: { checkpoint_handle: cpHandle, option_id: 'nonexistent-option' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
       expect(errorText).toContain('Invalid option');
     });
 
-    it('respond_checkpoint should reject checkpoint not in pcp', async () => {
+    it('respond_checkpoint should reject if bcp is empty', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
@@ -1250,30 +1302,35 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_token: token, checkpoint_id: 'nonexistent-cp', option_id: 'some-opt' },
+        arguments: { checkpoint_handle: token, option_id: 'some-opt' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('not pending');
+      expect(errorText).toContain('does not have an active checkpoint');
     });
 
-    it('respond_checkpoint with auto_advance should reject on blocking checkpoint', async () => {
+    it('respond_checkpoint with auto_advance should reject if no autoAdvanceMs config is present', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = act._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(act);
-      const token = actMeta['session_token'] as string;
-      const blockingCp = actResponse.checkpoints.find((c: { blocking?: boolean }) => c.blocking !== false);
+      const tokenWithAct = actMeta['session_token'] as string;
+      const normalCpId = 'issue-verification';
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: normalCpId },
+      });
+      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_token: token, checkpoint_id: blockingCp.id, auto_advance: true },
+        arguments: { checkpoint_handle: cpHandle, auto_advance: true },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('blocking');
+      expect(errorText).toContain('missing defaultOption or autoAdvanceMs');
     });
 
     it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {
@@ -1282,33 +1339,42 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
       });
       const actMeta = act._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(act);
-      const token = actMeta['session_token'] as string;
-      const unconditionalCp = actResponse.checkpoints.find((c: { condition?: unknown }) => !c.condition);
+      const tokenWithAct = actMeta['session_token'] as string;
+      const unconditionalCpId = 'workflow-path-selected';
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: unconditionalCpId },
+      });
+      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_token: token, checkpoint_id: unconditionalCp.id, condition_not_met: true },
+        arguments: { checkpoint_handle: cpHandle, condition_not_met: true },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('no condition');
+      expect(errorText).toContain('no condition field');
     });
 
     it('respond_checkpoint with condition_not_met should accept conditional checkpoint', async () => {
       const act = await client.callTool({
         name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = act._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(act);
-      const token = actMeta['session_token'] as string;
-      const conditionalCp = actResponse.checkpoints.find((c: { condition?: unknown }) => c.condition);
-      if (!conditionalCp) return;
+      const tokenWithAct = actMeta['session_token'] as string;
+      const conditionalCpId = 'branch-check';
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: conditionalCpId },
+      });
+      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_token: token, checkpoint_id: conditionalCp.id, condition_not_met: true },
+        arguments: { checkpoint_handle: cpHandle, condition_not_met: true },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -1318,78 +1384,74 @@ describe('mcp-server integration', () => {
     it('respond_checkpoint should return effects from selected option', async () => {
       const act = await client.callTool({
         name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
+        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = act._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(act);
-      const token = actMeta['session_token'] as string;
-      const cpWithEffects = actResponse.checkpoints.find(
-        (c: { options: Array<{ effect?: unknown }> }) => c.options.some((o: { effect?: unknown }) => o.effect)
-      );
-      if (!cpWithEffects) return;
-      const optionWithEffect = cpWithEffects.options.find((o: { effect?: unknown }) => o.effect);
+      const tokenWithAct = actMeta['session_token'] as string;
+      const cpWithEffectsId = 'issue-verification';
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: cpWithEffectsId },
+      });
+      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_token: token, checkpoint_id: cpWithEffects.id, option_id: optionWithEffect.id },
+        arguments: { checkpoint_handle: cpHandle, option_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.effect).toBeDefined();
     });
 
-    it('full flow: next_activity -> resolve all checkpoints -> next_activity succeeds', async () => {
-      const act1 = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const act1Meta = act1._meta as Record<string, unknown>;
-      const act1Response = parseToolResponse(act1);
-      let token = act1Meta['session_token'] as string;
+    it('full flow: next_activity -> yield -> respond -> resume -> next_activity succeeds', async () => {
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      let token = nextToken;
 
-      token = await resolveCheckpoints(client, token, act1Response);
+      token = await resolveCheckpoints(client, token, actResponse);
 
       const act2 = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: token, activity_id: 'design-philosophy' },
       });
       expect(act2.isError).toBeFalsy();
-      expect(parseToolResponse(act2).id).toBe('design-philosophy');
+      expect(parseToolResponse(act2).activity_id).toBe('design-philosophy');
     });
 
-    it('get_skill should be gated when checkpoints are pending', async () => {
+    it('get_skill should be gated when a checkpoint is yielded', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
       const actMeta = act._meta as Record<string, unknown>;
-      const token = actMeta['session_token'] as string;
+      const tokenWithAct = actMeta['session_token'] as string;
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: 'issue-verification' },
+      });
+      const tokenWithBcp = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: token, step_id: 'create-issue' },
+        arguments: { session_token: tokenWithBcp, step_id: 'create-issue' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('unresolved checkpoint');
-      expect(errorText).toContain('respond_checkpoint');
+      expect(errorText).toContain('Active checkpoint');
     });
 
-    it('get_skill should work after all checkpoints resolved', async () => {
-      const act = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = act._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(act);
-      const clearedToken = await resolveCheckpoints(client, actMeta['session_token'] as string, actResponse);
+    it('get_skill should work after checkpoint is resumed', async () => {
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const clearedToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
         name: 'get_skill',
         arguments: { session_token: clearedToken, step_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
-      expect(parseToolResponse(result).skill.id).toBe('create-issue');
+      expect(parseToolResponse(result).id).toBe('create-issue');
     });
 
     it('respond_checkpoint should require exactly one resolution mode', async () => {
@@ -1398,13 +1460,17 @@ describe('mcp-server integration', () => {
         arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
       });
       const actMeta = act._meta as Record<string, unknown>;
-      const actResponse = parseToolResponse(act);
-      const token = actMeta['session_token'] as string;
-      const cpId = actResponse.checkpoints[0].id;
+      const tokenWithAct = actMeta['session_token'] as string;
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: 'classification-confirmed' },
+      });
+      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_token: token, checkpoint_id: cpId, option_id: 'confirmed', auto_advance: true },
+        arguments: { checkpoint_handle: cpHandle, option_id: 'confirmed', auto_advance: true },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1415,12 +1481,34 @@ describe('mcp-server integration', () => {
   // ============== Token Inheritance ==============
 
   describe('start_session token inheritance', () => {
-    it('inherited session should preserve pcp from parent token', async () => {
+    it('should return a warning when agent_id does not match inherited session token', async () => {
+      const inherited = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', session_token: sessionToken, agent_id: 'different-agent' },
+      });
+      expect(inherited.isError).toBeFalsy();
+      const response = parseToolResponse(inherited);
+      expect(response.warning).toBeDefined();
+      expect(response.warning).toContain("does not match the inherited session token's agent_id");
+      
+      const meta = inherited._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings[0]).toContain("does not match the inherited session token's agent_id");
+    });
+    it('inherited session should preserve bcp from parent token', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const parentToken = (act._meta as Record<string, unknown>)['session_token'] as string;
+      const actMeta = act._meta as Record<string, unknown>;
+      const tokenWithAct = actMeta['session_token'] as string;
+
+      const yieldResult = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_token: tokenWithAct, checkpoint_id: 'issue-verification' },
+      });
+      const parentToken = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
       const inherited = await client.callTool({
         name: 'start_session',
@@ -1436,7 +1524,7 @@ describe('mcp-server integration', () => {
       });
       expect(skillResult.isError).toBe(true);
       const errorText = (skillResult.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('unresolved checkpoint');
+      expect(errorText).toContain('Active checkpoint');
     });
 
     it('inherited session should set aid from agent_id parameter', async () => {
@@ -1476,13 +1564,13 @@ describe('mcp-server integration', () => {
     it('should reject workflow mismatch between token and workflow_id', async () => {
       const metaSession = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'meta' },
+        arguments: { workflow_id: 'meta', agent_id: 'test-agent' },
       });
       const metaToken = parseToolResponse(metaSession).session_token;
 
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', session_token: metaToken },
+        arguments: { workflow_id: 'work-package', session_token: metaToken, agent_id: 'test-agent' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1492,7 +1580,7 @@ describe('mcp-server integration', () => {
     it('fresh session should still work without session_token', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package' },
+        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -1511,13 +1599,8 @@ describe('mcp-server integration', () => {
     });
 
     it('inherited session should preserve act from parent', async () => {
-      const act = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
-      });
-      const parentToken = (act._meta as Record<string, unknown>)['session_token'] as string;
-      const actResponse = parseToolResponse(act);
-      const clearedToken = await resolveCheckpoints(client, parentToken, actResponse);
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const clearedToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const inherited = await client.callTool({
         name: 'start_session',
@@ -1530,7 +1613,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: childToken, step_id: 'create-issue' },
       });
       expect(skillResult.isError).toBeFalsy();
-      expect(parseToolResponse(skillResult).skill.id).toBe('create-issue');
+      expect(parseToolResponse(skillResult).id).toBe('create-issue');
     });
   });
 

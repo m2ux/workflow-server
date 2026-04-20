@@ -1,0 +1,5 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm.
+src/types/workflow.ts(33,59): error TS2305: Module '"../schema/workflow.schema.js"' has no exported member 'AgentRole'.
+src/types/workflow.ts(33,70): error TS2305: Module '"../schema/workflow.schema.js"' has no exported member 'ExecutionModel'.
+src/types/workflow.ts(34,48): error TS2305: Module '"../schema/workflow.schema.js"' has no exported member 'AgentRoleSchema'.
+src/types/workflow.ts(34,65): error TS2305: Module '"../schema/workflow.schema.js"' has no exported member 'ExecutionModelSchema'.

@@ -297,7 +297,7 @@ A workflow is the top-level container representing a complete process definition
 | `author`          | string     | Creator of the workflow                                    |
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | string[]   | Execution guidelines                                       |
-| `executionModel`  | ExecutionModel | Agent roles and execution model for this workflow (required) |
+| `executionModel`  | ExecutionModel | Agent roles and orchestration model for this workflow (required) |
 | `skills`          | string[]   | Workflow-level skill IDs (returned by `get_skills`) |
 | `variables`       | Variable[] | State variables                                            |
 | `modes`           | Mode[]     | Execution modes that modify standard workflow behavior     |
@@ -562,7 +562,7 @@ Variables store state that persists across activities. Define them at the workfl
 
 **Variable Types:** `string`, `number`, `boolean`, `array`, `object`
 
-### Execution Model
+### Orchestration Model
 
 Every workflow must declare an `executionModel` that defines the agent roles participating in its execution. Each workflow defines its own role vocabulary — role IDs are validated for uniqueness within the workflow.
 
@@ -679,7 +679,7 @@ Activities are the execution units of a workflow. Each activity contains steps, 
       "version": "1.0.0",
       "name": "Initial Activity",
       "description": "The first activity of the workflow",
-      "skills": { "primary": "execute-activity" },
+      "skills": { "primary": "11-activity-worker" },
       "steps": [],
       "checkpoints": [],
       "transitions": []
@@ -1189,7 +1189,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "version": "1.0.0",
       "name": "Review",
       "description": "Initial review and approval",
-      "skills": { "primary": "execute-activity" },
+      "skills": { "primary": "11-activity-worker" },
       "estimatedTime": "5-10m",
       "steps": [
         {
@@ -1241,7 +1241,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "process",
       "version": "1.0.0",
       "name": "Processing",
-      "skills": { "primary": "execute-activity" },
+      "skills": { "primary": "11-activity-worker" },
       "steps": [
         {
           "id": "step-process",
@@ -1253,7 +1253,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "rejected",
       "version": "1.0.0",
       "name": "Rejection",
-      "skills": { "primary": "execute-activity" },
+      "skills": { "primary": "11-activity-worker" },
       "steps": [
         {
           "id": "step-notify",
@@ -1314,21 +1314,20 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 
 ```json
 {
-  "id": "start-workflow",
-  "version": "3.0.0",
-  "name": "Start Workflow",
-  "problem": "The user wants to begin executing a new workflow from the beginning.",
-  "recognition": ["Start a workflow", "Begin workflow", "Execute workflow"],
+  "id": "discover-session",
+  "version": "1.0.0",
+  "name": "Discover Session",
+  "problem": "Determine whether to resume an existing workflow session or start fresh.",
+  "recognition": ["start a workflow", "resume a workflow", "continue a workflow"],
   "skills": {
-    "primary": "execute-activity",
-    "supporting": ["state-management"]
+    "primary": "state-management"
   },
   "steps": [
-    { "id": "select", "name": "Select workflow" },
-    { "id": "load", "name": "Load workflow definition" }
+    { "id": "identify-target", "name": "Identify target workflow and context" },
+    { "id": "scan-planning-folders", "name": "Scan planning folders for saved sessions" }
   ],
-  "outcome": ["Workflow is selected and loaded", "Initial state is created"],
-  "context_to_preserve": ["workflowId", "currentActivity"]
+  "outcome": ["Workflow target identified", "Prior state located if available"],
+  "context_to_preserve": ["target_workflow", "has_saved_state"]
 }
 ```
 
@@ -1388,7 +1387,7 @@ A complete activity definition with workflow trigger:
   "description": "Execute each planned work package by triggering the work-package workflow",
   "problem": "Planned work packages need to be implemented one at a time",
   "skills": {
-    "primary": "execute-activity"
+    "primary": "11-activity-worker"
   },
   "triggers": [
     {
@@ -1434,7 +1433,7 @@ The skill schema (`skill.schema.json`) defines agent capabilities for workflow e
 
 ```json
 {
-  "id": "execute-activity",
+  "id": "11-activity-worker",
   "version": "2.0.0",
   "capability": "Bootstrap and execute a single workflow activity with consistent tool usage",
   "tools": {},

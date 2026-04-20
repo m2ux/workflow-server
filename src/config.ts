@@ -6,17 +6,14 @@ export interface ServerConfig {
   schemasDir: string;
   serverName: string;
   serverVersion: string;
-  /** Schema preamble prepended to get_workflow responses. Built at startup. */
-  schemaPreamble?: string;
   /** In-process trace store for execution tracing. Created by createServer(). */
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
   minCheckpointResponseSeconds?: number;
 }
 
-/** Config shape after startup — schemaPreamble and traceStore are guaranteed present. */
+/** Config shape after startup — traceStore is guaranteed present. */
 export interface ResolvedServerConfig extends ServerConfig {
-  schemaPreamble: string;
   traceStore: TraceStore;
 }
 

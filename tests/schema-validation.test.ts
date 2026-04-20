@@ -3,8 +3,6 @@ import { resolve } from 'node:path';
 import {
   WorkflowSchema,
   safeValidateWorkflow,
-  AgentRoleSchema,
-  ExecutionModelSchema,
 } from '../src/schema/workflow.schema.js';
 import {
   ActivitySchema,
@@ -279,7 +277,7 @@ describe('schema-validation', () => {
     });
 
     it('loaded activity should pass ActivitySchema validation', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'start-workflow');
+      const result = await readActivity(WORKFLOW_DIR, 'discover-session', 'meta');
       expect(result.success).toBe(true);
       if (result.success) {
         const validation = safeValidateActivity(result.value);
@@ -307,16 +305,11 @@ describe('schema-validation', () => {
       skills: { primary: 'some-skill' },
     };
 
-    const minimalExecutionModel = {
-      roles: [{ id: 'agent', description: 'Single agent' }],
-    };
-
     it('should validate minimal workflow', () => {
       const workflow = {
         id: 'test-workflow',
         version: '1.0.0',
         title: 'Test Workflow',
-        executionModel: minimalExecutionModel,
         initialActivity: 'activity-1',
         activities: [minimalActivity],
       };
@@ -329,7 +322,6 @@ describe('schema-validation', () => {
         id: 'test-workflow',
         version: '1.0.0',
         title: 'Test Workflow',
-        executionModel: minimalExecutionModel,
         initialActivity: 'activity-1',
         variables: [
           { name: 'counter', type: 'number', defaultValue: 0 },
@@ -346,7 +338,6 @@ describe('schema-validation', () => {
         id: 'test-workflow',
         version: '1.0.0',
         title: 'Test Workflow',
-        executionModel: minimalExecutionModel,
         initialActivity: 'activity-1',
         activities: [],
       };
@@ -359,7 +350,6 @@ describe('schema-validation', () => {
         id: 'test-workflow',
         version: 'v1',
         title: 'Test Workflow',
-        executionModel: minimalExecutionModel,
         initialActivity: 'activity-1',
         activities: [minimalActivity],
       };
@@ -367,7 +357,7 @@ describe('schema-validation', () => {
       expect(result.success).toBe(false);
     });
 
-    it('should reject workflow without executionModel', () => {
+    it('should accept workflow without executionModel', () => {
       const workflow = {
         id: 'test-workflow',
         version: '1.0.0',
@@ -376,124 +366,7 @@ describe('schema-validation', () => {
         activities: [minimalActivity],
       };
       const result = safeValidateWorkflow(workflow);
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('ExecutionModelSchema', () => {
-    it('should validate minimal execution model with one role', () => {
-      const model = { roles: [{ id: 'agent', description: 'Single agent' }] };
-      const result = ExecutionModelSchema.safeParse(model);
       expect(result.success).toBe(true);
-    });
-
-    it('should validate two-role execution model', () => {
-      const model = {
-        roles: [
-          { id: 'orchestrator', description: 'Coordinates workflow execution' },
-          { id: 'worker', description: 'Executes activity steps' },
-        ],
-      };
-      const result = ExecutionModelSchema.safeParse(model);
-      expect(result.success).toBe(true);
-    });
-
-    it('should validate many-role execution model', () => {
-      const model = {
-        roles: [
-          { id: 'orchestrator', description: 'Coordinates' },
-          { id: 'reconnaissance', description: 'Scouts' },
-          { id: 'auditor', description: 'Audits' },
-          { id: 'verifier', description: 'Verifies' },
-          { id: 'merger', description: 'Merges' },
-          { id: 'adversarial', description: 'Challenges' },
-          { id: 'dependency-reviewer', description: 'Reviews dependencies' },
-        ],
-      };
-      const result = ExecutionModelSchema.safeParse(model);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject missing roles', () => {
-      const model = {};
-      const result = ExecutionModelSchema.safeParse(model);
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject empty roles array', () => {
-      const model = { roles: [] };
-      const result = ExecutionModelSchema.safeParse(model);
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject role missing id', () => {
-      const result = AgentRoleSchema.safeParse({ description: 'No id' });
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject role missing description', () => {
-      const result = AgentRoleSchema.safeParse({ id: 'agent' });
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject extra properties on role (strict)', () => {
-      const result = AgentRoleSchema.safeParse({
-        id: 'agent',
-        description: 'An agent',
-        goal: 'Do things',
-      });
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject extra properties on execution model (strict)', () => {
-      const result = ExecutionModelSchema.safeParse({
-        roles: [{ id: 'agent', description: 'Single agent' }],
-        type: 'orchestrator-worker',
-      });
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('ExecutionModel unique role IDs', () => {
-    const minimalActivity = { 
-      id: 'activity-1', 
-      version: '1.0.0',
-      name: 'Activity One',
-      skills: { primary: 'some-skill' },
-    };
-
-    it('should accept unique role IDs', () => {
-      const workflow = {
-        id: 'test-workflow',
-        version: '1.0.0',
-        title: 'Test',
-        executionModel: {
-          roles: [
-            { id: 'orchestrator', description: 'Coordinates' },
-            { id: 'worker', description: 'Executes' },
-          ],
-        },
-        activities: [minimalActivity],
-      };
-      const result = safeValidateWorkflow(workflow);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject duplicate role IDs', () => {
-      const workflow = {
-        id: 'test-workflow',
-        version: '1.0.0',
-        title: 'Test',
-        executionModel: {
-          roles: [
-            { id: 'worker', description: 'Worker one' },
-            { id: 'worker', description: 'Worker two' },
-          ],
-        },
-        activities: [minimalActivity],
-      };
-      const result = safeValidateWorkflow(workflow);
-      expect(result.success).toBe(false);
     });
   });
 });

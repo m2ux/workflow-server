@@ -23,6 +23,14 @@
         },
         "value": {
           "description": "Value to assign (set) or emit"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what this action does"
+        },
+        "condition": {
+          "$ref": "condition.schema.json",
+          "description": "Condition that must be true for this action to execute"
         }
       },
       "required": ["action"],
@@ -51,6 +59,10 @@
           "$ref": "condition.schema.json",
           "description": "Condition that must be true for this step to execute. If false, the step is skipped."
         },
+        "checkpoint": {
+          "type": "string",
+          "description": "Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step."
+        },
         "required": {
           "type": "boolean",
           "default": true
@@ -60,6 +72,20 @@
           "items": {
             "$ref": "#/definitions/action"
           }
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/workflowTrigger"
+          },
+          "description": "Workflows to trigger from this step"
+        },
+        "skill_args": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "number", "boolean"]
+          },
+          "description": "Arguments to pass to the skill when executing this step"
         }
       },
       "required": ["id", "name"],
@@ -249,6 +275,10 @@
           "exclusiveMinimum": 0,
           "default": 100,
           "description": "Safety limit to prevent infinite loops"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what this loop does"
         },
         "breakCondition": {
           "$ref": "condition.schema.json",

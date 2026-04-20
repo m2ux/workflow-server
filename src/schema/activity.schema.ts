@@ -17,8 +17,22 @@ export const ActionSchema = z.object({
   target: z.string().optional(),
   message: z.string().optional(),
   value: z.unknown().optional(),
+  description: z.string().optional().describe('Human-readable description of what this action does'),
+  condition: ConditionSchema.optional().describe('Condition that must be true for this action to execute'),
 });
 export type Action = z.infer<typeof ActionSchema>;
+
+// Forward-declare step and loop schemas for circular references
+// StepSchema references LoopSchema (via loops) and WorkflowTriggerSchema (via triggers)
+// LoopSchema references StepSchema (via steps)
+
+// Workflow trigger schema - allows an activity or step to trigger another workflow
+export const WorkflowTriggerSchema = z.object({
+  workflow: z.string().describe('ID of the workflow to trigger'),
+  description: z.string().optional().describe('Description of when/why this workflow is triggered'),
+  passContext: z.array(z.string()).optional().describe('Context variables to pass to the triggered workflow'),
+});
+export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
 // Step schema
 export const StepSchema = z.object({
@@ -26,9 +40,12 @@ export const StepSchema = z.object({
   name: z.string().describe('Human-readable step name'),
   description: z.string().optional().describe('Detailed guidance for executing this step'),
   skill: z.string().optional().describe('Skill ID to apply for this step'),
+  checkpoint: z.string().optional().describe('Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step.'),
   required: z.boolean().default(true),
   condition: ConditionSchema.optional().describe('Condition that must be true for this step to execute'),
   actions: z.array(ActionSchema).optional(),
+  triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this step'),
+  skill_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Arguments to pass to the skill when executing this step'),
 });
 export type Step = z.infer<typeof StepSchema>;
 
@@ -52,8 +69,6 @@ export const CheckpointSchema = z.object({
   message: z.string().describe('Message to present to user at checkpoint'),
   condition: ConditionSchema.optional().describe('Condition that must be true before presenting this checkpoint. If false, the checkpoint is skipped.'),
   options: z.array(CheckpointOptionSchema).min(1),
-  required: z.boolean().default(true),
-  blocking: z.boolean().default(true),
   defaultOption: z.string().optional().describe('Option ID to auto-select when autoAdvanceMs elapses without user intervention'),
   autoAdvanceMs: z.number().int().positive().optional().describe('Milliseconds to wait before auto-selecting defaultOption'),
 });
@@ -87,6 +102,7 @@ export const LoopSchema = z.object({
   over: z.string().optional(),
   condition: ConditionSchema.optional(),
   maxIterations: z.number().int().positive().default(100),
+  description: z.string().optional().describe('Human-readable description of what this loop does'),
   breakCondition: ConditionSchema.optional(),
   steps: z.array(StepSchema).optional(),
   activities: z.array(z.string()).optional().describe('Activity IDs to execute in loop'),
@@ -100,14 +116,6 @@ export const TransitionSchema = z.object({
   isDefault: z.boolean().default(false),
 });
 export type Transition = z.infer<typeof TransitionSchema>;
-
-// Workflow trigger schema - allows an activity to trigger another workflow
-export const WorkflowTriggerSchema = z.object({
-  workflow: z.string().describe('ID of the workflow to trigger'),
-  description: z.string().optional().describe('Description of when/why this workflow is triggered'),
-  passContext: z.array(z.string()).optional().describe('Context variables to pass to the triggered workflow'),
-});
-export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
 // Artifact schema - defines outputs produced by an activity
 export const ArtifactSchema = z.object({
@@ -140,7 +148,7 @@ export const ActivitySchema = z.object({
   steps: z.array(StepSchema).optional().describe('Ordered execution steps for this activity'),
   
   // Control flow (optional)
-  checkpoints: z.array(CheckpointSchema).optional().describe('Blocking user decision points'),
+  checkpoints: z.array(CheckpointSchema).optional().describe('User decision points'),
   decisions: z.array(DecisionSchema).optional().describe('Conditional branching points'),
   loops: z.array(LoopSchema).optional().describe('Iteration constructs'),
   transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities'),

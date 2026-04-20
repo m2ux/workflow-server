@@ -140,14 +140,27 @@ function validateTraceTokenPayload(parsed: unknown): asserts parsed is TraceToke
 /** Decode and verify an HMAC-signed trace token, returning the payload with events. */
 export async function decodeTraceToken(token: string): Promise<TraceTokenPayload> {
   const dotIndex = token.lastIndexOf('.');
-  if (dotIndex === -1) throw new Error('Invalid trace token: missing signature');
+  if (dotIndex === -1) {
+    throw new Error(
+      'Invalid trace token: the token is malformed (missing signature segment). ' +
+      'A valid trace token must contain a "." separator between the payload and HMAC signature. ' +
+      'This usually means the token was truncated or the value passed is not a trace token. ' +
+      'Trace tokens are returned in the _meta.trace_token field of next_activity responses. ' +
+      'If the token is invalid, you can omit the trace_tokens parameter and use server-side tracing instead.'
+    );
+  }
 
   const b64 = token.substring(0, dotIndex);
   const sig = token.substring(dotIndex + 1);
 
   const key = await getOrCreateServerKey();
   if (!hmacVerify(b64, sig, key)) {
-    throw new Error('Invalid trace token: signature verification failed');
+    throw new Error(
+      'Invalid trace token: HMAC signature verification failed. ' +
+      'The token was either signed by a different server instance (e.g., the server was restarted and generated a new signing key), ' +
+      'or the token has been tampered with. ' +
+      'If the token is invalid, you can omit the trace_tokens parameter and use server-side tracing instead.'
+    );
   }
 
   const json = Buffer.from(b64, 'base64url').toString('utf8');

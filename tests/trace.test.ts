@@ -167,17 +167,17 @@ describe('trace token encode/decode', () => {
     const decoded = JSON.parse(Buffer.from(b64!, 'base64url').toString());
     decoded.n = 999;
     const tamperedB64 = Buffer.from(JSON.stringify(decoded)).toString('base64url');
-    await expect(decodeTraceToken(`${tamperedB64}.${sig}`)).rejects.toThrow('signature verification failed');
+    await expect(decodeTraceToken(`${tamperedB64}.${sig}`)).rejects.toThrow('HMAC signature verification failed');
   });
 
   it('rejects invalid HMAC (UT-11)', async () => {
     const token = await createTraceToken(samplePayload);
     const corrupted = token.slice(0, -4) + 'dead';
-    await expect(decodeTraceToken(corrupted)).rejects.toThrow('signature verification failed');
+    await expect(decodeTraceToken(corrupted)).rejects.toThrow('HMAC signature verification failed');
   });
 
   it('rejects missing signature', async () => {
-    await expect(decodeTraceToken('just-a-payload-no-dot')).rejects.toThrow('missing signature');
+    await expect(decodeTraceToken('just-a-payload-no-dot')).rejects.toThrow('malformed (missing signature segment)');
   });
 
   it('token is an opaque string (dot-separated)', async () => {

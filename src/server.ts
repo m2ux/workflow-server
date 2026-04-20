@@ -11,7 +11,6 @@ export function createServer(config: ServerConfig): McpServer {
   const resolvedConfig: ResolvedServerConfig = {
     ...config,
     traceStore: config.traceStore ?? new TraceStore(),
-    schemaPreamble: config.schemaPreamble ?? '',
   };
 
   const server = new McpServer(
@@ -22,6 +21,6 @@ export function createServer(config: ServerConfig): McpServer {
   registerWorkflowTools(server, resolvedConfig);
   registerResourceTools(server, resolvedConfig);
   registerSchemaResources(server, resolvedConfig);
-  logInfo('Server configured', { resources: ['workflow-server://schemas'] });
+  logInfo('Server configured', { resources: ['workflow-server://schemas', 'workflow-server://schemas/{id}'] });
   return server;
 }

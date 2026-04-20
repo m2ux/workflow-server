@@ -12,8 +12,8 @@ export interface SessionPayload {
   ts: number;
   sid: string;
   aid: string;
-  pcp: string[];
-  pcpt: number;
+  bcp?: string | undefined;
+  psid?: string | undefined;
 }
 
 export interface SessionAdvance {
@@ -22,8 +22,8 @@ export interface SessionAdvance {
   skill?: string;
   cond?: string;
   aid?: string;
-  pcp?: string[];
-  pcpt?: number;
+  bcp?: string | null; // using null to allow clearing the optional field
+  psid?: string;
 }
 
 async function encode(payload: SessionPayload): Promise<string> {
@@ -44,20 +44,33 @@ const SessionPayloadSchema = z.object({
   ts: z.number(),
   sid: z.string(),
   aid: z.string(),
-  pcp: z.array(z.string()),
-  pcpt: z.number(),
+  bcp: z.string().optional(),
+  psid: z.string().optional(),
 });
 
 async function decode(token: string): Promise<SessionPayload> {
   const dotIndex = token.lastIndexOf('.');
-  if (dotIndex === -1) throw new Error('Invalid session token: missing signature');
+  if (dotIndex === -1) {
+    throw new Error(
+      'Invalid session token: the token is malformed (missing signature segment). ' +
+      'A valid session token must contain a "." separator between the payload and HMAC signature. ' +
+      'This usually means the token was truncated, corrupted, or the value passed is not a session token at all. ' +
+      'To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls.'
+    );
+  }
 
   const b64 = token.substring(0, dotIndex);
   const sig = token.substring(dotIndex + 1);
 
   const key = await getOrCreateServerKey();
   if (!hmacVerify(b64, sig, key)) {
-    throw new Error('Invalid session token: signature verification failed');
+    throw new Error(
+      'Invalid session token: HMAC signature verification failed. ' +
+      'The token was either signed by a different server instance (e.g., the server was restarted and generated a new signing key), ' +
+      'or the token has been tampered with, or you are using a stale token from a previous session. ' +
+      'To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls. ' +
+      'If you are passing a checkpoint_handle (from yield_checkpoint), you must re-yield the checkpoint first to get a valid handle.'
+    );
   }
 
   try {
@@ -66,17 +79,25 @@ async function decode(token: string): Promise<SessionPayload> {
     const result = SessionPayloadSchema.safeParse(parsed);
     if (!result.success) {
       const issues = result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
-      throw new Error(`Missing or invalid token fields: ${issues}`);
+      throw new Error(
+        `Invalid session token: payload is missing required fields (${issues}). ` +
+        `The token signature is valid but the embedded data is incomplete or corrupt. ` +
+        `To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls.`
+      );
     }
     return result.data;
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    throw new Error(`Invalid session token: ${msg}`);
+    throw new Error(
+      `Invalid session token: failed to decode payload (${msg}). ` +
+      `The token signature is valid but the payload could not be parsed. ` +
+      `To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls.`
+    );
   }
 }
 
-export async function createSessionToken(workflowId: string, workflowVersion: string): Promise<string> {
-  return encode({
+export async function createSessionToken(workflowId: string, workflowVersion: string, agentId: string, parentSid?: string): Promise<string> {
+  const payload: SessionPayload = {
     wf: workflowId,
     act: '',
     skill: '',
@@ -85,10 +106,40 @@ export async function createSessionToken(workflowId: string, workflowVersion: st
     seq: 0,
     ts: Math.floor(Date.now() / 1000),
     sid: randomUUID(),
-    aid: '',
-    pcp: [],
-    pcpt: 0,
-  });
+    aid: agentId,
+  };
+  if (parentSid !== undefined) {
+    payload.psid = parentSid;
+  }
+  return encode(payload);
+}
+
+/**
+ * Decode and validate the token payload WITHOUT verifying the HMAC signature.
+ * Used by start_session to attempt session adoption when the HMAC key has changed
+ * (e.g., server restart) but the payload is structurally intact.
+ *
+ * Returns the decoded payload if valid, or null if the payload is corrupted/malformed.
+ */
+export async function decodePayloadOnly(token: string): Promise<SessionPayload | null> {
+  const dotIndex = token.lastIndexOf('.');
+  if (dotIndex === -1) {
+    return null;
+  }
+
+  const b64 = token.substring(0, dotIndex);
+
+  try {
+    const json = Buffer.from(b64, 'base64url').toString('utf8');
+    const parsed = JSON.parse(json);
+    const result = SessionPayloadSchema.safeParse(parsed);
+    if (!result.success) {
+      return null;
+    }
+    return result.data;
+  } catch {
+    return null;
+  }
 }
 
 export async function decodeSessionToken(token: string): Promise<SessionPayload> {
@@ -106,8 +157,8 @@ export async function advanceToken(token: string, updates?: SessionAdvance, deco
     ...(updates?.skill !== undefined && { skill: updates.skill }),
     ...(updates?.cond !== undefined && { cond: updates.cond }),
     ...(updates?.aid !== undefined && { aid: updates.aid }),
-    ...(updates?.pcp !== undefined && { pcp: updates.pcp }),
-    ...(updates?.pcpt !== undefined && { pcpt: updates.pcpt }),
+    ...(updates?.bcp !== undefined && { bcp: updates.bcp === null ? undefined : updates.bcp }),
+    ...(updates?.psid !== undefined && { psid: updates.psid }),
   };
   return encode(advanced);
 }
@@ -119,18 +170,17 @@ export const sessionTokenParam = {
 };
 
 /**
- * Throws if the token has unresolved checkpoints.
+ * Throws if the token has an active checkpoint.
  * Call this in every tool handler that accepts session_token,
- * EXCEPT respond_checkpoint (the resolution mechanism) and
- * get_checkpoint (needed to load checkpoint details for presentation).
+ * EXCEPT present_checkpoint (the resolution mechanism) and
+ * respond_checkpoint.
  */
 export function assertCheckpointsResolved(token: SessionPayload): void {
-  if (token.pcp.length > 0) {
+  if (token.bcp) {
     throw new Error(
-      `Blocked: ${token.pcp.length} unresolved checkpoint(s) on activity '${token.act}' ` +
-      `[${token.pcp.join(', ')}]. ` +
-      `All tools are gated until every checkpoint is resolved via respond_checkpoint. ` +
-      `Use get_checkpoint to load checkpoint details for presentation to the user.`
+      `Blocked: Active checkpoint '${token.bcp}' on activity '${token.act}'. ` +
+      `All tools are gated until the checkpoint is resolved. ` +
+      `The orchestrator must call respond_checkpoint with the checkpoint_handle to clear the gate before any other tool calls can proceed.`
     );
   }
 }

@@ -5,6 +5,17 @@
   "description": "Workflow definition schema - orchestrates activities",
   "$ref": "#/definitions/workflow",
   "definitions": {
+    "skills": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string",
+          "description": "Primary skill ID for this workflow"
+        }
+      },
+      "required": ["primary"],
+      "additionalProperties": false
+    },
     "variable": {
       "type": "object",
       "properties": {
@@ -80,38 +91,6 @@
         }
       },
       "required": ["id", "name", "activationVariable"],
-      "additionalProperties": false
-    },
-    "agentRole": {
-      "type": "object",
-      "description": "An agent role that participates in workflow execution",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique role identifier within this workflow"
-        },
-        "description": {
-          "type": "string",
-          "description": "What this role does in the workflow execution"
-        }
-      },
-      "required": ["id", "description"],
-      "additionalProperties": false
-    },
-    "executionModel": {
-      "type": "object",
-      "description": "Declares the agent roles that participate in workflow execution",
-      "properties": {
-        "roles": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/agentRole"
-          },
-          "minItems": 1,
-          "description": "Agent roles that participate in this workflow"
-        }
-      },
-      "required": ["roles"],
       "additionalProperties": false
     },
     "artifactLocation": {
@@ -200,16 +179,9 @@
             ]
           }
         },
-        "executionModel": {
-          "$ref": "#/definitions/executionModel",
-          "description": "Declares the agent roles that participate in workflow execution"
-        },
         "skills": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Workflow-level skill IDs. Returned by get_skills when called without activity_id."
+          "$ref": "#/definitions/skills",
+          "description": "Workflow-level skill references. Returned by get_skills when called without activity_id."
         },
         "initialActivity": {
           "type": "string",
@@ -218,13 +190,16 @@
         "activities": {
           "type": "array",
           "items": {
-            "$ref": "activity.schema.json"
+            "oneOf": [
+              { "type": "string", "description": "Activity filename (e.g., '01-start.toon' or 'work-package/02-design-philosophy.toon') resolved by the workflow loader" },
+              { "$ref": "activity.schema.json" }
+            ]
           },
           "minItems": 1,
-          "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points."
+          "description": "Activities that comprise this workflow. May be specified as filenames (resolved by the workflow loader at runtime) or inline activity objects."
         }
       },
-      "required": ["id", "version", "title", "executionModel", "activities"],
+      "required": ["id", "version", "title"],
       "additionalProperties": false
     }
   }
