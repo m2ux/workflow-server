@@ -66,11 +66,31 @@ errors:
     cause: "get_skill returned error for the step's declared skill"
     recovery: "Report error in result. Check skill ID in the step's skill field."
   step_failure:
-    cause: "A step could not be completed (e.g., test failure, build error)"
+    cause: "A step cannot be completed (e.g., test failure, build error)"
     recovery: "Attempt to fix per the skill's error handling. If unresolvable, report failure with error details."
   checkpoint_skipped:
     cause: "A checkpoint's prerequisite condition was not met"
     recovery: "Skip the checkpoint silently and note it in the result."
+
+tools:
+  next_activity:
+    when: "Once at activity start — transition to the activity"
+    params: "session_token, activity_id"
+  get_activity:
+    when: "After next_activity — load the complete activity definition"
+    params: "session_token"
+  get_skill:
+    when: "For steps with a skill field — load the skill definition"
+    params: "session_token, step_id"
+  get_resource:
+    when: "When a loaded skill has _resources — load each referenced resource"
+    params: "session_token, resource_id (string from _resources array, e.g., '09' or 'meta/02')"
+  yield_checkpoint:
+    when: "Before executing a step with a checkpoint ID"
+    params: "session_token, checkpoint_id"
+  resume_checkpoint:
+    when: "After being resumed by the orchestrator — continue from checkpoint"
+    params: "session_token (use the checkpoint_handle, not your session token)"
 
 resources[2]:
   - "meta/02"
