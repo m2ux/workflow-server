@@ -28,13 +28,13 @@ sequenceDiagram
     Note over Meta: Matches context,<br/>sets target_workflow
     Meta->>Meta: Runs dispatch-workflow activity
 
-    Note over Meta: Calls dispatch_workflow<br/>(creates independent client session)
-    Meta->>Client: spawn-agent(prompt: resource meta/05)
+    Note over Meta: Calls start_session({ workflow_id })<br/>Creates session for target workflow
+    Meta->>Client: spawn-agent(prompt: worker prompt with session_token)
 
-    Note over Client: Calls start_session(client_token)<br/>Loads client workflow
+    Note over Client: Calls start_session({ session_token })<br/>Adopts session
     
-    Client->>Worker: spawn-agent(prompt: resource meta/04)
-    Note over Worker: Calls start_session(client_token)<br/>Inherits session
+    Client->>Worker: spawn-agent(prompt: worker prompt with session_token)
+    Note over Worker: Calls start_session({ session_token })<br/>Adopts session
     
     Note over Worker: Executes activity steps
 

@@ -1,7 +1,7 @@
 id: state-management
 version: 3.2.0
 capability: Manage workflow execution state tracking and persistence
-description: "Behavioral patterns for initializing, updating, and resuming workflow state across the orchestrator hierarchy. The meta-orchestrator handles session persistence and resumption, while the workflow-orchestrator inherits the session and variables via dispatch_workflow. State schema is defined in state.schema.json."
+description: "Behavioral patterns for initializing, updating, and resuming workflow state. The orchestrator handles session persistence and resumption. State schema is defined in state.schema.json."
 
 protocol:
   initialize[2]:
@@ -13,5 +13,5 @@ protocol:
   persist[4]:
     - "After each completed activity, the meta-orchestrator writes a state file containing: the current session_token, variable state, and activity trace"
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
-    - "To resume, the meta-orchestrator passes the saved session_token to start_session. The workflow-orchestrator then inherits this session via dispatch_workflow."
+    - "To resume, the orchestrator passes the saved session_token to start_session. The worker then adopts this session via start_session({ session_token, agent_id: 'worker' })."
     - "STALE SESSION DETECTION: When resuming, call start_session with the saved session_token. If the server was restarted (new HMAC signing key), start_session will return adopted: true (re-signed with preserved state) or recovered: true (fresh session, state must be reconstructed from saved variables and completedActivities). The session identity is embedded in the token — there is no separate sessionId field."
