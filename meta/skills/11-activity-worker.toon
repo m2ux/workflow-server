@@ -18,13 +18,15 @@ protocol:
     - "Load the activity's primary skill via get_skill({ session_token }) if the activity defines one"
   check-mode[1]:
     - "If the activity is in mode.skipActivities, report back with a skip result"
-  execute-steps[9]:
+  execute-steps[11]:
     - "Execute ALL required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
     - "Execute each step sequentially. Check if the step object explicitly has a 'skill' field before calling get_skill."
     - "CRITICAL: If the step does NOT have a 'skill' field, DO NOT call get_skill. Execute the step directly using your general capabilities and the step's description."
-    - "For steps with a skill field, call get_skill({ session_token, step_id }) to load the skill before executing."
+    - "For steps with a skill field, call get_skill({ session_token, step_id }) to load the skill before executing. get_skill loads a SKILL definition (protocol, rules, errors). It does NOT load a resource."
     - "Skip the get_skill call if the same skill was ALREADY LOADED for a prior step and is still in context."
+    - "NEVER pass a skill reference (e.g., 'classify-problem', 'meta/activity-worker') to get_resource. Skills are loaded via get_skill; resources are loaded via get_resource. These are different tools for different purposes."
     - "When a loaded skill has a _resources array (e.g., ['09'] or ['meta/02']), call get_resource({ session_token, resource_id: '<value>' }) for each entry. The resource_id is the string from the _resources array — NOT the skill ID, step ID, or activity ID. Example: if _resources is ['09'], call get_resource({ session_token, resource_id: '09' })."
+    - "If a skill has no _resources array, do NOT call get_resource for that skill."
     - "For steps with a condition, evaluate against state variables — skip if false"
     - "Track completed steps in a steps_completed list"
   yield-checkpoint[5]:
