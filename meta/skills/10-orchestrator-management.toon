@@ -106,7 +106,7 @@ tools:
     params: "workflow_id, session_token (saved token), agent_id (optional)"
   get_resource:
     when: "After get_skills — loading content for entries in _resources"
-    params: "session_token, resource_index"
+    params: "session_token, resource_id"
 
 errors:
   worker_timeout:

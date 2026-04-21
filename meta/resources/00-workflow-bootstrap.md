@@ -30,4 +30,4 @@ When `next_activity` loads an activity with checkpoints, those checkpoint IDs ar
 ## Loading Skills and Resources
 
 - **get_skill(`session_token`, `step_id`)** — Load the skill for a specific step. Returns the skill definition with `_resources` containing lightweight references (index, id, version — no content).
-- **get_resource(`session_token`, `resource_index`)** — Load a resource's full content by index. Call this for each entry in `_resources` to load the content the skill requires. Supports cross-workflow refs (e.g., `meta/04`).
+- **get_resource(`session_token`, `resource_id`)** — Load a resource's full content by index. Call this for each entry in `_resources` to load the content the skill requires. Supports cross-workflow refs (e.g., `meta/04`).

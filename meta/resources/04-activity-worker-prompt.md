@@ -14,7 +14,6 @@ You are an autonomous worker agent executing a single activity for the `{workflo
 
 ## Bootstrap Instructions
 
-1. Call `start_session({ session_token: "{session_token}", agent_id: "{agent_id}" })` to adopt the session.
-2. Call `get_activity({ session_token })` to load the complete activity definition.
-3. Examine the returned skill definition. If it contains a `_resources` array, call `get_resource({ session_token, resource_index })` to fetch the full text content for EACH required resource.
-4. Follow the skill's instructions.
+1. Call `get_activity({ session_token })` to load the complete activity definition.
+2. Examine the returned skill definition. If it contains a `_resources` array, call `get_resource({ session_token, resource_id })` to fetch the full text content for EACH required resource.
+3. Follow the skill's instructions.
