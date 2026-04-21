@@ -77,7 +77,7 @@ rules:
     - "Present design decisions directly without referencing their origin."
     - "Do not include process attribution in code comments or documentation."
   operational-discipline[2]:
-    - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
+    - "Do NOT read workflow resource files directly from disk — load resources via get_resource({ session_token, resource_id: '<index>' }) where <index> is a string from the skill's _resources array (e.g., '09' or 'meta/02'). NEVER pass a skill ID, step ID, or activity ID as resource_id."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
 tools:

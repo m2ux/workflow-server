@@ -27,6 +27,6 @@ rules:
     - "Checkpoints are explicit user decision gates. The meta-orchestrator MUST NOT call respond_checkpoint with an option_id unless the user has explicitly selected that option. Never fabricate an option_id or auto-resolve."
   operational-discipline[4]:
     - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls."
-    - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
+    - "Do NOT read workflow resource files directly from disk — load resources via get_resource({ session_token, resource_id: '<index>' }) where <index> is a string from the skill's _resources array (e.g., '09' or 'meta/02'). NEVER pass a skill ID, step ID, or activity ID as resource_id."
     - "CPU-intensive build commands (cargo build, cargo check, cargo test, cargo clippy, npm run build, and similar) MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
     - "cargo fmt is exempt from nice — it is fast and should run at normal priority."
