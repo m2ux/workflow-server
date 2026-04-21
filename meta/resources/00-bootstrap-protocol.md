@@ -18,8 +18,8 @@ IMPORTANT: Do NOT attempt to connect to Github/Jira to resolve issue details yet
 
 ## RESUME an existing workflow
 
-1. Read the `workflow-state.json` file to get the saved `sessionToken` and `workflowId`.
+1. Read the `workflow-state.json` file to get the saved `sessionToken`, `state.currentActivity`, and `state.completedActivities`.
 2. Call `start_session({ session_token: "<saved-token>", agent_id: "orchestrator" })`. The workflow is derived from the token.
 3. Save the returned `session_token` — it is required for all subsequent calls.
 4. Call `get_workflow(session_token: <session_token>)` to load the workflow definition and its primary skill. The primary skill is the orchestrator skill — it tells you how to coordinate the workflow. Do NOT skip this step. Do NOT call next_activity or get_activity before loading the orchestrator skill.
-5. Follow the skill protocol — it handles resume state, activity dispatch, and checkpoint resolution.
+5. Follow the skill protocol starting at the `resume-session` step. It determines the next activity from the state file's `currentActivity` and `completedActivities`, then calls `next_activity` with the correct `activity_id`.
