@@ -13,7 +13,7 @@ IMPORTANT: Do NOT attempt to connect to Github/Jira to resolve issue details yet
    * IMPORTANT! Never skip workflow matching. If no workflow matches, **inform the user** — this is a design gap.
 3. Call `start_session({ workflow_id: "<matched-workflow-id>", agent_id: "orchestrator" })`. Use the workflow_id matched in step 2 — do NOT default to "meta".
 4. Save the returned `session_token` — it is required for all subsequent calls.
-5. Call `get_workflow(session_token: <session_token>)` to load the workflow definition and its primary skill. The primary skill is the orchestrator skill — it tells you how to coordinate the workflow. Do NOT skip this step.
+5. Call `get_skill(session_token: <session_token>)` to load the workflow's primary skill. This is the orchestrator skill — it tells you how to coordinate the workflow. Do NOT skip this step.
 6. Follow the skill protocol to continue the bootstrap process
 
 ## RESUME an existing workflow
