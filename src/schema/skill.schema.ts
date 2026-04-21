@@ -133,6 +133,19 @@ export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the skill produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
 
+/** Operation definition: a named operation with description, inputs, and harness-specific implementations. */
+export const OperationInputSchema = z.object({
+}).catchall(z.string().describe('Input name → description'));
+
+export const OperationHarnessSchema = z.record(z.string().describe('Harness name → implementation instruction'));
+
+export const OperationDefinitionSchema = z.object({
+  description: z.string(),
+  inputs: z.array(OperationInputSchema).optional(),
+  harness: OperationHarnessSchema.optional(),
+  note: z.string().optional(),
+});
+
 export const SkillSchema = z.object({
   id: z.string(),
   version: SemanticVersionSchema,
@@ -160,6 +173,7 @@ export const SkillSchema = z.object({
   protocol: ProtocolDefinitionSchema.optional(),
   output: OutputDefinitionSchema.optional(),
   resources: z.array(z.string()).optional().describe('Resource indices or IDs this skill depends on (e.g. 02, 04, 08)'),
+  operations: z.record(OperationDefinitionSchema).optional().describe('Named operations this skill defines (e.g. spawn-agent, continue-agent)'),
 }).strict();
 export type Skill = z.infer<typeof SkillSchema>;
 
