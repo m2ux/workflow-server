@@ -16,7 +16,7 @@ The prism workflow provides 7 skills organized by role. Skills `orchestrate-pris
 | 05 | `behavioral-pipeline` | Execute a pass of the 4+1 behavioral pipeline | Worker |
 | 06 | `generate-report` | Produce clean REPORT.md from analysis artifacts — methodology stripped | Worker |
 
-> The universal skills `orchestrate-workflow` and `11-activity-worker` from [meta/skills/](../../meta/skills/) are **not used** by this workflow. Prism uses its own orchestration skill (`orchestrate-prism`) because it requires disposable (non-resumed) workers for context isolation.
+> The universal skills `workflow-orchestrator` and `activity-worker` from [meta/skills/](../../meta/skills/) are **not used** by this workflow. Prism uses its own orchestration skill (`orchestrate-prism`) because it requires disposable (non-resumed) workers for context isolation.
 
 ---
 

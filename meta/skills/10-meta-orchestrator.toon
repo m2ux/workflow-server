@@ -26,9 +26,13 @@ protocol:
     - "The orchestrator already has a session_token for the target workflow from initialize-state. Do NOT create a new session."
     - "Spawn the workflow-orchestrator sub-agent with this prompt: 'You are the WORKER agent for the {workflow_id} workflow. Execute the {activity_id} activity. Bootstrap: 1) start_session({ session_token, agent_id: \"worker\" }) 2) next_activity({ session_token, activity_id: \"{activity_id}\" }) 3) get_skills({ session_token }) 4) Execute steps per loaded skill. State variables: {state_variables_block}. Planning folder: {planning_folder_path}. Workspace: {workspace_root}. Date: {todays_date}. Do NOT call AskQuestion — yield checkpoints to orchestrator. Report: result_type, variables_changed, checkpoints_responded, artifacts_produced, steps_completed.' Fill {workflow_id}, {activity_id}, {session_token}, {state_variables_block}, {planning_folder_path}, {workspace_root}, {todays_date} from current state. For resumed sessions, {activity_id} is currentActivity from the state file."
     - "The workflow-orchestrator runs in the same session as the meta-orchestrator — there is one unified session token for the target workflow. Wait for checkpoint yields or workflow_complete."
-  process-result[2]:
+  process-result[6]:
     - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via AskQuestion, then respond_checkpoint."
-    - "If workflow_complete: apply variables_changed to session state, record completion, proceed to end-workflow."
+    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required checkpoints — resume worker to complete any missing items"
+    - "Apply variables_changed to state, record in completedActivities"
+    - "Check next_activity _meta.trace_token — if present, append to the trace_tokens array"
+    - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
+    - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
   resolve-checkpoints[2]:
     - "When the sub-agent (workflow-orchestrator) encounters a checkpoint, it yields a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint_handle."
     - "The meta-orchestrator parses this JSON block to get the handle, calls present_checkpoint to retrieve the full prompt and options, calls the AskQuestion tool to present it, and then calls respond_checkpoint({ checkpoint_handle, option_id }) to resolve it, resuming the sub-agent."
@@ -76,6 +80,26 @@ rules:
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource using the indices from skill _resources."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
+tools:
+  get_workflow:
+    when: "Once at workflow start — load workflow structure and initialActivity"
+    params: "session_token, summary=true"
+  next_activity:
+    when: "Before dispatching each activity"
+    params: "session_token, activity_id from initialActivity (first call) or transitions (subsequent calls)"
+  start_session:
+    when: "Creating or resuming a session"
+    params: "workflow_id (fresh), session_token (resume), agent_id"
+  get_trace:
+    when: "After each activity_complete — resolve trace tokens for the completed activity"
+    params: "session_token, trace_tokens"
+  present_checkpoint:
+    when: "After worker yields a checkpoint — load checkpoint details"
+    params: "checkpoint_handle (from worker's yield_checkpoint, NOT session_token)"
+  respond_checkpoint:
+    when: "After user selects a checkpoint option — resolve the checkpoint"
+    params: "checkpoint_handle, option_id or auto_advance or condition_not_met"
+
 errors:
   stale_token:
     cause: "Server restarted and generated a new HMAC signing key, invalidating the saved session token"
@@ -92,5 +116,4 @@ errors:
     cause: "Sub-agent reports variable changes conflicting with orchestrator state"
     recovery: "Sub-agent-reported values take precedence (sub-agent has ground truth from user interaction)."
 
-resources[1]:
-  - "meta/01"
+resources[0]: []

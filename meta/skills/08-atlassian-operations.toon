@@ -18,7 +18,7 @@ protocol:
     - "For search: use Rovo for broad natural-language queries, JQL/CQL for precise filtering"
     - "For create/update: gather required metadata first (project key, issue type, space ID)"
   execute[2]:
-    - "Call the appropriate tool with cloudId and operation-specific params (see resource 07 for tool reference)"
+    - "Call the appropriate tool with cloudId and operation-specific params (see resource meta/07 for tool reference)"
     - "For transitions: always call getTransitionsForJiraIssue first to discover available transition IDs"
   verify-result[1]:
     - "After mutating operations, verify by fetching the entity to confirm the change was applied"
@@ -37,7 +37,7 @@ rules:
   account-id-for-users: "User fields require account IDs. Use lookupJiraAccountId to resolve names/emails."
 
 resources[1]:
-  - "07"
+  - "meta/07"
 
 errors:
   missing_cloud_id:

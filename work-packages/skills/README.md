@@ -15,7 +15,7 @@ The workflow uses 6 workflow-specific skills for planning and coordination, plus
 | 04 | `document-roadmap` | Produce finalized roadmap documentation | Finalize Roadmap |
 | 05 | `orchestrate-package-execution` | Trigger and manage work-package workflow instances | Implementation |
 
-> Universal skills `workflow-execution` and `artifact-management` are in [meta/skills/](../../meta/skills/) — they provide workflow orchestration and artifact folder management.
+> Universal skills `workflow-orchestrator` and `activity-worker` are in [meta/skills/](../../meta/skills/) — they provide workflow orchestration and activity execution.
 
 ---
 
