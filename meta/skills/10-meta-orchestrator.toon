@@ -116,4 +116,4 @@ errors:
     cause: "Sub-agent reports variable changes conflicting with orchestrator state"
     recovery: "Sub-agent-reported values take precedence (sub-agent has ground truth from user interaction)."
 
-resources[0]: []
+

@@ -18,7 +18,7 @@ protocol:
     - "Load the activity's primary skill via get_skill({ session_token }) if the activity defines one"
   check-mode[1]:
     - "If the activity is in mode.skipActivities, report back with a skip result"
-  execute-steps[11]:
+  execute-steps[10]:
     - "Execute ALL required steps. If a step cannot be completed, report it as incomplete with a reason — do not silently skip."
     - "Execute each step sequentially. Check if the step object explicitly has a 'skill' field before calling get_skill."
     - "CRITICAL: If the step does NOT have a 'skill' field, DO NOT call get_skill. Execute the step directly using your general capabilities and the step's description."
