@@ -594,11 +594,11 @@ describe('mcp-server integration', () => {
     it('should load resource content by bare index', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_token: sessionToken, resource_index: '03' },
+        arguments: { session_token: sessionToken, resource_id: '03' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource_index).toBe('03');
+      expect(response.resource_id).toBe('03');
       expect(response._body).toBeDefined();
       expect(response._body.length).toBeGreaterThan(0);
       expect(response.session_token).toBeDefined();
@@ -607,11 +607,11 @@ describe('mcp-server integration', () => {
     it('should load cross-workflow resource with prefix', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_token: sessionToken, resource_index: 'meta/04' },
+        arguments: { session_token: sessionToken, resource_id: 'meta/04' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource_index).toBe('meta/04');
+      expect(response.resource_id).toBe('meta/04');
       expect(response.id).toBe('activity-worker-prompt');
       expect(response._body.length).toBeGreaterThan(0);
     });
@@ -619,7 +619,7 @@ describe('mcp-server integration', () => {
     it('should strip frontmatter from resource content', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_token: sessionToken, resource_index: '03' },
+        arguments: { session_token: sessionToken, resource_id: '03' },
       });
       const response = parseToolResponse(result);
       expect(response._body).not.toMatch(/^---/);
@@ -628,7 +628,7 @@ describe('mcp-server integration', () => {
     it('should error for nonexistent resource', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_token: sessionToken, resource_index: '99' },
+        arguments: { session_token: sessionToken, resource_id: '99' },
       });
       expect(result.isError).toBe(true);
     });
@@ -744,7 +744,7 @@ describe('mcp-server integration', () => {
     it('get_resource should load cross-workflow resource content by ref', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_token: sessionToken, resource_index: 'meta/04' },
+        arguments: { session_token: sessionToken, resource_id: 'meta/04' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);

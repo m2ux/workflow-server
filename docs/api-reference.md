@@ -42,7 +42,7 @@ All require `session_token`. The workflow is determined from the session token.
 |------|------------|---------|-------------|
 | `get_skills` | `session_token` | Map of skill objects with lightweight `_resources` references | Loads all workflow-level skills (behavioral protocols such as session-protocol and agent-conduct). `session_token` authenticates the call and determines which workflow's skills to return. The returned skill objects contain the raw TOON skill definitions. Each skill includes a `_resources` array of lightweight string references (e.g., `"03"` or `"meta/04"`) that can be loaded individually via `get_resource`. |
 | `get_skill` | `session_token`, `step_id?` | Skill definition object | Loads the skill for a specific step within the current activity. `session_token` authenticates the call and determines the current workflow and activity context. The optional `step_id` parameter identifies which step's skill to load. If `step_id` is omitted, loads the primary skill for the current activity. If no activity is active (before calling `next_activity`), loads the workflow's primary skill. The returned skill definition includes protocol steps, rules, errors, inputs, and resource references. Requires `next_activity` to have been called first when `step_id` is provided. |
-| `get_resource` | `session_token`, `resource_index` | Resource content, id, and version | Loads a resource's full content by its index. `session_token` authenticates the call. `resource_index` is a string identifying the resource to load. Bare indices (e.g., `"03"`) resolve within the session's workflow. Prefixed cross-workflow references (e.g., `"meta/04"`) resolve from the named workflow. The returned content includes the resource body, an `id` field identifying the resource, and a `version` field. |
+| `get_resource` | `session_token`, `resource_id` | Resource content, id, and version | Loads a resource's full content by its index. `session_token` authenticates the call. `resource_id` is a string identifying the resource to load. Bare indices (e.g., `"03"`) resolve within the session's workflow. Prefixed cross-workflow references (e.g., `"meta/04"`) resolve from the named workflow. The returned content includes the resource body, an `id` field identifying the resource, and a `version` field. |
 
 ### Trace Tools
 
@@ -169,7 +169,7 @@ When calling `get_skill { step_id }`:
 
 Session lifecycle protocol:
 - **Bootstrap**: `start_session(agent_id)` → `get_skills` → `get_workflow` → `next_activity(initialActivity)` → `get_activity`
-- **Per-step**: `get_skill(step_id)` → `get_resource(resource_index)` for each `_resources` entry
+- **Per-step**: `get_skill(step_id)` → `get_resource(resource_id)` for each `_resources` entry
 - **Transitions**: Read `transitions` from `get_activity` response → `next_activity(activity_id)` with `step_manifest` → `get_activity`
 
 #### 11-activity-worker (universal)

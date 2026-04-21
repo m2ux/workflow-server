@@ -37,7 +37,7 @@ When `get_skill` returns the JSON representation of the skill to the agent, it b
 When the agent receives its skill payload, it sees the `_resources` array. The agent's protocol explicitly instructs it to call the `get_resource` tool for each of these indices *only* if it needs that specific context.
 
 ```javascript
-get_resource({ resource_index: "meta/06" })
+get_resource({ resource_id: "meta/06" })
 ```
 The server resolves the `meta/06` reference, loads the full Markdown text from `.engineering/workflows/meta/resources/06-gitnexus-reference.md`, and returns it to the agent.
 

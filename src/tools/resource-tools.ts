@@ -375,17 +375,17 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a single resource\'s full content by its index. Use this to fetch resources referenced in skill _resources arrays. The resource_index can be a bare index (e.g., "05") which resolves within the session\'s workflow, or a prefixed cross-workflow reference (e.g., "meta/04") which resolves from the named workflow. Returns the resource content, id, and version.',
+    'Load a single resource\'s full content by its ID. Use this to fetch resources referenced in skill _resources arrays. The resource_id can be a bare index (e.g., "05") which resolves within the session\'s workflow, or a prefixed cross-workflow reference (e.g., "meta/04") which resolves from the named workflow. Returns the resource content, id, and version.',
     {
       ...sessionTokenParam,
-      resource_index: z.string().describe('Resource index — bare (e.g., "23") resolves within the session workflow, prefixed (e.g., "meta/04") resolves from the specified workflow'),
+      resource_id: z.string().describe('Resource ID — bare (e.g., "23") resolves within the session workflow, prefixed (e.g., "meta/04") resolves from the specified workflow'),
     },
-    withAuditLog('get_resource', async ({ session_token, resource_index }) => {
+    withAuditLog('get_resource', async ({ session_token, resource_id }) => {
       const token = await decodeSessionToken(session_token);
       assertCheckpointsResolved(token);
       const workflow_id = token.wf;
 
-      const parsed = parseResourceRef(resource_index);
+      const parsed = parseResourceRef(resource_id);
       const targetWorkflow = parsed.workflowId ?? workflow_id;
       const result = await readResourceStructured(config.workflowDir, targetWorkflow, parsed.index);
       if (!result.success) throw result.error;
@@ -399,7 +399,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const { content: resourceContent, ...meta } = result.value;
       const lines = [
-        `resource_index: ${resource_index}`,
+        `resource_id: ${resource_id}`,
         ...(meta.id ? [`id: ${meta.id}`] : []),
         ...(meta.version ? [`version: ${meta.version}`] : []),
         `session_token: ${advancedToken}`,
