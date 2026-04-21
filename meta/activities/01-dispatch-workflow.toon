@@ -12,17 +12,13 @@ skills:
   supporting[2]:
     - state
     - meta-orchestrator
-steps[4]:
-  - id: resolve-target
-    name: Resolve target workflow
-    description: "The target workflow has already been resolved by the discover-session activity. Verify the `target_workflow` variable is set. If missing, return to discover-session."
-  - id: create-session
-    name: Create workflow session
-    description: "Call start_session({ workflow_id, agent_id }) to create a session for the target workflow. Extract session_token from the response. Save session_token in session state. No separate client session is needed — the unified token serves both orchestrator and worker."
-    required: true
+steps[3]:
+  - id: verify-session
+    name: Verify session exists
+    description: "The session was created during initialize-state. Verify session_token is available in session state. If missing, return to start-workflow."
   - id: dispatch-client
     name: Dispatch workflow-orchestrator
-    description: "Compose the worker prompt using the template from get_resource('meta/05'). Spawn a new agent (Task/sub-agent) with the composed prompt. The workflow-orchestrator runs the target workflow using the same session token. Wait for the agent to return a result — either checkpoint_pending or workflow_complete. Do NOT execute client workflow activities directly — all execution is delegated to the workflow-orchestrator."
+    description: "Spawn a new agent (Task/sub-agent) with the dispatch prompt. The prompt MUST include: workflow_id, activity_id (from initialActivity or currentActivity), session_token, planning_folder_path, workspace_root, todays_date, and current state variables. The worker bootstraps by calling start_session({ session_token, agent_id: 'worker' }) then next_activity({ activity_id }). Do NOT execute client workflow activities directly — all execution is delegated to the workflow-orchestrator."
     required: true
   - id: process-result
     name: Process client result
@@ -36,7 +32,7 @@ transitions[1]:
       operator: ==
       value: true
 outcome[4]:
-  - Workflow session created with unified session token
+  - Session verified and dispatch prompt composed
   - Client agent dispatched and lifecycle managed inline
   - Checkpoint yields presented to user and responses forwarded
   - Client workflow completed or blocked awaiting user input

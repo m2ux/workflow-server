@@ -22,11 +22,10 @@ protocol:
     - "If fresh session: call start_session({ workflow_id, agent_id }) to create a session for the target workflow. Determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
     - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
-  dispatch-workflow[4]:
-    - "FRESH DISPATCH: If is_resuming = false: the orchestrator already has a session_token for the target workflow from initialize-state. Compose the worker prompt using the template from get_resource('meta/05'). Fill in placeholders: workflow_id, activity_id (from initialActivity), state_variables_block, planning_folder_path, workspace_root, todays_date. Also include session_token as {session_token} so the worker can adopt the session via start_session({ session_token, agent_id })."
-    - "RESUME DISPATCH: If is_resuming = true: the orchestrator has the restored session_token. Compose the worker prompt with the same template, using the currentActivity from the state file and all restored state variables. Include session_token as {session_token}. The worker calls start_session({ session_token, agent_id }) to adopt the session and resume at the saved activity. Set is_resuming = false after this dispatch."
-    - "Spawn the workflow-orchestrator sub-agent using harness-compat::spawn-agent. Pass the composed prompt. If continuing an existing workflow-orchestrator, use harness-compat::continue-agent instead. ALWAYS foreground — never background. The meta-orchestrator blocks waiting for checkpoint yields."
-    - "The workflow-orchestrator runs in the same session as the meta-orchestrator — there is one unified session token for the target workflow."
+  dispatch-workflow[3]:
+    - "The orchestrator already has a session_token for the target workflow from initialize-state. Do NOT create a new session."
+    - "Spawn the workflow-orchestrator sub-agent with this prompt: 'You are the WORKER agent for the {workflow_id} workflow. Execute the {activity_id} activity. Bootstrap: 1) start_session({ session_token, agent_id: \"worker\" }) 2) next_activity({ session_token, activity_id: \"{activity_id}\" }) 3) get_skills({ session_token }) 4) Execute steps per loaded skill. State variables: {state_variables_block}. Planning folder: {planning_folder_path}. Workspace: {workspace_root}. Date: {todays_date}. Do NOT call AskQuestion — yield checkpoints to orchestrator. Report: result_type, variables_changed, checkpoints_responded, artifacts_produced, steps_completed.' Fill {workflow_id}, {activity_id}, {session_token}, {state_variables_block}, {planning_folder_path}, {workspace_root}, {todays_date} from current state. For resumed sessions, {activity_id} is currentActivity from the state file."
+    - "The workflow-orchestrator runs in the same session as the meta-orchestrator — there is one unified session token for the target workflow. Wait for checkpoint yields or workflow_complete."
   process-result[2]:
     - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via AskQuestion, then respond_checkpoint."
     - "If workflow_complete: apply variables_changed to session state, record completion, proceed to end-workflow."
@@ -93,6 +92,5 @@ errors:
     cause: "Sub-agent reports variable changes conflicting with orchestrator state"
     recovery: "Sub-agent-reported values take precedence (sub-agent has ground truth from user interaction)."
 
-resources[2]:
+resources[1]:
   - "meta/01"
-  - "meta/05"
