@@ -42,7 +42,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). When omitted and no session_token is provided, defaults to "meta". When session_token is provided, the workflow is derived from the token and this parameter is used only as a fallback for fresh-session recovery.'),
       parent_session_token: z.string().optional().describe('Optional. When creating a fresh session with workflow_id, provide the parent session token to establish a parent-child relationship. The parent\'s workflow ID, current activity, version, and session ID are embedded in the new token for trace correlation and resume routing. Ignored when session_token is provided.'),
       session_token: z.string().optional().describe('Optional. An existing session token to inherit. When provided, the returned token preserves sid, act, bcp, cond, v, and all state from the parent token. The workflow is derived from the token\'s embedded workflow ID. Used for worker dispatch (pass the orchestrator token) or resume (pass a saved token).'),
-      agent_id: z.string().describe('REQUIRED. Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace.'),
+      agent_id: z.string().default('orchestrator').describe('Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
     },
     withAuditLog('start_session', async ({ workflow_id, parent_session_token, session_token, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
