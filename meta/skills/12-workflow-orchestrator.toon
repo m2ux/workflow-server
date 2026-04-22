@@ -45,9 +45,10 @@ protocol:
     - "Format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing ONLY the checkpoint_handle."
     - "Wait for the parent to resolve the checkpoint and resume you."
     - "When resumed by the parent, it will provide the updated variables (effects) that resulted from resolving the checkpoint. You MUST update your internal state with these variables and then resume the worker, passing these effects down."
-  commit-artifacts[4]:
-    - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
-    - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
+  commit-artifacts[5]:
+    - "MANDATORY after trace append. cd to the parent repo root (where .engineering/artifacts/ lives). Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes."
+    - "Stage all changed files in .engineering/artifacts/. Do NOT stage changes outside this directory."
+    - ".engineering/artifacts/ is a REGULAR directory in the parent repo — NOT a submodule. Commit directly in the parent repo on the current branch. Do NOT create a new branch in the parent repo."
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
     - "Push the commit immediately. Do NOT leave un-pushed commits in the local repository."
   persist-state[5]:
@@ -83,7 +84,7 @@ rules:
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via the parent orchestrator. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
   no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
-  target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
+  target-path-scope: "Branch creation, PR creation, and code commits MUST be performed inside the target_path directory (the submodule), NEVER in the parent monorepo. Planning artifact commits (.engineering/artifacts/) MUST be performed in the parent repo where that directory lives, on the current branch — do NOT create a new branch in the parent repo."
   file-sensitivity[3]:
     - "Do not modify core configuration files without explicit user direction."
     - "Avoid changes to build scripts unless specifically requested."
