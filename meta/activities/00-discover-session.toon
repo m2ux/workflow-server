@@ -20,7 +20,7 @@ steps[4]:
     description: "Extract from the user request: the target workflow ID (e.g., 'work-package'), and any identifying context — ticket number (GitHub #N, Jira PROJ-123), branch name, PR number, or work package description. These are used to match against saved state files."
   - id: scan-planning-folders
     name: Scan planning folders for saved sessions
-    description: "List directories under .engineering/artifacts/planning/. For each directory that contains a workflow-state.json, read the file and extract: the saved session_token, workflow_id, current activity, and key variables (issue_number, branch_name, pr_number). Collect all matches."
+    description: "List directories under .engineering/artifacts/planning/. For each directory that contains a workflow-state.json, read the file and extract: the saved session_token, workflow_id, and key variables (issue_number, branch_name, pr_number). Use get_workflow_status({ session_token }) to determine the current activity directly from the token. Collect all matches."
   - id: match-session
     name: Match saved session to user request
     description: "Compare the identifying context from step 1 against the saved sessions from step 2. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. If multiple matches, prefer the most recently updated. If no matches, set has_saved_state = false."

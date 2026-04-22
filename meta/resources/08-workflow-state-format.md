@@ -23,14 +23,13 @@ The `workflow-state.json` file persists workflow execution state to disk, enabli
 
 ## State Object
 
+Note: `workflowId`, `workflowVersion`, and `currentActivity` are NOT duplicated in this state object. They are securely encoded within the opaque `sessionToken` and should be retrieved via `get_workflow_status`.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `workflowId` | string | Workflow being executed |
-| `workflowVersion` | string | Version of the workflow definition |
 | `stateVersion` | integer | Monotonically increasing sequence number |
 | `startedAt` | ISO 8601 | When execution started |
 | `updatedAt` | ISO 8601 | Most recent state change |
-| `currentActivity` | string | Activity currently being executed |
 | `currentStep` | integer | Current step index (1-based) |
 | `completedActivities` | string[] | Activity IDs completed in order |
 | `skippedActivities` | string[] | Activity IDs skipped |
@@ -81,12 +80,9 @@ After completing all steps and writing artifacts, the activity worker persists i
   "sessionToken": "eyJ3Zi...<opaque-unified-token>...signature",
   "sessionTokenEncrypted": false,
   "state": {
-    "workflowId": "work-package",
-    "workflowVersion": "1.2.0",
     "stateVersion": 5,
     "startedAt": "2026-04-14T12:00:00Z",
     "updatedAt": "2026-04-14T12:34:56Z",
-    "currentActivity": "analyze-codebase",
     "completedActivities": ["discover-session", "dispatch-workflow"],
     "skippedActivities": [],
     "completedSteps": {

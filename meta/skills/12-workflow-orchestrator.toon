@@ -20,15 +20,14 @@ protocol:
   load-workflow[1]:
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
   dispatch-activity[4]:
-    - "Compose worker prompt using resource meta/04 (activity-worker-prompt) including population of the dynamic front-matter variables. The worker prompt instructs the worker to call next_activity then get_activity to load the activity definition."
+    - "Call next_activity({ session_token, activity_id, step_manifest }) to transition the session. Check the next_activity response _meta.trace_token — if present, append it to the trace_tokens array."
+    - "Compose worker prompt using resource meta/04 (activity-worker-prompt) including population of the dynamic front-matter variables. The worker prompt instructs the worker to call get_activity to load the activity definition."
     - "Dispatch using harness-compat::spawn-agent"
-    - "For resumed workers: send only the updated state variables and context"
-    - "Upon activity completion, update the planning folder README.md progress table."
-  process-result[6]:
+    - "For resumed workers: send only the updated state variables and context. Wait for activity completion, then update the planning folder README.md progress table."
+  process-result[5]:
     - "If checkpoint_pending: present to user via handle-checkpoint-yield"
     - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required checkpoints — resume worker to complete any missing items"
     - "Apply variables_changed to state, record in completedActivities"
-    - "Check next_activity _meta.trace_token — if present, append to the trace_tokens array. Note: next_activity only returns activity_id and name; the worker calls get_activity separately to load the activity definition."
     - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
     - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
   resolve-checkpoints[2]:

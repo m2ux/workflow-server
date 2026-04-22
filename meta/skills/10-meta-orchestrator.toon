@@ -16,25 +16,27 @@ protocol:
     - "Check for .gitmodules file: test -f .gitmodules && echo 'monorepo' || echo 'regular'"
     - "If regular: Set target_path to the repository root (.)."
     - "If monorepo: Present the repo-type checkpoint. If confirmed as monorepo, parse .gitmodules, present submodule-selection checkpoint, and set target_path to the selected submodule."
-  initialize-state[5]:
+  initialize-state[7]:
     - "If resuming: call start_session({ session_token: saved_token, agent_id }) to resume the session. The workflow is derived from the token. If start_session returns recovered: true, proceed to fresh-session recovery."
-    - "Fresh-session recovery: call start_session({ workflow_id, agent_id }) without a session_token to create a new session for the target workflow. State must be reconstructed manually. Transition to the currentActivity from the state file via next_activity, and restore variables from the state file."
-    - "If fresh session: call start_session({ workflow_id, agent_id }) to create a session for the target workflow. Determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections. Set is_resuming = false."
+    - "If resuming: call get_workflow_status({ session_token }) to retrieve the current_activity directly from the token. Do NOT rely on the state file for current_activity."
+    - "If resuming: compare the current_activity against completedActivities from the state file. If current_activity is empty or already in completedActivities, evaluate transitions to find the next activity_id. Proceed to dispatch-workflow, which will call next_activity and dispatch the worker. If current_activity is not in completedActivities (e.g., resuming mid-activity), skip next_activity in dispatch-workflow and dispatch the worker for current_activity."
+    - "Fresh-session recovery: call start_session({ workflow_id, agent_id }) without a session_token to create a new session for the target workflow. State must be reconstructed manually. Determine the correct current_activity from completedActivities, and restore variables from the state file."
+    - "If fresh session: call start_session({ workflow_id, agent_id }) to create a session for the target workflow. Determine planning_folder_path from workflow variables or user request context. Set variables to defaults, initialize empty collections. Set is_resuming = false."
     - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
+  dispatch-workflow[4]:
+    - "The orchestrator already has a session_token for the target workflow from initialize-state. Do NOT create a new session."
   dispatch-workflow[3]:
     - "The orchestrator already has a session_token for the target workflow from initialize-state. Do NOT create a new session."
-    - "Spawn the workflow-orchestrator sub-agent with this prompt: 'You are the WORKER agent for the {workflow_id} workflow. Execute the {activity_id} activity. Bootstrap: 1) start_session({ session_token, agent_id: \"worker\" }) 2) next_activity({ session_token, activity_id: \"{activity_id}\" }) 3) get_skills({ session_token }) 4) Execute steps per loaded skill. State variables: {state_variables_block}. Planning folder: {planning_folder_path}. Workspace: {workspace_root}. Date: {todays_date}. Do NOT call AskQuestion — yield checkpoints to orchestrator. Report: result_type, variables_changed, checkpoints_responded, artifacts_produced, steps_completed.' Fill {workflow_id}, {activity_id}, {session_token}, {state_variables_block}, {planning_folder_path}, {workspace_root}, {todays_date} from current state. For resumed sessions, {activity_id} is currentActivity from the state file."
-    - "The workflow-orchestrator runs in the same session as the meta-orchestrator — there is one unified session token for the target workflow. Wait for checkpoint yields or workflow_complete."
-  process-result[6]:
+    - "Call next_activity({ session_token, activity_id, step_manifest }) to transition the session. Check the next_activity response _meta.trace_token — if present, append it to the trace_tokens array."
+    - "Spawn the activity-worker sub-agent with this prompt: 'You are the WORKER agent for the {workflow_id} workflow. Execute the {activity_id} activity. Bootstrap: 1) start_session({ session_token, agent_id: \"worker\" }) 2) get_activity({ session_token }) 3) get_skills({ session_token }) 4) Execute steps per loaded skill. State variables: {state_variables_block}. Planning folder: {planning_folder_path}. Workspace: {workspace_root}. Date: {todays_date}. Do NOT call AskQuestion — yield checkpoints to orchestrator. Report: result_type, variables_changed, checkpoints_responded, artifacts_produced, steps_completed.' Fill {workflow_id}, {activity_id}, {session_token}, {state_variables_block}, {planning_folder_path}, {workspace_root}, {todays_date} from current state. For resumed sessions, {activity_id} is the current_activity determined during initialize-state."
+    - "The activity-worker runs in the same session as the meta-orchestrator — there is one unified session token for the target workflow. Wait for checkpoint yields or activity_complete."
+  process-result[3]:
     - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via AskQuestion, then respond_checkpoint."
-    - "If activity_complete: validate steps_completed against required steps and checkpoints_responded against required checkpoints — resume worker to complete any missing items"
-    - "Apply variables_changed to state, record in completedActivities"
-    - "Check next_activity _meta.trace_token — if present, append to the trace_tokens array"
-    - "Write semantic trace: read {planning_folder_path}/workflow-trace.json (create if absent), append { type: 'semantic', activity_id, artifact_prefix, started_at, completed_at, events } where events are derived from the worker's steps_completed, checkpoints_responded, and variables_changed. Write back"
-    - "Write mechanical trace: call get_trace({ session_token, trace_tokens }) to resolve trace tokens, append { type: 'mechanical', activity_id, event_count, events }. Clear trace_tokens"
+    - "If activity_complete: apply variables_changed to session state, add activity to completedActivities, append to trace_tokens, and call get_trace to update traces. Proceed to commit-artifacts, then persist-state, then evaluate-transition."
+    - "If workflow_complete: apply variables_changed to session state, record completion, proceed to end-workflow."
   resolve-checkpoints[2]:
-    - "When the sub-agent (workflow-orchestrator) encounters a checkpoint, it yields a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint_handle."
+    - "When the sub-agent (activity-worker) encounters a checkpoint, it yields a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint_handle."
     - "The meta-orchestrator parses this JSON block to get the handle, calls present_checkpoint to retrieve the full prompt and options, calls the AskQuestion tool to present it, and then calls respond_checkpoint({ checkpoint_handle, option_id }) to resolve it, resuming the sub-agent."
   handle-checkpoint-yield[4]:
     - "CRITICAL: The meta-orchestrator is the ONLY agent permitted to call AskQuestion. Do not attempt to let sub-agents call it."
@@ -52,15 +54,16 @@ protocol:
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
     - "If no transitions exist, the workflow is complete"
-  advance-or-complete[1]:
-    - "If workflow complete: report final state"
+  advance-or-complete[2]:
+    - "If next activity determined via evaluate-transition: set current_activity and loop back to dispatch-workflow."
+    - "If workflow complete: report final state and proceed to end-workflow."
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
 rules:
   no-auto-resolution: "NEVER auto-resolve checkpoints. Even if the answer seems obvious, you MUST present the checkpoint to the user via AskQuestion. The user's explicit confirmation is required for all checkpoints. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
-  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): The meta-orchestrator is the ONLY agent permitted to call AskQuestion. Wait for the workflow-orchestrator sub-agent to yield checkpoints, call present_checkpoint to get the details, present them to the user, and use respond_checkpoint to resolve them. You must never fabricate answers."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): The meta-orchestrator is the ONLY agent permitted to call AskQuestion. Wait for the activity-worker sub-agent to yield checkpoints, call present_checkpoint to get the details, present them to the user, and use respond_checkpoint to resolve them. You must never fabricate answers."
   reject-empty-checkpoints: "If an activity defines checkpoints and the sub-agent returns without resolving them, REJECT the result."
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the sub-agent. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."

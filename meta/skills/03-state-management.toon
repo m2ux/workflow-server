@@ -6,7 +6,7 @@ description: "Behavioral patterns for initializing, updating, and resuming workf
 protocol:
   initialize[2]:
     - "On workflow start, the meta-orchestrator initializes state. If resuming from saved state, load and validate against current workflow version"
-    - "If a fresh meta session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults, current_activity to initialActivity, initialize empty collections."
+    - "If a fresh meta session: determine planning_folder_path from workflow variables or user request context. Set variables to defaults and initialize empty collections."
   update[2]:
     - "After each step, checkpoint response, or activity transition, the orchestrator updates the corresponding state fields in the session"
     - "Record every state change in the history array with timestamp and event type"

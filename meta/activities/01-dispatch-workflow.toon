@@ -18,7 +18,7 @@ steps[3]:
     description: "The session was created during initialize-state. Verify session_token is available in session state. If missing, return to start-workflow."
   - id: dispatch-client
     name: Dispatch workflow-orchestrator
-    description: "Spawn a new agent (Task/sub-agent) with the dispatch prompt. The prompt MUST include: workflow_id, activity_id (from initialActivity or currentActivity), session_token, planning_folder_path, workspace_root, todays_date, and current state variables. The worker bootstraps by calling start_session({ session_token, agent_id: 'worker' }) then next_activity({ activity_id }). Do NOT execute client workflow activities directly — all execution is delegated to the workflow-orchestrator."
+    description: "Spawn a new agent (Task/sub-agent) with the dispatch prompt. The prompt MUST include: workflow_id, activity_id (determined via get_workflow_status or initialActivity), session_token, planning_folder_path, workspace_root, todays_date, and current state variables. The orchestrator must call next_activity({ session_token, activity_id, step_manifest }) BEFORE spawning the worker if transitioning to a new activity. The worker bootstraps by calling get_activity({ session_token }). Do NOT execute client workflow activities directly — all execution is delegated to the sub-agent."
     required: true
   - id: process-result
     name: Process client result

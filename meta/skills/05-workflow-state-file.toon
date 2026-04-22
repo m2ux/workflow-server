@@ -21,7 +21,7 @@ protocol:
   update-progress[3]:
     - "Set description to 'State after {activity_id}'"
     - "Set state.completedSteps[activity_id] to the array of completed step indices from the activity result"
-    - "Orchestrators performing full persist also update: state.currentActivity, state.completedActivities, state.variables, state.checkpointResponses, and state.history"
+    - "Orchestrators performing full persist also update: state.completedActivities, state.variables, state.checkpointResponses, and state.history"
   write-state[2]:
     - "Write the updated JSON back to {planning_folder_path}/workflow-state.json"
     - "If planning_folder_path is not set or not known, skip silently"
