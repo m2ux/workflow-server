@@ -12,7 +12,7 @@ inputs[3]:
     description: "Current workflow state variables"
 
 protocol:
-  bootstrap-activity[3]:
+  bootstrap-activity[1]:
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, and artifactPrefix from the get_activity response"
   check-mode[1]:
     - "If the activity is in mode.skipActivities, report back with a skip result"
