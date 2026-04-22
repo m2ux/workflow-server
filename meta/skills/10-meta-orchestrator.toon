@@ -29,25 +29,26 @@ protocol:
     - "Compose the sub-agent prompt using resource meta/05 (workflow-orchestrator-prompt) including population of the dynamic front-matter variables. If the target workflow dictates inline execution, do NOT spawn a sub-agent — simply load the workflow-orchestrator skill and adopt its role."
     - "Wait for checkpoint yields or workflow_complete from the workflow-orchestrator."
   process-result[2]:
-    - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via AskQuestion, then respond_checkpoint."
+    - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via handle-checkpoint-yield."
     - "If workflow_complete: apply any final variables_changed to session state, record completion, proceed to end-workflow."
   resolve-checkpoints[2]:
     - "When the sub-agent (workflow-orchestrator) encounters a checkpoint, it yields a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint_handle."
-    - "The meta-orchestrator parses this JSON block to get the handle, calls present_checkpoint to retrieve the full prompt and options, calls the AskQuestion tool to present it, and then calls respond_checkpoint({ checkpoint_handle, option_id }) to resolve it, resuming the sub-agent."
-  handle-checkpoint-yield[4]:
-    - "CRITICAL: The meta-orchestrator is the ONLY agent permitted to call AskQuestion. Do not attempt to let sub-agents call it."
+    - "The meta-orchestrator parses this JSON block to get the handle, calls present_checkpoint to retrieve the full prompt and options, and then delegates to handle-checkpoint-yield."
+  handle-checkpoint-yield[5]:
+    - "CRITICAL: The meta-orchestrator is the ONLY agent permitted to call AskQuestion or respond_checkpoint. Do not attempt to let sub-agents call them."
     - "Parse the <checkpoint_yield> JSON block to extract the checkpoint_handle, then call present_checkpoint({ checkpoint_handle }) to retrieve the checkpoint details."
-    - "Present the checkpoint via the AskQuestion tool using ONLY the retrieved question and options, and receive the user's response."
-    - "Call respond_checkpoint({ checkpoint_handle, option_id }) and resume the sub-agent with the chosen option and variable updates."
+    - "If the checkpoint has NO autoAdvanceMs: Present it via the AskQuestion tool using ONLY the retrieved question and options. Wait for the user's response, then call respond_checkpoint({ checkpoint_handle, option_id })."
+    - "If the checkpoint HAS autoAdvanceMs and a defaultOption: Present it to the user in a regular chat message (do NOT use AskQuestion, as it blocks indefinitely). Clearly state the default option and how many seconds until it auto-advances."
+    - "After presenting an auto-advancing checkpoint in chat, use the Shell tool to `sleep` for the specified autoAdvanceMs duration. If the sleep completes without user interruption, call respond_checkpoint({ checkpoint_handle, auto_advance: true }). You MUST actually WAIT the specified time before calling auto_advance, giving the user a chance to read and respond."
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
 rules:
-  no-auto-resolution: "NEVER auto-resolve checkpoints. Even if the answer seems obvious, you MUST present the checkpoint to the user via AskQuestion. The user's explicit confirmation is required for all checkpoints. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
+  no-auto-resolution: "NEVER auto-resolve checkpoints. Even if the answer seems obvious, you MUST present the checkpoint to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
-  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): The meta-orchestrator is the ONLY agent permitted to call AskQuestion. Wait for the workflow-orchestrator sub-agent to yield checkpoints, call present_checkpoint to get the details, present them to the user, and use respond_checkpoint to resolve them. You must never fabricate answers."
+  checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): Wait for the workflow-orchestrator sub-agent to yield checkpoints, call present_checkpoint to get details. For blocking checkpoints, use AskQuestion. For advisory checkpoints (autoAdvanceMs), present them in chat, state the timer, and use the Shell tool to wait before calling auto_advance. You must actually WAIT the specified time and let the user respond."
   reject-empty-checkpoints: "If an activity defines checkpoints and the sub-agent returns without resolving them, REJECT the result."
-  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the sub-agent. The ONLY mechanism for user interaction is presenting checkpoint_pending yields via AskQuestion. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
+  no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the sub-agent. The ONLY mechanism for user interaction is presenting checkpoint_pending yields (via AskQuestion for blocking, or chat + sleep for advisory). Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
   no-domain-work: "The orchestrator MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the sub-agent."
   target-path-scope: "All git operations MUST be performed inside the target_path directory, not in the parent repo."
