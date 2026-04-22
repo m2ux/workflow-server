@@ -23,7 +23,7 @@ The `workflow-state.json` file persists workflow execution state to disk, enabli
 
 ## State Object
 
-Note: `workflowId`, `workflowVersion`, and `currentActivity` are NOT duplicated in this state object. They are securely encoded within the opaque `sessionToken` and should be retrieved via `get_workflow_status`.
+Note: `currentActivity` is NOT stored in this state object or at the top level. It is securely encoded within the opaque `sessionToken` and should be retrieved via `get_workflow_status`. (`workflowId` and `workflowVersion` are stored at the top level for discovery purposes, but not inside this nested `state` object).
 
 | Field | Type | Description |
 |-------|------|-------------|

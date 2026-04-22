@@ -14,9 +14,9 @@ inputs[3]:
 protocol:
 
   resume-session[3]:
-    - "Read workflow-state.json from planning_folder_path. Get currentActivity from state.currentActivity and completedActivities from state.completedActivities."
-    - "If currentActivity is set, the session is mid-activity — dispatch a worker for it (go to dispatch-activity). If currentActivity is empty but completedActivities is non-empty, determine the next activity from the workflow's activity list (the first activity NOT in completedActivities). Call next_activity({ session_token, activity_id: '<next-activity-id>' }) to advance the session."
-    - "If the state file has no currentActivity and no completedActivities, this is a fresh start — use initialActivity from the workflow definition. Call next_activity({ session_token, activity_id: '<initialActivity>' })."
+    - "Read workflow-state.json from planning_folder_path. Get the saved session_token and call get_workflow_status({ session_token }) to retrieve current_activity. Read completedActivities from state.completedActivities."
+    - "If current_activity is set, the session is mid-activity — dispatch a worker for it (go to dispatch-activity). If current_activity is empty but completedActivities is non-empty, determine the next activity from the workflow's activity list (the first activity NOT in completedActivities). Call next_activity({ session_token, activity_id: '<next-activity-id>' }) to advance the session."
+    - "If current_activity is empty and no completedActivities exist, this is a fresh start — use initialActivity from the workflow definition. Call next_activity({ session_token, activity_id: '<initialActivity>' })."
   load-workflow[1]:
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
   dispatch-activity[4]:
