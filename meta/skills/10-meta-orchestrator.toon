@@ -34,12 +34,13 @@ protocol:
   resolve-checkpoints[2]:
     - "When the sub-agent (workflow-orchestrator) encounters a checkpoint, it yields a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint_handle."
     - "The meta-orchestrator parses this JSON block to get the handle, calls present_checkpoint to retrieve the full prompt and options, and then delegates to handle-checkpoint-yield."
-  handle-checkpoint-yield[5]:
+  handle-checkpoint-yield[6]:
     - "CRITICAL: The meta-orchestrator is the ONLY agent permitted to call AskQuestion or respond_checkpoint. Do not attempt to let sub-agents call them."
-    - "Parse the <checkpoint_yield> JSON block to extract the checkpoint_handle, then call present_checkpoint({ checkpoint_handle }) to retrieve the checkpoint details."
-    - "If the checkpoint has NO autoAdvanceMs: Present it via the AskQuestion tool using ONLY the retrieved question and options. Wait for the user's response, then call respond_checkpoint({ checkpoint_handle, option_id })."
+    - "Parse the <checkpoint_yield> JSON block to extract the checkpoint_handle (long token string containing '.'), then call present_checkpoint({ checkpoint_handle: '<the-handle>' }). This returns checkpoint details."
+    - "EXACT CALL FORMAT for present_checkpoint: present_checkpoint({ checkpoint_handle: 'eyJ...' }). Do NOT pass session_token or checkpoint_id."
+    - "If the checkpoint has NO autoAdvanceMs: Present it via the AskQuestion tool using ONLY the retrieved question and options. Wait for the user's response, then call respond_checkpoint({ checkpoint_handle: '<the-handle>', option_id: '<chosen-id>' })."
     - "If the checkpoint HAS autoAdvanceMs and a defaultOption: Present it to the user in a regular chat message (do NOT use AskQuestion, as it blocks indefinitely). Clearly state the default option and how many seconds until it auto-advances."
-    - "After presenting an auto-advancing checkpoint in chat, use the Shell tool to `sleep` for the specified autoAdvanceMs duration. If the sleep completes without user interruption, call respond_checkpoint({ checkpoint_handle, auto_advance: true }). You MUST actually WAIT the specified time before calling auto_advance, giving the user a chance to read and respond."
+    - "After presenting an auto-advancing checkpoint in chat, use the Shell tool to `sleep` for the specified autoAdvanceMs duration. If the sleep completes without user interruption, call respond_checkpoint({ checkpoint_handle: '<the-handle>', auto_advance: true }). You MUST actually WAIT the specified time before calling auto_advance, giving the user a chance to read and respond."
   session-protocol[1]:
     - "Follow session-protocol skill for token handling and validation. See tool descriptions for detailed parameter and return value guidance."
 
@@ -47,6 +48,7 @@ rules:
   no-auto-resolution: "NEVER auto-resolve checkpoints. Even if the answer seems obvious, you MUST present the checkpoint to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
   inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
   checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): Wait for the workflow-orchestrator sub-agent to yield checkpoints, call present_checkpoint to get details. For blocking checkpoints, use AskQuestion. For advisory checkpoints (autoAdvanceMs), present them in chat, state the timer, and use the Shell tool to wait before calling auto_advance. You must actually WAIT the specified time and let the user respond."
+  checkpoint-token-discipline: "CHECKPOINT TOKEN DISCIPLINE: present_checkpoint and respond_checkpoint both take a checkpoint_handle parameter — this is the HMAC-signed token returned by yield_checkpoint (a long string containing a '.'). Do NOT pass your session_token, the checkpoint_id, or any other value as the checkpoint_handle. If you get an 'Invalid session token' or 'missing signature' error from a checkpoint tool, you are passing the wrong value — use the checkpoint_handle from the worker's yield_checkpoint response."
   reject-empty-checkpoints: "If an activity defines checkpoints and the sub-agent returns without resolving them, REJECT the result."
   no-ad-hoc-interaction: "The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the sub-agent. The ONLY mechanism for user interaction is presenting checkpoint_pending yields (via AskQuestion for blocking, or chat + sleep for advisory). Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues."
   automatic-transitions: "AUTOMATIC TRANSITIONS: After an activity completes and artifacts are committed, the orchestrator MUST evaluate the transition table and immediately dispatch the next activity WITHOUT pausing for user confirmation. Transitions are deterministic — they are evaluated against state variables, not user prompts. Any pause between activities for user confirmation is a protocol violation. Activity transitions are internal orchestration mechanics and are never surfaced to the user for approval."
@@ -81,10 +83,10 @@ tools:
     params: "session_token, trace_tokens"
   present_checkpoint:
     when: "After worker yields a checkpoint — load checkpoint details"
-    params: "checkpoint_handle (from worker's yield_checkpoint, NOT session_token)"
+    params: "checkpoint_handle ONLY (from worker's yield_checkpoint, NOT session_token)"
   respond_checkpoint:
     when: "After user selects a checkpoint option — resolve the checkpoint"
-    params: "checkpoint_handle, option_id or auto_advance or condition_not_met"
+    params: "checkpoint_handle AND exactly one of: option_id (string) OR auto_advance (boolean, true) OR condition_not_met (boolean, true). NEVER pass session_token or checkpoint_id here."
 
 errors:
   stale_token:
