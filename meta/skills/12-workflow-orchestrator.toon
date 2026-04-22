@@ -13,6 +13,13 @@ inputs[3]:
 
 protocol:
 
+  main-loop[6]:
+    - "Resume session state using resume-session."
+    - "Dispatch the activity worker using dispatch-activity."
+    - "If the worker yields a checkpoint, handle it via handle-checkpoint-yield (yield to parent, wait for resume, then resume the worker)."
+    - "If the worker returns activity_complete, call process-result to apply state changes and append traces."
+    - "IMMEDIATELY after process-result, call commit-artifacts then persist-state. Do NOT skip these steps."
+    - "Call evaluate-transition and advance-or-complete to either dispatch the next activity or return workflow_complete."
   resume-session[3]:
     - "Read workflow-state.json from planning_folder_path. Get the saved session_token and call get_workflow_status({ session_token }) to retrieve current_activity. Read completedActivities from state.completedActivities."
     - "If current_activity is set, the session is mid-activity — dispatch a worker for it (go to dispatch-activity). If current_activity is empty but completedActivities is non-empty, determine the next activity from the workflow's activity list (the first activity NOT in completedActivities). Call next_activity({ session_token, activity_id: '<next-activity-id>' }) to advance the session."
@@ -38,16 +45,20 @@ protocol:
     - "Format the yield as a raw JSON block wrapped in <checkpoint_yield> tags containing ONLY the checkpoint_handle."
     - "Wait for the parent to resolve the checkpoint and resume you."
     - "When resumed by the parent, it will provide the updated variables (effects) that resulted from resolving the checkpoint. You MUST update your internal state with these variables and then resume the worker, passing these effects down."
-  commit-artifacts[3]:
+  commit-artifacts[4]:
     - "MANDATORY after trace append. Run git status --porcelain .engineering/artifacts/ to detect uncommitted changes"
     - "Stage all changed files. Follow .engineering/AGENTS.md commit procedures (submodule paths require two-step commit-and-push)"
     - "Commit with conventional format: docs(<workflow-id>): <activity-id> artifacts"
+    - "Push the commit immediately. Do NOT leave un-pushed commits in the local repository."
   persist-state[5]:
     - "Track state changes triggered by activities: activity_transition logs activity_entered, step_completion increments currentStep and logs step_completed, decision_outcome records branch taken in decisionOutcomes."
     - "MANDATORY after commit. Construct state file containing: the current session_token (opaque string), variable state (JSON), and activity trace (from get_trace)"
     - "Update state sessionToken with the current session_token, set savedAt and state.updatedAt to the current ISO 8601 timestamp, increment state.stateVersion by 1, set state.completedSteps[activity_id] to the completed step indices, and set description to 'State after {activity_id}'."
     - "Write to {planning_folder_path}/workflow-state.json using agent file tools"
     - "If planning_folder_path is not set, skip silently"
+  after-activity[2]:
+    - "IMMEDIATELY after process-result completes for an activity_complete, call commit-artifacts: stage all changed files in .engineering/artifacts/, commit with conventional format, and push."
+    - "IMMEDIATELY after commit-artifacts succeeds, call persist-state: write the updated workflow-state.json to the planning folder. Do NOT skip these steps."
   evaluate-transition[2]:
     - "Evaluate transition conditions against state variables — take first matching or default"
     - "If no transitions exist, the workflow is complete"
