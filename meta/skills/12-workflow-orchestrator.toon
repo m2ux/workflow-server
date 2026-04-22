@@ -21,7 +21,7 @@ protocol:
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
   dispatch-activity[4]:
     - "Call next_activity({ session_token, activity_id, step_manifest }) to transition the session. Check the next_activity response _meta.trace_token — if present, append it to the trace_tokens array."
-    - "Spawn the activity-worker sub-agent with this prompt: 'You are the WORKER agent for the {workflow_id} workflow. Execute the {activity_id} activity. Bootstrap: 1) start_session({ session_token, agent_id: \"worker\" }) 2) get_activity({ session_token }) 3) get_skills({ session_token }) 4) Execute steps per loaded skill. State variables: {state_variables_block}. Planning folder: {planning_folder_path}. Workspace: {workspace_root}. Date: {todays_date}. Do NOT call AskQuestion — yield checkpoints to orchestrator. Report: result_type, variables_changed, checkpoints_responded, artifacts_produced, steps_completed.' Fill {workflow_id}, {activity_id}, {session_token}, {state_variables_block}, {planning_folder_path}, {workspace_root}, {todays_date} from current state. For resumed workers: send only the updated state variables and context."
+    - "Compose the sub-agent prompt using resource meta/04 (activity-worker-prompt) including population of the dynamic front-matter variables. The worker prompt instructs the worker to call get_activity to load the activity definition."
     - "Dispatch using harness-compat::spawn-agent"
     - "Wait for activity completion, then update the planning folder README.md progress table."
   process-result[5]:
@@ -105,6 +105,7 @@ errors:
     cause: "Worker reports variable changes conflicting with orchestrator state"
     recovery: "Worker-reported values take precedence (worker has ground truth from user interaction)."
 
-resources[2]:
+resources[3]:
   - "meta/03"
+  - "meta/04"
   - "meta/08"

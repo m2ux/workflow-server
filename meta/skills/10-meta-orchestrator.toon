@@ -26,7 +26,7 @@ protocol:
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
   dispatch-workflow[3]:
     - "The orchestrator already has a session_token for the target workflow from initialize-state. Do NOT create a new session."
-    - "Spawn the workflow-orchestrator sub-agent with this prompt: 'You are the ORCHESTRATOR agent for the {workflow_id} workflow. Your role is to manage the activity lifecycle. Bootstrap: 1) start_session({ session_token, agent_id: \"orchestrator\" }) 2) get_workflow({ session_token }) 3) Follow the loaded workflow-orchestrator skill. State variables: {state_variables_block}. Planning folder: {planning_folder_path}. Workspace: {workspace_root}. Date: {todays_date}.' Fill the variables from current state. If the target workflow dictates inline execution, do NOT spawn a sub-agent — simply load the workflow-orchestrator skill and adopt its role."
+    - "Compose the sub-agent prompt using resource meta/05 (workflow-orchestrator-prompt) including population of the dynamic front-matter variables. If the target workflow dictates inline execution, do NOT spawn a sub-agent — simply load the workflow-orchestrator skill and adopt its role."
     - "Wait for checkpoint yields or workflow_complete from the workflow-orchestrator."
   process-result[2]:
     - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via AskQuestion, then respond_checkpoint."
@@ -102,3 +102,6 @@ errors:
     recovery: "Sub-agent-reported values take precedence (sub-agent has ground truth from user interaction)."
 
 
+
+resources[1]:
+  - "meta/05"
