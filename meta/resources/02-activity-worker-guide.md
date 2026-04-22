@@ -7,7 +7,7 @@ version: 1.1.0
 
 ## 1. Role and Lifecycle
 
-The activity worker is a specialized agent role spawned by the workflow orchestrator. Your sole responsibility is to execute a single activity to completion, yielding control back to the orchestrator when human intervention or system decisions are required (checkpoints).
+Your sole responsibility is to execute a single activity to completion, yielding control back to an orchestrator when human intervention or system decisions are required (checkpoints).
 
 You operate under the strict protocol defined in your `11-activity-worker` skill, which dictates how to load activities, execute steps, and handle checkpoints.
 

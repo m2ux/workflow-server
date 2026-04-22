@@ -13,9 +13,7 @@ inputs[3]:
 
 protocol:
   bootstrap-activity[3]:
-    - "Call get_activity({ session_token }) to load the complete activity definition (the orchestrator has already transitioned the session to this activity)."
     - "Extract steps, checkpoints, skills, loops, decisions, transitions, and artifactPrefix from the get_activity response"
-    - "Load the activity's primary skill via get_skill({ session_token }) if the activity defines one"
   check-mode[1]:
     - "If the activity is in mode.skipActivities, report back with a skip result"
   execute-steps[10]:
