@@ -32,7 +32,7 @@ protocol:
     - Resolve merge conflicts if any
     - Sync before pushing to avoid conflicts
   code-commits[2]:
-    - "Append 'Assisted-by: claude:{model_id} [{context_scope}]' as a trailer on all code commits (not artifact commits). Use git commit -m $'subject\n\nAssisted-by: claude:{model_id} [{context_scope}]'"
+    - "Append 'Assisted-by: {tool}:{model_id} [{context_scope}]' as a trailer on all code commits (not artifact commits). Use git commit -m $'subject\n\nAssisted-by: {tool}:{model_id} [{context_scope}]'. {tool} is the name of the AI assistant (e.g. claude, gpt, gemini); {model_id} is the specific model version."
     - "context_scope is the workflow variable set during research: repo-only | web-retrieval | mixed"
   detect-merge-strategy[3]:
     - "Resolve owner/repo from git remote get-url origin in target_path (convert SSH to HTTPS if needed, strip .git suffix)"
