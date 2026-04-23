@@ -34,6 +34,15 @@ protocol:
   code-commits[2]:
     - "Append 'Assisted-by: claude:{model_id} [{context_scope}]' as a trailer on all code commits (not artifact commits). Use git commit -m $'subject\n\nAssisted-by: claude:{model_id} [{context_scope}]'"
     - "context_scope is the workflow variable set during research: repo-only | web-retrieval | mixed"
+  detect-merge-strategy[3]:
+    - "Resolve owner/repo from git remote get-url origin in target_path (convert SSH to HTTPS if needed, strip .git suffix)"
+    - "Call: gh api repos/{owner}/{repo} --jq '{allow_squash_merge}'"
+    - "Set squash_merge_available=true if allow_squash_merge is true; false otherwise"
+  squash-merge-instruction[4]:
+    - "GitHub web UI squash merges do not produce GPG-signed commits — use the local flow for a signed merge commit"
+    - "Checkout and update default branch: git checkout {default_branch} && git pull"
+    - "Squash all branch commits: git merge --squash {branch_name}"
+    - "Commit with Signed-off-by and GPG signature: git commit -s -S -m '{type}: {description} (#{pr_number})' then git push"
   push-commits[2]:
     - Push all local commits to remote
     - Verify push succeeded

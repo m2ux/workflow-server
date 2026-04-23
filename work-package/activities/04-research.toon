@@ -50,7 +50,8 @@ steps[10]:
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
   - id: declare-context-scope
     name: Declare Context Scope
-    description: "Set context_scope based on whether web retrieval was used during research. If web-research step retrieved external content that informed design decisions or code generation, set context_scope to 'web-retrieval'. If only repository-local sources were used, set context_scope to 'repo-only'. If both were used, set context_scope to 'mixed'. This value flows into Assisted-by commit trailers and the provenance log."
+    description: "Classify the provenance scope of this work package's research sources. Sets context_scope for Assisted-by commit trailers and the provenance log."
+    skill: dco-provenance
     checkpoint: context-scope-declaration
     actions[1]:
       - action: set

@@ -47,8 +47,8 @@ steps[21]:
     skill: manage-git
   - id: detect-merge-strategy
     name: Detect Merge Strategy
-    description: "Call 'gh api repos/{owner}/{repo}' in target_path (resolve owner/repo from git remote get-url origin). Extract allow_squash_merge. Set squash_merge_available=true if allow_squash_merge is true, false otherwise. This drives the DCO merge path: squash-merge with signed merge commit when available, unsigned branch commits otherwise."
-    skill: github-cli-protocol
+    description: "Detect whether the target repo permits squash merges. Sets squash_merge_available for downstream DCO merge path routing."
+    skill: manage-git
     actions[1]:
       - action: set
         target: squash_merge_available

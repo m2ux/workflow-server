@@ -53,7 +53,8 @@ steps[13]:
       value: true
   - id: dco-sign-off
     name: DCO Sign-off
-    description: "Present the DCO sign-off checkpoint to the human before pushing. Surface the provenance context: model used, context_scope, squash_merge_available, and commit count. The human must certify the DCO checklist before the PR is submitted. Record the attestation timestamp and human identity in provenance-log.md."
+    description: "Gate PR submission on human DCO attestation. Records attestation in provenance-log.md."
+    skill: dco-provenance
     checkpoint: dco-sign-off
     condition:
       type: simple
@@ -81,7 +82,8 @@ steps[13]:
       value: true
   - id: instruct-merge-strategy
     name: Instruct Merge Strategy
-    description: "Present merge strategy guidance to the human. If squash_merge_available is true: instruct the human to merge using squash merge with 'git commit -s -S' (Signed-off-by + GPG) — note that GitHub web UI squash merges are not GPG-signed; use 'git merge --squash' locally for a fully signed merge commit. If squash_merge_available is false: note that branch commits are unsigned and will land on main as-is — no signing action required."
+    description: "Present merge strategy guidance based on squash_merge_available. Instructs human on the correct merge procedure for a DCO-compliant merge commit."
+    skill: manage-git
     checkpoint: merge-strategy-reminder
     condition:
       type: simple

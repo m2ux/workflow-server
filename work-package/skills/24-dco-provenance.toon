@@ -1,0 +1,29 @@
+id: dco-provenance
+version: 1.0.0
+capability: DCO compliance and AI provenance tracking — provenance log, attestation recording, and context scope management
+
+description: "Manages Developer Certificate of Origin (DCO) compliance artifacts and AI provenance records for a work package. Handles provenance-log.md creation and maintenance, DCO attestation recording, and context scope classification."
+
+protocol:
+  provenance-log[4]:
+    - "Schema: markdown table with columns | Task ID | Model | Prompt Class | Context Scope | Description |"
+    - "On first task create the file with header row: | Task ID | Model | Prompt Class | Context Scope | Description |\n|---|---|---|---|---|"
+    - "Append one row per task: current_task.id, model_id, prompt_class, context_scope variable, one-line description of what was generated"
+    - "Prompt class values: code-generation | refactoring | test-writing | docs | mixed"
+  record-attestation[3]:
+    - "Append an '## Attestation' section to provenance-log.md with: ISO 8601 timestamp, certifier identity from git config user.name/user.email, and the option selected (certify | flag-legal)"
+    - "If flag-legal selected, include a 'Legal Review Note' field with the concern text provided by the user"
+    - "Do not record attestation until the human explicitly selects the certify or flag-legal option at the dco-sign-off checkpoint"
+  context-scope[3]:
+    - "repo-only: all research and code generation used only repository-local sources (codebase, git history, local knowledge)"
+    - "web-retrieval: external web sources were accessed during research that informed design decisions or code patterns"
+    - "mixed: both repository-local and external web sources contributed to the implementation"
+
+output[1]:
+  - id: provenance-record
+    description: "provenance-log.md updated with task entry or attestation record"
+
+errors:
+  log_not_found:
+    cause: provenance-log.md does not exist when appending
+    recovery: Create file with header row, then append

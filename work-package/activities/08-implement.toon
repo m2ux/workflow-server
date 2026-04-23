@@ -45,8 +45,8 @@ loops[3]:
         skill: manage-git
       - id: log-provenance
         name: Log AI provenance
-        description: "Append a row to provenance-log.md for this task: | {current_task.id} | {model_id} | {prompt_class} | {context_scope} | {one-line description of what was generated} |. Create the file with a header row if this is the first task. prompt_class is one of: code-generation, refactoring, test-writing, docs, mixed."
-        skill: manage-artifacts
+        description: "Append a provenance record for this task to provenance-log.md."
+        skill: dco-provenance
       - id: self-review
         name: Self-review
         description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies; (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource 14 for verification checklist."
