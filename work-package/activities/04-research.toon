@@ -50,7 +50,7 @@ steps[10]:
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
   - id: declare-context-scope
     name: Declare Context Scope
-    description: "Classify the provenance scope of this work package's research sources. Sets context_scope for Assisted-by commit trailers and the provenance log."
+    description: "Classify the provenance scope of this work package's research sources. Sets context_scope for the provenance log and PR description."
     skill: dco-provenance
     checkpoint: context-scope-declaration
     actions[1]:

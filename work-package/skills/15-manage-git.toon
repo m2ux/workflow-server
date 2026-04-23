@@ -1,5 +1,5 @@
 id: manage-git
-version: 1.5.0
+version: 1.6.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 
 description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE target_path. Branches and PRs are created against the target's upstream."
@@ -31,9 +31,10 @@ protocol:
     - Fetch and rebase/merge from main to keep branch current
     - Resolve merge conflicts if any
     - Sync before pushing to avoid conflicts
-  code-commits[2]:
-    - "Append 'Assisted-by: {assistant}:{model_id} [{context_scope}]' as a trailer on all code commits (not artifact commits). Use git commit -m $'subject\n\nAssisted-by: {assistant}:{model_id} [{context_scope}]'. {assistant} is the name of the AI assistant name (e.g. claude, gpt, gemini); {model_id} is the specific model version."
-    - "context_scope is the workflow variable set during research: repo-only | web-retrieval | mixed"
+  code-commits[3]:
+    - "Every code commit (not artifact commits) must carry a 'Co-authored-by: {display_name} <{email}>' trailer so GitHub renders both the human and assistant in the commit byline."
+    - "Whether to add it manually depends on the harness: Claude Code adds it automatically — do NOT add it again or it will appear twice. Other assistants that do not auto-inject the trailer must add it explicitly via: git commit -m $'subject\n\nCo-authored-by: {display_name} <{email}>'"
+    - "Known assistant identities — Claude (Claude Code harness): 'Co-authored-by: Claude <noreply@anthropic.com>' (auto-injected, no action needed). For other assistants, use the identity provided by their harness or documentation."
   detect-merge-strategy[3]:
     - "Resolve owner/repo from git remote get-url origin in target_path (convert SSH to HTTPS if needed, strip .git suffix)"
     - "Call: gh api repos/{owner}/{repo} --jq '{allow_squash_merge}'"

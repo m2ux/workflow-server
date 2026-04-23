@@ -296,7 +296,7 @@ variables[69]:
     defaultValue: false
   - name: context_scope
     type: string
-    description: "Provenance scope of AI-generated code in this work package. Set during research phase. Values: repo-only (all context from repository), web-retrieval (web sources used), mixed (both). Used in Assisted-by commit trailers and provenance log."
+    description: "Provenance scope of AI-generated code in this work package. Set during research phase. Values: repo-only (all context from repository), web-retrieval (web sources used), mixed (both). Recorded in the provenance log and PR description."
     defaultValue: repo-only
   - name: recommended_outcome
     type: string
