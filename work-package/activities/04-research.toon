@@ -1,5 +1,5 @@
 id: research
-version: 2.3.2
+version: 2.4.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
@@ -11,7 +11,7 @@ required: false
 estimatedTime: 20-45m
 skills:
   primary: meta/activity-worker
-steps[9]:
+steps[10]:
   - id: kb-research
     name: Knowledge base research
     description: "Call get_guidance before making concept-rag MCP tool calls. Search for relevant patterns and practices."
@@ -48,6 +48,15 @@ steps[9]:
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
+  - id: declare-context-scope
+    name: Declare Context Scope
+    description: "Classify the provenance scope of this work package's research sources. Sets context_scope for the provenance log and PR description."
+    skill: dco-provenance
+    checkpoint: context-scope-declaration
+    actions[1]:
+      - action: set
+        target: context_scope
+        description: "repo-only | web-retrieval | mixed based on research sources used"
   - id: interview-open-assumptions
     name: Interview open assumptions
     description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the research-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
@@ -88,7 +97,7 @@ artifacts[1]:
   - id: research-document
     name: kb-research.md
     location: planning
-checkpoints[3]:
+checkpoints[4]:
   - id: research-findings
     name: Research Findings Checkpoint
     message: "Here are the combined findings from knowledge base and web research. Proceeding in 30s unless you want changes."
@@ -149,6 +158,31 @@ checkpoints[3]:
         effect:
           setVariable:
             assumption_deferred: true
+  - id: context-scope-declaration
+    name: Context Scope Declaration
+    message: "Did research use external web sources (web search, documentation URLs, external references)? This determines the provenance scope recorded in commit trailers and the provenance log."
+    blocking: false
+    defaultOption: repo-only
+    autoAdvanceMs: 15000
+    options[3]:
+      - id: repo-only
+        label: "Repository only — no external web sources used"
+        description: All research was based on codebase and local knowledge (default)
+        effect:
+          setVariable:
+            context_scope: repo-only
+      - id: web-retrieval
+        label: "External web sources used for design decisions"
+        description: Web search, external docs, or third-party references informed the approach
+        effect:
+          setVariable:
+            context_scope: web-retrieval
+      - id: mixed
+        label: "Both repository and external sources used"
+        description: Mix of codebase analysis and external references
+        effect:
+          setVariable:
+            context_scope: mixed
 transitions[1]:
   - to: implementation-analysis
     isDefault: true

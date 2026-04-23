@@ -1,5 +1,5 @@
 id: manage-git
-version: 1.4.0
+version: 1.6.0
 capability: Manage git operations — branching, PR lifecycle, and branch synchronization
 
 description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE target_path. Branches and PRs are created against the target's upstream."
@@ -31,17 +31,25 @@ protocol:
     - Fetch and rebase/merge from main to keep branch current
     - Resolve merge conflicts if any
     - Sync before pushing to avoid conflicts
+  code-commits[3]:
+    - "Every code commit (not artifact commits) must carry a 'Co-authored-by: {display_name} <{email}>' trailer so GitHub renders both the human and assistant in the commit byline."
+    - "Whether to add it manually depends on the harness: Claude Code adds it automatically — do NOT add it again or it will appear twice. Other assistants that do not auto-inject the trailer must add it explicitly via: git commit -m $'subject\n\nCo-authored-by: {display_name} <{email}>'"
+    - "Known assistant identities — Claude (Claude Code harness): 'Co-authored-by: Claude <noreply@anthropic.com>' (auto-injected, no action needed). For other assistants, use the identity provided by their harness or documentation."
+  detect-merge-strategy[3]:
+    - "Resolve owner/repo from git remote get-url origin in target_path (convert SSH to HTTPS if needed, strip .git suffix)"
+    - "Call: gh api repos/{owner}/{repo} --jq '{allow_squash_merge}'"
+    - "Set squash_merge_available=true if allow_squash_merge is true; false otherwise"
+  squash-merge-instruction[4]:
+    - "GitHub web UI squash merges do not produce GPG-signed commits — use the local flow for a signed merge commit"
+    - "Checkout and update default branch: git checkout {default_branch} && git pull"
+    - "Squash all branch commits: git merge --squash {branch_name}"
+    - "Commit with Signed-off-by and GPG signature: git commit -s -S -m '{type}: {description} (#{pr_number})' then git push"
   push-commits[2]:
     - Push all local commits to remote
     - Verify push succeeded
-  gpg-resign-range[3]:
-    - Resolve MERGE_BASE against default branch (same order as validate strategic preflight)
-    - Re-sign each commit in MERGE_BASE..HEAD via rebase --exec 'git commit --amend --no-edit -S' (GPG); ensure user.signingkey and gpg agent are available
-    - After rewrite, verify with git log --format='%h %G?' MERGE_BASE..HEAD; push with --force-with-lease only when appropriate for the PR branch
-  artifact-commits[3]:
-    - "ALL planning artifact commits to the parent (engineering) repo MUST use --no-gpg-sign: git add <files> && git commit --no-gpg-sign -m 'docs(work-package): <activity> artifacts for <issue-key>' && git push origin <branch>"
+  artifact-commits[2]:
+    - "git add <files> && git commit -m 'docs(work-package): <activity-name> artifacts for <issue-key>' && git push origin <branch>"
     - "Commit after each workflow activity completes. Use the message pattern: docs(work-package): <activity-name> artifacts for <issue-key>"
-    - "The --no-gpg-sign flag is mandatory on all intermediate artifact commits so the workflow can proceed unattended without a GPG pinentry prompt. At completion, resign-artifact-commits in the complete activity re-signs the full history via gpg-resign-range"
 
 output[1]:
   - id: branch-and-pr

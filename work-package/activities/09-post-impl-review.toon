@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.7.1
+version: 1.8.0
 name: Post-Implementation Review
 description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
 problem: User needs to review implementation quality before validation
@@ -106,21 +106,45 @@ steps[7]:
       - action: set
         target: recommended_review_option
         description: "Set to the recommended review-findings option based on severity analysis"
-checkpoints[3]:
+checkpoints[4]:
   - id: file-index-table
     name: File Index Checkpoint
-    message: "File index written to {change_block_index_path}. Please review the diff in your side-by-side app using the index for reference, then provide row numbers for any files with issues (e.g., '24, 31, 106') or 'none' if all looks good."
+    message: "File index written to {change_block_index_path}. The index includes a rationale paragraph for each change block written by the agent. Please review the diff in your side-by-side app. Then: (1) confirm the rationale paragraphs are accurate (or note corrections), and (2) provide row numbers for any blocks with issues (e.g., '24, 31, 106') or 'none'. Your confirmation of the rationale serves as your provenance attestation for each change."
     blocking: true
-    options[2]:
-      - id: has-issues
-        label: Issues found - provide indices
-        description: Enter comma-separated list of block indices with issues
+    options[3]:
+      - id: rationale-confirmed
+        label: "Rationale confirmed — no issues"
+        description: "Agent rationale paragraphs are accurate. All changes understood. Proceed with automated reviews."
+      - id: rationale-confirmed-with-issues
+        label: "Rationale confirmed (with corrections) — issues found"
+        description: "Provide corrections to any rationale paragraphs and comma-separated block indices with issues"
         effect:
           setVariable:
             has_flagged_blocks: true
-      - id: no-issues
-        label: No issues found
-        description: All changes look good, proceed with automated reviews
+      - id: has-issues
+        label: Issues found — rationale not yet reviewed
+        description: Enter comma-separated list of block indices with issues; rationale review deferred
+        effect:
+          setVariable:
+            has_flagged_blocks: true
+  - id: rationale-amendment
+    name: Rationale Amendment Checkpoint
+    condition:
+      type: simple
+      variable: has_flagged_blocks
+      operator: "=="
+      value: false
+    message: "Please provide any corrections to the agent rationale paragraphs in change-block-index.md, or confirm they are all accurate. Corrections are recorded in manual-diff-review-report.md as your provenance statement."
+    blocking: false
+    defaultOption: all-accurate
+    autoAdvanceMs: 20000
+    options[2]:
+      - id: all-accurate
+        label: "All rationale paragraphs are accurate (default)"
+        description: No corrections needed — rationale confirmed as written
+      - id: provide-corrections
+        label: "Provide corrections to specific blocks"
+        description: Amend rationale paragraphs for one or more blocks
   - id: block-interview
     name: Block Interview Checkpoint
     condition:

@@ -1,5 +1,5 @@
 id: validate
-version: 2.5.0
+version: 2.6.0
 name: Verify & Validate Design
 description: "Validate the implementation through testing and build verification. Test suite quality was already reviewed in implement phase."
 problem: User needs to validate the implementation passes all tests
@@ -11,7 +11,7 @@ required: true
 estimatedTime: 15-30m
 skills:
   primary: meta/activity-worker
-steps[9]:
+steps[8]:
   - id: run-tests
     name: Run all tests
     description: "Execute unit, integration, e2e tests. Observe and record results."
@@ -73,17 +73,6 @@ steps[9]:
           variable: has_failures
           operator: ==
           value: true
-  - id: scan-commit-signatures-for-strategic
-    name: Scan PR commit signatures (preflight)
-    description: "In target_path, resolve MERGE_BASE against the default branch (try origin/main, origin/master, main, master in order). Run git log --format='%h %G? %s' MERGE_BASE..HEAD. If ANY line has %G? of N (no signature) or B (bad), set unsigned_commits_in_pr to true and populate unsigned_commit_list_summary with a concise list of affected commits; otherwise set unsigned_commits_in_pr to false and clear the summary. Review mode uses the same branch/PR under review. This runs before strategic-review so the orchestrator can resolve the unsigned-commits checkpoint with accurate state."
-    skill: manage-git
-    actions[2]:
-      - action: set
-        target: unsigned_commits_in_pr
-        message: "true if any commit in range has G? N or B; false if all commits good (G/U) or range empty"
-      - action: set
-        target: unsigned_commit_list_summary
-        message: "Comma-separated short lines (hash + subject) for unsigned/bad commits, or empty string if none"
 loops[1]:
   - id: fix-revalidate-cycle
     name: Fix and Revalidate Cycle
@@ -115,10 +104,7 @@ exitActions[1]{action,message}:
 outcome[2]:
   - All tests passing
   - Build successful
-context_to_preserve[6]:
+context_to_preserve[3]:
   - test_results - Test execution results
   - build_status - Build success/failure status
   - validation_passed - Whether all validation checks passed
-  - unsigned_commits_in_pr - Whether unsigned/bad GPG commits exist in PR range
-  - unsigned_commit_list_summary - Summary for strategic-review checkpoint messaging
-  - resign_unsigned_commits_requested - Filled when user opts to re-sign at strategic review

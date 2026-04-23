@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: work-package
-version: 3.7.0
+version: 3.8.0
 title: Work Package Implementation Workflow
 description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
 author: m2ux
@@ -45,7 +45,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[70]:
+variables[69]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -290,17 +290,14 @@ variables[70]:
   - name: recommended_strategic_option
     type: string
     description: "Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by analyze-strategic-findings step."
-  - name: unsigned_commits_in_pr
+  - name: squash_merge_available
     type: boolean
-    description: "True when any commit in merge-base..HEAD has no valid GPG signature (%G? N or B). Set during validate (pre-strategic scan) so strategic-review can gate resign consent before the worker runs."
+    description: "True when the target repo allows squash merges (allow_squash_merge=true from GitHub API). Detected during start-work-package. Drives DCO merge strategy: squash-merge path when true, unsigned-commit path when false."
     defaultValue: false
-  - name: resign_unsigned_commits_requested
-    type: boolean
-    description: "User chose to re-sign unsigned commits at the strategic-review checkpoint. Drives the resign-unsigned-pr-commits step."
-    defaultValue: false
-  - name: unsigned_commit_list_summary
+  - name: context_scope
     type: string
-    description: "Short human-readable summary of unsigned or bad-signature commits (e.g. hashes and subjects) for checkpoint messaging."
+    description: "Provenance scope of AI-generated code in this work package. Set during research phase. Values: repo-only (all context from repository), web-retrieval (web sources used), mixed (both). Recorded in the provenance log and PR description."
+    defaultValue: repo-only
   - name: recommended_outcome
     type: string
     description: "Agent-recommended PR review outcome (approved|minor-changes|significant-changes). Set by analyze-review-outcome step."

@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-## Skills (24 workflow-specific + 6 cross-workflow)
+## Skills (25 workflow-specific + 6 cross-workflow)
 
 The workflow uses 24 workflow-specific skills organized by capability, plus 6 cross-workflow skill references. Universal meta skills are auto-included on the first `get_skills` call. Skills are referenced by activities through `primary` and `supporting` roles.
 
@@ -23,7 +23,7 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 12 | `review-strategy` | Strategic review ensuring minimal and focused changes | Strategic Review |
 | 13 | `review-assumptions` | Assumption collection, classification, and structured review | All planning and implementation activities |
 | 14 | `manage-artifacts` | Planning folder creation and artifact numbering management | Start Work Package, Requirements Elicitation, Implementation Analysis |
-| 15 | `manage-git` | Git branching, PR lifecycle, branch sync, GPG re-sign | Start Work Package, Implement, Validate, Strategic Review |
+| 15 | `manage-git` | Git branching, PR lifecycle, branch sync, merge strategy detection, squash merge instruction | Start Work Package, Implement, Submit for Review |
 | 16 | `validate-build` | Test execution, build verification, lint checking | Validate, Implement |
 | 17 | `finalize-documentation` | ADR updates, test plan finalization, COMPLETE.md creation | Complete |
 | 18 | `update-pr` | PR description update, push commits, mark ready for review | Submit for Review |
@@ -32,6 +32,7 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 21 | `create-adr` | Architecture Decision Record creation for significant decisions | Complete |
 | 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
 | 23 | `reconcile-assumptions` | Iterative assumption reconciliation through targeted code analysis | Design Philosophy, Requirements Elicitation, Research, Implementation Analysis, Plan & Prepare, Implement |
+| 24 | `dco-provenance` | DCO compliance and AI provenance tracking — provenance log, attestation recording, context scope | Research, Implement, Submit for Review |
 
 > Skills `11-activity-worker`, `meta-orchestrator`, `workflow-orchestrator`, and `activity-worker` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
 
