@@ -160,7 +160,7 @@ A well-written PR description serves multiple audiences:
 
 ## 🤖 AI Assistance
 
-- **Tool / Model:** [tool] / [model-id]
+- **Assistant / Model:** [assistant] / [model-id]
 - **Context scope:** [repo-only | web-retrieval | mixed]
 - **Prompt classes:** [code-generation, test-writing, refactoring, docs — list applicable]
 - **Provenance log:** [link to provenance-log.md in engineering artifacts]

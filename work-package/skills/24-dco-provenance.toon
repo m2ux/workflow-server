@@ -6,9 +6,9 @@ description: "Manages Developer Certificate of Origin (DCO) compliance artifacts
 
 protocol:
   provenance-log[4]:
-    - "Schema: markdown table with columns | Task ID | Tool | Model | Prompt Class | Context Scope | Description |"
-    - "On first task create the file with header row: | Task ID | Tool | Model | Prompt Class | Context Scope | Description |\n|---|---|---|---|---|---|"
-    - "Append one row per task: current_task.id, tool name (e.g. claude, gpt, gemini), model_id, prompt_class, context_scope variable, one-line description of what was generated"
+    - "Schema: markdown table with columns | Task ID | Assistant | Model | Prompt Class | Context Scope | Description |"
+    - "On first task create the file with header row: | Task ID | Assistant | Model | Prompt Class | Context Scope | Description |\n|---|---|---|---|---|---|"
+    - "Append one row per task: current_task.id, assistant name (e.g. claude, gpt, gemini), model_id, prompt_class, context_scope variable, one-line description of what was generated"
     - "Prompt class values: code-generation | refactoring | test-writing | docs | mixed"
   record-attestation[3]:
     - "Append an '## Attestation' section to provenance-log.md with: ISO 8601 timestamp, certifier identity from git config user.name/user.email, and the option selected (certify | flag-legal)"
