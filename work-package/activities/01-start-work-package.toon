@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.3.0
+version: 3.4.0
 name: Start Work Package
 description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR, and create planning folder. Establishes traceability from requirements through implementation."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -19,7 +19,7 @@ entryActions[1]:
     message: Starting issue management
 skills:
   primary: meta/activity-worker
-steps[20]:
+steps[21]:
   - id: detect-review-mode
     name: Detect Review Mode
     description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
@@ -45,6 +45,14 @@ steps[20]:
     name: Initialize Target Directory
     description: "cd into target_path. Fetch origin and checkout the default branch (main/master). Pull latest. This ensures the target is at HEAD before creating a feature branch."
     skill: manage-git
+  - id: detect-merge-strategy
+    name: Detect Merge Strategy
+    description: "Call 'gh api repos/{owner}/{repo}' in target_path (resolve owner/repo from git remote get-url origin). Extract allow_squash_merge. Set squash_merge_available=true if allow_squash_merge is true, false otherwise. This drives the DCO merge path: squash-merge with signed merge commit when available, unsigned branch commits otherwise."
+    skill: github-cli-protocol
+    actions[1]:
+      - action: set
+        target: squash_merge_available
+        description: "true if allow_squash_merge=true in repo settings, false otherwise"
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type inside target_path: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
@@ -484,7 +492,7 @@ outcome[5]:
   - Feature branch created from main
   - Draft PR created and linked to issue
   - Planning folder initialized
-context_to_preserve[16]:
+context_to_preserve[17]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
   - issue_platform - github or jira
   - issue_type - Type of issue (feature, bug, task, enhancement, epic)
@@ -501,3 +509,4 @@ context_to_preserve[16]:
   - jira_cloud_id - Atlassian cloud ID for subsequent Jira operations
   - github_issue_found - Whether a GitHub issue linked to the Jira ticket was found
   - github_issue_number - GitHub issue number linked to the Jira ticket (if found or created)
+  - squash_merge_available - Whether target repo allows squash merges (drives DCO merge path)

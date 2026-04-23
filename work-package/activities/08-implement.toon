@@ -1,5 +1,5 @@
 id: implement
-version: 2.6.2
+version: 2.7.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task, reconciled through code analysis after all tasks complete, and only unresolvable assumptions are presented to the user."
 problem: User needs to implement the planned tasks
@@ -11,12 +11,17 @@ required: true
 estimatedTime: 1-4h
 rules[1]:
   - "SYMBOL VERIFICATION: Every symbol introduced or referenced in code or documentation MUST have provenance — exists in codebase, in a declared dependency, or is newly created by the current task. Never fabricate symbols."
-artifacts[1]:
+artifacts[2]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions - continues from earlier phases (design-philosophy, requirements, research, analysis, planning)"
     action: update
+  - id: provenance-log
+    name: provenance-log.md
+    location: planning
+    description: "AI assistance provenance record. One row per task: task ID, model ID, prompt class (code-generation|refactoring|test-writing|docs), context_scope, and a one-line description of what was generated. Created on first task, appended on each subsequent task. Linked from PR description."
+    action: create
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 skills:
@@ -27,7 +32,7 @@ loops[3]:
     type: forEach
     variable: current_task
     over: plan.tasks
-    steps[5]:
+    steps[6]:
       - id: implement-task
         name: Implement task
         skill: implement-task
@@ -38,6 +43,10 @@ loops[3]:
       - id: commit
         name: Commit changes
         skill: manage-git
+      - id: log-provenance
+        name: Log AI provenance
+        description: "Append a row to provenance-log.md for this task: | {current_task.id} | {model_id} | {prompt_class} | {context_scope} | {one-line description of what was generated} |. Create the file with a header row if this is the first task. prompt_class is one of: code-generation, refactoring, test-writing, docs, mixed."
+        skill: manage-artifacts
       - id: self-review
         name: Self-review
         description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies; (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource 14 for verification checklist."
@@ -167,10 +176,12 @@ transitions[1]:
     isDefault: true
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — set Status to In Progress and mark implementation artifacts.
-outcome[2]:
+outcome[3]:
   - All tasks implemented
   - Changes committed
-context_to_preserve[3]:
+  - Provenance log created (provenance-log.md)
+context_to_preserve[4]:
   - completed_tasks - Tasks completed during implementation
   - assumptions - Assumptions made during implementation
   - commits - Commits created
+  - provenance_log_path - Path to provenance-log.md

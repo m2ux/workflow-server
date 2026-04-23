@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.1.0
+version: 1.2.0
 name: Submit for Review
 description: "Push implementation, update PR, mark ready for review, then handle the review cycle. If review feedback requires significant changes, transition back to plan-prepare."
 problem: User needs to submit the PR for review and handle reviewer feedback
@@ -14,7 +14,7 @@ entryActions[1]{action,message}:
   log,Submitting PR for review
 skills:
   primary: meta/activity-worker
-steps[12]:
+steps[13]:
   - id: consolidate-review-findings
     name: Consolidate Review Findings
     description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
@@ -51,10 +51,15 @@ steps[12]:
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: verify-commit-signatures
-    name: Verify and sign commits
-    description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
-    skill: manage-git
+  - id: dco-sign-off
+    name: DCO Sign-off
+    description: "Present the DCO sign-off checkpoint to the human before pushing. Surface the provenance context: model used, context_scope, squash_merge_available, and commit count. The human must certify the DCO checklist before the PR is submitted. Record the attestation timestamp and human identity in provenance-log.md."
+    checkpoint: dco-sign-off
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     required: true
   - id: push-commits
     name: Push all commits
@@ -69,6 +74,15 @@ steps[12]:
     name: Update PR description
     description: "Update PR description with final implementation details. Apply automatically — user can edit the PR directly in GitHub/Jira if adjustments are needed."
     skill: update-pr
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - id: instruct-merge-strategy
+    name: Instruct Merge Strategy
+    description: "Present merge strategy guidance to the human. If squash_merge_available is true: instruct the human to merge using squash merge with 'git commit -s -S' (Signed-off-by + GPG) — note that GitHub web UI squash merges are not GPG-signed; use 'git merge --squash' locally for a fully signed merge commit. If squash_merge_available is false: note that branch commits are unsigned and will land on main as-is — no signing action required."
+    checkpoint: merge-strategy-reminder
     condition:
       type: simple
       variable: is_review_mode
@@ -104,7 +118,33 @@ steps[12]:
       - action: set
         target: recommended_outcome
         description: "Set to the recommended review-outcome option based on comment analysis"
-checkpoints[4]:
+checkpoints[6]:
+  - id: dco-sign-off
+    name: DCO Sign-off
+    message: "Before pushing: please certify the Developer Certificate of Origin for this work package.\n\nProvenance context:\n- Model: {model_id}\n- Context scope: {context_scope}\n- Squash merge available: {squash_merge_available}\n- Provenance log: {provenance_log_path}\n\nCertify that you:\n1. Reviewed the entire diff and understand each material change\n2. Have the right to submit this contribution under the project's license\n3. Did not include code with unclear or incompatible provenance\n4. Can explain where the solution came from (your design, repo context, or approved references)\n5. Tests and linters have been run (or will run in CI)\n6. Are willing to take responsibility for defects and licensing issues in this patch"
+    blocking: true
+    options[2]:
+      - id: certify
+        label: "I certify all of the above — proceed"
+        description: "DCO attestation recorded. Timestamp and identity logged to provenance-log.md."
+      - id: flag-legal
+        label: "I have reservations — flag for legal review"
+        description: "Document concern in provenance-log.md before proceeding. Consider escalating to legal or OSS program review."
+  - id: merge-strategy-reminder
+    name: Merge Strategy Reminder
+    message: "PR is ready for review. Merge strategy guidance:\n\n**Squash merge available — use squash merge with signed commit.**\nTo get a GPG-signed + DCO-attested merge commit, merge locally:\n```\ngit checkout main && git pull\ngit merge --squash {branch_name}\ngit commit -s -S -m 'feat: description (#{pr_number})'\ngit push\n```\nNote: GitHub web UI squash merge is not GPG-signed. Use the local flow above for a verified commit.\n\nIf squash merge is not available on this repo, branch commits land as-is — no signing required."
+    condition:
+      type: simple
+      variable: squash_merge_available
+      operator: "=="
+      value: true
+    blocking: false
+    defaultOption: acknowledged
+    autoAdvanceMs: 20000
+    options[1]:
+      - id: acknowledged
+        label: "Understood — will use squash merge with signed commit"
+        description: Proceed to mark PR ready for review
   - id: review-received
     name: Review Received Checkpoint
     message: "Has the PR received manual review feedback?"
