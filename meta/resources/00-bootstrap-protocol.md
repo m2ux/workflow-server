@@ -1,9 +1,21 @@
 ---
 id: bootstrap-protocol
-version: 4.0.0
+version: 4.1.0
 ---
 
 IMPORTANT: Do NOT attempt to connect to Github/Jira to resolve issue details yet. This happens later.
+
+## Load TOON schemas (REQUIRED — do this first)
+
+Workflow content (workflows, activities, skills, state) is encoded in TOON. Before any other step, fetch each schema resource so you can interpret the structures returned by later tool calls. Read each one — do NOT skip any:
+
+- `workflow-server://schemas/workflow` — workflow definition structure
+- `workflow-server://schemas/activity` — activity / steps / checkpoints / transitions
+- `workflow-server://schemas/skill` — skill protocol, tools, inputs/outputs, rules
+- `workflow-server://schemas/condition` — transition, decision, and loop conditions
+- `workflow-server://schemas/state` — runtime state file format
+
+Fetching the combined `workflow-server://schemas` is acceptable, but fetching each individually is preferred — it ensures every schema is loaded and surfaced in your context.
 
 ## START a new workflow
 

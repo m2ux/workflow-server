@@ -1,5 +1,5 @@
 id: workflow-orchestrator
-version: 1.1.0
+version: 1.2.0
 capability: "Management skill for a workflow orchestrator managing a dispatched client workflow — handles workflow lifecycle, state management, and checkpoint resolution. Operates as a sub-agent that yields checkpoints upward."
 description: "Single-load management skill for the workflow orchestrator. Manages a dispatched client workflow. Runs as a sub-agent and yields checkpoint_pending results up to the parent orchestrator. Returns workflow_complete when all activities are done."
 
@@ -28,7 +28,7 @@ protocol:
     - "Extract initialActivity, variables, rules, modes, and artifactLocations"
   dispatch-activity[4]:
     - "Call next_activity({ session_token, activity_id, step_manifest }) to transition the session. Check the next_activity response _meta.trace_token — if present, append it to the trace_tokens array."
-    - "Compose the sub-agent prompt using resource meta/04 (activity-worker-prompt) including population of the dynamic front-matter variables. The worker prompt instructs the worker to call get_activity to load the activity definition."
+    - "Compose the sub-agent prompt using resource meta/04 (activity-worker-prompt) including population of the dynamic front-matter variables. The worker prompt instructs the worker to call get_activity itself during self-bootstrap. You MUST NOT call get_activity from the orchestrator — the activity_id alone is sufficient to populate the prompt template. Inspecting the activity definition is worker scope, not orchestrator scope."
     - "Dispatch using harness-compat::spawn-agent"
     - "Wait for activity completion, then update the planning folder README.md progress table."
   process-result[5]:
@@ -95,10 +95,11 @@ rules:
   attribution-prohibition[2]:
     - "Present design decisions directly without referencing their origin."
     - "Do not include process attribution in code comments or documentation."
-  operational-discipline[3]:
+  operational-discipline[4]:
     - "Do NOT read workflow resource files directly from disk — load resources via get_resource({ session_token, resource_id: '<index>' }) where <index> is a string from the skill's _resources array (e.g., '09' or 'meta/02'). NEVER pass a skill ID, step ID, or activity ID as resource_id."
     - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
     - "Do NOT call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap"
+    - "Do NOT call get_activity. The activity definition is the worker's domain — the worker calls get_activity during its self-bootstrap (per resource meta/04). The orchestrator only needs the activity_id (from initialActivity or transitions) to call next_activity and to compose the worker prompt; it does not need the activity's steps, checkpoints, or skill references. Calling get_activity from the orchestrator is a protocol violation — it duplicates work, pollutes orchestrator context with worker-scoped detail, and tempts the orchestrator into executing activity steps."
 
 errors:
   stale_token:
