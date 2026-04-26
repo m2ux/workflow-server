@@ -36,9 +36,6 @@ npm run build
 
 # Run in development mode (with hot reload via tsx)
 npm run dev
-
-# Generate JSON schemas from Zod definitions
-npm run build:schemas
 ```
 
 ## Project Structure
@@ -46,53 +43,62 @@ npm run build:schemas
 ```
 workflow-server/
 ├── src/
-│   ├── index.ts              # Entry point and exports
-│   ├── server.ts             # MCP server setup
-│   ├── config.ts             # Configuration loading
-│   ├── errors.ts             # Custom error classes
-│   ├── result.ts             # Result type for error handling
-│   ├── logging.ts            # Audit logging and trace capture
+│   ├── index.ts              # Entry point: config → server → stdio transport
+│   ├── server.ts             # MCP server creation and tool/resource registration
+│   ├── config.ts             # ServerConfig: workflowDir, schemasDir, schemaPreamble, traceStore, minCheckpointResponseSeconds
+│   ├── errors.ts             # Custom error classes (WorkflowNotFoundError, etc.)
+│   ├── result.ts             # Result<T, E> monad for typed error handling
+│   ├── logging.ts            # Structured JSON logging + audit event wrapper (withAuditLog)
 │   ├── trace.ts              # TraceStore, TraceEvent, trace token encode/decode
-│   ├── schema/               # Zod schemas
+│   ├── schema/               # Zod runtime schemas for validation
 │   │   ├── workflow.schema.ts
+│   │   ├── activity.schema.ts
+│   │   ├── skill.schema.ts
+│   │   ├── condition.schema.ts
 │   │   ├── state.schema.ts
-│   │   └── condition.schema.ts
-│   ├── types/                # Generated TypeScript types
-│   ├── loaders/              # File loaders
+│   │   ├── resource.schema.ts
+│   │   └── common.ts
+│   ├── types/                # Re-export layer (types + schemas)
+│   ├── loaders/              # File loaders (filesystem → validated objects)
 │   │   ├── workflow-loader.ts
-│   │   ├── resource-loader.ts
 │   │   ├── activity-loader.ts
 │   │   ├── skill-loader.ts
+│   │   ├── resource-loader.ts
 │   │   ├── rules-loader.ts
-│   │   └── schema-loader.ts
+│   │   ├── schema-loader.ts
+│   │   ├── schema-preamble.ts
+│   │   └── filename-utils.ts
 │   ├── tools/                # MCP tool implementations
-│   │   ├── workflow-tools.ts # next_activity, get_workflow, get_trace, etc.
+│   │   ├── workflow-tools.ts # discover, list_workflows, get_workflow, next_activity, get_activity, yield_checkpoint, resume_checkpoint, present_checkpoint, respond_checkpoint, get_trace, health_check, get_workflow_status
 │   │   └── resource-tools.ts # start_session, get_skills, get_skill, get_resource
+│   ├── resources/            # MCP resource registration
+│   │   └── schema-resources.ts # workflow-server://schemas
 │   └── utils/                # Utility functions
-│       ├── toon.ts           # TOON format parser
-│       ├── session.ts        # Session token create/decode/advance (HMAC)
+│       ├── toon.ts           # TOON format parser wrapper
+│       ├── session.ts        # Session token create/decode/advance (HMAC-SHA256)
 │       ├── validation.ts     # Transition, manifest, and activity validation
-│       └── crypto.ts         # HMAC signing for session and trace tokens
-├── schemas/                  # Generated JSON schemas
+│       ├── crypto.ts         # AES-256-GCM encryption, HMAC signing
+│       └── index.ts          # Barrel exports
+├── schemas/                  # JSON Schema files for IDE tooling
+│   ├── workflow.schema.json
+│   ├── activity.schema.json
+│   ├── skill.schema.json
+│   ├── condition.schema.json
+│   └── state.schema.json
 ├── scripts/                  # Build scripts
 │   ├── generate-schemas.ts
 │   └── validate-workflow.ts
 ├── tests/                    # Test suites
 ├── workflows/                # Worktree (workflows branch)
-│   ├── meta/                 # Bootstrap workflow (manages other workflows)
-│   │   ├── workflow.toon          # Meta workflow definition
-│   │   ├── activities/           # All activities (indexed, no separate index file)
-│   │   │   └── {NN}-{id}.toon    # Individual activities (01-start-workflow, etc.)
-│   │   └── skills/               # Universal skills (indexed)
-│   │       └── {NN}-{id}.toon    # Skills that apply to all workflows
-│   └── {workflow-id}/        # Each workflow folder contains:
-│       ├── workflow.toon         # Workflow definition
-│       ├── activities/           # Activity subdirectory (if activitiesDir used)
-│       │   └── {NN}-{id}.toon    # Activities (indexed)
-│       ├── resources/            # Resource subdirectory
-│       │   └── {NN}-{name}.md    # Resources (indexed, markdown)
-│       └── skills/               # Workflow-specific skills (indexed)
-│           └── {NN}-{id}.toon    # Skills for this workflow
+│   ├── meta/                 # Bootstrap workflow
+│   │   ├── workflow.toon
+│   │   ├── activities/
+│   │   └── skills/
+│   └── {workflow-id}/        # Each workflow folder
+│       ├── workflow.toon
+│       ├── activities/
+│       ├── resources/
+│       └── skills/
 └── docs/                     # Documentation
 ```
 
@@ -131,11 +137,11 @@ npm test -- --run --coverage
 | `mcp-server.test.ts` | 62 | All MCP tools, trace lifecycle, activity manifest |
 | `activity-loader.test.ts` | 10 | Activity loading and dynamic index |
 | `skill-loader.test.ts` | 13 | Skill loading and dynamic index |
-| `session.test.ts` | 22 | Token create/decode/advance, sid, aid |
+| `session.test.ts` | 22 | Token create/decode/advance, sid, aid, parent context |
 | `trace.test.ts` | 20 | TraceStore, trace token encode/decode |
-| `toon-parser.test.ts` | 13 | TOON format parsing |
-| `resource-loader.test.ts` | 7 | Resource loading |
-| **Total** | **187** | All passing |
+| `validation.test.ts` | 15 | Transition, manifest, condition validation |
+| `dispatch.test.ts` | 8 | Workflow dispatch, status, parent-child trace correlation |
+| **Total** | **190+** | All passing |
 
 ### Test Infrastructure
 
@@ -143,26 +149,12 @@ npm test -- --run --coverage
 - **MCP Testing:** Uses `InMemoryTransport` for integration tests
 - **Schema Validation:** Tests all Zod schemas with valid/invalid inputs
 
-## Schema Generation
-
-The project uses Zod as the source of truth for schemas. JSON Schema files are generated for external tooling:
-
-```bash
-# Generate JSON schemas from Zod
-npm run build:schemas
-```
-
-This creates:
-- `schemas/workflow.schema.json`
-- `schemas/state.schema.json`
-- `schemas/condition.schema.json`
-
 ## Validating Workflows
 
-Use the validation script to check workflow JSON files:
+Use the validation script to check workflow TOON files:
 
 ```bash
-npx tsx scripts/validate-workflow.ts workflows/work-package/work-package.toon
+npx tsx scripts/validate-workflow.ts workflows/work-package/workflow.toon
 ```
 
 ## Branch Structure
@@ -194,7 +186,7 @@ git push origin workflows
 ## Adding New Workflows
 
 1. Create a new directory in `workflows/{workflow-id}/`
-2. Create `{workflow-id}.toon` workflow definition in that directory
+2. Create `workflow.toon` workflow definition in that directory
 3. Validate with: `npx tsx scripts/validate-workflow.ts <path>`
 4. Commit to the `workflows` branch
 
@@ -205,7 +197,7 @@ Resources are stored in a `resources/` subdirectory within each workflow:
 1. Create `{NN}-{name}.toon` or `{NN}-{name}.md` in `workflows/{workflow-id}/resources/`
 2. Use sequential index (00, 01, 02, etc.)
 3. Resources are auto-discovered - no manifest update needed
-4. Access via: `get_resource` with the resource index (referenced from skill `_resources`)
+4. Access via: `get_resource` with the resource index (referenced from skill `resources` arrays)
 5. Commit to the `workflows` branch
 
 Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
@@ -220,9 +212,8 @@ Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
 1. Create `{NN}-{skill-id}.toon` in `workflows/meta/skills/`
 2. Use sequential index (00, 01, 02, etc.)
-3. Access via: `get_skills` (workflow-level) or `get_skill { session_token, step_id: "{step-id}" }` (step-level)
-4. Examples: `00-session-protocol`, `01-agent-conduct`, `02-execute-activity`
-5. Commit to the `workflows` branch
+3. Access via: `get_skills` (workflow-level primary skill) or `get_skill { session_token, step_id: "{step-id}" }` (step-level)
+4. Commit to the `workflows` branch
 
 ### Workflow-Specific Skills
 

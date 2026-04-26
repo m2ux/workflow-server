@@ -52,39 +52,28 @@ flowchart TD
 
     subgraph actA [Activity A]
         nextA["next_activity(activity_id=A)"]
-        cpGateA{{"L2: bcp populated
-        with required checkpoints"}}
-        toolsBlocked["All tools BLOCKED
-        except get_checkpoint
-        and respond_checkpoint"]
-        respondCp["respond_checkpoint
-        for each pending checkpoint"]
-        cpTiming{{"L2: Timing enforced
-        option validated against definition"}}
+        cpGateA{{"L2: bcp populated\nwith required checkpoints"}}
+        toolsBlocked["All tools BLOCKED\nexcept present_checkpoint\nand respond_checkpoint"]
+        respondCp["respond_checkpoint\nfor each pending checkpoint"]
+        cpTiming{{"L2: Timing enforced\noption validated against definition"}}
         bcpClear["bcp cleared — tools unblocked"]
         getSkill["get_skill(step_id) + get_resource"]
         executeSteps["Execute activity steps"]
     end
 
     subgraph transition [Transition A to B]
-        nextB["next_activity(activity_id=B,
-        step_manifest, activity_manifest,
-        transition_condition)"]
-        hardGate{{"L2: bcp empty?
-        HARD GATE"}}
+        nextB["next_activity(activity_id=B,\nstep_manifest, activity_manifest,\ntransition_condition)"]
+        hardGate{{"L2: bcp empty?\nHARD GATE"}}
         transCheck["L3: A→B in transition graph?"]
         condCheck["L4: condition matches table?"]
         stepCheck["L5: step_manifest complete?"]
         actCheck["L6: activity_manifest valid?"]
-        tracePackage["L7: Trace token packaged
-        for Activity A"]
+        tracePackage["L7: Trace token packaged\nfor Activity A"]
     end
 
     subgraph actB [Activity B]
-        cpGateB{{"L2: bcp populated
-        for Activity B checkpoints"}}
-        continueB["Resolve checkpoints,
-        execute steps..."]
+        cpGateB{{"L2: bcp populated\nfor Activity B checkpoints"}}
+        continueB["Resolve checkpoints,\nexecute steps..."]
     end
 
     getWorkflow -->|"L7: trace event"| nextA
@@ -101,9 +90,9 @@ flowchart TD
     nextB --> hardGate
     hardGate -->|"bcp non-empty"| toolsBlocked
     hardGate -->|"bcp empty"| transCheck
-    transCheck -.- condCheck
-    condCheck -.- stepCheck
-    stepCheck -.- actCheck
+    transCheck -.-> condCheck
+    condCheck -.-> stepCheck
+    stepCheck -.-> actCheck
     actCheck --> tracePackage
     tracePackage --> cpGateB
     cpGateB --> continueB
@@ -133,20 +122,29 @@ The token payload carries:
 | `sid` | Session UUID — uniquely identifies this execution session across all tool calls |
 | `aid` | Agent ID — identifies which agent (orchestrator vs. worker) made the call |
 | `bcp` | Active blocking checkpoint ID — gates activity transitions until resolved |
+| `psid` | Parent session ID — for trace correlation when a workflow is dispatched from another |
+| `pwf` | Parent workflow ID — for resume routing in dispatched workflows |
+| `pact` | Parent activity — for resume routing in dispatched workflows |
+| `pv` | Parent workflow version — for resume routing in dispatched workflows |
 
 **What it enforces:**
 - Agents cannot fabricate tokens — the server rejects any token it didn't issue
 - Agents cannot tamper with token fields — modifying any field invalidates the signature
 - Each tool call produces a new token with an incremented counter, ensuring tokens are unique per exchange
 - The `sid` field binds all tool calls to a single session, enabling trace correlation
-- The `aid` field distinguishes orchestrator from worker calls in multi-agent execution patterns. The `dispatch_workflow` tool creates distinct sessions linked to a parent `sid` to ensure cross-agent execution trace isolation.
+- The `aid` field distinguishes orchestrator from worker calls in multi-agent execution patterns
 - The `bcp` field blocks activity transitions until the checkpoint is resolved via `respond_checkpoint`
+- Parent context fields (`psid`, `pwf`, `pact`, `pv`) link dispatched child workflows back to their parent for trace correlation
 
-**How it works:** The server verifies the HMAC signature on every tool call before processing. Invalid signatures cause immediate rejection — with one exception: `start_session` implements **token adoption** to handle server restarts gracefully. When a saved session token is passed to `start_session` but fails HMAC verification (because the server was restarted and generated a new signing key), the server decodes the payload without signature verification. If the payload is structurally valid and the workflow matches, the server re-signs it with the current key and returns `adopted: true` — the session state (ID, activity position) is fully preserved. If the payload is also corrupted, the server falls back to a fresh session and returns `recovered: true` — the previous state was NOT inherited and must be reconstructed from `workflow-state.json`. This recovery mechanism prevents the common failure mode where a server restart makes all saved tokens permanently unusable.
+**How it works:** The server verifies the HMAC signature on every tool call before processing. Invalid signatures cause immediate rejection — with one exception: `start_session` implements **token adoption** to handle server restarts gracefully. When a saved session token is passed to `start_session` but fails HMAC verification (because the server was restarted and generated a new signing key), the server decodes the payload without signature verification. If the payload is structurally valid and the workflow matches, the server re-signs it with the current key and returns `adopted: true` — the session state (ID, activity position) is fully preserved. If the payload is also corrupted, the server falls back to a fresh session and returns `recovered: true` — the previous state was NOT inherited and must be reconstructed from saved state. This recovery mechanism prevents the common failure mode where a server restart makes all saved tokens permanently unusable.
 
 ### Layer 2: Checkpoint Gate
 
-When `next_activity` loads an activity with required checkpoints (`required: true`, the default), the server embeds the checkpoint ID in the token's `bcp` field. The token then **hard-blocks** any transition to a different activity until the checkpoint is resolved. Timing enforcement uses the token's `ts` (timestamp) field to estimate elapsed time since the checkpoint was yielded.
+When a worker yields a checkpoint via `yield_checkpoint`, the server embeds the checkpoint ID in the token's `bcp` field. The token then **hard-blocks** most tool calls until the checkpoint is resolved. `assertCheckpointsResolved()` is called in nearly every tool handler to enforce this gate.
+
+**Tools exempt from the checkpoint gate:**
+- `present_checkpoint` — the orchestrator needs this to read checkpoint details for resolution
+- `respond_checkpoint` — this is the resolution mechanism itself
 
 **Resolution via `respond_checkpoint`:**
 
@@ -165,9 +163,9 @@ The agent must call `respond_checkpoint` for each pending checkpoint, using exac
 - Agents cannot dismiss unconditional checkpoints — `condition_not_met` is rejected unless the checkpoint has a `condition` field
 - Agents cannot tamper with `bcp` — the field is in the HMAC-signed token payload
 
-**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with the checkpoint handle, which clears `bcp` and returns effects (setVariable, transitionTo, skipActivities). Only when `bcp` is cleared can the agent transition to the next activity.
+**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with the checkpoint handle (or session token), which clears `bcp` and returns effects (`setVariable`, `transitionTo`, `skipActivities`). Only when `bcp` is cleared can the agent transition to the next activity.
 
-**Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `next_activity` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The token's `ts` timestamp is used to estimate elapsed time since the checkpoint was yielded.
+**Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `yield_checkpoint` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The token's `ts` timestamp is used to estimate elapsed time since the checkpoint was yielded.
 
 ### Layer 3: Cross-Activity Validation
 
@@ -213,6 +211,7 @@ When transitioning between activities via `next_activity`, agents include a `ste
 - All required steps are present (missing steps produce a warning)
 - Steps are in the correct order (out-of-order steps produce a warning)
 - Each step has a non-empty output description (empty outputs produce a warning)
+- Unexpected steps not defined in the activity produce a warning
 
 **Design constraint:** All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level. This simplifies enforcement — the validator checks for exact match against the expected step sequence.
 
@@ -233,7 +232,7 @@ When transitioning between activities via `next_activity`, agents can include an
 **What it enforces (advisory):**
 - Activity IDs reference activities that exist in the workflow definition
 - Outcomes are non-empty
-- The activity sequence is plausible given the transition table
+- The claimed transition condition matches one defined in the workflow for that activity
 
 **Design principle:** Activity manifest validation is advisory — it produces warnings, not rejections. This matches the design principle of Layer 3. The manifest provides a workflow-level audit trail that complements the step-level detail of Layer 5, particularly in orchestrator/worker patterns where the orchestrator tracks the workflow journey and the worker tracks step execution.
 
@@ -252,18 +251,20 @@ The server automatically captures a mechanical trace of every tool call in a ses
 | `wf`, `act`, `aid` | Workflow, activity, and agent ID from the decoded token |
 | `err` | Error message (on failure) |
 | `vw` | Validation warnings from `_meta.validation` |
+| `psid` | Parent session ID (for dispatched workflows) |
 
 **How trace tokens work:**
 
 1. The server accumulates trace events in an in-memory `TraceStore` during the session
-2. When `next_activity` is called (activity transition), the server packages all events since the last transition into an HMAC-signed trace token (~1.3KB) and returns it in `_meta.trace_token`
-3. The agent accumulates these opaque tokens without parsing them (~300 bytes of context per token)
-4. At any point, `get_trace` resolves the accumulated tokens into full event data
+2. When `next_activity` is called (activity transition), the server packages all events since the last transition into an HMAC-signed trace token and returns it in `_meta.trace_token`
+3. The agent accumulates these opaque tokens without parsing them
+4. At any point, `get_trace` resolves the accumulated tokens into full event data, or returns the in-memory trace if no tokens are provided
 
 **What it enables:**
 - **Post-execution audit** — the complete tool call sequence with timing, errors, and validation warnings
 - **Failure diagnosis** — the last call before silence identifies where an agent got stuck
 - **Multi-agent attribution** — the `aid` field distinguishes orchestrator from worker calls
+- **Parent-child correlation** — the `psid` field links dispatched child workflows to their parent
 - **Validation warning history** — every warning issued during the session is recorded, not just the most recent
 
 **Two-layer trace architecture:** The server captures the mechanical trace (tool calls, timing, validation) automatically. Agents write a complementary semantic trace (step outputs, checkpoint responses, decision branches, variable changes) to the planning folder per workflow skill instructions. Together they provide complete execution visibility.
@@ -280,11 +281,11 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 ### Summary Mode
 
-`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, and activity stubs without consuming its context window with step-level detail.
+`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, modes, and activity stubs without consuming its context window with step-level detail.
 
 ### Transitions in Activity Definitions
 
-`next_activity` returns the complete activity definition including its `transitions` field with human-readable conditions. The agent matches conditions against its state variables to determine the next activity:
+`get_activity` returns the complete activity definition including its `transitions` field with human-readable conditions. The agent matches conditions against its state variables to determine the next activity:
 
 ```json
 {
@@ -295,9 +296,11 @@ Beyond enforcement, the server reduces the context burden on agents:
 }
 ```
 
+Transitions are also derived from `decisions` (branch `transitionTo` fields) and `checkpoints` (option `effect.transitionTo` fields), giving the orchestrator a complete view of all possible next activities.
+
 ### Skill and Resource Loading
 
-`get_skills` returns workflow-level behavioral protocols with `_resources` containing lightweight references (index, id, version). `get_skill` loads the skill for a specific step. Call `get_resource` with the resource index to load full content. Do not call `get_skill` on steps that lack a `skill` property.
+`get_skills` returns the workflow's primary skill as raw TOON. `get_skill` loads the skill for a specific step. Call `get_resource` with the resource index to load full content. Do not call `get_skill` on steps that lack a `skill` property.
 
 ### Self-Describing Bootstrap
 
@@ -305,11 +308,11 @@ The `discover` tool returns the complete bootstrap procedure and available workf
 
 ### Trace Token Efficiency
 
-Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-activity session produces ~3KB of accumulated tokens (~3,200 LLM tokens) — approximately 1.6% of a 200K context window. The agent stores tokens as opaque strings without parsing, keeping the mechanical trace out of the reasoning context until explicitly resolved via `get_trace`.
+Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-activity session produces ~3KB of accumulated tokens. The agent stores tokens as opaque strings without parsing, keeping the mechanical trace out of the reasoning context until explicitly resolved via `get_trace`.
 
 ## State Persistence
 
-State persistence is agent-managed. The orchestrator writes the session token (opaque, HMAC-signed) and its variable state to disk using its own file tools. Session identity is embedded within the token — there is no separate `session_id` field. To resume, the saved token is passed to `start_session(agent_id, session_token=saved_token)`. If the server has restarted since the token was saved, `start_session` will adopt the token (re-sign with the current key) and return `adopted: true`, preserving the session state. If the token is corrupted, `start_session` returns `recovered: true` with a fresh session, and the agent must reconstruct state from the saved variables in `workflow-state.json`. Stale-session detection is handled by the server: the `adopted` and `recovered` flags in the `start_session` response indicate whether the session was inherited, adopted (re-signed), or recovered (fresh session). The trace provides the audit trail via `get_trace`.
+State persistence is agent-managed. The orchestrator writes the session token (opaque, HMAC-signed) and its variable state to disk using its own file tools. Session identity is embedded within the token — there is no separate `session_id` field. To resume, the saved token is passed to `start_session(agent_id, session_token=saved_token)`. If the server has restarted since the token was saved, `start_session` will adopt the token (re-sign with the current key) and return `adopted: true`, preserving the session state. If the token is corrupted, `start_session` returns `recovered: true` with a fresh session, and the agent must reconstruct state by transitioning to the `currentActivity` and restoring variables from the saved state file.
 
 ## Limitations
 
@@ -318,7 +321,7 @@ State persistence is agent-managed. The orchestrator writes the session token (o
 - **Checkpoint user presence is not provable** — the checkpoint gate ensures the agent *calls* `respond_checkpoint` with a valid option, but cannot prove a human saw the checkpoint. The timing enforcement raises the bar (instant auto-resolve is rejected), and the trace records all checkpoint interactions for audit. However, an agent could wait the minimum time and then submit a fabricated response. This is an inherent limitation of agent-mediated systems where the agent controls the communication channel.
 - **Conditional checkpoint dismissal relies on agent honesty** — when an agent calls `respond_checkpoint` with `condition_not_met`, the server validates that the checkpoint has a `condition` field but cannot verify the condition is actually false. The trace records the dismissal for post-hoc audit.
 - **Replay is not detected** — an agent could present an old valid token. The HMAC proves authenticity but not freshness (the server is stateless). The `sid` field makes replay across sessions detectable, but within-session replay remains possible.
-- **Warnings are advisory** — a confused agent may ignore validation warnings. The enforcement is detection-oriented, not prevention-oriented. Validation warnings are now captured in the execution trace, making ignored warnings visible in post-hoc review.
+- **Warnings are advisory** — a confused agent may ignore validation warnings. The enforcement is detection-oriented, not prevention-oriented. Validation warnings are captured in the execution trace, making ignored warnings visible in post-hoc review.
 - **In-memory trace lifespan** — the `TraceStore` lives in server memory. On server restart, accumulated events are lost. Trace tokens issued before the restart remain valid as self-contained attestations (event data is embedded), but ad-hoc `get_trace` queries without tokens return empty results for prior sessions.
 - **Semantic trace is agent-dependent** — the agent-written semantic trace (step outputs, checkpoint responses, variable changes) relies on agent discipline. The server cannot verify that the agent wrote it or that it is complete.
 
