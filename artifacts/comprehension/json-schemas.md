@@ -50,6 +50,8 @@ state.schema.json
 
 **Key observation:** Only `activity.schema.json` uses cross-file `$ref`. It references `condition.schema.json` via bare relative path (`"$ref": "condition.schema.json"`). This works when schemas are loaded from the same directory, but no `$id` is declared in any schema file, making resolution implicitly dependent on the validator's base URI strategy.
 
+**Note**: `workflow.schema.json` now includes an `activities` property. The JSON Schema and Zod schema are partially aligned — `workflow.schema.json` includes `activities` as an array of activity objects, while `WorkflowSchema` in Zod also includes `activities` as `z.array(ActivitySchema).min(1).optional()`.
+
 ---
 
 ## `additionalProperties` Policy Analysis
@@ -92,25 +94,18 @@ The semantic difference is intentional: workflow/activity rules are ordered list
 
 ## Condition Schema Deep Dive (QC-013, QC-068)
 
-### Recursive Validation Gap
+### Recursive Validation
 
-The `and` and `or` condition types declare `conditions` as:
+The `and` and `or` condition types correctly declare `conditions` with recursive `$ref`:
 ```json
 "conditions": {
   "type": "array",
-  "items": {},
+  "items": { "$ref": "#/definitions/condition" },
   "minItems": 2
 }
 ```
 
-`items: {}` accepts any JSON value — strings, numbers, nulls, not just condition objects. The `not` type has:
-```json
-"condition": {
-  "description": "The condition to negate"
-}
-```
-
-This also accepts any JSON value. The fix is to add `$ref: "#/definitions/condition"` to both `items` (for and/or) and `condition` (for not).
+The `not` type also correctly references `#/definitions/condition`. The recursive references are properly defined in the current JSON Schema.
 
 ### Value Type Gap
 

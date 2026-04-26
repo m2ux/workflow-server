@@ -26,7 +26,7 @@ Agent
 ## Key Abstractions
 
 ### StateSaveFile (schema)
-Top-level envelope for persisted state. Fields: `id`, `savedAt`, `description`, `workflowId`, `workflowVersion`, `planningFolder`, `state`. Currently has **no metadata field** for encryption state — this is the root cause of QC-004.
+Top-level envelope for persisted state. Fields: `id`, `savedAt`, `description`, `workflowId`, `workflowVersion`, `planningFolder`, `sessionTokenEncrypted`, `state`. The `sessionTokenEncrypted` boolean field (added post-QC-004) now stores the encryption flag in the save-file metadata rather than in the agent-controlled `variables` namespace.
 
 ### NestedWorkflowState (schema)
 Extends `WorkflowState` with recursive `triggeredWorkflows` that can each carry their own nested state. The `variables` field is `z.record(z.unknown())` — an open key-value store with no reserved-key protection.

@@ -36,6 +36,8 @@ src/schema/                          schemas/
 └── rules.schema.ts        (no JSON Schema counterpart)
 ```
 
+**Note**: `executionModel` and `ExecutionModelSchema` do NOT exist in the current source. They were referenced in older work packages but were never merged or have since been removed. The current `WorkflowSchema` has `skills` (with `primary` skill ID), `modes`, `variables`, `artifactLocations`, etc. — no `executionModel` field.
+
 ### 1.3 Import Chain
 
 ```
@@ -417,28 +419,7 @@ Following the optional field addition pattern from §2.3:
 
 ### 9.5 executionModel Deprecation Consideration
 
-The `executionModel` field (added by ADR-0002, #84/#85) currently declares agent roles:
-
-```typescript
-executionModel: ExecutionModelSchema  // required
-// where ExecutionModelSchema = { roles: [{ id, description }] }
-```
-
-With workflow-level `skills`, the behavioral specification for each role moves into the skills themselves (`orchestrate-workflow` defines the orchestrator's protocol; `execute-activity` defines the worker's protocol). The `executionModel.roles` declaration becomes redundant — the roles are implicit in the skills.
-
-**Current consumers of executionModel:**
-- `workflow.schema.ts:66` — required field on WorkflowSchema
-- `workflow.schema.ts:71-76` — `.refine()` for unique role IDs
-- `schemas/workflow.schema.json:203-205` — in `required` array
-- All 10 workflow TOON files — must declare it (required field)
-- `schemas/README.md` — documented
-
-**Options:**
-1. **Remove executionModel** — delete the field, schema, migration, refine. Clean but breaking. All 10 TOON files need migration.
-2. **Make executionModel optional** — change from required to optional. Non-breaking. Workflows that declare skills don't need it.
-3. **Defer** — keep executionModel as-is, track removal separately. Avoids scope creep on #86.
-
-**Scope assessment:** Removing `executionModel` is a separate concern from fixing the discoverability gap (#86). It should be tracked as a follow-up issue rather than included in this work package. However, making `executionModel` optional (option 2) could be done as a low-risk cleanup within #86 if desired.
+**Note**: The `executionModel` field discussed in older work packages (#84/#85) does NOT exist in the current source. The workflow schema has `skills` (with `primary` skill ID), `modes`, `variables`, etc. — no `executionModel` field. The orchestrator/worker roles are implicitly defined by the workflow's primary skill (loaded via `get_skills`) and the activity step skills (loaded via `get_skill`).
 
 ### 9.3 Skill-Loader Dead Code Map
 
