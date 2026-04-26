@@ -11,14 +11,12 @@ tags[6]:
   - feature
   - bug-fix
   - pr
-rules[7]:
-  - "Agents MUST NOT skip or auto-resolve blocking checkpoints (blocking: true) — these require explicit user selection. Advisory checkpoints (blocking: false with autoAdvanceMs and defaultOption) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input."
+rules[5]:
   - "Ask, don't assume - Clarify requirements before acting"
   - "Summarize, then proceed - Provide brief status before asking to continue"
   - One task at a time - Complete current work before starting new work
   - "Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)"
   - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
-  - "ORCHESTRATION MODEL: This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: meta-orchestrator from meta/skills) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: activity-worker from meta/skills) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. CONSTRAINT: Only ONE level of sub-agent indirection (the worker)."
 skills:
   primary: meta/workflow-orchestrator
 artifactLocations:
@@ -45,7 +43,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[70]:
+variables[79]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -254,7 +252,7 @@ variables[70]:
     description: "Current task during implementation loop (from plan.tasks)"
   - name: current_assumption
     type: object
-    description: "Current assumption during assumption review loop (from task_assumptions)"
+    description: "Current assumption during assumption review loop (from task_assumptions). Sub-shape: { id: string (e.g., 'A-001'), statement: string }."
   - name: current_domain
     type: string
     description: "Current question domain during elicitation loop (from question_domains)"
@@ -304,4 +302,39 @@ variables[70]:
   - name: recommended_outcome
     type: string
     description: "Agent-recommended PR review outcome (approved|minor-changes|significant-changes). Set by analyze-review-outcome step."
+  - name: current_branch
+    type: string
+    description: "Active git branch in the target repo at the moment a step is executing. Set after manage-git checks out a branch; read by checkpoints and PR-creation steps that reference the branch by name."
+    defaultValue: ""
+  - name: existing_pr_number
+    type: string
+    description: "PR number returned by gh pr list when an existing draft PR is detected during issue/branch initialization. Empty string means no existing PR was found."
+    defaultValue: ""
+  - name: jira_issue_key
+    type: string
+    description: "Jira issue key in PROJ-NNN form, captured during issue verification when issue_platform == 'jira'. Used in messages, GitHub-issue search queries, and PR descriptions."
+    defaultValue: ""
+  - name: comprehension_artifact_path
+    type: string
+    description: "Absolute path to the comprehension artifact for the current codebase area, set by create-comprehension-artifact and read by downstream activities that reference comprehension findings."
+    defaultValue: ""
+  - name: block_path
+    type: string
+    description: "File path of the code block referenced by the current PR-review comment or implementation block. Used in PR-review-response and implement step messages."
+    defaultValue: ""
+  - name: block_line_range
+    type: string
+    description: "Line range (e.g., 120-145) of the current code block. Pairs with block_path."
+    defaultValue: ""
+  - name: change_block_index_path
+    type: string
+    description: "Absolute path to the index file mapping change-block IDs to their per-block artifacts under .engineering/artifacts/change-blocks/."
+    defaultValue: ""
+  - name: artifact_name
+    type: string
+    description: "Filename of the comprehension artifact (basename only, no path) used in user-facing messages — distinct from comprehension_artifact_path which is the full path."
+    defaultValue: ""
+  - name: plan
+    type: object
+    description: "Implementation plan produced by plan-prepare. Sub-shape: { task_count: number — count of tasks in the plan; tasks: array of { id: string, description: string, status: string } }. Fields actually interpolated in messages today: task_count, tasks[].id, tasks[].description. Additional fields are tolerated."
 initialActivity: start-work-package

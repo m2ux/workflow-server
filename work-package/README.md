@@ -1,12 +1,12 @@
 # Work Package Implementation Workflow
 
-> v3.6.1 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.7.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
 ## Overview
 
-This workflow guides the complete lifecycle of a single work package through fourteen activities, each with defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
+This workflow guides the complete lifecycle of a single work package through 14 activities total — 13 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
@@ -28,7 +28,7 @@ This workflow guides the complete lifecycle of a single work package through fou
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (25 skills) and protocol flow diagrams.
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (24 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
 - **Resources:** See [resources/README.md](resources/README.md) for the resource index (26 resources).
 
 ---

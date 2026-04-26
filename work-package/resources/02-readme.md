@@ -1,5 +1,5 @@
 ---
-id: readme
+id: readme-deprecated
 version: 2.0.0
 ---
 

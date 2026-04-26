@@ -9,8 +9,6 @@ recognition[3]:
   - execute plan
 required: true
 estimatedTime: 1-4h
-rules[1]:
-  - "SYMBOL VERIFICATION: Every symbol introduced or referenced in code or documentation MUST have provenance — exists in codebase, in a declared dependency, or is newly created by the current task. Never fabricate symbols."
 artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
@@ -42,6 +40,7 @@ loops[3]:
         name: Self-review
         description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies; (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource 14 for verification checklist."
         skill: implement-task
+        checkpoint: symbol-provenance-confirmed
       - id: collect-assumptions
         name: Collect assumptions
         description: "Identify all assumptions made during this task. Accumulate — do not review yet."
@@ -97,7 +96,18 @@ steps[4]:
     name: Update assumptions log
     description: "Record all implementation assumptions, reconciliation outcomes, and user interview responses in the assumptions log."
     checkpoint: switch-model-post-impl
-checkpoints[4]:
+checkpoints[5]:
+  - id: symbol-provenance-confirmed
+    name: Symbol Provenance Confirmation
+    message: "Confirm every symbol referenced or introduced in this task has provenance: exists in codebase, in a declared dependency, or is newly created by this task. List any uncertain symbols."
+    blocking: true
+    options[2]:
+      - id: confirmed
+        label: All symbols have provenance
+        description: Every symbol referenced or introduced in this task has been verified to exist in the codebase, in a declared dependency, or is newly created by this task.
+      - id: uncertain
+        label: Some symbols are uncertain — investigate before proceeding
+        description: One or more symbols cannot be confirmed; pause and investigate provenance before continuing.
   - id: switch-model-pre-impl
     name: Switch Model for Implementation
     message: "Implementation requires the full model for code generation. You may switch to your preferred implementation model. Proceeding in 10s."

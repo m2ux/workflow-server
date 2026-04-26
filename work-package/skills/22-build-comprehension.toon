@@ -22,9 +22,10 @@ protocol:
     - "Check if the target codebase has a GitNexus index: call list_repos or read gitnexus://repo/{name}/context"
     - "If indexed: use attached resource meta/06 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill."
     - "If not indexed or stale: fall back to grep/read/glob for all exploration steps."
-  architecture-survey[6]:
+  architecture-survey[7]:
     - "Top-down survey: start with project root structure, build system, entry points"
     - "When GitNexus is available: use query() to discover execution flows and functional areas, read cluster resources for module groupings, and context() for dependency mapping — this yields structural understanding faster than grep and is the required primary approach"
+    - "Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey"
     - "Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs"
     - "Map dependency relationships between modules (imports, trait implementations, cross-module calls)"
     - "Identify overarching patterns: layered architecture, event-driven, actor model, plugin system, etc."
@@ -82,8 +83,6 @@ rules:
   relevance-focus: "Prioritize areas relevant to the current problem statement while still building broadly useful knowledge"
   cross-reference: "Cross-reference related comprehension artifacts and note dependencies between codebase areas"
   question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
-
-  tool-usage: "use glob to map directory structure, find module files, and locate test files"
 resources[2]:
   - "25"
   - "meta/06"

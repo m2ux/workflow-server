@@ -12,8 +12,6 @@ recognition[6]:
   - create github issue
 required: true
 estimatedTime: 10-20m
-rules[1]:
-  - "PREREQUISITE: Before calling ANY Jira tool (getJiraIssue, searchJiraIssuesUsingJql, etc.), the agent MUST first call getAccessibleAtlassianResources to obtain the cloudId. Load the atlassian-operations supporting skill for the full protocol."
 entryActions[1]:
   - action: log
     message: Starting issue management
@@ -65,6 +63,10 @@ steps[20]:
       variable: issue_platform
       operator: "=="
       value: jira
+    actions[1]:
+      - action: validate
+        target: jira_cloud_id != null
+        message: "Atlassian cloudId not set. Load the atlassian-operations skill and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations."
   - id: verify-github-issue
     name: Verify GitHub Issue
     description: "Run 'gh issue view <number>' to verify the issue exists. Capture issue_number and issue_url."

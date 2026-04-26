@@ -79,7 +79,7 @@ This appears to be a review of an existing PR. Is that correct?
 
 ```mermaid
 graph TD
-    Start([Start]) --> IM[issue-management]
+    Start([Start]) --> IM[start-work-package]
     IM -->|detect review| DETECT{review mode?}
     
     DETECT -->|yes| CAPTURE[Capture PR reference]
@@ -99,7 +99,7 @@ graph TD
     PIR --> VAL[validate]
     VAL -->|document failures| SR[strategic-review]
     
-    SR -->|document recommendations| UPR[update-pr]
+    SR -->|document recommendations| UPR[submit-for-review]
     UPR -->|generate review comments| POST[Post to PR]
     POST --> Done([Complete])
     
@@ -132,13 +132,13 @@ graph TD
 
 | Activity | Mode Override |
 |----------|---------------|
-| `issue-management` | Detect mode, capture PR reference, skip branch/PR creation |
+| `start-work-package` | Detect mode, capture PR reference, skip branch/PR creation |
 | `design-philosophy` | Assess ticket completeness, force skip elicitation |
 | `implementation-analysis` | Checkout base branch, document expected changes |
 | `implement` | **SKIPPED** via `skipActivities` |
 | `validate` | Document failures as findings, skip fix-failures |
-| `strategic-review` | Document recommendations, transition to update-pr |
-| `update-pr` | Generate review summary, post to PR, end workflow |
+| `strategic-review` | Document recommendations, transition to submit-for-review |
+| `submit-for-review` | Generate review summary, post to PR, end workflow |
 | `post-impl-review` | Compare changes against expected |
 
 ---
