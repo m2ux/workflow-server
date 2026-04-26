@@ -3,6 +3,21 @@ version: 1.2.0
 capability: "Consolidated management skill for the activity-worker role — covers activity execution, session lifecycle, and behavioral boundaries"
 description: "Single-load management skill for the activity-worker (sub-agent). Consolidates 11-activity-worker, session-protocol, and agent-conduct into one skill. The worker loads this once at bootstrap to become fully capable of executing activity steps, yielding checkpoints, and producing artifacts."
 
+rules:
+  skill-operation-notation: "References of the form `skill-id::operation` (e.g. `harness-compat::spawn-agent`) denote a named operation defined in the `operations` field of the identified skill. Read that skill to find the harness-specific implementation for your environment."
+  file-sensitivity[3]:
+    - "Do not modify core configuration files without explicit user direction."
+    - "Avoid changes to build scripts unless specifically requested."
+    - "Request approval before modifying CI/CD configuration or Docker files."
+  agent-conduct[1]:
+    - "You MUST adhere to the agent conduct guidelines specified in the agent-conduct resource (01)."
+    - "NEVER call start_session"
+  no-continuation-after-yield: "After yielding a checkpoint, you MUST stop all execution immediately. Continuing with subsequent steps before the orchestrator resolves the checkpoint is a protocol violation."
+  operational-discipline[3]:
+    - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability."
+    - "Do NOT read workflow resource files directly from disk — load resources via get_resource({ session_token, resource_id: '<index>' }) where <index> is a string from the skill's _resources array (e.g., '09' or 'meta/02'). NEVER pass a skill ID, step ID, or activity ID as resource_id."
+    - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
+
 inputs[3]:
   - id: activity-id
     description: "ID of the activity to execute"
@@ -32,7 +47,6 @@ protocol:
     - "CRITICAL: The checkpoint_handle is NOT the same as the checkpoint_id. The checkpoint_handle is a long signed token string returned by yield_checkpoint; the checkpoint_id is a short name like 'classification-confirmed'. Never pass a checkpoint_id where a checkpoint_handle is expected or vice versa."
     - "If multiple checkpoints are pending, you MUST yield ONLY the first one. Stop and wait for the parent to resume you with the response before proceeding."
     - "CRITICAL: The worker MUST NOT call present_checkpoint or respond_checkpoint. Checkpoint resolution is solely the orchestrator's responsibility."
-    - "If yield_checkpoint fails with 'Invalid session token' or 'stale token', do NOT call start_session. Report the error in your response and stop. The orchestrator will refresh the session token and re-dispatch you."
     - "After outputting the </checkpoint_yield> tag, you MUST end your response immediately. Do not make any further tool calls, do not continue with subsequent steps, and do not generate additional output. The orchestrator will resume you when the checkpoint is resolved."
     - "On resume with checkpoint_response, call resume_checkpoint({ session_token: checkpoint_handle }). Apply effects and continue from where paused"
   execute-loops[2]:
@@ -44,21 +58,6 @@ protocol:
     - "Update descriptive text in the Status column and update the footer status line to reflect current progress."
     - "Compile structured result with result_type: activity_complete. Include steps_completed, checkpoints_responded, variables_changed, artifacts_produced"
     - "If a checkpoint effect includes transitionTo, include transition_override in the result"
-
-rules:
-  skill-operation-notation: "References of the form `skill-id::operation` (e.g. `harness-compat::spawn-agent`) denote a named operation defined in the `operations` field of the identified skill. Read that skill to find the harness-specific implementation for your environment."
-  file-sensitivity[3]:
-    - "Do not modify core configuration files without explicit user direction."
-    - "Avoid changes to build scripts unless specifically requested."
-    - "Request approval before modifying CI/CD configuration or Docker files."
-  agent-conduct[1]:
-    - "You MUST adhere to the agent conduct guidelines specified in the agent-conduct resource (01)."
-  no-stale-token-recovery: "Workers MUST NOT call start_session or any other session-management tool. If you encounter a stale or invalid session token error, report it in your activity_complete result and let the orchestrator handle recovery."
-  no-continuation-after-yield: "After yielding a checkpoint, you MUST stop all execution immediately. Continuing with subsequent steps before the orchestrator resolves the checkpoint is a protocol violation."
-  operational-discipline[3]:
-    - "Domain-specific tools may ONLY be called from within a workflow activity whose skills declare the relevant capability."
-    - "Do NOT read workflow resource files directly from disk — load resources via get_resource({ session_token, resource_id: '<index>' }) where <index> is a string from the skill's _resources array (e.g., '09' or 'meta/02'). NEVER pass a skill ID, step ID, or activity ID as resource_id."
-    - "CPU-intensive build commands MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
 
 errors:
   activity_not_found:

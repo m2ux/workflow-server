@@ -25,9 +25,9 @@ protocol:
     - "If fresh session and planning_folder_path is set: create the initial workflow-state.json at {planning_folder_path}/workflow-state.json containing the current session_token, workflow metadata, and default state. This ensures the token is on disk before the first activity is dispatched. See the workflow-state-format resource for the file structure."
     - "If is_resuming: compare workflow version against the loaded workflow. Warn on mismatch. Adopt restored variables. Detect mode from restored variables — do not override unless the user explicitly requests a mode change."
   dispatch-workflow[3]:
-    - "The orchestrator already has a session_token for the target workflow from initialize-state. Do NOT create a new session."
-    - "Compose the sub-agent prompt using resource meta/05 (workflow-orchestrator-prompt) including population of the dynamic front-matter variables. If the target workflow dictates inline execution, do NOT spawn a sub-agent — simply load the workflow-orchestrator skill and adopt its role."
-    - "Wait for checkpoint yields or workflow_complete from the workflow-orchestrator."
+    - "Compose the sub-agent prompt using resource meta/05 (workflow-orchestrator-prompt) including population of the dynamic front-matter variables."
+    - "If the target workflow dictates inline execution, do NOT spawn a sub-agent — simply load the workflow-orchestrator skill and adopt its role."
+    - "Wait for the checkpoint yield or workflow_complete from the workflow-orchestrator."
   process-result[2]:
     - "If checkpoint_pending: parse the <checkpoint_yield> block and present to user via handle-checkpoint-yield."
     - "If workflow_complete: apply any final variables_changed to session state, record completion, proceed to end-workflow."
@@ -35,7 +35,7 @@ protocol:
     - "When the sub-agent (workflow-orchestrator) encounters a checkpoint, it yields a raw JSON block wrapped in <checkpoint_yield> tags containing the checkpoint_handle."
     - "The meta-orchestrator parses this JSON block to get the handle, calls present_checkpoint to retrieve the full prompt and options, and then delegates to handle-checkpoint-yield."
   handle-checkpoint-yield[6]:
-    - "CRITICAL: The meta-orchestrator is the ONLY agent permitted to call AskQuestion or respond_checkpoint. Do not attempt to let sub-agents call them."
+    - "CRITICAL: The meta-orchestrator is the ONLY agent permitted to call AskQuestion or respond_checkpoint."
     - "Parse the <checkpoint_yield> JSON block to extract the checkpoint_handle (long token string containing '.'), then call present_checkpoint({ checkpoint_handle: '<the-handle>' }). This returns checkpoint details."
     - "EXACT CALL FORMAT for present_checkpoint: present_checkpoint({ checkpoint_handle: 'eyJ...' }). Do NOT pass session_token or checkpoint_id."
     - "If the checkpoint has NO autoAdvanceMs: Present it via the AskQuestion tool using ONLY the retrieved question and options. Wait for the user's response, then call respond_checkpoint({ checkpoint_handle: '<the-handle>', option_id: '<chosen-id>' })."
@@ -46,7 +46,6 @@ protocol:
 
 rules:
   no-auto-resolution: "NEVER auto-resolve checkpoints. Even if the answer seems obvious, you MUST present the checkpoint to the user. Fabricating an option_id or answering on the user's behalf is a strict protocol violation."
-  inline-execution: "MUST be executed inline by the top-level agent — NEVER inside a sub-agent. Sub-agent AskQuestion calls do not surface question content to the user."
   checkpoint-enforcement: "CHECKPOINT ENFORCEMENT (CRITICAL — NEVER SKIP): Wait for the workflow-orchestrator sub-agent to yield checkpoints, call present_checkpoint to get details. For blocking checkpoints, use AskQuestion. For advisory checkpoints (autoAdvanceMs), present them in chat, state the timer, and use the Shell tool to wait before calling auto_advance. You must actually WAIT the specified time and let the user respond."
   checkpoint-token-discipline: "CHECKPOINT TOKEN DISCIPLINE: present_checkpoint and respond_checkpoint both take a checkpoint_handle parameter — this is the HMAC-signed token returned by yield_checkpoint (a long string containing a '.'). Do NOT pass your session_token, the checkpoint_id, or any other value as the checkpoint_handle. If you get an 'Invalid session token' or 'missing signature' error from a checkpoint tool, you are passing the wrong value — use the checkpoint_handle from the worker's yield_checkpoint response."
   present-before-respond: "ABSOLUTE REQUIREMENT: If you have not called present_checkpoint on the current checkpoint_handle, you MUST NOT call respond_checkpoint. Always call present_checkpoint first. The response from present_checkpoint contains the exact question and valid options for THIS checkpoint — do NOT reuse options from a previous checkpoint or make them up."
