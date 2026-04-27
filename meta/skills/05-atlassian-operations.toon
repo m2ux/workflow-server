@@ -1,5 +1,5 @@
 id: atlassian-operations
-version: 2.0.0
+version: 3.0.0
 capability: Operations for Jira and Confluence tasks via the Atlassian MCP server
 
 description: "Operations for the common Jira and Confluence tasks. Each operation wraps one or two Atlassian MCP tools with explicit inputs and the tool reference inline. cloudId is resolved via resolve-cloud-id once per session and reused."
@@ -14,6 +14,13 @@ operations:
     tools:
       atlassian[1]:
         - getAccessibleAtlassianResources
+    errors:
+      missing_cloud_id:
+        cause: "A product-specific Atlassian tool was called without resolving cloudId first"
+        recovery: "Call resolve-cloud-id, then retry the original operation with the returned cloudId"
+      permission_denied:
+        cause: "User lacks permission for the requested operation"
+        recovery: "Verify Jira/Confluence permissions and project roles"
 
   user-info:
     description: "Get the current user's account ID"
@@ -96,6 +103,10 @@ operations:
     tools:
       atlassian[1]:
         - createJiraIssue
+    errors:
+      invalid_issue_type:
+        cause: "create-jira-issue called with a non-existent issueTypeName"
+        recovery: "Call list-jira-issue-types to discover valid types, then retry"
 
   edit-jira-issue:
     description: "Update fields on an existing Jira issue"
@@ -142,6 +153,10 @@ operations:
     tools:
       atlassian[1]:
         - transitionJiraIssue
+    errors:
+      transition_not_available:
+        cause: "transition-jira-issue called with a transition id that is not available for the current issue state"
+        recovery: "Call list-jira-transitions to get the available transitions and retry with one of those ids"
 
   comment-jira-issue:
     description: "Add a comment to a Jira issue"
@@ -284,16 +299,3 @@ rules:
   transitions-are-dynamic: "ALWAYS call list-jira-transitions before transition-jira-issue — transition IDs are issue-specific."
   verify-after-mutation: "After any mutating operation, call the corresponding read operation (e.g., get-jira-issue, get-confluence-page) to verify the change."
 
-errors:
-  missing_cloud_id:
-    cause: "A product tool was called without resolving cloudId first"
-    recovery: "Call resolve-cloud-id, then retry"
-  invalid_issue_type:
-    cause: "create-jira-issue called with a non-existent issue type"
-    recovery: "Call list-jira-issue-types to discover valid types"
-  transition_not_available:
-    cause: "transition-jira-issue called with an unavailable transition ID"
-    recovery: "Call list-jira-transitions to get the available transitions"
-  permission_denied:
-    cause: "User lacks permission for the requested operation"
-    recovery: "Verify Jira/Confluence permissions and project roles"

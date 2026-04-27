@@ -1,5 +1,5 @@
 id: knowledge-base-search
-version: 2.2.0
+version: 3.0.0
 capability: Operations for targeted concept-rag searches via pre-indexed domain maps
 
 description: "Operations for searching the knowledge base. Domain indexes in .engineering/resources/ map natural terminology to indexed concept terms, reducing exploratory queries from 3-5 to 2 targeted ones."
@@ -17,6 +17,10 @@ operations:
     tools:
       harness[1]:
         - Read
+    errors:
+      no_index_for_domain:
+        cause: "No knowledge index file found in .engineering/resources/ for the requested domain"
+        recovery: "Fall back to standard concept-rag search: catalog-search then chunks-search"
 
   catalog-search:
     description: "Resolve a document name to its full source path"
@@ -38,6 +42,10 @@ operations:
     tools:
       concept-rag[1]:
         - chunks_search
+    errors:
+      stale_index:
+        cause: "Knowledge base has been updated since the local index was created"
+        recovery: "If chunks-search returns no results for an indexed path, fall back to catalog-search to rediscover"
 
   broad-chunks-search:
     description: "Search across documents using an indexed concept term"
@@ -48,14 +56,7 @@ operations:
     tools:
       concept-rag[1]:
         - broad_chunks_search
-
-errors:
-  no_index_for_domain:
-    cause: "No knowledge index file found in .engineering/resources/ for the requested domain"
-    recovery: "Fall back to standard concept-rag search: catalog_search then chunks_search"
-  no_mapping_for_term:
-    cause: "The index does not contain a mapping for the search term"
-    recovery: "Use broad-chunks-search with the natural term; note the gap for future index updates"
-  stale_index:
-    cause: "Knowledge base has been updated since the index was created"
-    recovery: "If chunks-search returns no results for an indexed path, fall back to catalog-search to rediscover"
+    errors:
+      no_mapping_for_term:
+        cause: "The local index does not contain a mapping for the search term"
+        recovery: "Use broad-chunks-search with the natural term; note the gap for future index updates"

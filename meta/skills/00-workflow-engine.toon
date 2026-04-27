@@ -1,5 +1,5 @@
 id: workflow-engine
-version: 3.1.0
+version: 4.0.0
 capability: Operations and rules for workflow execution — session lifecycle, state persistence, activity dispatch, transition evaluation, checkpoint flow
 
 description: "Capability skill bundling everything needed to execute a workflow's structured flow. Operations cover session token mechanics (implicit), state persistence (persist/restore), activity dispatch and transition evaluation, the post-activity commit-and-persist hook, sub-workflow handling, and the full checkpoint protocol (yield, bubble, present-to-user, respond, resume). Rules cover token mechanics, checkpoint discipline, state-mutation invariants, and orchestrator/worker behavioural boundaries. Each operation is a short linear procedure invoking a small set of MCP / harness / shell tools."
@@ -70,6 +70,10 @@ operations:
     tools:
       workflow-server[1]:
         - start_session
+    errors:
+      stale_token:
+        cause: "HMAC signature verification failed (server restarted with a new signing key)"
+        recovery: "Call start_session({ workflow_id, agent_id }) for a fresh session; reconstruct state from the on-disk workflow-state.toon via workflow-engine::restore."
 
   create-session:
     description: "Create a fresh client session as a child of the meta session"
@@ -181,6 +185,16 @@ operations:
         - next_activity
     resources[1]:
       - "meta/activity-worker-prompt"
+    errors:
+      worker_timeout:
+        cause: "Worker sub-agent did not return within the expected time"
+        recovery: "harness-compat::continue-agent if still running; otherwise dispatch a fresh worker for the same activity_id."
+      worker_incomplete:
+        cause: "Worker reports fewer steps than the activity defines, or required checkpoints have no response"
+        recovery: "Resume the worker with explicit instructions to complete the missing items. Do NOT accept the partial result."
+      state_desync:
+        cause: "Worker reports variable changes conflicting with orchestrator state"
+        recovery: "Worker values take precedence (the worker has ground truth from user interaction)."
 
   evaluate-transition:
     description: "Pick the next activity from the current activity's transitions[]"
@@ -194,6 +208,10 @@ operations:
       - "If transition_override is set, return it"
       - "Iterate activity.transitions[] in array order; return the first whose condition evaluates true"
       - "If no condition matches and no isDefault transition exists, return null (workflow_complete)"
+    errors:
+      transition_ambiguous:
+        cause: "Multiple transition conditions evaluate to true at the activity boundary"
+        recovery: "Take the first matching transition in array order. Log a warning."
 
   commit-and-persist:
     description: "Post-activity hook — commit artifacts then persist state"
@@ -287,6 +305,10 @@ operations:
       harness[2]:
         - AskQuestion
         - Shell
+    errors:
+      invalid_checkpoint_handle:
+        cause: "present_checkpoint returned 'Invalid session token' or 'missing signature'"
+        recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
 
   respond-checkpoint:
     description: "Meta-orchestrator-side: send the user's selection back to the server"
@@ -300,6 +322,10 @@ operations:
     tools:
       workflow-server[1]:
         - respond_checkpoint
+    errors:
+      invalid_checkpoint_handle:
+        cause: "respond_checkpoint returned 'Invalid session token' or 'missing signature'"
+        recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
 
 rules:
   token-passes-on-each-call: "EVERY tool call (other than discover, list_workflows, start_session, health_check) requires a session_token parameter."
@@ -322,23 +348,3 @@ rules:
   no-direct-interaction: "Workflow-orchestrators run as sub-agents and NEVER prompt the user directly. Surface checkpoints by bubbling the worker's checkpoint_handle up."
   no-auto-resolution: "Meta-orchestrators NEVER auto-resolve checkpoints. Even if the answer seems obvious, the user MUST explicitly select an option (or the autoAdvanceMs timer MUST fully elapse for advisory checkpoints)."
   no-option-hallucination: "If respond_checkpoint returns 'Invalid option', STOP. Call present_checkpoint on the same handle to retrieve valid options. Never guess."
-
-errors:
-  worker_timeout:
-    cause: "Worker sub-agent did not return within expected time"
-    recovery: "harness-compat::continue-agent if still running; otherwise dispatch a fresh worker for the same activity_id."
-  worker_incomplete:
-    cause: "Worker reports fewer steps than the activity defines, or required checkpoints have no response"
-    recovery: "Resume the worker with explicit instructions to complete the missing items. Do NOT accept the partial result."
-  state_desync:
-    cause: "Worker reports variable changes conflicting with orchestrator state"
-    recovery: "Worker values take precedence (the worker has ground truth from user interaction)."
-  transition_ambiguous:
-    cause: "Multiple transition conditions evaluate to true at the activity boundary"
-    recovery: "Take the first matching transition in array order. Log a warning."
-  invalid_checkpoint_handle:
-    cause: "present_checkpoint or respond_checkpoint returned 'Invalid session token' or 'missing signature'"
-    recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
-  stale_token:
-    cause: "HMAC signature verification failed (server restarted with new signing key)"
-    recovery: "Call start_session({ workflow_id, agent_id }) for a fresh session; reconstruct state from the on-disk workflow-state.toon via workflow-engine::restore."

@@ -1,5 +1,5 @@
 id: gitnexus-operations
-version: 2.0.0
+version: 3.0.0
 capability: Operations for codebase queries via the GitNexus knowledge graph
 
 description: "Operations wrapping the GitNexus MCP tools (query, context, impact, rename, detect_changes, cypher) and the lightweight resource reads. Each operation has the tool reference and a small linear procedure inline. Pertinent reference tables (impact depth/risk, refactor risk classes) live in the relevant operation's prose."
@@ -15,6 +15,13 @@ operations:
     procedure[2]:
       - "Read the MCP resource gitnexus://repo/{repo_name}/context"
       - "If stale, run `npx gitnexus analyze` in the terminal before proceeding"
+    errors:
+      index_not_found:
+        cause: "No GitNexus index exists for the target repository"
+        recovery: "Run 'npx gitnexus analyze' from the project root, then retry verify-index"
+      index_stale:
+        cause: "The index is out of date relative to recent code changes"
+        recovery: "Run 'npx gitnexus analyze' to refresh, or 'npx gitnexus analyze --force' for a full rebuild"
 
   query:
     description: "Find execution flows related to a concept or term"
@@ -28,6 +35,10 @@ operations:
     tools:
       gitnexus[1]:
         - query
+    errors:
+      no_processes_found:
+        cause: "query() returned no execution flows for the search term"
+        recovery: "Try broader search terms, or use cypher() for direct graph traversal"
 
   context:
     description: "Get the 360-degree view of a symbol — callers, callees, and process participation"
@@ -41,6 +52,10 @@ operations:
     tools:
       gitnexus[1]:
         - context
+    errors:
+      symbol_ambiguous:
+        cause: "Multiple symbols share the same name — context() returns disambiguation candidates"
+        recovery: "Re-call context() with the file_path or uid from one of the candidates"
 
   impact:
     description: "Map upstream or downstream dependents for a symbol; assess blast radius before changes"
@@ -129,16 +144,3 @@ rules:
   detect-changes-after-edit: "Always run detect-changes after applying a rename or batch edits to verify only expected files were affected."
   index-freshness-first: "Run verify-index at the start of any GitNexus session. Stale indexes return misleading results."
 
-errors:
-  index_not_found:
-    cause: "No GitNexus index exists for the target repository"
-    recovery: "Run 'npx gitnexus analyze' from the project root, then retry"
-  index_stale:
-    cause: "The index is out of date relative to recent code changes"
-    recovery: "Run 'npx gitnexus analyze' to refresh, or 'npx gitnexus analyze --force' for a full rebuild"
-  symbol_ambiguous:
-    cause: "Multiple symbols share the same name — context() returns disambiguation candidates"
-    recovery: "Re-call context() with the file_path or uid from the candidate list"
-  no_processes_found:
-    cause: "query() returned no execution flows for the search term"
-    recovery: "Try broader search terms, or use cypher() for direct graph traversal"
