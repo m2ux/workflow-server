@@ -15,6 +15,8 @@ operations:
     tools:
       workflow-server[1]:
         - save_state
+    resources[1]:
+      - "meta/workflow-state-format"
 
   restore:
     description: "Load saved variables from workflow-state.toon into the current session"
@@ -28,6 +30,8 @@ operations:
     tools:
       workflow-server[1]:
         - restore_state
+    resources[1]:
+      - "meta/workflow-state-format"
 
   dispatch-activity:
     description: "Transition the session to a target activity and spawn a worker for it"
@@ -45,6 +49,8 @@ operations:
     tools:
       workflow-server[1]:
         - next_activity
+    resources[1]:
+      - "meta/activity-worker-prompt"
 
   evaluate-transition:
     description: "Pick the next activity from the current activity's transitions[]"
@@ -67,6 +73,8 @@ operations:
     procedure[2]:
       - "version-control::commit-regular-files for changes under .engineering/artifacts/ with message 'docs(<workflow-id>): <activity-id> artifacts'"
       - "Invoke workflow-engine::persist with the current session_token and planning_folder_path"
+    resources[1]:
+      - "meta/workflow-state-format"
 
   handle-sub-workflow:
     description: "Dispatch a child workflow with parent context"
@@ -204,7 +212,3 @@ errors:
   stale_token:
     cause: "HMAC signature verification failed (server restarted with new signing key)"
     recovery: "Call start_session({ workflow_id, agent_id }) for a fresh session; reconstruct state from the on-disk workflow-state.toon via workflow-engine::restore."
-
-resources[2]:
-  - "meta/01"
-  - "meta/05"
