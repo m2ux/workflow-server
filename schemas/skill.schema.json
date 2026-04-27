@@ -161,6 +161,10 @@
           "additionalProperties": { "$ref": "#/definitions/errorDefinition" },
           "description": "Errors this operation can encounter, keyed by error name. Errors are scoped per-operation."
         },
+        "rules": {
+          "$ref": "#/definitions/rulesDefinition",
+          "description": "Behavioural rules specific to this operation. Scoped per-operation so role-specific rules do not leak across orchestrator / worker bundles."
+        },
         "prose": {
           "type": "string",
           "description": "Freeform markdown content for tables, examples, and reference material specific to this operation"
