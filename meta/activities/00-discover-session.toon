@@ -1,5 +1,5 @@
 id: discover-session
-version: 3.0.0
+version: 4.0.0
 name: Discover Session
 description: "Identify the user's intended target workflow and search for an existing client session to resume. Calls list_workflows for the catalog, matches the user request against workflow descriptions, scans planning folders for saved client sessions matching the request's identifying context (ticket, branch, PR, work-package name), and presents resume / workflow-selection checkpoints. Always runs first — bootstrap delegates target identification and session matching here."
 problem: The meta workflow needs to determine which client workflow to dispatch and whether to resume an existing client session, before initialize-session creates or adopts the client session
@@ -10,28 +10,38 @@ recognition[4]:
   - work on
 required: true
 estimatedTime: 1-2m
-operations[2]:
-  - "workflow-engine::restore"
-  - "agent-conduct::operational-discipline"
 rules[2]:
   - "Always call list_workflows — never hardcode the workflow catalog"
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
-steps[5]:
+steps[6]:
   - id: list-available-workflows
     name: List Available Workflows
-    description: "Call list_workflows (no session token required) to retrieve the catalog of available workflows with their titles, descriptions, and recognition tags. Cache the catalog for the match step."
+    description: "Call list_workflows to retrieve the catalog with titles, descriptions, and recognition tags. Cache the catalog for the match step."
   - id: identify-target
     name: Identify Target Workflow and Context
-    description: "Compare the user's request against the workflow catalog. Match on title, description keywords, and recognition tags. Set target_workflow_id to the matched workflow. If multiple workflows could match, set workflow_match_ambiguous = true so the workflow-selection checkpoint fires. Also extract identifying context — ticket number (GitHub #N, Jira PROJ-123), branch name, PR number, or work-package description — for the saved-session match step."
+    description: "Compare the user's request against the workflow catalog. Match on title, description keywords, and recognition tags. Set target_workflow_id to the matched workflow. Set workflow_match_ambiguous = true when more than one workflow matches. Extract identifying context — ticket number, branch name, PR number, or work-package description — for the saved-session match step."
   - id: scan-planning-folders
     name: Scan Planning Folders for Saved Sessions
-    description: "List directories under .engineering/artifacts/planning/. For each directory containing a workflow-state.toon file, read it and extract: saved sessionToken, workflowId, planningFolder, and key state variables (issue_number, branch_name, pr_number, work-package description). Collect all candidates whose workflowId matches target_workflow_id."
+    description: "Read each workflow-state.toon under .engineering/artifacts/planning/. Collect candidates whose workflowId matches target_workflow_id. Per candidate, capture: sessionToken, planningFolder, and key state variables (issue_number, branch_name, pr_number, work-package description)."
   - id: match-session
     name: Match Saved Session to User Request
-    description: "Compare the identifying context from identify-target against the candidate saved sessions. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. If multiple matches, prefer the most recently updated by savedAt. If no matches, set has_saved_state = false."
-  - id: prepare-result
-    name: Prepare Discovery Result
-    description: "If a match was found: set has_saved_state = true, saved_session_token = matched session's sessionToken, planning_folder_path = matched session's planningFolder. If no match: set has_saved_state = false. Set is_resuming = false by default; the resume-session checkpoint may flip it to true."
+    description: "Compare the identifying context against the candidate sessions. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. Pick the most recently-updated when more than one matches."
+  - id: record-match
+    name: Record Match
+    description: "Set has_saved_state = true. Set saved_session_token and planning_folder_path from the matched candidate."
+    condition:
+      type: simple
+      variable: has_saved_state
+      operator: "=="
+      value: true
+  - id: record-no-match
+    name: Record No Match
+    description: "Set has_saved_state = false. is_resuming defaults to false; the resume-session checkpoint will not fire."
+    condition:
+      type: simple
+      variable: has_saved_state
+      operator: "=="
+      value: false
 checkpoints[2]:
   - id: workflow-selection
     name: Workflow Selection

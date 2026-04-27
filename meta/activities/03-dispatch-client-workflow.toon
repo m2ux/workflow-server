@@ -1,20 +1,14 @@
 id: dispatch-client-workflow
-version: 1.0.0
+version: 2.0.0
 name: Dispatch Client Workflow
-description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator (sub-agent in spawning harnesses, inline persona otherwise) for the client workflow, and drive the checkpoint-yield loop. Each loop iteration parses the orchestrator's most recent output: a <checkpoint_yield> block triggers present-checkpoint → ask-user → respond-checkpoint → continue-orchestrator; a workflow_complete result sets client_workflow_completed and exits the loop."
+description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator (sub-agent in spawning harnesses, inline persona otherwise) for the client workflow, and drive the checkpoint-yield loop until the orchestrator reports workflow_complete."
 problem: The orchestrator runs as a sub-agent (or inline persona) and surfaces checkpoints upward; meta must mediate user interaction for those checkpoints and resume the orchestrator with the resolved effects
 required: true
-operations[6]:
-  - "workflow-engine::dispatch-activity"
-  - "workflow-engine::present-checkpoint-to-user"
-  - "workflow-engine::respond-checkpoint"
+operations[2]:
   - "harness-compat::spawn-agent"
   - "harness-compat::continue-agent"
-  - "agent-conduct::checkpoint-discipline"
-rules[3]:
-  - "NEVER auto-resolve a checkpoint — the user MUST explicitly select an option (or the autoAdvance timer MUST fully elapse for advisory checkpoints)"
+rules[1]:
   - "Pass client_session_token to the orchestrator prompt — the orchestrator inherits state via that token, NEVER via the meta session token"
-  - "Always dispatch as foreground (blocking) per harness-compat::spawn-agent — background dispatch silently breaks checkpoint delivery"
 entryActions[1]:
   - action: validate
     target: client_session_token
@@ -22,7 +16,7 @@ entryActions[1]:
 steps[2]:
   - id: compose-orchestrator-prompt
     name: Compose Orchestrator Prompt
-    description: "Build the workflow-orchestrator prompt using resource meta/02 as the template. Substitute: workflow_id = target_workflow_id, session_token = client_session_token, planning_folder_path, target_path, agent_id = 'workflow-orchestrator'."
+    description: "Build the workflow-orchestrator prompt using resource meta/workflow-orchestrator-prompt as the template. Substitute: workflow_id = target_workflow_id, session_token = client_session_token, planning_folder_path, target_path, agent_id = 'workflow-orchestrator'."
   - id: dispatch-orchestrator
     name: Dispatch Orchestrator (Initial)
     operation: "harness-compat::spawn-agent"
@@ -33,17 +27,30 @@ loops[1]:
   - id: checkpoint-loop
     name: Checkpoint-Yield Loop
     type: doWhile
-    description: "Iterate while the client workflow is still running. Each iteration handles either a yielded checkpoint or the workflow_complete signal. Body steps short-circuit via condition when client_workflow_completed becomes true."
+    description: "Iterate while the client workflow is still running. Each iteration handles either a yielded checkpoint or the workflow_complete signal."
     condition:
       type: simple
       variable: client_workflow_completed
       operator: "=="
       value: false
     maxIterations: 200
-    steps[4]:
-      - id: parse-orchestrator-result
-        name: Parse Orchestrator Result
-        description: "Inspect the orchestrator's most recent output. If it contains a <checkpoint_yield> block: extract checkpoint_handle and store as pending_checkpoint_handle. If the output is workflow_complete: apply any final variables_changed, set client_workflow_completed = true so the remaining loop body is skipped via condition."
+    steps[5]:
+      - id: capture-checkpoint-yield
+        name: Capture Checkpoint Yield
+        description: "Read the orchestrator's most recent output. Extract the checkpoint_handle from the <checkpoint_yield> block and store it as pending_checkpoint_handle."
+        condition:
+          type: simple
+          variable: client_workflow_completed
+          operator: "=="
+          value: false
+      - id: capture-workflow-complete
+        name: Capture Workflow Complete
+        description: "When the orchestrator's most recent output is a workflow_complete result instead of a checkpoint yield, apply any final variables_changed and set client_workflow_completed = true."
+        condition:
+          type: simple
+          variable: client_workflow_completed
+          operator: "=="
+          value: false
       - id: present-and-resolve
         name: Present Checkpoint and Capture Resolution
         operation: "workflow-engine::present-checkpoint-to-user"
