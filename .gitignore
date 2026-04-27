@@ -25,3 +25,4 @@ coverage/
 .env
 .env.local
 .env.*.local
+.gitnexus

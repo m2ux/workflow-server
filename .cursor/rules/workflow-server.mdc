@@ -5,19 +5,4 @@ alwaysApply: true
 
 # Workflow Server Integration
 
-For any workflow execution request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure.
-
-## Single-path bootstrap
-
-The bootstrap sequence is one path — there is no separate START/RESUME branching at the bootstrap level:
-
-1. Load all five TOON schemas (`workflow-server://schemas/{workflow,activity,skill,condition,state}`).
-2. Call `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` and save the returned `session_token`.
-3. Call `get_workflow({ session_token })` to load the meta workflow definition and its primary skill.
-4. Follow the primary skill's rules and the meta workflow's activities from here.
-
-Meta's first activity (`discover-session`) calls `list_workflows`, matches the user's request to a target workflow, scans planning folders for saved client sessions, and presents resume / workflow-selection checkpoints. **Do NOT attempt to identify the target workflow yourself or read state files directly — meta owns that matching via its `discover-session` activity.**
-
-## Existing-session escape hatch
-
-If the user provides a `session_token`, explicit bootstrap instructions, or asks you to call a specific tool like `next_activity` directly, follow those instructions — the session is already active and `start_session` must not be called again without passing the existing token.
+For any start workflow or create or resume work package request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure.

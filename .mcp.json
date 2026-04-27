@@ -3,8 +3,8 @@
     "concept-rag": {
       "command": "node",
       "args": [
-        "/home/mike/projects/dev/concept-rag/dist/conceptual_index.js",
-        "/home/mike/.concept_rag"
+        "/home/mike1/projects/dev/concept-rag/dist/conceptual_index.js",
+        "/home/mike1/.concept_rag"
       ]
     },
     "atlassian": {
@@ -18,16 +18,16 @@
     "workflow-server": {
       "command": "node",
       "args": [
-        "/home/mike/projects/main/workflow-server/dist/index.js"
+        "/home/mike1/projects/main/workflow-server/dist/index.js"
       ],
       "env": {
-        "WORKFLOW_DIR": "/home/mike/projects/main/workflow-server/workflows"
+        "WORKFLOW_DIR": "/home/mike1/projects/main/workflow-server/workflows"
       }
     },
     "gitnexus": {
-      "command": "/home/mike/.nvm/versions/node/v22.16.0/bin/node",
+      "command": "/home/mike1/.nvm/versions/node/v22.16.0/bin/node",
       "args": [
-        "/home/mike/.nvm/versions/node/v22.16.0/bin/gitnexus",
+        "/home/mike1/.nvm/versions/node/v22.16.0/bin/gitnexus",
         "mcp"
       ]
     }

@@ -13,6 +13,7 @@
 
 import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
 import { join, resolve, basename } from 'path';
+import { pathToFileURL } from 'url';
 import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
 import { safeValidateActivity } from '../src/schema/activity.schema.js';
 
@@ -69,61 +70,67 @@ function findWorkflowDirs(basePath: string): string[] {
   return workflows;
 }
 
-const inputPath = process.argv[2] 
-  ? resolve(process.argv[2])
-  : resolve(import.meta.dirname, '../workflows');
+const isDirectInvocation =
+  process.argv[1] !== undefined &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 
-const workflowDirs = findWorkflowDirs(inputPath);
+if (isDirectInvocation) {
+  const inputPath = process.argv[2]
+    ? resolve(process.argv[2])
+    : resolve(import.meta.dirname, '../workflows');
 
-if (workflowDirs.length === 0) {
-  console.error(`No workflow directories found in ${inputPath}`);
-  console.error('A workflow directory must contain an "activities" subfolder.');
-  process.exit(2);
-}
+  const workflowDirs = findWorkflowDirs(inputPath);
 
-const results: ValidationResult[] = [];
-let totalPassed = 0;
-let totalFailed = 0;
+  if (workflowDirs.length === 0) {
+    console.error(`No workflow directories found in ${inputPath}`);
+    console.error('A workflow directory must contain an "activities" subfolder.');
+    process.exit(2);
+  }
 
-for (const workflowDir of workflowDirs) {
-  const workflowName = basename(workflowDir);
-  const activitiesDir = join(workflowDir, 'activities');
-  const files = readdirSync(activitiesDir).filter(f => f.endsWith('.toon'));
-  
-  console.log(`\n[INFO] ${workflowName} (${files.length} activities)`);
-  
-  for (const file of files) {
-    const filePath = join(activitiesDir, file);
-    const result = validateActivityFile(filePath);
-    
-    results.push({
-      workflow: workflowName,
-      file,
-      passed: result.passed,
-      errors: result.errors,
-    });
-    
-    if (result.passed) {
-      console.log(`   [PASS] ${file}`);
-      totalPassed++;
-    } else {
-      console.log(`   [FAIL] ${file}`);
-      for (const error of result.errors || []) {
-        console.log(`      - ${error}`);
+  const results: ValidationResult[] = [];
+  let totalPassed = 0;
+  let totalFailed = 0;
+
+  for (const workflowDir of workflowDirs) {
+    const workflowName = basename(workflowDir);
+    const activitiesDir = join(workflowDir, 'activities');
+    const files = readdirSync(activitiesDir).filter(f => f.endsWith('.toon'));
+
+    console.log(`\n[INFO] ${workflowName} (${files.length} activities)`);
+
+    for (const file of files) {
+      const filePath = join(activitiesDir, file);
+      const result = validateActivityFile(filePath);
+
+      results.push({
+        workflow: workflowName,
+        file,
+        passed: result.passed,
+        errors: result.errors,
+      });
+
+      if (result.passed) {
+        console.log(`   [PASS] ${file}`);
+        totalPassed++;
+      } else {
+        console.log(`   [FAIL] ${file}`);
+        for (const error of result.errors || []) {
+          console.log(`      - ${error}`);
+        }
+        totalFailed++;
       }
-      totalFailed++;
     }
   }
-}
 
-console.log(`\n${'─'.repeat(50)}`);
-console.log(`Total: ${totalPassed} passed, ${totalFailed} failed`);
+  console.log(`\n${'─'.repeat(50)}`);
+  console.log(`Total: ${totalPassed} passed, ${totalFailed} failed`);
 
-if (totalFailed > 0) {
-  console.log('\nFailed activities:');
-  for (const r of results.filter(r => !r.passed)) {
-    console.log(`  - ${r.workflow}/${r.file}`);
+  if (totalFailed > 0) {
+    console.log('\nFailed activities:');
+    for (const r of results.filter(r => !r.passed)) {
+      console.log(`  - ${r.workflow}/${r.file}`);
+    }
   }
-}
 
-process.exit(totalFailed > 0 ? 1 : 0);
+  process.exit(totalFailed > 0 ? 1 : 0);
+}

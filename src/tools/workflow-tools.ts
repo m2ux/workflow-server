@@ -289,13 +289,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('present_checkpoint', 'Load the full details of a specific checkpoint yielded by a worker. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield.',
+  server.tool('present_checkpoint', 'Load the full details of a specific checkpoint yielded by a worker. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield. Accepts either checkpoint_handle (preferred) or session_token — both are the same opaque token string.',
     {
-      checkpoint_handle: z.string().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint.'),
+      checkpoint_handle: z.string().optional().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint. Either this or session_token must be provided.'),
+      session_token: z.string().optional().describe('The current session token (same opaque string as checkpoint_handle). Either this or checkpoint_handle must be provided. Useful when resuming a workflow and the agent only has the session_token from get_workflow_status.'),
     },
-    withAuditLog('present_checkpoint', async ({ checkpoint_handle }) => {
+    withAuditLog('present_checkpoint', async ({ checkpoint_handle, session_token }) => {
+      const handle = checkpoint_handle ?? session_token;
+      if (!handle) {
+        throw new Error('Either checkpoint_handle or session_token must be provided. Both were omitted.');
+      }
       // The handle is just the worker's session token encoded.
-      const token = await decodeSessionToken(checkpoint_handle);
+      const token = await decodeSessionToken(handle);
       const workflow_id = token.wf;
       const activity_id = token.act;
       const checkpoint_id = token.bcp;
@@ -326,15 +331,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'Exactly one of option_id, auto_advance, or condition_not_met must be provided. ' +
     'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
     'auto_advance: use the checkpoint\'s defaultOption (only for checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
-    'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field).',
+    'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field). ' +
+    'Accepts either checkpoint_handle (preferred) or session_token — both are the same opaque token string.',
     {
-      checkpoint_handle: z.string().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint.'),
+      checkpoint_handle: z.string().optional().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint. Either this or session_token must be provided.'),
+      session_token: z.string().optional().describe('The current session token (same opaque string as checkpoint_handle). Either this or checkpoint_handle must be provided. Useful when resuming a workflow and the agent only has the session_token from get_workflow_status.'),
       option_id: z.string().optional().describe('The option ID selected by the user. Must match one of the checkpoint\'s defined options.'),
       auto_advance: z.boolean().optional().describe('Set to true to auto-advance a checkpoint using its defaultOption. Only valid for checkpoints with defaultOption and autoAdvanceMs. The server enforces the autoAdvanceMs timer. If you use auto_advance, present a message to the user that you are proceeding with the default option because no input was provided.'),
       condition_not_met: z.boolean().optional().describe('Set to true to dismiss a conditional checkpoint whose condition was not met. Only valid for checkpoints that have a condition field.'),
     },
-    withAuditLog('respond_checkpoint', async ({ checkpoint_handle, option_id, auto_advance, condition_not_met }) => {
-      const token = await decodeSessionToken(checkpoint_handle);
+    withAuditLog('respond_checkpoint', async ({ checkpoint_handle, session_token, option_id, auto_advance, condition_not_met }) => {
+      const handle = checkpoint_handle ?? session_token;
+      if (!handle) {
+        throw new Error('Either checkpoint_handle or session_token must be provided. Both were omitted.');
+      }
+      const token = await decodeSessionToken(handle);
       const checkpoint_id = token.bcp;
 
       if (!checkpoint_id) {
@@ -399,7 +410,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      const advancedToken = await advanceToken(checkpoint_handle, { bcp: null });
+      const advancedToken = await advanceToken(handle, { bcp: null });
 
       const validation = buildValidation(
         validateWorkflowVersion(token, result.value),
