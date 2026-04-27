@@ -1,72 +1,34 @@
 id: initialize-session
-version: 3.0.0
+version: 4.0.0
 name: Initialize Session
 description: "Create or adopt the client workflow's session as a child of the meta session. Restore variables on resume; create the planning folder on fresh starts."
 problem: The client workflow needs a valid session token before its orchestrator can be dispatched, and saved state must be restored before activities resume
 required: true
 estimatedTime: 1-2m
-operations[4]:
+operations[5]:
   - "workflow-engine::adopt-session"
   - "workflow-engine::create-session"
   - "workflow-engine::restore"
+  - "workflow-engine::persist"
   - "version-control::initialize-folder"
 steps[6]:
   - id: adopt-saved-session
-    name: Adopt Saved Client Session
-    operation: "workflow-engine::adopt-session"
-    args:
-      saved_session_token: "{saved_session_token}"
-    condition:
-      type: simple
-      variable: has_saved_state
-      operator: "=="
-      value: true
+    description: "workflow-engine::adopt-session(saved_session_token: {saved_session_token})"
+    when: "has_saved_state == true"
   - id: create-fresh-session
-    name: Create Fresh Client Session
-    operation: "workflow-engine::create-session"
-    args:
-      workflow_id: "{target_workflow_id}"
-      parent_session_token: "{session_token}"
-    condition:
-      type: simple
-      variable: has_saved_state
-      operator: "!="
-      value: true
+    description: "workflow-engine::create-session(workflow_id: {target_workflow_id}, parent_session_token: {session_token})"
+    when: "has_saved_state == false"
   - id: detect-recovery
-    name: Detect Server-Restart Recovery
-    description: "Inspect the start_session response. Set session_recovered when the response carries recovered: true; set session_adopted when it carries adopted: true."
+    description: "Inspect the start_session response. Set session_recovered when it carries recovered: true; set session_adopted when it carries adopted: true."
   - id: restore-state
-    name: Restore Variables from Disk
-    operation: "workflow-engine::restore"
-    args:
-      session_token: "{client_session_token}"
-      file_path: "{planning_folder_path}/workflow-state.toon"
-    condition:
-      type: simple
-      variable: is_resuming
-      operator: "=="
-      value: true
+    description: "workflow-engine::restore(session_token: {client_session_token}, file_path: {planning_folder_path}/workflow-state.toon)"
+    when: "is_resuming == true"
   - id: derive-planning-folder
-    name: Derive Planning Folder Path
-    operation: "version-control::initialize-folder"
-    args:
-      initiative_name: "kebab-case from issue title, work-package description, or identifying context"
-    condition:
-      type: simple
-      variable: is_resuming
-      operator: "!="
-      value: true
+    description: "version-control::initialize-folder(initiative_name: <kebab-case from issue title or work-package description>)"
+    when: "is_resuming == false"
   - id: initialize-state
-    name: Write Initial State
-    operation: "workflow-engine::persist"
-    args:
-      session_token: "{client_session_token}"
-      planning_folder_path: "{planning_folder_path}"
-    condition:
-      type: simple
-      variable: is_resuming
-      operator: "!="
-      value: true
+    description: "workflow-engine::persist(session_token: {client_session_token}, planning_folder_path: {planning_folder_path})"
+    when: "is_resuming == false"
 transitions[1]:
   - to: resolve-target
     isDefault: true

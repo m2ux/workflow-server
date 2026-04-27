@@ -1,5 +1,5 @@
 id: end-workflow
-version: 3.0.0
+version: 4.0.0
 name: End Workflow
 description: "Verify the client workflow's outcomes were satisfied, generate a session summary, persist final state, and confirm closure with the user. If the user opts to return to the workflow, transitions back to dispatch-client-workflow with abort_completion set."
 problem: Workflow sessions need an explicit close-out so the user knows the work is done and the final state is durably persisted
@@ -11,23 +11,11 @@ operations[3]:
   - "workflow-engine::persist"
 steps[3]:
   - id: verify-outcomes
-    name: Verify Outcomes
-    operation: "workflow-engine::verify-outcomes"
-    args:
-      outcome: "{target_workflow_outcomes}"
-      state: "{client_state}"
+    description: "workflow-engine::verify-outcomes(outcome: {target_workflow_outcomes}, state: {client_state})"
   - id: generate-summary
-    name: Generate Session Summary
-    operation: "workflow-engine::generate-summary"
-    args:
-      workflow: "{target_workflow}"
-      trace: "{client_trace}"
+    description: "workflow-engine::generate-summary(workflow: {target_workflow}, trace: {client_trace})"
   - id: final-persist
-    name: Persist Final State
-    operation: "workflow-engine::persist"
-    args:
-      session_token: "{client_session_token}"
-      planning_folder_path: "{planning_folder_path}"
+    description: "workflow-engine::persist(session_token: {client_session_token}, planning_folder_path: {planning_folder_path})"
 checkpoints[1]:
   - id: completion-confirmed
     name: Completion Confirmation

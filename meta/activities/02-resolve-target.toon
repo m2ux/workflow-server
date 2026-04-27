@@ -1,7 +1,7 @@
 id: resolve-target
-version: 3.0.0
+version: 4.0.0
 name: Resolve Target
-description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path. Sets is_monorepo and target_path for downstream activities that perform git operations on the user's codebase."
+description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path."
 problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
 required: true
 estimatedTime: 1-2m
@@ -15,24 +15,13 @@ entryActions[1]:
     message: "Resolving target repository structure"
 steps[3]:
   - id: detect-monorepo
-    name: Detect Repository Type
-    operation: "version-control::detect-repo-type"
+    description: "version-control::detect-repo-type()"
   - id: list-submodules
-    name: List Submodules
-    operation: "version-control::list-submodules"
-    condition:
-      type: simple
-      variable: is_monorepo
-      operator: "=="
-      value: true
+    description: "version-control::list-submodules()"
+    when: "is_monorepo == true"
   - id: capture-submodule-target
-    name: Capture Submodule Target
     description: "Ask the user to select a submodule from the listed entries. Set target_path to the chosen path."
-    condition:
-      type: simple
-      variable: is_monorepo
-      operator: "=="
-      value: true
+    when: "is_monorepo == true"
 checkpoints[1]:
   - id: repo-type-confirmed
     name: Repository Type Confirmation

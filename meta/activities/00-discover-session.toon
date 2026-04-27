@@ -1,5 +1,5 @@
 id: discover-session
-version: 6.0.0
+version: 7.0.0
 name: Discover Session
 description: "Identify the user's intended target workflow and search for an existing client session to resume. Always runs first — bootstrap delegates target identification and session matching here."
 problem: The meta workflow needs to determine which client workflow to dispatch and whether to resume an existing client session, before initialize-session creates or adopts the client session
@@ -20,46 +20,21 @@ rules[1]:
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
 steps[7]:
   - id: list-available-workflows
-    name: List Available Workflows
-    operation: "workflow-engine::list-workflows"
+    description: "workflow-engine::list-workflows()"
   - id: match-target
-    name: Match Target Workflow
-    operation: "workflow-engine::match-target-workflow"
-    args:
-      user_request: "{user_request}"
-      catalog: "{workflow_catalog}"
+    description: "workflow-engine::match-target-workflow(user_request: {user_request}, catalog: {workflow_catalog})"
   - id: extract-context
-    name: Extract Identifying Context
-    operation: "workflow-engine::extract-identifying-context"
-    args:
-      user_request: "{user_request}"
+    description: "workflow-engine::extract-identifying-context(user_request: {user_request})"
   - id: scan-planning-folders
-    name: Scan Planning Folders for Saved Sessions
-    operation: "workflow-engine::scan-saved-sessions"
-    args:
-      target_workflow_id: "{target_workflow_id}"
+    description: "workflow-engine::scan-saved-sessions(target_workflow_id: {target_workflow_id})"
   - id: match-session
-    name: Match Saved Session
-    operation: "workflow-engine::match-saved-session"
-    args:
-      context: "{identifying_context}"
-      candidates: "{saved_session_candidates}"
+    description: "workflow-engine::match-saved-session(context: {identifying_context}, candidates: {saved_session_candidates})"
   - id: record-match
-    name: Record Match
-    description: "Set has_saved_state = true. Set saved_session_token and planning_folder_path from the matched candidate."
-    condition:
-      type: simple
-      variable: has_saved_state
-      operator: "=="
-      value: true
+    description: "Set has_saved_state = true; copy saved_session_token and planning_folder_path from the matched candidate."
+    when: "has_saved_state == true"
   - id: record-no-match
-    name: Record No Match
-    description: "Set has_saved_state = false. The resume-session checkpoint will not fire."
-    condition:
-      type: simple
-      variable: has_saved_state
-      operator: "=="
-      value: false
+    description: "Set has_saved_state = false; the resume-session checkpoint will not fire."
+    when: "has_saved_state == false"
 checkpoints[2]:
   - id: workflow-selection
     name: Workflow Selection

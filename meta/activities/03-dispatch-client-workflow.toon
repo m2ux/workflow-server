@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 3.0.0
+version: 4.0.0
 name: Dispatch Client Workflow
 description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator, and drive the checkpoint-yield loop until workflow_complete."
 problem: The orchestrator runs as a sub-agent (or inline persona) and surfaces checkpoints upward; meta must mediate user interaction for those checkpoints and resume the orchestrator with the resolved effects
@@ -18,22 +18,9 @@ entryActions[1]:
     message: "Cannot dispatch without a client session token; initialize-session must run first"
 steps[2]:
   - id: compose-orchestrator-prompt
-    name: Compose Orchestrator Prompt
-    operation: "workflow-engine::compose-prompt"
-    args:
-      template_ref: "meta/workflow-orchestrator-prompt"
-      substitutions:
-        workflow_id: "{target_workflow_id}"
-        session_token: "{client_session_token}"
-        planning_folder_path: "{planning_folder_path}"
-        target_path: "{target_path}"
-        agent_id: "workflow-orchestrator"
+    description: "workflow-engine::compose-prompt(template_ref: meta/workflow-orchestrator-prompt, substitutions: { workflow_id: {target_workflow_id}, session_token: {client_session_token}, planning_folder_path: {planning_folder_path}, target_path: {target_path}, agent_id: workflow-orchestrator })"
   - id: dispatch-orchestrator
-    name: Dispatch Orchestrator (Initial)
-    operation: "harness-compat::spawn-agent"
-    args:
-      prompt: "{composed_orchestrator_prompt}"
-      description: "Workflow orchestrator for {target_workflow_id}"
+    description: "harness-compat::spawn-agent(prompt: {composed_orchestrator_prompt}, description: Workflow orchestrator for {target_workflow_id})"
 loops[1]:
   - id: checkpoint-loop
     name: Checkpoint-Yield Loop
@@ -47,57 +34,20 @@ loops[1]:
     maxIterations: 200
     steps[5]:
       - id: capture-checkpoint-yield
-        name: Capture Checkpoint Yield
-        operation: "workflow-engine::extract-checkpoint-handle"
-        args:
-          output: "{orchestrator_output}"
-        condition:
-          type: simple
-          variable: client_workflow_completed
-          operator: "=="
-          value: false
+        description: "workflow-engine::extract-checkpoint-handle(output: {orchestrator_output})"
+        when: "client_workflow_completed == false"
       - id: capture-workflow-complete
-        name: Capture Workflow Complete
-        operation: "workflow-engine::handle-workflow-complete"
-        args:
-          result: "{orchestrator_output}"
-        condition:
-          type: simple
-          variable: client_workflow_completed
-          operator: "=="
-          value: false
+        description: "workflow-engine::handle-workflow-complete(result: {orchestrator_output})"
+        when: "client_workflow_completed == false"
       - id: present-and-resolve
-        name: Present Checkpoint and Capture Resolution
-        operation: "workflow-engine::present-checkpoint-to-user"
-        args:
-          checkpoint_handle: "{pending_checkpoint_handle}"
-        condition:
-          type: simple
-          variable: client_workflow_completed
-          operator: "=="
-          value: false
+        description: "workflow-engine::present-checkpoint-to-user(checkpoint_handle: {pending_checkpoint_handle})"
+        when: "client_workflow_completed == false"
       - id: respond-checkpoint
-        name: Respond Checkpoint
-        operation: "workflow-engine::respond-checkpoint"
-        args:
-          checkpoint_handle: "{pending_checkpoint_handle}"
-          resolution: "{user_selection}"
-        condition:
-          type: simple
-          variable: client_workflow_completed
-          operator: "=="
-          value: false
+        description: "workflow-engine::respond-checkpoint(checkpoint_handle: {pending_checkpoint_handle}, resolution: {user_selection})"
+        when: "client_workflow_completed == false"
       - id: continue-orchestrator
-        name: Continue Orchestrator
-        operation: "harness-compat::continue-agent"
-        args:
-          session_token: "{client_session_token}"
-          prompt: "Checkpoint resolved with effects: {effects}. Continue execution."
-        condition:
-          type: simple
-          variable: client_workflow_completed
-          operator: "=="
-          value: false
+        description: "harness-compat::continue-agent(session_token: {client_session_token}, prompt: Checkpoint resolved with effects {effects}. Continue execution.)"
+        when: "client_workflow_completed == false"
 transitions[1]:
   - to: end-workflow
     condition:
