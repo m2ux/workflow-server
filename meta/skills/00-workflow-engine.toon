@@ -1,5 +1,5 @@
 id: workflow-engine
-version: 3.0.0
+version: 3.1.0
 capability: Operations and rules for workflow execution — session lifecycle, state persistence, activity dispatch, transition evaluation, checkpoint flow
 
 description: "Capability skill bundling everything needed to execute a workflow's structured flow. Operations cover session token mechanics (implicit), state persistence (persist/restore), activity dispatch and transition evaluation, the post-activity commit-and-persist hook, sub-workflow handling, and the full checkpoint protocol (yield, bubble, present-to-user, respond, resume). Rules cover token mechanics, checkpoint discipline, state-mutation invariants, and orchestrator/worker behavioural boundaries. Each operation is a short linear procedure invoking a small set of MCP / harness / shell tools."
@@ -14,6 +14,36 @@ operations:
     tools:
       workflow-server[1]:
         - list_workflows
+
+  match-target-workflow:
+    description: "Match a user request against the workflow catalog and surface ambiguity"
+    inputs[2]:
+      - user_request: "User's free-form request"
+      - catalog: "Array of workflow entries from list-workflows"
+    output[2]:
+      - target_workflow_id: "Best-match workflow id, or null when no candidate matches"
+      - ambiguous: "true when more than one workflow matches with similar confidence"
+    procedure[1]:
+      - "Score each catalog entry against user_request by title, description keywords, and recognition tags; return the top match and set ambiguous when the top scores are close"
+
+  extract-identifying-context:
+    description: "Extract ticket, branch, PR, and work-package identifiers from a user request"
+    inputs[1]:
+      - user_request: "User's free-form request"
+    output[1]:
+      - context: "Map of any identifiers found: { issue_number?, branch_name?, pr_number?, work_package? }"
+    procedure[1]:
+      - "Scan user_request for GitHub issue numbers (#N), Jira keys (PROJ-123), branch references, PR numbers, and work-package descriptions; collect any found into context"
+
+  match-saved-session:
+    description: "Pick the saved-session candidate that best matches an identifying context"
+    inputs[2]:
+      - context: "Identifying context from extract-identifying-context"
+      - candidates: "Saved sessions from scan-saved-sessions"
+    output[1]:
+      - match: "Best matching candidate { sessionToken, planningFolder, savedAt }, or null when none match"
+    procedure[1]:
+      - "Score each candidate by overlap between its variables (issue_number, branch_name, pr_number, work-package description, planning-folder name) and context; pick the most recently-updated by savedAt on ties; return null when no candidate has any overlap"
 
   scan-saved-sessions:
     description: "Find saved client sessions matching a target workflow under .engineering/artifacts/planning/"

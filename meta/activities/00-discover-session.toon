@@ -1,5 +1,5 @@
 id: discover-session
-version: 5.0.0
+version: 6.0.0
 name: Discover Session
 description: "Identify the user's intended target workflow and search for an existing client session to resume. Always runs first — bootstrap delegates target identification and session matching here."
 problem: The meta workflow needs to determine which client workflow to dispatch and whether to resume an existing client session, before initialize-session creates or adopts the client session
@@ -10,25 +10,40 @@ recognition[4]:
   - work on
 required: true
 estimatedTime: 1-2m
-operations[1]:
+operations[5]:
+  - "workflow-engine::list-workflows"
+  - "workflow-engine::match-target-workflow"
+  - "workflow-engine::extract-identifying-context"
   - "workflow-engine::scan-saved-sessions"
+  - "workflow-engine::match-saved-session"
 rules[1]:
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
-steps[6]:
+steps[7]:
   - id: list-available-workflows
     name: List Available Workflows
     operation: "workflow-engine::list-workflows"
-  - id: identify-target
-    name: Identify Target Workflow and Context
-    description: "Match the user's request against the catalog. Set target_workflow_id to the matched workflow. Set workflow_match_ambiguous = true when more than one matches. Extract identifying context (ticket, branch, PR, work-package description) for the saved-session match step."
+  - id: match-target
+    name: Match Target Workflow
+    operation: "workflow-engine::match-target-workflow"
+    args:
+      user_request: "{user_request}"
+      catalog: "{workflow_catalog}"
+  - id: extract-context
+    name: Extract Identifying Context
+    operation: "workflow-engine::extract-identifying-context"
+    args:
+      user_request: "{user_request}"
   - id: scan-planning-folders
     name: Scan Planning Folders for Saved Sessions
     operation: "workflow-engine::scan-saved-sessions"
     args:
       target_workflow_id: "{target_workflow_id}"
   - id: match-session
-    name: Match Saved Session to User Request
-    description: "Compare the identifying context against the candidates. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. Pick the most recently-updated when multiple match."
+    name: Match Saved Session
+    operation: "workflow-engine::match-saved-session"
+    args:
+      context: "{identifying_context}"
+      candidates: "{saved_session_candidates}"
   - id: record-match
     name: Record Match
     description: "Set has_saved_state = true. Set saved_session_token and planning_folder_path from the matched candidate."
