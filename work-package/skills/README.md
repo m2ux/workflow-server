@@ -33,7 +33,7 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
 | 23 | `reconcile-assumptions` | Iterative assumption reconciliation through targeted code analysis | Design Philosophy, Requirements Elicitation, Research, Implementation Analysis, Plan & Prepare, Implement |
 
-> Skills `11-activity-worker`, `meta-orchestrator`, `workflow-orchestrator`, and `activity-worker` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
+> Skills `meta-orchestrator`, `workflow-orchestrator`, and `activity-worker` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
 
 ### Cross-Workflow Skill References
 
@@ -41,10 +41,10 @@ The following skills are referenced by activities but defined in other workflows
 
 | Skill ID | Source Workflow | Source File | Used By |
 |----------|----------------|-------------|---------|
-| `atlassian-operations` | [meta](../../meta/skills/08-atlassian-operations.toon) | `08-atlassian-operations.toon` | Start Work Package, Assumptions Review |
-| `github-cli-protocol` | [meta](../../meta/skills/06-github-cli-protocol.toon) | `06-github-cli-protocol.toon` | Start Work Package, Submit for Review |
-| `knowledge-base-search` | [meta](../../meta/skills/07-knowledge-base-search.toon) | `07-knowledge-base-search.toon` | Research |
-| `version-control-protocol` | [meta](../../meta/skills/05-version-control-protocol.toon) | `05-version-control-protocol.toon` | Post-Implementation Review |
+| `atlassian-operations` | [meta](../../meta/skills/06-atlassian-operations.toon) | `06-atlassian-operations.toon` | Start Work Package, Assumptions Review |
+| `github-cli-protocol` | [meta](../../meta/skills/04-github-cli-protocol.toon) | `04-github-cli-protocol.toon` | Start Work Package, Submit for Review |
+| `knowledge-base-search` | [meta](../../meta/skills/05-knowledge-base-search.toon) | `05-knowledge-base-search.toon` | Research |
+| `version-control` | [meta](../../meta/skills/03-version-control.toon) | `03-version-control.toon` | Post-Implementation Review |
 | `structural-analysis` | [prism](../../prism/skills/00-structural-analysis.toon) | `00-structural-analysis.toon` | Post-Implementation Review |
 | `portfolio-analysis` | [prism](../../prism/skills/02-portfolio-analysis.toon) | `02-portfolio-analysis.toon` | Codebase Comprehension |
 

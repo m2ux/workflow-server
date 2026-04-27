@@ -1,0 +1,91 @@
+id: workflow-orchestrator
+version: 2.0.0
+capability: Engine logic for the workflow-orchestrator role — drives a single client workflow's lifecycle, dispatches activity workers, evaluates transitions, and persists state
+description: "Single-load skill for the workflow-orchestrator (sub-agent or inline persona). Provides the generic doWhile-over-activities engine that drives an arbitrary client workflow from initialActivity through workflow_complete. Cross-cutting rules (file-sensitivity, communication-tone, attribution-prohibition, operational-discipline, checkpoint-discipline, orchestrator-discipline) live in agent-conduct — they are NOT restated here. Per-activity hooks (commit-artifacts, persist-state) reference version-control and state-management skills rather than restating their procedures."
+
+inputs[3]:
+  - id: workflow-id
+    description: "Client workflow to orchestrate (e.g., 'work-package')"
+  - id: session-token
+    description: "Session token for the client workflow, inherited from the meta-orchestrator"
+  - id: planning-folder-path
+    description: "Path to the planning folder for this workflow run"
+
+protocol:
+  resume-detect[2]:
+    - "On bootstrap, call get_workflow_status({ session_token }). If current_activity is set, the session is mid-activity — go to dispatch-activity for current_activity. If current_activity is empty but completedActivities is non-empty, determine the next activity from the workflow's activity list and call next_activity to advance."
+    - "If current_activity is empty and completedActivities is empty, this is a fresh start — use the workflow's initialActivity and call next_activity to enter it."
+  main-loop[5]:
+    - "Loop body for each activity: dispatch-activity → process-result → after-activity → evaluate-transition → advance-or-complete."
+    - "dispatch-activity: spawn or continue the worker for the current activity."
+    - "process-result: validate the worker's result and apply variable changes."
+    - "after-activity: commit artifacts and persist state (delegated)."
+    - "evaluate-transition: pick the next activity (or recognise workflow_complete)."
+  dispatch-activity[3]:
+    - "Call next_activity({ session_token, activity_id, step_manifest }) to transition the session. Capture _meta.trace_token from the response and append to trace_tokens."
+    - "Compose the worker prompt using resource meta/01 (activity-worker-prompt) with substitutions for workflow_id, activity_id, session_token, agent_id. The worker self-bootstraps via get_activity — you MUST NOT call get_activity yourself."
+    - "Dispatch via harness-compat::spawn-agent (foreground / blocking). Wait for the worker's result."
+  process-result[4]:
+    - "If the worker output contains <checkpoint_yield>: extract the checkpoint_handle and yield it upward to the meta-orchestrator using your own <checkpoint_yield> block. Stop and wait to be resumed."
+    - "If activity_complete: validate steps_completed against the activity's required steps and checkpoints_responded against the activity's required checkpoints. If incomplete, resume the worker to address the missing items — do NOT accept the partial result."
+    - "Apply variables_changed to your internal state. Append the activity to completedActivities."
+    - "Append a semantic trace entry to {planning_folder_path}/workflow-trace.toon for this activity (events derived from steps_completed, checkpoints_responded, variables_changed). Then call get_trace({ session_token, trace_tokens }) to resolve the mechanical trace and append that too. Clear trace_tokens."
+  after-activity[2]:
+    - "commit-artifacts: per version-control.commit-regular-files — stage all changed files in .engineering/artifacts/ in the parent repo, commit with conventional format 'docs(<workflow-id>): <activity-id> artifacts', and push. Do NOT commit anything outside .engineering/artifacts/."
+    - "persist-state: per state-management.persistence — call save_state({ session_token, planning_folder_path }). Do NOT skip this; an unpersisted activity makes the session unrecoverable."
+  evaluate-transition[3]:
+    - "If the worker returned a transition_override (from a checkpoint effect transitionTo), use that activity_id."
+    - "Otherwise, evaluate the activity's transitions[] against state variables in array order. Take the first matching condition. If none match and no isDefault transition exists, the workflow is complete."
+    - "On workflow_complete: prepare a final summary (workflow id, dates, completed activities, key decisions, artifacts, outcomes met/unmet) and return { status: 'workflow_complete', final_state } to the meta-orchestrator."
+  resolve-checkpoints[3]:
+    - "When the worker yields a <checkpoint_yield>, the contained checkpoint_handle is an HMAC-signed token (contains a '.'). It is NOT the checkpoint_id."
+    - "Bubble up by emitting your own <checkpoint_yield> containing ONLY the worker's checkpoint_handle, then stop. The meta-orchestrator handles present_checkpoint, the user interaction, and respond_checkpoint."
+    - "When resumed, the meta-orchestrator passes you the resolved effects (variable updates). Apply them to your internal state, then resume the worker via harness-compat::continue-agent so the worker can call resume_checkpoint and continue."
+  handle-sub-workflows[3]:
+    - "If a client workflow needs to dispatch a sub-workflow, call start_session({ workflow_id: 'child-workflow', parent_session_token: '<your_token>', agent_id: 'workflow-orchestrator' })."
+    - "Spawn a NEW workflow-orchestrator for the sub-workflow via harness-compat::spawn-agent."
+    - "Manage the child inline; bubble its checkpoint yields further up to the meta-orchestrator unchanged."
+
+rules:
+  no-direct-interaction: "You are a sub-agent (or inline persona). NEVER ask the user directly. Surface checkpoints by yielding the worker's checkpoint_handle to the meta-orchestrator."
+  reject-empty-checkpoints: "If an activity defines required checkpoints and the worker returns checkpoints_responded as empty, REJECT the result and resume the worker."
+  no-get-activity: "NEVER call get_activity. The activity definition is the worker's domain. You only need the activity_id (from initialActivity or transitions) to call next_activity and to compose the worker prompt. Calling get_activity from the orchestrator is a protocol violation."
+  no-pre-load-skills: "NEVER call get_skill or get_skills to pre-load skills for worker activities. The worker loads its own skills during self-bootstrap."
+
+tools:
+  start_session:
+    when: "Bootstrap (resuming) and dispatching sub-workflows"
+    params: "session_token (resume) OR workflow_id with parent_session_token (sub-workflow); agent_id"
+  get_workflow:
+    when: "Once at bootstrap — load the workflow structure and the initialActivity field"
+    params: "session_token, summary=true"
+  get_workflow_status:
+    when: "On resume — derive current_activity from the token"
+    params: "session_token"
+  next_activity:
+    when: "Before dispatching each activity"
+    params: "session_token, activity_id, step_manifest (when transitioning from a prior activity)"
+  get_trace:
+    when: "After each activity_complete — resolve trace tokens for the completed activity"
+    params: "session_token, trace_tokens"
+  save_state:
+    when: "After every completed activity (persist-state phase)"
+    params: "session_token, planning_folder_path"
+
+errors:
+  worker_timeout:
+    cause: "Worker sub-agent did not return within expected time"
+    recovery: "Check terminal output. Resume via harness-compat::continue-agent if still running; if stuck, dispatch a fresh worker with the current activity_id."
+  worker_incomplete:
+    cause: "Worker reports fewer steps than the activity defines, or required checkpoints have no response"
+    recovery: "Resume the worker with explicit instructions to complete the missing items. Do NOT accept the partial result."
+  state_desync:
+    cause: "Worker reports variable changes conflicting with orchestrator state"
+    recovery: "Worker values take precedence (the worker has ground truth from user interaction)."
+  transition_ambiguous:
+    cause: "Multiple transition conditions evaluate to true at the activity boundary"
+    recovery: "Take the first matching transition in array order. Log a warning."
+
+resources[2]:
+  - "meta/01"
+  - "meta/05"

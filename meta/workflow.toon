@@ -1,74 +1,71 @@
+"$schema": ../../schemas/workflow.schema.json
 id: meta
-version: 3.0.0
+version: 4.0.0
 title: Meta Workflow
-description: "Bootstrap workflow for the workflow-server. Provides self-contained activities for workflow lifecycle management (start, resume, end). Each activity is an independent entry point matched via recognition patterns."
+description: "Top-level lifecycle workflow for the workflow-server. Provides the universal skill repository and a five-activity sequence that runs in the meta session: identify the target workflow and any matching saved client session, create or adopt the client session as a child of meta, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out with a session summary. Excluded from list_workflows because it is not a user-facing workflow — bootstrap navigates here directly."
 author: m2ux
 tags[5]:
   - meta
   - bootstrap
-  - workflow-management
   - lifecycle
+  - dispatch
   - session
 skills:
   primary: meta-orchestrator
+initialActivity: discover-session
+rules[3]:
+  - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
+  - "Skills in this workflow are universal and resolve for any client workflow via the loader's universal-skill fallback"
+  - "Meta does not perform domain work — every activity exists to identify, create, adopt, dispatch, or close out a client session"
 variables[14]:
-  - name: is_monorepo
-    type: boolean
-    description: Whether the target repository is a submodule monorepo
-    defaultValue: false
-  - name: target_path
+  - name: target_workflow_id
     type: string
-    description: Resolved target directory for git operations
-    defaultValue: "."
-  - name: entry_point_confirmed
+    description: "ID of the client workflow to dispatch (set by discover-session)"
+  - name: workflow_match_ambiguous
     type: boolean
-    description: Whether the user confirmed the resume entry point
-    defaultValue: false
-  - name: ready_to_resume
-    type: boolean
-    description: Whether the user confirmed readiness to resume workflow execution
-    defaultValue: false
-  - name: restart_workflow
-    type: boolean
-    description: Whether the user chose to restart the workflow from the beginning
-    defaultValue: false
-  - name: has_external_state
-    type: boolean
-    description: Whether the workflow has external state to assess (branches, PRs, artifacts)
-    defaultValue: false
-  - name: branch_behind_main
-    type: number
-    description: Number of commits the branch is behind main
-    defaultValue: 0
-  - name: has_conflicts
-    type: boolean
-    description: Whether the branch has merge conflicts with main
-    defaultValue: false
-  - name: abort_completion
-    type: boolean
-    description: Whether the user chose to return to workflow execution instead of ending
-    defaultValue: false
-  - name: has_outcome_gaps
-    type: boolean
-    description: Whether workflow outcomes have unsatisfied gaps
-    defaultValue: false
-  - name: workflow_completed
-    type: boolean
-    description: Whether the workflow has been finalized and closed
-    defaultValue: false
-  - name: is_resuming
-    type: boolean
-    description: Whether the orchestrator is resuming from restored state (set by initialize-state, cleared after first dispatch)
+    description: "Whether the user request matched multiple workflows — gates the workflow-selection checkpoint in discover-session"
     defaultValue: false
   - name: has_saved_state
     type: boolean
-    description: Whether a workflow-state.json file was found and successfully restored
+    description: "Whether discover-session matched a saved client session for the request"
     defaultValue: false
+  - name: saved_session_token
+    type: string
+    description: "Saved client session token from a matched workflow-state.toon (set by discover-session when has_saved_state)"
+  - name: is_resuming
+    type: boolean
+    description: "Whether the user chose to resume the matched saved session"
+    defaultValue: false
+  - name: planning_folder_path
+    type: string
+    description: "Absolute path to the planning folder for the client workflow"
+  - name: client_session_token
+    type: string
+    description: "Session token for the dispatched client workflow (created or adopted by initialize-session)"
+  - name: session_recovered
+    type: boolean
+    description: "Whether start_session returned recovered: true (saved payload corrupted; state must be reconstructed)"
+    defaultValue: false
+  - name: session_adopted
+    type: boolean
+    description: "Whether start_session returned adopted: true (saved payload preserved; token re-signed)"
+    defaultValue: false
+  - name: is_monorepo
+    type: boolean
+    description: "Whether the target repository is a submodule monorepo (set by resolve-target)"
+    defaultValue: false
+  - name: target_path
+    type: string
+    description: "Resolved target directory for git operations — '.' for regular repos, a submodule path for monorepos"
+    defaultValue: "."
   - name: client_workflow_completed
     type: boolean
-    description: Whether the dispatched client workflow has completed all activities
+    description: "Whether the dispatched client workflow has reached workflow_complete"
     defaultValue: false
-rules[3]:
-  - This workflow is the entrypoint for all workflow operations
-  - Each activity is matched independently via recognition patterns in list_workflows
-  - Skills in this workflow are universal and apply to all workflows
+  - name: pending_checkpoint_handle
+    type: string
+    description: "Most recently yielded checkpoint_handle awaiting resolution (cleared after each iteration of the dispatch loop)"
+  - name: abort_completion
+    type: boolean
+    description: "Whether the user chose to return to dispatch from end-workflow instead of closing"
+    defaultValue: false

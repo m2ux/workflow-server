@@ -1,0 +1,64 @@
+id: initialize-session
+version: 1.0.0
+name: Initialize Session
+description: "Create or adopt the client workflow's session as a child of the meta session. If discover-session matched a saved client session, adopt it via start_session and restore variables from disk. Otherwise, create a fresh child session via start_session({ workflow_id, parent_session_token }) and initialize the planning folder. Sets client_session_token, planning_folder_path, and the session-recovery flags."
+problem: The client workflow needs a valid session token before its orchestrator can be dispatched, and saved state must be restored before activities resume
+skills:
+  primary: meta/activity-worker
+  supporting[3]:
+    - session-protocol
+    - state-management
+    - version-control
+required: true
+estimatedTime: 1-2m
+rules[3]:
+  - "When creating a fresh client session, ALWAYS pass parent_session_token so trace correlation links the meta session to the client workflow"
+  - "When adopting a saved session, treat the saved token as opaque — never decode or modify it"
+  - "If start_session returns recovered: true, the saved payload was corrupted — variables MUST be reconstructed from the on-disk state file before any activity runs"
+steps[5]:
+  - id: start-or-adopt-session
+    name: Start or Adopt Client Session
+    description: "If has_saved_state: call start_session({ session_token: saved_session_token, agent_id: 'orchestrator' }) to adopt the saved client session. Otherwise: call start_session({ workflow_id: target_workflow_id, parent_session_token: session_token, agent_id: 'orchestrator' }) to create a fresh child session. Save the returned token as client_session_token."
+    skill: session-protocol
+  - id: detect-recovery
+    name: Detect Server-Restart Recovery
+    description: "Inspect the start_session response. If recovered: true, the saved token failed signature verification AND its payload was corrupted — set session_recovered = true so the next step reconstructs variables from disk. If adopted: true, the token was re-signed but its payload was preserved — set session_adopted = true (no reconstruction needed). Otherwise both flags remain false."
+  - id: restore-state
+    name: Restore Variables from Disk
+    description: "If is_resuming: call restore_state({ session_token: client_session_token, file_path: '{planning_folder_path}/workflow-state.toon' }) to load the saved variables and apply each to the client session. This step covers both adopted and recovered sessions — for recovered sessions it is the only source of truth for state."
+    condition:
+      type: simple
+      variable: is_resuming
+      operator: "=="
+      value: true
+    skill: state-management
+  - id: derive-planning-folder
+    name: Derive Planning Folder Path
+    description: "If fresh session and planning_folder_path is not yet set, derive it from the user's request context: .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ where initiative-name is kebab-cased from issue title, work-package description, or other identifying context. Store as planning_folder_path."
+    condition:
+      type: simple
+      variable: is_resuming
+      operator: "!="
+      value: true
+    skill: version-control
+  - id: initialize-folder
+    name: Initialize Planning Folder
+    description: "If fresh session: create the planning folder at planning_folder_path (mkdir -p), then call save_state({ session_token: client_session_token, planning_folder_path }) to write the initial workflow-state.toon containing the client session token and default variables. This guarantees the token is on disk before any activity is dispatched."
+    condition:
+      type: simple
+      variable: is_resuming
+      operator: "!="
+      value: true
+    skill: state-management
+transitions[1]:
+  - to: resolve-target
+    isDefault: true
+outcome[3]:
+  - Client session created or adopted with parent context linked to the meta session
+  - Variables restored from disk on resume; defaults set on fresh session
+  - Planning folder exists and contains an initial workflow-state.toon
+context_to_preserve[4]:
+  - client_session_token - The session token for the dispatched client workflow
+  - planning_folder_path - Absolute path to the planning folder
+  - session_recovered - Whether start_session returned recovered (state must be reconstructed)
+  - session_adopted - Whether start_session re-signed the token (payload preserved)

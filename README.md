@@ -14,10 +14,12 @@ workflows/                    # Worktree checkout
 ├── meta/                     # Skill and resource repository (excluded from list_workflows)
 │   ├── README.md             # Meta documentation with Mermaid diagrams
 │   ├── workflow.toon         # Meta definition (activities for lifecycle management)
-│   ├── activities/           # All activities (indexed)
-│   │   └── {NN}-{id}.toon    # 01-start-workflow, 02-resume-workflow, etc.
-│   └── skills/               # Universal skills (indexed, auto-included on first get_skills)
-│       └── {NN}-{id}.toon    # 00-session-protocol, 01-agent-conduct, etc.
+│   ├── activities/           # Lifecycle activities (indexed)
+│   │   └── {NN}-{id}.toon    # 00-discover-session, 01-initialize-session, ...
+│   ├── resources/            # Reference material (indexed)
+│   │   └── {NN}-{name}.md    # 00-bootstrap-protocol, 01-activity-worker-prompt, ...
+│   └── skills/               # Universal skills (indexed, auto-resolved across workflows)
+│       └── {NN}-{id}.toon    # 00-session-protocol, 01-agent-conduct, ...
 ├── {workflow-id}/            # Each workflow folder
 │   ├── README.md             # Workflow documentation with Mermaid diagrams
 │   ├── workflow.toon         # Workflow definition
@@ -46,20 +48,22 @@ workflows/                    # Worktree checkout
 
 Available for any workflow session.
 
+Skills are referenced by canonical ID (the filename minus the `NN-` prefix). The numeric prefix orders the files for humans; the loader strips it.
+
 | Skill | Description |
 |-------|-------------|
-| [`00-session-protocol`](meta/skills/00-session-protocol.toon) | Session lifecycle protocol: bootstrap sequence (start_session → get_skills → get_workflow → next_activity), token handling, step manifests, resource loading via get_resource |
-| [`01-agent-conduct`](meta/skills/01-agent-conduct.toon) | Agent behavioral boundaries: file sensitivity, communication tone, resource loading discipline |
-| [`02-11-activity-worker`](meta/skills/02-11-activity-worker.toon) | Bootstrap and execute a single workflow activity using get_skill for step-level skill loading |
-| [`03-state-management`](meta/skills/03-state-management.toon) | Manage workflow state across sessions (agent writes token + variables + trace; resumes via start_session) |
-| [`04-artifact-management`](meta/skills/04-artifact-management.toon) | Manage planning artifact folder structure and commit workflows |
-| [`05-version-control-protocol`](meta/skills/05-version-control-protocol.toon) | Conventional commits, branch management, destructive operation guardrails |
-| [`06-github-cli-protocol`](meta/skills/06-github-cli-protocol.toon) | GitHub CLI usage: GraphQL deprecation workarounds, REST API for mutations |
-| [`07-knowledge-base-search`](meta/skills/07-knowledge-base-search.toon) | Optimise knowledge base searches via pre-indexed domain map |
-| [`08-atlassian-operations`](meta/skills/08-atlassian-operations.toon) | Perform Atlassian Jira and Confluence operations via MCP |
-| [`09-gitnexus-operations`](meta/skills/09-gitnexus-operations.toon) | Query codebases via knowledge graph for impact analysis, debugging, refactoring |
-| [`10-meta-orchestrator`](meta/skills/10-meta-orchestrator.toon) | Consolidated orchestrator skill: workflow coordination, state management, worker dispatch, checkpoint presentation |
-| [`11-activity-worker`](meta/skills/11-activity-worker.toon) | Consolidated worker skill: activity execution, step-level skill loading, checkpoint yielding, artifact production |
+| [`session-protocol`](meta/skills/00-session-protocol.toon) | Session lifecycle protocol: token mechanics, checkpoint-handle discipline, step manifests, resource-loading conventions |
+| [`agent-conduct`](meta/skills/01-agent-conduct.toon) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
+| [`state-management`](meta/skills/02-state-management.toon) | Concept reference for variable mutation, persist-after-activity, and adopted/recovered token semantics (state I/O via save_state/restore_state MCP tools) |
+| [`version-control`](meta/skills/03-version-control.toon) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
+| [`github-cli-protocol`](meta/skills/04-github-cli-protocol.toon) | GitHub CLI usage: GraphQL-deprecation workarounds, REST API for mutations |
+| [`knowledge-base-search`](meta/skills/05-knowledge-base-search.toon) | Optimised concept-rag searches via pre-indexed domain maps |
+| [`atlassian-operations`](meta/skills/06-atlassian-operations.toon) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
+| [`gitnexus-operations`](meta/skills/07-gitnexus-operations.toon) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
+| [`meta-orchestrator`](meta/skills/08-meta-orchestrator.toon) | Inline meta-workflow role: checkpoint mediation, sub-agent dispatch, meta-level errors |
+| [`activity-worker`](meta/skills/09-activity-worker.toon) | Engine logic for the activity-worker role: bootstrap, step iteration, checkpoint yielding, artifact production |
+| [`workflow-orchestrator`](meta/skills/10-workflow-orchestrator.toon) | Engine logic for driving an arbitrary client workflow: doWhile-over-activities, transitions, persist hooks |
+| [`harness-compat`](meta/skills/11-harness-compat.toon) | Harness-independent operations (spawn-agent, continue-agent, spawn-concurrent) abstracting cross-tool dispatch |
 
 ## Worktree Setup
 

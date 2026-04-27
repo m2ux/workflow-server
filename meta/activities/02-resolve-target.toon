@@ -1,0 +1,57 @@
+id: resolve-target
+version: 1.0.0
+name: Resolve Target
+description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path. Skipped when target_path was already restored from saved state. Sets is_monorepo and target_path for downstream activities that perform git operations on the user's codebase."
+problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
+skills:
+  primary: meta/activity-worker
+required: true
+estimatedTime: 1-2m
+rules[2]:
+  - "Skip detection when target_path was already restored from saved state (target_path != '.')"
+  - "target_path MUST resolve to a directory containing a working git tree"
+entryActions[1]:
+  - action: log
+    message: "Resolving target repository structure"
+steps[3]:
+  - id: detect-monorepo
+    name: Detect Repository Type
+    description: "Check whether the working directory contains a .gitmodules file (test -f .gitmodules). If present, this is a submodule monorepo. If absent, this is a regular repository and target_path defaults to the repository root."
+  - id: list-submodules
+    name: List Submodules
+    description: "If is_monorepo is true (set by the repo-type-confirmed checkpoint): parse .gitmodules to extract the submodule paths and present them as a numbered list, including a brief description of each (from the submodule's README first paragraph or its path)."
+    condition:
+      type: simple
+      variable: is_monorepo
+      operator: "=="
+      value: true
+  - id: capture-target-path
+    name: Capture Target Path
+    description: "If is_monorepo: ask the user to select a submodule, set target_path to its path, and verify the directory exists. If not is_monorepo: set target_path to '.'."
+checkpoints[1]:
+  - id: repo-type-confirmed
+    name: Repository Type Confirmation
+    message: "Is this a regular repository or a submodule monorepo?"
+    options[2]:
+      - id: regular
+        label: Regular repository
+        description: Single-repo project; target_path will be the repository root
+        effect:
+          setVariable:
+            is_monorepo: false
+            target_path: "."
+      - id: monorepo
+        label: Submodule monorepo
+        description: Parent repo with submodules; the next step will list submodules for selection
+        effect:
+          setVariable:
+            is_monorepo: true
+transitions[1]:
+  - to: dispatch-client-workflow
+    isDefault: true
+outcome[2]:
+  - Repository type confirmed by the user
+  - target_path resolved to '.' (regular) or a submodule path (monorepo)
+context_to_preserve[2]:
+  - is_monorepo - Whether the target is a submodule monorepo
+  - target_path - Resolved target directory for git operations

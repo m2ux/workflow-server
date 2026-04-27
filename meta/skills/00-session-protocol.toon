@@ -22,7 +22,7 @@ protocol:
     - "STEP MANIFEST: When transitioning to the next activity (calling next_activity({ session_token, activity_id, step_manifest })), include a step_manifest parameter listing each step completed in the previous activity with its output summary."
     - "STEP COMPLETENESS: All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level."
   resource-usage[1]:
-    - "RESOURCE LOADING: Skills return _resources as lightweight references (index, id, version — no content). Call get_resource with the resource index to load the full content. When a step says 'use attached resource XX', find the matching entry in _resources and call get_resource."
+    - "RESOURCE LOADING: Skills return _resources as lightweight references (index, id, version — no content). Call get_resource({ session_token, resource_id }) with the index from the _resources array (e.g., '07' for a bare local index, 'meta/01' for a cross-workflow reference) to load the full content. When a step says 'use attached resource XX', find the matching entry in _resources and call get_resource."
 
 resources[1]:
   - "meta/00"

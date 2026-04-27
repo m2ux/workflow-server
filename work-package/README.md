@@ -140,7 +140,7 @@ sequenceDiagram
 - Evaluates transition conditions between activities
 - Manages rework loops (transitions back to earlier activities)
 
-**Worker** (skill: `11-activity-worker`):
+**Worker** (skill: `activity-worker`):
 - Self-bootstraps from `next_activity` and `get_skill`
 - Executes activity steps sequentially using the skill protocol
 - Handles all checkpoints and user interaction directly

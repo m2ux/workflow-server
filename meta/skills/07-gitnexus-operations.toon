@@ -39,10 +39,10 @@ output[1]:
 
 rules:
   query-not-grep: "Use GitNexus query() when you need execution flows and relationships, not just file matches. GitNexus complements grep/search — it finds how code works together."
-  resource-reference: "Use attached resource meta/06 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
+  resource-reference: "Use attached resource meta/03 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
 
 resources[1]:
-  - "meta/06"
+  - "meta/03"
 
 errors:
   index_not_found:

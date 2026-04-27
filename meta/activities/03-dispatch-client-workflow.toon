@@ -1,0 +1,94 @@
+id: dispatch-client-workflow
+version: 1.0.0
+name: Dispatch Client Workflow
+description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator (sub-agent in spawning harnesses, inline persona otherwise) for the client workflow, and drive the checkpoint-yield loop. Each loop iteration parses the orchestrator's most recent output: a <checkpoint_yield> block triggers present-checkpoint → ask-user → respond-checkpoint → continue-orchestrator; a workflow_complete result sets client_workflow_completed and exits the loop."
+problem: The orchestrator runs as a sub-agent (or inline persona) and surfaces checkpoints upward; meta must mediate user interaction for those checkpoints and resume the orchestrator with the resolved effects
+skills:
+  primary: meta/activity-worker
+  supporting[3]:
+    - meta-orchestrator
+    - harness-compat
+    - session-protocol
+required: true
+rules[3]:
+  - "NEVER auto-resolve a checkpoint — the user MUST explicitly select an option (or the autoAdvance timer MUST fully elapse for advisory checkpoints)"
+  - "Pass client_session_token to the orchestrator prompt — the orchestrator inherits state via that token, NEVER via the meta session token"
+  - "Always dispatch as foreground (blocking) per harness-compat::spawn-agent — background dispatch silently breaks checkpoint delivery"
+entryActions[1]:
+  - action: validate
+    target: client_session_token
+    message: "Cannot dispatch without a client session token; initialize-session must run first"
+steps[2]:
+  - id: compose-orchestrator-prompt
+    name: Compose Orchestrator Prompt
+    description: "Build the workflow-orchestrator prompt using resource meta/02 (workflow-orchestrator-prompt) as the template. Substitute: workflow_id = target_workflow_id, session_token = client_session_token, planning_folder_path, target_path, agent_id = 'workflow-orchestrator'. The prompt instructs the orchestrator to call start_session to adopt the session, then load and follow its primary skill."
+    skill: meta-orchestrator
+  - id: dispatch-orchestrator
+    name: Dispatch Orchestrator (Initial)
+    description: "Call harness-compat::spawn-agent with the composed prompt. Spawn-agent always runs foreground and blocks until the orchestrator yields a checkpoint or returns workflow_complete. Subsequent iterations of checkpoint-loop use harness-compat::continue-agent to resume the orchestrator."
+    skill: harness-compat
+loops[1]:
+  - id: checkpoint-loop
+    name: Checkpoint-Yield Loop
+    type: doWhile
+    description: "Iterate while the client workflow is still running. Each iteration handles either a yielded checkpoint or the workflow_complete signal. Body steps short-circuit via condition when client_workflow_completed becomes true."
+    condition:
+      type: simple
+      variable: client_workflow_completed
+      operator: "=="
+      value: false
+    maxIterations: 200
+    steps[5]:
+      - id: parse-orchestrator-result
+        name: Parse Orchestrator Result
+        description: "Inspect the orchestrator's most recent output. If it contains a <checkpoint_yield> block: extract checkpoint_handle and store as pending_checkpoint_handle. If the output is workflow_complete: apply any final variables_changed, set client_workflow_completed = true so the remaining loop body is skipped via condition."
+      - id: present-checkpoint
+        name: Present Checkpoint
+        description: "Call present_checkpoint({ checkpoint_handle: pending_checkpoint_handle }) — and ONLY checkpoint_handle, never session_token or checkpoint_id — to retrieve the question text and option list for THIS checkpoint. Do not reuse options from a prior checkpoint."
+        condition:
+          type: simple
+          variable: client_workflow_completed
+          operator: "=="
+          value: false
+        skill: meta-orchestrator
+      - id: ask-user
+        name: Ask User
+        description: "For blocking checkpoints (no autoAdvanceMs): use the harness AskQuestion tool with the retrieved message and options; capture the user's selected option_id. For advisory checkpoints (autoAdvanceMs set): present the message in chat and use Shell sleep for the full autoAdvanceMs before resolving with auto_advance — never short-circuit the timer."
+        condition:
+          type: simple
+          variable: client_workflow_completed
+          operator: "=="
+          value: false
+        skill: meta-orchestrator
+      - id: respond-checkpoint
+        name: Respond Checkpoint
+        description: "Call respond_checkpoint({ checkpoint_handle: pending_checkpoint_handle, option_id: <user-selection> }) — or { auto_advance: true } for advisory checkpoints with the timer fully elapsed, or { condition_not_met: true } only for conditional checkpoints whose prerequisite evaluated false. Capture the returned effects (variable changes)."
+        condition:
+          type: simple
+          variable: client_workflow_completed
+          operator: "=="
+          value: false
+        skill: meta-orchestrator
+      - id: continue-orchestrator
+        name: Continue Orchestrator
+        description: "Call harness-compat::continue-agent with a resume prompt that conveys the checkpoint resolution: the option chosen and the effect's variable updates. The orchestrator updates its internal state and resumes its waiting worker. Wait for the next yield or workflow_complete."
+        condition:
+          type: simple
+          variable: client_workflow_completed
+          operator: "=="
+          value: false
+        skill: harness-compat
+transitions[1]:
+  - to: end-workflow
+    condition:
+      type: simple
+      variable: client_workflow_completed
+      operator: "=="
+      value: true
+outcome[3]:
+  - Client workflow orchestrator dispatched and lifecycle managed inline by meta
+  - Every yielded checkpoint presented to the user; selections forwarded to the server with respond_checkpoint
+  - Client workflow reached workflow_complete (or the user aborted via end-workflow's completion-confirmed checkpoint)
+context_to_preserve[2]:
+  - client_workflow_completed - Whether the client workflow has finalised
+  - pending_checkpoint_handle - The most recently yielded checkpoint (cleared after each iteration)
