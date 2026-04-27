@@ -133,14 +133,12 @@ export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the skill produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
 
-/** Operation definition: a named operation with description, inputs, output, procedure, tools, and optional harness-specific implementations and freeform prose. */
+/** Operation definition: a named operation with description, inputs, output, procedure, tools, errors, rules, and optional reference prose. */
 export const OperationInputSchema = z.object({
 }).catchall(z.string().describe('Input name → description'));
 
 export const OperationOutputSchema = z.object({
 }).catchall(z.string().describe('Output name → description'));
-
-export const OperationHarnessSchema = z.record(z.string().describe('Harness name → implementation instruction'));
 
 export const OperationDefinitionSchema = z.object({
   description: z.string().describe('What this operation does'),
@@ -151,8 +149,7 @@ export const OperationDefinitionSchema = z.object({
   resources: z.array(z.string()).optional().describe('Resource refs (e.g., "meta/05") this operation needs. Resources are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
   errors: z.record(ErrorDefinitionSchema).optional().describe('Errors this operation can encounter, keyed by error name. Each entry is { cause, recovery, ... }. Errors are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
   rules: RulesDefinitionSchema.optional().describe('Behavioural rules specific to this operation. Scoped per-operation so role-specific rules do not leak across orchestrator / worker bundles.'),
-  prose: z.string().optional().describe('Freeform markdown content for tables, examples, and reference material specific to this operation'),
-  harness: OperationHarnessSchema.optional().describe('Harness-specific implementations keyed by harness name (cursor, cline, generic, ...)'),
+  prose: z.string().optional().describe('Freeform markdown content for tables, examples, harness-specific implementations, and any reference material specific to this operation that does not fit the structured fields.'),
   note: z.string().optional().describe('Additional notes about the operation'),
 });
 

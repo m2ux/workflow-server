@@ -167,12 +167,7 @@
         },
         "prose": {
           "type": "string",
-          "description": "Freeform markdown content for tables, examples, and reference material specific to this operation"
-        },
-        "harness": {
-          "type": "object",
-          "additionalProperties": { "type": "string" },
-          "description": "Harness-specific implementations keyed by harness name (cursor, cline, generic, …)"
+          "description": "Freeform markdown content for tables, examples, harness-specific implementations, and any reference material specific to this operation that does not fit the structured fields."
         },
         "note": {
           "type": "string",
