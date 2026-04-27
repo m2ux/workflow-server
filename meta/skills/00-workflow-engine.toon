@@ -142,34 +142,34 @@ operations:
       - "Compose sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items"
 
   persist:
-    description: "Write the current session state to workflow-state.toon"
-    inputs[2]:
+    description: "Write the current session state to workflow-state.toon using agent-managed file operations"
+    inputs[3]:
       - session_token: "The current session token"
       - planning_folder_path: "Absolute path to the planning folder"
+      - state: "Current variable state, completed activities, and history to persist"
     procedure[1]:
-      - "Call save_state({ session_token, planning_folder_path })"
+      - "Write the session token and state to {planning_folder_path}/workflow-state.toon using agent file tools (Write). Include: sessionToken, workflowId, variables, completedActivities, savedAt (ISO 8601)."
     tools:
-      workflow-server[1]:
-        - save_state
-    resources[1]:
-      - "meta/workflow-state-format"
+      harness[1]:
+        - Write
     rules:
-      no-direct-state-io: "NEVER read or write workflow-state.toon directly. The save_state and restore_state MCP tools enforce schema, encryption, and path validation."
+      state-format: "The workflow-state.toon file is a plain-text key-value file. Write sessionToken, workflowId, and all variable assignments as key: value pairs, one per line. No server-side encryption — the session token is already HMAC-signed."
 
   restore:
-    description: "Load saved variables from workflow-state.toon into the current session"
+    description: "Load saved state from workflow-state.toon and resume via start_session token inheritance"
     inputs[2]:
-      - session_token: "The current session token"
+      - workflow_id: "The workflow ID to resume"
       - file_path: "Absolute path to the workflow-state.toon file"
     output[1]:
-      - state: "Parsed state object with variables, completed activities, and history"
-    procedure[1]:
-      - "Call restore_state({ session_token, file_path })"
+      - session_token: "Resumed session token with inherited state"
+    procedure[2]:
+      - "Read workflow-state.toon and extract the sessionToken field"
+      - "Call start_session({ workflow_id, session_token: saved_session_token, agent_id: 'orchestrator' }) to inherit the saved session position and checkpoint state"
     tools:
+      harness[1]:
+        - Read
       workflow-server[1]:
-        - restore_state
-    resources[1]:
-      - "meta/workflow-state-format"
+        - start_session
 
   dispatch-activity:
     description: "Transition the session to a target activity and spawn a worker for it"
@@ -231,8 +231,6 @@ operations:
     procedure[2]:
       - "version-control::commit-regular-files for changes under .engineering/artifacts/ with message 'docs(<workflow-id>): <activity-id> artifacts'"
       - "Invoke workflow-engine::persist with the current session_token and planning_folder_path"
-    resources[1]:
-      - "meta/workflow-state-format"
     rules:
       persist-after-every-activity: "After every completed activity (post commit-artifacts), invoke workflow-engine::persist. Skipping makes the session unrecoverable on restart."
 
@@ -356,4 +354,4 @@ rules:
   use-most-recent-token: "Each tool call returns a NEW token (in the response body and _meta.session_token). The next call MUST use that new token. Reusing a stale token causes HMAC verification failure."
   token-is-opaque: "Treat the session token as an opaque string. NEVER parse, decode, or modify its contents. Session identity is embedded within the token; there is no separate session_id field."
   validation-warnings: "Check _meta.validation in each response. Warnings are advisory but should be addressed."
-  resource-loading-via-tool: "Resource refs returned in operation bodies (e.g., 'meta/workflow-state-format') are lightweight pointers. Load full content via get_resource({ session_token, resource_id })."
+  resource-loading-via-tool: "Resource refs returned in operation bodies (e.g., 'meta/activity-worker-prompt') are lightweight pointers. Load full content via get_resource({ session_token, resource_id })."
