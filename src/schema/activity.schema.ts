@@ -37,17 +37,16 @@ export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 // Step schema
 export const StepSchema = z.object({
   id: z.string().describe('Unique identifier for this step'),
-  name: z.string().describe('Human-readable step name'),
-  description: z.string().optional().describe('Detailed guidance for executing this step'),
-  skill: z.string().optional().describe('LEGACY: Skill ID to apply for this step. Prefer the operation field.'),
-  operation: z.string().optional().describe('Operation reference in skill-id::operation-name form (e.g., workflow-orchestrator::evaluate-transition). Operations are loaded via resolve_operations.'),
+  name: z.string().optional().describe('LEGACY: Human-readable step name. Optional — id + description are usually sufficient.'),
+  description: z.string().optional().describe('Detailed guidance for executing this step. Carries inline operation invocations of the form `skill-id::operation-name(arg: {var}, ...)` when a step wraps a known operation.'),
+  skill: z.string().optional().describe('LEGACY: Skill ID to apply for this step. Prefer inline operation invocation in description.'),
   checkpoint: z.string().optional().describe('Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step.'),
   required: z.boolean().default(true),
-  condition: ConditionSchema.optional().describe('Condition that must be true for this step to execute'),
+  when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated against current variable state at runtime.'),
+  condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons.'),
   actions: z.array(ActionSchema).optional(),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this step'),
-  skill_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('LEGACY: Arguments to pass to the skill. Prefer args.'),
-  args: z.record(z.unknown()).optional().describe('Arguments to pass to the operation when executing this step'),
+  skill_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('LEGACY: Arguments to pass to the skill. Prefer inline operation invocation in description.'),
 });
 export type Step = z.infer<typeof StepSchema>;
 

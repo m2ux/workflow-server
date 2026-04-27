@@ -45,23 +45,23 @@
         },
         "name": {
           "type": "string",
-          "description": "Human-readable step name"
+          "description": "LEGACY: Human-readable step name. Optional — id + description are usually sufficient."
         },
         "description": {
           "type": "string",
-          "description": "Detailed guidance for executing this step"
+          "description": "Detailed guidance for executing this step. Carries inline operation invocations of the form `skill-id::operation-name(arg: {var}, ...)` when a step wraps a known operation."
         },
         "skill": {
           "type": "string",
-          "description": "LEGACY: Skill ID to apply for this step. Prefer the operation field."
+          "description": "LEGACY: Skill ID to apply for this step. Prefer inline operation invocation in description."
         },
-        "operation": {
+        "when": {
           "type": "string",
-          "description": "Operation reference in skill-id::operation-name form (e.g., workflow-orchestrator::evaluate-transition). Operations are loaded via resolve_operations."
+          "description": "Inline boolean expression that gates this step (e.g., 'has_saved_state == true'). Evaluated against current variable state at runtime."
         },
         "condition": {
           "$ref": "condition.schema.json",
-          "description": "Condition that must be true for this step to execute. If false, the step is skipped."
+          "description": "LEGACY: Structured condition. Prefer the `when` inline expression for simple comparisons."
         },
         "checkpoint": {
           "type": "string",
@@ -89,15 +89,10 @@
           "additionalProperties": {
             "type": ["string", "number", "boolean"]
           },
-          "description": "LEGACY: Arguments to pass to the skill. Prefer args."
-        },
-        "args": {
-          "type": "object",
-          "additionalProperties": true,
-          "description": "Arguments to pass to the operation when executing this step"
+          "description": "LEGACY: Arguments to pass to the skill. Prefer inline operation invocation in description."
         }
       },
-      "required": ["id", "name"],
+      "required": ["id"],
       "additionalProperties": false
     },
     "checkpointOption": {
