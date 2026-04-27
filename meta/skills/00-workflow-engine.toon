@@ -1,5 +1,5 @@
 id: workflow-engine
-version: 4.0.0
+version: 5.0.0
 capability: Operations and rules for workflow execution — session lifecycle, state persistence, activity dispatch, transition evaluation, checkpoint flow
 
 description: "Capability skill bundling everything needed to execute a workflow's structured flow. Operations cover session token mechanics (implicit), state persistence (persist/restore), activity dispatch and transition evaluation, the post-activity commit-and-persist hook, sub-workflow handling, and the full checkpoint protocol (yield, bubble, present-to-user, respond, resume). Rules cover token mechanics, checkpoint discipline, state-mutation invariants, and orchestrator/worker behavioural boundaries. Each operation is a short linear procedure invoking a small set of MCP / harness / shell tools."
@@ -74,6 +74,8 @@ operations:
       stale_token:
         cause: "HMAC signature verification failed (server restarted with a new signing key)"
         recovery: "Call start_session({ workflow_id, agent_id }) for a fresh session; reconstruct state from the on-disk workflow-state.toon via workflow-engine::restore."
+    rules:
+      stale-token-recovery: "On HMAC signature verification failure, the server has restarted. Call start_session({ workflow_id, agent_id }) for a fresh session and reconstruct state from the on-disk state file."
 
   create-session:
     description: "Create a fresh client session as a child of the meta session"
@@ -151,6 +153,8 @@ operations:
         - save_state
     resources[1]:
       - "meta/workflow-state-format"
+    rules:
+      no-direct-state-io: "NEVER read or write workflow-state.toon directly. The save_state and restore_state MCP tools enforce schema, encryption, and path validation."
 
   restore:
     description: "Load saved variables from workflow-state.toon into the current session"
@@ -195,6 +199,12 @@ operations:
       state_desync:
         cause: "Worker reports variable changes conflicting with orchestrator state"
         recovery: "Worker values take precedence (the worker has ground truth from user interaction)."
+    rules:
+      step-manifest-required: "When calling next_activity, include a step_manifest listing each completed step's id and output summary."
+      reject-empty-checkpoints: "If an activity defines required checkpoints and the worker returns checkpoints_responded as empty, REJECT the result and resume the worker."
+      no-get-activity-from-orchestrator: "Workflow-orchestrators NEVER call get_activity. The activity definition is the worker's domain. Orchestrators need only the activity_id (from initialActivity or transitions) to call next_activity and compose the worker prompt."
+      no-pre-load-skills: "NEVER call get_skill or get_skills to pre-load skills. The worker self-bootstraps via get_activity, which bundles the operations the activity needs."
+      variable-mutation-source: "Variables mutate from two sources only: checkpoint option effects (setVariable) and worker activity_complete results (variables_changed). Never mutate state through ad-hoc reasoning."
 
   evaluate-transition:
     description: "Pick the next activity from the current activity's transitions[]"
@@ -223,6 +233,8 @@ operations:
       - "Invoke workflow-engine::persist with the current session_token and planning_folder_path"
     resources[1]:
       - "meta/workflow-state-format"
+    rules:
+      persist-after-every-activity: "After every completed activity (post commit-artifacts), invoke workflow-engine::persist. Skipping makes the session unrecoverable on restart."
 
   handle-sub-workflow:
     description: "Dispatch a child workflow with parent context"
@@ -263,6 +275,8 @@ operations:
     tools:
       workflow-server[1]:
         - yield_checkpoint
+    rules:
+      checkpoint-handle-distinct-from-session: "yield_checkpoint returns a checkpoint_handle (HMAC-signed, contains '.'). present_checkpoint and respond_checkpoint take a checkpoint_handle parameter, NOT a session_token. Never substitute one for the other."
 
   resume-from-checkpoint:
     description: "Continue execution after the orchestrator resolves a checkpoint"
@@ -277,6 +291,8 @@ operations:
     tools:
       workflow-server[1]:
         - resume_checkpoint
+    rules:
+      resume-checkpoint-uses-handle: "resume_checkpoint takes the checkpoint_handle as its session_token argument (the handle IS the worker's advanced token with the checkpoint encoded)."
 
   bubble-checkpoint-up:
     description: "Forward a worker's checkpoint to the parent (meta) orchestrator without resolving it"
@@ -288,6 +304,8 @@ operations:
       - "Receive the worker's <checkpoint_yield> block and extract the checkpoint_handle"
       - "Emit a <checkpoint_yield> block containing the SAME checkpoint_handle (do not modify it)"
       - "STOP — wait to be resumed by the parent with the resolved effects"
+    rules:
+      no-direct-interaction: "Sub-agent orchestrators NEVER prompt the user directly. Surface checkpoints by bubbling the worker's checkpoint_handle up unchanged."
 
   present-checkpoint-to-user:
     description: "Load checkpoint details and present them to the user"
@@ -309,6 +327,10 @@ operations:
       invalid_checkpoint_handle:
         cause: "present_checkpoint returned 'Invalid session token' or 'missing signature'"
         recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
+    rules:
+      no-auto-resolution: "NEVER auto-resolve a checkpoint. The user MUST explicitly select an option (or the autoAdvanceMs timer MUST fully elapse for advisory checkpoints)."
+      apply-effects-immediately: "Apply the resolved effects to internal state on receipt, then pass them down to the orchestrator/worker."
+      checkpoint-handle-distinct-from-session: "present_checkpoint takes a checkpoint_handle parameter, NOT a session_token. The handle is the HMAC-signed token returned by yield_checkpoint (contains '.')."
 
   respond-checkpoint:
     description: "Send the user's selection back to the server"
@@ -326,25 +348,12 @@ operations:
       invalid_checkpoint_handle:
         cause: "respond_checkpoint returned 'Invalid session token' or 'missing signature'"
         recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
+    rules:
+      no-option-hallucination: "If respond_checkpoint returns 'Invalid option', STOP. Call present_checkpoint on the same handle to retrieve valid options. Never guess."
 
 rules:
   token-passes-on-each-call: "EVERY tool call (other than discover, list_workflows, start_session, health_check) requires a session_token parameter."
   use-most-recent-token: "Each tool call returns a NEW token (in the response body and _meta.session_token). The next call MUST use that new token. Reusing a stale token causes HMAC verification failure."
   token-is-opaque: "Treat the session token as an opaque string. NEVER parse, decode, or modify its contents. Session identity is embedded within the token; there is no separate session_id field."
-  stale-token-recovery: "On HMAC signature verification failure, the server has restarted. Call start_session({ workflow_id, agent_id }) for a fresh session and reconstruct state from the on-disk state file."
-  checkpoint-handle-distinct-from-session: "yield_checkpoint returns a checkpoint_handle (HMAC-signed, contains '.'). present_checkpoint and respond_checkpoint take a checkpoint_handle parameter, NOT a session_token. Never substitute one for the other."
-  resume-checkpoint-uses-handle: "resume_checkpoint takes the checkpoint_handle as its session_token argument (the handle IS the worker's advanced token with the checkpoint encoded)."
   validation-warnings: "Check _meta.validation in each response. Warnings are advisory but should be addressed."
-  step-manifest-required: "When calling next_activity, include a step_manifest listing each completed step's id and output summary."
-  resource-loading-via-tool: "Skill _resources arrays are lightweight references. Load full content via get_resource({ session_token, resource_id })."
-  variable-mutation-source: "Variables mutate from two sources only: checkpoint option effects (setVariable) and worker activity_complete results (variables_changed). Never mutate state through ad-hoc reasoning."
-  apply-effects-immediately: "The orchestrator applies checkpoint effects to internal state on receipt, then includes updated values in subsequent worker dispatches."
-  persist-after-every-activity: "After every completed activity (post commit-artifacts), invoke workflow-engine::persist. Skipping makes the session unrecoverable on restart."
-  no-direct-state-io: "NEVER read or write workflow-state.toon directly. The save_state and restore_state MCP tools enforce schema, encryption, and path validation."
-  reject-empty-checkpoints: "If an activity defines required checkpoints and the worker returns checkpoints_responded as empty, REJECT the result and resume the worker."
-  no-get-activity-from-orchestrator: "Workflow-orchestrators NEVER call get_activity. The activity definition is the worker's domain. Orchestrators need only the activity_id (from initialActivity or transitions) to call next_activity and compose the worker prompt."
-  no-pre-load-skills: "NEVER call get_skill or get_skills to pre-load skills. The worker self-bootstraps via get_activity, which bundles the operations the activity needs."
-  no-continuation-after-yield: "After emitting </checkpoint_yield>, STOP all execution. No further tool calls until you are resumed by the parent."
-  no-direct-interaction: "Workflow-orchestrators run as sub-agents and NEVER prompt the user directly. Surface checkpoints by bubbling the worker's checkpoint_handle up."
-  no-auto-resolution: "Meta-orchestrators NEVER auto-resolve checkpoints. Even if the answer seems obvious, the user MUST explicitly select an option (or the autoAdvanceMs timer MUST fully elapse for advisory checkpoints)."
-  no-option-hallucination: "If respond_checkpoint returns 'Invalid option', STOP. Call present_checkpoint on the same handle to retrieve valid options. Never guess."
+  resource-loading-via-tool: "Resource refs returned in operation bodies (e.g., 'meta/workflow-state-format') are lightweight pointers. Load full content via get_resource({ session_token, resource_id })."
