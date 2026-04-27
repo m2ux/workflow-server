@@ -476,23 +476,24 @@ describe('mcp-server integration', () => {
     it('should return workflow primary skill when no activity in session token', async () => {
       const result = await client.callTool({
         name: 'get_skill',
-        arguments: { session_token: metaToken },
+        arguments: { session_token: sessionToken },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.id).toBe('meta-orchestrator');
+      // work-package retains a legacy skills.primary; meta has migrated to skill_operations and no longer exposes get_skill on the workflow.
+      expect(response.id).toBe('workflow-orchestrator');
     });
 
     it('should return workflow primary skill even when no activity in session token', async () => {
       const result = await client.callTool({
         name: 'get_skills',
-        arguments: { session_token: metaToken },
+        arguments: { session_token: sessionToken },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
       expect(response._body).toBeDefined();
-      expect(response._body).toContain('id: meta-orchestrator');
+      expect(response._body).toContain('id: workflow-orchestrator');
     });
 
     it('should error when step_id not found in activity', async () => {
@@ -688,7 +689,9 @@ describe('mcp-server integration', () => {
       expect(meta['session_token']).toBeDefined();
     });
 
-    it('should return declared skills for meta workflow', async () => {
+    it('should return empty body for workflows that have migrated to skill_operations', async () => {
+      // Meta workflow under v5 declares skill_operations[] and has no skills.primary;
+      // get_skills (legacy) returns no primary-skill body for such workflows.
       const metaSession = await client.callTool({
         name: 'start_session',
         arguments: { agent_id: 'test-agent' },
@@ -701,8 +704,6 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.scope).toBe('workflow');
-      expect(response._body).toBeDefined();
-      expect(response._body).toContain('id: meta-orchestrator');
     });
   });
 

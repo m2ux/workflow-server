@@ -145,8 +145,11 @@
         },
         "tools": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/toolDefinition" },
-          "description": "Tool references pertinent to this operation"
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": "Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys 'shell' (regular shell programs) and 'harness' (agent built-ins like Read, Write, AskQuestion)."
         },
         "prose": {
           "type": "string",

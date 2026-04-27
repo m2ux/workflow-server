@@ -147,7 +147,7 @@ export const OperationDefinitionSchema = z.object({
   inputs: z.array(OperationInputSchema).optional().describe('Positional input entries — each item is a single-key object mapping input name to its description'),
   output: z.array(OperationOutputSchema).optional().describe('Output entries produced by this operation — same shape as inputs'),
   procedure: z.array(z.string()).optional().describe('Ordered imperative bullets describing how to perform the operation'),
-  tools: z.record(ToolDefinitionSchema).optional().describe('Tool references pertinent to this operation (replaces flat tool reference resources)'),
+  tools: z.record(z.array(z.string())).optional().describe('Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys "shell" (regular shell programs) and "harness" (agent built-ins like Read, Write, AskQuestion). Provenance hint only — tool specs come from the tool descriptions themselves.'),
   prose: z.string().optional().describe('Freeform markdown content for tables, examples, and reference material specific to this operation'),
   harness: OperationHarnessSchema.optional().describe('Harness-specific implementations keyed by harness name (cursor, cline, generic, ...)'),
   note: z.string().optional().describe('Additional notes about the operation'),
