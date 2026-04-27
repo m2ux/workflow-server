@@ -16,8 +16,9 @@ describe('activity-loader', () => {
         expect(result.value.id).toBe('discover-session');
         expect(result.value.version).toBeDefined();
         expect(result.value.name).toBeDefined();
-        // discover-session uses the new operations model (no skills.primary)
-        expect((result.value as { operations?: unknown }).operations).toBeDefined();
+        // discover-session has migrated off skills.primary; operations[] may be omitted entirely
+        // when the activity relies solely on the core worker operations bundled by get_activity.
+        expect((result.value as { skills?: unknown }).skills).toBeUndefined();
         expect(result.value.workflowId).toBe('meta');
       }
     });
