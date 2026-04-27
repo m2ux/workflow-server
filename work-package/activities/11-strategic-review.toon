@@ -10,6 +10,9 @@ recognition[3]:
 required: true
 estimatedTime: 15-30m
 skills:
+  supporting[2]:
+    - manage-git
+    - review-strategy
 artifacts[2]:
   - id: strategic-review-doc
     name: "strategic-review-{n}.md"
@@ -23,12 +26,10 @@ steps[9]:
   - id: diff-review
     name: Review diff
     description: "Examine all changes in the PR for scope and relevance"
-    skill: review-strategy
     checkpoint: unsigned-commits-prompt
   - id: resign-unsigned-pr-commits
     name: Re-sign unsigned commits
     description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_pr to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
-    skill: manage-git
     condition:
       type: simple
       variable: resign_unsigned_commits_requested
@@ -37,19 +38,15 @@ steps[9]:
   - id: identify-artifacts
     name: Identify artifacts
     description: "Find investigation artifacts, over-engineering, orphaned infrastructure"
-    skill: review-strategy
   - id: ensure-changes-folder-entry
     name: Ensure changes/ fragment when required
     description: "If a directory named changes exists at the repository root of target_path (Towncrier, release notes fragments, or similar), inspect existing fragment filenames and bodies. Determine whether this work package already has a matching fragment (same issue/ticket id in the name or clearly linked content). If not, add one new fragment under changes/ that matches the naming pattern and structure (sections, bullets, RST/Markdown style) of the existing files. Commit it on the feature branch if appropriate. If there is no changes/ directory, skip this step."
-    skill: review-strategy
   - id: document-findings
     name: Document findings
     description: "Create strategic-review-{n}.md with items that should be removed or simplified"
-    skill: review-strategy
   - id: document-cleanup-recommendations
     name: Document Cleanup Recommendations
     description: "Document recommended cleanup actions as review feedback. Do NOT apply changes."
-    skill: review-strategy
     condition:
       type: simple
       variable: is_review_mode
@@ -58,7 +55,6 @@ steps[9]:
   - id: apply-cleanup
     name: Apply cleanup
     description: "If cleanup needed, remove identified artifacts and update review document with actions taken"
-    skill: review-strategy
     condition:
       type: simple
       variable: is_review_mode
@@ -67,7 +63,6 @@ steps[9]:
   - id: create-architecture-summary
     name: Create architecture summary
     description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
-    skill: review-strategy
   - id: analyze-strategic-findings
     name: Analyze Strategic Findings
     description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly."

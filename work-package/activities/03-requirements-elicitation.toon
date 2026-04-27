@@ -10,33 +10,32 @@ recognition[3]:
 required: false
 estimatedTime: 15-30m
 skills:
+  supporting[4]:
+    - elicit-requirements
+    - manage-artifacts
+    - reconcile-assumptions
+    - review-assumptions
 steps[6]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion
     description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
-    skill: elicit-requirements
     checkpoint: stakeholder-transcript
   - id: elicit-requirements
     name: Elicit requirements through conversation
     description: "Iterate through question domains, asking one question at a time. Use stakeholder transcript as context."
-    skill: elicit-requirements
     checkpoint: domain-iteration
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
-    skill: review-assumptions
   - id: create-document
     name: Create requirements document
     description: "Create requirements document using elicitation output template"
-    skill: manage-artifacts
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add requirements-phase assumptions to the assumptions log"
-    skill: review-assumptions
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
-    skill: reconcile-assumptions
     checkpoint: elicitation-complete
 artifacts[1]:
   - id: requirements-document
@@ -56,7 +55,6 @@ loops[2]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
         description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
-        skill: reconcile-assumptions
   - id: domain-iteration
     name: Question Domain Iteration
     type: forEach
@@ -67,11 +65,9 @@ loops[2]:
       - id: ask-question
         name: Ask domain question
         description: "Present ONE question from current domain. Wait for response before proceeding."
-        skill: elicit-requirements
       - id: record-response
         name: Record response
         description: "Capture answer or mark as skipped. Adapt follow-up based on response."
-        skill: elicit-requirements
 decisions[1]:
   - id: user-intent
     name: User Intent Check

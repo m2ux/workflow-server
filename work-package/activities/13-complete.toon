@@ -28,11 +28,15 @@ artifacts[4]:
     location: reviews
     description: "PR review analysis document"
 skills:
+  supporting[4]:
+    - conduct-retrospective
+    - create-adr
+    - finalize-documentation
+    - manage-git
 steps[10]:
   - id: create-adr
     name: Create Architecture Decision Record
     description: "Create ADR at .engineering/artifacts/adr/ documenting the architectural decision, rationale, and alternatives."
-    skill: create-adr
     condition:
       type: and
       conditions[2]:
@@ -53,7 +57,6 @@ steps[10]:
   - id: update-adr-status
     name: Update ADR status to Accepted
     description: "Update ADR status from Proposed to Accepted."
-    skill: create-adr
     condition:
       type: and
       conditions[2]:
@@ -74,7 +77,6 @@ steps[10]:
   - id: finalize-test-plan
     name: Finalize test plan with source links
     description: "Add hyperlinks to actual test source file locations in the test plan."
-    skill: finalize-documentation
     condition:
       type: simple
       variable: is_review_mode
@@ -83,7 +85,6 @@ steps[10]:
   - id: create-complete-doc
     name: Create completion document
     description: "Create COMPLETE.md summarizing deliverables, test coverage, deferred items, and known limitations."
-    skill: finalize-documentation
     condition:
       type: simple
       variable: is_review_mode
@@ -92,7 +93,6 @@ steps[10]:
   - id: ensure-docs
     name: Ensure inline documentation on public APIs
     description: "Verify public APIs have inline documentation — add missing doc comments."
-    skill: finalize-documentation
     condition:
       type: simple
       variable: is_review_mode
@@ -101,19 +101,15 @@ steps[10]:
   - id: capture-history
     name: Capture session history
     description: "If metadata repository exists, capture session history. Private — never committed."
-    skill: conduct-retrospective
   - id: retrospective
     name: Workflow retrospective
     description: "Conduct retrospective: what went well, what could improve, lessons learned. Skip if trivial session."
-    skill: conduct-retrospective
   - id: update-status
     name: Update work package plan status
     description: "After PR merged, update work package plan status to reflect completion."
-    skill: conduct-retrospective
   - id: resign-artifact-commits
     name: Re-sign all planning artifact commits
     description: "Apply gpg-resign-range to the parent (engineering) repo to re-sign every unsigned artifact commit made during this work package. Resolve MERGE_BASE as the point where the current engineering branch diverged from its default branch. Run: git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE in the engineering repo root. Verify all commits show G with git log --format='%h %G? %s' MERGE_BASE..HEAD, then push with --force-with-lease. This converts the full unsigned artifact history to a signed history in one operation. Requires the GPG agent to be unlocked — the user is present at this stage for post-review work."
-    skill: manage-git
     condition:
       type: simple
       variable: is_review_mode
@@ -122,7 +118,6 @@ steps[10]:
   - id: select-next
     name: Select next work package
     description: "Identify and select next work package if applicable. Prepare context for transition."
-    skill: conduct-retrospective
 exitActions[1]{action,message}:
   log,Work package workflow complete
 outcome[6]:

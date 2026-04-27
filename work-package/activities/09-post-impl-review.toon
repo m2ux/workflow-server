@@ -17,6 +17,13 @@ rules[4]:
 entryActions[1]{action,message}:
   log,Starting post-implementation review
 skills:
+  supporting[6]:
+    - prism/structural-analysis
+    - review-code
+    - review-diff
+    - review-test-suite
+    - summarize-architecture
+    - version-control
 artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"
@@ -46,18 +53,15 @@ steps[7]:
   - id: manual-diff-review
     name: Manual Diff Review
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
-    skill: review-diff
     required: true
     checkpoint: file-index-table
   - id: code-review
     name: Code Review
     description: "Perform comprehensive code review of all implementation changes. Create code-review.md report."
-    skill: review-code
     required: true
   - id: structural-analysis-inline
     name: Structural Analysis (Single Pass)
     description: "Load the L12 structural lens from the prism workflow (prism resource 00 — attached to skill response via get_skill) and apply it to the changed files. Produces conservation law, meta-law, and classified bug table. Write findings to structural-findings.md. This inline pass runs for simple and moderate complexity work packages."
-    skill: prism/structural-analysis
     required: true
     condition:
       type: not
@@ -85,12 +89,10 @@ steps[7]:
   - id: test-suite-review
     name: Test Suite Review
     description: "Review test quality and create test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
-    skill: review-test-suite
     required: true
   - id: architecture-summary
     name: Architecture Summary
     description: "Create architecture-summary.md if the diff introduces new modules, changes dependency structure, or modifies public interfaces. Skipped for minor changes, documentation, or configuration."
-    skill: summarize-architecture
     required: false
     condition:
       type: simple
@@ -191,7 +193,6 @@ loops[1]:
       - id: apply-fixes
         name: Apply Fixes
         description: "Implement the code review findings (needs_code_fixes) and/or test improvements (needs_test_improvements) selected by the user. Commit changes."
-        skill: version-control
         required: true
       - id: reset-fix-flags
         name: Reset Fix Flags
@@ -200,22 +201,18 @@ loops[1]:
       - id: regenerate-index
         name: Regenerate Change Block Index
         description: "Re-parse git diff and regenerate change-block-index.md reflecting the new changes."
-        skill: version-control
         required: true
       - id: re-manual-diff-review
         name: Re-run Manual Diff Review
         description: "Present updated file index to user for manual diff review of the fix changes."
-        skill: review-diff
         required: true
       - id: re-code-review
         name: Re-run Code Review
         description: "Re-run code review on the updated diff to verify fixes resolved prior findings. May set needs_code_fixes if new issues are found."
-        skill: review-code
         required: true
       - id: re-test-suite-review
         name: Re-run Test Suite Review
         description: "Re-run test suite review to verify fix quality. May set needs_test_improvements if new issues are found."
-        skill: review-test-suite
         required: true
 decisions[1]:
   - id: blocker-gate

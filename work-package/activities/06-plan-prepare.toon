@@ -10,49 +10,48 @@ recognition[3]:
 required: true
 estimatedTime: 20-45m
 skills:
+  supporting[7]:
+    - classify-problem
+    - create-plan
+    - create-test-plan
+    - manage-git
+    - reconcile-assumptions
+    - review-assumptions
+    - update-pr
 steps[10]:
   - id: apply-design
     name: Apply design framework
     description: Use design framework skill to structure the approach
-    skill: classify-problem
   - id: create-plan
     name: Create work package plan
     description: "Create work package plan document"
-    skill: create-plan
   - id: create-test-plan
     name: Create test plan
     description: "Create test plan document"
-    skill: create-test-plan
   - id: present-solution-overview
     name: Present Solution Overview
     description: "Synthesize and present a plain-language solution overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the solution does and how it addresses the problem. The second paragraph should explain how the fix works at a high level — what changes are made and what guarantees they provide. Do not use jargon without explanation. Base the overview on the work package plan, test plan, and design decisions made during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Solution Overview' section."
-    skill: create-plan
     actions[1]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during planning. Categories: Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions."
-    skill: review-assumptions
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add planning-phase assumptions to the assumptions log"
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
-    skill: reconcile-assumptions
   - id: create-todos
     name: Create TODO list from plan
     description: "Break down plan into actionable tasks and add to assumptions log for review"
-    skill: create-plan
   - id: sync-branch
     name: Sync feature branch with main
     description: Ensure feature branch is up to date with main
-    skill: manage-git
   - id: update-pr
     name: Update PR description
     description: "Update PR description with planning information. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template and populate with planning details (summary, motivation, planned changes, checklist, fork strategy)."
-    skill: update-pr
     checkpoint: approach-confirmed
 loops[1]:
   - id: assumption-reconciliation
@@ -68,7 +67,6 @@ loops[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
         description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
-        skill: reconcile-assumptions
 artifacts[2]:
   - id: plan-document
     name: work-package-plan.md

@@ -16,6 +16,12 @@ entryActions[1]:
   - action: log
     message: Starting issue management
 skills:
+  supporting[5]:
+    - atlassian-operations
+    - create-issue
+    - github-cli-protocol
+    - manage-artifacts
+    - manage-git
 steps[20]:
   - id: detect-review-mode
     name: Detect Review Mode
@@ -41,7 +47,6 @@ steps[20]:
   - id: initialize-target
     name: Initialize Target Directory
     description: "cd into target_path. Fetch origin and checkout the default branch (main/master). Pull latest. This ensures the target is at HEAD before creating a feature branch."
-    skill: manage-git
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type inside target_path: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
@@ -56,7 +61,6 @@ steps[20]:
   - id: verify-jira-issue
     name: Verify Jira Issue
     description: "Load the atlassian-operations supporting skill. Call getAccessibleAtlassianResources to obtain cloudId, then call getJiraIssue to verify the issue exists. Capture issue_number and issue_url."
-    skill: atlassian-operations
     condition:
       type: simple
       variable: issue_platform
@@ -69,7 +73,6 @@ steps[20]:
   - id: verify-github-issue
     name: Verify GitHub Issue
     description: "Run 'gh issue view <number>' to verify the issue exists. Capture issue_number and issue_url."
-    skill: github-cli-protocol
     condition:
       type: simple
       variable: issue_platform
@@ -78,7 +81,6 @@ steps[20]:
   - id: search-github-issue
     name: Search for linked GitHub issue
     description: "When the provided issue is a Jira ticket, search the target repo for a GitHub issue that references the Jira key. Run: gh issue list --search '<jira_issue_key>' --repo <target_repo> --json number,title,url --limit 5 inside target_path. Match against the Jira key appearing in the issue title or body. If a match is found set github_issue_found=true and capture github_issue_number and github_issue_url. If no match is found set github_issue_found=false."
-    skill: github-cli-protocol
     condition:
       type: simple
       variable: issue_platform
@@ -109,7 +111,6 @@ steps[20]:
   - id: create-github-issue-for-jira
     name: Create GitHub issue for Jira ticket
     description: "Create a GitHub issue in the target repo that mirrors the Jira ticket. Set issue_platform to 'github' temporarily so the create-issue skill routes to the GitHub protocol. The issue title should match the Jira ticket summary. The issue body should include a reference to the Jira ticket URL. After creation capture github_issue_number and github_issue_url, then restore issue_platform to 'jira'."
-    skill: create-issue
     condition:
       type: simple
       variable: needs_github_issue_creation
@@ -118,7 +119,6 @@ steps[20]:
   - id: create-issue
     name: Create Issue
     description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
-    skill: create-issue
     checkpoint: platform-selection
     condition:
       type: simple
@@ -128,7 +128,6 @@ steps[20]:
   - id: activate-issue
     name: Activate Issue
     description: "Transition the issue to 'In Progress' and assign it to the current user. (1) For Jira: call atlassianUserInfo to get the current user's account ID, then call editJiraIssue to set the assignee field to { accountId: <current_user_account_id> }. Next, call getTransitionsForJiraIssue to discover available transitions, find the one targeting 'In Progress' (or equivalent active status), and call transitionJiraIssue with that transition ID. (2) For GitHub: run 'gh issue edit <number> --add-assignee @me' to self-assign. Skip transition for GitHub (no built-in status workflow). (3) If the issue is already in progress or already assigned, skip the respective operation silently."
-    skill: atlassian-operations
     condition:
       type: simple
       variable: issue_skipped
@@ -143,11 +142,9 @@ steps[20]:
   - id: check-branch
     name: Check Current Branch
     description: "INSIDE target_path: Check if already on a feature branch (not main/master). Run 'git branch --show-current' and compare against main/master."
-    skill: manage-git
   - id: create-branch
     name: Create Feature Branch
     description: "INSIDE target_path: Create feature branch from the default branch with naming convention: type/issue-number-short-description."
-    skill: manage-git
     checkpoint: branch-check
     condition:
       type: and
@@ -163,7 +160,6 @@ steps[20]:
   - id: check-pr
     name: Check for Existing PR
     description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path. If a PR is found, set pr_exists=true and capture the PR number in existing_pr_number. If no PR is found, pr_exists remains false."
-    skill: github-cli-protocol
     checkpoint: pr-check
     condition:
       type: simple
@@ -177,7 +173,6 @@ steps[20]:
   - id: create-pr
     name: Create Draft PR
     description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names."
-    skill: github-cli-protocol
     checkpoint: pr-creation
     condition:
       type: and
@@ -193,7 +188,6 @@ steps[20]:
   - id: initialize-planning-folder
     name: Initialize Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title. Use attached resource 01 (readme) for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text."
-    skill: manage-artifacts
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"

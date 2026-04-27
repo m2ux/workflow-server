@@ -10,6 +10,11 @@ recognition[3]:
 required: false
 estimatedTime: 10-20m
 skills:
+  supporting[4]:
+    - analyze-implementation
+    - manage-artifacts
+    - reconcile-assumptions
+    - review-assumptions
 steps[12]:
   - id: checkout-baseline
     name: Checkout Baseline State
@@ -22,7 +27,6 @@ steps[12]:
   - id: document-expected-changes
     name: Document Expected Changes
     description: "Based on ticket requirements and baseline analysis, document what changes SHOULD be made to fulfill requirements. This becomes the reference for evaluating the actual PR."
-    skill: analyze-implementation
     condition:
       type: simple
       variable: is_review_mode
@@ -39,32 +43,25 @@ steps[12]:
   - id: review-implementation
     name: Review implementation
     description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture."
-    skill: analyze-implementation
   - id: evaluate-effectiveness
     name: Evaluate effectiveness
     description: "Gather evidence of existing performance: logs, metrics, tests, issues, comments"
-    skill: analyze-implementation
   - id: establish-baselines
     name: Establish baseline metrics
     description: "Establish quantitative measurements: performance, quality, usage, reliability"
-    skill: analyze-implementation
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during analysis. Categories: Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding."
-    skill: review-assumptions
   - id: document
     name: Create analysis document
     description: "Create implementation analysis document"
-    skill: manage-artifacts
     checkpoint: analysis-confirmed
   - id: update-assumptions-log
     name: Update assumptions log
     description: "Add analysis-phase assumptions to the assumptions log"
-    skill: manage-artifacts
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
-    skill: reconcile-assumptions
   - id: present-resolved-assumptions
     name: Present resolved assumptions
     description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."
@@ -74,7 +71,6 @@ steps[12]:
   - id: interview-open-assumptions
     name: Interview open assumptions
     description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the analysis-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
-    skill: review-assumptions
 loops[2]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
@@ -89,7 +85,6 @@ loops[2]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
         description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
-        skill: reconcile-assumptions
   - id: assumption-interview
     name: Assumption Interview Loop
     type: forEach
@@ -101,12 +96,10 @@ loops[2]:
       - id: present-assumption
         name: Present assumption to user
         description: "Present the current open assumption via the analysis-assumption-interview checkpoint."
-        skill: review-assumptions
         checkpoint: analysis-assumption-interview
       - id: record-response
         name: Record user response
         description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
-        skill: manage-artifacts
 artifacts[1]:
   - id: analysis-document
     name: implementation-analysis.md
