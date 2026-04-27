@@ -1,43 +1,58 @@
 id: harness-compat
-version: 1.1.0
-capability: "Abstract sub-agent dispatch operations — harness-independent vocabulary for spawning, continuing, and concurrently dispatching agents"
+version: 2.0.0
+capability: Abstract sub-agent dispatch operations — harness-independent vocabulary for spawning, continuing, and concurrently dispatching agents
 
-description: "Defines three canonical operations (spawn-agent, continue-agent, spawn-concurrent) with harness-specific implementation notes. All skills and activities reference these operation names rather than harness-specific tool syntax. The workflow-server session_token provides complete workflow-state continuity regardless of harness — harness-level resume is a context-window optimisation only, not a correctness requirement."
+description: "Three canonical operations (spawn-agent, continue-agent, spawn-concurrent) with harness-specific implementation notes attached to each. All skills and activities reference these operation names rather than harness-specific tool syntax."
 
 operations:
   spawn-agent:
-    description: "Dispatch a new isolated sub-agent with no prior context. ALWAYS dispatched as foreground — the calling orchestrator must block and wait for the result before proceeding."
+    description: "Dispatch a new isolated sub-agent with no prior context"
     inputs[2]:
       - prompt: "Full task prompt for the new agent"
       - description: "Short label for the agent's role (optional; useful for tracing)"
+    output[1]:
+      - result: "The sub-agent's final output (text, including any <checkpoint_yield> block) — captured when the agent yields or completes"
+    procedure[1]:
+      - "Use the harness mechanism (see `harness` block) to start a foreground sub-agent with the given prompt; block until it yields a checkpoint or returns a final result"
     harness:
-      cursor: "Task(subagent_type=generalPurpose, description=<description>, prompt=<prompt>) — omit run_in_background or set it to false. Foreground dispatch is required so checkpoint yields surface to the orchestrator."
+      cursor: "Task(subagent_type=generalPurpose, description=<description>, prompt=<prompt>) — omit run_in_background or set it to false"
       cline: "use_subagents({ prompt_1: <prompt> })"
-      generic: "Any mechanism the harness provides to start a new agent with the given prompt, blocking until the agent yields or completes."
+      generic: "Any harness mechanism that starts a new agent with the given prompt and blocks until the agent yields or completes"
+    rules:
+      foreground-always: "CRITICAL: spawn-agent MUST be dispatched as foreground (blocking). Never set run_in_background. Background dispatch silently breaks checkpoint delivery — the orchestrator never sees the worker's <checkpoint_yield>."
+      token-in-prompt: "When the spawned agent inherits a workflow session, ALWAYS include the session_token in the prompt. Server state is preserved by the token, not by the harness."
 
   continue-agent:
-    description: "Resume or extend an existing worker, preserving accumulated context where possible. ALWAYS dispatched as foreground. The workflow-server session_token provides complete workflow-state continuity regardless of harness — server-side state (activity, variables, checkpoints) is always recoverable from the token. Harness-level resume additionally preserves the agent's context window (accumulated codebase understanding, tool results) — a beneficial optimisation, not a correctness requirement."
+    description: "Resume an existing sub-agent, preserving accumulated context where the harness supports it"
     inputs[3]:
-      - agent_id: "Harness-assigned identifier for the worker to resume (harness-specific; may be unavailable on some harnesses)"
-      - session_token: "Workflow-server session token — ALWAYS include in the prompt for workflow-state continuity"
+      - agent_id: "Harness-assigned identifier for the agent to resume (harness-specific; may be unavailable on some harnesses)"
+      - session_token: "Workflow-server session token — included in the prompt for workflow-state continuity"
       - prompt: "Updated instructions or continuation context"
+    output[1]:
+      - result: "The resumed agent's next yield or final output"
+    procedure[1]:
+      - "Use the harness mechanism (see `harness` block) to resume the agent with the new prompt; block until it yields or completes"
     harness:
-      cursor: "Task(resume=<agent_id>) — preserves context window. Include session_token in the prompt for workflow-state continuity. Never set run_in_background."
-      generic: "spawn-agent with session_token prepended to prompt. Full workflow state is preserved by the token; the agent rebuilds codebase context from artifacts and tool calls."
-    note: "The session_token encodes complete workflow state. Server-side continuity is fully provided by the token — no harness dependency. Harness-level resume (context window preservation) is an optimisation only."
+      cursor: "Task(resume=<agent_id>) — preserves the agent's context window. Include session_token in the prompt. Never set run_in_background."
+      generic: "spawn-agent with session_token prepended to prompt. Full workflow state is preserved by the token; the agent rebuilds context from artifacts and tool calls."
+    rules:
+      foreground-always: "CRITICAL: continue-agent MUST be dispatched as foreground (blocking). Never set run_in_background."
+      token-in-prompt: "ALWAYS include the session_token in the prompt. The harness-level resume preserves the context window only — server-side workflow state lives in the token."
+      resume-is-optimisation: "Harness-level resume preserves the context window. Useful, not required for correctness — workflows must be correct without it."
 
   spawn-concurrent:
-    description: "Dispatch multiple independent agents simultaneously"
+    description: "Dispatch multiple independent agents in parallel"
     inputs[1]:
-      - agents: "Array of {description, prompt} objects — each becomes an independent sub-agent"
+      - agents: "Array of { description, prompt } objects — each becomes an independent sub-agent"
+    output[1]:
+      - results: "Array of agent results, one per dispatched agent"
+    procedure[1]:
+      - "Use the harness mechanism (see `harness` block) to dispatch all agents at once; block until all yield or complete"
     harness:
       cursor: "Multiple Task calls in a single response turn — the harness executes them in parallel"
-      generic: "Parallel invocations if the harness supports concurrent dispatch; sequential spawn-agent calls otherwise. Correctness is unaffected by sequencing — parallelism reduces wall-clock time only."
-    note: "Concurrent dispatch is a performance optimisation. Workflows are correct when agents are dispatched sequentially."
+      generic: "Parallel invocations when the harness supports concurrent dispatch; sequential spawn-agent calls otherwise"
+    rules:
+      parallelism-is-optimisation: "Concurrent dispatch reduces wall-clock time. Not required for correctness — sequential fallback is always valid."
 
 rules:
   harness-independence: "All skills and activities MUST reference operation names from this skill (spawn-agent, continue-agent, spawn-concurrent) rather than harness-specific tool syntax. Harness-specific implementation details belong in this skill only."
-  token-always-included: "ALWAYS include the session_token in the prompt for continue-agent calls, and for any spawn-agent call that inherits a workflow session. Server state is preserved by the token, not by the harness."
-  foreground-always: "CRITICAL: spawn-agent and continue-agent MUST always be dispatched as foreground (blocking). Never set run_in_background (or equivalent) for workflow sub-agents. The entire checkpoint architecture depends on the orchestrator blocking until the sub-agent yields a checkpoint or completes — background dispatch silently breaks checkpoint delivery."
-  resume-is-optimisation: "Harness-level resume (e.g. Cursor Task resume) preserves the context window — useful but not required for correctness. Workflows must be correct without it."
-  parallelism-is-optimisation: "Concurrent dispatch reduces wall-clock time but is not required for correctness. Sequential fallback is always valid."
