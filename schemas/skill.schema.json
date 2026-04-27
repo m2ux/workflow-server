@@ -156,6 +156,11 @@
           "items": { "type": "string" },
           "description": "Resource refs (e.g., 'meta/05') this operation needs. Resources are scoped per-operation."
         },
+        "errors": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/errorDefinition" },
+          "description": "Errors this operation can encounter, keyed by error name. Errors are scoped per-operation."
+        },
         "prose": {
           "type": "string",
           "description": "Freeform markdown content for tables, examples, and reference material specific to this operation"

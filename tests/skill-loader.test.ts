@@ -52,8 +52,11 @@ describe('skill-loader', () => {
         expect(skill.rules).toBeDefined();
         expect(Object.keys(skill.rules!).length).toBeGreaterThanOrEqual(3);
 
-        expect(skill.errors).toBeDefined();
-        expect(Object.keys(skill.errors!).length).toBeGreaterThanOrEqual(3);
+        // Errors live per-operation in v4+. Verify at least one operation declares errors.
+        const opsWithErrors = Object.values(skill.operations!).filter(
+          (op) => (op as { errors?: Record<string, unknown> }).errors !== undefined,
+        );
+        expect(opsWithErrors.length).toBeGreaterThanOrEqual(1);
       }
     });
 
@@ -68,14 +71,18 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should have error recovery patterns', async () => {
+    it('should have per-operation error recovery patterns', async () => {
       const result = await readSkill('meta/workflow-engine', WORKFLOW_DIR);
-      
+
       expect(result.success).toBe(true);
-      if (result.success) {
-        for (const [errorName, errorInfo] of Object.entries(result.value.errors)) {
-          expect((errorInfo as Record<string, any>).cause, `${errorName} should have 'cause' field`).toBeDefined();
-          expect((errorInfo as Record<string, any>).recovery, `${errorName} should have 'recovery' field`).toBeDefined();
+      if (result.success && result.value.operations) {
+        for (const [opName, opDef] of Object.entries(result.value.operations)) {
+          const errors = (opDef as { errors?: Record<string, { cause?: string; recovery?: string }> }).errors;
+          if (!errors) continue;
+          for (const [errorName, errorInfo] of Object.entries(errors)) {
+            expect(errorInfo.cause, `${opName}::${errorName} should have 'cause' field`).toBeDefined();
+            expect(errorInfo.recovery, `${opName}::${errorName} should have 'recovery' field`).toBeDefined();
+          }
         }
       }
     });

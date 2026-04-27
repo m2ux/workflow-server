@@ -149,6 +149,7 @@ export const OperationDefinitionSchema = z.object({
   procedure: z.array(z.string()).optional().describe('Ordered imperative bullets describing how to perform the operation'),
   tools: z.record(z.array(z.string())).optional().describe('Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys "shell" (regular shell programs) and "harness" (agent built-ins like Read, Write, AskQuestion). Provenance hint only — tool specs come from the tool descriptions themselves.'),
   resources: z.array(z.string()).optional().describe('Resource refs (e.g., "meta/05") this operation needs. Resources are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
+  errors: z.record(ErrorDefinitionSchema).optional().describe('Errors this operation can encounter, keyed by error name. Each entry is { cause, recovery, ... }. Errors are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
   prose: z.string().optional().describe('Freeform markdown content for tables, examples, and reference material specific to this operation'),
   harness: OperationHarnessSchema.optional().describe('Harness-specific implementations keyed by harness name (cursor, cline, generic, ...)'),
   note: z.string().optional().describe('Additional notes about the operation'),
