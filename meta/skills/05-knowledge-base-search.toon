@@ -1,49 +1,61 @@
 id: knowledge-base-search
-version: 1.2.0
-capability: Optimise knowledge base searches by loading a pre-indexed domain map before querying concept-rag
+version: 2.2.0
+capability: Operations for targeted concept-rag searches via pre-indexed domain maps
 
-description: "This skill reduces concept-rag tool calls from 3-5 exploratory calls down to 2 targeted calls. Agents load a domain knowledge index from the local project's .engineering/resources/ directory, then use the pre-mapped source paths, concept terms, and search strategies to make a single targeted query. Domain indexes bridge the gap between natural terminology and the indexed concept strings in concept-rag."
+description: "Operations for searching the knowledge base. Domain indexes in .engineering/resources/ map natural terminology to indexed concept terms, reducing exploratory queries from 3-5 to 2 targeted ones."
 
-inputs[2]:
-  - id: search-topic
-    description: "The topic or question the agent needs to find in the knowledge base"
-  - id: domain-hint
-    description: "Optional domain hint to select the correct index resource (e.g., substrate, blockchain)"
-    required: false
+operations:
+  load-domain-index:
+    description: "Read the matching domain index file from .engineering/resources/"
+    inputs[1]:
+      - domain: "Domain hint (e.g., 'substrate', 'blockchain')"
+    output[1]:
+      - index: "Parsed source registry, concept lookup table, and topic clusters"
+    procedure[2]:
+      - "Locate {domain}-knowledge-index.md under .engineering/resources/"
+      - "Read the file and parse its source registry, concept table, and topic clusters"
+    tools:
+      harness[1]:
+        - Read
 
-protocol:
-  identify-domain[2]:
-    - Determine the domain from the search topic or domain-hint input
-    - "Match domain to an available knowledge index file in .engineering/resources/ (e.g., substrate-knowledge-index.md)"
-  load-index[4]:
-    - "Read the matched index file from .engineering/resources/ using the Read tool"
-    - Parse the source registry, concept lookup table, and topic clusters
-    - Identify the document names and mapped concept terms relevant to the search topic
-    - "Domain knowledge indexes are stored as markdown files in the project's .engineering/resources/ directory"
-  execute-targeted-search[4]:
-    - "Use catalog_search with the document name from the index to resolve the full source path"
-    - "Use chunks_search with the resolved source path when searching within a known document"
-    - "Use broad_chunks_search with the mapped concept term when searching across documents"
-    - "Fall back to catalog_search only when the index has no mapping for the topic"
-  synthesize-results[2]:
-    - Combine search results with the context provided by the index (related concepts, topic cluster)
-    - Present findings with source citations
+  catalog-search:
+    description: "Resolve a document name to its full source path"
+    inputs[1]:
+      - document_name: "Name from the index"
+    procedure[1]:
+      - "Call catalog_search({ name: document_name })"
+    tools:
+      concept-rag[1]:
+        - catalog_search
 
-output[1]:
-  - id: search-results
-    description: "Targeted knowledge base search results with source citations"
-    components:
-      findings: "Content retrieved from concept-rag using the indexed search strategy"
-      sources: "Source documents and paths used"
-      related_concepts: "Related concepts from the index that may warrant follow-up"
+  chunks-search:
+    description: "Search within a known document by its resolved path"
+    inputs[2]:
+      - source_path: "Path returned by catalog-search"
+      - query: "Search query"
+    procedure[1]:
+      - "Call chunks_search({ source_path, query })"
+    tools:
+      concept-rag[1]:
+        - chunks_search
+
+  broad-chunks-search:
+    description: "Search across documents using an indexed concept term"
+    inputs[1]:
+      - concept_term: "Mapped concept from the index"
+    procedure[1]:
+      - "Call broad_chunks_search({ concept: concept_term })"
+    tools:
+      concept-rag[1]:
+        - broad_chunks_search
 
 errors:
   no_index_for_domain:
     cause: "No knowledge index file found in .engineering/resources/ for the requested domain"
     recovery: "Fall back to standard concept-rag search: catalog_search then chunks_search"
   no_mapping_for_term:
-    cause: The index does not contain a mapping for the search term
-    recovery: "Use broad_chunks_search with the natural term; note the gap for future index updates"
+    cause: "The index does not contain a mapping for the search term"
+    recovery: "Use broad-chunks-search with the natural term; note the gap for future index updates"
   stale_index:
-    cause: Knowledge base has been updated since the index was created
-    recovery: "If chunks_search returns no results for an indexed path, fall back to catalog_search to rediscover"
+    cause: "Knowledge base has been updated since the index was created"
+    recovery: "If chunks-search returns no results for an indexed path, fall back to catalog-search to rediscover"

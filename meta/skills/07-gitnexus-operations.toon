@@ -1,48 +1,133 @@
 id: gitnexus-operations
-version: 1.0.0
-capability: Query and navigate codebases using the GitNexus knowledge graph MCP server
+version: 2.0.0
+capability: Operations for codebase queries via the GitNexus knowledge graph
 
-description: "This skill guides agents through the correct use of GitNexus MCP tools for codebase understanding, impact analysis, debugging, and refactoring. GitNexus builds a knowledge graph from source code — indexing symbols, call relationships, execution flows (processes), and functional areas (communities). Agents should use GitNexus when they need to understand how code works together (not just where text appears), trace execution flows, assess blast radius before changes, or perform safe multi-file renames."
+description: "Operations wrapping the GitNexus MCP tools (query, context, impact, rename, detect_changes, cypher) and the lightweight resource reads. Each operation has the tool reference and a small linear procedure inline. Pertinent reference tables (impact depth/risk, refactor risk classes) live in the relevant operation's prose."
 
-inputs[2]:
-  - id: task-type
-    description: "The type of codebase task: explore, impact-analysis, debug, or refactor"
-  - id: target
-    description: "The symbol, concept, error message, or area to investigate"
+operations:
+  verify-index:
+    description: "Read the GitNexus index context resource and check freshness for the target repo"
+    inputs[1]:
+      - repo_name: "Repository name as known to GitNexus"
+    output[2]:
+      - stats: "Symbol/relationship/process counts"
+      - stale: "Boolean — true if the index is out of date"
+    procedure[2]:
+      - "Read the MCP resource gitnexus://repo/{repo_name}/context"
+      - "If stale, run `npx gitnexus analyze` in the terminal before proceeding"
 
-protocol:
-  verify-index[3]:
-    - "Read gitnexus://repo/{name}/context to check index freshness and get codebase stats"
-    - "If the index is stale or missing, run 'npx gitnexus analyze' in the terminal before proceeding"
-    - "Available MCP resources for navigation: gitnexus://repo/{name}/clusters (functional areas), gitnexus://repo/{name}/cluster/{clusterName} (area members), gitnexus://repo/{name}/processes (all execution flows), gitnexus://repo/{name}/process/{processName} (step-by-step trace), gitnexus://repo/{name}/schema (graph schema for Cypher)"
-  select-workflow[4]:
-    - "explore: Use query() to find execution flows related to a concept, then context() for symbol deep-dives, then read process resources for full traces"
-    - "impact-analysis: Use impact() with direction 'upstream' to find dependents, then detect_changes() for pre-commit checks. Assess risk by depth (d=1 WILL BREAK, d=2 LIKELY AFFECTED, d=3 MAY NEED TESTING)"
-    - "debug: Use query() with error text to find related flows, then context() on suspect symbols to see callers/callees, then cypher() for custom call chain traces"
-    - "refactor: Use impact() to map all dependents first, then rename() with dry_run=true to preview edits, then rename() with dry_run=false to apply, then detect_changes() to verify scope"
-  execute[3]:
-    - "Start with the primary tool for the selected workflow (query for explore/debug, impact for impact-analysis/refactor)"
-    - "Use context() to get the 360-degree view of any symbol that appears in results — callers, callees, and process participation"
-    - "Read process resources (gitnexus://repo/{name}/process/{processName}) to trace full execution flows when understanding data flow or call chains"
-  verify-results[2]:
-    - "For refactoring: always run detect_changes() after applying changes to verify only expected files were affected"
-    - "For impact analysis: cross-reference affected processes against the codebase's functional areas (clusters) to assess blast radius breadth"
+  query:
+    description: "Find execution flows related to a concept or term"
+    inputs[2]:
+      - repo_name: "Repository name"
+      - search_term: "Concept, error text, or keyword"
+    output[1]:
+      - flows: "Process-grouped result list ranked by relevance"
+    procedure[1]:
+      - "Call gitnexus query({ repo_name, search_term })"
+    tools:
+      gitnexus[1]:
+        - query
 
-output[1]:
-  - id: analysis-result
-    description: "Structured findings from the GitNexus analysis"
-    components:
-      symbols: "Relevant symbols with file paths and relationships"
-      processes: "Affected execution flows"
-      risk: "Risk assessment (LOW/MEDIUM/HIGH/CRITICAL) with rationale"
-      recommendations: "Suggested next steps based on findings"
+  context:
+    description: "Get the 360-degree view of a symbol — callers, callees, and process participation"
+    inputs[2]:
+      - repo_name: "Repository name"
+      - name: "Symbol name (function, class, method, etc.)"
+    output[1]:
+      - context: "Symbol details with callers, callees, member relationships, and processes"
+    procedure[1]:
+      - "Call gitnexus context({ repo_name, name }); if ambiguous, re-call with file_path or uid from the disambiguation candidates"
+    tools:
+      gitnexus[1]:
+        - context
+
+  impact:
+    description: "Map upstream or downstream dependents for a symbol; assess blast radius before changes"
+    inputs[3]:
+      - repo_name: "Repository name"
+      - target: "Symbol or file"
+      - direction: "'upstream' (dependents) or 'downstream' (dependencies)"
+    output[2]:
+      - dependents: "Symbols/processes affected, grouped by depth"
+      - risk: "Risk classification per the depth/risk table"
+    procedure[1]:
+      - "Call gitnexus impact({ repo_name, target, direction })"
+    tools:
+      gitnexus[1]:
+        - impact
+    prose: |
+      Risk classification by depth (d):
+      | Depth | Risk          | Recommended action                         |
+      |-------|---------------|--------------------------------------------|
+      | d=1   | WILL BREAK    | Direct callers; must update synchronously  |
+      | d=2   | LIKELY AFFECTED | Call chain at one remove; test thoroughly |
+      | d=3   | MAY NEED TESTING | Indirect; verify with detect_changes     |
+
+  rename:
+    description: "Multi-file rename driven by the call graph (preview or apply)"
+    inputs[4]:
+      - repo_name: "Repository name"
+      - old_name: "Current symbol name"
+      - new_name: "Target symbol name"
+      - dry_run: "true to preview edits without applying"
+    output[1]:
+      - changes: "Per-file edit list (when dry_run) or applied summary"
+    procedure[2]:
+      - "Always run with dry_run: true first; review the change list with the user"
+      - "Re-run with dry_run: false to apply"
+    tools:
+      gitnexus[1]:
+        - rename
+
+  detect-changes:
+    description: "Verify the scope of recent edits — confirm only expected files/symbols changed"
+    inputs[1]:
+      - repo_name: "Repository name"
+    output[1]:
+      - delta: "Changed symbols/processes since last scan"
+    procedure[1]:
+      - "Call gitnexus detect_changes({ repo_name })"
+    tools:
+      gitnexus[1]:
+        - detect_changes
+
+  cypher:
+    description: "Run a custom Cypher query over the GitNexus graph"
+    inputs[2]:
+      - repo_name: "Repository name"
+      - query: "Cypher query string"
+    procedure[1]:
+      - "Call gitnexus cypher({ repo_name, query })"
+    tools:
+      gitnexus[1]:
+        - cypher
+    prose: |
+      Graph schema reference:
+      Nodes: File, Function, Class, Interface, Method, Community, Process
+      Edges (via CodeRelation.type): CALLS, IMPORTS, EXTENDS, IMPLEMENTS, DEFINES, MEMBER_OF, STEP_IN_PROCESS
+
+  read-process:
+    description: "Read a process resource for a step-by-step execution trace"
+    inputs[2]:
+      - repo_name: "Repository name"
+      - process_name: "Process identifier"
+    procedure[1]:
+      - "Read the MCP resource gitnexus://repo/{repo_name}/process/{process_name}"
+
+  read-cluster:
+    description: "Read a functional-area cluster resource — area members and cohesion score"
+    inputs[2]:
+      - repo_name: "Repository name"
+      - cluster_name: "Cluster identifier"
+    procedure[1]:
+      - "Read the MCP resource gitnexus://repo/{repo_name}/cluster/{cluster_name}"
 
 rules:
-  query-not-grep: "Use GitNexus query() when you need execution flows and relationships, not just file matches. GitNexus complements grep/search — it finds how code works together."
-  resource-reference: "Use attached resource meta/03 (gitnexus-reference) for checklists, pattern tables, worked examples, and CLI commands for each task type"
-
-resources[1]:
-  - "meta/03"
+  query-not-grep: "Use query/context for execution flows and relationships. Grep is for text patterns and string literals only — when structure matters, use GitNexus."
+  dry-run-before-rename: "Always run rename with dry_run: true first and review the changes with the user before applying."
+  detect-changes-after-edit: "Always run detect-changes after applying a rename or batch edits to verify only expected files were affected."
+  index-freshness-first: "Run verify-index at the start of any GitNexus session. Stale indexes return misleading results."
 
 errors:
   index_not_found:

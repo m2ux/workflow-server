@@ -1,0 +1,167 @@
+id: workflow-engine
+version: 1.0.0
+capability: Operations for executing a workflow's structured flow — activity dispatch, transition evaluation, persistence hooks, checkpoint flow
+
+description: "Capability skill providing the runtime operations every workflow needs: dispatch the next activity, walk transitions, commit-and-persist after each activity, and the full checkpoint protocol (yield, present, respond, resume, bubble). Operations stay simple — each is a short linear procedure invoking a small set of MCP or harness tools."
+
+operations:
+  dispatch-activity:
+    description: "Transition the session to a target activity and spawn a worker for it"
+    inputs[3]:
+      - activity_id: "Activity ID to enter"
+      - prompt_template: "Resource ref for the worker prompt (e.g., meta/01)"
+      - state: "Current variable state for prompt substitution"
+    output[2]:
+      - worker_result: "{ type: 'checkpoint_pending', handle } or { type: 'activity_complete', ...payload }"
+      - trace_token: "Trace token captured from next_activity response, appended to trace_tokens"
+    procedure[3]:
+      - "Call next_activity({ session_token, activity_id, step_manifest }); capture _meta.trace_token"
+      - "Compose the worker prompt from prompt_template substituting state values"
+      - "harness-compat::spawn-agent with the composed prompt; await result"
+    tools:
+      workflow-server[1]:
+        - next_activity
+
+  evaluate-transition:
+    description: "Pick the next activity from the current activity's transitions[]"
+    inputs[3]:
+      - activity: "Just-completed activity definition (with transitions[])"
+      - state: "Current variable state"
+      - transition_override: "Optional activity_id from a checkpoint effect transitionTo"
+    output[1]:
+      - next_activity_id: "Activity ID to dispatch next, or null if the workflow is complete"
+    procedure[3]:
+      - "If transition_override is set, return it"
+      - "Iterate activity.transitions[] in array order; return the first whose condition evaluates true"
+      - "If no condition matches and no isDefault transition exists, return null (workflow_complete)"
+
+  commit-and-persist:
+    description: "Post-activity hook — commit artifacts then persist state"
+    inputs[2]:
+      - activity_id: "Activity that just completed"
+      - planning_folder_path: "Path to the planning folder"
+    procedure[2]:
+      - "version-control::commit-regular-files for changes under .engineering/artifacts/ with message 'docs(<workflow-id>): <activity-id> artifacts'"
+      - "state-management::persist with the current session_token and planning_folder_path"
+
+  handle-sub-workflow:
+    description: "Dispatch a child workflow with parent context"
+    inputs[2]:
+      - workflow_id: "Child workflow ID"
+      - parent_session_token: "Parent (current) session token"
+    output[1]:
+      - child_session_token: "New child session token"
+    procedure[2]:
+      - "Call start_session({ workflow_id, parent_session_token, agent_id: 'workflow-orchestrator' })"
+      - "harness-compat::spawn-agent for the child orchestrator with the new token in its prompt"
+    tools:
+      workflow-server[1]:
+        - start_session
+
+  finalize-activity:
+    description: "Compile the activity_complete result after all steps, checkpoints, and artifacts are done"
+    inputs[3]:
+      - steps_completed: "Array of completed step entries"
+      - checkpoints_responded: "Array of checkpoint responses (option_id + effects)"
+      - artifacts_produced: "Array of artifact entries (id, name, path)"
+    output[1]:
+      - result: "{ result_type: 'activity_complete', steps_completed, checkpoints_responded, variables_changed, artifacts_produced, transition_override? }"
+    procedure[2]:
+      - "Update the planning folder's README.md Progress table for each artifact produced and the footer status"
+      - "Compile and return the activity_complete object; include transition_override if a checkpoint effect specified transitionTo"
+
+  yield-checkpoint:
+    description: "Worker-side: pause at a checkpoint and surface the handle"
+    inputs[1]:
+      - checkpoint_id: "ID of the checkpoint being yielded"
+    output[1]:
+      - emitted: "<checkpoint_yield> block containing only the checkpoint_handle"
+    procedure[3]:
+      - "Call yield_checkpoint({ session_token, checkpoint_id }); capture the returned checkpoint_handle"
+      - "Emit a <checkpoint_yield> block containing ONLY the checkpoint_handle"
+      - "STOP — make no further tool calls until the orchestrator resumes you"
+    tools:
+      workflow-server[1]:
+        - yield_checkpoint
+
+  resume-from-checkpoint:
+    description: "Worker-side: continue execution after the orchestrator resolves a checkpoint"
+    inputs[2]:
+      - checkpoint_handle: "Handle returned by yield_checkpoint"
+      - effects: "Variable updates passed back by the orchestrator"
+    output[1]:
+      - session_token: "Fresh unblocked token to use for subsequent calls"
+    procedure[2]:
+      - "Call resume_checkpoint({ session_token: checkpoint_handle }); capture the new session_token"
+      - "Apply effects to local state and continue from the paused step"
+    tools:
+      workflow-server[1]:
+        - resume_checkpoint
+
+  bubble-checkpoint-up:
+    description: "Workflow-orchestrator-side: forward a worker's checkpoint to the parent (meta) orchestrator without resolving it"
+    inputs[1]:
+      - checkpoint_handle: "Handle yielded by the worker"
+    output[1]:
+      - emitted: "<checkpoint_yield> block containing only the checkpoint_handle"
+    procedure[3]:
+      - "Receive the worker's <checkpoint_yield> block and extract the checkpoint_handle"
+      - "Emit a <checkpoint_yield> block containing the SAME checkpoint_handle (do not modify it)"
+      - "STOP — wait to be resumed by the parent with the resolved effects"
+
+  present-checkpoint-to-user:
+    description: "Meta-orchestrator-side: load checkpoint details and present them to the user"
+    inputs[1]:
+      - checkpoint_handle: "HMAC-signed handle bubbled up from the worker"
+    output[1]:
+      - selection: "{ option_id, effects } — captured user response"
+    procedure[3]:
+      - "Call present_checkpoint({ checkpoint_handle }) and read the message + options"
+      - "For blocking checkpoints, use AskQuestion with the message + options. For autoAdvanceMs checkpoints, present in chat and wait the full timer via Shell sleep before resolving"
+      - "Capture the user's option_id (or auto_advance / condition_not_met)"
+    tools:
+      workflow-server[1]:
+        - present_checkpoint
+
+  respond-checkpoint:
+    description: "Meta-orchestrator-side: send the user's selection back to the server"
+    inputs[2]:
+      - checkpoint_handle: "Handle from present-checkpoint-to-user"
+      - resolution: "{ option_id } | { auto_advance: true } | { condition_not_met: true }"
+    output[1]:
+      - effects: "Variable updates returned by the server, to pass back down to the orchestrator/worker"
+    procedure[1]:
+      - "Call respond_checkpoint({ checkpoint_handle, ...resolution }); read effects from the response"
+    tools:
+      workflow-server[1]:
+        - respond_checkpoint
+
+rules:
+  reject-empty-checkpoints: "If an activity defines required checkpoints and the worker returns checkpoints_responded as empty, REJECT the result and resume the worker."
+  no-get-activity-from-orchestrator: "Workflow-orchestrators NEVER call get_activity. The activity definition is the worker's domain. Orchestrators need only the activity_id (from initialActivity or transitions) to call next_activity and compose the worker prompt."
+  no-pre-load-skills: "NEVER call get_skill or get_skills to pre-load skills for worker activities. The worker self-bootstraps via get_activity, which now bundles its own operations."
+  no-continuation-after-yield: "After emitting </checkpoint_yield>, STOP all execution. No further tool calls until you are resumed by the parent."
+  no-direct-interaction: "Workflow-orchestrators run as sub-agents and NEVER prompt the user directly. Surface checkpoints by bubbling the worker's checkpoint_handle up."
+  no-auto-resolution: "Meta-orchestrators NEVER auto-resolve checkpoints. Even if the answer seems obvious, the user MUST explicitly select an option (or the autoAdvanceMs timer MUST fully elapse for advisory checkpoints)."
+  no-option-hallucination: "If respond_checkpoint returns 'Invalid option', STOP. Call present_checkpoint on the same handle to retrieve valid options. Never guess."
+
+errors:
+  worker_timeout:
+    cause: "Worker sub-agent did not return within expected time"
+    recovery: "harness-compat::continue-agent if still running; otherwise dispatch a fresh worker for the same activity_id."
+  worker_incomplete:
+    cause: "Worker reports fewer steps than the activity defines, or required checkpoints have no response"
+    recovery: "Resume the worker with explicit instructions to complete the missing items. Do NOT accept the partial result."
+  state_desync:
+    cause: "Worker reports variable changes conflicting with orchestrator state"
+    recovery: "Worker values take precedence (the worker has ground truth from user interaction)."
+  transition_ambiguous:
+    cause: "Multiple transition conditions evaluate to true at the activity boundary"
+    recovery: "Take the first matching transition in array order. Log a warning."
+  invalid_checkpoint_handle:
+    cause: "present_checkpoint or respond_checkpoint returned 'Invalid session token' or 'missing signature'"
+    recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
+
+resources[2]:
+  - "meta/01"
+  - "meta/05"

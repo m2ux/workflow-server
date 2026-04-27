@@ -1,54 +1,299 @@
 id: atlassian-operations
-version: 1.1.0
-capability: Perform common Atlassian Jira and Confluence operations via the Atlassian MCP server
-description: "Guides agents through the correct sequence of Atlassian MCP tool calls. Most tools require a cloudId from getAccessibleAtlassianResources. Covers Jira issue lifecycle, Confluence page lifecycle, and cross-product search. Use attached resource meta/04 for the complete tool parameter reference."
+version: 2.0.0
+capability: Operations for Jira and Confluence tasks via the Atlassian MCP server
 
-inputs[2]:
-  - id: operation-type
-    description: "The Atlassian operation to perform (e.g., create-jira-issue, search-confluence)"
-  - id: operation-context
-    description: "Context: project key, issue key, space ID, page ID, search query, etc."
+description: "Operations for the common Jira and Confluence tasks. Each operation wraps one or two Atlassian MCP tools with explicit inputs and the tool reference inline. cloudId is resolved via resolve-cloud-id once per session and reused."
 
-protocol:
-  resolve-cloud-id[2]:
-    - "Call getAccessibleAtlassianResources to obtain the cloudId for the target site"
-    - "Cache the cloudId for subsequent calls in the same session"
-  identify-operation[3]:
-    - "Match the request to an operation: jira-search, jira-create, jira-update, jira-transition, jira-comment, confluence-search, confluence-create, confluence-update, rovo-search"
-    - "For search: use Rovo for broad natural-language queries, JQL/CQL for precise filtering"
-    - "For create/update: gather required metadata first (project key, issue type, space ID)"
-  execute[2]:
-    - "Call the appropriate tool with cloudId and operation-specific params (see resource meta/04 for tool reference)"
-    - "For transitions: always call getTransitionsForJiraIssue first to discover available transition IDs"
-  verify-result[1]:
-    - "After mutating operations, verify by fetching the entity to confirm the change was applied"
+operations:
+  resolve-cloud-id:
+    description: "Obtain the cloudId for the target Atlassian site"
+    output[1]:
+      - cloudId: "UUID of the cloud site, used by every product-specific tool"
+    procedure[1]:
+      - "Call getAccessibleAtlassianResources and use the first cloudId returned (or the one matching the user's site)"
+    tools:
+      atlassian[1]:
+        - getAccessibleAtlassianResources
 
-output[1]:
-  - id: operation-result
-    description: "Result of the Atlassian operation"
-    components:
-      entity_type: "issue, page, comment, or space"
-      entity_id: "Issue key or page ID"
-      operation: "created, updated, transitioned, or searched"
-      result_summary: "Brief outcome summary"
+  user-info:
+    description: "Get the current user's account ID"
+    output[1]:
+      - accountId: "Current user's account ID"
+    procedure[1]:
+      - "Call atlassianUserInfo"
+    tools:
+      atlassian[1]:
+        - atlassianUserInfo
+
+  lookup-jira-account-id:
+    description: "Resolve a name or email to a Jira account ID"
+    inputs[2]:
+      - cloudId: "From resolve-cloud-id"
+      - searchString: "Name or email to resolve"
+    procedure[1]:
+      - "Call lookupJiraAccountId({ cloudId, searchString })"
+    tools:
+      atlassian[1]:
+        - lookupJiraAccountId
+
+  search-jira-issues:
+    description: "Search Jira issues with JQL"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - jql: "JQL query string"
+      - fields: "Optional array of fields to return"
+    procedure[1]:
+      - "Call searchJiraIssuesUsingJql({ cloudId, jql, fields, maxResults })"
+    tools:
+      atlassian[1]:
+        - searchJiraIssuesUsingJql
+
+  list-jira-projects:
+    description: "Discover Jira projects with their issue types"
+    inputs[1]:
+      - cloudId: "From resolve-cloud-id"
+    procedure[1]:
+      - "Call getVisibleJiraProjects({ cloudId, searchString? })"
+    tools:
+      atlassian[1]:
+        - getVisibleJiraProjects
+
+  list-jira-issue-types:
+    description: "List issue types available in a project"
+    inputs[2]:
+      - cloudId: "From resolve-cloud-id"
+      - projectIdOrKey: "Project key (e.g., 'ENG')"
+    procedure[1]:
+      - "Call getJiraProjectIssueTypesMetadata({ cloudId, projectIdOrKey })"
+    tools:
+      atlassian[1]:
+        - getJiraProjectIssueTypesMetadata
+
+  list-jira-issue-fields:
+    description: "Discover the fields for a specific issue type in a project"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - projectIdOrKey: "Project key"
+      - issueTypeId: "Issue type ID from list-jira-issue-types"
+    procedure[1]:
+      - "Call getJiraIssueTypeMetaWithFields({ cloudId, projectIdOrKey, issueTypeId })"
+    tools:
+      atlassian[1]:
+        - getJiraIssueTypeMetaWithFields
+
+  create-jira-issue:
+    description: "Create a new Jira issue"
+    inputs[5]:
+      - cloudId: "From resolve-cloud-id"
+      - projectKey: "Project key"
+      - issueTypeName: "Issue type name from list-jira-issue-types"
+      - summary: "Issue summary"
+      - additional_fields: "Optional object with description, assignee, labels, etc."
+    output[1]:
+      - issueKey: "Created issue key (e.g., 'ENG-123')"
+    procedure[1]:
+      - "Call createJiraIssue({ cloudId, projectKey, issueTypeName, summary, description?, additional_fields? })"
+    tools:
+      atlassian[1]:
+        - createJiraIssue
+
+  edit-jira-issue:
+    description: "Update fields on an existing Jira issue"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - issueIdOrKey: "Issue key"
+      - fields: "Object of field updates"
+    procedure[1]:
+      - "Call editJiraIssue({ cloudId, issueIdOrKey, fields })"
+    tools:
+      atlassian[1]:
+        - editJiraIssue
+
+  get-jira-issue:
+    description: "Read a single Jira issue"
+    inputs[2]:
+      - cloudId: "From resolve-cloud-id"
+      - issueIdOrKey: "Issue key"
+    procedure[1]:
+      - "Call getJiraIssue({ cloudId, issueIdOrKey })"
+    tools:
+      atlassian[1]:
+        - getJiraIssue
+
+  list-jira-transitions:
+    description: "Discover available status transitions for an issue"
+    inputs[2]:
+      - cloudId: "From resolve-cloud-id"
+      - issueIdOrKey: "Issue key"
+    procedure[1]:
+      - "Call getTransitionsForJiraIssue({ cloudId, issueIdOrKey })"
+    tools:
+      atlassian[1]:
+        - getTransitionsForJiraIssue
+
+  transition-jira-issue:
+    description: "Move an issue to a new status"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - issueIdOrKey: "Issue key"
+      - transition: "Transition object with id from list-jira-transitions"
+    procedure[1]:
+      - "Call transitionJiraIssue({ cloudId, issueIdOrKey, transition })"
+    tools:
+      atlassian[1]:
+        - transitionJiraIssue
+
+  comment-jira-issue:
+    description: "Add a comment to a Jira issue"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - issueIdOrKey: "Issue key"
+      - commentBody: "Markdown comment body"
+    procedure[1]:
+      - "Call addCommentToJiraIssue({ cloudId, issueIdOrKey, commentBody })"
+    tools:
+      atlassian[1]:
+        - addCommentToJiraIssue
+
+  log-work-jira-issue:
+    description: "Log work time on a Jira issue"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - issueIdOrKey: "Issue key"
+      - timeSpent: "e.g., '2h', '30m'"
+    procedure[1]:
+      - "Call addWorklogToJiraIssue({ cloudId, issueIdOrKey, timeSpent })"
+    tools:
+      atlassian[1]:
+        - addWorklogToJiraIssue
+
+  search-confluence:
+    description: "Search Confluence content with CQL"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - cql: "CQL query string"
+      - limit: "Optional result limit"
+    procedure[1]:
+      - "Call searchConfluenceUsingCql({ cloudId, cql, limit?, cursor? })"
+    tools:
+      atlassian[1]:
+        - searchConfluenceUsingCql
+
+  create-confluence-page:
+    description: "Create a Confluence page"
+    inputs[5]:
+      - cloudId: "From resolve-cloud-id"
+      - spaceId: "Target space ID"
+      - body: "Markdown body"
+      - title: "Page title (optional)"
+      - parentId: "Optional parent page ID"
+    procedure[1]:
+      - "Call createConfluencePage({ cloudId, spaceId, body, contentFormat: 'markdown', title?, parentId? })"
+    tools:
+      atlassian[1]:
+        - createConfluencePage
+
+  update-confluence-page:
+    description: "Update a Confluence page (full body replace)"
+    inputs[4]:
+      - cloudId: "From resolve-cloud-id"
+      - pageId: "Page ID"
+      - body: "New Markdown body"
+      - title: "Optional new title"
+    procedure[1]:
+      - "Call updateConfluencePage({ cloudId, pageId, body, title? })"
+    tools:
+      atlassian[1]:
+        - updateConfluencePage
+
+  get-confluence-page:
+    description: "Read a Confluence page as Markdown"
+    inputs[2]:
+      - cloudId: "From resolve-cloud-id"
+      - pageId: "Page ID"
+    procedure[1]:
+      - "Call getConfluencePage({ cloudId, pageId, contentFormat: 'markdown' })"
+    tools:
+      atlassian[1]:
+        - getConfluencePage
+
+  list-confluence-spaces:
+    description: "List spaces accessible to the current user"
+    inputs[1]:
+      - cloudId: "From resolve-cloud-id"
+    procedure[1]:
+      - "Call getConfluenceSpaces({ cloudId, ...filters })"
+    tools:
+      atlassian[1]:
+        - getConfluenceSpaces
+
+  list-confluence-pages-in-space:
+    description: "List pages in a Confluence space"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - spaceId: "Space ID"
+      - title: "Optional title filter"
+    procedure[1]:
+      - "Call getPagesInConfluenceSpace({ cloudId, spaceId, title? })"
+    tools:
+      atlassian[1]:
+        - getPagesInConfluenceSpace
+
+  list-confluence-page-descendants:
+    description: "List child pages of a Confluence page"
+    inputs[4]:
+      - cloudId: "From resolve-cloud-id"
+      - pageId: "Page ID"
+      - depth: "Optional traversal depth"
+      - limit: "Optional result limit"
+    procedure[1]:
+      - "Call getConfluencePageDescendants({ cloudId, pageId, depth?, limit? })"
+    tools:
+      atlassian[1]:
+        - getConfluencePageDescendants
+
+  comment-confluence-page-footer:
+    description: "Add a page-level (footer) comment to a Confluence page"
+    inputs[3]:
+      - cloudId: "From resolve-cloud-id"
+      - pageId: "Page ID"
+      - body: "Markdown body"
+    procedure[1]:
+      - "Call createConfluenceFooterComment({ cloudId, pageId, body })"
+    tools:
+      atlassian[1]:
+        - createConfluenceFooterComment
+
+  comment-confluence-page-inline:
+    description: "Add an inline (in-text) comment to a Confluence page"
+    inputs[4]:
+      - cloudId: "From resolve-cloud-id"
+      - pageId: "Page ID"
+      - body: "Markdown body"
+      - inlineCommentProperties: "Object describing the inline anchor"
+    procedure[1]:
+      - "Call createConfluenceInlineComment({ cloudId, pageId, body, inlineCommentProperties })"
+    tools:
+      atlassian[1]:
+        - createConfluenceInlineComment
 
 rules:
-  content-format: "Set contentFormat to 'markdown' for Confluence create/update/read operations."
-  account-id-for-users: "User fields require account IDs. Use lookupJiraAccountId to resolve names/emails."
-
-resources[1]:
-  - "meta/04"
+  resolve-cloud-id-once: "Call resolve-cloud-id ONCE per session and cache the cloudId. Every product-specific operation requires it."
+  content-format-markdown: "Set contentFormat to 'markdown' for Confluence create/update/read operations."
+  account-id-for-users: "User fields require account IDs. Use lookup-jira-account-id (or user-info for the current user) to resolve names/emails."
+  transitions-are-dynamic: "ALWAYS call list-jira-transitions before transition-jira-issue — transition IDs are issue-specific."
+  verify-after-mutation: "After any mutating operation, call the corresponding read operation (e.g., get-jira-issue, get-confluence-page) to verify the change."
 
 errors:
   missing_cloud_id:
     cause: "A product tool was called without resolving cloudId first"
-    recovery: "Call getAccessibleAtlassianResources, then retry"
+    recovery: "Call resolve-cloud-id, then retry"
   invalid_issue_type:
-    cause: "createJiraIssue called with non-existent issue type"
-    recovery: "Call getJiraProjectIssueTypesMetadata to discover valid types"
+    cause: "create-jira-issue called with a non-existent issue type"
+    recovery: "Call list-jira-issue-types to discover valid types"
   transition_not_available:
-    cause: "transitionJiraIssue called with unavailable transition ID"
-    recovery: "Call getTransitionsForJiraIssue to get available transitions"
+    cause: "transition-jira-issue called with an unavailable transition ID"
+    recovery: "Call list-jira-transitions to get the available transitions"
   permission_denied:
     cause: "User lacks permission for the requested operation"
     recovery: "Verify Jira/Confluence permissions and project roles"

@@ -1,26 +1,39 @@
 id: state-management
-version: 4.0.0
-capability: Concept reference for workflow state mutation, persistence, and resume
-description: "Concept-level skill for workflow state. Documents how variables mutate (checkpoint effects, worker outputs), the persist-after-activity invariant, and the server's adopted/recovered token semantics. State persistence uses the save_state and restore_state MCP tools — agents do NOT read or write workflow-state.toon directly. The file format is documented in resource meta/05."
+version: 5.2.0
+capability: Persist and restore workflow state via the save_state and restore_state MCP tools
 
-protocol:
-  variable-mutation[3]:
-    - "Variables mutate from two sources only: checkpoint option effects (setVariable in the checkpoint definition) and worker activity_complete results (variables_changed)."
-    - "The orchestrator applies effects to its internal state immediately on receiving them, then includes the updated values in subsequent worker dispatches."
-    - "NEVER mutate state through ad-hoc reasoning. State changes are deterministic — they come from explicit effects or explicit worker outputs."
-  persistence[3]:
-    - "After EVERY completed activity (post commit-artifacts), the workflow-orchestrator calls save_state({ session_token, planning_folder_path }) to write the current session token, variables, and trace tokens to {planning_folder_path}/workflow-state.toon."
-    - "This invariant is mandatory — skipping persist after an activity makes the session unrecoverable on the next restart."
-    - "save_state handles serialization, encryption, and schema validation. The agent provides only the inputs."
-  resume[3]:
-    - "On resume, the orchestrator calls start_session({ session_token: saved_token }) and inspects the response."
-    - "If adopted: true — the saved payload is intact; the server re-signed the token with its current key. Continue with the restored state in memory (already in the token)."
-    - "If recovered: true — the saved payload was corrupted; a fresh session was created. Call restore_state({ session_token, file_path }) to rebuild variables from the on-disk state file, then transition to the saved currentActivity."
+description: "Operations and rules for workflow state lifecycle. State persistence uses MCP tools — agents do NOT read or write workflow-state.toon directly. Variable mutation rules enforce determinism."
+
+operations:
+  persist:
+    description: "Write the current session state to workflow-state.toon"
+    inputs[2]:
+      - session_token: "The current session token"
+      - planning_folder_path: "Absolute path to the planning folder"
+    procedure[1]:
+      - "Call save_state({ session_token, planning_folder_path })"
+    tools:
+      workflow-server[1]:
+        - save_state
+
+  restore:
+    description: "Load saved variables from workflow-state.toon into the current session"
+    inputs[2]:
+      - session_token: "The current session token"
+      - file_path: "Absolute path to the workflow-state.toon file"
+    output[1]:
+      - state: "Parsed state object with variables, completed activities, and history"
+    procedure[1]:
+      - "Call restore_state({ session_token, file_path })"
+    tools:
+      workflow-server[1]:
+        - restore_state
 
 rules:
-  no-direct-file-io: "NEVER read or write workflow-state.toon directly. Use save_state and restore_state MCP tools — they enforce the schema, handle encryption, and gate path traversal."
-  token-is-opaque: "Treat the session token as an opaque string. NEVER parse, decode, or modify it. Session identity is embedded in the token."
-  persist-or-fail: "If save_state fails (disk full, permission denied), the activity transition MUST NOT proceed. State desync is a hard failure."
+  variable-mutation-source: "Variables mutate from two sources only: checkpoint option effects (setVariable) and worker activity_complete results (variables_changed). Never mutate state through ad-hoc reasoning."
+  apply-effects-immediately: "The orchestrator applies checkpoint effects to internal state on receipt, then includes updated values in subsequent worker dispatches."
+  persist-after-every-activity: "After every completed activity (post commit-artifacts), invoke state-management::persist. Skipping makes the session unrecoverable on restart."
+  no-direct-file-io: "NEVER read or write workflow-state.toon directly. The save_state and restore_state MCP tools enforce schema, encryption, and path validation."
 
 resources[1]:
   - "meta/05"

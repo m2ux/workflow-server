@@ -1,26 +1,83 @@
 id: github-cli-protocol
-version: 1.1.0
-capability: Enforce correct GitHub CLI usage patterns including GraphQL deprecation workarounds
+version: 2.1.0
+capability: Operations for GitHub CLI usage with GraphQL-deprecation workarounds
 
-description: "Cross-cutting skill that governs how agents use the GitHub CLI (gh). Mutating operations on PRs and issues must use the REST API because gh commands that use GraphQL fail due to Projects Classic deprecation. Read operations via gh CLI are safe."
+description: "Operations for common GitHub PR/issue tasks. Mutating operations route through gh's REST API (gh api) because gh's GraphQL paths fail under Projects Classic deprecation. Read operations use the standard gh CLI."
 
-protocol:
-  mutating-operations[3]:
-    - "Update PR description: gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f body=CONTENT"
-    - "Update PR title: gh api repos/OWNER/REPO/pulls/NUMBER -X PATCH -f title=TITLE"
-    - "Add labels: gh api repos/OWNER/REPO/issues/NUMBER/labels -X POST -f labels=LABELS"
-  read-operations[3]:
-    - "gh pr view — safe for viewing PRs"
-    - "gh pr list — safe for listing PRs"
-    - "gh issue list — safe for listing issues"
-  user-approval[1]:
-    - "ALWAYS ask the user before replying to PR comments or review feedback"
+operations:
+  update-pr-description:
+    description: "Update the body of an existing PR via REST"
+    inputs[3]:
+      - owner: "Repo owner (e.g., 'm2ux')"
+      - repo: "Repo name"
+      - number: "PR number"
+    procedure[1]:
+      - "gh api repos/{owner}/{repo}/pulls/{number} -X PATCH -f body=<content>"
+    tools:
+      shell[1]:
+        - gh
+
+  update-pr-title:
+    description: "Update the title of an existing PR via REST"
+    inputs[3]:
+      - owner: "Repo owner"
+      - repo: "Repo name"
+      - number: "PR number"
+    procedure[1]:
+      - "gh api repos/{owner}/{repo}/pulls/{number} -X PATCH -f title=<title>"
+    tools:
+      shell[1]:
+        - gh
+
+  add-labels:
+    description: "Add labels to an issue or PR via REST"
+    inputs[4]:
+      - owner: "Repo owner"
+      - repo: "Repo name"
+      - number: "Issue or PR number"
+      - labels: "Comma-separated label names"
+    procedure[1]:
+      - "gh api repos/{owner}/{repo}/issues/{number}/labels -X POST -f labels={labels}"
+    tools:
+      shell[1]:
+        - gh
+
+  view-pr:
+    description: "View an existing PR (read-only — safe via gh CLI)"
+    inputs[1]:
+      - identifier: "PR number or URL"
+    procedure[1]:
+      - "gh pr view {identifier}"
+    tools:
+      shell[1]:
+        - gh
+
+  list-prs:
+    description: "List PRs (read-only — safe via gh CLI)"
+    inputs[1]:
+      - filters: "Optional flags (e.g., '--state open --author @me')"
+    procedure[1]:
+      - "gh pr list {filters}"
+    tools:
+      shell[1]:
+        - gh
+
+  list-issues:
+    description: "List issues (read-only — safe via gh CLI)"
+    inputs[1]:
+      - filters: "Optional flags (e.g., '--state open --label bug')"
+    procedure[1]:
+      - "gh issue list {filters}"
+    tools:
+      shell[1]:
+        - gh
 
 rules:
-  no-graphql-mutations: "Do not use gh CLI commands that mutate PRs/issues via GraphQL (e.g., gh pr edit) — they fail due to Projects Classic deprecation. Use gh api with REST endpoints for all mutating operations instead."
+  no-graphql-mutations: "Do NOT use gh CLI commands that mutate PRs/issues via GraphQL (e.g., gh pr edit) — they fail under Projects Classic deprecation. Use gh api with REST endpoints for all mutating operations."
   read-ops-safe: "Read operations via gh CLI (gh pr view, gh pr list, gh issue list) are safe and preferred."
+  ask-before-replying: "Ask the user before replying to PR comments or review feedback."
 
 errors:
   graphql-deprecation:
     cause: "gh pr edit or similar GraphQL-based mutation command failed with Projects Classic deprecation error"
-    recovery: "Use the equivalent REST API endpoint via gh api instead"
+    recovery: "Use the equivalent REST API endpoint via gh api"

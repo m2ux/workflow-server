@@ -10,10 +10,9 @@ recognition[4]:
   - work on
 required: true
 estimatedTime: 1-2m
-skills:
-  primary: meta/activity-worker
-  supporting[1]:
-    - state-management
+skill_operations[2]:
+  - "state-management::restore"
+  - "agent-conduct::operational-discipline"
 rules[2]:
   - "Always call list_workflows — never hardcode the workflow catalog"
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
@@ -27,7 +26,6 @@ steps[5]:
   - id: scan-planning-folders
     name: Scan Planning Folders for Saved Sessions
     description: "List directories under .engineering/artifacts/planning/. For each directory containing a workflow-state.toon file, read it and extract: saved sessionToken, workflowId, planningFolder, and key state variables (issue_number, branch_name, pr_number, work-package description). Collect all candidates whose workflowId matches target_workflow_id."
-    skill: state-management
   - id: match-session
     name: Match Saved Session to User Request
     description: "Compare the identifying context from identify-target against the candidate saved sessions. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. If multiple matches, prefer the most recently updated by savedAt. If no matches, set has_saved_state = false."

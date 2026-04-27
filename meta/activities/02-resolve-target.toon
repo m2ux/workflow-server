@@ -3,10 +3,10 @@ version: 1.0.0
 name: Resolve Target
 description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path. Skipped when target_path was already restored from saved state. Sets is_monorepo and target_path for downstream activities that perform git operations on the user's codebase."
 problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
-skills:
-  primary: meta/activity-worker
 required: true
 estimatedTime: 1-2m
+skill_operations[1]:
+  - "agent-conduct::operational-discipline"
 rules[2]:
   - "Skip detection when target_path was already restored from saved state (target_path != '.')"
   - "target_path MUST resolve to a directory containing a working git tree"
