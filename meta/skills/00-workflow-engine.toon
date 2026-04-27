@@ -251,7 +251,7 @@ operations:
       - "Compile and return the activity_complete object; include transition_override if a checkpoint effect specified transitionTo"
 
   yield-checkpoint:
-    description: "Worker-side: pause at a checkpoint and surface the handle"
+    description: "Pause at a checkpoint and surface the handle"
     inputs[1]:
       - checkpoint_id: "ID of the checkpoint being yielded"
     output[1]:
@@ -265,7 +265,7 @@ operations:
         - yield_checkpoint
 
   resume-from-checkpoint:
-    description: "Worker-side: continue execution after the orchestrator resolves a checkpoint"
+    description: "Continue execution after the orchestrator resolves a checkpoint"
     inputs[2]:
       - checkpoint_handle: "Handle returned by yield_checkpoint"
       - effects: "Variable updates passed back by the orchestrator"
@@ -279,7 +279,7 @@ operations:
         - resume_checkpoint
 
   bubble-checkpoint-up:
-    description: "Workflow-orchestrator-side: forward a worker's checkpoint to the parent (meta) orchestrator without resolving it"
+    description: "Forward a worker's checkpoint to the parent (meta) orchestrator without resolving it"
     inputs[1]:
       - checkpoint_handle: "Handle yielded by the worker"
     output[1]:
@@ -290,7 +290,7 @@ operations:
       - "STOP — wait to be resumed by the parent with the resolved effects"
 
   present-checkpoint-to-user:
-    description: "Meta-orchestrator-side: load checkpoint details and present them to the user"
+    description: "Load checkpoint details and present them to the user"
     inputs[1]:
       - checkpoint_handle: "HMAC-signed handle bubbled up from the worker"
     output[1]:
@@ -311,7 +311,7 @@ operations:
         recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
 
   respond-checkpoint:
-    description: "Meta-orchestrator-side: send the user's selection back to the server"
+    description: "Send the user's selection back to the server"
     inputs[2]:
       - checkpoint_handle: "Handle from present-checkpoint-to-user"
       - resolution: "{ option_id } | { auto_advance: true } | { condition_not_met: true }"
