@@ -1,16 +1,14 @@
 ---
 id: bootstrap-protocol
-version: 6.0.0
+version: 6.1.0
 ---
 
 # Bootstrap Protocol
 
-1. Fetch the schemas needed to interpret the next response:
-   - `workflow-server://schemas/workflow` — workflow definitions
-   - `workflow-server://schemas/skill` — skill definitions
+1. Fetch:
+   - `workflow-server://schemas/workflow`
+   - `workflow-server://schemas/skill`
 
-2. `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` — save the returned `session_token`. Every subsequent tool call passes the most recent token.
+2. `start_session({ workflow_id: "meta", agent_id: "orchestrator" })`. Save the returned `session_token`.
 
-3. `get_workflow({ session_token })` — returns the meta workflow's primary skill (raw TOON) followed by the workflow definition. Follow the primary skill's instructions from here.
-
-Additional schemas (`activity`, `condition`, `state`) are fetched later when their content first appears.
+3. `get_workflow({ session_token })`. Follow the primary skill returned in the response.
