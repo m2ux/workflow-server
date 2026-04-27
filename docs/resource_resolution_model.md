@@ -144,7 +144,7 @@ Even with operations and skills tightly scoped, large reference material (Git CL
 ```yaml
 resources:
   - "04"            # bare index — resolves within the session workflow
-  - "meta/03"       # prefixed — resolves from the meta workflow
+  - "meta/activity-worker-prompt"  # prefixed — resolves by id from the meta workflow
 ```
 
 Resource refs may live at the skill level or per-operation. Server responses do not bundle resource bodies — agents call `get_resource` only when they actually need a resource.
@@ -154,13 +154,13 @@ Resource refs may live at the skill level or per-operation. Server responses do 
 When the agent encounters an operation that needs a resource, it calls:
 
 ```javascript
-get_resource({ session_token, resource_id: "meta/03" })
+get_resource({ session_token, resource_id: "meta/activity-worker-prompt" })
 ```
 
 The server resolves the reference using `parseResourceRef`:
 
 * Bare indices (e.g., `"04"`) resolve within the session's workflow.
-* Prefixed references (e.g., `"meta/03"`) resolve from the named workflow.
+* Prefixed references (e.g., `"meta/activity-worker-prompt"`) resolve from the named workflow.
 
 The full content is loaded from `workflows/{workflow}/resources/{NN}-{name}.md` (or `.toon`) and returned alongside the resource `id` and `version`.
 
