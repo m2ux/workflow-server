@@ -1,0 +1,63 @@
+{
+  "id": "save-2026-04-26-work-package-design-review-004",
+  "savedAt": "2026-04-26T17:45:00Z",
+  "description": "State after intake (update mode) — yielded change-request-confirmed",
+  "workflowId": "workflow-design",
+  "workflowVersion": "1.2.1",
+  "planningFolder": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-04-26-work-package-design-review",
+  "sessionToken": "eyJ3ZiI6IndvcmtmbG93LWRlc2lnbiIsImFjdCI6ImludGFrZSIsInNraWxsIjoibWV0YS93b3JrZmxvdy1vcmNoZXN0cmF0b3IiLCJjb25kIjoidXNlcl93YW50c19maXhlcyA9PSB0cnVlIiwidiI6IiIsInNlcSI6MzAsInRzIjoxNzc3MjIxODg4LCJzaWQiOiI1NmI1Njc5OS1kNzljLTRhODgtYjRmZS0xYjNlYmQ3MWU4YmIiLCJhaWQiOiJ3b3JrZXItaW50YWtlLXVwZGF0ZS1pbnNwZWN0b3IiLCJiY3AiOiJjaGFuZ2UtcmVxdWVzdC1jb25maXJtZWQifQ.6d67ba06b6fd7cf2d3a419f76a8b143a178d3572f9b51f43aaf88ea58d4dff85",
+  "sessionTokenEncrypted": false,
+  "state": {
+    "stateVersion": 2,
+    "startedAt": "2026-04-26T00:00:00Z",
+    "updatedAt": "2026-04-26T17:45:00Z",
+    "completedActivities": ["intake", "context-and-literacy"],
+    "skippedActivities": [],
+    "completedSteps": {
+      "intake": ["load-existing-workflow", "parse-change-request", "present-current-structure"],
+      "context-and-literacy": ["load-schemas", "load-construct-inventory", "load-anti-patterns", "load-review-mode-guide", "literacy-confirmed"],
+      "quality-review": ["load-all-workflow-files", "principle-compliance-audit", "anti-pattern-scan", "schema-validation-check", "tool-skill-doc-consistency", "compile-compliance-report", "present-compliance-report"]
+    },
+    "checkpointResponses": {
+      "intake-review-scope-confirmed": {
+        "optionId": "confirm-review-target",
+        "respondedAt": "2026-04-26T00:00:00Z",
+        "effects": {
+          "variablesSet": {
+            "review_scope_confirmed": true
+          }
+        }
+      }
+    },
+    "decisionOutcomes": {},
+    "activeLoops": [],
+    "variables": {
+      "is_review_mode": true,
+      "is_update_mode": false,
+      "target_workflow_id": "work-package",
+      "review_scope_confirmed": true,
+      "planning_folder_path": ".engineering/artifacts/planning/2026-04-26-work-package-design-review",
+      "format_literacy_confirmed": true,
+      "schema_constructs_confirmed": true,
+      "review_findings_count": 21,
+      "review_findings_critical": 0,
+      "review_findings_high": 5,
+      "review_findings_medium": 9,
+      "review_findings_low": 7,
+      "schema_validation_passed": true
+    },
+    "history": [
+      {"timestamp": "2026-04-26T00:00:00Z", "type": "workflow_started"},
+      {"timestamp": "2026-04-26T00:00:00Z", "type": "activity_entered", "activity": "intake"},
+      {"timestamp": "2026-04-26T00:00:00Z", "type": "checkpoint_response", "activity": "intake", "checkpoint": "review-scope-confirmed", "data": {"optionId": "confirm-review-target"}},
+      {"timestamp": "2026-04-26T00:00:00Z", "type": "activity_exited", "activity": "intake"},
+      {"timestamp": "2026-04-26T17:25:00Z", "type": "activity_entered", "activity": "context-and-literacy"},
+      {"timestamp": "2026-04-26T17:25:00Z", "type": "activity_exited", "activity": "context-and-literacy"},
+      {"timestamp": "2026-04-26T17:28:00Z", "type": "activity_entered", "activity": "quality-review"},
+      {"timestamp": "2026-04-26T17:30:00Z", "type": "artifact_written", "activity": "quality-review", "data": {"path": "03-quality-review.md"}},
+      {"timestamp": "2026-04-26T17:30:00Z", "type": "checkpoint_yielded", "activity": "quality-review", "checkpoint": "review-disposition"}
+    ],
+    "status": "running",
+    "triggeredWorkflows": []
+  }
+}
