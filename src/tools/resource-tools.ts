@@ -14,8 +14,8 @@ import { createTraceEvent } from '../trace.js';
 /**
  * Parse a resource reference that may include a workflow prefix.
  * Format: "workflow/index" for cross-workflow, or bare "index" for local.
- * Examples: "meta/05" → { workflowId: "meta", index: "05" }
- *           "05"      → { workflowId: undefined, index: "05" }
+ * Examples: "meta/01" → { workflowId: "meta", index: "01" }
+ *           "01"      → { workflowId: undefined, index: "01" }
  */
 function parseResourceRef(ref: string): { workflowId: string | undefined; index: string } {
   const slashIdx = ref.indexOf('/');
@@ -375,10 +375,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a single resource\'s full content by its ID. Use this to fetch resources referenced in skill _resources arrays. The resource_id can be a bare index (e.g., "05") which resolves within the session\'s workflow, or a prefixed cross-workflow reference (e.g., "meta/04") which resolves from the named workflow. Returns the resource content, id, and version.',
+    'Load a single resource\'s full content by its ID. Use this to fetch resources referenced in skill _resources arrays. The resource_id can be a bare index (e.g., "05") which resolves within the session\'s workflow, or a prefixed cross-workflow reference (e.g., "meta/01") which resolves from the named workflow. Returns the resource content, id, and version.',
     {
       ...sessionTokenParam,
-      resource_id: z.string().describe('Resource ID — bare (e.g., "23") resolves within the session workflow, prefixed (e.g., "meta/04") resolves from the specified workflow'),
+      resource_id: z.string().describe('Resource ID — bare (e.g., "23") resolves within the session workflow, prefixed (e.g., "meta/01") resolves from the specified workflow'),
     },
     withAuditLog('get_resource', async ({ session_token, resource_id }) => {
       const token = await decodeSessionToken(session_token);

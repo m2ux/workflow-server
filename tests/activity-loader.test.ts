@@ -65,7 +65,7 @@ describe('activity-loader', () => {
     });
 
     it('should have all required fields on a successfully loaded activity', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'dispatch-workflow', 'meta');
+      const result = await readActivity(WORKFLOW_DIR, 'dispatch-client-workflow', 'meta');
 
       expect(result.success).toBe(true);
       if (result.success) {

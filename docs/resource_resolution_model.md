@@ -6,10 +6,10 @@ The Workflow Server solves this via a **Lazy-Loading Resource Architecture**.
 
 ## 1. Canonical IDs and Prefix Stripping
 
-Skills and activities are stored on disk with numerical prefixes to enforce ordered visibility for humans (e.g., `12-workflow-orchestrator.toon`).
+Skills and activities are stored on disk with numerical prefixes to enforce ordered visibility for humans (e.g., `10-workflow-orchestrator.toon`).
 
 However, the internal resolution system uses **Canonical IDs**. The server's `filename-utils` strips the `NN-` prefix during parsing.
-* File: `12-workflow-orchestrator.toon`
+* File: `10-workflow-orchestrator.toon`
 * Canonical ID: `workflow-orchestrator`
 
 Agents must always request skills and activities using their Canonical IDs.
@@ -38,7 +38,7 @@ Instead, they declare a `resources` array using lightweight index references:
 ```yaml
 resources:
   - "04"
-  - "meta/06"
+  - "meta/03"
 ```
 
 When `get_skill` returns the skill to the agent, the server does not automatically bundle resource content. The skill's own protocol instructs the agent to call `get_resource` when it needs specific context.
@@ -48,12 +48,12 @@ When `get_skill` returns the skill to the agent, the server does not automatical
 When the agent encounters a step that needs a resource, it calls the `get_resource` tool:
 
 ```javascript
-get_resource({ session_token, resource_id: "meta/06" })
+get_resource({ session_token, resource_id: "meta/03" })
 ```
 
 The server resolves the reference using `parseResourceRef`:
 - Bare indices (e.g., `"04"`) resolve within the session's workflow
-- Prefixed references (e.g., `"meta/06"`) resolve from the named workflow
+- Prefixed references (e.g., `"meta/03"`) resolve from the named workflow
 
 The server then loads the full content from `workflows/{workflow}/resources/{NN}-{name}.md` (or `.toon`) and returns it.
 

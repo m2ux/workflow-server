@@ -18,7 +18,7 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should load 11-activity-worker directly', async () => {
+    it('should load activity-worker directly', async () => {
       const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
@@ -39,7 +39,7 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should load 11-activity-worker skill with protocol and rules', async () => {
+    it('should load activity-worker skill with protocol and rules', async () => {
       const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
@@ -48,10 +48,10 @@ describe('skill-loader', () => {
         
         expect(skill.protocol).toBeDefined();
         expect(Object.keys(skill.protocol).length).toBeGreaterThanOrEqual(6);
-        
+
         expect(skill.rules).toBeDefined();
-        expect(Object.keys(skill.rules).length).toBeGreaterThanOrEqual(4);
-        
+        expect(Object.keys(skill.rules).length).toBeGreaterThanOrEqual(3);
+
         expect(skill.errors).toBeDefined();
         expect(Object.keys(skill.errors).length).toBeGreaterThanOrEqual(3);
       }

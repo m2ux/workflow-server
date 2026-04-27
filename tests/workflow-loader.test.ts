@@ -49,7 +49,10 @@ describe('workflow-loader', () => {
       if (result.success) {
         const ids = result.value.activities.map(a => a.id);
         expect(ids).toContain('discover-session');
-        expect(ids).toContain('dispatch-workflow');
+        expect(ids).toContain('initialize-session');
+        expect(ids).toContain('resolve-target');
+        expect(ids).toContain('dispatch-client-workflow');
+        expect(ids).toContain('end-workflow');
       }
     });
   });
@@ -119,8 +122,8 @@ describe('workflow-loader', () => {
       const transitions = getTransitionList(workflow, 'discover-session');
 
       const targets = transitions.map(t => t.to);
-      // discover-session has transition to dispatch-workflow
-      expect(targets).toContain('dispatch-workflow');
+      // discover-session has transition to initialize-session
+      expect(targets).toContain('initialize-session');
     });
 
     it('should include targets from decisions branches', async () => {
@@ -147,7 +150,7 @@ describe('workflow-loader', () => {
 
     it('should include condition strings for conditional transitions', async () => {
       const workflow = await loadMetaWorkflow();
-      const transitions = getTransitionList(workflow, 'dispatch-workflow');
+      const transitions = getTransitionList(workflow, 'dispatch-client-workflow');
 
       const conditionalTransition = transitions.find(t => t.to === 'end-workflow');
       expect(conditionalTransition).toBeDefined();
@@ -185,7 +188,7 @@ describe('workflow-loader', () => {
       const workflow = await loadMetaWorkflow();
       const valid = getValidTransitions(workflow, 'discover-session');
 
-      expect(valid).toContain('dispatch-workflow');
+      expect(valid).toContain('initialize-session');
     });
 
     it('should deduplicate targets', async () => {
@@ -205,8 +208,8 @@ describe('workflow-loader', () => {
   describe('validateTransition (BF-12)', () => {
     it('should validate a real transition between activities', async () => {
       const workflow = await loadMetaWorkflow();
-      // discover-session transitions to dispatch-workflow
-      const result = validateTransition(workflow, 'discover-session', 'dispatch-workflow');
+      // discover-session transitions to initialize-session
+      const result = validateTransition(workflow, 'discover-session', 'initialize-session');
       expect(result.valid).toBe(true);
       expect(result.reason).toBeUndefined();
     });
