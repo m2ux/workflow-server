@@ -1,0 +1,76 @@
+id: classify-problem
+version: 1.0.0
+capability: Problem classification, complexity assessment, and workflow path determination
+
+description: "Protocol for identifying and classifying a problem as specific (cause known or unknown) or inventive (improvement or prevention), assessing complexity (simple, moderate, complex), and determining which workflow activities are needed based on the classification."
+
+operations:
+  define-problem:
+    description: "Create a clear problem statement with system understanding, impact assessment, success criteria, and constraints"
+    inputs[1]:
+      - user_request: "User's free-form request or ticket description"
+    output[4]:
+      - problem_statement: "Clear one-sentence problem definition"
+      - impact_assessment: "Description of what is affected and why it matters"
+      - success_criteria: "Measurable criteria for a successful resolution"
+      - constraints: "Known limitations and boundaries"
+    procedure[3]:
+      - "Extract the core problem from the user request, ticket, or issue — strip framing and focus on what needs to change"
+      - "Assess impact: which components, users, or behaviors are affected"
+      - "Define success criteria: what does 'done' look like"
+    rules:
+      no-embedding: "NEVER embed constraints or scope decisions into the problem statement. The problem statement describes WHAT, not HOW."
+
+  classify-type:
+    description: "Determine if this is a specific problem or an inventive goal"
+    inputs[2]:
+      - problem_statement: "Output from define-problem"
+      - codebase_context: "Current understanding of the target codebase area"
+    output[2]:
+      - problem_type: "One of: specific-cause-known, specific-cause-unknown, inventive-improvement, inventive-prevention"
+      - rationale: "Explanation for the classification"
+    procedure[2]:
+      - "If the problem has a clear location and expected behavior, classify as specific (cause-known if the root cause is evident, cause-unknown if investigation is needed)"
+      - "If the problem is about making something better or preventing future issues without a concrete failing, classify as inventive"
+    tools:
+      harness[2]:
+        - Read
+        - Grep
+
+  assess-complexity:
+    description: "Evaluate the complexity of the problem to determine workflow path"
+    inputs[2]:
+      - problem_type: "Classification from classify-type"
+      - codebase_context: "Understanding of the codebase, affected components, and dependencies"
+    output[2]:
+      - complexity: "One of: simple, moderate, complex"
+      - rationale: "Explanation for the complexity rating"
+    procedure[3]:
+      - "Simple: well-defined scope, single component, clear fix — e.g. a typo, a missing null check, a config update"
+      - "Moderate: multiple components or some uncertainty — may need research but requirements are clear"
+      - "Complex: cross-cutting concern, unclear requirements, significant architectural change, or risk of regression"
+      - "If the classification is inventive-improvement or inventive-prevention with broad scope, default to complex"
+    rules:
+      err-on-the-side-of-complexity: "When uncertain, rate complexity one level higher. It is better to perform unnecessary research than to miss a critical dependency."
+
+  determine-path:
+    description: "Map complexity to required workflow activities"
+    inputs[2]:
+      - complexity: "simple, moderate, or complex"
+      - ticket_context: "Whether a ticket exists and how complete it is"
+    output[4]:
+      - needs_elicitation: "Whether requirements elicitation is needed"
+      - needs_research: "Whether research is needed"
+      - needs_comprehension: "Whether codebase comprehension is needed"
+      - skip_optional_activities: "Whether to skip optional discovery activities"
+    procedure[1]:
+      - "Simple: skip optional (elicitation=false, research=false, comprehension may be needed for unfamiliar code)"
+      - "Moderate: research only (elicitation=false, research=true)"
+      - "Complex: full workflow (elicitation=true, research=true, comprehension=true)"
+    rules:
+      comprehension-always-when-unknown: "If the target area is unfamiliar or the problem type is specific-cause-unknown, set needs_comprehension=true regardless of complexity."
+      review-mode-override: "In review mode, force needs_elicitation=false and path to review-appropriate activities."
+
+rules:
+  classification-informs-everything: "The problem type and complexity classification drive all subsequent activity decisions. Revisit the classification if new information emerges during the workflow."
+  ticket-completeness-check: "When a ticket exists, assess its completeness (problem statement, goal, scope, acceptance criteria, user stories). Document gaps in assumptions-log.md."

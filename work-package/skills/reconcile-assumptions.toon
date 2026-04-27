@@ -1,0 +1,56 @@
+id: reconcile-assumptions
+version: 1.0.0
+capability: Iterative assumption classification and codebase-driven resolution with convergence tracking
+
+description: "Protocol for classifying assumptions by resolvability and iteratively resolving code-analyzable assumptions through targeted codebase analysis. Runs as a while loop until no code-resolvable assumptions remain (convergence). Each iteration classifies resolvability, performs targeted analysis, updates logs, and reclassifies."
+
+operations:
+  classify-resolvability:
+    description: "Classify each open assumption as code-analyzable or stakeholder-dependent"
+    inputs[2]:
+      - assumptions: "Array of open assumptions from assumptions-log.md"
+      - codebase_context: "Current understanding of the codebase structure and target paths"
+    output[1]:
+      - classification: "Map of assumption -> { resolvable: boolean, strategy: string }"
+    procedure[2]:
+      - "For each assumption, evaluate whether the codebase can answer it definitively"
+      - "Mark as resolvable when the answer exists in source code, tests, configs, or docs; mark as stakeholder-dependent when it requires domain knowledge, business decisions, or user input"
+    rules:
+      no-speculation: "NEVER mark an assumption as resolved without code evidence. If uncertain, classify as stakeholder-dependent."
+      strategy-required: "Every resolvable assumption must have a strategy describing WHERE in the codebase to look."
+
+  resolve-iteration:
+    description: "Execute one resolution pass: pick the highest-confidence resolvable assumption and investigate"
+    inputs[2]:
+      - classification: "Output from classify-resolvability"
+      - codebase_context: "Current understanding of the codebase"
+    output[2]:
+      - findings: "Resolved assumption text and evidence"
+      - updated_assumptions: "Assumptions log with resolved items marked"
+    procedure[4]:
+      - "Pick the resolvable assumption with the clearest investigation strategy"
+      - "Perform targeted codebase analysis using the strategy (read source, grep patterns, trace calls, check tests)"
+      - "Record findings: the resolved answer and the evidence trail (files read, patterns matched)"
+      - "Update assumptions-log.md: mark the assumption resolved with its finding"
+    tools:
+      harness[3]:
+        - Read
+        - Grep
+        - Glob
+    rules:
+      evidence-trail: "Every resolution MUST cite the file path and line(s) that provided the answer."
+      one-at-a-time: "Resolve one assumption per iteration. Do not batch."
+
+  check-convergence:
+    description: "Evaluate whether any code-resolvable assumptions remain"
+    inputs[1]:
+      - assumptions: "Current assumptions log"
+    output[1]:
+      - converged: "true when no code-resolvable assumptions remain"
+    procedure[1]:
+      - "Re-classify all open assumptions; return converged=true only when every remaining assumption is stakeholder-dependent"
+
+rules:
+  convergence-before-continue: "Do NOT proceed past the assumption reconciliation loop until check-convergence returns true. Lingering resolvable assumptions indicate incomplete analysis."
+  log-fidelity: "Every assumption in assumptions-log.md must have a status: open, resolved, or stakeholder-dependent. Never leave assumptions unclassified."
+  reclassify-after-resolve: "After resolving an assumption, re-run classify-resolvability — a resolution may unlock or change the resolvability of other assumptions."
