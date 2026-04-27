@@ -18,7 +18,6 @@ artifacts[1]:
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 skills:
-  primary: meta/activity-worker
 loops[3]:
   - id: task-cycle
     name: Task Implementation Cycle

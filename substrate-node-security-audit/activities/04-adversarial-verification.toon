@@ -8,7 +8,6 @@ recognition[3]:
   - adversarial review
   - check pass items
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-audit
 required: true

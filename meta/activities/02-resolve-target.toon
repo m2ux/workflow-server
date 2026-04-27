@@ -5,7 +5,7 @@ description: "Detect the target repository structure (regular directory vs. subm
 problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
 required: true
 estimatedTime: 1-2m
-skill_operations[1]:
+operations[1]:
   - "agent-conduct::operational-discipline"
 rules[2]:
   - "Skip detection when target_path was already restored from saved state (target_path != '.')"

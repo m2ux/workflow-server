@@ -28,7 +28,6 @@ artifacts[4]:
     location: reviews
     description: "PR review analysis document"
 skills:
-  primary: meta/activity-worker
 steps[10]:
   - id: create-adr
     name: Create Architecture Decision Record

@@ -10,8 +10,8 @@ recognition[4]:
   - work on
 required: true
 estimatedTime: 1-2m
-skill_operations[2]:
-  - "state-management::restore"
+operations[2]:
+  - "workflow-engine::restore"
   - "agent-conduct::operational-discipline"
 rules[2]:
   - "Always call list_workflows — never hardcode the workflow catalog"

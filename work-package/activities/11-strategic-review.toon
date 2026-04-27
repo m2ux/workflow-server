@@ -10,7 +10,6 @@ recognition[3]:
 required: true
 estimatedTime: 15-30m
 skills:
-  primary: meta/activity-worker
 artifacts[2]:
   - id: strategic-review-doc
     name: "strategic-review-{n}.md"

@@ -16,7 +16,6 @@ rules[5]:
   - User controls priorities - Never assume priority order without confirmation
   - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
 skills:
-  primary: meta/workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"

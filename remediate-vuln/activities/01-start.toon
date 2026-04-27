@@ -6,7 +6,6 @@ problem: User needs to remediate a security vulnerability without public disclos
 required: true
 estimatedTime: 10-15m
 skills:
-  primary: meta/activity-worker
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR or Issue creation tools (gh pr create, gh issue create)."
   - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."

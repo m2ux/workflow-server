@@ -4,7 +4,6 @@ name: Work Package Planning
 description: Define scope, dependencies, effort, and success criteria for each work package
 problem: Each work package needs detailed planning before prioritization
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - plan-work-package-scope
 steps[1]:

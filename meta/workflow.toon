@@ -10,7 +10,7 @@ tags[5]:
   - lifecycle
   - dispatch
   - session
-skill_operations[3]:
+operations[3]:
   - "workflow-engine::handle-sub-workflow"
   - "workflow-engine::dispatch-activity"
   - "agent-conduct::orchestrator-discipline"

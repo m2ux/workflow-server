@@ -8,7 +8,6 @@ recognition[3]:
   - dispatch audit agents
   - execute audit template
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-audit
 required: true

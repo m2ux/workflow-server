@@ -25,7 +25,6 @@ artifacts[2]:
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
 skills:
-  primary: meta/activity-worker
 steps[9]:
   - id: define-problem
     name: Identify and Define Problem

@@ -4,7 +4,7 @@ name: Dispatch Client Workflow
 description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator (sub-agent in spawning harnesses, inline persona otherwise) for the client workflow, and drive the checkpoint-yield loop. Each loop iteration parses the orchestrator's most recent output: a <checkpoint_yield> block triggers present-checkpoint → ask-user → respond-checkpoint → continue-orchestrator; a workflow_complete result sets client_workflow_completed and exits the loop."
 problem: The orchestrator runs as a sub-agent (or inline persona) and surfaces checkpoints upward; meta must mediate user interaction for those checkpoints and resume the orchestrator with the resolved effects
 required: true
-skill_operations[6]:
+operations[6]:
   - "workflow-engine::dispatch-activity"
   - "workflow-engine::present-checkpoint-to-user"
   - "workflow-engine::respond-checkpoint"
