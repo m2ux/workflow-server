@@ -279,18 +279,25 @@ operations:
   resume-from-checkpoint:
     description: "Continue execution after the orchestrator resolves a checkpoint"
     inputs[2]:
-      - checkpoint_handle: "Handle returned by yield_checkpoint"
+      - resumed_session_token: "Fresh session token (bcp cleared) returned by respond_checkpoint and threaded down through the orchestrator's resume prompt. This is NOT the yield-time checkpoint_handle — that handle still has bcp set and resume_checkpoint will reject it."
       - effects: "Variable updates passed back by the orchestrator"
     output[1]:
-      - session_token: "Fresh unblocked token to use for subsequent calls"
+      - session_token: "Advanced token to use for subsequent calls (get_activity, etc.)"
     procedure[2]:
-      - "Call resume_checkpoint({ session_token: checkpoint_handle }); capture the new session_token"
+      - "Call resume_checkpoint({ session_token: resumed_session_token }); capture the new session_token from the response and use it for every subsequent call"
       - "Apply effects to local state and continue from the paused step"
     tools:
       workflow-server[1]:
         - resume_checkpoint
+    errors:
+      checkpoint_still_active:
+        cause: "resume_checkpoint returned 'Cannot resume: Checkpoint is still active'"
+        recovery: "You passed the yield-time checkpoint_handle (bcp still set). Use the resumed_session_token from your resume prompt (the new token returned by respond_checkpoint), not the handle you yielded with."
+      hmac_failure:
+        cause: "resume_checkpoint or any subsequent call returned 'Invalid session token: HMAC signature verification failed'"
+        recovery: "The token in your resume prompt is the source of truth. Do not transcribe it from a tool-result display (which may be truncated) and do not reach back for an earlier session token from your context. Use the EXACT resumed_session_token your orchestrator just handed you."
     rules:
-      resume-checkpoint-uses-handle: "resume_checkpoint takes the checkpoint_handle as its session_token argument (the handle IS the worker's advanced token with the checkpoint encoded)."
+      resume-uses-post-respond-token: "resume_checkpoint requires a token whose bcp is cleared. The yield-time checkpoint_handle does NOT satisfy this — only the token returned in the response body of respond_checkpoint does. The orchestrator MUST thread that token down to you on resume."
 
   bubble-checkpoint-up:
     description: "Forward a worker's checkpoint to the parent (meta) orchestrator without resolving it"
@@ -335,10 +342,11 @@ operations:
     inputs[2]:
       - checkpoint_handle: "Handle from present-checkpoint-to-user"
       - resolution: "{ option_id } | { auto_advance: true } | { condition_not_met: true }"
-    output[1]:
+    output[2]:
       - effects: "Variable updates returned by the server, to pass back down to the orchestrator/worker"
+      - resumed_session_token: "Fresh session token returned by the server with bcp cleared. This token (NOT the yield-time checkpoint_handle) MUST be passed back to the worker so it can resume — the original checkpoint_handle still has bcp set and any subsequent tool call with it is gated."
     procedure[1]:
-      - "Call respond_checkpoint({ checkpoint_handle, ...resolution }); read effects from the response"
+      - "Call respond_checkpoint({ checkpoint_handle, ...resolution }); from the response, capture BOTH effects and the new checkpoint_handle field — that field is the resumed_session_token the worker needs"
     tools:
       workflow-server[1]:
         - respond_checkpoint
@@ -348,6 +356,7 @@ operations:
         recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
     rules:
       no-option-hallucination: "If respond_checkpoint returns 'Invalid option', STOP. Call present_checkpoint on the same handle to retrieve valid options. Never guess."
+      thread-resumed-token: "The server returns a NEW token in the checkpoint_handle field of the response. Capture it as resumed_session_token and propagate it to the worker on resume. Failing to do so leaves the worker with its yield-time handle (bcp still set), and every subsequent tool call is gated by assertCheckpointsResolved."
 
 rules:
   token-passes-on-each-call: "EVERY tool call (other than discover, list_workflows, start_session, health_check) requires a session_token parameter."

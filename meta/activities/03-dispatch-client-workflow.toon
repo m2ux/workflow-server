@@ -45,8 +45,13 @@ loops[1]:
       - id: respond-checkpoint
         description: "workflow-engine::respond-checkpoint(checkpoint_handle: {pending_checkpoint_handle}, resolution: {user_selection})"
         when: "client_workflow_completed == false"
+        actions[1]:
+          - action: set
+            target: client_session_token
+            value: "{resumed_session_token}"
+            description: "Advance the client session token to the post-respond handle returned by respond_checkpoint. The previous client_session_token still has bcp set; reusing it would gate every subsequent worker call."
       - id: continue-orchestrator
-        description: "harness-compat::continue-agent(session_token: {client_session_token}, prompt: Checkpoint resolved with effects {effects}. Continue execution.)"
+        description: "harness-compat::continue-agent(session_token: {client_session_token}, prompt: Checkpoint resolved. Use this resumed session_token for all subsequent calls (NOT your yield-time checkpoint_handle — that still has bcp set): {client_session_token}. Effects to apply: {effects}. Continue execution from the paused step.)"
         when: "client_workflow_completed == false"
 transitions[1]:
   - to: end-workflow
