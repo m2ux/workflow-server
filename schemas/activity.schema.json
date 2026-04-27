@@ -53,7 +53,11 @@
         },
         "skill": {
           "type": "string",
-          "description": "Skill ID to apply for this step"
+          "description": "LEGACY: Skill ID to apply for this step. Prefer the operation field."
+        },
+        "operation": {
+          "type": "string",
+          "description": "Operation reference in skill-id::operation-name form (e.g., workflow-orchestrator::evaluate-transition). Operations are loaded via resolve_operations."
         },
         "condition": {
           "$ref": "condition.schema.json",
@@ -85,7 +89,12 @@
           "additionalProperties": {
             "type": ["string", "number", "boolean"]
           },
-          "description": "Arguments to pass to the skill when executing this step"
+          "description": "LEGACY: Arguments to pass to the skill. Prefer args."
+        },
+        "args": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Arguments to pass to the operation when executing this step"
         }
       },
       "required": ["id", "name"],
@@ -422,7 +431,12 @@
         },
         "skills": {
           "$ref": "#/definitions/skills",
-          "description": "Skill references. Load step skills via get_skill(step_id) to get execution protocol, tool guidance, and rules."
+          "description": "LEGACY: Skill references (primary/supporting). Prefer skill_operations."
+        },
+        "skill_operations": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Flat array of skill-id::operation-name (or skill-id::rule-name) references this activity uses. Resolved via resolve_operations."
         },
         "steps": {
           "type": "array",

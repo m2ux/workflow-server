@@ -5,7 +5,8 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { readSkillRaw } from '../loaders/skill-loader.js';
+import { readSkillRaw, resolveOperations } from '../loaders/skill-loader.js';
+import { encodeToon } from '../utils/toon.js';
 import { createSessionToken, decodeSessionToken, decodePayloadOnly, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import type { ParentContext } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
@@ -248,7 +249,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Load all workflow-level skills (behavioral protocols like session-protocol, agent-conduct). Call this after start_session to load the skills that govern session behavior. Returns raw TOON skill definitions separated by --- fences. These are workflow-scope skills; activity-level step skills are loaded separately via get_skill.',
+    'DEPRECATED: prefer get_workflow which now bundles the workflow-level operations (resolved from workflow.skill_operations + core orchestrator ops) directly in its response. Use resolve_operations for ad-hoc operation lookups. Retained for backwards compatibility with workflows still on the legacy primary-skill model. Loads the workflow-level primary skill as raw TOON.',
     {
       ...sessionTokenParam,
     },
@@ -412,6 +413,22 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
+  );
+
+  // ============== Operation Resolution ==============
+
+  server.tool(
+    'resolve_operations',
+    'Resolve a flat list of skill::element references to their bodies. Each ref is in skill-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns one entry per ref with source skill, element name, type (operation / rule / error / not-found), and body. No session token required — this is a structural lookup.',
+    {
+      operations: z.array(z.string()).min(1).describe('List of skill::element references to resolve. Each entry is "skill-id::element-name" or "workflow/skill-id::element-name".'),
+    },
+    withAuditLog('resolve_operations', async ({ operations }) => {
+      const resolved = await resolveOperations(operations, config.workflowDir);
+      return {
+        content: [{ type: 'text' as const, text: encodeToon({ operations: resolved }) }],
+      };
+    })
   );
 
 }

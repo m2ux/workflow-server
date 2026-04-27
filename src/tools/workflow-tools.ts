@@ -2,7 +2,8 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw } from '../loaders/workflow-loader.js';
-import { readSkillRaw } from '../loaders/skill-loader.js';
+import { readSkillRaw, resolveOperations } from '../loaders/skill-loader.js';
+import { CORE_ORCHESTRATOR_OPS, CORE_WORKER_OPS } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
@@ -74,7 +75,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      const skillSection = primarySkillContent ? primarySkillContent + '\n\n---\n\n' : '';
+      // Bundle operations: workflow.skill_operations + core orchestrator ops.
+      // Deduplicate by ref so a workflow that explicitly lists a core op only resolves it once.
+      const declaredOps = (wf as { skill_operations?: string[] }).skill_operations ?? [];
+      const orchestratorOps = Array.from(new Set([...declaredOps, ...CORE_ORCHESTRATOR_OPS]));
+      const resolvedOps = await resolveOperations(orchestratorOps, config.workflowDir);
+      const opsBlock = encodeToon({ operations: resolvedOps });
+
+      // Pre-separator preamble holds the legacy primary-skill body (when present)
+      // followed by the resolved-operations bundle. Tests and clients split on
+      // the first '\n\n---\n\n' to recover the workflow section, so we keep
+      // that single separator and concatenate skill + ops before it.
+      const preambleParts = [primarySkillContent, opsBlock].filter(s => s.length > 0);
+      const preamble = preambleParts.length > 0 ? preambleParts.join('\n\n') + '\n\n---\n\n' : '';
 
       if (summary) {
         const summaryData = {
@@ -90,7 +103,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         };
 
         return {
-          content: [{ type: 'text' as const, text: skillSection + encodeToon(summaryData) }],
+          content: [{ type: 'text' as const, text: preamble + encodeToon(summaryData) }],
           _meta: { session_token: advancedToken, validation },
         };
       } else {
@@ -98,7 +111,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         if (!rawResult.success) throw rawResult.error;
 
         return {
-          content: [{ type: 'text' as const, text: skillSection + `session_token: ${advancedToken}\n\n${rawResult.value}` }],
+          content: [{ type: 'text' as const, text: preamble + `session_token: ${advancedToken}\n\n${rawResult.value}` }],
           _meta: { session_token: advancedToken, validation },
         };
       }
@@ -221,8 +234,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(token, result.value) : null,
       );
 
+      // Bundle operations: activity.skill_operations + core worker ops.
+      const activity = result.success ? getActivity(result.value, activity_id) : undefined;
+      const declaredOps = (activity as { skill_operations?: string[] } | undefined)?.skill_operations ?? [];
+      const workerOps = Array.from(new Set([...declaredOps, ...CORE_WORKER_OPS]));
+      const resolvedOps = await resolveOperations(workerOps, config.workflowDir);
+      const opsSection = encodeToon({ operations: resolvedOps }) + '\n\n---\n\n';
+
       return {
-        content: [{ type: 'text' as const, text: `session_token: ${advancedToken}\n\n${rawResult.value}` }],
+        content: [{ type: 'text' as const, text: opsSection + `session_token: ${advancedToken}\n\n${rawResult.value}` }],
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts));

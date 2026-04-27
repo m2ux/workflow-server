@@ -102,6 +102,19 @@
       "items": { "$ref": "#/definitions/outputItemDefinition" },
       "description": "What the skill produces: one or more named outputs, each with optional name, description, and components"
     },
+    "toolDefinition": {
+      "type": "object",
+      "properties": {
+        "when": { "type": "string" },
+        "params": { "type": "string" },
+        "returns": { "type": "string" },
+        "next": { "type": "string" },
+        "action": { "type": "string" },
+        "usage": { "type": "string" },
+        "preserve": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
     "operationDefinition": {
       "type": "object",
       "properties": {
@@ -117,6 +130,28 @@
           },
           "description": "Positional input entries — each item is a single-key object mapping input name to its description"
         },
+        "output": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "description": "Output entries produced by this operation — same shape as inputs"
+        },
+        "procedure": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Ordered imperative bullets describing how to perform the operation"
+        },
+        "tools": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/toolDefinition" },
+          "description": "Tool references pertinent to this operation"
+        },
+        "prose": {
+          "type": "string",
+          "description": "Freeform markdown content for tables, examples, and reference material specific to this operation"
+        },
         "harness": {
           "type": "object",
           "additionalProperties": { "type": "string" },
@@ -128,7 +163,7 @@
         }
       },
       "additionalProperties": false,
-      "description": "A single named operation with description, inputs, harness implementations, and optional notes"
+      "description": "A single named operation with description, inputs, output, procedure, tools, prose, harness implementations, and optional notes"
     },
     "operationsDefinition": {
       "type": "object",

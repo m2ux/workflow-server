@@ -133,17 +133,24 @@ export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the skill produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
 
-/** Operation definition: a named operation with description, inputs, and harness-specific implementations. */
+/** Operation definition: a named operation with description, inputs, output, procedure, tools, and optional harness-specific implementations and freeform prose. */
 export const OperationInputSchema = z.object({
 }).catchall(z.string().describe('Input name → description'));
+
+export const OperationOutputSchema = z.object({
+}).catchall(z.string().describe('Output name → description'));
 
 export const OperationHarnessSchema = z.record(z.string().describe('Harness name → implementation instruction'));
 
 export const OperationDefinitionSchema = z.object({
-  description: z.string(),
-  inputs: z.array(OperationInputSchema).optional(),
-  harness: OperationHarnessSchema.optional(),
-  note: z.string().optional(),
+  description: z.string().describe('What this operation does'),
+  inputs: z.array(OperationInputSchema).optional().describe('Positional input entries — each item is a single-key object mapping input name to its description'),
+  output: z.array(OperationOutputSchema).optional().describe('Output entries produced by this operation — same shape as inputs'),
+  procedure: z.array(z.string()).optional().describe('Ordered imperative bullets describing how to perform the operation'),
+  tools: z.record(ToolDefinitionSchema).optional().describe('Tool references pertinent to this operation (replaces flat tool reference resources)'),
+  prose: z.string().optional().describe('Freeform markdown content for tables, examples, and reference material specific to this operation'),
+  harness: OperationHarnessSchema.optional().describe('Harness-specific implementations keyed by harness name (cursor, cline, generic, ...)'),
+  note: z.string().optional().describe('Additional notes about the operation'),
 });
 
 export const SkillSchema = z.object({

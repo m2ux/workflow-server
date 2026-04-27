@@ -102,7 +102,8 @@ async function transitionToActivity(client: Client, token: string, activityId: s
 
   const getResult = await client.callTool({ name: 'get_activity', arguments: { session_token: nextToken } });
   if (getResult.isError) throw new Error(`get_activity failed: ${(getResult.content[0] as { type: string; text: string }).text}`);
-  const actResponse = parseToolResponse(getResult);
+  // get_activity prepends a resolved-operations bundle separated by '\n\n---\n\n' from the activity body.
+  const actResponse = parseWorkflowResponse(getResult);
 
   return { actMeta, nextToken, actResponse };
 }
@@ -388,7 +389,7 @@ describe('mcp-server integration', () => {
         arguments: { session_token: nextToken },
       });
       expect(result.isError).toBeFalsy();
-      const activity = parseToolResponse(result);
+      const activity = parseWorkflowResponse(result);
       expect(activity.id).toBe('start-work-package');
       expect(activity.steps).toBeDefined();
       expect(Array.isArray(activity.steps)).toBe(true);
