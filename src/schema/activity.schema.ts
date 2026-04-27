@@ -143,11 +143,11 @@ export const ActivitySchema = z.object({
   problem: z.string().optional().describe('Description of the user problem this activity addresses'),
   recognition: z.array(z.string()).optional().describe('Patterns to match user intent to this activity'),
   
-  // Skills (LEGACY — primary/supporting model). Optional. Prefer skill_operations.
+  // Skills (LEGACY — primary/supporting model). Optional. Prefer operations.
   skills: SkillsReferenceSchema.optional(),
 
-  // Skill operations (NEW — flat array of skill-id::operation-name refs the activity uses)
-  skill_operations: z.array(z.string()).optional().describe('Flat array of skill-id::operation-name (or skill-id::rule-name) references the activity uses. Resolved via resolve_operations.'),
+  // Operations (NEW — flat array of skill-id::operation-name refs the activity uses)
+  operations: z.array(z.string()).optional().describe('Flat array of skill-id::operation-name (or skill-id::rule-name) references the activity uses. Resolved via resolve_operations and bundled into get_activity.'),
 
   // Execution
   steps: z.array(StepSchema).optional().describe('Ordered execution steps for this activity'),

@@ -151,6 +151,11 @@
           },
           "description": "Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys 'shell' (regular shell programs) and 'harness' (agent built-ins like Read, Write, AskQuestion)."
         },
+        "resources": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Resource refs (e.g., 'meta/05') this operation needs. Resources are scoped per-operation."
+        },
         "prose": {
           "type": "string",
           "description": "Freeform markdown content for tables, examples, and reference material specific to this operation"

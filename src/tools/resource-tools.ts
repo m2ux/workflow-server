@@ -261,7 +261,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!wfResult.success) throw wfResult.error;
 
       const workflow = wfResult.value;
-      const skillIds = workflow.skills ? [workflow.skills.primary] : [];
+      const skillIds: string[] = workflow.skills?.primary ? [workflow.skills.primary] : [];
 
       const rawBlocks: string[] = [];
       const failedSkills: string[] = [];

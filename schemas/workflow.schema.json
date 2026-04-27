@@ -183,7 +183,7 @@
           "$ref": "#/definitions/skills",
           "description": "LEGACY: Workflow-level primary skill reference. Prefer skill_operations."
         },
-        "skill_operations": {
+        "operations": {
           "type": "array",
           "items": { "type": "string" },
           "description": "Flat array of skill-id::operation-name references the workflow uses at orchestrator level. Bundled into get_workflow responses alongside core orchestrator operations."

@@ -75,9 +75,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Bundle operations: workflow.skill_operations + core orchestrator ops.
+      // Bundle operations: workflow.operations + core orchestrator ops.
       // Deduplicate by ref so a workflow that explicitly lists a core op only resolves it once.
-      const declaredOps = (wf as { skill_operations?: string[] }).skill_operations ?? [];
+      const declaredOps = (wf as { operations?: string[] }).operations ?? [];
       const orchestratorOps = Array.from(new Set([...declaredOps, ...CORE_ORCHESTRATOR_OPS]));
       const resolvedOps = await resolveOperations(orchestratorOps, config.workflowDir);
       const opsBlock = encodeToon({ operations: resolvedOps });
@@ -234,9 +234,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(token, result.value) : null,
       );
 
-      // Bundle operations: activity.skill_operations + core worker ops.
+      // Bundle operations: activity.operations + core worker ops.
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
-      const declaredOps = (activity as { skill_operations?: string[] } | undefined)?.skill_operations ?? [];
+      const declaredOps = (activity as { operations?: string[] } | undefined)?.operations ?? [];
       const workerOps = Array.from(new Set([...declaredOps, ...CORE_WORKER_OPS]));
       const resolvedOps = await resolveOperations(workerOps, config.workflowDir);
       const opsSection = encodeToon({ operations: resolvedOps }) + '\n\n---\n\n';

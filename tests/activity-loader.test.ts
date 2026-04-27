@@ -16,8 +16,8 @@ describe('activity-loader', () => {
         expect(result.value.id).toBe('discover-session');
         expect(result.value.version).toBeDefined();
         expect(result.value.name).toBeDefined();
-        // discover-session uses the new skill_operations model (no skills.primary)
-        expect((result.value as { skill_operations?: unknown }).skill_operations).toBeDefined();
+        // discover-session uses the new operations model (no skills.primary)
+        expect((result.value as { operations?: unknown }).operations).toBeDefined();
         expect(result.value.workflowId).toBe('meta');
       }
     });

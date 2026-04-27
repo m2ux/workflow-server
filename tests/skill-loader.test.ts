@@ -9,21 +9,21 @@ const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 describe('skill-loader', () => {
   describe('readSkill', () => {
     it('should load a meta skill directly', async () => {
-      const result = await readSkill('meta/state-management', WORKFLOW_DIR);
-      
+      const result = await readSkill('meta/agent-conduct', WORKFLOW_DIR);
+
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.id).toBe('state-management');
+        expect(result.value.id).toBe('agent-conduct');
         expect(result.value.capability).toBeDefined();
       }
     });
 
-    it('should load activity-worker directly', async () => {
-      const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
+    it('should load workflow-engine directly', async () => {
+      const result = await readSkill('meta/workflow-engine', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.id).toBe('activity-worker');
+        expect(result.value.id).toBe('workflow-engine');
         expect(result.value.version).toBeDefined();
         expect(result.value.capability).toBeDefined();
       }
@@ -39,26 +39,26 @@ describe('skill-loader', () => {
       }
     });
 
-    it('should load activity-worker skill with protocol and rules', async () => {
-      const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
+    it('should load workflow-engine skill with operations and rules', async () => {
+      const result = await readSkill('meta/workflow-engine', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
         const skill = result.value;
         
-        expect(skill.protocol).toBeDefined();
-        expect(Object.keys(skill.protocol).length).toBeGreaterThanOrEqual(6);
+        expect(skill.operations).toBeDefined();
+        expect(Object.keys(skill.operations!).length).toBeGreaterThanOrEqual(6);
 
         expect(skill.rules).toBeDefined();
-        expect(Object.keys(skill.rules).length).toBeGreaterThanOrEqual(3);
+        expect(Object.keys(skill.rules!).length).toBeGreaterThanOrEqual(3);
 
         expect(skill.errors).toBeDefined();
-        expect(Object.keys(skill.errors).length).toBeGreaterThanOrEqual(3);
+        expect(Object.keys(skill.errors!).length).toBeGreaterThanOrEqual(3);
       }
     });
 
     it('should have rule definitions with string values', async () => {
-      const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
+      const result = await readSkill('meta/workflow-engine', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {
@@ -69,7 +69,7 @@ describe('skill-loader', () => {
     });
 
     it('should have error recovery patterns', async () => {
-      const result = await readSkill('meta/activity-worker', WORKFLOW_DIR);
+      const result = await readSkill('meta/workflow-engine', WORKFLOW_DIR);
       
       expect(result.success).toBe(true);
       if (result.success) {

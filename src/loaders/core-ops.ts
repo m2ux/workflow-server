@@ -2,21 +2,19 @@
  * Core operations bundled into get_workflow and get_activity responses.
  *
  * The orchestrator and worker roles each have a baseline set of operations they
- * always need (engine glue: dispatching activities, walking transitions,
- * yielding checkpoints, persisting state). These were previously delivered via
- * role-based skills loaded by get_skill / get_skills. Under the operation-focused
- * model, get_workflow returns the union of (workflow.skill_operations + core
- * orchestrator ops), and get_activity returns the union of
- * (activity.skill_operations + core worker ops).
+ * always need (session/token mechanics, state persistence, engine traversal,
+ * checkpoint flow). Under the operation-focused model, get_workflow returns the
+ * union of (workflow.operations + core orchestrator ops), and get_activity
+ * returns the union of (activity.operations + core worker ops).
  *
  * Operations live in the meta workflow's capability skills (workflow-engine,
- * agent-conduct, state-management, version-control). The lists below name the
- * specific operation refs that constitute the runtime baseline.
+ * agent-conduct). The lists below name the specific operation refs that
+ * constitute the runtime baseline.
  */
 
 /**
  * Operations every orchestrator needs at the workflow level. Returned by
- * get_workflow alongside the workflow's declared skill_operations.
+ * get_workflow alongside the workflow's declared operations.
  */
 export const CORE_ORCHESTRATOR_OPS: readonly string[] = [
   // Engine traversal
@@ -28,22 +26,17 @@ export const CORE_ORCHESTRATOR_OPS: readonly string[] = [
   'workflow-engine::present-checkpoint-to-user',
   'workflow-engine::respond-checkpoint',
   'workflow-engine::bubble-checkpoint-up',
+  // State persistence
+  'workflow-engine::persist',
   // Cross-cutting orchestrator rules
   'agent-conduct::orchestrator-discipline',
   'agent-conduct::checkpoint-discipline',
   'agent-conduct::operational-discipline',
-  // Session token mechanics
-  'session-protocol::token-passes-on-each-call',
-  'session-protocol::use-most-recent-token',
-  'session-protocol::checkpoint-handle-distinct-from-session',
-  // State persistence
-  'state-management::persist',
-  'state-management::persist-after-every-activity',
 ];
 
 /**
  * Operations every activity worker needs at the activity level. Returned by
- * get_activity alongside the activity's declared skill_operations.
+ * get_activity alongside the activity's declared operations.
  */
 export const CORE_WORKER_OPS: readonly string[] = [
   // Step execution surface
@@ -55,8 +48,4 @@ export const CORE_WORKER_OPS: readonly string[] = [
   'agent-conduct::operational-discipline',
   'agent-conduct::file-sensitivity',
   'agent-conduct::code-commentary',
-  // Session token mechanics
-  'session-protocol::token-passes-on-each-call',
-  'session-protocol::use-most-recent-token',
-  'session-protocol::resume-checkpoint-uses-handle',
 ];
