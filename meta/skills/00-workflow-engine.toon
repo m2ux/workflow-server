@@ -1,10 +1,110 @@
 id: workflow-engine
-version: 2.0.0
+version: 3.0.0
 capability: Operations and rules for workflow execution — session lifecycle, state persistence, activity dispatch, transition evaluation, checkpoint flow
 
 description: "Capability skill bundling everything needed to execute a workflow's structured flow. Operations cover session token mechanics (implicit), state persistence (persist/restore), activity dispatch and transition evaluation, the post-activity commit-and-persist hook, sub-workflow handling, and the full checkpoint protocol (yield, bubble, present-to-user, respond, resume). Rules cover token mechanics, checkpoint discipline, state-mutation invariants, and orchestrator/worker behavioural boundaries. Each operation is a short linear procedure invoking a small set of MCP / harness / shell tools."
 
 operations:
+  list-workflows:
+    description: "Retrieve the catalog of available workflows"
+    output[1]:
+      - catalog: "Array of { id, title, description, tags } entries"
+    procedure[1]:
+      - "Call list_workflows"
+    tools:
+      workflow-server[1]:
+        - list_workflows
+
+  scan-saved-sessions:
+    description: "Find saved client sessions matching a target workflow under .engineering/artifacts/planning/"
+    inputs[1]:
+      - target_workflow_id: "Workflow ID to filter candidates by"
+    output[1]:
+      - candidates: "Array of { sessionToken, planningFolder, savedAt, variables } entries whose workflowId matches"
+    procedure[3]:
+      - "List directories under .engineering/artifacts/planning/"
+      - "For each directory, read its workflow-state.toon"
+      - "Keep entries whose workflowId equals target_workflow_id"
+    tools:
+      harness[1]:
+        - Read
+
+  adopt-session:
+    description: "Adopt a saved session by passing the saved token to start_session"
+    inputs[1]:
+      - saved_session_token: "Token from a saved workflow-state.toon"
+    output[1]:
+      - session_token: "Adopted token (re-signed if the server restarted)"
+    procedure[1]:
+      - "Call start_session({ session_token: saved_session_token, agent_id: 'orchestrator' })"
+    tools:
+      workflow-server[1]:
+        - start_session
+
+  create-session:
+    description: "Create a fresh client session as a child of the meta session"
+    inputs[2]:
+      - workflow_id: "Target client workflow"
+      - parent_session_token: "Meta session token (becomes the parent)"
+    output[1]:
+      - session_token: "Newly minted child session token"
+    procedure[1]:
+      - "Call start_session({ workflow_id, parent_session_token, agent_id: 'orchestrator' })"
+    tools:
+      workflow-server[1]:
+        - start_session
+
+  compose-prompt:
+    description: "Substitute state variables into a prompt template resource"
+    inputs[2]:
+      - template_ref: "Resource ref for the prompt template (e.g., meta/workflow-orchestrator-prompt)"
+      - substitutions: "Map of placeholder name → value"
+    output[1]:
+      - prompt: "Composed prompt string"
+    procedure[2]:
+      - "Load the template via get_resource"
+      - "Replace each {placeholder} with its substitution value"
+    tools:
+      workflow-server[1]:
+        - get_resource
+
+  extract-checkpoint-handle:
+    description: "Parse an orchestrator's most recent output to extract the checkpoint handle"
+    inputs[1]:
+      - output: "Orchestrator's most recent text output"
+    output[1]:
+      - checkpoint_handle: "The checkpoint_handle string when a <checkpoint_yield> block is present, otherwise null"
+    procedure[1]:
+      - "Find the <checkpoint_yield>...</checkpoint_yield> block; parse its JSON body and return checkpoint_handle"
+
+  handle-workflow-complete:
+    description: "Apply a workflow_complete result's final variables and mark the dispatched workflow finished"
+    inputs[1]:
+      - result: "The orchestrator's workflow_complete result with its variables_changed payload"
+    procedure[2]:
+      - "Apply variables_changed to the local state"
+      - "Set client_workflow_completed = true"
+
+  verify-outcomes:
+    description: "Compare a workflow's declared outcome[] against state and identify gaps"
+    inputs[2]:
+      - outcome: "Array of expected outcome strings from the workflow definition"
+      - state: "Current variable state and completed-activities trace"
+    output[1]:
+      - gaps: "Array of unsatisfied outcomes"
+    procedure[1]:
+      - "For each outcome, evaluate satisfaction against state variables, artifact presence in planning_folder_path, and completed-activities trace; collect any unmet items"
+
+  generate-summary:
+    description: "Compose the markdown session summary presented at workflow close"
+    inputs[2]:
+      - workflow: "Workflow definition (id, title, outcomes)"
+      - trace: "Completed activities, checkpoint decisions, artifacts produced"
+    output[1]:
+      - summary_markdown: "Markdown string ready to present to the user"
+    procedure[1]:
+      - "Compose sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items"
+
   persist:
     description: "Write the current session state to workflow-state.toon"
     inputs[2]:

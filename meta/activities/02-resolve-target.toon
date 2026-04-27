@@ -1,10 +1,13 @@
 id: resolve-target
-version: 2.0.0
+version: 3.0.0
 name: Resolve Target
-description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path. Skipped when target_path was already restored from saved state. Sets is_monorepo and target_path for downstream activities that perform git operations on the user's codebase."
+description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path. Sets is_monorepo and target_path for downstream activities that perform git operations on the user's codebase."
 problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
 required: true
 estimatedTime: 1-2m
+operations[2]:
+  - "version-control::detect-repo-type"
+  - "version-control::list-submodules"
 rules[1]:
   - "target_path MUST resolve to a directory containing a working git tree"
 entryActions[1]:
@@ -13,10 +16,10 @@ entryActions[1]:
 steps[3]:
   - id: detect-monorepo
     name: Detect Repository Type
-    description: "Run `test -f .gitmodules`. Set is_monorepo = true on success, false on failure. The repo-type-confirmed checkpoint asks the user to confirm the detection."
+    operation: "version-control::detect-repo-type"
   - id: list-submodules
     name: List Submodules
-    description: "Parse .gitmodules to extract submodule paths and present them as a numbered list, including a brief description of each (from the submodule's README first paragraph or its path)."
+    operation: "version-control::list-submodules"
     condition:
       type: simple
       variable: is_monorepo
@@ -24,7 +27,7 @@ steps[3]:
       value: true
   - id: capture-submodule-target
     name: Capture Submodule Target
-    description: "Ask the user to select a submodule. Set target_path to the chosen path. Verify the directory exists."
+    description: "Ask the user to select a submodule from the listed entries. Set target_path to the chosen path."
     condition:
       type: simple
       variable: is_monorepo

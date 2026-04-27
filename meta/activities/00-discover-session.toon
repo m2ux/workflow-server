@@ -1,7 +1,7 @@
 id: discover-session
-version: 4.0.0
+version: 5.0.0
 name: Discover Session
-description: "Identify the user's intended target workflow and search for an existing client session to resume. Calls list_workflows for the catalog, matches the user request against workflow descriptions, scans planning folders for saved client sessions matching the request's identifying context (ticket, branch, PR, work-package name), and presents resume / workflow-selection checkpoints. Always runs first — bootstrap delegates target identification and session matching here."
+description: "Identify the user's intended target workflow and search for an existing client session to resume. Always runs first — bootstrap delegates target identification and session matching here."
 problem: The meta workflow needs to determine which client workflow to dispatch and whether to resume an existing client session, before initialize-session creates or adopts the client session
 recognition[4]:
   - start a workflow
@@ -10,22 +10,25 @@ recognition[4]:
   - work on
 required: true
 estimatedTime: 1-2m
-rules[2]:
-  - "Always call list_workflows — never hardcode the workflow catalog"
+operations[1]:
+  - "workflow-engine::scan-saved-sessions"
+rules[1]:
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
 steps[6]:
   - id: list-available-workflows
     name: List Available Workflows
-    description: "Call list_workflows to retrieve the catalog with titles, descriptions, and recognition tags. Cache the catalog for the match step."
+    operation: "workflow-engine::list-workflows"
   - id: identify-target
     name: Identify Target Workflow and Context
-    description: "Compare the user's request against the workflow catalog. Match on title, description keywords, and recognition tags. Set target_workflow_id to the matched workflow. Set workflow_match_ambiguous = true when more than one workflow matches. Extract identifying context — ticket number, branch name, PR number, or work-package description — for the saved-session match step."
+    description: "Match the user's request against the catalog. Set target_workflow_id to the matched workflow. Set workflow_match_ambiguous = true when more than one matches. Extract identifying context (ticket, branch, PR, work-package description) for the saved-session match step."
   - id: scan-planning-folders
     name: Scan Planning Folders for Saved Sessions
-    description: "Read each workflow-state.toon under .engineering/artifacts/planning/. Collect candidates whose workflowId matches target_workflow_id. Per candidate, capture: sessionToken, planningFolder, and key state variables (issue_number, branch_name, pr_number, work-package description)."
+    operation: "workflow-engine::scan-saved-sessions"
+    args:
+      target_workflow_id: "{target_workflow_id}"
   - id: match-session
     name: Match Saved Session to User Request
-    description: "Compare the identifying context against the candidate sessions. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. Pick the most recently-updated when more than one matches."
+    description: "Compare the identifying context against the candidates. Match on issue_number, branch_name, pr_number, or directory name containing the ticket identifier. Pick the most recently-updated when multiple match."
   - id: record-match
     name: Record Match
     description: "Set has_saved_state = true. Set saved_session_token and planning_folder_path from the matched candidate."
@@ -36,7 +39,7 @@ steps[6]:
       value: true
   - id: record-no-match
     name: Record No Match
-    description: "Set has_saved_state = false. is_resuming defaults to false; the resume-session checkpoint will not fire."
+    description: "Set has_saved_state = false. The resume-session checkpoint will not fire."
     condition:
       type: simple
       variable: has_saved_state

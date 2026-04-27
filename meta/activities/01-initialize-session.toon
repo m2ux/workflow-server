@@ -1,19 +1,21 @@
 id: initialize-session
-version: 2.0.0
+version: 3.0.0
 name: Initialize Session
-description: "Create or adopt the client workflow's session as a child of the meta session. If discover-session matched a saved client session, adopt it via start_session and restore variables from disk. Otherwise, create a fresh child session via start_session({ workflow_id, parent_session_token }) and initialize the planning folder."
+description: "Create or adopt the client workflow's session as a child of the meta session. Restore variables on resume; create the planning folder on fresh starts."
 problem: The client workflow needs a valid session token before its orchestrator can be dispatched, and saved state must be restored before activities resume
 required: true
 estimatedTime: 1-2m
-operations[2]:
-  - "version-control::initialize-folder"
+operations[4]:
+  - "workflow-engine::adopt-session"
+  - "workflow-engine::create-session"
   - "workflow-engine::restore"
-rules[1]:
-  - "When creating a fresh client session, ALWAYS pass parent_session_token so trace correlation links the meta session to the client workflow"
+  - "version-control::initialize-folder"
 steps[6]:
   - id: adopt-saved-session
     name: Adopt Saved Client Session
-    description: "Call start_session({ session_token: saved_session_token, agent_id: 'orchestrator' }). Save the returned token as client_session_token."
+    operation: "workflow-engine::adopt-session"
+    args:
+      saved_session_token: "{saved_session_token}"
     condition:
       type: simple
       variable: has_saved_state
@@ -21,7 +23,10 @@ steps[6]:
       value: true
   - id: create-fresh-session
     name: Create Fresh Client Session
-    description: "Call start_session({ workflow_id: target_workflow_id, parent_session_token: session_token, agent_id: 'orchestrator' }). Save the returned token as client_session_token."
+    operation: "workflow-engine::create-session"
+    args:
+      workflow_id: "{target_workflow_id}"
+      parent_session_token: "{session_token}"
     condition:
       type: simple
       variable: has_saved_state
@@ -29,7 +34,7 @@ steps[6]:
       value: true
   - id: detect-recovery
     name: Detect Server-Restart Recovery
-    description: "Inspect the start_session response. Set session_recovered = true if the response carried recovered: true; set session_adopted = true if it carried adopted: true; otherwise leave both false."
+    description: "Inspect the start_session response. Set session_recovered when the response carries recovered: true; set session_adopted when it carries adopted: true."
   - id: restore-state
     name: Restore Variables from Disk
     operation: "workflow-engine::restore"

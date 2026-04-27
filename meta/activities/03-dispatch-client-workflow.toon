@@ -1,10 +1,13 @@
 id: dispatch-client-workflow
-version: 2.0.0
+version: 3.0.0
 name: Dispatch Client Workflow
-description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator (sub-agent in spawning harnesses, inline persona otherwise) for the client workflow, and drive the checkpoint-yield loop until the orchestrator reports workflow_complete."
+description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator, and drive the checkpoint-yield loop until workflow_complete."
 problem: The orchestrator runs as a sub-agent (or inline persona) and surfaces checkpoints upward; meta must mediate user interaction for those checkpoints and resume the orchestrator with the resolved effects
 required: true
-operations[2]:
+operations[5]:
+  - "workflow-engine::compose-prompt"
+  - "workflow-engine::extract-checkpoint-handle"
+  - "workflow-engine::handle-workflow-complete"
   - "harness-compat::spawn-agent"
   - "harness-compat::continue-agent"
 rules[1]:
@@ -16,7 +19,15 @@ entryActions[1]:
 steps[2]:
   - id: compose-orchestrator-prompt
     name: Compose Orchestrator Prompt
-    description: "Build the workflow-orchestrator prompt using resource meta/workflow-orchestrator-prompt as the template. Substitute: workflow_id = target_workflow_id, session_token = client_session_token, planning_folder_path, target_path, agent_id = 'workflow-orchestrator'."
+    operation: "workflow-engine::compose-prompt"
+    args:
+      template_ref: "meta/workflow-orchestrator-prompt"
+      substitutions:
+        workflow_id: "{target_workflow_id}"
+        session_token: "{client_session_token}"
+        planning_folder_path: "{planning_folder_path}"
+        target_path: "{target_path}"
+        agent_id: "workflow-orchestrator"
   - id: dispatch-orchestrator
     name: Dispatch Orchestrator (Initial)
     operation: "harness-compat::spawn-agent"
@@ -27,7 +38,7 @@ loops[1]:
   - id: checkpoint-loop
     name: Checkpoint-Yield Loop
     type: doWhile
-    description: "Iterate while the client workflow is still running. Each iteration handles either a yielded checkpoint or the workflow_complete signal."
+    description: "Iterate until the orchestrator reports workflow_complete."
     condition:
       type: simple
       variable: client_workflow_completed
@@ -37,7 +48,9 @@ loops[1]:
     steps[5]:
       - id: capture-checkpoint-yield
         name: Capture Checkpoint Yield
-        description: "Read the orchestrator's most recent output. Extract the checkpoint_handle from the <checkpoint_yield> block and store it as pending_checkpoint_handle."
+        operation: "workflow-engine::extract-checkpoint-handle"
+        args:
+          output: "{orchestrator_output}"
         condition:
           type: simple
           variable: client_workflow_completed
@@ -45,7 +58,9 @@ loops[1]:
           value: false
       - id: capture-workflow-complete
         name: Capture Workflow Complete
-        description: "When the orchestrator's most recent output is a workflow_complete result instead of a checkpoint yield, apply any final variables_changed and set client_workflow_completed = true."
+        operation: "workflow-engine::handle-workflow-complete"
+        args:
+          result: "{orchestrator_output}"
         condition:
           type: simple
           variable: client_workflow_completed

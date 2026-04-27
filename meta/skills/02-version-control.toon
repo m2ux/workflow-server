@@ -1,10 +1,30 @@
 id: version-control
-version: 4.1.0
+version: 4.2.0
 capability: Initialize planning folders and commit artifacts in the parent repository or a submodule
 
 description: "Operations for version-control actions during workflow execution: planning-folder initialization, regular-directory commits, and the two-step submodule commit pattern. Rules guard destructive operations and enforce the post-activity commit invariant."
 
 operations:
+  detect-repo-type:
+    description: "Determine whether the working directory is a regular repo or a submodule monorepo"
+    output[1]:
+      - is_monorepo: "true when .gitmodules exists at the repo root"
+    procedure[1]:
+      - "Run `test -f .gitmodules`; is_monorepo is true when the file exists, false otherwise"
+    tools:
+      shell[1]:
+        - test
+
+  list-submodules:
+    description: "Read and parse .gitmodules to enumerate submodule paths"
+    output[1]:
+      - submodules: "Array of { path, name, url } entries"
+    procedure[1]:
+      - "Read .gitmodules; parse each [submodule \"name\"] section to extract path and url"
+    tools:
+      harness[1]:
+        - Read
+
   initialize-folder:
     description: "Create a planning folder for a new workflow run under .engineering/artifacts/planning/"
     inputs[1]:
