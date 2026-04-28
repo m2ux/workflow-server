@@ -27,7 +27,7 @@ A well-written PR description serves multiple audiences:
 - Fix bugs or address issues
 - Refactor existing code
 - Make architectural changes
-- Update dependencies with breaking changes
+- Update dependencies with breaking changes/
 
 **Simplified descriptions are acceptable for:**
 - Documentation-only changes
@@ -47,7 +47,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary of the change and key benefit]
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](link-to-start-here)  🧪 [Test Plan](link-to-test-plan)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](link-to-start-here)
 
 ---
 
@@ -140,7 +140,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary with key benefit/metric achieved]
 
 
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)  🧪 [Test Plan](branch-link)
+🎫 [Ticket](link)  📐 [Engineering](eng-repo-link) 
 
 ---
 
@@ -216,7 +216,7 @@ This PR adds some improvements to search.
 Always link to related artifacts on the same line for easy scanning:
 
 ```markdown
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan]({TARGET_REPO_URL}/blob/{BRANCH_NAME}/docs/tests/test-plan.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
 ```
 
 #### CRITICAL: Resolving Link Placeholders
@@ -244,10 +244,6 @@ The `ENG_REPO_URL` comes from the **parent repo** (the repo containing `.enginee
 - **Engineering** - Always include; links to the README.md in the engineering artifacts planning folder for the work package. This provides reviewers access to design philosophy, planning, and review documents.
 - **ADR** - Include for architectural decisions committed to the target repo (see [Architecture Review Guide](15-architecture-review.md))
 - **Test Plan** - Include when formal test documentation exists (see [Test Plan Creation Guide](11-test-plan.md))
-
-**Important:** Link to ADRs and test plans on the *feature branch*, not main:
-- ✅ `https://github.com/OWNER/REPO/blob/feat/hybrid-search/docs/decisions/adr-hybrid-search.md`
-- ❌ `docs/decisions/adr-hybrid-search.md` (resolves to main, which won't have the file yet)
 
 **Note:** Engineering links point to the engineering artifacts repository (not the target repo), on whatever branch the parent repo uses for engineering artifacts. Resolve the branch from `git branch --show-current` in the parent repo — do not assume `main`.
 
@@ -364,116 +360,6 @@ Track remaining items before the PR can be merged:
 
 ---
 
-### Initial PR (ADR-only)
-
-Template for a PR with just the ADR (before implementation):
-
-```markdown
-## Summary
-
-[1-2 sentence summary of the proposed work]
-
-
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)
-
----
-
-## Motivation
-
-[Why this change is needed]
-
----
-
-## Changes
-
-**Implementation (coming next):**
-- [Task 1 description]
-- [Task 2 description]
-
----
-
-## 📌 Submission Checklist
-
-- [ ] Changes are backward-compatible (or flagged if breaking)
-- [ ] Pull request description explains why the change is needed
-- [ ] Self-reviewed the diff
-- [ ] I have included a change file, or skipped for this reason: [reason]
-- [ ] If the changes introduce a new feature, I have bumped the node minor version
-- [ ] Update documentation (if relevant)
-- [ ] No new todos introduced
-
----
-
-## 🔱 Fork Strategy
-
-- [ ] Node Runtime Update
-- [ ] Node Client Update
-- [ ] Other
-- [ ] N/A
-
----
-
-## 🗹 TODO before merging
-
-- [ ] Ready for review
-```
-
-### Final PR (After Implementation)
-
-Update the description to reflect completed work:
-
-```markdown
-## Summary
-
-[1-2 sentence summary with key benefit/metric achieved]
-
-
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)  🧪 [Test Plan](branch-link)
-
----
-
-## Motivation
-
-[Why this change was needed - can keep from initial PR]
-
----
-
-## Changes
-
-- **Component A** - [What was implemented]
-- **Component B** - [What was modified]
-- **Tests** - [Coverage summary]
-
----
-
-## 📌 Submission Checklist
-
-- [x] Changes are backward-compatible (or flagged if breaking)
-- [x] Pull request description explains why the change is needed
-- [x] Self-reviewed the diff
-- [x] I have included a change file, or skipped for this reason: [reason]
-- [x] If the changes introduce a new feature, I have bumped the node minor version
-- [x] Update documentation (if relevant)
-- [x] No new todos introduced
-
----
-
-## 🔱 Fork Strategy
-
-- [x] Node Runtime Update
-- [ ] Node Client Update
-- [ ] Other
-- [ ] N/A
-
----
-
-## 🗹 TODO before merging
-
-- [x] Ready for review
-```
-
----
-
 ## Updating PR Descriptions
 
 Always use the GitHub API for PR updates (`gh pr edit` uses GraphQL which fails due to Projects Classic deprecation):
@@ -527,7 +413,7 @@ gh pr ready
 Implement content-aware chunking that preserves semantic boundaries, reducing retrieval errors by 40% on the evaluation dataset.
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/tests/test-plan-content-chunking.md)
+🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
 ```
 
 ### Good Motivation Section
@@ -587,5 +473,4 @@ Before submitting a PR, verify:
 ## Related Guides
 
 - [Architecture Review Guide](15-architecture-review.md)
-- [Test Plan Creation Guide](11-test-plan.md)
 - [Complete Guide](21-complete-wp.md)
