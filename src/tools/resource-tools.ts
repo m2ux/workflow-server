@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { readSkillRaw, resolveOperations } from '../loaders/skill-loader.js';
+import { readSkillRaw, resolveOperations, formatOperationsBundle } from '../loaders/skill-loader.js';
 import { encodeToon } from '../utils/toon.js';
 import { createSessionToken, decodeSessionToken, decodePayloadOnly, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import type { ParentContext } from '../utils/session.js';
@@ -419,14 +419,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'resolve_operations',
-    'Resolve a flat list of skill::element references to their bodies. Each ref is in skill-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns one entry per ref with source skill, element name, type (operation / rule / error / not-found), and body. No session token required — this is a structural lookup.',
+    'Resolve a flat list of skill::element references to their bodies. Each ref is in skill-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns a bundle grouped by kind: `operations` and `errors` are objects keyed by `<skill-id>::<name>` → body; `rules` is a flat array of [rule-name, rule-line] tuples (one tuple per line, with global rules from any touched skill auto-included); `unresolved` lists refs that did not resolve. Empty groups are omitted. No session token required — this is a structural lookup.',
     {
       operations: z.array(z.string()).min(1).describe('List of skill::element references to resolve. Each entry is "skill-id::element-name" or "workflow/skill-id::element-name".'),
     },
     withAuditLog('resolve_operations', async ({ operations }) => {
       const resolved = await resolveOperations(operations, config.workflowDir);
       return {
-        content: [{ type: 'text' as const, text: encodeToon({ operations: resolved }) }],
+        content: [{ type: 'text' as const, text: encodeToon(formatOperationsBundle(resolved)) }],
       };
     })
   );

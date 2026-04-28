@@ -353,3 +353,40 @@ export async function resolveOperations(
 
   return results;
 }
+
+/**
+ * Shape a resolved-operations array for tool-response output.
+ * Groups by kind and drops per-entry redundancy so the wire payload is compact:
+ *   - operations / errors keyed by `<skill-id>::<name>` → body
+ *   - rules flattened to `[header, line]` tuples (one per line in the rule body)
+ *   - unresolved refs collected into a string array
+ * `workflow`, `type`, and `ref` are folded away. Empty groups are omitted.
+ */
+export function formatOperationsBundle(resolved: ResolvedOperation[]): Record<string, unknown> {
+  const operations: Record<string, unknown> = {};
+  const errors: Record<string, unknown> = {};
+  const rules: Array<[string, string]> = [];
+  const unresolved: string[] = [];
+
+  for (const entry of resolved) {
+    if (entry.type === 'operation') {
+      operations[`${entry.source}::${entry.name}`] = entry.body;
+    } else if (entry.type === 'error') {
+      errors[`${entry.source}::${entry.name}`] = entry.body;
+    } else if (entry.type === 'rule') {
+      const lines = Array.isArray(entry.body) ? entry.body : [entry.body];
+      for (const line of lines) {
+        rules.push([entry.name, String(line)]);
+      }
+    } else {
+      unresolved.push(entry.ref);
+    }
+  }
+
+  const out: Record<string, unknown> = {};
+  if (Object.keys(operations).length > 0) out['operations'] = operations;
+  if (rules.length > 0) out['rules'] = rules;
+  if (Object.keys(errors).length > 0) out['errors'] = errors;
+  if (unresolved.length > 0) out['unresolved'] = unresolved;
+  return out;
+}

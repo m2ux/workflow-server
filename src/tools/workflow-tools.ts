@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw } from '../loaders/workflow-loader.js';
-import { readSkillRaw, resolveOperations } from '../loaders/skill-loader.js';
+import { readSkillRaw, resolveOperations, formatOperationsBundle } from '../loaders/skill-loader.js';
 import { CORE_ORCHESTRATOR_OPS, CORE_WORKER_OPS } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
@@ -80,7 +80,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const declaredOps = (wf as { operations?: string[] }).operations ?? [];
       const orchestratorOps = Array.from(new Set([...declaredOps, ...CORE_ORCHESTRATOR_OPS]));
       const resolvedOps = await resolveOperations(orchestratorOps, config.workflowDir);
-      const opsBlock = encodeToon({ operations: resolvedOps });
+      const opsBlock = encodeToon(formatOperationsBundle(resolvedOps));
 
       // Pre-separator preamble holds the legacy primary-skill body (when present)
       // followed by the resolved-operations bundle. Tests and clients split on
@@ -239,7 +239,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const declaredOps = (activity as { operations?: string[] } | undefined)?.operations ?? [];
       const workerOps = Array.from(new Set([...declaredOps, ...CORE_WORKER_OPS]));
       const resolvedOps = await resolveOperations(workerOps, config.workflowDir);
-      const opsSection = encodeToon({ operations: resolvedOps }) + '\n\n---\n\n';
+      const opsSection = encodeToon(formatOperationsBundle(resolvedOps)) + '\n\n---\n\n';
 
       return {
         content: [{ type: 'text' as const, text: opsSection + `session_token: ${advancedToken}\n\n${rawResult.value}` }],

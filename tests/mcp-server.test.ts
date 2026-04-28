@@ -797,9 +797,11 @@ describe('mcp-server integration', () => {
       const sepIdx = text.indexOf('\n\n---\n\n');
       expect(sepIdx).toBeGreaterThan(0);
       const preamble = text.substring(0, sepIdx);
-      const decoded = decode(preamble);
+      const decoded = decode(preamble) as Record<string, unknown>;
       expect(decoded.operations).toBeDefined();
-      expect(Array.isArray(decoded.operations)).toBe(true);
+      // Bundle shape: operations keyed by `<skill>::<name>`, rules as [header, line] tuples.
+      expect(typeof decoded.operations).toBe('object');
+      expect(Array.isArray(decoded.operations)).toBe(false);
     });
 
     it('should return lightweight summary by default', async () => {
