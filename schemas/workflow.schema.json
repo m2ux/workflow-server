@@ -181,7 +181,12 @@
         },
         "skills": {
           "$ref": "#/definitions/skills",
-          "description": "Workflow-level skill references. Returned by get_skills when called without activity_id."
+          "description": "LEGACY: Workflow-level primary skill reference. Prefer skill_operations."
+        },
+        "operations": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Flat array of skill-id::operation-name references the workflow uses at orchestrator level. Bundled into get_workflow responses alongside core orchestrator operations."
         },
         "initialActivity": {
           "type": "string",

@@ -20,9 +20,9 @@ Orchestra defines the grammar and semantic constraints for the four workflow pri
 
 | Primitive | Description | Orchestra Status |
 |-----------|-------------|----------------|
-| **Workflow** | Top-level container: metadata, variables, activity sequencing | Legacy — Orchestra variant TBD |
-| **Activity** | Execution unit: steps, decisions, loops composed into flows | **Defined in this specification** |
-| **Skill** | Agent capability: inputs, outputs, rules, protocol, tools | Legacy — Orchestra variant TBD |
+| **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator `operations:` refs | Legacy — Orchestra variant TBD |
+| **Activity** | Execution unit: steps, decisions, loops composed into flows; declares worker `operations:` refs | **Defined in this specification** |
+| **Skill** | Container for named `operations`, `rules`, and `errors` | Legacy — Orchestra variant TBD |
 | **Resource** | Reference material: documentation, templates, guides | Legacy — Orchestra variant TBD |
 
 This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, skill, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Orchestra variants are designed.
@@ -47,11 +47,11 @@ The activity is the primary execution unit. It defines steps, decisions, and loo
 
 #### 3.1.1 Steps
 
-A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps declare a `skill:` reference — just the skill ID, nothing more.
+A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps invoke a named operation — either by listing the activity-level `operations:` array (a flat list of `skill-id::operation-name` refs) and writing a plain step description, or by inlining the invocation in the step's description (`skill-id::operation-name(arg: {var}, ...)`). The legacy `skill:` reference (just the skill ID) is still accepted and is resolved through `get_skill(step_id)`, but new activities should prefer operation references.
 
-**Input/output resolution**: The skill's own definition declares its inputs and outputs by name. At runtime, the agent resolves each input name by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). If a name is ambiguous across scopes, the skill's input definition uses a qualified reference (`NN.step-id.name`) to select explicitly. The step does not redeclare inputs or outputs — that would be redundant with the skill definition. Skill outputs are injected into the current scope after execution.
+**Input/output resolution**: An operation declares its inputs and outputs by name in the skill definition. At runtime, the agent resolves each input by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). Inline invocations may supply arguments explicitly (`skill-id::operation-name(arg: {var}, ...)`), overriding scope resolution for those names. Outputs are injected into the current scope after execution.
 
-**Rules live in skills**: Steps do not carry rules. If a step requires behavioral constraints, that signals a skill is needed — the skill definition houses the rules. This keeps steps as pure references and rules co-located with the procedural knowledge that enforces them.
+**Rules live in skills**: Steps do not carry rules. If a step requires behavioural constraints, that signals an operation or rule is needed — both live in the skill definition and are pulled into the activity's bundled response when the activity references at least one element of the source skill (auto-included rules). This keeps steps as pure references and rules co-located with the procedural knowledge that enforces them.
 
 **Deterministic vs. dynamic questions**: Fixed-option questions with known branches are handled by interactive decisions (see Section 2.2). Dynamic questions — where the content, phrasing, or follow-up logic depends on runtime context — are steps backed by a skill. The skill declares its own context inputs (current domain, prior responses, etc.) and produces structured outputs (question text, user response, adaptation signals). These resolve from the environment automatically.
 
@@ -898,7 +898,13 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 
 ## 4. Skill
 
-TBD — Orchestra grammar and constraints for the skill primitive (agent capability: inputs, outputs, rules, protocol, tools) are not yet defined. See `schemas/skill.schema.json` for the current legacy schema.
+TBD — Orchestra grammar and constraints for the skill primitive are not yet defined. See `schemas/skill.schema.json` for the current legacy schema. In that schema, a skill is a container for three element kinds:
+
+* **`operations`** — named procedures with `inputs`, `output`, `procedure`, `tools`, optional per-operation `resources`, `errors`, `rules`, and `prose`. Referenced from activities/workflows as `skill-id::operation-name`. The discrete `harness` field has been dropped — implementation hints fold into `procedure`, `prose`, and `tools` instead.
+* **`rules`** — named behavioural invariants (string or grouped string array). Referenced as `skill-id::rule-name` and auto-included when any element from the same skill is resolved.
+* **`errors`** — named error definitions with `cause`, `recovery`, `detection`, and `resolution`. Referenced as `skill-id::error-name`.
+
+See [Skill, Operation & Resource Resolution Architecture](resource_resolution_model.md) for resolution semantics.
 
 ---
 

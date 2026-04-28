@@ -45,19 +45,23 @@
         },
         "name": {
           "type": "string",
-          "description": "Human-readable step name"
+          "description": "LEGACY: Human-readable step name. Optional — id + description are usually sufficient."
         },
         "description": {
           "type": "string",
-          "description": "Detailed guidance for executing this step"
+          "description": "Detailed guidance for executing this step. Carries inline operation invocations of the form `skill-id::operation-name(arg: {var}, ...)` when a step wraps a known operation."
         },
         "skill": {
           "type": "string",
-          "description": "Skill ID to apply for this step"
+          "description": "LEGACY: Skill ID to apply for this step. Prefer inline operation invocation in description."
+        },
+        "when": {
+          "type": "string",
+          "description": "Inline boolean expression that gates this step (e.g., 'has_saved_state == true'). Evaluated against current variable state at runtime."
         },
         "condition": {
           "$ref": "condition.schema.json",
-          "description": "Condition that must be true for this step to execute. If false, the step is skipped."
+          "description": "LEGACY: Structured condition. Prefer the `when` inline expression for simple comparisons."
         },
         "checkpoint": {
           "type": "string",
@@ -85,10 +89,10 @@
           "additionalProperties": {
             "type": ["string", "number", "boolean"]
           },
-          "description": "Arguments to pass to the skill when executing this step"
+          "description": "LEGACY: Arguments to pass to the skill. Prefer inline operation invocation in description."
         }
       },
-      "required": ["id", "name"],
+      "required": ["id"],
       "additionalProperties": false
     },
     "checkpointOption": {
@@ -422,7 +426,12 @@
         },
         "skills": {
           "$ref": "#/definitions/skills",
-          "description": "Skill references. Load step skills via get_skill(step_id) to get execution protocol, tool guidance, and rules."
+          "description": "LEGACY: Skill references (primary/supporting). Prefer skill_operations."
+        },
+        "operations": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Flat array of skill-id::operation-name (or skill-id::rule-name) references this activity uses. Resolved via resolve_operations and bundled into get_activity."
         },
         "steps": {
           "type": "array",

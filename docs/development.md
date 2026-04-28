@@ -62,15 +62,17 @@ workflow-server/
 │   ├── loaders/              # File loaders (filesystem → validated objects)
 │   │   ├── workflow-loader.ts
 │   │   ├── activity-loader.ts
-│   │   ├── skill-loader.ts
+│   │   ├── skill-loader.ts   # Includes resolveOperations (skill::element ref resolver)
 │   │   ├── resource-loader.ts
-│   │   ├── rules-loader.ts
+│   │   ├── core-ops.ts       # CORE_ORCHESTRATOR_OPS / CORE_WORKER_OPS (op refs bundled into get_workflow / get_activity)
 │   │   ├── schema-loader.ts
 │   │   ├── schema-preamble.ts
-│   │   └── filename-utils.ts
+│   │   ├── filename-utils.ts
+│   │   └── index.ts          # Barrel exports
 │   ├── tools/                # MCP tool implementations
 │   │   ├── workflow-tools.ts # discover, list_workflows, get_workflow, next_activity, get_activity, yield_checkpoint, resume_checkpoint, present_checkpoint, respond_checkpoint, get_trace, health_check, get_workflow_status
-│   │   └── resource-tools.ts # start_session, get_skills, get_skill, get_resource
+│   │   ├── resource-tools.ts # start_session, get_skills, get_skill, get_resource, resolve_operations
+│   │   └── index.ts          # Tool registration entry point
 │   ├── resources/            # MCP resource registration
 │   │   └── schema-resources.ts # workflow-server://schemas
 │   └── utils/                # Utility functions
@@ -130,18 +132,20 @@ npm test -- --run --coverage
 
 ### Test Suites
 
-| Test Suite | Tests | Coverage |
-|------------|-------|----------|
-| `workflow-loader.test.ts` | 17 | Workflow loading, transitions, validation |
-| `schema-validation.test.ts` | 23 | All Zod schemas |
-| `mcp-server.test.ts` | 62 | All MCP tools, trace lifecycle, activity manifest |
-| `activity-loader.test.ts` | 10 | Activity loading and dynamic index |
-| `skill-loader.test.ts` | 13 | Skill loading and dynamic index |
-| `session.test.ts` | 22 | Token create/decode/advance, sid, aid, parent context |
-| `trace.test.ts` | 20 | TraceStore, trace token encode/decode |
-| `validation.test.ts` | 15 | Transition, manifest, condition validation |
-| `dispatch.test.ts` | 8 | Workflow dispatch, status, parent-child trace correlation |
-| **Total** | **190+** | All passing |
+| Test Suite | Coverage |
+|------------|----------|
+| `workflow-loader.test.ts` | Workflow loading, transitions, validation |
+| `schema-validation.test.ts` | All Zod schemas |
+| `schema-loader.test.ts` | JSON Schema loading and serving |
+| `mcp-server.test.ts` | All MCP tools, trace lifecycle, activity manifest, operation bundles |
+| `activity-loader.test.ts` | Activity loading and dynamic index |
+| `skill-loader.test.ts` | Skill loading, dynamic index, `resolveOperations` |
+| `session.test.ts` | Token create/decode/advance, sid, aid, parent context |
+| `trace.test.ts` | TraceStore, trace token encode/decode |
+| `validation.test.ts` | Transition, manifest, condition validation |
+| `dispatch.test.ts` | Workflow dispatch, status, parent-child trace correlation |
+
+Run `npm test -- --run` for the live count and pass/fail summary.
 
 ### Test Infrastructure
 

@@ -5,7 +5,8 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { readSkillRaw } from '../loaders/skill-loader.js';
+import { readSkillRaw, resolveOperations, formatOperationsBundle } from '../loaders/skill-loader.js';
+import { encodeToon } from '../utils/toon.js';
 import { createSessionToken, decodeSessionToken, decodePayloadOnly, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import type { ParentContext } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
@@ -31,18 +32,25 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   // ============== Session Tools ==============
 
-  server.tool(
+  server.registerTool(
     'start_session',
-    'Start a new workflow session or inherit an existing one. Returns a session token (required for all subsequent tool calls) and basic workflow metadata. ' +
-    'For a fresh session, provide agent_id only (defaults to "meta" workflow) or specify workflow_id for a different workflow. ' +
-    'For nested workflow dispatch, provide workflow_id and parent_session_token — this creates a new child session with parent context fields (pwf, pact, pv, psid) embedded for trace correlation and resume routing. ' +
-    'For worker dispatch or resume, provide session_token and agent_id — the returned token inherits all state (current activity, pending checkpoints, session ID) from the token, and the workflow is derived from the token\'s embedded workflow ID. ' +
-    'The agent_id parameter is required and sets the aid field inside the HMAC-signed token, distinguishing orchestrator from worker calls in the trace.',
     {
-      workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). When omitted and no session_token is provided, defaults to "meta". When session_token is provided, the workflow is derived from the token and this parameter is used only as a fallback for fresh-session recovery.'),
-      parent_session_token: z.string().optional().describe('Optional. When creating a fresh session with workflow_id, provide the parent session token to establish a parent-child relationship. The parent\'s workflow ID, current activity, version, and session ID are embedded in the new token for trace correlation and resume routing. Ignored when session_token is provided.'),
-      session_token: z.string().optional().describe('Optional. An existing session token to inherit. When provided, the returned token preserves sid, act, bcp, cond, v, and all state from the parent token. The workflow is derived from the token\'s embedded workflow ID. Used for worker dispatch (pass the orchestrator token) or resume (pass a saved token).'),
-      agent_id: z.string().default('orchestrator').describe('Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
+      description:
+        'Start a new workflow session or inherit an existing one. Returns a session token (required for all subsequent tool calls) and basic workflow metadata. ' +
+        'For a fresh session, provide agent_id only (defaults to "meta" workflow) or specify workflow_id for a different workflow. ' +
+        'For nested workflow dispatch, provide workflow_id and parent_session_token — this creates a new child session with parent context fields (pwf, pact, pv, psid) embedded for trace correlation and resume routing. ' +
+        'For worker dispatch or resume, provide session_token and agent_id — the returned token inherits all state (current activity, pending checkpoints, session ID) from the token, and the workflow is derived from the token\'s embedded workflow ID. ' +
+        'The agent_id parameter is required and sets the aid field inside the HMAC-signed token, distinguishing orchestrator from worker calls in the trace. ' +
+        'STRICT PARAMETERS: this tool rejects unknown keys (e.g., do NOT pass "saved_session_token" — pass the saved token under the "session_token" parameter). ' +
+        'STALENESS RECOVERY POLICY: HMAC staleness recovery (re-signing a saved token after a server restart) is performed ONLY by start_session. Other workflow tools (next_activity, get_workflow, etc.) verify HMAC strictly with no recovery. To recover a stale saved token, call start_session with session_token set to the saved value; the auto-adopt path re-signs the payload in place and preserves sid, act, and variables.',
+      inputSchema: z
+        .object({
+          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). When omitted and no session_token is provided, defaults to "meta". When session_token is provided, the workflow is derived from the token and this parameter is used only as a fallback for fresh-session recovery.'),
+          parent_session_token: z.string().optional().describe('Optional. When creating a fresh session with workflow_id, provide the parent session token to establish a parent-child relationship. The parent\'s workflow ID, current activity, version, and session ID are embedded in the new token for trace correlation and resume routing. Ignored when session_token is provided.'),
+          session_token: z.string().optional().describe('Optional. An existing session token to inherit. When provided, the returned token preserves sid, act, bcp, cond, v, and all state from the parent token. The workflow is derived from the token\'s embedded workflow ID. Used for worker dispatch (pass the orchestrator token) or resume (pass a saved token). NOTE: this is the parameter to use for resume from a saved workflow-state.json — do not invent a "saved_session_token" parameter; the schema is strict and unknown keys are rejected.'),
+          agent_id: z.string().default('orchestrator').describe('Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
+        })
+        .strict(),
     },
     withAuditLog('start_session', async ({ workflow_id, parent_session_token, session_token, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
@@ -127,7 +135,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             // Payload is also corrupted. Fall back to a fresh session.
             // Use workflow_id if provided, otherwise default to meta.
             effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
-            effectiveWorkflowVersion = '';
+            // Load the workflow so the fresh token carries v (the workflow
+            // version). Without this, the token's v stays empty and saved
+            // state files end up duplicating workflowVersion at the envelope
+            // level just to recover it.
+            const wfPreLoad = await loadWorkflow(config.workflowDir, effectiveWorkflowId);
+            effectiveWorkflowVersion = wfPreLoad.success ? (wfPreLoad.value.version ?? '') : '';
             console.warn(`[start_session] Provided session_token is invalid and payload is not recoverable. Creating a fresh session for workflow '${effectiveWorkflowId}'.`);
             tokenRecoveryWarning =
               `The provided session_token could not be verified and the payload could not be recovered. ` +
@@ -153,7 +166,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       } else {
         // Fresh session — use workflow_id if provided, otherwise default to meta.
         effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
-        effectiveWorkflowVersion = '';
+        // Load the workflow so the fresh token carries v (the workflow version).
+        // Without this, the token's v stays empty and saved state files end up
+        // duplicating workflowVersion at the envelope level just to recover it.
+        const wfPreLoad = await loadWorkflow(config.workflowDir, effectiveWorkflowId);
+        effectiveWorkflowVersion = wfPreLoad.success ? (wfPreLoad.value.version ?? '') : '';
 
         // If parent_session_token is provided, extract parent context for trace correlation.
         let parentContext: ParentContext | undefined;
@@ -248,7 +265,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_skills',
-    'Load all workflow-level skills (behavioral protocols like session-protocol, agent-conduct). Call this after start_session to load the skills that govern session behavior. Returns raw TOON skill definitions separated by --- fences. These are workflow-scope skills; activity-level step skills are loaded separately via get_skill.',
+    'DEPRECATED: prefer get_workflow which now bundles the workflow-level operations (resolved from workflow.skill_operations + core orchestrator ops) directly in its response. Use resolve_operations for ad-hoc operation lookups. Retained for backwards compatibility with workflows still on the legacy primary-skill model. Loads the workflow-level primary skill as raw TOON.',
     {
       ...sessionTokenParam,
     },
@@ -260,7 +277,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (!wfResult.success) throw wfResult.error;
 
       const workflow = wfResult.value;
-      const skillIds = workflow.skills ? [workflow.skills.primary] : [];
+      const skillIds: string[] = workflow.skills?.primary ? [workflow.skills.primary] : [];
 
       const rawBlocks: string[] = [];
       const failedSkills: string[] = [];
@@ -412,6 +429,22 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         _meta: { session_token: advancedToken, validation },
       };
     }, traceOpts)
+  );
+
+  // ============== Operation Resolution ==============
+
+  server.tool(
+    'resolve_operations',
+    'Resolve a flat list of skill::element references to their bodies. Each ref is in skill-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns a bundle grouped by kind: `operations` and `errors` are objects keyed by `<skill-id>::<name>` → body; `rules` is a flat array of [rule-name, rule-line] tuples (one tuple per line, with global rules from any touched skill auto-included); `unresolved` lists refs that did not resolve. Empty groups are omitted. No session token required — this is a structural lookup.',
+    {
+      operations: z.array(z.string()).min(1).describe('List of skill::element references to resolve. Each entry is "skill-id::element-name" or "workflow/skill-id::element-name".'),
+    },
+    withAuditLog('resolve_operations', async ({ operations }) => {
+      const resolved = await resolveOperations(operations, config.workflowDir);
+      return {
+        content: [{ type: 'text' as const, text: encodeToon(formatOperationsBundle(resolved)) }],
+      };
+    })
   );
 
 }
