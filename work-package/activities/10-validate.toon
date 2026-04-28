@@ -1,7 +1,7 @@
 id: validate
-version: 2.5.0
+version: 3.0.0
 name: Verify & Validate Design
-description: "Validate the implementation through testing and build verification. Test suite quality was already reviewed in implement phase."
+description: "Validate the implementation by running tests, build, format, and lint via cargo-operations (Rust/Substrate) or project-equivalent commands, then aggregate results via validate-build. Test suite quality was reviewed at the implement phase."
 problem: User needs to validate the implementation passes all tests
 recognition[3]:
   - validate implementation
@@ -9,41 +9,50 @@ recognition[3]:
   - verify build
 required: true
 estimatedTime: 15-30m
-skills:
-  primary: meta/activity-worker
-steps[9]:
+operations[8]:
+  - "cargo-operations::test"
+  - "cargo-operations::check"
+  - "cargo-operations::build-release"
+  - "cargo-operations::fmt-check"
+  - "cargo-operations::clippy"
+  - "validate-build::analyze-failure"
+  - "validate-build::apply-fix"
+  - "validate-build::aggregate-results"
+steps[10]:
   - id: run-tests
     name: Run all tests
-    description: "Execute unit, integration, e2e tests. Observe and record results."
-    skill: validate-build
+    description: "cargo-operations::test(scope: '--workspace')"
+    when: "project_type == 'rust-substrate'"
   - id: verify-build
     name: Verify build succeeds
-    description: "Run build. Observe and record result."
-    skill: validate-build
+    description: "cargo-operations::check(scope: '--workspace')"
+    when: "project_type == 'rust-substrate'"
   - id: check-format
     name: Check formatting
-    description: "Run the canonical formatting check (e.g. cargo fmt --all -- --check for Rust). This must match the exact CI command. Formatting diffs are treated as failures."
-    skill: validate-build
+    description: "cargo-operations::fmt-check(scope: '--all')"
+    when: "project_type == 'rust-substrate'"
   - id: check-lint
     name: Check for linter errors
-    description: "Run linter. Observe and record results."
-    skill: validate-build
+    description: "cargo-operations::clippy(scope: '--workspace')"
+    when: "project_type == 'rust-substrate'"
+  - id: aggregate-results
+    name: Aggregate validation results
+    description: "validate-build::aggregate-results(test_results: {test_status}, build_status: {check_status}, format_status: {fmt_status}, lint_results: {clippy_status})"
   - id: evaluate-results
     name: Evaluate validation results
-    description: "Set has_failures to true if any test, build, format, or lint check failed. Set validation_passed to true if all checks passed."
+    description: "Read validation_results from aggregate-results. Set has_failures and validation_passed from it."
     actions[2]:
       - action: set
         target: has_failures
         value: true
-        message: "Set to true if any test/build/lint failure was observed; false otherwise"
+        message: "true when validation_results.validation_passed is false; false otherwise"
       - action: set
         target: validation_passed
         value: true
-        message: "Set to true if all checks passed; false otherwise"
+        message: "Mirrors validation_results.validation_passed"
   - id: document-failures
     name: Document Failures as Findings
     description: "Document all test/build/lint failures as review findings with severity (critical for test failures, high for build failures). Do NOT attempt to fix."
-    skill: validate-build
     condition:
       type: simple
       variable: is_review_mode
@@ -52,7 +61,6 @@ steps[9]:
   - id: assess-test-coverage
     name: Assess Test Coverage
     description: "Evaluate whether the tests added are sufficient for the changes made. Check coverage of edge cases and error paths."
-    skill: validate-build
     condition:
       type: simple
       variable: is_review_mode
@@ -60,8 +68,7 @@ steps[9]:
       value: true
   - id: fix-failures
     name: Fix any failures
-    description: "Analyze root cause of failures, fix, and re-validate."
-    skill: validate-build
+    description: "Enter the fix-revalidate-cycle loop. Each iteration calls validate-build::analyze-failure for a failed check, validate-build::apply-fix for the chosen strategy, and re-runs the affected cargo-operations op."
     condition:
       type: and
       conditions[2]:
@@ -76,7 +83,6 @@ steps[9]:
   - id: scan-commit-signatures-for-strategic
     name: Scan PR commit signatures (preflight)
     description: "In target_path, resolve MERGE_BASE against the default branch (try origin/main, origin/master, main, master in order). Run git log --format='%h %G? %s' MERGE_BASE..HEAD. If ANY line has %G? of N (no signature) or B (bad), set unsigned_commits_in_pr to true and populate unsigned_commit_list_summary with a concise list of affected commits; otherwise set unsigned_commits_in_pr to false and clear the summary. Review mode uses the same branch/PR under review. This runs before strategic-review so the orchestrator can resolve the unsigned-commits checkpoint with accurate state."
-    skill: manage-git
     actions[2]:
       - action: set
         target: unsigned_commits_in_pr
@@ -97,16 +103,13 @@ loops[1]:
     steps[3]:
       - id: analyze-failure
         name: Analyze Failure Root Cause
-        description: "Identify the root cause of each test/build/lint failure."
-        skill: validate-build
+        description: "validate-build::analyze-failure(check_id: {failed_check_id}, diagnostics: {failed_check_diagnostics}, target_path: {target_path})"
       - id: apply-fix
         name: Apply Fix
-        description: "Implement the fix for the identified root cause."
-        skill: validate-build
+        description: "validate-build::apply-fix(check_id: {failed_check_id}, fix_strategy: {fix_strategy})"
       - id: revalidate
         name: Re-run Validation
-        description: "Re-run the failing checks. Update has_failures based on results."
-        skill: validate-build
+        description: "Re-run the failed check by invoking the matching cargo-operations operation (cargo-operations::test for run-tests, ::check for verify-build, ::fmt-check for check-format, ::clippy for check-lint), then re-aggregate via validate-build::aggregate-results and update has_failures from the new validation_results."
 transitions[1]:
   - to: strategic-review
     isDefault: true

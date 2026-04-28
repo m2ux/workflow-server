@@ -18,7 +18,6 @@ rules[5]:
   - "Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)"
   - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
 skills:
-  primary: meta/workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"

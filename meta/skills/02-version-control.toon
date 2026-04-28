@@ -1,0 +1,111 @@
+id: version-control
+version: 5.0.0
+capability: Initialize planning folders and commit artifacts in the parent repository or a submodule
+
+description: "Operations for version-control actions during workflow execution: planning-folder initialization, regular-directory commits, and the two-step submodule commit pattern. Rules guard destructive operations and conventional-commit hygiene. Activity-lifecycle invariants (when to commit) live in workflow-engine, not here."
+
+operations:
+  detect-repo-type:
+    description: "Determine whether the working directory is a regular repo or a submodule monorepo"
+    output[1]:
+      - is_monorepo: "true when .gitmodules exists at the repo root"
+    procedure[1]:
+      - "Run `test -f .gitmodules`; is_monorepo is true when the file exists, false otherwise"
+    tools:
+      shell[1]:
+        - test
+
+  list-submodules:
+    description: "Read and parse .gitmodules to enumerate submodule paths"
+    output[1]:
+      - submodules: "Array of { path, name, url } entries"
+    procedure[1]:
+      - "Read .gitmodules; parse each [submodule \"name\"] section to extract path and url"
+    tools:
+      harness[1]:
+        - Read
+
+  initialize-folder:
+    description: "Create a planning folder for a new workflow run under .engineering/artifacts/planning/"
+    inputs[1]:
+      - initiative_name: "Kebab-case identifier derived from the issue title or work-package description"
+    output[1]:
+      - planning_folder_path: "Absolute path to the created folder"
+    procedure[3]:
+      - "Compose path: .engineering/artifacts/planning/YYYY-MM-DD-{initiative_name}/"
+      - "mkdir -p the path"
+      - "Return the absolute path as planning_folder_path"
+    tools:
+      shell[1]:
+        - mkdir
+    errors:
+      no_folder_path:
+        cause: "Attempted to write an artifact without a planning folder"
+        recovery: "Run version-control::initialize-folder first"
+
+  commit-regular-files:
+    description: "Stage, commit, and push files in a regular (non-submodule) directory of the parent repo"
+    inputs[3]:
+      - paths: "Array of file paths to stage (under .engineering/artifacts/, .engineering/AGENTS.md, .engineering/scripts/, etc.)"
+      - message: "Conventional Commits message (e.g., 'docs(work-package): activity-X artifacts')"
+      - branch: "Branch to push to (typically the current branch — do NOT create a new branch in the parent repo)"
+    procedure[3]:
+      - "git add {paths}"
+      - "git commit -m '{message}'"
+      - "git push origin {branch}"
+    tools:
+      shell[1]:
+        - git
+    errors:
+      uncommitted_changes:
+        cause: "Changes exist but the user has not requested a commit"
+        recovery: "Report the changes and wait for user direction"
+      destructive_operation:
+        cause: "Agent attempted a destructive git operation"
+        recovery: "Stop immediately. Ask for explicit user confirmation with clear consequences."
+
+  commit-submodule:
+    description: "Two-step submodule commit: commit + push inside the submodule, then update the parent's submodule pointer"
+    inputs[4]:
+      - submodule_path: "Path of the submodule from the repo root (e.g., 'workflows', '.engineering/workflows')"
+      - paths: "Array of file paths inside the submodule"
+      - submodule_message: "Conventional Commits message for the submodule commit"
+      - parent_branch: "Branch to push the parent commit to"
+    procedure[6]:
+      - "cd {submodule_path}"
+      - "git add {paths} && git commit -m '{submodule_message}' && git push origin <submodule-branch>"
+      - "cd back to the repo root"
+      - "git add {submodule_path}"
+      - "git commit -m 'chore: update {submodule_path} submodule'"
+      - "git push origin {parent_branch}"
+    note: "The submodule push (step 2) MUST complete before the parent commit (step 5). Skipping step 5 leaves the parent pointing at the old submodule commit. Skipping the submodule push leaves the parent pointing at a commit that does not exist on the remote."
+    tools:
+      shell[1]:
+        - git
+    errors:
+      submodule-desync:
+        cause: "Parent points to a submodule commit that does not exist on the remote"
+        recovery: "cd into the submodule and push the missing commit, then verify the parent pointer resolves"
+      stale-pointer:
+        cause: "Submodule committed but parent pointer not updated"
+        recovery: "cd to repo root, git add the submodule path, commit, and push"
+
+  identify-path-type:
+    description: "Determine whether a path is a regular directory or a git submodule before committing"
+    inputs[1]:
+      - path: "Path to inspect"
+    output[1]:
+      - kind: "'submodule' (mode 160000) or 'regular' (mode 040000)"
+    procedure[1]:
+      - "Run 'git ls-tree HEAD {path}' and read the mode prefix"
+    tools:
+      shell[1]:
+        - git
+
+rules:
+  no-destructive-ops: "NEVER run destructive or irreversible operations (force push to protected branches, hard resets) without explicit user request."
+  no-hook-skipping: "NEVER skip hooks (--no-verify, --no-gpg-sign) unless the user explicitly requests it."
+  explicit-commit: "NEVER commit changes unless the user explicitly asks. Verify the request before executing."
+  read-agents-md: "BEFORE committing engineering artifacts, ALWAYS read .engineering/AGENTS.md for the definitive git structure."
+  conventional-commits: "Follow Conventional Commits: type(optional-scope): description. Common types: feat, fix, docs, style, refactor, test, chore, build, ci. Reference issue numbers when applicable."
+

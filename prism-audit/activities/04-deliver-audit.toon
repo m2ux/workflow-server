@@ -4,7 +4,6 @@ name: Deliver Audit Results
 description: "Present the final audit deliverables to the user. Reads and summarises the three audit documents (AUDIT-REPORT.md, DETAILED-FINDINGS.md, DESIGN-TRADE-OFFS.md), reports all artifact paths, and provides a structured summary of findings by severity."
 problem: "The audit produces multiple documents across potentially multiple prism runs. The user needs a clear summary of what was produced, key metrics (finding counts by severity), and paths to all deliverables."
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - compose-audit-prompt
 steps[4]:

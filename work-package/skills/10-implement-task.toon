@@ -1,5 +1,5 @@
 id: implement-task
-version: 2.0.0
+version: 2.1.1
 capability: Implement a single task from the work package plan by writing code changes
 
 description: "Atomic code implementation capability. Reads a task from the plan, understands the context (affected files, dependencies, requirements), and writes the code changes. Testing, committing, and assumption review are handled by other skills (validate-build, manage-git, review-assumptions) orchestrated by the activity's loop."
@@ -16,13 +16,11 @@ protocol:
     - Read the task description and requirements from the plan
     - Identify affected files, dependencies, and related code
     - Review test plan for acceptance criteria relevant to this task
-  write-code[4]:
+  write-code[3]:
     - Implement the code changes for this task
     - Follow existing code patterns and conventions in the target codebase
-    - For Rust projects, follow TDD approach per resource 23
-    - "For Rust projects, follow TDD best practices from resource 23 — Red-Green-Refactor, FIRST principles, test doubles, boundary testing"
-  verify-locally[2]:
-    - Verify the change compiles and basic tests pass
+    - "For Rust projects, follow TDD best practices from resource 23 (tdd-concepts-rust)"
+  verify-locally[1]:
     - Check for obvious regressions in affected code
 
 output[1]:

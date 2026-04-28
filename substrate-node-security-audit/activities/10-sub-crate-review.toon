@@ -8,7 +8,6 @@ recognition[3]:
   - group a sub-agent
   - checklist review
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-sub-agent
 required: false

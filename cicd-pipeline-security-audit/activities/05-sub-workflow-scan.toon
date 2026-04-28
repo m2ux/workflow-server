@@ -7,7 +7,6 @@ recognition[2]:
   - scan submodule workflows
   - run detection patterns
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-sub-agent
 required: false

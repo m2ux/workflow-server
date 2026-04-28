@@ -12,7 +12,10 @@ recognition[5]:
 required: false
 estimatedTime: 20-45m
 skills:
-  primary: meta/activity-worker
+  supporting[3]:
+    - build-comprehension
+    - manage-artifacts
+    - portfolio-analysis
 rules[3]:
   - "The initial deep-dive is mandatory and always performed — it attempts to resolve every open question from the first pass without user selection"
   - "Comprehension is sufficient when all open questions have been resolved through code analysis. If unresolved questions remain after the initial deep-dive, present them with the 30s auto-advance pattern — the user can intervene to explore further or let it proceed."
@@ -21,31 +24,24 @@ steps[12]:
   - id: check-existing-artifacts
     name: Check Existing Comprehension Artifacts
     description: "Search .engineering/artifacts/comprehension/ for existing artifacts related to this codebase area. Match by project name, module names, or domain concepts from the problem statement."
-    skill: manage-artifacts
   - id: review-existing
     name: Review Existing Artifacts
     description: "Silently review any relevant existing comprehension artifacts as baseline context. Incorporate prior knowledge into the architecture survey. If none exist, proceed to fresh analysis."
-    skill: build-comprehension
   - id: architecture-survey
     name: Architecture Survey
     description: "Perform a top-down survey of the codebase: project structure, key modules and their responsibilities, dependency graph between modules, entry points, and overarching design patterns (e.g., layered architecture, event-driven, actor model). Use a hypothesis-driven approach — form initial hypotheses about structure and verify them by examining code."
-    skill: build-comprehension
   - id: key-abstractions
     name: Key Abstractions and Data Model
     description: "Identify core types, traits, interfaces, data structures, error handling patterns, and state management approaches. Document what each key abstraction represents in domain terms and how abstractions relate to each other."
-    skill: build-comprehension
   - id: design-rationale
     name: Design Rationale Mapping
     description: "For each significant design choice observed (patterns used, architecture decisions, abstraction boundaries), infer the likely rationale — why was it built this way? What constraints or trade-offs does this design address? Document these as 'design rationale hypotheses' that the user can validate."
-    skill: build-comprehension
   - id: domain-concept-mapping
     name: Domain Concept Mapping
     description: "Map technical constructs to domain concepts: what does each module or subsystem accomplish in business/domain terms? Create a glossary of domain-specific terminology found in the codebase."
-    skill: build-comprehension
   - id: create-comprehension-artifact
     name: Create or Augment Comprehension Artifact
     description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary. Initialize the 'Open Questions' section (markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section) between Domain Concept Mapping and Deep-Dive Sections. Populate it with questions and gaps identified during the architecture survey — do not leave it empty."
-    skill: manage-artifacts
     checkpoint: architecture-confirmed
     actions[1]:
       - action: message
@@ -53,23 +49,18 @@ steps[12]:
   - id: initial-deep-dive
     name: Initial Deep-Dive (Mandatory)
     description: "Systematically investigate every open question identified during the first pass (architecture survey, key abstractions, design rationale, domain mapping). This step is always performed — do not skip it and do not ask the user to select areas. For each open question, trace relevant data flows, examine implementation details, and resolve the question through targeted code analysis."
-    skill: build-comprehension
   - id: initial-lens-pass
     name: Apply Portfolio Lenses to Initial Deep-Dive
     description: "Apply pedagogy (prism resource 06) and rejected-paths (prism resource 09) lenses to the key modules examined during the initial deep-dive. Pedagogy reveals where inherited patterns create silent problems; rejected-paths reveals hidden design trade-offs. Apply each lens independently. Append findings to the comprehension artifact under the 'Initial Deep-Dive' section."
-    skill: portfolio-analysis
   - id: update-artifact-initial
     name: Update Artifact with Initial Deep-Dive Findings
     description: "Append the initial deep-dive findings and portfolio lens findings to the comprehension artifact under a dedicated 'Initial Deep-Dive' section, organized by the open question each finding addresses."
-    skill: manage-artifacts
   - id: revise-initial-questions
     name: Revise Open Questions after Initial Deep-Dive
     description: "Review findings from the initial deep-dive against the 'Open Questions' section. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation. Write the updated section to the artifact. Then evaluate sufficiency: if all open questions are now Resolved, set has_open_questions to false and needs_comprehension to false — comprehension is complete, skip the checkpoint. If unresolved questions remain, set has_open_questions to true and present the revised table as context for the comprehension-sufficient checkpoint."
-    skill: build-comprehension
   - id: deep-dive-loop
     name: Further Deep-Dive Exploration (Optional)
     description: "If the user requests further exploration at the comprehension-sufficient checkpoint, enter interactive loop: present remaining open questions and areas available for deeper exploration (specific modules, patterns, data flows, error handling, etc.) and ask the user which area they want to understand better. For each selection, perform targeted analysis and append findings to the comprehension artifact."
-    skill: build-comprehension
 artifacts[1]:
   - id: comprehension-artifact
     name: "{codebase-area}.md"
@@ -133,19 +124,15 @@ loops[1]:
       - id: targeted-analysis
         name: Perform targeted analysis
         description: "Dive into the selected area: trace data flows, examine implementation details, identify edge cases, document internal design decisions and their implications."
-        skill: build-comprehension
       - id: portfolio-lens-pass
         name: Apply portfolio lenses to deep-dive area
         description: "Load portfolio lenses from the prism workflow and apply them independently to the code under examination. Use pedagogy (prism resource 06 — attached to skill response via get_skill) to trace where inherited patterns create silent problems, and rejected-paths (prism resource 09 — attached to skill response via get_skill) to reveal what design paths were rejected and what problems they would swap. Apply each lens independently to the key files in the deep-dive area. Append per-lens findings and a cross-lens synthesis (convergent vs unique) to the comprehension artifact under the current deep-dive section."
-        skill: portfolio-analysis
       - id: update-artifact
         name: Update comprehension artifact
         description: "Append deep-dive findings and portfolio lens findings to the comprehension artifact under a dedicated section for this area."
-        skill: manage-artifacts
       - id: revise-open-questions
         name: Revise open questions
         description: "Review findings from this iteration (including portfolio lens findings) against the 'Open Questions' section in the comprehension artifact. Mark investigated questions as Resolved with a one-line resolution summary and deep-dive section reference. Add any new questions surfaced during investigation — including structural properties revealed by the lenses. Write the updated section to the artifact. If all questions are now Resolved, set has_open_questions to false and needs_comprehension to false — loop exits. Otherwise present the revised table as context for the sufficiency checkpoint."
-        skill: build-comprehension
         checkpoint: comprehension-sufficient
 transitions[4]:
   - to: requirements-elicitation

@@ -4,7 +4,6 @@ name: Define Audit Scope
 description: "Collect the audit target, user's description of what to audit, and output path. Index the codebase with GitNexus. Present the scope for confirmation before proceeding to prompt generation."
 problem: "The audit requires a confirmed target codebase, a clear description of audit goals and focus areas, and an organised output directory before analysis can begin."
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - compose-audit-prompt
 steps[5]:

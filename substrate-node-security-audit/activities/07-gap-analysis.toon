@@ -8,7 +8,6 @@ recognition[3]:
   - gap analysis
   - benchmark against professional report
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-audit
 required: false

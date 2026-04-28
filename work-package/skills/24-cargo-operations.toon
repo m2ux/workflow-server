@@ -1,0 +1,150 @@
+id: cargo-operations
+version: 1.1.0
+capability: Resource-constrained operations for the cargo subcommands used during the work-package workflow
+
+description: "Operations wrapping each cargo subcommand invoked by work-package skills (check, test, build, clippy, fmt, doc). Every operation embeds the inline resource budget — nice -n 19, CARGO_BUILD_JOBS cap (default 4), RUST_TEST_THREADS cap (default 4), and SKIP_WASM_BUILD=1 for non-release commands — to prevent OOM/host-hang on memory-constrained hosts. Defaults assume ≤32 GiB RAM and ≤16 cores; raise the env caps on larger hosts."
+
+operations:
+  check:
+    description: "Type-check without producing binaries; the cheapest validation pass"
+    inputs[2]:
+      - scope: "'--workspace' for the full workspace, or '-p <crate>' to scope to one crate (preferred during inner loops)"
+      - features: "Optional --features flags (empty string when none)"
+    output[1]:
+      - check_status: "Pass/fail and the rustc diagnostics emitted"
+    procedure[1]:
+      - "nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo check {scope} {features}"
+    tools:
+      shell[1]:
+        - cargo
+    errors:
+      out_of_memory:
+        cause: "Compile peaked above available RAM even with the budget"
+        recovery: "Halve CARGO_BUILD_JOBS (export CARGO_BUILD_JOBS=2) and retry; if still failing, narrow scope to -p <crate>"
+      compile_error:
+        cause: "Type-check failed in the source"
+        recovery: "Address the rustc errors and retry"
+
+  test:
+    description: "Run tests with bounded test parallelism; prefer nextest when configured"
+    inputs[3]:
+      - scope: "'--workspace' or '-p <crate>'"
+      - features: "Optional --features flags (empty string when none)"
+      - test_filter: "Optional test name filter (e.g., 'test_foo' or '--test integration'); empty string when none"
+    output[2]:
+      - test_status: "Pass/fail summary"
+      - failures: "Per-test failure detail when any failed"
+    procedure[2]:
+      - "If cargo nextest is configured (.config/nextest.toml present in the project): nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo nextest run {scope} {features} --test-threads=${RUST_TEST_THREADS:-4} {test_filter}"
+      - "Otherwise: nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo test {scope} {features} {test_filter} -- --test-threads=${RUST_TEST_THREADS:-4}"
+    tools:
+      shell[1]:
+        - cargo
+    errors:
+      out_of_memory:
+        cause: "Test compile or test runtime peaked above available RAM"
+        recovery: "Halve CARGO_BUILD_JOBS and RUST_TEST_THREADS and retry; consider nextest for lower per-test peak"
+      test_failure:
+        cause: "One or more tests failed"
+        recovery: "Investigate the reported failure; do not mask via --no-fail-fast"
+
+  build-dev:
+    description: "Workspace dev build; skips the runtime wasm artifact"
+    inputs[2]:
+      - scope: "'--workspace' or '-p <crate>'"
+      - features: "Optional --features flags (empty string when none)"
+    procedure[1]:
+      - "nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build {scope} {features}"
+    tools:
+      shell[1]:
+        - cargo
+    errors:
+      out_of_memory:
+        cause: "Link or codegen step exceeded available RAM"
+        recovery: "Halve CARGO_BUILD_JOBS and retry"
+
+  build-release:
+    description: "Release build; produces the final binary AND the runtime wasm artifact"
+    inputs[2]:
+      - scope: "'--workspace' or '-p <crate>'"
+      - features: "Optional --features flags (empty string when none)"
+    procedure[2]:
+      - "Do NOT set SKIP_WASM_BUILD here — the wasm runtime artifact is required for release"
+      - "nice -n 19 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build --release {scope} {features}"
+    tools:
+      shell[1]:
+        - cargo
+    errors:
+      out_of_memory:
+        cause: "Release link/LTO and the nested wasm build together exceeded available RAM"
+        recovery: "Halve CARGO_BUILD_JOBS; on tight hosts, run -p <crate> for the binary first, then a separate workspace pass for the runtime"
+
+  clippy:
+    description: "Run the linter against all targets, denying warnings"
+    inputs[2]:
+      - scope: "'--workspace' or '-p <crate>'"
+      - features: "Optional --features flags (empty string when none)"
+    output[2]:
+      - clippy_status: "{ passed: boolean } — true when no denied warnings emitted"
+      - lint_diagnostics: "Captured stdout/stderr (used by validate-build::analyze-failure)"
+    procedure[1]:
+      - "nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo clippy {scope} --all-targets {features} -- -D warnings"
+    tools:
+      shell[1]:
+        - cargo
+    errors:
+      lint_violations:
+        cause: "clippy emitted denied warnings"
+        recovery: "Address the diagnostics; do not blanket-allow without justification"
+
+  fmt-check:
+    description: "Canonical formatting check; matches CI exactly. Does not compile, so does not need build-jobs caps"
+    inputs[1]:
+      - scope: "'--all' for the full workspace (default and CI parity), or omit for the local crate"
+    output[2]:
+      - fmt_status: "{ passed: boolean } — true when no formatting diffs"
+      - fmt_diff_summary: "Concise summary of files needing formatting (when not passed)"
+    procedure[1]:
+      - "nice -n 19 cargo fmt {scope} -- --check"
+    tools:
+      shell[1]:
+        - cargo
+    errors:
+      formatting_diffs:
+        cause: "Source files do not match rustfmt configuration"
+        recovery: "Run cargo-operations::fmt-fix to apply formatting, then commit the result"
+
+  fmt-fix:
+    description: "Apply rustfmt formatting in place"
+    inputs[1]:
+      - scope: "'--all' for the full workspace, or omit for the local crate"
+    procedure[1]:
+      - "nice -n 19 cargo fmt {scope}"
+    tools:
+      shell[1]:
+        - cargo
+
+  doc:
+    description: "Generate API documentation to verify inline doc comments compile"
+    inputs[1]:
+      - scope: "'--workspace --no-deps' for the full workspace, or '-p <crate> --no-deps' to scope"
+    procedure[1]:
+      - "nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo doc {scope}"
+    tools:
+      shell[1]:
+        - cargo
+    errors:
+      broken_doc_link:
+        cause: "rustdoc detected a broken intra-doc link"
+        recovery: "Fix the link target or remove the broken reference"
+
+rules:
+  resource-budget: "Every cargo invocation made by work-package skills MUST use one of these operations. Do NOT call bare `cargo ...` from skill protocols. The inline budget — nice -n 19, CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4}, RUST_TEST_THREADS=${RUST_TEST_THREADS:-4}, SKIP_WASM_BUILD=1 (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts."
+
+  scope-narrow-then-wide: "During inner loops (TDD red/green in implement-task) prefer scope='-p <crate>'. Run --workspace once at the validate activity to match CI."
+
+  release-builds-keep-wasm: "build-release is the ONLY operation that produces the runtime wasm artifact and is therefore the ONLY operation that omits SKIP_WASM_BUILD=1. Do not 'optimise' build-release by adding it."
+
+  prefer-nextest: "When cargo nextest is configured for the project (.config/nextest.toml present), the test operation MUST use nextest — it isolates failures into separate processes, giving lower peak RAM and clearer reporting."
+
+  fmt-uses-only-nice: "fmt-check and fmt-fix do not compile, so only nice -n 19 applies; do not paste the full env budget there — it is misleading."

@@ -32,7 +32,6 @@ rules[19]:
   - "AGENT OUTPUT PERSISTENCE: Every sub-agent MUST write its own structured output as a JSON file to the planning folder. The orchestrator verifies all expected files exist BEFORE dispatching V or M. If any file is missing, the orchestrator re-dispatches the agent. File naming: s{n}-{submodule}.json for scanners, verification-report.json for V, merged-findings.json and reconciliation-table.json for M."
   - "SUB-AGENT BOOTSTRAP: Every sub-agent receives workflow-server bootstrap instructions in its spawn-agent prompt (harness-compat): call start_session(session_token, agent_id) to inherit the dispatched session, then next_activity({ activity_id: <assigned> }), then follow activity steps sequentially. Sub-agents self-load their activity definition — the orchestrator does NOT inline the activity content."
 skills:
-  primary: meta/workflow-orchestrator
 variables[14]:
   - name: target_submodules
     type: string

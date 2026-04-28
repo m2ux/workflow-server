@@ -4,7 +4,6 @@ name: Adaptive Depth Pass
 description: "Cost-minimizing depth escalation. Starts with the cheapest analysis (SDL deep_scan on Haiku) and escalates to deeper modes only if signal quality is insufficient. Stops at the first stage that produces adequate analytical depth. 1-3+ fresh workers depending on escalation."
 problem: "Users often don't know how deep an analysis needs to be. Running full-prism on every target is wasteful. Adaptive starts cheap and escalates only when needed."
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - adaptive-analysis
 artifacts[5]:

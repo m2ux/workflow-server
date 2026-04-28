@@ -25,16 +25,17 @@ artifacts[2]:
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
 skills:
-  primary: meta/activity-worker
+  supporting[3]:
+    - classify-problem
+    - reconcile-assumptions
+    - review-assumptions
 steps[9]:
   - id: define-problem
     name: Identify and Define Problem
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
-    skill: classify-problem
   - id: classify-problem
     name: Classify Problem Type
     description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
-    skill: classify-problem
     checkpoint: classification-confirmed
   - id: determine-path
     name: Determine Workflow Path
@@ -48,26 +49,21 @@ steps[9]:
   - id: document-philosophy
     name: Document Design Philosophy
     description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
-    skill: classify-problem
     actions[1]:
       - action: message
         message: "Created: design-philosophy.md"
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during problem classification and path selection. Categories: Problem Interpretation, Complexity Assessment, Workflow Path."
-    skill: review-assumptions
   - id: create-assumptions-log
     name: Create assumptions log
     description: "Create the assumptions log with initial assumptions from this activity."
-    skill: review-assumptions
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
-    skill: reconcile-assumptions
   - id: assess-ticket-completeness
     name: Assess Ticket Completeness
     description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
-    skill: classify-problem
     checkpoint: ticket-completeness
     condition:
       type: simple
@@ -96,7 +92,6 @@ loops[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
         description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
-        skill: reconcile-assumptions
 checkpoints[3]:
   - id: classification-confirmed
     name: Classification Checkpoint

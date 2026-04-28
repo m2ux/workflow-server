@@ -1,29 +1,21 @@
 id: end-workflow
-version: 1.0.0
+version: 4.0.0
 name: End Workflow
-description: "Verify the client workflow's outcomes were satisfied, generate a session summary, persist final state, and confirm closure with the user. If the user opts to return to the workflow (e.g., to address an unmet outcome), transitions back to dispatch-client-workflow with abort_completion set."
+description: "Verify the client workflow's outcomes were satisfied, generate a session summary, persist final state, and confirm closure with the user. If the user opts to return to the workflow, transitions back to dispatch-client-workflow with abort_completion set."
 problem: Workflow sessions need an explicit close-out so the user knows the work is done and the final state is durably persisted
-skills:
-  primary: meta/activity-worker
-  supporting[2]:
-    - state-management
-    - meta-orchestrator
 required: true
 estimatedTime: 2-3m
-rules[2]:
-  - "Final save_state is mandatory — workflow-state.toon must reflect the final session token, variable state, and a status of 'completed'"
-  - "Outcome verification compares the workflow definition's outcome[] against state — surface any unsatisfied outcomes to the user before closure"
+operations[3]:
+  - "workflow-engine::verify-outcomes"
+  - "workflow-engine::generate-summary"
+  - "workflow-engine::persist"
 steps[3]:
   - id: verify-outcomes
-    name: Verify Outcomes
-    description: "Read the client workflow's outcome[] from its definition. For each outcome, check whether it was satisfied — via state variables, artifact presence in planning_folder_path, or completed-activities trace. Collect any unmet outcomes for the summary."
+    description: "workflow-engine::verify-outcomes(outcome: {target_workflow_outcomes}, state: {client_state})"
   - id: generate-summary
-    name: Generate Session Summary
-    description: "Compose a markdown summary including: workflow ID and title; start and completion timestamps; activities completed; key checkpoint decisions (option chosen and rationale where stated); artifacts produced with paths; outcomes satisfied vs. unmet; follow-up items raised during the workflow. Present to the user as a chat message before the completion checkpoint."
+    description: "workflow-engine::generate-summary(workflow: {target_workflow}, trace: {client_trace})"
   - id: final-persist
-    name: Persist Final State
-    description: "Call save_state({ session_token: client_session_token, planning_folder_path }) with the final variable state. The workflow-state.toon file remains valid for future audit and for resume operations against the closed session."
-    skill: state-management
+    description: "workflow-engine::persist(session_token: {client_session_token}, planning_folder_path: {planning_folder_path})"
 checkpoints[1]:
   - id: completion-confirmed
     name: Completion Confirmation

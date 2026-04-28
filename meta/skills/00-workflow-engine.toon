@@ -1,0 +1,385 @@
+id: workflow-engine
+version: 5.1.0
+capability: Operations and rules for workflow execution — session lifecycle, state persistence, activity dispatch, transition evaluation, checkpoint flow
+
+description: "Capability skill bundling everything needed to execute a workflow's structured flow. Operations cover session token mechanics (implicit), state persistence (persist/restore), activity dispatch and transition evaluation, the post-activity commit-and-persist hook, sub-workflow handling, and the full checkpoint protocol (yield, bubble, present-to-user, respond, resume). Rules cover token mechanics, checkpoint discipline, state-mutation invariants, and orchestrator/worker behavioural boundaries. Each operation is a short linear procedure invoking a small set of MCP / harness / shell tools."
+
+operations:
+  list-workflows:
+    description: "Retrieve the catalog of available workflows"
+    output[1]:
+      - catalog: "Array of { id, title, description, tags } entries"
+    procedure[1]:
+      - "Call list_workflows"
+    tools:
+      workflow-server[1]:
+        - list_workflows
+
+  match-target-workflow:
+    description: "Match a user request against the workflow catalog and surface ambiguity"
+    inputs[2]:
+      - user_request: "User's free-form request"
+      - catalog: "Array of workflow entries from list-workflows"
+    output[2]:
+      - target_workflow_id: "Best-match workflow id, or null when no candidate matches"
+      - ambiguous: "true when more than one workflow matches with similar confidence"
+    procedure[1]:
+      - "Score each catalog entry against user_request by title, description keywords, and recognition tags; return the top match and set ambiguous when the top scores are close"
+
+  extract-identifying-context:
+    description: "Extract ticket, branch, PR, and work-package identifiers from a user request"
+    inputs[1]:
+      - user_request: "User's free-form request"
+    output[1]:
+      - context: "Map of any identifiers found: { issue_number?, branch_name?, pr_number?, work_package? }"
+    procedure[1]:
+      - "Scan user_request for GitHub issue numbers (#N), Jira keys (PROJ-123), branch references, PR numbers, and work-package descriptions; collect any found into context"
+
+  match-saved-session:
+    description: "Pick the saved-session candidate that best matches an identifying context"
+    inputs[2]:
+      - context: "Identifying context from extract-identifying-context"
+      - candidates: "Saved sessions from scan-saved-sessions"
+    output[1]:
+      - match: "Best matching candidate { sessionToken, planningFolder, savedAt }, or null when none match"
+    procedure[1]:
+      - "Score each candidate by overlap between its variables (issue_number, branch_name, pr_number, work-package description, planning-folder name) and context; pick the most recently-updated by savedAt on ties; return null when no candidate has any overlap"
+
+  scan-saved-sessions:
+    description: "Find saved client sessions matching a target workflow under .engineering/artifacts/planning/"
+    inputs[1]:
+      - target_workflow_id: "Workflow ID to filter candidates by"
+    output[1]:
+      - candidates: "Array of { sessionToken, planningFolder, savedAt, variables } entries whose workflowId matches"
+    procedure[3]:
+      - "List directories under .engineering/artifacts/planning/"
+      - "For each directory, read its workflow-state.toon"
+      - "Keep entries whose workflowId equals target_workflow_id"
+    tools:
+      harness[1]:
+        - Read
+
+  adopt-session:
+    description: "Adopt a saved session by passing the saved token to start_session"
+    inputs[1]:
+      - saved_session_token: "Token loaded from the saved workflow-state.toon (a workflow-engine VARIABLE, NOT an MCP parameter name)"
+    output[1]:
+      - session_token: "Adopted token (re-signed in place if the server restarted; sid, act, and variables preserved)"
+    procedure[3]:
+      - "Call MCP tool start_session with EXACTLY these named parameters: session_token = <value of the saved_session_token variable>, agent_id = 'orchestrator'."
+      - "Do NOT pass workflow_id (the workflow is derived from the saved token's wf field). Do NOT pass parent_session_token. Do NOT invent a 'saved_session_token' parameter — that is a workflow-engine variable name, not an MCP parameter name. The MCP schema is strict and unknown keys are rejected."
+      - "On success the response includes adopted=true (and a re-sign warning if the server had restarted). Use the RETURNED session_token for all subsequent calls — never re-pass the original saved value to any other tool."
+    tools:
+      workflow-server[1]:
+        - start_session
+    errors:
+      strict_param_violation:
+        cause: "start_session returned 'Invalid arguments' / 'unrecognized_keys' because an unknown parameter name (e.g., 'saved_session_token') was passed instead of session_token"
+        recovery: "Re-issue start_session with the saved token bound to the session_token parameter, exactly as the procedure prescribes"
+      unrecoverable_token:
+        cause: "start_session reports the token payload is unrecoverable (corrupted beyond payload-only decoding)"
+        recovery: "Call start_session with parameters: workflow_id = <wf>, agent_id = 'orchestrator' (no session_token) for a fresh session, then reconstruct state from the on-disk workflow-state.toon via workflow-engine::restore"
+    rules:
+      strict-params: "start_session is the ONLY MCP tool that performs HMAC staleness recovery and the ONLY one that adopts a saved token. It is also strict-schema: unknown keys are rejected at the MCP boundary. Bind the saved_session_token VARIABLE to the session_token PARAMETER and pass nothing else."
+      no-recovery-elsewhere: "Other workflow tools (next_activity, get_workflow, get_resource, etc.) verify HMAC strictly with no recovery. NEVER pass a saved/disk token to them — always go through start_session first to obtain a freshly-signed token, then use that returned token everywhere else."
+
+  create-session:
+    description: "Create a fresh client session as a child of the meta session"
+    inputs[2]:
+      - workflow_id: "Target client workflow id (e.g., 'work-package')"
+      - parent_session_token: "The meta session token currently held by the orchestrator (used as the parent context source)"
+    output[1]:
+      - session_token: "Newly minted child session token"
+    procedure[2]:
+      - "Call MCP tool start_session with EXACTLY these named parameters: workflow_id = <target client workflow id>, parent_session_token = <current meta session token>, agent_id = 'orchestrator'."
+      - "Do NOT pass session_token (this is a fresh session, not an inherited one) and do NOT pass any other parameter. The schema is strict and unknown keys are rejected. Use the RETURNED session_token for all subsequent calls inside the child workflow."
+    tools:
+      workflow-server[1]:
+        - start_session
+
+  compose-prompt:
+    description: "Substitute state variables into a prompt template resource"
+    inputs[2]:
+      - template_ref: "Resource ref for the prompt template (e.g., meta/workflow-orchestrator-prompt)"
+      - substitutions: "Map of placeholder name → value"
+    output[1]:
+      - prompt: "Composed prompt string"
+    procedure[2]:
+      - "Load the template via get_resource"
+      - "Replace each {placeholder} with its substitution value"
+    tools:
+      workflow-server[1]:
+        - get_resource
+
+  extract-checkpoint-handle:
+    description: "Parse an orchestrator's most recent output to extract the checkpoint handle"
+    inputs[1]:
+      - output: "Orchestrator's most recent text output"
+    output[1]:
+      - checkpoint_handle: "The checkpoint_handle string when a <checkpoint_yield> block is present, otherwise null"
+    procedure[1]:
+      - "Find the <checkpoint_yield>...</checkpoint_yield> block; parse its JSON body and return checkpoint_handle"
+
+  handle-workflow-complete:
+    description: "Apply a workflow_complete result's final variables and mark the dispatched workflow finished"
+    inputs[1]:
+      - result: "The orchestrator's workflow_complete result with its variables_changed payload"
+    procedure[2]:
+      - "Apply variables_changed to the local state"
+      - "Set client_workflow_completed = true"
+
+  verify-outcomes:
+    description: "Compare a workflow's declared outcome[] against state and identify gaps"
+    inputs[2]:
+      - outcome: "Array of expected outcome strings from the workflow definition"
+      - state: "Current variable state and completed-activities trace"
+    output[1]:
+      - gaps: "Array of unsatisfied outcomes"
+    procedure[1]:
+      - "For each outcome, evaluate satisfaction against state variables, artifact presence in planning_folder_path, and completed-activities trace; collect any unmet items"
+
+  generate-summary:
+    description: "Compose the markdown session summary presented at workflow close"
+    inputs[2]:
+      - workflow: "Workflow definition (id, title, outcomes)"
+      - trace: "Completed activities, checkpoint decisions, artifacts produced"
+    output[1]:
+      - summary_markdown: "Markdown string ready to present to the user"
+    procedure[1]:
+      - "Compose sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items"
+
+  persist:
+    description: "Write the current session state to workflow-state.json using agent-managed file operations"
+    inputs[3]:
+      - session_token: "The current session token"
+      - planning_folder_path: "Absolute path to the planning folder"
+      - state: "Current variable state, completed activities, and history to persist"
+    procedure[2]:
+      - "Compose the state envelope using ONLY the fields below — do not duplicate anything that is already encoded in the session token (workflowId/wf, currentActivity/act, agentId/aid, parent context/psid+pwf+pact+pv, workflowVersion/v) or already present inside variables (e.g., planning_folder_path)."
+      - "Write the JSON envelope to {planning_folder_path}/workflow-state.json via the harness Write tool. Required envelope shape (top-level): { stateVersion, savedAt, startedAt, sessionToken, state }. The nested state object holds: { variables, completedActivities, skippedActivities, checkpointResponses, history, status }. Optional fields (omit when empty): activeLoops, triggeredWorkflows. EXAMPLE: {\"stateVersion\":4,\"savedAt\":\"2026-04-28T10:00:00Z\",\"startedAt\":\"2026-04-27T16:12:00Z\",\"sessionToken\":\"<HMAC-signed token>\",\"state\":{\"variables\":{\"issue_number\":\"307\",\"planning_folder_path\":\"/abs/path\"},\"completedActivities\":[\"start-work-package\",\"design-philosophy\"],\"skippedActivities\":[\"requirements-elicitation\"],\"checkpointResponses\":{\"design-philosophy-classification-confirmed\":\"confirmed\"},\"history\":[{\"timestamp\":\"2026-04-27T16:12:00Z\",\"event\":\"session_created\"}],\"status\":\"running\"}}"
+    tools:
+      harness[1]:
+        - Write
+    rules:
+      state-format: "workflow-state.json is a plain-text JSON file with a fixed envelope. The session token is HMAC-signed and self-authenticating; the file is unencrypted."
+      no-token-duplication: "Do NOT write workflowId, workflowVersion, currentActivity, agentId, or parentWorkflow at the top level — these are already encoded in the sessionToken (wf, v, act, aid, psid/pwf/pact/pv) and the server is the source of truth. Restore decodes them from the token."
+      no-derived-fields: "Do NOT write fields derivable from other persisted fields: currentStep (= completedActivities.length), updatedAt (= savedAt at the envelope level). Compute on read if a consumer needs them."
+      omit-empty-collections: "Omit empty maps/arrays from the file rather than writing {} or []. Exception: completedActivities and history are always present (possibly empty) so a fresh save is recognisable."
+      variables-canonical-home: "Domain state — including planning_folder_path, branch_name, issue_number, etc. — lives ONLY inside state.variables. Do not duplicate any variable at the envelope level."
+
+  restore:
+    description: "Load saved state from workflow-state.json and resume via start_session token inheritance"
+    inputs[2]:
+      - workflow_id: "The workflow ID to resume (informational; the canonical id is also encoded in the saved token's wf field)"
+      - file_path: "Absolute path to the workflow-state.json file"
+    output[1]:
+      - session_token: "Resumed session token with inherited state (re-signed in place if the server restarted since the file was written)"
+    procedure[3]:
+      - "Read workflow-state.json and extract the sessionToken field into a variable named saved_session_token. The token carries workflowId, workflowVersion, currentActivity, agentId, and any parent context — do not look for those at the envelope level."
+      - "Call MCP tool start_session with EXACTLY these named parameters: session_token = <value of saved_session_token>, agent_id = 'orchestrator'. workflow_id is unnecessary (it is derived from the token's wf field) and SHOULD NOT be passed; do not pass parent_session_token or any other key. The schema is strict and unknown keys are rejected — in particular do NOT pass a literal 'saved_session_token' key."
+      - "Use the RETURNED session_token for every subsequent MCP call. Never re-read the saved file's sessionToken and pass it to next_activity / get_workflow / get_resource — those tools do not perform staleness recovery."
+    tools:
+      harness[1]:
+        - Read
+      workflow-server[1]:
+        - start_session
+
+  dispatch-activity:
+    description: "Transition the session to a target activity and spawn a worker for it"
+    inputs[3]:
+      - activity_id: "Activity ID to enter"
+      - prompt_template: "Resource ref for the worker prompt (e.g., meta/01)"
+      - state: "Current variable state for prompt substitution"
+    output[2]:
+      - worker_result: "{ type: 'checkpoint_pending', handle } or { type: 'activity_complete', ...payload }"
+      - trace_token: "Trace token captured from next_activity response, appended to trace_tokens"
+    procedure[3]:
+      - "Call next_activity({ session_token, activity_id, step_manifest }); capture _meta.trace_token"
+      - "Compose the worker prompt from prompt_template substituting state values"
+      - "harness-compat::spawn-agent with the composed prompt; await result"
+    tools:
+      workflow-server[1]:
+        - next_activity
+    resources[1]:
+      - "meta/activity-worker-prompt"
+    errors:
+      worker_timeout:
+        cause: "Worker sub-agent did not return within the expected time"
+        recovery: "harness-compat::continue-agent if still running; otherwise dispatch a fresh worker for the same activity_id."
+      worker_incomplete:
+        cause: "Worker reports fewer steps than the activity defines, or required checkpoints have no response"
+        recovery: "Resume the worker with explicit instructions to complete the missing items. Do NOT accept the partial result."
+      state_desync:
+        cause: "Worker reports variable changes conflicting with orchestrator state"
+        recovery: "Worker values take precedence (the worker has ground truth from user interaction)."
+    rules:
+      step-manifest-required: "When calling next_activity, include a step_manifest array. Each entry is an object with two string fields: step_id (the literal step id from the activity definition's steps[]) and output (a short summary of what was produced). Omit step_manifest entirely if no steps were executed; do not pass an empty array or empty string."
+      reject-empty-checkpoints: "If an activity defines required checkpoints and the worker returns checkpoints_responded as empty, REJECT the result and resume the worker."
+      no-get-activity-from-orchestrator: "Workflow-orchestrators NEVER call get_activity. The activity definition is the worker's domain. Orchestrators need only the activity_id (from initialActivity or transitions) to call next_activity and compose the worker prompt."
+      no-pre-load-skills: "NEVER call get_skill or get_skills to pre-load skills. The worker self-bootstraps via get_activity, which bundles the operations the activity needs."
+      variable-mutation-source: "Variables mutate from two sources only: checkpoint option effects (setVariable) and worker activity_complete results (variables_changed). Never mutate state through ad-hoc reasoning."
+
+  evaluate-transition:
+    description: "Pick the next activity from the current activity's transitions[]"
+    inputs[3]:
+      - activity: "Just-completed activity definition (with transitions[])"
+      - state: "Current variable state"
+      - transition_override: "Optional activity_id from a checkpoint effect transitionTo"
+    output[1]:
+      - next_activity_id: "Activity ID to dispatch next, or null if the workflow is complete"
+    procedure[3]:
+      - "If transition_override is set, return it"
+      - "Iterate activity.transitions[] in array order; return the first whose condition evaluates true"
+      - "If no condition matches and no isDefault transition exists, return null (workflow_complete)"
+    errors:
+      transition_ambiguous:
+        cause: "Multiple transition conditions evaluate to true at the activity boundary"
+        recovery: "Take the first matching transition in array order. Log a warning."
+
+  commit-and-persist:
+    description: "Post-activity hook — commit source-side changes (target_path), commit engineering artifacts (.engineering/artifacts/), then persist state"
+    inputs[3]:
+      - activity_id: "Activity that just completed"
+      - planning_folder_path: "Path to the planning folder"
+      - target_path: "Path to the target submodule where source-side changes live (typically the application repo)"
+    procedure[3]:
+      - "If target_path has uncommitted changes (git status --porcelain non-empty), invoke version-control::commit-submodule with paths=changed files, submodule_message='<type>(<workflow-id>): <activity-id> source changes' (pick the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, etc.), and parent_branch=current parent branch. Skip when the working tree is clean."
+      - "Invoke version-control::commit-regular-files for changes under .engineering/artifacts/ with message 'docs(<workflow-id>): <activity-id> artifacts'"
+      - "Invoke workflow-engine::persist with the current session_token and planning_folder_path"
+    rules:
+      commit-after-activity: "After every completed activity, BOTH source-side changes (under target_path, via version-control::commit-submodule) AND engineering artifacts (under .engineering/artifacts/, via version-control::commit-regular-files) MUST be committed and pushed before evaluating transitions to the next activity. Skipping either scope leaves a dirty working tree that breaks resume and downstream activities (validate, strategic-review, submit-for-review). The submodule commit may be skipped only when target_path's working tree is clean."
+      persist-after-every-activity: "After every completed activity (post commit-and-persist's commit steps), invoke workflow-engine::persist. Skipping makes the session unrecoverable on restart."
+
+  handle-sub-workflow:
+    description: "Dispatch a child workflow with parent context"
+    inputs[2]:
+      - workflow_id: "Child workflow ID"
+      - parent_session_token: "Parent (current) session token"
+    output[1]:
+      - child_session_token: "New child session token"
+    procedure[2]:
+      - "Call MCP tool start_session with EXACTLY these named parameters: workflow_id = <child workflow id>, parent_session_token = <current session token>, agent_id = 'workflow-orchestrator'. Do NOT pass session_token (this is a child session, not an inherited one). The schema is strict and unknown keys are rejected."
+      - "harness-compat::spawn-agent for the child orchestrator with the new token in its prompt"
+    tools:
+      workflow-server[1]:
+        - start_session
+
+  finalize-activity:
+    description: "Compile the activity_complete result after all steps, checkpoints, and artifacts are done"
+    inputs[3]:
+      - steps_completed: "Array of completed step entries"
+      - checkpoints_responded: "Array of checkpoint responses (option_id + effects)"
+      - artifacts_produced: "Array of artifact entries (id, name, path)"
+    output[1]:
+      - result: "{ result_type: 'activity_complete', steps_completed, checkpoints_responded, variables_changed, artifacts_produced, transition_override? }"
+    procedure[2]:
+      - "Update the planning folder's README.md Progress table for each artifact produced and the footer status"
+      - "Compile and return the activity_complete object; include transition_override if a checkpoint effect specified transitionTo"
+
+  yield-checkpoint:
+    description: "Pause at a checkpoint and surface the handle"
+    inputs[1]:
+      - checkpoint_id: "ID of the checkpoint being yielded"
+    output[1]:
+      - emitted: "<checkpoint_yield> block containing only the checkpoint_handle"
+    procedure[3]:
+      - "Call yield_checkpoint({ session_token, checkpoint_id }); capture the returned checkpoint_handle"
+      - "Emit a <checkpoint_yield> block containing ONLY the checkpoint_handle"
+      - "STOP — make no further tool calls until the orchestrator resumes you"
+    tools:
+      workflow-server[1]:
+        - yield_checkpoint
+    rules:
+      checkpoint-handle-distinct-from-session: "yield_checkpoint returns a checkpoint_handle (HMAC-signed, contains '.'). present_checkpoint and respond_checkpoint take a checkpoint_handle parameter, NOT a session_token. Never substitute one for the other."
+
+  resume-from-checkpoint:
+    description: "Continue execution after the orchestrator resolves a checkpoint"
+    inputs[2]:
+      - resumed_session_token: "Fresh session token (bcp cleared) returned by respond_checkpoint and threaded down through the orchestrator's resume prompt. This is NOT the yield-time checkpoint_handle — that handle still has bcp set and resume_checkpoint will reject it."
+      - effects: "Variable updates passed back by the orchestrator"
+    output[1]:
+      - session_token: "Advanced token to use for subsequent calls (get_activity, etc.)"
+    procedure[2]:
+      - "Call resume_checkpoint({ session_token: resumed_session_token }); capture the new session_token from the response and use it for every subsequent call"
+      - "Apply effects to local state and continue from the paused step"
+    tools:
+      workflow-server[1]:
+        - resume_checkpoint
+    errors:
+      checkpoint_still_active:
+        cause: "resume_checkpoint returned 'Cannot resume: Checkpoint is still active'"
+        recovery: "You passed the yield-time checkpoint_handle (bcp still set). Use the resumed_session_token from your resume prompt (the new token returned by respond_checkpoint), not the handle you yielded with."
+      hmac_failure:
+        cause: "resume_checkpoint or any subsequent call returned 'Invalid session token: HMAC signature verification failed'"
+        recovery: "The token in your resume prompt is the source of truth. Do not transcribe it from a tool-result display (which may be truncated) and do not reach back for an earlier session token from your context. Use the EXACT resumed_session_token your orchestrator just handed you."
+    rules:
+      resume-uses-post-respond-token: "resume_checkpoint requires a token whose bcp is cleared. The yield-time checkpoint_handle does NOT satisfy this — only the token returned in the response body of respond_checkpoint does. The orchestrator MUST thread that token down to you on resume."
+
+  bubble-checkpoint-up:
+    description: "Forward a worker's checkpoint to the parent (meta) orchestrator without resolving it"
+    inputs[1]:
+      - checkpoint_handle: "Handle yielded by the worker"
+    output[1]:
+      - emitted: "<checkpoint_yield> block containing only the checkpoint_handle"
+    procedure[3]:
+      - "Receive the worker's <checkpoint_yield> block and extract the checkpoint_handle"
+      - "Emit a <checkpoint_yield> block containing the SAME checkpoint_handle (do not modify it)"
+      - "STOP — wait to be resumed by the parent with the resolved effects"
+    rules:
+      no-direct-interaction: "Sub-agent orchestrators NEVER prompt the user directly. Surface checkpoints by bubbling the worker's checkpoint_handle up unchanged."
+
+  present-checkpoint-to-user:
+    description: "Load checkpoint details and present them to the user"
+    inputs[1]:
+      - checkpoint_handle: "HMAC-signed handle bubbled up from the worker"
+    output[1]:
+      - selection: "{ option_id, effects } — captured user response"
+    procedure[3]:
+      - "Call present_checkpoint({ checkpoint_handle }) and read the message + options"
+      - "Call AskQuestion with the checkpoint's message and options[]. This is the user's only opportunity to respond — it is MANDATORY for every checkpoint, including those with autoAdvanceMs set. If autoAdvanceMs is set, configure AskQuestion's timeout to that value with defaultOption as the timeout fallback; if the user does not respond within the timer, capture that as auto_advance: true. If the user responds, capture their option_id."
+      - "Capture the user's option_id (or auto_advance / condition_not_met)"
+    tools:
+      workflow-server[1]:
+        - present_checkpoint
+      harness[1]:
+        - AskQuestion
+    errors:
+      invalid_checkpoint_handle:
+        cause: "present_checkpoint returned 'Invalid session token' or 'missing signature'"
+        recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
+    rules:
+      no-auto-resolution: "NEVER auto-resolve a checkpoint without first presenting it. auto_advance: true is only valid after AskQuestion has been shown to the user and the autoAdvanceMs timer has elapsed without a response. Skipping AskQuestion and going straight to a sleep + auto_advance is a protocol violation, even when the default option seems obvious from prior context or prior user input on a different checkpoint."
+      present-before-any-resolution: "present_checkpoint returning data is not the same as presenting to the user. Every checkpoint resolution path — option_id, auto_advance, or condition_not_met — MUST be preceded by an AskQuestion that displays the checkpoint's message and options. All checkpoints block; autoAdvanceMs is a fallback for when the user does not respond, not a license to skip the prompt."
+      apply-effects-immediately: "Apply the resolved effects to internal state on receipt, then pass them down to the orchestrator/worker."
+      checkpoint-handle-distinct-from-session: "present_checkpoint takes a checkpoint_handle parameter, NOT a session_token. The handle is the HMAC-signed token returned by yield_checkpoint (contains '.')."
+
+  respond-checkpoint:
+    description: "Send the user's selection back to the server"
+    inputs[2]:
+      - checkpoint_handle: "Handle from present-checkpoint-to-user"
+      - resolution: "{ option_id } | { auto_advance: true } | { condition_not_met: true }"
+    output[2]:
+      - effects: "Variable updates returned by the server, to pass back down to the orchestrator/worker"
+      - resumed_session_token: "Fresh session token returned by the server with bcp cleared. This token (NOT the yield-time checkpoint_handle) MUST be passed back to the worker so it can resume — the original checkpoint_handle still has bcp set and any subsequent tool call with it is gated."
+    procedure[1]:
+      - "Call respond_checkpoint({ checkpoint_handle, ...resolution }); from the response, capture BOTH effects and the new checkpoint_handle field — that field is the resumed_session_token the worker needs"
+    tools:
+      workflow-server[1]:
+        - respond_checkpoint
+    errors:
+      invalid_checkpoint_handle:
+        cause: "respond_checkpoint returned 'Invalid session token' or 'missing signature'"
+        recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
+    rules:
+      no-option-hallucination: "If respond_checkpoint returns 'Invalid option', STOP. Call present_checkpoint on the same handle to retrieve valid options. Never guess."
+      thread-resumed-token: "The server returns a NEW token in the checkpoint_handle field of the response. Capture it as resumed_session_token and propagate it to the worker on resume. Failing to do so leaves the worker with its yield-time handle (bcp still set), and every subsequent tool call is gated by assertCheckpointsResolved."
+
+rules:
+  token-passes-on-each-call: "EVERY tool call (other than discover, list_workflows, start_session, health_check) requires a session_token parameter."
+  use-most-recent-token: "Each tool call returns a NEW token (in the response body and _meta.session_token). The next call MUST use that new token. Reusing a stale token causes HMAC verification failure."
+  token-is-opaque: "Treat the session token as an opaque string. NEVER parse, decode, or modify its contents. Session identity is embedded within the token; there is no separate session_id field."
+  validation-warnings: "Check _meta.validation in each response. Warnings are advisory but should be addressed."
+  resource-loading-via-tool: "Resource refs returned in operation bodies (e.g., 'meta/activity-worker-prompt') are lightweight pointers. Load full content via get_resource({ session_token, resource_id })."
+  staleness-recovery-only-via-start-session: "HMAC staleness recovery (re-signing a saved token after a server restart) is performed ONLY by start_session. No other workflow tool — next_activity, get_workflow, get_resource, get_skill, resolve_operations, yield/resume/respond_checkpoint — has a recovery path: they verify HMAC strictly and fail. When resuming a saved session, ALWAYS go through start_session first (binding the saved token to the session_token parameter); use the returned token for everything else. Never pass a saved/disk token directly to any tool other than start_session."
+  start-session-strict-params: "start_session has a strict input schema and rejects unknown keys (e.g., 'saved_session_token', 'token', 'sessionToken'). The valid parameters are exactly: workflow_id, parent_session_token, session_token, agent_id. Workflow VARIABLES with the same shorthand name (e.g., the saved_session_token variable) must be bound to the canonical PARAMETER (session_token) at the call site."
+  parameter-vs-variable: "Workflow operations describe input/output VARIABLES with their own names (e.g., saved_session_token). MCP tool calls take their own canonical PARAMETER names (e.g., session_token). When invoking an MCP tool, always bind variables to parameters explicitly — do not pass workflow variables under their workflow names as MCP parameters."

@@ -1,8 +1,8 @@
 "$schema": ../../schemas/workflow.schema.json
 id: meta
-version: 4.0.0
+version: 5.0.0
 title: Meta Workflow
-description: "Top-level lifecycle workflow for the workflow-server. Provides the universal skill repository and a five-activity sequence that runs in the meta session: identify the target workflow and any matching saved client session, create or adopt the client session as a child of meta, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out with a session summary. Excluded from list_workflows because it is not a user-facing workflow — bootstrap navigates here directly."
+description: "Top-level lifecycle workflow. Five activities run in the meta session: identify the target workflow and any matching saved client session, create or adopt the client session as a child of meta, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out. Excluded from list_workflows — bootstrap navigates here directly."
 author: m2ux
 tags[5]:
   - meta
@@ -10,8 +10,10 @@ tags[5]:
   - lifecycle
   - dispatch
   - session
-skills:
-  primary: meta-orchestrator
+operations[3]:
+  - "workflow-engine::handle-sub-workflow"
+  - "workflow-engine::dispatch-activity"
+  - "agent-conduct::orchestrator-discipline"
 initialActivity: discover-session
 rules[3]:
   - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"

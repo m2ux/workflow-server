@@ -4,7 +4,6 @@ name: Commit and Submit
 description: "Create a feature branch if needed, push all commits, and create a pull request against the workflows branch."
 problem: Changes need to be submitted as a PR for review
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - sync-resources
 

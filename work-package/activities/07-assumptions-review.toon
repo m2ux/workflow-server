@@ -10,16 +10,17 @@ recognition[3]:
 required: true
 estimatedTime: 10-20m
 skills:
-  primary: meta/activity-worker
+  supporting[3]:
+    - atlassian-operations
+    - manage-artifacts
+    - review-assumptions
 steps[4]:
   - id: evaluate-open-assumptions
     name: Evaluate which assumptions are open
     description: "Read assumptions-log.md from the planning folder. Collect all assumptions with status 'open' or 'partially-validated' that require user input. If none remain, set has_open_assumptions=false and stakeholder_review_complete=true — the interview loop will be skipped. Otherwise, set has_open_assumptions=true and prepare the list of assumptions to review."
-    skill: review-assumptions
   - id: interview-assumptions
     name: Interview user on each assumption
     description: "For each open assumption, yield a checkpoint_pending with: (1) the assumption ID and statement, (2) a rationale paragraph explaining why the assumption was made, what evidence exists for and against it, and what the consequences are if it's wrong — written to help the user make an informed decision, (3) the assumption-decision checkpoint options. After the user responds, record the decision (accepted, rejected with correction, or deferred) and continue to the next assumption. After all assumptions are reviewed, update the assumptions log with all decisions."
-    skill: review-assumptions
     condition:
       type: and
       conditions[2]:
@@ -34,11 +35,9 @@ steps[4]:
   - id: update-assumptions-log
     name: Update assumptions log with decisions
     description: "Update assumptions-log.md with the user's decisions for each reviewed assumption. Mark accepted assumptions as 'validated', rejected as 'invalidated' with the user's correction, and deferred as 'deferred'. Set stakeholder_review_complete=true."
-    skill: manage-artifacts
   - id: post-summary
     name: Post resolution summary to issue tracker
     description: "Post a brief summary of assumption resolutions to the issue tracker ONLY when deferred assumptions exist that require external stakeholder attention. If all assumptions were accepted or rejected during the interview, skip posting — the decisions are recorded in the assumptions log and no external review is needed. Uses GitHub gh CLI or Jira API depending on issue_platform."
-    skill: atlassian-operations
     checkpoint: post-summary-review
     condition:
       type: and
@@ -64,12 +63,10 @@ loops[1]:
       - id: present-assumption
         name: Present assumption with rationale
         description: "Yield checkpoint_pending for the current assumption. The context must include: the assumption ID, the assumption statement, and a rationale paragraph (2-4 sentences) that explains why this assumption was made, what evidence supports it, and what happens if it's wrong."
-        skill: review-assumptions
         checkpoint: assumption-decision
       - id: record-decision
         name: Record user decision
         description: "Record the user's response for this assumption. If rejected, capture the correction text."
-        skill: manage-artifacts
 artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
