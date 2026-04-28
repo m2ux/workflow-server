@@ -128,7 +128,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             // Payload is also corrupted. Fall back to a fresh session.
             // Use workflow_id if provided, otherwise default to meta.
             effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
-            effectiveWorkflowVersion = '';
+            // Load the workflow so the fresh token carries v (the workflow
+            // version). Without this, the token's v stays empty and saved
+            // state files end up duplicating workflowVersion at the envelope
+            // level just to recover it.
+            const wfPreLoad = await loadWorkflow(config.workflowDir, effectiveWorkflowId);
+            effectiveWorkflowVersion = wfPreLoad.success ? (wfPreLoad.value.version ?? '') : '';
             console.warn(`[start_session] Provided session_token is invalid and payload is not recoverable. Creating a fresh session for workflow '${effectiveWorkflowId}'.`);
             tokenRecoveryWarning =
               `The provided session_token could not be verified and the payload could not be recovered. ` +
@@ -154,7 +159,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       } else {
         // Fresh session — use workflow_id if provided, otherwise default to meta.
         effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
-        effectiveWorkflowVersion = '';
+        // Load the workflow so the fresh token carries v (the workflow version).
+        // Without this, the token's v stays empty and saved state files end up
+        // duplicating workflowVersion at the envelope level just to recover it.
+        const wfPreLoad = await loadWorkflow(config.workflowDir, effectiveWorkflowId);
+        effectiveWorkflowVersion = wfPreLoad.success ? (wfPreLoad.value.version ?? '') : '';
 
         // If parent_session_token is provided, extract parent context for trace correlation.
         let parentContext: ParentContext | undefined;
