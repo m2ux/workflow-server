@@ -142,28 +142,33 @@ operations:
       - "Compose sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items"
 
   persist:
-    description: "Write the current session state to workflow-state.toon using agent-managed file operations"
+    description: "Write the current session state to workflow-state.json using agent-managed file operations"
     inputs[3]:
       - session_token: "The current session token"
       - planning_folder_path: "Absolute path to the planning folder"
       - state: "Current variable state, completed activities, and history to persist"
-    procedure[1]:
-      - "Write the session token and state to {planning_folder_path}/workflow-state.toon using agent file tools (Write). Include: sessionToken, workflowId, variables, completedActivities, savedAt (ISO 8601)."
+    procedure[2]:
+      - "Compose the state envelope using ONLY the fields below — do not duplicate anything that is already encoded in the session token (workflowId/wf, currentActivity/act, agentId/aid, parent context/psid+pwf+pact+pv, workflowVersion/v) or already present inside variables (e.g., planning_folder_path)."
+      - "Write the JSON envelope to {planning_folder_path}/workflow-state.json via the harness Write tool. Required envelope shape (top-level): { stateVersion, savedAt, startedAt, sessionToken, state }. The nested state object holds: { variables, completedActivities, skippedActivities, checkpointResponses, history, status }. Optional fields (omit when empty): activeLoops, triggeredWorkflows. EXAMPLE: {\"stateVersion\":4,\"savedAt\":\"2026-04-28T10:00:00Z\",\"startedAt\":\"2026-04-27T16:12:00Z\",\"sessionToken\":\"<HMAC-signed token>\",\"state\":{\"variables\":{\"issue_number\":\"307\",\"planning_folder_path\":\"/abs/path\"},\"completedActivities\":[\"start-work-package\",\"design-philosophy\"],\"skippedActivities\":[\"requirements-elicitation\"],\"checkpointResponses\":{\"design-philosophy-classification-confirmed\":\"confirmed\"},\"history\":[{\"timestamp\":\"2026-04-27T16:12:00Z\",\"event\":\"session_created\"}],\"status\":\"running\"}}"
     tools:
       harness[1]:
         - Write
     rules:
-      state-format: "The workflow-state.toon file is a plain-text key-value file. Write sessionToken, workflowId, and all variable assignments as key: value pairs, one per line. No server-side encryption — the session token is already HMAC-signed."
+      state-format: "workflow-state.json is a plain-text JSON file with a fixed envelope. The session token is HMAC-signed and self-authenticating; the file is unencrypted."
+      no-token-duplication: "Do NOT write workflowId, workflowVersion, currentActivity, agentId, or parentWorkflow at the top level — these are already encoded in the sessionToken (wf, v, act, aid, psid/pwf/pact/pv) and the server is the source of truth. Restore decodes them from the token."
+      no-derived-fields: "Do NOT write fields derivable from other persisted fields: currentStep (= completedActivities.length), updatedAt (= savedAt at the envelope level). Compute on read if a consumer needs them."
+      omit-empty-collections: "Omit empty maps/arrays from the file rather than writing {} or []. Exception: completedActivities and history are always present (possibly empty) so a fresh save is recognisable."
+      variables-canonical-home: "Domain state — including planning_folder_path, branch_name, issue_number, etc. — lives ONLY inside state.variables. Do not duplicate any variable at the envelope level."
 
   restore:
-    description: "Load saved state from workflow-state.toon and resume via start_session token inheritance"
+    description: "Load saved state from workflow-state.json and resume via start_session token inheritance"
     inputs[2]:
       - workflow_id: "The workflow ID to resume"
-      - file_path: "Absolute path to the workflow-state.toon file"
+      - file_path: "Absolute path to the workflow-state.json file"
     output[1]:
       - session_token: "Resumed session token with inherited state"
     procedure[2]:
-      - "Read workflow-state.toon and extract the sessionToken field"
+      - "Read workflow-state.json and extract the sessionToken field. The token carries workflowId, workflowVersion, currentActivity, agentId, and any parent context — do not look for those at the envelope level."
       - "Call start_session({ workflow_id, session_token: saved_session_token, agent_id: 'orchestrator' }) to inherit the saved session position and checkpoint state"
     tools:
       harness[1]:
