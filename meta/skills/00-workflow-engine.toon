@@ -1,5 +1,5 @@
 id: workflow-engine
-version: 5.0.0
+version: 5.1.0
 capability: Operations and rules for workflow execution — session lifecycle, state persistence, activity dispatch, transition evaluation, checkpoint flow
 
 description: "Capability skill bundling everything needed to execute a workflow's structured flow. Operations cover session token mechanics (implicit), state persistence (persist/restore), activity dispatch and transition evaluation, the post-activity commit-and-persist hook, sub-workflow handling, and the full checkpoint protocol (yield, bubble, present-to-user, respond, resume). Rules cover token mechanics, checkpoint discipline, state-mutation invariants, and orchestrator/worker behavioural boundaries. Each operation is a short linear procedure invoking a small set of MCP / harness / shell tools."
@@ -62,30 +62,37 @@ operations:
   adopt-session:
     description: "Adopt a saved session by passing the saved token to start_session"
     inputs[1]:
-      - saved_session_token: "Token from a saved workflow-state.toon"
+      - saved_session_token: "Token loaded from the saved workflow-state.toon (a workflow-engine VARIABLE, NOT an MCP parameter name)"
     output[1]:
-      - session_token: "Adopted token (re-signed if the server restarted)"
-    procedure[1]:
-      - "Call start_session({ session_token: saved_session_token, agent_id: 'orchestrator' })"
+      - session_token: "Adopted token (re-signed in place if the server restarted; sid, act, and variables preserved)"
+    procedure[3]:
+      - "Call MCP tool start_session with EXACTLY these named parameters: session_token = <value of the saved_session_token variable>, agent_id = 'orchestrator'."
+      - "Do NOT pass workflow_id (the workflow is derived from the saved token's wf field). Do NOT pass parent_session_token. Do NOT invent a 'saved_session_token' parameter — that is a workflow-engine variable name, not an MCP parameter name. The MCP schema is strict and unknown keys are rejected."
+      - "On success the response includes adopted=true (and a re-sign warning if the server had restarted). Use the RETURNED session_token for all subsequent calls — never re-pass the original saved value to any other tool."
     tools:
       workflow-server[1]:
         - start_session
     errors:
-      stale_token:
-        cause: "HMAC signature verification failed (server restarted with a new signing key)"
-        recovery: "Call start_session({ workflow_id, agent_id }) for a fresh session; reconstruct state from the on-disk workflow-state.toon via workflow-engine::restore."
+      strict_param_violation:
+        cause: "start_session returned 'Invalid arguments' / 'unrecognized_keys' because an unknown parameter name (e.g., 'saved_session_token') was passed instead of session_token"
+        recovery: "Re-issue start_session with the saved token bound to the session_token parameter, exactly as the procedure prescribes"
+      unrecoverable_token:
+        cause: "start_session reports the token payload is unrecoverable (corrupted beyond payload-only decoding)"
+        recovery: "Call start_session with parameters: workflow_id = <wf>, agent_id = 'orchestrator' (no session_token) for a fresh session, then reconstruct state from the on-disk workflow-state.toon via workflow-engine::restore"
     rules:
-      stale-token-recovery: "On HMAC signature verification failure, the server has restarted. Call start_session({ workflow_id, agent_id }) for a fresh session and reconstruct state from the on-disk state file."
+      strict-params: "start_session is the ONLY MCP tool that performs HMAC staleness recovery and the ONLY one that adopts a saved token. It is also strict-schema: unknown keys are rejected at the MCP boundary. Bind the saved_session_token VARIABLE to the session_token PARAMETER and pass nothing else."
+      no-recovery-elsewhere: "Other workflow tools (next_activity, get_workflow, get_resource, etc.) verify HMAC strictly with no recovery. NEVER pass a saved/disk token to them — always go through start_session first to obtain a freshly-signed token, then use that returned token everywhere else."
 
   create-session:
     description: "Create a fresh client session as a child of the meta session"
     inputs[2]:
-      - workflow_id: "Target client workflow"
-      - parent_session_token: "Meta session token (becomes the parent)"
+      - workflow_id: "Target client workflow id (e.g., 'work-package')"
+      - parent_session_token: "The meta session token currently held by the orchestrator (used as the parent context source)"
     output[1]:
       - session_token: "Newly minted child session token"
-    procedure[1]:
-      - "Call start_session({ workflow_id, parent_session_token, agent_id: 'orchestrator' })"
+    procedure[2]:
+      - "Call MCP tool start_session with EXACTLY these named parameters: workflow_id = <target client workflow id>, parent_session_token = <current meta session token>, agent_id = 'orchestrator'."
+      - "Do NOT pass session_token (this is a fresh session, not an inherited one) and do NOT pass any other parameter. The schema is strict and unknown keys are rejected. Use the RETURNED session_token for all subsequent calls inside the child workflow."
     tools:
       workflow-server[1]:
         - start_session
@@ -163,13 +170,14 @@ operations:
   restore:
     description: "Load saved state from workflow-state.json and resume via start_session token inheritance"
     inputs[2]:
-      - workflow_id: "The workflow ID to resume"
+      - workflow_id: "The workflow ID to resume (informational; the canonical id is also encoded in the saved token's wf field)"
       - file_path: "Absolute path to the workflow-state.json file"
     output[1]:
-      - session_token: "Resumed session token with inherited state"
-    procedure[2]:
-      - "Read workflow-state.json and extract the sessionToken field. The token carries workflowId, workflowVersion, currentActivity, agentId, and any parent context — do not look for those at the envelope level."
-      - "Call start_session({ workflow_id, session_token: saved_session_token, agent_id: 'orchestrator' }) to inherit the saved session position and checkpoint state"
+      - session_token: "Resumed session token with inherited state (re-signed in place if the server restarted since the file was written)"
+    procedure[3]:
+      - "Read workflow-state.json and extract the sessionToken field into a variable named saved_session_token. The token carries workflowId, workflowVersion, currentActivity, agentId, and any parent context — do not look for those at the envelope level."
+      - "Call MCP tool start_session with EXACTLY these named parameters: session_token = <value of saved_session_token>, agent_id = 'orchestrator'. workflow_id is unnecessary (it is derived from the token's wf field) and SHOULD NOT be passed; do not pass parent_session_token or any other key. The schema is strict and unknown keys are rejected — in particular do NOT pass a literal 'saved_session_token' key."
+      - "Use the RETURNED session_token for every subsequent MCP call. Never re-read the saved file's sessionToken and pass it to next_activity / get_workflow / get_resource — those tools do not perform staleness recovery."
     tools:
       harness[1]:
         - Read
@@ -250,7 +258,7 @@ operations:
     output[1]:
       - child_session_token: "New child session token"
     procedure[2]:
-      - "Call start_session({ workflow_id, parent_session_token, agent_id: 'workflow-orchestrator' })"
+      - "Call MCP tool start_session with EXACTLY these named parameters: workflow_id = <child workflow id>, parent_session_token = <current session token>, agent_id = 'workflow-orchestrator'. Do NOT pass session_token (this is a child session, not an inherited one). The schema is strict and unknown keys are rejected."
       - "harness-compat::spawn-agent for the child orchestrator with the new token in its prompt"
     tools:
       workflow-server[1]:
@@ -372,3 +380,6 @@ rules:
   token-is-opaque: "Treat the session token as an opaque string. NEVER parse, decode, or modify its contents. Session identity is embedded within the token; there is no separate session_id field."
   validation-warnings: "Check _meta.validation in each response. Warnings are advisory but should be addressed."
   resource-loading-via-tool: "Resource refs returned in operation bodies (e.g., 'meta/activity-worker-prompt') are lightweight pointers. Load full content via get_resource({ session_token, resource_id })."
+  staleness-recovery-only-via-start-session: "HMAC staleness recovery (re-signing a saved token after a server restart) is performed ONLY by start_session. No other workflow tool — next_activity, get_workflow, get_resource, get_skill, resolve_operations, yield/resume/respond_checkpoint — has a recovery path: they verify HMAC strictly and fail. When resuming a saved session, ALWAYS go through start_session first (binding the saved token to the session_token parameter); use the returned token for everything else. Never pass a saved/disk token directly to any tool other than start_session."
+  start-session-strict-params: "start_session has a strict input schema and rejects unknown keys (e.g., 'saved_session_token', 'token', 'sessionToken'). The valid parameters are exactly: workflow_id, parent_session_token, session_token, agent_id. Workflow VARIABLES with the same shorthand name (e.g., the saved_session_token variable) must be bound to the canonical PARAMETER (session_token) at the call site."
+  parameter-vs-variable: "Workflow operations describe input/output VARIABLES with their own names (e.g., saved_session_token). MCP tool calls take their own canonical PARAMETER names (e.g., session_token). When invoking an MCP tool, always bind variables to parameters explicitly — do not pass workflow variables under their workflow names as MCP parameters."
