@@ -42,7 +42,8 @@ To honour anti-pattern 27 (single source of truth), each rule lives in exactly o
 | `no-direct-interaction`, `no-get-activity`, `no-pre-load-skills`, `reject-empty-checkpoints` | `workflow-orchestrator` | sub-agent only |
 | `no-continuation-after-yield`, `no-start-session`, `skill-operation-notation` | `activity-worker` | worker only |
 | `token-management`, `step-manifests`, `resource-usage`, `validation` | `session-protocol` | All token-passing roles |
-| `commit-after-activity`, `read-agents-md`, `no-destructive-ops`, `no-hook-skipping`, `explicit-commit` | `version-control` | Orchestrators producing artefacts |
+| `read-agents-md`, `no-destructive-ops`, `no-hook-skipping`, `explicit-commit`, `conventional-commits` | `version-control` | Orchestrators producing artefacts |
+| `commit-after-activity`, `persist-after-every-activity` | `workflow-engine` (under `commit-and-persist`) | Workflow orchestrators at activity boundaries |
 
 ---
 

@@ -2,7 +2,7 @@ id: version-control
 version: 5.0.0
 capability: Initialize planning folders and commit artifacts in the parent repository or a submodule
 
-description: "Operations for version-control actions during workflow execution: planning-folder initialization, regular-directory commits, and the two-step submodule commit pattern. Rules guard destructive operations and enforce the post-activity commit invariant."
+description: "Operations for version-control actions during workflow execution: planning-folder initialization, regular-directory commits, and the two-step submodule commit pattern. Rules guard destructive operations and conventional-commit hygiene. Activity-lifecycle invariants (when to commit) live in workflow-engine, not here."
 
 operations:
   detect-repo-type:
@@ -106,7 +106,6 @@ rules:
   no-destructive-ops: "NEVER run destructive or irreversible operations (force push to protected branches, hard resets) without explicit user request."
   no-hook-skipping: "NEVER skip hooks (--no-verify, --no-gpg-sign) unless the user explicitly requests it."
   explicit-commit: "NEVER commit changes unless the user explicitly asks. Verify the request before executing."
-  commit-after-activity: "Engineering artifacts MUST be committed and pushed after each completed activity, before evaluating transitions to the next activity."
   read-agents-md: "BEFORE committing engineering artifacts, ALWAYS read .engineering/AGENTS.md for the definitive git structure."
   conventional-commits: "Follow Conventional Commits: type(optional-scope): description. Common types: feat, fix, docs, style, refactor, test, chore, build, ci. Reference issue numbers when applicable."
 

@@ -229,15 +229,18 @@ operations:
         recovery: "Take the first matching transition in array order. Log a warning."
 
   commit-and-persist:
-    description: "Post-activity hook — commit artifacts then persist state"
-    inputs[2]:
+    description: "Post-activity hook — commit source-side changes (target_path), commit engineering artifacts (.engineering/artifacts/), then persist state"
+    inputs[3]:
       - activity_id: "Activity that just completed"
       - planning_folder_path: "Path to the planning folder"
-    procedure[2]:
-      - "version-control::commit-regular-files for changes under .engineering/artifacts/ with message 'docs(<workflow-id>): <activity-id> artifacts'"
+      - target_path: "Path to the target submodule where source-side changes live (typically the application repo)"
+    procedure[3]:
+      - "If target_path has uncommitted changes (git status --porcelain non-empty), invoke version-control::commit-submodule with paths=changed files, submodule_message='<type>(<workflow-id>): <activity-id> source changes' (pick the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, etc.), and parent_branch=current parent branch. Skip when the working tree is clean."
+      - "Invoke version-control::commit-regular-files for changes under .engineering/artifacts/ with message 'docs(<workflow-id>): <activity-id> artifacts'"
       - "Invoke workflow-engine::persist with the current session_token and planning_folder_path"
     rules:
-      persist-after-every-activity: "After every completed activity (post commit-artifacts), invoke workflow-engine::persist. Skipping makes the session unrecoverable on restart."
+      commit-after-activity: "After every completed activity, BOTH source-side changes (under target_path, via version-control::commit-submodule) AND engineering artifacts (under .engineering/artifacts/, via version-control::commit-regular-files) MUST be committed and pushed before evaluating transitions to the next activity. Skipping either scope leaves a dirty working tree that breaks resume and downstream activities (validate, strategic-review, submit-for-review). The submodule commit may be skipped only when target_path's working tree is clean."
+      persist-after-every-activity: "After every completed activity (post commit-and-persist's commit steps), invoke workflow-engine::persist. Skipping makes the session unrecoverable on restart."
 
   handle-sub-workflow:
     description: "Dispatch a child workflow with parent context"
