@@ -19,10 +19,8 @@ protocol:
   write-code[4]:
     - Implement the code changes for this task
     - Follow existing code patterns and conventions in the target codebase
-    - For Rust projects, follow TDD approach per resource 23
-    - "For Rust projects, follow TDD best practices from resource 23 — Red-Green-Refactor, FIRST principles, test doubles, boundary testing"
-  verify-locally[2]:
-    - "Rust/Substrate: invoke cargo-operations.check (scope='-p <crate>' for the affected crate) for the inner compile loop, then cargo-operations.test (same scope) for affected tests. Other project types: run the equivalent compile and test commands for the project. This skill does not invoke cargo directly."
+    - "For Rust projects, follow TDD best practices from resource 23 (tdd-concepts-rust)"
+  verify-locally[1]:
     - Check for obvious regressions in affected code
 
 output[1]:

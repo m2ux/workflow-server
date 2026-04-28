@@ -1,5 +1,5 @@
 id: cargo-operations
-version: 1.0.0
+version: 1.1.0
 capability: Resource-constrained operations for the cargo subcommands used during the work-package workflow
 
 description: "Operations wrapping each cargo subcommand invoked by work-package skills (check, test, build, clippy, fmt, doc). Every operation embeds the inline resource budget — nice -n 19, CARGO_BUILD_JOBS cap (default 4), RUST_TEST_THREADS cap (default 4), and SKIP_WASM_BUILD=1 for non-release commands — to prevent OOM/host-hang on memory-constrained hosts. Defaults assume ≤32 GiB RAM and ≤16 cores; raise the env caps on larger hosts."
@@ -84,6 +84,9 @@ operations:
     inputs[2]:
       - scope: "'--workspace' or '-p <crate>'"
       - features: "Optional --features flags (empty string when none)"
+    output[2]:
+      - clippy_status: "{ passed: boolean } — true when no denied warnings emitted"
+      - lint_diagnostics: "Captured stdout/stderr (used by validate-build::analyze-failure)"
     procedure[1]:
       - "nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo clippy {scope} --all-targets {features} -- -D warnings"
     tools:
@@ -98,6 +101,9 @@ operations:
     description: "Canonical formatting check; matches CI exactly. Does not compile, so does not need build-jobs caps"
     inputs[1]:
       - scope: "'--all' for the full workspace (default and CI parity), or omit for the local crate"
+    output[2]:
+      - fmt_status: "{ passed: boolean } — true when no formatting diffs"
+      - fmt_diff_summary: "Concise summary of files needing formatting (when not passed)"
     procedure[1]:
       - "nice -n 19 cargo fmt {scope} -- --check"
     tools:
@@ -106,7 +112,7 @@ operations:
     errors:
       formatting_diffs:
         cause: "Source files do not match rustfmt configuration"
-        recovery: "Run cargo-operations.fmt-fix to apply formatting, then commit the result"
+        recovery: "Run cargo-operations::fmt-fix to apply formatting, then commit the result"
 
   fmt-fix:
     description: "Apply rustfmt formatting in place"

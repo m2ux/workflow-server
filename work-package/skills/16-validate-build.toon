@@ -1,56 +1,69 @@
 id: validate-build
-version: 1.4.0
-capability: Validate implementation through test execution, build verification, and lint checking
+version: 2.0.0
+capability: Triage validation failures and aggregate cross-check results for the validate activity
 
-description: "Runs the full validation suite: tests, build verification, format check, and lint check. Analyzes failures, applies fixes, and re-runs until all pass. Provides observable results — does not ask user about test/build outcomes. MANDATORY: validation steps for Rust/Substrate projects are performed by invoking cargo-operations skill operations directly. This skill never spawns a shell to run a cargo subcommand; it delegates to cargo-operations."
+description: "Provides the orchestration operations the validate activity needs OUTSIDE of cargo execution: analysing the root cause of a failed check, applying a fix, and aggregating per-check outcomes into a single validation_results envelope. Cargo command execution lives entirely in cargo-operations — this skill never invokes cargo and never describes cargo invocations; it operates on the OUTPUTS of cargo-operations operations and on source files."
 
-inputs[2]:
-  - id: project-type
-    description: "Project type (rust-substrate, other) — determines commands"
-  - id: target-submodule
-    description: "Target submodule path (e.g., midnight-node, midnight-ledger)"
+operations:
+  analyze-failure:
+    description: "Identify the root cause of a single failed validation check"
+    inputs[3]:
+      - check_id: "Identifier of the failed check (one of: run-tests, verify-build, check-format, check-lint)"
+      - diagnostics: "stdout/stderr or structured diagnostics emitted by the underlying tool"
+      - target_path: "Path the check ran against (used to read source files referenced in diagnostics)"
+    output[3]:
+      - failure_class: "One of: compile-error, test-assertion, lint-violation, formatting-diff, environment, flaky"
+      - root_cause: "One-line statement of the root cause"
+      - fix_strategy: "Concrete fix approach (file edit, fmt-fix invocation, dependency install, etc.)"
+    procedure[3]:
+      - "Parse the diagnostics; classify into failure_class. Compile and test failures cite a file:line — read that location via the harness Read tool."
+      - "Distinguish flaky from real failures by inspecting the diagnostic surface (e.g., timing-related panics, network errors). Mark flaky only when there is a clear signal."
+      - "Map failure_class to fix_strategy. compile-error / test-assertion → source edit; formatting-diff → cargo-operations::fmt-fix; lint-violation → either source edit or an explicit allow with justification; environment → surface to the user (do not auto-install)."
+    tools:
+      harness[2]:
+        - Read
+        - Grep
+    errors:
+      ambiguous_diagnostics:
+        cause: "Diagnostics do not pinpoint a file or symbol"
+        recovery: "Surface raw diagnostics to the user as a checkpoint via the activity"
 
-precondition[1]:
-  - "Load the cargo-operations skill before executing any protocol step: get_skill skill_id: 'cargo-operations', workflow_id: 'work-package'. All Rust/Substrate validation actions in this skill are delegated to its operations."
+  apply-fix:
+    description: "Apply the chosen fix strategy and prepare for re-validation"
+    inputs[2]:
+      - check_id: "Identifier of the originally failed check"
+      - fix_strategy: "fix_strategy from analyze-failure"
+    output[1]:
+      - fix_applied: "Boolean — true if the fix was applied; false if the fix requires user input or external action"
+    procedure[2]:
+      - "Execute the fix per fix_strategy: source edits go through harness Edit/Write; formatting fixes go through cargo-operations::fmt-fix; dependency or environment fixes are surfaced to the user."
+      - "Set fix_applied = true on success. Set fix_applied = false when the fix requires user input — the activity loop will surface this via its checkpoint."
+    tools:
+      harness[2]:
+        - Edit
+        - Write
 
-protocol:
-  run-tests[3]:
-    - "Rust/Substrate: invoke cargo-operations.test (scope='--workspace'). Other project types: run the equivalent test command for the project."
-    - Observe and record results
-    - Do not ask user about test outcomes — results are observable
-  verify-build[2]:
-    - "Rust/Substrate dev/check pass: invoke cargo-operations.check (scope='--workspace'). Rust/Substrate release pass producing runtime wasm or final binary: invoke cargo-operations.build-release. Other project types: run the equivalent build command for the project."
-    - Observe and record result
-  check-format[3]:
-    - "Rust/Substrate: invoke cargo-operations.fmt-check (scope='--all'). Matches the exact CI command and checks ALL workspace members. Other project types: run the equivalent canonical formatting check."
-    - "Formatting diffs are treated as failures."
-    - Record any formatting diffs as failures
-  check-lint[2]:
-    - "Rust/Substrate: invoke cargo-operations.clippy (scope='--workspace'). Other project types: run the equivalent linter."
-    - Observe and record results
-  fix-failures[4]:
-    - If any check failed — analyze root cause
-    - Apply fix
-    - Re-run failed check
-    - Repeat until all pass
-
-output[1]:
-  - id: validation-results
-    description: "Validation outcomes from tests, build, and lint"
-    components:
-      test_results: "Test execution results (pass/fail, output)"
-      build_status: "Build success or failure"
-      lint_results: "Linter output and any issues"
-      validation_passed: "Boolean — all checks passed"
+  aggregate-results:
+    description: "Combine per-check outcomes into a single validation_results envelope"
+    inputs[4]:
+      - test_results: "Pass/fail and output captured from cargo-operations::test (or the project-equivalent test command)"
+      - build_status: "Pass/fail captured from cargo-operations::check or build-release (or the project-equivalent build command)"
+      - format_status: "Pass/fail captured from cargo-operations::fmt-check (or the project-equivalent format check)"
+      - lint_results: "Pass/fail and output captured from cargo-operations::clippy (or the project-equivalent linter)"
+    output[1]:
+      - validation_results: "{ test_results, build_status, format_status, lint_results, validation_passed } — validation_passed is true iff ALL inputs passed"
+    procedure[1]:
+      - "validation_passed = test_results.passed AND build_status.passed AND format_status.passed AND lint_results.passed. Emit the envelope; do not mutate any input."
 
 rules:
-  no-duplicate-review: "Test suite quality was already reviewed in post-impl-review — this activity validates execution only"
-  delegate-to-cargo-operations: "Rust/Substrate validation actions in this skill are delegated to cargo-operations operations (cargo-operations.test, .check, .build-release, .clippy, .fmt-check). This skill does not invoke cargo directly — that responsibility lives entirely in cargo-operations, where the resource budget is encoded."
+  no-cargo-here: "This skill MUST NOT invoke cargo, describe cargo invocations, or duplicate cargo command-line text. Cargo execution belongs entirely to cargo-operations. validate-build operates on the OUTPUTS of cargo-operations operations."
+  no-duplicate-review: "Test suite quality was already reviewed in post-impl-review. analyze-failure focuses on root cause of execution failures, not test design."
+  do-not-mask-flaky: "When analyze-failure classifies a failure as flaky, surface that classification — do not silently retry. The activity loop decides whether to retry or escalate."
 
 errors:
   persistent_failure:
-    cause: Tests fail repeatedly after fixes
-    recovery: Present analysis to user for guidance
+    cause: "A check fails repeatedly after analyze-failure / apply-fix iterations"
+    recovery: "Surface the latest analysis to the user via the activity's checkpoint mechanism"
   build_environment:
-    cause: Missing dependencies or toolchain issues
-    recovery: Check project setup instructions
+    cause: "Diagnostics indicate a missing toolchain, dependency, or external service"
+    recovery: "Refer the user to the project's setup instructions; do not attempt to install or configure toolchain"

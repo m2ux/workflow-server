@@ -24,7 +24,7 @@ The workflow uses 25 workflow-specific skills organized by capability, plus 6 cr
 | 13 | `review-assumptions` | Assumption collection, classification, and structured review | All planning and implementation activities |
 | 14 | `manage-artifacts` | Planning folder creation and artifact numbering management | Start Work Package, Requirements Elicitation, Implementation Analysis |
 | 15 | `manage-git` | Git branching, PR lifecycle, branch sync, GPG re-sign | Start Work Package, Implement, Validate, Strategic Review |
-| 16 | `validate-build` | Test execution, build verification, lint checking | Validate, Implement |
+| 16 | `validate-build` | Failure-analysis, fix-application, and result-aggregation operations (cargo execution lives in `cargo-operations`) | Validate, Implement |
 | 17 | `finalize-documentation` | ADR updates, test plan finalization, COMPLETE.md creation | Complete |
 | 18 | `update-pr` | PR description update, push commits, mark ready for review | Submit for Review |
 | 19 | `conduct-retrospective` | Workflow retrospective and lessons learned capture | Complete |
