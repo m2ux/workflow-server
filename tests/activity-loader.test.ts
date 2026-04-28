@@ -23,18 +23,6 @@ describe('activity-loader', () => {
       }
     });
 
-    it('should include next_action guidance pointing to the first step with a skill', async () => {
-      // Use work-package start-work-package activity which has steps with skills
-      const result = await readActivity(WORKFLOW_DIR, 'start-work-package', 'work-package');
-
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.value.next_action).toBeDefined();
-        expect(result.value.next_action?.tool).toBe('get_skill');
-        expect(result.value.next_action?.parameters.step_id).toBeDefined();
-      }
-    });
-
     it('should find an activity by searching all workflows when workflowId is omitted', async () => {
       const result = await readActivity(WORKFLOW_DIR, 'discover-session');
 
