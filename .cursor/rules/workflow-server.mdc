@@ -5,4 +5,4 @@ alwaysApply: true
 
 # Workflow Server Integration
 
-For any start workflow or create or resume work package request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure.
+For any start workflow or create or resume work package request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure. Complete the procedure before any other action.
