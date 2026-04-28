@@ -200,7 +200,7 @@ operations:
         cause: "Worker reports variable changes conflicting with orchestrator state"
         recovery: "Worker values take precedence (the worker has ground truth from user interaction)."
     rules:
-      step-manifest-required: "When calling next_activity, include a step_manifest listing each completed step's id and output summary."
+      step-manifest-required: "When calling next_activity, include a step_manifest array. Each entry is an object with two string fields: step_id (the literal step id from the activity definition's steps[]) and output (a short summary of what was produced). Omit step_manifest entirely if no steps were executed; do not pass an empty array or empty string."
       reject-empty-checkpoints: "If an activity defines required checkpoints and the worker returns checkpoints_responded as empty, REJECT the result and resume the worker."
       no-get-activity-from-orchestrator: "Workflow-orchestrators NEVER call get_activity. The activity definition is the worker's domain. Orchestrators need only the activity_id (from initialActivity or transitions) to call next_activity and compose the worker prompt."
       no-pre-load-skills: "NEVER call get_skill or get_skills to pre-load skills. The worker self-bootstraps via get_activity, which bundles the operations the activity needs."
