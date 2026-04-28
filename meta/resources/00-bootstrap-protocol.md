@@ -5,6 +5,8 @@ version: 7.0.0
 
 # Bootstrap Protocol
 
+IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
+
 1. Fetch:
    - `workflow-server://schemas/workflow`
    - `workflow-server://schemas/skill`
