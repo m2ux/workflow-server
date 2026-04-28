@@ -320,20 +320,20 @@ operations:
       - selection: "{ option_id, effects } — captured user response"
     procedure[3]:
       - "Call present_checkpoint({ checkpoint_handle }) and read the message + options"
-      - "For blocking checkpoints, use AskQuestion with the message + options. For autoAdvanceMs checkpoints, present in chat and wait the full timer via Shell sleep before resolving"
+      - "Call AskQuestion with the checkpoint's message and options[]. This is the user's only opportunity to respond — it is MANDATORY for every checkpoint, including those with autoAdvanceMs set. If autoAdvanceMs is set, configure AskQuestion's timeout to that value with defaultOption as the timeout fallback; if the user does not respond within the timer, capture that as auto_advance: true. If the user responds, capture their option_id."
       - "Capture the user's option_id (or auto_advance / condition_not_met)"
     tools:
       workflow-server[1]:
         - present_checkpoint
-      harness[2]:
+      harness[1]:
         - AskQuestion
-        - Shell
     errors:
       invalid_checkpoint_handle:
         cause: "present_checkpoint returned 'Invalid session token' or 'missing signature'"
         recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
     rules:
-      no-auto-resolution: "NEVER auto-resolve a checkpoint. The user MUST explicitly select an option (or the autoAdvanceMs timer MUST fully elapse for advisory checkpoints)."
+      no-auto-resolution: "NEVER auto-resolve a checkpoint without first presenting it. auto_advance: true is only valid after AskQuestion has been shown to the user and the autoAdvanceMs timer has elapsed without a response. Skipping AskQuestion and going straight to a sleep + auto_advance is a protocol violation, even when the default option seems obvious from prior context or prior user input on a different checkpoint."
+      present-before-any-resolution: "present_checkpoint returning data is not the same as presenting to the user. Every checkpoint resolution path — option_id, auto_advance, or condition_not_met — MUST be preceded by an AskQuestion that displays the checkpoint's message and options. All checkpoints block; autoAdvanceMs is a fallback for when the user does not respond, not a license to skip the prompt."
       apply-effects-immediately: "Apply the resolved effects to internal state on receipt, then pass them down to the orchestrator/worker."
       checkpoint-handle-distinct-from-session: "present_checkpoint takes a checkpoint_handle parameter, NOT a session_token. The handle is the HMAC-signed token returned by yield_checkpoint (contains '.')."
 
