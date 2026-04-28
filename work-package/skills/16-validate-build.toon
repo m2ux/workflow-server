@@ -1,8 +1,8 @@
 id: validate-build
-version: 1.1.0
+version: 1.3.0
 capability: Validate implementation through test execution, build verification, and lint checking
 
-description: "Runs the full validation suite: unit/integration/e2e tests, build verification, and linter checks. Analyzes failures, applies fixes, and re-runs until all pass. Provides observable results — does not ask user about test/build outcomes."
+description: "Runs the full validation suite: unit/integration/e2e tests, build verification, and linter checks. Analyzes failures, applies fixes, and re-runs until all pass. Provides observable results — does not ask user about test/build outcomes. All cargo invocations route through the cargo-operations skill so the resource budget is enforced uniformly."
 
 inputs[2]:
   - id: project-type
@@ -12,18 +12,18 @@ inputs[2]:
 
 protocol:
   run-tests[3]:
-    - Execute unit, integration, and e2e tests
+    - "For Rust/Substrate: invoke cargo-operations.test with scope='--workspace'. Drop SKIP_WASM_BUILD only when a test specifically exercises the runtime wasm artifact (rare; documented per-test). For other project types, run the equivalent test command."
     - Observe and record results
     - Do not ask user about test outcomes — results are observable
   verify-build[2]:
-    - Run build command
+    - "For Rust/Substrate dev/check passes: invoke cargo-operations.check with scope='--workspace'. For release builds that must produce the runtime wasm or final binary: invoke cargo-operations.build-release. For other project types, run the equivalent build command."
     - Observe and record result
   check-format[3]:
-    - "Run the canonical formatting check: nice -n 19 cargo fmt --all -- --check (Rust) or equivalent for the project type"
-    - "This MUST match the exact command CI runs — for Rust/Substrate projects, this is cargo fmt --all -- --check which checks ALL workspace members"
+    - "For Rust/Substrate: invoke cargo-operations.fmt-check with scope='--all'. This matches the exact command CI runs and checks ALL workspace members. For other project types, run the equivalent canonical formatting check."
+    - "Formatting diffs are treated as failures."
     - Record any formatting diffs as failures
   check-lint[2]:
-    - Run linter
+    - "For Rust/Substrate: invoke cargo-operations.clippy with scope='--workspace'. For other project types, run the equivalent linter."
     - Observe and record results
   fix-failures[4]:
     - If any check failed — analyze root cause
@@ -42,6 +42,7 @@ output[1]:
 
 rules:
   no-duplicate-review: "Test suite quality was already reviewed in post-impl-review — this activity validates execution only"
+  resource-budget: "All cargo invocations MUST go through the cargo-operations skill (work-package skill 24). Do NOT call bare `cargo ...` from this skill's protocol — the inline resource budget (nice -n 19, CARGO_BUILD_JOBS, RUST_TEST_THREADS, SKIP_WASM_BUILD=1 for non-release commands) is encoded in those operations and prevents host hang on ≤32 GiB hosts."
 
 errors:
   persistent_failure:

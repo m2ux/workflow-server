@@ -1,5 +1,5 @@
 id: implement-task
-version: 2.0.0
+version: 2.1.0
 capability: Implement a single task from the work package plan by writing code changes
 
 description: "Atomic code implementation capability. Reads a task from the plan, understands the context (affected files, dependencies, requirements), and writes the code changes. Testing, committing, and assumption review are handled by other skills (validate-build, manage-git, review-assumptions) orchestrated by the activity's loop."
@@ -22,7 +22,7 @@ protocol:
     - For Rust projects, follow TDD approach per resource 23
     - "For Rust projects, follow TDD best practices from resource 23 — Red-Green-Refactor, FIRST principles, test doubles, boundary testing"
   verify-locally[2]:
-    - Verify the change compiles and basic tests pass
+    - "Verify the change compiles and basic tests pass. For Rust/Substrate, invoke cargo-operations.check (scope='-p <crate>' for the affected crate) for the inner loop, then cargo-operations.test (same scope) for affected tests. Do NOT call bare `cargo ...` — the cargo-operations skill encodes the resource budget that prevents host hang."
     - Check for obvious regressions in affected code
 
 output[1]:

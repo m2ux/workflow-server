@@ -2,9 +2,9 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-## Skills (24 workflow-specific + 6 cross-workflow)
+## Skills (25 workflow-specific + 6 cross-workflow)
 
-The workflow uses 24 workflow-specific skills organized by capability, plus 6 cross-workflow skill references. Universal meta skills are auto-included on the first `get_skills` call. Skills are referenced by activities through `primary` and `supporting` roles.
+The workflow uses 25 workflow-specific skills organized by capability, plus 6 cross-workflow skill references. Universal meta skills are auto-included on the first `get_skills` call. Skills are referenced by activities through `primary` and `supporting` roles.
 
 | # | Skill ID | Capability | Used By |
 |---|----------|------------|---------|
@@ -32,6 +32,7 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 21 | `create-adr` | Architecture Decision Record creation for significant decisions | Complete |
 | 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
 | 23 | `reconcile-assumptions` | Iterative assumption reconciliation through targeted code analysis | Design Philosophy, Requirements Elicitation, Research, Implementation Analysis, Plan & Prepare, Implement |
+| 24 | `cargo-operations` | Resource-constrained cargo subcommand operations (check, test, build, clippy, fmt, doc) with inline budget to prevent host hang | Implement, Validate, Complete |
 
 > Skills `meta-orchestrator`, `workflow-orchestrator`, and `activity-worker` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
 

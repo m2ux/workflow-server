@@ -1,5 +1,5 @@
 id: validate
-version: 2.5.0
+version: 2.5.2
 name: Verify & Validate Design
 description: "Validate the implementation through testing and build verification. Test suite quality was already reviewed in implement phase."
 problem: User needs to validate the implementation passes all tests
@@ -22,7 +22,7 @@ steps[9]:
     description: "Run build. Observe and record result."
   - id: check-format
     name: Check formatting
-    description: "Run the canonical formatting check (e.g. cargo fmt --all -- --check for Rust). This must match the exact CI command. Formatting diffs are treated as failures."
+    description: "Run the canonical formatting check. For Rust/Substrate, invoke cargo-operations.fmt-check with scope='--all' (matches the exact CI command and checks ALL workspace members). For other project types, run the equivalent canonical check. Formatting diffs are treated as failures."
   - id: check-lint
     name: Check for linter errors
     description: "Run linter. Observe and record results."
