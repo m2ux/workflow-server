@@ -1,5 +1,5 @@
 id: implement
-version: 2.6.3
+version: 2.6.4
 name: Implement Tasks
 description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task, reconciled through code analysis after all tasks complete, and only unresolvable assumptions are presented to the user."
 problem: User needs to implement the planned tasks
@@ -37,6 +37,7 @@ loops[3]:
         checkpoint: switch-model-pre-impl
       - id: run-tests
         name: Run tests
+        description: "cargo-operations::test(scope: '-p {current_task.crate}')"
       - id: commit
         name: Commit changes
       - id: self-review
