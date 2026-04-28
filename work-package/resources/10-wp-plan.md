@@ -1,6 +1,6 @@
 ---
 id: plan
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Work Package Plan Guide
@@ -281,12 +281,22 @@ Break down into discrete, estimable tasks. Each task should:
 - `tests/search/fusion_test.rs` - Unit tests (8+ cases)
 ```
 
-**Bad:**
+**Bad — vague:**
 
 ```markdown
 ### Task 1: Implement search improvements
 - Make search better
 - Add tests
+```
+
+**Bad — verification-as-task / raw cargo (forbidden):**
+
+```markdown
+### Task 2: Verify compilation
+Run `cargo check` on the pallet to confirm the change compiles.
+
+### Task 3: Verify existing tests pass
+Run `cargo test -p pallet-foo`.
 ```
 
 ### Success Criteria

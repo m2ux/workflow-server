@@ -28,7 +28,6 @@ rules:
   operational-discipline[4]:
     - "Domain-specific tools may ONLY be invoked from operations bundled into the current activity or workflow response. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls."
     - "Do NOT read workflow resource files directly from disk — load them via get_resource({ session_token, resource_id }) using the refs declared on operations (e.g., 'meta/activity-worker-prompt'). Resource ids are preferred; numeric indices ('meta/01') resolve for backward compatibility."
-    - "CPU-intensive build commands (cargo build, cargo check, cargo test, cargo clippy, npm run build, and similar) MUST be prefixed with nice -n 19 to run at lowest CPU scheduling priority."
     - "cargo fmt is exempt from nice — it is fast and should run at normal priority."
   orchestrator-discipline[5]:
     - "no-domain-work: The orchestrator (meta or workflow) MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."
