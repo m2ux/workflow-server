@@ -32,18 +32,25 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   // ============== Session Tools ==============
 
-  server.tool(
+  server.registerTool(
     'start_session',
-    'Start a new workflow session or inherit an existing one. Returns a session token (required for all subsequent tool calls) and basic workflow metadata. ' +
-    'For a fresh session, provide agent_id only (defaults to "meta" workflow) or specify workflow_id for a different workflow. ' +
-    'For nested workflow dispatch, provide workflow_id and parent_session_token — this creates a new child session with parent context fields (pwf, pact, pv, psid) embedded for trace correlation and resume routing. ' +
-    'For worker dispatch or resume, provide session_token and agent_id — the returned token inherits all state (current activity, pending checkpoints, session ID) from the token, and the workflow is derived from the token\'s embedded workflow ID. ' +
-    'The agent_id parameter is required and sets the aid field inside the HMAC-signed token, distinguishing orchestrator from worker calls in the trace.',
     {
-      workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). When omitted and no session_token is provided, defaults to "meta". When session_token is provided, the workflow is derived from the token and this parameter is used only as a fallback for fresh-session recovery.'),
-      parent_session_token: z.string().optional().describe('Optional. When creating a fresh session with workflow_id, provide the parent session token to establish a parent-child relationship. The parent\'s workflow ID, current activity, version, and session ID are embedded in the new token for trace correlation and resume routing. Ignored when session_token is provided.'),
-      session_token: z.string().optional().describe('Optional. An existing session token to inherit. When provided, the returned token preserves sid, act, bcp, cond, v, and all state from the parent token. The workflow is derived from the token\'s embedded workflow ID. Used for worker dispatch (pass the orchestrator token) or resume (pass a saved token).'),
-      agent_id: z.string().default('orchestrator').describe('Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
+      description:
+        'Start a new workflow session or inherit an existing one. Returns a session token (required for all subsequent tool calls) and basic workflow metadata. ' +
+        'For a fresh session, provide agent_id only (defaults to "meta" workflow) or specify workflow_id for a different workflow. ' +
+        'For nested workflow dispatch, provide workflow_id and parent_session_token — this creates a new child session with parent context fields (pwf, pact, pv, psid) embedded for trace correlation and resume routing. ' +
+        'For worker dispatch or resume, provide session_token and agent_id — the returned token inherits all state (current activity, pending checkpoints, session ID) from the token, and the workflow is derived from the token\'s embedded workflow ID. ' +
+        'The agent_id parameter is required and sets the aid field inside the HMAC-signed token, distinguishing orchestrator from worker calls in the trace. ' +
+        'STRICT PARAMETERS: this tool rejects unknown keys (e.g., do NOT pass "saved_session_token" — pass the saved token under the "session_token" parameter). ' +
+        'STALENESS RECOVERY POLICY: HMAC staleness recovery (re-signing a saved token after a server restart) is performed ONLY by start_session. Other workflow tools (next_activity, get_workflow, etc.) verify HMAC strictly with no recovery. To recover a stale saved token, call start_session with session_token set to the saved value; the auto-adopt path re-signs the payload in place and preserves sid, act, and variables.',
+      inputSchema: z
+        .object({
+          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). When omitted and no session_token is provided, defaults to "meta". When session_token is provided, the workflow is derived from the token and this parameter is used only as a fallback for fresh-session recovery.'),
+          parent_session_token: z.string().optional().describe('Optional. When creating a fresh session with workflow_id, provide the parent session token to establish a parent-child relationship. The parent\'s workflow ID, current activity, version, and session ID are embedded in the new token for trace correlation and resume routing. Ignored when session_token is provided.'),
+          session_token: z.string().optional().describe('Optional. An existing session token to inherit. When provided, the returned token preserves sid, act, bcp, cond, v, and all state from the parent token. The workflow is derived from the token\'s embedded workflow ID. Used for worker dispatch (pass the orchestrator token) or resume (pass a saved token). NOTE: this is the parameter to use for resume from a saved workflow-state.json — do not invent a "saved_session_token" parameter; the schema is strict and unknown keys are rejected.'),
+          agent_id: z.string().default('orchestrator').describe('Sets the aid field inside the HMAC-signed token (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
+        })
+        .strict(),
     },
     withAuditLog('start_session', async ({ workflow_id, parent_session_token, session_token, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
