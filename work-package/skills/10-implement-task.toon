@@ -16,7 +16,7 @@ protocol:
     - Read the task description and requirements from the plan
     - Identify affected files, dependencies, and related code
     - Review test plan for acceptance criteria relevant to this task
-  write-code[4]:
+  write-code[3]:
     - Implement the code changes for this task
     - Follow existing code patterns and conventions in the target codebase
     - "For Rust projects, follow TDD best practices from resource 23 (tdd-concepts-rust)"

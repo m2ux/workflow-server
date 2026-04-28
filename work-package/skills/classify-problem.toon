@@ -45,7 +45,7 @@ operations:
     output[2]:
       - complexity: "One of: simple, moderate, complex"
       - rationale: "Explanation for the complexity rating"
-    procedure[3]:
+    procedure[4]:
       - "Simple: well-defined scope, single component, clear fix — e.g. a typo, a missing null check, a config update"
       - "Moderate: multiple components or some uncertainty — may need research but requirements are clear"
       - "Complex: cross-cutting concern, unclear requirements, significant architectural change, or risk of regression"
@@ -63,7 +63,7 @@ operations:
       - needs_research: "Whether research is needed"
       - needs_comprehension: "Whether codebase comprehension is needed"
       - skip_optional_activities: "Whether to skip optional discovery activities"
-    procedure[1]:
+    procedure[3]:
       - "Simple: skip optional (elicitation=false, research=false, comprehension may be needed for unfamiliar code)"
       - "Moderate: research only (elicitation=false, research=true)"
       - "Complex: full workflow (elicitation=true, research=true, comprehension=true)"
