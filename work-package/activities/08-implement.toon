@@ -1,5 +1,5 @@
 id: implement
-version: 2.6.2
+version: 2.6.3
 name: Implement Tasks
 description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task, reconciled through code analysis after all tasks complete, and only unresolvable assumptions are presented to the user."
 problem: User needs to implement the planned tasks
@@ -18,12 +18,13 @@ artifacts[1]:
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 skills:
-  supporting[5]:
+  supporting[6]:
     - implement-task
     - manage-git
     - reconcile-assumptions
     - review-assumptions
     - validate-build
+    - cargo-operations
 loops[3]:
   - id: task-cycle
     name: Task Implementation Cycle
