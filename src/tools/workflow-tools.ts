@@ -16,7 +16,7 @@ import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
   output: z.string(),
-})).optional().describe('Step completion manifest from the previous activity. Each entry reports a step ID and its output summary.');
+})).optional().describe('Array of completed-step entries from the previous activity, e.g. [{"step_id":"detect-review-mode","output":"is_review_mode=false"}]. Each entry has two string fields: step_id (the literal id from the activity\'s steps[] — note the field is step_id, not id) and output (a short summary). Omit the parameter entirely when no steps ran; do not pass an empty array or empty string.');
 
 const activityManifestSchema = z.array(z.object({
   activity_id: z.string(),
