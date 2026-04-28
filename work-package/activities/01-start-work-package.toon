@@ -1,7 +1,7 @@
 id: start-work-package
-version: 3.3.0
+version: 3.4.0
 name: Start Work Package
-description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR, and create planning folder. Establishes traceability from requirements through implementation."
+description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR (assigned to the current GitHub user), record the PR reference back on the issue via its platform's native PR linkage, and create the planning folder. Establishes traceability from requirements through implementation."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
 recognition[6]:
   - start work package
@@ -22,7 +22,7 @@ skills:
     - github-cli-protocol
     - manage-artifacts
     - manage-git
-steps[20]:
+steps[21]:
   - id: detect-review-mode
     name: Detect Review Mode
     description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
@@ -172,7 +172,7 @@ steps[20]:
         description: "Set to true when an existing PR is found for the current branch"
   - id: create-pr
     name: Create Draft PR
-    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names."
+    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number (for Jira, include the issue key so the Development panel auto-links the PR). The PR is against the target's default branch. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names. After creation, self-assign the PR to the current GitHub user: run 'gh pr edit <pr_number> --add-assignee @me' inside target_path. Capture pr_number and pr_url for the link-pr-to-ticket step."
     checkpoint: pr-creation
     condition:
       type: and
@@ -185,6 +185,30 @@ steps[20]:
           variable: use_existing_pr
           operator: ==
           value: false
+    actions[2]:
+      - action: set
+        target: pr_number
+        description: "PR number captured from gh pr create output"
+      - action: set
+        target: pr_url
+        description: "PR URL captured from gh pr create output"
+  - id: link-pr-to-ticket
+    name: Link PR to Ticket
+    description: "Record the PR reference on the issue using the ticket platform's native mechanism so the PR appears in the issue's linked-PRs view. (1) For Jira: the PR is auto-linked via the Development panel when the branch name and PR title contain the issue key (already enforced upstream) — verify by calling getJiraIssue and confirming the PR is detectable. As a durable fallback that does not depend on the Atlassian-GitHub integration, also add a comment to the issue via addCommentToJiraIssue with body 'Pull Request: <pr_url>'. If the project exposes a custom 'Pull Request URL' field, prefer editJiraIssue to set that field instead of (or in addition to) the comment. (2) For GitHub: the PR body's 'Closes #<issue_number>' reference (from the Initial PR template in resource 12) already creates the native cross-link — verify the issue's timeline shows the PR reference via 'gh issue view <issue_number>'. (3) If issue_skipped is true, skip this step."
+    condition:
+      type: and
+      conditions[3]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: pr_number
+          operator: exists
+        - type: simple
+          variable: issue_skipped
+          operator: "!="
+          value: true
   - id: initialize-planning-folder
     name: Initialize Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title. Use attached resource 01 (readme) for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text."
@@ -473,13 +497,14 @@ transitions[1]:
     isDefault: true
 exitActions[1]{action,message}:
   log,"Issue management complete - issue verified/created, PR ready"
-outcome[5]:
+outcome[6]:
   - Issue exists or is created in appropriate platform
   - Issue transitioned to In Progress and assigned to current user
   - Feature branch created from main
-  - Draft PR created and linked to issue
+  - Draft PR created, assigned to current GitHub user, and linked to issue
+  - PR reference recorded on the issue via the platform's native PR linkage (Jira Development panel / comment, or GitHub timeline cross-reference)
   - Planning folder initialized
-context_to_preserve[16]:
+context_to_preserve[17]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
   - issue_platform - github or jira
   - issue_type - Type of issue (feature, bug, task, enhancement, epic)
@@ -487,6 +512,7 @@ context_to_preserve[16]:
   - issue_assignee_account_id - Account ID of the assigned user (Jira)
   - branch_name - Feature branch name
   - pr_number - Draft PR number (new or existing)
+  - pr_url - URL to the PR (used to link the PR to the ticket)
   - project_type - Detected project type (rust-substrate or other)
   - planning_folder_path - Path to planning artifacts folder
   - on_feature_branch - Whether already on a feature branch (not main/master)
