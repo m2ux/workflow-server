@@ -25,7 +25,7 @@ rules:
     - "Workflow-orchestrators MUST NOT call respond_checkpoint. They bubble up the checkpoint_handle yielded by the worker to the meta-orchestrator."
     - "Meta-orchestrators use AskQuestion, present_checkpoint, and respond_checkpoint. No one else calls respond_checkpoint."
     - "Checkpoints are explicit user decision gates. The meta-orchestrator MUST NOT call respond_checkpoint with an option_id unless the user has explicitly selected that option. Never fabricate an option_id or auto-resolve."
-  operational-discipline[4]:
+  operational-discipline[3]:
     - "Domain-specific tools may ONLY be invoked from operations bundled into the current activity or workflow response. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls."
     - "Do NOT read workflow resource files directly from disk — load them via get_resource({ session_token, resource_id }) using the refs declared on operations (e.g., 'meta/activity-worker-prompt'). Resource ids are preferred; numeric indices ('meta/01') resolve for backward compatibility."
     - "cargo fmt is exempt from nice — it is fast and should run at normal priority."
