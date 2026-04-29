@@ -2,7 +2,3 @@
 	path = history
 	url = git@github.com:m2ux/ai-metadata.git
 	branch = workflow-server
-[submodule "workflows"]
-	path = workflows
-	url = git@github.com:m2ux/workflow-server.git
-	branch = feature/hierarchical-dispatch-workflows
