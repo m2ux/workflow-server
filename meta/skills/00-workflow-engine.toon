@@ -149,35 +149,37 @@ operations:
       - "Compose sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items"
 
   persist:
-    description: "Write the current session state to workflow-state.json using agent-managed file operations"
+    description: "Write the current session state to two files: workflow-state.json (slowly-changing variables, completed activities, history) and .session-token (the HMAC-signed token, which changes on every save). Splitting reduces diff noise on workflow-state.json — the high-churn token no longer dominates every state-change diff in code review."
     inputs[3]:
       - session_token: "The current session token"
       - planning_folder_path: "Absolute path to the planning folder"
       - state: "Current variable state, completed activities, and history to persist"
-    procedure[2]:
+    procedure[3]:
       - "Compose the state envelope using ONLY the fields below — do not duplicate anything that is already encoded in the session token (workflowId/wf, currentActivity/act, agentId/aid, parent context/psid+pwf+pact+pv, workflowVersion/v) or already present inside variables (e.g., planning_folder_path)."
-      - "Write the JSON envelope to {planning_folder_path}/workflow-state.json via the harness Write tool. Required envelope shape (top-level): { stateVersion, savedAt, startedAt, sessionToken, state }. The nested state object holds: { variables, completedActivities, skippedActivities, checkpointResponses, history, status }. Optional fields (omit when empty): activeLoops, triggeredWorkflows. EXAMPLE: {\"stateVersion\":4,\"savedAt\":\"2026-04-28T10:00:00Z\",\"startedAt\":\"2026-04-27T16:12:00Z\",\"sessionToken\":\"<HMAC-signed token>\",\"state\":{\"variables\":{\"issue_number\":\"307\",\"planning_folder_path\":\"/abs/path\"},\"completedActivities\":[\"start-work-package\",\"design-philosophy\"],\"skippedActivities\":[\"requirements-elicitation\"],\"checkpointResponses\":{\"design-philosophy-classification-confirmed\":\"confirmed\"},\"history\":[{\"timestamp\":\"2026-04-27T16:12:00Z\",\"event\":\"session_created\"}],\"status\":\"running\"}}"
+      - "Write the JSON envelope to {planning_folder_path}/workflow-state.json via the harness Write tool. Required envelope shape (top-level): { stateVersion, savedAt, startedAt, state }. NOTE: sessionToken is NOT part of this envelope (see next step). The nested state object holds: { variables, completedActivities, skippedActivities, checkpointResponses, history, status }. Optional fields (omit when empty): activeLoops, triggeredWorkflows. EXAMPLE: {\"stateVersion\":5,\"savedAt\":\"2026-04-28T10:00:00Z\",\"startedAt\":\"2026-04-27T16:12:00Z\",\"state\":{\"variables\":{\"issue_number\":\"307\",\"planning_folder_path\":\"/abs/path\"},\"completedActivities\":[\"start-work-package\",\"design-philosophy\"],\"skippedActivities\":[\"requirements-elicitation\"],\"checkpointResponses\":{\"design-philosophy-classification-confirmed\":\"confirmed\"},\"history\":[{\"timestamp\":\"2026-04-27T16:12:00Z\",\"event\":\"session_created\"}],\"status\":\"running\"}}"
+      - "Write the raw session token (single line, no JSON wrapper, no quotes) to {planning_folder_path}/.session-token via the harness Write tool. Overwrite on every save. This is the ONLY token-bearing file; do NOT also embed the token inside workflow-state.json."
     tools:
       harness[1]:
         - Write
     rules:
-      state-format: "workflow-state.json is a plain-text JSON file with a fixed envelope. The session token is HMAC-signed and self-authenticating; the file is unencrypted."
-      no-token-duplication: "Do NOT write workflowId, workflowVersion, currentActivity, agentId, or parentWorkflow at the top level — these are already encoded in the sessionToken (wf, v, act, aid, psid/pwf/pact/pv) and the server is the source of truth. Restore decodes them from the token."
+      state-format: "workflow-state.json is a plain-text JSON file with a fixed envelope. The session token lives in the sibling .session-token file (also plain text, single line). Both files are unencrypted; the token is HMAC-signed and self-authenticating."
+      token-in-sibling: "The HMAC-signed session token MUST live in {planning_folder_path}/.session-token, NOT inside workflow-state.json. This isolates the high-churn token from the slowly-changing state envelope so workflow-state.json diffs stay readable in code review and the token does not bloat git history."
+      no-token-duplication: "Do NOT write workflowId, workflowVersion, currentActivity, agentId, or parentWorkflow at the top level — these are already encoded in the session token (wf, v, act, aid, psid/pwf/pact/pv) and the server is the source of truth. Restore decodes them from the token."
       no-derived-fields: "Do NOT write fields derivable from other persisted fields: currentStep (= completedActivities.length), updatedAt (= savedAt at the envelope level). Compute on read if a consumer needs them."
       omit-empty-collections: "Omit empty maps/arrays from the file rather than writing {} or []. Exception: completedActivities and history are always present (possibly empty) so a fresh save is recognisable."
       variables-canonical-home: "Domain state — including planning_folder_path, branch_name, issue_number, etc. — lives ONLY inside state.variables. Do not duplicate any variable at the envelope level."
 
   restore:
-    description: "Load saved state from workflow-state.json and resume via start_session token inheritance"
+    description: "Load saved state from a planning folder and resume via start_session token inheritance. The session token is read from the .session-token sibling file (current format) with a fallback to the legacy sessionToken field inside workflow-state.json for older planning folders."
     inputs[2]:
       - workflow_id: "The workflow ID to resume (informational; the canonical id is also encoded in the saved token's wf field)"
-      - file_path: "Absolute path to the workflow-state.json file"
+      - file_path: "Absolute path to the workflow-state.json file (the sibling .session-token is read from the same directory)"
     output[1]:
       - session_token: "Resumed session token with inherited state (re-signed in place if the server restarted since the file was written)"
     procedure[3]:
-      - "Read workflow-state.json and extract the sessionToken field into a variable named saved_session_token. The token carries workflowId, workflowVersion, currentActivity, agentId, and any parent context — do not look for those at the envelope level."
+      - "Read {dirname(file_path)}/.session-token into a variable named saved_session_token (single line, no parsing). If that file does not exist (legacy planning folders pre-split), fall back to reading workflow-state.json and extracting the sessionToken field. The token carries workflowId, workflowVersion, currentActivity, agentId, and any parent context — do not look for those at the envelope level."
       - "Call MCP tool start_session with EXACTLY these named parameters: session_token = <value of saved_session_token>, agent_id = 'orchestrator'. workflow_id is unnecessary (it is derived from the token's wf field) and SHOULD NOT be passed; do not pass parent_session_token or any other key. The schema is strict and unknown keys are rejected — in particular do NOT pass a literal 'saved_session_token' key."
-      - "Use the RETURNED session_token for every subsequent MCP call. Never re-read the saved file's sessionToken and pass it to next_activity / get_workflow / get_resource — those tools do not perform staleness recovery."
+      - "Use the RETURNED session_token for every subsequent MCP call. Never re-read the saved files and pass an old token to next_activity / get_workflow / get_resource — those tools do not perform staleness recovery."
     tools:
       harness[1]:
         - Read
@@ -237,18 +239,18 @@ operations:
         recovery: "Take the first matching transition in array order. Log a warning."
 
   commit-and-persist:
-    description: "Post-activity hook — commit source-side changes (target_path), commit engineering artifacts (.engineering/artifacts/), then persist state"
+    description: "Post-activity hook — commit source-side changes (target_path), persist state into the planning folder, then commit engineering artifacts (.engineering/artifacts/) including the freshly-written workflow-state.json in a single commit. Persist runs BETWEEN the two commits so workflow-state.json rides along with the activity's other artifacts; producing a separate state-persist commit doubles commit count without adding history value."
     inputs[3]:
       - activity_id: "Activity that just completed"
       - planning_folder_path: "Path to the planning folder"
       - target_path: "Path to the target submodule where source-side changes live (typically the application repo)"
     procedure[3]:
       - "If target_path has uncommitted changes (git status --porcelain non-empty), invoke version-control::commit-submodule with paths=changed files, submodule_message='<type>(<workflow-id>): <activity-id> source changes' (pick the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, etc.), and parent_branch=current parent branch. Skip when the working tree is clean."
-      - "Invoke version-control::commit-regular-files for changes under .engineering/artifacts/ with message 'docs(<workflow-id>): <activity-id> artifacts'"
-      - "Invoke workflow-engine::persist with the current session_token and planning_folder_path"
+      - "Invoke workflow-engine::persist with the current session_token and planning_folder_path. The resulting workflow-state.json (and its sibling .session-token) is staged in the SAME engineering commit as the activity's other artifacts in the next step — never as a separate commit."
+      - "Invoke version-control::commit-regular-files for ALL changes under .engineering/artifacts/ (including the workflow-state.json and .session-token just written by persist) with message 'docs(<workflow-id>): <activity-id> artifacts'"
     rules:
       commit-after-activity: "After every completed activity, BOTH source-side changes (under target_path, via version-control::commit-submodule) AND engineering artifacts (under .engineering/artifacts/, via version-control::commit-regular-files) MUST be committed and pushed before evaluating transitions to the next activity. Skipping either scope leaves a dirty working tree that breaks resume and downstream activities (validate, strategic-review, submit-for-review). The submodule commit may be skipped only when target_path's working tree is clean."
-      persist-after-every-activity: "After every completed activity (post commit-and-persist's commit steps), invoke workflow-engine::persist. Skipping makes the session unrecoverable on restart."
+      persist-before-engineering-commit: "Persist runs BETWEEN the source commit and the engineering commit so workflow-state.json rides along in the same engineering commit as the activity's other artifacts. Producing a separate 'state persist' commit doubles commit count without adding history value. Skipping persist altogether makes the session unrecoverable on restart."
 
   handle-sub-workflow:
     description: "Dispatch a child workflow with parent context"

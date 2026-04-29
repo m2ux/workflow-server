@@ -22,7 +22,7 @@ artifacts[2]:
     name: "architecture-summary.md"
     location: planning
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
-steps[9]:
+steps[11]:
   - id: diff-review
     name: Review diff
     description: "Examine all changes in the PR for scope and relevance"
@@ -38,12 +38,25 @@ steps[9]:
   - id: identify-artifacts
     name: Identify artifacts
     description: "Find investigation artifacts, over-engineering, orphaned infrastructure"
+  - id: verify-readme
+    name: Verify README conforms to template
+    description: "manage-artifacts::verify-readme-conforms(planning_folder_path: {planning_folder_path}). When readme_conformance.conforms is false, surface the missing_sections / extra_top_level_headings / header_block_drift entries as an informational strategic finding to be documented in document-findings. This catches template drift that would otherwise only be flagged late by a human reviewer at submit-for-review."
   - id: ensure-changes-folder-entry
     name: Ensure changes/ fragment when required
     description: "If a directory named changes exists at the repository root of target_path (Towncrier, release notes fragments, or similar), inspect existing fragment filenames and bodies. Determine whether this work package already has a matching fragment (same issue/ticket id in the name or clearly linked content). If not, add one new fragment under changes/ that matches the naming pattern and structure (sections, bullets, RST/Markdown style) of the existing files. The fragment MUST reference the GitHub issue for this work package — use the issue_number, issue_url, and issue_platform variables already captured in start-work-package, do not re-search. When issue_platform=github, include a 'Closes: #{issue_number}' or 'Fixes: #{issue_number}' line in the body (or the full {issue_url} form when the existing fragments use that style). When issue_platform=jira and no paired GitHub tracker exists, warn the user that CI check-changes may fail and suggest creating a tracking GitHub issue or applying a skip-changes-check label. Commit it on the feature branch if appropriate. If there is no changes/ directory, skip this step."
+  - id: verify-change-fragment
+    name: Verify change fragment references the issue
+    description: "If target_path has a changes/ directory: locate the change fragment for this work package (matched by issue_number / pr_number in filename or body) and read it. Set fragment_references_issue = true when the body contains issue_url verbatim, false when it does not, null when no changes/ directory exists at target_path root. The validate action below blocks the activity when the reference is missing — fix the fragment and re-run rather than deferring to human review."
+    actions[2]:
+      - action: set
+        target: fragment_references_issue
+        description: "true when the located fragment body contains issue_url verbatim; false when it does not; null when no changes/ directory exists at target_path root (skip)"
+      - action: validate
+        target: "fragment_references_issue != false"
+        message: "Change fragment for this work package does not reference issue_url ({issue_url}). Add a 'Closes: #{issue_number}' line (GitHub) or the full issue_url (when sibling fragments use that style) to the fragment body, commit, and re-run."
   - id: document-findings
     name: Document findings
-    description: "Create strategic-review-{n}.md with items that should be removed or simplified"
+    description: "Create strategic-review-{n}.md with items that should be removed or simplified, plus any informational findings from verify-readme and verify-change-fragment"
   - id: document-cleanup-recommendations
     name: Document Cleanup Recommendations
     description: "Document recommended cleanup actions as review feedback. Do NOT apply changes."
@@ -65,12 +78,15 @@ steps[9]:
     description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
   - id: analyze-strategic-findings
     name: Analyze Strategic Findings
-    description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly."
+    description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly. Also produce a concise multi-line strategic_findings_summary so the review-findings checkpoint message shows findings inline with the options — this saves the user a 'what are the findings?' round-trip."
     checkpoint: review-findings
-    actions[1]:
+    actions[2]:
       - action: set
         target: recommended_strategic_option
         description: "Set to the recommended strategic review option based on findings analysis"
+      - action: set
+        target: strategic_findings_summary
+        description: "Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding). Empty string when no findings. Interpolated into the review-findings checkpoint message so the user sees findings alongside the options without an extra question."
 checkpoints[2]:
   - id: unsigned-commits-prompt
     name: Unsigned or unverified commits
@@ -96,7 +112,7 @@ checkpoints[2]:
             resign_unsigned_commits_requested: false
   - id: review-findings
     name: Strategic Review Findings Checkpoint
-    message: "Strategic review complete. Based on findings analysis, the recommended action is {recommended_strategic_option}. Auto-advancing in 30s."
+    message: "Strategic review complete.\n\nFindings:\n{strategic_findings_summary}\n\nRecommended action: {recommended_strategic_option}. Auto-advancing in 30s."
     blocking: false
     defaultOption: acceptable
     autoAdvanceMs: 30000
@@ -146,9 +162,11 @@ outcome[6]:
   - Architecture summary created in architecture-summary.md for stakeholder communication
   - PR commit GPG signature expectations addressed (resign completed or user declined with documentation)
   - Changelog fragment added when target repo uses root changes/ and none existed for this work
-context_to_preserve[5]:
+context_to_preserve[7]:
   - review_findings - Findings from strategic review
   - review_passed - Whether review passed
   - items_removed - List of items removed during cleanup
   - unsigned_commits_in_pr - Whether any unsigned commits remained after strategic review
   - resign_unsigned_commits_requested - Whether user requested resign at checkpoint
+  - strategic_findings_summary - Concise multi-line summary of findings interpolated into the review-findings checkpoint message
+  - fragment_references_issue - Whether the change fragment references issue_url (true/false/null per verify-change-fragment)

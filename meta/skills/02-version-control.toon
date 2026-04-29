@@ -51,7 +51,7 @@ operations:
       - branch: "Branch to push to (typically the current branch — do NOT create a new branch in the parent repo)"
     procedure[3]:
       - "git add {paths}"
-      - "git commit -m '{message}'"
+      - "git commit -s -m '{message}'"
       - "git push origin {branch}"
     tools:
       shell[1]:
@@ -71,12 +71,13 @@ operations:
       - paths: "Array of file paths inside the submodule"
       - submodule_message: "Conventional Commits message for the submodule commit"
       - parent_branch: "Branch to push the parent commit to"
-    procedure[6]:
+    procedure[7]:
+      - "Read {submodule_path}/AGENTS.md (when present). If it forbids Co-Authored-By, LLM attribution, or similar trailers, strip them from {submodule_message} BEFORE committing — fixing it after commit usually requires a force push, which this skill forbids."
       - "cd {submodule_path}"
-      - "git add {paths} && git commit -m '{submodule_message}' && git push origin <submodule-branch>"
+      - "git add {paths} && git commit -s -m '{submodule_message}' && git push origin <submodule-branch>"
       - "cd back to the repo root"
       - "git add {submodule_path}"
-      - "git commit -m 'chore: update {submodule_path} submodule'"
+      - "git commit -s -m 'chore: update {submodule_path} submodule'"
       - "git push origin {parent_branch}"
     note: "The submodule push (step 2) MUST complete before the parent commit (step 5). Skipping step 5 leaves the parent pointing at the old submodule commit. Skipping the submodule push leaves the parent pointing at a commit that does not exist on the remote."
     tools:
@@ -108,4 +109,6 @@ rules:
   explicit-commit: "NEVER commit changes unless the user explicitly asks. Verify the request before executing."
   read-agents-md: "BEFORE committing engineering artifacts, ALWAYS read .engineering/AGENTS.md for the definitive git structure."
   conventional-commits: "Follow Conventional Commits: type(optional-scope): description. Common types: feat, fix, docs, style, refactor, test, chore, build, ci. Reference issue numbers when applicable."
+  dco-sign-off: "All commits made via this skill use 'git commit -s'. The Signed-off-by trailer is required by DCO and harmless when not. Adding it by default avoids the failure-then-retry pattern when target repos enforce DCO via a pre-commit hook."
+  respect-submodule-agents: "commit-submodule MUST honour the SUBMODULE'S AGENTS.md authorial-trailer policy in addition to the parent's. When the submodule forbids Co-Authored-By or similar LLM-attribution trailers, strip them from {submodule_message} before invocation. Discovery, not retrofit — fixing it after commit usually requires a force push."
 

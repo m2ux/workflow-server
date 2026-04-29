@@ -185,13 +185,17 @@ steps[21]:
           variable: use_existing_pr
           operator: ==
           value: false
-    actions[2]:
+    actions[3]:
       - action: set
         target: pr_number
         description: "PR number captured from gh pr create output"
       - action: set
         target: pr_url
         description: "PR URL captured from gh pr create output"
+      - action: set
+        target: pr_exists
+        value: true
+        description: "Mark PR as existing once successfully created so downstream activities (validate, strategic-review, submit-for-review) see the correct state"
   - id: link-pr-to-ticket
     name: Link PR to Ticket
     description: "Record the PR reference on the issue using the ticket platform's native mechanism so the PR appears in the issue's linked-PRs view. (1) For Jira: the PR is auto-linked via the Development panel when the branch name and PR title contain the issue key (already enforced upstream) — verify by calling getJiraIssue and confirming the PR is detectable. As a durable fallback that does not depend on the Atlassian-GitHub integration, also add a comment to the issue via addCommentToJiraIssue with body 'Pull Request: <pr_url>'. If the project exposes a custom 'Pull Request URL' field, prefer editJiraIssue to set that field instead of (or in addition to) the comment. (2) For GitHub: the PR body's 'Closes #<issue_number>' reference (from the Initial PR template in resource 12) already creates the native cross-link — verify the issue's timeline shows the PR reference via 'gh issue view <issue_number>'. (3) If issue_skipped is true, skip this step."

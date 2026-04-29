@@ -138,8 +138,46 @@ operations:
         cause: "rustdoc detected a broken intra-doc link"
         recovery: "Fix the link target or remove the broken reference"
 
+  preflight:
+    description: "Probe required toolchain prerequisites before running any workspace cargo command. Surfaces missing system dependencies (protoc, openssl headers, pkg-config, ...) as a structured environment finding so the validate activity fails fast rather than mid-workspace-compile."
+    output[1]:
+      - missing_prerequisites: "Array of {name, install_hint} for any unmet prerequisite. Empty array when all prerequisites are present."
+    procedure[3]:
+      - "Inspect target_path for build-script signals indicating system-dependency requirements. Common: protoc (libp2p / litep2p crates), libssl-dev / openssl headers (openssl-sys), pkg-config. Walk Cargo.toml and any build.rs files for these crates."
+      - "For each candidate, probe via 'which <name>' and (where applicable) 'pkg-config --exists <name>'. Collect any unresolved entries with a one-line install_hint (e.g., 'apt-get install -y protobuf-compiler' for protoc)."
+      - "Return missing_prerequisites. Do NOT attempt installation — environment changes always require user consent."
+    tools:
+      shell[2]:
+        - which
+        - pkg-config
+    errors:
+      missing_prerequisite:
+        cause: "A required toolchain component is not installed"
+        recovery: "Surface missing_prerequisites to the user as an environment finding via the activity's validate action; do not auto-install"
+
+  run-suite:
+    description: "Run check, clippy, test, and fmt-check concurrently against the same scope and aggregate their statuses into a single validation_results envelope. Replaces the four serial validate-class operations and is the canonical entry point for the validate activity on rust-substrate projects."
+    inputs[2]:
+      - scope: "'--workspace' for full validation parity with CI; '-p <crate>' to scope to one crate (faster but does not match CI)"
+      - features: "Optional --features flags (empty string when none)"
+    output[1]:
+      - validation_results: "{ check_status, clippy_status, test_status, fmt_status, validation_passed } — validation_passed is true iff all four sub-statuses passed"
+    procedure[3]:
+      - "Fan out four concurrent shells invoking cargo-operations::check, ::clippy, ::test, and ::fmt-check against the same {scope}. Each carries its own resource budget (nice -n 19 + CARGO_BUILD_JOBS cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all)."
+      - "Wait for ALL four to finish before composing results. Do NOT short-circuit on the first failure — collect every per-op status and diagnostics so a single pass surfaces every issue rather than forcing serial discovery."
+      - "Compose validation_results = { check_status, clippy_status, test_status, fmt_status, validation_passed: check_status.passed AND clippy_status.passed AND test_status.passed AND fmt_status.passed }."
+    tools:
+      shell[1]:
+        - cargo
+    errors:
+      out_of_memory:
+        cause: "Combined peak of concurrent cargo invocations exceeded available RAM despite per-op budgets"
+        recovery: "Halve CARGO_BUILD_JOBS for all (export CARGO_BUILD_JOBS=2) and retry. On very tight hosts, fall back to running check/clippy/test sequentially via the per-op operations."
+
 rules:
   resource-budget: "Every cargo invocation made by work-package skills MUST use one of these operations. Do NOT call bare `cargo ...` from skill protocols. The inline budget — nice -n 19, CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4}, RUST_TEST_THREADS=${RUST_TEST_THREADS:-4}, SKIP_WASM_BUILD=1 (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts."
+
+  foreground-only: "Cargo operations MUST run synchronously in the foreground of the caller. Never invoke them with run_in_background inside an activity worker — when the worker exits, the OS process group is killed and the build is lost (this is what forced the worker re-spawn pattern observed in past runs). If the activity's wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand."
 
   scope-narrow-then-wide: "During inner loops (TDD red/green in implement-task) prefer scope='-p <crate>'. Run --workspace once at the validate activity to match CI."
 

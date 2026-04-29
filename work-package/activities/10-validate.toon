@@ -9,38 +9,30 @@ recognition[3]:
   - verify build
 required: true
 estimatedTime: 15-30m
-operations[8]:
-  - "cargo-operations::test"
-  - "cargo-operations::check"
+operations[7]:
+  - "cargo-operations::preflight"
+  - "cargo-operations::run-suite"
   - "cargo-operations::build-release"
-  - "cargo-operations::fmt-check"
-  - "cargo-operations::clippy"
   - "validate-build::analyze-failure"
   - "validate-build::apply-fix"
   - "validate-build::aggregate-results"
-steps[10]:
-  - id: run-tests
-    name: Run all tests
-    description: "cargo-operations::test(scope: '--workspace')"
+  - "manage-artifacts::verify-readme-conforms"
+steps[7]:
+  - id: preflight
+    name: Toolchain preflight
+    description: "cargo-operations::preflight() — fail fast when toolchain prerequisites (protoc, openssl headers, pkg-config, etc.) are missing, BEFORE attempting any workspace cargo command. Surfaces missing dependencies as an environment finding rather than a partial workspace compile."
     when: "project_type == 'rust-substrate'"
-  - id: verify-build
-    name: Verify build succeeds
-    description: "cargo-operations::check(scope: '--workspace')"
+    actions[1]:
+      - action: validate
+        target: "missing_prerequisites.length == 0"
+        message: "Install missing toolchain prerequisites before validation: {missing_prerequisites}"
+  - id: run-suite
+    name: Run validation suite
+    description: "cargo-operations::run-suite(scope: '--workspace') — runs check, clippy, test, and fmt-check concurrently and emits a single validation_results envelope. Replaces the four previous serial steps."
     when: "project_type == 'rust-substrate'"
-  - id: check-format
-    name: Check formatting
-    description: "cargo-operations::fmt-check(scope: '--all')"
-    when: "project_type == 'rust-substrate'"
-  - id: check-lint
-    name: Check for linter errors
-    description: "cargo-operations::clippy(scope: '--workspace')"
-    when: "project_type == 'rust-substrate'"
-  - id: aggregate-results
-    name: Aggregate validation results
-    description: "validate-build::aggregate-results(test_results: {test_status}, build_status: {check_status}, format_status: {fmt_status}, lint_results: {clippy_status})"
   - id: evaluate-results
     name: Evaluate validation results
-    description: "Read validation_results from aggregate-results. Set has_failures and validation_passed from it."
+    description: "Read validation_results from cargo-operations::run-suite. Set has_failures and validation_passed from it."
     actions[2]:
       - action: set
         target: has_failures
@@ -109,7 +101,7 @@ loops[1]:
         description: "validate-build::apply-fix(check_id: {failed_check_id}, fix_strategy: {fix_strategy})"
       - id: revalidate
         name: Re-run Validation
-        description: "Re-run the failed check by invoking the matching cargo-operations operation (cargo-operations::test for run-tests, ::check for verify-build, ::fmt-check for check-format, ::clippy for check-lint), then re-aggregate via validate-build::aggregate-results and update has_failures from the new validation_results."
+        description: "Re-run cargo-operations::run-suite(scope: '--workspace') to re-validate after fix application. validation_results is updated atomically; has_failures = !validation_results.validation_passed. (run-suite already covers all four sub-checks concurrently, so a single re-run captures the full post-fix state.)"
 transitions[1]:
   - to: strategic-review
     isDefault: true
