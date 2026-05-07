@@ -172,11 +172,10 @@ graph TD
 7. **create-comprehension-artifact** — Write/augment artifact to `.engineering/artifacts/comprehension/{codebase-area}.md`.
 8. **deep-dive-loop** — Interactive loop: present areas for deeper exploration, perform targeted analysis, append to artifact.
 
-**Checkpoints (2):**
+**Checkpoints (1):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `architecture-confirmed` | Confirm architecture survey and key abstractions are correct | no (autoAdvance 30s) |
 | `comprehension-sufficient` | Confirm understanding is sufficient or select area for deeper exploration (conditional: has_open_questions) | no (autoAdvance 30s) |
 
 **Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration explores a selected area, performs targeted analysis, and updates the artifact.
@@ -205,12 +204,13 @@ graph TD
     archSurvey["Architecture survey"] --> keyAbstractions["Key abstractions & data model"]
     keyAbstractions --> designRationale["Design rationale mapping"]
     designRationale --> domainMapping["Domain concept mapping"]
-    domainMapping --> cpArch{"architecture-confirmed checkpoint"}
-    cpArch -->|"confirmed"| createArtifact["Create/augment comprehension artifact"]
-    cpArch -->|"corrections"| archSurvey
-    cpArch -->|"more depth"| deepDive
+    domainMapping --> createArtifact["Create/augment comprehension artifact"]
 
-    createArtifact --> cpSufficient{"comprehension-sufficient checkpoint"}
+    createArtifact --> initialDeepDive["Initial deep-dive (mandatory)"]
+    initialDeepDive --> reviseQuestions["Revise open questions"]
+    reviseQuestions --> hasOpen{"Open questions remain?"}
+    hasOpen -->|"no"| pathBranch
+    hasOpen -->|"yes"| cpSufficient{"comprehension-sufficient checkpoint"}
     cpSufficient -->|"sufficient"| pathBranch{"Selected path?"}
     cpSufficient -->|"dive deeper"| deepDive["Deep-dive: select area"]
     cpSufficient -->|"different area"| deepDive

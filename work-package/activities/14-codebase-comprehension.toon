@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.4.0
+version: 1.5.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in .engineering/artifacts/comprehension/ that grow across successive tasks, forming a reusable knowledge base."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
@@ -42,10 +42,9 @@ steps[12]:
   - id: create-comprehension-artifact
     name: Create or Augment Comprehension Artifact
     description: "Write the comprehension artifact to .engineering/artifacts/comprehension/{codebase-area-name}.md. If an existing artifact covers this area, augment it with new sections rather than replacing. Include a metadata header with date, work package reference, and coverage summary. Initialize the 'Open Questions' section (markdown table with columns: #, Question, Status, Resolution, Deep-Dive Section) between Domain Concept Mapping and Deep-Dive Sections. Populate it with questions and gaps identified during the architecture survey — do not leave it empty."
-    checkpoint: architecture-confirmed
     actions[1]:
       - action: message
-        message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name})"
+        message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name}). Proceeding to mandatory initial deep-dive — comprehension-sufficient checkpoint surfaces only when unresolved questions remain after investigation."
   - id: initial-deep-dive
     name: Initial Deep-Dive (Mandatory)
     description: "Systematically investigate every open question identified during the first pass (architecture survey, key abstractions, design rationale, domain mapping). This step is always performed — do not skip it and do not ask the user to select areas. For each open question, trace relevant data flows, examine implementation details, and resolve the question through targeted code analysis."
@@ -66,23 +65,7 @@ artifacts[1]:
     name: "{codebase-area}.md"
     location: comprehension
     description: "Persistent knowledge artifact covering architecture, abstractions, design rationale, and domain mapping for a codebase area. Augmented across successive work packages."
-checkpoints[2]:
-  - id: architecture-confirmed
-    name: Architecture Survey Checkpoint
-    message: "Comprehension artifact: {comprehension_artifact_path}. Here is my understanding of the codebase architecture, key abstractions, and design rationale. Confirming in 30s unless you intervene."
-    blocking: false
-    defaultOption: confirmed
-    autoAdvanceMs: 30000
-    options[3]:
-      - id: confirmed
-        label: Understanding confirmed
-        description: "The architectural survey accurately represents the codebase (default — auto-confirms after 30s)"
-      - id: corrections
-        label: Some corrections needed
-        description: "Parts of the survey need adjustment"
-      - id: more-depth
-        label: Need more depth
-        description: "The survey is too shallow — analyze specific areas more thoroughly"
+checkpoints[1]:
   - id: comprehension-sufficient
     name: Comprehension Sufficiency Checkpoint
     condition:
