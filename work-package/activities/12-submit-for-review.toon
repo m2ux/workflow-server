@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.1.0
+version: 1.2.0
 name: Submit for Review
 description: "Push implementation, update PR, mark ready for review, then handle the review cycle. If review feedback requires significant changes, transition back to plan-prepare."
 problem: User needs to submit the PR for review and handle reviewer feedback
@@ -93,13 +93,16 @@ steps[12]:
     description: "Based on review feedback, determine whether changes are needed."
   - id: analyze-review-outcome
     name: Analyze Review Outcome
-    description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly."
+    description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly. Also produce a concise multi-line review_comments_summary so the review-outcome checkpoint message shows the comments inline with the options — this saves the user a 'what did the reviewer say?' round-trip."
     checkpoint: review-outcome
-    actions[1]:
+    actions[2]:
       - action: set
         target: recommended_outcome
         description: "Set to the recommended review-outcome option based on comment analysis"
-checkpoints[4]:
+      - action: set
+        target: review_comments_summary
+        description: "Concise multi-line summary of reviewer comments (severity tag + one-line description per comment, grouped by reviewer when multiple). Empty string when no comments. Interpolated into the review-outcome checkpoint message so the user sees the comments alongside the options without an extra question."
+checkpoints[3]:
   - id: review-received
     name: Review Received Checkpoint
     message: "Has the PR received manual review feedback?"
@@ -112,7 +115,7 @@ checkpoints[4]:
         description: Continue waiting for review
   - id: review-outcome
     name: Review Outcome Checkpoint
-    message: "Based on review comment analysis, the recommended outcome is {recommended_outcome}. Auto-advancing in 30s."
+    message: "Review outcome analysis complete.\n\nReviewer comments:\n{review_comments_summary}\n\nRecommended outcome: {recommended_outcome}. Auto-advancing in 30s."
     blocking: false
     defaultOption: approved
     autoAdvanceMs: 30000
@@ -135,17 +138,6 @@ checkpoints[4]:
         effect:
           setVariable:
             review_requires_changes: true
-  - id: review-ready
-    name: Review Ready Check
-    message: "Has the PR received review feedback from a human reviewer?"
-    blocking: true
-    options[2]:
-      - id: feedback-available
-        label: Yes — review comments are available
-        description: Proceed to process review comments
-      - id: still-waiting
-        label: Not yet — still waiting
-        description: Pause and check back when review is available
   - id: review-summary-approval
     name: Review Summary Approval Checkpoint
     condition:
@@ -196,9 +188,10 @@ outcome[3]:
   - PR pushed and marked ready for review
   - Review comments received and addressed
   - Review outcome determined (proceed or rework)
-context_to_preserve[5]:
+context_to_preserve[6]:
   - pr_url - PR URL
   - pr_status - PR status (draft/ready)
   - review_analysis_path - Path to review analysis document
   - review_actions_completed - List of completed review actions
   - review_requires_changes - Whether review feedback requires returning to planning
+  - review_comments_summary - Concise multi-line summary of reviewer comments interpolated into the review-outcome checkpoint message

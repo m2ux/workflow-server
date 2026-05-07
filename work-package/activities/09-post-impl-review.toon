@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.7.1
+version: 1.8.0
 name: Post-Implementation Review
 description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
 problem: User needs to review implementation quality before validation
@@ -101,12 +101,15 @@ steps[7]:
       value: true
   - id: analyze-review-findings
     name: Analyze Review Findings
-    description: "Analyze the severity of code review and test suite review findings. If critical or high-severity findings exist, recommend fix-code or improve-tests. If all findings are low/informational, recommend all-acceptable. Set recommended_review_option accordingly."
+    description: "Analyze the severity of code review and test suite review findings. If critical or high-severity findings exist, recommend fix-code or improve-tests. If all findings are low/informational, recommend all-acceptable. Set recommended_review_option accordingly. Also produce a concise multi-line review_findings_summary so the review-findings checkpoint message shows findings inline with the options — this saves the user a 'what are the findings?' round-trip."
     checkpoint: review-findings
-    actions[1]:
+    actions[2]:
       - action: set
         target: recommended_review_option
         description: "Set to the recommended review-findings option based on severity analysis"
+      - action: set
+        target: review_findings_summary
+        description: "Concise multi-line summary of post-impl review findings (severity tag + one-line description per finding, grouped by code-review vs test-suite). Empty string when no findings. Interpolated into the review-findings checkpoint message so the user sees findings alongside the options without an extra question."
 checkpoints[3]:
   - id: file-index-table
     name: File Index Checkpoint
@@ -146,7 +149,7 @@ checkpoints[3]:
         description: No longer an issue, move to next
   - id: review-findings
     name: Review Findings Checkpoint
-    message: "Code review and test quality reports complete. Based on findings analysis, the recommended action is {recommended_review_option}. Auto-advancing in 30s."
+    message: "Code review and test suite review complete.\n\nFindings:\n{review_findings_summary}\n\nRecommended action: {recommended_review_option}. Auto-advancing in 30s."
     blocking: false
     defaultOption: all-acceptable
     autoAdvanceMs: 30000
@@ -240,7 +243,7 @@ outcome[6]:
   - Structural analysis complete (single-pass or full-prism based on complexity)
   - Test suite quality reviewed
   - Architecture summary created (if applicable)
-context_to_preserve[10]:
+context_to_preserve[11]:
   - change_block_index_path - Path to change-block-index.md file
   - change_block_data - Parsed hunk data for interview loop
   - flagged_block_indices - List of indices flagged by user during review
@@ -251,5 +254,6 @@ context_to_preserve[10]:
   - architecture_summary_created - Whether architecture summary was created
   - manual_diff_review_report_path - Path to generated manual diff review report
   - prism_artifact_paths - Paths to prism structural analysis artifacts (single-pass or full-prism)
+  - review_findings_summary - Concise multi-line summary of post-impl review findings interpolated into the review-findings checkpoint message
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark review artifacts as ✅ Complete.
