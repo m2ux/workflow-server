@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: work-package
-version: 3.8.0
+version: 3.9.0
 title: Work Package Implementation Workflow
 description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
 author: m2ux
@@ -42,7 +42,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[84]:
+variables[82]:
   - name: target_path
     type: string
     description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -281,9 +281,6 @@ variables[84]:
     type: boolean
     description: Whether the current assumption was deferred during the assumption interview checkpoint
     defaultValue: false
-  - name: recommended_review_option
-    type: string
-    description: "Agent-recommended action after post-impl review analysis (fix-code|improve-tests|all-acceptable). Set by analyze-review-findings step."
   - name: recommended_strategic_option
     type: string
     description: "Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by analyze-strategic-findings step."
@@ -339,10 +336,6 @@ variables[84]:
   - name: strategic_findings_summary
     type: string
     description: "Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding). Empty string when no findings. Interpolated into the strategic-review review-findings checkpoint message so the user sees findings alongside the options without an extra round-trip. Set by analyze-strategic-findings."
-    defaultValue: ""
-  - name: review_findings_summary
-    type: string
-    description: "Concise multi-line summary of post-impl review findings (severity tag + one-line description per finding, grouped by code-review vs test-suite). Empty string when no findings. Interpolated into the post-impl-review review-findings checkpoint message so the user sees findings alongside the options without an extra round-trip. Set by analyze-review-findings."
     defaultValue: ""
   - name: review_comments_summary
     type: string
