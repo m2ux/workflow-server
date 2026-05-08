@@ -4,7 +4,6 @@ name: Review Changes
 description: "Present discovered changes to the user for approval. User confirms scope and adjusts exclusions before import begins."
 problem: User needs to review and approve which upstream changes to import
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - diff-upstream
 steps[2]:

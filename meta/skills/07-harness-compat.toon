@@ -1,0 +1,67 @@
+id: harness-compat
+version: 3.0.0
+capability: Abstract sub-agent dispatch operations — harness-independent vocabulary for spawning, continuing, and concurrently dispatching agents
+
+description: "Three canonical operations (spawn-agent, continue-agent, spawn-concurrent). All skills and activities reference these operation names rather than harness-specific tool syntax. Per-harness implementation notes live in each operation's prose."
+
+operations:
+  spawn-agent:
+    description: "Dispatch a new isolated sub-agent with no prior context"
+    inputs[2]:
+      - prompt: "Full task prompt for the new agent"
+      - description: "Short label for the agent's role (optional; useful for tracing)"
+    output[1]:
+      - result: "The sub-agent's final output (text, including any <checkpoint_yield> block) — captured when the agent yields or completes"
+    procedure[1]:
+      - "Use the harness's foreground spawn primitive (see prose) with the given prompt; block until the agent yields a checkpoint or returns"
+    rules:
+      foreground-always: "CRITICAL: spawn-agent MUST be dispatched as foreground (blocking). Never set run_in_background. Background dispatch silently breaks checkpoint delivery — the orchestrator never sees the worker's <checkpoint_yield>."
+      token-in-prompt: "When the spawned agent inherits a workflow session, ALWAYS include the session_token in the prompt. Server state is preserved by the token, not by the harness."
+    prose: |
+      Per-harness implementation:
+      | Harness | Invocation |
+      |---------|-----------|
+      | cursor  | Task(subagent_type=generalPurpose, description=<description>, prompt=<prompt>) — omit run_in_background or set it to false |
+      | cline   | use_subagents({ prompt_1: <prompt> }) |
+      | generic | Any harness mechanism that starts a new agent with the given prompt and blocks until the agent yields or completes |
+
+  continue-agent:
+    description: "Resume an existing sub-agent, preserving accumulated context where the harness supports it"
+    inputs[3]:
+      - agent_id: "Harness-assigned identifier for the agent to resume (harness-specific; may be unavailable on some harnesses)"
+      - session_token: "Workflow-server session token — included in the prompt for workflow-state continuity"
+      - prompt: "Updated instructions or continuation context"
+    output[1]:
+      - result: "The resumed agent's next yield or final output"
+    procedure[1]:
+      - "Use the harness's resume primitive (see prose) with the new prompt; block until the agent yields or completes"
+    rules:
+      foreground-always: "CRITICAL: continue-agent MUST be dispatched as foreground (blocking). Never set run_in_background."
+      token-in-prompt: "ALWAYS include the session_token in the prompt. The harness-level resume preserves the context window only — server-side workflow state lives in the token."
+      resume-is-optimisation: "Harness-level resume preserves the context window. Useful, not required for correctness — workflows must be correct without it."
+    prose: |
+      Per-harness implementation:
+      | Harness | Invocation |
+      |---------|-----------|
+      | cursor  | Task(resume=<agent_id>) — preserves the agent's context window. Include session_token in the prompt. Never set run_in_background. |
+      | generic | spawn-agent with the session_token prepended to the prompt. Full workflow state is preserved by the token; the agent rebuilds context from artifacts and tool calls. |
+
+  spawn-concurrent:
+    description: "Dispatch multiple independent agents in parallel"
+    inputs[1]:
+      - agents: "Array of { description, prompt } objects — each becomes an independent sub-agent"
+    output[1]:
+      - results: "Array of agent results, one per dispatched agent"
+    procedure[1]:
+      - "Use the harness's parallel-dispatch primitive (see prose) for all agents at once; block until they all yield or complete"
+    rules:
+      parallelism-is-optimisation: "Concurrent dispatch reduces wall-clock time. Not required for correctness — sequential fallback via spawn-agent is always valid."
+    prose: |
+      Per-harness implementation:
+      | Harness | Invocation |
+      |---------|-----------|
+      | cursor  | Multiple Task calls in a single response turn — the harness executes them in parallel |
+      | generic | Parallel invocations when the harness supports concurrent dispatch; sequential spawn-agent calls otherwise |
+
+rules:
+  harness-independence: "All skills and activities MUST reference operation names from this skill (spawn-agent, continue-agent, spawn-concurrent) rather than harness-specific tool syntax. Harness-specific implementation details belong in this skill only, in each operation's prose."

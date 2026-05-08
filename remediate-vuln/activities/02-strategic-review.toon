@@ -19,7 +19,6 @@ artifacts[2]:
     location: planning
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
 skills:
-  primary: meta/activity-worker
 steps[9]:
   - id: diff-review
     name: Review diff

@@ -27,7 +27,7 @@ protocol:
     - If changes/ exists at target_path repository root, read sibling fragments as the format template
     - Create one new fragment only when none already ties to this issue/PR/work package
     - Match filename convention (e.g. type.issue.ext) and section structure of existing entries
-    - "REQUIRED: search for a matching GitHub issue (gh search issues using JIRA ID, PR title, or keywords). Include a Closes: #NNN or Fixes: #NNN line referencing the issue. Many repos enforce this via CI (check-changes). If no GitHub issue exists, warn the user that CI may fail without one — suggest creating an issue or adding a skip-changes-check label."
+    - "REQUIRED: reference the GitHub issue for this work package using the variables already captured in start-work-package — do NOT re-search. When issue_platform=github, include 'Closes: #{issue_number}' or 'Fixes: #{issue_number}' (or the full {issue_url} form when sibling fragments use that style). When issue_platform=jira, search for a paired GitHub tracker issue and reference it the same way; if none exists, warn the user that the project's CI check-changes may fail and suggest creating a tracking GitHub issue or applying a skip-changes-check label."
     - "Validate the completed fragment against CI requirements: must contain a GitHub issue reference matching the regex github\\.com/.+/issues/[0-9]+ or (Fixes|Closes|Resolves):?\\s+#[0-9]+"
   identify-artifacts[4]:
     - "Look for investigation artifacts: extra logging, debug messages, temporary workarounds"

@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.1.0
+version: 1.2.0
 name: Submit for Review
 description: "Push implementation, update PR, mark ready for review, then handle the review cycle. If review feedback requires significant changes, transition back to plan-prepare."
 problem: User needs to submit the PR for review and handle reviewer feedback
@@ -13,12 +13,16 @@ estimatedTime: 30-60m
 entryActions[1]{action,message}:
   log,Submitting PR for review
 skills:
-  primary: meta/activity-worker
+  supporting[5]:
+    - github-cli-protocol
+    - manage-git
+    - respond-to-pr-review
+    - review-code
+    - update-pr
 steps[12]:
   - id: consolidate-review-findings
     name: Consolidate Review Findings
     description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
-    skill: review-code
     condition:
       type: simple
       variable: is_review_mode
@@ -27,7 +31,6 @@ steps[12]:
   - id: generate-review-summary
     name: Generate Review Summary
     description: "Use attached resource 24 (review-mode) via get_skill (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
-    skill: review-code
     condition:
       type: simple
       variable: is_review_mode
@@ -45,7 +48,6 @@ steps[12]:
   - id: post-pr-review
     name: Post PR Review
     description: "Post review to GitHub PR using 'gh pr review'. Include consolidated findings with severity ratings."
-    skill: github-cli-protocol
     condition:
       type: simple
       variable: is_review_mode
@@ -54,12 +56,10 @@ steps[12]:
   - id: verify-commit-signatures
     name: Verify and sign commits
     description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
-    skill: manage-git
     required: true
   - id: push-commits
     name: Push all commits
     description: "Push all local commits to remote branch."
-    skill: manage-git
     condition:
       type: simple
       variable: is_review_mode
@@ -68,7 +68,6 @@ steps[12]:
   - id: update-description
     name: Update PR description
     description: "Update PR description with final implementation details. Apply automatically — user can edit the PR directly in GitHub/Jira if adjustments are needed."
-    skill: update-pr
     condition:
       type: simple
       variable: is_review_mode
@@ -77,7 +76,6 @@ steps[12]:
   - id: mark-ready
     name: Mark PR ready for review
     description: "Mark the draft PR as ready for review using gh pr ready."
-    skill: github-cli-protocol
     condition:
       type: simple
       variable: is_review_mode
@@ -86,25 +84,25 @@ steps[12]:
   - id: await-review
     name: Await Manual Review
     description: "Wait for PR to receive manual review from team members."
-    skill: respond-to-pr-review
     checkpoint: review-received
   - id: process-review-comments
     name: Process Review Comments
     description: "Analyze and respond to PR review feedback."
-    skill: respond-to-pr-review
   - id: determine-review-outcome
     name: Determine Review Outcome
     description: "Based on review feedback, determine whether changes are needed."
-    skill: respond-to-pr-review
   - id: analyze-review-outcome
     name: Analyze Review Outcome
-    description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly."
+    description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly. Also produce a concise multi-line review_comments_summary so the review-outcome checkpoint message shows the comments inline with the options — this saves the user a 'what did the reviewer say?' round-trip."
     checkpoint: review-outcome
-    actions[1]:
+    actions[2]:
       - action: set
         target: recommended_outcome
         description: "Set to the recommended review-outcome option based on comment analysis"
-checkpoints[4]:
+      - action: set
+        target: review_comments_summary
+        description: "Concise multi-line summary of reviewer comments (severity tag + one-line description per comment, grouped by reviewer when multiple). Empty string when no comments. Interpolated into the review-outcome checkpoint message so the user sees the comments alongside the options without an extra question."
+checkpoints[3]:
   - id: review-received
     name: Review Received Checkpoint
     message: "Has the PR received manual review feedback?"
@@ -117,7 +115,7 @@ checkpoints[4]:
         description: Continue waiting for review
   - id: review-outcome
     name: Review Outcome Checkpoint
-    message: "Based on review comment analysis, the recommended outcome is {recommended_outcome}. Auto-advancing in 30s."
+    message: "Review outcome analysis complete.\n\nReviewer comments:\n{review_comments_summary}\n\nRecommended outcome: {recommended_outcome}. Auto-advancing in 30s."
     blocking: false
     defaultOption: approved
     autoAdvanceMs: 30000
@@ -140,17 +138,6 @@ checkpoints[4]:
         effect:
           setVariable:
             review_requires_changes: true
-  - id: review-ready
-    name: Review Ready Check
-    message: "Has the PR received review feedback from a human reviewer?"
-    blocking: true
-    options[2]:
-      - id: feedback-available
-        label: Yes — review comments are available
-        description: Proceed to process review comments
-      - id: still-waiting
-        label: Not yet — still waiting
-        description: Pause and check back when review is available
   - id: review-summary-approval
     name: Review Summary Approval Checkpoint
     condition:
@@ -201,9 +188,10 @@ outcome[3]:
   - PR pushed and marked ready for review
   - Review comments received and addressed
   - Review outcome determined (proceed or rework)
-context_to_preserve[5]:
+context_to_preserve[6]:
   - pr_url - PR URL
   - pr_status - PR status (draft/ready)
   - review_analysis_path - Path to review analysis document
   - review_actions_completed - List of completed review actions
   - review_requires_changes - Whether review feedback requires returning to planning
+  - review_comments_summary - Concise multi-line summary of reviewer comments interpolated into the review-outcome checkpoint message

@@ -8,7 +8,6 @@ recognition[3]:
   - structured merge
   - reconcile finding counts
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - merge-findings
 required: false

@@ -1,5 +1,5 @@
 id: create-plan
-version: 2.0.0
+version: 2.1.0
 capability: Create work package plan with task breakdown, dependencies, and ordering
 
 description: "Design the implementation approach and produce work-package-plan.md. Applies design framework to structure the approach, breaks work into atomic tasks with explicit dependencies, and documents design decisions and assumptions. Test plan creation is handled by the separate create-test-plan skill."
@@ -47,6 +47,10 @@ output[1]:
 
 resources[1]:
   - "10"
+
+rules:
+  tasks-are-code-changes-only: "Plan tasks describe CODE OR ARTIFACT CHANGES — the source edits, schema changes, doc updates, etc. that must be made to satisfy the goal. Tasks MUST NOT describe verification work (compile, test, lint, format) as separate items: verification runs after every task automatically via the implement activity's task-cycle (run-tests step → cargo-operations::test) and at the validate activity (cargo-operations::check / ::fmt-check / ::clippy). Adding 'Verify compilation', 'Verify tests pass', 'Run cargo X', or similar as a task duplicates that built-in cycle and is forbidden."
+  no-raw-commands-in-plan: "Plan content MUST NEVER contain raw command invocations/specification"
 
 errors:
   missing_inputs:

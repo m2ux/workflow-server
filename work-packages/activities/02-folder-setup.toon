@@ -4,7 +4,6 @@ name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons
 problem: Need organized folder structure for multi-package planning artifacts
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - workflow-execution
 steps[4]:

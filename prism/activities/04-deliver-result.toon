@@ -3,7 +3,6 @@ version: 3.0.0
 name: Deliver Result
 description: "Present the final report to the user. Reads the REPORT.md artifact produced by the generate-report activity and reports paths to all underlying analysis artifacts for reference. This is the terminal activity for all prism pipeline modes."
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - structural-analysis
 steps[3]:

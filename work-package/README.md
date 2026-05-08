@@ -286,10 +286,11 @@ The workflow declares 66 variables that drive control flow, store checkpoint sta
 | `issue_skipped` | boolean | Set when user chooses to skip issue creation |
 | `issue_approved` | boolean | Set when drafted issue is approved for creation |
 | `issue_cancelled` | boolean | Set when issue creation is cancelled |
-| `on_feature_branch` | boolean | Whether already on a feature branch |
 | `pr_exists` | boolean | Whether a PR already exists for the branch |
-| `use_existing_branch` | boolean | Whether to use the existing branch |
 | `use_existing_pr` | boolean | Whether to use the existing PR |
+| `reference_path` | string | Reference checkout (monorepo root or standalone repo) used for comprehension and GitNexus indexing |
+| `component_name` | string | Basename of the component being worked on; used in the canonical worktree path |
+| `worktree_created` | boolean | Whether `start-work-package` materialized (or reused) a worktree at `target_path` |
 | `pr_skipped` | boolean | Set when PR creation is skipped |
 | `has_stakeholder_input` | boolean | Whether stakeholder discussion was provided |
 | `post_jira_comment` | boolean | Whether to post assumptions to Jira |

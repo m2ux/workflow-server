@@ -1,0 +1,62 @@
+id: knowledge-base-search
+version: 3.0.0
+capability: Operations for targeted concept-rag searches via pre-indexed domain maps
+
+description: "Operations for searching the knowledge base. Domain indexes in .engineering/resources/ map natural terminology to indexed concept terms, reducing exploratory queries from 3-5 to 2 targeted ones."
+
+operations:
+  load-domain-index:
+    description: "Read the matching domain index file from .engineering/resources/"
+    inputs[1]:
+      - domain: "Domain hint (e.g., 'substrate', 'blockchain')"
+    output[1]:
+      - index: "Parsed source registry, concept lookup table, and topic clusters"
+    procedure[2]:
+      - "Locate {domain}-knowledge-index.md under .engineering/resources/"
+      - "Read the file and parse its source registry, concept table, and topic clusters"
+    tools:
+      harness[1]:
+        - Read
+    errors:
+      no_index_for_domain:
+        cause: "No knowledge index file found in .engineering/resources/ for the requested domain"
+        recovery: "Fall back to standard concept-rag search: catalog-search then chunks-search"
+
+  catalog-search:
+    description: "Resolve a document name to its full source path"
+    inputs[1]:
+      - document_name: "Name from the index"
+    procedure[1]:
+      - "Call catalog_search({ name: document_name })"
+    tools:
+      concept-rag[1]:
+        - catalog_search
+
+  chunks-search:
+    description: "Search within a known document by its resolved path"
+    inputs[2]:
+      - source_path: "Path returned by catalog-search"
+      - query: "Search query"
+    procedure[1]:
+      - "Call chunks_search({ source_path, query })"
+    tools:
+      concept-rag[1]:
+        - chunks_search
+    errors:
+      stale_index:
+        cause: "Knowledge base has been updated since the local index was created"
+        recovery: "If chunks-search returns no results for an indexed path, fall back to catalog-search to rediscover"
+
+  broad-chunks-search:
+    description: "Search across documents using an indexed concept term"
+    inputs[1]:
+      - concept_term: "Mapped concept from the index"
+    procedure[1]:
+      - "Call broad_chunks_search({ concept: concept_term })"
+    tools:
+      concept-rag[1]:
+        - broad_chunks_search
+    errors:
+      no_mapping_for_term:
+        cause: "The local index does not contain a mapping for the search term"
+        recovery: "Use broad-chunks-search with the natural term; note the gap for future index updates"

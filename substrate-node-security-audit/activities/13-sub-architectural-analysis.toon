@@ -8,7 +8,6 @@ recognition[3]:
   - threat model construction
   - architectural decomposition
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-sub-agent
 required: false

@@ -8,7 +8,6 @@ recognition[3]:
   - output verification
   - check completeness
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - verify-sub-agent-output
 required: false

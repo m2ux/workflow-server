@@ -4,7 +4,6 @@ name: Plan Dimension Analysis
 description: "Survey the target to understand its structure and content, map each evaluation dimension to prism pipeline modes and lenses, group dimensions by pipeline mode for execution, and write the evaluation plan artifact."
 problem: "Generic evaluation prompts miss target-specific content. A blockchain proposal needs different analytical focus than a product strategy document or a codebase architecture review. The dimension-to-lens mapping must be informed by the target's actual structure, claims, and content to produce meaningful findings."
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - plan-evaluation
 steps[5]:
