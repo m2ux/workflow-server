@@ -1,5 +1,5 @@
 id: manage-git
-version: 1.5.0
+version: 1.6.0
 capability: Manage git operations — branching, worktree lifecycle, PR lifecycle, branch synchronization, and reference-repo submodule maintenance
 
 description: "Handles git branch management, worktree creation and removal, PR creation/updates via gh CLI, branch synchronization, and reference-repo submodule maintenance. Edit-side git operations (branch, PR, sync, push) run INSIDE target_path (the worktree). Reference-side git operations (submodule update) run INSIDE reference_path (the monorepo). Branches and PRs are created against the target's upstream."
@@ -22,11 +22,13 @@ inputs[6]:
     required: false
 
 protocol:
-  update-reference-submodules[4]:
+  update-reference-submodules[6]:
     - "Run only when reference_path is set AND points at a monorepo (i.e. reference_path/.gitmodules exists). Skip silently when reference_path is empty or the reference is a standalone repo with no submodules."
-    - "Run 'git -C {reference_path} submodule update --init --recursive --remote' to bring every submodule to its tracked branch's remote HEAD. This refreshes the reference for downstream code-resolvable assumption analysis and gitnexus indexing."
-    - "Do NOT commit the resulting pointer changes in the monorepo — the goal is reference-side freshness, not history mutation. If the user has uncommitted submodule pointer changes after this step, that is intentional and harmless."
-    - "On failure (network, missing submodule, dirty submodule worktree), surface the error and stop. Do not silently proceed with a stale reference."
+    - "Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on {reference_path}/.git/.workflow-submodule-refresh.lock (blocking). Concrete form: 'flock {reference_path}/.git/.workflow-submodule-refresh.lock -c <command>'. The lock prevents two parallel start-work-package activities from racing on .git/index.lock during the submodule update."
+    - "Skip-if-recent (under the lock): check the mtime of {reference_path}/.git/.workflow-submodule-refresh. If it exists and was modified in the last 300 seconds, skip the submodule update entirely — a sibling work package or a recent prior run already refreshed the reference and another refresh adds no value. Release the lock and return."
+    - "Otherwise run 'git -C {reference_path} submodule update --init --recursive --remote' to bring every submodule to its tracked branch's remote HEAD. Do NOT commit the resulting pointer changes in the monorepo — the goal is reference-side freshness, not history mutation."
+    - "On success, touch {reference_path}/.git/.workflow-submodule-refresh so subsequent invocations see the freshness signal. Release the lock."
+    - "On failure (network, missing submodule, dirty submodule worktree), surface the error and release the lock without touching the freshness sentinel. Do not silently proceed with a stale reference."
   create-worktree[6]:
     - "Inputs: reference_path, component_name, target_path (canonical form '~/projects/work/{component_name}/{wp-slug}/'), branch_name (derived from issue per the create-branch convention)."
     - "Determine the component's git directory: when reference_path is a monorepo and reference_path/component_name exists, use reference_path/component_name; otherwise use reference_path itself (standalone case)."
@@ -60,10 +62,11 @@ protocol:
     - Resolve MERGE_BASE against default branch (same order as validate strategic preflight)
     - Re-sign each commit in MERGE_BASE..HEAD via rebase --exec 'git commit --amend --no-edit -S' (GPG); ensure user.signingkey and gpg agent are available
     - After rewrite, verify with git log --format='%h %G?' MERGE_BASE..HEAD; push with --force-with-lease only when appropriate for the PR branch
-  artifact-commits[3]:
-    - "ALL planning artifact commits to the parent (engineering) repo MUST use --no-gpg-sign: git add <files> && git commit --no-gpg-sign -m 'docs(work-package): <activity> artifacts for <issue-key>' && git push origin <branch>"
-    - "Commit after each workflow activity completes. Use the message pattern: docs(work-package): <activity-name> artifacts for <issue-key>"
-    - "The --no-gpg-sign flag is mandatory on all intermediate artifact commits so the workflow can proceed unattended without a GPG pinentry prompt. At completion, resign-artifact-commits in the complete activity re-signs the full history via gpg-resign-range"
+  artifact-commits[4]:
+    - "ALL planning artifact commits to the parent (engineering) repo MUST use --no-gpg-sign: git add <files> && git commit --no-gpg-sign -m 'docs(work-package): <activity> artifacts for <issue-key>'"
+    - "BEFORE every push, integrate sibling work-package commits onto the same engineering branch: 'git -C {reference_path} pull --rebase origin <branch>'. Without this, two work packages running in parallel on the same monorepo will produce non-fast-forward push rejections and halt mid-flow. The rebase is cheap because each work package writes only to its own planning subfolder, so conflicts are rare."
+    - "Push: 'git -C {reference_path} push origin <branch>'. If the push is still rejected (race with a sibling that pushed between our rebase and our push), retry the pull --rebase + push cycle once."
+    - "Commit after each workflow activity completes. Use the message pattern: docs(work-package): <activity-name> artifacts for <issue-key>. The --no-gpg-sign flag is mandatory on all artifact commits so the workflow can proceed unattended without a GPG pinentry prompt. Artifact commits remain unsigned permanently — there is no completion-time resign step."
 
 output[1]:
   - id: branch-and-pr
