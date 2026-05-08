@@ -1223,7 +1223,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_token'] as string;
-      const conditionalCpId = 'branch-check';
+      const conditionalCpId = 'pr-check';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
