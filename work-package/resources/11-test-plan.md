@@ -367,7 +367,7 @@ Store test plans alongside their corresponding ADRs or in a dedicated tests docu
 The PR description links to the test plan:
 
 ```markdown
-🎫 [Ticket](link)  📐 [ADR](link)  🧪 [Test Plan](link)
+🐛 [Issue](github-issue-link)  📐 [ADR](link)  🧪 [Test Plan](link)
 ```
 
 ### Test Plan ↔ Source Code

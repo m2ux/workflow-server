@@ -1,6 +1,6 @@
 ---
 id: pr-description
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Pull Request Description Guide
@@ -47,7 +47,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary of the change and key benefit]
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](link-to-start-here)
+🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering](link-to-start-here)
 
 ---
 
@@ -88,7 +88,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary of the proposed work]
 
 
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)
+🐛 [Issue](github-issue-link)  📐 [Engineering](eng-repo-link)
 
 ---
 
@@ -140,7 +140,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary with key benefit/metric achieved]
 
 
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link) 
+🐛 [Issue](github-issue-link)  📐 [Engineering](eng-repo-link) 
 
 ---
 
@@ -211,27 +211,33 @@ This PR adds some improvements to search.
 - Include quantifiable impact when available
 - Keep to 1-2 sentences maximum
 
-### Ticket, ADR, Engineering, and Test Plan Links
+### Issue, ADR, Engineering, and Test Plan Links
 
 Always link to related artifacts on the same line for easy scanning:
 
 ```markdown
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
+🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
 ```
+
+The Issue link **must** point to the GitHub issue in the target repo, not the Jira ticket. The work-package workflow always captures or creates a paired GitHub issue during start-work-package (`github_issue_number` variable), so this link is always resolvable. When a Jira ticket also exists, append it as a secondary reference (see "Jira reference" below).
 
 #### CRITICAL: Resolving Link Placeholders
 
-**NEVER guess or infer repository URLs or branch names.** Always resolve them from git remotes:
+**NEVER guess or infer repository URLs, issue numbers, or branch names.** Always resolve them from workflow variables or git remotes:
 
 ```bash
+# Target repo URL (submodule where the PR is created):
+TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
+
+# GitHub issue number — read from the github_issue_number workflow variable
+# (captured by start-work-package via gh issue list / gh issue create).
+# Do NOT guess; do NOT use jira_issue_key here.
+
 # Engineering repo URL (parent repo where .engineering/ lives):
 ENG_REPO_URL=$(git -C <parent-repo-path> remote get-url origin | sed 's/\.git$//')
 
 # Engineering repo branch (the branch where planning artifacts are committed):
 ENG_BRANCH=$(git -C <parent-repo-path> branch --show-current)
-
-# Target repo URL (submodule where the PR is created):
-TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
 
 # Convert SSH URLs to HTTPS if needed:
 # git@github.com:org/repo.git → https://github.com/org/repo
@@ -239,9 +245,26 @@ TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
 
 The `ENG_REPO_URL` comes from the **parent repo** (the repo containing `.engineering/`), not the target submodule. These are different repositories with different owners. The `ENG_BRANCH` is the current branch of the parent repo — do NOT assume `main`; the engineering artifacts may live on a different branch (e.g., `engineering`, a user branch, or a feature branch).
 
+**Resulting URL form (example):**
+
+```
+https://github.com/midnightntwrk/midnight-node/issues/1471
+```
+
+#### Jira reference (when applicable)
+
+When `issue_platform == 'jira'` and `jira_issue_key` is captured, include the Jira ticket as a secondary line below the link row so reviewers tracing back to the originating ticket can find it without cluttering the primary link line:
+
+```markdown
+🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering](...)
+
+_Jira: [{JIRA_ISSUE_KEY}](https://{JIRA_DOMAIN}/browse/{JIRA_ISSUE_KEY})_
+```
+
 **When to include each link:**
-- **Ticket** - Always include if work is tracked in a ticket
-- **Engineering** - Always include; links to the README.md in the engineering artifacts planning folder for the work package. This provides reviewers access to design philosophy, planning, and review documents.
+- **Issue** - Always include; the GitHub issue in the target repo (paired with the Jira ticket, if any).
+- **Engineering** - Always include; links to the README.md in the engineering artifacts planning folder for the work package. Provides reviewers access to design philosophy, planning, and review documents.
+- **Jira** - Include as a secondary reference only when the work originated in Jira and a `jira_issue_key` was captured.
 - **ADR** - Include for architectural decisions committed to the target repo (see [Architecture Review Guide](15-architecture-review.md))
 - **Test Plan** - Include when formal test documentation exists (see [Test Plan Creation Guide](11-test-plan.md))
 
@@ -413,7 +436,7 @@ gh pr ready
 Implement content-aware chunking that preserves semantic boundaries, reducing retrieval errors by 40% on the evaluation dataset.
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
+🐛 [Issue](https://github.com/{TARGET_REPO_OWNER}/{TARGET_REPO_NAME}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
 ```
 
 ### Good Motivation Section
@@ -454,7 +477,8 @@ Before submitting a PR, verify:
 - [ ] No redundant information (commits, files changed)
 
 ### Links and References
-- [ ] Ticket linked (if applicable)
+- [ ] GitHub Issue linked (always; URL form `{TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER}`, NOT a Jira browse URL)
+- [ ] Jira ticket included as a secondary reference (only if `issue_platform == 'jira'`)
 - [ ] ADR linked on feature branch (if applicable)
 - [ ] Test plan linked (if applicable)
 
