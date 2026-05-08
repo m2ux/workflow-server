@@ -210,3 +210,183 @@ export async function readSkillRaw(
 
   return err(new SkillNotFoundError(skillId));
 }
+
+/**
+ * Resolved entry returned by resolveOperations.
+ * Carries the skill source, the element name, its kind (operation/rule/error), and its body.
+ */
+export interface ResolvedOperation {
+  source: string;                  // canonical skill id (e.g. "workflow-orchestrator")
+  workflow?: string | undefined;   // optional workflow context (e.g. "meta") when the ref was prefixed
+  name: string;                    // element name (operation/rule/error name)
+  type: 'operation' | 'rule' | 'error' | 'not-found';
+  body: unknown;                   // the element body (operation object, rule string/array, error object) — null when not-found
+  ref: string;                     // original reference string from the request (for traceability)
+}
+
+/**
+ * Parse a skill::element reference. Supports optional workflow prefix.
+ * Examples:
+ *   "agent-conduct::file-sensitivity" → { workflow: undefined, skill: "agent-conduct", name: "file-sensitivity" }
+ *   "meta/agent-conduct::file-sensitivity" → { workflow: "meta", skill: "agent-conduct", name: "file-sensitivity" }
+ */
+function parseOperationRef(ref: string): { workflow?: string; skill: string; name: string } | null {
+  // Find the :: separator
+  const sepIdx = ref.indexOf('::');
+  if (sepIdx < 0) return null;
+  const skillPart = ref.slice(0, sepIdx);
+  const name = ref.slice(sepIdx + 2);
+  if (!name) return null;
+
+  // Skill part may be workflow-prefixed (e.g. "meta/agent-conduct")
+  const slashIdx = skillPart.indexOf('/');
+  if (slashIdx > 0) {
+    const workflow = skillPart.slice(0, slashIdx);
+    const skill = skillPart.slice(slashIdx + 1);
+    if (!workflow || !skill) return null;
+    return { workflow, skill, name };
+  }
+  return { skill: skillPart, name };
+}
+
+/**
+ * Resolve a list of skill::element references into their bodies.
+ * Looks up each element across the appropriate skill files (handling workflow prefixes
+ * and cross-workflow search). Each ref resolves to one entry; not-found refs are surfaced
+ * with type "not-found" rather than dropped, so callers can detect and report.
+ *
+ * Auto-inclusion: when at least one element from a skill is resolved, that skill's
+ * global rules are appended to the result with type 'rule' and an "auto: true" marker
+ * (skipping rules already explicitly requested). This lets activities reference a
+ * single operation and still receive the skill's invariants.
+ *
+ * No session token required — this is a purely structural lookup.
+ */
+export async function resolveOperations(
+  refs: string[],
+  workflowDir: string,
+): Promise<ResolvedOperation[]> {
+  const results: ResolvedOperation[] = [];
+  // Track which (workflow, skill, ruleName) tuples were explicitly requested,
+  // so auto-inclusion does not duplicate them.
+  const explicitRules = new Set<string>();
+  // Track which skills had at least one successful resolution; for each, we will
+  // auto-append remaining global rules at the end.
+  const touchedSkills = new Map<string, { workflow: string | undefined; skill: string; cached: Skill }>();
+
+  const skillKey = (workflow: string | undefined, skill: string) => `${workflow ?? ''}::${skill}`;
+  const ruleKey = (workflow: string | undefined, skill: string, name: string) => `${workflow ?? ''}::${skill}::${name}`;
+
+  for (const ref of refs) {
+    const parsed = parseOperationRef(ref);
+    if (!parsed) {
+      results.push({ source: '', name: '', type: 'not-found', body: null, ref });
+      continue;
+    }
+
+    const skillResult = await readSkill(
+      parsed.workflow ? `${parsed.workflow}/${parsed.skill}` : parsed.skill,
+      workflowDir,
+    );
+    if (!skillResult.success) {
+      results.push({ source: parsed.skill, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
+      continue;
+    }
+    const skill = skillResult.value;
+
+    // Prefer operations, then rules, then errors
+    if (skill.operations && parsed.name in skill.operations) {
+      results.push({
+        source: parsed.skill,
+        workflow: parsed.workflow,
+        name: parsed.name,
+        type: 'operation',
+        body: skill.operations[parsed.name],
+        ref,
+      });
+      touchedSkills.set(skillKey(parsed.workflow, parsed.skill), { workflow: parsed.workflow, skill: parsed.skill, cached: skill });
+      continue;
+    }
+    if (skill.rules && parsed.name in skill.rules) {
+      explicitRules.add(ruleKey(parsed.workflow, parsed.skill, parsed.name));
+      results.push({
+        source: parsed.skill,
+        workflow: parsed.workflow,
+        name: parsed.name,
+        type: 'rule',
+        body: skill.rules[parsed.name],
+        ref,
+      });
+      touchedSkills.set(skillKey(parsed.workflow, parsed.skill), { workflow: parsed.workflow, skill: parsed.skill, cached: skill });
+      continue;
+    }
+    if (skill.errors && parsed.name in skill.errors) {
+      results.push({
+        source: parsed.skill,
+        workflow: parsed.workflow,
+        name: parsed.name,
+        type: 'error',
+        body: skill.errors[parsed.name],
+        ref,
+      });
+      touchedSkills.set(skillKey(parsed.workflow, parsed.skill), { workflow: parsed.workflow, skill: parsed.skill, cached: skill });
+      continue;
+    }
+    results.push({ source: parsed.skill, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
+  }
+
+  // Auto-append global rules from each touched skill (skipping rules already explicitly requested).
+  for (const { workflow, skill: skillId, cached: skill } of touchedSkills.values()) {
+    if (!skill.rules) continue;
+    for (const [ruleName, ruleBody] of Object.entries(skill.rules)) {
+      if (explicitRules.has(ruleKey(workflow, skillId, ruleName))) continue;
+      results.push({
+        source: skillId,
+        workflow,
+        name: ruleName,
+        type: 'rule',
+        body: ruleBody,
+        ref: `${workflow ? workflow + '/' : ''}${skillId}::${ruleName}`,
+      });
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Shape a resolved-operations array for tool-response output.
+ * Groups by kind and drops per-entry redundancy so the wire payload is compact:
+ *   - operations / errors keyed by `<skill-id>::<name>` → body
+ *   - rules flattened to `[header, line]` tuples (one per line in the rule body)
+ *   - unresolved refs collected into a string array
+ * `workflow`, `type`, and `ref` are folded away. Empty groups are omitted.
+ */
+export function formatOperationsBundle(resolved: ResolvedOperation[]): Record<string, unknown> {
+  const operations: Record<string, unknown> = {};
+  const errors: Record<string, unknown> = {};
+  const rules: Array<[string, string]> = [];
+  const unresolved: string[] = [];
+
+  for (const entry of resolved) {
+    if (entry.type === 'operation') {
+      operations[`${entry.source}::${entry.name}`] = entry.body;
+    } else if (entry.type === 'error') {
+      errors[`${entry.source}::${entry.name}`] = entry.body;
+    } else if (entry.type === 'rule') {
+      const lines = Array.isArray(entry.body) ? entry.body : [entry.body];
+      for (const line of lines) {
+        rules.push([entry.name, String(line)]);
+      }
+    } else {
+      unresolved.push(entry.ref);
+    }
+  }
+
+  const out: Record<string, unknown> = {};
+  if (Object.keys(operations).length > 0) out['operations'] = operations;
+  if (rules.length > 0) out['rules'] = rules;
+  if (Object.keys(errors).length > 0) out['errors'] = errors;
+  if (unresolved.length > 0) out['unresolved'] = unresolved;
+  return out;
+}

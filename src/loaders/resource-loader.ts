@@ -22,6 +22,50 @@ function normalizeResourceIndex(index: string): string {
   return index.padStart(3, '0');
 }
 
+/** True when a resource ref looks like a numeric index (legacy) rather than an id. */
+function isNumericIndex(ref: string): boolean {
+  return /^\d+$/.test(ref);
+}
+
+/**
+ * Resolve a resource ref (id or numeric index) to a concrete numeric index by
+ * scanning the resource directory. When the ref is numeric, it is returned
+ * unchanged. When it is an id, each resource's frontmatter `id:` field is
+ * inspected and matched.
+ */
+async function resolveResourceRefToIndex(
+  workflowDir: string,
+  workflowId: string,
+  ref: string,
+): Promise<string | null> {
+  if (isNumericIndex(ref)) return ref;
+  const resourceDir = getResourceDir(workflowDir, workflowId);
+  if (!resourceDir) return null;
+
+  try {
+    const files = (await readdir(resourceDir)).sort();
+    for (const file of files) {
+      const parsed = parseResourceFilename(file);
+      if (!parsed) continue;
+      // Quick win: match the filename name as a fallback for refs that match the file's "name" (post-prefix) part.
+      if (parsed.name === ref) return parsed.index;
+      // Otherwise inspect frontmatter for id match.
+      const filePath = join(resourceDir, file);
+      try {
+        const content = await readFile(filePath, 'utf-8');
+        const fmMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
+        if (!fmMatch) continue;
+        const idMatch = fmMatch[1]?.match(/^id:\s*(.+)$/m);
+        const id = idMatch?.[1]?.trim();
+        if (id === ref) return parsed.index;
+      } catch { /* ignore read errors and try next file */ }
+    }
+  } catch (error) {
+    logWarn('Failed to resolve resource ref by id', { workflowId, ref, error: error instanceof Error ? error.message : String(error) });
+  }
+  return null;
+}
+
 /**
  * Parse a resource filename to extract index and name.
  * Expected format: {NN}-{name}.toon or {NN}-{name}.md (in resources/ subdirectory)
@@ -71,17 +115,22 @@ function getResourceDir(workflowDir: string, workflowId: string): string | null 
  * @returns Resource content as decoded object (TOON) or raw string (Markdown)
  */
 export async function readResource(
-  workflowDir: string, 
-  workflowId: string, 
+  workflowDir: string,
+  workflowId: string,
   resourceIndex: string
 ): Promise<Result<Resource | string, ResourceNotFoundError>> {
   const resourceDir = getResourceDir(workflowDir, workflowId);
-  
+
   if (!resourceDir) {
     return err(new ResourceNotFoundError(resourceIndex, workflowId));
   }
-  
-  const normalizedIndex = normalizeResourceIndex(resourceIndex);
+
+  // Resolve id-based refs to numeric indices (numeric refs pass through unchanged).
+  const effectiveIndex = isNumericIndex(resourceIndex)
+    ? resourceIndex
+    : (await resolveResourceRefToIndex(workflowDir, workflowId, resourceIndex)) ?? resourceIndex;
+
+  const normalizedIndex = normalizeResourceIndex(effectiveIndex);
   
   try {
     const files = (await readdir(resourceDir)).sort();
@@ -123,17 +172,22 @@ export async function readResource(
  * Returns the original file content without parsing.
  */
 export async function readResourceRaw(
-  workflowDir: string, 
-  workflowId: string, 
+  workflowDir: string,
+  workflowId: string,
   resourceIndex: string
 ): Promise<Result<{ content: string; format: 'toon' | 'markdown' }, ResourceNotFoundError>> {
   const resourceDir = getResourceDir(workflowDir, workflowId);
-  
+
   if (!resourceDir) {
     return err(new ResourceNotFoundError(resourceIndex, workflowId));
   }
-  
-  const normalizedIndex = normalizeResourceIndex(resourceIndex);
+
+  // Resolve id-based refs to numeric indices (numeric refs pass through unchanged).
+  const effectiveIndex = isNumericIndex(resourceIndex)
+    ? resourceIndex
+    : (await resolveResourceRefToIndex(workflowDir, workflowId, resourceIndex)) ?? resourceIndex;
+
+  const normalizedIndex = normalizeResourceIndex(effectiveIndex);
   
   try {
     const files = (await readdir(resourceDir)).sort();

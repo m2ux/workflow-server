@@ -16,23 +16,10 @@ describe('activity-loader', () => {
         expect(result.value.id).toBe('discover-session');
         expect(result.value.version).toBeDefined();
         expect(result.value.name).toBeDefined();
-        expect(result.value.skills).toBeDefined();
-        if (result.value.skills) {
-          expect(result.value.skills.primary).toBeDefined();
-        }
+        // discover-session has migrated off skills.primary; operations[] may be omitted entirely
+        // when the activity relies solely on the core worker operations bundled by get_activity.
+        expect((result.value as { skills?: unknown }).skills).toBeUndefined();
         expect(result.value.workflowId).toBe('meta');
-      }
-    });
-
-    it('should include next_action guidance pointing to the first step with a skill', async () => {
-      // Use work-package start-work-package activity which has steps with skills
-      const result = await readActivity(WORKFLOW_DIR, 'start-work-package', 'work-package');
-
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.value.next_action).toBeDefined();
-        expect(result.value.next_action?.tool).toBe('get_skill');
-        expect(result.value.next_action?.parameters.step_id).toBeDefined();
       }
     });
 

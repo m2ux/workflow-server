@@ -133,17 +133,24 @@ export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the skill produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
 
-/** Operation definition: a named operation with description, inputs, and harness-specific implementations. */
+/** Operation definition: a named operation with description, inputs, output, procedure, tools, errors, rules, and optional reference prose. */
 export const OperationInputSchema = z.object({
 }).catchall(z.string().describe('Input name → description'));
 
-export const OperationHarnessSchema = z.record(z.string().describe('Harness name → implementation instruction'));
+export const OperationOutputSchema = z.object({
+}).catchall(z.string().describe('Output name → description'));
 
 export const OperationDefinitionSchema = z.object({
-  description: z.string(),
-  inputs: z.array(OperationInputSchema).optional(),
-  harness: OperationHarnessSchema.optional(),
-  note: z.string().optional(),
+  description: z.string().describe('What this operation does'),
+  inputs: z.array(OperationInputSchema).optional().describe('Positional input entries — each item is a single-key object mapping input name to its description'),
+  output: z.array(OperationOutputSchema).optional().describe('Output entries produced by this operation — same shape as inputs'),
+  procedure: z.array(z.string()).optional().describe('Ordered imperative bullets describing how to perform the operation'),
+  tools: z.record(z.array(z.string())).optional().describe('Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys "shell" (regular shell programs) and "harness" (agent built-ins like Read, Write, AskQuestion). Provenance hint only — tool specs come from the tool descriptions themselves.'),
+  resources: z.array(z.string()).optional().describe('Resource refs (e.g., "meta/05") this operation needs. Resources are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
+  errors: z.record(ErrorDefinitionSchema).optional().describe('Errors this operation can encounter, keyed by error name. Each entry is { cause, recovery, ... }. Errors are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
+  rules: RulesDefinitionSchema.optional().describe('Behavioural rules specific to this operation. Scoped per-operation so role-specific rules do not leak across orchestrator / worker bundles.'),
+  prose: z.string().optional().describe('Freeform markdown content for tables, examples, harness-specific implementations, and any reference material specific to this operation that does not fit the structured fields.'),
+  note: z.string().optional().describe('Additional notes about the operation'),
 });
 
 export const SkillSchema = z.object({

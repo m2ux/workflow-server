@@ -281,7 +281,7 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 ### Summary Mode
 
-`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, modes, and activity stubs without consuming its context window with step-level detail.
+`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. The response is preceded by the workflow's primary skill (when present) and a TOON-encoded `operations` bundle (workflow-declared ops + the core orchestrator op set), so the orchestrator receives its execution surface in a single round-trip.
 
 ### Transitions in Activity Definitions
 
@@ -298,9 +298,9 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 Transitions are also derived from `decisions` (branch `transitionTo` fields) and `checkpoints` (option `effect.transitionTo` fields), giving the orchestrator a complete view of all possible next activities.
 
-### Skill and Resource Loading
+### Operation, Skill, and Resource Loading
 
-`get_skills` returns the workflow's primary skill as raw TOON. `get_skill` loads the skill for a specific step. Call `get_resource` with the resource index to load full content. Do not call `get_skill` on steps that lack a `skill` property.
+`get_workflow` and `get_activity` pre-resolve `operations:` references and return them as bundled TOON in the response preamble — agents read operation bodies directly from the bundle rather than chasing per-step skill loads. `resolve_operations` is exposed for ad-hoc lookups outside the bundled sets. The legacy path (`get_skills` for the workflow's primary skill, `get_skill(step_id)` for a step's `skill:` reference) remains available for activities still using the per-step skill model. Call `get_resource` with the resource index when an operation references reference material that wasn't bundled.
 
 ### Self-Describing Bootstrap
 

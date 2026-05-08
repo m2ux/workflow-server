@@ -71,11 +71,12 @@ The `evaluateCondition()` function in `condition.schema.ts` handles structured `
 
 Workflows can define execution `modes` that modify standard behavior. Each mode has:
 - `activationVariable` — the variable that activates this mode when true
+- `recognition` — patterns to detect mode activation from user intent
 - `skipActivities` — activity IDs to skip entirely in this mode
 - `defaults` — default variable values when the mode is active
 - `resource` — optional path to a resource file with detailed mode guidance
 
-Activities can define `modeOverrides` that override steps, checkpoints, rules, or transitions for specific modes.
+Activities react to active modes through their `transitions` (conditioned on the mode's activation variable) and via the workflow's `skipActivities` list — there is no per-activity override block in the current schema.
 
 ## 5. Persistence
 
