@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: work-package
-version: 3.9.0
+version: 3.10.0
 title: Work Package Implementation Workflow
 description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
 author: m2ux
@@ -42,10 +42,22 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[82]:
+variables[83]:
   - name: target_path
     type: string
-    description: "Path to the target directory for this work package (e.g., a submodule, standalone repo, or monorepo subdirectory). All git operations (branch, PR) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
+    description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
+  - name: reference_path
+    type: string
+    description: "Path to the reference checkout used for codebase comprehension, GitNexus indexing, and code-resolvable assumption analysis. When the component is a submodule of a monorepo, this is the monorepo root; when the component is a standalone repo, this equals the component's primary checkout. NOT used for edits — edits happen in target_path. Resolved by start-work-package's resolve-target step from the path the user originally pointed at."
+    defaultValue: ""
+  - name: component_name
+    type: string
+    description: "Basename of the component being worked on (e.g., 'midnight-node'). When the reference is a monorepo, this is the submodule directory name; when the reference is a standalone repo, this is the basename of reference_path. Used in the canonical worktree path formula '~/projects/work/{component_name}/{wp-slug}/'."
+    defaultValue: ""
+  - name: worktree_created
+    type: boolean
+    description: "True once start-work-package's create-component-worktree step has successfully created (or reused) a worktree at target_path. Drives the remove-worktree gate in complete: only worktrees this workflow created get cleaned up."
+    defaultValue: false
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}"
@@ -130,10 +142,6 @@ variables[82]:
     type: boolean
     description: Whether issue creation was skipped by user
     defaultValue: false
-  - name: on_feature_branch
-    type: boolean
-    description: Whether already on a feature branch (not main/master)
-    defaultValue: false
   - name: pr_exists
     type: boolean
     description: Whether a PR already exists for the current branch
@@ -141,10 +149,6 @@ variables[82]:
   - name: review_pr_captured
     type: boolean
     description: Whether the PR reference has been captured in review mode
-    defaultValue: false
-  - name: use_existing_branch
-    type: boolean
-    description: Whether to use the current branch instead of creating a new one
     defaultValue: false
   - name: use_existing_pr
     type: boolean

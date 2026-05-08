@@ -1,12 +1,18 @@
 id: manage-git
-version: 1.4.0
-capability: Manage git operations — branching, PR lifecycle, and branch synchronization
+version: 1.5.0
+capability: Manage git operations — branching, worktree lifecycle, PR lifecycle, branch synchronization, and reference-repo submodule maintenance
 
-description: "Handles git branch management, PR creation/updates via gh CLI, and branch synchronization. All git operations are performed INSIDE target_path. Branches and PRs are created against the target's upstream."
+description: "Handles git branch management, worktree creation and removal, PR creation/updates via gh CLI, branch synchronization, and reference-repo submodule maintenance. Edit-side git operations (branch, PR, sync, push) run INSIDE target_path (the worktree). Reference-side git operations (submodule update) run INSIDE reference_path (the monorepo). Branches and PRs are created against the target's upstream."
 
-inputs[4]:
+inputs[6]:
   - id: target-path
-    description: "Path to the target directory. All git commands run from this directory."
+    description: "Path to the working directory (worktree). All edit-side git commands (branch, PR, sync) run from this directory."
+  - id: reference-path
+    description: "Path to the reference checkout (monorepo root or standalone-repo primary checkout). Submodule-update operations run here. May equal target-path's parent component for standalone repos."
+    required: false
+  - id: component-name
+    description: "Basename of the component (submodule directory name, or basename of a standalone repo). Used by create-worktree to locate the component's git directory inside the reference."
+    required: false
   - id: issue-number
     description: "Issue identifier (GitHub #N or Jira KEY-N)"
   - id: issue-platform
@@ -16,10 +22,26 @@ inputs[4]:
     required: false
 
 protocol:
+  update-reference-submodules[4]:
+    - "Run only when reference_path is set AND points at a monorepo (i.e. reference_path/.gitmodules exists). Skip silently when reference_path is empty or the reference is a standalone repo with no submodules."
+    - "Run 'git -C {reference_path} submodule update --init --recursive --remote' to bring every submodule to its tracked branch's remote HEAD. This refreshes the reference for downstream code-resolvable assumption analysis and gitnexus indexing."
+    - "Do NOT commit the resulting pointer changes in the monorepo — the goal is reference-side freshness, not history mutation. If the user has uncommitted submodule pointer changes after this step, that is intentional and harmless."
+    - "On failure (network, missing submodule, dirty submodule worktree), surface the error and stop. Do not silently proceed with a stale reference."
+  create-worktree[6]:
+    - "Inputs: reference_path, component_name, target_path (canonical form '~/projects/work/{component_name}/{wp-slug}/'), branch_name (derived from issue per the create-branch convention)."
+    - "Determine the component's git directory: when reference_path is a monorepo and reference_path/component_name exists, use reference_path/component_name; otherwise use reference_path itself (standalone case)."
+    - "Fetch first: 'git -C {component_git_dir} fetch origin' so origin/{default_branch} is current before the worktree is materialized. Resolve {default_branch} via 'git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD' (fall back to main, then master)."
+    - "Idempotency check: if {target_path} already exists, run 'git -C {component_git_dir} worktree list --porcelain' and verify the path is registered as a worktree pointing at the expected branch. If yes, reuse and set worktree_created=true. If the path exists but is not a worktree (or points elsewhere), surface an error — do not delete the user's data."
+    - "Create the worktree: 'git -C {component_git_dir} worktree add -b {branch_name} {target_path} origin/{default_branch}'. This creates target_path AND the feature branch in one step — replaces the prior create-branch flow inside the monorepo's submodule checkout."
+    - "On success, set worktree_created=true and emit a one-line message: 'Worktree created at {target_path} on branch {branch_name} (from origin/{default_branch}).'"
+  remove-worktree[3]:
+    - "Run only when worktree_created is true. Identify the component git directory the same way create-worktree did (reference_path/component_name or reference_path itself)."
+    - "Run 'git -C {component_git_dir} worktree remove {target_path}'. If the worktree has uncommitted changes, the command will fail — surface that to the user rather than passing --force; uncommitted edits at completion are likely a mistake."
+    - "After successful removal, set worktree_created=false and emit a one-line confirmation."
   create-branch[3]:
+    - "DEPRECATED for new workflows: prefer create-worktree which produces both the worktree at target_path AND the feature branch in one step. Retained for backward compatibility (workflows where target_path is not a worktree)."
     - "cd into target_path before any git operations"
-    - Create feature branch from the default branch (main/master)
-    - Use naming convention type/issue-number-short-description
+    - Use naming convention type/issue-number-short-description from the default branch (main/master)
   create-pr[6]:
     - "Use attached resource 12 (pr-description) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource."
     - "BEFORE creating the PR: commit and push the planning folder to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote."
@@ -64,3 +86,12 @@ errors:
   pr_exists:
     cause: PR already exists for this branch
     recovery: Use existing PR
+  worktree_path_collision:
+    cause: target_path already exists but is not a registered worktree of the component repo
+    recovery: Surface the conflict to the user; do NOT delete the path. Offer to choose a different wp-slug or to inspect the existing directory.
+  worktree_dirty_on_remove:
+    cause: remove-worktree found uncommitted edits in target_path at completion time
+    recovery: Surface to the user — they may have intentional unfinished work; only remove after explicit confirmation
+  reference_dirty_submodule:
+    cause: update-reference-submodules failed because a submodule has a dirty worktree
+    recovery: Resolve or stash changes inside the affected submodule, then retry. Do not pass --force.

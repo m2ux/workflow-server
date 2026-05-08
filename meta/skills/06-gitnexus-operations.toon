@@ -1,5 +1,5 @@
 id: gitnexus-operations
-version: 3.0.0
+version: 3.1.0
 capability: Operations for codebase queries via the GitNexus knowledge graph
 
 description: "Operations wrapping the GitNexus MCP tools (query, context, impact, rename, detect_changes, cypher) and the lightweight resource reads. Each operation has the tool reference and a small linear procedure inline. Pertinent reference tables (impact depth/risk, refactor risk classes) live in the relevant operation's prose."
@@ -14,14 +14,33 @@ operations:
       - stale: "Boolean — true if the index is out of date"
     procedure[2]:
       - "Read the MCP resource gitnexus://repo/{repo_name}/context"
-      - "If stale, run `npx gitnexus analyze` in the terminal before proceeding"
+      - "If stale, call the analyze operation before proceeding"
     errors:
       index_not_found:
         cause: "No GitNexus index exists for the target repository"
-        recovery: "Run 'npx gitnexus analyze' from the project root, then retry verify-index"
+        recovery: "Call analyze from the project root, then retry verify-index"
       index_stale:
         cause: "The index is out of date relative to recent code changes"
-        recovery: "Run 'npx gitnexus analyze' to refresh, or 'npx gitnexus analyze --force' for a full rebuild"
+        recovery: "Call analyze to refresh, or analyze with force=true for a full rebuild"
+
+  analyze:
+    description: "(Re)build the GitNexus index for a repository. Used at the start of a work package after the reference monorepo's submodules have been bumped to HEAD, and to recover from index_not_found / index_stale conditions."
+    inputs[2]:
+      - repo_path: "Filesystem path to the repository to index. For monorepos, pass the monorepo root — analyze recurses into submodules."
+      - force: "Optional. Boolean. When true, rebuilds the index from scratch instead of incrementally updating. Defaults to false."
+    output[1]:
+      - stats: "Post-analyze symbol/relationship/process counts emitted by the CLI"
+    procedure[3]:
+      - "Run 'npx gitnexus analyze' (or 'npx gitnexus analyze --force' when force is true) inside repo_path. The CLI exits non-zero on failure; surface its stderr."
+      - "On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds."
+      - "After exit, optionally call verify-index to confirm freshness — useful when chained immediately into a downstream comprehension or impact step."
+    errors:
+      cli_not_installed:
+        cause: "'npx gitnexus' resolves to no binary (gitnexus package not installed)"
+        recovery: "Install via 'npm install -g gitnexus' (or the project-local equivalent), then retry"
+      analyze_failed:
+        cause: "Analyze CLI returned non-zero — typically a parser error inside the target codebase or an unsupported language"
+        recovery: "Read the CLI's stderr; if it identifies a single offending file, exclude or fix it. For corrupted index state, retry with force=true."
 
   query:
     description: "Find execution flows related to a concept or term"
