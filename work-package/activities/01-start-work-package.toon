@@ -61,7 +61,7 @@ steps[25]:
       operator: notExists
   - id: analyze-reference-with-gitnexus
     name: Re-index Reference with GitNexus
-    description: "gitnexus-operations::analyze(repo_path: {reference_path}). Runs after the submodule update so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries. The analyze CLI emits stats; capture them in trace logs but do not gate the workflow on them."
+    description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries. The analyze CLI emits stats; capture them in trace logs but do not gate the workflow on them."
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type inside reference_path/component_name (the component's source as it appears in the reference): Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'. Performed against the reference because the worktree does not exist yet — both paths see the same files."

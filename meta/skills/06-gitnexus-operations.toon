@@ -26,7 +26,7 @@ operations:
   analyze:
     description: "(Re)build the GitNexus index for a repository. Used at the start of a work package after the reference monorepo's submodules have been bumped to HEAD, and to recover from index_not_found / index_stale conditions."
     inputs[2]:
-      - repo_path: "Filesystem path to the repository to index. For monorepos, pass the monorepo root — analyze recurses into submodules."
+      - repo_path: "Filesystem path to the repository to index. For monorepos, pass the monorepo ROOT — gitnexus walks the working tree from there and indexes every source file it encounters, including content that physically lives inside submodule directories. The result is a single unified index keyed under the monorepo's name. Do NOT analyze each submodule separately when the monorepo root has already been (or will be) analyzed — that produces duplicate, harder-to-reason-about indexes. For standalone repos, pass the repo root."
       - force: "Optional. Boolean. When true, rebuilds the index from scratch instead of incrementally updating. Defaults to false."
     output[1]:
       - stats: "Post-analyze symbol/relationship/process counts emitted by the CLI"
