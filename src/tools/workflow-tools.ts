@@ -7,7 +7,7 @@ import { CORE_ORCHESTRATOR_OPS, CORE_WORKER_OPS } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
-import { decodeSessionToken, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
+import { loadSession, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 import { createTraceEvent, createTraceToken, decodeTraceToken } from '../trace.js';
@@ -52,7 +52,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the raw workflow definition.'),
     },
     withAuditLog('get_workflow', async ({ session_token, summary }) => {
-      const token = await decodeSessionToken(session_token);
+      const token = await loadSession(session_token);
       assertCheckpointsResolved(token);
       const workflow_id = token.wf;
 
@@ -126,7 +126,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       activity_manifest: activityManifestSchema,
     },
     withAuditLog('next_activity', async ({ session_token, activity_id, transition_condition, step_manifest, activity_manifest }) => {
-      const token = await decodeSessionToken(session_token);
+      const token = await loadSession(session_token);
 
       const workflow_id = token.wf;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
@@ -173,7 +173,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const advancedToken = await advanceToken(session_token, {
         act: activity_id,
-        cond: transition_condition ?? '',
         bcp: null, // Clear any active checkpoint on transition
       });
 
@@ -215,7 +214,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionTokenParam,
     },
     withAuditLog('get_activity', async ({ session_token }) => {
-      const token = await decodeSessionToken(session_token);
+      const token = await loadSession(session_token);
       assertCheckpointsResolved(token);
 
       const activity_id = token.act;
@@ -253,7 +252,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       checkpoint_id: z.string().describe('The ID of the checkpoint being yielded.'),
     },
     withAuditLog('yield_checkpoint', async ({ session_token, checkpoint_id }) => {
-      const token = await decodeSessionToken(session_token);
+      const token = await loadSession(session_token);
       
       if (token.bcp) {
         throw new Error(`Cannot yield checkpoint '${checkpoint_id}': Checkpoint '${token.bcp}' is already active and awaiting orchestrator resolution.`);
@@ -289,7 +288,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionTokenParam,
     },
     withAuditLog('resume_checkpoint', async ({ session_token }) => {
-      const token = await decodeSessionToken(session_token);
+      const token = await loadSession(session_token);
       
       if (token.bcp) {
         throw new Error(`Cannot resume: Checkpoint '${token.bcp}' is still active and has not been resolved by the orchestrator.`);
@@ -320,7 +319,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         throw new Error('Either checkpoint_handle or session_token must be provided. Both were omitted.');
       }
       // The handle is just the worker's session token encoded.
-      const token = await decodeSessionToken(handle);
+      const token = await loadSession(handle);
       const workflow_id = token.wf;
       const activity_id = token.act;
       const checkpoint_id = token.bcp;
@@ -365,7 +364,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!handle) {
         throw new Error('Either checkpoint_handle or session_token must be provided. Both were omitted.');
       }
-      const token = await decodeSessionToken(handle);
+      const token = await loadSession(handle);
       const checkpoint_id = token.bcp;
 
       if (!checkpoint_id) {
@@ -457,7 +456,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       trace_tokens: z.array(z.string()).optional().describe('Accumulated trace tokens from next_activity _meta.trace_token responses. If not provided, returns the full in-memory trace for the current session.'),
     },
     withAuditLog('get_trace', async ({ session_token, trace_tokens }) => {
-      const token = await decodeSessionToken(session_token);
+      const token = await loadSession(session_token);
       assertCheckpointsResolved(token);
       const advancedToken = await advanceToken(session_token);
 
@@ -512,7 +511,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionTokenParam,
     },
     withAuditLog('get_workflow_status', async ({ session_token }) => {
-      const token = await decodeSessionToken(session_token);
+      const token = await loadSession(session_token);
       const clientSid = token.sid;
       const clientWf = token.wf;
       const clientAct = token.act;

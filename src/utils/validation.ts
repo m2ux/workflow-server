@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SessionPayload } from './session.js';
+import type { SessionView } from './session.js';
 import type { Workflow } from '../schema/workflow.schema.js';
 import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
 
@@ -13,14 +13,14 @@ function emptyValidation(): ValidationResult {
   return { status: 'valid', warnings: [] };
 }
 
-export function validateWorkflowConsistency(token: SessionPayload, workflowId: string): string | null {
+export function validateWorkflowConsistency(token: SessionView, workflowId: string): string | null {
   if (token.wf && token.wf !== workflowId) {
     return `Workflow mismatch: session was on '${token.wf}' but call targets '${workflowId}'. Start a new session for a different workflow.`;
   }
   return null;
 }
 
-export function validateActivityTransition(token: SessionPayload, workflow: Workflow, activityId: string): string | null {
+export function validateActivityTransition(token: SessionView, workflow: Workflow, activityId: string): string | null {
   if (!token.act) {
     if (workflow.initialActivity && activityId !== workflow.initialActivity) {
       return `First activity must be '${workflow.initialActivity}' but '${activityId}' was requested. Start with the workflow's initialActivity.`;
@@ -72,7 +72,7 @@ export function validateSkillAssociation(workflow: Workflow, activityId: string,
   return null;
 }
 
-export function validateWorkflowVersion(token: SessionPayload, workflow: Workflow): string | null {
+export function validateWorkflowVersion(token: SessionView, workflow: Workflow): string | null {
   if (token.v && workflow.version && token.v !== workflow.version) {
     return `Workflow version drift: session started with v${token.v} but current definition is v${workflow.version}. Workflow may have changed mid-session.`;
   }
@@ -124,7 +124,7 @@ export function validateStepManifest(
   return warnings;
 }
 
-export function validateTransitionCondition(token: SessionPayload, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {
+export function validateTransitionCondition(token: SessionView, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {
   if (!token.act) return null;
   if (token.act === activityId) return null;
 

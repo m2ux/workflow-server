@@ -1,229 +1,244 @@
-import { describe, it, expect } from 'vitest';
-import { createSessionToken, decodeSessionToken, advanceToken } from '../src/utils/session.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import {
+  createSessionToken,
+  loadSession,
+  advanceToken,
+  setDefaultSessionStore,
+  assertCheckpointsResolved,
+  type SessionView,
+} from '../src/utils/session.js';
+import { SessionStore } from '../src/utils/session-store.js';
 
-describe('session token utilities', () => {
-  describe('createSessionToken', () => {
-    it('should create an HMAC-signed opaque token', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      expect(typeof token).toBe('string');
-      expect(token.length).toBeGreaterThan(10);
-      expect(token).toContain('.');
-      expect(token).not.toContain('{');
-    });
+beforeEach(() => {
+  // Isolate each test in its own SessionStore so disk state from a prior test
+  // can't leak in. Vitest's per-worker default tmpdir is also fine but this
+  // gives stricter per-test isolation for stores that share sid space.
+  const dir = mkdtempSync(join(tmpdir(), 'session-test-'));
+  setDefaultSessionStore(new SessionStore(dir));
+});
 
-    it('should encode workflow_id, version, and empty defaults', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const payload = await decodeSessionToken(token);
-      expect(payload.wf).toBe('work-package');
-      expect(payload.v).toBe('3.4.0');
-      expect(payload.act).toBe('');
-      expect(payload.skill).toBe('');
-      expect(payload.seq).toBe(0);
-    });
-
-    it('should set ts to current epoch seconds', async () => {
-      const before = Math.floor(Date.now() / 1000);
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const after = Math.floor(Date.now() / 1000);
-      const payload = await decodeSessionToken(token);
-      expect(payload.ts).toBeGreaterThanOrEqual(before);
-      expect(payload.ts).toBeLessThanOrEqual(after);
-    });
+describe('createSessionToken', () => {
+  it('creates an HMAC-signed opaque token (base64url.base64url)', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    expect(typeof token).toBe('string');
+    expect(token.length).toBeGreaterThan(10);
+    expect(token).toContain('.');
+    expect(token).not.toContain('{');
+    expect(token.split('.').length).toBe(2);
   });
 
-  describe('decodeSessionToken', () => {
-    it('should decode a valid token', async () => {
-      const token = await createSessionToken('meta', '1.0.0', 'test-agent');
-      const payload = await decodeSessionToken(token);
-      expect(payload.wf).toBe('meta');
-      expect(payload.v).toBe('1.0.0');
-      expect(payload.seq).toBe(0);
-    });
-
-    it('should throw on garbage input', async () => {
-      await expect(decodeSessionToken('not-valid')).rejects.toThrow('malformed (missing signature segment)');
-    });
-
-    it('should throw on empty string', async () => {
-      await expect(decodeSessionToken('')).rejects.toThrow();
-    });
-
-    it('should throw on valid base64 with wrong structure', async () => {
-      const bad = Buffer.from(JSON.stringify({ foo: 'bar' })).toString('base64url') + '.fakesig';
-      await expect(decodeSessionToken(bad)).rejects.toThrow('HMAC signature verification failed');
-    });
-
-    it('should throw on tampered payload', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const payload = await decodeSessionToken(token);
-      const [, sig] = token.split('.');
-      const tampered = Buffer.from(JSON.stringify({ ...payload, wf: 'hacked' })).toString('base64url');
-      await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('HMAC signature verification failed');
-    });
+  it('binds the token to a SessionRecord with the workflow id and version', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const view = await loadSession(token);
+    expect(view.wf).toBe('work-package');
+    expect(view.v).toBe('3.4.0');
+    expect(view.aid).toBe('test-agent');
+    expect(view.act).toBe('');
+    expect(view.seq).toBe(0);
+    expect(view.bcp).toBeUndefined();
   });
 
-  describe('advanceToken', () => {
-    it('should increment seq by 1', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token);
-      const payload = await decodeSessionToken(advanced);
-      expect(payload.seq).toBe(1);
-    });
-
-    it('should increment cumulatively', async () => {
-      let token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      token = await advanceToken(token);
-      token = await advanceToken(token);
-      token = await advanceToken(token);
-      const payload = await decodeSessionToken(token);
-      expect(payload.seq).toBe(3);
-    });
-
-    it('should update act when provided', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token, { act: 'design-philosophy' });
-      const payload = await decodeSessionToken(advanced);
-      expect(payload.act).toBe('design-philosophy');
-      expect(payload.seq).toBe(1);
-    });
-
-    it('should update skill when provided', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token, { skill: 'create-issue' });
-      const payload = await decodeSessionToken(advanced);
-      expect(payload.skill).toBe('create-issue');
-    });
-
-    it('should preserve fields when not updating', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const step1 = await advanceToken(token, { act: 'start-work-package', skill: 'create-issue' });
-      const step2 = await advanceToken(step1);
-      const payload = await decodeSessionToken(step2);
-      expect(payload.wf).toBe('work-package');
-      expect(payload.act).toBe('start-work-package');
-      expect(payload.skill).toBe('create-issue');
-      expect(payload.seq).toBe(2);
-    });
-
-    it('should produce different token strings', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token);
-      expect(advanced).not.toBe(token);
-    });
-
-    it('advanced token should have valid HMAC', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token);
-      const payload = await decodeSessionToken(advanced);
-      expect(payload.seq).toBe(1);
-    });
+  it('sets ts to current epoch seconds', async () => {
+    const before = Math.floor(Date.now() / 1000);
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const after = Math.floor(Date.now() / 1000);
+    const view = await loadSession(token);
+    expect(view.ts).toBeGreaterThanOrEqual(before);
+    expect(view.ts).toBeLessThanOrEqual(after);
   });
 
-  describe('session ID (sid)', () => {
-    it('should have sid field (UT-13)', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const payload = await decodeSessionToken(token);
-      expect(typeof payload.sid).toBe('string');
-      expect(payload.sid.length).toBeGreaterThan(0);
-    });
-
-    it('sid should be UUID format (UT-14)', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const payload = await decodeSessionToken(token);
-      expect(payload.sid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
-    });
-
-    it('sid should be preserved across advance (UT-15)', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const original = await decodeSessionToken(token);
-      const advanced = await advanceToken(token, { act: 'some-activity' });
-      const after = await decodeSessionToken(advanced);
-      expect(after.sid).toBe(original.sid);
-    });
+  it('generates a UUID-formatted sid', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const view = await loadSession(token);
+    expect(view.sid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
   });
 
-  describe('agent ID (aid)', () => {
-    it('should be set to provided agentId (UT-16)', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const payload = await decodeSessionToken(token);
-      expect(payload.aid).toBe('test-agent');
-    });
-
-    it('should be settable via advanceToken (UT-17)', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token, { aid: 'worker-1' });
-      const payload = await decodeSessionToken(advanced);
-      expect(payload.aid).toBe('worker-1');
-    });
-
-    it('should be preserved when not in updates (UT-18)', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const step1 = await advanceToken(token, { aid: 'worker-1' });
-      const step2 = await advanceToken(step1, { act: 'some-activity' });
-      const payload = await decodeSessionToken(step2);
-      expect(payload.aid).toBe('worker-1');
-    });
+  it('embeds parent context when provided', async () => {
+    const parent = { psid: 'parent-sid', pwf: 'meta', pact: 'init', pv: '5.0.0' };
+    const token = await createSessionToken('work-package', '3.4.0', 'worker', parent);
+    const view = await loadSession(token);
+    expect(view.psid).toBe('parent-sid');
+    expect(view.pwf).toBe('meta');
+    expect(view.pact).toBe('init');
+    expect(view.pv).toBe('5.0.0');
   });
 
-  describe('active yielded checkpoint (bcp)', () => {
-    it('should default bcp to undefined', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const payload = await decodeSessionToken(token);
-      expect(payload.bcp).toBeUndefined();
-    });
+  it('records createdAt and updatedAt timestamps', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const view = await loadSession(token);
+    expect(typeof view.createdAt).toBe('number');
+    expect(typeof view.updatedAt).toBe('number');
+    expect(view.createdAt).toBeLessThanOrEqual(view.updatedAt);
+  });
+});
 
-    it('should set bcp via advanceToken', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token, { bcp: 'cp-1' });
-      const payload = await decodeSessionToken(advanced);
-      expect(payload.bcp).toEqual('cp-1');
-    });
-
-    it('bcp should persist across advance when not updated', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const step1 = await advanceToken(token, { bcp: 'cp-1' });
-      const step2 = await advanceToken(step1, { act: 'some-activity' });
-      const payload = await decodeSessionToken(step2);
-      expect(payload.bcp).toEqual('cp-1');
-    });
-
-    it('bcp should be clearable using null', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const withCp = await advanceToken(token, { bcp: 'cp-1' });
-      const cleared = await advanceToken(withCp, { bcp: null });
-      const payload = await decodeSessionToken(cleared);
-      expect(payload.bcp).toBeUndefined();
-    });
-
-    it('tampering with bcp should fail HMAC verification', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const advanced = await advanceToken(token, { bcp: 'cp-1' });
-      const [b64] = advanced.split('.');
-      const json = Buffer.from(b64!, 'base64url').toString('utf8');
-      const payload = JSON.parse(json);
-      payload.bcp = undefined;
-      const tampered = Buffer.from(JSON.stringify(payload)).toString('base64url');
-      const sig = advanced.split('.')[1];
-      await expect(decodeSessionToken(`${tampered}.${sig}`)).rejects.toThrow('HMAC signature verification failed');
-    });
+describe('loadSession', () => {
+  it('decodes a valid token', async () => {
+    const token = await createSessionToken('meta', '1.0.0', 'test-agent');
+    const view = await loadSession(token);
+    expect(view.wf).toBe('meta');
+    expect(view.v).toBe('1.0.0');
+    expect(view.seq).toBe(0);
   });
 
-  describe('token opacity and HMAC', () => {
-    it('token should not contain readable workflow id', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const b64Part = token.split('.')[0]!;
-      expect(b64Part).not.toContain('work-package');
-    });
+  it('throws on garbage input', async () => {
+    await expect(loadSession('not-valid')).rejects.toThrow(/missing signature segment/);
+  });
 
-    it('token should contain a dot separator (payload.signature)', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      expect(token.split('.').length).toBe(2);
-    });
+  it('throws on empty string', async () => {
+    await expect(loadSession('')).rejects.toThrow();
+  });
 
-    it('should reject token with modified signature', async () => {
-      const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
-      const corrupted = token.slice(0, -4) + 'dead';
-      await expect(decodeSessionToken(corrupted)).rejects.toThrow('HMAC signature verification failed');
-    });
+  it('throws on a tampered payload (HMAC fails)', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const [payloadB64, sig] = token.split('.');
+    const bytes = Buffer.from(payloadB64!, 'base64url');
+    bytes[Math.floor(bytes.length / 2)] ^= 0x01;
+    const tampered = `${bytes.toString('base64url')}.${sig}`;
+    await expect(loadSession(tampered)).rejects.toThrow(/HMAC signature verification failed/);
+  });
+});
+
+describe('advanceToken', () => {
+  it('increments seq by 1', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const advanced = await advanceToken(token);
+    const view = await loadSession(advanced);
+    expect(view.seq).toBe(1);
+  });
+
+  it('increments cumulatively', async () => {
+    let token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    token = await advanceToken(token);
+    token = await advanceToken(token);
+    token = await advanceToken(token);
+    const view = await loadSession(token);
+    expect(view.seq).toBe(3);
+  });
+
+  it('updates act when provided', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const advanced = await advanceToken(token, { act: 'design-philosophy' });
+    const view = await loadSession(advanced);
+    expect(view.act).toBe('design-philosophy');
+    expect(view.seq).toBe(1);
+  });
+
+  it('preserves wf and other record fields when not in updates', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const step1 = await advanceToken(token, { act: 'start-work-package' });
+    const step2 = await advanceToken(step1);
+    const view = await loadSession(step2);
+    expect(view.wf).toBe('work-package');
+    expect(view.act).toBe('start-work-package');
+    expect(view.seq).toBe(2);
+  });
+
+  it('produces a different token string each advance', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const advanced = await advanceToken(token);
+    expect(advanced).not.toBe(token);
+  });
+
+  it('preserves sid across advances', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const original = await loadSession(token);
+    const advanced = await advanceToken(token, { act: 'some-activity' });
+    const after = await loadSession(advanced);
+    expect(after.sid).toBe(original.sid);
+  });
+
+  it('sets aid when provided', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const advanced = await advanceToken(token, { aid: 'worker-1' });
+    const view = await loadSession(advanced);
+    expect(view.aid).toBe('worker-1');
+  });
+
+  it('preserves aid across advances when not in updates', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const step1 = await advanceToken(token, { aid: 'worker-1' });
+    const step2 = await advanceToken(step1, { act: 'some-activity' });
+    const view = await loadSession(step2);
+    expect(view.aid).toBe('worker-1');
+  });
+});
+
+describe('active yielded checkpoint (bcp)', () => {
+  it('defaults bcp to undefined', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const view = await loadSession(token);
+    expect(view.bcp).toBeUndefined();
+  });
+
+  it('sets bcp via advanceToken', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const advanced = await advanceToken(token, { bcp: 'cp-1' });
+    const view = await loadSession(advanced);
+    expect(view.bcp).toBe('cp-1');
+  });
+
+  it('persists bcp across advance when not updated', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const step1 = await advanceToken(token, { bcp: 'cp-1' });
+    const step2 = await advanceToken(step1, { act: 'some-activity' });
+    const view = await loadSession(step2);
+    expect(view.bcp).toBe('cp-1');
+  });
+
+  it('is clearable using null', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const withCp = await advanceToken(token, { bcp: 'cp-1' });
+    const cleared = await advanceToken(withCp, { bcp: null });
+    const view = await loadSession(cleared);
+    expect(view.bcp).toBeUndefined();
+  });
+});
+
+describe('token opacity and HMAC', () => {
+  it('does not contain the readable workflow id', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const payloadB64 = token.split('.')[0]!;
+    expect(payloadB64).not.toContain('work-package');
+  });
+
+  it('has exactly one "." separator', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    expect(token.split('.').length).toBe(2);
+  });
+
+  it('rejects a token with a modified signature', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    const corrupted = token.slice(0, -4) + 'dead';
+    await expect(loadSession(corrupted)).rejects.toThrow(/HMAC signature verification failed/);
+  });
+
+  it('wire form is materially smaller than the legacy ~480-char target', async () => {
+    const token = await createSessionToken('work-package', '3.4.0', 'test-agent');
+    expect(token.length).toBeLessThan(200);
+  });
+});
+
+describe('assertCheckpointsResolved', () => {
+  function viewWithBcp(bcp: string | undefined): SessionView {
+    return {
+      sid: 'test',
+      seq: 0,
+      ts: 0,
+      wf: 'wf', act: 'a', v: '1', aid: 'agent',
+      createdAt: 0, updatedAt: 0,
+      ...(bcp !== undefined ? { bcp } : {}),
+    };
+  }
+
+  it('does not throw when bcp is absent', () => {
+    expect(() => assertCheckpointsResolved(viewWithBcp(undefined))).not.toThrow();
+  });
+
+  it('throws when bcp is set', () => {
+    expect(() => assertCheckpointsResolved(viewWithBcp('cp-1'))).toThrow(/Active checkpoint/);
   });
 });
