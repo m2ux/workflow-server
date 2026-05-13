@@ -34,8 +34,8 @@ Status legend: `confirmed`, `refuted`, `refined`, `open`.
 
 | ID | Assumption | Resolvability | Status | Evidence / next step |
 |----|------------|---------------|--------|----------------------|
-| B1 | Six base32 characters (30 bits) is sufficient identifier length for transcription reliability and acceptable collision risk. | research-dependent | open | Research activity: survey transcription-failure rates for short alphanumeric strings vs. token-shaped opaque blobs in LLM contexts; survey UUID-shortening conventions (nanoid, base32) for similar use cases. |
-| B2 | `base32(HMAC(folder_path, secret)[0..4])` is the right derivation function — deterministic, secret-bound (so the index cannot be guessed without the key), and short. | refined / research-dependent | refined | The derivation is deterministic and secret-bound, which is good. Open: should the input be the absolute path, the slug (basename), or the workspace-relative path? Absolute-path makes the index workspace-instance-specific; slug-only makes two workspaces with identically named slugs collide. Recommendation: use absolute path. Confirm in research. |
+| B1 | Six base32 characters (30 bits) is sufficient identifier length for transcription reliability and acceptable collision risk. | research-dependent | **Resolved** | See [05-research.md](05-research.md) §1. Six base32 (30 bits) confirmed for V1: sidesteps the two observed transcription failure modes (boundary truncation, run-length substitution); at realistic workspace sizes (≤ 1000 folders) expected-collision-count ≈ 5 × 10⁻⁴, error-with-disambiguation per PD-4 handles the rest. |
+| B2 | `base32(HMAC(folder_path, secret)[0..4])` is the right derivation function — deterministic, secret-bound (so the index cannot be guessed without the key), and short. | research-dependent (partial) | **Resolved** | See [05-research.md](05-research.md) §2. HMAC-SHA256 confirmed (re-use existing `src/utils/crypto.ts` `hmacSign`); input is `fs.realpathSync(absolute_folder_path)`; 5-byte truncation per RFC 2104 §5; microbenchmark: ~2-5 μs per HMAC, ≤ 3 ms total enumeration at 1000 folders. |
 | B3 | `.session-token` should hold ONLY the HMAC hex bytes — no JSON, no envelope. The state lives in `session.json`. | stakeholder-dependent | **confirmed** | Stakeholder transcript §5 confirms: just the HMAC bytes, nothing else. Recorded in [04-requirements-elicitation.md](04-requirements-elicitation.md) §5 in-scope item 5. |
 | B4 | Atomic write semantics are: write `session.json.tmp` + fsync + rename, then write `.session-token.tmp` + fsync + rename. Two-step rename is acceptable because the seal-mismatch is the convergence detector. | refined | refined | Two-step rename has a tiny window where `session.json` is new but `.session-token` is old. A concurrent reader during that window would observe a seal mismatch and reject — which is the correct failure mode (fail fast). Order is: write `session.json` first, then `.session-token`. A reader that sees a half-completed pair retries or errors clearly. |
 | B5 | The HMAC is computed over the raw bytes of `session.json`, not over a parsed/normalised representation. Whitespace and key-order changes invalidate the seal. | stakeholder-dependent | **confirmed** | Stakeholder transcript §5 confirms raw-bytes hashing. Anything touching the file invalidates the seal — intended convergence detector. |
@@ -75,7 +75,7 @@ Status legend: `confirmed`, `refuted`, `refined`, `open`.
 | F1 | The server resolves `session_index` → planning folder by enumerating planning folders in the workspace and matching computed HMACs. There is no cache or in-memory map. | self-evident | confirmed | Stated directly in the issue. Stateless-across-calls invariant (I8 in design philosophy) requires this. |
 | F2 | "Planning folders in the workspace" means directories matching `<workspace>/.engineering/artifacts/planning/*/`. | code-analyzable | confirmed | The orchestrator's resume prompt and the existing artifact structure use exactly this layout (`/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-05-13-server-managed-session-state`). No other planning-folder location is referenced anywhere in the codebase or workflows. |
 | F3 | The collision policy when two folders hash to the same six-character index is: error with both candidate paths and require the agent to disambiguate (rare case; deterministic resolution would silently route to the wrong folder). | stakeholder-dependent | **forwarded → PD-3, PD-4** | Six chars fixed for V1 (PD-3). Collision policy chosen at plan-prepare: error-with-disambiguation vs lengthen-to-8 (PD-4). See [04-requirements-elicitation.md](04-requirements-elicitation.md) §6. |
-| F4 | Folder enumeration on every authenticated call is acceptable for workspaces with hundreds of historical planning folders (the typical case). | research-dependent | open | Research activity: benchmark `readdir` + per-folder HMAC compute time on representative workspace sizes. Add an LRU cache if measurements warrant. |
+| F4 | Folder enumeration on every authenticated call is acceptable for workspaces with hundreds of historical planning folders (the typical case). | research-dependent | **Resolved** | See [05-research.md](05-research.md) §3. Stateless enumeration is sub-millisecond at typical sizes (≤ 100 folders), ~5 ms at 1000 folders; in the same order of magnitude as the existing per-call baseline. **No cache in V1.** Future-proofed by a single-entry LRU stub if production reports latency. |
 
 ## G. Nested parent chain
 
@@ -112,13 +112,13 @@ Surfaced during the requirements-elicitation activity from interpreting the stak
 
 ## Reconciliation summary
 
-After two reconciliation passes (comprehension activity + elicitation activity):
+After three reconciliation passes (comprehension activity + elicitation activity + research activity):
 
 - **Code-analyzable assumptions:** 17 + 5 (A1–A11, D1–D2, E3, F1, F2, G1, G2, R1–R5). **All confirmed.**
 - **Stakeholder-dependent (resolved):** 13 of 14 — B3, B5, C3, D3, E1, E2, E4, E5, E6, H2, R9 confirmed outright; B6, G3, F3 refined to plan-phase decisions (PD-3, PD-4, PD-6, PD-9). Listed exhaustively in [04-requirements-elicitation.md](04-requirements-elicitation.md) §9.
 - **Stakeholder-dependent (forwarded to plan-prepare):** 11 plan-phase decisions PD-1 through PD-11. None block downstream work.
-- **Research-dependent:** 3 (B1, B2 partial, F4). To be addressed in the **research** activity.
+- **Research-dependent:** 3 (B1, B2 partial, F4). **All Resolved** in [05-research.md](05-research.md): B1 → §1; B2 → §2; F4 → §3.
 - **Self-evident (new):** 3 (R6, R7, R8). All confirmed.
-- **Open count after elicitation:** 3 (research-dependent only). Plus 11 plan-phase decisions, which are tracked but do not block research.
+- **Open count after research:** 0 (research-dependent items all resolved). Plus 11 plan-phase decisions, which are tracked for plan-prepare.
 
-Convergence: no code-resolvable assumptions remain open. Stakeholder-dependent items are either resolved or explicitly forwarded as plan-phase decisions with recommendations.
+Convergence: no code-resolvable, stakeholder-resolved, or research-resolvable assumptions remain open. Plan-prepare can proceed.
