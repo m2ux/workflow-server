@@ -39,11 +39,13 @@ The program is deliberately cautious. It always leaves the very first call (`sta
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | -- | Implementation | Code changes per plan | 1-4h | ✅ Complete |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | Pending |
-| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | Pending |
-| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | Pending |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | Pending |
-| -- | Validation | Build, test, lint verification | 15-30m | Pending |
+| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ✅ Complete |
+| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
+| 06 | [Structural findings](06-structural-findings.md) | L12 single-pass structural analysis | 10-15m | ✅ Complete |
+| 06 | [Architecture summary](06-architecture-summary.md) | C4 diagrams and invariant table | 10-15m | ✅ Complete |
+| 10 | [Strategic review](10-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
+| 09 | [Validation report](09-validation-report.md) | Build, test, lint verification | 15-30m | ✅ Complete |
 | -- | PR review | External review feedback cycle | 30-60m | Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | Pending |
