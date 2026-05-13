@@ -73,6 +73,8 @@ workflow-server/
 │   │   ├── workflow-tools.ts # discover, list_workflows, get_workflow, next_activity, get_activity, yield_checkpoint, resume_checkpoint, present_checkpoint, respond_checkpoint, get_trace, health_check, get_workflow_status
 │   │   ├── resource-tools.ts # start_session, get_skills, get_skill, get_resource, resolve_operations
 │   │   └── index.ts          # Tool registration entry point
+│   ├── hooks/                # MCP-client interceptor CLI (host-harness companion)
+│   │   └── cli.ts            # workflow-server-interceptor inject/capture entry point (bin)
 │   ├── resources/            # MCP resource registration
 │   │   └── schema-resources.ts # workflow-server://schemas
 │   └── utils/                # Utility functions
@@ -144,6 +146,8 @@ npm test -- --run --coverage
 | `trace.test.ts` | TraceStore, trace token encode/decode |
 | `validation.test.ts` | Transition, manifest, condition validation |
 | `dispatch.test.ts` | Workflow dispatch, status, parent-child trace correlation |
+| `hooks-cli.test.ts` | `workflow-server-interceptor` CLI: inject/capture, sid extraction, atomic writes, pass-through behaviour |
+| `logging-redaction.test.ts` | `withAuditLog` redaction of `session_token` / `checkpoint_handle` from audit-log `parameters` |
 
 Run `npm test -- --run` for the live count and pass/fail summary.
 
@@ -234,3 +238,9 @@ Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
 When loading a skill, the workflow is determined from the session token:
 1. First checks `{workflow}/skills/{NN}-{skill-id}.toon`
 2. Falls back to `meta/skills/{NN}-{skill-id}.toon` (universal)
+
+## MCP-Client Interceptor
+
+The package publishes a second executable, `workflow-server-interceptor` (declared in `package.json` `bin`, sourced from `src/hooks/cli.ts`, built to `dist/hooks/cli.js`). It is **not** part of the workflow-server process — it runs as a transient subprocess inside the host harness's MCP lifecycle hooks (Claude Code's `PreToolUse` / `PostToolUse`, Cursor's `beforeMCPExecution` / `afterMCPExecution`, OpenCode's `tool.execute.before` / `tool.execute.after`, etc.) and auto-threads the workflow-server `session_token` between calls so the LLM never has to retype it.
+
+See [docs/interceptor-recipe.md](interceptor-recipe.md) for per-harness wiring recipes, and `examples/interceptor/` for copy-pasteable configuration fragments. The interceptor's state lives in `~/.claude/workflow-server-tokens/` (mode `0700`); per-sid token files and the shared `current.token` pointer are mode `0600`. The CLI has no runtime dependencies (`node:fs`, `node:path`, `node:os` only).

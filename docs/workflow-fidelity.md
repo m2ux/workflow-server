@@ -163,7 +163,7 @@ The agent must call `respond_checkpoint` for each pending checkpoint, using exac
 - Agents cannot dismiss unconditional checkpoints — `condition_not_met` is rejected unless the checkpoint has a `condition` field
 - Agents cannot tamper with `bcp` — the field is in the HMAC-signed token payload
 
-**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with the checkpoint handle (or session token), which clears `bcp` and returns effects (`setVariable`, `transitionTo`, `skipActivities`). Only when `bcp` is cleared can the agent transition to the next activity.
+**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with that bcp-bearing `session_token` (the API was collapsed in feat/112 — see [api-reference.md → Breaking Changes](api-reference.md#breaking-changes); the token is the checkpoint handle), which clears `bcp` and returns effects (`setVariable`, `transitionTo`, `skipActivities`). Only when `bcp` is cleared can the agent transition to the next activity.
 
 **Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `yield_checkpoint` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The token's `ts` timestamp is used to estimate elapsed time since the checkpoint was yielded.
 

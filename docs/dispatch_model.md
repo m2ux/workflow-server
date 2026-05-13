@@ -107,3 +107,7 @@ This appends the new instructions directly to the sub-agent's existing context w
 The Hierarchical Dispatch Model is optimized for environments like Cursor that support true background sub-agents via tools like `Task`.
 
 In environments that do not support sub-agent spawning (e.g., Claude Code), the top-level agent must execute the workflow **inline**. This means a single agent sequentially adopts the personas of the Meta Orchestrator, Workflow Orchestrator, and Activity Worker, executing all instructions within a single, contiguous conversation thread.
+
+## Token Threading and the Interceptor
+
+The cross-layer hand-offs above describe how each layer obtains its `session_token` from the layer that spawned it (L0 → L1 via `start_session` with `parent_session_token`; L1 → L2 by sharing the orchestrator's token directly). Within each layer, the same token must be re-passed on every subsequent MCP call until the next response advances it. When the [workflow-server interceptor](interceptor-recipe.md) is installed in the host harness, it captures the advanced token from each response's `_meta` and auto-injects it into the next call's `session_token`, so the LLM only needs to pass tokens explicitly at the cross-layer boundaries (the spawned-agent prompt, the `<checkpoint_yield>` block) where the harness cannot rewrite the text content. Without an interceptor the wire shape is identical; the LLM is responsible for threading the token on every call.
