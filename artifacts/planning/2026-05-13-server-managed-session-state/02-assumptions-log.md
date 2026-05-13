@@ -122,3 +122,49 @@ After three reconciliation passes (comprehension activity + elicitation activity
 - **Open count after research:** 0 (research-dependent items all resolved). Plus 11 plan-phase decisions, which are tracked for plan-prepare.
 
 Convergence: no code-resolvable, stakeholder-resolved, or research-resolvable assumptions remain open. Plan-prepare can proceed.
+
+---
+
+## P. Plan-phase decisions resolved (added 2026-05-13, plan-prepare activity)
+
+The 11 plan-phase decisions forwarded by [04-requirements-elicitation.md §6](04-requirements-elicitation.md) are resolved in [05-work-package-plan.md](05-work-package-plan.md). Each row records the final position and the rationale section in the plan.
+
+| ID | Decision | Resolution | Source |
+|----|----------|------------|--------|
+| PD-1 | Workspace-arg precedence | **Confirmed.** CLI flag wins; env var fallback; startup error when neither is present. | [05-work-package-plan.md](05-work-package-plan.md) §"Plan-Phase Decision Resolution", Phase 1. |
+| PD-2 | Migration strategy | **Confirmed.** One-shot converter shipped in the same PR; idempotent; detect-on-read. | [05-work-package-plan.md](05-work-package-plan.md) Phase 9. |
+| PD-3 | `session_index` length | **Confirmed.** Fixed at six (30 bits) for V1. | Plan §"Plan-Phase Decision Resolution". |
+| PD-4 | Collision policy | **Confirmed.** Error-with-disambiguation. Do not lengthen to 8 chars. | Plan Phase 2; [05-test-plan.md](05-test-plan.md) PR116-TC-11. |
+| PD-5 | Secret-key rotation | **Confirmed.** No rotation protocol in V1; document recovery via re-`start_session`. | Plan §"Plan-Phase Decision Resolution". |
+| PD-6 | Parent-chain depth | **Confirmed.** No hard ceiling; soft warning past 5 levels in `_meta.validation`. | Plan Phase 6; [05-test-plan.md](05-test-plan.md) PR116-TC-31. |
+| PD-7 | Deprecated `session_token` parameter | **Confirmed.** No. Clean break. | Plan §"Plan-Phase Decision Resolution". |
+| PD-8 | Address #98 / #101 in scope | **Confirmed.** No. Close #98 as superseded; track #101 separately. | Plan §"Plan-Phase Decision Resolution". |
+| PD-9 | `session.json` schema design | **Confirmed.** Flat schema with `schemaVersion: 1` at root. | Plan Phase 3. |
+| PD-10 | Force-reseal escape hatch | **Confirmed.** No. Hand-edits cause seal mismatch. | Plan §"Plan-Phase Decision Resolution". |
+| PD-11 | Single `session_index` parameter on checkpoints | **Confirmed.** Yes. Active checkpoint read from `state.activeCheckpoint`. | Plan Phase 4; [05-test-plan.md](05-test-plan.md) PR116-TC-35. |
+
+### Tactical decisions surfaced during plan-prepare (no PD entry)
+
+| ID | Assumption / decision | Resolvability | Status | Evidence |
+|----|----------------------|---------------|--------|----------|
+| P1 | Symlink resolution: always canonicalise via `fs.realpathSync` before HMAC input. | self-evident | confirmed | Forwarded from research §2.4; recorded in plan §"Plan-Phase Decision Resolution" ("Symlink resolution"). |
+| P2 | Index encoding: RFC 4648 base32 (`A-Z2-7`); case-insensitive input; uppercase output. Crockford rejected. | code-analyzable | confirmed | Research §1.4; plan §"Plan-Phase Decision Resolution". |
+| P3 | Atomic write order: `session.json` (state) first, then `.session-token` (seal). Reader in inter-rename window observes mismatch and fails fast. | self-evident | confirmed | Plan Phase 2; [05-test-plan.md](05-test-plan.md) PR116-TC-44. |
+| P4 | HMAC input for seal: canonical UTF-8 sorted-key JSON bytes (lifted from Tier C `state-hash.ts`). On-disk bytes ARE the canonical bytes; agent reads as-is. | code-analyzable | confirmed | Plan §"Plan-Phase Decision Resolution"; salvage scope from elicitation §5 in-scope item 14. |
+| P5 | EXDEV fallback for atomic rename: copy + fsync + unlink. Same-device case is the practical norm; defensive guard for cross-device tmp writes. | code-analyzable | confirmed | Plan Phase 2; salvage scope from Tier C `session-store.ts` EXDEV handling. |
+| P6 | `session.json` schemaVersion field is `z.literal(1)` at root; deprecation cadence deferred until first breaking change. | self-evident | confirmed | PD-9 plus plan Phase 3. |
+| P7 | `start_session` schema becomes `(planning_slug: string, agent_id: string, parent_planning_slug?: string)`. Parent snapshot captured by reading the parent folder's current `session.json`. | code-analyzable | confirmed | Plan Phase 5; R6 (snapshot semantics). |
+| P8 | `withAuditLog` re-resolution duplicates folder enumeration per call. Acceptable V1 cost per research §3.4. Single-entry LRU stub reserved if profiling shows hot path. | self-evident | confirmed | Plan Phase 7; comprehension §7.2. |
+| P9 | `assertCheckpointsResolved` is the only helper retained from `src/utils/session.ts`; relocates to `session-store.ts` with `state.activeCheckpoint` accessor. Rest of `session.ts` is deleted. | code-analyzable | confirmed | Plan Phase 4 + Phase 10; comprehension §7.4. |
+| P10 | Migration converter is invoked automatically on `start_session` against a folder containing a legacy 3-field envelope and no `session.json`. Idempotent: second call short-circuits. | self-evident | confirmed | Plan Phase 9; R1 (fixture from this very work package). |
+| P11 | Test fixture for migration: snapshot of this work package's own `workflow-state.json` committed under `tests/fixtures/legacy-session/`. | self-evident | confirmed | R1; plan Phase 9. |
+
+All P1-P11 are downstream of either prior resolved assumptions or plan-phase decisions. None require further reconciliation — they are tactical implementation choices documented for the implement activity to follow.
+
+### Convergence (after plan-prepare)
+
+- **Code-analyzable:** 17 (original) + 5 (elicitation, R1-R5) + 5 (plan P2, P4, P5, P7, P9) = **27**, all confirmed.
+- **Stakeholder-dependent:** all 13 + 11 PD items confirmed.
+- **Research-dependent:** all 3 resolved.
+- **Self-evident:** 3 (R6, R7, R8) + 6 (P1, P3, P6, P8, P10, P11) = 9, all confirmed.
+- **Open count:** 0. Plan-prepare is convergent; implement activity may proceed without further reconciliation.
