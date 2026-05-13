@@ -75,10 +75,9 @@ async function decode(token: string): Promise<SessionPayload> {
   if (!hmacVerify(b64, sig, key)) {
     throw new Error(
       'Invalid session token: HMAC signature verification failed. ' +
-      'The token was either signed by a different server instance (e.g., the server was restarted and generated a new signing key), ' +
-      'or the token has been tampered with, or you are using a stale token from a previous session. ' +
-      'To resolve this, call start_session to obtain a fresh session token, then use the returned token for all subsequent tool calls. ' +
-      'If you are passing a checkpoint_handle (from yield_checkpoint), you must re-yield the checkpoint first to get a valid handle.'
+      'The recommended fix for the common cause (LLM transcription drift) is to install the workflow-server MCP-client interceptor, which manages the token automatically — see docs/interceptor-recipe.md. ' +
+      'Without the interceptor, this error typically means the token was signed by a different server instance (e.g., the server was restarted and generated a new signing key), the token has been tampered with, or you are using a stale token from a previous session. ' +
+      'Recovery path (with or without the interceptor): call start_session with the saved token; the auto-adopt path re-signs the payload in place and preserves sid, act, and variables, then use the returned token for all subsequent tool calls.'
     );
   }
 
@@ -188,7 +187,7 @@ export async function advanceToken(token: string, updates?: SessionAdvance, deco
 export const sessionTokenParam = {
   session_token: z.string()
     .min(1, 'Session token is required')
-    .describe('REQUIRED. The session token string returned by start_session (or the updated token from the previous tool response). Every tool call after start_session must include this parameter.'),
+    .describe('Session token. Managed automatically by the MCP-host harness interceptor when installed (see docs/interceptor-recipe.md). Pass explicitly when running without the interceptor, or when resuming a saved session through start_session. Every workflow-server tool call after start_session requires this parameter, regardless of who supplies it.'),
 };
 
 /**
@@ -202,7 +201,7 @@ export function assertCheckpointsResolved(token: SessionPayload): void {
     throw new Error(
       `Blocked: Active checkpoint '${token.bcp}' on activity '${token.act}'. ` +
       `All tools are gated until the checkpoint is resolved. ` +
-      `The orchestrator must call respond_checkpoint with the checkpoint_handle to clear the gate before any other tool calls can proceed.`
+      `The orchestrator must call respond_checkpoint with the session_token to clear the gate before any other tool calls can proceed.`
     );
   }
 }

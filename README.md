@@ -79,6 +79,10 @@ npm run build
 
 Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 
+### Install the Token Interceptor (Recommended)
+
+Workflow-server tool calls require an HMAC-signed session token to be threaded through each call. By default the LLM transcribes that token by hand on each call; on long workflows this is occasionally subject to single-character transcription drift that fails server-side HMAC verification and halts the workflow. The repository ships an MCP-client interceptor CLI (`workflow-server-interceptor`) that wires into your MCP host's lifecycle hooks and manages the token automatically — see [docs/interceptor-recipe.md](docs/interceptor-recipe.md) for the recipe and per-harness configuration snippets (Claude Code, Cursor, OpenCode, Codex CLI, Claude Agent SDK).
+
 ### Deploy to Your Project
 
 To set up the engineering branch pattern in your own project:
