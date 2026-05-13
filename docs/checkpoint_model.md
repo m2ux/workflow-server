@@ -4,6 +4,18 @@ The Workflow Server utilizes a **Just-In-Time (JIT) Checkpoint Model** to handle
 
 Because the system uses a [Hierarchical Dispatch Model](dispatch_model.md), sub-agents (workers) do not have the authority or capability to ask the user questions directly. Checkpoints must therefore "bubble up" from the executing worker to the top-level user-facing agent.
 
+The checkpoint protocol uses a single token type throughout: **the `session_token` returned by `yield_checkpoint` IS the checkpoint handle.** Once `bcp` (blocking checkpoint) is set on that token, the server recognizes the token as a checkpoint handle for `present_checkpoint` and `respond_checkpoint`. There is no separate `checkpoint_handle` parameter or field — the API was collapsed in feat/112 (see [API Reference → Breaking Changes](api-reference.md#breaking-changes)).
+
+## Interceptor and the Agent's View of the Protocol
+
+When the workflow-server interceptor is installed in the host harness (see [interceptor recipe](interceptor-recipe.md)), the harness automatically rewrites outgoing MCP calls to inject the most recently captured `session_token` and captures the updated token from each response's `_meta`. From the LLM's perspective:
+
+- The **worker** at L2 still calls `yield_checkpoint` explicitly and reads the returned `session_token` from the response body, because that token must be embedded literally inside the `<checkpoint_yield>` text block — the harness does not rewrite text content. The yield-time token (the checkpoint handle) is captured by the PostToolUse hook into `current.token`, so subsequent orchestrator calls automatically receive it.
+- The **orchestrator** at L1 / L0 calls `present_checkpoint` and `respond_checkpoint` without supplying `session_token` in `tool_input`; the interceptor injects the captured handle from `current.token`. The orchestrator only needs to provide the user's decision (`option_id`, `auto_advance`, or `condition_not_met`).
+- The advanced `session_token` returned by `respond_checkpoint` is captured by the PostToolUse hook and flows downward via the resume conversation to the worker, which then passes it to `resume_checkpoint` (again injected automatically by the interceptor).
+
+Without an interceptor, the LLM must thread the same token explicitly at each step; the wire shape is identical either way.
+
 ## The Checkpoint Flow
 
 ### 1. Yielding at the Worker (Level 2)
@@ -11,7 +23,7 @@ When an Activity Worker reaches a step that defines a `checkpoint` ID, it halts 
 ```javascript
 yield_checkpoint({ session_token, checkpoint_id: "verify-issue" })
 ```
-The server marks the session token as blocked (setting the `bcp` field) and returns a new token string. The worker uses this token string as the `checkpoint_handle`.
+The server marks the session token as blocked (setting the `bcp` field) and returns an advanced `session_token` in the response. This bcp-bearing token IS the checkpoint handle.
 
 **Hard gate during yield:** Cannot yield a new checkpoint while another checkpoint (`bcp`) is already active. This prevents nested checkpoint yields.
 
@@ -19,7 +31,7 @@ To pass this pause up the chain, the worker outputs a specialized JSON block in 
 ```json
 <checkpoint_yield>
 {
-  "checkpoint_handle": "<opaque_token_string>"
+  "session_token": "<opaque_token_string_with_bcp>"
 }
 </checkpoint_yield>
 ```
@@ -30,19 +42,19 @@ The Workflow Orchestrator (a background sub-agent) receives the worker's text ou
 The Workflow Orchestrator does not attempt to resolve the checkpoint itself. It simply echoes the exact same `<checkpoint_yield>` block up to its parent in its own final text response and goes to sleep.
 
 ### 3. Presenting and Resolving at the Meta Orchestrator (Level 0)
-The Meta Orchestrator (the user-facing agent) receives the yield block. It extracts the `checkpoint_handle` and queries the server for the human-readable metadata:
+The Meta Orchestrator (the user-facing agent) receives the yield block. It extracts the `session_token` and queries the server for the human-readable metadata:
 ```javascript
-present_checkpoint({ checkpoint_handle: "<opaque_token_string>" })
+present_checkpoint({ session_token: "<opaque_token_string_with_bcp>" })
 ```
-The server decodes the handle (or accepts `session_token` as an alternative), locates the specific checkpoint in the workflow definition, and returns the message, options, and effects.
+The server decodes the token, locates the checkpoint in the workflow definition using the token's `wf`, `act`, and `bcp` fields, and returns the message, options, and effects.
 
 The Meta Orchestrator then calls its UI tool (e.g., Cursor's `AskQuestion`) to present the options to the human user.
 
 Once the user selects an option, the Meta Orchestrator finalizes the resolution on the server:
 ```javascript
-respond_checkpoint({ checkpoint_handle: "<opaque_token_string>", option_id: "proceed" })
+respond_checkpoint({ session_token: "<opaque_token_string_with_bcp>", option_id: "proceed" })
 ```
-The server clears the `bcp` block, records the decision, and returns any state updates (`effects`, such as variable changes) associated with the user's choice.
+The server clears the `bcp` block, records the decision, and returns an advanced `session_token` plus any state updates (`effects`, such as variable changes) associated with the user's choice.
 
 **Three resolution modes:**
 
@@ -67,9 +79,9 @@ The Workflow Orchestrator updates its internal JSON state tracker, and then resu
 **Clearing the Local Lock (L2 API Call):**
 Because the Activity Worker needs a cryptographically valid, unblocked token to continue calling server tools (like `next_activity`), it must make one final API call:
 ```javascript
-resume_checkpoint({ session_token: "<checkpoint_handle>" })
+resume_checkpoint({ session_token: "<advanced_session_token_from_respond>" })
 ```
-The server verifies that the checkpoint was successfully resolved by the Meta Orchestrator (checking that `bcp` is cleared), and returns a fresh, unblocked session token. The Activity Worker uses this new token to execute the next step in its activity.
+The worker calls `resume_checkpoint` with the session token returned by `respond_checkpoint` (relayed down the resume chain, or auto-injected by the interceptor). The server verifies that the checkpoint was successfully resolved by the Meta Orchestrator (checking that `bcp` is cleared), and returns a fresh, unblocked session token. The Activity Worker uses this new token to execute the next step in its activity.
 
 **Hard gate on resume:** `resume_checkpoint` throws a hard error if `bcp` is still active — the checkpoint must be resolved before the worker can proceed.
 
@@ -113,7 +125,7 @@ Fields:
 ## Why this Architecture?
 
 1. **Clean UI Boundaries:** Sub-agents running in hidden background tasks never attempt to prompt the user directly, preventing frozen processes.
-2. **Stateless Hand-offs:** The `checkpoint_handle` encapsulates all necessary state cryptographically. The intermediate agents don't need to parse, understand, or store the checkpoint's prompt or options.
+2. **Stateless Hand-offs:** The bcp-bearing `session_token` encapsulates all necessary state cryptographically. The intermediate agents don't need to parse, understand, or store the checkpoint's prompt or options.
 3. **Conversation as State:** Variable effects are passed down through natural language prompts during the `Task` resume sequence, eliminating the need to write intermediate state to disk just to sync the agents.
 4. **Timing Enforcement:** Minimum response times and auto-advance timers prevent gaming of the checkpoint system.
 5. **Flexible Resolution:** Three resolution modes (option selection, auto-advance, conditional dismissal) cover all checkpoint use cases without requiring separate tool implementations.
