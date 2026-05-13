@@ -9,15 +9,15 @@ export * from './schema/condition.schema.js';
 export * from './types/workflow.js';
 export * from './types/state.js';
 export { createServer } from './server.js';
-export { loadConfig } from './config.js';
+export { loadConfig, WorkspaceConfigError } from './config.js';
 export type { ServerConfig, ResolvedServerConfig } from './config.js';
 export { TraceStore, createTraceToken, decodeTraceToken, createTraceEvent } from './trace.js';
 export type { TraceEvent, TraceTokenPayload } from './trace.js';
 
 async function main(): Promise<void> {
   try {
-    const config = loadConfig();
-    logInfo('Starting MCP Workflow Server', { workflowDir: config.workflowDir });
+    const config = loadConfig(process.argv.slice(2));
+    logInfo('Starting MCP Workflow Server', { workflowDir: config.workflowDir, workspaceDir: config.workspaceDir });
     const server = createServer(config);
     await server.connect(new StdioServerTransport());
     logInfo('Server connected and ready');
