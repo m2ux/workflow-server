@@ -1,7 +1,7 @@
 # MCP-Client Interceptor CLI - May 2026
 
 **Created:** 2026-05-13
-**Status:** In Progress
+**Status:** Complete (foundation/parent-branch mode)
 **Type:** Feature
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -46,9 +46,10 @@ The program is deliberately cautious. It always leaves the very first call (`sta
 | 06 | [Architecture summary](06-architecture-summary.md) | C4 diagrams and invariant table | 10-15m | ✅ Complete |
 | 10 | [Strategic review](10-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | 09 | [Validation report](09-validation-report.md) | Build, test, lint verification | 15-30m | ✅ Complete |
-| -- | PR review | External review feedback cycle | 30-60m | Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | Pending |
-| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | Pending |
+| 11 | [Submit for review](11-submit-for-review.md) | PR body + review-summary comment; parent-branch strategy applied (PR stays DRAFT) | 15-30m | ✅ Complete |
+| -- | PR review | External review feedback cycle | 30-60m | Deferred (parent-branch strategy: child PRs land first) |
+| 08 | [Completion summary](COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ✅ Complete |
+| 08 | Workflow retrospective | Process improvement recommendations | 10-20m | Deferred (parent-branch strategy: retrospective applies at unified-merge closeout) |
 
 ---
 
@@ -96,4 +97,4 @@ current branch's motivation no longer holds.
 
 ---
 
-**Status:** Ready. Plan and test plan complete; problem classified as `specific-problem-cause-known` / `simple`; workflow path = `skip-optional`. Ready for implementation activity.
+**Status:** Work package **complete** in foundation/parent-branch mode (2026-05-13). Implementation shipped on `feat/112-interceptor-cli` (HEAD `4948e09`); draft [PR #113](https://github.com/m2ux/workflow-server/pull/113) remains DRAFT as the parent foundation for stacked child PRs. All 10 commits in range `67f1782..4948e09` are GPG-signed. Tests: **295 passing / 2 skipped**; `npm run typecheck` clean. Follow-on work happens on child branches that target `feat/112-interceptor-cli` as their base; once all children land, this branch un-drafts and merges to `main` as a unified set, auto-closing #112. Branch is retained; worktree was not created (nothing to remove); issue #112 stays open until unified merge. Closeout marker: [COMPLETE.md](COMPLETE.md). Retrospective is deferred to the unified-merge closeout.
