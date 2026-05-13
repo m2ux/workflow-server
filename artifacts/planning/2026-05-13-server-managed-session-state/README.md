@@ -33,6 +33,7 @@ Make the MCP server workspace-aware so it owns workflow session state end-to-end
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 03 | [Codebase comprehension](03-codebase-comprehension.md) | AS-IS architecture survey of #115 touchpoints, key abstractions, design rationale, portfolio-lens findings | 20-45m | ✅ Complete |
+| 04 | [Requirements elicitation](04-requirements-elicitation.md) | Captured requirements, scope, success criteria; 11 plan-phase decisions forwarded; assumptions reclassified | 15-30m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 2-6h | ⬚ Pending |
@@ -56,4 +57,4 @@ Make the MCP server workspace-aware so it owns workflow session state end-to-end
 
 ---
 
-**Status:** Codebase comprehension complete — ready for requirements elicitation
+**Status:** Requirements elicitation complete — ready for research activity
