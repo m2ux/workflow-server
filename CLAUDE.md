@@ -45,7 +45,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **workflow-server** (3939 symbols, 4801 relationships, 81 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **workflow-server** (3928 symbols, 4840 relationships, 85 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
