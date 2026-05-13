@@ -24,7 +24,9 @@ The consequences are larger than a single failed call. A workflow can be twenty 
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix moves the job of remembering the session token out of the language model and into the tools the model already uses. A small program called `workflow-server-interceptor` ships as part of the `@m2ux/workflow-server` package. Once installed, the user's coding tool (Claude Code, Cursor, OpenCode, Codex CLI, or the Claude Agent SDK) runs this program automatically every time the model talks to the workflow server. The program does two things: when the model is about to send a request, it slips the correct token into the request; when the server sends a reply back, it saves the new token to a small local file for next time. The model never has to copy the token itself, so it can no longer accidentally change a character and break the conversation.
+
+The program is deliberately cautious. It always leaves the very first call (`start_session`) alone, because that is the one place the user might legitimately be supplying their own token. It also leaves any other call alone if the model has already supplied a token or a checkpoint handle of its own. If the local token file is missing or unreadable, or if the program itself is not installed, the system behaves exactly the way it does today — the model carries the token by hand. Nothing the program does can make a working call fail. The token file is created with file permissions that only the current user can read, so the token never leaks to other users on the same machine. The result is that workflows of any length become resilient: the structural source of the "signature verification failed" error is eliminated, not merely mitigated.
 
 ---
 
@@ -32,10 +34,10 @@ The consequences are larger than a single failed call. A workflow can be twenty 
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | Pending |
-| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | Pending |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | Pending |
+| 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | -- | Implementation | Code changes per plan | 1-4h | Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | Pending |
@@ -59,4 +61,4 @@ The consequences are larger than a single failed call. A workflow can be twenty 
 
 ---
 
-**Status:** Planning folder initialized; ready for design-philosophy activity.
+**Status:** Ready. Plan and test plan complete; problem classified as `specific-problem-cause-known` / `simple`; workflow path = `skip-optional`. Ready for implementation activity.
