@@ -208,7 +208,7 @@ Resources are stored in a `resources/` subdirectory within each workflow:
 4. Access via: `get_resource` with the resource index (referenced from skill `resources` arrays)
 5. Commit to the `workflows` branch
 
-Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
+The loader also checks the `guides/` folder if `resources/` doesn't exist.
 
 ## Adding New Skills
 

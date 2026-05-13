@@ -20,12 +20,12 @@ Orchestra defines the grammar and semantic constraints for the four workflow pri
 
 | Primitive | Description | Orchestra Status |
 |-----------|-------------|----------------|
-| **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator `operations:` refs | Legacy — Orchestra variant TBD |
+| **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator `operations:` refs | TBD |
 | **Activity** | Execution unit: steps, decisions, loops composed into flows; declares worker `operations:` refs | **Defined in this specification** |
-| **Skill** | Container for named `operations`, `rules`, and `errors` | Legacy — Orchestra variant TBD |
-| **Resource** | Reference material: documentation, templates, guides | Legacy — Orchestra variant TBD |
+| **Skill** | Container for named `operations`, `rules`, and `errors` | TBD |
+| **Resource** | Reference material: documentation, templates, guides | TBD |
 
-This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, skill, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Orchestra variants are designed.
+This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, skill, and resource primitives use the JSON Schema definitions in `schemas/*.schema.json`; their Orchestra variants are not yet defined.
 
 ### Design Goal
 
@@ -35,7 +35,7 @@ Three primitives — **steps**, **decisions**, and **loops** — are composed in
 
 ## 2. Workflow
 
-TBD — Orchestra grammar and constraints for the workflow primitive (top-level container: metadata, variables, activity sequencing) are not yet defined. See `schemas/workflow.schema.json` for the current legacy schema.
+TBD — Orchestra grammar and constraints for the workflow primitive (top-level container: metadata, variables, activity sequencing) are not yet defined. See `schemas/workflow.schema.json` for the JSON Schema definition.
 
 ---
 
@@ -47,7 +47,7 @@ The activity is the primary execution unit. It defines steps, decisions, and loo
 
 #### 3.1.1 Steps
 
-A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps invoke a named operation — either by listing the activity-level `operations:` array (a flat list of `skill-id::operation-name` refs) and writing a plain step description, or by inlining the invocation in the step's description (`skill-id::operation-name(arg: {var}, ...)`). The legacy `skill:` reference (just the skill ID) is still accepted and is resolved through `get_skill(step_id)`, but new activities should prefer operation references.
+A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps invoke a named operation — either by listing the activity-level `operations:` array (a flat list of `skill-id::operation-name` refs) and writing a plain step description, or by inlining the invocation in the step's description (`skill-id::operation-name(arg: {var}, ...)`). A step's `skill:` reference (just the skill ID) is also accepted and is resolved through `get_skill(step_id)`.
 
 **Input/output resolution**: An operation declares its inputs and outputs by name in the skill definition. At runtime, the agent resolves each input by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). Inline invocations may supply arguments explicitly (`skill-id::operation-name(arg: {var}, ...)`), overriding scope resolution for those names. Outputs are injected into the current scope after execution.
 
@@ -898,9 +898,9 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 
 ## 4. Skill
 
-TBD — Orchestra grammar and constraints for the skill primitive are not yet defined. See `schemas/skill.schema.json` for the current legacy schema. In that schema, a skill is a container for three element kinds:
+TBD — Orchestra grammar and constraints for the skill primitive are not yet defined. See `schemas/skill.schema.json` for the JSON Schema definition. In that schema, a skill is a container for three element kinds:
 
-* **`operations`** — named procedures with `inputs`, `output`, `procedure`, `tools`, optional per-operation `resources`, `errors`, `rules`, and `prose`. Referenced from activities/workflows as `skill-id::operation-name`. The discrete `harness` field has been dropped — implementation hints fold into `procedure`, `prose`, and `tools` instead.
+* **`operations`** — named procedures with `inputs`, `output`, `procedure`, `tools`, optional per-operation `resources`, `errors`, `rules`, and `prose`. Referenced from activities/workflows as `skill-id::operation-name`. Implementation hints live in `procedure`, `prose`, and `tools`.
 * **`rules`** — named behavioural invariants (string or grouped string array). Referenced as `skill-id::rule-name` and auto-included when any element from the same skill is resolved.
 * **`errors`** — named error definitions with `cause`, `recovery`, `detection`, and `resolution`. Referenced as `skill-id::error-name`.
 

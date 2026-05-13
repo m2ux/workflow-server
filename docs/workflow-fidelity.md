@@ -163,7 +163,7 @@ The agent must call `respond_checkpoint` for each pending checkpoint, using exac
 - Agents cannot dismiss unconditional checkpoints — `condition_not_met` is rejected unless the checkpoint has a `condition` field
 - Agents cannot tamper with `bcp` — the field is in the HMAC-signed token payload
 
-**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with that bcp-bearing `session_token` (the API was collapsed in feat/112 — see [api-reference.md → Breaking Changes](api-reference.md#breaking-changes); the token is the checkpoint handle), which clears `bcp` and returns effects (`setVariable`, `transitionTo`, `skipActivities`). Only when `bcp` is cleared can the agent transition to the next activity.
+**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with that bcp-bearing `session_token` (the token is the checkpoint handle), which clears `bcp` and returns effects (`setVariable`, `transitionTo`, `skipActivities`). Only when `bcp` is cleared can the agent transition to the next activity.
 
 **Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `yield_checkpoint` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The token's `ts` timestamp is used to estimate elapsed time since the checkpoint was yielded.
 
@@ -300,7 +300,7 @@ Transitions are also derived from `decisions` (branch `transitionTo` fields) and
 
 ### Operation, Skill, and Resource Loading
 
-`get_workflow` and `get_activity` pre-resolve `operations:` references and return them as bundled TOON in the response preamble — agents read operation bodies directly from the bundle rather than chasing per-step skill loads. `resolve_operations` is exposed for ad-hoc lookups outside the bundled sets. The legacy path (`get_skills` for the workflow's primary skill, `get_skill(step_id)` for a step's `skill:` reference) remains available for activities still using the per-step skill model. Call `get_resource` with the resource index when an operation references reference material that wasn't bundled.
+`get_workflow` and `get_activity` pre-resolve `operations:` references and return them as bundled TOON in the response preamble — agents read operation bodies directly from the bundle rather than chasing per-step skill loads. `resolve_operations` is exposed for ad-hoc lookups outside the bundled sets. `get_skills` returns the workflow's primary skill, and `get_skill(step_id)` resolves a step's `skill:` reference for activities that use the per-step skill model. Call `get_resource` with the resource index when an operation references reference material that wasn't bundled.
 
 ### Self-Describing Bootstrap
 

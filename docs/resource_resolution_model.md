@@ -22,9 +22,9 @@ A skill is a container for three kinds of named elements:
 * **`rules`** — behavioural invariants (single string or grouped array) that apply across the skill.
 * **`errors`** — failure-mode definitions with `cause`, `recovery`, `detection`, and `resolution` steps.
 
-Skills also keep top-level metadata (`id`, `version`, `capability`, `description`) and optional `inputs`, `protocol`, `output`, and `resources` fields used by the legacy `get_skill` path.
+Skills also keep top-level metadata (`id`, `version`, `capability`, `description`) and optional `inputs`, `protocol`, `output`, and `resources` fields used by the `get_skill` path.
 
-The `harness` field on operations was removed — implementation hints that used to live there are now folded into the operation's `procedure`, `prose`, and `tools` fields. The `tools` map keys an MCP server name (e.g. `workflow-server`, `atlassian`, `gitnexus`) or one of the reserved keys `shell` / `harness`.
+Operation implementation hints live in the operation's `procedure`, `prose`, and `tools` fields. The `tools` map keys an MCP server name (e.g. `workflow-server`, `atlassian`, `gitnexus`) or one of the reserved keys `shell` / `harness`.
 
 ## 3. Operation References
 
@@ -133,9 +133,9 @@ When resolving a skill (via `get_skill`, `get_skills`, or the resolver inside `r
 
 This lets workflows inherit standard meta capability skills (`workflow-engine`, `agent-conduct`, `atlassian-operations`, …) for free while still being able to override them when specialised behaviour is needed.
 
-## 7. Workflow-Level Primary Skill (Legacy)
+## 7. Workflow-Level Primary Skill
 
-Workflows may still declare a `skills.primary` field. When present, that skill's raw TOON is returned by `get_skills` and is included as the pre-bundle preamble of `get_workflow`. New workflows are encouraged to compose behaviour via `operations` arrays referencing capability skills rather than maintaining a monolithic primary skill.
+Workflows may declare a `skills.primary` field. When present, that skill's raw TOON is returned by `get_skills` and is included as the pre-bundle preamble of `get_workflow`. Workflows may also compose behaviour via `operations` arrays referencing capability skills rather than maintaining a monolithic primary skill.
 
 ## 8. The `resources` Array
 

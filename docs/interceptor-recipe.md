@@ -193,7 +193,7 @@ A copy-pasteable plugin is at
 
 ## 6. OpenAI Codex CLI
 
-Codex CLI (PR #18385) supports a `PreToolUse` hook with the same JSON
+Codex CLI supports a `PreToolUse` hook with the same JSON
 envelope shape as Claude Code.
 
 ```json
@@ -327,10 +327,9 @@ echo '{"tool_name":"mcp__workflow-server__get_activity","tool_input":{}}' \
 
 **Concurrent workflow-server sessions race on `current.token`.**
 
-- This is the v1 known limitation. Per-sid files at
-  `<sid-hex>.token` survive concurrent captures; only the shared
-  `current.token` pointer races. To recover, manually copy the desired
-  per-sid file over `current.token`:
+- Per-sid files at `<sid-hex>.token` survive concurrent captures; only
+  the shared `current.token` pointer races. To recover, manually copy
+  the desired per-sid file over `current.token`:
   `cp ~/.claude/workflow-server-tokens/<sid-hex>.token ~/.claude/workflow-server-tokens/current.token`.
 
 **The workflow still fails with a "signature verification failed" error

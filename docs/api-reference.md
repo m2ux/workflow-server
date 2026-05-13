@@ -1,11 +1,5 @@
 # API Reference
 
-## Breaking Changes
-
-**Checkpoint API collapse (feat/112).** The `checkpoint_handle` parameter has been removed from `present_checkpoint` and `respond_checkpoint`; both now accept only `session_token`. Likewise, the response field formerly named `checkpoint_handle` on `yield_checkpoint` and `respond_checkpoint` is now `session_token`. The session token returned by `yield_checkpoint` (with its `bcp` field set) IS the checkpoint handle — there is no separate value to track. Pre-existing clients should rename the parameter and the response field; the wire shape is otherwise unchanged.
-
-In tandem, the new `workflow-server-interceptor` CLI (see [interceptor recipe](interceptor-recipe.md)) installs as a host-harness PreToolUse / PostToolUse hook and auto-threads the `session_token` between calls, so most callers no longer pass it explicitly.
-
 ## MCP Tools
 
 ### Bootstrap Tools
@@ -61,7 +55,7 @@ All require `session_token`. The workflow is determined from the session token.
 
 The session token is an opaque string returned by `start_session`. It captures the context of each call (workflow, activity, skill) so the server can validate subsequent calls for consistency.
 
-The token is managed by the harness interceptor when installed (see [interceptor recipe](interceptor-recipe.md)); the LLM only passes it explicitly when no interceptor is present, when it must address a non-current session, or on the worker's `<checkpoint_yield>` hand-off to the orchestrator.
+The token is managed by the harness interceptor when installed (see [interceptor recipe](interceptor-recipe.md)); the LLM passes it explicitly when no interceptor is present, when it must address a non-current session, or on the worker's `<checkpoint_yield>` hand-off to the orchestrator.
 
 The token payload carries: `wf` (workflow ID), `act` (current activity), `skill` (last loaded skill), `cond` (last transition condition), `v` (workflow version), `seq` (sequence counter), `ts` (creation timestamp), `sid` (session UUID), `aid` (agent ID — set via `start_session`'s `agent_id` parameter), `bcp` (active blocking checkpoint ID, if any), `psid` (parent session ID for dispatched workflows), `pwf` (parent workflow ID), `pact` (parent activity), and `pv` (parent workflow version). When `start_session` is called with an existing `session_token`, all fields are inherited (including `sid`, `act`) and `aid` is stamped with the new agent identity. The token's `wf` (workflow ID) is the authoritative workflow source — there is no separate `workflow_id` parameter.
 
@@ -78,8 +72,6 @@ The token payload carries: `wf` (workflow ID), `act` (current activity), `skill`
 9. When encountering a checkpoint step, call `yield_checkpoint`, yield to the orchestrator, and wait to be resumed via `resume_checkpoint`.
 10. Read `transitions` from the `get_activity` response; call `next_activity` with a `step_manifest` to advance
 11. Accumulate `_meta.trace_token` from each `next_activity` call for post-execution trace resolution
-
-> Note on legacy bootstrap: `get_skills` and step-scoped `get_skill(step_id)` calls remain available for workflows still using the legacy `skills.primary` / step `skill:` references. The operation-focused path above (bundled by `get_workflow` / `get_activity`) is preferred for new workflows.
 
 ### Validation
 
@@ -176,7 +168,7 @@ Activities and workflows declare a flat `operations` array of `skill-id::operati
 
 ### Skill Resolution
 
-When calling `get_skill({ step_id })` (legacy path):
+When calling `get_skill({ step_id })`:
 1. First checks `{workflow}/skills/{NN}-{skill_id}.toon` (using the session's workflow)
 2. Falls back to `meta/skills/{NN}-{skill_id}.toon` (universal)
 
@@ -192,6 +184,6 @@ Houses the operations and rules that drive workflow execution: session lifecycle
 
 Cross-cutting behavioural rules — orchestrator-discipline, checkpoint-discipline, operational-discipline, file-sensitivity, code-commentary. These are auto-included when their skill is referenced and form part of every orchestrator / worker bundle.
 
-#### Workflow primary skills (legacy)
+#### Workflow primary skills
 
-Workflows may still declare a `skills.primary` (e.g., orchestrator-management / worker-management). `get_skills` and `get_workflow` return its raw TOON for backwards compatibility. New workflows should compose behavior via `operations` arrays referencing capability skills instead.
+A workflow may declare a `skills.primary` (e.g., orchestrator-management / worker-management). `get_skills` and `get_workflow` return its raw TOON. Workflows may also compose behavior via `operations` arrays referencing capability skills.

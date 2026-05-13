@@ -4,13 +4,13 @@ The Workflow Server utilizes a **Just-In-Time (JIT) Checkpoint Model** to handle
 
 Because the system uses a [Hierarchical Dispatch Model](dispatch_model.md), sub-agents (workers) do not have the authority or capability to ask the user questions directly. Checkpoints must therefore "bubble up" from the executing worker to the top-level user-facing agent.
 
-The checkpoint protocol uses a single token type throughout: **the `session_token` returned by `yield_checkpoint` IS the checkpoint handle.** Once `bcp` (blocking checkpoint) is set on that token, the server recognizes the token as a checkpoint handle for `present_checkpoint` and `respond_checkpoint`. There is no separate `checkpoint_handle` parameter or field — the API was collapsed in feat/112 (see [API Reference → Breaking Changes](api-reference.md#breaking-changes)).
+The checkpoint protocol uses a single token type throughout: **the `session_token` returned by `yield_checkpoint` IS the checkpoint handle.** Once `bcp` (blocking checkpoint) is set on that token, the server recognizes the token as a checkpoint handle for `present_checkpoint` and `respond_checkpoint`.
 
 ## Interceptor and the Agent's View of the Protocol
 
 When the workflow-server interceptor is installed in the host harness (see [interceptor recipe](interceptor-recipe.md)), the harness automatically rewrites outgoing MCP calls to inject the most recently captured `session_token` and captures the updated token from each response's `_meta`. From the LLM's perspective:
 
-- The **worker** at L2 still calls `yield_checkpoint` explicitly and reads the returned `session_token` from the response body, because that token must be embedded literally inside the `<checkpoint_yield>` text block — the harness does not rewrite text content. The yield-time token (the checkpoint handle) is captured by the PostToolUse hook into `current.token`, so subsequent orchestrator calls automatically receive it.
+- The **worker** at L2 calls `yield_checkpoint` explicitly and reads the returned `session_token` from the response body, because that token must be embedded literally inside the `<checkpoint_yield>` text block — the harness does not rewrite text content. The yield-time token (the checkpoint handle) is captured by the PostToolUse hook into `current.token`, so subsequent orchestrator calls automatically receive it.
 - The **orchestrator** at L1 / L0 calls `present_checkpoint` and `respond_checkpoint` without supplying `session_token` in `tool_input`; the interceptor injects the captured handle from `current.token`. The orchestrator only needs to provide the user's decision (`option_id`, `auto_advance`, or `condition_not_met`).
 - The advanced `session_token` returned by `respond_checkpoint` is captured by the PostToolUse hook and flows downward via the resume conversation to the worker, which then passes it to `resume_checkpoint` (again injected automatically by the interceptor).
 
