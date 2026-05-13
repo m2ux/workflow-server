@@ -247,14 +247,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('yield_checkpoint', 'Yield execution to the orchestrator at a checkpoint. Call this tool when you encounter a checkpoint step during activity execution. It returns a checkpoint_handle that you MUST yield back to the orchestrator via a <checkpoint_yield> block.',
+  server.tool('yield_checkpoint', 'Yield execution to the orchestrator at a checkpoint. Call this tool when you encounter a checkpoint step during activity execution. It returns a session_token (with the checkpoint bcp set) that you MUST yield back to the orchestrator via a <checkpoint_yield> block.',
     {
       ...sessionTokenParam,
       checkpoint_id: z.string().describe('The ID of the checkpoint being yielded.'),
     },
     withAuditLog('yield_checkpoint', async ({ session_token, checkpoint_id }) => {
       const token = await decodeSessionToken(session_token);
-      
+
       if (token.bcp) {
         throw new Error(`Cannot yield checkpoint '${checkpoint_id}': Checkpoint '${token.bcp}' is already active and awaiting orchestrator resolution.`);
       }
@@ -263,7 +263,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const activity_id = token.act;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      
+
       const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
       if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id} in activity ${activity_id}`);
 
@@ -272,13 +272,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       const advancedToken = await advanceToken(session_token, { bcp: checkpoint_id });
-      
+
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'yielded',
           checkpoint_id,
-          checkpoint_handle: advancedToken,
-          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this checkpoint_handle to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
+          session_token: advancedToken,
+          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this session_token to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
         }, null, 2) }],
         _meta: { session_token: advancedToken, validation },
       };
@@ -309,24 +309,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }, traceOpts));
 
-  server.tool('present_checkpoint', 'Load the full details of a specific checkpoint yielded by a worker. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield. Accepts either checkpoint_handle (preferred) or session_token — both are the same opaque token string.',
+  server.tool('present_checkpoint', 'Load the full details of a specific checkpoint yielded by a worker. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield. Takes the session_token returned by yield_checkpoint (with its bcp field set).',
     {
-      checkpoint_handle: z.string().optional().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint. Either this or session_token must be provided.'),
-      session_token: z.string().optional().describe('The current session token (same opaque string as checkpoint_handle). Either this or checkpoint_handle must be provided. Useful when resuming a workflow and the agent only has the session_token from get_workflow_status.'),
+      ...sessionTokenParam,
     },
-    withAuditLog('present_checkpoint', async ({ checkpoint_handle, session_token }) => {
-      const handle = checkpoint_handle ?? session_token;
-      if (!handle) {
-        throw new Error('Either checkpoint_handle or session_token must be provided. Both were omitted.');
-      }
-      // The handle is just the worker's session token encoded.
-      const token = await decodeSessionToken(handle);
+    withAuditLog('present_checkpoint', async ({ session_token }) => {
+      const token = await decodeSessionToken(session_token);
       const workflow_id = token.wf;
       const activity_id = token.act;
       const checkpoint_id = token.bcp;
-      
+
       if (!checkpoint_id) {
-        throw new Error(`The provided checkpoint_handle does not have an active checkpoint (bcp is empty). The worker must yield a checkpoint first.`);
+        throw new Error(`The provided session_token does not have an active checkpoint (bcp is empty). The worker must yield a checkpoint first.`);
       }
 
       const result = await loadWorkflow(config.workflowDir, workflow_id);
@@ -339,7 +333,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       return {
-        content: [{ type: 'text' as const, text: encodeToon({ ...checkpoint, checkpoint_handle }) }],
+        content: [{ type: 'text' as const, text: encodeToon({ ...checkpoint, session_token }) }],
         _meta: { validation },
       };
     }, traceOpts));
@@ -352,24 +346,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
     'auto_advance: use the checkpoint\'s defaultOption (only for checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
     'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field). ' +
-    'Accepts either checkpoint_handle (preferred) or session_token — both are the same opaque token string.',
+    'Takes the session_token returned by yield_checkpoint (with its bcp field set).',
     {
-      checkpoint_handle: z.string().optional().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint. Either this or session_token must be provided.'),
-      session_token: z.string().optional().describe('The current session token (same opaque string as checkpoint_handle). Either this or checkpoint_handle must be provided. Useful when resuming a workflow and the agent only has the session_token from get_workflow_status.'),
+      ...sessionTokenParam,
       option_id: z.string().optional().describe('The option ID selected by the user. Must match one of the checkpoint\'s defined options.'),
       auto_advance: z.boolean().optional().describe('Set to true to auto-advance a checkpoint using its defaultOption. Only valid for checkpoints with defaultOption and autoAdvanceMs. The server enforces the autoAdvanceMs timer. If you use auto_advance, present a message to the user that you are proceeding with the default option because no input was provided.'),
       condition_not_met: z.boolean().optional().describe('Set to true to dismiss a conditional checkpoint whose condition was not met. Only valid for checkpoints that have a condition field.'),
     },
-    withAuditLog('respond_checkpoint', async ({ checkpoint_handle, session_token, option_id, auto_advance, condition_not_met }) => {
-      const handle = checkpoint_handle ?? session_token;
-      if (!handle) {
-        throw new Error('Either checkpoint_handle or session_token must be provided. Both were omitted.');
-      }
-      const token = await decodeSessionToken(handle);
+    withAuditLog('respond_checkpoint', async ({ session_token, option_id, auto_advance, condition_not_met }) => {
+      const token = await decodeSessionToken(session_token);
       const checkpoint_id = token.bcp;
 
       if (!checkpoint_id) {
-        throw new Error(`The provided checkpoint_handle does not have an active checkpoint (bcp is empty). The worker must yield a checkpoint first.`);
+        throw new Error(`The provided session_token does not have an active checkpoint (bcp is empty). The worker must yield a checkpoint first.`);
       }
 
       const modeCount = [option_id, auto_advance, condition_not_met].filter(v => v !== undefined).length;
@@ -430,7 +419,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      const advancedToken = await advanceToken(handle, { bcp: null });
+      const advancedToken = await advanceToken(session_token, { bcp: null });
 
       const validation = buildValidation(
         validateWorkflowVersion(token, result.value),
@@ -439,7 +428,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const responseData: Record<string, unknown> = {
         checkpoint_id,
         resolved: true,
-        checkpoint_handle: advancedToken,
+        session_token: advancedToken,
       };
       if (resolvedOptionId !== undefined) responseData['resolved_option'] = resolvedOptionId;
       if (effect !== undefined) responseData['effect'] = effect;

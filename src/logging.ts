@@ -6,6 +6,32 @@ const MAX_LOG_VALUE_LENGTH = 8192;
 
 export interface AuditEvent { tool: string; parameters: Record<string, unknown>; result: 'success' | 'error'; duration_ms: number; error_message?: string; }
 
+/**
+ * Tokens the interceptor manages. Redacted from audit-log parameter
+ * payloads so the HMAC-signed credentials never sit in the audit log
+ * — they are machine-managed, not user-supplied, and logging them
+ * would be gratuitous credential exposure with no debugging value
+ * beyond "did the call include a token at all?", which is preserved
+ * by the literal "[redacted]" sentinel.
+ */
+const REDACTED_PARAM_KEYS = new Set(['session_token', 'checkpoint_handle']);
+const REDACTED_SENTINEL = '[redacted]';
+
+/**
+ * Return a shallow clone of `params` with the redaction-sensitive keys
+ * replaced by the literal "[redacted]" sentinel. Other keys (including
+ * nested objects) are passed through verbatim — the redaction is
+ * deliberately shallow because tokens only ever appear as top-level
+ * tool-call arguments.
+ */
+function redactParams(params: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = { ...params };
+  for (const key of REDACTED_PARAM_KEYS) {
+    if (key in out) out[key] = REDACTED_SENTINEL;
+  }
+  return out;
+}
+
 export function logAuditEvent(event: AuditEvent): void { console.error(JSON.stringify({ type: 'audit', ...event, timestamp: new Date().toISOString() })); }
 export function logInfo(message: string, data?: Record<string, unknown>): void { console.error(JSON.stringify({ type: 'info', message, ...data, timestamp: new Date().toISOString() })); }
 
@@ -89,14 +115,14 @@ export function withAuditLog<T extends Record<string, unknown>, R>(toolName: str
     } catch (error) {
       const duration = Date.now() - start;
       const errorMessage = error instanceof Error ? error.message : String(error);
-      logAuditEvent({ tool: toolName, parameters: params, result: 'error', duration_ms: duration, error_message: errorMessage });
+      logAuditEvent({ tool: toolName, parameters: redactParams(params), result: 'error', duration_ms: duration, error_message: errorMessage });
       if (traceOpts?.traceStore && !traceOpts.excludeFromTrace) {
         await appendTraceEvent(traceOpts.traceStore, toolName, params as Record<string, unknown>, duration, 'error', undefined, errorMessage);
       }
       throw error;
     }
     const duration = Date.now() - start;
-    logAuditEvent({ tool: toolName, parameters: params, result: 'success', duration_ms: duration });
+    logAuditEvent({ tool: toolName, parameters: redactParams(params), result: 'success', duration_ms: duration });
     if (traceOpts?.traceStore && !traceOpts.excludeFromTrace) {
       await appendTraceEvent(traceOpts.traceStore, toolName, params as Record<string, unknown>, duration, 'ok', result);
     }

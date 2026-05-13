@@ -66,15 +66,15 @@ async function resolveCheckpoints(client: Client, token: string, activityRespons
       arguments: { session_token: currentToken, checkpoint_id: cp.id },
     });
     if (yieldResult.isError) throw new Error(`Failed to yield checkpoint ${cp.id}`);
-    const cpHandle = parseToolResponse(yieldResult).checkpoint_handle;
-    
+    const cpHandle = parseToolResponse(yieldResult).session_token;
+
     // 2. Respond to the checkpoint (simulating orchestrator)
     const result = await client.callTool({
       name: 'respond_checkpoint',
-      arguments: { checkpoint_handle: cpHandle, option_id: cp.options[0].id },
+      arguments: { session_token: cpHandle, option_id: cp.options[0].id },
     });
     if (result.isError) throw new Error(`Failed to resolve checkpoint ${cp.id}`);
-    const resolvedHandle = parseToolResponse(result).checkpoint_handle;
+    const resolvedHandle = parseToolResponse(result).session_token;
 
     // 3. Resume the checkpoint (simulating worker)
     const resumeResult = await client.callTool({
@@ -372,7 +372,7 @@ describe('mcp-server integration', () => {
       });
       const content = parseToolResponse(result);
       expect(content.status).toBe('yielded');
-      expect(content.checkpoint_handle).toBeDefined();
+      expect(content.session_token).toBeDefined();
     });
   });
 
@@ -1120,7 +1120,7 @@ describe('mcp-server integration', () => {
 
       const cpResult = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { checkpoint_handle: cpHandle, option_id: 'confirmed' }, // Assumes 'confirmed' is a valid option
+        arguments: { session_token: cpHandle, option_id: 'confirmed' }, // Assumes 'confirmed' is a valid option
       });
       expect(cpResult.isError).toBeFalsy();
       const response = parseToolResponse(cpResult);
@@ -1144,7 +1144,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { checkpoint_handle: cpHandle, option_id: 'nonexistent-option' },
+        arguments: { session_token: cpHandle, option_id: 'nonexistent-option' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1161,7 +1161,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { checkpoint_handle: token, option_id: 'some-opt' },
+        arguments: { session_token: token, option_id: 'some-opt' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1185,7 +1185,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { checkpoint_handle: cpHandle, auto_advance: true },
+        arguments: { session_token: cpHandle, auto_advance: true },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1209,7 +1209,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { checkpoint_handle: cpHandle, condition_not_met: true },
+        arguments: { session_token: cpHandle, condition_not_met: true },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1233,7 +1233,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { checkpoint_handle: cpHandle, condition_not_met: true },
+        arguments: { session_token: cpHandle, condition_not_met: true },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -1257,7 +1257,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { checkpoint_handle: cpHandle, option_id: 'create-issue' },
+        arguments: { session_token: cpHandle, option_id: 'create-issue' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -1317,14 +1317,14 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { checkpoint_handle: cpHandle, option_id: 'confirmed', auto_advance: true },
+        arguments: { session_token: cpHandle, option_id: 'confirmed', auto_advance: true },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
       expect(errorText).toContain('Exactly one');
     });
 
-    it('present_checkpoint should accept session_token instead of checkpoint_handle', async () => {
+    it('TC-33 present_checkpoint accepts session_token under the collapsed-parameter schema', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
@@ -1339,7 +1339,6 @@ describe('mcp-server integration', () => {
       });
       const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
-      // Agent resumes and only has session_token from get_workflow_status
       const presentResult = await client.callTool({
         name: 'present_checkpoint',
         arguments: { session_token: cpHandle },
@@ -1347,10 +1346,12 @@ describe('mcp-server integration', () => {
       expect(presentResult.isError).toBeFalsy();
       const response = parseToolResponse(presentResult);
       expect(response.id).toBe(firstCpId);
-      expect(response.checkpoint_handle).toBeDefined();
+      // Response body uses the canonical session_token field name (Option 9A).
+      expect(response.session_token).toBeDefined();
+      expect(response.checkpoint_handle).toBeUndefined();
     });
 
-    it('respond_checkpoint should accept session_token instead of checkpoint_handle', async () => {
+    it('TC-34 respond_checkpoint accepts session_token under the collapsed-parameter schema and returns session_token in response', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'design-philosophy' },
@@ -1365,7 +1366,6 @@ describe('mcp-server integration', () => {
       });
       const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_token'] as string;
 
-      // Agent resumes and only has session_token from get_workflow_status
       const result = await client.callTool({
         name: 'respond_checkpoint',
         arguments: { session_token: cpHandle, option_id: 'confirmed' },
@@ -1373,26 +1373,36 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.resolved).toBe(true);
+      // Response body uses the canonical session_token field name (Option 9A).
+      expect(response.session_token).toBeDefined();
+      expect(response.checkpoint_handle).toBeUndefined();
     });
 
-    it('present_checkpoint should reject when both checkpoint_handle and session_token are omitted', async () => {
+    it('TC-35a present_checkpoint rejects when session_token is omitted', async () => {
       const result = await client.callTool({
         name: 'present_checkpoint',
         arguments: {},
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('Either checkpoint_handle or session_token must be provided');
     });
 
-    it('respond_checkpoint should reject when both checkpoint_handle and session_token are omitted', async () => {
+    it('TC-35b respond_checkpoint rejects when session_token is omitted', async () => {
       const result = await client.callTool({
         name: 'respond_checkpoint',
         arguments: { option_id: 'confirmed' },
       });
       expect(result.isError).toBe(true);
-      const errorText = (result.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('Either checkpoint_handle or session_token must be provided');
+    });
+
+    it('TC-35c present_checkpoint rejects when only checkpoint_handle is provided (collapsed API)', async () => {
+      // checkpoint_handle is no longer in the schema. The MCP SDK either
+      // rejects unknown keys outright or ignores them; either way the
+      // call must fail because session_token is missing.
+      const result = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { checkpoint_handle: 'some-value' },
+      });
+      expect(result.isError).toBe(true);
     });
   });
 
