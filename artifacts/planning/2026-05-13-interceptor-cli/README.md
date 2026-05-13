@@ -38,7 +38,7 @@ The program is deliberately cautious. It always leaves the very first call (`sta
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
-| -- | Implementation | Code changes per plan | 1-4h | Pending |
+| -- | Implementation | Code changes per plan | 1-4h | ✅ Complete |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | Pending |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | Pending |
@@ -50,13 +50,46 @@ The program is deliberately cautious. It always leaves the very first call (`sta
 
 ---
 
+## Implementation outcomes
+
+### Tier-C revert (Task 10)
+
+Decision recorded during the implement activity: **Option 10A** — revert
+the two tier-C commits (`f7a4cd8` and `1cd7d56`) on the existing
+`enhancement/session-token-size-optimization` branch and abandon the
+branch without a PR. The interceptor (this PR) eliminates the
+transcription-corruption motivation for tier-C, so the modules
+(`SessionStore`, `state-hash`, `wire-token`, CBOR codec) become dead
+weight pending a future, separately-motivated need.
+
+The reverts land as two commits on
+`enhancement/session-token-size-optimization`:
+
+- `36fb736` — Revert "feat(session): add SessionStore, CBOR wire codec,
+  state_hash modules"
+- `8c46f8d` — Revert "feat(session): switch wire format to CBOR; move
+  state to SessionStore"
+
+Verification on the post-revert branch: `npm run typecheck` clean,
+`npm test` reports 256 passing / 2 skipped (the original pre-tier-C
+counts; tier-C had added its own test files that were also reverted).
+No references to `SessionStore`, `state_hash`, `wire-token`, or the
+CBOR codec remain in the post-revert tree (apart from git history).
+
+`main` never saw tier-C, so reverting on the unmerged branch and
+closing it (no PR) is the cleanest outcome. Tier-C work may resurrect
+later for unrelated reasons (state size on disk, log volume), but its
+current branch's motivation no longer holds.
+
 ## Links
 
 | Resource | Link |
 |----------|------|
 | Issue | [#112](https://github.com/m2ux/workflow-server/issues/112) |
 | Branch | `feat/112-interceptor-cli` |
-| PR | _Pending — will be created during start-work-package_ |
+| PR | [#113](https://github.com/m2ux/workflow-server/pull/113) |
+| Workflows submodule branch | `feat/112-meta-skill-prune` |
+| Tier-C revert branch (abandoned) | `enhancement/session-token-size-optimization` |
 | Repository | https://github.com/m2ux/workflow-server |
 
 ---
