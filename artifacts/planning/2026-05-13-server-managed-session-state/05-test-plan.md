@@ -38,6 +38,23 @@ Key changes to validate:
    absent post-refactor.
 10. `Recursive parent chain` — `parentSession.parentSession.parentSession`
     preserved across three-level dispatch (A → B → C → D).
+11. `Migration converter — full coverage` — the legacy `workflow-state.json`
+    (3-field envelope), legacy sibling `.session-token`, and the older
+    pre-split envelope form (with embedded `sessionToken` field) all
+    convert correctly; idempotent on second invocation; clean cutover
+    (legacy files removed, no coexistence period). Added in the plan
+    revision to cover the back-compat surface explicitly.
+12. `Transitional back-compat` — agents mid-migration that still pass
+    `session_token` receive a clear error pointing at `session_index`.
+    No silent failures during the cutover window.
+13. `Doc-freshness CI gate` — automated grep for obsolete prose
+    (`session_token`, `workflow-state.json`, `.session-token`,
+    `parent_session_token`, `interceptor`) across `docs/`, `workflows/meta/`,
+    `schemas/README.md`, and top-level markdown. Added as a manual gate
+    for the #115 PR with follow-up plan for CI automation (S9).
+14. `Operation-removal gate` — verify `workflow-engine::adopt-session`,
+    `workflow-engine::restore`, `workflow-engine::persist` are not
+    referenced anywhere after Phase 8.
 
 *Detailed steps, expected results, and source links will be added after
 implementation (per the test-plan lifecycle convention: initial placeholder at
@@ -100,6 +117,54 @@ locations).*
 | PR116-TC-48 | Verify `grep -rn 'encryptToken\|decryptToken\|StateSaveFileSchema' src/` returns zero matches (SC-13) | Manual |
 | PR116-TC-49 | Verify zero references to `session_token` in `docs/`, `README.md`, `CLAUDE.md`, `AGENTS.md`, `schemas/README.md` (SC-11) | Manual |
 | PR116-TC-50 | Verify `npm run typecheck && npm test` passes; test count at or above pre-refactor baseline (SC-14) | Manual |
+
+### Phase-revision additions (sweep + migration + CI freshness gate)
+
+Added after the `approach-confirmed` revise to cover the expanded sweep
+phases (Phase 8.1–8.3, Phase 10.1–10.3) and migration / back-compat /
+doc-freshness gates.
+
+| Test ID | Objective | Type |
+|---------|-----------|------|
+| PR116-TC-51 | Verify migration converter successfully reads this work package's actual `workflow-state.json` fixture (~2 KB, 3-field envelope `{ stateVersion, savedAt, startedAt, state }`) and produces a `session.json` containing the full state plus `schemaVersion: 1`, `sessionIndex` matching the folder, and (when applicable) a `parentSession` snapshot reconstructed from the legacy `psid/pwf/pact/pv` fields decoded from the legacy `.session-token` (SC-9, R1) | Integration |
+| PR116-TC-52 | Verify migration converter handles a legacy folder with **only `workflow-state.json` present** (no sibling `.session-token`) — the legacy `sessionToken` field embedded in the envelope (older format pre-split) is decoded as a fallback per `restore`'s "legacy planning folders pre-split" branch | Integration |
+| PR116-TC-53 | Verify migration converter handles a legacy folder with **only `.session-token` present** (no `workflow-state.json`) — the converter detects the orphan token, treats the folder as a fresh session, and produces a minimal `session.json` re-seeded from the token payload | Integration |
+| PR116-TC-54 | Verify migration converter is invoked automatically on `start_session` against a folder containing legacy artifacts; the agent does not need to call a separate migration tool | Integration |
+| PR116-TC-55 | Verify migration converter leaves the legacy `workflow-state.json` removed and the new `session.json` + new `.session-token` seal in place after a successful conversion (clean cutover, no coexistence period — PD-7, S8) | Integration |
+| PR116-TC-56 | Verify migration converter is **detect-on-read idempotent** — second call on the same folder short-circuits without re-reading the (now-removed) legacy artifacts (SC-9) | Integration |
+| PR116-TC-57 | Verify migration converter rejects a folder where the legacy envelope decode fails (corrupt JSON, missing `state` field) — error surfaces with the legacy path and recovery guidance ("rerun against the most recent valid commit") | Integration |
+| PR116-TC-58 | Verify migration converter rejects a legacy `.session-token` whose payload-only decode fails — error surfaces with the legacy path and recovery guidance | Integration |
+| PR116-TC-59 | Verify transitional back-compat: a second authenticated call against a folder that was migrated by a previous `start_session` call (i.e., now contains `session.json`) succeeds without invoking the migration path again | Integration |
+| PR116-TC-60 | Verify transitional back-compat: an authenticated call with a `session_token` parameter (legacy parameter name) returns a clear error pointing at the new `session_index` parameter — not a silent failure (helps users mid-migration spot the API change) | Integration |
+| PR116-TC-61 | Verify CI doc-freshness gate (Phase 10.1): `grep -rn 'session_token' docs/ schemas/README.md README.md SETUP.md CLAUDE.md AGENTS.md` returns zero matches after the refactor (SC-11) | Manual (CI gate) |
+| PR116-TC-62 | Verify CI doc-freshness gate: `grep -rn 'session_token\|workflow-state\.json\|\.session-token' workflows/meta/` returns zero matches after Phase 8 (SC-2 extension) | Manual (CI gate) |
+| PR116-TC-63 | Verify CI doc-freshness gate: `grep -rn 'parent_session_token' .` excluding `workflows/workflow-design/` and historical planning folders returns zero matches | Manual (CI gate) |
+| PR116-TC-64 | Verify CI doc-freshness gate: `grep -rn 'interceptor' docs/ README.md SETUP.md CLAUDE.md AGENTS.md` returns zero matches (Phase 10.3, S1) | Manual (CI gate) |
+| PR116-TC-65 | Verify CI doc-freshness gate: the tool descriptions returned by `discover` and `get_resource` do not contain the string "session_token" or "interceptor" (regression-check on `src/tools/*.ts` description prose) | Integration |
+| PR116-TC-66 | Verify the meta-workflow TOON files load without parse error after Phase 8 (the workflow-server loader will reject malformed TOON; this is a smoke test that the deletions and rewrites do not break the workflow definition) | Integration |
+| PR116-TC-67 | Verify deleted operations `adopt-session`, `restore`, `persist` are not referenced anywhere — `grep -rn 'workflow-engine::adopt-session\|workflow-engine::restore\|workflow-engine::persist' workflows/` returns zero matches | Manual (CI gate) |
+| PR116-TC-68 | Verify the `meta` workflow's variables (`workflows/meta/workflow.toon`) do not reference `saved_session_token`, `client_session_token`, `pending_checkpoint_handle`, `session_recovered`, `session_adopted` after Phase 8.2 | Manual (CI gate) |
+| PR116-TC-69 | Verify the `workflows/meta/resources/` prompt files (`01-activity-worker-prompt.md`, `02-workflow-orchestrator-prompt.md`, `00-bootstrap-protocol.md`) do not contain `{session_token}` placeholders after Phase 8.3 | Manual (CI gate) |
+| PR116-TC-70 | Verify the `workflows/meta/skills/00-workflow-engine.toon` file size shrinks by approximately 35-40% after Phase 8.1 (sanity check that the deletions actually happen — not a hard threshold) | Manual |
+
+### CI doc-freshness gate (consolidated)
+
+The `Manual (CI gate)` tests above (PR116-TC-61, -62, -63, -64, -67, -68,
+-69) are candidates for a single CI workflow step that runs:
+
+```bash
+# Fail the build if any obsolete prose remains
+! grep -rqn 'session_token\|workflow-state\.json\|\.session-token\|parent_session_token' \
+    docs/ schemas/README.md README.md SETUP.md CLAUDE.md AGENTS.md workflows/meta/
+! grep -rqn 'workflow-engine::adopt-session\|workflow-engine::restore\|workflow-engine::persist' workflows/
+! grep -rqn 'interceptor' docs/ README.md SETUP.md CLAUDE.md AGENTS.md
+```
+
+Implementation of this CI gate as an automated step is **a follow-up
+enhancement** (S9). For the #115 PR, the gates are verified manually in the
+PR description's "What was verified" section. If a follow-up issue is filed,
+reference `feat/115-server-managed-session-state` as the baseline that
+established green status on each gate.
 
 *Detailed steps, expected results, and source links will be added after implementation.*
 

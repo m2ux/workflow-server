@@ -2,8 +2,8 @@
 
 **Date:** 2026-05-13
 **Priority:** HIGH
-**Status:** Ready
-**Estimated Effort:** 14-22h agentic + 3-4h review
+**Status:** Ready (revised after `approach-confirmed` revise — sweep phases for redundant prose added)
+**Estimated Effort:** 17-25h agentic + 3-4h review (was 14-22h; +3h for the expanded TOON / docs sweep in Phases 8.1, 8.2, 10.1, 10.2)
 
 ---
 
@@ -78,11 +78,23 @@ the staleness recovery branch and `decodePayloadOnly` are removed entirely.
   (`state-hash.ts` canonicalisation, `session-store.ts` atomic-rename + EXDEV
   handling) lifted into the new `src/utils/session-store.ts`. CBOR codec is not
   salvaged (no wire format change in #115).
-- Documentation updates: every doc referencing `session_token`, plus deletion
-  of `docs/interceptor-recipe.md` and revert of PR #113 architecture additions.
-- Meta-workflow surface updates: `meta/skills/00-workflow-engine.toon` (persist
-  becomes no-op, restore becomes start_session wrapper, token-discipline rules
-  removed), `meta/workflow.toon` variables, orchestrator/worker prompt resources.
+- Documentation sweep: every doc referencing `session_token`, plus revert
+  of PR #113 architecture additions. The `docs/interceptor-recipe.md` file
+  is **already absent** from `main` HEAD (verified during the plan-revision
+  sweep — S1); Phase 10.3 audits the sunset rather than deleting the file.
+  See Appendix A for the per-file disposition table.
+- Meta-workflow surface sweep: `meta/skills/00-workflow-engine.toon`
+  (operations `adopt-session`, `restore`, `persist` deleted; rules
+  `token-passes-on-each-call`, `use-most-recent-token`, `token-is-opaque`,
+  `staleness-recovery-only-via-start-session`, `start-session-strict-params`,
+  `parameter-vs-variable` deleted; remaining operations rewritten with
+  `session_index` semantics — 50 `session_token` references → 0);
+  `meta/workflow.toon` variables (`saved_session_token`, `client_session_token`,
+  `pending_checkpoint_handle`, `session_recovered`, `session_adopted` renamed
+  or dropped); `meta/activities/{00,01,03,04}*.toon` rewritten;
+  `meta/skills/{01-agent-conduct,07-harness-compat}.toon` rewritten;
+  `meta/resources/{00-bootstrap-protocol,01-activity-worker-prompt,02-workflow-orchestrator-prompt}.md`
+  and `meta/README.md` rewritten. See Appendix A for the full file list.
 
 **Out of Scope:**
 
@@ -227,10 +239,15 @@ Additional tactical decisions made by this plan (not in the PD list):
 
 ## Implementation Tasks
 
-The work package is sequenced into ten phases. Phases 1-3 are foundation
-(workspace, store, schema); 4-7 are surface (tool API, dispatch, audit,
-checkpoint); 8-9 are migration (meta-workflow, legacy converter); 10 is
-documentation.
+The work package is sequenced into ten phases (with Phase 8 and Phase 10
+each split into three sub-phases as a result of the plan-revision sweep).
+Phases 1-3 are foundation (workspace, store, schema); 4-7 are surface
+(tool API, dispatch, audit, checkpoint); 8 is the meta-workflow TOON
+cleanup (8.1 = `00-workflow-engine.toon`, 8.2 = remaining TOON files,
+8.3 = resources/READMEs); 9 is the legacy migration converter; 10 is
+the docs sweep (10.1 = docs/, 10.2 = dead-code removal, 10.3 = interceptor
+sunset audit). Appendix A enumerates every file affected with its
+disposition.
 
 ### Phase 1: Workspace argument plumbing (1.5-2h)
 
@@ -376,30 +393,84 @@ events from the resolved `session.json`.
 
 **Depends on:** Phase 2 (resolution), Phase 4 (parameter shape).
 
-### Phase 8: Meta-workflow surface update (1-1.5h)
+### Phase 8: Meta-workflow surface update (2.5-3.5h, was 1-1.5h)
 
-**Goal:** Meta-workflow operations and prompts no longer reference
-`session_token` or instruct the agent to `Write` state files.
+**Goal:** Meta-workflow operations, rules, variables, and prompts no longer
+reference `session_token`, `workflow-state.json`, `.session-token`, or
+instruct the agent to `Write` state files. Redundant prose generated to
+defend the brittle token-threading contract is deleted.
 
-**Deliverables:**
+The phase is split into three sub-phases so reviewers can read the diff in
+domain order (skills → activities/workflow → resources/READMEs).
 
-- `workflows/meta/skills/00-workflow-engine.toon` — `persist` becomes a
-  no-op (or is removed entirely); `restore` becomes a thin wrapper around
-  `start_session(planning_slug, agent_id)`; `commit-and-persist` retains the
-  git-commit choreography but drops the persist call; token-discipline rules
-  (`token-passes-on-each-call`, `use-most-recent-token`, etc.) are removed
-  or rewritten for `session_index`.
-- `workflows/meta/workflow.toon` — variables `saved_session_token`,
-  `client_session_token`, `pending_checkpoint_handle`, flat parent fields
-  (`parent_session_token`, `pwf`, etc.) replaced by recursive
-  `parent_planning_slug` or equivalent; `session_index` becomes the canonical
-  variable.
-- `workflows/meta/resources/01-activity-worker-prompt.md` and
-  `02-workflow-orchestrator-prompt.md` — phrasing updated; references to
-  threading and re-signing tokens removed; resume becomes a single
-  `start_session(planning_slug, agent_id)` call.
+#### Phase 8.1: `workflows/meta/skills/00-workflow-engine.toon` (1.5-2h)
 
-**Depends on:** Phase 5 (`start_session` shape).
+This file is the largest single concentration of redundant prose (50
+`session_token` hits across operations and rules; see Appendix A for the
+grep map). Specific operations and rules to edit:
+
+**Operations to delete or rewrite (verbatim names from the TOON):**
+
+| Operation | Disposition | Rationale |
+|-----------|------------|-----------|
+| `scan-saved-sessions` | **Rewrite.** Output shape changes from `{ sessionToken, planningFolder, savedAt, variables }` to `{ sessionIndex, planningFolder, savedAt, variables }`; remove the "read its workflow-state.toon" step (the server reads `session.json`); replace `workflow-state.toon` mention with `session.json` (state file change). | Saved-session matching now operates on server-readable `session.json`; agent no longer parses the envelope. |
+| `match-saved-session` | **Rewrite.** Output candidate shape uses `sessionIndex` instead of `sessionToken`. Procedure prose unchanged except for the field rename. | Same shape rename. |
+| `adopt-session` | **Delete entire operation.** | Adoption is no longer agent-driven; `start_session(planning_slug, agent_id)` performs the same role idempotently. All of `errors.strict_param_violation`, `errors.unrecoverable_token`, `rules.strict-params`, `rules.no-recovery-elsewhere` are removed with the operation. |
+| `create-session` | **Rewrite.** Inputs become `(workflow_id, parent_planning_slug?)`; output becomes `session_index`. The strict-schema warning prose ("Do NOT pass session_token; the schema is strict and unknown keys are rejected") is deleted — strict-schema concerns no longer apply because the parameter shape is uniform. | `start_session` schema is simpler; the warning was generated by today's overloaded parameter set. |
+| `restore` | **Delete entire operation.** | Restore is the server's job. The orchestrator-resume path collapses to `start_session(planning_slug, agent_id)`. |
+| `persist` | **Delete entire operation.** | The agent never writes session state. The five rules (`state-format`, `token-in-sibling`, `no-token-duplication`, `no-derived-fields`, `omit-empty-collections`, `variables-canonical-home`) are deleted with the operation — every one of them was generated to constrain the agent's state writes. |
+| `dispatch-activity` | **Rewrite.** `next_activity({ session_token, ... })` becomes `next_activity({ session_index, ... })` in the procedure step. No other change. | Direct parameter rename. |
+| `handle-sub-workflow` | **Rewrite.** Inputs become `(workflow_id, parent_planning_slug)`; output becomes `child_session_index`. Strict-schema warning prose deleted. | Same simplification as `create-session`. |
+| `commit-and-persist` | **Rewrite.** Drop the `workflow-engine::persist` step from the procedure. The git-commit choreography for source-side commits and engineering commits is retained. The engineering commit message no longer mentions `workflow-state.json` or `.session-token`; `session.json` may be committed alongside other engineering artifacts if it lives under `.engineering/artifacts/`, but is written by the server. The `persist-before-engineering-commit` rule is **deleted** (no persist call to order); `commit-after-activity` rule is **rewritten** to drop the explicit reference to persist. | The agent no longer persists; the rule's "skipping persist altogether makes the session unrecoverable" warning is moot. |
+| `yield-checkpoint` | **Rewrite.** `yield_checkpoint({ session_token, checkpoint_id })` becomes `yield_checkpoint({ session_index, checkpoint_id })`. The `checkpoint-handle-distinct-from-session` rule prose ("yield_checkpoint returns a checkpoint_handle… present_checkpoint and respond_checkpoint take a checkpoint_handle parameter, NOT a session_token. Never substitute one for the other.") is **deleted** entirely — per PD-11, `present_checkpoint` and `respond_checkpoint` now take `session_index` and the active checkpoint is read from `state.activeCheckpoint`. | Checkpoint handle as a distinct token disappears. |
+| `resume-from-checkpoint` | **Rewrite.** Inputs become `(session_index, effects)`; output becomes `session_index` (unchanged). The procedure step drops the "capture the new session_token from the response and use it for every subsequent call" prose — the index is stable across calls. The `checkpoint_still_active` and `hmac_failure` error blocks are **deleted** (no HMAC failure mode at the agent layer; staleness recovery is server-side). The `resume-uses-post-respond-token` rule is **deleted**. | Index stability eliminates token-rotation discipline. |
+| `bubble-checkpoint-up` | **No change.** | The operation doesn't reference session tokens. |
+| `present-checkpoint-to-user` | **Rewrite.** `present_checkpoint({ checkpoint_handle })` becomes `present_checkpoint({ session_index })`. The `checkpoint-handle-distinct-from-session` rule is **deleted**. The `invalid_checkpoint_handle` error is **rewritten** to refer to "Invalid session_index" with stale-folder recovery guidance. | PD-11. |
+| `respond-checkpoint` | **Rewrite.** Same param rename. The output drops `resumed_session_token` (no longer returned). The `thread-resumed-token` rule is **deleted**. The procedure step "from the response, capture BOTH effects and the new checkpoint_handle field" is **rewritten** to "from the response, capture effects". | PD-11 + R3. |
+| `compose-prompt`, `extract-checkpoint-handle`, `handle-workflow-complete`, `verify-outcomes`, `generate-summary`, `finalize-activity`, `evaluate-transition` | **No change.** | Don't reference session tokens. |
+
+**Top-level rules to delete (verbatim names):**
+
+| Rule | Disposition | Rationale |
+|------|------------|-----------|
+| `token-passes-on-each-call` | **Delete.** | Index replaces token; rule is rewritten conceptually as "every authenticated tool requires `session_index`" but lives in the new `session-index-passes-on-each-call` shape (one terse rule, not a discipline). |
+| `use-most-recent-token` | **Delete.** | Index is stable; no rotation. |
+| `token-is-opaque` | **Delete.** | Index is the visible identifier; the opacity concern goes away. The base32 string IS the identifier. |
+| `validation-warnings` | **Keep, no change.** | Generic validation guidance independent of token shape. |
+| `resource-loading-via-tool` | **Rewrite.** Replace `get_resource({ session_token, resource_id })` with `get_resource({ session_index, resource_id })`. | Direct rename. |
+| `staleness-recovery-only-via-start-session` | **Delete.** | No staleness recovery exists. The rule is generated entirely by today's brittle token. |
+| `start-session-strict-params` | **Delete.** | `start_session`'s schema is simpler post-refactor (`planning_slug`, `agent_id`, `parent_planning_slug?`); the strict-schema discipline is no longer load-bearing. |
+| `parameter-vs-variable` | **Delete or shrink.** | The parameter-vs-variable confusion was specific to the `saved_session_token` workflow-variable vs `session_token` MCP-parameter case. With `session_index` as the canonical name on both sides, the discipline is no longer needed. If retained, shrink to a one-line generic note. |
+
+**Net effect on `00-workflow-engine.toon`:** approximately **35-40% of the file by line count** is removed (~140-180 lines of redundant prose), and the remaining content is rewritten with `session_index` semantics. The 50 `session_token` references drop to zero.
+
+#### Phase 8.2: `workflows/meta/{workflow,activities/*,skills/01-agent-conduct,skills/07-harness-compat}.toon` (0.5-0.75h)
+
+**Files and dispositions:**
+
+| File | Hits | Disposition |
+|------|------|-------------|
+| `workflows/meta/workflow.toon` | 2 | **Rewrite variables.** Replace `saved_session_token` → `saved_session_index`; replace `client_session_token` → `client_session_index`; replace `pending_checkpoint_handle` with single canonical `active_checkpoint_id` (or remove if dispatch-client-workflow no longer needs it because the active checkpoint is read from `state.activeCheckpoint`). The `session_recovered` / `session_adopted` variables are **deleted** (the recovery + adoption paths are server-internal and not surfaced to the agent). |
+| `workflows/meta/activities/00-discover-session.toon` | 2 | **Rewrite.** `saved_session_token` variable + matching prose become `saved_session_index` (or directly `planning_slug` if the matched slug is what's threaded). The `record-match` step description is rewritten accordingly. |
+| `workflows/meta/activities/01-initialize-session.toon` | 5 | **Heavy rewrite.** `adopt-session` operation reference is **deleted** (operation no longer exists). The `adopt-saved-session`, `create-fresh-session`, `detect-recovery`, `restore-state`, and `initialize-state` steps collapse into two: `start-or-resume-session` (single `start_session(planning_slug, agent_id, parent_planning_slug?)` call) and `derive-planning-folder` (unchanged). The `context_to_preserve` block drops `session_recovered`, `session_adopted`. |
+| `workflows/meta/activities/03-dispatch-client-workflow.toon` | 7 | **Rewrite.** Step `compose-orchestrator-prompt` template substitution `session_token: {client_session_token}` → `session_index: {client_session_index}` (or `planning_slug`). The `respond-checkpoint` step's `actions[0]` block (the `set client_session_token = {resumed_session_token}` action) is **deleted** — the index doesn't change across checkpoint resolution. The `continue-orchestrator` step's prompt no longer mentions `bcp` or "use this resumed session_token". |
+| `workflows/meta/activities/04-end-workflow.toon` | 1 | **Rewrite.** Drop the `workflow-engine::persist` operation from `operations[]` (operation no longer exists). Drop the `final-persist` step entirely — the server persists on every authenticated call, so a separate final-persist step is redundant. The outcome "Final state persisted to workflow-state.toon" is **rewritten** to "Final state persisted to `session.json` by the server". |
+| `workflows/meta/skills/01-agent-conduct.toon` | 1 | **Rewrite.** The rule "Do NOT read workflow resource files directly from disk — load them via `get_resource({ session_token, resource_id })`" → replace `session_token` with `session_index`. No other change. |
+| `workflows/meta/skills/07-harness-compat.toon` | 5 | **Rewrite.** The `spawn-agent::rules.token-in-prompt` rule prose ("When the spawned agent inherits a workflow session, ALWAYS include the session_token in the prompt") becomes "include the session_index in the prompt". The `continue-agent` operation's `session_token` input → `session_index`; same in its rule. |
+
+#### Phase 8.3: `workflows/meta/resources/*.md` and `workflows/meta/README.md` (0.5-0.75h)
+
+**Files and dispositions:**
+
+| File | Hits | Disposition |
+|------|------|-------------|
+| `workflows/meta/resources/00-bootstrap-protocol.md` | 2 | **Rewrite.** "Save the returned `session_token`" → "Save the returned `session_index`". `get_workflow({ session_token })` → `get_workflow({ session_index })`. The bootstrap call shape uses `start_session(workflow_id: "meta", agent_id: "orchestrator")`. |
+| `workflows/meta/resources/01-activity-worker-prompt.md` | Multiple | **Rewrite.** The `{session_token}` placeholder in the prompt template body becomes `{session_index}`. The `get_activity({ session_token })` and `get_resource({ session_token, resource_id })` calls in the body become `{ session_index, ... }`. The "Session token:" header field becomes "Session index:". |
+| `workflows/meta/resources/02-workflow-orchestrator-prompt.md` | Multiple | **Heavy rewrite.** Same placeholder swap. The strict-schema "Call MCP tool `start_session` with EXACTLY these named parameters: `session_token` = ... bind to the canonical `session_token` parameter — do NOT invent a `saved_session_token` parameter, schema is strict and unknown keys are rejected" entire paragraph is **deleted**. The `recovered: true` / `adopted: true` branch handling prose is **deleted** (server resolves it). The resume detection step ("Call `get_workflow_status({ session_token })`") becomes `({ session_index })`. |
+| `workflows/meta/README.md` | Multiple | **Rewrite.** Activity 01 description "Create a fresh child session via `start_session(parent_session_token)` or adopt the saved client session" → "Create a fresh or resume an existing session via `start_session(planning_slug, agent_id, parent_planning_slug?)`". Variables table: rename `saved_session_token` → `saved_session_index`, `client_session_token` → `client_session_index`; remove `pending_checkpoint_handle` row. Mermaid diagram labels updated. Sequence-diagram step "01 initialize-session<br/>(start_session(parent_session_token))" rewritten. The `skills/README.md` stale references to `02-state-management.toon` and `save_state`/`restore_state` MCP tools are corrected (S10 — these files/tools do not exist in the current codebase). |
+| `workflows/meta/activities/README.md`, `workflows/meta/skills/README.md`, `workflows/meta/resources/README.md` | Various | **Rewrite.** Same renames; remove dead skill references; drop the `Workflow State Format` resource entry from any table (or rewrite to point at `schemas/session-file.schema.json`). |
+
+**Depends on:** Phase 5 (`start_session` shape) for the new parameter contract. Phase 8.3 also depends on Phase 10.1 outputs to avoid duplicating effort (the meta README's diagram changes overlap with `docs/architecture.md`'s).
 
 ### Phase 9: Migration converter (2-3h)
 
@@ -425,12 +496,36 @@ events from the resolved `session.json`.
 
 **Depends on:** Phase 2 (atomic write), Phase 3 (target schema).
 
-### Phase 10: Dead-code removal + documentation (1.5-2h)
+### Phase 10: Dead-code removal + documentation sweep (3-4h, was 1.5-2h)
 
-**Goal:** Remove stale code; update every doc and rule referencing
-`session_token`.
+**Goal:** Remove stale code; rewrite every `docs/` and top-level markdown
+reference to `session_token`, `workflow-state.json`, or the threading
+contract; verify the interceptor sunset (already executed by a prior
+cleanup) is complete.
 
-**Deliverables:**
+The phase is split into three sub-phases.
+
+#### Phase 10.1: Documentation sweep (1.5-2h)
+
+Per-file disposition (counts from `grep -cn session_token` against `main`
+HEAD on 2026-05-13; full hit map in Appendix A):
+
+| File | session_token hits | Disposition |
+|------|---------------------|-------------|
+| `docs/api-reference.md` | 18 | **Heavy rewrite.** Every tool signature in the table loses `session_token`. `start_session` signature row becomes `agent_id`, `planning_slug?`, `parent_planning_slug?` returning `session_index`, workflow info, and (no longer `inherited`/`adopted`/`recovered` flags — those are server-internal). All "**Token adoption on server restart**" prose is **deleted**. `get_workflow_status` row drops `session_token` from the response shape. The `_meta.session_token` field is **removed** from the example envelope (lines around 83). The "Token payload carries: `wf`, `act`, …" deep-dive paragraph (lines around 58) is **rewritten** to describe `session.json` shape with reference to `schemas/session-file.schema.json`. The bootstrap section (around line 64) becomes `start_session(agent_id)` for a fresh meta session, returning `session_index`. |
+| `docs/architecture.md` | 1 | **Rewrite.** The Level-0/1/2 agent-model paragraph mentioning "how they share session state (via `start_session` with `parent_session_token`)" is rewritten to "(via `start_session` with `parent_planning_slug`)". |
+| `docs/checkpoint_model.md` | 3 | **Rewrite.** All `yield_checkpoint({ session_token, ... })`, `present_checkpoint` (accepts `checkpoint_handle` or `session_token`), and `resume_checkpoint({ session_token: "<checkpoint_handle>" })` examples are rewritten to use `session_index`. The dual-acceptance prose ("Accepts either `checkpoint_handle` (preferred) or `session_token` — both are the same opaque token string") is **deleted** per PD-11. |
+| `docs/development.md` | 2 | **Rewrite.** `get_skill { session_token, step_id }` examples → `{ session_index, step_id }`. |
+| `docs/dispatch_model.md` | 6 | **Heavy rewrite.** All `parent_session_token` mentions become `parent_planning_slug`. The example `start_session({ parent_session_token: "<meta_token>", ... })` snippet is rewritten with the new shape. The "session_token" passing pattern in the orchestrator → worker handoff prose is rewritten to "session_index passing". |
+| `docs/resource_resolution_model.md` | 1 | **Rewrite.** `get_resource({ session_token, resource_id: "meta/activity-worker-prompt" })` → `get_resource({ session_index, resource_id: ... })`. The `CORE_ORCHESTRATOR_OPS` table entry "`workflow-engine::commit-and-persist`, `persist`" → drop `persist` (operation removed in Phase 8.1). |
+| `docs/state_management_model.md` | 1 | **Heavy rewrite or wholesale replacement.** The "State persistence is agent-managed" paragraph is **deleted**; the entire model becomes "State persistence is server-managed. The server writes `session.json` and `.session-token` (seal) atomically on every authenticated tool call." Adoption/recovery paragraph removed. If the doc as written is mostly about the old model, consider **replacing** the body wholesale with a short pointer to the new design in Phase 3 + Phase 4 of the implementation (and `schemas/session-file.schema.json`). |
+| `docs/workflow-fidelity.md` | 1 | **Rewrite.** "State persistence is agent-managed. The orchestrator writes the session token (opaque, HMAC-signed) and its variable state to disk using its own file tools…" entire paragraph is **rewritten** to describe server-owned `session.json`. The "If the server has restarted… adopted… recovered…" prose is **deleted**. |
+| `docs/ide-setup.md` | 0 | **Manual verification only.** No `session_token` references; verify it does not mention the interceptor or token-threading bootstrap. |
+| `docs/artifact_management_model.md`, `docs/orchestra-specification.md` | 0 | **No change.** Verify zero hits remain. |
+| `schemas/README.md` | 4 | **Rewrite.** Each `"params": "session_token, ..."` entry in the API specs is rewritten to `"params": "session_index, ..."`. Add a new `session-file.schema.json` schema documentation entry (per Phase 3 deliverable). |
+| `README.md`, `SETUP.md`, `CLAUDE.md`, `AGENTS.md` | 0 | **Manual verification only.** No `session_token` references; verify on completion. |
+
+#### Phase 10.2: Dead-code removal (1-1.5h)
 
 - `src/utils/crypto.ts` — remove `encryptToken`, `decryptToken` (DR7, Q5).
 - `src/schema/state.schema.ts` — remove `StateSaveFileSchema` and
@@ -438,18 +533,41 @@ events from the resolved `session.json`.
 - `src/utils/session.ts` — file shrinks to `assertCheckpointsResolved` and
   any other still-live helpers (or is deleted entirely; the
   active-checkpoint helper moves into `session-store.ts`).
-- `docs/api-reference.md`, `docs/architecture.md`, `docs/checkpoint_model.md`,
-  `docs/dispatch_model.md`, `docs/development.md`, `docs/ide-setup.md`,
-  `docs/state_management_model.md`, `docs/resource_resolution_model.md`,
-  `docs/orchestra-specification.md`, `docs/artifact_management_model.md`,
-  `docs/workflow-fidelity.md`, `README.md`, `CLAUDE.md`, `AGENTS.md` —
-  every reference to `session_token` updated to `session_index`; persist/restore
-  prose updated to reflect server ownership.
-- `docs/interceptor-recipe.md` — deleted.
-- PR #113 architecture additions reverted/removed.
-- `schemas/README.md` — `session-file.schema.json` documented.
+- PR #113 architecture additions identified in the codebase-comprehension
+  artifact are reverted/removed in line with the new model.
 
-**Depends on:** All preceding phases.
+#### Phase 10.3: Interceptor sunset audit (0.5h)
+
+The interceptor (`docs/interceptor-recipe.md`) was scoped to compensate for
+the brittleness of the `session_token` threading contract — it transparently
+injected the token into every authenticated MCP call so the agent didn't
+have to thread it manually. With server-managed state, the threading contract
+is replaced by `session_index` passing, which the agent surfaces explicitly
+on every call. The interceptor is no longer needed.
+
+**Audit findings (S1):** The `docs/interceptor-recipe.md` file is **already
+absent** from `main` HEAD (verified by `find . -name "interceptor-recipe*"`
+returning no matches and `grep -ln "interceptor" docs/*.md README.md SETUP.md
+CLAUDE.md` returning no matches). The sunset is documentation-only — there
+is no file to delete.
+
+**Deliverables:**
+
+- Verify `find /home/mike1/projects/main/workflow-server -name
+  "interceptor-recipe*"` returns no results before the PR opens.
+- Verify the tool descriptions surfaced via `discover` / `get_resource`
+  do not mention "interceptor" or "Managed automatically by the MCP-host
+  harness interceptor when installed". (These prose snippets appear in
+  the JSONSchema descriptions returned by `ToolSearch` today; they live
+  in `src/tools/*.ts` and need to be regenerated as part of Phase 4 once
+  the `sessionIndexParam` lands.)
+- Verify the meta-workflow resources (`workflows/meta/resources/`) do not
+  reference the interceptor — already handled by Phase 8.3.
+- If any residual mentions appear during the sweep, append them to the
+  Appendix A disposition log with status "removed during sweep".
+
+**Depends on:** All preceding phases (10.1 follows 8.3 to avoid duplicating
+diagram/example updates).
 
 ---
 
@@ -473,10 +591,14 @@ maps phases to verification:
 - [ ] **SC-8** — Server restart transparent (Phase 2 test).
 - [ ] **SC-9** — Migration converter idempotent (Phase 9 test).
 - [ ] **SC-10** — Collision policy deterministic (Phase 2 test).
-- [ ] **SC-11** — Documentation reflects new model (Phase 10 grep).
+- [ ] **SC-11** — Documentation reflects new model (Phase 10.1 grep gates: PR116-TC-49, TC-61, TC-62, TC-63, TC-64, TC-65).
 - [ ] **SC-12** — `withAuditLog` re-resolution correct (Phase 7 test).
-- [ ] **SC-13** — Dead-code removal clean (Phase 10 grep).
+- [ ] **SC-13** — Dead-code removal clean (Phase 10.2 grep + Phase 8 operation-removal gate: PR116-TC-67, TC-68).
 - [ ] **SC-14** — `npm run typecheck && npm test` passes.
+- [ ] **SC-15 (new, sweep)** — Phase 8 TOON cleanup: meta-workflow operations `adopt-session`, `restore`, `persist` are deleted; rules `token-passes-on-each-call`, `use-most-recent-token`, `token-is-opaque`, `staleness-recovery-only-via-start-session`, `start-session-strict-params` are deleted; variables `saved_session_token`, `client_session_token`, `pending_checkpoint_handle`, `session_recovered`, `session_adopted` are renamed/dropped (PR116-TC-66, TC-67, TC-68, TC-69, TC-70).
+- [ ] **SC-16 (new, migration)** — Migration converter handles all three legacy variants: 3-field envelope + sibling token, embedded sessionToken field (older pre-split), and orphan `.session-token` (PR116-TC-51, TC-52, TC-53, TC-57, TC-58).
+- [ ] **SC-17 (new, back-compat)** — Mid-migration agents passing the legacy `session_token` parameter receive a clear actionable error (PR116-TC-60).
+- [ ] **SC-18 (new, interceptor sunset)** — `docs/interceptor-recipe.md` absent and zero references to "interceptor" in surfaced documentation or tool descriptions (PR116-TC-64, TC-65, S1).
 
 ### Quality Requirements
 
@@ -557,3 +679,91 @@ coverage:
 ---
 
 **Status:** Ready for implementation.
+
+---
+
+## Appendix A — Grep-hit map and dispositions
+
+This appendix enumerates every file in `workflows/` and `docs/` (plus
+top-level markdown) that contains `session_token`, `workflow-state.json`,
+`.session-token`, or related obsolete prose. Each row records the
+disposition decided by the plan revision sweep. Hit counts are from
+`grep -cn` against `main` HEAD on 2026-05-13.
+
+### A.1 `workflows/meta/` — TOON files (Phase 8)
+
+| File | session_token hits | workflow-state hits | Disposition | Phase |
+|------|---------------------|--------------------|-------------|-------|
+| `workflows/meta/skills/00-workflow-engine.toon` | 50 | several | **Heavy rewrite + delete `adopt-session`, `restore`, `persist` operations; delete rules `token-passes-on-each-call`, `use-most-recent-token`, `token-is-opaque`, `staleness-recovery-only-via-start-session`, `start-session-strict-params`, `parameter-vs-variable`; per-operation table in Phase 8.1.** | 8.1 |
+| `workflows/meta/skills/01-agent-conduct.toon` | 1 | 0 | **Rewrite.** Single `get_resource` rule. | 8.2 |
+| `workflows/meta/skills/07-harness-compat.toon` | 5 | 0 | **Rewrite.** `token-in-prompt` rule + `continue-agent` input rename. | 8.2 |
+| `workflows/meta/skills/README.md` | several | 0 | **Rewrite.** Stale `02-state-management.toon` and `save_state`/`restore_state` references corrected (S10). | 8.3 |
+| `workflows/meta/workflow.toon` | 2 | 0 | **Rewrite variables.** `saved_session_token`, `client_session_token`, `pending_checkpoint_handle` → `_index` equivalents or dropped. | 8.2 |
+| `workflows/meta/activities/00-discover-session.toon` | 2 | 0 | **Rewrite.** `saved_session_token` variable + record-match step. | 8.2 |
+| `workflows/meta/activities/01-initialize-session.toon` | 5 | 1 | **Heavy rewrite.** Collapses 6 steps to 2; drops `adopt-session`, `restore`, `persist` operation references. | 8.2 |
+| `workflows/meta/activities/03-dispatch-client-workflow.toon` | 7 | 0 | **Rewrite.** Drops the post-respond `set client_session_token` action; rewrites continue-orchestrator prompt. | 8.2 |
+| `workflows/meta/activities/04-end-workflow.toon` | 1 | 1 | **Rewrite.** Drops `persist` operation + `final-persist` step. | 8.2 |
+| `workflows/meta/activities/README.md` | several | several | **Rewrite.** Activity descriptions and persist references. | 8.3 |
+| `workflows/meta/resources/00-bootstrap-protocol.md` | 2 | 0 | **Rewrite.** Bootstrap snippet. | 8.3 |
+| `workflows/meta/resources/01-activity-worker-prompt.md` | several | 0 | **Rewrite.** `{session_token}` placeholder → `{session_index}`. | 8.3 |
+| `workflows/meta/resources/02-workflow-orchestrator-prompt.md` | several | 0 | **Heavy rewrite.** Strict-schema + recovery prose deleted. | 8.3 |
+| `workflows/meta/resources/README.md` | several | 0 | **Rewrite.** Drop `Workflow State Format` entry. | 8.3 |
+| `workflows/meta/README.md` | several | several | **Rewrite.** Activity descriptions, variables table, Mermaid diagrams, sequence-diagram step labels (S10). | 8.3 |
+
+### A.2 `workflows/` — non-meta hits
+
+| File | Disposition | Notes |
+|------|-------------|-------|
+| `workflows/README.md` | **Spot-rewrite.** | If the file describes the session contract; otherwise no-op. |
+| `workflows/work-package/README.md` | **Verify no relevant hits.** | The `session` matches are on the word "session" in unrelated contexts; the `persist` match is on `persistent-artifacts`. |
+| `workflows/work-package/skills/22-build-comprehension.toon` | **No change (S6).** | `persistent_failure`, `persistent-artifacts` false positives. |
+| `workflows/work-package/skills/16-validate-build.toon` | **No change (S6).** | `persistent_failure` false positive. |
+| `workflows/work-package/activities/01-start-work-package.toon` | **No change (S6).** | `restore issue_platform` false positive. |
+| `workflows/work-package/activities/14-codebase-comprehension.toon` | **No change (S6).** | `persistent` false positive. |
+| `workflows/work-package/skills/README.md` | **No change (S6).** | `persistent knowledge artifacts` false positive. |
+| `workflows/workflow-design/workflow.toon`, `workflows/workflow-design/skills/00-workflow-design.toon`, `workflows/workflow-design/skills/README.md`, `workflows/workflow-design/resources/02-anti-patterns.md`, `workflows/workflow-design/README.md` | **Out of scope for #115 (S5).** | The `workflow-design` workflow describes the design DSL for designing workflows. The references to `session_token` in those files describe the wire-shape of MCP calls in the abstract; updating them is downstream of #115 (a separate concern about the design template). Track under follow-up issue. |
+| `workflows/prism/**`, `workflows/prism-audit/**`, `workflows/prism-evaluate/**`, `workflows/prism-update/**` | **Out of scope (S5).** | Hits in prism workflows are unrelated to runtime session tokens (e.g., `state-audit.md`, `fix-cascade.md`); they describe persistence patterns at the application-domain layer. |
+| `workflows/cicd-pipeline-security-audit/**`, `workflows/substrate-node-security-audit/**`, `workflows/remediate-vuln/**` | **Out of scope (S5).** | Hits on `persist`, `restore` in audit-workflow domain prose are false positives. |
+
+### A.3 `docs/` and top-level markdown (Phase 10.1)
+
+| File | session_token hits | Disposition | Phase |
+|------|---------------------|-------------|-------|
+| `docs/api-reference.md` | 18 | **Heavy rewrite.** Every tool signature in the table loses `session_token`; `start_session` row entirely rewritten; token-payload deep-dive paragraph replaced with `session.json` description. | 10.1 |
+| `docs/architecture.md` | 1 | **Rewrite.** `parent_session_token` → `parent_planning_slug`. | 10.1 |
+| `docs/checkpoint_model.md` | 3 | **Rewrite.** Tool examples; dual-acceptance prose deleted. | 10.1 |
+| `docs/development.md` | 2 | **Rewrite.** `get_skill` examples. | 10.1 |
+| `docs/dispatch_model.md` | 6 | **Heavy rewrite.** Parent dispatch snippet, orchestrator → worker handoff prose. | 10.1 |
+| `docs/resource_resolution_model.md` | 1 | **Rewrite.** `get_resource` example + drop `persist` from `CORE_ORCHESTRATOR_OPS`. | 10.1 |
+| `docs/state_management_model.md` | 1 | **Wholesale replacement.** "Agent-managed" entire paragraph replaced with server-managed model + pointer to `schemas/session-file.schema.json`. | 10.1 |
+| `docs/workflow-fidelity.md` | 1 | **Heavy rewrite.** "Agent-managed" paragraph removed; adoption/recovery prose deleted. | 10.1 |
+| `docs/ide-setup.md` | 0 | **Manual verify only.** | 10.1 |
+| `docs/artifact_management_model.md` | 0 | **No change.** | n/a |
+| `docs/orchestra-specification.md` | 0 | **No change.** | n/a |
+| `schemas/README.md` | 4 | **Rewrite.** Tool params table; add `session-file.schema.json` entry. | 10.1 |
+| `README.md` | 0 | **Manual verify only.** | 10.1 |
+| `SETUP.md` | 0 | **Manual verify only.** | 10.1 |
+| `CLAUDE.md` | 0 | **Manual verify only.** Project rules — update the `gitnexus` and project-instructions section only if examples reference `session_token`. | 10.1 |
+| `AGENTS.md` | 0 | **Manual verify only.** | 10.1 |
+
+### A.4 Interceptor sunset (Phase 10.3)
+
+| Item | Status | Disposition |
+|------|--------|-------------|
+| `docs/interceptor-recipe.md` | **Already absent** in `main` HEAD | **No-op.** Verify absence at PR open. |
+| `grep -ln "interceptor" docs/*.md README.md SETUP.md CLAUDE.md` | **Zero matches** | **Confirm at PR open.** |
+| Tool description prose ("Managed automatically by the MCP-host harness interceptor when installed") in JSONSchema descriptions returned by `discover`/`get_resource` | **Lives in `src/tools/*.ts`** | **Rewrite during Phase 4.** When `sessionIndexParam` is introduced, regenerate the descriptions to drop the interceptor reference. |
+
+### A.5 Disposition rollup
+
+| Bucket | Count | Notes |
+|--------|-------|-------|
+| **Files in scope, heavy rewrite** | 6 | `00-workflow-engine.toon`, `01-initialize-session.toon`, `03-dispatch-client-workflow.toon`, `02-workflow-orchestrator-prompt.md`, `meta/README.md`, `api-reference.md` |
+| **Files in scope, ordinary rewrite** | 16 | The remainder of the `workflows/meta/` and `docs/` rows above |
+| **Files in scope, manual verify only** | 7 | `ide-setup.md`, `artifact_management_model.md`, `orchestra-specification.md`, `README.md`, `SETUP.md`, `CLAUDE.md`, `AGENTS.md` |
+| **Files out of scope (S5, S6)** | 11 | `workflow-design/`, `prism*/`, `cicd-pipeline-security-audit/`, `substrate-node-security-audit/`, `work-package/` non-meta false positives |
+| **Files deleted** | 0 | None — `interceptor-recipe.md` already absent (S1). The `adopt-session`, `restore`, `persist` operations are deleted from a file, not whole files. |
+
+**Total in-scope file edits: 29.** Phase 8 covers 13 (the `workflows/meta/`
+subtree). Phase 10 covers 16 (`docs/`, `schemas/README.md`, top-level
+markdown). The blast radius is concentrated in `workflows/meta/skills/00-workflow-engine.toon` (50 hits) and `docs/api-reference.md` (18 hits); these two files alone account for ~70% of the redundant prose.
