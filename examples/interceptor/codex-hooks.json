@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__workflow-server__.*",
+        "command": ["workflow-server-interceptor", "inject"]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__workflow-server__.*",
+        "command": ["workflow-server-interceptor", "capture"]
+      }
+    ]
+  }
+}

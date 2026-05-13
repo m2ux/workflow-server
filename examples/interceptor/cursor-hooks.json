@@ -1,0 +1,14 @@
+{
+  "mcp": {
+    "hooks": {
+      "beforeMCPExecution": {
+        "command": "workflow-server-interceptor inject",
+        "matchTool": "^mcp__workflow-server__"
+      },
+      "afterMCPExecution": {
+        "command": "workflow-server-interceptor capture",
+        "matchTool": "^mcp__workflow-server__"
+      }
+    }
+  }
+}
