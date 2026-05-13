@@ -883,14 +883,13 @@ describe('mcp-server integration', () => {
     });
 
     it('get_trace without tokens returns in-memory trace (IT-13)', async () => {
-      const advanceResult = await client.callTool({
+      await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const advanced = (advanceResult._meta as Record<string, unknown>)['session_token'] as string;
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: advanced },
+        arguments: { session_token: sessionToken },
       });
       const trace = parseToolResponse(result);
       expect(trace.source).toBe('memory');
@@ -898,14 +897,13 @@ describe('mcp-server integration', () => {
     });
 
     it('trace events have compressed field names (IT-10)', async () => {
-      const advanceResult = await client.callTool({
+      await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const advanced = (advanceResult._meta as Record<string, unknown>)['session_token'] as string;
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: advanced },
+        arguments: { session_token: sessionToken },
       });
       const trace = parseToolResponse(result);
       const event = trace.events[0];
@@ -917,14 +915,13 @@ describe('mcp-server integration', () => {
     });
 
     it('session_token not in trace events (IT-15)', async () => {
-      const advanceResult = await client.callTool({
+      await client.callTool({
         name: 'next_activity',
         arguments: { session_token: sessionToken, activity_id: 'start-work-package' },
       });
-      const advanced = (advanceResult._meta as Record<string, unknown>)['session_token'] as string;
       const result = await client.callTool({
         name: 'get_trace',
-        arguments: { session_token: advanced },
+        arguments: { session_token: sessionToken },
       });
       const trace = parseToolResponse(result);
       for (const event of trace.events) {

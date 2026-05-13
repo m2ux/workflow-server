@@ -23,7 +23,7 @@ import { existsSync, readFileSync } from 'fs';
 import { writeFile } from 'fs/promises';
 import { resolve, basename } from 'path';
 import { randomUUID } from 'crypto';
-import { createSessionToken, loadSession } from '../src/utils/session.js';
+import { createSessionToken, decodeSessionToken } from '../src/utils/session.js';
 
 // --- Argument parsing ---
 
@@ -149,7 +149,7 @@ async function main() {
 
   // Create session token
   const token = await createSessionToken(workflowId, '0.0.0', 'legacy-backfill');
-  const decoded = await loadSession(token);
+  const decoded = await decodeSessionToken(token);
   console.log(`[INFO] Session ID: ${decoded.sid}`);
 
   // Build the state save file

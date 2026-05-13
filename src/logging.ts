@@ -1,6 +1,6 @@
 import type { TraceStore } from './trace.js';
 import { createTraceEvent } from './trace.js';
-import { decodeWireToken, sidToString, getDefaultSessionStore } from './utils/session.js';
+import { decodeSessionToken } from './utils/session.js';
 
 const MAX_LOG_VALUE_LENGTH = 8192;
 
@@ -64,24 +64,17 @@ async function appendTraceEvent(
   if (typeof tokenStr !== 'string') return;
 
   try {
-    // Use wire-only decode + direct store load so the trace event still records
-    // the call even when the handler has just advanced the token (which leaves
-    // the wire token's seq/sh stale relative to the post-advance record, so a
-    // full loadSession would throw a state-hash mismatch here).
-    const wire = await decodeWireToken(tokenStr);
-    const record = await getDefaultSessionStore().load(wire.sid);
-    if (record === null) return;
-    const sid = sidToString(wire.sid);
+    const token = await decodeSessionToken(tokenStr);
     const vw = status === 'ok' ? extractValidationWarnings(result) : undefined;
     const opts: { err?: string; vw?: string[] } = {};
     if (errorMessage !== undefined) opts.err = errorMessage;
     if (vw !== undefined) opts.vw = vw;
     const event = createTraceEvent(
-      sid, toolName, durationMs, status,
-      record.wf, record.act, record.aid,
+      token.sid, toolName, durationMs, status,
+      token.wf, token.act, token.aid,
       opts,
     );
-    traceStore.append(sid, event);
+    traceStore.append(token.sid, event);
   } catch (e) {
     logWarn('Trace capture skipped: token decode failed', { tool: toolName, error: e instanceof Error ? e.message : String(e) });
   }

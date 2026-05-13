@@ -7,7 +7,7 @@ import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { readSkillRaw, resolveOperations, formatOperationsBundle } from '../loaders/skill-loader.js';
 import { encodeToon } from '../utils/toon.js';
-import { createSessionToken, loadSession, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
+import { createSessionToken, decodeSessionToken, decodePayloadOnly, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
 import type { ParentContext } from '../utils/session.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
@@ -58,49 +58,143 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       let effectiveWorkflowVersion: string;
       let token: string;
       let aidMismatchWarning: string | undefined;
-      const tokenAdoptedWarning: string | undefined = undefined;
-      const tokenRecoveryWarning: string | undefined = undefined;
+      let tokenAdoptedWarning: string | undefined;
+      let tokenRecoveryWarning: string | undefined;
 
       if (session_token) {
-        // Phase 2: happy-path only. HMAC failure / missing state / hash mismatch
-        // surface as a plain error here; phase 3 will add adoption + legacy migration.
-        const view = await loadSession(session_token);
-        effectiveWorkflowId = view.wf;
-        effectiveWorkflowVersion = view.v;
+        // Decode the token FIRST to determine the authoritative workflow ID.
+        try {
+          const parentToken = await decodeSessionToken(session_token);
 
-        if (view.aid && view.aid !== agent_id) {
-          aidMismatchWarning = `Warning: The provided agent_id '${agent_id}' does not match the inherited session token's agent_id '${view.aid}'. The session has been transitioned to '${agent_id}'.`;
-        }
+          // Auto-detect staleness: if the server started after the token was created,
+          // the HMAC key has changed. Skip verification and go directly to re-signing.
+          const serverUptimeSeconds = Math.floor(process.uptime());
+          const tokenAgeSeconds = Math.floor(Date.now() / 1000) - parentToken.ts;
+          if (tokenAgeSeconds > serverUptimeSeconds + 5) { // 5s grace period
+            // Token predates server startup — it WILL fail HMAC verification.
+            // Throw to trigger the re-signing path below.
+            throw new Error('Invalid session token: HMAC signature verification failed. Auto-detected stale token (server restarted since token was created).');
+          }
 
-        token = await advanceToken(session_token, { aid: agent_id });
+          effectiveWorkflowId = parentToken.wf;
+          effectiveWorkflowVersion = parentToken.v;
 
-        if (config.traceStore) {
-          const event = createTraceEvent(
-            view.sid, 'start_session', 0, 'ok',
-            effectiveWorkflowId, view.act, agent_id,
-          );
-          config.traceStore.append(view.sid, event);
+          if (parentToken.aid && parentToken.aid !== agent_id) {
+            aidMismatchWarning = `Warning: The provided agent_id '${agent_id}' does not match the inherited session token's agent_id '${parentToken.aid}'. The session has been transitioned to '${agent_id}'.`;
+          }
+
+          token = await advanceToken(session_token, { aid: agent_id }, parentToken);
+
+          if (config.traceStore) {
+            const event = createTraceEvent(
+              parentToken.sid, 'start_session', 0, 'ok',
+              effectiveWorkflowId, parentToken.act, agent_id,
+            );
+            config.traceStore.append(parentToken.sid, event);
+          }
+        } catch (err: unknown) {
+          const errMsg = err instanceof Error ? err.message : String(err);
+          const isTokenError = errMsg.includes('HMAC signature verification failed') ||
+            errMsg.includes('missing signature segment') ||
+            errMsg.includes('failed to decode payload') ||
+            errMsg.includes('payload is missing required fields') ||
+            errMsg.includes('Auto-detected stale token');
+
+          if (!isTokenError) {
+            // Re-throw non-token errors
+            throw err;
+          }
+
+          // HMAC verification failed — the token may be stale (server restart)
+          // or corrupted. Try to adopt the payload by re-signing it.
+          const payload = await decodePayloadOnly(session_token);
+
+          if (payload) {
+            // Payload is structurally valid. Use its wf as the workflow ID.
+            effectiveWorkflowId = payload.wf;
+            effectiveWorkflowVersion = payload.v;
+
+            console.warn(`[start_session] Re-signing stale token for session '${payload.sid}' (HMAC key changed).`);
+            tokenAdoptedWarning =
+              `The provided session_token had an invalid signature (the server was likely restarted). ` +
+              `The session state has been adopted and re-signed — session ID, activity position, and variables are preserved. ` +
+              `Original error: ${errMsg}`;
+
+            token = await advanceToken(session_token, { aid: agent_id }, payload);
+
+            if (config.traceStore) {
+              config.traceStore.initSession(payload.sid);
+              const event = createTraceEvent(
+                payload.sid, 'start_session', 0, 'ok',
+                effectiveWorkflowId, payload.act, agent_id,
+                { err: 'adopted:re-signed_stale_token' },
+              );
+              config.traceStore.append(payload.sid, event);
+            }
+          } else {
+            // Payload is also corrupted. Fall back to a fresh session.
+            // Use workflow_id if provided, otherwise default to meta.
+            effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
+            // Load the workflow so the fresh token carries v (the workflow
+            // version). Without this, the token's v stays empty and saved
+            // state files end up duplicating workflowVersion at the envelope
+            // level just to recover it.
+            const wfPreLoad = await loadWorkflow(config.workflowDir, effectiveWorkflowId);
+            effectiveWorkflowVersion = wfPreLoad.success ? (wfPreLoad.value.version ?? '') : '';
+            console.warn(`[start_session] Provided session_token is invalid and payload is not recoverable. Creating a fresh session for workflow '${effectiveWorkflowId}'.`);
+            tokenRecoveryWarning =
+              `The provided session_token could not be verified and the payload could not be recovered. ` +
+              `A fresh session has been created instead (workflow: '${effectiveWorkflowId}'). The previous session state (activity position, variables) was NOT inherited. ` +
+              `You must reconstruct the session state from your saved workflow-state.json: ` +
+              `call next_activity to transition to the currentActivity, and restore variables manually. ` +
+              `Original error: ${errMsg}`;
+
+            token = await createSessionToken(effectiveWorkflowId, effectiveWorkflowVersion, agent_id);
+
+            if (config.traceStore) {
+              const decoded = await decodeSessionToken(token);
+              config.traceStore.initSession(decoded.sid);
+              const event = createTraceEvent(
+                decoded.sid, 'start_session', 0, 'ok',
+                effectiveWorkflowId, '', agent_id,
+                { err: 'recovered:invalid_session_token' },
+              );
+              config.traceStore.append(decoded.sid, event);
+            }
+          }
         }
       } else {
         // Fresh session — use workflow_id if provided, otherwise default to meta.
         effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
+        // Load the workflow so the fresh token carries v (the workflow version).
+        // Without this, the token's v stays empty and saved state files end up
+        // duplicating workflowVersion at the envelope level just to recover it.
         const wfPreLoad = await loadWorkflow(config.workflowDir, effectiveWorkflowId);
         effectiveWorkflowVersion = wfPreLoad.success ? (wfPreLoad.value.version ?? '') : '';
 
+        // If parent_session_token is provided, extract parent context for trace correlation.
         let parentContext: ParentContext | undefined;
         if (parent_session_token) {
           try {
-            const pview = await loadSession(parent_session_token);
-            parentContext = { psid: pview.sid, pwf: pview.wf, pact: pview.act, pv: pview.v };
+            const parentToken = await decodeSessionToken(parent_session_token);
+            parentContext = {
+              psid: parentToken.sid,
+              pwf: parentToken.wf,
+              pact: parentToken.act,
+              pv: parentToken.v,
+            };
+
             if (config.traceStore) {
               const parentEvent = createTraceEvent(
-                pview.sid, 'start_session', 0, 'ok',
-                pview.wf, pview.act, pview.aid,
+                parentToken.sid, 'start_session', 0, 'ok',
+                parentToken.wf, parentToken.act, parentToken.aid,
                 { vw: [effectiveWorkflowId] },
               );
-              config.traceStore.append(pview.sid, parentEvent);
+              config.traceStore.append(parentToken.sid, parentEvent);
             }
           } catch {
+            // Parent token is invalid — proceed without parent context.
+            // The child session is still valid, just unlinked.
             console.warn(`[start_session] parent_session_token is invalid; creating child session without parent context.`);
           }
         }
@@ -108,7 +202,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         token = await createSessionToken(effectiveWorkflowId, effectiveWorkflowVersion, agent_id, parentContext);
 
         if (config.traceStore) {
-          const decoded = await loadSession(token);
+          const decoded = await decodeSessionToken(token);
           config.traceStore.initSession(decoded.sid);
           const event = createTraceEvent(
             decoded.sid, 'start_session', 0, 'ok',
@@ -176,7 +270,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       ...sessionTokenParam,
     },
     withAuditLog('get_skills', async ({ session_token }) => {
-      const token = await loadSession(session_token);
+      const token = await decodeSessionToken(session_token);
       assertCheckpointsResolved(token);
       const workflow_id = token.wf;
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
@@ -223,7 +317,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary skill for the activity, or the workflow primary skill if no activity is active.'),
     },
     withAuditLog('get_skill', async ({ session_token, step_id }) => {
-      const token = await loadSession(session_token);
+      const token = await decodeSessionToken(session_token);
       const workflow_id = token.wf;
 
       assertCheckpointsResolved(token);
@@ -287,7 +381,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(token, wfResult.value),
       );
 
-      const advancedToken = await advanceToken(session_token);
+      const advancedToken = await advanceToken(session_token, { skill: skillId });
 
       return {
         content: [{ type: 'text' as const, text: `session_token: ${advancedToken}\n\n${rawResult.value}` }],
@@ -304,7 +398,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       resource_id: z.string().describe('Resource ID — bare (e.g., "23") resolves within the session workflow, prefixed (e.g., "meta/01") resolves from the specified workflow'),
     },
     withAuditLog('get_resource', async ({ session_token, resource_id }) => {
-      const token = await loadSession(session_token);
+      const token = await decodeSessionToken(session_token);
       assertCheckpointsResolved(token);
       const workflow_id = token.wf;
 
