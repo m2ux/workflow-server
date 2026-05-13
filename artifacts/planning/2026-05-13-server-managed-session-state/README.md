@@ -51,7 +51,7 @@ Make the MCP server workspace-aware so it owns workflow session state end-to-end
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#115](https://github.com/m2ux/workflow-server/issues/115) |
-| PR | _Pending_ |
+| PR | [#116](https://github.com/m2ux/workflow-server/pull/116) |
 
 ---
 
