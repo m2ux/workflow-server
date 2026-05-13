@@ -6,7 +6,7 @@ problem: The orchestrator runs as a sub-agent (or inline persona) and surfaces c
 required: true
 operations[5]:
   - "workflow-engine::compose-prompt"
-  - "workflow-engine::extract-checkpoint-handle"
+  - "workflow-engine::extract-checkpoint-session-token"
   - "workflow-engine::handle-workflow-complete"
   - "harness-compat::spawn-agent"
   - "harness-compat::continue-agent"
@@ -34,24 +34,24 @@ loops[1]:
     maxIterations: 200
     steps[5]:
       - id: capture-checkpoint-yield
-        description: "workflow-engine::extract-checkpoint-handle(output: {orchestrator_output})"
+        description: "workflow-engine::extract-checkpoint-session-token(output: {orchestrator_output})"
         when: "client_workflow_completed == false"
       - id: capture-workflow-complete
         description: "workflow-engine::handle-workflow-complete(result: {orchestrator_output})"
         when: "client_workflow_completed == false"
       - id: present-and-resolve
-        description: "workflow-engine::present-checkpoint-to-user(checkpoint_handle: {pending_checkpoint_handle})"
+        description: "workflow-engine::present-checkpoint-to-user(session_token: {pending_checkpoint_session_token})"
         when: "client_workflow_completed == false"
       - id: respond-checkpoint
-        description: "workflow-engine::respond-checkpoint(checkpoint_handle: {pending_checkpoint_handle}, resolution: {user_selection})"
+        description: "workflow-engine::respond-checkpoint(session_token: {pending_checkpoint_session_token}, resolution: {user_selection})"
         when: "client_workflow_completed == false"
         actions[1]:
           - action: set
             target: client_session_token
             value: "{resumed_session_token}"
-            description: "Advance the client session token to the post-respond handle returned by respond_checkpoint. The previous client_session_token still has bcp set; reusing it would gate every subsequent worker call."
+            description: "Advance the client session token to the post-respond token returned by respond_checkpoint. The previous client_session_token still has bcp set; reusing it would gate every subsequent worker call."
       - id: continue-orchestrator
-        description: "harness-compat::continue-agent(session_token: {client_session_token}, prompt: Checkpoint resolved. Use this resumed session_token for all subsequent calls (NOT your yield-time checkpoint_handle — that still has bcp set): {client_session_token}. Effects to apply: {effects}. Continue execution from the paused step.)"
+        description: "harness-compat::continue-agent(session_token: {client_session_token}, prompt: Checkpoint resolved. Use this resumed session_token for all subsequent calls (NOT your yield-time session_token — that still has bcp set): {client_session_token}. Effects to apply: {effects}. Continue execution from the paused step.)"
         when: "client_workflow_completed == false"
 transitions[1]:
   - to: end-workflow
@@ -66,4 +66,4 @@ outcome[3]:
   - Client workflow reached workflow_complete (or the user aborted via end-workflow's completion-confirmed checkpoint)
 context_to_preserve[2]:
   - client_workflow_completed - Whether the client workflow has finalised
-  - pending_checkpoint_handle - The most recently yielded checkpoint (cleared after each iteration)
+  - pending_checkpoint_session_token - The most recently yielded checkpoint (cleared after each iteration)

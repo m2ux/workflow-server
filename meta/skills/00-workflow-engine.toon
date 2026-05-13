@@ -111,14 +111,14 @@ operations:
       workflow-server[1]:
         - get_resource
 
-  extract-checkpoint-handle:
-    description: "Parse an orchestrator's most recent output to extract the checkpoint handle"
+  extract-checkpoint-session-token:
+    description: "Parse an orchestrator's most recent output to extract the session_token yielded at a checkpoint"
     inputs[1]:
       - output: "Orchestrator's most recent text output"
     output[1]:
-      - checkpoint_handle: "The checkpoint_handle string when a <checkpoint_yield> block is present, otherwise null"
+      - session_token: "The session_token string when a <checkpoint_yield> block is present, otherwise null"
     procedure[1]:
-      - "Find the <checkpoint_yield>...</checkpoint_yield> block; parse its JSON body and return checkpoint_handle"
+      - "Find the <checkpoint_yield>...</checkpoint_yield> block; parse its JSON body and return session_token"
 
   handle-workflow-complete:
     description: "Apply a workflow_complete result's final variables and mark the dispatched workflow finished"
@@ -279,25 +279,23 @@ operations:
       - "Compile and return the activity_complete object; include transition_override if a checkpoint effect specified transitionTo"
 
   yield-checkpoint:
-    description: "Pause at a checkpoint and surface the handle"
+    description: "Pause at a checkpoint and surface the session_token"
     inputs[1]:
       - checkpoint_id: "ID of the checkpoint being yielded"
     output[1]:
-      - emitted: "<checkpoint_yield> block containing only the checkpoint_handle"
+      - emitted: "<checkpoint_yield> block containing only the session_token"
     procedure[3]:
-      - "Call yield_checkpoint({ session_token, checkpoint_id }); capture the returned checkpoint_handle"
-      - "Emit a <checkpoint_yield> block containing ONLY the checkpoint_handle"
+      - "Call yield_checkpoint({ session_token, checkpoint_id }); capture the returned session_token (with bcp set)"
+      - "Emit a <checkpoint_yield> block containing ONLY the session_token"
       - "STOP — make no further tool calls until the orchestrator resumes you"
     tools:
       workflow-server[1]:
         - yield_checkpoint
-    rules:
-      checkpoint-handle-distinct-from-session: "yield_checkpoint returns a checkpoint_handle (HMAC-signed, contains '.'). present_checkpoint and respond_checkpoint take a checkpoint_handle parameter, NOT a session_token. Never substitute one for the other."
 
   resume-from-checkpoint:
     description: "Continue execution after the orchestrator resolves a checkpoint"
     inputs[2]:
-      - resumed_session_token: "Fresh session token (bcp cleared) returned by respond_checkpoint and threaded down through the orchestrator's resume prompt. This is NOT the yield-time checkpoint_handle — that handle still has bcp set and resume_checkpoint will reject it."
+      - resumed_session_token: "Fresh session token (bcp cleared) returned by respond_checkpoint and threaded down through the orchestrator's resume prompt. This is NOT the yield-time session_token — that token still has bcp set and resume_checkpoint will reject it."
       - effects: "Variable updates passed back by the orchestrator"
     output[1]:
       - session_token: "Advanced token to use for subsequent calls (get_activity, etc.)"
@@ -310,34 +308,34 @@ operations:
     errors:
       checkpoint_still_active:
         cause: "resume_checkpoint returned 'Cannot resume: Checkpoint is still active'"
-        recovery: "You passed the yield-time checkpoint_handle (bcp still set). Use the resumed_session_token from your resume prompt (the new token returned by respond_checkpoint), not the handle you yielded with."
+        recovery: "You passed the yield-time session_token (bcp still set). Use the resumed_session_token from your resume prompt (the new token returned by respond_checkpoint), not the token you yielded with."
       hmac_failure:
         cause: "resume_checkpoint or any subsequent call returned 'Invalid session token: HMAC signature verification failed'"
         recovery: "The token in your resume prompt is the source of truth. Do not transcribe it from a tool-result display (which may be truncated) and do not reach back for an earlier session token from your context. Use the EXACT resumed_session_token your orchestrator just handed you."
     rules:
-      resume-uses-post-respond-token: "resume_checkpoint requires a token whose bcp is cleared. The yield-time checkpoint_handle does NOT satisfy this — only the token returned in the response body of respond_checkpoint does. The orchestrator MUST thread that token down to you on resume."
+      resume-uses-post-respond-token: "resume_checkpoint requires a token whose bcp is cleared. The yield-time session_token does NOT satisfy this — only the token returned in the response body of respond_checkpoint does. The orchestrator MUST thread that token down to you on resume."
 
   bubble-checkpoint-up:
     description: "Forward a worker's checkpoint to the parent (meta) orchestrator without resolving it"
     inputs[1]:
-      - checkpoint_handle: "Handle yielded by the worker"
+      - session_token: "Session token yielded by the worker (bcp set)"
     output[1]:
-      - emitted: "<checkpoint_yield> block containing only the checkpoint_handle"
+      - emitted: "<checkpoint_yield> block containing only the session_token"
     procedure[3]:
-      - "Receive the worker's <checkpoint_yield> block and extract the checkpoint_handle"
-      - "Emit a <checkpoint_yield> block containing the SAME checkpoint_handle (do not modify it)"
+      - "Receive the worker's <checkpoint_yield> block and extract the session_token"
+      - "Emit a <checkpoint_yield> block containing the SAME session_token (do not modify it)"
       - "STOP — wait to be resumed by the parent with the resolved effects"
     rules:
-      no-direct-interaction: "Sub-agent orchestrators NEVER prompt the user directly. Surface checkpoints by bubbling the worker's checkpoint_handle up unchanged."
+      no-direct-interaction: "Sub-agent orchestrators NEVER prompt the user directly. Surface checkpoints by bubbling the worker's session_token up unchanged."
 
   present-checkpoint-to-user:
     description: "Load checkpoint details and present them to the user"
     inputs[1]:
-      - checkpoint_handle: "HMAC-signed handle bubbled up from the worker"
+      - session_token: "HMAC-signed session token (bcp set) bubbled up from the worker"
     output[1]:
       - selection: "{ option_id, effects } — captured user response"
     procedure[3]:
-      - "Call present_checkpoint({ checkpoint_handle }) and read the message + options"
+      - "Call present_checkpoint({ session_token }) and read the message + options"
       - "Call AskQuestion with the checkpoint's message and options[]. This is the user's only opportunity to respond — it is MANDATORY for every checkpoint, including those with autoAdvanceMs set. If autoAdvanceMs is set, configure AskQuestion's timeout to that value with defaultOption as the timeout fallback; if the user does not respond within the timer, capture that as auto_advance: true. If the user responds, capture their option_id."
       - "Capture the user's option_id (or auto_advance / condition_not_met)"
     tools:
@@ -346,42 +344,41 @@ operations:
       harness[1]:
         - AskQuestion
     errors:
-      invalid_checkpoint_handle:
+      invalid_session_token:
         cause: "present_checkpoint returned 'Invalid session token' or 'missing signature'"
-        recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
+        recovery: "You are passing the wrong value as session_token. Use the EXACT string the worker returned in its <checkpoint_yield> block (the post-yield_checkpoint token, bcp set)."
     rules:
       no-auto-resolution: "NEVER auto-resolve a checkpoint without first presenting it. auto_advance: true is only valid after AskQuestion has been shown to the user and the autoAdvanceMs timer has elapsed without a response. Skipping AskQuestion and going straight to a sleep + auto_advance is a protocol violation, even when the default option seems obvious from prior context or prior user input on a different checkpoint."
       present-before-any-resolution: "present_checkpoint returning data is not the same as presenting to the user. Every checkpoint resolution path — option_id, auto_advance, or condition_not_met — MUST be preceded by an AskQuestion that displays the checkpoint's message and options. All checkpoints block; autoAdvanceMs is a fallback for when the user does not respond, not a license to skip the prompt."
       apply-effects-immediately: "Apply the resolved effects to internal state on receipt, then pass them down to the orchestrator/worker."
-      checkpoint-handle-distinct-from-session: "present_checkpoint takes a checkpoint_handle parameter, NOT a session_token. The handle is the HMAC-signed token returned by yield_checkpoint (contains '.')."
 
   respond-checkpoint:
     description: "Send the user's selection back to the server"
     inputs[2]:
-      - checkpoint_handle: "Handle from present-checkpoint-to-user"
+      - session_token: "Session token from present-checkpoint-to-user (bcp set, awaiting resolution)"
       - resolution: "{ option_id } | { auto_advance: true } | { condition_not_met: true }"
     output[2]:
       - effects: "Variable updates returned by the server, to pass back down to the orchestrator/worker"
-      - resumed_session_token: "Fresh session token returned by the server with bcp cleared. This token (NOT the yield-time checkpoint_handle) MUST be passed back to the worker so it can resume — the original checkpoint_handle still has bcp set and any subsequent tool call with it is gated."
+      - resumed_session_token: "Fresh session token returned by the server with bcp cleared. This token (NOT the yield-time session_token) MUST be passed back to the worker so it can resume — the original token still has bcp set and any subsequent tool call with it is gated."
     procedure[1]:
-      - "Call respond_checkpoint({ checkpoint_handle, ...resolution }); from the response, capture BOTH effects and the new checkpoint_handle field — that field is the resumed_session_token the worker needs"
+      - "Call respond_checkpoint({ session_token, ...resolution }); from the response, capture BOTH effects and the new session_token field — that field is the resumed_session_token the worker needs"
     tools:
       workflow-server[1]:
         - respond_checkpoint
     errors:
-      invalid_checkpoint_handle:
+      invalid_session_token:
         cause: "respond_checkpoint returned 'Invalid session token' or 'missing signature'"
-        recovery: "You are passing the wrong value as checkpoint_handle. Use the EXACT string returned by yield_checkpoint."
+        recovery: "You are passing the wrong value as session_token. Use the EXACT string the worker returned in its <checkpoint_yield> block (the post-yield_checkpoint token, bcp set)."
     rules:
-      no-option-hallucination: "If respond_checkpoint returns 'Invalid option', STOP. Call present_checkpoint on the same handle to retrieve valid options. Never guess."
-      thread-resumed-token: "The server returns a NEW token in the checkpoint_handle field of the response. Capture it as resumed_session_token and propagate it to the worker on resume. Failing to do so leaves the worker with its yield-time handle (bcp still set), and every subsequent tool call is gated by assertCheckpointsResolved."
+      no-option-hallucination: "If respond_checkpoint returns 'Invalid option', STOP. Call present_checkpoint on the same session_token to retrieve valid options. Never guess."
+      thread-resumed-token: "The server returns a NEW token in the session_token field of the response. Capture it as resumed_session_token and propagate it to the worker on resume. Failing to do so leaves the worker with its yield-time token (bcp still set), and every subsequent tool call is gated by assertCheckpointsResolved."
 
 rules:
-  token-passes-on-each-call: "EVERY tool call (other than discover, list_workflows, start_session, health_check) requires a session_token parameter."
-  use-most-recent-token: "Each tool call returns a NEW token (in the response body and _meta.session_token). The next call MUST use that new token. Reusing a stale token causes HMAC verification failure."
+  token-passes-on-each-call: "Applies when running without an MCP-client interceptor. EVERY tool call (other than discover, list_workflows, start_session, health_check) requires a session_token parameter. With the interceptor installed (see docs/interceptor-recipe.md) the harness injects session_token automatically; agents do not construct the parameter."
+  use-most-recent-token: "Applies when running without an MCP-client interceptor. Each tool call returns a NEW token (in the response body and _meta.session_token). The next call MUST use that new token. Reusing a stale token causes HMAC verification failure. With the interceptor installed, capture writes the new token to ~/.claude/workflow-server-tokens/current.token and inject reads it on the next call, so this discipline is mechanical."
   token-is-opaque: "Treat the session token as an opaque string. NEVER parse, decode, or modify its contents. Session identity is embedded within the token; there is no separate session_id field."
   validation-warnings: "Check _meta.validation in each response. Warnings are advisory but should be addressed."
   resource-loading-via-tool: "Resource refs returned in operation bodies (e.g., 'meta/activity-worker-prompt') are lightweight pointers. Load full content via get_resource({ session_token, resource_id })."
   staleness-recovery-only-via-start-session: "HMAC staleness recovery (re-signing a saved token after a server restart) is performed ONLY by start_session. No other workflow tool — next_activity, get_workflow, get_resource, get_skill, resolve_operations, yield/resume/respond_checkpoint — has a recovery path: they verify HMAC strictly and fail. When resuming a saved session, ALWAYS go through start_session first (binding the saved token to the session_token parameter); use the returned token for everything else. Never pass a saved/disk token directly to any tool other than start_session."
-  start-session-strict-params: "start_session has a strict input schema and rejects unknown keys (e.g., 'saved_session_token', 'token', 'sessionToken'). The valid parameters are exactly: workflow_id, parent_session_token, session_token, agent_id. Workflow VARIABLES with the same shorthand name (e.g., the saved_session_token variable) must be bound to the canonical PARAMETER (session_token) at the call site."
-  parameter-vs-variable: "Workflow operations describe input/output VARIABLES with their own names (e.g., saved_session_token). MCP tool calls take their own canonical PARAMETER names (e.g., session_token). When invoking an MCP tool, always bind variables to parameters explicitly — do not pass workflow variables under their workflow names as MCP parameters."
+  start-session-strict-params: "Applies when running without an MCP-client interceptor. start_session has a strict input schema and rejects unknown keys (e.g., 'saved_session_token', 'token', 'sessionToken'). The valid parameters are exactly: workflow_id, parent_session_token, session_token, agent_id. Workflow VARIABLES with the same shorthand name (e.g., the saved_session_token variable) must be bound to the canonical PARAMETER (session_token) at the call site. With the interceptor installed, the LLM does not construct parameter names; this constraint is satisfied automatically."
+  parameter-vs-variable: "Applies to LLM-constructed tool calls. Workflow operations describe input/output VARIABLES with their own names (e.g., saved_session_token). MCP tool calls take their own canonical PARAMETER names (e.g., session_token). When invoking an MCP tool, always bind variables to parameters explicitly — do not pass workflow variables under their workflow names as MCP parameters. With the MCP-client interceptor installed, session_token specifically is injected by the harness and the agent never names it."

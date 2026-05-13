@@ -64,9 +64,9 @@ variables[14]:
     type: boolean
     description: "Whether the dispatched client workflow has reached workflow_complete"
     defaultValue: false
-  - name: pending_checkpoint_handle
+  - name: pending_checkpoint_session_token
     type: string
-    description: "Most recently yielded checkpoint_handle awaiting resolution (cleared after each iteration of the dispatch loop)"
+    description: "Most recently yielded session_token (bcp set) awaiting resolution (cleared after each iteration of the dispatch loop)"
   - name: abort_completion
     type: boolean
     description: "Whether the user chose to return to dispatch from end-workflow instead of closing"

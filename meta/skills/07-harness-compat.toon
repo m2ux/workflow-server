@@ -17,6 +17,7 @@ operations:
     rules:
       foreground-always: "CRITICAL: spawn-agent MUST be dispatched as foreground (blocking). Never set run_in_background. Background dispatch silently breaks checkpoint delivery — the orchestrator never sees the worker's <checkpoint_yield>."
       token-in-prompt: "When the spawned agent inherits a workflow session, ALWAYS include the session_token in the prompt. Server state is preserved by the token, not by the harness."
+      explicit-session-on-resume: "When the parent agent regains control after a spawned child returns, its next workflow-server tool call MUST explicitly include its own session_token in arguments. With an MCP-client interceptor injecting current.token, the interceptor's pointer still holds the child's last captured token at this moment; explicit inclusion overwrites it on the next capture and restores single-pointer correctness for subsequent calls. Without the interceptor this is the same discipline as use-most-recent-token; with the interceptor it is the only place an agent must name session_token by hand."
     prose: |
       Per-harness implementation:
       | Harness | Invocation |
