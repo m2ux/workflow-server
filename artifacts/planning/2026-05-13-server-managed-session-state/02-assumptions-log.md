@@ -185,3 +185,19 @@ Surfaced during the redundant-prose sweep across `workflows/` and `docs/`:
 - **Research-dependent:** all 3 resolved.
 - **Self-evident:** 3 (R6, R7, R8) + 6 (P1, P3, P6, P8, P10, P11) + 1 (S9) = 10, all confirmed.
 - **Open count:** 0. Plan-prepare (including the sweep revision) is convergent; implement activity may proceed without further reconciliation.
+
+---
+
+## Assumptions review (added 2026-05-13, assumptions-review activity)
+
+The assumptions-review activity inspected this log end-to-end against the planning artifacts (`02-design-philosophy.md`, `03-codebase-comprehension.md`, `04-requirements-elicitation.md`, `05-research.md`, `05-work-package-plan.md`, `05-test-plan.md`).
+
+**Outcome:** no open assumptions remain. The convergence summary above is accurate:
+
+- Every code-analyzable assumption is backed by a concrete file/line citation or grep result.
+- Every stakeholder-dependent assumption either points to a transcript section in [04-requirements-elicitation.md](04-requirements-elicitation.md) §5–§6 or has been resolved as a plan-phase decision (PD-1 through PD-11).
+- All three research-dependent assumptions (B1, B2, F4) cite the resolution sections in [05-research.md](05-research.md).
+- All eleven plan-phase decisions (PD-1 through PD-11) are confirmed and traceable to a section of [05-work-package-plan.md](05-work-package-plan.md).
+- The sweep-phase set (S1–S10) and the plan-phase tactical set (P1–P11) are downstream of resolved decisions and require no further reconciliation.
+
+No interview loop was executed because no assumption was `open` or `partially-validated` against a stakeholder-resolvable axis. `stakeholder_review_complete = true`. Proceed to implement.

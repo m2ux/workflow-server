@@ -60,4 +60,4 @@ The fix works by separating three things that are mixed together today: who carr
 
 ---
 
-**Status:** Ready — plan-prepare complete; ready for assumptions-review and implementation
+**Status:** Ready — assumptions-review confirmed convergence (0 open); ready for implement activity
