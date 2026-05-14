@@ -754,6 +754,27 @@ disposition decided by the plan revision sweep. Hit counts are from
 | `grep -ln "interceptor" docs/*.md README.md SETUP.md CLAUDE.md` | **Zero matches** | **Confirm at PR open.** |
 | Tool description prose ("Managed automatically by the MCP-host harness interceptor when installed") in JSONSchema descriptions returned by `discover`/`get_resource` | **Lives in `src/tools/*.ts`** | **Rewrite during Phase 4.** When `sessionIndexParam` is introduced, regenerate the descriptions to drop the interceptor reference. |
 
+**Phase 10.3 audit attestation (2026-05-14):** Sunset complete on
+`feat/115-server-managed-session-state` @ `d9b3845`.
+
+| Audit step | Command | Result |
+|-----------|---------|--------|
+| File-presence check | `find . -name "interceptor-recipe*" -not -path "*/node_modules/*" -not -path "*/.git/*"` | Zero matches |
+| Top-level prose check | `grep -rln -i "interceptor" src/ schemas/ docs/ README.md SETUP.md CLAUDE.md AGENTS.md` | Zero matches |
+| Tool-description prose check | `grep -rn "interceptor" src/` | Zero matches (Phase 4 scrubbed the `start_session` STRICT PARAMETERS / staleness-recovery notes when `sessionIndexParam` landed) |
+| Workflows worktree check | `grep -rln -i "interceptor" workflows/` (on `workflows` branch @ `89dda5c`) | Zero matches (Phase 8 cleanup of meta-workflow operations removed the residual interceptor references via deletions of `adopt-session`, `restore`, `persist`, and the obsolete token-threading rules) |
+| Token-threading rule remnants | `grep -rln "token-passes-on-each-call\|use-most-recent-token\|token-is-opaque\|staleness-recovery-only-via-start-session\|start-session-strict-params" src/ schemas/ docs/ README.md SETUP.md CLAUDE.md AGENTS.md` | Zero matches |
+
+No residual mentions to remove. The sunset was effected as a side-effect of
+Phases 4 (tool-description regeneration) and 8 (meta-workflow operation
+deletion + rule deletion), not as an additional explicit removal during
+Phase 10.3. **SC-18 satisfied** without code or doc changes in this phase.
+
+The currently-running workflow-server MCP (main-branch build) still surfaces
+the legacy interceptor prose in its `start_session` JSONSchema description
+because the running process predates the feature branch — this is expected
+and will resolve when the merged PR is built and the server restarts.
+
 ### A.5 Disposition rollup
 
 | Bucket | Count | Notes |
