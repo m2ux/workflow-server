@@ -75,15 +75,18 @@ export class SessionStoreError extends Error {
 /**
  * Canonicalise an arbitrary JSON-serialisable value to a deterministic UTF-8
  * byte string. Keys are sorted lexicographically at every depth; arrays
- * preserve order; `undefined` values are dropped. The output is the byte
- * sequence that gets HMAC-sealed and written to disk — readers see exactly
- * what was sealed because the on-disk bytes ARE the canonical bytes.
+ * preserve order; `undefined` values are dropped. Output is pretty-printed
+ * with 2-space indentation and `\n` separators — deterministic because the
+ * key order and whitespace rules are fixed. The output is the byte sequence
+ * that gets HMAC-sealed and written to disk.
  */
 export function canonicaliseJson(value: unknown): string {
-  return canonicaliseValue(value);
+  return canonicaliseValue(value, 0);
 }
 
-function canonicaliseValue(v: unknown): string {
+const INDENT = '  ';
+
+function canonicaliseValue(v: unknown, depth: number): string {
   if (v === null) return 'null';
   if (typeof v === 'number') {
     if (!Number.isFinite(v)) {
@@ -96,17 +99,23 @@ function canonicaliseValue(v: unknown): string {
   }
   if (typeof v === 'string' || typeof v === 'boolean') return JSON.stringify(v);
   if (Array.isArray(v)) {
-    return '[' + v.map(canonicaliseValue).join(',') + ']';
+    if (v.length === 0) return '[]';
+    const inner = INDENT.repeat(depth + 1);
+    const outer = INDENT.repeat(depth);
+    return '[\n' + v.map((item) => inner + canonicaliseValue(item, depth + 1)).join(',\n') + '\n' + outer + ']';
   }
   if (typeof v === 'object') {
     const obj = v as Record<string, unknown>;
     const keys = Object.keys(obj).filter((k) => obj[k] !== undefined).sort();
+    if (keys.length === 0) return '{}';
+    const inner = INDENT.repeat(depth + 1);
+    const outer = INDENT.repeat(depth);
     return (
-      '{' +
+      '{\n' +
       keys
-        .map((k) => `${JSON.stringify(k)}:${canonicaliseValue(obj[k])}`)
-        .join(',') +
-      '}'
+        .map((k) => `${inner}${JSON.stringify(k)}: ${canonicaliseValue(obj[k], depth + 1)}`)
+        .join(',\n') +
+      '\n' + outer + '}'
     );
   }
   // `undefined`, functions, symbols — dropped at the parent level. If we

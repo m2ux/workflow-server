@@ -41,16 +41,21 @@ describe('session-store primitives', () => {
   describe('canonicaliseJson', () => {
     it('sorts object keys lexicographically at every depth', () => {
       const bytes = canonicaliseJson({ z: 1, a: { y: 2, x: 3 } });
-      expect(bytes).toBe('{"a":{"x":3,"y":2},"z":1}');
+      expect(bytes).toBe('{\n  "a": {\n    "x": 3,\n    "y": 2\n  },\n  "z": 1\n}');
     });
 
     it('drops undefined values (matching JSON semantics)', () => {
       const bytes = canonicaliseJson({ a: 1, b: undefined, c: 3 });
-      expect(bytes).toBe('{"a":1,"c":3}');
+      expect(bytes).toBe('{\n  "a": 1,\n  "c": 3\n}');
     });
 
     it('preserves array order', () => {
-      expect(canonicaliseJson([3, 1, 2])).toBe('[3,1,2]');
+      expect(canonicaliseJson([3, 1, 2])).toBe('[\n  3,\n  1,\n  2\n]');
+    });
+
+    it('emits empty containers compactly', () => {
+      expect(canonicaliseJson([])).toBe('[]');
+      expect(canonicaliseJson({})).toBe('{}');
     });
 
     it('serialises null, booleans, strings, finite numbers', () => {
@@ -182,10 +187,11 @@ describe('session-store primitives', () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc18');
       await writeSessionFile(folder, { schemaVersion: 1, sealed: 'ok' });
       const original = await readFile(sessionFilePath(folder), 'utf8');
-      // Pretty-print: same value, different bytes ⇒ seal must mismatch.
-      const pretty = JSON.stringify(JSON.parse(original), null, 2);
-      expect(pretty).not.toBe(original);
-      await writeFile(sessionFilePath(folder), pretty, 'utf8');
+      // Re-serialise with a different whitespace shape (compact, no indent).
+      // Same value, different bytes ⇒ seal must mismatch.
+      const compact = JSON.stringify(JSON.parse(original));
+      expect(compact).not.toBe(original);
+      await writeFile(sessionFilePath(folder), compact, 'utf8');
       await expect(verifySeal(folder)).rejects.toMatchObject({ code: 'SEAL_MISMATCH' });
     });
 
