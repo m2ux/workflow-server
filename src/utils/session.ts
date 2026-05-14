@@ -2,13 +2,9 @@ import { z } from 'zod';
 
 /**
  * Zod parameter spread for the `session_index` parameter shared by every
- * authenticated tool (Phase 4). The index is a 6-character RFC 4648 base32
- * string identifying the planning folder whose `session.json` is the
- * authoritative state for the session.
- *
- * Tools that previously accepted `session_token` now accept `session_index`;
- * passing the legacy `session_token` parameter is rejected by the strict
- * zod schema and surfaces a clear migration error (PR116-TC-60).
+ * authenticated tool. The index is a 6-character RFC 4648 base32 string
+ * identifying the planning folder whose `session.json` is the authoritative
+ * state for the session.
  */
 export const sessionIndexParam = {
   session_index: z.string()
@@ -21,9 +17,6 @@ export const sessionIndexParam = {
  * authenticated tool handler EXCEPT `respond_checkpoint` (the resolution
  * mechanism) and `present_checkpoint` (which loads the checkpoint definition
  * while a checkpoint is active).
- *
- * Reads `state.activeCheckpoint` per PD-11; the legacy token-decoded
- * `assertCheckpointsResolved(SessionPayload)` helper has been removed.
  */
 export function assertNoActiveCheckpoint(state: { activeCheckpoint?: { checkpointId: string; activityId: string } | undefined; currentActivity?: string }): void {
   if (state.activeCheckpoint) {

@@ -229,16 +229,10 @@ export const ValidationResultSchema = z.object({
 });
 
 /**
- * Response `_meta` envelope returned by every authenticated tool. The legacy
- * `session_token` field is removed in Phase 4 (R3) — the agent identifies the
- * session via the stable `session_index` parameter passed on every call, and
- * authoritative state lives in `session.json` on disk, so there is nothing for
- * the server to thread back through the response.
- *
- * `session_index` is included as an optional field so handlers may echo the
- * resolved index for parity with the input (helpful for trace correlation in
- * test fixtures), but agents are not expected to read it back from the
- * response.
+ * Response `_meta` envelope returned by every authenticated tool. The session
+ * is identified by the stable `session_index` parameter passed on every call;
+ * authoritative state lives in `session.json` on disk. Handlers may echo the
+ * resolved index for trace correlation.
  */
 export const MetaResponseSchema = z.object({
   session_index: z.string().regex(/^[A-Z2-7]{6}$/).optional(),

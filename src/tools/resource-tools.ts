@@ -82,12 +82,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Start or resume a workflow session, identified by `planning_slug` (a single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`). Returns a 6-character base32 `session_index` (required for all subsequent authenticated tool calls) and basic workflow metadata. ' +
         'For a fresh session, provide `planning_slug` (canonical) and optionally `workflow_id` (defaults to "meta"). For a nested-workflow dispatch, also pass `parent_planning_slug` — the server snapshots the parent\'s `session.json` under the child\'s `parentSession` field for trace correlation and recursive parent traversal. ' +
-        'If the resolved folder contains legacy `workflow-state.json` + `.session-token` artefacts (pre-Phase-5), the server migrates them in place before resuming. The migration is idempotent (detect-on-read), and after success the folder holds a server-managed `session.json` + new `.session-token` seal pair. ' +
+        'If the resolved folder contains legacy `workflow-state.json` + `.session-token` artefacts, the server migrates them in place before resuming. The migration is idempotent (detect-on-read), and after success the folder holds a server-managed `session.json` + new `.session-token` seal pair. ' +
         'The agent_id parameter is required and is stored on `session.json#agentId`, distinguishing orchestrator from worker calls in the trace.',
       inputSchema: z
         .object({
           workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). Defaults to "meta". Ignored when the slug already resolves to an existing `session.json` (the workflow is taken from the resumed state).'),
-          planning_slug: z.string().optional().describe('Optional. Single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`. Phase 5 makes this the canonical input; when omitted the server mints a transitional slug derived from a fresh UUID (back-compat shim for callers not yet on the new contract).'),
+          planning_slug: z.string().optional().describe('Optional. Single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`. When omitted the server mints a transitional slug derived from a fresh UUID.'),
           parent_planning_slug: z.string().optional().describe('Optional. When dispatching a child workflow, the parent session\'s `planning_slug`. The parent\'s `session.json` is read (and seal-verified) and snapshot under the child\'s `parentSession` field for trace correlation and recursive parent traversal.'),
           agent_id: z.string().default('orchestrator').describe('Sets the agentId field inside the session state (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
         })
@@ -96,10 +96,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     withAuditLog('start_session', async ({ workflow_id, planning_slug, parent_planning_slug, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
-      // Resolve the planning folder up-front. When `planning_slug` is provided,
-      // use it directly (Phase 5 canonical). Otherwise mint a transitional
-      // slug — back-compat shim retained while the meta workflow surface is
-      // updated (Phase 8); Phase 5 itself ships the parameter shape.
+      // Resolve the planning folder up-front. When `planning_slug` is
+      // provided use it directly; otherwise mint a transitional slug.
       const slug = planning_slug ?? `transition-${randomUUID()}`;
       const folder = await ensurePlanningFolder(config.workspaceDir, slug);
 
@@ -207,11 +205,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       // Depth of the recursive parent chain rooted at the new/resumed
-      // session. 0 == no parent, 1 == one parent, and so on. Past
-      // PARENT_CHAIN_DEPTH_WARN_THRESHOLD we surface a soft validation
-      // warning (PD-6) and stamp the depth onto the start_session trace
-      // event for forensic queries. There is no hard ceiling — pathological
-      // depth is loud, not fatal.
+      // session. Past PARENT_CHAIN_DEPTH_WARN_THRESHOLD we surface a soft
+      // validation warning and stamp the depth onto the trace event. There
+      // is no hard ceiling — pathological depth is loud, not fatal.
       const depth = parentChainDepth(state);
       const depthWarning =
         depth > PARENT_CHAIN_DEPTH_WARN_THRESHOLD

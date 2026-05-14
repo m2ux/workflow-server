@@ -20,8 +20,7 @@ export interface TraceEvent {
    * Number of ancestor sessions reachable via `parentSession` at event time.
    * Populated by handlers that have a loaded `SessionFile` available (notably
    * `start_session`); omitted for unauthenticated tools and for events whose
-   * caller did not compute the depth. PD-6 — exposed for trace enrichment so
-   * pathological chains can be located after-the-fact.
+   * caller did not compute the depth.
    */
   pdepth?: number;
 }

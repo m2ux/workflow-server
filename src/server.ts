@@ -13,10 +13,6 @@ export function createServer(config: ServerConfig): McpServer {
     traceStore: config.traceStore ?? new TraceStore(),
   };
 
-  // Wire the workspace path into the audit-log wrapper so withAuditLog can
-  // re-resolve `session_index` parameters against the canonical planning root
-  // (Phase 4 / R4). Unauthenticated tools bypass the resolver and emit trace
-  // events without session-derived fields.
   setAuditWorkspaceDir(resolvedConfig.workspaceDir);
 
   const server = new McpServer(

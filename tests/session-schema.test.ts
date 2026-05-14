@@ -36,7 +36,7 @@ function minimalSession(overrides: Partial<SessionFile> = {}): SessionFile {
 
 describe('SessionFile schema', () => {
   describe('minimal valid payload', () => {
-    it('PR116-TC-21: accepts a minimal valid session.json with all required fields', () => {
+    it('accepts a minimal valid session.json with all required fields', () => {
       const data = minimalSession();
       const result = safeValidateSessionFile(data);
       expect(result.success).toBe(true);
@@ -56,7 +56,7 @@ describe('SessionFile schema', () => {
   });
 
   describe('required-field rejection', () => {
-    it('PR116-TC-22: rejects a payload missing schemaVersion', () => {
+    it('rejects a payload missing schemaVersion', () => {
       const data = minimalSession();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (data as any).schemaVersion;
@@ -145,7 +145,7 @@ describe('SessionFile schema', () => {
   });
 
   describe('recursive parentSession', () => {
-    it('PR116-TC-23: accepts recursive parentSession and round-trips through serialise/parse', () => {
+    it('accepts recursive parentSession and round-trips through serialise/parse', () => {
       const parent = minimalSession({
         sessionIndex: 'PARENT',
         workflowId: 'meta',
@@ -163,7 +163,7 @@ describe('SessionFile schema', () => {
       }
     });
 
-    it('PR116-TC-24: round-trips a 3-level nested parentSession.parentSession.parentSession (SC-5)', () => {
+    it('round-trips a 3-level nested parentSession.parentSession.parentSession', () => {
       const gp = minimalSession({ sessionIndex: 'GGGGGG', workflowId: 'meta' });
       const grandparent = minimalSession({
         sessionIndex: 'GRANDP',
@@ -207,7 +207,7 @@ describe('SessionFile schema', () => {
   });
 
   describe('structured error reporting', () => {
-    it('PR116-TC-25: safeValidateSessionFile returns structured errors with field paths for invalid payloads', () => {
+    it('safeValidateSessionFile returns structured errors with field paths for invalid payloads', () => {
       const data = minimalSession({ sessionIndex: 'lowercase' as string });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (data as any).seq = 'not-a-number';
@@ -278,13 +278,13 @@ describe('SessionFile schema', () => {
       expect(typeof SessionFileSchema.safeParse).toBe('function');
     });
 
-    it('exposes PARENT_CHAIN_DEPTH_WARN_THRESHOLD as a numeric constant (PD-6)', () => {
+    it('exposes PARENT_CHAIN_DEPTH_WARN_THRESHOLD as a numeric constant', () => {
       expect(typeof PARENT_CHAIN_DEPTH_WARN_THRESHOLD).toBe('number');
       expect(PARENT_CHAIN_DEPTH_WARN_THRESHOLD).toBe(5);
     });
   });
 
-  describe('parentChainDepth helper (PD-6)', () => {
+  describe('parentChainDepth helper', () => {
     it('returns 0 for a session with no parent', () => {
       const state = minimalSession();
       expect(parentChainDepth(state)).toBe(0);

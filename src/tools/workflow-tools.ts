@@ -216,8 +216,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       if (config.traceStore) {
         const segment = config.traceStore.getSegmentAndAdvanceCursor(state.sessionIndex);
-        // Note: trace store keys by sessionIndex now (was sid); for Phase 4 we
-        // continue to use the sessionIndex as the trace partition key.
         if (segment.events.length > 0) {
           const firstEvent = segment.events[0];
           const lastEvent = segment.events[segment.events.length - 1];

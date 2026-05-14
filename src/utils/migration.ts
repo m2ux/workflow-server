@@ -21,9 +21,6 @@
  *   - Legacy token decode failure (no `.session-token`, or malformed payload)
  *     is non-fatal: the converter falls back to a minimal session shape
  *     reconstructed from whatever fields the envelope itself carries.
- *
- * Test cases: PR116-TC-51 .. PR116-TC-58 (migration variants + idempotency +
- * error paths).
  */
 
 import { readFile, stat, unlink } from 'node:fs/promises';

@@ -78,8 +78,6 @@ export class SessionStoreError extends Error {
  * preserve order; `undefined` values are dropped. The output is the byte
  * sequence that gets HMAC-sealed and written to disk — readers see exactly
  * what was sealed because the on-disk bytes ARE the canonical bytes.
- *
- * Salvaged from the reverted Tier C `state-hash.ts` (research §6 / PD-14).
  */
 export function canonicaliseJson(value: unknown): string {
   return canonicaliseValue(value);
@@ -131,12 +129,9 @@ async function computeSeal(canonicalJson: string): Promise<string> {
 /**
  * Atomic write helper: stage to `<path>.tmp.<pid>.<ts>.<rand>`, fsync the
  * file descriptor, fsync the parent directory, then `rename` over the
- * destination. Falls back to copy+fsync+unlink on EXDEV (cross-device).
- *
- * Salvaged from the reverted Tier C `session-store.ts` (PD-14). The EXDEV
- * fallback is defensive — in practice the tmp file and destination live in
- * the same planning folder — but the cost is negligible and protects against
- * `/tmp` overlays in CI / container setups.
+ * destination. Falls back to copy+fsync+unlink on EXDEV (cross-device) — the
+ * tmp file and destination normally live in the same planning folder, but the
+ * fallback protects against `/tmp` overlays in CI / container setups.
  */
 async function writeAtomic(
   path: string,
@@ -342,11 +337,11 @@ export function planningRoot(workspaceDir: string): string {
  * iteration and resolves the server secret once across the enumeration.
  *
  * Behaviour:
- *   - Exactly one match → returns its absolute path (PR116-TC-10).
+ *   - Exactly one match → returns its absolute path.
  *   - Two or more matches → throws `SessionStoreError(COLLISION)` with both
- *     candidate paths in `details.candidates` (PR116-TC-11, PD-4, SC-10).
+ *     candidate paths in `details.candidates`.
  *   - Zero matches → throws `SessionStoreError(NOT_FOUND)` naming the index
- *     and the workspace (PR116-TC-12).
+ *     and the workspace.
  *
  * The function does NOT verify the seal on a matched folder — that is the
  * caller's responsibility (`verifySeal` is called downstream by the
@@ -467,9 +462,7 @@ export { writeAtomic as _writeAtomicForTests };
 
 /**
  * Round-trip-and-re-canonicalise a JSON value. Helper for migration code
- * (Phase 9) that needs to ingest legacy state and re-emit it in canonical
- * form before sealing. Equivalent to `canonicaliseJson(JSON.parse(s))` with
- * an extra parse safety check.
+ * that ingests legacy state and re-emits it in canonical form before sealing.
  */
 export function recanonicalise(value: unknown): string {
   return canonicaliseJson(value);

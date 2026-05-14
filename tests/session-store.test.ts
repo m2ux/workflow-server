@@ -33,8 +33,6 @@ import {
 import { computeSessionIndex } from '../src/utils/session-index.js';
 
 /**
- * Phase 2 — session-store primitives (PR116-TC-10 .. PR116-TC-20).
- *
  * Tests build a real workspace under `os.tmpdir()` and exercise the full
  * read/write/seal/resolve surface. Each top-level describe gets its own
  * workspace so file-mode and collision assertions don't interfere.
@@ -68,7 +66,7 @@ describe('session-store primitives', () => {
     });
   });
 
-  describe('PR116-TC-13 / TC-14 — writeSessionFile atomicity', () => {
+  describe('writeSessionFile atomicity', () => {
     let workspace: string;
 
     beforeEach(async () => {
@@ -114,7 +112,7 @@ describe('session-store primitives', () => {
     afterEachCleanup(() => workspace);
   });
 
-  describe('PR116-TC-15 — EXDEV fallback', () => {
+  describe('EXDEV fallback', () => {
     let workspace: string;
 
     beforeEach(async () => {
@@ -155,21 +153,21 @@ describe('session-store primitives', () => {
     afterEachCleanup(() => workspace);
   });
 
-  describe('PR116-TC-16 / TC-17 / TC-18 — verifySeal', () => {
+  describe('verifySeal', () => {
     let workspace: string;
 
     beforeEach(async () => {
       workspace = await mkdtemp(join(tmpdir(), 'sx-store-seal-'));
     });
 
-    it('PR116-TC-16: succeeds for an untouched (session.json, .session-token) pair', async () => {
+    it('succeeds for an untouched (session.json, .session-token) pair', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc16');
       await writeSessionFile(folder, { schemaVersion: 1, sealed: 'ok' });
       const result = await verifySeal(folder);
       expect(result.state).toEqual({ schemaVersion: 1, sealed: 'ok' });
     });
 
-    it('PR116-TC-17: returns SEAL_MISMATCH when session.json is hand-edited (SC-4)', async () => {
+    it('returns SEAL_MISMATCH when session.json is hand-edited', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc17');
       await writeSessionFile(folder, { schemaVersion: 1, sealed: 'ok' });
       // Hand-edit: change a field value.
@@ -180,7 +178,7 @@ describe('session-store primitives', () => {
       });
     });
 
-    it('PR116-TC-18: returns SEAL_MISMATCH when whitespace alone changes', async () => {
+    it('returns SEAL_MISMATCH when whitespace alone changes', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc18');
       await writeSessionFile(folder, { schemaVersion: 1, sealed: 'ok' });
       const original = await readFile(sessionFilePath(folder), 'utf8');
@@ -214,14 +212,14 @@ describe('session-store primitives', () => {
     afterEachCleanup(() => workspace);
   });
 
-  describe('PR116-TC-19 / TC-20 — file and directory modes', () => {
+  describe('file and directory modes', () => {
     let workspace: string;
 
     beforeEach(async () => {
       workspace = await mkdtemp(join(tmpdir(), 'sx-store-mode-'));
     });
 
-    it('PR116-TC-19: session.json and .session-token are written with 0600', async () => {
+    it('session.json and .session-token are written with 0600', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc19');
       await writeSessionFile(folder, { schemaVersion: 1 });
       const stateStat = await stat(sessionFilePath(folder));
@@ -231,7 +229,7 @@ describe('session-store primitives', () => {
       expect(sealStat.mode & 0o777).toBe(PLANNING_FILE_MODE);
     });
 
-    it('PR116-TC-20: planning folder is created with 0700 when ensurePlanningFolder is called', async () => {
+    it('planning folder is created with 0700 when ensurePlanningFolder is called', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc20');
       const folderStat = await stat(folder);
       // Some umask configurations or pre-existing parents can drop bits; the
@@ -244,7 +242,7 @@ describe('session-store primitives', () => {
     afterEachCleanup(() => workspace);
   });
 
-  describe('PR116-TC-10 / TC-11 / TC-12 — resolveSessionIndex', () => {
+  describe('resolveSessionIndex', () => {
     let workspace: string;
 
     beforeEach(async () => {
@@ -253,14 +251,14 @@ describe('session-store primitives', () => {
       await mkdir(planningRoot(workspace), { recursive: true });
     });
 
-    it('PR116-TC-10: returns the unique folder when exactly one match exists', async () => {
+    it('returns the unique folder when exactly one match exists', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc10');
       const idx = await computeSessionIndex(folder);
       const resolved = await resolveSessionIndex(workspace, idx);
       expect(resolved).toBe(folder);
     });
 
-    it('PR116-TC-11: errors with both candidate paths on collision (SC-10, PD-4)', async () => {
+    it('errors with both candidate paths on collision', async () => {
       // Inject a collision by mocking computeSessionIndexSync via the file
       // layer is awkward. Instead, we craft a workspace with two folders and
       // monkey-patch the module's internal hash to return the same index for
@@ -293,7 +291,7 @@ describe('session-store primitives', () => {
       }
     });
 
-    it('PR116-TC-12: errors with NOT_FOUND when no folder matches', async () => {
+    it('errors with NOT_FOUND when no folder matches', async () => {
       // Empty planning root → no matches for any index.
       await expect(resolveSessionIndex(workspace, 'ZZZZZZ')).rejects.toMatchObject({
         code: 'NOT_FOUND',

@@ -1,21 +1,3 @@
-/**
- * Migration-converter tests for the Phase 5 legacy-session converter.
- *
- * Covers PR116-TC-51 .. PR116-TC-60:
- *   - 51: full envelope + sibling token → session.json
- *   - 52: envelope only, with embedded sessionToken field (pre-split)
- *   - 53: orphan .session-token only (no envelope) → fresh minimal session.json
- *   - 54: invoked automatically by start_session
- *   - 55: clean cutover (legacy workflow-state.json removed; new seal in place)
- *   - 56: detect-on-read idempotent (second call short-circuits)
- *   - 57: corrupt envelope → MigrationError with recovery hint
- *   - 58: undecodable orphan token → MigrationError with recovery hint
- *   - 59: a previously-migrated folder is reused (resume path) by start_session
- *   - 60: legacy session_token parameter is rejected by every authenticated
- *         tool (verified upstream in mcp-server.test.ts; this file holds the
- *         server-internal migration-API surface)
- */
-
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, copyFileSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -51,7 +33,7 @@ async function makePlanningFolder(): Promise<{ workspaceDir: string; folder: str
   };
 }
 
-describe('migration converter (Phase 5)', () => {
+describe('migration converter', () => {
   let workspaceDir: string;
   let folder: string;
   let cleanup: () => void;
@@ -67,7 +49,7 @@ describe('migration converter (Phase 5)', () => {
     cleanup();
   });
 
-  describe('PR116-TC-51 — full legacy envelope + sibling token', () => {
+  describe('full legacy envelope + sibling token', () => {
     it('converts the actual workflow-state.json fixture into a valid session.json + new seal', async () => {
       copyFileSync(join(FIXTURE_DIR, LEGACY_STATE_FILE_NAME), join(folder, LEGACY_STATE_FILE_NAME));
       copyFileSync(join(FIXTURE_DIR, SEAL_FILE_NAME), join(folder, SEAL_FILE_NAME));
@@ -81,7 +63,7 @@ describe('migration converter (Phase 5)', () => {
       expect(result.state!.workflowId).toBe('work-package');
       expect(result.state!.workflowVersion).toBe('3.11.0');
       // Variables from the envelope were carried over.
-      expect(result.state!.variables['issue_number']).toBe('115');
+      expect(result.state!.variables['issue_number']).toBe('42');
       expect(result.state!.completedActivities).toContain('start-work-package');
     });
 
@@ -96,14 +78,14 @@ describe('migration converter (Phase 5)', () => {
     });
   });
 
-  describe('PR116-TC-52 — envelope only, pre-split sessionToken embedded inside', () => {
+  describe('envelope only, pre-split sessionToken embedded inside', () => {
     it('decodes the embedded sessionToken field as a fallback when no sibling .session-token exists', async () => {
       // Construct an envelope with an embedded sessionToken (pre-split format).
       const legacyToken = readFileSync(join(FIXTURE_DIR, SEAL_FILE_NAME), 'utf8').trim();
       const envelope = {
         stateVersion: 1,
-        savedAt: '2026-05-13T16:30:00Z',
-        startedAt: '2026-05-13T16:26:00Z',
+        savedAt: '2024-01-15T12:00:00Z',
+        startedAt: '2024-01-15T10:00:00Z',
         sessionToken: legacyToken,
         state: { variables: { foo: 'bar' }, completedActivities: [], history: [], status: 'running' },
       };
@@ -117,7 +99,7 @@ describe('migration converter (Phase 5)', () => {
     });
   });
 
-  describe('PR116-TC-53 — orphan .session-token only (no envelope)', () => {
+  describe('orphan .session-token only (no envelope)', () => {
     it('reconstructs a minimal session.json from the token payload', async () => {
       copyFileSync(join(FIXTURE_DIR, SEAL_FILE_NAME), join(folder, SEAL_FILE_NAME));
 
@@ -130,7 +112,7 @@ describe('migration converter (Phase 5)', () => {
     });
   });
 
-  describe('PR116-TC-54 — auto-trigger from start_session', () => {
+  describe('auto-trigger from start_session', () => {
     // Verified via the mcp-server integration test below; here we just
     // assert the public API surface that start_session calls.
     it('exports migratePlanningFolder for start_session to call', () => {
@@ -138,7 +120,7 @@ describe('migration converter (Phase 5)', () => {
     });
   });
 
-  describe('PR116-TC-55 — clean cutover (no coexistence)', () => {
+  describe('clean cutover (no coexistence)', () => {
     it('removes the legacy workflow-state.json after a successful conversion', async () => {
       copyFileSync(join(FIXTURE_DIR, LEGACY_STATE_FILE_NAME), join(folder, LEGACY_STATE_FILE_NAME));
       copyFileSync(join(FIXTURE_DIR, SEAL_FILE_NAME), join(folder, SEAL_FILE_NAME));
@@ -151,7 +133,7 @@ describe('migration converter (Phase 5)', () => {
     });
   });
 
-  describe('PR116-TC-56 — detect-on-read idempotency', () => {
+  describe('detect-on-read idempotency', () => {
     it('second call short-circuits when session.json is already present', async () => {
       copyFileSync(join(FIXTURE_DIR, LEGACY_STATE_FILE_NAME), join(folder, LEGACY_STATE_FILE_NAME));
       copyFileSync(join(FIXTURE_DIR, SEAL_FILE_NAME), join(folder, SEAL_FILE_NAME));
@@ -173,7 +155,7 @@ describe('migration converter (Phase 5)', () => {
     });
   });
 
-  describe('PR116-TC-57 — corrupt legacy envelope', () => {
+  describe('corrupt legacy envelope', () => {
     it('throws MigrationError with the legacy path when workflow-state.json is not JSON', async () => {
       writeFileSync(join(folder, LEGACY_STATE_FILE_NAME), '{not-json');
 
@@ -195,7 +177,7 @@ describe('migration converter (Phase 5)', () => {
     });
   });
 
-  describe('PR116-TC-58 — orphan token decode failure', () => {
+  describe('orphan token decode failure', () => {
     it('throws MigrationError when the orphan .session-token has no payload separator', async () => {
       writeFileSync(join(folder, SEAL_FILE_NAME), 'not-a-token-at-all');
 
@@ -216,7 +198,7 @@ describe('migration converter (Phase 5)', () => {
     });
   });
 
-  describe('PR116-TC-59 — already-migrated folder reused', () => {
+  describe('already-migrated folder reused', () => {
     it('verifySeal succeeds on a freshly-migrated folder', async () => {
       copyFileSync(join(FIXTURE_DIR, LEGACY_STATE_FILE_NAME), join(folder, LEGACY_STATE_FILE_NAME));
       copyFileSync(join(FIXTURE_DIR, SEAL_FILE_NAME), join(folder, SEAL_FILE_NAME));

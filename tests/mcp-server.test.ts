@@ -222,7 +222,7 @@ describe('mcp-server integration', () => {
       expect(sessionToken).toMatch(/^[A-Z2-7]{6}$/);
     });
 
-    it('tools return the same session_index in _meta (stable across calls — Phase 4 R3)', async () => {
+    it('tools return the same session_index in _meta (stable across calls)', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
         arguments: { session_index: sessionToken },
@@ -253,7 +253,7 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBe(true);
     });
 
-    it('rejects authenticated call passing legacy session_token parameter (PR116-TC-60)', async () => {
+    it('rejects authenticated call passing legacy session_token parameter', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
         // The strict zod schema only accepts `session_index`; `session_token`
@@ -357,7 +357,7 @@ describe('mcp-server integration', () => {
       expect(errorText).toContain('No current activity');
     });
 
-    it('returns the stable session_index in _meta (Phase 4 R3)', async () => {
+    it('returns the stable session_index in _meta', async () => {
       const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
 
       const result = await client.callTool({
@@ -1018,9 +1018,7 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
     });
 
-    // Phase 7 — withAuditLog re-resolution (SC-12).
-
-    it('withAuditLog re-resolves session_index and populates trace event with sid/wf/act/aid from session.json (PR116-TC-37)', async () => {
+    it('withAuditLog re-resolves session_index and populates trace event with sid/wf/act/aid from session.json', async () => {
       // Mutate the session: transition to a non-initial activity so the
       // expected `act` field is distinguishable from the start-session state.
       await client.callTool({
@@ -1059,7 +1057,7 @@ describe('mcp-server integration', () => {
       expect(getActEvent.s).toBe('ok');
     });
 
-    it('trace events for unauthenticated tools omit session-derived fields without warning (PR116-TC-38)', async () => {
+    it('trace events for unauthenticated tools omit session-derived fields without warning', async () => {
       // Snapshot the per-session trace length before the unauthenticated call.
       const before = parseToolResponse(await client.callTool({
         name: 'get_trace',
@@ -1415,7 +1413,7 @@ describe('mcp-server integration', () => {
       expect(errorText).toContain('Exactly one');
     });
 
-    it('present_checkpoint reads activeCheckpoint from session.json (PD-11)', async () => {
+    it('present_checkpoint reads activeCheckpoint from session.json', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_index: sessionToken, activity_id: 'design-philosophy' },
@@ -1439,7 +1437,7 @@ describe('mcp-server integration', () => {
       expect(response.session_index).toBe(tokenWithAct);
     });
 
-    it('respond_checkpoint reads activeCheckpoint from session.json (PD-11)', async () => {
+    it('respond_checkpoint reads activeCheckpoint from session.json', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_index: sessionToken, activity_id: 'design-philosophy' },
@@ -1483,9 +1481,7 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // ============== start_session shape (Phase 5) ==============
-
-  describe('start_session (Phase 5 surface)', () => {
+  describe('start_session surface', () => {
     it('returns a 6-character session_index for a fresh meta session', async () => {
       const result = await client.callTool({
         name: 'start_session',
@@ -1509,8 +1505,8 @@ describe('mcp-server integration', () => {
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
     });
 
-    it('is idempotent when planning_slug is provided — returns the same session_index on a second call (PR116-TC-27, TC-28)', async () => {
-      const slug = 'phase-5-idempotent-test';
+    it('is idempotent when planning_slug is provided — returns the same session_index on a second call', async () => {
+      const slug = 'idempotent-test';
       const first = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slug },
@@ -1525,7 +1521,7 @@ describe('mcp-server integration', () => {
     });
 
     it('resume preserves the workflow_id stored in session.json even when a different workflow_id is supplied', async () => {
-      const slug = 'phase-5-resume-workflow-stable';
+      const slug = 'resume-workflow-stable';
       const first = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
@@ -1542,13 +1538,13 @@ describe('mcp-server integration', () => {
       expect(secondResponse.workflow.id).toBe('work-package');
     });
 
-    it('captures parent snapshot when parent_planning_slug is provided (PR116-TC-29)', async () => {
+    it('captures parent snapshot when parent_planning_slug is provided', async () => {
       const parent = await client.callTool({
         name: 'start_session',
         arguments: {
           workflow_id: 'work-package',
           agent_id: 'orchestrator',
-          planning_slug: 'phase-5-parent-slug',
+          planning_slug: 'parent-slug',
         },
       });
       const parentResponse = parseToolResponse(parent);
@@ -1558,9 +1554,9 @@ describe('mcp-server integration', () => {
         name: 'start_session',
         arguments: {
           workflow_id: 'remediate-vuln',
-          parent_planning_slug: 'phase-5-parent-slug',
+          parent_planning_slug: 'parent-slug',
           agent_id: 'worker-1',
-          planning_slug: 'phase-5-child-slug',
+          planning_slug: 'child-slug',
         },
       });
       expect(child.isError).toBeFalsy();
@@ -1570,11 +1566,11 @@ describe('mcp-server integration', () => {
       expect(childResponse.session_index).not.toBe(parentIdx);
     });
 
-    it('PR116-TC-30: three-level dispatch (A → B → C → D) records the full chain in D\'s session.json (SC-5)', async () => {
-      const slugA = 'phase-6-chain-a';
-      const slugB = 'phase-6-chain-b';
-      const slugC = 'phase-6-chain-c';
-      const slugD = 'phase-6-chain-d';
+    it('three-level dispatch (A → B → C → D) records the full chain in D\'s session.json', async () => {
+      const slugA = 'chain-a';
+      const slugB = 'chain-b';
+      const slugC = 'chain-c';
+      const slugD = 'chain-d';
 
       // Build the chain from root → leaf. Each child captures the immediate
       // parent's planning_slug; the server reads the parent's session.json
@@ -1610,17 +1606,17 @@ describe('mcp-server integration', () => {
       expect(dState.parentSession?.parentSession?.parentSession?.parentSession).toBeUndefined();
     });
 
-    it('PR116-TC-31: dispatch depth > 5 emits a soft warning in _meta.validation (PD-6)', async () => {
+    it('dispatch depth > 5 emits a soft warning in _meta.validation', async () => {
       // Build a 7-level chain so the leaf records depth = 6 (six ancestors),
       // tripping the > 5 soft-warn threshold.
       const slugs = [
-        'phase-6-depth-l0',
-        'phase-6-depth-l1',
-        'phase-6-depth-l2',
-        'phase-6-depth-l3',
-        'phase-6-depth-l4',
-        'phase-6-depth-l5',
-        'phase-6-depth-l6',
+        'depth-l0',
+        'depth-l1',
+        'depth-l2',
+        'depth-l3',
+        'depth-l4',
+        'depth-l5',
+        'depth-l6',
       ];
 
       // Levels 0 through 5 stay under the threshold; the leaf at level 6 trips it.
@@ -1651,8 +1647,8 @@ describe('mcp-server integration', () => {
       expect(leaf.warnings.some((w) => /depth 6/i.test(w) && /threshold/i.test(w))).toBe(true);
     });
 
-    it('creates a fresh planning folder under .engineering/artifacts/planning/<slug>/ (PR116-TC-26)', async () => {
-      const slug = 'phase-5-fresh-folder';
+    it('creates a fresh planning folder under .engineering/artifacts/planning/<slug>/', async () => {
+      const slug = 'fresh-folder';
       const result = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slug },
@@ -1666,20 +1662,9 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // The "start_session token inheritance" describe.skip block of 13 tests was
-  // deleted in Phase 5. Those tests exercised the legacy contract whereby
-  // start_session inherited a parent session by re-passing the parent's
-  // session_token (later session_index). Phase 5 eliminates that contract:
-  // session resumption is now driven by planning_slug (PR116-TC-27/28) and
-  // parent-context capture is driven by parent_planning_slug (PR116-TC-29).
-  // The retained equivalents live in the "start_session (Phase 5 surface)"
-  // describe block above. See 02-assumptions-log.md for the rationale.
-
-  // ============== Phase 5: legacy → server-managed migration via start_session ==============
-
-  describe('start_session migration auto-trigger (Phase 5)', () => {
-    it('PR116-TC-54: auto-migrates a planning folder containing legacy workflow-state.json + .session-token on first call', async () => {
-      const slug = 'phase-5-migration-auto';
+  describe('start_session migration auto-trigger', () => {
+    it('auto-migrates a planning folder containing legacy workflow-state.json + .session-token on first call', async () => {
+      const slug = 'migration-auto';
       const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
       const { mkdirSync, copyFileSync, existsSync } = await import('node:fs');
       mkdirSync(folderPath, { recursive: true });
@@ -1705,8 +1690,8 @@ describe('mcp-server integration', () => {
       expect(existsSync(join(folderPath, '.session-token'))).toBe(true);
     });
 
-    it('PR116-TC-59: a second call against the same migrated folder reuses session.json without re-migrating', async () => {
-      const slug = 'phase-5-migration-resume';
+    it('a second call against the same migrated folder reuses session.json without re-migrating', async () => {
+      const slug = 'migration-resume';
       const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
       const { mkdirSync, copyFileSync } = await import('node:fs');
       mkdirSync(folderPath, { recursive: true });
@@ -1731,9 +1716,7 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // ============== Phase 5: dispatch_workflow tool stays removed ==============
-
-  describe('Phase 5 deletions', () => {
+  describe('removed legacy surface', () => {
     it('dispatch_workflow tool is not registered', async () => {
       const result = await client.callTool({
         name: 'dispatch_workflow',

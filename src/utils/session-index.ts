@@ -4,16 +4,15 @@ import { getOrCreateServerKey } from './crypto.js';
 
 /**
  * RFC 4648 base32 alphabet (uppercase, no padding). 32 symbols covering
- * `A-Z` (skipping nothing in this regime) and `2-7`. By design this alphabet
- * excludes the ambiguous digits/letters `0`, `1`, `8`, `9`, `O`, `I`, `L`
- * (PR116-TC-09).
+ * `A-Z` and `2-7`. The alphabet excludes ambiguous digits/letters `0`, `1`,
+ * `8`, `9`.
  */
 const BASE32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
 /**
  * Length of the session index in base32 characters. 6 characters = 30 bits of
- * collision space — sufficient for per-workspace scoping (research §1) and
- * short enough to be a single tokenizer chunk.
+ * collision space — sufficient for per-workspace scoping and short enough to
+ * be a single tokenizer chunk.
  */
 const SESSION_INDEX_LENGTH = 6;
 
@@ -57,21 +56,17 @@ function base32Truncated(bytes: Buffer, length: number): string {
  * Compute the canonical session index for a planning folder.
  *
  * Algorithm:
- *   1. Canonicalise the folder path via `fs.realpathSync` (symlink-stable;
- *      avoids the "same folder, two indices" pitfall — research §2.4).
+ *   1. Canonicalise the folder path via `fs.realpathSync` (symlink-stable so
+ *      the same folder always hashes to the same index).
  *   2. HMAC-SHA-256 the canonical path bytes under the server's secret key
- *      (same key as the session-token HMAC; secret-bound so leakage of an
- *      index without the key reveals nothing about the folder).
+ *      (secret-bound so an index reveals nothing about the folder without
+ *      the key).
  *   3. Truncate the digest to 30 bits and encode as 6 RFC 4648 base32 chars
  *      (uppercase).
  *
  * The folder path **must exist on disk** at call time — `realpathSync` is
- * synchronous and throws if the path is missing. The caller (typically
- * `start_session`) is responsible for creating the folder first.
- *
- * Determinism: same folder + same server secret ⇒ byte-identical index
- * (PR116-TC-06). Secret-bound: rotating the server key changes every index
- * for the same folder (PR116-TC-08).
+ * synchronous and throws if the path is missing. The caller is responsible
+ * for creating the folder first.
  */
 export async function computeSessionIndex(folderAbsPath: string): Promise<string> {
   const canonical = realpathSync(folderAbsPath);

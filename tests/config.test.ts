@@ -2,13 +2,6 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { resolve } from 'node:path';
 import { loadConfig, WorkspaceConfigError } from '../src/config.js';
 
-/**
- * Phase 1 — workspace argument plumbing (PR116-TC-01 .. PR116-TC-04).
- *
- * Tests construct an argv vector and manipulate WORKFLOW_WORKSPACE
- * deterministically so PD-1's CLI > env > error precedence can be exercised
- * without touching process.argv.
- */
 describe('loadConfig — workspace argument', () => {
   let envBefore: string | undefined;
 
@@ -22,7 +15,7 @@ describe('loadConfig — workspace argument', () => {
     else process.env['WORKFLOW_WORKSPACE'] = envBefore;
   });
 
-  describe('PR116-TC-01 — --workspace=PATH CLI flag', () => {
+  describe('--workspace=PATH CLI flag', () => {
     it('exposes workspaceDir resolved to an absolute path from --workspace=PATH', () => {
       const config = loadConfig(['--workspace=/tmp/example-workspace']);
       expect(config.workspaceDir).toBe(resolve('/tmp/example-workspace'));
@@ -39,7 +32,7 @@ describe('loadConfig — workspace argument', () => {
     });
   });
 
-  describe('PR116-TC-02 — WORKFLOW_WORKSPACE env fallback', () => {
+  describe('WORKFLOW_WORKSPACE env fallback', () => {
     it('uses WORKFLOW_WORKSPACE when no CLI flag is supplied', () => {
       process.env['WORKFLOW_WORKSPACE'] = '/tmp/env-workspace';
       const config = loadConfig([]);
@@ -53,7 +46,7 @@ describe('loadConfig — workspace argument', () => {
     });
   });
 
-  describe('PR116-TC-03 — CLI wins over env (PD-1)', () => {
+  describe('CLI wins over env', () => {
     it('prefers --workspace=PATH over WORKFLOW_WORKSPACE when both are present', () => {
       process.env['WORKFLOW_WORKSPACE'] = '/tmp/env-workspace';
       const config = loadConfig(['--workspace=/tmp/cli-workspace']);
@@ -67,7 +60,7 @@ describe('loadConfig — workspace argument', () => {
     });
   });
 
-  describe('PR116-TC-04 — neither source provided', () => {
+  describe('neither source provided', () => {
     it('throws WorkspaceConfigError when no CLI flag and no env var', () => {
       expect(() => loadConfig([])).toThrow(WorkspaceConfigError);
     });

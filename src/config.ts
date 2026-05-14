@@ -65,9 +65,9 @@ function parseWorkspaceFlag(argv: readonly string[]): string | undefined {
 }
 
 /**
- * Resolve the workspace path with CLI > env precedence (PD-1). Returns an
- * absolute path. Throws WorkspaceConfigError when neither source supplies a
- * value — an explicit failure beats silently defaulting to `process.cwd()`.
+ * Resolve the workspace path with CLI > env precedence. Returns an absolute
+ * path. Throws WorkspaceConfigError when neither source supplies a value — an
+ * explicit failure beats silently defaulting to `process.cwd()`.
  */
 function resolveWorkspaceDir(argv: readonly string[]): string {
   const fromCli = parseWorkspaceFlag(argv);
