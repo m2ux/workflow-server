@@ -9,7 +9,8 @@ import {
   unlink,
 } from 'node:fs/promises';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
+import { tmpdir } from 'node:os';
 import { getOrCreateServerKey } from './crypto.js';
 import { computeSessionIndexSync } from './derivation.js';
 
@@ -376,6 +377,12 @@ export async function resolveSessionIndex(
     );
   }
 
+  // Check the in-memory transient registry first — bootstrap (meta)
+  // sessions live under os.tmpdir() and never appear in the workspace
+  // enumeration below.
+  const transient = transientFolderByIndex.get(sessionIndex);
+  if (transient) return transient;
+
   const root = planningRoot(workspaceDir);
   let entries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
   try {
@@ -474,8 +481,6 @@ const transientFolderBySlug = new Map<string, string>();
 
 /** Create a fresh transient planning folder under `os.tmpdir()`. */
 export async function createTransientFolder(): Promise<string> {
-  const { tmpdir } = await import('node:os');
-  const { randomUUID } = await import('node:crypto');
   const folder = join(tmpdir(), `${TRANSIENT_DIR_PREFIX}${randomUUID()}`);
   await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
   return folder;
@@ -493,8 +498,7 @@ export function lookupTransientBySlug(slug: string): string | undefined {
 }
 
 /** `true` if `folder` lives under the os.tmpdir() transient prefix. */
-export async function isTransientFolder(folder: string): Promise<boolean> {
-  const { tmpdir } = await import('node:os');
+export function isTransientFolder(folder: string): boolean {
   return folder.startsWith(join(tmpdir(), TRANSIENT_DIR_PREFIX));
 }
 
@@ -504,7 +508,7 @@ export async function isTransientFolder(folder: string): Promise<boolean> {
  * orphans eventually).
  */
 export async function discardTransient(folder: string): Promise<void> {
-  if (!(await isTransientFolder(folder))) return;
+  if (!isTransientFolder(folder)) return;
   for (const [idx, f] of transientFolderByIndex.entries()) {
     if (f === folder) transientFolderByIndex.delete(idx);
   }

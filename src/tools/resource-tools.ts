@@ -25,7 +25,11 @@ import {
   migratePlanningFolder,
   MigrationError,
   describeMigrationError,
-  consumeBootstrapFolder,
+  createTransientFolder,
+  registerTransient,
+  lookupTransientBySlug,
+  isTransientFolder,
+  discardTransient,
 } from '../utils/session/index.js';
 import {
   createInitialSessionFile,
@@ -97,14 +101,22 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     withAuditLog('start_session', async ({ workflow_id, planning_slug, parent_planning_slug, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
-      // Resolve the planning folder under the workspace planning root. Every
-      // session — including the meta bootstrap orchestrator — lives in a real
-      // folder on disk; the server keeps no in-memory state. When the meta
-      // session later dispatches a child workflow, the parent folder is
-      // consumed (deleted) post-dispatch via `consumeBootstrapFolder`, so the
-      // user sees only one folder per work package once dispatch completes.
+      // Resolve the planning folder. Meta orchestrator sessions are transient
+      // (bootstrap state only) — folder lives under os.tmpdir() and is
+      // discarded when a child workflow captures the parent. All other
+      // workflows persist under the workspace planning root with a canonical
+      // slug. This keeps the workspace free of one-shot bootstrap folders.
+      const isTransientSession = (workflow_id ?? DEFAULT_WORKFLOW_ID) === DEFAULT_WORKFLOW_ID;
       const slug = planning_slug ?? `transition-${randomUUID()}`;
-      const folder = await ensurePlanningFolder(config.workspaceDir, slug);
+      let folder: string;
+      if (isTransientSession) {
+        // Reuse the transient folder if the caller has already started a
+        // transient with this slug in this process; otherwise mint a fresh one.
+        const existing = planning_slug ? lookupTransientBySlug(planning_slug) : undefined;
+        folder = existing ?? await createTransientFolder();
+      } else {
+        folder = await ensurePlanningFolder(config.workspaceDir, slug);
+      }
 
       // Detect-and-migrate legacy session-state in the folder before anything
       // else. Idempotent: short-circuits when `session.json` is already
@@ -166,9 +178,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
       } else {
         // Capture parent snapshot if a parent_planning_slug was provided.
+        // Lookup order: transient registry by slug (the parent may be an
+        // orchestrator-bootstrap session living under os.tmpdir()), then
+        // workspace folder under the planning root.
         let parentSession: SessionFile | undefined;
+        let parentFolderToDiscard: string | undefined;
         if (parent_planning_slug) {
-          const parentFolder = resolve(planningRoot(config.workspaceDir), parent_planning_slug);
+          const transientParent = lookupTransientBySlug(parent_planning_slug);
+          const parentFolder = transientParent ?? resolve(planningRoot(config.workspaceDir), parent_planning_slug);
           try {
             // Migrate the parent folder if it carries legacy artefacts so the
             // recursive snapshot has the canonical shape.
@@ -192,6 +209,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
               );
               config.traceStore.append(parentLoaded.state.sessionIndex, parentEvent);
             }
+
+            // If the parent was a transient (orchestrator-bootstrap)
+            // session, the standalone folder is redundant once we've captured
+            // its state into the child's `parentSession`. Mark it for
+            // discard after the child's session.json is sealed.
+            if (await isTransientFolder(parentFolder)) {
+              parentFolderToDiscard = parentFolder;
+            }
           } catch (err) {
             // Parent slug is invalid — proceed without parent context.
             console.warn(`[start_session] parent_planning_slug '${parent_planning_slug}' could not be resolved; creating session without parent snapshot. Error: ${err instanceof Error ? err.message : String(err)}`);
@@ -208,14 +233,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         state = newState;
         await writeSessionFile(folder, state);
 
-        // The child folder is sealed. Now the parent's standalone folder is
-        // redundant — its state is captured inside this session's
-        // `parentSession`. Delete it IFF it contains only session.json +
-        // .session-token (i.e. it's a bootstrap orchestrator's folder, with
-        // no planning artifacts of its own). Folders with real artifacts are
-        // left alone.
-        if (parent_planning_slug && parent_planning_slug !== slug && parentSession) {
-          await consumeBootstrapFolder(config.workspaceDir, parent_planning_slug);
+        // If this is a transient session, register so its session_index
+        // resolves back to the os.tmpdir() folder. Done AFTER writeSessionFile
+        // so the registry only points at fully-sealed folders.
+        if (isTransientSession) {
+          registerTransient(sessionIndex, folder, slug);
+        }
+
+        // Discard the parent's transient folder now that the child's
+        // session.json is sealed. The parent state lives on inside the
+        // child's `parentSession` field.
+        if (parentFolderToDiscard) {
+          await discardTransient(parentFolderToDiscard);
         }
       }
 
