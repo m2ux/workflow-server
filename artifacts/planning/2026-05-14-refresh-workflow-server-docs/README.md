@@ -50,7 +50,7 @@ The practical consequence is that anyone reading the docs — a new contributor,
 | Resource | Link |
 |----------|------|
 | Issue | _None — direct user request (no associated GitHub/Jira issue)_ |
-| PR | [#118](https://github.com/m2ux/workflow-server/pull/118) |
+| PR | [#119](https://github.com/m2ux/workflow-server/pull/119) |
 | Target Branch | `chore/refresh-workflow-server-docs` |
 | Worktree | `~/projects/work/workflow-server/2026-05-14-refresh-workflow-server-docs/` |
 
