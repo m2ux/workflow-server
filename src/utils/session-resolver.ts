@@ -9,9 +9,7 @@ import type { SessionView } from './validation.js';
 
 /**
  * Project a `SessionFile` onto the abstract `SessionView` consumed by the
- * validation helpers. Bridges the Phase 4 swap from token-decoded
- * `SessionPayload` to the server-managed `SessionFile` without duplicating the
- * validation surface.
+ * validation helpers, so the validation surface stays storage-agnostic.
  */
 export function sessionView(state: SessionFile): SessionView {
   return {

@@ -6,23 +6,17 @@ import {
   validateSkillAssociation,
   buildValidation,
   buildErrorValidation,
+  type SessionView,
 } from '../src/utils/validation.js';
 import { evaluateCondition } from '../src/schema/condition.schema.js';
 import type { Condition } from '../src/schema/condition.schema.js';
-import type { SessionPayload } from '../src/utils/session.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
 
-function makeToken(overrides: Partial<SessionPayload> = {}): SessionPayload {
+function makeToken(overrides: Partial<SessionView> = {}): SessionView {
   return {
     wf: 'test-wf',
     act: '',
-    skill: '',
-    cond: '',
     v: '1.0.0',
-    seq: 1,
-    ts: Date.now(),
-    sid: 'sess-1',
-    aid: 'agent-1',
     ...overrides,
   };
 }

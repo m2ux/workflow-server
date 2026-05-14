@@ -3,18 +3,17 @@ import type { Workflow } from '../schema/workflow.schema.js';
 import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
 
 /**
- * Minimal view of session state required by the validation helpers. Both the
- * legacy `SessionPayload` (token-decoded) and the new `SessionFile`
- * (server-managed) can be projected onto this shape with a tiny adapter, so
- * the validation surface stays storage-agnostic while Phase 4 swaps the
- * authenticated tools across.
+ * Minimal view of session state required by the validation helpers. The
+ * server-managed `SessionFile` is projected onto this shape via the
+ * `sessionView()` adapter in `session-resolver.ts`, keeping the validation
+ * surface storage-agnostic.
  */
 export interface SessionView {
-  /** Workflow id (`wf` on the legacy payload, `workflowId` on the file). */
+  /** Workflow id (`workflowId` on the `SessionFile`). */
   wf: string;
-  /** Current activity id (`act` on the legacy payload, `currentActivity` on the file). */
+  /** Current activity id (`currentActivity` on the `SessionFile`). */
   act: string;
-  /** Workflow version (`v` on the legacy payload, `workflowVersion` on the file). */
+  /** Workflow version (`workflowVersion` on the `SessionFile`). */
   v: string;
 }
 

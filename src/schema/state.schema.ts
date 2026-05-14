@@ -162,17 +162,3 @@ export function addHistoryEvent(state: WorkflowState, type: HistoryEventType, de
   return { ...state, stateVersion: state.stateVersion + 1, updatedAt: now, history: [...state.history, { timestamp: now, type, ...details }] };
 }
 
-export const StateSaveFileSchema = z.object({
-  id: z.string(),
-  savedAt: z.string().datetime(),
-  description: z.string().optional(),
-  workflowId: z.string(),
-  workflowVersion: z.string(),
-  planningFolder: z.string(),
-  sessionTokenEncrypted: z.boolean(),
-  state: z.lazy(() => NestedWorkflowStateSchema),
-});
-export type StateSaveFile = z.infer<typeof StateSaveFileSchema>;
-
-export function validateStateSave(data: unknown): StateSaveFile { return StateSaveFileSchema.parse(data); }
-export function safeValidateStateSave(data: unknown) { return StateSaveFileSchema.safeParse(data); }
