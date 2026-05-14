@@ -7,15 +7,16 @@ import { CORE_ORCHESTRATOR_OPS, CORE_WORKER_OPS } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
-import { sessionIndexParam, assertNoActiveCheckpoint } from '../utils/session.js';
 import {
+  sessionIndexParam,
+  assertNoActiveCheckpoint,
   loadSessionForTool,
   advanceSession,
   saveSessionForTool,
   sessionView,
   describeSessionStoreError,
-} from '../utils/session-resolver.js';
-import { SessionStoreError } from '../utils/session-store.js';
+  SessionStoreError,
+} from '../utils/session/index.js';
 import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 import { createTraceToken, decodeTraceToken } from '../trace.js';

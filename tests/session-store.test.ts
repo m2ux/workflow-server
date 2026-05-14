@@ -29,8 +29,8 @@ import {
   verifySeal,
   writeSeal,
   writeSessionFile,
-} from '../src/utils/session-store.js';
-import { computeSessionIndex } from '../src/utils/session-index.js';
+  computeSessionIndex,
+} from '../src/utils/session/index.js';
 
 /**
  * Tests build a real workspace under `os.tmpdir()` and exercise the full
@@ -120,7 +120,7 @@ describe('session-store primitives', () => {
     });
 
     it('falls back to copy+fsync+unlink when rename throws EXDEV', async () => {
-      const { _setRenameForTests } = await import('../src/utils/session-store.js');
+      const { _setRenameForTests } = await import('../src/utils/session/store.js');
       const { rename: realRename } = await import('node:fs/promises');
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc15');
       let exdevThrown = 0;

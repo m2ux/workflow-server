@@ -10,7 +10,7 @@ import {
   SESSION_INDEX_BASE32_ALPHABET,
   SESSION_INDEX_CHAR_LENGTH,
   SESSION_INDEX_REGEX,
-} from '../src/utils/session-index.js';
+} from '../src/utils/session/derivation.js';
 
 /**
  * Tests create real directories under `os.tmpdir()` because

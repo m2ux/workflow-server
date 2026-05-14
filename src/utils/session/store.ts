@@ -10,7 +10,7 @@ import {
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { getOrCreateServerKey } from './crypto.js';
-import { computeSessionIndexSync } from './session-index.js';
+import { computeSessionIndexSync } from './derivation.js';
 
 /**
  * Tiny FS adapter object used internally by `writeAtomic`. Existing only so

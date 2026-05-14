@@ -1,6 +1,6 @@
 import type { TraceStore } from './trace.js';
 import { createTraceEvent } from './trace.js';
-import { loadSessionForTool } from './utils/session-resolver.js';
+import { loadSessionForTool } from './utils/session/resolver.js';
 
 /**
  * Workspace path injected at startup so the audit-log wrapper can re-resolve

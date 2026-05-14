@@ -7,23 +7,25 @@ import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { readSkillRaw, resolveOperations, formatOperationsBundle } from '../loaders/skill-loader.js';
 import { encodeToon } from '../utils/toon.js';
-import { sessionIndexParam, assertNoActiveCheckpoint } from '../utils/session.js';
 import {
+  sessionIndexParam,
+  assertNoActiveCheckpoint,
   loadSessionForTool,
   advanceSession,
   saveSessionForTool,
   sessionView,
   describeSessionStoreError,
-} from '../utils/session-resolver.js';
-import {
   SessionStoreError,
   ensurePlanningFolder,
   sessionFileExists,
   writeSessionFile,
   verifySeal,
   planningRoot,
-} from '../utils/session-store.js';
-import { computeSessionIndex } from '../utils/session-index.js';
+  computeSessionIndex,
+  migratePlanningFolder,
+  MigrationError,
+  describeMigrationError,
+} from '../utils/session/index.js';
 import {
   createInitialSessionFile,
   safeValidateSessionFile,
@@ -35,8 +37,6 @@ import { buildValidation, validateWorkflowVersion } from '../utils/validation.js
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
-import { migratePlanningFolder, MigrationError, describeMigrationError } from '../utils/migration.js';
-
 /**
  * Parse a resource reference that may include a workflow prefix.
  * Format: "workflow/index" for cross-workflow, or bare "index" for local.

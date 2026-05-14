@@ -32,13 +32,13 @@ import {
   SessionStoreError,
   sessionFileExists,
   writeSessionFile,
-} from './session-store.js';
-import { computeSessionIndex } from './session-index.js';
+} from './store.js';
+import { computeSessionIndex } from './derivation.js';
 import {
   createInitialSessionFile,
   safeValidateSessionFile,
   type SessionFile,
-} from '../schema/session.schema.js';
+} from '../../schema/session.schema.js';
 
 /** Filename of the legacy state envelope. */
 export const LEGACY_STATE_FILE_NAME = 'workflow-state.json';

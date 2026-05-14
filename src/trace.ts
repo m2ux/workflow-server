@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { getOrCreateServerKey, hmacSign, hmacVerify } from './utils/crypto.js';
+import { getOrCreateServerKey, hmacSign, hmacVerify } from './utils/session/crypto.js';
 import { logWarn } from './logging.js';
 
 /** Mechanical trace event with compressed field names (opaque to agents). */

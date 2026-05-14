@@ -3,9 +3,9 @@ import {
   verifySeal,
   writeSessionFile,
   SessionStoreError,
-} from './session-store.js';
-import { safeValidateSessionFile, type SessionFile } from '../schema/session.schema.js';
-import type { SessionView } from './validation.js';
+} from './store.js';
+import { safeValidateSessionFile, type SessionFile } from '../../schema/session.schema.js';
+import type { SessionView } from '../validation.js';
 
 /**
  * Project a `SessionFile` onto the abstract `SessionView` consumed by the

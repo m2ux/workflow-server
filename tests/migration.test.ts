@@ -8,14 +8,12 @@ import {
   MigrationError,
   hasLegacyArtifacts,
   LEGACY_STATE_FILE_NAME,
-} from '../src/utils/migration.js';
-import {
   PLANNING_RELATIVE_DIR,
   SEAL_FILE_NAME,
   SESSION_FILE_NAME,
   sessionFileExists,
   verifySeal,
-} from '../src/utils/session-store.js';
+} from '../src/utils/session/index.js';
 import { safeValidateSessionFile } from '../src/schema/session.schema.js';
 
 const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/legacy-session');
