@@ -4,6 +4,7 @@ import {
   readFile,
   readdir,
   rename,
+  rm,
   stat,
   unlink,
 } from 'node:fs/promises';
@@ -451,6 +452,70 @@ export async function ensurePlanningFolder(
   const folder = resolve(planningRoot(workspaceDir), slug);
   await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
   return folder;
+}
+
+/**
+ * Transient (bootstrap) session support. Orchestrator-only sessions (notably
+ * the meta workflow) never need a workspace folder — their state lives only
+ * long enough to dispatch a child workflow, which then snapshots them into
+ * `session.json#parentSession` and discards the parent.
+ *
+ * To keep the workspace planning root free of one-shot bootstrap folders,
+ * transient sessions live under `os.tmpdir()/workflow-server-transient-<uuid>/`
+ * and are registered in an in-memory map keyed by `session_index` (and
+ * optionally by slug for cross-call lookups during the same dispatch).
+ *
+ * Registry is process-local; on server restart, any /tmp leftovers are
+ * orphaned and reaped by the OS.
+ */
+const TRANSIENT_DIR_PREFIX = 'workflow-server-transient-';
+const transientFolderByIndex = new Map<string, string>();
+const transientFolderBySlug = new Map<string, string>();
+
+/** Create a fresh transient planning folder under `os.tmpdir()`. */
+export async function createTransientFolder(): Promise<string> {
+  const { tmpdir } = await import('node:os');
+  const { randomUUID } = await import('node:crypto');
+  const folder = join(tmpdir(), `${TRANSIENT_DIR_PREFIX}${randomUUID()}`);
+  await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
+  return folder;
+}
+
+/** Register a transient folder so `resolveSessionIndex` and slug-lookup find it. */
+export function registerTransient(sessionIndex: string, folder: string, slug?: string): void {
+  transientFolderByIndex.set(sessionIndex, folder);
+  if (slug) transientFolderBySlug.set(slug, folder);
+}
+
+/** Look up a transient folder by the slug it was registered under. */
+export function lookupTransientBySlug(slug: string): string | undefined {
+  return transientFolderBySlug.get(slug);
+}
+
+/** `true` if `folder` lives under the os.tmpdir() transient prefix. */
+export async function isTransientFolder(folder: string): Promise<boolean> {
+  const { tmpdir } = await import('node:os');
+  return folder.startsWith(join(tmpdir(), TRANSIENT_DIR_PREFIX));
+}
+
+/**
+ * Delete a transient folder (recursive) and remove all registry entries
+ * pointing at it. Best-effort; failures are swallowed (the OS will reap
+ * orphans eventually).
+ */
+export async function discardTransient(folder: string): Promise<void> {
+  if (!(await isTransientFolder(folder))) return;
+  for (const [idx, f] of transientFolderByIndex.entries()) {
+    if (f === folder) transientFolderByIndex.delete(idx);
+  }
+  for (const [slug, f] of transientFolderBySlug.entries()) {
+    if (f === folder) transientFolderBySlug.delete(slug);
+  }
+  try {
+    await rm(folder, { recursive: true, force: true });
+  } catch {
+    /* best-effort */
+  }
 }
 
 /**

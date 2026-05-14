@@ -25,6 +25,7 @@ import {
   migratePlanningFolder,
   MigrationError,
   describeMigrationError,
+  consumeBootstrapFolder,
 } from '../utils/session/index.js';
 import {
   createInitialSessionFile,
@@ -96,8 +97,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     withAuditLog('start_session', async ({ workflow_id, planning_slug, parent_planning_slug, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
-      // Resolve the planning folder up-front. When `planning_slug` is
-      // provided use it directly; otherwise mint a transitional slug.
+      // Resolve the planning folder under the workspace planning root. Every
+      // session — including the meta bootstrap orchestrator — lives in a real
+      // folder on disk; the server keeps no in-memory state. When the meta
+      // session later dispatches a child workflow, the parent folder is
+      // consumed (deleted) post-dispatch via `consumeBootstrapFolder`, so the
+      // user sees only one folder per work package once dispatch completes.
       const slug = planning_slug ?? `transition-${randomUUID()}`;
       const folder = await ensurePlanningFolder(config.workspaceDir, slug);
 
@@ -202,6 +207,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         });
         state = newState;
         await writeSessionFile(folder, state);
+
+        // The child folder is sealed. Now the parent's standalone folder is
+        // redundant — its state is captured inside this session's
+        // `parentSession`. Delete it IFF it contains only session.json +
+        // .session-token (i.e. it's a bootstrap orchestrator's folder, with
+        // no planning artifacts of its own). Folders with real artifacts are
+        // left alone.
+        if (parent_planning_slug && parent_planning_slug !== slug && parentSession) {
+          await consumeBootstrapFolder(config.workspaceDir, parent_planning_slug);
+        }
       }
 
       // Depth of the recursive parent chain rooted at the new/resumed

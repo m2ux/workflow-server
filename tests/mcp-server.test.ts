@@ -1566,6 +1566,86 @@ describe('mcp-server integration', () => {
       expect(childResponse.session_index).not.toBe(parentIdx);
     });
 
+    it('parent (bootstrap) folder is consumed when a child captures it via parent_planning_slug', async () => {
+      const { existsSync } = await import('node:fs');
+      const path = await import('node:path');
+
+      // 1. Start a meta session. The folder appears under the workspace
+      //    planning root (server is fully file-based; no in-memory state).
+      const metaSlug = 'meta-bootstrap';
+      const metaWorkspaceFolder = path.join(workspaceDir, '.engineering/artifacts/planning', metaSlug);
+
+      const meta = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: metaSlug },
+      });
+      expect(meta.isError).toBeFalsy();
+      const metaResponse = parseToolResponse(meta);
+      expect(metaResponse.workflow.id).toBe('meta');
+      expect(metaResponse.session_index).toMatch(/^[A-Z2-7]{6}$/);
+
+      // Meta folder exists briefly with session.json + .session-token only.
+      expect(existsSync(path.join(metaWorkspaceFolder, 'session.json'))).toBe(true);
+      expect(existsSync(path.join(metaWorkspaceFolder, '.session-token'))).toBe(true);
+
+      // 2. Dispatch a child workflow that captures the meta parent.
+      const childSlug = 'docs-refresh';
+      const child = await client.callTool({
+        name: 'start_session',
+        arguments: {
+          workflow_id: 'work-package',
+          agent_id: 'worker-1',
+          planning_slug: childSlug,
+          parent_planning_slug: metaSlug,
+        },
+      });
+      expect(child.isError).toBeFalsy();
+      const childResponse = parseToolResponse(child);
+      expect(childResponse.workflow.id).toBe('work-package');
+
+      // The child's folder lives under the workspace, with parentSession
+      // capturing meta state.
+      const childWorkspaceFolder = path.join(workspaceDir, '.engineering/artifacts/planning', childSlug);
+      expect(existsSync(path.join(childWorkspaceFolder, 'session.json'))).toBe(true);
+      expect(existsSync(path.join(childWorkspaceFolder, '.session-token'))).toBe(true);
+
+      // Parent (meta) folder was consumed on dispatch — only one canonical
+      // folder per work package remains.
+      expect(existsSync(metaWorkspaceFolder)).toBe(false);
+    });
+
+    it('parent folder is NOT consumed if it contains planning artifacts beyond session shell', async () => {
+      const { existsSync, mkdirSync, writeFileSync } = await import('node:fs');
+      const path = await import('node:path');
+
+      const parentSlug = 'parent-with-artifacts';
+      const parentFolder = path.join(workspaceDir, '.engineering/artifacts/planning', parentSlug);
+
+      // Start a parent session, then add a real planning artifact.
+      await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: parentSlug },
+      });
+      mkdirSync(parentFolder, { recursive: true });
+      writeFileSync(path.join(parentFolder, '02-design-philosophy.md'), '# real artifact\n');
+
+      // Dispatch a child.
+      const childSlug = 'child-of-artifact-parent';
+      await client.callTool({
+        name: 'start_session',
+        arguments: {
+          workflow_id: 'work-package',
+          agent_id: 'worker-1',
+          planning_slug: childSlug,
+          parent_planning_slug: parentSlug,
+        },
+      });
+
+      // Parent folder MUST still exist because it has the artifact.
+      expect(existsSync(path.join(parentFolder, '02-design-philosophy.md'))).toBe(true);
+      expect(existsSync(path.join(parentFolder, 'session.json'))).toBe(true);
+    });
+
     it('three-level dispatch (A → B → C → D) records the full chain in D\'s session.json', async () => {
       const slugA = 'chain-a';
       const slugB = 'chain-b';
