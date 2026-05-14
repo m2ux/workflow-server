@@ -15,7 +15,7 @@ When a workflow session begins, a "planning folder" is established (e.g., `.engi
 
 It contains:
 * `README.md`: The central progress tracker.
-* `workflow-state.json`: The persisted variable and session state.
+* `session.json`: The persisted variable and session state, server-managed and validated against `schemas/session-file.schema.json`. The companion `.session-token` is an HMAC-signed seal binding `session.json` to the workspace.
 * `workflow-trace.json`: The semantic and mechanical logs of everything the agents have done.
 
 ### Mandatory Progress Tracking

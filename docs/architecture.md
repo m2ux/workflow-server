@@ -5,7 +5,7 @@ The Workflow Server is designed to orchestrate complex software engineering task
 Below is the collection of architectural models that govern how the server and its agents interact.
 
 ## 1. [Hierarchical Dispatch Model](dispatch_model.md)
-To prevent prompt degradation and ensure safe boundaries, the server uses a multi-layered agent model. The Meta Orchestrator (Level 0) handles high-level user interaction and workflow dispatch. The Workflow Orchestrator (Level 1) manages the state machine for a specific workflow. The Activity Worker (Level 2) executes the actual domain tasks (coding, reviewing, etc.). This document details how these agents are spawned, how they share session state (via `start_session` with `parent_session_token`), and how they resume each other.
+To prevent prompt degradation and ensure safe boundaries, the server uses a multi-layered agent model. The Meta Orchestrator (Level 0) handles high-level user interaction and workflow dispatch. The Workflow Orchestrator (Level 1) manages the state machine for a specific workflow. The Activity Worker (Level 2) executes the actual domain tasks (coding, reviewing, etc.). This document details how these agents are spawned, how they share session state (via `start_session` with `parent_planning_slug`), and how they resume each other.
 
 ## 2. [Just-In-Time (JIT) Checkpoint Model](checkpoint_model.md)
 The JIT Checkpoint Model handles execution pauses. When a worker agent needs human input (like confirming a target directory or approving a PR), it cannot ask the user directly. Instead, it yields a `checkpoint_handle` up the chain to the Meta Orchestrator. This document explains how the handle bubbles up, how the server resolves it (via `present_checkpoint` and `respond_checkpoint`), and how the resulting variable updates are passed back down the chain via conversational resumes to unblock the worker.
@@ -24,6 +24,6 @@ Because agents are autonomous, they must be audited to ensure they actually foll
 
 ## Tool Reference
 
-See [API Reference](api-reference.md) for the complete list of MCP tools, their parameters, and the session token lifecycle.
+See [API Reference](api-reference.md) for the complete list of MCP tools, their parameters, and the `session_index` lifecycle.
 
 See [Development Guide](development.md) for setup, build commands, and testing.

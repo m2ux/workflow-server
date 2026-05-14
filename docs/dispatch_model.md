@@ -10,8 +10,8 @@ This model relies heavily on native agent-spawning capabilities, such as Cursor'
 - **Role:** The user-facing top-level agent. It discovers workflows, handles high-level user goals, and dispatches the appropriate client workflows.
 - **Responsibilities:**
   - Finding and selecting workflows (`discover`, `list_workflows`).
-  - Starting sessions via `start_session(agent_id)`.
-  - Dispatching workflow orchestrators via `start_session` with `parent_session_token` to establish parent-child trace correlation.
+  - Starting sessions via `start_session({ agent_id })` (optionally with `planning_slug` once a planning folder exists).
+  - Dispatching workflow orchestrators via `start_session` with `parent_planning_slug` to establish parent-child trace correlation.
   - Acting as the sole interface for user prompts (e.g., presenting checkpoints).
   - **Never** executes domain work or tracks detailed workflow state.
 
@@ -36,39 +36,40 @@ This model relies heavily on native agent-spawning capabilities, such as Cursor'
 
 ## Mechanics of Dispatch
 
-The dispatch process safely hands off execution from one layer to the next while preserving cryptographic session state.
+The dispatch process safely hands off execution from one layer to the next. Each session has a 6-character `session_index` (base32, deterministically derived from the planning slug); agents pass the index — not a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [State Management](state_management_model.md#5-persistence)).
 
 ### Dispatching the Workflow Orchestrator (L0 → L1)
-When the Meta Orchestrator decides to start a workflow (e.g., `work-package`), it calls `start_session` with a `parent_session_token`:
+When the Meta Orchestrator decides to start a workflow (e.g., `work-package`), it calls `start_session` with the parent's `planning_slug`:
 
 ```javascript
 start_session({
   workflow_id: "work-package",
-  parent_session_token: "<meta_token>",
+  planning_slug: "<child_slug>",
+  parent_planning_slug: "<meta_slug>",
   agent_id: "workflow-orchestrator"
 })
 ```
 
-This creates a **child session** with parent context fields (`pwf`, `pact`, `pv`, `psid`) embedded in the token for trace correlation. The server also records a trace event in the parent's trace store linking the two sessions. The response includes a `session_token` for the child session.
+This creates a **child session** under the child planning folder; the server snapshots the parent's `session.json` (after seal-verifying it) under the child's `parentSession` field for trace correlation and recursive parent traversal. A trace event in the parent's trace store links the two sessions. The response includes a `session_index` for the child session.
 
 The Meta Orchestrator then uses Cursor's `Task` tool to spawn a background agent:
 ```javascript
 Task({
   subagent_type: "generalPurpose",
-  prompt: "You are a workflow orchestrator. Your session token is: <child_token>..."
+  prompt: "You are a workflow orchestrator. Your session_index is: <child_index>..."
 })
 ```
 
 ### Dispatching the Activity Worker (L1 → L2)
-The Workflow Orchestrator evaluates the workflow, determines the next activity to run, and passes its own `session_token` to the worker.
+The Workflow Orchestrator evaluates the workflow, determines the next activity to run, and passes its own `session_index` to the worker.
 
-Unlike the L0 → L1 transition (which creates a new child session), the L1 → L2 transition **shares the same session token**. The worker uses this token directly to call `get_activity`, `get_skill`, and `next_activity`, ensuring its actions are cryptographically bound to the exact workflow and activity state tracked by the orchestrator.
+Unlike the L0 → L1 transition (which creates a new child session), the L1 → L2 transition **shares the same `session_index`**. The worker uses this index directly to call `get_activity`, `get_skill`, and `next_activity`; the server resolves the index to the same `session.json` the orchestrator is reading, so both agents see a single canonical state.
 
 The Workflow Orchestrator uses the `Task` tool to spawn the Activity Worker:
 ```javascript
 Task({
   subagent_type: "generalPurpose",
-  prompt: "You are an autonomous worker agent... Session token: <orchestrator_token>... Activity: implement..."
+  prompt: "You are an autonomous worker agent... session_index: <orchestrator_index>... Activity: implement..."
 })
 ```
 
@@ -77,17 +78,17 @@ Task({
 The meta orchestrator can poll the status of a dispatched workflow using `get_workflow_status`:
 
 ```javascript
-get_workflow_status({ session_token: "<child_token>" })
+get_workflow_status({ session_index: "<child_index>" })
 ```
 
 This returns:
 - `status`: `active`, `blocked`, or `completed`
 - `current_activity`: The activity the sub-agent is executing
-- `completed_activities`: Activities finished so far (derived from the trace)
+- `completed_activities`: Activities finished so far (derived from `session.json` + trace)
 - `last_checkpoint`: The most recent resolved checkpoint
-- `parent`: If the session was dispatched, the parent's session ID and workflow info
+- `parent`: If the session was dispatched, the parent's session info derived from `parentSession` in `session.json`
 
-The status is determined from the trace store: `blocked` when `bcp` is active, `completed` when the workflow has no more activities, and `active` otherwise.
+The status is determined from the session state: `blocked` when `activeCheckpoint` is set in `session.json`, `completed` when the workflow has no more activities, and `active` otherwise.
 
 ## Resuming Sub-Agents
 
