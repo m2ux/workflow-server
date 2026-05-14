@@ -5,4 +5,4 @@
 [submodule "workflows"]
 	path = workflows
 	url = git@github.com:m2ux/workflow-server.git
-	branch = workflows
+	branch = feat/115-server-managed-session-state-meta
