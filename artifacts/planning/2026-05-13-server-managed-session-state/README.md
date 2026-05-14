@@ -39,13 +39,14 @@ The fix works by separating three things that are mixed together today: who carr
 | 05 | [Research](05-research.md) | Resolved B1 (6-char base32), B2 (HMAC-SHA256 + microbench), F4 (enumeration cost) | 15-30m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
-| — | Implementation | Code changes per plan | 2-6h | ⬚ Pending |
+| — | Implementation | Code changes per plan (Phases 1-10) | 2-6h | ✅ Complete |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | 10 | [Validation report](10-validation-report.md) | Build, test, lint verification | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
+| 12 | [Submit-for-review](12-submit-for-review.md) | PR description finalised; PR marked ready for review | 10-15m | ✅ Complete |
+| — | PR review | External review feedback cycle | 30-60m | ⬚ Awaiting reviewer |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
 
@@ -60,4 +61,4 @@ The fix works by separating three things that are mixed together today: who carr
 
 ---
 
-**Status:** Ready — assumptions-review confirmed convergence (0 open); ready for implement activity
+**Status:** Ready for PR review and merge — PR [#116](https://github.com/m2ux/workflow-server/pull/116) marked ready for review; awaiting reviewer feedback
