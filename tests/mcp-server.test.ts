@@ -1017,6 +1017,87 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBeFalsy();
     });
+
+    // Phase 7 — withAuditLog re-resolution (SC-12).
+
+    it('withAuditLog re-resolves session_index and populates trace event with sid/wf/act/aid from session.json (PR116-TC-37)', async () => {
+      // Mutate the session: transition to a non-initial activity so the
+      // expected `act` field is distinguishable from the start-session state.
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'start-work-package' },
+      });
+
+      // Issue another authenticated call whose trace event we will inspect.
+      const getActResult = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: sessionToken },
+      });
+      expect(getActResult.isError).toBeFalsy();
+
+      const traceResult = await client.callTool({
+        name: 'get_trace',
+        arguments: { session_index: sessionToken },
+      });
+      const trace = parseToolResponse(traceResult);
+
+      // Locate the most recent get_activity event — that call was re-resolved
+      // by appendTraceEvent against the post-next_activity session.json.
+      const getActEvent = [...trace.events]
+        .reverse()
+        .find((e: { name: string }) => e.name === 'get_activity');
+      expect(getActEvent).toBeDefined();
+
+      // sid is the session_index (the re-resolution path uses state.sessionIndex
+      // as the trace sid for the event).
+      expect(getActEvent.traceId).toBe(sessionToken);
+      // wf/act/aid sourced from session.json, not from a decoded token.
+      expect(getActEvent.wf).toBe('work-package');
+      expect(getActEvent.act).toBe('start-work-package');
+      expect(getActEvent.aid).toBe('test-worker');
+      // Status is recorded.
+      expect(getActEvent.s).toBe('ok');
+    });
+
+    it('trace events for unauthenticated tools omit session-derived fields without warning (PR116-TC-38)', async () => {
+      // Snapshot the per-session trace length before the unauthenticated call.
+      const before = parseToolResponse(await client.callTool({
+        name: 'get_trace',
+        arguments: { session_index: sessionToken },
+      }));
+      const beforeLen: number = before.events.length;
+
+      // Invoke each unauthenticated tool. None of these emit a session-keyed
+      // trace event because appendTraceEvent short-circuits when
+      // params.session_index is absent.
+      await client.callTool({ name: 'discover', arguments: {} });
+      await client.callTool({ name: 'list_workflows', arguments: {} });
+      await client.callTool({ name: 'health_check', arguments: {} });
+      await client.callTool({
+        name: 'resolve_operations',
+        arguments: { operations: ['workflow-engine::create-session'] },
+      });
+
+      // The per-session trace length is unchanged — unauthenticated calls
+      // produce no trace event keyed against `sessionToken`.
+      const after = parseToolResponse(await client.callTool({
+        name: 'get_trace',
+        arguments: { session_index: sessionToken },
+      }));
+
+      // get_trace itself is excluded from the trace (IT-14), so the only delta
+      // possible here would come from a unauthenticated tool slipping a
+      // session-derived event in.
+      const afterLen: number = after.events.length;
+      expect(afterLen).toBe(beforeLen);
+
+      // Belt and braces: no event in the trace was emitted by any of the
+      // unauthenticated tools.
+      const unauthenticatedNames = new Set(['discover', 'list_workflows', 'health_check', 'resolve_operations']);
+      for (const event of after.events) {
+        expect(unauthenticatedNames.has(event.name)).toBe(false);
+      }
+    });
   });
 
   // ============== Concurrent Session Isolation ==============
