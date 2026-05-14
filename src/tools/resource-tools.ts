@@ -21,12 +21,15 @@ import {
   sessionFileExists,
   writeSessionFile,
   verifySeal,
+  planningRoot,
 } from '../utils/session-store.js';
 import { computeSessionIndex } from '../utils/session-index.js';
 import { createInitialSessionFile, safeValidateSessionFile, type SessionFile } from '../schema/session.schema.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
+import { resolve } from 'node:path';
+import { migratePlanningFolder, MigrationError, describeMigrationError } from '../utils/migration.js';
 
 /**
  * Parse a resource reference that may include a workflow prefix.
@@ -71,32 +74,65 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'start_session',
     {
       description:
-        'Start a new workflow session or inherit an existing one. Returns a `session_index` (a 6-character RFC 4648 base32 string, required for all subsequent authenticated tool calls) and basic workflow metadata. ' +
-        'In Phase 4 the input shape mirrors the legacy contract: provide `workflow_id` (defaults to "meta") and `agent_id`; pass `parent_session_index` for nested-workflow dispatch. The server creates a planning folder under `<workspace>/.engineering/artifacts/planning/`, writes `session.json` + `.session-token`, and returns the index that identifies the folder. ' +
+        'Start or resume a workflow session, identified by `planning_slug` (a single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`). Returns a 6-character base32 `session_index` (required for all subsequent authenticated tool calls) and basic workflow metadata. ' +
+        'For a fresh session, provide `planning_slug` (canonical) and optionally `workflow_id` (defaults to "meta"). For a nested-workflow dispatch, also pass `parent_planning_slug` — the server snapshots the parent\'s `session.json` under the child\'s `parentSession` field for trace correlation and recursive parent traversal. ' +
+        'If the resolved folder contains legacy `workflow-state.json` + `.session-token` artefacts (pre-Phase-5), the server migrates them in place before resuming. The migration is idempotent (detect-on-read), and after success the folder holds a server-managed `session.json` + new `.session-token` seal pair. ' +
         'The agent_id parameter is required and is stored on `session.json#agentId`, distinguishing orchestrator from worker calls in the trace.',
       inputSchema: z
         .object({
-          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). Defaults to "meta".'),
-          parent_session_index: z.string().regex(/^[A-Z2-7]{6}$/).optional().describe('Optional. When dispatching a child workflow, the parent\'s session_index. The parent\'s `session.json` is snapshot under the child\'s `parentSession` field for trace correlation and recursive parent traversal.'),
-          planning_slug: z.string().optional().describe('Optional. Slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`. When omitted, the server creates a transitional slug derived from a fresh UUID. Phase 5 makes this the canonical input.'),
+          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). Defaults to "meta". Ignored when the slug already resolves to an existing `session.json` (the workflow is taken from the resumed state).'),
+          planning_slug: z.string().optional().describe('Optional. Single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`. Phase 5 makes this the canonical input; when omitted the server mints a transitional slug derived from a fresh UUID (back-compat shim for callers not yet on the new contract).'),
+          parent_planning_slug: z.string().optional().describe('Optional. When dispatching a child workflow, the parent session\'s `planning_slug`. The parent\'s `session.json` is read (and seal-verified) and snapshot under the child\'s `parentSession` field for trace correlation and recursive parent traversal.'),
           agent_id: z.string().default('orchestrator').describe('Sets the agentId field inside the session state (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
         })
         .strict(),
     },
-    withAuditLog('start_session', async ({ workflow_id, parent_session_index, planning_slug, agent_id }) => {
+    withAuditLog('start_session', async ({ workflow_id, planning_slug, parent_planning_slug, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
-      const effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
+
+      // Resolve the planning folder up-front. When `planning_slug` is provided,
+      // use it directly (Phase 5 canonical). Otherwise mint a transitional
+      // slug — back-compat shim retained while the meta workflow surface is
+      // updated (Phase 8); Phase 5 itself ships the parameter shape.
+      const slug = planning_slug ?? `transition-${randomUUID()}`;
+      const folder = await ensurePlanningFolder(config.workspaceDir, slug);
+
+      // Detect-and-migrate legacy session-state in the folder before anything
+      // else. Idempotent: short-circuits when `session.json` is already
+      // present. On a successful migration the legacy `workflow-state.json`
+      // is deleted and the new seal replaces the legacy `.session-token`.
+      let migrationResult;
+      try {
+        migrationResult = await migratePlanningFolder(folder);
+      } catch (err) {
+        if (err instanceof MigrationError) {
+          throw new Error(describeMigrationError(err));
+        }
+        throw err;
+      }
+
+      // The effective workflow_id resolves in this order:
+      //   1. If session.json exists (either pre-existing or just migrated),
+      //      the workflow_id stored in state wins (caller cannot rebrand a
+      //      live session).
+      //   2. Otherwise, fall back to the caller-supplied workflow_id, then
+      //      to the default "meta".
+      let effectiveWorkflowId = workflow_id ?? DEFAULT_WORKFLOW_ID;
+      if (migrationResult.migrated && migrationResult.state) {
+        effectiveWorkflowId = migrationResult.state.workflowId;
+      } else if (await sessionFileExists(folder)) {
+        try {
+          const { state: rawState } = await verifySeal(folder);
+          const peek = safeValidateSessionFile(rawState);
+          if (peek.success) effectiveWorkflowId = peek.data.workflowId;
+        } catch {
+          // Best-effort peek; the canonical load + parse happens below.
+        }
+      }
 
       // Load the workflow to capture version (carried into session.json#workflowVersion).
       const wfPreLoad = await loadWorkflow(config.workflowDir, effectiveWorkflowId);
       const effectiveWorkflowVersion = wfPreLoad.success ? (wfPreLoad.value.version ?? '') : '';
-
-      // Resolve the planning folder.
-      // - When `planning_slug` is provided, use it directly (Phase 5-compatible).
-      // - Otherwise mint a transitional slug (`transition-<uuid>`); Phase 5 will
-      //   make `planning_slug` required and remove this fallback.
-      const slug = planning_slug ?? `transition-${randomUUID()}`;
-      const folder = await ensurePlanningFolder(config.workspaceDir, slug);
 
       // Compute the canonical session_index for the folder.
       const sessionIndex = await computeSessionIndex(folder);
@@ -120,11 +156,23 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           await writeSessionFile(folder, state);
         }
       } else {
-        // Capture parent snapshot if a parent_session_index was provided.
+        // Capture parent snapshot if a parent_planning_slug was provided.
         let parentSession: SessionFile | undefined;
-        if (parent_session_index) {
+        if (parent_planning_slug) {
+          const parentFolder = resolve(planningRoot(config.workspaceDir), parent_planning_slug);
           try {
-            const parentLoaded = await loadSessionForTool(config.workspaceDir, parent_session_index);
+            // Migrate the parent folder if it carries legacy artefacts so the
+            // recursive snapshot has the canonical shape.
+            await migratePlanningFolder(parentFolder);
+          } catch (err) {
+            if (err instanceof MigrationError) {
+              throw new Error(describeMigrationError(err));
+            }
+            // Unknown error reading parent — surface but don't block.
+          }
+          const parentIndex = await computeSessionIndex(parentFolder);
+          try {
+            const parentLoaded = await loadSessionForTool(config.workspaceDir, parentIndex);
             parentSession = parentLoaded.state;
 
             if (config.traceStore) {
@@ -136,8 +184,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
               config.traceStore.append(parentLoaded.state.sessionIndex, parentEvent);
             }
           } catch (err) {
-            // Parent index is invalid — proceed without parent context.
-            console.warn(`[start_session] parent_session_index '${parent_session_index}' could not be resolved; creating session without parent snapshot. Error: ${err instanceof Error ? err.message : String(err)}`);
+            // Parent slug is invalid — proceed without parent context.
+            console.warn(`[start_session] parent_planning_slug '${parent_planning_slug}' could not be resolved; creating session without parent snapshot. Error: ${err instanceof Error ? err.message : String(err)}`);
           }
         }
 
@@ -178,6 +226,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         session_index: sessionIndex,
         planning_slug: slug,
       };
+      if (migrationResult.migrated) {
+        response['migrated'] = true;
+      }
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],

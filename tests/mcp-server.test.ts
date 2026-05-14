@@ -1402,9 +1402,9 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // ============== start_session shape (Phase 4 transitional) ==============
+  // ============== start_session shape (Phase 5) ==============
 
-  describe('start_session (Phase 4 surface)', () => {
+  describe('start_session (Phase 5 surface)', () => {
     it('returns a 6-character session_index for a fresh meta session', async () => {
       const result = await client.callTool({
         name: 'start_session',
@@ -1428,8 +1428,8 @@ describe('mcp-server integration', () => {
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
     });
 
-    it('is idempotent when planning_slug is provided — returns the same session_index on a second call', async () => {
-      const slug = 'phase-4-idempotent-test';
+    it('is idempotent when planning_slug is provided — returns the same session_index on a second call (PR116-TC-27, TC-28)', async () => {
+      const slug = 'phase-5-idempotent-test';
       const first = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slug },
@@ -1443,19 +1443,43 @@ describe('mcp-server integration', () => {
       expect(firstIdx).toBe(secondIdx);
     });
 
-    it('captures parent snapshot when parent_session_index is provided', async () => {
+    it('resume preserves the workflow_id stored in session.json even when a different workflow_id is supplied', async () => {
+      const slug = 'phase-5-resume-workflow-stable';
+      const first = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+      });
+      const firstIdx = parseToolResponse(first).session_index;
+
+      // Resume with a different workflow_id — the stored workflowId wins.
+      const second = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'remediate-vuln', agent_id: 'orchestrator', planning_slug: slug },
+      });
+      const secondResponse = parseToolResponse(second);
+      expect(secondResponse.session_index).toBe(firstIdx);
+      expect(secondResponse.workflow.id).toBe('work-package');
+    });
+
+    it('captures parent snapshot when parent_planning_slug is provided (PR116-TC-29)', async () => {
       const parent = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+        arguments: {
+          workflow_id: 'work-package',
+          agent_id: 'orchestrator',
+          planning_slug: 'phase-5-parent-slug',
+        },
       });
-      const parentIdx = parseToolResponse(parent).session_index;
+      const parentResponse = parseToolResponse(parent);
+      const parentIdx = parentResponse.session_index;
 
       const child = await client.callTool({
         name: 'start_session',
         arguments: {
           workflow_id: 'remediate-vuln',
-          parent_session_index: parentIdx,
+          parent_planning_slug: 'phase-5-parent-slug',
           agent_id: 'worker-1',
+          planning_slug: 'phase-5-child-slug',
         },
       });
       expect(child.isError).toBeFalsy();
@@ -1464,202 +1488,109 @@ describe('mcp-server integration', () => {
       expect(childResponse.session_index).toMatch(/^[A-Z2-7]{6}$/);
       expect(childResponse.session_index).not.toBe(parentIdx);
     });
+
+    it('creates a fresh planning folder under .engineering/artifacts/planning/<slug>/ (PR116-TC-26)', async () => {
+      const slug = 'phase-5-fresh-folder';
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slug },
+      });
+      expect(result.isError).toBeFalsy();
+      // The folder must exist with session.json + .session-token.
+      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
+      const { existsSync } = await import('node:fs');
+      expect(existsSync(join(folderPath, 'session.json'))).toBe(true);
+      expect(existsSync(join(folderPath, '.session-token'))).toBe(true);
+    });
   });
 
-  describe.skip('start_session token inheritance (legacy — superseded by Phase 5)', () => {
-    it('inherited session should preserve bcp from parent token', async () => {
-      const act = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = act._meta as Record<string, unknown>;
-      const tokenWithAct = actMeta['session_index'] as string;
+  // The "start_session token inheritance" describe.skip block of 13 tests was
+  // deleted in Phase 5. Those tests exercised the legacy contract whereby
+  // start_session inherited a parent session by re-passing the parent's
+  // session_token (later session_index). Phase 5 eliminates that contract:
+  // session resumption is now driven by planning_slug (PR116-TC-27/28) and
+  // parent-context capture is driven by parent_planning_slug (PR116-TC-29).
+  // The retained equivalents live in the "start_session (Phase 5 surface)"
+  // describe block above. See 02-assumptions-log.md for the rationale.
 
-      const yieldResult = await client.callTool({
-        name: 'yield_checkpoint',
-        arguments: { session_index: tokenWithAct, checkpoint_id: 'issue-verification' },
-      });
-      const parentToken = (yieldResult._meta as Record<string, unknown>)['session_index'] as string;
+  // ============== Phase 5: legacy → server-managed migration via start_session ==============
 
-      const inherited = await client.callTool({
-        name: 'start_session',
-        arguments: { session_index: parentToken, agent_id: 'worker-1' },
-      });
-      expect(inherited.isError).toBeFalsy();
-      const response = parseToolResponse(inherited);
-      expect(response.inherited).toBe(true);
-
-      const skillResult = await client.callTool({
-        name: 'get_skill',
-        arguments: { session_index: response.session_index, step_id: 'create-issue' },
-      });
-      expect(skillResult.isError).toBe(true);
-      const errorText = (skillResult.content[0] as { type: string; text: string }).text;
-      expect(errorText).toContain('Active checkpoint');
-    });
-
-    it('inherited session should set aid from agent_id parameter', async () => {
-      const inherited = await client.callTool({
-        name: 'start_session',
-        arguments: { session_index: sessionToken, agent_id: 'worker-42' },
-      });
-      expect(inherited.isError).toBeFalsy();
-    });
-
-    it('inherited session should preserve sid from parent', async () => {
-      const act = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'start-work-package' },
-      });
-      const parentToken = (act._meta as Record<string, unknown>)['session_index'] as string;
-
-      const inherited = await client.callTool({
-        name: 'start_session',
-        arguments: { session_index: parentToken, agent_id: 'worker-1' },
-      });
-      const childToken = parseToolResponse(inherited).session_index;
-
-      const parentTrace = await client.callTool({
-        name: 'get_trace',
-        arguments: { session_index: sessionToken },
-      });
-      const childTrace = await client.callTool({
-        name: 'get_trace',
-        arguments: { session_index: sessionToken },
-      });
-      const parentTraceId = parseToolResponse(parentTrace).traceId;
-      const childTraceId = parseToolResponse(childTrace).traceId;
-      expect(childTraceId).toBe(parentTraceId);
-    });
-
-    it('should inherit session using token workflow', async () => {
-      const metaSession = await client.callTool({
-        name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
-      });
-      const metaToken = parseToolResponse(metaSession).session_index;
+  describe('start_session migration auto-trigger (Phase 5)', () => {
+    it('PR116-TC-54: auto-migrates a planning folder containing legacy workflow-state.json + .session-token on first call', async () => {
+      const slug = 'phase-5-migration-auto';
+      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
+      const { mkdirSync, copyFileSync, existsSync } = await import('node:fs');
+      mkdirSync(folderPath, { recursive: true });
+      // Drop legacy artefacts in the folder before calling start_session.
+      const fixtureDir = resolve(import.meta.dirname, 'fixtures/legacy-session');
+      copyFileSync(join(fixtureDir, 'workflow-state.json'), join(folderPath, 'workflow-state.json'));
+      copyFileSync(join(fixtureDir, '.session-token'), join(folderPath, '.session-token'));
 
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { session_index: metaToken, agent_id: 'test-agent' },
+        arguments: { planning_slug: slug, agent_id: 'orchestrator' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.workflow.id).toBe('meta');
-      expect(response.inherited).toBe(true);
-      expect(response.warning).toBeUndefined();
-    });
-
-    it('should inherit session using token workflow when workflow_id is omitted', async () => {
-      const metaSession = await client.callTool({
-        name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
-      });
-      const metaToken = parseToolResponse(metaSession).session_index;
-
-      const result = await client.callTool({
-        name: 'start_session',
-        arguments: { session_index: metaToken, agent_id: 'test-agent' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.workflow.id).toBe('meta');
-      expect(response.inherited).toBe(true);
-      expect(response.warning).toBeUndefined();
-    });
-
-    it('fresh session should default to meta workflow', async () => {
-      const result = await client.callTool({
-        name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.workflow.id).toBe('meta');
-      expect(response.session_index).toBeDefined();
-      expect(response.inherited).toBeUndefined();
-    });
-
-    it('fresh session should accept agent_id without session_index', async () => {
-      const result = await client.callTool({
-        name: 'start_session',
-        arguments: { agent_id: 'orchestrator' },
-      });
-      expect(result.isError).toBeFalsy();
-      expect(parseToolResponse(result).session_index).toBeDefined();
-    });
-
-    it('fresh session should accept workflow_id for non-meta workflow', async () => {
-      const result = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
+      // The migrated workflow_id wins over the default 'meta'.
       expect(response.workflow.id).toBe('work-package');
-      expect(response.session_index).toBeDefined();
-      expect(response.inherited).toBeUndefined();
+      expect(response.migrated).toBe(true);
+      expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
+
+      // Legacy artefacts have been cleaned up; new shape is in place.
+      expect(existsSync(join(folderPath, 'workflow-state.json'))).toBe(false);
+      expect(existsSync(join(folderPath, 'session.json'))).toBe(true);
+      expect(existsSync(join(folderPath, '.session-token'))).toBe(true);
     });
 
-    it('fresh session with workflow_id and parent_session_index should embed parent context', async () => {
-      // Create a parent session for work-package
-      const parentResult = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
-      });
-      const parentToken = parseToolResponse(parentResult).session_index;
+    it('PR116-TC-59: a second call against the same migrated folder reuses session.json without re-migrating', async () => {
+      const slug = 'phase-5-migration-resume';
+      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
+      const { mkdirSync, copyFileSync } = await import('node:fs');
+      mkdirSync(folderPath, { recursive: true });
+      const fixtureDir = resolve(import.meta.dirname, 'fixtures/legacy-session');
+      copyFileSync(join(fixtureDir, 'workflow-state.json'), join(folderPath, 'workflow-state.json'));
+      copyFileSync(join(fixtureDir, '.session-token'), join(folderPath, '.session-token'));
 
-      // Transition parent to an activity so pact is set
-      const actResult = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_index: parentToken, activity_id: 'start-work-package' },
-      });
-      const advancedParentToken = (actResult._meta as Record<string, unknown>)['session_index'] as string;
-
-      // Create child session with parent context
-      const childResult = await client.callTool({
+      const first = await client.callTool({
         name: 'start_session',
-        arguments: {
-          workflow_id: 'remediate-vuln',
-          parent_session_index: advancedParentToken,
-          agent_id: 'worker-1',
-        },
+        arguments: { planning_slug: slug, agent_id: 'orchestrator' },
       });
-      expect(childResult.isError).toBeFalsy();
-      const childResponse = parseToolResponse(childResult);
-      expect(childResponse.workflow.id).toBe('remediate-vuln');
-      expect(childResponse.session_index).toBeDefined();
-      expect(childResponse.inherited).toBeUndefined();
+      const firstResponse = parseToolResponse(first);
+
+      const second = await client.callTool({
+        name: 'start_session',
+        arguments: { planning_slug: slug, agent_id: 'orchestrator' },
+      });
+      const secondResponse = parseToolResponse(second);
+      expect(secondResponse.session_index).toBe(firstResponse.session_index);
+      // The second call must NOT report a migration — session.json is already present.
+      expect(secondResponse.migrated).toBeUndefined();
     });
+  });
 
-    it('workflow_id is ignored when session_index is provided', async () => {
-      // Create a work-package session
-      const wpResult = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'test-agent' },
-      });
-      const wpToken = parseToolResponse(wpResult).session_index;
+  // ============== Phase 5: dispatch_workflow tool stays removed ==============
 
-      // Inherit with a different workflow_id — should use the token's workflow
-      const inherited = await client.callTool({
-        name: 'start_session',
-        arguments: { session_index: wpToken, agent_id: 'test-agent' },
-      });
-      expect(inherited.isError).toBeFalsy();
-      const response = parseToolResponse(inherited);
-      expect(response.workflow.id).toBe('work-package');
-      expect(response.inherited).toBe(true);
-    });
-
-    it('dispatch_workflow tool should not exist', async () => {
-      // Verify the deprecated tool is not registered
+  describe('Phase 5 deletions', () => {
+    it('dispatch_workflow tool is not registered', async () => {
       const result = await client.callTool({
         name: 'dispatch_workflow',
-        arguments: { workflow_id: 'work-package', parent_session_index: sessionToken },
+        arguments: { workflow_id: 'work-package' },
       });
       expect(result.isError).toBe(true);
     });
 
+    it('start_session rejects the deleted parent_session_index parameter (replaced by parent_planning_slug)', async () => {
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: {
+          workflow_id: 'remediate-vuln',
+          parent_session_index: 'ABCDEF',
+          agent_id: 'worker-1',
+        },
+      });
+      expect(result.isError).toBe(true);
+    });
   });
 
 });
