@@ -2,7 +2,7 @@
 
 The Workflow Server utilizes a **Hierarchical Dispatch Model** to execute workflows. This architecture leverages multi-agent delegation, where specialized agents spawn sub-agents to handle specific scopes of work, ensuring clear boundaries between high-level user interaction, workflow state management, and low-level task execution.
 
-This model relies heavily on native agent-spawning capabilities, such as Cursor's `Task` tool.
+The model is host-agnostic: any IDE or agent harness that supports spawning background sub-agents can drive it (Cursor's `Task` tool is one such mechanism). For environments without sub-agent support, see "Environment Considerations" at the bottom of this document.
 
 ## The Three Layers of Orchestration
 
@@ -51,7 +51,7 @@ start_session({
 
 This creates a **child session** with parent context fields (`pwf`, `pact`, `pv`, `psid`) embedded in the token for trace correlation. The server also records a trace event in the parent's trace store linking the two sessions. The response includes a `session_token` for the child session.
 
-The Meta Orchestrator then uses Cursor's `Task` tool to spawn a background agent:
+The Meta Orchestrator then uses the host's sub-agent spawn mechanism (e.g., Cursor's `Task` tool) to start a background workflow orchestrator:
 ```javascript
 Task({
   subagent_type: "generalPurpose",
@@ -64,7 +64,7 @@ The Workflow Orchestrator evaluates the workflow, determines the next activity t
 
 Unlike the L0 → L1 transition (which creates a new child session), the L1 → L2 transition **shares the same session token**. The worker uses this token directly to call `get_activity`, `get_skill`, and `next_activity`, ensuring its actions are cryptographically bound to the exact workflow and activity state tracked by the orchestrator.
 
-The Workflow Orchestrator uses the `Task` tool to spawn the Activity Worker:
+The Workflow Orchestrator uses the host's sub-agent spawn mechanism to spawn the Activity Worker:
 ```javascript
 Task({
   subagent_type: "generalPurpose",
@@ -91,9 +91,9 @@ The status is determined from the trace store: `blocked` when `bcp` is active, `
 
 ## Resuming Sub-Agents
 
-When an agent pauses (e.g., waiting for a checkpoint resolution), it doesn't die. Cursor's `Task` tool supports a `resume` parameter that accepts the `agent_id` of a previously spawned sub-agent.
+When an agent pauses (e.g., waiting for a checkpoint resolution), it doesn't die. Hosts that support sub-agents typically expose a `resume` mechanism that re-enters a previously spawned sub-agent with new instructions appended to its existing context (Cursor's `Task` tool, for example, accepts a `resume` parameter keyed on the sub-agent's ID).
 
-When the parent agent needs to wake the sub-agent back up, it simply calls the `Task` tool again:
+When the parent agent needs to wake the sub-agent back up, it calls the host's resume primitive:
 ```javascript
 Task({
   resume: "<sub_agent_id>",
@@ -104,6 +104,6 @@ This appends the new instructions directly to the sub-agent's existing context w
 
 ## Environment Considerations (Inline Fallback)
 
-The Hierarchical Dispatch Model is optimized for environments like Cursor that support true background sub-agents via tools like `Task`.
+The Hierarchical Dispatch Model is optimised for hosts that support background sub-agents (e.g., Cursor's `Task` tool).
 
-In environments that do not support sub-agent spawning (e.g., Claude Code), the top-level agent must execute the workflow **inline**. This means a single agent sequentially adopts the personas of the Meta Orchestrator, Workflow Orchestrator, and Activity Worker, executing all instructions within a single, contiguous conversation thread.
+In environments that do not support sub-agent spawning, the top-level agent must execute the workflow **inline**. A single agent sequentially adopts the personas of the Meta Orchestrator, Workflow Orchestrator, and Activity Worker, executing all instructions within a single contiguous conversation thread. The server's enforcement layers (HMAC tokens, checkpoint gates, manifests, trace tokens) function identically in either mode — only the persona-switching mechanism changes.
