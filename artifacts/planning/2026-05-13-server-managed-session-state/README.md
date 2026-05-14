@@ -1,8 +1,9 @@
 # Server-Managed Session State - May 2026
 
 **Created:** 2026-05-13
-**Status:** Planning
+**Status:** Complete
 **Type:** Refactor
+**ADR:** [ADR-0003](../../adr/0003-server-managed-session-state.md)
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
 
@@ -47,8 +48,10 @@ The fix works by separating three things that are mixed together today: who carr
 | 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | 12 | [Submit-for-review](12-submit-for-review.md) | PR description finalised; PR marked ready for review; review outcome **approved** with feedback addressed inline (ad23820, 0af3f8c, 4f35aea, workflows PR #117) | 10-15m | ✅ Complete |
 | — | PR review | External review feedback cycle — **approved** | 30-60m | ✅ Complete |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| — | [ADR-0003](../../adr/0003-server-managed-session-state.md) | Architecture Decision Record (Accepted): server-managed session state with workspace-aware MCP server | 15-30m | ✅ Complete |
+| 05 | [Test plan finalised](05-test-plan.md) | Source links added; final test result (315 passed / 2 skipped) | 5-10m | ✅ Complete |
+| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ✅ Complete |
+| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ✅ Complete |
 
 ---
 
@@ -61,4 +64,4 @@ The fix works by separating three things that are mixed together today: who carr
 
 ---
 
-**Status:** PR [#116](https://github.com/m2ux/workflow-server/pull/116) **approved**; review feedback addressed inline (commits `ad23820`, `0af3f8c`, `4f35aea` + workflows-side PR [#117](https://github.com/m2ux/workflow-server/pull/117)); ready for merge and `complete` activity.
+**Status:** ✅ COMPLETE. PR [#116](https://github.com/m2ux/workflow-server/pull/116) **approved**; review feedback addressed inline (commits `ad23820`, `0af3f8c`, `4f35aea` + workflows-side PR [#117](https://github.com/m2ux/workflow-server/pull/117)). Completion artefacts produced ([ADR-0003](../../adr/0003-server-managed-session-state.md), [08-COMPLETE.md](08-COMPLETE.md), [08-workflow-retrospective.md](08-workflow-retrospective.md)) and committed to the engineering submodule on the `engineering` branch. Awaiting merge.

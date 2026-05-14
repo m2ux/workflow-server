@@ -190,3 +190,31 @@ npm test -- migration
 # Typecheck
 npm run typecheck
 ```
+
+---
+
+## Source links (post-implementation)
+
+Test IDs in this plan were anchored as `PR116-TC-NN` markers in test source during development, then stripped in commit `ad23820` per review feedback (planning references kept out of merged source). The mapping below replaces the per-test grep with a file-level index, paired with the workflow phase the file covers.
+
+> Links target the head of `feat/115-server-managed-session-state`; resolve against [`origin/main`](https://github.com/m2ux/workflow-server/tree/main) after merge.
+
+| Test bucket | Test IDs | Source file | Phase |
+|-------------|----------|-------------|-------|
+| Workspace argument plumbing | TC-01 — TC-04 | [`tests/config.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/config.test.ts) | Phase 1 |
+| `computeSessionIndex` derivation + base32 alphabet | TC-05 — TC-09 | [`tests/session-index.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/session-index.test.ts) | Phase 2 |
+| `resolveSessionIndex` enumeration + collisions | TC-10 — TC-12 | [`tests/session-store.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/session-store.test.ts) | Phase 2 |
+| Atomic write semantics + seal verification + file modes | TC-13 — TC-20 | [`tests/session-store.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/session-store.test.ts) | Phase 2 |
+| `SessionFile` Zod schema | TC-21 — TC-25 | [`tests/session-schema.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/session-schema.test.ts) | Phase 3 |
+| `start_session` (fresh + resume + nested + depth warning) | TC-26 — TC-31 | [`tests/mcp-server.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/mcp-server.test.ts) | Phase 5–6 |
+| Authenticated tool API + checkpoint routing + audit | TC-32 — TC-38 | [`tests/mcp-server.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/mcp-server.test.ts) + [`tests/trace.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/trace.test.ts) | Phase 4 + 7 |
+| Legacy migration converter | TC-39 — TC-41, TC-51 — TC-59 | [`tests/migration.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/migration.test.ts) + [`tests/mcp-server.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/mcp-server.test.ts) | Phase 9 |
+| Restart transparency + torn-pair detection + E2E | TC-42 — TC-45 | [`tests/mcp-server.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/mcp-server.test.ts) | Phase 5–9 |
+| Back-compat error for `session_token` parameter | TC-60 | [`tests/mcp-server.test.ts`](https://github.com/m2ux/workflow-server/blob/feat/115-server-managed-session-state/tests/mcp-server.test.ts) | Phase 4 |
+| Doc-freshness / operation-removal CI gates (manual) | TC-46 — TC-50, TC-61 — TC-70 | Verified in [`10-validation-report.md`](10-validation-report.md) §"Success-Criteria Verification" | Phase 10.1 + Phase 8 |
+
+Legacy migration fixture: [`tests/fixtures/legacy-session/`](https://github.com/m2ux/workflow-server/tree/feat/115-server-managed-session-state/tests/fixtures/legacy-session) — generic placeholder for the 3-field envelope + sibling token format (the original concrete fixture referenced this very work package's planning folder; replaced with a synthetic fixture per review feedback in commit `ad23820`).
+
+### Final test result
+
+`npx vitest run` → **315 passed / 2 skipped** across 13 test files (16.88s wall clock). The 2 skipped tests pre-date the refactor. Test count rose from the pre-refactor baseline of 256 by **+59 tests** for the new modules and integration cases. Every success criterion SC-1 through SC-18 is satisfied — see [10-validation-report.md](10-validation-report.md) for the SC-by-SC verification table.
