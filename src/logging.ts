@@ -1,6 +1,25 @@
 import type { TraceStore } from './trace.js';
 import { createTraceEvent } from './trace.js';
-import { decodeSessionToken } from './utils/session.js';
+import { loadSessionForTool } from './utils/session-resolver.js';
+
+/**
+ * Workspace path injected at startup so the audit-log wrapper can re-resolve
+ * `session_index` parameters against the canonical planning root. Set once by
+ * `setAuditWorkspaceDir`; unauthenticated tool calls (no `session_index`)
+ * bypass the resolver and emit trace events without session-derived fields.
+ */
+let auditWorkspaceDir: string | undefined;
+
+/**
+ * Wire the workspace path into the audit-log infrastructure. Called by
+ * `createServer` after `loadConfig` resolves `--workspace=PATH` / env. Tools
+ * call `loadSessionForTool` indirectly via the wrapper below; without this
+ * setter the wrapper falls back to logging without `sid/wf/act/aid` (the
+ * tool itself still works — only the trace event loses the session fields).
+ */
+export function setAuditWorkspaceDir(workspaceDir: string): void {
+  auditWorkspaceDir = workspaceDir;
+}
 
 const MAX_LOG_VALUE_LENGTH = 8192;
 
@@ -60,23 +79,30 @@ async function appendTraceEvent(
   result: unknown,
   errorMessage?: string,
 ): Promise<void> {
-  const tokenStr = params['session_token'];
-  if (typeof tokenStr !== 'string') return;
+  const sessionIndex = params['session_index'];
+  if (typeof sessionIndex !== 'string') return; // Unauthenticated tool — no session-derived fields.
+
+  if (!auditWorkspaceDir) {
+    // Workspace not wired into the audit infrastructure; skip session-derived
+    // fields. This branch is hit by ad-hoc test setups that build a tool
+    // pipeline without `setAuditWorkspaceDir`.
+    return;
+  }
 
   try {
-    const token = await decodeSessionToken(tokenStr);
+    const { state } = await loadSessionForTool(auditWorkspaceDir, sessionIndex);
     const vw = status === 'ok' ? extractValidationWarnings(result) : undefined;
     const opts: { err?: string; vw?: string[] } = {};
     if (errorMessage !== undefined) opts.err = errorMessage;
     if (vw !== undefined) opts.vw = vw;
     const event = createTraceEvent(
-      token.sid, toolName, durationMs, status,
-      token.wf, token.act, token.aid,
+      state.sessionIndex, toolName, durationMs, status,
+      state.workflowId, state.currentActivity, state.agentId,
       opts,
     );
-    traceStore.append(token.sid, event);
+    traceStore.append(state.sessionIndex, event);
   } catch (e) {
-    logWarn('Trace capture skipped: token decode failed', { tool: toolName, error: e instanceof Error ? e.message : String(e) });
+    logWarn('Trace capture skipped: session_index resolution failed', { tool: toolName, error: e instanceof Error ? e.message : String(e) });
   }
 }
 

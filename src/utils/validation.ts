@@ -1,7 +1,22 @@
 import { z } from 'zod';
-import type { SessionPayload } from './session.js';
 import type { Workflow } from '../schema/workflow.schema.js';
 import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
+
+/**
+ * Minimal view of session state required by the validation helpers. Both the
+ * legacy `SessionPayload` (token-decoded) and the new `SessionFile`
+ * (server-managed) can be projected onto this shape with a tiny adapter, so
+ * the validation surface stays storage-agnostic while Phase 4 swaps the
+ * authenticated tools across.
+ */
+export interface SessionView {
+  /** Workflow id (`wf` on the legacy payload, `workflowId` on the file). */
+  wf: string;
+  /** Current activity id (`act` on the legacy payload, `currentActivity` on the file). */
+  act: string;
+  /** Workflow version (`v` on the legacy payload, `workflowVersion` on the file). */
+  v: string;
+}
 
 export interface ValidationResult {
   status: 'valid' | 'warning' | 'error';
@@ -13,27 +28,27 @@ function emptyValidation(): ValidationResult {
   return { status: 'valid', warnings: [] };
 }
 
-export function validateWorkflowConsistency(token: SessionPayload, workflowId: string): string | null {
-  if (token.wf && token.wf !== workflowId) {
-    return `Workflow mismatch: session was on '${token.wf}' but call targets '${workflowId}'. Start a new session for a different workflow.`;
+export function validateWorkflowConsistency(view: SessionView, workflowId: string): string | null {
+  if (view.wf && view.wf !== workflowId) {
+    return `Workflow mismatch: session was on '${view.wf}' but call targets '${workflowId}'. Start a new session for a different workflow.`;
   }
   return null;
 }
 
-export function validateActivityTransition(token: SessionPayload, workflow: Workflow, activityId: string): string | null {
-  if (!token.act) {
+export function validateActivityTransition(view: SessionView, workflow: Workflow, activityId: string): string | null {
+  if (!view.act) {
     if (workflow.initialActivity && activityId !== workflow.initialActivity) {
       return `First activity must be '${workflow.initialActivity}' but '${activityId}' was requested. Start with the workflow's initialActivity.`;
     }
     return null;
   }
-  if (token.act === activityId) return null;
+  if (view.act === activityId) return null;
 
-  const valid = getValidTransitions(workflow, token.act);
+  const valid = getValidTransitions(workflow, view.act);
   if (valid.length === 0) return null;
 
   if (!valid.includes(activityId)) {
-    return `Activity '${activityId}' is not a direct transition from '${token.act}'. Valid transitions: [${valid.join(', ')}]`;
+    return `Activity '${activityId}' is not a direct transition from '${view.act}'. Valid transitions: [${valid.join(', ')}]`;
   }
   return null;
 }
@@ -72,9 +87,9 @@ export function validateSkillAssociation(workflow: Workflow, activityId: string,
   return null;
 }
 
-export function validateWorkflowVersion(token: SessionPayload, workflow: Workflow): string | null {
-  if (token.v && workflow.version && token.v !== workflow.version) {
-    return `Workflow version drift: session started with v${token.v} but current definition is v${workflow.version}. Workflow may have changed mid-session.`;
+export function validateWorkflowVersion(view: SessionView, workflow: Workflow): string | null {
+  if (view.v && workflow.version && view.v !== workflow.version) {
+    return `Workflow version drift: session started with v${view.v} but current definition is v${workflow.version}. Workflow may have changed mid-session.`;
   }
   return null;
 }
@@ -124,11 +139,11 @@ export function validateStepManifest(
   return warnings;
 }
 
-export function validateTransitionCondition(token: SessionPayload, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {
-  if (!token.act) return null;
-  if (token.act === activityId) return null;
+export function validateTransitionCondition(view: SessionView, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {
+  if (!view.act) return null;
+  if (view.act === activityId) return null;
 
-  const transitions = getTransitionList(workflow, token.act);
+  const transitions = getTransitionList(workflow, view.act);
   if (transitions.length === 0) return null;
 
   const matchingTransition = transitions.find(t => t.to === activityId);
@@ -214,12 +229,26 @@ export const ValidationResultSchema = z.object({
   errors: z.array(z.string()).optional(),
 });
 
+/**
+ * Response `_meta` envelope returned by every authenticated tool. The legacy
+ * `session_token` field is removed in Phase 4 (R3) — the agent identifies the
+ * session via the stable `session_index` parameter passed on every call, and
+ * authoritative state lives in `session.json` on disk, so there is nothing for
+ * the server to thread back through the response.
+ *
+ * `session_index` is included as an optional field so handlers may echo the
+ * resolved index for parity with the input (helpful for trace correlation in
+ * test fixtures), but agents are not expected to read it back from the
+ * response.
+ */
 export const MetaResponseSchema = z.object({
-  session_token: z.string(),
+  session_index: z.string().regex(/^[A-Z2-7]{6}$/).optional(),
   validation: ValidationResultSchema,
 });
 export type MetaResponse = z.infer<typeof MetaResponseSchema>;
 
-export function buildMeta(sessionToken: string, validation: ValidationResult): MetaResponse {
-  return { session_token: sessionToken, validation };
+export function buildMeta(sessionIndex: string | undefined, validation: ValidationResult): MetaResponse {
+  return sessionIndex
+    ? { session_index: sessionIndex, validation }
+    : { validation };
 }

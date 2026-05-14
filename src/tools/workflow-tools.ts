@@ -7,10 +7,18 @@ import { CORE_ORCHESTRATOR_OPS, CORE_WORKER_OPS } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
-import { decodeSessionToken, advanceToken, sessionTokenParam, assertCheckpointsResolved } from '../utils/session.js';
+import { sessionIndexParam, assertNoActiveCheckpoint } from '../utils/session.js';
+import {
+  loadSessionForTool,
+  advanceSession,
+  saveSessionForTool,
+  sessionView,
+  describeSessionStoreError,
+} from '../utils/session-resolver.js';
+import { SessionStoreError } from '../utils/session-store.js';
 import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
-import { createTraceEvent, createTraceToken, decodeTraceToken } from '../trace.js';
+import { createTraceToken, decodeTraceToken } from '../trace.js';
 import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 
 const stepManifestSchema = z.array(z.object({
@@ -24,11 +32,31 @@ const activityManifestSchema = z.array(z.object({
   transition_condition: z.string().optional(),
 })).optional().describe('Activity completion manifest from the orchestrator. Reports the sequence of activities completed so far with outcomes and transition conditions.');
 
+/**
+ * Wrap a tool handler so any thrown `SessionStoreError` is re-thrown with a
+ * user-facing message. Keeps the per-handler logic terse — handlers can
+ * assume `loadSessionForTool` succeeded or surface a clear error.
+ */
+function withSessionStoreErrors<T extends Record<string, unknown>, R>(
+  handler: (args: T) => Promise<R>,
+): (args: T) => Promise<R> {
+  return async (args: T) => {
+    try {
+      return await handler(args);
+    } catch (err) {
+      if (err instanceof SessionStoreError) {
+        throw new Error(describeSessionStoreError(err));
+      }
+      throw err;
+    }
+  };
+}
+
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
 
-  server.tool('discover', 'Entry point for this server. Call this before any other tool to learn the bootstrap procedure for starting a session. Returns the server name, version, and the bootstrap guide explaining the full tool-calling sequence. Use list_workflows to discover available workflows. No parameters required and no session token needed.', {},
+  server.tool('discover', 'Entry point for this server. Call this before any other tool to learn the bootstrap procedure for starting a session. Returns the server name, version, and the bootstrap guide explaining the full tool-calling sequence. Use list_workflows to discover available workflows. No parameters required and no session_index needed.', {},
     withAuditLog('discover', async () => {
       const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '00');
       const lines = [
@@ -41,30 +69,34 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
     }));
 
-  server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. Does not require a session token.', {},
+  server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. Does not require a session_index.', {},
     withAuditLog('list_workflows', async () => ({
       content: [{ type: 'text' as const, text: encodeToon(await listWorkflows(config.workflowDir)) }],
     })));
 
   server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the workflow\'s primary skill (raw TOON), followed by the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
     {
-      ...sessionTokenParam,
+      ...sessionIndexParam,
       summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the raw workflow definition.'),
     },
-    withAuditLog('get_workflow', async ({ session_token, summary }) => {
-      const token = await decodeSessionToken(session_token);
-      assertCheckpointsResolved(token);
-      const workflow_id = token.wf;
+    withAuditLog('get_workflow', withSessionStoreErrors(async ({ session_index, summary }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
+      assertNoActiveCheckpoint(state);
+      const workflow_id = state.workflowId;
 
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       const wf = result.value;
 
+      const view = sessionView(state);
       const validation = buildValidation(
-        validateWorkflowVersion(token, wf),
+        validateWorkflowVersion(view, wf),
       );
 
-      const advancedToken = await advanceToken(session_token);
+      // Advance state (bump seq+ts) and persist before returning.
+      const next = advanceSession(state);
+      await saveSessionForTool(loaded.folderAbsPath, next);
 
       const primarySkillId = wf.skills?.primary;
       let primarySkillContent = '';
@@ -99,58 +131,60 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           variables: wf.variables,
           initialActivity: wf.initialActivity,
           activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean }) => ({ id: a.id, name: a.name, required: a.required })) ?? [],
-          session_token: advancedToken,
+          session_index,
         };
 
         return {
           content: [{ type: 'text' as const, text: preamble + encodeToon(summaryData) }],
-          _meta: { session_token: advancedToken, validation },
+          _meta: { session_index, validation },
         };
       } else {
         const rawResult = await readWorkflowRaw(config.workflowDir, workflow_id);
         if (!rawResult.success) throw rawResult.error;
 
         return {
-          content: [{ type: 'text' as const, text: preamble + `session_token: ${advancedToken}\n\n${rawResult.value}` }],
-          _meta: { session_token: advancedToken, validation },
+          content: [{ type: 'text' as const, text: preamble + `session_index: ${session_index}\n\n${rawResult.value}` }],
+          _meta: { session_index, validation },
         };
       }
-    }, traceOpts));
+    }), traceOpts));
 
-  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session token, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and skill references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
+  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and skill references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
     {
-      ...sessionTokenParam,
+      ...sessionIndexParam,
       activity_id: z.string().describe('Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.'),
       transition_condition: z.string().optional().describe('The transition condition that led to this activity (from the transitions field of the previous activity). Enables server-side validation of condition-activity consistency.'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
     },
-    withAuditLog('next_activity', async ({ session_token, activity_id, transition_condition, step_manifest, activity_manifest }) => {
-      const token = await decodeSessionToken(session_token);
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
 
-      const workflow_id = token.wf;
+      const workflow_id = state.workflowId;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
 
-      if (token.bcp) {
+      if (state.activeCheckpoint) {
         throw new Error(
-          `Cannot transition to '${activity_id}': Active checkpoint '${token.bcp}' ` +
-          `on activity '${token.act}'. The orchestrator must resolve it by calling respond_checkpoint.`
+          `Cannot transition to '${activity_id}': Active checkpoint '${state.activeCheckpoint.checkpointId}' ` +
+          `on activity '${state.activeCheckpoint.activityId}'. The orchestrator must resolve it by calling respond_checkpoint.`
         );
       }
       const activity = getActivity(result.value, activity_id);
       if (!activity) throw new Error(`Activity not found: ${activity_id}`);
 
+      const view = sessionView(state);
       const manifestWarnings: (string | null)[] = [];
-      if (step_manifest && token.act) {
-        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, token.act);
+      if (step_manifest && state.currentActivity) {
+        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, state.currentActivity);
         manifestWarnings.push(...mw);
-      } else if (!step_manifest && token.act) {
-        manifestWarnings.push(`No step_manifest provided for previous activity '${token.act}'. Include a manifest to enable step completion validation.`);
+      } else if (!step_manifest && state.currentActivity) {
+        manifestWarnings.push(`No step_manifest provided for previous activity '${state.currentActivity}'. Include a manifest to enable step completion validation.`);
       }
 
-      const condWarning = (transition_condition !== undefined && token.act)
-        ? validateTransitionCondition(token, result.value, activity_id, transition_condition)
+      const condWarning = (transition_condition !== undefined && state.currentActivity)
+        ? validateTransitionCondition(view, result.value, activity_id, transition_condition)
         : null;
 
       const activityManifestWarnings: string[] = [];
@@ -164,28 +198,31 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const validation = buildValidation(
-        validateActivityTransition(token, result.value, activity_id),
-        validateWorkflowVersion(token, result.value),
+        validateActivityTransition(view, result.value, activity_id),
+        validateWorkflowVersion(view, result.value),
         condWarning,
         ...manifestWarnings,
         ...activityManifestWarnings,
       );
 
-      const advancedToken = await advanceToken(session_token, {
-        act: activity_id,
-        cond: transition_condition ?? '',
-        bcp: null, // Clear any active checkpoint on transition
+      const next = advanceSession(state, (draft) => {
+        draft.currentActivity = activity_id;
+        draft.condition = transition_condition ?? '';
+        delete draft.activeCheckpoint;
       });
+      await saveSessionForTool(loaded.folderAbsPath, next);
 
-      const meta: Record<string, unknown> = { session_token: advancedToken, validation };
+      const meta: Record<string, unknown> = { session_index, validation };
 
       if (config.traceStore) {
-        const segment = config.traceStore.getSegmentAndAdvanceCursor(token.sid);
+        const segment = config.traceStore.getSegmentAndAdvanceCursor(state.sessionIndex);
+        // Note: trace store keys by sessionIndex now (was sid); for Phase 4 we
+        // continue to use the sessionIndex as the trace partition key.
         if (segment.events.length > 0) {
           const firstEvent = segment.events[0];
           const lastEvent = segment.events[segment.events.length - 1];
           const payload: TraceTokenPayload = {
-            sid: token.sid,
+            sid: state.sessionIndex,
             act: activity_id,
             from: segment.fromIndex,
             to: segment.toIndex,
@@ -202,36 +239,40 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const responseData: Record<string, unknown> = {
         activity_id,
         name: activity.name,
-        session_token: advancedToken,
+        session_index,
       };
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseData, null, 2) }],
         _meta: meta,
       };
-    }, traceOpts));
-  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and skill references — everything needed to execute the activity. The activity is determined from the session token, so no activity_id parameter is needed.',
-    {
-      ...sessionTokenParam,
-    },
-    withAuditLog('get_activity', async ({ session_token }) => {
-      const token = await decodeSessionToken(session_token);
-      assertCheckpointsResolved(token);
+    }), traceOpts));
 
-      const activity_id = token.act;
+  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and skill references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed.',
+    {
+      ...sessionIndexParam,
+    },
+    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
+      assertNoActiveCheckpoint(state);
+
+      const activity_id = state.currentActivity;
       if (!activity_id) {
-        throw new Error('No current activity in session token. Call next_activity first.');
+        throw new Error('No current activity in session state. Call next_activity first.');
       }
 
-      const workflow_id = token.wf;
+      const workflow_id = state.workflowId;
       const rawResult = await readActivityRaw(config.workflowDir, workflow_id, activity_id);
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
 
-      const advancedToken = await advanceToken(session_token);
+      const next = advanceSession(state);
+      await saveSessionForTool(loaded.folderAbsPath, next);
 
+      const view = sessionView(state);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       const validation = buildValidation(
-        result.success ? validateWorkflowVersion(token, result.value) : null,
+        result.success ? validateWorkflowVersion(view, result.value) : null,
       );
 
       // Bundle operations: activity.operations + core worker ops.
@@ -242,149 +283,158 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const opsSection = encodeToon(formatOperationsBundle(resolvedOps)) + '\n\n---\n\n';
 
       return {
-        content: [{ type: 'text' as const, text: opsSection + `session_token: ${advancedToken}\n\n${rawResult.value}` }],
-        _meta: { session_token: advancedToken, validation },
+        content: [{ type: 'text' as const, text: opsSection + `session_index: ${session_index}\n\n${rawResult.value}` }],
+        _meta: { session_index, validation },
       };
-    }, traceOpts));
+    }), traceOpts));
 
-  server.tool('yield_checkpoint', 'Yield execution to the orchestrator at a checkpoint. Call this tool when you encounter a checkpoint step during activity execution. It returns a checkpoint_handle that you MUST yield back to the orchestrator via a <checkpoint_yield> block.',
+  server.tool('yield_checkpoint', 'Yield execution to the orchestrator at a checkpoint. Call this tool when you encounter a checkpoint step during activity execution. It records the checkpoint as active in the session state and returns the session_index, which the worker yields back to the orchestrator via a <checkpoint_yield> block.',
     {
-      ...sessionTokenParam,
+      ...sessionIndexParam,
       checkpoint_id: z.string().describe('The ID of the checkpoint being yielded.'),
     },
-    withAuditLog('yield_checkpoint', async ({ session_token, checkpoint_id }) => {
-      const token = await decodeSessionToken(session_token);
-      
-      if (token.bcp) {
-        throw new Error(`Cannot yield checkpoint '${checkpoint_id}': Checkpoint '${token.bcp}' is already active and awaiting orchestrator resolution.`);
+    withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
+
+      if (state.activeCheckpoint) {
+        throw new Error(`Cannot yield checkpoint '${checkpoint_id}': Checkpoint '${state.activeCheckpoint.checkpointId}' is already active and awaiting orchestrator resolution.`);
       }
 
-      const workflow_id = token.wf;
-      const activity_id = token.act;
+      const workflow_id = state.workflowId;
+      const activity_id = state.currentActivity;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      
+
       const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
       if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id} in activity ${activity_id}`);
 
+      const view = sessionView(state);
       const validation = buildValidation(
-        validateWorkflowVersion(token, result.value),
+        validateWorkflowVersion(view, result.value),
       );
 
-      const advancedToken = await advanceToken(session_token, { bcp: checkpoint_id });
-      
+      const yieldedAt = new Date().toISOString();
+      const next = advanceSession(state, (draft) => {
+        draft.activeCheckpoint = {
+          checkpointId: checkpoint_id,
+          activityId: activity_id,
+          yieldedAt,
+        };
+      });
+      await saveSessionForTool(loaded.folderAbsPath, next);
+
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'yielded',
           checkpoint_id,
-          checkpoint_handle: advancedToken,
-          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this checkpoint_handle to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
+          session_index,
+          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this session_index to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
         }, null, 2) }],
-        _meta: { session_token: advancedToken, validation },
+        _meta: { session_index, validation },
       };
-    }, traceOpts));
+    }), traceOpts));
 
-  server.tool('resume_checkpoint', 'Resume execution after the orchestrator resolves a checkpoint. Call this tool when the orchestrator resumes you with a checkpoint response. It verifies the checkpoint was resolved and returns any variable updates you need to apply to your state.',
+  server.tool('resume_checkpoint', 'Resume execution after the orchestrator resolves a checkpoint. Call this tool when the orchestrator resumes you with a checkpoint response. It verifies the checkpoint was resolved (no activeCheckpoint in state) and returns any variable updates you need to apply to your state.',
     {
-      ...sessionTokenParam,
+      ...sessionIndexParam,
     },
-    withAuditLog('resume_checkpoint', async ({ session_token }) => {
-      const token = await decodeSessionToken(session_token);
-      
-      if (token.bcp) {
-        throw new Error(`Cannot resume: Checkpoint '${token.bcp}' is still active and has not been resolved by the orchestrator.`);
+    withAuditLog('resume_checkpoint', withSessionStoreErrors(async ({ session_index }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
+
+      if (state.activeCheckpoint) {
+        throw new Error(`Cannot resume: Checkpoint '${state.activeCheckpoint.checkpointId}' is still active and has not been resolved by the orchestrator.`);
       }
 
       const validation = buildValidation();
-      const advancedToken = await advanceToken(session_token);
-      
+      const next = advanceSession(state);
+      await saveSessionForTool(loaded.folderAbsPath, next);
+
       // Note: The orchestrator passes variable effects directly in its prompt when resuming the worker.
-      // This tool exists to verify the lock is cleared and advance the token sequence.
+      // This tool exists to verify the lock is cleared and advance the session sequence.
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'resumed',
+          session_index,
           message: `Checkpoint cleared. You may proceed to the next step. Note any variable updates provided by the orchestrator.`
         }, null, 2) }],
-        _meta: { session_token: advancedToken, validation },
+        _meta: { session_index, validation },
       };
-    }, traceOpts));
+    }), traceOpts));
 
-  server.tool('present_checkpoint', 'Load the full details of a specific checkpoint yielded by a worker. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield. Accepts either checkpoint_handle (preferred) or session_token — both are the same opaque token string.',
+  server.tool('present_checkpoint', 'Load the full details of the currently-active checkpoint for the session. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield. Reads the active checkpoint from state.activeCheckpoint — no separate checkpoint handle is needed.',
     {
-      checkpoint_handle: z.string().optional().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint. Either this or session_token must be provided.'),
-      session_token: z.string().optional().describe('The current session token (same opaque string as checkpoint_handle). Either this or checkpoint_handle must be provided. Useful when resuming a workflow and the agent only has the session_token from get_workflow_status.'),
+      ...sessionIndexParam,
     },
-    withAuditLog('present_checkpoint', async ({ checkpoint_handle, session_token }) => {
-      const handle = checkpoint_handle ?? session_token;
-      if (!handle) {
-        throw new Error('Either checkpoint_handle or session_token must be provided. Both were omitted.');
-      }
-      // The handle is just the worker's session token encoded.
-      const token = await decodeSessionToken(handle);
-      const workflow_id = token.wf;
-      const activity_id = token.act;
-      const checkpoint_id = token.bcp;
-      
-      if (!checkpoint_id) {
-        throw new Error(`The provided checkpoint_handle does not have an active checkpoint (bcp is empty). The worker must yield a checkpoint first.`);
+    withAuditLog('present_checkpoint', withSessionStoreErrors(async ({ session_index }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
+
+      const active = state.activeCheckpoint;
+      if (!active) {
+        throw new Error(
+          `present_checkpoint: no active checkpoint on session '${session_index}'. The worker must yield a checkpoint via yield_checkpoint before the orchestrator can present it.`,
+        );
       }
 
+      const workflow_id = state.workflowId;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
-      if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id} in activity ${activity_id}`);
+      const checkpoint = getCheckpoint(result.value, active.activityId, active.checkpointId);
+      if (!checkpoint) throw new Error(`Checkpoint not found: ${active.checkpointId} in activity ${active.activityId}`);
 
+      const view = sessionView(state);
       const validation = buildValidation(
-        validateWorkflowVersion(token, result.value),
+        validateWorkflowVersion(view, result.value),
       );
 
       return {
-        content: [{ type: 'text' as const, text: encodeToon({ ...checkpoint, checkpoint_handle }) }],
-        _meta: { validation },
+        content: [{ type: 'text' as const, text: encodeToon({ ...checkpoint, session_index }) }],
+        _meta: { session_index, validation },
       };
-    }, traceOpts));
+    }), traceOpts));
 
   const MIN_RESPONSE_SECONDS = config.minCheckpointResponseSeconds ?? 3;
 
   server.tool('respond_checkpoint',
-    'Submit a checkpoint response to clear the checkpoint gate. *MUST* present the checkpoint to the user and wait for their input. ' +
+    'Submit a checkpoint response to clear the active-checkpoint gate. *MUST* present the checkpoint to the user and wait for their input. ' +
     'Exactly one of option_id, auto_advance, or condition_not_met must be provided. ' +
     'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
     'auto_advance: use the checkpoint\'s defaultOption (only for checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
     'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field). ' +
-    'Accepts either checkpoint_handle (preferred) or session_token — both are the same opaque token string.',
+    'Reads the active checkpoint from state.activeCheckpoint — no separate checkpoint handle is needed.',
     {
-      checkpoint_handle: z.string().optional().describe('The checkpoint_handle (token) provided by the worker when it yielded the checkpoint. Either this or session_token must be provided.'),
-      session_token: z.string().optional().describe('The current session token (same opaque string as checkpoint_handle). Either this or checkpoint_handle must be provided. Useful when resuming a workflow and the agent only has the session_token from get_workflow_status.'),
+      ...sessionIndexParam,
       option_id: z.string().optional().describe('The option ID selected by the user. Must match one of the checkpoint\'s defined options.'),
       auto_advance: z.boolean().optional().describe('Set to true to auto-advance a checkpoint using its defaultOption. Only valid for checkpoints with defaultOption and autoAdvanceMs. The server enforces the autoAdvanceMs timer. If you use auto_advance, present a message to the user that you are proceeding with the default option because no input was provided.'),
       condition_not_met: z.boolean().optional().describe('Set to true to dismiss a conditional checkpoint whose condition was not met. Only valid for checkpoints that have a condition field.'),
     },
-    withAuditLog('respond_checkpoint', async ({ checkpoint_handle, session_token, option_id, auto_advance, condition_not_met }) => {
-      const handle = checkpoint_handle ?? session_token;
-      if (!handle) {
-        throw new Error('Either checkpoint_handle or session_token must be provided. Both were omitted.');
+    withAuditLog('respond_checkpoint', withSessionStoreErrors(async ({ session_index, option_id, auto_advance, condition_not_met }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
+      const active = state.activeCheckpoint;
+      if (!active) {
+        throw new Error(
+          `respond_checkpoint: no active checkpoint on session '${session_index}'. The worker must yield a checkpoint via yield_checkpoint before the orchestrator can respond to it.`,
+        );
       }
-      const token = await decodeSessionToken(handle);
-      const checkpoint_id = token.bcp;
-
-      if (!checkpoint_id) {
-        throw new Error(`The provided checkpoint_handle does not have an active checkpoint (bcp is empty). The worker must yield a checkpoint first.`);
-      }
+      const checkpoint_id = active.checkpointId;
 
       const modeCount = [option_id, auto_advance, condition_not_met].filter(v => v !== undefined).length;
       if (modeCount !== 1) {
         throw new Error('Exactly one of option_id, auto_advance, or condition_not_met must be provided.');
       }
 
-      const result = await loadWorkflow(config.workflowDir, token.wf);
+      const result = await loadWorkflow(config.workflowDir, state.workflowId);
       if (!result.success) throw result.error;
-      const checkpoint = getCheckpoint(result.value, token.act, checkpoint_id);
-      if (!checkpoint) throw new Error(`Checkpoint definition not found: ${checkpoint_id} in activity ${token.act}`);
+      const checkpoint = getCheckpoint(result.value, active.activityId, checkpoint_id);
+      if (!checkpoint) throw new Error(`Checkpoint definition not found: ${checkpoint_id} in activity ${active.activityId}`);
 
       const now = Math.floor(Date.now() / 1000);
-      // We don't have pcpt anymore, so we estimate elapsed time since the token sequence was advanced (yield time)
-      const elapsed = now - token.ts;
+      // Time since the checkpoint was yielded (recorded on activeCheckpoint).
+      const yieldedAtSeconds = Math.floor(new Date(active.yieldedAt).getTime() / 1000);
+      const elapsed = now - yieldedAtSeconds;
       let resolvedOptionId: string | undefined;
       let effect: Record<string, unknown> | undefined;
 
@@ -430,16 +480,33 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      const advancedToken = await advanceToken(handle, { bcp: null });
+      const next = advanceSession(state, (draft) => {
+        delete draft.activeCheckpoint;
+        const recordKey = `${active.activityId}-${checkpoint_id}`;
+        // CheckpointResponseSchema requires `optionId` + `respondedAt`; for
+        // `condition_not_met` dismissals we still record the resolution with
+        // a sentinel option id so the on-disk schema stays valid.
+        const recordedOptionId = resolvedOptionId ?? (condition_not_met ? '__condition_not_met__' : '__unknown__');
+        const record: { optionId: string; respondedAt: string; effects?: { variablesSet?: Record<string, unknown> } } = {
+          optionId: recordedOptionId,
+          respondedAt: new Date(now * 1000).toISOString(),
+        };
+        if (effect !== undefined) {
+          record.effects = { variablesSet: effect };
+        }
+        draft.checkpointResponses = { ...(draft.checkpointResponses ?? {}), [recordKey]: record };
+      });
+      await saveSessionForTool(loaded.folderAbsPath, next);
 
+      const view = sessionView(state);
       const validation = buildValidation(
-        validateWorkflowVersion(token, result.value),
+        validateWorkflowVersion(view, result.value),
       );
 
       const responseData: Record<string, unknown> = {
         checkpoint_id,
         resolved: true,
-        checkpoint_handle: advancedToken,
+        session_index,
       };
       if (resolvedOptionId !== undefined) responseData['resolved_option'] = resolvedOptionId;
       if (effect !== undefined) responseData['effect'] = effect;
@@ -447,19 +514,21 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseData, null, 2) }],
-        _meta: { session_token: advancedToken, validation },
+        _meta: { session_index, validation },
       };
-    }, traceOpts));
+    }), traceOpts));
 
   server.tool('get_trace', 'Retrieve the execution trace for the current workflow session. Accepts an optional array of trace_tokens accumulated from next_activity _meta.trace_token responses to reconstruct a specific trace segment. If no trace_tokens are provided, returns the full in-memory trace for the current session (requires server-side tracing to be enabled). Use this for debugging, auditing, or reviewing the sequence of tool calls made during the session.',
     {
-      ...sessionTokenParam,
+      ...sessionIndexParam,
       trace_tokens: z.array(z.string()).optional().describe('Accumulated trace tokens from next_activity _meta.trace_token responses. If not provided, returns the full in-memory trace for the current session.'),
     },
-    withAuditLog('get_trace', async ({ session_token, trace_tokens }) => {
-      const token = await decodeSessionToken(session_token);
-      assertCheckpointsResolved(token);
-      const advancedToken = await advanceToken(session_token);
+    withAuditLog('get_trace', withSessionStoreErrors(async ({ session_index, trace_tokens }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
+      assertNoActiveCheckpoint(state);
+      const next = advanceSession(state);
+      await saveSessionForTool(loaded.folderAbsPath, next);
 
       if (trace_tokens && trace_tokens.length > 0) {
         const allEvents: TraceEvent[] = [];
@@ -472,29 +541,29 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             errors.push(e instanceof Error ? e.message : String(e));
           }
         }
-        const result: Record<string, unknown> = { traceId: token.sid, source: 'tokens', event_count: allEvents.length, events: allEvents, session_token: advancedToken };
+        const result: Record<string, unknown> = { traceId: state.sessionIndex, source: 'tokens', event_count: allEvents.length, events: allEvents, session_index };
         if (errors.length > 0) result['token_errors'] = errors;
         return {
           content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
-          _meta: { session_token: advancedToken, validation: buildValidation() },
+          _meta: { session_index, validation: buildValidation() },
         };
       }
 
       if (!config.traceStore) {
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: false, event_count: 0, events: [], session_token: advancedToken }, null, 2) }],
-          _meta: { session_token: advancedToken, validation: buildValidation() },
+          content: [{ type: 'text' as const, text: JSON.stringify({ traceId: state.sessionIndex, source: 'memory', tracing_enabled: false, event_count: 0, events: [], session_index }, null, 2) }],
+          _meta: { session_index, validation: buildValidation() },
         };
       }
 
-      const events = config.traceStore.getEvents(token.sid);
+      const events = config.traceStore.getEvents(state.sessionIndex);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: token.sid, source: 'memory', tracing_enabled: true, event_count: events.length, events, session_token: advancedToken }, null, 2) }],
-        _meta: { session_token: advancedToken, validation: buildValidation() },
+        content: [{ type: 'text' as const, text: JSON.stringify({ traceId: state.sessionIndex, source: 'memory', tracing_enabled: true, event_count: events.length, events, session_index }, null, 2) }],
+        _meta: { session_index, validation: buildValidation() },
       };
-    }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
+    }), traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 
-  server.tool('health_check', 'Check server health and availability. Returns server status, name, version, number of available workflows, and uptime in seconds. Does not require a session token. Use this to verify the server is running before starting a workflow.', {},
+  server.tool('health_check', 'Check server health and availability. Returns server status, name, version, number of available workflows, and uptime in seconds. Does not require a session_index. Use this to verify the server is running before starting a workflow.', {},
     withAuditLog('health_check', async () => {
       const workflows = await listWorkflows(config.workflowDir);
       return {
@@ -507,28 +576,28 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
   server.tool('get_workflow_status',
     'Check the status of a workflow session. Returns the session status (active/blocked/completed), current activity, ' +
-    'completed activities trace, last checkpoint info, and parent context if nested. Requires a session token.',
+    'completed activities trace, last checkpoint info, and parent context if nested. Requires a session_index.',
     {
-      ...sessionTokenParam,
+      ...sessionIndexParam,
     },
-    withAuditLog('get_workflow_status', async ({ session_token }) => {
-      const token = await decodeSessionToken(session_token);
-      const clientSid = token.sid;
-      const clientWf = token.wf;
-      const clientAct = token.act;
-      const clientBcp = token.bcp;
+    withAuditLog('get_workflow_status', withSessionStoreErrors(async ({ session_index }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const { state } = loaded;
+      const clientWf = state.workflowId;
+      const clientAct = state.currentActivity;
+      const clientActive = state.activeCheckpoint;
 
       const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
       const workflow = wfResult.success ? wfResult.value : null;
 
       let status: string;
-      if (clientBcp) {
+      if (clientActive) {
         status = 'blocked';
       } else {
         status = 'active';
       }
 
-      const traceEvents = config.traceStore ? config.traceStore.getEvents(clientSid) : [];
+      const traceEvents = config.traceStore ? config.traceStore.getEvents(state.sessionIndex) : [];
       const completedActivities: string[] = [];
       const activitySet = new Set<string>();
       for (const event of traceEvents) {
@@ -555,12 +624,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         } : { id: clientWf },
       };
 
-      if (token.psid) {
+      if (state.parentSession) {
         response['parent'] = {
-          session_id: token.psid,
-          workflow_id: token.pwf,
-          activity: token.pact,
-          version: token.pv,
+          session_index: state.parentSession.sessionIndex,
+          workflow_id: state.parentSession.workflowId,
+          activity: state.parentSession.currentActivity,
+          version: state.parentSession.workflowVersion,
         };
       }
 
@@ -571,12 +640,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         };
       }
 
-      const advancedToken = await advanceToken(session_token);
-      response['session_token'] = advancedToken;
+      // get_workflow_status reads but does not advance — keep the on-disk state stable.
+      response['session_index'] = session_index;
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
-        _meta: { session_token: advancedToken },
+        _meta: { session_index, validation: buildValidation() },
       };
-    }, traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
+    }), traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 }
