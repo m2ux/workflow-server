@@ -106,23 +106,40 @@ selection is policy-driven rather than workflow-driven.
 
 ---
 
-## 6. Next Step
+## 6. Review Outcome — Approved
 
-`await-review` checkpoint — pause until reviewer feedback arrives on
-PR #116. On resume, the worker will analyse review comments and route
-to either `process-review-comments` (if comments are minor/major in
-scope) or directly transition to `complete` (if approval is the only
-signal).
+The `review-outcome` checkpoint resolved with **approved**
+(`review_requires_changes = false`). Reviewer feedback was addressed
+in-flight on the feature branch before transitioning back to
+`complete`. The activity recorded the following feedback items and
+their resolutions:
+
+| # | Feedback item | Resolution | Commit / Action |
+|---|---------------|------------|-----------------|
+| 1 | Source and tests carried ephemeral planning references ("Phase N", "PR116-TC-XX", "PD-N", "SC-N" comments; migration fixture had hardcoded user-specific paths and live issue context) that belong in the PR description, not in code that has to survive after merge. | Stripped all such references from `src/` and `tests/`; replaced fixture paths with generic placeholders. | `ad23820` — `refactor: strip ephemeral planning refs from source and tests` |
+| 2 | Six session-related utility files (`session.ts`, `session-index.ts`, `session-store.ts`, `session-resolver.ts`, `migration.ts`, `crypto.ts`) sat as siblings at `src/` root with no grouping, obscuring the module boundary. | Grouped under `src/utils/session/` with a barrel export (`index.ts`). No logic change; all 315 tests still pass and typecheck clean. | `0af3f8c` — `refactor: group session-related utils into src/utils/session/` |
+| 3 | The `workflows` submodule on the feature branch was tracking the long-lived `workflows` branch, but the in-flight changes for #115 live on `feat/115-server-managed-session-state-meta` on the workflows-side repo — submodule reorganisation needed before reviewers could see the matched workflow changes. | Opened workflows-side PR #117; updated parent `.gitmodules` to point at the feature branch (to revert to `branch = workflows` once both PRs land). | `4f35aea` — `chore: point workflows submodule at feat/115-server-managed-session-state-meta` + workflows PR #117 |
+| 4 | The parent repo's `.gitmodules` declared `branch = workflows` for the workflows submodule but did not record the new feature branch tracking, so a fresh clone would have checked out workflows from the wrong ref. | Updated `.gitmodules` `branch =` field to `feat/115-server-managed-session-state-meta`. | Captured in same commit as item 3 (`4f35aea`); to be reverted post-merge per the commit message. |
+
+Status after resolution:
+
+| State field | Value |
+|-------------|-------|
+| `review_requires_changes` | `false` |
+| `review_comments_summary` | (recorded above) |
+| Transition destination | `complete` |
 
 ---
 
 ## 7. Variables
 
 ```
-pr_url                  = https://github.com/m2ux/workflow-server/pull/116
-pr_status               = ready-for-review
-review_analysis_path    = (n/a — set after review-received resolves)
-review_actions_completed = []
-review_requires_changes = false   (default; reset by review-outcome checkpoint)
-review_comments_summary = ""      (populated by analyze-review-outcome)
+pr_url                   = https://github.com/m2ux/workflow-server/pull/116
+pr_status                = approved
+review_analysis_path     = (n/a — feedback handled inline; no separate analysis artifact)
+review_actions_completed = [strip-ephemeral-refs (ad23820),
+                            group-session-utils (0af3f8c),
+                            workflows-submodule-tracking (4f35aea + PR #117)]
+review_requires_changes  = false
+review_comments_summary  = "Strip ephemeral planning refs from src/ and tests; group session utils under src/utils/session/; point workflows submodule at feature branch and open PR #117."
 ```
