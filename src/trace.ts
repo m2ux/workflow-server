@@ -16,6 +16,14 @@ export interface TraceEvent {
   err?: string;
   vw?: string[];
   psid?: string;
+  /**
+   * Number of ancestor sessions reachable via `parentSession` at event time.
+   * Populated by handlers that have a loaded `SessionFile` available (notably
+   * `start_session`); omitted for unauthenticated tools and for events whose
+   * caller did not compute the depth. PD-6 — exposed for trace enrichment so
+   * pathological chains can be located after-the-fact.
+   */
+  pdepth?: number;
 }
 
 /** HMAC-signed trace token payload containing full event data for a segment. */
@@ -42,7 +50,7 @@ export function createTraceEvent(
   wf: string,
   act: string,
   aid: string,
-  options?: { err?: string; vw?: string[]; psid?: string },
+  options?: { err?: string; vw?: string[]; psid?: string; pdepth?: number },
 ): TraceEvent {
   return {
     traceId,
@@ -57,6 +65,7 @@ export function createTraceEvent(
     ...(options?.err !== undefined ? { err: options.err } : {}),
     ...(options?.vw !== undefined && options.vw.length > 0 ? { vw: options.vw } : {}),
     ...(options?.psid !== undefined ? { psid: options.psid } : {}),
+    ...(options?.pdepth !== undefined ? { pdepth: options.pdepth } : {}),
   };
 }
 

@@ -24,7 +24,13 @@ import {
   planningRoot,
 } from '../utils/session-store.js';
 import { computeSessionIndex } from '../utils/session-index.js';
-import { createInitialSessionFile, safeValidateSessionFile, type SessionFile } from '../schema/session.schema.js';
+import {
+  createInitialSessionFile,
+  safeValidateSessionFile,
+  parentChainDepth,
+  PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
+  type SessionFile,
+} from '../schema/session.schema.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
@@ -200,12 +206,27 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         await writeSessionFile(folder, state);
       }
 
+      // Depth of the recursive parent chain rooted at the new/resumed
+      // session. 0 == no parent, 1 == one parent, and so on. Past
+      // PARENT_CHAIN_DEPTH_WARN_THRESHOLD we surface a soft validation
+      // warning (PD-6) and stamp the depth onto the start_session trace
+      // event for forensic queries. There is no hard ceiling — pathological
+      // depth is loud, not fatal.
+      const depth = parentChainDepth(state);
+      const depthWarning =
+        depth > PARENT_CHAIN_DEPTH_WARN_THRESHOLD
+          ? `Parent chain depth ${depth} exceeds soft threshold of ${PARENT_CHAIN_DEPTH_WARN_THRESHOLD}. Typical dispatch is 2-3 levels deep; verify the nested-workflow topology is intentional.`
+          : null;
+
       if (config.traceStore) {
         config.traceStore.initSession(state.sessionIndex);
+        const traceOpts: { psid?: string; pdepth?: number } = {};
+        if (state.parentSession) traceOpts.psid = state.parentSession.sessionIndex;
+        if (depth > 0) traceOpts.pdepth = depth;
         const event = createTraceEvent(
           state.sessionIndex, 'start_session', 0, 'ok',
           effectiveWorkflowId, state.currentActivity, agent_id,
-          state.parentSession ? { psid: state.parentSession.sessionIndex } : undefined,
+          Object.keys(traceOpts).length > 0 ? traceOpts : undefined,
         );
         config.traceStore.append(state.sessionIndex, event);
       }
@@ -232,7 +253,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
-        _meta: { session_index: sessionIndex, validation: buildValidation() },
+        _meta: { session_index: sessionIndex, validation: buildValidation(depthWarning) },
       };
     })
   );

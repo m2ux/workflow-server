@@ -1489,6 +1489,87 @@ describe('mcp-server integration', () => {
       expect(childResponse.session_index).not.toBe(parentIdx);
     });
 
+    it('PR116-TC-30: three-level dispatch (A → B → C → D) records the full chain in D\'s session.json (SC-5)', async () => {
+      const slugA = 'phase-6-chain-a';
+      const slugB = 'phase-6-chain-b';
+      const slugC = 'phase-6-chain-c';
+      const slugD = 'phase-6-chain-d';
+
+      // Build the chain from root → leaf. Each child captures the immediate
+      // parent's planning_slug; the server reads the parent's session.json
+      // and snapshots it under parentSession recursively.
+      await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slugA },
+      });
+      await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'worker-1', planning_slug: slugB, parent_planning_slug: slugA },
+      });
+      await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'remediate-vuln', agent_id: 'worker-2', planning_slug: slugC, parent_planning_slug: slugB },
+      });
+      const dResult = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'prism-update', agent_id: 'worker-3', planning_slug: slugD, parent_planning_slug: slugC },
+      });
+      expect(dResult.isError).toBeFalsy();
+
+      // Read D's session.json from disk and walk the parentSession chain.
+      const { readFileSync } = await import('node:fs');
+      const dStatePath = join(workspaceDir, '.engineering/artifacts/planning', slugD, 'session.json');
+      const dState = JSON.parse(readFileSync(dStatePath, 'utf8'));
+
+      expect(dState.workflowId).toBe('prism-update');
+      expect(dState.parentSession?.workflowId).toBe('remediate-vuln');
+      expect(dState.parentSession?.parentSession?.workflowId).toBe('work-package');
+      expect(dState.parentSession?.parentSession?.parentSession?.workflowId).toBe('meta');
+      // Chain terminates at the root.
+      expect(dState.parentSession?.parentSession?.parentSession?.parentSession).toBeUndefined();
+    });
+
+    it('PR116-TC-31: dispatch depth > 5 emits a soft warning in _meta.validation (PD-6)', async () => {
+      // Build a 7-level chain so the leaf records depth = 6 (six ancestors),
+      // tripping the > 5 soft-warn threshold.
+      const slugs = [
+        'phase-6-depth-l0',
+        'phase-6-depth-l1',
+        'phase-6-depth-l2',
+        'phase-6-depth-l3',
+        'phase-6-depth-l4',
+        'phase-6-depth-l5',
+        'phase-6-depth-l6',
+      ];
+
+      // Levels 0 through 5 stay under the threshold; the leaf at level 6 trips it.
+      const results: Array<{ depth: number; meta: Record<string, unknown> }> = [];
+      for (let i = 0; i < slugs.length; i++) {
+        const args: Record<string, unknown> = {
+          workflow_id: 'meta',
+          agent_id: `worker-${i}`,
+          planning_slug: slugs[i],
+        };
+        if (i > 0) args.parent_planning_slug = slugs[i - 1];
+        const r = await client.callTool({ name: 'start_session', arguments: args });
+        expect(r.isError).toBeFalsy();
+        results.push({ depth: i, meta: r._meta as Record<string, unknown> });
+      }
+
+      // Levels 0-5 (depth 0..5) are at or below the threshold — no soft warning.
+      for (let i = 0; i <= 5; i++) {
+        const validation = results[i].meta['validation'] as { status: string; warnings: string[] };
+        expect(validation.status).toBe('valid');
+        expect(validation.warnings).toEqual([]);
+      }
+
+      // Level 6 (depth 6) exceeds the soft-warn threshold of 5 — a warning fires.
+      const leaf = results[6].meta['validation'] as { status: string; warnings: string[] };
+      expect(leaf.status).toBe('warning');
+      expect(leaf.warnings.length).toBeGreaterThan(0);
+      expect(leaf.warnings.some((w) => /depth 6/i.test(w) && /threshold/i.test(w))).toBe(true);
+    });
+
     it('creates a fresh planning folder under .engineering/artifacts/planning/<slug>/ (PR116-TC-26)', async () => {
       const slug = 'phase-5-fresh-folder';
       const result = await client.callTool({

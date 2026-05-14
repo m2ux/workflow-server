@@ -4,6 +4,8 @@ import {
   safeValidateSessionFile,
   validateSessionFile,
   createInitialSessionFile,
+  parentChainDepth,
+  PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
 } from '../src/schema/session.schema.js';
 
@@ -274,6 +276,49 @@ describe('SessionFile schema', () => {
       expect(SessionFileSchema).toBeDefined();
       expect(typeof SessionFileSchema.parse).toBe('function');
       expect(typeof SessionFileSchema.safeParse).toBe('function');
+    });
+
+    it('exposes PARENT_CHAIN_DEPTH_WARN_THRESHOLD as a numeric constant (PD-6)', () => {
+      expect(typeof PARENT_CHAIN_DEPTH_WARN_THRESHOLD).toBe('number');
+      expect(PARENT_CHAIN_DEPTH_WARN_THRESHOLD).toBe(5);
+    });
+  });
+
+  describe('parentChainDepth helper (PD-6)', () => {
+    it('returns 0 for a session with no parent', () => {
+      const state = minimalSession();
+      expect(parentChainDepth(state)).toBe(0);
+    });
+
+    it('returns 0 when called with undefined', () => {
+      expect(parentChainDepth(undefined)).toBe(0);
+    });
+
+    it('returns 1 for a single-parent chain', () => {
+      const parent = minimalSession({ sessionIndex: 'PARENT' });
+      const child = minimalSession({ parentSession: parent });
+      expect(parentChainDepth(child)).toBe(1);
+    });
+
+    it('returns N for an N-ancestor chain', () => {
+      let cursor: SessionFile = minimalSession({ sessionIndex: 'ROOTAA' });
+      // Build a chain of 7 ancestors above the leaf.
+      for (let i = 0; i < 7; i++) {
+        cursor = minimalSession({ sessionIndex: 'AAAAAA', parentSession: cursor });
+      }
+      expect(parentChainDepth(cursor)).toBe(7);
+    });
+
+    it('caps traversal at the safety limit when parentSession forms a cycle', () => {
+      // Forge a cycle by self-reference (cannot happen via schema round-trip
+      // because Zod recurses through `z.lazy`, but possible in process-only
+      // hand-built objects).
+      const node = minimalSession();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (node as any).parentSession = node;
+      const d = parentChainDepth(node);
+      // Cap is 1024; helper must return without infinite-looping.
+      expect(d).toBe(1024);
     });
   });
 });

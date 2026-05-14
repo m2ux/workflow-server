@@ -131,6 +131,38 @@ export function safeValidateSessionFile(data: unknown): z.SafeParseReturnType<un
 }
 
 /**
+ * Soft warning threshold (in ancestors) for nested-workflow parent chains. Past
+ * this depth, callers (notably `start_session`) emit a `_meta.validation`
+ * warning; there is no hard ceiling (PD-6). Typical dispatch is 2-3 levels
+ * deep; pathological depth surfaces via warning, not crash.
+ */
+export const PARENT_CHAIN_DEPTH_WARN_THRESHOLD = 5;
+
+/**
+ * Count the number of ancestor sessions reachable via `parentSession`. Returns
+ * 0 when the session has no parent, 1 for a single parent, and so on. Walks
+ * the chain iteratively with a generous safety cap to defend against cycles
+ * introduced by hand-edited or malformed `session.json` files (PD-6).
+ *
+ * Exposed for trace-event enrichment (PD-6) and for the `start_session`
+ * soft-warn path that fires past `PARENT_CHAIN_DEPTH_WARN_THRESHOLD`.
+ */
+export function parentChainDepth(state: SessionFile | undefined): number {
+  if (!state) return 0;
+  let depth = 0;
+  let cursor: SessionFile | undefined = state.parentSession;
+  // Safety cap defends against accidental cycles in hand-edited state. 1024
+  // is two orders of magnitude past the soft-warn threshold; legitimate
+  // chains will never approach it.
+  const SAFETY_CAP = 1024;
+  while (cursor && depth < SAFETY_CAP) {
+    depth += 1;
+    cursor = cursor.parentSession;
+  }
+  return depth;
+}
+
+/**
  * Create a minimal valid `SessionFile` for a freshly-created session. Callers
  * (e.g. `start_session`) layer in defaults and persist via the session store.
  */
