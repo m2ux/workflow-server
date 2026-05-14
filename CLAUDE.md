@@ -28,8 +28,8 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
 ## Boundaries
 
-- Do **not** modify server source (`src/`, `schemas/`) or workflow TOON/registry content unless the user explicitly asks.
-- When following workflows, respect workflow fidelity as defined in TOON files and the workflow-server rules (fetch `workflow-server://schemas`, call `start_session`). See [docs/ide-setup.md](docs/ide-setup.md).
+- Do **not** modify server source (`src/`, `schemas/`) or workflow TOON files unless the user explicitly asks.
+- When following workflows, respect workflow fidelity as defined in TOON files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`list_workflows` / `start_session` / `get_workflow` / `next_activity` / `get_activity`). Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
 
 ## Testing and PR instructions
 
