@@ -34,6 +34,7 @@ The consequence is that the strategic-review activity rated the work `acceptable
 |---|------|-------------|----------|--------|
 | 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 02 | [Codebase comprehension](02-codebase-comprehension.md) | Touch-site summary; pointer to persistent artifact under `.engineering/artifacts/comprehension/work-package-workflow-content.md` | 20-45m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 1-3h | ⬚ Pending |
@@ -61,4 +62,4 @@ The consequence is that the strategic-review activity rated the work `acceptable
 
 ---
 
-**Status:** Design philosophy complete; ready for `codebase-comprehension`. Worktree materialized at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) opened against the parent branch. Driving input is the retrospective from the preceding docs-refresh work package. Two stakeholder-dependent assumptions remain open for `assumptions-review` (see [01-assumptions-log.md](01-assumptions-log.md)).
+**Status:** Codebase comprehension complete; ready for `plan-prepare`. All ten code-analyzable open questions resolved during the initial deep-dive; comprehension-sufficiency checkpoint does not fire (`has_open_questions = false`). Persistent comprehension artifact augmented at `.engineering/artifacts/comprehension/work-package-workflow-content.md`. Worktree materialized at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) opened against the parent branch. Two stakeholder-dependent assumptions remain open for `assumptions-review` (see [01-assumptions-log.md](01-assumptions-log.md)).
