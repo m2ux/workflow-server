@@ -1,0 +1,114 @@
+{
+  "activeCheckpoint": {
+    "activityId": "submit-for-review",
+    "checkpointId": "review-received",
+    "yieldedAt": "2026-05-15T07:29:51.463Z"
+  },
+  "agentId": "orchestrator",
+  "checkpointResponses": {
+    "assumptions-review-assumption-decision": {
+      "effects": {
+        "variablesSet": {
+          "setVariable": {
+            "assumption_resolved_inline": true
+          }
+        }
+      },
+      "optionId": "accept",
+      "respondedAt": "2026-05-14T16:46:47.000Z"
+    },
+    "design-philosophy-classification-confirmed": {
+      "optionId": "confirmed",
+      "respondedAt": "2026-05-14T16:21:37.000Z"
+    },
+    "design-philosophy-workflow-path-selected": {
+      "effects": {
+        "variablesSet": {
+          "setVariable": {
+            "complexity": "simple",
+            "needs_elicitation": false,
+            "needs_research": false,
+            "skip_optional_activities": true
+          }
+        }
+      },
+      "optionId": "skip-optional",
+      "respondedAt": "2026-05-14T16:30:12.000Z"
+    },
+    "implement-switch-model-post-impl": {
+      "optionId": "continue-current",
+      "respondedAt": "2026-05-14T18:51:08.000Z"
+    },
+    "implement-switch-model-pre-impl": {
+      "optionId": "continue-current",
+      "respondedAt": "2026-05-14T16:55:56.000Z"
+    },
+    "plan-prepare-approach-confirmed": {
+      "optionId": "confirmed",
+      "respondedAt": "2026-05-14T16:43:08.000Z"
+    },
+    "post-impl-review-file-index-table": {
+      "optionId": "no-issues",
+      "respondedAt": "2026-05-14T18:56:31.000Z"
+    },
+    "start-work-package-issue-verification": {
+      "effects": {
+        "variablesSet": {
+          "setVariable": {
+            "issue_skipped": true
+          }
+        }
+      },
+      "optionId": "skip-issue",
+      "respondedAt": "2026-05-14T16:11:35.000Z"
+    },
+    "start-work-package-pr-creation": {
+      "effects": {
+        "variablesSet": {
+          "setVariable": {
+            "pr_skipped": false
+          }
+        }
+      },
+      "optionId": "proceed",
+      "respondedAt": "2026-05-14T16:15:37.000Z"
+    },
+    "strategic-review-review-findings": {
+      "effects": {
+        "variablesSet": {
+          "setVariable": {
+            "review_passed": true
+          }
+        }
+      },
+      "optionId": "acceptable",
+      "respondedAt": "2026-05-15T07:28:32.000Z"
+    },
+    "strategic-review-unsigned-commits-prompt": {
+      "effects": {
+        "variablesSet": {
+          "setVariable": {
+            "resign_unsigned_commits_requested": true
+          }
+        }
+      },
+      "optionId": "resign-all",
+      "respondedAt": "2026-05-15T07:18:08.000Z"
+    }
+  },
+  "completedActivities": [],
+  "condition": "",
+  "currentActivity": "submit-for-review",
+  "currentSkill": "",
+  "history": [],
+  "schemaVersion": 1,
+  "seq": 71,
+  "sessionIndex": "O2ZUQL",
+  "skippedActivities": [],
+  "startedAt": "2026-05-14T16:02:23.183Z",
+  "triggeredWorkflows": [],
+  "ts": 1778830191,
+  "variables": {},
+  "workflowId": "work-package",
+  "workflowVersion": "3.11.0"
+}

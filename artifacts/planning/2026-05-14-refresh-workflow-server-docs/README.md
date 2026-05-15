@@ -41,10 +41,13 @@ The fix is mechanical, not architectural: no source code or schema changes, just
 | 05 | [Test plan](05-test-plan.md) | Verification suite + doc-specific checks | 15-25m | ✅ Complete |
 | — | Implementation | Documentation updates per plan (4 commits on `chore/refresh-workflow-server-docs`) | 1-3h | ✅ Complete |
 | 06 | [Tracked drift](06-tracked-drift.md) | Files needing a follow-up pass after `session_index` merge | 10m | ✅ Complete |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | [Code review](06-code-review.md) | Automated doc quality review | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | Validation | Build, typecheck, link verification | 10-20m | ⬚ Pending |
+| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| 06 | [Code review](06-code-review.md) | Automated doc quality review | 10-20m | ✅ Complete |
+| 06 | [Structural findings](06-structural-findings.md) | Prism L12 single-pass structural analysis | 10-15m | ✅ Complete |
+| 06 | [Test suite review](06-test-suite-review.md) | Test suite quality assessment (docs-only — N/A) | 5m | ✅ Complete |
+| 06 | [Architecture summary](06-architecture-summary.md) | Architecture summary (skipped — docs-only) | 5m | ✅ Complete |
+| 07 | [Validation](07-validation.md) | Typecheck + Vitest suite, commit signature scan, README conformance | 10-20m | ✅ Complete |
+| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 
@@ -61,4 +64,4 @@ The fix is mechanical, not architectural: no source code or schema changes, just
 
 ---
 
-**Status:** Implementation complete on `chore/refresh-workflow-server-docs`. Four commits land the refresh in the order planned: (1) `docs: refresh API and entry-point docs` (T1–T6); (2) `docs: refresh architecture and model docs` (T7–T9); (3) `docs: refresh schemas/README.md and schema-header.md` (T10–T11); plus the planning-folder updates here. `npm run typecheck` and `npm test -- --run` both pass (256 passed, 2 skipped, 0 failed) before and after edits. Tracked drift recorded in [06-tracked-drift.md](06-tracked-drift.md). Proceeding to code-review.
+**Status:** Implementation complete on `chore/refresh-workflow-server-docs`. Four commits land the refresh in the order planned: (1) `docs: refresh API and entry-point docs` (T1–T6); (2) `docs: refresh architecture and model docs` (T7–T9); (3) `docs: refresh schemas/README.md and schema-header.md` (T10–T11); plus the planning-folder updates here. `npm run typecheck` and `npm test -- --run` both pass (256 passed, 2 skipped, 0 failed) before and after edits. Tracked drift recorded in [06-tracked-drift.md](06-tracked-drift.md). Post-impl-review complete: code-review (06), structural-findings (06), test-suite-review (06), architecture-summary (06, skipped — docs-only). Validation complete: typecheck + tests green, commit-signature preflight flagged 4 unsigned commits. Strategic review complete: 4 unsigned commits re-signed via `git rebase --keep-empty --force-rebase -S 7dfca21` and force-with-lease pushed to `chore/refresh-workflow-server-docs` (new tip `7de8898`, all G); diff scope confirmed docs-only (+94/-33 across 12 files); no findings ≥ Minor. Proceeding to submit-for-review.
