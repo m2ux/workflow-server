@@ -604,54 +604,6 @@ export async function ensureNestedPlanningFolder(
 }
 
 /**
- * Locate a planning folder by slug anywhere under the planning root,
- * recursively. Returns the absolute path of the first folder whose basename
- * matches `slug` AND contains a `session.json`. Returns `undefined` if no
- * match is found.
- *
- * Used by `start_session` to resolve `parent_planning_slug` when the parent
- * may be nested under a grand-parent rather than living at the workspace
- * top level. Slugs are expected to be unique across the planning tree; if
- * two folders share the same slug, the first encountered match wins.
- */
-export async function findPlanningFolderBySlug(
-  workspaceDir: string,
-  slug: string,
-): Promise<string | undefined> {
-  assertValidSlug(slug);
-  const root = planningRoot(workspaceDir);
-
-  async function walk(dirPath: string): Promise<string | undefined> {
-    let entries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
-    try {
-      entries = await readdir(dirPath, { withFileTypes: true });
-    } catch {
-      return undefined;
-    }
-    for (const entry of entries) {
-      if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
-      const folderPath = resolve(dirPath, entry.name);
-      let isDir = false;
-      try {
-        const st = await stat(folderPath);
-        isDir = st.isDirectory();
-      } catch {
-        continue;
-      }
-      if (!isDir) continue;
-      if (entry.name === slug && (await sessionFileExists(folderPath))) {
-        return folderPath;
-      }
-      const nested = await walk(folderPath);
-      if (nested) return nested;
-    }
-    return undefined;
-  }
-
-  return walk(root);
-}
-
-/**
  * Transient (bootstrap) session support. Orchestrator-only sessions (notably
  * the meta workflow) never need a workspace folder — their state lives only
  * long enough to dispatch a child workflow, which then snapshots them into
