@@ -1759,6 +1759,61 @@ describe('mcp-server integration', () => {
       expect(state.history.some((e: { type: string }) => e.type === 'workflow_completed')).toBe(true);
     });
 
+    it('parent.triggeredWorkflows gets a backlink when a child is dispatched, and flips to completed when the child terminates', async () => {
+      const { readFile } = await import('node:fs/promises');
+      const parentSlug = 'parent-with-backlink';
+      const childSlug = 'child-of-backlink';
+      const parentFolder = join(workspaceDir, '.engineering/artifacts/planning', parentSlug);
+      const childFolder = join(workspaceDir, '.engineering/artifacts/planning', childSlug);
+
+      // Persistent parent (work-package, not meta) so the backlink is durable.
+      const parent = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: parentSlug },
+      });
+      const parentIdx = parseToolResponse(parent).session_index;
+
+      // Dispatch a child.
+      const child = await client.callTool({
+        name: 'start_session',
+        arguments: {
+          workflow_id: 'work-package',
+          agent_id: 'worker-1',
+          planning_slug: childSlug,
+          parent_planning_slug: parentSlug,
+        },
+      });
+      const childIdx = parseToolResponse(child).session_index;
+
+      // Parent.session.json now has a triggeredWorkflows entry for the child.
+      let parentState = JSON.parse(await readFile(join(parentFolder, 'session.json'), 'utf8'));
+      expect(parentState.triggeredWorkflows).toHaveLength(1);
+      expect(parentState.triggeredWorkflows[0]).toMatchObject({
+        workflowId: 'work-package',
+        planningSlug: childSlug,
+        sessionIndex: childIdx,
+        status: 'running',
+      });
+      expect(parentState.history.some((e: { type: string }) => e.type === 'workflow_triggered')).toBe(true);
+
+      // Walk the child to its terminal activity.
+      await client.callTool({ name: 'next_activity', arguments: { session_index: childIdx, activity_id: 'start-work-package' } });
+      await client.callTool({ name: 'next_activity', arguments: { session_index: childIdx, activity_id: 'complete' } });
+
+      // Parent's TWR entry should now be `completed` with a completedAt set.
+      parentState = JSON.parse(await readFile(join(parentFolder, 'session.json'), 'utf8'));
+      expect(parentState.triggeredWorkflows[0].status).toBe('completed');
+      expect(parentState.triggeredWorkflows[0].completedAt).toBeTruthy();
+      expect(parentState.history.some((e: { type: string }) => e.type === 'workflow_returned')).toBe(true);
+
+      // Child's session.json is intact and resumable — `parentIdx` still
+      // resolves to the same parent folder, child's own state is sealed.
+      const childState = JSON.parse(await readFile(join(childFolder, 'session.json'), 'utf8'));
+      expect(childState.status).toBe('completed');
+      expect(childState.currentActivity).toBe('complete');
+      expect(childState.parentSession?.sessionIndex).toBe(parentIdx);
+    });
+
     it('canonical key order: top-level priority fields come before alphabetic tail', async () => {
       const { readFile } = await import('node:fs/promises');
       const slug = 'key-order';

@@ -230,6 +230,34 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded.folderAbsPath, next);
 
+      // If this child just reached its terminal activity, notify the parent
+      // (if any) so the parent's `triggeredWorkflows[i].status` flips from
+      // `running` to `completed`. Persistent-parent only — transient parents
+      // were already discarded when the child captured them. Best-effort.
+      if (activity_id === 'complete' && state.parentSession?.sessionIndex) {
+        const parentIdx = state.parentSession.sessionIndex;
+        try {
+          const parentLoaded = await loadSessionForTool(config.workspaceDir, parentIdx);
+          const completedAt = new Date().toISOString();
+          const parentNext = advanceSession(parentLoaded.state, (draft) => {
+            const ref = draft.triggeredWorkflows.find((t) => t.sessionIndex === state.sessionIndex);
+            if (ref && ref.status === 'running') {
+              ref.status = 'completed';
+              ref.completedAt = completedAt;
+              draft.history.push({
+                timestamp: completedAt,
+                type: 'workflow_returned',
+                data: { sessionIndex: state.sessionIndex, workflowId: state.workflowId },
+              });
+            }
+          });
+          await saveSessionForTool(parentLoaded.folderAbsPath, parentNext);
+        } catch {
+          // Parent may have been a transient and discarded long ago, or its
+          // folder may have moved. Don't fail the child's completion.
+        }
+      }
+
       const meta: Record<string, unknown> = { session_index, validation };
 
       if (config.traceStore) {

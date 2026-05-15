@@ -183,6 +183,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // workspace folder under the planning root.
         let parentSession: SessionFile | undefined;
         let parentFolderToDiscard: string | undefined;
+        let parentForBacklink: { folderAbsPath: string; state: SessionFile } | undefined;
         if (parent_planning_slug) {
           const transientParent = lookupTransientBySlug(parent_planning_slug);
           const parentFolder = transientParent ?? resolve(planningRoot(config.workspaceDir), parent_planning_slug);
@@ -214,8 +215,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             // session, the standalone folder is redundant once we've captured
             // its state into the child's `parentSession`. Mark it for
             // discard after the child's session.json is sealed.
-            if (await isTransientFolder(parentFolder)) {
+            if (isTransientFolder(parentFolder)) {
               parentFolderToDiscard = parentFolder;
+            } else {
+              // Persistent parent — we'll backlink this child onto its
+              // triggeredWorkflows[] once the child's session.json is sealed.
+              parentForBacklink = { folderAbsPath: parentLoaded.folderAbsPath, state: parentLoaded.state };
             }
           } catch (err) {
             // Parent slug is invalid — proceed without parent context.
@@ -245,6 +250,36 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // child's `parentSession` field.
         if (parentFolderToDiscard) {
           await discardTransient(parentFolderToDiscard);
+        }
+
+        // Backlink this child onto the persistent parent's
+        // triggeredWorkflows[] so the parent's session.json knows what it
+        // dispatched. Transients are skipped (they're being discarded). The
+        // operation is best-effort: the child is already sealed; failing to
+        // backlink only loses parent-side discoverability.
+        if (parentForBacklink) {
+          try {
+            const triggeredAt = new Date().toISOString();
+            const parentNext = advanceSession(parentForBacklink.state, (draft) => {
+              draft.triggeredWorkflows.push({
+                workflowId: effectiveWorkflowId,
+                planningSlug: slug,
+                sessionIndex,
+                triggeredAt,
+                triggeredFrom: { activityId: draft.currentActivity || '' },
+                status: 'running',
+              });
+              draft.history.push({
+                timestamp: triggeredAt,
+                type: 'workflow_triggered',
+                activity: draft.currentActivity || undefined,
+                data: { workflowId: effectiveWorkflowId, planningSlug: slug, sessionIndex },
+              });
+            });
+            await saveSessionForTool(parentForBacklink.folderAbsPath, parentNext);
+          } catch (err) {
+            console.warn(`[start_session] failed to backlink child '${slug}' onto parent '${parent_planning_slug}' triggeredWorkflows: ${err instanceof Error ? err.message : String(err)}`);
+          }
         }
       }
 
