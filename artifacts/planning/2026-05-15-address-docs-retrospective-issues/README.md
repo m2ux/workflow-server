@@ -1,7 +1,7 @@
 # Address Docs-Refresh Retrospective Issues - May 2026
 
 **Created:** 2026-05-15
-**Status:** Planning
+**Status:** Ready
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -37,8 +37,8 @@ The fix works as a layered safety net. First, the publish step now reads its own
 | 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 02 | [Codebase comprehension](02-codebase-comprehension.md) | Touch-site summary; pointer to persistent artifact under `.engineering/artifacts/comprehension/work-package-workflow-content.md` | 20-45m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-3h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
@@ -64,4 +64,4 @@ The fix works as a layered safety net. First, the publish step now reads its own
 
 ---
 
-**Status:** Codebase comprehension complete; ready for `plan-prepare`. All ten code-analyzable open questions resolved during the initial deep-dive; comprehension-sufficiency checkpoint does not fire (`has_open_questions = false`). Persistent comprehension artifact augmented at `.engineering/artifacts/comprehension/work-package-workflow-content.md`. Worktree materialized at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) opened against the parent branch. Two stakeholder-dependent assumptions remain open for `assumptions-review` (see [01-assumptions-log.md](01-assumptions-log.md)).
+**Status:** Plan & test plan complete; approach confirmed at `approach-confirmed` checkpoint. Ready for `assumptions-review`. Touch sites 1–8 confirmed (touch site 9 removed; bootstrap obs §4.2 retracted). Two stakeholder-dependent assumptions remain open: `A-DP-05-residual` and `A-DP-09` (see [01-assumptions-log.md](01-assumptions-log.md)). Persistent comprehension artifact at `.engineering/artifacts/comprehension/work-package-workflow-content.md`. Worktree at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) open against the parent branch.
