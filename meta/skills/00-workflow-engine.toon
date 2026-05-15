@@ -1,19 +1,22 @@
 id: workflow-engine
-version: 6.0.0
+version: 6.1.0
 capability: Operations and rules for workflow execution — session lifecycle, activity dispatch, transition evaluation, checkpoint flow
 
 description: "Capability skill bundling everything needed to execute a workflow's structured flow. Operations cover session lifecycle (resume or create via start_session), activity dispatch and transition evaluation, the post-activity commit hook, sub-workflow handling, and the full checkpoint protocol (yield, bubble, present-to-user, respond, resume). State persistence is server-managed: every authenticated tool call atomically writes session.json + .session-token (seal) into the planning folder, so no agent-side persist/restore operations exist. Rules cover session-index usage, checkpoint discipline, state-mutation invariants, and orchestrator/worker behavioural boundaries. Each operation is a short linear procedure invoking a small set of MCP / harness / shell tools."
 
 operations:
   list-workflows:
-    description: "Retrieve the catalog of available workflows"
+    description: "Retrieve the catalog of available workflows by reading the workflows worktree directly via harness primitives"
     output[1]:
-      - catalog: "Array of { id, title, description, tags } entries"
-    procedure[1]:
-      - "Call list_workflows"
+      - catalog: "Array of { id, title, description, tags } entries — one per workflow.toon found"
+    procedure[3]:
+      - "Glob 'workflows/*/workflow.toon' (relative to the repo root containing the workflows worktree) to enumerate every workflow definition file"
+      - "For each path returned, Read the file and parse the TOON header fields id, title, description, and tags"
+      - "Return the parsed entries as catalog (no further server-side aggregation needed)"
     tools:
-      workflow-server[1]:
-        - list_workflows
+      harness[2]:
+        - Glob
+        - Read
 
   match-target-workflow:
     description: "Match a user request against the workflow catalog and surface ambiguity"
