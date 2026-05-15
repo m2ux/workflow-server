@@ -117,17 +117,13 @@ The checkpoint's message uses `{problem_type}` and `{complexity}` substitution m
 - Or change the message away from templated substitution and let the worker emit a structured summary the orchestrator passes verbatim.
 - Defensive: extend `yield_checkpoint` to accept an optional `variables` payload. This crosses into MCP-server source (`src/`, `schemas/`) — it is the only candidate in this work package that does — so it should be a deliberate scope decision, not folded in by default.
 
-### 4.2 Sub-agents lack the `Task` primitive — `harness-compat::spawn-agent` design mismatch
+### 4.2 ~~Sub-agents lack the `Task` primitive~~ — RETRACTED
 
-When the meta-orchestrator spawned a depth-1 `work-package` orchestrator, that orchestrator could not in turn spawn its own worker via `harness-compat::spawn-agent` — depth-1 sub-agents do not have the `Task` tool in this Claude Code harness. The orchestrator/worker layering in the current `meta` workflow does not match what the harness actually supports: foreground spawn is only available at the top orchestrator depth. The `dispatch-client-workflow` meta-activity's pattern (spawn client orchestrator → client orchestrator runs activity loop) collapses in practice into "meta-orchestrator runs the client loop itself".
+This observation was based on the bootstrap experience where a depth-1 sub-agent could not invoke `harness-compat::spawn-agent`. **The user has clarified that workers CAN be spawned as foreground tasks from depth ≥ 1 in this harness.** The actual cause of the bootstrap failure was therefore not a depth limit — most likely the spawned agent's `subagent_type` did not include the Task tool in its allowed-tools list, or the prompt did not pass through correctly. The architectural concern raised here (collapse meta and client orchestrator into one agent) is not justified by the evidence.
 
-**Possible scope items** (`plan-prepare` decides):
+**No scope items.** The observation is retracted. `harness-compat::spawn-agent` does not need a depth-constraint doc edit, and `workflow-engine::dispatch-activity` does not need an inline-fallback note for depth ≥ 1.
 
-- Document the depth constraint explicitly in `harness-compat::spawn-agent` so future workflow authors don't design around the assumption that sub-agents recursively spawn.
-- Either (a) collapse meta and the client workflow orchestrator into a single agent (meta runs the client loop inline), or (b) define a different harness primitive — for example, a "checkpoint-bounded continuation" where meta hands control to the worker prompt directly with no intermediate orchestrator agent.
-- Audit `workflow-engine` operation procedures that implicitly assume nested orchestrator agents and rewrite them for a single-agent loop.
-
-This finding may be the more architecturally significant of the two. It does not match the shape of the driving retrospective's recommendations (which are PR-body verification + ancillary process gaps), so it should be considered separately at `plan-prepare`.
+If a related issue does need addressing, it is at the per-subagent-type level: ensuring whichever agent type is used for client orchestrators is configured with Task. That is a harness/permission configuration concern, not a workflow-content one.
 
 ### 4.3 Worker-local classification overwritten by checkpoint effect
 

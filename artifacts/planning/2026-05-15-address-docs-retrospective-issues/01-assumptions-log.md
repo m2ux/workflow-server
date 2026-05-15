@@ -25,11 +25,11 @@ Categories used in this activity:
 ## Scorecard
 
 ```
-Total: 13 | Validated: 10 | Invalidated: 0 | Partially Validated: 1 | Open: 2
-Convergence iterations: 1 | Newly surfaced: 0
+Total: 23 | Validated: 20 | Invalidated: 0 | Partially Validated: 1 | Open: 2
+Convergence iterations: 1 | Newly surfaced (plan-prepare): 10 | Newly resolvable: 0
 ```
 
-Convergence reached after one reconciliation iteration. The two remaining Open assumptions are Stakeholder-dependent and will be presented at the `assumptions-review` activity. The Partially Validated entry (A-DP-05) is partly empirical / harness-observed; its residual uncertainty is reclassified as Stakeholder-dependent.
+Convergence reached after one reconciliation iteration. The two remaining Open assumptions are Stakeholder-dependent and will be presented at the `assumptions-review` activity. The Partially Validated entry (A-DP-05) is partly empirical / harness-observed; its residual uncertainty is reclassified as Stakeholder-dependent. Ten planning-phase assumptions added at `plan-prepare` (A-PP-01 through A-PP-10) — all Validated in place; none reopens the resolvable set.
 
 ---
 
@@ -165,6 +165,112 @@ Convergence reached after one reconciliation iteration. The two remaining Open a
 
 ---
 
+## Plan-Prepare assumptions (added at `plan-prepare`, 2026-05-15)
+
+Categories follow resource 26: Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions.
+
+### Design Approach
+
+### A-PP-01: Two-tier defence-in-depth is sufficient (no CI lint)
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** Render-time verify in `update-pr` + live-body re-fetch in `strategic-review` is sufficient defence-in-depth. A third tier (a CI lint over the merged PR body) is not required.  
+**Finding:** No evidence of post-strategic-review mutation in the docs-refresh retrospective (`13-workflow-retrospective.md`). The three review-feedback items on PR #119 were all caught by the human reviewer at `review-received`, not by a post-merge process. Both render-time and strategic-review tiers see the same constraint set; a CI lint would catch only the rare case of post-PATCH human mutation. Validated in the comprehension artifact §I.  
+**Evidence:** Comprehension artifact §I; retrospective Observations table. Iteration 1.  
+**Resolution:** Validated.
+
+### A-PP-02: Verify phase in skill; rerender loop in activity
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The render-validate-rerender pattern is best expressed as a new `verify-body` protocol phase inside `18-update-pr.toon` (which emits `body_conforms` and `body_findings[]`), with the rerender loop expressed as activity-level `loops[]` on `12-submit-for-review.toon`.  
+**Finding:** `loops[]` is an activity-level construct per `schemas/activity.schema.json` L250. Skills carry `protocol` and `rules` but not `loops`. The pattern (skill emits a boolean condition consumed by an activity-level `while` loop) is already used in `02-design-philosophy.toon`'s assumption-reconciliation loop, this activity's same loop, and `08-implement.toon`. Validated in comprehension artifact §C.  
+**Evidence:** Comprehension artifact §C; `schemas/activity.schema.json` L250, L281. Iteration 1.  
+**Resolution:** Validated.
+
+### Task Breakdown
+
+### A-PP-03: Eight retrospective recommendations + three bootstrap observations decompose into ten independent implementation tasks
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The work decomposes into ten implementation tasks (Tier 1 ×4, Tier 2 ×1, Tier 3 ×2, Tier 4 ×3 — counting touch site #9 as two file edits) with no shared mutable state across tiers. The defence-in-depth pair (T1.1/T1.2) is the only intentional cross-coupling.  
+**Finding:** A-DP-06 already validated the six retrospective buckets as independent. Folding in §4.1, §4.2 (docs-only), and §4.3 adds three more touch sites; each is localised to a single TOON file or pair of files. No shared mutable state.  
+**Evidence:** Plan §3 sequencing block; comprehension artifact §2 file-by-file analysis. Iteration 1.  
+**Resolution:** Validated.
+
+### A-PP-04: §4.1 fixable by adding explicit `set` actions; no schema extension needed
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The §4.1 templated-literal bug can be fixed entirely in workflow content — by adding two `set` actions to `02-design-philosophy.toon` that write `problem_type` and `complexity` to session state before the `classification-confirmed` checkpoint yields. No `yield_checkpoint` schema extension is required.  
+**Finding:** Activity schema (`schemas/activity.schema.json`) already supports `actions: set` with `target` and `value` fields. A-DP-07 validated that recommended TOON edits fit within existing schemas. Two new `set` actions on the existing `classify-problem` step (or a new step before the checkpoint) is well within the existing patterns (e.g., `determine-path` uses `actions: set`).  
+**Evidence:** Activity schema; `02-design-philosophy.toon` step structure observed in `get_activity` response. Iteration 1.  
+**Resolution:** Validated.
+
+### Dependency Assumptions
+
+### A-PP-05: Repo provides `validate-workflow.ts` and `validate-workflow-toon.ts` as the canonical TOON validators
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The test plan can rely on `tsx scripts/validate-workflow.ts <workflow>` and `tsx scripts/validate-workflow-toon.ts` as the canonical structural validators; no separate `workflow-validator` package is needed.  
+**Finding:** `ls scripts/` returns `validate-activities.ts`, `validate-workflow-toon.ts`, `validate-workflow.ts`. `package.json` declares no `validate` npm script, but `tsx` is in `devDependencies`, so direct invocation is supported.  
+**Evidence:** `ls scripts/`; `package.json` lines 1-30. Iteration 1.  
+**Resolution:** Validated.
+
+### A-PP-06: Workers have `Read` and `Glob` in their tool allowlist
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The `list-workflows` operation rewrite can use harness `Read` and `Glob` primitives because workers have those tools available.  
+**Finding:** The §4 bootstrap observation already confirms a worker workaround that read `workflows/*/workflow.toon` directly — the worker successfully used `Read` over the directory. `Glob` is available to all agents (it's a harness primitive, not an MCP tool). The forbidden-tool list for workers covers `next_activity`, `get_workflow`, `list_workflows`; `Read` and `Glob` are not on that list.  
+**Evidence:** Retrospective Observations table; worker workaround in the docs-refresh work package; CLAUDE.md worker rules. Iteration 1.  
+**Resolution:** Validated.
+
+### Test Strategy
+
+### A-PP-07: Targeted `grep`-based assertions are an acceptable test proxy
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** There is no TOON-content unit-test harness; structural assertions implemented as `grep`/`diff` commands against the edited TOON files are an acceptable test proxy.  
+**Finding:** `vitest.config.ts` (parent repo) covers server source under `src/` and `tests/`. No TOON test harness exists in `workflows/`. Existing TOON-edit work packages (per the comprehension artifact's pattern survey) rely on the validator scripts plus the schema as the structural floor. `grep`-based assertions in the test plan are documentation of the implementer's verification steps, not automated tests.  
+**Evidence:** Repo layout; absence of TOON tests under `tests/`. Iteration 1.  
+**Resolution:** Validated.
+
+### A-PP-08: TC-Z smoke runs can target PR #120 without affecting the live PR
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The end-to-end smoke runs (TC-Z1–TC-Z4) can be executed against PR #120's body either by capturing a snapshot of the body first (and restoring after) or by reading the body without writing.  
+**Finding:** TC-Z1 reads `gh pr view 120 --json body` (read-only). TC-Z2 deliberately mutates the body for one test cycle — the implementer captures `gh pr view 120 --json body > /tmp/pr-120-body.before.md` before mutation and restores via `gh api repos/m2ux/workflow-server/pulls/120 -X PATCH -f body=@/tmp/pr-120-body.before.md` after. TC-Z3 / TC-Z4 are read-only of the loop / strategic-review behaviour. All four operations are reversible.  
+**Evidence:** `gh pr view --json body` semantics; `gh api ... PATCH` is the existing update path used in `update-pr`. Iteration 1.  
+**Resolution:** Validated.
+
+### Scope Decisions
+
+### A-PP-09: §4.1/§4.2/§4.3 are IN scope as workflow-content-only edits
+
+**Status:** Validated (recommendation; final decision rides into `approach-confirmed` checkpoint)  
+**Resolvability:** Stakeholder-dependent (decision item)  
+**Assumption:** §4.1 (templated checkpoint), §4.2 (sub-agent Task depth — docs-only variant), §4.3 (classification overwrite smell) are all IN scope for THIS work package. The §4.1 defensive `yield_checkpoint` schema extension is OUT (server-source change). The §4.2 architectural collapse is OUT (deferred).  
+**Finding:** All three are workflow-content-only when restricted to the proposed variants. §4.1's set-actions fix is consistent with A-PP-04. §4.2's docs-only variant edits `harness-compat::spawn-agent` rules and `dispatch-activity` procedure — both workflow-content. §4.3's variable separation edits `02-design-philosophy.toon` only. The originating A-DP-09 was Stakeholder-dependent because `plan-prepare` was the right place to decide. The recommendation is made; the checkpoint formalises it.  
+**Evidence:** Comprehension artifact §J; plan §2; design-philosophy §4.  
+**Resolution:** Validated (pending checkpoint).
+
+### A-PP-10: Issue-skipped placeholder uses the terse form
+
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The Issue-skipped placeholder is the terse `🐛 _Issue: skipped_`; rationale capture is a future enhancement.  
+**Finding:** Comprehension §G resolved Q7 to form (1). The free-text-input checkpoint primitive required for form (3) does not exist in the schema (`schemas/checkpoint.schema.json` exposes options[] as enumerated, not free-text).  
+**Evidence:** Comprehension §G; checkpoint schema. Iteration 1.  
+**Resolution:** Validated.
+
+---
+
 ## Convergence check
 
 After iteration 1, the open set is:
@@ -172,7 +278,7 @@ After iteration 1, the open set is:
 | # | Assumption | Why open |
 |---|---|---|
 | A-DP-05-residual | Harness-behavior verification (depth-1 `Task` availability) | Empirical / requires user confirmation |
-| A-DP-09 | Bootstrap observations §4.1–§4.3 scope decision | Stakeholder decision at `plan-prepare` |
+| A-DP-09 | Bootstrap observations §4.1–§4.3 scope decision | Stakeholder decision at `plan-prepare` (A-PP-09 records the recommendation; checkpoint formalises it) |
 
 Both remaining open assumptions are Stakeholder-dependent. No further code analysis would reduce them. `has_resolvable_assumptions = false`. Convergence reached.
 
@@ -185,4 +291,29 @@ Both remaining open assumptions are Stakeholder-dependent. No further code analy
 The two open assumptions above will be presented to the user at the `assumptions-review` activity. Both are decision items, not verification questions:
 
 - **A-DP-05-residual** — user is best placed to confirm whether the depth-1 `Task` constraint is a stable harness behaviour or a transient configuration artefact.
-- **A-DP-09** — user decides whether to fold the three bootstrap observations into this work package or spin them out.
+- **A-DP-09** — user decides whether to fold the three bootstrap observations into this work package or spin them out. Plan-prepare's recommendation (recorded as A-PP-09): fold in §4.1/§4.2 (docs-only)/§4.3; keep the §4.1 server-source variant and §4.2 architectural collapse out of scope.
+
+---
+
+## Implementation TODO list (from `05-work-package-plan.md` §3, §6)
+
+Tasks are listed in the leverage-tier order from the plan. Within a tier, tasks are independent; across tiers, only Tier 1 has internal ordering (T1.1 → T1.2 → T1.3 → T1.4 by rule-wording dependency; otherwise parallel-safe).
+
+| # | Task | Touch site | Tier | Est. |
+|---|------|-----------|------|------|
+| T1.1 | Add `verify-body` protocol phase to `update-pr` (emits `body_conforms`, `body_findings[]`) and five `rules.pr-body-conformance.*` rules with wording from plan §4. | `workflows/work-package/skills/18-update-pr.toon` | 1 | 30-45m |
+| T1.2 | Add `verify-pr-body-conformance` protocol phase to `strategic-review` with five bullets — wording byte-identical to T1.1 rules — that read live PR body via `gh pr view --json body`. | `workflows/work-package/skills/12-review-strategy.toon` | 1 | 20-30m |
+| T1.3 | Add activity-level `loops[]` (`id: verify-pr-body-rerender`, `type: while`, `condition: body_conforms == false`, `maxIterations: 2`) and blocking `body-non-conformant` checkpoint (options: `proceed-with-override`, `provide-input`, `abort`) to `submit-for-review`. | `workflows/work-package/activities/12-submit-for-review.toon` | 1 | 30-45m |
+| T1.4 | Add Issue-skipped placeholder variant (`🐛 _Issue: skipped_`) to resource 12; no other content change. | `workflows/work-package/resources/12-pr-description.md` | 1 | 5-10m |
+| T2.1 | Add `verify-signing-precondition` step (six `validate` actions) between `analyze-reference-with-gitnexus` and `derive-branch-name`. | `workflows/work-package/activities/01-start-work-package.toon` | 2 | 20-30m |
+| T3.1 | Add `env-prerequisites` step at `steps[0]` of `plan-prepare` — six `validate` actions covering workflows worktree, target_path, reference_path, planning_folder_path writability, gh auth, GPG agent. | `workflows/work-package/activities/06-plan-prepare.toon` | 3 | 20-30m |
+| T3.2 | Rewrite `workflow-engine::list-workflows` operation body to use harness `Read`+`Glob` over `workflows/*/workflow.toon`; drop `workflow-server.list_workflows` tool ref. Operation name unchanged. | `workflows/meta/skills/00-workflow-engine.toon` | 3 | 20-30m |
+| T4.1 | Two edits in design-philosophy: (a) §4.1 add `set` actions for `problem_type` and `complexity` before `classification-confirmed` checkpoint yields; (b) §4.3 separate path-gating from substantive complexity at `workflow-path-selected` (introduce `path_gating_complexity` or rename existing variable). | `workflows/work-package/activities/02-design-philosophy.toon` | 4 | 20-30m |
+| T4.2a | Document depth-1 `Task` constraint in `harness-compat::spawn-agent` rules. | `workflows/meta/skills/07-harness-compat.toon` | 4 | 10-15m |
+| T4.2b | Add inline-fallback note to `workflow-engine::dispatch-activity`: "if invoked from a depth ≥ 1 agent, run the worker prompt inline rather than spawning". | `workflows/meta/skills/00-workflow-engine.toon::dispatch-activity` | 4 | 10-15m |
+| V1 | After each task: run `tsx scripts/validate-workflow.ts <workflow>` and `tsx scripts/validate-workflow-toon.ts`. Run `npm test` and `npm run typecheck` after Tier 1 lands. | All | — | per-task |
+| V2 | Smoke run (TC-Z1): re-render PR #120's body through the new `update-pr` skill; confirm `body_conforms=true`. | Manual | — | 15m |
+
+**Total estimate:** 3-4.5h agentic + 30-60m human review. Aligns with plan §3 totals.
+
+These tasks ride into the `assumptions-review` activity for confirmation alongside the two open stakeholder-dependent assumptions.
