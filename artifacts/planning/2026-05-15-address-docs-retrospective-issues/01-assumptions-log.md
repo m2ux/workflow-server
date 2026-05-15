@@ -25,11 +25,11 @@ Categories used in this activity:
 ## Scorecard
 
 ```
-Total: 23 | Validated: 20 | Invalidated: 0 | Partially Validated: 1 | Open: 2
+Total: 23 | Validated: 22 | Invalidated: 0 | Partially Validated: 1 | Open: 0
 Convergence iterations: 1 | Newly surfaced (plan-prepare): 10 | Newly resolvable: 0
 ```
 
-Convergence reached after one reconciliation iteration. The two remaining Open assumptions are Stakeholder-dependent and will be presented at the `assumptions-review` activity. The Partially Validated entry (A-DP-05) is partly empirical / harness-observed; its residual uncertainty is reclassified as Stakeholder-dependent. Ten planning-phase assumptions added at `plan-prepare` (A-PP-01 through A-PP-10) — all Validated in place; none reopens the resolvable set.
+Convergence reached after one reconciliation iteration. The two previously-open Stakeholder-dependent assumptions (A-DP-05-residual, A-DP-09) were resolved by user input during `plan-prepare` and are confirmed closed at `assumptions-review` (2026-05-15). The Partially Validated entry (A-DP-05) is retained as Partially Validated because its hybrid resolvability label is structural — the actionable code-side claim is Validated; the harness-side residual was tracked separately as A-DP-05-residual and is now Validated as well. Ten planning-phase assumptions added at `plan-prepare` (A-PP-01 through A-PP-10) — all Validated in place; none reopens the resolvable set.
 
 ---
 
@@ -82,11 +82,12 @@ Convergence reached after one reconciliation iteration. The two remaining Open a
 
 ### A-DP-05-residual: Harness-behavior verification
 
-**Status:** Open  
-**Resolvability:** Stakeholder-dependent  
+**Status:** Validated  
+**Resolvability:** Stakeholder-dependent (resolved by user input)  
 **Assumption:** The depth-1 spawn failure observed during bootstrap is a Claude Code harness behaviour, not a configuration error in this specific session.  
-**Risk if wrong:** A workflow-content-only fix would not solve the underlying problem; the harness configuration would be the right edit point.  
-**What would resolve it:** User confirmation of the harness behaviour at `assumptions-review`. Iteration 1.
+**Finding:** User clarified during `plan-prepare` (and reconfirmed at `assumptions-review`) that workers CAN be foreground-spawned from depth ≥ 1 in this Claude Code harness. The bootstrap failure was per-subagent-type allowed-tools configuration (the `subagent_type` used for the spawned client orchestrator did not include the `Task` tool in its allowed-tools list, or the agent prompt did not pass the Task primitive through correctly) — not a harness depth limit. The observations-from-bootstrap §4.2 entry has been formally retracted. No workflow-content fix is required for the harness-depth concern; the §4.2 row was removed from the plan (T4.9 / touch site 9 removed) and the §4.2 retraction is documented in `observations-from-bootstrap.md` and `05-work-package-plan.md` §2 row 6.  
+**Evidence:** User input during `plan-prepare`; `observations-from-bootstrap.md` §2 (RETRACTED block); `05-work-package-plan.md` §2 row 6 and §3 (T4.9 removed). Iteration 1, confirmed at `assumptions-review` 2026-05-15.  
+**Resolution:** Validated.
 
 ## Complexity Assessment
 
@@ -119,11 +120,12 @@ Convergence reached after one reconciliation iteration. The two remaining Open a
 
 ### A-DP-09: Bootstrap observations §4.1–§4.3 are out of scope unless `plan-prepare` opts in
 
-**Status:** Open  
-**Resolvability:** Stakeholder-dependent  
+**Status:** Validated  
+**Resolvability:** Stakeholder-dependent (resolved at `plan-prepare`)  
 **Assumption:** Bootstrap-observation items are candidates for `plan-prepare` to decide; default is spin-out to a separate work package.  
-**Risk if wrong:** A simpler folded-in approach might be cheaper than spinning out.  
-**What would resolve it:** Stakeholder decision at `plan-prepare`'s scope checkpoint. Iteration 1.
+**Finding:** Resolved at `plan-prepare` per the recorded recommendation (A-PP-09) and confirmed at `assumptions-review`. Final scope: §4.1 (templated `{problem_type}`/`{complexity}` checkpoint) IN as a workflow-content fix (Tier 4, touch site 8a); §4.2 (sub-agent `Task` depth) OUT — observation retracted because workers CAN be foreground-spawned from depth ≥ 1; §4.3 (classification overwrite smell) IN as a workflow-content fix (Tier 4, touch site 8b). The §4.1 server-source defensive variant (yield_checkpoint variables-payload extension) and the §4.2 architectural collapse are OUT (server-source / architectural changes).  
+**Evidence:** `05-work-package-plan.md` §2 rows 5/6/7, §3 Tier 4; `observations-from-bootstrap.md` §1, §2 (retraction); A-PP-09 above. Iteration 1, confirmed at `assumptions-review` 2026-05-15.  
+**Resolution:** Validated.
 
 ## Workflow Path
 
@@ -273,25 +275,25 @@ Categories follow resource 26: Design Approach, Task Breakdown, Dependency Assum
 
 ## Convergence check
 
-After iteration 1, the open set is:
+After iteration 1, the open set was:
 
-| # | Assumption | Why open |
-|---|---|---|
-| A-DP-05-residual | Harness-behavior verification (depth-1 `Task` availability) | Empirical / requires user confirmation |
-| A-DP-09 | Bootstrap observations §4.1–§4.3 scope decision | Stakeholder decision at `plan-prepare` (A-PP-09 records the recommendation; checkpoint formalises it) |
+| # | Assumption | Why open | Resolution |
+|---|---|---|---|
+| A-DP-05-residual | Harness-behavior verification (depth-1 `Task` availability) | Empirical / required user confirmation | Validated at `plan-prepare` (user input) and confirmed at `assumptions-review` — workers CAN spawn at depth ≥ 1; §4.2 retracted. |
+| A-DP-09 | Bootstrap observations §4.1–§4.3 scope decision | Stakeholder decision at `plan-prepare` | Validated at `plan-prepare` per A-PP-09 (§4.1 IN, §4.2 OUT-retracted, §4.3 IN) and confirmed at `assumptions-review`. |
 
-Both remaining open assumptions are Stakeholder-dependent. No further code analysis would reduce them. `has_resolvable_assumptions = false`. Convergence reached.
-
-`has_open_assumptions = true` — two stakeholder-dependent items remain for `assumptions-review`.
+Both previously-open Stakeholder-dependent assumptions are now closed. `has_resolvable_assumptions = false`. `has_open_assumptions = false`. `stakeholder_review_complete = true`. Convergence reached and confirmed.
 
 ---
 
-## Handoff to `assumptions-review`
+## Assumptions-review outcome (2026-05-15)
 
-The two open assumptions above will be presented to the user at the `assumptions-review` activity. Both are decision items, not verification questions:
+The `assumptions-review` activity re-audited the assumptions log and confirmed both previously-open assumptions had already been resolved by user input during `plan-prepare`:
 
-- **A-DP-05-residual** — user is best placed to confirm whether the depth-1 `Task` constraint is a stable harness behaviour or a transient configuration artefact.
-- **A-DP-09** — user decides whether to fold the three bootstrap observations into this work package or spin them out. Plan-prepare's recommendation (recorded as A-PP-09): fold in §4.1/§4.2 (docs-only)/§4.3; keep the §4.1 server-source variant and §4.2 architectural collapse out of scope.
+- **A-DP-05-residual** → Validated. The §4.2 retraction in `observations-from-bootstrap.md` and the removal of touch site 9 / T4.9 from the plan reflect the user's clarification. No further harness-side action required for this work package.
+- **A-DP-09** → Validated. The §4.1 IN / §4.2 OUT-retracted / §4.3 IN scope decision recorded as A-PP-09 is the final scope for this work package.
+
+No new assumptions surfaced during this activity. The interview-loop checkpoint was not yielded because the open set is empty. The activity transitions to `implement` per the default transition.
 
 ---
 
