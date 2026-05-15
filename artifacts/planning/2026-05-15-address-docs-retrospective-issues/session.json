@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "work-package",
+  "workflowVersion": "3.11.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "QIUBSR",
+  "currentActivity": "start-work-package",
+  "currentSkill": "",
+  "condition": "",
+  "seq": 12,
+  "ts": 1778849037,
+  "startedAt": "2026-05-15T11:13:31.882Z",
+  "completedActivities": [],
+  "skippedActivities": [],
+  "variables": {
+    "issue_skipped": true,
+    "pr_skipped": false
+  },
+  "checkpointResponses": {
+    "start-work-package-issue-verification": {
+      "effects": {
+        "variablesSet": {
+          "issue_skipped": true
+        }
+      },
+      "optionId": "skip-issue",
+      "respondedAt": "2026-05-15T11:31:59.000Z"
+    },
+    "start-work-package-pr-creation": {
+      "effects": {
+        "variablesSet": {
+          "pr_skipped": false
+        }
+      },
+      "optionId": "proceed",
+      "respondedAt": "2026-05-15T12:43:20.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-05-15T11:13:31.882Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "start-work-package",
+      "timestamp": "2026-05-15T11:23:00.169Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "start-work-package",
+      "checkpoint": "issue-verification",
+      "timestamp": "2026-05-15T11:24:58.245Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "start-work-package",
+      "checkpoint": "issue-verification",
+      "data": {
+        "optionId": "skip-issue"
+      },
+      "timestamp": "2026-05-15T11:31:59.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "start-work-package",
+      "data": {
+        "name": "issue_skipped",
+        "value": true
+      },
+      "timestamp": "2026-05-15T11:31:59.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "start-work-package",
+      "checkpoint": "pr-creation",
+      "timestamp": "2026-05-15T11:36:40.151Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "start-work-package",
+      "checkpoint": "pr-creation",
+      "data": {
+        "optionId": "proceed"
+      },
+      "timestamp": "2026-05-15T12:43:20.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "start-work-package",
+      "data": {
+        "name": "pr_skipped",
+        "value": false
+      },
+      "timestamp": "2026-05-15T12:43:20.000Z",
+      "type": "variable_set"
+    }
+  ],
+  "triggeredWorkflows": []
+}
