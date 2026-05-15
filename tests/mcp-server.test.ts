@@ -1925,6 +1925,89 @@ describe('mcp-server integration', () => {
       expect(idx('completedActivities')).toBeLessThan(idx('history'));
       expect(idx('variables')).toBeLessThan(idx('history'));
     });
+
+    it('dispatch_child embeds the child inline under parent.triggeredWorkflows[N].state', async () => {
+      const { readFile } = await import('node:fs/promises');
+      const slug = 'dispatch-child-embed';
+      const topFolder = join(workspaceDir, '.engineering/artifacts/planning', slug);
+
+      // Create a persistent top-level work-package.
+      const parent = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+      });
+      const parentIdx = parseToolResponse(parent).session_index;
+
+      // Dispatch a child via the new tool — must NOT create a new top-level
+      // folder; must embed the child in the parent's session.json.
+      const child = await client.callTool({
+        name: 'dispatch_child',
+        arguments: { session_index: parentIdx, workflow_id: 'remediate-vuln', agent_id: 'worker' },
+      });
+      expect(child.isError).toBeFalsy();
+      const childIdx = parseToolResponse(child).session_index;
+      expect(childIdx).toMatch(/^[A-Z2-7]{6}$/);
+      expect(childIdx).not.toBe(parentIdx);
+
+      // Top folder is the parent's; the child does NOT have its own folder.
+      const topState = JSON.parse(await readFile(join(topFolder, 'session.json'), 'utf8'));
+      expect(topState.workflowId).toBe('work-package');
+      expect(topState.triggeredWorkflows).toHaveLength(1);
+      const childEmbedded = topState.triggeredWorkflows[0];
+      expect(childEmbedded.workflowId).toBe('remediate-vuln');
+      expect(childEmbedded.sessionIndex).toBe(childIdx);
+      expect(childEmbedded.status).toBe('running');
+      expect(childEmbedded.state).toBeDefined();
+      expect(childEmbedded.state.workflowId).toBe('remediate-vuln');
+      expect(childEmbedded.state.sessionIndex).toBe(childIdx);
+      expect(childEmbedded.state.status).toBe('running');
+
+      // Loading via the child's session_index returns the embedded sub-state.
+      const childGet = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_index: childIdx, summary: true },
+      });
+      expect(childGet.isError).toBeFalsy();
+      // get_workflow's _meta.session_index echoes the child index.
+      expect((childGet._meta as { session_index?: string })?.session_index).toBe(childIdx);
+      // No separate folder was created at the workspace top level for the child.
+      const { existsSync } = await import('node:fs');
+      expect(existsSync(join(workspaceDir, '.engineering/artifacts/planning', childEmbedded.workflowId))).toBe(false);
+    });
+
+    it('mutations through a child session_index land in the embedded state (not in a separate file)', async () => {
+      const { readFile } = await import('node:fs/promises');
+      const slug = 'dispatch-child-mutate';
+      const topFolder = join(workspaceDir, '.engineering/artifacts/planning', slug);
+
+      // Parent + child must share the same workflow so we can use a known
+      // activity id for the mutation (avoids cross-workflow activity lookup).
+      const parent = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+      });
+      const parentIdx = parseToolResponse(parent).session_index;
+
+      const child = await client.callTool({
+        name: 'dispatch_child',
+        arguments: { session_index: parentIdx, workflow_id: 'work-package', agent_id: 'worker' },
+      });
+      const childIdx = parseToolResponse(child).session_index;
+
+      // Drive the child through a real activity transition.
+      const nextResult = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: childIdx, activity_id: 'start-work-package' },
+      });
+      expect(nextResult.isError).toBeFalsy();
+
+      // Re-read the top file and verify the child's currentActivity is set
+      // INSIDE triggeredWorkflows[0].state — no other file was touched.
+      const topAfter = JSON.parse(await readFile(join(topFolder, 'session.json'), 'utf8'));
+      expect(topAfter.triggeredWorkflows[0].state.currentActivity).toBe('start-work-package');
+      // The parent's own currentActivity is untouched.
+      expect(topAfter.currentActivity).toBe('');
+    });
   });
 
   describe('start_session migration auto-trigger', () => {
