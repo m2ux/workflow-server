@@ -89,58 +89,40 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'start_session',
     {
       description:
-        'Start or resume a workflow session, identified by `planning_slug` (a single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`). Returns a 6-character base32 `session_index` (required for all subsequent authenticated tool calls) and basic workflow metadata. ' +
-        'For a fresh session, provide `planning_slug` (canonical) and optionally `workflow_id` (defaults to "meta"). For a nested-workflow dispatch, also pass `parent_planning_slug` — the server snapshots the parent\'s `session.json` under the child\'s `parentSession` field for trace correlation and recursive parent traversal. ' +
-        'If the resolved folder contains legacy `workflow-state.json` + `.session-token` artefacts, the server migrates them in place before resuming. The migration is idempotent (detect-on-read), and after success the folder holds a server-managed `session.json` + new `.session-token` seal pair. ' +
-        'The agent_id parameter is required and is stored on `session.json#agentId`, distinguishing orchestrator from worker calls in the trace.',
+        'Start or resume the TOP-LEVEL workflow session for a `planning_slug` (a single-segment slug for the canonical planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`). Returns a 6-character base32 `session_index` for the root session, plus basic workflow metadata. ' +
+        'Behaviour: if a workspace folder with `session.json` already exists for the slug, the server resumes it (workflow_id taken from state — caller cannot rebrand a live session). Otherwise a fresh meta-bootstrap session is created in `os.tmpdir()` and the slug is registered so subsequent dispatch_child calls can promote it to a workspace folder. ' +
+        'Child workflows are not created through start_session — call `dispatch_child({ session_index, workflow_id })` from inside the parent session to append a child under `triggeredWorkflows[]` (embedded inline; the whole work-package tree lives in the top-level session.json). ' +
+        'If the resolved folder contains legacy `workflow-state.json` + `.session-token` artefacts, the server migrates them in place. ' +
+        'The agent_id parameter is stored on `session.json#agentId`, distinguishing orchestrator from worker calls in the trace.',
       inputSchema: z
         .object({
-          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh session (e.g., "work-package"). Defaults to "meta". Ignored when the slug already resolves to an existing `session.json` (the workflow is taken from the resumed state).'),
-          planning_slug: z.string().optional().describe('Optional. Single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`. When omitted the server mints a transitional slug derived from a fresh UUID.'),
-          parent_planning_slug: z.string().optional().describe('Optional. When dispatching a child workflow, the parent session\'s `planning_slug`. The parent\'s `session.json` is read (and seal-verified) and snapshot under the child\'s `parentSession` field for trace correlation and recursive parent traversal.'),
-          agent_id: z.string().default('orchestrator').describe('Sets the agentId field inside the session state (e.g., "orchestrator", "worker-1"). Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
+          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh top-level session (e.g., "work-package"). Defaults to "meta". Ignored when the slug already resolves to an existing `session.json` (the workflow is taken from the resumed state).'),
+          planning_slug: z.string().optional().describe('Optional. Single-segment slug for the top-level planning folder. When omitted the server mints a transitional slug derived from a fresh UUID and registers it for the meta bootstrap session.'),
+          agent_id: z.string().default('orchestrator').describe('Sets the agentId field inside the session state. Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
         })
         .strict(),
     },
-    withAuditLog('start_session', async ({ workflow_id, planning_slug, parent_planning_slug, agent_id }) => {
+    withAuditLog('start_session', async ({ workflow_id, planning_slug, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
-      // Resolve the planning folder. Meta orchestrator sessions are
-      // transient (bootstrap state only) — folder lives under os.tmpdir().
-      // Persistent children of persistent parents nest under the parent's
-      // folder so the workspace planning root only ever shows canonical
-      // root sessions at the top level. All other persistent sessions live
-      // at the workspace top level.
-      const isTransientSession = (workflow_id ?? DEFAULT_WORKFLOW_ID) === DEFAULT_WORKFLOW_ID;
+      // start_session is top-level only — it either opens an existing
+      // workspace top-level folder for `planning_slug` (and resumes the
+      // session inside it) or creates a fresh meta-bootstrap session under
+      // os.tmpdir() registered to the slug. Child workflows are dispatched
+      // by calling dispatch_child against the returned session_index.
       const slug = planning_slug ?? `transition-${randomUUID()}`;
-
-      // Pre-resolve the parent (if any) so we know whether to nest the child
-      // under it or keep the child at the workspace top level. Persistent
-      // parents may live at any depth under the planning root because
-      // children nest under their parents; we walk the tree to find the
-      // matching slug.
-      let parentFolderResolved: string | undefined;
-      let parentIsTransient = false;
-      if (parent_planning_slug) {
-        const transientParent = lookupTransientBySlug(parent_planning_slug);
-        if (transientParent) {
-          parentFolderResolved = transientParent;
-          parentIsTransient = true;
-        } else {
-          parentFolderResolved = await findPlanningFolderBySlug(config.workspaceDir, parent_planning_slug);
-        }
-      }
+      // If a workspace folder already exists for the slug, resume the
+      // top-level session there — the workflow_id stored in state wins.
+      const workspaceCandidate = await findPlanningFolderBySlug(config.workspaceDir, slug);
+      const isTransientSession = !workspaceCandidate && (workflow_id ?? DEFAULT_WORKFLOW_ID) === DEFAULT_WORKFLOW_ID;
 
       let folder: string;
-      if (isTransientSession) {
-        const existing = planning_slug ? lookupTransientBySlug(planning_slug) : undefined;
+      if (workspaceCandidate) {
+        folder = workspaceCandidate;
+      } else if (isTransientSession) {
+        const existing = lookupTransientBySlug(slug);
         folder = existing ?? await createTransientFolder();
-      } else if (parentFolderResolved && !parentIsTransient) {
-        // Nested under the persistent parent.
-        folder = await ensureNestedPlanningFolder(parentFolderResolved, slug);
       } else {
-        // Top-level (no parent, or parent was transient and is about to
-        // be discarded — child becomes a new canonical root).
         folder = await ensurePlanningFolder(config.workspaceDir, slug);
       }
 
@@ -203,61 +185,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           await writeSessionFile(folder, state);
         }
       } else {
-        // Capture parent snapshot if a parent_planning_slug was provided.
-        // Lookup order: transient registry by slug (the parent may be an
-        // orchestrator-bootstrap session living under os.tmpdir()), then
-        // workspace folder under the planning root.
-        let parentSession: SessionFile | undefined;
-        let parentFolderToDiscard: string | undefined;
-        let parentForBacklink: Awaited<ReturnType<typeof loadSessionForTool>> | undefined;
-        if (parentFolderResolved) {
-          try {
-            // Migrate the parent folder if it carries legacy artefacts so the
-            // recursive snapshot has the canonical shape.
-            await migratePlanningFolder(parentFolderResolved);
-          } catch (err) {
-            if (err instanceof MigrationError) {
-              throw new Error(describeMigrationError(err));
-            }
-            // Unknown error reading parent — surface but don't block.
-          }
-          const parentIndex = await computeSessionIndex(parentFolderResolved);
-          try {
-            const parentLoaded = await loadSessionForTool(config.workspaceDir, parentIndex);
-            parentSession = parentLoaded.state;
-
-            if (config.traceStore) {
-              const parentEvent = createTraceEvent(
-                parentLoaded.state.sessionIndex, 'start_session', 0, 'ok',
-                parentLoaded.state.workflowId, parentLoaded.state.currentActivity, parentLoaded.state.agentId,
-                { vw: [effectiveWorkflowId] },
-              );
-              config.traceStore.append(parentLoaded.state.sessionIndex, parentEvent);
-            }
-
-            // If the parent was a transient (orchestrator-bootstrap)
-            // session, the standalone folder is redundant once we've captured
-            // its state into the child's `parentSession`. Mark it for
-            // discard after the child's session.json is sealed.
-            if (parentIsTransient) {
-              parentFolderToDiscard = parentLoaded.folderAbsPath;
-            } else {
-              // Persistent parent — we'll backlink this child onto its
-              // triggeredWorkflows[] once the child's session.json is sealed.
-              parentForBacklink = parentLoaded;
-            }
-          } catch (err) {
-            // Parent slug is invalid — proceed without parent context.
-            console.warn(`[start_session] parent_planning_slug '${parent_planning_slug}' could not be resolved; creating session without parent snapshot. Error: ${err instanceof Error ? err.message : String(err)}`);
-          }
-        }
-
+        // Fresh top-level session — no parent. Children are dispatched via
+        // dispatch_child after start_session returns the index.
         const newState = createInitialSessionFile({
           sessionIndex,
           workflowId: effectiveWorkflowId,
           workflowVersion: effectiveWorkflowVersion,
           agentId: agent_id,
-          ...(parentSession ? { parentSession } : {}),
         });
         state = newState;
         await writeSessionFile(folder, state);
@@ -267,42 +201,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // so the registry only points at fully-sealed folders.
         if (isTransientSession) {
           registerTransient(sessionIndex, folder, slug);
-        }
-
-        // Discard the parent's transient folder now that the child's
-        // session.json is sealed. The parent state lives on inside the
-        // child's `parentSession` field.
-        if (parentFolderToDiscard) {
-          await discardTransient(parentFolderToDiscard);
-        }
-
-        // Backlink this child onto the persistent parent's
-        // triggeredWorkflows[] so the parent's session.json knows what it
-        // dispatched. Transients are skipped (they're being discarded). The
-        // operation is best-effort: the child is already sealed; failing to
-        // backlink only loses parent-side discoverability.
-        if (parentForBacklink) {
-          try {
-            const triggeredAt = new Date().toISOString();
-            const parentNext = advanceSession(parentForBacklink.state, (draft) => {
-              draft.triggeredWorkflows.push({
-                workflowId: effectiveWorkflowId,
-                sessionIndex,
-                triggeredAt,
-                triggeredFrom: { activityId: draft.currentActivity || '' },
-                status: 'running',
-              });
-              draft.history.push({
-                timestamp: triggeredAt,
-                type: 'workflow_triggered',
-                activity: draft.currentActivity || undefined,
-                data: { workflowId: effectiveWorkflowId, sessionIndex },
-              });
-            });
-            await saveSessionForTool(parentForBacklink, parentNext);
-          } catch (err) {
-            console.warn(`[start_session] failed to backlink child '${slug}' onto parent '${parent_planning_slug}' triggeredWorkflows: ${err instanceof Error ? err.message : String(err)}`);
-          }
         }
       }
 
