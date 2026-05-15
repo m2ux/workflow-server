@@ -32,8 +32,8 @@ The consequence is that the strategic-review activity rated the work `acceptable
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
-| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
+| 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 1-3h | ⬚ Pending |
@@ -61,4 +61,4 @@ The consequence is that the strategic-review activity rated the work `acceptable
 
 ---
 
-**Status:** Ready for implementation planning. Worktree materialized at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) opened against the parent branch. Driving input is the retrospective from the preceding docs-refresh work package.
+**Status:** Design philosophy complete; ready for `codebase-comprehension`. Worktree materialized at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) opened against the parent branch. Driving input is the retrospective from the preceding docs-refresh work package. Two stakeholder-dependent assumptions remain open for `assumptions-review` (see [01-assumptions-log.md](01-assumptions-log.md)).
