@@ -112,11 +112,11 @@ loops[1]:
       operator: ==
       value: false
     maxIterations: 2
-    description: "Re-render the PR body and re-evaluate update-pr::rules.pr-body-conformance until body_conforms=true or the iteration budget is exhausted. The body is only pushed to GitHub after a clean render (body_conforms=true). Skipped in review mode (no PR body to render). Bound is two iterations: one initial render + one retry; further attempts surface the body-non-conformant checkpoint where the user can accept the deviation, fix the underlying input, or abort."
+    description: "Re-render the PR body until body_conforms=true."
     steps[1]:
       - id: rerender-and-verify
         name: Re-render and Verify Body
-        description: "update-pr::render(template: final, pr_number: {pr_number}) followed by update-pr::verify-body. The verify-body protocol writes body_conforms and body_findings; the loop exits when body_conforms=true."
+        description: "update-pr::render(template: final, pr_number: {pr_number}); update-pr::verify-body"
 checkpoints[4]:
   - id: review-received
     name: Review Received Checkpoint
@@ -189,21 +189,21 @@ checkpoints[4]:
     options[3]:
       - id: proceed-with-override
         label: Proceed with override
-        description: "Acknowledge the deviation and continue. Records body_override_recorded=true so the retrospective captures the rationale alongside body_findings."
+        description: "Acknowledge the deviation and continue."
         effect:
           setVariable:
             body_conforms: true
             body_override_recorded: true
       - id: provide-input
         label: Provide missing input
-        description: "Supply the missing input (e.g., push the engineering branch, add an issue rationale) outside the loop, then re-enter submit-for-review. Re-dispatched by the orchestrator with a fresh iteration budget."
+        description: "Supply the missing input (e.g., push the engineering branch, add an issue rationale), then re-enter submit-for-review."
         effect:
           setVariable:
             body_conforms: false
           transitionTo: submit-for-review
       - id: abort
         label: Abort submission
-        description: "Terminate the activity with an explicit failure status. The retrospective for this work package captures the abort reason from body_findings."
+        description: "Terminate the activity with a failure status."
         effect:
           setVariable:
             submission_aborted: true
@@ -241,7 +241,7 @@ context_to_preserve[10]:
   - review_actions_completed - List of completed review actions
   - review_requires_changes - Whether review feedback requires returning to planning
   - review_comments_summary - Concise multi-line summary of reviewer comments interpolated into the review-outcome checkpoint message
-  - "body_conforms - True once the rendered PR body passes every update-pr rules.pr-body-conformance rule; drives the verify-pr-body-rerender loop's exit condition"
-  - "body_findings - List of rule violations produced by update-pr's verify-body phase, interpolated into the body-non-conformant checkpoint message"
-  - "body_override_recorded - True when the user selected proceed-with-override on body-non-conformant"
-  - "submission_aborted - True when the user selected abort on body-non-conformant; causes transition to complete with failure status"
+  - body_conforms - True once the rendered PR body passes pr-body-conformance
+  - body_findings - List of pr-body-conformance violations
+  - body_override_recorded - True when proceed-with-override selected on body-non-conformant
+  - submission_aborted - True when abort selected on body-non-conformant

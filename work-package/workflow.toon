@@ -355,22 +355,22 @@ variables[88]:
     defaultValue: ""
   - name: body_conforms
     type: boolean
-    description: "True once the rendered PR body has passed every rule in update-pr::rules.pr-body-conformance. Written by update-pr's verify-body protocol phase and consumed by the verify-pr-body-rerender loop's exit condition on submit-for-review. The proceed-with-override option on the body-non-conformant checkpoint also sets this to true to break the loop with an explicit user-acknowledged deviation."
+    description: "True once the rendered PR body has passed every rule in update-pr::rules.pr-body-conformance."
     defaultValue: false
   - name: body_findings
     type: array
-    description: "List of rule violations produced by update-pr's verify-body phase. Each entry is { rule_id: string, detail: string } naming the rule under update-pr::rules.pr-body-conformance and giving a one-line excerpt of the offending body region. Empty when body_conforms is true. Consumed by the body-non-conformant checkpoint message and by the retrospective when submission_aborted ends the workflow."
+    description: "List of pr-body-conformance violations. Each entry is { rule_id: string, detail: string }."
     defaultValue: []
   - name: body_override_recorded
     type: boolean
-    description: "True when the user selected proceed-with-override on the body-non-conformant checkpoint. Records that the PR body deviation was acknowledged rather than fixed so the work-package retrospective can capture the rationale alongside body_findings."
+    description: "True when proceed-with-override was selected on body-non-conformant."
     defaultValue: false
   - name: submission_aborted
     type: boolean
-    description: "True when the user selected abort on the body-non-conformant checkpoint. Causes submit-for-review to transition to complete with an explicit failure status; the retrospective captures the abort reason from body_findings."
+    description: "True when abort was selected on body-non-conformant."
     defaultValue: false
   - name: path_gating_complexity
     type: string
-    description: "Path-gating mirror of complexity used solely by design-philosophy's workflow-path-selected checkpoint to skip optional activities (elicitation, research). Carved off from the substantive complexity variable so that selecting skip-optional at the path-gating checkpoint does NOT overwrite the design-time complexity classification used by downstream activities (e.g., ADR creation gating in plan-prepare). Substantive complexity stays untouched; path_gating_complexity carries the discardable concern."
+    description: "Path-gating mirror of complexity. Used by design-philosophy's workflow-path-selected.skip-optional effect."
     defaultValue: ""
 initialActivity: start-work-package

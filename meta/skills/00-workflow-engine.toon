@@ -6,17 +6,14 @@ description: "Capability skill bundling everything needed to execute a workflow'
 
 operations:
   list-workflows:
-    description: "Retrieve the catalog of available workflows by reading the workflows worktree directly via harness primitives"
+    description: "Retrieve the catalog of available workflows"
     output[1]:
-      - catalog: "Array of { id, title, description, tags } entries — one per workflow.toon found"
-    procedure[3]:
-      - "Glob 'workflows/*/workflow.toon' (relative to the repo root containing the workflows worktree) to enumerate every workflow definition file"
-      - "For each path returned, Read the file and parse the TOON header fields id, title, description, and tags"
-      - "Return the parsed entries as catalog (no further server-side aggregation needed)"
+      - catalog: "Array of { id, title, description, tags } entries"
+    procedure[1]:
+      - "Call list_workflows"
     tools:
-      harness[2]:
-        - Glob
-        - Read
+      workflow-server[1]:
+        - list_workflows
 
   match-target-workflow:
     description: "Match a user request against the workflow catalog and surface ambiguity"

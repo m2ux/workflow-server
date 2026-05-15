@@ -23,13 +23,10 @@ protocol:
     - Include test coverage summary
     - Document key decisions and trade-offs
     - "NEVER guess or infer repository URLs for PR description links. ALWAYS resolve them from git remotes. The engineering repo URL is obtained from the PARENT repo (the repo containing .engineering/): run 'git -C <parent-repo-path> remote get-url origin' and strip the .git suffix. The target repo URL is obtained from the TARGET repo (where the PR lives): run 'git -C <target-path> remote get-url origin'. These are different repositories — the engineering repo owner will differ from the target repo owner."
-  verify-body[6]:
-    - "Run after update-description (Final template only — Initial template lacks the Changes and Engineering link content the rules cover)."
-    - "Render the body to /tmp/pr-body.md as today, then evaluate every rule under rules.pr-body-conformance against the rendered text."
-    - "For each rule that fails, append { rule_id: <id>, detail: <one-line excerpt of the offending region> } to the body_findings workflow variable."
-    - "Set body_conforms=true when body_findings is empty after evaluating all five rules; set body_conforms=false otherwise."
-    - "Do NOT push the rendered body to the PR if body_conforms=false on the first render — let the submit-for-review verify-pr-body-rerender loop handle the re-render attempt before any PR mutation."
-    - "When body_conforms=true on entry (re-run via the loop), record the verification result in trace logs and proceed to mark-ready."
+  verify-body[3]:
+    - "Render the Final-template body to /tmp/pr-body.md."
+    - "Evaluate each rule in rules.pr-body-conformance against the rendered text. For each failure append { rule_id, detail } to body_findings."
+    - "Set body_conforms=true when body_findings is empty after all rules are evaluated; false otherwise."
   mark-ready[2]:
     - Mark PR ready for review using gh pr ready
     - Ensure description is finalized before marking ready

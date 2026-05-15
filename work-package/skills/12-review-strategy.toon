@@ -34,13 +34,10 @@ protocol:
     - "Look for over-engineering: generic abstractions for specific problems, unused config options"
     - "Look for orphaned infrastructure: commented-out code, unused utilities, duplicate functionality"
     - "Goal is minimal, focused changes — every line justified by requirements"
-  verify-pr-body-conformance[6]:
-    - "Read the live PR body via `gh pr view {pr_number} --json body --jq .body`. Operate on the body as it appears on GitHub now — do NOT use the locally rendered /tmp/pr-body.md, since strategic-review audits the merged-up reality, not the latest draft."
-    - "Read the Summary section of the live PR body. Confirm it is 1-2 sentences and leads with the outcome. Flag if violated, referencing update-pr::rules.pr-body-conformance.summary-max-two-sentences."
-    - "Confirm the Engineering link in the live PR body resolves to a committed file on the remote of the parent repo. Flag if violated, referencing update-pr::rules.pr-body-conformance.engineering-link-mandatory."
-    - "Confirm an Issue line is present in the live PR body. When issue_skipped == true, confirm it renders as the explicit placeholder `🐛 _Issue: skipped_`. Flag if violated, referencing update-pr::rules.pr-body-conformance.issue-link-or-explicit-placeholder."
-    - "Confirm the Changes section groups bullets by component (bold component name). Flag any Conventional-Commits-styled headings, referencing update-pr::rules.pr-body-conformance.no-commit-headings-in-changes."
-    - "Confirm the Changes section does not enumerate file paths. Flag any file-list bullets, referencing update-pr::rules.pr-body-conformance.no-files-changed-list."
+  verify-pr-body-conformance[3]:
+    - "Read the live PR body via `gh pr view {pr_number} --json body --jq .body`."
+    - "Run update-pr::protocol.verify-body against the live body."
+    - "If body_conforms == false, record each body_findings entry in strategic-review-{n}.md under 'PR body conformance'."
   document-findings[3]:
     - Document all findings in strategic-review-{n}.md
     - "Categorize by type: investigation artifacts, over-engineering, orphaned infrastructure"
