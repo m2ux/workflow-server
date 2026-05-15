@@ -42,7 +42,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[83]:
+variables[87]:
   - name: target_path
     type: string
     description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
@@ -353,4 +353,20 @@ variables[83]:
     type: string
     description: "Multi-line list of symbols flagged by the implement task-cycle self-review whose provenance could not be confirmed (one per line: symbol name + file/line context). Empty string when has_uncertain_symbols is false. Interpolated into the symbol-provenance-confirmed checkpoint message."
     defaultValue: ""
+  - name: body_conforms
+    type: boolean
+    description: "True once the rendered PR body has passed every rule in update-pr::rules.pr-body-conformance. Written by update-pr's verify-body protocol phase and consumed by the verify-pr-body-rerender loop's exit condition on submit-for-review. The proceed-with-override option on the body-non-conformant checkpoint also sets this to true to break the loop with an explicit user-acknowledged deviation."
+    defaultValue: false
+  - name: body_findings
+    type: array
+    description: "List of rule violations produced by update-pr's verify-body phase. Each entry is { rule_id: string, detail: string } naming the rule under update-pr::rules.pr-body-conformance and giving a one-line excerpt of the offending body region. Empty when body_conforms is true. Consumed by the body-non-conformant checkpoint message and by the retrospective when submission_aborted ends the workflow."
+    defaultValue: []
+  - name: body_override_recorded
+    type: boolean
+    description: "True when the user selected proceed-with-override on the body-non-conformant checkpoint. Records that the PR body deviation was acknowledged rather than fixed so the work-package retrospective can capture the rationale alongside body_findings."
+    defaultValue: false
+  - name: submission_aborted
+    type: boolean
+    description: "True when the user selected abort on the body-non-conformant checkpoint. Causes submit-for-review to transition to complete with an explicit failure status; the retrospective captures the abort reason from body_findings."
+    defaultValue: false
 initialActivity: start-work-package
