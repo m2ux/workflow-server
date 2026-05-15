@@ -87,6 +87,61 @@ export function computeSessionIndexSync(folderAbsPath: string, key: Buffer): str
 }
 
 /**
+ * Path into an embedded SessionFile expressed as an array of object keys and
+ * array indices. `[]` addresses the root of the file. `["triggeredWorkflows",
+ * 0, "state"]` addresses the first child's embedded state. Recurse for
+ * grandchildren.
+ */
+export type SessionJsonPath = ReadonlyArray<string | number>;
+
+/**
+ * Canonical string form of a `SessionJsonPath`. Segments are joined by `.`,
+ * with array indices rendered as decimal integers. This is the input fed
+ * into the HMAC for embedded-index derivation; canonicalising here keeps
+ * the index byte-identical regardless of how the caller constructed the
+ * path.
+ */
+function jsonPathToString(path: SessionJsonPath): string {
+  return path.map((seg) => (typeof seg === 'number' ? String(seg) : seg)).join('.');
+}
+
+/**
+ * Compute the session_index for an embedded SessionFile at `jsonPath` inside
+ * the top-level `session.json` at `folderAbsPath`. When `jsonPath` is empty
+ * the result is identical to `computeSessionIndex(folderAbsPath)` — root
+ * sessions are addressed by folder alone.
+ *
+ * Algorithm: HMAC-SHA-256 over `<realpath(folder)>` if root, else
+ * `<realpath(folder)>:<jsonPathString>`. The `:` separator can never appear
+ * inside a real filesystem path on POSIX (filenames may contain `:` but
+ * `realpath` always yields an absolute path beginning with `/`, so the
+ * separator never collides with path content), and the canonical path is
+ * always rooted, so the combined input is unambiguous.
+ */
+export async function computeEmbeddedSessionIndex(
+  folderAbsPath: string,
+  jsonPath: SessionJsonPath,
+): Promise<string> {
+  const canonical = realpathSync(folderAbsPath);
+  const key = await getOrCreateServerKey();
+  const input = jsonPath.length === 0 ? canonical : `${canonical}:${jsonPathToString(jsonPath)}`;
+  const digest = createHmac('sha256', key).update(input, 'utf8').digest();
+  return base32Truncated(digest, SESSION_INDEX_LENGTH);
+}
+
+/** Sync variant; matches `computeSessionIndexSync` when `jsonPath` is empty. */
+export function computeEmbeddedSessionIndexSync(
+  folderAbsPath: string,
+  jsonPath: SessionJsonPath,
+  key: Buffer,
+): string {
+  const canonical = realpathSync(folderAbsPath);
+  const input = jsonPath.length === 0 ? canonical : `${canonical}:${jsonPathToString(jsonPath)}`;
+  const digest = createHmac('sha256', key).update(input, 'utf8').digest();
+  return base32Truncated(digest, SESSION_INDEX_LENGTH);
+}
+
+/**
  * Regex matching a syntactically valid session index. Useful for early input
  * validation before invoking `resolveSessionIndex`.
  */
