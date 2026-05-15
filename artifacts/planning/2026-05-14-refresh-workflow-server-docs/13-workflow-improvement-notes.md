@@ -1,4 +1,4 @@
-# Retrospective Stager
+# Workflow Improvement Notes
 
 Observations and improvement recommendations captured mid-flight, to be folded into the final retrospective at the `complete` activity.
 

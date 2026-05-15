@@ -8,7 +8,7 @@
 
 ## Session Analysis
 
-This retrospective draws from observable artefacts: the `session.json` checkpoint map, the planning folder contents, commit history on `chore/refresh-workflow-server-docs` and on the engineering submodule, the strategic-review findings recorded in `07-strategic-review.md`, the validation report in `07-validation.md`, and the mid-flight observations captured in `13-retrospective-stager.md` (committed as `4913f0f` on the engineering branch).
+This retrospective draws from observable artefacts: the `session.json` checkpoint map, the planning folder contents, commit history on `chore/refresh-workflow-server-docs` and on the engineering submodule, the strategic-review findings recorded in `07-strategic-review.md`, the validation report in `07-validation.md`, and the mid-flight observations captured in `13-workflow-improvement-notes.md` (committed as `4913f0f` on the engineering branch).
 
 **Checkpoint responses recorded in `session.json`:**
 
@@ -50,7 +50,7 @@ The user caught three deviations of the PR #119 body from the canonical template
 | 2 | Summary was a single paragraph with subordinate clauses (multi-sentence). | Template prescribes 1-2 sentences. | The Summary rule is prose inside resource 12 rather than a checked `rules:` entry on `update-pr`; nothing verified length after render. |
 | 3 | Changes were organised under three commit-message-styled headings (`docs: refresh API and entry-point docs (T1–T6 + T14 baseline)`, etc.) with embedded `T1`–`T11` task IDs. | Template's "What NOT to Include" table forbids commit lists; Changes are meant to be grouped by component. | Same gate-shape as #2 — the anti-pattern lives in a markdown table inside resource 12 rather than as enforceable `rules:` on `update-pr`. The diff in `strategic-review` does not include the PR body, so that gate did not see the deviation either. |
 
-The deviations were fixed inline via a PR-body rewrite before continuing past `review-outcome`. The pre-staged stager (`13-retrospective-stager.md`) captures root-cause analysis and a ranked set of workflow improvements (see "Improvement Recommendations" below).
+The deviations were fixed inline via a PR-body rewrite before continuing past `review-outcome`. The pre-staged notes file (`13-workflow-improvement-notes.md`) captures root-cause analysis and a ranked set of workflow improvements (see "Improvement Recommendations" below).
 
 ### Activity-flow signals
 
@@ -73,7 +73,7 @@ The deviations were fixed inline via a PR-body rewrite before continuing past `r
 
 ## Improvement Recommendations
 
-The five recommendations below are folded in from the mid-flight stager (`13-retrospective-stager.md`) with priorities adjusted against the final session evidence. Item 1 (the strategic-review checklist line) is the single highest-leverage change — it would have caught all three deviations on this run.
+The five recommendations below are folded in from the mid-flight notes (`13-workflow-improvement-notes.md`) with priorities adjusted against the final session evidence. Item 1 (the strategic-review checklist line) is the single highest-leverage change — it would have caught all three deviations on this run.
 
 ### High Priority
 
