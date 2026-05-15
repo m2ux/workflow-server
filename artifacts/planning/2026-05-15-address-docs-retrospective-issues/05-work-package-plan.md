@@ -25,7 +25,7 @@ These ride into the `approach-confirmed` checkpoint at the end of this activity.
 | 3 | Retrospective medium-priority (signing pre-check) | **IN** | Move detection from `strategic-review` to `start-work-package`. |
 | 4 | Retrospective low-priority (promote anti-patterns to rules, issue-skipped placeholder, env-prerequisites step, list-workflows rewrite) | **IN** | Each is a small, localised edit; collectively close the secondary gaps. |
 | 5 | Bootstrap obs §4.1 (templated `{problem_type}`/`{complexity}` in checkpoint message) | **IN** (workflow-content fix only) | Add explicit `set` actions before the checkpoint in `design-philosophy`. The defensive `yield_checkpoint` variables-payload variant is **OUT** — server-source change not justified. |
-| 6 | Bootstrap obs §4.2 (sub-agent `Task` depth) | **OUT — observation retracted** | The original observation was incorrect. Workers CAN be foreground-spawned from depth ≥ 1; the bootstrap failure was per-subagent-type allowed-tools configuration, not a harness depth limit. No workflow-content change needed. |
+| 6 | Bootstrap obs §4.2 (sub-agent `Task` depth) | **IN — un-retracted** | Reproducer + claude-code-guide consult confirm `Task` is harness-gated, not permissionable; nested spawn is impossible in any Claude Code harness. The `dispatch-client-workflow` activity must collapse the meta and client orchestrator into one agent. Server session model unchanged. |
 | 7 | Bootstrap obs §4.3 (classification overwrite smell) | **IN** | Separate path-gating from substantive complexity at `workflow-path-selected` — single-line edit while editing `design-philosophy`. |
 
 Stakeholder-dependent assumptions resolved at `assumptions-review` (the next activity), not at this checkpoint:
@@ -49,6 +49,10 @@ Each touch site is audited against the 14 principles in `resources/00-design-pri
 | 6 | `06-plan-prepare.toon` — `env-prerequisites` step at position 1 with six `validate` actions | Step `actions[].action: validate` | Same as #5; plus #5 Convention Over Invention (existing `start-work-package` uses the same pattern after #5 lands) | Same as #5 | None — already aligned |
 | 7 | `meta/00-workflow-engine.toon::list-workflows` operation body rewrite | Skill `operations.list-workflows.tools` switched from `workflow-server.list_workflows` to `harness.Read`/`harness.Glob`; `procedure[]` updated to match | #6 Never Modify Upward (fixing operation body to match the worker's tool allowlist — content conforms to constraint, not the other way around); #9 Modular Over Inline (operation body stays modular within the skill) | AP-32 "Inconsistent tool names across skills" — the activity-side `operations[]` ref still says `workflow-engine::list-workflows` so external contract is preserved; AP-34 "describes mechanics, not value" — the operation's `output` description must remain unchanged | Add explicit note in §3 row 7 that activity-side operation ref is unchanged (already captured in TC-M3 of the test plan) |
 | 8 | `02-design-philosophy.toon` — §4.1 `set` actions + §4.3 variable separation | Step `actions[].action: set` (two `set` actions for `problem_type` and `complexity` before the `classification-confirmed` checkpoint); new workflow variable `path_gating_complexity` declared in `work-package/workflow.toon::variables[]` (avoids overwriting substantive `complexity`); checkpoint `options[].effect.setVariable` updated to write to the new variable | #4 Maximize Schema Expressiveness (`set` action — not "ensure variable is written" prose); #10 Encode Constraints as Structure (the variable carries the path-gating semantic, not a code comment); #2 Define Complete Scope (the new variable is added to the workflow's `variables[]` so the scope is enumerated) | AP-13 "implicit variables" — `path_gating_complexity` is declared, not implied; AP-28 "contradictory siblings" — the previous overwrite of `complexity` made it ambiguous; the new variable removes that contradiction | Add §3 row 8c sub-edit: declare `path_gating_complexity` variable in `work-package/workflow.toon` |
+| 9a | `meta/skills/07-harness-compat.toon::spawn-agent` — depth-1 rule | Skill `operations.spawn-agent.rules.depth-1-only` (a named rule string in the operation's grouped rule object — same form as the existing `foreground-always` and `index-in-prompt` rules) | #4 Maximize Schema Expressiveness (rule expressed as a `rules` entry, not commentary); #10 Encode Constraints as Structure (the harness constraint is encoded so downstream operations can guard against it); #6 Never Modify Upward (the rule documents a harness fact; it does not attempt to override it) | AP-26 flat prefix keys — added under the existing grouped rules object; AP-19 rule text only — paired with the structural collapse in 9b/9c/9d so the rule is enforced by the absence of an orchestrator-spawn step |  None — already aligned with construct inventory |
+| 9b | `meta/skills/00-workflow-engine.toon` — delete `bubble-checkpoint-up`, `extract-checkpoint-handle`, `handle-workflow-complete` operations | Operation deletion — three top-level entries removed from `operations` map | #12 Non-Destructive Updates requires explicit user approval for content removal — captured here in §2 bucket 6 and §9 acceptance criteria; #9 Modular Over Inline (the three deleted operations existed solely to coordinate an orchestrator sub-agent's text output, which no longer exists) | AP-20 "Updated content that removes" — removal is approved in §2 bucket 6; AP-27 "rule appears in workflow AND activity" — this collapse removes the duplicate orchestrator level entirely | None — already aligned |
+| 9c | `meta/skills/00-workflow-engine.toon::handle-sub-workflow` — drop spawn step | Operation `procedure[]` reduced from 2 bullets to 1 (the `dispatch_child` call only); the calling agent then drives the child workflow's activity loop using existing operations | #6 Never Modify Upward (content conforms to the harness constraint); #5 Convention Over Invention (uses existing `dispatch-activity` / `evaluate-transition` operations for the child loop, no new constructs needed) | AP-19 "rule text only" — the depth limit lives on `spawn-agent` (touch site 9a); this operation just stops invoking the impossible step | None — already aligned |
+| 9d | `meta/activities/03-dispatch-client-workflow.toon` — rewrite | Activity `steps[]` reduced from "compose-orchestrator-prompt → dispatch-orchestrator"; activity `loops[]` rewritten from "extract-checkpoint-handle → ... → continue-orchestrator" to drive the client workflow's activity loop directly. New loop iterates over `dispatch-activity → handle-checkpoint-if-yielded → commit-and-persist → evaluate-transition` until `evaluate-transition` returns `null` (workflow_complete). `operations[]` updated to reference the new operation set | #4 Maximize Schema Expressiveness (`loops[].type: while` over a deterministic exit condition); #9 Modular Over Inline (no new skill, just composition of existing workflow-engine operations); #11 Plan Before Acting (activity entry actions validate client_session_index before entering the loop, as before) | AP-9 prose checkpoints — the new loop's checkpoint handling uses `present-checkpoint-to-user` + `respond-checkpoint` (existing operations) rather than prose escapes; AP-10 prose repeat — the loop uses the canonical `loops[].type: while` form; AP-13 implicit variables — `current_activity` is read from `session.json#currentActivity` server-side, no new agent-side variable needed | None — uses existing constructs throughout |
 
 **Net adjustments to §3 / §4 / §5 from this audit:**
 
@@ -56,8 +60,9 @@ Each touch site is audited against the 14 principles in `resources/00-design-pri
 - Touch site 2: clarify in §4 that the strategic-review bullets are audit-framed, not rule-text copies (anti-pattern 24).
 - Touch site 3: §5 now includes an explicit `effect` table for the three checkpoint options.
 - Touch site 8: now has three sub-edits (8a §4.1 set actions, 8b §4.3 new variable + effect update, 8c declare new variable in `workflow.toon`).
+- **Touch site 9 restored under new scope (bucket 6 un-retracted):** four sub-edits (9a spawn-agent depth-1 rule, 9b delete three obsolete `workflow-engine` operations, 9c rewrite `handle-sub-workflow` procedure, 9d rewrite `dispatch-client-workflow` activity).
 
-No new buckets in §2. No buckets retracted (other than bucket 6 which was already retracted in the prior pass).
+No new buckets in §2 (bucket 6's recommendation flipped from OUT to IN; bucket roster is unchanged).
 
 ---
 
@@ -79,11 +84,14 @@ Eight touch sites, grouped into four leverage tiers. Each tier ships value indep
 | **Tier 4 — Bootstrap-observation follow-ups** | 8a | `workflows/work-package/activities/02-design-philosophy.toon` | §4.1 fix — add two `actions[].action: set` entries (one for `problem_type`, one for `complexity`) immediately before the `classification-confirmed` checkpoint yields. Replaces implicit "variables are written somewhere" assumption with a structural write (principle #10). | 10-15m |
 | | 8b | `workflows/work-package/activities/02-design-philosophy.toon` | §4.3 fix — change the `workflow-path-selected` checkpoint's `skip-optional` option's `effect.setVariable` so it writes to the new `path_gating_complexity` variable rather than overwriting substantive `complexity`. Any downstream transition/decision currently reading `complexity` for path-gating purposes must be repointed at `path_gating_complexity` in the same edit. | 10-15m |
 | | 8c | `workflows/work-package/workflow.toon` | Declare new variable `path_gating_complexity` in `variables[]` (`type: string`, `defaultValue: ""`, description names it as the path-gating-only mirror of `complexity`). Required so the new variable is enumerated (principle #2) and not implicit (anti-pattern 13). | 5-10m |
-| | ~~9~~ | ~~`workflows/meta/skills/07-harness-compat.toon` + dispatch-activity~~ | **REMOVED.** Bootstrap obs §4.2 retracted — workers can be spawned foreground from depth ≥ 1. No edits needed. | — |
+| | 9a | `workflows/meta/skills/07-harness-compat.toon` | Add a named rule `depth-1-only` under `operations.spawn-agent.rules`. The Task primitive is harness-gated and not inherited by spawned sub-agents; spawn operates depth-1 only. Same grouped-rule pattern as existing `foreground-always` and `index-in-prompt` rules on the same operation. | 5-10m |
+| | 9b | `workflows/meta/skills/00-workflow-engine.toon` | Delete three operations made obsolete by the agent collapse: `bubble-checkpoint-up`, `extract-checkpoint-handle`, `handle-workflow-complete`. Each premised on coordinating an orchestrator sub-agent's text output. | 10-15m |
+| | 9c | `workflows/meta/skills/00-workflow-engine.toon::handle-sub-workflow` | Reduce `procedure[]` to the single `dispatch_child` step. The calling orchestrator then drives the child workflow's activity loop directly with existing operations (`dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `present-checkpoint-to-user`, `respond-checkpoint`). | 10-15m |
+| | 9d | `workflows/meta/activities/03-dispatch-client-workflow.toon` | Rewrite the activity. New shape: `operations[]` references `dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `present-checkpoint-to-user`, `respond-checkpoint`. A single `loops[].type: while` iterates over the client workflow's activities, exiting when `evaluate-transition` returns null. Checkpoint handling inside the loop uses `present-checkpoint-to-user` + `respond-checkpoint` directly — no bubble-up. | 30-45m |
 
-Eleven sub-edits total across Tiers 1–4 (the original seven touch sites, with #1 split into 1a/1b/1c and #8 split into 8a/8b/8c surfaced by the principles audit).
+Fifteen sub-edits total across Tiers 1–4 (the original seven touch sites; #1 split into 1a/1b/1c; #8 split into 8a/8b/8c; #9 split into 9a/9b/9c/9d, restored under the un-retraction of bootstrap obs §4.2).
 
-**Total estimated time:** 2.75-4.5h agentic + 30-60m human review. Slight increase over the previous estimate (2.5-4h) reflects the explicit variable declarations and effects table folded into the plan; the underlying scope did not grow.
+**Total estimated time:** 3.5-5.5h agentic + 30-60m human review. Increase over the prior estimate (2.75-4.5h) reflects the four restored touch sites for the meta-orchestrator collapse.
 
 ---
 
@@ -175,10 +183,16 @@ T3.2 meta/00-workflow-engine list-workflows rewrite                          (in
 T4.8c work-package/workflow.toon — declare path_gating_complexity variable   ─┐
 T4.8a design-philosophy §4.1 set actions (problem_type + complexity)         ├─ (run validator after each)
 T4.8b design-philosophy §4.3 effect retarget to path_gating_complexity       ─┘
-# T4.9 removed (bootstrap obs §4.2 retracted)
+
+T4.9a meta/skills/07-harness-compat.toon — spawn-agent depth-1-only rule     ─┐
+T4.9b meta/skills/00-workflow-engine.toon — delete obsolete ops              │
+       (bubble-checkpoint-up, extract-checkpoint-handle,                     ├─ (run validator after each)
+        handle-workflow-complete)                                            │
+T4.9c meta/skills/00-workflow-engine.toon — handle-sub-workflow procedure    │
+T4.9d meta/activities/03-dispatch-client-workflow.toon — activity rewrite    ─┘
 ```
 
-Note: within Tier 1, sub-edit 1c must land **before** 1a/1b/3 because the rules' `verify-body` phase and the loop's condition reference the variables declared in 1c. Within Tier 4, sub-edit 8c must land before 8b for the same reason. Schema validation will catch out-of-order edits anyway, but the recommended order avoids transient validator failures during implementation.
+Note: within Tier 1, sub-edit 1c must land **before** 1a/1b/3 because the rules' `verify-body` phase and the loop's condition reference the variables declared in 1c. Within Tier 4, sub-edit 8c must land before 8b for the same reason. Within the 9-series sub-edits, 9b's deletions must precede 9d's rewrite because 9d's new `operations[]` list must not reference deleted operations — otherwise `validate-activities.ts` will fail. Schema validation will catch out-of-order edits anyway, but the recommended order avoids transient validator failures during implementation.
 
 After each edit: `npx workflow-validator` (or equivalent — confirmed by `test-plan.md`) to catch schema breaks early. Final smoke run: invoke `update-pr` against PR #120's body end-to-end (after the new tier has landed). This is what the test plan covers.
 
@@ -199,7 +213,7 @@ After each edit: `npx workflow-validator` (or equivalent — confirmed by `test-
 
 ## 8. Out of scope
 
-- MCP-server source (`src/`, `schemas/`) edits — including the `yield_checkpoint` variables-payload extension (§4.1 defensive variant) and the harness collapse (§4.2 architectural variant).
+- MCP-server source (`src/`, `schemas/`) edits — including the `yield_checkpoint` variables-payload extension (§4.1 defensive variant). The `§4.2` agent-collapse fix is workflow-content only (touch site 9) and IS in scope.
 - Retroactive PR-body fix on PR #119 (already corrected inline, merged).
 - New tests for the MCP server. The test plan covers schema-validation and structural assertions on the TOON edits only.
 - CI lint as a third defence-in-depth tier (Q9 — out of scope; no evidence of post-strategic-review mutation).
@@ -224,10 +238,14 @@ For the work package to ship:
 9. `02-design-philosophy.toon` writes `problem_type` and `complexity` via two `actions[].action: set` entries before `classification-confirmed` yields.
 10. `02-design-philosophy.toon`'s `workflow-path-selected` checkpoint's `skip-optional` option's `effect.setVariable` writes to `path_gating_complexity`, NOT to the substantive `complexity` variable. Any downstream transition/decision currently reading `complexity` for path-gating purposes is repointed at `path_gating_complexity`.
 11. `workflows/work-package/workflow.toon::variables[]` declares the new variable `path_gating_complexity` (string, default `""`).
-12. Schema validators (`tsx scripts/validate-workflow.ts work-package`, `tsx scripts/validate-workflow.ts meta`, `tsx scripts/validate-workflow-toon.ts`) all exit 0 on every edited file (principle #13 — schema validation before commit; principle #6 — never modify upward).
-13. Manual smoke run: `update-pr` against PR #120's body produces a body that passes its own `verify-body` phase with no `body_findings`.
+12. `meta/skills/07-harness-compat.toon::spawn-agent.rules` carries a new named rule (e.g. `depth-1-only`) declaring that `Task` is harness-gated and not inherited by spawned sub-agents; spawn operates depth-1 only.
+13. `meta/skills/00-workflow-engine.toon` no longer defines the operations `bubble-checkpoint-up`, `extract-checkpoint-handle`, or `handle-workflow-complete`. No remaining caller references any of these names (verified by grep across `workflows/` for `bubble-checkpoint-up`, `extract-checkpoint-handle`, `handle-workflow-complete`).
+14. `meta/skills/00-workflow-engine.toon::handle-sub-workflow.procedure` is a single bullet invoking `dispatch_child`. The previous `harness-compat::spawn-agent` bullet is gone. The operation's `output` (`child_session_index`) is unchanged.
+15. `meta/activities/03-dispatch-client-workflow.toon` `operations[]` references `workflow-engine::dispatch-activity`, `workflow-engine::evaluate-transition`, `workflow-engine::commit-and-persist`, `workflow-engine::present-checkpoint-to-user`, and `workflow-engine::respond-checkpoint`. The activity's `loops[]` drives the client workflow's activity loop directly; no `spawn-agent`, `continue-agent`, `extract-checkpoint-handle`, `handle-workflow-complete`, or `compose-prompt` references remain at the activity level. (`compose-prompt` may still be referenced by `dispatch-activity` internally — that's fine.)
+16. Schema validators (`tsx scripts/validate-workflow-toon.ts work-package`, `tsx scripts/validate-workflow-toon.ts meta`, `tsx scripts/validate-activities.ts work-package`, `tsx scripts/validate-activities.ts meta` if present) all exit 0 on every edited file (principle #13 — schema validation before commit; principle #6 — never modify upward).
+17. Manual smoke run: `update-pr` against PR #120's body produces a body that passes its own `verify-body` phase with no `body_findings`.
 
-> Note: the prior acceptance criterion about `harness-compat::spawn-agent` documenting a depth-1 constraint was removed because the underlying observation (bootstrap §4.2) was retracted — workers CAN be spawned foreground from depth ≥ 1.
+> Note: the prior version of this section was rewritten to fold in the un-retracted bootstrap obs §4.2 (sub-agent `Task` depth — bucket 6 now IN). Acceptance criteria 12–15 replace the previous note that observation #4.2 was retracted.
 
 ---
 

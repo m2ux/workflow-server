@@ -17,15 +17,23 @@ When the checkpoint was presented, the message arrived at the meta-orchestrator 
 - Alternative: change the checkpoint message to not use template variables and instead let the worker emit a structured summary that the orchestrator passes to AskQuestion verbatim.
 - Defensive: make `yield_checkpoint` accept an optional `variables` payload so workers can atomically set state + yield, closing the gap permanently.
 
-## 2. ~~Sub-agents lack the `Task` primitive~~ — RETRACTED (2026-05-15)
+## 2. Sub-agents lack the `Task` primitive — IN SCOPE (un-retracted 2026-05-15)
 
-The original observation here claimed depth-1 sub-agents could not spawn workers via `harness-compat::spawn-agent`, and proposed documenting a depth constraint plus an architectural collapse of meta + client orchestrators.
+Earlier in this work package this observation was retracted on the hypothesis that workers could be spawned at depth ≥ 1 if the `subagent_type` had `Task` in its allowed-tools list, and that the bootstrap failure was a per-subagent-type configuration issue rather than an architectural one. That hypothesis was wrong.
 
-**This was incorrect.** Workers CAN be spawned as foreground tasks from depth ≥ 1 in this Claude Code harness. The bootstrap failure that prompted the original write-up was not a depth limit. The most likely actual causes are configuration-side, not architecture-side:
+**Reproducer (run 2026-05-15):** `Agent({ subagent_type: "general-purpose", prompt: "report your tool list and attempt to spawn a sub-agent" })`. The depth-1 sub-agent reported its tool list as `Bash, Edit, Read, ShareOnboardingGuide, Skill, ToolSearch, Write` plus various MCP and utility tools, with **no Task or Agent tool** in either the directly-loaded set or the deferred-tool set.
 
-- The `subagent_type` used for the spawned client orchestrator did not include the `Task` tool in its allowed-tools list.
-- The agent prompt did not pass the expected Task primitive through correctly.
+**Authoritative confirmation (claude-code-guide, 2026-05-15):** sub-agents cannot spawn further sub-agents in any Claude Code harness. The Task/Agent tool is a session-control primitive gated at the harness level, not a permissionable tool, so adding it to a custom subagent's `allowed-tools` list does not enable nested spawning. The limit applies across CLI, IDE extensions, and the web app. Documented in Claude Code's [subagents](https://code.claude.com/docs/en/sub-agents.md) and [parallel agents](https://code.claude.com/docs/en/agents.md) docs — neither references multi-level hierarchies. Recommended primitives for hierarchical delegation are Agent View and the experimental Agent Teams.
 
-These are per-subagent-type harness/permission configuration concerns, not workflow-content concerns. No `harness-compat::spawn-agent` doc edit is required; no `workflow-engine::dispatch-activity` inline-fallback note is required; the `dispatch-client-workflow` meta-activity's spawn-orchestrator → orchestrator-spawns-worker pattern is supported by the harness.
+**Operational evidence in this work package:** every activity dispatch in this conversation succeeded only when the meta orchestrator spawned the worker directly. When the meta orchestrator spawned a work-package orchestrator as a depth-1 sub-agent and asked it to dispatch its own worker, the work-package orchestrator returned text reporting it had no spawn primitive and asked the meta orchestrator to perform the dispatch on its behalf. The pattern of "meta spawns client orchestrator → client orchestrator spawns worker" was never functional in this run.
 
-If a follow-up is needed, it is to ensure whichever subagent type runs the client orchestrator is configured with Task. That is out of scope for this work package, which is workflow-content only.
+**Consequence:** the meta workflow's `dispatch-client-workflow` activity, as currently written, is architecturally incompatible with Claude Code. It must be revised so that one orchestrator agent drives all orchestrator-level work across all session levels, and each activity dispatches a fresh worker that lives only for that activity. The server-side session model (parent meta session + `triggeredWorkflows[]` lineage) remains valid — only the agent model collapses.
+
+**Suggested fix shape:**
+
+- `workflows/meta/skills/07-harness-compat.toon::spawn-agent` — add a rule documenting that `Task` is a harness-level session-control primitive available only to the calling agent; spawned agents do not inherit it. Spawn operates depth-1 only.
+- `workflows/meta/skills/00-workflow-engine.toon::handle-sub-workflow` — drop the `spawn-agent` step. After `dispatch_child` returns the child `session_index`, the calling orchestrator drives the child workflow's activity loop directly using the existing activity-loop operations.
+- `workflows/meta/skills/00-workflow-engine.toon::bubble-checkpoint-up` — delete. With no sub-agent orchestrator there is nothing to bubble between; the orchestrator presents checkpoints to the user directly.
+- `workflows/meta/skills/00-workflow-engine.toon::extract-checkpoint-handle` — delete. With no orchestrator sub-agent text output to parse, this is obsolete.
+- `workflows/meta/skills/00-workflow-engine.toon::handle-workflow-complete` — delete. No orchestrator sub-agent text result to apply.
+- `workflows/meta/activities/03-dispatch-client-workflow.toon` — rewrite. The two-step "compose-orchestrator-prompt → dispatch-orchestrator" pattern plus the checkpoint-yield loop around an orchestrator sub-agent is replaced with a single activity loop over the client workflow's activities, using `dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `present-checkpoint-to-user`, `respond-checkpoint`.

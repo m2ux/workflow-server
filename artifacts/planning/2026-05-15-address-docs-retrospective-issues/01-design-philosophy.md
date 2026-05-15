@@ -117,13 +117,19 @@ The checkpoint's message uses `{problem_type}` and `{complexity}` substitution m
 - Or change the message away from templated substitution and let the worker emit a structured summary the orchestrator passes verbatim.
 - Defensive: extend `yield_checkpoint` to accept an optional `variables` payload. This crosses into MCP-server source (`src/`, `schemas/`) — it is the only candidate in this work package that does — so it should be a deliberate scope decision, not folded in by default.
 
-### 4.2 ~~Sub-agents lack the `Task` primitive~~ — RETRACTED
+### 4.2 Sub-agents lack the `Task` primitive — IN SCOPE
 
-This observation was based on the bootstrap experience where a depth-1 sub-agent could not invoke `harness-compat::spawn-agent`. **The user has clarified that workers CAN be spawned as foreground tasks from depth ≥ 1 in this harness.** The actual cause of the bootstrap failure was therefore not a depth limit — most likely the spawned agent's `subagent_type` did not include the Task tool in its allowed-tools list, or the prompt did not pass through correctly. The architectural concern raised here (collapse meta and client orchestrator into one agent) is not justified by the evidence.
+The earlier retraction of this observation has been reversed. The reproducer and claude-code-guide consult (both 2026-05-15, details in [observations-from-bootstrap.md §2](observations-from-bootstrap.md#2-sub-agents-lack-the-task-primitive--in-scope-un-retracted-2026-05-15)) establish that `Task` is a Claude Code harness-level session-control primitive — not a permissionable tool — and is not available to spawned sub-agents at any depth, in any harness flavour. The meta workflow's `dispatch-client-workflow` activity, which spawns a client orchestrator as a sub-agent and expects that orchestrator to in turn spawn workers, cannot work end-to-end in Claude Code.
 
-**No scope items.** The observation is retracted. `harness-compat::spawn-agent` does not need a depth-constraint doc edit, and `workflow-engine::dispatch-activity` does not need an inline-fallback note for depth ≥ 1.
+**Scope items folded in:**
 
-If a related issue does need addressing, it is at the per-subagent-type level: ensuring whichever agent type is used for client orchestrators is configured with Task. That is a harness/permission configuration concern, not a workflow-content one.
+- Document the depth-1 limit on `harness-compat::spawn-agent`.
+- Collapse the agent model: one orchestrator agent drives orchestrator-level work across all session levels. Worker spawns remain depth-1 from the orchestrator (which works).
+- Rewrite `workflows/meta/activities/03-dispatch-client-workflow.toon` to run the client workflow's activity loop inline rather than via a spawned client orchestrator.
+- Remove now-obsolete operations from `workflow-engine`: `bubble-checkpoint-up`, `extract-checkpoint-handle`, `handle-workflow-complete` (all premised on parsing or coordinating an orchestrator sub-agent's text output).
+- Rewrite `workflow-engine::handle-sub-workflow` to drop the orchestrator-spawn step — the calling orchestrator drives the child workflow's activity loop after `dispatch_child` returns.
+
+The server-side session model (parent meta + `triggeredWorkflows[]` lineage; the `session_index` per session level) is unchanged. The collapse is purely at the agent layer.
 
 ### 4.3 Worker-local classification overwritten by checkpoint effect
 
