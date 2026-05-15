@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.4.0
+version: 1.5.0
 name: Design Philosophy
 description: "Apply structured design framework to classify the problem, determine complexity, and decide which activities to perform."
 problem: User needs to understand problem nature before deciding on workflow path
@@ -35,8 +35,15 @@ steps[9]:
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
   - id: classify-problem
     name: Classify Problem Type
-    description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
+    description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity. The two set actions below write the classification outputs (problem_type, complexity) BEFORE the classification-confirmed checkpoint yields — without them, the checkpoint message's {problem_type} and {complexity} template variables interpolate empty strings (bootstrap obs §4.1)."
     checkpoint: classification-confirmed
+    actions[2]:
+      - action: set
+        target: problem_type
+        description: "Set to the classified problem type from the classify-problem skill output. One of: 'specific-cause-known', 'specific-cause-unknown', 'inventive-improvement', 'inventive-prevention'. Interpolated into the classification-confirmed checkpoint message."
+      - action: set
+        target: complexity
+        description: "Set to the substantive complexity classification from the classify-problem skill output. One of: 'simple', 'moderate', 'complex'. This is the substantive value consumed by downstream activities (post-impl-review structural analysis gating, complete ADR creation gating) and must not be overwritten by the workflow-path-selected checkpoint's path-gating concern — see path_gating_complexity for that. Interpolated into the classification-confirmed checkpoint message."
   - id: determine-path
     name: Determine Workflow Path
     description: "Based on problem complexity and clarity, determine which optional activities are needed."
@@ -145,7 +152,7 @@ checkpoints[3]:
         description: Well-defined issue — no additional discovery needed
         effect:
           setVariable:
-            complexity: simple
+            path_gating_complexity: simple
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
@@ -188,10 +195,11 @@ outcome[5]:
   - Workflow path determined
   - Design philosophy documented in artifact
   - Ready for next activity based on problem nature
-context_to_preserve[7]:
+context_to_preserve[8]:
   - problem_statement - Clear problem definition
   - problem_type - Specific problem or inventive goal
-  - complexity - simple, moderate, or complex
+  - complexity - "simple, moderate, or complex — substantive classification consumed by post-impl-review structural analysis gating and complete ADR creation gating"
+  - "path_gating_complexity - Path-gating-only mirror of complexity used by the workflow-path-selected checkpoint's skip-optional option; does not overwrite the substantive complexity variable"
   - needs_elicitation - Whether requirements elicitation is needed
   - needs_research - Whether research is needed
   - skip_optional_activities - Whether to skip optional discovery activities
