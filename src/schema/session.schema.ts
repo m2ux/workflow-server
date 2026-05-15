@@ -2,11 +2,38 @@ import { z } from 'zod';
 import {
   CheckpointResponseSchema,
   HistoryEntrySchema,
-  NestedTriggeredWorkflowRefSchema,
-  type NestedTriggeredWorkflowRef,
   type HistoryEntry,
   type CheckpointResponse,
 } from './state.schema.js';
+
+/**
+ * Reference + optional embedded state of a child workflow dispatched from
+ * this session. The shape is recursive — `state` is a full `SessionFile`
+ * itself, so the whole work-package tree lives inside the top-level file.
+ *
+ * Lightweight fields (workflowId, sessionIndex, status, ...) act as
+ * navigation metadata when the embedded `state` is absent or summarised.
+ */
+export interface EmbeddedSessionRef {
+  /** Child's workflow id (e.g. "work-package"). */
+  workflowId: string;
+  /** Child's 6-char base32 session_index. */
+  sessionIndex: string;
+  /** ISO-8601 timestamp at dispatch. */
+  triggeredAt: string;
+  /** Where in the parent's flow the child was dispatched. */
+  triggeredFrom: { activityId: string; stepIndex?: number };
+  status: 'running' | 'completed' | 'aborted' | 'error';
+  /** ISO-8601 timestamp when the child reached its terminal activity. */
+  completedAt?: string;
+  /** Context returned from the child on completion. */
+  returnedContext?: Record<string, unknown>;
+  /**
+   * Full child SessionFile, embedded recursively. The single `session.json`
+   * at the top of the planning folder carries every descendant's state.
+   */
+  state?: SessionFile;
+}
 
 /**
  * Active checkpoint state — replaces the `bcp` field embedded in the legacy
@@ -86,11 +113,11 @@ const SessionFileBaseSchema = z.object({
   status: z.enum(['running', 'completed', 'aborted']).default('running'),
 
   /**
-   * Child workflows dispatched from this session. Each entry can carry its
-   * own nested workflow state via the existing `NestedTriggeredWorkflowRef`
-   * recursion.
+   * Child workflows dispatched from this session. Each entry's `state` field
+   * is a full embedded `SessionFile` — the whole work-package tree lives
+   * inside the top-level `session.json`. See `EmbeddedSessionRefSchema`.
    */
-  triggeredWorkflows: z.array(NestedTriggeredWorkflowRefSchema).default([]),
+  triggeredWorkflows: z.array(z.lazy(() => EmbeddedSessionRefSchema)).default([]),
 });
 
 /**
@@ -116,18 +143,36 @@ export interface SessionFile {
   checkpointResponses: Record<string, CheckpointResponse>;
   history: HistoryEntry[];
   status: 'running' | 'completed' | 'aborted';
-  triggeredWorkflows: NestedTriggeredWorkflowRef[];
+  triggeredWorkflows: EmbeddedSessionRef[];
   parentSession?: SessionFile;
 }
 
 /**
- * Recursive `SessionFile` schema. The `parentSession` branch references this
- * schema itself via `z.lazy()` so the same shape captures the whole
- * nested-dispatch chain (A → B → C → D) without flattening.
+ * Recursive `SessionFile` schema. Both `parentSession` (upward link) and
+ * `triggeredWorkflows[i].state` (downward children) reference this schema via
+ * `z.lazy()`, so a single file captures the entire work-package tree.
  */
 export const SessionFileSchema: z.ZodType<SessionFile> = SessionFileBaseSchema.extend({
   parentSession: z.lazy(() => SessionFileSchema).optional(),
 }) as z.ZodType<SessionFile>;
+
+/**
+ * Schema for a child entry inside the parent's `triggeredWorkflows[]` array.
+ * The `state` field embeds the child's full `SessionFile` recursively.
+ */
+export const EmbeddedSessionRefSchema: z.ZodType<EmbeddedSessionRef> = z.object({
+  workflowId: z.string().min(1),
+  sessionIndex: z.string().regex(/^[A-Z2-7]{6}$/),
+  triggeredAt: z.string().datetime(),
+  triggeredFrom: z.object({
+    activityId: z.string(),
+    stepIndex: z.number().int().min(1).optional(),
+  }),
+  status: z.enum(['running', 'completed', 'aborted', 'error']),
+  completedAt: z.string().datetime().optional(),
+  returnedContext: z.record(z.unknown()).optional(),
+  state: z.lazy(() => SessionFileSchema).optional(),
+}) as z.ZodType<EmbeddedSessionRef>;
 
 /** Strict parse — throws on validation failure. */
 export function validateSessionFile(data: unknown): SessionFile {

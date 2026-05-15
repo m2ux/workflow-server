@@ -285,7 +285,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             const parentNext = advanceSession(parentForBacklink.state, (draft) => {
               draft.triggeredWorkflows.push({
                 workflowId: effectiveWorkflowId,
-                planningSlug: slug,
                 sessionIndex,
                 triggeredAt,
                 triggeredFrom: { activityId: draft.currentActivity || '' },
@@ -295,7 +294,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
                 timestamp: triggeredAt,
                 type: 'workflow_triggered',
                 activity: draft.currentActivity || undefined,
-                data: { workflowId: effectiveWorkflowId, planningSlug: slug, sessionIndex },
+                data: { workflowId: effectiveWorkflowId, sessionIndex },
               });
             });
             await saveSessionForTool(parentForBacklink.folderAbsPath, parentNext);

@@ -1795,7 +1795,6 @@ describe('mcp-server integration', () => {
       expect(parentState.triggeredWorkflows).toHaveLength(1);
       expect(parentState.triggeredWorkflows[0]).toMatchObject({
         workflowId: 'work-package',
-        planningSlug: childSlug,
         sessionIndex: childIdx,
         status: 'running',
       });
