@@ -207,9 +207,26 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       const next = advanceSession(state, (draft) => {
+        const now = new Date().toISOString();
+        // Exit-prior: any non-empty previous activity is recorded as
+        // completed once we transition off it.
+        if (draft.currentActivity) {
+          draft.history.push({ timestamp: now, type: 'activity_exited', activity: draft.currentActivity });
+          if (!draft.completedActivities.includes(draft.currentActivity)) {
+            draft.completedActivities.push(draft.currentActivity);
+          }
+        }
         draft.currentActivity = activity_id;
         draft.condition = transition_condition ?? '';
         delete draft.activeCheckpoint;
+        draft.history.push({ timestamp: now, type: 'activity_entered', activity: activity_id });
+        // Terminal-state transition emits a workflow_completed event and
+        // flips status. The activity id 'complete' is the canonical terminal
+        // marker across the work-package, prism, and meta workflows.
+        if (activity_id === 'complete') {
+          draft.history.push({ timestamp: now, type: 'workflow_completed' });
+          draft.status = 'completed';
+        }
       });
       await saveSessionForTool(loaded.folderAbsPath, next);
 
@@ -320,6 +337,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           activityId: activity_id,
           yieldedAt,
         };
+        draft.history.push({
+          timestamp: yieldedAt,
+          type: 'checkpoint_reached',
+          activity: activity_id,
+          checkpoint: checkpoint_id,
+        });
       });
       await saveSessionForTool(loaded.folderAbsPath, next);
 
@@ -482,18 +505,61 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state, (draft) => {
         delete draft.activeCheckpoint;
         const recordKey = `${active.activityId}-${checkpoint_id}`;
+        const respondedAt = new Date(now * 1000).toISOString();
         // CheckpointResponseSchema requires `optionId` + `respondedAt`; for
         // `condition_not_met` dismissals we still record the resolution with
         // a sentinel option id so the on-disk schema stays valid.
         const recordedOptionId = resolvedOptionId ?? (condition_not_met ? '__condition_not_met__' : '__unknown__');
-        const record: { optionId: string; respondedAt: string; effects?: { variablesSet?: Record<string, unknown> } } = {
+        // Unwrap the TOON effect into the schema-flat shape:
+        // TOON gives { setVariable: {...}, transitionTo: '...', skipActivities: [...] };
+        // the schema stores variablesSet / transitionedTo / activitiesSkipped.
+        const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; transitionTo?: string; skipActivities?: string[] };
+        const variablesSet = effectObj?.setVariable;
+        const transitionedTo = effectObj?.transitionTo;
+        const activitiesSkipped = effectObj?.skipActivities;
+        const record: { optionId: string; respondedAt: string; effects?: { variablesSet?: Record<string, unknown>; transitionedTo?: string; activitiesSkipped?: string[] } } = {
           optionId: recordedOptionId,
-          respondedAt: new Date(now * 1000).toISOString(),
+          respondedAt,
         };
-        if (effect !== undefined) {
-          record.effects = { variablesSet: effect };
+        if (variablesSet || transitionedTo || activitiesSkipped) {
+          record.effects = {};
+          if (variablesSet) record.effects.variablesSet = variablesSet;
+          if (transitionedTo) record.effects.transitionedTo = transitionedTo;
+          if (activitiesSkipped) record.effects.activitiesSkipped = activitiesSkipped;
         }
         draft.checkpointResponses = { ...(draft.checkpointResponses ?? {}), [recordKey]: record };
+        draft.history.push({
+          timestamp: respondedAt,
+          type: 'checkpoint_response',
+          activity: active.activityId,
+          checkpoint: checkpoint_id,
+          data: { optionId: recordedOptionId },
+        });
+        // Apply variable assignments to the rolled-up bag.
+        if (variablesSet) {
+          for (const [name, value] of Object.entries(variablesSet)) {
+            draft.variables[name] = value;
+            draft.history.push({
+              timestamp: respondedAt,
+              type: 'variable_set',
+              activity: active.activityId,
+              data: { name, value },
+            });
+          }
+        }
+        // Apply explicitly-skipped activities to the bookkeeping array.
+        if (activitiesSkipped) {
+          for (const id of activitiesSkipped) {
+            if (!draft.skippedActivities.includes(id)) {
+              draft.skippedActivities.push(id);
+              draft.history.push({
+                timestamp: respondedAt,
+                type: 'activity_skipped',
+                activity: id,
+              });
+            }
+          }
+        }
       });
       await saveSessionForTool(loaded.folderAbsPath, next);
 

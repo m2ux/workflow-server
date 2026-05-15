@@ -1710,6 +1710,77 @@ describe('mcp-server integration', () => {
       expect(existsSync(join(folderPath, 'session.json'))).toBe(true);
       expect(existsSync(join(folderPath, '.session-token'))).toBe(true);
     });
+
+    it('session.json audit fields roll up across start_session / next_activity / yield_checkpoint / respond_checkpoint', async () => {
+      const { readFile } = await import('node:fs/promises');
+      const slug = 'audit-rollup';
+      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
+      const sessionFilePath = join(folderPath, 'session.json');
+
+      // 1. Fresh session — should seed workflow_started + status=running.
+      const startResp = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+      });
+      expect(startResp.isError).toBeFalsy();
+      const startIdx = parseToolResponse(startResp).session_index;
+      let state = JSON.parse(await readFile(sessionFilePath, 'utf8'));
+      expect(state.status).toBe('running');
+      expect(state.history).toHaveLength(1);
+      expect(state.history[0].type).toBe('workflow_started');
+      expect(state.completedActivities).toEqual([]);
+
+      // 2. next_activity → activity_entered (plus activity_exited / completed
+      //    push for the prior empty activity, which is suppressed).
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: startIdx, activity_id: 'start-work-package' },
+      });
+      state = JSON.parse(await readFile(sessionFilePath, 'utf8'));
+      expect(state.currentActivity).toBe('start-work-package');
+      const enteredEvents = state.history.filter((e: { type: string }) => e.type === 'activity_entered');
+      expect(enteredEvents.some((e: { activity?: string }) => e.activity === 'start-work-package')).toBe(true);
+
+      // 3. Transition again — prior activity should land in completedActivities.
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: startIdx, activity_id: 'design-philosophy' },
+      });
+      state = JSON.parse(await readFile(sessionFilePath, 'utf8'));
+      expect(state.completedActivities).toContain('start-work-package');
+
+      // 4. Final transition to the terminal activity flips status to completed.
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: startIdx, activity_id: 'complete' },
+      });
+      state = JSON.parse(await readFile(sessionFilePath, 'utf8'));
+      expect(state.status).toBe('completed');
+      expect(state.history.some((e: { type: string }) => e.type === 'workflow_completed')).toBe(true);
+    });
+
+    it('canonical key order: top-level priority fields come before alphabetic tail', async () => {
+      const { readFile } = await import('node:fs/promises');
+      const slug = 'key-order';
+      const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
+      const sessionFilePath = join(folderPath, 'session.json');
+
+      await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+      });
+      const raw = await readFile(sessionFilePath, 'utf8');
+      // Extract top-level key names from the pretty-printed JSON in order.
+      const keyOrder = Array.from(raw.matchAll(/^  "([a-zA-Z]+)":/gm)).map((m) => m[1]);
+      const idx = (k: string) => keyOrder.indexOf(k);
+
+      // Priority block ordering — most-read fields up top.
+      expect(idx('schemaVersion')).toBeLessThan(idx('workflowId'));
+      expect(idx('status')).toBeLessThan(idx('completedActivities'));
+      expect(idx('currentActivity')).toBeLessThan(idx('completedActivities'));
+      expect(idx('completedActivities')).toBeLessThan(idx('history'));
+      expect(idx('variables')).toBeLessThan(idx('history'));
+    });
   });
 
   describe('start_session migration auto-trigger', () => {

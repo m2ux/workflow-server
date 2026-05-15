@@ -237,7 +237,11 @@ describe('SessionFile schema', () => {
       expect(result.success).toBe(true);
       expect(file.schemaVersion).toBe(1);
       expect(file.seq).toBe(0);
-      expect(file.history).toEqual([]);
+      // Fresh sessions seed history with a workflow_started event and start
+      // in the `running` status.
+      expect(file.history).toHaveLength(1);
+      expect(file.history[0]).toMatchObject({ type: 'workflow_started' });
+      expect(file.status).toBe('running');
     });
 
     it('attaches an optional parentSession when provided', () => {

@@ -75,18 +75,58 @@ export class SessionStoreError extends Error {
 }
 
 /**
+ * Top-level key priority for `canonicaliseJson`. Keys that appear in this list
+ * are emitted in this order at depth 0 of an object; keys not in the list fall
+ * back to lexicographic order after the priority block. Nested objects are
+ * still sorted lexicographically. Purpose: produce a human-friendly layout
+ * for `session.json` (current state up top, audit fields next, history last)
+ * without sacrificing determinism.
+ */
+const TOP_LEVEL_KEY_PRIORITY = [
+  'schemaVersion',
+  'status',
+  'workflowId',
+  'workflowVersion',
+  'agentId',
+  'sessionIndex',
+  'currentActivity',
+  'currentSkill',
+  'condition',
+  'activeCheckpoint',
+  'seq',
+  'ts',
+  'startedAt',
+  'completedActivities',
+  'skippedActivities',
+  'variables',
+  'checkpointResponses',
+  'history',
+  'triggeredWorkflows',
+  'parentSession',
+];
+
+/**
  * Canonicalise an arbitrary JSON-serialisable value to a deterministic UTF-8
- * byte string. Keys are sorted lexicographically at every depth; arrays
- * preserve order; `undefined` values are dropped. Output is pretty-printed
- * with 2-space indentation and `\n` separators — deterministic because the
- * key order and whitespace rules are fixed. The output is the byte sequence
- * that gets HMAC-sealed and written to disk.
+ * byte string. Keys at depth 0 follow `TOP_LEVEL_KEY_PRIORITY` first (then
+ * lexicographic); nested objects sort lexicographically at every depth.
+ * Arrays preserve order; `undefined` values are dropped. Output is pretty-
+ * printed with 2-space indentation. Deterministic because key order and
+ * whitespace rules are fixed. The output is the byte sequence that gets
+ * HMAC-sealed and written to disk.
  */
 export function canonicaliseJson(value: unknown): string {
   return canonicaliseValue(value, 0);
 }
 
 const INDENT = '  ';
+
+function sortedKeys(obj: Record<string, unknown>, depth: number): string[] {
+  const present = Object.keys(obj).filter((k) => obj[k] !== undefined);
+  if (depth !== 0) return present.sort();
+  const priority = TOP_LEVEL_KEY_PRIORITY.filter((k) => present.includes(k));
+  const remaining = present.filter((k) => !TOP_LEVEL_KEY_PRIORITY.includes(k)).sort();
+  return [...priority, ...remaining];
+}
 
 function canonicaliseValue(v: unknown, depth: number): string {
   if (v === null) return 'null';
@@ -108,7 +148,7 @@ function canonicaliseValue(v: unknown, depth: number): string {
   }
   if (typeof v === 'object') {
     const obj = v as Record<string, unknown>;
-    const keys = Object.keys(obj).filter((k) => obj[k] !== undefined).sort();
+    const keys = sortedKeys(obj, depth);
     if (keys.length === 0) return '{}';
     const inner = INDENT.repeat(depth + 1);
     const outer = INDENT.repeat(depth);

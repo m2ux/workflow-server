@@ -78,6 +78,14 @@ const SessionFileBaseSchema = z.object({
   history: z.array(HistoryEntrySchema).default([]),
 
   /**
+   * Session lifecycle status. `running` while the workflow has not reached
+   * its terminal activity; `completed` after the terminal activity runs;
+   * `aborted` if it was explicitly cancelled. Optional and defaults to
+   * `running` so existing sessions parse without migration.
+   */
+  status: z.enum(['running', 'completed', 'aborted']).default('running'),
+
+  /**
    * Child workflows dispatched from this session. Each entry can carry its
    * own nested workflow state via the existing `NestedTriggeredWorkflowRef`
    * recursion.
@@ -107,6 +115,7 @@ export interface SessionFile {
   skippedActivities: string[];
   checkpointResponses: Record<string, CheckpointResponse>;
   history: HistoryEntry[];
+  status: 'running' | 'completed' | 'aborted';
   triggeredWorkflows: NestedTriggeredWorkflowRef[];
   parentSession?: SessionFile;
 }
@@ -186,7 +195,8 @@ export function createInitialSessionFile(args: {
     completedActivities: [],
     skippedActivities: [],
     checkpointResponses: {},
-    history: [],
+    history: [{ timestamp: now.toISOString(), type: 'workflow_started' }],
+    status: 'running',
     triggeredWorkflows: [],
   };
   if (args.parentSession) file.parentSession = args.parentSession;
