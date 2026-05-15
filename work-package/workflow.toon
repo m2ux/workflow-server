@@ -42,7 +42,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[87]:
+variables[88]:
   - name: target_path
     type: string
     description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
@@ -369,4 +369,8 @@ variables[87]:
     type: boolean
     description: "True when the user selected abort on the body-non-conformant checkpoint. Causes submit-for-review to transition to complete with an explicit failure status; the retrospective captures the abort reason from body_findings."
     defaultValue: false
+  - name: path_gating_complexity
+    type: string
+    description: "Path-gating mirror of complexity used solely by design-philosophy's workflow-path-selected checkpoint to skip optional activities (elicitation, research). Carved off from the substantive complexity variable so that selecting skip-optional at the path-gating checkpoint does NOT overwrite the design-time complexity classification used by downstream activities (e.g., ADR creation gating in plan-prepare). Substantive complexity stays untouched; path_gating_complexity carries the discardable concern."
+    defaultValue: ""
 initialActivity: start-work-package
