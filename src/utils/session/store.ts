@@ -786,6 +786,14 @@ export function lookupTransientBySlug(slug: string): string | undefined {
   return transientFolderBySlug.get(slug);
 }
 
+/** Reverse lookup: find the slug a transient folder was registered under. */
+export function lookupTransientSlugByFolder(folder: string): string | undefined {
+  for (const [slug, f] of transientFolderBySlug.entries()) {
+    if (f === folder) return slug;
+  }
+  return undefined;
+}
+
 /** `true` if `folder` lives under the os.tmpdir() transient prefix. */
 export function isTransientFolder(folder: string): boolean {
   return folder.startsWith(join(tmpdir(), TRANSIENT_DIR_PREFIX));

@@ -1861,6 +1861,48 @@ describe('mcp-server integration', () => {
       expect(parseToolResponse(resumed).session_index).toBe(childIdx);
     });
 
+    it('dispatch_child embeds the child SessionFile under parent.triggeredWorkflows[N].state and returns its session_index', async () => {
+      const { readFile } = await import('node:fs/promises');
+      const slug = 'embed-parent';
+      const parentFolder = join(workspaceDir, '.engineering/artifacts/planning', slug);
+
+      // Persistent parent.
+      const parent = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+      });
+      const parentIdx = parseToolResponse(parent).session_index;
+
+      // Dispatch a child via the new tool.
+      const child = await client.callTool({
+        name: 'dispatch_child',
+        arguments: { session_index: parentIdx, workflow_id: 'remediate-vuln', agent_id: 'worker-1' },
+      });
+      expect(child.isError).toBeFalsy();
+      const childIdx = parseToolResponse(child).session_index;
+      expect(childIdx).toMatch(/^[A-Z2-7]{6}$/);
+      expect(childIdx).not.toBe(parentIdx);
+
+      // Inspect the on-disk top file — child must be embedded, not a
+      // separate folder.
+      const topState = JSON.parse(await readFile(join(parentFolder, 'session.json'), 'utf8'));
+      expect(topState.triggeredWorkflows).toHaveLength(1);
+      const entry = topState.triggeredWorkflows[0];
+      expect(entry.workflowId).toBe('remediate-vuln');
+      expect(entry.sessionIndex).toBe(childIdx);
+      expect(entry.status).toBe('running');
+      expect(entry.state).toBeDefined();
+      expect(entry.state.workflowId).toBe('remediate-vuln');
+      expect(entry.state.sessionIndex).toBe(childIdx);
+      expect(entry.state.history.some((e: { type: string }) => e.type === 'workflow_started')).toBe(true);
+
+      // The child can be loaded via its session_index — it routes through
+      // the embedded sub-state, not a separate file.
+      const { existsSync } = await import('node:fs');
+      const wouldBePeerFolder = join(workspaceDir, '.engineering/artifacts/planning', 'remediate-vuln');
+      expect(existsSync(wouldBePeerFolder)).toBe(false);
+    });
+
     it('canonical key order: top-level priority fields come before alphabetic tail', async () => {
       const { readFile } = await import('node:fs/promises');
       const slug = 'key-order';
