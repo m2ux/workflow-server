@@ -1,7 +1,7 @@
 # Refresh Workflow-Server Docs - May 2026
 
 **Created:** 2026-05-14
-**Status:** In Progress (implementation complete; pending code-review / strategic-review / submit-for-review)
+**Status:** Complete (PR approved at `review-outcome`; retrospective delivered; awaiting merge of PR #119)
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -48,8 +48,9 @@ The fix is mechanical, not architectural: no source code or schema changes, just
 | 06 | [Architecture summary](06-architecture-summary.md) | Architecture summary (skipped — docs-only) | 5m | ✅ Complete |
 | 07 | [Validation](07-validation.md) | Typecheck + Vitest suite, commit signature scan, README conformance | 10-20m | ✅ Complete |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
+| — | PR review | External review feedback cycle (3 PR-description deviations addressed inline; outcome: approved) | 30-60m | ✅ Complete |
+| 13 | [Retrospective stager](13-retrospective-stager.md) | Mid-flight observations and improvement recommendations | 10m | ✅ Complete |
+| 13 | [Workflow retrospective](13-workflow-retrospective.md) | Lessons learned and prioritized recommendations | 15-30m | ✅ Complete |
 
 ---
 
@@ -64,4 +65,4 @@ The fix is mechanical, not architectural: no source code or schema changes, just
 
 ---
 
-**Status:** Implementation complete on `chore/refresh-workflow-server-docs`. Four commits land the refresh in the order planned: (1) `docs: refresh API and entry-point docs` (T1–T6); (2) `docs: refresh architecture and model docs` (T7–T9); (3) `docs: refresh schemas/README.md and schema-header.md` (T10–T11); plus the planning-folder updates here. `npm run typecheck` and `npm test -- --run` both pass (256 passed, 2 skipped, 0 failed) before and after edits. Tracked drift recorded in [06-tracked-drift.md](06-tracked-drift.md). Post-impl-review complete: code-review (06), structural-findings (06), test-suite-review (06), architecture-summary (06, skipped — docs-only). Validation complete: typecheck + tests green, commit-signature preflight flagged 4 unsigned commits. Strategic review complete: 4 unsigned commits re-signed via `git rebase --keep-empty --force-rebase -S 7dfca21` and force-with-lease pushed to `chore/refresh-workflow-server-docs` (new tip `7de8898`, all G); diff scope confirmed docs-only (+94/-33 across 12 files); no findings ≥ Minor. Proceeding to submit-for-review.
+**Status:** Work package complete. Four commits land the refresh on `chore/refresh-workflow-server-docs` in the order planned: (1) `docs: refresh API and entry-point docs` (T1–T6); (2) `docs: refresh architecture and model docs` (T7–T9); (3) `docs: refresh schemas/README.md and schema-header.md` (T10–T11); plus the planning-folder updates here. All four commits were re-signed during `strategic-review` via `git rebase --keep-empty --force-rebase -S` (new tip `7de8898`, all G). `npm run typecheck` and `npm test -- --run` both pass (256 passed, 2 skipped, 0 failed). Strategic review: 0 findings ≥ Minor; diff scope confirmed docs-only (+94/-33 across 12 files). PR #119 was marked ready for review, received feedback on three PR-description deviations from the canonical template (addressed inline via PR-body rewrite), and was approved at the `review-outcome` checkpoint (`review_requires_changes=false`). Retrospective delivered as [13-workflow-retrospective.md](13-workflow-retrospective.md), folding in the mid-flight observations captured in [13-retrospective-stager.md](13-retrospective-stager.md). Recommended follow-up: a strategic-review checklist line item for canonical-PR-body conformance (single highest-leverage change). Awaiting merge of PR #119.
