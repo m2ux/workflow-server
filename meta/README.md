@@ -18,7 +18,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 | # | Activity | Est. Time | Purpose |
 |---|----------|-----------|---------|
 | 00 | [**Discover Session**](activities/README.md#00-discover-session) | 1-2m | Catalog workflows, match user request to `target_workflow_id`, scan for saved client sessions, present resume / workflow-selection checkpoints |
-| 01 | [**Initialize Session**](activities/README.md#01-initialize-session) | 1-2m | Create a fresh or resume an existing client session via `start_session({ workflow_id, planning_slug, parent_planning_slug, agent_id })`; create the planning folder on fresh starts. Variables are restored automatically by the server on resume. |
+| 01 | [**Initialize Session**](activities/README.md#01-initialize-session) | 1-2m | Dispatch the client workflow as a child of meta via `dispatch_child({ session_index, workflow_id, agent_id })`; server embeds the child SessionFile inline (or creates a new top-level folder when meta is transient). Variables are restored automatically by the server on resume. |
 | 02 | [**Resolve Target**](activities/README.md#02-resolve-target) | 1-2m | Detect repo type (regular vs. submodule monorepo) and resolve `target_path` for downstream git operations |
 | 03 | [**Dispatch Client Workflow**](activities/README.md#03-dispatch-client-workflow) | variable | Compose the orchestrator prompt, dispatch the orchestrator, drive the doWhile checkpoint-yield loop until `client_workflow_completed` |
 | 04 | [**End Workflow**](activities/README.md#04-end-workflow) | 2-3m | Verify outcomes, generate summary, completion checkpoint (with abort-back path to dispatch). Final state is already on disk — the server has persisted every authenticated call. |
@@ -60,7 +60,7 @@ sequenceDiagram
     User->>Meta: "start work-package on issue 42"
     Note over Meta: Bootstrap → start_session(workflow_id: meta, agent_id: orchestrator)
     Meta->>Meta: 00 discover-session<br/>(list_workflows, match, scan)
-    Meta->>Meta: 01 initialize-session<br/>(start_session(workflow_id, planning_slug, parent_planning_slug))
+    Meta->>Meta: 01 initialize-session<br/>(dispatch_child(session_index, workflow_id))
     Meta->>Meta: 02 resolve-target
 
     Meta->>Client: 03 dispatch — spawn-agent(prompt with client_session_index)

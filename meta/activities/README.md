@@ -37,7 +37,7 @@ Five sequential activities that run inside the meta session: identify the target
 
 **Steps:**
 
-1. **start-or-resume-session** — `workflow-engine::create-session(workflow_id, planning_slug, parent_planning_slug)`. Capture `client_session_index` and `client_planning_slug` from the response.
+1. **start-or-resume-session** — `workflow-engine::create-session(parent_session_index, workflow_id)`. Capture `client_session_index` from the response. The server appends the child under `meta.triggeredWorkflows[N].state` (or creates a new top-level workspace folder when meta is transient).
 2. **derive-planning-folder** — Conditional on a fresh session: `version-control::initialize-folder` to create the planning folder on disk.
 
 **Transitions:** Default to [Resolve Target](#02-resolve-target).

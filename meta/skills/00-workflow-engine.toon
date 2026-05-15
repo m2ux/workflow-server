@@ -60,18 +60,17 @@ operations:
         - Read
 
   create-session:
-    description: "Create a fresh client session as a child of the meta session"
-    inputs[3]:
+    description: "Dispatch a fresh client workflow as a child of the meta session"
+    inputs[2]:
+      - parent_session_index: "session_index of the meta (parent) session — typically the meta_session_index variable"
       - workflow_id: "Target client workflow id (e.g., 'work-package')"
-      - planning_slug: "Single-segment slug for the new planning folder (no path separators)"
-      - parent_planning_slug: "planning_slug of the meta (parent) session, used so the server can snapshot the parent state under the child's parentSession field"
     output[1]:
       - session_index: "The 6-character base32 session_index of the newly created child session"
     procedure[1]:
-      - "Call start_session({ workflow_id: <target client workflow id>, planning_slug: <slug>, parent_planning_slug: <parent slug>, agent_id: 'orchestrator' }); capture the returned session_index for use in all subsequent calls inside the child workflow"
+      - "Call dispatch_child({ session_index: <parent_session_index>, workflow_id: <target client workflow id>, agent_id: 'orchestrator' }); capture the returned session_index for use in all subsequent calls inside the child workflow. The server appends the child under parent.triggeredWorkflows[N].state and embeds the full child SessionFile inline; the agent does not deal with separate child folders."
     tools:
       workflow-server[1]:
-        - start_session
+        - dispatch_child
 
   compose-prompt:
     description: "Substitute state variables into a prompt template resource"
@@ -191,18 +190,17 @@ operations:
 
   handle-sub-workflow:
     description: "Dispatch a child workflow under the current session as its parent"
-    inputs[3]:
+    inputs[2]:
+      - parent_session_index: "The current session's session_index — passed to the server so it can append the child under the parent's triggeredWorkflows[] with the child's SessionFile embedded inline"
       - workflow_id: "Child workflow ID"
-      - child_planning_slug: "Single-segment slug for the new child planning folder"
-      - parent_planning_slug: "The current session's planning_slug — passed to the server so it can snapshot the parent state under the child's parentSession field"
     output[1]:
       - child_session_index: "The 6-character base32 session_index of the newly created child session"
     procedure[2]:
-      - "Call start_session({ workflow_id: <child workflow id>, planning_slug: <child_planning_slug>, parent_planning_slug: <parent_planning_slug>, agent_id: 'workflow-orchestrator' }); capture child_session_index from the response"
+      - "Call dispatch_child({ session_index: <parent_session_index>, workflow_id: <child workflow id>, agent_id: 'workflow-orchestrator' }); capture child_session_index from the response. The child SessionFile is embedded under parent.triggeredWorkflows[N].state in the top-level session.json — no separate child folder."
       - "harness-compat::spawn-agent for the child orchestrator with child_session_index in its prompt"
     tools:
       workflow-server[1]:
-        - start_session
+        - dispatch_child
 
   finalize-activity:
     description: "Compile the activity_complete result after all steps, checkpoints, and artifacts are done"

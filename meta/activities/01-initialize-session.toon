@@ -1,7 +1,7 @@
 id: initialize-session
 version: 5.0.0
 name: Initialize Session
-description: "Create or resume the client workflow's session as a child of the meta session. The server resolves whether the call creates a fresh session or rebinds an existing session.json on disk; the agent issues a single start_session call regardless. Variables are restored automatically by the server on resume."
+description: "Dispatch the client workflow as a child of the meta session. The agent calls dispatch_child against the meta session_index; the server appends the child entry to meta's triggeredWorkflows[] with the full child SessionFile embedded inline. When meta is a transient bootstrap session the child becomes a new top-level workspace folder and meta's tmp folder is discarded post-capture."
 problem: The client workflow needs a session_index before its orchestrator can be dispatched, and the planning folder must exist before fresh starts
 required: true
 estimatedTime: 1-2m
@@ -10,7 +10,7 @@ operations[2]:
   - "version-control::initialize-folder"
 steps[2]:
   - id: start-or-resume-session
-    description: "workflow-engine::create-session(workflow_id: {target_workflow_id}, planning_slug: {saved_planning_slug | derived from issue title}, parent_planning_slug: {meta_planning_slug}). On resume the server reads the existing session.json keyed by planning_slug and returns its session_index; on a fresh start it creates session.json and seals it. Capture client_session_index and client_planning_slug from the response."
+    description: "workflow-engine::create-session(parent_session_index: {meta_session_index}, workflow_id: {target_workflow_id}). The server appends the child entry under meta.triggeredWorkflows[N] (or creates a new top-level workspace folder when meta is transient) and returns the child's session_index. Capture client_session_index from the response."
   - id: derive-planning-folder
     description: "version-control::initialize-folder(initiative_name: <kebab-case from issue title or work-package description>)"
     when: "is_resuming == false"
