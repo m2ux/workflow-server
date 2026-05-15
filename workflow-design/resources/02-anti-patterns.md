@@ -56,6 +56,12 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 
 29. **"persist-output" rule on a skill with a "write-artifact" step** — A rule that applies to only one protocol step is not a cross-cutting constraint — it's step-level guidance masquerading as a rule. Move the content into the step's description prose and delete the rule. Skill-level rules should span multiple protocol phases.
 
+## Description Hygiene Anti-Patterns
+
+36. **"Let me explain why this is here"** — `description`, `message`, action-description, option-description, and procedure-bullet fields must say what the construct does, not why it exists, what depends on it, or what consumes its output. Rationale ("so the retrospective captures..."), process narration ("interpolated into checkpoint X", "drives the loop's exit condition", "consumed by activity Y"), comparison with prior implementations ("as today", "no further server-side aggregation needed"), and restatement of facts already encoded by adjacent structure (the step's position in `steps[]`, the loop's `condition`/`maxIterations`, the checkpoint's `effect.setVariable`, the option's `transitionTo`, the variable's `defaultValue`) belong in commit messages, ADRs, or planning docs — not in workflow files. Every sentence in a workflow description should survive the test "if I deleted this, would any structural fact be lost?" — if the answer is no, delete it.
+
+37. **"Without X, Y will happen"** (justification tail on validate messages) — Validate-action messages must state the cause and the fix command only. Trailing paragraphs explaining the consequences of the misconfiguration ("Without a configured signing key, every commit made by this workflow will be unsigned and strategic-review will refuse to advance...") repeat what the failing validate already proves and add noise the user has to skim past to find the fix. Format: `<what's wrong>. Run '<command>'.` Stop there.
+
 ## Tool-Skill-Doc Consistency Anti-Patterns
 
 30. **"Resources are in the response"** (but they aren't) — Skill protocols or tool sections that describe return values inaccurately. If a skill says a tool returns resource content but the tool actually returns lightweight refs, agents will skip the `get_resource` call. Skill tool sections must match actual tool behavior.
