@@ -1644,8 +1644,11 @@ describe('mcp-server integration', () => {
       expect(dResult.isError).toBeFalsy();
 
       // Read D's session.json from disk and walk the parentSession chain.
+      // Layout: A (meta) is transient (/tmp) and discarded after B captures
+      // it, so B becomes a new top-level root. C nests under B, D nests
+      // under C — hierarchical persistent layout.
       const { readFileSync } = await import('node:fs');
-      const dStatePath = join(workspaceDir, '.engineering/artifacts/planning', slugD, 'session.json');
+      const dStatePath = join(workspaceDir, '.engineering/artifacts/planning', slugB, slugC, slugD, 'session.json');
       const dState = JSON.parse(readFileSync(dStatePath, 'utf8'));
 
       expect(dState.workflowId).toBe('prism-update');
@@ -1763,8 +1766,10 @@ describe('mcp-server integration', () => {
       const { readFile } = await import('node:fs/promises');
       const parentSlug = 'parent-with-backlink';
       const childSlug = 'child-of-backlink';
+      // Parents live at the workspace top level; persistent children nest
+      // UNDER their parent's folder.
       const parentFolder = join(workspaceDir, '.engineering/artifacts/planning', parentSlug);
-      const childFolder = join(workspaceDir, '.engineering/artifacts/planning', childSlug);
+      const childFolder = join(parentFolder, childSlug);
 
       // Persistent parent (work-package, not meta) so the backlink is durable.
       const parent = await client.callTool({
@@ -1812,6 +1817,49 @@ describe('mcp-server integration', () => {
       expect(childState.status).toBe('completed');
       expect(childState.currentActivity).toBe('complete');
       expect(childState.parentSession?.sessionIndex).toBe(parentIdx);
+    });
+
+    it('persistent children nest UNDER their persistent parent (not at workspace top level)', async () => {
+      const { existsSync } = await import('node:fs');
+      const parentSlug = 'nest-parent';
+      const childSlug = 'nest-child';
+      const parentFolder = join(workspaceDir, '.engineering/artifacts/planning', parentSlug);
+      // Top-level peer location (where the child would have lived under the
+      // old flat layout) — must NOT exist after nesting takes effect.
+      const wrongPeerFolder = join(workspaceDir, '.engineering/artifacts/planning', childSlug);
+      // The nested location — where the child actually lives.
+      const nestedChildFolder = join(parentFolder, childSlug);
+
+      // Persistent parent (work-package, not meta).
+      await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: parentSlug },
+      });
+      // Child of persistent parent.
+      const child = await client.callTool({
+        name: 'start_session',
+        arguments: {
+          workflow_id: 'work-package',
+          agent_id: 'worker-1',
+          planning_slug: childSlug,
+          parent_planning_slug: parentSlug,
+        },
+      });
+      expect(child.isError).toBeFalsy();
+
+      // Child sits under the parent — not at the planning-root top level.
+      expect(existsSync(join(nestedChildFolder, 'session.json'))).toBe(true);
+      expect(existsSync(join(nestedChildFolder, '.session-token'))).toBe(true);
+      expect(existsSync(wrongPeerFolder)).toBe(false);
+
+      // Resume by slug still finds the nested child — resolveSessionIndex
+      // recurses through the tree.
+      const childIdx = parseToolResponse(child).session_index;
+      const resumed = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'worker-1', planning_slug: childSlug, parent_planning_slug: parentSlug },
+      });
+      expect(parseToolResponse(resumed).session_index).toBe(childIdx);
     });
 
     it('canonical key order: top-level priority fields come before alphabetic tail', async () => {

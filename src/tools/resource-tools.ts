@@ -17,6 +17,8 @@ import {
   describeSessionStoreError,
   SessionStoreError,
   ensurePlanningFolder,
+  ensureNestedPlanningFolder,
+  findPlanningFolderBySlug,
   sessionFileExists,
   writeSessionFile,
   verifySeal,
@@ -101,20 +103,42 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     withAuditLog('start_session', async ({ workflow_id, planning_slug, parent_planning_slug, agent_id }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
-      // Resolve the planning folder. Meta orchestrator sessions are transient
-      // (bootstrap state only) — folder lives under os.tmpdir() and is
-      // discarded when a child workflow captures the parent. All other
-      // workflows persist under the workspace planning root with a canonical
-      // slug. This keeps the workspace free of one-shot bootstrap folders.
+      // Resolve the planning folder. Meta orchestrator sessions are
+      // transient (bootstrap state only) — folder lives under os.tmpdir().
+      // Persistent children of persistent parents nest under the parent's
+      // folder so the workspace planning root only ever shows canonical
+      // root sessions at the top level. All other persistent sessions live
+      // at the workspace top level.
       const isTransientSession = (workflow_id ?? DEFAULT_WORKFLOW_ID) === DEFAULT_WORKFLOW_ID;
       const slug = planning_slug ?? `transition-${randomUUID()}`;
+
+      // Pre-resolve the parent (if any) so we know whether to nest the child
+      // under it or keep the child at the workspace top level. Persistent
+      // parents may live at any depth under the planning root because
+      // children nest under their parents; we walk the tree to find the
+      // matching slug.
+      let parentFolderResolved: string | undefined;
+      let parentIsTransient = false;
+      if (parent_planning_slug) {
+        const transientParent = lookupTransientBySlug(parent_planning_slug);
+        if (transientParent) {
+          parentFolderResolved = transientParent;
+          parentIsTransient = true;
+        } else {
+          parentFolderResolved = await findPlanningFolderBySlug(config.workspaceDir, parent_planning_slug);
+        }
+      }
+
       let folder: string;
       if (isTransientSession) {
-        // Reuse the transient folder if the caller has already started a
-        // transient with this slug in this process; otherwise mint a fresh one.
         const existing = planning_slug ? lookupTransientBySlug(planning_slug) : undefined;
         folder = existing ?? await createTransientFolder();
+      } else if (parentFolderResolved && !parentIsTransient) {
+        // Nested under the persistent parent.
+        folder = await ensureNestedPlanningFolder(parentFolderResolved, slug);
       } else {
+        // Top-level (no parent, or parent was transient and is about to
+        // be discarded — child becomes a new canonical root).
         folder = await ensurePlanningFolder(config.workspaceDir, slug);
       }
 
@@ -184,20 +208,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         let parentSession: SessionFile | undefined;
         let parentFolderToDiscard: string | undefined;
         let parentForBacklink: { folderAbsPath: string; state: SessionFile } | undefined;
-        if (parent_planning_slug) {
-          const transientParent = lookupTransientBySlug(parent_planning_slug);
-          const parentFolder = transientParent ?? resolve(planningRoot(config.workspaceDir), parent_planning_slug);
+        if (parentFolderResolved) {
           try {
             // Migrate the parent folder if it carries legacy artefacts so the
             // recursive snapshot has the canonical shape.
-            await migratePlanningFolder(parentFolder);
+            await migratePlanningFolder(parentFolderResolved);
           } catch (err) {
             if (err instanceof MigrationError) {
               throw new Error(describeMigrationError(err));
             }
             // Unknown error reading parent — surface but don't block.
           }
-          const parentIndex = await computeSessionIndex(parentFolder);
+          const parentIndex = await computeSessionIndex(parentFolderResolved);
           try {
             const parentLoaded = await loadSessionForTool(config.workspaceDir, parentIndex);
             parentSession = parentLoaded.state;
@@ -215,8 +237,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             // session, the standalone folder is redundant once we've captured
             // its state into the child's `parentSession`. Mark it for
             // discard after the child's session.json is sealed.
-            if (isTransientFolder(parentFolder)) {
-              parentFolderToDiscard = parentFolder;
+            if (parentIsTransient) {
+              parentFolderToDiscard = parentLoaded.folderAbsPath;
             } else {
               // Persistent parent — we'll backlink this child onto its
               // triggeredWorkflows[] once the child's session.json is sealed.

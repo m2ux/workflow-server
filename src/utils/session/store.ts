@@ -440,25 +440,50 @@ export async function resolveSessionIndex(
 
   const key = await getOrCreateServerKey();
   const matches: string[] = [];
+
+  /**
+   * Walk every directory under the planning root recursively. Each folder
+   * that hashes to the requested session_index is a match. Recursion is
+   * needed because persistent children of persistent parents nest under
+   * the parent's folder rather than living at the workspace top level.
+   */
+  async function walk(dirPath: string): Promise<void> {
+    let dirEntries: typeof entries;
+    try {
+      dirEntries = await readdir(dirPath, { withFileTypes: true });
+    } catch {
+      // Permission denied / race deletion — best-effort, skip.
+      return;
+    }
+    for (const entry of dirEntries) {
+      if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
+      const folderPath = resolve(dirPath, entry.name);
+      try {
+        const st = await stat(folderPath);
+        if (!st.isDirectory()) continue;
+        const index = computeSessionIndexSync(folderPath, key);
+        if (index === sessionIndex) matches.push(folderPath);
+      } catch {
+        // realpath / stat failed (broken symlink, race deletion); skip.
+        continue;
+      }
+      await walk(folderPath);
+    }
+  }
+
+  // Seed the walk with the immediate planning-root entries we already read.
   for (const entry of entries) {
-    // Accept plain directories AND symbolic links (which may resolve to
-    // directories). `computeSessionIndexSync` calls realpath, so a broken
-    // symlink throws and the entry is skipped. We do not pre-filter
-    // symlinks because users may legitimately alias planning folders.
     if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
     const folderPath = resolve(root, entry.name);
-    let index: string;
     try {
-      // Confirm the resolved target is actually a directory; skip files
-      // that happen to live under the planning root.
       const st = await stat(folderPath);
       if (!st.isDirectory()) continue;
-      index = computeSessionIndexSync(folderPath, key);
+      const index = computeSessionIndexSync(folderPath, key);
+      if (index === sessionIndex) matches.push(folderPath);
     } catch {
-      // realpath / stat failed (broken symlink, race deletion); skip.
       continue;
     }
-    if (index === sessionIndex) matches.push(folderPath);
+    await walk(folderPath);
   }
 
   if (matches.length === 0) {
@@ -481,24 +506,149 @@ export async function resolveSessionIndex(
 }
 
 /**
- * Create a planning folder at `<workspaceDir>/<PLANNING_RELATIVE_DIR>/<slug>`
- * with mode 0700. Idempotent — succeeds if the folder already exists with
- * any mode (we don't chmod existing folders). Returns the absolute path.
+ * Validate a single-segment planning-folder slug. Rejects slashes,
+ * backslashes, and `.` / `..` so callers can't escape the planning root.
+ */
+function assertValidSlug(slug: string): void {
+  if (!slug || slug.includes('/') || slug.includes('\\') || slug === '.' || slug === '..') {
+    throw new SessionStoreError(
+      `planning slug must be a single path segment, got '${slug}'`,
+      'INVALID_INDEX',
+      { slug },
+    );
+  }
+}
+
+/**
+ * Find a persistent planning folder by slug at any depth under the workspace
+ * planning root. A folder matches when its basename equals the slug AND it
+ * contains a `session.json`. Returns the absolute path of the first match,
+ * `undefined` if no folder matches, or throws on slug collision (the same
+ * slug used at multiple nesting depths).
+ */
+export async function findPlanningFolderBySlug(
+  workspaceDir: string,
+  slug: string,
+): Promise<string | undefined> {
+  assertValidSlug(slug);
+  const root = planningRoot(workspaceDir);
+  const matches: string[] = [];
+
+  async function walk(dir: string): Promise<void> {
+    let entries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
+    try {
+      entries = await readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
+      const folderPath = resolve(dir, entry.name);
+      try {
+        const st = await stat(folderPath);
+        if (!st.isDirectory()) continue;
+      } catch {
+        continue;
+      }
+      if (entry.name === slug && await sessionFileExists(folderPath)) {
+        matches.push(folderPath);
+      }
+      await walk(folderPath);
+    }
+  }
+
+  try {
+    await walk(root);
+  } catch {
+    return undefined;
+  }
+  if (matches.length === 0) return undefined;
+  if (matches.length === 1) return matches[0];
+  const sorted = [...matches].sort();
+  throw new SessionStoreError(
+    `findPlanningFolderBySlug: slug '${slug}' matches ${sorted.length} planning folders at different nesting depths: ${sorted.join(', ')}`,
+    'COLLISION',
+    { slug, candidates: sorted },
+  );
+}
+
+/**
+ * Create a top-level planning folder at
+ * `<workspaceDir>/<PLANNING_RELATIVE_DIR>/<slug>` with mode 0700.
+ * Idempotent. Returns the absolute path.
  */
 export async function ensurePlanningFolder(
   workspaceDir: string,
   slug: string,
 ): Promise<string> {
-  if (!slug || slug.includes('/') || slug.includes('\\') || slug === '.' || slug === '..') {
-    throw new SessionStoreError(
-      `ensurePlanningFolder: slug must be a single path segment, got '${slug}'`,
-      'INVALID_INDEX',
-      { slug },
-    );
-  }
+  assertValidSlug(slug);
   const folder = resolve(planningRoot(workspaceDir), slug);
   await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
   return folder;
+}
+
+/**
+ * Create a nested planning folder at `<parentFolder>/<slug>` with mode 0700.
+ * Used when dispatching a persistent child workflow from a persistent parent
+ * so children live under their parent in the planning hierarchy rather than
+ * adjacent to it at the workspace top level.
+ */
+export async function ensureNestedPlanningFolder(
+  parentFolder: string,
+  slug: string,
+): Promise<string> {
+  assertValidSlug(slug);
+  const folder = resolve(parentFolder, slug);
+  await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
+  return folder;
+}
+
+/**
+ * Locate a planning folder by slug anywhere under the planning root,
+ * recursively. Returns the absolute path of the first folder whose basename
+ * matches `slug` AND contains a `session.json`. Returns `undefined` if no
+ * match is found.
+ *
+ * Used by `start_session` to resolve `parent_planning_slug` when the parent
+ * may be nested under a grand-parent rather than living at the workspace
+ * top level. Slugs are expected to be unique across the planning tree; if
+ * two folders share the same slug, the first encountered match wins.
+ */
+export async function findPlanningFolderBySlug(
+  workspaceDir: string,
+  slug: string,
+): Promise<string | undefined> {
+  assertValidSlug(slug);
+  const root = planningRoot(workspaceDir);
+
+  async function walk(dirPath: string): Promise<string | undefined> {
+    let entries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
+    try {
+      entries = await readdir(dirPath, { withFileTypes: true });
+    } catch {
+      return undefined;
+    }
+    for (const entry of entries) {
+      if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
+      const folderPath = resolve(dirPath, entry.name);
+      let isDir = false;
+      try {
+        const st = await stat(folderPath);
+        isDir = st.isDirectory();
+      } catch {
+        continue;
+      }
+      if (!isDir) continue;
+      if (entry.name === slug && (await sessionFileExists(folderPath))) {
+        return folderPath;
+      }
+      const nested = await walk(folderPath);
+      if (nested) return nested;
+    }
+    return undefined;
+  }
+
+  return walk(root);
 }
 
 /**
