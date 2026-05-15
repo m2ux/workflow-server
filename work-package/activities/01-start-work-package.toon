@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.5.0
+version: 3.6.0
 name: Start Work Package
 description: "Initialize the work package: detect whether the user-provided path is a monorepo or standalone repo, refresh the reference (submodules to remote HEAD + GitNexus index), verify or create an issue, materialize a dedicated git worktree of the component at '~/projects/work/{component_name}/{wp-slug}/', set up the feature branch + draft PR inside that worktree, record the PR reference on the issue via its platform's native PR linkage, and create the planning folder. Establishes traceability from requirements through implementation, with edits cleanly separated from the reference checkout."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -23,7 +23,7 @@ skills:
     - gitnexus-operations
     - manage-artifacts
     - manage-git
-steps[25]:
+steps[26]:
   - id: detect-review-mode
     name: Detect Review Mode
     description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
@@ -62,6 +62,28 @@ steps[25]:
   - id: analyze-reference-with-gitnexus
     name: Re-index Reference with GitNexus
     description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries. The analyze CLI emits stats; capture them in trace logs but do not gate the workflow on them."
+  - id: verify-signing-precondition
+    name: Verify Commit-Signing Pre-conditions
+    description: "Pre-condition gate for commit signing — runs BEFORE branch creation, worktree materialization, or any commit. The downstream activities (implement, submit-for-review) require signed commits when the target repo's contributor guidelines mandate them; detecting the misconfiguration here instead of at submit-for-review avoids hours of unsigned-commit rework. Each validate action below blocks the workflow with an explicit failure message if its target condition is false."
+    actions[6]:
+      - action: validate
+        target: user.signingkey != null
+        message: "git config user.signingkey is unset. Run 'git config --global user.signingkey <key-id>' (or set the equivalent in ~/.gitconfig). Without a configured signing key, every commit made by this workflow will be unsigned — the work-package's strategic-review will refuse to advance and the contributor guidelines for the target repo may reject the PR."
+      - action: validate
+        target: commit.gpgsign == true
+        message: "git config commit.gpgsign is not true. Run 'git config --global commit.gpgsign true'. Without this, signing is opt-in per-commit and the workflow's automated commits will be unsigned regardless of user.signingkey."
+      - action: validate
+        target: gpg.program != null
+        message: "git config gpg.program is unset. For GPG signing, set 'git config --global gpg.program $(which gpg)'; for SSH signing, set 'git config --global gpg.format ssh' and 'git config --global user.signingkey <ssh-public-key-path>'. Without a configured backend, git cannot invoke the signing tool."
+      - action: validate
+        target: gpg.agent.reachable == true
+        message: "GPG agent is not reachable. Run 'gpgconf --launch gpg-agent' (or restart the agent via 'gpgconf --kill gpg-agent && gpgconf --launch gpg-agent'). Without a running agent, every commit attempt blocks indefinitely waiting for passphrase input."
+      - action: validate
+        target: signing.key.unlocked == true
+        message: "The signing key is locked. Run 'echo \"test\" | gpg --clearsign --local-user $(git config user.signingkey)' to prompt for the passphrase and cache it in the agent. Without an unlocked key, the first commit attempt will fail with 'gpg: signing failed: No secret key' or hang waiting for input."
+      - action: validate
+        target: github.user.gpgkeys.matches == true
+        message: "The configured signing key fingerprint does not match any GPG key on the GitHub account. Run 'gpg --list-secret-keys --keyid-format=long $(git config user.signingkey)' to get the key id, then upload its public key at https://github.com/settings/keys. Without a matching key, GitHub will display every commit as Unverified even though git considers them signed."
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type inside reference_path/component_name (the component's source as it appears in the reference): Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'. Performed against the reference because the worktree does not exist yet — both paths see the same files."
