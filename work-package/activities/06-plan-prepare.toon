@@ -1,5 +1,5 @@
 id: plan-prepare
-version: 1.4.2
+version: 1.5.0
 name: Plan & Prepare
 description: "Design the approach, create the work package plan, and prepare for implementation."
 problem: User needs to plan the implementation approach
@@ -18,7 +18,29 @@ skills:
     - reconcile-assumptions
     - review-assumptions
     - update-pr
-steps[10]:
+steps[11]:
+  - id: env-prerequisites
+    name: Verify Environment Prerequisites
+    description: "Pre-condition gate for plan-prepare — runs BEFORE design-framework application so a missing prerequisite is caught at the start of planning rather than partway through artifact generation. Each validate action blocks the workflow with an actionable failure message naming the exact command to fix the misconfiguration."
+    actions[6]:
+      - action: validate
+        target: workflows.worktree.present == true
+        message: "The workflows worktree is missing. From the parent repo root run 'git worktree add ./workflows workflows' (see SETUP.md). The planner needs the workflows submodule materialised so it can read TOON definitions during plan and test-plan composition."
+      - action: validate
+        target: target_path != null
+        message: "target_path is unset. start-work-package's compute-canonical-target-path step writes this — re-enter start-work-package if it was skipped. plan-prepare cannot place artifacts or stage edits without a target_path."
+      - action: validate
+        target: reference_path != null
+        message: "reference_path is unset. start-work-package's resolve-reference step writes this — re-enter start-work-package if it was skipped. plan-prepare's create-plan step reads GitNexus indexed under reference_path."
+      - action: validate
+        target: planning_folder_path.writable == true
+        message: "planning_folder_path is not writable. Confirm the path exists (start-work-package's initialize-planning-folder step creates it) and that the user has write permission. plan-prepare writes work-package-plan.md and test-plan.md into this folder."
+      - action: validate
+        target: gh.auth.status == 0
+        message: "gh CLI is not authenticated. Run 'gh auth login' (or 'gh auth refresh' if the token has expired). plan-prepare's update-pr step calls 'gh api repos/.../pulls/N -X PATCH' to update the PR description; the call fails with 401 when unauthenticated."
+      - action: validate
+        target: gpg.agent.reachable == true
+        message: "GPG agent is not reachable. Run 'gpgconf --launch gpg-agent' (or restart via 'gpgconf --kill gpg-agent && gpgconf --launch gpg-agent'). Without a running agent the planning commits (work-package plan, test plan) will hang waiting for passphrase input."
   - id: apply-design
     name: Apply design framework
     description: Use design framework skill to structure the approach
