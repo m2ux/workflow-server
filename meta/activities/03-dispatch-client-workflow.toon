@@ -1,63 +1,57 @@
 id: dispatch-client-workflow
-version: 4.0.0
+version: 5.0.0
 name: Dispatch Client Workflow
-description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator, and drive the checkpoint-yield loop until workflow_complete."
-problem: The orchestrator runs as a sub-agent (or inline persona) and surfaces checkpoints upward; meta must mediate user interaction for those checkpoints and resume the orchestrator with the resolved effects
+description: "Drive the client workflow's activity loop. One orchestrator agent operates against both the meta session_index (for orchestrator-level decisions) and the client_session_index (for client activity dispatch and checkpoint resolution). Worker agents are spawned per activity at depth-1."
+problem: spawn-agent operates depth-1 only, so the meta orchestrator must drive the client workflow's activity loop inline rather than via a spawned client orchestrator
 required: true
 operations[5]:
-  - "workflow-engine::compose-prompt"
-  - "workflow-engine::extract-checkpoint-handle"
-  - "workflow-engine::handle-workflow-complete"
-  - "harness-compat::spawn-agent"
-  - "harness-compat::continue-agent"
+  - "workflow-engine::dispatch-activity"
+  - "workflow-engine::evaluate-transition"
+  - "workflow-engine::commit-and-persist"
+  - "workflow-engine::present-checkpoint-to-user"
+  - "workflow-engine::respond-checkpoint"
 rules[1]:
-  - "Pass client_session_index to the orchestrator prompt — the orchestrator authenticates every tool call with that index. The server resolves variable state from session.json on each call; there is no token-rotation discipline for the agent to enforce."
+  - "Authenticate every tool call inside the loop with client_session_index. The meta session_index is used only at activity boundaries (commit-and-persist's engineering commit) and at end-workflow."
 entryActions[1]:
   - action: validate
     target: client_session_index
     message: "Cannot dispatch without a client session_index; initialize-session must run first"
-steps[2]:
-  - id: compose-orchestrator-prompt
-    description: "workflow-engine::compose-prompt(template_ref: meta/workflow-orchestrator-prompt, substitutions: { workflow_id: {target_workflow_id}, session_index: {client_session_index}, planning_folder_path: {planning_folder_path}, target_path: {target_path}, agent_id: workflow-orchestrator })"
-  - id: dispatch-orchestrator
-    description: "harness-compat::spawn-agent(prompt: {composed_orchestrator_prompt}, description: Workflow orchestrator for {target_workflow_id})"
+steps[1]:
+  - id: prime-initial-activity
+    description: "Set current_activity from get_workflow({ session_index: {client_session_index} }).initialActivity when session.json#currentActivity is unset; otherwise resume from session.json#currentActivity."
 loops[1]:
-  - id: checkpoint-loop
-    name: Checkpoint-Yield Loop
-    type: doWhile
-    description: "Iterate until the orchestrator reports workflow_complete."
+  - id: client-activity-loop
+    name: Client Activity Loop
+    type: while
     condition:
       type: simple
-      variable: client_workflow_completed
-      operator: "=="
-      value: false
+      variable: current_activity
+      operator: "!="
+      value: null
     maxIterations: 200
-    steps[5]:
-      - id: capture-checkpoint-yield
-        description: "workflow-engine::extract-checkpoint-handle(output: {orchestrator_output}) — the worker emits <checkpoint_yield> without a payload; the active checkpoint is read from the server-managed session.json#activeCheckpoint"
-        when: "client_workflow_completed == false"
-      - id: capture-workflow-complete
-        description: "workflow-engine::handle-workflow-complete(result: {orchestrator_output})"
-        when: "client_workflow_completed == false"
-      - id: present-and-resolve
-        description: "workflow-engine::present-checkpoint-to-user(session_index: {client_session_index})"
-        when: "client_workflow_completed == false"
-      - id: respond-checkpoint
-        description: "workflow-engine::respond-checkpoint(session_index: {client_session_index}, resolution: {user_selection})"
-        when: "client_workflow_completed == false"
-      - id: continue-orchestrator
-        description: "harness-compat::continue-agent(session_index: {client_session_index}, prompt: Checkpoint resolved. Effects to apply: {effects}. Continue execution from the paused step.)"
-        when: "client_workflow_completed == false"
+    steps[4]:
+      - id: dispatch-activity
+        description: "workflow-engine::dispatch-activity(activity_id: {current_activity}, session_index: {client_session_index}, prompt_template: meta/activity-worker-prompt, state: {variables})"
+      - id: handle-yielded-checkpoint
+        when: "worker_yielded_checkpoint == true"
+        description: "workflow-engine::present-checkpoint-to-user(session_index: {client_session_index}); workflow-engine::respond-checkpoint(session_index: {client_session_index}, resolution: {user_selection}); re-dispatch the worker via dispatch-activity to resume from the resolved checkpoint."
+      - id: commit-activity-artifacts
+        when: "worker_yielded_checkpoint == false"
+        description: "workflow-engine::commit-and-persist(activity_id: {current_activity}, planning_folder_path: {planning_folder_path}, target_path: {target_path})"
+      - id: advance-activity
+        when: "worker_yielded_checkpoint == false"
+        description: "workflow-engine::evaluate-transition(activity: {completed_activity}, state: {variables}, transition_override: {transition_override}) → assigns current_activity (null signals workflow_complete)"
 transitions[1]:
   - to: end-workflow
     condition:
       type: simple
-      variable: client_workflow_completed
+      variable: current_activity
       operator: "=="
-      value: true
+      value: null
 outcome[3]:
-  - Client workflow orchestrator dispatched and lifecycle managed inline by meta
-  - Every yielded checkpoint presented to the user; selections forwarded to the server with respond_checkpoint
-  - Client workflow reached workflow_complete (or the user aborted via end-workflow's completion-confirmed checkpoint)
-context_to_preserve[1]:
-  - client_workflow_completed - Whether the client workflow has finalised
+  - Client workflow's activity loop driven to completion by the meta orchestrator
+  - Every yielded checkpoint presented to the user; selections forwarded via respond_checkpoint
+  - Client workflow reached workflow_complete (current_activity == null after evaluate-transition)
+context_to_preserve[2]:
+  - current_activity - Server-resident in session.json#currentActivity; mirrored locally for the loop condition
+  - worker_yielded_checkpoint - Set true by dispatch-activity when the worker output a checkpoint_yield block

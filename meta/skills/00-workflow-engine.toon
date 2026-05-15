@@ -86,23 +86,6 @@ operations:
       workflow-server[1]:
         - get_resource
 
-  extract-checkpoint-handle:
-    description: "Detect that an orchestrator's most recent output yielded a checkpoint"
-    inputs[1]:
-      - output: "Orchestrator's most recent text output"
-    output[1]:
-      - yielded: "true when a <checkpoint_yield> block is present in the output, otherwise false"
-    procedure[1]:
-      - "Look for a <checkpoint_yield> block in output. The block carries no payload — its presence alone signals the orchestrator paused; the active checkpoint is read from session.json#activeCheckpoint via present_checkpoint."
-
-  handle-workflow-complete:
-    description: "Apply a workflow_complete result's final variables and mark the dispatched workflow finished"
-    inputs[1]:
-      - result: "The orchestrator's workflow_complete result with its variables_changed payload"
-    procedure[2]:
-      - "Apply variables_changed to the local state"
-      - "Set client_workflow_completed = true"
-
   verify-outcomes:
     description: "Compare a workflow's declared outcome[] against state and identify gaps"
     inputs[2]:
@@ -189,15 +172,14 @@ operations:
       session-files-ride-along: "session.json and .session-token are written by the server on every authenticated tool call and so are always present in the planning folder by the time this operation runs. Stage them in the SAME engineering commit as the activity's other artifacts — do not produce a separate 'state' commit."
 
   handle-sub-workflow:
-    description: "Dispatch a child workflow under the current session as its parent"
+    description: "Dispatch a child workflow under the current session as its parent. The calling agent drives the child workflow's activity loop directly (depth-1-only constraint on spawn-agent)."
     inputs[2]:
       - parent_session_index: "The current session's session_index — passed to the server so it can append the child under the parent's triggeredWorkflows[] with the child's SessionFile embedded inline"
       - workflow_id: "Child workflow ID"
     output[1]:
       - child_session_index: "The 6-character base32 session_index of the newly created child session"
-    procedure[2]:
+    procedure[1]:
       - "Call dispatch_child({ session_index: <parent_session_index>, workflow_id: <child workflow id>, agent_id: 'workflow-orchestrator' }); capture child_session_index from the response. The child SessionFile is embedded under parent.triggeredWorkflows[N].state in the top-level session.json — no separate child folder."
-      - "harness-compat::spawn-agent for the child orchestrator with child_session_index in its prompt"
     tools:
       workflow-server[1]:
         - dispatch_child
@@ -245,17 +227,6 @@ operations:
       checkpoint_still_active:
         cause: "resume_checkpoint returned 'no active checkpoint' or 'checkpoint is still active'"
         recovery: "The orchestrator has not yet called respond_checkpoint to resolve the checkpoint. Wait for the orchestrator to resume you; do not call resume_checkpoint until the resume prompt arrives."
-
-  bubble-checkpoint-up:
-    description: "Forward a worker's checkpoint pause to the parent (meta) orchestrator without resolving it"
-    output[1]:
-      - emitted: "<checkpoint_yield> block signalling the bubbled pause"
-    procedure[3]:
-      - "On receiving a <checkpoint_yield> block from a worker, treat it as a pause signal; the active checkpoint already lives on the worker's session under session.json#activeCheckpoint"
-      - "Emit a <checkpoint_yield> block of your own to bubble the pause to the parent (no payload — the parent reads the worker's active checkpoint via present_checkpoint using the worker's session_index, which it already holds)"
-      - "STOP — wait to be resumed by the parent with the resolved effects"
-    rules:
-      no-direct-interaction: "Sub-agent orchestrators NEVER prompt the user directly. Surface checkpoints by emitting a <checkpoint_yield> block that bubbles the worker's pause up unchanged."
 
   present-checkpoint-to-user:
     description: "Load the active checkpoint's details and present them to the user"

@@ -17,11 +17,13 @@ operations:
     rules:
       foreground-always: "CRITICAL: spawn-agent MUST be dispatched as foreground (blocking). Never set run_in_background. Background dispatch silently breaks checkpoint delivery — the orchestrator never sees the worker's <checkpoint_yield>."
       index-in-prompt: "When the spawned agent inherits a workflow session, ALWAYS include the session_index in the prompt. Server-managed session.json holds the state; the index is the lookup key."
+      depth-1-only: "spawn-agent operates depth-1 only. The Task primitive is a harness-level session-control gate; spawned sub-agents do not inherit it. Workflows MUST NOT design around nested orchestrator agents — one orchestrator agent drives all orchestrator-level work across all session levels."
     prose: |
       Per-harness implementation:
       | Harness | Invocation |
       |---------|-----------|
-      | cursor  | Task(subagent_type=generalPurpose, description=<description>, prompt=<prompt>) — omit run_in_background or set it to false |
+      | claude-code | Task(subagent_type=<type>, description=<description>, prompt=<prompt>) — same primitive across CLI, IDE extensions (Cursor, VSCode), and the web app. Omit run_in_background or set it to false. Spawned sub-agents do not inherit Task (depth-1-only rule). |
+      | cursor  | Same as claude-code (Cursor wraps the Claude Code Task primitive). |
       | cline   | use_subagents({ prompt_1: <prompt> }) |
       | generic | Any harness mechanism that starts a new agent with the given prompt and blocks until the agent yields or completes |
 
@@ -32,7 +34,7 @@ operations:
       - session_index: "Workflow-server session_index — included in the prompt so the resumed agent can authenticate every tool call against the server-managed session.json"
       - prompt: "Updated instructions or continuation context"
     output[1]:
-      - result: "The resumed agent's next yield or final output"
+      - result: "The resumed agent's next yieltd or final output"
     procedure[1]:
       - "Use the harness's resume primitive (see prose) with the new prompt; block until the agent yields or completes"
     rules:
@@ -43,7 +45,8 @@ operations:
       Per-harness implementation:
       | Harness | Invocation |
       |---------|-----------|
-      | cursor  | Task(resume=<agent_id>) — preserves the agent's context window. Include session_index in the prompt. Never set run_in_background. |
+      | claude-code | Task(resume=<agent_id>) — preserves the agent's context window. Include session_index in the prompt. Never set run_in_background. Same primitive across CLI, IDE extensions, and the web app. |
+      | cursor  | Same as claude-code. |
       | generic | spawn-agent with the session_index prepended to the prompt. Full workflow state is read from session.json by the server on every authenticated call; the agent rebuilds context from artifacts and tool calls. |
 
   spawn-concurrent:
@@ -60,7 +63,8 @@ operations:
       Per-harness implementation:
       | Harness | Invocation |
       |---------|-----------|
-      | cursor  | Multiple Task calls in a single response turn — the harness executes them in parallel |
+      | claude-code | Multiple Task calls in a single response turn — the harness executes them in parallel. Same across CLI, IDE extensions, and the web app. |
+      | cursor  | Same as claude-code. |
       | generic | Parallel invocations when the harness supports concurrent dispatch; sequential spawn-agent calls otherwise |
 
 rules:
