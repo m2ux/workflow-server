@@ -1,7 +1,7 @@
 # Address Docs-Refresh Retrospective Issues - May 2026
 
 **Created:** 2026-05-15
-**Status:** Ready
+**Status:** In Progress
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -39,7 +39,7 @@ The fix works as a layered safety net. First, the publish step now reads its own
 | 02 | [Codebase comprehension](02-codebase-comprehension.md) | Touch-site summary; pointer to persistent artifact under `.engineering/artifacts/comprehension/work-package-workflow-content.md` | 20-45m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
-| — | Implementation | Code changes per plan | 1-3h | ⬚ Pending |
+| — | Implementation | Code changes per plan | 1-3h | ✅ Complete |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
@@ -64,4 +64,4 @@ The fix works as a layered safety net. First, the publish step now reads its own
 
 ---
 
-**Status:** Plan & test plan complete; approach confirmed at `approach-confirmed` checkpoint. Assumptions review complete (2026-05-15) — `A-DP-05-residual` and `A-DP-09` Validated; no new assumptions surfaced; `has_open_assumptions = false`, `stakeholder_review_complete = true`. Ready for `implement`. Touch sites 1–8 confirmed (touch site 9 removed; bootstrap obs §4.2 retracted). Persistent comprehension artifact at `.engineering/artifacts/comprehension/work-package-workflow-content.md`. Worktree at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) open against the parent branch.
+**Status:** Implementation complete (2026-05-15). All seven touch sites landed across 11 commits on `chore/docs-retrospective-followups` (parent worktree) and `chore/docs-retrospective-followups-meta` (workflows submodule), with the submodule pointer bumped in the parent. Every TOON edit passes `validate-workflow-toon` for both `work-package` and `meta`. Plan & test plan complete; approach confirmed at `approach-confirmed` checkpoint. Assumptions review complete (2026-05-15) — `A-DP-05-residual` and `A-DP-09` Validated; no new assumptions surfaced; `has_open_assumptions = false`, `stakeholder_review_complete = true`. Touch sites 1–8 implemented (touch site 9 removed; bootstrap obs §4.2 retracted). Persistent comprehension artifact at `.engineering/artifacts/comprehension/work-package-workflow-content.md`. Worktree at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) open against the parent branch. Next: `post-impl-review` per the workflow's transition table.
