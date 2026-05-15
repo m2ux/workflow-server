@@ -4,8 +4,90 @@ import {
   writeSessionFile,
   SessionStoreError,
 } from './store.js';
+import type { SessionJsonPath } from './derivation.js';
 import { safeValidateSessionFile, type SessionFile } from '../../schema/session.schema.js';
 import type { SessionView } from '../validation.js';
+
+/**
+ * Navigate into a SessionFile via a JSON path. The path is an array of
+ * object keys (string) and array indices (number) — typically
+ * `["triggeredWorkflows", N, "state", ...]` to reach an embedded child.
+ *
+ * Returns the addressed sub-state, or throws `SessionStoreError(NOT_FOUND)`
+ * if the path cannot be resolved (missing key, out-of-bounds index, or
+ * non-object intermediate node).
+ */
+export function navigatePath(root: SessionFile, jsonPath: SessionJsonPath): SessionFile {
+  let cursor: unknown = root;
+  for (let i = 0; i < jsonPath.length; i++) {
+    const seg = jsonPath[i] as string | number;
+    if (cursor === null || cursor === undefined || typeof cursor !== 'object') {
+      throw new SessionStoreError(
+        `navigatePath: cannot index into non-object at jsonPath[${i - 1}] (segment '${String(seg)}')`,
+        'NOT_FOUND',
+        { jsonPath: [...jsonPath] },
+      );
+    }
+    if (typeof seg === 'number') {
+      if (!Array.isArray(cursor)) {
+        throw new SessionStoreError(
+          `navigatePath: numeric segment ${seg} at jsonPath[${i}] but cursor is not an array`,
+          'NOT_FOUND',
+          { jsonPath: [...jsonPath] },
+        );
+      }
+      cursor = cursor[seg];
+    } else {
+      cursor = (cursor as Record<string, unknown>)[seg];
+    }
+  }
+  if (cursor === undefined || cursor === null) {
+    throw new SessionStoreError(
+      `navigatePath: jsonPath does not resolve to a value`,
+      'NOT_FOUND',
+      { jsonPath: [...jsonPath] },
+    );
+  }
+  return cursor as SessionFile;
+}
+
+/**
+ * Return a structurally-cloned `root` with the sub-state at `jsonPath`
+ * replaced by `newSubState`. The original `root` is not mutated.
+ *
+ * When `jsonPath` is empty, returns `newSubState` directly (it IS the new
+ * root). For non-empty paths, walks down cloning each intermediate
+ * container so the result shares no references with `root` along the
+ * mutation path — safe for downstream HMAC-seal computation.
+ */
+export function replacePath(root: SessionFile, jsonPath: SessionJsonPath, newSubState: SessionFile): SessionFile {
+  if (jsonPath.length === 0) return newSubState;
+  // Deep clone once; mutate the clone along jsonPath.
+  const cloned = JSON.parse(JSON.stringify(root)) as SessionFile;
+  let cursor: unknown = cloned;
+  for (let i = 0; i < jsonPath.length - 1; i++) {
+    const seg = jsonPath[i] as string | number;
+    if (typeof seg === 'number') {
+      cursor = (cursor as unknown[])[seg];
+    } else {
+      cursor = (cursor as Record<string, unknown>)[seg];
+    }
+    if (cursor === undefined || cursor === null) {
+      throw new SessionStoreError(
+        `replacePath: jsonPath[${i}] does not exist on root`,
+        'NOT_FOUND',
+        { jsonPath: [...jsonPath] },
+      );
+    }
+  }
+  const last = jsonPath[jsonPath.length - 1] as string | number;
+  if (typeof last === 'number') {
+    (cursor as unknown[])[last] = newSubState;
+  } else {
+    (cursor as Record<string, unknown>)[last as string] = newSubState;
+  }
+  return cloned;
+}
 
 /**
  * Project a `SessionFile` onto the abstract `SessionView` consumed by the
