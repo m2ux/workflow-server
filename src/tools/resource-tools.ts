@@ -207,7 +207,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // workspace folder under the planning root.
         let parentSession: SessionFile | undefined;
         let parentFolderToDiscard: string | undefined;
-        let parentForBacklink: { folderAbsPath: string; state: SessionFile } | undefined;
+        let parentForBacklink: Awaited<ReturnType<typeof loadSessionForTool>> | undefined;
         if (parentFolderResolved) {
           try {
             // Migrate the parent folder if it carries legacy artefacts so the
@@ -242,7 +242,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             } else {
               // Persistent parent — we'll backlink this child onto its
               // triggeredWorkflows[] once the child's session.json is sealed.
-              parentForBacklink = { folderAbsPath: parentLoaded.folderAbsPath, state: parentLoaded.state };
+              parentForBacklink = parentLoaded;
             }
           } catch (err) {
             // Parent slug is invalid — proceed without parent context.
@@ -297,7 +297,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
                 data: { workflowId: effectiveWorkflowId, sessionIndex },
               });
             });
-            await saveSessionForTool(parentForBacklink.folderAbsPath, parentNext);
+            await saveSessionForTool(parentForBacklink, parentNext);
           } catch (err) {
             console.warn(`[start_session] failed to backlink child '${slug}' onto parent '${parent_planning_slug}' triggeredWorkflows: ${err instanceof Error ? err.message : String(err)}`);
           }
@@ -391,7 +391,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       const next = advanceSession(state);
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       const header = [
         `scope: workflow`,
@@ -483,7 +483,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state, (draft) => {
         draft.currentSkill = skillId as string;
       });
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       return {
         content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${rawResult.value}` }],
@@ -517,7 +517,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       const next = advanceSession(state);
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       const { content: resourceContent, ...meta } = result.value;
       const lines = [

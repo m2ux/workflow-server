@@ -1,5 +1,5 @@
 import {
-  resolveSessionIndex,
+  resolveSessionLocation,
   verifySeal,
   writeSessionFile,
   SessionStoreError,
@@ -102,44 +102,57 @@ export function sessionView(state: SessionFile): SessionView {
 }
 
 /**
- * Result of `loadSessionForTool` — the verified `SessionFile`, the absolute
- * planning folder it lives in, and the original raw bytes (useful when the
- * caller wants to no-op-rewrite to refresh `ts` without re-canonicalising).
+ * Result of `loadSessionForTool`.
+ *
+ * `state` is the SessionFile the tool should operate on — for root sessions
+ * it's the top-level file, for embedded children it's the addressed
+ * sub-state. `topState` is always the root of the on-disk file; combined
+ * with `jsonPath` it allows the save path to re-insert mutations into the
+ * correct location before re-canonicalising and re-sealing.
  */
 export interface LoadedSession {
+  /** The addressed SessionFile (may be the root or an embedded sub-state). */
   state: SessionFile;
+  /** Absolute path to the top-level planning folder. */
   folderAbsPath: string;
+  /** Raw bytes of the on-disk top file (pre-mutation). */
   bytes: string;
+  /** Path inside `topState` to reach `state`. Empty for the root session. */
+  jsonPath: SessionJsonPath;
+  /** The root SessionFile of the on-disk file. */
+  topState: SessionFile;
 }
 
 /**
- * Resolve a `session_index` to its planning folder, verify the seal, and
- * parse `session.json` as a `SessionFile`. Used by every authenticated tool
- * to load state before reading or mutating it.
+ * Resolve a `session_index` to its location (top folder + jsonPath inside
+ * `session.json`), verify the seal, and parse the file. The returned
+ * `state` is the SessionFile addressed by the index — either the root
+ * SessionFile of the file or an embedded sub-state at `jsonPath`.
  *
  * Errors:
- *   - `INVALID_INDEX` / `NOT_FOUND` / `COLLISION` from `resolveSessionIndex`.
- *   - `SEAL_MISMATCH` from `verifySeal` (state was hand-edited or torn).
- *   - Schema-validation failure (the file parses as JSON but does not match
- *     the `SessionFile` shape) — wrapped in a thrown `Error` with a clear
- *     message pointing at the planning folder.
+ *   - `INVALID_INDEX` / `NOT_FOUND` / `COLLISION` from `resolveSessionLocation`.
+ *   - `SEAL_MISMATCH` from `verifySeal`.
+ *   - Schema-validation failure on the top file.
+ *   - `NOT_FOUND` if `jsonPath` cannot be navigated on the parsed top state.
  */
 export async function loadSessionForTool(
   workspaceDir: string,
   sessionIndex: string,
 ): Promise<LoadedSession> {
-  const folderAbsPath = await resolveSessionIndex(workspaceDir, sessionIndex);
-  const { state: rawState, bytes } = await verifySeal(folderAbsPath);
-  const parsed = safeValidateSessionFile(rawState);
+  const { folder, jsonPath } = await resolveSessionLocation(workspaceDir, sessionIndex);
+  const { state: rawTopState, bytes } = await verifySeal(folder);
+  const parsed = safeValidateSessionFile(rawTopState);
   if (!parsed.success) {
     const issues = parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
     throw new SessionStoreError(
-      `session.json in ${folderAbsPath} does not match the SessionFile schema: ${issues}`,
+      `session.json in ${folder} does not match the SessionFile schema: ${issues}`,
       'SEAL_MISMATCH',
-      { folder: folderAbsPath },
+      { folder },
     );
   }
-  return { state: parsed.data, folderAbsPath, bytes };
+  const topState = parsed.data;
+  const state = jsonPath.length === 0 ? topState : navigatePath(topState, jsonPath);
+  return { state, folderAbsPath: folder, bytes, jsonPath, topState };
 }
 
 /**
@@ -167,15 +180,23 @@ export function advanceSession(
 }
 
 /**
- * Persist an updated `SessionFile` (and its seal) atomically. Returns the
- * canonical bytes that were written and the seal hex so the caller may
- * include them in trace events without re-reading the file.
+ * Persist a tool's mutated SessionFile back into its on-disk top file.
+ *
+ * When the loaded session is the root (empty jsonPath), `newState` becomes
+ * the new top file. When it's an embedded sub-state, `replacePath` produces
+ * a new top SessionFile with the mutation slotted in at `loaded.jsonPath`,
+ * and that whole top file is re-canonicalised, sealed, and atomic-written.
+ *
+ * Returns the canonical bytes written and the seal hex.
  */
 export async function saveSessionForTool(
-  folderAbsPath: string,
-  state: SessionFile,
+  loaded: LoadedSession,
+  newState: SessionFile,
 ): Promise<{ bytes: string; seal: string }> {
-  return writeSessionFile(folderAbsPath, state);
+  const newTopState = loaded.jsonPath.length === 0
+    ? newState
+    : replacePath(loaded.topState, loaded.jsonPath, newState);
+  return writeSessionFile(loaded.folderAbsPath, newTopState);
 }
 
 /**
@@ -190,7 +211,7 @@ export async function withSession<R>(
 ): Promise<{ result: R; loaded: LoadedSession; written: { bytes: string; seal: string } }> {
   const loaded = await loadSessionForTool(workspaceDir, sessionIndex);
   const { next, result } = await fn(loaded);
-  const written = await saveSessionForTool(loaded.folderAbsPath, next);
+  const written = await saveSessionForTool(loaded, next);
   return { result, loaded, written };
 }
 

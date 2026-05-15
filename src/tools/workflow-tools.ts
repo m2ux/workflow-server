@@ -97,7 +97,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // Advance state (bump seq+ts) and persist before returning.
       const next = advanceSession(state);
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       const primarySkillId = wf.skills?.primary;
       let primarySkillContent = '';
@@ -228,7 +228,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           draft.status = 'completed';
         }
       });
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       // If this child just reached its terminal activity, notify the parent
       // (if any) so the parent's `triggeredWorkflows[i].status` flips from
@@ -251,7 +251,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               });
             }
           });
-          await saveSessionForTool(parentLoaded.folderAbsPath, parentNext);
+          await saveSessionForTool(parentLoaded, parentNext);
         } catch {
           // Parent may have been a transient and discarded long ago, or its
           // folder may have moved. Don't fail the child's completion.
@@ -311,7 +311,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
 
       const next = advanceSession(state);
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       const view = sessionView(state);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
@@ -372,7 +372,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpoint: checkpoint_id,
         });
       });
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({
@@ -399,7 +399,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const validation = buildValidation();
       const next = advanceSession(state);
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       // Note: The orchestrator passes variable effects directly in its prompt when resuming the worker.
       // This tool exists to verify the lock is cleared and advance the session sequence.
@@ -589,7 +589,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           }
         }
       });
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -621,7 +621,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
       const next = advanceSession(state);
-      await saveSessionForTool(loaded.folderAbsPath, next);
+      await saveSessionForTool(loaded, next);
 
       if (trace_tokens && trace_tokens.length > 0) {
         const allEvents: TraceEvent[] = [];

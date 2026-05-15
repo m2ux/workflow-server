@@ -12,7 +12,7 @@ import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { getOrCreateServerKey } from './crypto.js';
-import { computeSessionIndexSync } from './derivation.js';
+import { computeSessionIndexSync, computeEmbeddedSessionIndexSync } from './derivation.js';
 
 /**
  * Tiny FS adapter object used internally by `writeAtomic`. Existing only so
@@ -381,22 +381,169 @@ export function planningRoot(workspaceDir: string): string {
 }
 
 /**
- * Resolve a 6-char `session_index` to the planning folder it identifies by
- * enumerating every immediate subdirectory of
- * `<workspaceDir>/.engineering/artifacts/planning/` and hashing it through
- * `computeSessionIndex`. The function uses `noUncheckedIndexedAccess`-safe
- * iteration and resolves the server secret once across the enumeration.
+ * Result of `resolveSessionLocation` — the absolute path to the top-level
+ * planning folder and the JSON path to navigate inside `session.json` to
+ * reach the addressed SessionFile. `jsonPath` is empty when the index
+ * identifies the top-level (root) session of the folder.
+ */
+export interface SessionLocation {
+  folder: string;
+  jsonPath: import('./derivation.js').SessionJsonPath;
+}
+
+/**
+ * Resolve a `session_index` to its location in the workspace: a top-level
+ * planning folder + the jsonPath of the embedded SessionFile (empty path
+ * for the root session). Walks top-level folders, and for each folder
+ * walks the embedded `triggeredWorkflows[i].state` tree recursively.
+ *
+ * Transient (in-memory) sessions resolve via the registry first.
+ */
+export async function resolveSessionLocation(
+  workspaceDir: string,
+  sessionIndex: string,
+): Promise<SessionLocation> {
+  if (!isAbsolute(workspaceDir)) {
+    throw new SessionStoreError(
+      `resolveSessionLocation: workspaceDir must be absolute, got ${workspaceDir}`,
+      'WORKSPACE_INVALID',
+      { workspaceDir },
+    );
+  }
+  if (!/^[A-Z2-7]{6}$/.test(sessionIndex)) {
+    throw new SessionStoreError(
+      `resolveSessionLocation: session_index must be 6 uppercase RFC 4648 base32 characters (A-Z, 2-7), got '${sessionIndex}'`,
+      'INVALID_INDEX',
+      { sessionIndex },
+    );
+  }
+
+  // Transient (meta-bootstrap) sessions live under os.tmpdir() and never
+  // appear in the workspace enumeration. They are always at the root of
+  // their tmp folder (no embedded children for transients).
+  const transient = transientFolderByIndex.get(sessionIndex);
+  if (transient) return { folder: transient, jsonPath: [] };
+
+  const root = planningRoot(workspaceDir);
+  let topEntries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
+  try {
+    topEntries = await readdir(root, { withFileTypes: true });
+  } catch (err: unknown) {
+    if (err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'ENOENT') {
+      throw new SessionStoreError(
+        `resolveSessionLocation: planning root ${root} does not exist`,
+        'NOT_FOUND',
+        { workspaceDir, root, sessionIndex },
+      );
+    }
+    throw err;
+  }
+
+  const key = await getOrCreateServerKey();
+  const matches: SessionLocation[] = [];
+
+  // Walk the embedded triggeredWorkflows[i].state tree of `topState`,
+  // pushing every (jsonPath, computedIndex) hit that matches sessionIndex.
+  function walkEmbedded(topState: unknown, folder: string, prefix: import('./derivation.js').SessionJsonPath): void {
+    if (!topState || typeof topState !== 'object') return;
+    const tw = (topState as { triggeredWorkflows?: unknown }).triggeredWorkflows;
+    if (!Array.isArray(tw)) return;
+    for (let i = 0; i < tw.length; i++) {
+      const entry = tw[i];
+      if (!entry || typeof entry !== 'object') continue;
+      const childState = (entry as { state?: unknown }).state;
+      if (!childState || typeof childState !== 'object') continue;
+      const childPath: import('./derivation.js').SessionJsonPath = [...prefix, 'triggeredWorkflows', i, 'state'];
+      const idx = computeEmbeddedSessionIndexSync(folder, childPath, key);
+      if (idx === sessionIndex) matches.push({ folder, jsonPath: childPath });
+      walkEmbedded(childState, folder, childPath);
+    }
+  }
+
+  // Walk every directory under the planning root. For each folder:
+  //   1. compute its root index (legacy nested-folder layout uses one
+  //      session.json per folder, so a deeply-nested folder may itself be
+  //      a session that matches).
+  //   2. if it has a session.json, walk the embedded triggeredWorkflows tree
+  //      inside it for matches against the new embedded-state layout.
+  // The double-coverage lets old (separate-folder children) and new
+  // (embedded children) layouts coexist during migration.
+  async function walkFolders(dirPath: string): Promise<void> {
+    let dirEntries: typeof topEntries;
+    try {
+      dirEntries = await readdir(dirPath, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of dirEntries) {
+      if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
+      const folderPath = resolve(dirPath, entry.name);
+      try {
+        const st = await stat(folderPath);
+        if (!st.isDirectory()) continue;
+        const rootIdx = computeEmbeddedSessionIndexSync(folderPath, [], key);
+        if (rootIdx === sessionIndex) matches.push({ folder: folderPath, jsonPath: [] });
+        try {
+          const { state } = await readSessionFile(folderPath);
+          walkEmbedded(state, folderPath, []);
+        } catch {
+          // No session.json here — keep recursing in case nested folders
+          // have one (transitional separate-folder layout).
+        }
+      } catch {
+        continue;
+      }
+      await walkFolders(folderPath);
+    }
+  }
+
+  for (const entry of topEntries) {
+    if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
+    const folderPath = resolve(root, entry.name);
+    try {
+      const st = await stat(folderPath);
+      if (!st.isDirectory()) continue;
+      const rootIdx = computeEmbeddedSessionIndexSync(folderPath, [], key);
+      if (rootIdx === sessionIndex) matches.push({ folder: folderPath, jsonPath: [] });
+      try {
+        const { state } = await readSessionFile(folderPath);
+        walkEmbedded(state, folderPath, []);
+      } catch {
+        /* no session.json at this level */
+      }
+    } catch {
+      continue;
+    }
+    await walkFolders(folderPath);
+  }
+
+  if (matches.length === 0) {
+    throw new SessionStoreError(
+      `resolveSessionLocation: no session under ${root} hashes to session_index '${sessionIndex}'`,
+      'NOT_FOUND',
+      { workspaceDir, root, sessionIndex },
+    );
+  }
+  if (matches.length > 1) {
+    throw new SessionStoreError(
+      `resolveSessionLocation: session_index '${sessionIndex}' collides across ${matches.length} sessions`,
+      'COLLISION',
+      { workspaceDir, sessionIndex, candidates: matches },
+    );
+  }
+  return matches[0] as SessionLocation;
+}
+
+/**
+ * Resolve a `session_index` to the absolute path of its top-level planning
+ * folder. Convenience wrapper that drops the `jsonPath` component — useful
+ * when the caller only needs the folder (e.g. for `verifySeal` which always
+ * operates at the top file level).
  *
  * Behaviour:
  *   - Exactly one match → returns its absolute path.
- *   - Two or more matches → throws `SessionStoreError(COLLISION)` with both
- *     candidate paths in `details.candidates`.
- *   - Zero matches → throws `SessionStoreError(NOT_FOUND)` naming the index
- *     and the workspace.
- *
- * The function does NOT verify the seal on a matched folder — that is the
- * caller's responsibility (`verifySeal` is called downstream by the
- * authenticated-tool wrapper).
+ *   - Two or more matches → throws `SessionStoreError(COLLISION)`.
+ *   - Zero matches → throws `SessionStoreError(NOT_FOUND)`.
  */
 export async function resolveSessionIndex(
   workspaceDir: string,
