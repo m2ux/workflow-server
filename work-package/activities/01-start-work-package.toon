@@ -64,26 +64,11 @@ steps[26]:
     description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries. The analyze CLI emits stats; capture them in trace logs but do not gate the workflow on them."
   - id: verify-signing-precondition
     name: Verify Commit-Signing Pre-conditions
-    description: "Verify commit-signing configuration before any commits."
-    actions[6]:
+    description: "Verify commit signing is configured. The workflow does not modify git configuration."
+    actions[1]:
       - action: validate
-        target: user.signingkey != null
-        message: "git config user.signingkey is unset. Run 'git config --global user.signingkey <key-id>'."
-      - action: validate
-        target: commit.gpgsign == true
-        message: "git config commit.gpgsign is not true. Run 'git config --global commit.gpgsign true'."
-      - action: validate
-        target: gpg.program != null
-        message: "git config gpg.program is unset. For GPG: 'git config --global gpg.program $(which gpg)'. For SSH: 'git config --global gpg.format ssh' and set user.signingkey to the SSH public-key path."
-      - action: validate
-        target: gpg.agent.reachable == true
-        message: "GPG agent is not reachable. Run 'gpgconf --launch gpg-agent'."
-      - action: validate
-        target: signing.key.unlocked == true
-        message: "The signing key is locked. Run 'echo test | gpg --clearsign --local-user $(git config user.signingkey)' to cache the passphrase in the agent."
-      - action: validate
-        target: github.user.gpgkeys.matches == true
-        message: "The configured signing key is not registered on the GitHub account. Run 'gpg --list-secret-keys --keyid-format=long $(git config user.signingkey)' and upload the public key at https://github.com/settings/keys."
+        target: signing.configured == true
+        message: "Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running. The workflow does not modify your git configuration."
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type inside reference_path/component_name (the component's source as it appears in the reference): Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'. Performed against the reference because the worktree does not exist yet — both paths see the same files."
