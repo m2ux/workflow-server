@@ -30,8 +30,10 @@ import {
   createTransientFolder,
   registerTransient,
   lookupTransientBySlug,
+  lookupTransientSlugByFolder,
   isTransientFolder,
   discardTransient,
+  computeEmbeddedSessionIndex,
 } from '../utils/session/index.js';
 import {
   createInitialSessionFile,
@@ -352,6 +354,96 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         _meta: { session_index: sessionIndex, validation: buildValidation(depthWarning) },
       };
     })
+  );
+
+  server.registerTool(
+    'dispatch_child',
+    {
+      description:
+        'Dispatch a child workflow from the current session. Pass `session_index` of the parent (any depth) and `workflow_id` of the child workflow. ' +
+        'The server appends a child entry under the parent\'s `triggeredWorkflows[]` with the child\'s full SessionFile embedded inline (the entire work-package tree lives in the top-level session.json). ' +
+        'Returns the child\'s `session_index`, which the agent threads to subsequent authenticated tool calls operating on the child. ' +
+        'Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the child becomes a new top-level workspace folder rather than nesting inside the parent; the parent\'s tmp folder is discarded post-capture.',
+      inputSchema: z.object({
+        ...sessionIndexParam,
+        workflow_id: z.string().describe('Workflow id for the child (e.g. "work-package"). Must resolve to a workflow definition in the workflows directory.'),
+        agent_id: z.string().default('worker').describe('agent_id stored on the child SessionFile. Defaults to "worker".'),
+      }).strict(),
+    },
+    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const parentFolder = loaded.folderAbsPath;
+      const parentIsTransient = isTransientFolder(parentFolder);
+
+      // Resolve workflow version up-front (carried onto the child SessionFile).
+      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
+      if (!wfResult.success) throw wfResult.error;
+      const effectiveWorkflowVersion = wfResult.value.version ?? '';
+
+      const triggeredAt = new Date().toISOString();
+
+      if (parentIsTransient) {
+        // Transient parent (meta-bootstrap) — child becomes a new top-level
+        // workspace folder, with parentSession populated from the parent's
+        // snapshot. Slug is taken from the transient registry entry the
+        // parent was registered under, falling back to a workflowId-derived
+        // form if the registry has no entry (defensive).
+        const parentSlug = lookupTransientSlugByFolder(parentFolder)
+          ?? `${loaded.state.workflowId}-${new Date().toISOString().slice(0, 10)}`;
+        const childFolder = await ensurePlanningFolder(config.workspaceDir, parentSlug);
+        const childSessionIndex = await computeSessionIndex(childFolder);
+        const childInitial = createInitialSessionFile({
+          sessionIndex: childSessionIndex,
+          workflowId: workflow_id,
+          workflowVersion: effectiveWorkflowVersion,
+          agentId: agent_id,
+          parentSession: loaded.state,
+        });
+        await writeSessionFile(childFolder, childInitial);
+        // Discard the transient parent now that the child has captured its
+        // state into parentSession.
+        await discardTransient(parentFolder);
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: parentSlug }, null, 2) }],
+          _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
+        };
+      }
+
+      // Persistent parent — embed the child inline under
+      // triggeredWorkflows[N].state. The child's sessionIndex is derived
+      // from the top folder + jsonPath so it stays stable as long as the
+      // array index doesn't shift (triggeredWorkflows is append-only).
+      const newArrayIndex = loaded.state.triggeredWorkflows.length;
+      const childJsonPath = [...loaded.jsonPath, 'triggeredWorkflows', newArrayIndex, 'state'];
+      const childSessionIndex = await computeEmbeddedSessionIndex(parentFolder, childJsonPath);
+      const childInitial = createInitialSessionFile({
+        sessionIndex: childSessionIndex,
+        workflowId: workflow_id,
+        workflowVersion: effectiveWorkflowVersion,
+        agentId: agent_id,
+      });
+      const parentNext = advanceSession(loaded.state, (draft) => {
+        draft.triggeredWorkflows.push({
+          workflowId: workflow_id,
+          sessionIndex: childSessionIndex,
+          triggeredAt,
+          triggeredFrom: { activityId: draft.currentActivity || '' },
+          status: 'running',
+          state: childInitial,
+        });
+        draft.history.push({
+          timestamp: triggeredAt,
+          type: 'workflow_triggered',
+          activity: draft.currentActivity || undefined,
+          data: { workflowId: workflow_id, sessionIndex: childSessionIndex },
+        });
+      });
+      await saveSessionForTool(loaded, parentNext);
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version } }, null, 2) }],
+        _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
+      };
+    }), traceOpts)
   );
 
   // ============== Skill Tools ==============
