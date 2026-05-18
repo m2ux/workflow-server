@@ -1,7 +1,8 @@
 # Address Docs-Refresh Retrospective Issues - May 2026
 
 **Created:** 2026-05-15
-**Status:** In Progress
+**Status:** Complete (early — user-directed; validate/strategic-review/submit-for-review skipped)
+**Completed:** 2026-05-18
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -43,11 +44,11 @@ The fix works as a layered safety net. First, the publish step now reads its own
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ✅ Complete |
 | 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| 07 | Strategic review | Scope focus and artifact cleanliness | 15-30m | ⊘ Skipped (user-directed early completion) |
+| — | Validation | Build, test, lint verification | 15-30m | ⊘ Skipped (user-directed early completion) |
+| — | PR review | External review feedback cycle | 30-60m | ⊘ Skipped (PR #120 closed; merge direct to parent) |
+| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ✅ Complete |
+| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ✅ Complete |
 
 ---
 
@@ -60,8 +61,12 @@ The fix works as a layered safety net. First, the publish step now reads its own
 | Parent Branch | `feat/115-server-managed-session-state` |
 | Target Branch | `chore/docs-retrospective-followups` |
 | Worktree | `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` |
-| PR | [#120](https://github.com/m2ux/workflow-server/pull/120) (draft) |
+| PR | [#120](https://github.com/m2ux/workflow-server/pull/120) (closed; merge done by direct push to parent branch) |
 
 ---
 
-**Status:** post-impl-review complete (2026-05-18). Touch site 9 re-introduced (bootstrap obs §4.2 un-retracted) across four sub-edits in commits `9be34eb`. Two prose-cleanup commits (`cf18f6c`, `ffc03cd`) and one anti-pattern-doc commit (`5d9ce9c`) landed alongside. All three schema validators (`validate-workflow-toon work-package`, `validate-workflow-toon meta`, `validate-activities work-package`) PASS at HEAD `9be34eb`. Review artifacts produced: change-block index (14 rows covering the full `97be373..9be34eb` range), code review (1 Critical, 3 Major, 3 Minor, 2 Nit, 2 Informational), test-suite review (2 Major, 4 Minor, 1 Nit). Findings flag a regression on §9.8 (`list-workflows` reverted to MCP tool form), a deviation on §9.2 (review-strategy delegates rather than restating audit bullets), and a deviation on §9.6 (1 composite validate, not 6). Worktree at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`. PR #120 currently CLOSED on GitHub. Next: `validate` per the workflow's transition table.
+**Status:** Complete (2026-05-18). Work package closed out early via user direction. Workflows-submodule branch `feat/115-server-managed-session-state-meta` HEAD `9be34eb` pushed to remote; the original feature branch `chore/docs-retrospective-followups` on the submodule side has been deleted (locally and on remote). Parent monorepo retains `chore/docs-retrospective-followups` with submodule-pointer commits. PR #120 closed; merge accomplished by direct push to parent branch.
+
+Final artefact set: completion summary ([08-COMPLETE.md](08-COMPLETE.md)) and workflow retrospective ([08-workflow-retrospective.md](08-workflow-retrospective.md)). Earlier review artefacts (change-block index, code review, test-suite review) remain canonical for the post-impl-review pass.
+
+All 8 planned touch sites delivered (T7 reverted in cleanup — see follow-up Fwk-2). Touch site 9 (bootstrap obs §4.2 un-retracted) delivered across four sub-edits (9a–9d). Two new anti-patterns landed in `workflow-design/resources/02-anti-patterns.md`: AP-36 (description-hygiene) and AP-37 (validate-message hygiene), with principle #4 tightened accordingly. Validators PASS at HEAD `9be34eb`. Seven follow-up items captured in `08-COMPLETE.md §4`.
