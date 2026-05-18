@@ -26,7 +26,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 4. Maximize Schema Expressiveness
 
-**Rule:** Every piece of structured workflow information must use the most specific formal construct the schema provides. Prose is only acceptable for `description`, `problem`, and `recognition` fields. Even in those fields, prose must not restate what the surrounding structure already encodes (step position, loop bounds, checkpoint effects, variable defaults) or narrate rationale and downstream consumers — that content belongs in commit messages and planning docs (see anti-pattern 36).
+**Rule:** Every piece of structured workflow information must use the most specific formal construct the schema provides. Prose is only acceptable for `description`, `problem`, and `recognition` fields. Even in those fields, prose must not (a) restate what the surrounding structure already encodes — step position, loop bounds, checkpoint effects, variable defaults; (b) narrate rationale, downstream consumers, or prior-implementation comparisons; (c) enumerate the sequence of activities, modes, phases, or steps (the canonical declaration is `activities[]`, `modes[]`, or the on-disk directory); (d) prescribe modifications to user-owned environment state (git config, shell, GPG, GitHub account); or (e) carry behavioural rules / role-prescriptions ("The orchestrator coordinates only", "Workers MUST X"). The dedicated `rules:` section on the construct or a parent construct is the canonical home for behavioural constraints. See anti-patterns 36-40.
 
 **Enforcement:** `08-quality-review` with `expressiveness-confirmed` checkpoint. Schema construct inventory (resource 01) is the reference.
 
