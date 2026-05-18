@@ -10,7 +10,35 @@ import { join, resolve } from 'path';
 import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
 import { safeValidateSkill } from '../src/schema/skill.schema.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
+import { parseActivityFilename } from '../src/loaders/filename-utils.js';
 import { validateActivityFile } from './validate-activities.js';
+
+/**
+ * Check NN- filename prefix and report duplicate skill/activity IDs.
+ * Files without a NN-{id}.toon prefix are invisible to the runtime loader
+ * (see src/loaders/filename-utils.ts), and duplicate IDs cause non-deterministic
+ * resolution (whichever file readdir returns first wins).
+ */
+function checkPrefixAndDuplicates(files: string[]): string[] {
+  const issues: string[] = [];
+  const idToFiles = new Map<string, string[]>();
+  for (const file of files) {
+    const parsed = parseActivityFilename(file);
+    if (!parsed) {
+      issues.push(`${file}: missing NN- prefix — runtime loader will ignore this file`);
+      continue;
+    }
+    const list = idToFiles.get(parsed.id) ?? [];
+    list.push(file);
+    idToFiles.set(parsed.id, list);
+  }
+  for (const [id, fileList] of idToFiles) {
+    if (fileList.length > 1) {
+      issues.push(`duplicate id "${id}" in: ${fileList.join(', ')} — runtime resolution is non-deterministic`);
+    }
+  }
+  return issues;
+}
 
 const workflowDirPath = resolve(process.argv[2] ?? '');
 if (!workflowDirPath || !existsSync(workflowDirPath)) {
@@ -45,6 +73,11 @@ async function main() {
   if (existsSync(activitiesDir)) {
     const activityFiles = readdirSync(activitiesDir).filter((f) => f.endsWith('.toon'));
     console.log(`\n[INFO] activities/ (${activityFiles.length} files)`);
+    const layoutIssues = checkPrefixAndDuplicates(activityFiles);
+    for (const issue of layoutIssues) {
+      console.log(`   [FAIL] ${issue}`);
+      failed++;
+    }
     for (const file of activityFiles) {
       const result = validateActivityFile(join(activitiesDir, file));
       if (result.passed) {
@@ -63,6 +96,11 @@ async function main() {
   if (existsSync(skillsDir)) {
     const skillFiles = readdirSync(skillsDir).filter((f) => f.endsWith('.toon'));
     console.log(`\n[INFO] skills/ (${skillFiles.length} files)`);
+    const layoutIssues = checkPrefixAndDuplicates(skillFiles);
+    for (const issue of layoutIssues) {
+      console.log(`   [FAIL] ${issue}`);
+      failed++;
+    }
     for (const file of skillFiles) {
       const content = readFileSync(join(skillsDir, file), 'utf-8');
       try {
