@@ -36,7 +36,7 @@ present_checkpoint({ checkpoint_handle: "<opaque_handle_string>" })
 ```
 The server decodes the handle, looks up the active checkpoint recorded in `session.json`, locates the matching checkpoint in the workflow definition, and returns the message, options, and effects.
 
-The Meta Orchestrator then calls its UI tool (e.g., Cursor's `AskQuestion`) to present the options to the human user.
+The Meta Orchestrator then calls its host UI tool (e.g., Cursor's `AskQuestion`, Claude Code's interactive prompts) to present the options to the human user.
 
 Once the user selects an option, the Meta Orchestrator finalizes the resolution on the server:
 ```javascript
@@ -54,7 +54,7 @@ The server clears `activeCheckpoint` from `session.json`, records the decision a
 
 ## The Resume Protocol
 
-Once the server has resolved the checkpoint, the agents must be woken back up in reverse order using the `Task(resume=...)` mechanism.
+Once the server has resolved the checkpoint, the agents must be woken back up in reverse order using the host's sub-agent resume mechanism (e.g., Cursor's `Task(resume=…)`). For inline (single-agent) execution, the "wake" is a no-op — the same agent simply switches persona back to the worker and continues.
 
 **Waking the Orchestrator (L0 → L1):**
 The Meta Orchestrator resumes the Workflow Orchestrator, passing the effects via plain text conversation:

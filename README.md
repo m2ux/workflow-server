@@ -20,8 +20,8 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 ### How It Works
 
 1. **Discover** — The agent calls `discover` to learn available workflows and the bootstrap procedure
-2. **Start session** — `start_session` returns a session token; `get_skills` loads behavioral protocols; `get_workflow` reveals the workflow structure and which activity to start with
-3. **Navigate** — `next_activity` loads each activity's full definition (steps, checkpoints, transitions) and advances the session. `get_skill` loads the skill for each step
+2. **Start session** — `start_session` returns a session token; `get_workflow` returns the workflow structure, the workflow's primary skill (when present), a bundled `operations` block (workflow-declared ops + core orchestrator ops), and the `initialActivity` ID
+3. **Navigate** — `next_activity` advances the session to the next activity; `get_activity` returns the activity's full definition (steps, checkpoints, transitions) along with a bundled worker `operations` block (activity-declared ops + core worker ops). `get_resource` lazy-loads reference material referenced by operations
 4. **Execute** — The agent works through activities, with checkpoints for user decisions and transitions governing the flow between activities
 
 ### Architecture
@@ -32,8 +32,21 @@ User Goal → Workflow → Activities → Skills → Tools
 
 - **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
 - **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
-- **Skills** provide tool orchestration patterns — which tools to call, in what order, what state to track
+- **Skills** are containers for named operations, rules, and errors; activities and workflows compose behavior by referencing `skill-id::operation-name`
 - **Tools** are the MCP operations the agent invokes, all correlated by the session token
+
+### MCP Tools at a Glance
+
+The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
+
+| Concern | Tools |
+|---------|-------|
+| Bootstrap (no session token) | `discover`, `list_workflows`, `health_check` |
+| Session | `start_session`, `get_workflow_status` |
+| Workflow / activity navigation | `get_workflow`, `next_activity`, `get_activity` |
+| Checkpoint flow | `yield_checkpoint`, `resume_checkpoint`, `present_checkpoint`, `respond_checkpoint` |
+| Skills, operations, resources | `get_skills`, `get_skill`, `get_resource`, `resolve_operations` |
+| Trace | `get_trace` |
 
 ---
 
@@ -92,7 +105,7 @@ This creates a `.engineering/` folder with workflows and artifact directories. S
 
 ### Setup IDE Rule
 
-Add the following to your IDE 'always-applied' rule-set: [`docs/ide-setup.md`](docs/ide-setup.md).
+Add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md) to your IDE's 'always-applied' rule set. The rule tells the agent to call `discover` on every workflow request so the bootstrap procedure stays in sync with the server.
 
 ### Execute a Workflow
 

@@ -67,7 +67,7 @@ Edit `~/.cursor/mcp.json`:
 
 ## IDE Rules Setup
 
-Follow the guide at [`docs/ide-setup.md`](docs/ide-setup.md):
+Add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md) to your IDE's "always-applied" rule set. The rule tells the agent to call `discover` on every workflow request so the bootstrap procedure stays in sync with the server.
 
 ## Verify Installation
 
@@ -90,11 +90,14 @@ This separation allows workflow definitions to evolve independently from server 
 
 ## Environment Variables
 
+The server reads these environment variables at startup (see `src/config.ts`):
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (each contains .toon workflow, guides, templates) |
-| `SERVER_NAME` | `workflow-server` | Server name for MCP |
-| `SERVER_VERSION` | `1.0.0` | Server version |
+| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (each contains `workflow.toon`, `activities/`, `skills/`, `resources/`) |
+| `SCHEMAS_DIR` | `./schemas` | Path to JSON Schema definitions served via the `workflow-server://schemas` MCP resource |
+| `SERVER_NAME` | `workflow-server` | Server name reported by `health_check` |
+| `SERVER_VERSION` | `1.0.0` | Server version reported by `health_check` |
 
 ---
 

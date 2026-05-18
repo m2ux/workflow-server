@@ -2,6 +2,8 @@
 
 This folder contains JSON Schema definitions for the workflow server. These schemas define the structure for workflow definitions, conditional logic, and runtime state tracking.
 
+The server also exposes these schemas as MCP resources under `workflow-server://schemas` (combined) and `workflow-server://schemas/{id}` (per schema), built from the JSON files in this folder plus the `schema-header.md` preamble.
+
 ## Overview
 
 The workflow server uses six interconnected schemas:
@@ -1637,5 +1639,7 @@ A minimal skill demonstrating key concepts:
 
 ## Related Documentation
 
-- [API Reference](../docs/api-reference.md) - MCP server tools and endpoints
-- [Development Guide](../docs/development.md) - Building and testing the server
+- [API Reference](../docs/api-reference.md) — MCP server tools and endpoints
+- [Development Guide](../docs/development.md) — Building and testing the server
+- [Resource Resolution Model](../docs/resource_resolution_model.md) — How skills, operations, and resources are loaded
+- [IDE Setup](../docs/ide-setup.md) — Bootstrap rule and `workflow-server://schemas` MCP resource
