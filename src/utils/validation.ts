@@ -1,7 +1,21 @@
 import { z } from 'zod';
-import type { SessionPayload } from './session.js';
 import type { Workflow } from '../schema/workflow.schema.js';
 import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
+
+/**
+ * Minimal view of session state required by the validation helpers. The
+ * server-managed `SessionFile` is projected onto this shape via the
+ * `sessionView()` adapter in `session-resolver.ts`, keeping the validation
+ * surface storage-agnostic.
+ */
+export interface SessionView {
+  /** Workflow id (`workflowId` on the `SessionFile`). */
+  wf: string;
+  /** Current activity id (`currentActivity` on the `SessionFile`). */
+  act: string;
+  /** Workflow version (`workflowVersion` on the `SessionFile`). */
+  v: string;
+}
 
 export interface ValidationResult {
   status: 'valid' | 'warning' | 'error';
@@ -13,27 +27,27 @@ function emptyValidation(): ValidationResult {
   return { status: 'valid', warnings: [] };
 }
 
-export function validateWorkflowConsistency(token: SessionPayload, workflowId: string): string | null {
-  if (token.wf && token.wf !== workflowId) {
-    return `Workflow mismatch: session was on '${token.wf}' but call targets '${workflowId}'. Start a new session for a different workflow.`;
+export function validateWorkflowConsistency(view: SessionView, workflowId: string): string | null {
+  if (view.wf && view.wf !== workflowId) {
+    return `Workflow mismatch: session was on '${view.wf}' but call targets '${workflowId}'. Start a new session for a different workflow.`;
   }
   return null;
 }
 
-export function validateActivityTransition(token: SessionPayload, workflow: Workflow, activityId: string): string | null {
-  if (!token.act) {
+export function validateActivityTransition(view: SessionView, workflow: Workflow, activityId: string): string | null {
+  if (!view.act) {
     if (workflow.initialActivity && activityId !== workflow.initialActivity) {
       return `First activity must be '${workflow.initialActivity}' but '${activityId}' was requested. Start with the workflow's initialActivity.`;
     }
     return null;
   }
-  if (token.act === activityId) return null;
+  if (view.act === activityId) return null;
 
-  const valid = getValidTransitions(workflow, token.act);
+  const valid = getValidTransitions(workflow, view.act);
   if (valid.length === 0) return null;
 
   if (!valid.includes(activityId)) {
-    return `Activity '${activityId}' is not a direct transition from '${token.act}'. Valid transitions: [${valid.join(', ')}]`;
+    return `Activity '${activityId}' is not a direct transition from '${view.act}'. Valid transitions: [${valid.join(', ')}]`;
   }
   return null;
 }
@@ -72,9 +86,9 @@ export function validateSkillAssociation(workflow: Workflow, activityId: string,
   return null;
 }
 
-export function validateWorkflowVersion(token: SessionPayload, workflow: Workflow): string | null {
-  if (token.v && workflow.version && token.v !== workflow.version) {
-    return `Workflow version drift: session started with v${token.v} but current definition is v${workflow.version}. Workflow may have changed mid-session.`;
+export function validateWorkflowVersion(view: SessionView, workflow: Workflow): string | null {
+  if (view.v && workflow.version && view.v !== workflow.version) {
+    return `Workflow version drift: session started with v${view.v} but current definition is v${workflow.version}. Workflow may have changed mid-session.`;
   }
   return null;
 }
@@ -124,11 +138,11 @@ export function validateStepManifest(
   return warnings;
 }
 
-export function validateTransitionCondition(token: SessionPayload, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {
-  if (!token.act) return null;
-  if (token.act === activityId) return null;
+export function validateTransitionCondition(view: SessionView, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {
+  if (!view.act) return null;
+  if (view.act === activityId) return null;
 
-  const transitions = getTransitionList(workflow, token.act);
+  const transitions = getTransitionList(workflow, view.act);
   if (transitions.length === 0) return null;
 
   const matchingTransition = transitions.find(t => t.to === activityId);
@@ -214,12 +228,20 @@ export const ValidationResultSchema = z.object({
   errors: z.array(z.string()).optional(),
 });
 
+/**
+ * Response `_meta` envelope returned by every authenticated tool. The session
+ * is identified by the stable `session_index` parameter passed on every call;
+ * authoritative state lives in `session.json` on disk. Handlers may echo the
+ * resolved index for trace correlation.
+ */
 export const MetaResponseSchema = z.object({
-  session_token: z.string(),
+  session_index: z.string().regex(/^[A-Z2-7]{6}$/).optional(),
   validation: ValidationResultSchema,
 });
 export type MetaResponse = z.infer<typeof MetaResponseSchema>;
 
-export function buildMeta(sessionToken: string, validation: ValidationResult): MetaResponse {
-  return { session_token: sessionToken, validation };
+export function buildMeta(sessionIndex: string | undefined, validation: ValidationResult): MetaResponse {
+  return sessionIndex
+    ? { session_index: sessionIndex, validation }
+    : { validation };
 }

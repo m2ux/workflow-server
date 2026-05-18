@@ -71,12 +71,23 @@ export type ParentWorkflowRef = z.infer<typeof ParentWorkflowRefSchema>;
 
 export const TriggeredWorkflowRefSchema = z.object({
   workflowId: z.string(),
+  /**
+   * Slug of the child's planning folder. Required for server-managed state
+   * (it's how the parent or any other caller resumes the child by calling
+   * `start_session({ planning_slug })`). Optional in the legacy
+   * `workflow-state.json` migration path where the field didn't exist.
+   */
+  planningSlug: z.string().optional(),
+  /** 6-char base32 session_index of the child session. */
+  sessionIndex: z.string().regex(/^[A-Z2-7]{6}$/).optional(),
   triggeredAt: z.string().datetime(),
   triggeredFrom: z.object({
     activityId: z.string(),
     stepIndex: StepIndex.optional(),
   }),
   status: z.enum(['running', 'completed', 'aborted', 'error']),
+  /** Set when the child reaches its terminal activity. */
+  completedAt: z.string().datetime().optional(),
   returnedContext: z.record(z.unknown()).optional(),
 });
 export type TriggeredWorkflowRef = z.infer<typeof TriggeredWorkflowRefSchema>;
@@ -162,17 +173,3 @@ export function addHistoryEvent(state: WorkflowState, type: HistoryEventType, de
   return { ...state, stateVersion: state.stateVersion + 1, updatedAt: now, history: [...state.history, { timestamp: now, type, ...details }] };
 }
 
-export const StateSaveFileSchema = z.object({
-  id: z.string(),
-  savedAt: z.string().datetime(),
-  description: z.string().optional(),
-  workflowId: z.string(),
-  workflowVersion: z.string(),
-  planningFolder: z.string(),
-  sessionTokenEncrypted: z.boolean(),
-  state: z.lazy(() => NestedWorkflowStateSchema),
-});
-export type StateSaveFile = z.infer<typeof StateSaveFileSchema>;
-
-export function validateStateSave(data: unknown): StateSaveFile { return StateSaveFileSchema.parse(data); }
-export function safeValidateStateSave(data: unknown) { return StateSaveFileSchema.safeParse(data); }

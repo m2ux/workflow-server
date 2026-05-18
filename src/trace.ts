@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { getOrCreateServerKey, hmacSign, hmacVerify } from './utils/crypto.js';
+import { getOrCreateServerKey, hmacSign, hmacVerify } from './utils/session/crypto.js';
 import { logWarn } from './logging.js';
 
 /** Mechanical trace event with compressed field names (opaque to agents). */
@@ -16,6 +16,13 @@ export interface TraceEvent {
   err?: string;
   vw?: string[];
   psid?: string;
+  /**
+   * Number of ancestor sessions reachable via `parentSession` at event time.
+   * Populated by handlers that have a loaded `SessionFile` available (notably
+   * `start_session`); omitted for unauthenticated tools and for events whose
+   * caller did not compute the depth.
+   */
+  pdepth?: number;
 }
 
 /** HMAC-signed trace token payload containing full event data for a segment. */
@@ -42,7 +49,7 @@ export function createTraceEvent(
   wf: string,
   act: string,
   aid: string,
-  options?: { err?: string; vw?: string[]; psid?: string },
+  options?: { err?: string; vw?: string[]; psid?: string; pdepth?: number },
 ): TraceEvent {
   return {
     traceId,
@@ -57,6 +64,7 @@ export function createTraceEvent(
     ...(options?.err !== undefined ? { err: options.err } : {}),
     ...(options?.vw !== undefined && options.vw.length > 0 ? { vw: options.vw } : {}),
     ...(options?.psid !== undefined ? { psid: options.psid } : {}),
+    ...(options?.pdepth !== undefined ? { pdepth: options.pdepth } : {}),
   };
 }
 

@@ -1,5 +1,5 @@
-import { randomBytes, createCipheriv, createDecipheriv, createHmac, timingSafeEqual } from 'node:crypto';
-import { readFile, writeFile, mkdir, open } from 'node:fs/promises';
+import { randomBytes, createHmac, timingSafeEqual } from 'node:crypto';
+import { readFile, mkdir, open } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
@@ -7,9 +7,6 @@ import { homedir } from 'node:os';
 const KEY_DIR = join(homedir(), '.workflow-server');
 const KEY_FILE = join(KEY_DIR, 'secret');
 const KEY_LENGTH = 32; // 256 bits
-const IV_LENGTH = 12;  // GCM standard
-const AUTH_TAG_LENGTH = 16;
-const ALGORITHM = 'aes-256-gcm';
 
 let keyPromise: Promise<Buffer> | null = null;
 
@@ -51,27 +48,6 @@ async function loadOrCreateKey(): Promise<Buffer> {
     }
     throw err;
   }
-}
-
-export function encryptToken(token: string, key: Buffer): string {
-  const iv = randomBytes(IV_LENGTH);
-  const cipher = createCipheriv(ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-  const encrypted = Buffer.concat([cipher.update(token, 'utf8'), cipher.final()]);
-  const authTag = cipher.getAuthTag();
-  return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted.toString('hex')}`;
-}
-
-export function decryptToken(encrypted: string, key: Buffer): string {
-  const parts = encrypted.split(':');
-  if (parts.length !== 3) throw new Error('Invalid encrypted token format');
-
-  const iv = Buffer.from(parts[0]!, 'hex');
-  const authTag = Buffer.from(parts[1]!, 'hex');
-  const ciphertext = Buffer.from(parts[2]!, 'hex');
-
-  const decipher = createDecipheriv(ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-  decipher.setAuthTag(authTag);
-  return decipher.update(ciphertext, undefined, 'utf8') + decipher.final('utf8');
 }
 
 export function hmacSign(payload: string, key: Buffer): string {
