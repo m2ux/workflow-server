@@ -2,7 +2,7 @@
 id: meta
 version: 5.0.0
 title: Meta Workflow
-description: "Top-level lifecycle workflow. Five activities run in the meta session: identify the target workflow and any matching saved client session, create or resume the client session as a child of meta, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out. Excluded from list_workflows — bootstrap navigates here directly."
+description: "Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly."
 author: m2ux
 tags[5]:
   - meta
