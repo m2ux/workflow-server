@@ -2,7 +2,7 @@ id: cargo-operations
 version: 1.1.0
 capability: Resource-constrained operations for the cargo subcommands used during the work-package workflow
 
-description: "Operations wrapping each cargo subcommand invoked by work-package skills (check, test, build, clippy, fmt, doc). Every operation embeds the inline resource budget — nice -n 19, CARGO_BUILD_JOBS cap (default 4), RUST_TEST_THREADS cap (default 4), and SKIP_WASM_BUILD=1 for non-release commands — to prevent OOM/host-hang on memory-constrained hosts. Defaults assume ≤32 GiB RAM and ≤16 cores; raise the env caps on larger hosts."
+description: "Resource-constrained operations for cargo subcommands."
 
 operations:
   check:

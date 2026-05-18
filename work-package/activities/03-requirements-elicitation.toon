@@ -1,7 +1,7 @@
 id: requirements-elicitation
 version: 2.7.1
 name: Requirements Elicitation
-description: Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it.
+description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 problem: User needs to clarify and capture requirements before implementation
 recognition[3]:
   - elicit requirements

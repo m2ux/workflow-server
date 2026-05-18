@@ -2,7 +2,7 @@ id: reconcile-assumptions
 version: 1.0.0
 capability: Iterative assumption classification and codebase-driven resolution with convergence tracking
 
-description: "Protocol for classifying assumptions by resolvability and iteratively resolving code-analyzable assumptions through targeted codebase analysis. Runs as a while loop until no code-resolvable assumptions remain (convergence). Each iteration classifies resolvability, performs targeted analysis, updates logs, and reclassifies."
+description: "Protocol for classifying assumptions and iteratively resolving the code-analyzable ones."
 
 operations:
   classify-resolvability:

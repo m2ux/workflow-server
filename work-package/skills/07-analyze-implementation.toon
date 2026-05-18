@@ -2,7 +2,7 @@ id: analyze-implementation
 version: 1.0.0
 capability: Analyze current implementation to understand effectiveness, establish baselines, and identify improvement opportunities
 
-description: "This skill serves the implementation-analysis activity. It handles: reviewing how the feature/component is currently implemented (location, usage, dependencies, architecture); evaluating effectiveness via logs, metrics, tests, issues, comments; establishing quantitative baseline metrics (performance, quality, usage, reliability); documenting how each metric was measured for reproducibility; creating implementation-analysis.md artifact."
+description: "Analyze the current implementation and establish quantitative baseline metrics."
 
 inputs[3]:
   - id: requirements

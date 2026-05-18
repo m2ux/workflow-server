@@ -1,7 +1,7 @@
 id: start-work-package
 version: 3.6.0
 name: Start Work Package
-description: "Initialize the work package: detect whether the user-provided path is a monorepo or standalone repo, refresh the reference (submodules to remote HEAD + GitNexus index), verify or create an issue, materialize a dedicated git worktree of the component at '~/projects/work/{component_name}/{wp-slug}/', set up the feature branch + draft PR inside that worktree, record the PR reference on the issue via its platform's native PR linkage, and create the planning folder. Establishes traceability from requirements through implementation, with edits cleanly separated from the reference checkout."
+description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
 recognition[6]:
   - start work package

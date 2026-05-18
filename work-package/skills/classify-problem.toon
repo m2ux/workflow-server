@@ -2,7 +2,7 @@ id: classify-problem
 version: 1.0.0
 capability: Problem classification, complexity assessment, and workflow path determination
 
-description: "Protocol for identifying and classifying a problem as specific (cause known or unknown) or inventive (improvement or prevention), assessing complexity (simple, moderate, complex), and determining which workflow activities are needed based on the classification."
+description: "Protocol for problem classification and workflow-path determination."
 
 operations:
   define-problem:

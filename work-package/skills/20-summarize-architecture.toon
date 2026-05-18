@@ -2,7 +2,7 @@ id: summarize-architecture
 version: 1.0.0
 capability: Create high-level architecture summary with diagrams for management stakeholders
 
-description: "Produces a stakeholder-facing architecture summary document with Mermaid C4 diagrams (system context, container, component) and sequence diagrams for key flows affected by the changes. Intended for non-technical stakeholders who need to understand the impact and scope of changes."
+description: "Produce a stakeholder-facing architecture summary with Mermaid diagrams."
 
 inputs[3]:
   - id: changed-files

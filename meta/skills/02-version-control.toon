@@ -2,7 +2,7 @@ id: version-control
 version: 5.0.0
 capability: Initialize planning folders and commit artifacts in the parent repository or a submodule
 
-description: "Operations for version-control actions during workflow execution: planning-folder initialization, regular-directory commits, and the two-step submodule commit pattern. Rules guard destructive operations and conventional-commit hygiene. Activity-lifecycle invariants (when to commit) live in workflow-engine, not here."
+description: "Version-control operations for planning folders, regular-directory commits, and the two-step submodule commit pattern."
 
 operations:
   detect-repo-type:

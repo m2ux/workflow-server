@@ -1,7 +1,7 @@
 id: codebase-comprehension
 version: 1.5.0
 name: Codebase Comprehension
-description: "Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in .engineering/artifacts/comprehension/ that grow across successive tasks, forming a reusable knowledge base."
+description: "Build or augment a mental model of the codebase."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
 recognition[5]:
   - build codebase understanding

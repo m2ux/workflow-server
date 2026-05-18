@@ -1,7 +1,7 @@
 id: end-workflow
 version: 4.0.0
 name: End Workflow
-description: "Verify the client workflow's outcomes were satisfied, generate a session summary, persist final state, and confirm closure with the user. If the user opts to return to the workflow, transitions back to dispatch-client-workflow with abort_completion set."
+description: "Close out the client workflow."
 problem: Workflow sessions need an explicit close-out so the user knows the work is done and the final state is durably persisted
 required: true
 estimatedTime: 2-3m

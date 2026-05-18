@@ -2,7 +2,7 @@ id: manage-artifacts
 version: 2.0.0
 capability: Manage planning artifacts — create folders, enforce activity-based artifact prefixing, and organize documents
 
-description: "Handles the creation and organization of planning artifacts in the .engineering/artifacts/planning/ directory. Manages the YYYY-MM-DD-{initiative-name} folder convention, activity-based artifact prefixing (NN-filename.md from the activity's server-computed artifactPrefix), and ensures artifacts are properly organized."
+description: "Create and organize planning artifacts in .engineering/artifacts/planning/."
 
 inputs[2]:
   - id: planning-folder-path
