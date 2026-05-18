@@ -1,7 +1,7 @@
 id: prism-evaluate
 version: 1.1.0
 title: Evaluation Workflow
-description: "Orchestrate multi-dimensional evaluations of proposals, documents, codebases, or artifact sets by mapping user-defined evaluation dimensions to prism analytical lenses. A user provides a target and evaluation description; the workflow classifies the target, derives or accepts evaluation dimensions, maps each dimension to appropriate prism modes and lenses, triggers prism runs grouped by pipeline mode, and consolidates the results into a unified evaluation report. Evaluation-specific orchestration is isolated here, keeping the prism workflow generic."
+description: "Orchestrate multi-dimensional evaluations by mapping user-defined evaluation dimensions to prism analytical lenses. Evaluation-specific orchestration is isolated here, keeping the prism workflow generic."
 author: m2ux
 tags[6]:
   - evaluation
