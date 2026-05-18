@@ -1,7 +1,7 @@
 id: submit-for-review
 version: 1.3.0
 name: Submit for Review
-description: "Push implementation, update PR, mark ready for review, then handle the review cycle. If review feedback requires significant changes, transition back to plan-prepare."
+description: "Submit the PR for review and handle reviewer feedback."
 problem: User needs to submit the PR for review and handle reviewer feedback
 recognition[4]:
   - submit for review
@@ -55,7 +55,7 @@ steps[12]:
       value: true
   - id: verify-commit-signatures
     name: Verify and sign commits
-    description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. Run 'git log main...HEAD --format=\"%h %G? %s\"' in target_path. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them: 'git rebase --exec \"git commit --amend --no-edit -S\" main' followed by 'git push --force-with-lease'. This ensures all commits are verified before review. If the target repo's AGENTS.md requires signed commits, this step is mandatory."
+    description: "Verify all feature-branch commits are GPG-signed; rebase and force-push to re-sign any unsigned commits."
     required: true
   - id: push-commits
     name: Push all commits
@@ -67,7 +67,7 @@ steps[12]:
       value: true
   - id: update-description
     name: Update PR description
-    description: "Update PR description with final implementation details. Apply automatically — user can edit the PR directly in GitHub/Jira if adjustments are needed."
+    description: "Update the PR description with final implementation details."
     condition:
       type: simple
       variable: is_review_mode
@@ -93,15 +93,15 @@ steps[12]:
     description: "Based on review feedback, determine whether changes are needed."
   - id: analyze-review-outcome
     name: Analyze Review Outcome
-    description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly. Also produce a concise multi-line review_comments_summary so the review-outcome checkpoint message shows the comments inline with the options — this saves the user a 'what did the reviewer say?' round-trip."
+    description: "Analyze PR review comments and recommend an outcome."
     checkpoint: review-outcome
     actions[2]:
       - action: set
         target: recommended_outcome
-        description: "Set to the recommended review-outcome option based on comment analysis"
+        description: "Recommended review-outcome option."
       - action: set
         target: review_comments_summary
-        description: "Concise multi-line summary of reviewer comments (severity tag + one-line description per comment, grouped by reviewer when multiple). Empty string when no comments. Interpolated into the review-outcome checkpoint message so the user sees the comments alongside the options without an extra question."
+        description: "Multi-line summary of reviewer comments (severity tag + one-line description per comment)."
 loops[1]:
   - id: verify-pr-body-rerender
     name: PR Body Verification Re-render Loop

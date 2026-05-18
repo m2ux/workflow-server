@@ -35,7 +35,7 @@ steps[9]:
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
   - id: classify-problem
     name: Classify Problem Type
-    description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
+    description: "Classify the problem type and assess complexity."
     checkpoint: classification-confirmed
     actions[2]:
       - action: set

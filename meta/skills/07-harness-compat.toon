@@ -2,7 +2,7 @@ id: harness-compat
 version: 3.0.0
 capability: Abstract sub-agent dispatch operations — harness-independent vocabulary for spawning, continuing, and concurrently dispatching agents
 
-description: "Three canonical operations (spawn-agent, continue-agent, spawn-concurrent). All skills and activities reference these operation names rather than harness-specific tool syntax. Per-harness implementation notes live in each operation's prose."
+description: "Three operations for sub-agent dispatch: spawn-agent, continue-agent, spawn-concurrent."
 
 operations:
   spawn-agent:
