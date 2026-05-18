@@ -1,7 +1,7 @@
 id: start-work-package
 version: 3.6.0
 name: Start Work Package
-description: "Initialize the work package: detect whether the user-provided path is a monorepo or standalone repo, refresh the reference (submodules to remote HEAD + GitNexus index), verify or create an issue, materialize a dedicated git worktree of the component at '~/projects/work/{component_name}/{wp-slug}/', set up the feature branch + draft PR inside that worktree, record the PR reference on the issue via its platform's native PR linkage, and create the planning folder. Establishes traceability from requirements through implementation, with edits cleanly separated from the reference checkout."
+description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
 recognition[6]:
   - start work package
@@ -535,7 +535,7 @@ outcome[6]:
   - Issue transitioned to In Progress and assigned to current user
   - Feature branch created from main
   - Draft PR created, assigned to current GitHub user, and linked to issue
-  - PR reference recorded on the issue via the platform's native PR linkage (Jira Development panel / comment, or GitHub timeline cross-reference)
+  - PR reference recorded on the issue via the platform's native PR linkage
   - Planning folder initialized
 context_to_preserve[19]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
@@ -543,14 +543,14 @@ context_to_preserve[19]:
   - issue_type - Type of issue (feature, bug, task, enhancement, epic)
   - issue_url - URL to the issue
   - issue_assignee_account_id - Account ID of the assigned user (Jira)
-  - branch_name - Feature branch name (created together with the worktree by create-component-worktree)
-  - pr_number - Draft PR number (new or existing)
-  - pr_url - URL to the PR (used to link the PR to the ticket)
+  - branch_name - Feature branch name
+  - pr_number - Draft PR number
+  - pr_url - URL to the PR
   - project_type - Detected project type (rust-substrate or other)
   - planning_folder_path - Path to planning artifacts folder
-  - reference_path - Path to the reference checkout (monorepo root or standalone-repo primary checkout); used by codebase comprehension and GitNexus
-  - component_name - Basename of the component being worked on; used in the canonical worktree path formula
-  - target_path - Canonical worktree path '~/projects/work/{component_name}/{wp-slug}/'; all edit-side activities operate inside this path
+  - reference_path - Path to the reference checkout
+  - component_name - Basename of the component being worked on
+  - target_path - Canonical worktree path '~/projects/work/{component_name}/{wp-slug}/'
   - worktree_created - Whether create-component-worktree successfully materialized or reused the worktree at target_path
   - pr_exists - Whether a PR already exists for the branch
   - use_existing_pr - Whether to use the existing PR

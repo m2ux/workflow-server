@@ -55,7 +55,7 @@ steps[12]:
       value: true
   - id: verify-commit-signatures
     name: Verify and sign commits
-    description: "Verify all feature-branch commits are GPG-signed; rebase and force-push to re-sign any unsigned commits."
+    description: "manage-git::gpg-resign-range(target_path: {target_path})"
     required: true
   - id: push-commits
     name: Push all commits

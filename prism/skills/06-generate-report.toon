@@ -1,7 +1,7 @@
 id: generate-report
 version: 1.0.0
 capability: "Generate a clean final report from prism analysis artifacts, stripping methodology semantics and presenting only definitive findings with unified identifiers"
-description: "Worker-side skill for the generate-report activity. The worker reads all analysis artifacts from the filesystem, extracts definitive findings from the authoritative source per pipeline mode, assigns unified report identifiers, and writes a clean REPORT.md. The report contains no methodology-specific language — findings are stated as facts, not as discoveries attributed to analytical passes."
+description: "Generate the clean final REPORT.md from analysis artifacts."
 inputs[5]:
   - id: pipeline-mode
     description: "The pipeline mode that produced the artifacts: 'single', 'full-prism', 'portfolio', or 'behavioral'. Determines which artifacts are authoritative."

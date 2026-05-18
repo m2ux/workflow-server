@@ -1,7 +1,7 @@
 id: implement
 version: 2.7.0
 name: Implement Tasks
-description: "Execute the implementation plan task by task. Each task follows a cycle of implement → test → commit. Assumptions are collected during each task, reconciled through code analysis after all tasks complete, and only unresolvable assumptions are presented to the user."
+description: "Execute the implementation plan task by task."
 problem: User needs to implement the planned tasks
 recognition[3]:
   - implement tasks
@@ -176,5 +176,5 @@ context_to_preserve[5]:
   - completed_tasks - Tasks completed during implementation
   - assumptions - Assumptions made during implementation
   - commits - Commits created
-  - has_uncertain_symbols - Whether the current task's self-review flagged symbols without provenance (drives the symbol-provenance-confirmed checkpoint condition)
-  - uncertain_symbols_list - Multi-line list of flagged symbols interpolated into the symbol-provenance-confirmed checkpoint message
+  - has_uncertain_symbols - Whether the current task's self-review flagged symbols without provenance
+  - uncertain_symbols_list - Multi-line list of flagged symbols

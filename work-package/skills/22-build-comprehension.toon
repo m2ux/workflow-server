@@ -2,7 +2,7 @@ id: build-comprehension
 version: 1.0.0
 capability: Build or augment codebase comprehension through progressive analysis and persistent knowledge artifacts
 
-description: "This skill serves the codebase-comprehension activity. It handles: discovering existing comprehension artifacts and recommending them; performing hierarchical codebase analysis (architecture → modules → abstractions → design rationale); creating and augmenting persistent comprehension artifacts in .engineering/artifacts/comprehension/; facilitating user-driven deep-dive exploration into specific areas."
+description: "Build or augment codebase comprehension via progressive analysis and persistent artifacts."
 
 inputs[3]:
   - id: problem-statement

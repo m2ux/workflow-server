@@ -2,7 +2,7 @@ id: document-roadmap
 version: 1.0.0
 capability: Produce finalized roadmap documentation with timeline, navigation, and success criteria
 
-description: "Completes the roadmap documentation by updating START-HERE.md with executive summary, final status table, timeline, and success criteria. Updates README.md with navigation links to all planning documents. Uses the roadmap-template resource for consistent formatting."
+description: "Complete the roadmap documentation."
 
 inputs[3]:
   - id: planning-folder-path

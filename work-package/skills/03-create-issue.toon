@@ -2,7 +2,7 @@ id: create-issue
 version: 3.0.0
 capability: Create a GitHub or Jira issue with appropriate type, labels, and metadata
 
-description: "Atomic issue creation and verification capability. Routes to GitHub (gh CLI) or Jira (Atlassian MCP) based on the issue_platform variable. Handles platform-specific details: label/type mapping, project selection, assignee lookup. For Jira operations, cloudId MUST be resolved via getAccessibleAtlassianResources before any other Jira tool call — see the atlassian-operations universal skill for the full prerequisite protocol. Branch/PR creation and planning folder initialization are handled by manage-git and manage-artifacts skills respectively."
+description: "Atomic issue creation and verification on GitHub or Jira."
 
 inputs[3]:
   - id: issue-platform

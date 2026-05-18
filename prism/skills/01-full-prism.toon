@@ -2,7 +2,7 @@ id: full-prism
 version: 2.1.0
 capability: Execute a single pass of the Full Prism pipeline within the prism workflow's isolation model
 
-description: "Worker-side skill for executing one pass of the 3-pass Full Prism pipeline. Each pass runs in a fresh, isolated sub-agent dispatched by the orchestrate-prism skill. The worker receives: (1) the target content, (2) any prior pass artifact paths to read, and (3) a resource index indicating which lens to load. The worker loads the lens via get_skill (resources attached), reads prior artifacts from the filesystem, applies the lens, writes the result artifact, and returns the artifact path."
+description: "Execute one pass of the Full Prism pipeline."
 
 inputs[5]:
   - id: target-content

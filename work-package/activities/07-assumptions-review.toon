@@ -1,7 +1,7 @@
 id: assumptions-review
 version: 2.1.1
 name: Assumptions Review
-description: "Present each open assumption to the user one-at-a-time, interview-style, with a rationale paragraph that explains the context and helps the user decide. The user resolves each assumption directly (accept, reject with correction, or defer). After all assumptions are reviewed, optionally post a summary to the issue tracker."
+description: "Review each open assumption with the user."
 problem: Open assumptions need resolution before implementation begins
 recognition[3]:
   - review assumptions with stakeholders
@@ -163,7 +163,7 @@ outcome[3]:
 context_to_preserve[6]:
   - open_assumptions - List of open assumptions to review
   - assumption_decisions - Map of assumption ID to decision (accept/reject/defer)
-  - has_deferred_assumptions - Whether any assumptions were deferred (triggers issue tracker posting)
+  - has_deferred_assumptions - Whether any assumptions were deferred
   - stakeholder_review_complete - Whether all assumptions have been reviewed
   - needs_further_discussion - Whether further discussion is needed
   - needs_plan_revision - Whether significant plan revision is needed

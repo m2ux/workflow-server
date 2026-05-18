@@ -2,7 +2,7 @@ id: manage-git
 version: 1.6.0
 capability: Manage git operations — branching, worktree lifecycle, PR lifecycle, branch synchronization, and reference-repo submodule maintenance
 
-description: "Handles git branch management, worktree creation and removal, PR creation/updates via gh CLI, branch synchronization, and reference-repo submodule maintenance. Edit-side git operations (branch, PR, sync, push) run INSIDE target_path (the worktree). Reference-side git operations (submodule update) run INSIDE reference_path (the monorepo). Branches and PRs are created against the target's upstream."
+description: "Git branch, worktree, and PR lifecycle management."
 
 inputs[6]:
   - id: target-path
@@ -58,7 +58,8 @@ protocol:
   push-commits[2]:
     - Push all local commits to remote
     - Verify push succeeded
-  gpg-resign-range[3]:
+  gpg-resign-range[4]:
+    - "Check signatures: 'git log {default_branch}...HEAD --format=\"%h %G? %s\"' in target_path. Skip remaining steps if no commit is marked 'N'."
     - Resolve MERGE_BASE against default branch (same order as validate strategic preflight)
     - Re-sign each commit in MERGE_BASE..HEAD via rebase --exec 'git commit --amend --no-edit -S' (GPG); ensure user.signingkey and gpg agent are available
     - After rewrite, verify with git log --format='%h %G?' MERGE_BASE..HEAD; push with --force-with-lease only when appropriate for the PR branch
@@ -98,3 +99,6 @@ errors:
   reference_dirty_submodule:
     cause: update-reference-submodules failed because a submodule has a dirty worktree
     recovery: Resolve or stash changes inside the affected submodule, then retry. Do not pass --force.
+
+rules:
+  directory-scope: "Edit-side git operations (branch, PR, sync, push) run inside target_path. Reference-side git operations (submodule update) run inside reference_path. Branches and PRs are created against the target's upstream."

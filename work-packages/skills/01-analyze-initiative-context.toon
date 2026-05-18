@@ -2,7 +2,7 @@ id: analyze-initiative-context
 version: 1.0.0
 capability: Perform completion or context analysis for a multi-package initiative
 
-description: "Performs one of two analysis types based on whether the initiative is continuing previous work (completion analysis) or starting fresh (context analysis). Completion analysis surveys existing artifacts, assesses progress, and identifies remaining work. Context analysis surveys the domain, identifies cross-cutting concerns, and establishes the planning baseline."
+description: "Perform completion or context analysis for a multi-package initiative."
 
 inputs[2]:
   - id: analysis-type

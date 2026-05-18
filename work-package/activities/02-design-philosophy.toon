@@ -1,7 +1,7 @@
 id: design-philosophy
 version: 1.5.0
 name: Design Philosophy
-description: "Apply structured design framework to classify the problem, determine complexity, and decide which activities to perform."
+description: "Apply the design framework to classify the problem and decide the workflow path."
 problem: User needs to understand problem nature before deciding on workflow path
 recognition[4]:
   - classify problem

@@ -1,7 +1,7 @@
 id: reconnaissance
 version: 3.0.0
 name: Reconnaissance
-description: "Orchestrate codebase reconnaissance by dispatching a dedicated sub-agent (R) for crate analysis and function registry building, then an architectural analysis sub-agent (Arch) for security decomposition. The orchestrator reads their file outputs and performs the coordination-only steps: vulnerability domain mapping, agent group assignment, and reconnaissance lead routing. The orchestrator does NOT read source files or build registries — all analysis is delegated."
+description: "Run codebase reconnaissance and security decomposition."
 problem: "The orchestrator previously performed 9 inline reconnaissance steps (reading source files, scanning crates, building registries), consuming 10-15K tokens of context before primary agent dispatch. This reduced the orchestrator's effective context budget for its actual role: coordinating 10+ sub-agents across 6 workflow phases. Delegating analysis to sub-agents keeps the orchestrator's context clean for coordination."
 recognition[3]:
   - map architecture

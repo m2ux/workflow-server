@@ -2,7 +2,7 @@ id: classify-problem
 version: 1.0.0
 capability: Apply structured design framework to classify problems, assess complexity, and determine workflow path
 
-description: "This skill serves the design-philosophy activity. It handles: creating clear problem statements with system understanding, impact, success criteria, constraints; classifying problem type (specific problem with cause known/unknown, inventive goal for improvement/prevention); assessing complexity (simple, moderate, complex); determining workflow path based on complexity: full (elicitation+research), elicitation-only, research-only, or skip optional activities; creating the design-philosophy.md artifact."
+description: "Classify a problem by type and complexity and select the workflow path."
 
 inputs[2]:
   - id: issue-details

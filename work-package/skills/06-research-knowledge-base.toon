@@ -2,7 +2,7 @@ id: research-knowledge-base
 version: 1.0.0
 capability: Research knowledge base and external sources to discover best practices, patterns, and resources
 
-description: "This skill serves the research activity. It handles: searching the concept-rag knowledge base for relevant patterns using MCP tools; performing web research for current information and documentation; synthesizing findings and connecting them to requirements; creating kb-research.md artifact."
+description: "Research the knowledge base and external sources for relevant patterns and resources."
 
 inputs[2]:
   - id: requirements

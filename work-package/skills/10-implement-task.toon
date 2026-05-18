@@ -2,7 +2,7 @@ id: implement-task
 version: 2.1.1
 capability: Implement a single task from the work package plan by writing code changes
 
-description: "Atomic code implementation capability. Reads a task from the plan, understands the context (affected files, dependencies, requirements), and writes the code changes. Testing, committing, and assumption review are handled by other skills (validate-build, manage-git, review-assumptions) orchestrated by the activity's loop."
+description: "Implement a single task from the plan by writing code changes."
 
 inputs[2]:
   - id: current-task

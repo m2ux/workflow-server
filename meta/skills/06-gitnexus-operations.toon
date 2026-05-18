@@ -2,7 +2,7 @@ id: gitnexus-operations
 version: 3.2.0
 capability: Operations for codebase queries via the GitNexus knowledge graph
 
-description: "Operations wrapping the GitNexus MCP tools (query, context, impact, rename, detect_changes, cypher) and the lightweight resource reads. Each operation has the tool reference and a small linear procedure inline. Pertinent reference tables (impact depth/risk, refactor risk classes) live in the relevant operation's prose."
+description: "Operations for codebase queries via the GitNexus knowledge graph."
 
 operations:
   verify-index:

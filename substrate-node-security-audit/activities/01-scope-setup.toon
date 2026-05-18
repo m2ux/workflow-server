@@ -1,7 +1,7 @@
 id: scope-setup
 version: 2.0.0
 name: Scope Setup
-description: "Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder with START-HERE.md. Fully automated — no user checkpoints."
+description: "Set up the audit scope and planning folder."
 problem: The audit requires a confirmed target, reproducible commit, dependency scan outputs, and an organized artifact folder before analysis begins.
 recognition[4]:
   - start security audit

@@ -2,7 +2,7 @@ id: behavioral-pipeline
 version: 1.0.0
 capability: Execute the behavioral pipeline — 4 independent behavioral lenses followed by a synthesis pass
 
-description: "Worker-side skill for executing the behavioral pipeline. The pipeline runs 4 independent behavioral lenses against the same target, each answering a distinct question about code behavior. The orchestrator dispatches each lens to a fresh sub-agent. After all 4 complete, a synthesis pass reads all 4 artifacts (labeled ERRORS, COSTS, CHANGES, PROMISES) and finds convergence points, blind spots, and a unified conservation law. The behavioral pipeline is code-only — do not use on general/non-code targets."
+description: "Execute the behavioral pipeline of 4 lenses plus synthesis."
 
 inputs[4]:
   - id: target-content
