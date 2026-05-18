@@ -1,0 +1,60 @@
+id: dispatch-client-workflow
+version: 5.0.0
+name: Dispatch Client Workflow
+description: "Drive the client workflow's activity loop."
+problem: The orchestrator must drive the client workflow's activity loop inline rather than via a spawned client orchestrator
+required: true
+operations[5]:
+  - "workflow-engine::dispatch-activity"
+  - "workflow-engine::evaluate-transition"
+  - "workflow-engine::commit-and-persist"
+  - "workflow-engine::present-checkpoint-to-user"
+  - "workflow-engine::respond-checkpoint"
+rules[1]:
+  - "Authenticate every tool call inside the loop with client_session_index. The meta session_index is used only at activity boundaries (commit-and-persist's engineering commit) and at end-workflow."
+entryActions[1]:
+  - action: validate
+    target: client_session_index
+    message: "Cannot dispatch without a client session_index; initialize-session must run first"
+steps[1]:
+  - id: prime-initial-activity
+    description: "Determine the first activity to dispatch."
+loops[1]:
+  - id: client-activity-loop
+    name: Client Activity Loop
+    type: while
+    condition:
+      type: simple
+      variable: current_activity
+      operator: "!="
+      value: null
+    maxIterations: 200
+    steps[5]:
+      - id: dispatch-activity
+        description: "workflow-engine::dispatch-activity(activity_id: {current_activity}, session_index: {client_session_index}, prompt_template: meta/activity-worker-prompt, state: {variables})"
+      - id: present-yielded-checkpoint
+        when: "worker_yielded_checkpoint == true"
+        description: "workflow-engine::present-checkpoint-to-user(session_index: {client_session_index})"
+      - id: respond-yielded-checkpoint
+        when: "worker_yielded_checkpoint == true"
+        description: "workflow-engine::respond-checkpoint(session_index: {client_session_index}, resolution: {user_selection})"
+      - id: commit-activity-artifacts
+        when: "worker_yielded_checkpoint == false"
+        description: "workflow-engine::commit-and-persist(activity_id: {current_activity}, planning_folder_path: {planning_folder_path}, target_path: {target_path})"
+      - id: advance-activity
+        when: "worker_yielded_checkpoint == false"
+        description: "workflow-engine::evaluate-transition(activity: {completed_activity}, state: {variables}, transition_override: {transition_override})"
+transitions[1]:
+  - to: end-workflow
+    condition:
+      type: simple
+      variable: current_activity
+      operator: "=="
+      value: null
+outcome[3]:
+  - Client workflow's activity loop driven to completion by the meta orchestrator
+  - Every yielded checkpoint presented to the user; selections forwarded via respond_checkpoint
+  - Client workflow reached workflow_complete (current_activity == null after evaluate-transition)
+context_to_preserve[2]:
+  - current_activity - Server-resident activity pointer mirrored locally for the loop condition
+  - worker_yielded_checkpoint - Whether the dispatched worker yielded a checkpoint

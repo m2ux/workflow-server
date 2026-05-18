@@ -1,14 +1,13 @@
 id: primary-audit
 version: 4.16.0
 name: Primary Audit
-description: "Multi-agent audit via single-batch concurrent dispatch. All primary agents (A1-A7, B, D1, D2) dispatch simultaneously. Group A applies §3 checklist per crate (node binary split into A3 startup/config + A4 consensus/network; runtime and governance split into A5 runtime + A7 governance). Group B runs §2 patterns and mechanical checks. Group D applies the 8-item toolkit checklist per-function (D1: ledger helpers, D2: toolkit + upgrader). A dedicated verification sub-agent (V) validates output completeness. A dedicated merge sub-agent (M) performs the structured merge in a fresh context window to prevent finding loss from orchestrator context saturation."
+description: "Multi-agent primary audit via concurrent dispatch with verification and merge."
 problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to merge and verify agent outputs. Multi-agent orchestration with dedicated verification (V) and merge (M) agents provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window (V), (c) finding-lossless merge in a fresh context window (M), (d) targeted re-dispatch for gaps before findings are merged."
 recognition[3]:
   - run primary audit
   - dispatch audit agents
   - execute audit template
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-audit
 required: true

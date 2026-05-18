@@ -2,9 +2,9 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-## Skills (25 workflow-specific + 6 cross-workflow)
+## Skills (26 workflow-specific + 6 cross-workflow)
 
-The workflow uses 24 workflow-specific skills organized by capability, plus 6 cross-workflow skill references. Universal meta skills are auto-included on the first `get_skills` call. Skills are referenced by activities through `primary` and `supporting` roles.
+The workflow uses 26 workflow-specific skills organized by capability, plus 6 cross-workflow skill references. Universal meta skills are auto-included on the first `get_skills` call. Skills are referenced by activities through `primary` and `supporting` roles.
 
 | # | Skill ID | Capability | Used By |
 |---|----------|------------|---------|
@@ -23,8 +23,8 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 12 | `review-strategy` | Strategic review ensuring minimal and focused changes | Strategic Review |
 | 13 | `review-assumptions` | Assumption collection, classification, and structured review | All planning and implementation activities |
 | 14 | `manage-artifacts` | Planning folder creation and artifact numbering management | Start Work Package, Requirements Elicitation, Implementation Analysis |
-| 15 | `manage-git` | Git branching, PR lifecycle, branch sync, merge strategy detection, squash merge instruction | Start Work Package, Implement, Submit for Review |
-| 16 | `validate-build` | Test execution, build verification, lint checking | Validate, Implement |
+| 15 | `manage-git` | Git branching, worktree lifecycle, PR lifecycle, branch sync, merge strategy detection, squash merge instruction | Start Work Package, Implement, Submit for Review, Complete |
+| 16 | `validate-build` | Failure-analysis, fix-application, and result-aggregation operations (cargo execution lives in `cargo-operations`) | Validate, Implement |
 | 17 | `finalize-documentation` | ADR updates, test plan finalization, COMPLETE.md creation | Complete |
 | 18 | `update-pr` | PR description update, push commits, mark ready for review | Submit for Review |
 | 19 | `conduct-retrospective` | Workflow retrospective and lessons learned capture | Complete |
@@ -32,9 +32,10 @@ The workflow uses 24 workflow-specific skills organized by capability, plus 6 cr
 | 21 | `create-adr` | Architecture Decision Record creation for significant decisions | Complete |
 | 22 | `build-comprehension` | Codebase comprehension via hierarchical analysis and persistent knowledge artifacts | Codebase Comprehension |
 | 23 | `reconcile-assumptions` | Iterative assumption reconciliation through targeted code analysis | Design Philosophy, Requirements Elicitation, Research, Implementation Analysis, Plan & Prepare, Implement |
-| 24 | `dco-provenance` | DCO compliance and AI provenance tracking — provenance log, attestation recording, context scope | Research, Implement, Submit for Review |
+| 24 | `cargo-operations` | Resource-constrained cargo subcommand operations (check, test, build, clippy, fmt, doc) with inline budget to prevent host hang | Implement, Validate, Complete |
+| 25 | `dco-provenance` | DCO compliance and AI provenance tracking — provenance log, attestation recording, context scope | Research, Implement, Submit for Review |
 
-> Skills `11-activity-worker`, `meta-orchestrator`, `workflow-orchestrator`, and `activity-worker` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
+> Skills `meta-orchestrator`, `workflow-orchestrator`, and `activity-worker` are **universal skills** in [meta/skills/](../../meta/skills/). They provide the core orchestration and execution protocols used across all workflows.
 
 ### Cross-Workflow Skill References
 
@@ -42,10 +43,10 @@ The following skills are referenced by activities but defined in other workflows
 
 | Skill ID | Source Workflow | Source File | Used By |
 |----------|----------------|-------------|---------|
-| `atlassian-operations` | [meta](../../meta/skills/08-atlassian-operations.toon) | `08-atlassian-operations.toon` | Start Work Package, Assumptions Review |
-| `github-cli-protocol` | [meta](../../meta/skills/06-github-cli-protocol.toon) | `06-github-cli-protocol.toon` | Start Work Package, Submit for Review |
-| `knowledge-base-search` | [meta](../../meta/skills/07-knowledge-base-search.toon) | `07-knowledge-base-search.toon` | Research |
-| `version-control-protocol` | [meta](../../meta/skills/05-version-control-protocol.toon) | `05-version-control-protocol.toon` | Post-Implementation Review |
+| `atlassian-operations` | [meta](../../meta/skills/06-atlassian-operations.toon) | `06-atlassian-operations.toon` | Start Work Package, Assumptions Review |
+| `github-cli-protocol` | [meta](../../meta/skills/04-github-cli-protocol.toon) | `04-github-cli-protocol.toon` | Start Work Package, Submit for Review |
+| `knowledge-base-search` | [meta](../../meta/skills/05-knowledge-base-search.toon) | `05-knowledge-base-search.toon` | Research |
+| `version-control` | [meta](../../meta/skills/03-version-control.toon) | `03-version-control.toon` | Post-Implementation Review |
 | `structural-analysis` | [prism](../../prism/skills/00-structural-analysis.toon) | `00-structural-analysis.toon` | Post-Implementation Review |
 | `portfolio-analysis` | [prism](../../prism/skills/02-portfolio-analysis.toon) | `02-portfolio-analysis.toon` | Codebase Comprehension |
 

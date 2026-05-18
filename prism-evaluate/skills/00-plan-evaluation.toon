@@ -2,7 +2,7 @@ id: plan-evaluation
 version: 1.0.0
 capability: Classify an evaluation target, derive or validate evaluation dimensions, and map each dimension to prism analytical lens configurations
 
-description: "Given a target path and evaluation description, classify the target type, derive evaluation dimensions appropriate to the target and goals (or validate user-supplied dimensions), survey the target structure to inform lens selection, map each dimension to prism pipeline modes and lenses, group dimensions by pipeline mode for execution, and produce an evaluation plan artifact."
+description: "Plan an evaluation by mapping dimensions to prism modes and lenses."
 
 inputs[4]:
   - id: target_path

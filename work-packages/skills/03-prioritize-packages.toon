@@ -2,7 +2,7 @@ id: prioritize-packages
 version: 1.0.0
 capability: Evaluate and order work packages by dependencies, value, risk, and effort
 
-description: "Guides the prioritization of work packages using a structured framework. Builds a dependency graph, evaluates each package on business value, risk, and effort, then produces a priority order that respects dependency constraints while optimizing for value delivery and risk reduction."
+description: "Order work packages by dependencies, value, risk, and effort."
 
 inputs[2]:
   - id: package-plans

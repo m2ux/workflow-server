@@ -1,7 +1,7 @@
 id: prism-update
 version: 1.1.0
 title: Prism Update Workflow
-description: "Sync the prism workflow's resources, skills, and documentation with upstream changes from the agi-in-md project. Discovers new, modified, renamed, and deleted prisms; imports resource files; updates skill routing (goal-mapping, portfolio catalog, model sensitivity); rebuilds documentation; and verifies consistency before submitting a PR."
+description: "Sync the prism workflow's resources, skills, and documentation with upstream changes from the agi-in-md project."
 author: m2ux
 tags[3]:
   - prism
@@ -9,7 +9,6 @@ tags[3]:
   - sync
 
 skills:
-  primary: meta/workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"

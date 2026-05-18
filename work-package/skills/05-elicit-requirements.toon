@@ -2,7 +2,7 @@ id: elicit-requirements
 version: 1.0.0
 capability: Discover and clarify requirements through structured sequential conversation
 
-description: "This skill serves the requirements-elicitation activity. It handles: prompting user for stakeholder discussion transcript; iterating through question domains one question at a time; recording responses and adapting follow-up questions; preparing assumptions as Jira comments for stakeholder review; awaiting and incorporating stakeholder feedback; creating requirements-elicitation.md artifact."
+description: "Elicit requirements through structured sequential conversation."
 
 inputs[3]:
   - id: stakeholder-transcript

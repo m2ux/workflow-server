@@ -2,7 +2,7 @@ id: create-adr
 version: 1.0.0
 capability: Create Architecture Decision Record for moderate or complex implementations
 
-description: "Produces an ADR at .engineering/artifacts/adr/ documenting the architectural decision, rationale, alternatives considered, and consequences. Triggered for moderate or complex implementations based on the complexity variable set during design-philosophy."
+description: "Produce an ADR at .engineering/artifacts/adr/."
 
 inputs[3]:
   - id: complexity

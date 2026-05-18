@@ -1,7 +1,7 @@
 id: strategic-review
 version: 1.0.0
 name: Strategic Review
-description: "Review the implementation to ensure changes are minimal and focused. Validates that the final branch contains only the changes required for the solution. Confirms GPG signatures on commits (with user consent before history rewrite) and ensures a changelog fragment exists when the target repo uses a root-level changes/ convention."
+description: "Review the implementation to ensure changes are minimal and focused."
 problem: User needs to ensure changes are minimal and focused
 recognition[3]:
   - strategic review
@@ -19,7 +19,6 @@ artifacts[2]:
     location: planning
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
 skills:
-  primary: meta/activity-worker
 steps[9]:
   - id: diff-review
     name: Review diff
@@ -143,7 +142,7 @@ outcome[6]:
   - Investigation artifacts and over-engineering removed
   - Review findings documented in strategic-review-{n}.md
   - Architecture summary created in architecture-summary.md for stakeholder communication
-  - Commit GPG signature expectations addressed (resign completed or user declined with documentation)
+  - Resign completed for any unsigned commits, or user decline documented
   - Changelog fragment added when target repo uses root changes/ and none existed for this work
 context_to_preserve[5]:
   - review_findings - Findings from strategic review

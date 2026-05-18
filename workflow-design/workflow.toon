@@ -2,7 +2,7 @@
 id: workflow-design
 version: 1.2.1
 title: Workflow Design Workflow
-description: "Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints."
+description: "Guide agents through creating, updating, or reviewing workflow definitions."
 author: m2ux
 tags[7]:
   - workflow-creation
@@ -26,9 +26,8 @@ rules[14]:
   - "Define complete scope before execution — enumerate all files to create, modify, or remove before starting"
   - "Corrections must persist — record corrections and verify compliance at every subsequent checkpoint"
   - "Non-destructive updates — compare new content against existing content and flag any material being removed"
-  - "Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/). Root README documents the workflow overview, modes, activity sequence, variables, and file structure. Subfolder READMEs document the contents of that folder with tables and protocol details. Follow the style established by the prism workflow."
+  - "Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/) following the style established by the prism workflow."
 skills:
-  primary: meta/workflow-orchestrator
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
@@ -39,7 +38,7 @@ artifactLocations:
 modes[2]:
   - id: update
     name: Update Mode
-    description: "Modify an existing workflow following design principles. Loads the target workflow, analyses impact of changes, and applies modifications with content preservation checks."
+    description: "Modify an existing workflow following design principles."
     activationVariable: is_update_mode
     recognition[4]:
       - update workflow
@@ -53,7 +52,7 @@ modes[2]:
     resource: resources/03-update-mode-guide.md
   - id: review
     name: Review Mode
-    description: "Audit an existing workflow against the 14 design principles and produce a compliance report. Identifies schema expressiveness gaps, convention divergences, and rules lacking structural enforcement. Offers to switch to update mode to fix identified issues."
+    description: "Audit an existing workflow against the design principles and produce a compliance report."
     activationVariable: is_review_mode
     recognition[6]:
       - review workflow

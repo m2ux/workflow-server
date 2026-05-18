@@ -2,7 +2,7 @@ id: plan-work-package-scope
 version: 1.0.0
 capability: Define scope, dependencies, effort, and success criteria for a single package within a multi-package initiative
 
-description: "Guides the planning of individual work packages during the package-planning loop. For each package, produces a plan document covering scope boundaries, dependency mapping, effort estimation, and measurable success criteria. Uses the package-plan-template resource for consistent document structure."
+description: "Plan an individual work package within a multi-package initiative."
 
 inputs[2]:
   - id: current-package

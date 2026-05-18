@@ -1,7 +1,7 @@
 id: design-philosophy
-version: 1.4.0
+version: 1.5.0
 name: Design Philosophy
-description: "Apply structured design framework to classify the problem, determine complexity, and decide which activities to perform."
+description: "Apply the design framework to classify the problem and decide the workflow path."
 problem: User needs to understand problem nature before deciding on workflow path
 recognition[4]:
   - classify problem
@@ -25,17 +25,25 @@ artifacts[2]:
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
 skills:
-  primary: meta/activity-worker
+  supporting[3]:
+    - classify-problem
+    - reconcile-assumptions
+    - review-assumptions
 steps[9]:
   - id: define-problem
     name: Identify and Define Problem
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
-    skill: classify-problem
   - id: classify-problem
     name: Classify Problem Type
-    description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
-    skill: classify-problem
+    description: "Classify the problem type and assess complexity."
     checkpoint: classification-confirmed
+    actions[2]:
+      - action: set
+        target: problem_type
+        description: "One of: specific-cause-known, specific-cause-unknown, inventive-improvement, inventive-prevention."
+      - action: set
+        target: complexity
+        description: "One of: simple, moderate, complex."
   - id: determine-path
     name: Determine Workflow Path
     description: "Based on problem complexity and clarity, determine which optional activities are needed."
@@ -48,26 +56,21 @@ steps[9]:
   - id: document-philosophy
     name: Document Design Philosophy
     description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
-    skill: classify-problem
     actions[1]:
       - action: message
         message: "Created: design-philosophy.md"
   - id: collect-assumptions
     name: Collect assumptions
     description: "Identify assumptions made during problem classification and path selection. Categories: Problem Interpretation, Complexity Assessment, Workflow Path."
-    skill: review-assumptions
   - id: create-assumptions-log
     name: Create assumptions log
     description: "Create the assumptions log with initial assumptions from this activity."
-    skill: review-assumptions
   - id: reconcile-assumptions
     name: Reconcile assumptions
     description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
-    skill: reconcile-assumptions
   - id: assess-ticket-completeness
     name: Assess Ticket Completeness
     description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
-    skill: classify-problem
     checkpoint: ticket-completeness
     condition:
       type: simple
@@ -96,7 +99,6 @@ loops[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
         description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
-        skill: reconcile-assumptions
 checkpoints[3]:
   - id: classification-confirmed
     name: Classification Checkpoint
@@ -150,7 +152,7 @@ checkpoints[3]:
         description: Well-defined issue — no additional discovery needed
         effect:
           setVariable:
-            complexity: simple
+            path_gating_complexity: simple
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
@@ -193,10 +195,11 @@ outcome[5]:
   - Workflow path determined
   - Design philosophy documented in artifact
   - Ready for next activity based on problem nature
-context_to_preserve[7]:
+context_to_preserve[8]:
   - problem_statement - Clear problem definition
   - problem_type - Specific problem or inventive goal
   - complexity - simple, moderate, or complex
+  - path_gating_complexity - path-gating mirror of complexity for workflow-path-selected
   - needs_elicitation - Whether requirements elicitation is needed
   - needs_research - Whether research is needed
   - skip_optional_activities - Whether to skip optional discovery activities

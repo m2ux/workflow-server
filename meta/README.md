@@ -1,261 +1,174 @@
-# Meta
+# Meta Workflow
 
-> Skill and resource repository for the workflow-server. Provides universal skills (auto-included on first `get_skills` call) and self-contained activities for workflow lifecycle management (start, resume, end). Excluded from `list_workflows`.
+> v5.0.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs five activities that identify a target client workflow, match any saved session, create or resume the client session as a child of meta, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out. Provides the universal skill repository for all client workflows.
+
+---
 
 ## Overview
 
-Meta is the **skill and resource repository** for the workflow server. It provides universal skills that apply to all workflows, plus three independent activities for workflow lifecycle management matched via user intent recognition patterns.
+The meta workflow is the structural home for the orchestration logic that used to live in skill prose. Every meta activity runs in the meta session as a real activity with formal steps, checkpoints, decisions, and transitions. Universal skills live under [skills/](skills/) and are auto-resolved for any client workflow via the loader's universal-skill fallback.
 
 **Key characteristics:**
-- Excluded from `list_workflows` — not a user-facing workflow
-- Skills are universal and auto-included on the first `get_skills` call for any session
-- Activities are independent entry points matched via recognition patterns (not sequential flow)
+
+- Excluded from `list_workflows` — not a user-facing workflow.
+- Bootstrap (resource [`bootstrap-protocol`](resources/00-bootstrap-protocol.md)) calls `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` directly and saves the returned `session_index`. There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
+- Universal skills resolve for any session via the loader's workflow-specific → cross-workflow → universal fallback chain.
+- State persistence is server-managed. Every authenticated tool call atomically writes `session.json` + `.session-token` (seal) into the planning folder, so there are no agent-side persist or restore steps.
+
+| # | Activity | Est. Time | Purpose |
+|---|----------|-----------|---------|
+| 00 | [**Discover Session**](activities/README.md#00-discover-session) | 1-2m | Catalog workflows, match user request to `target_workflow_id`, scan for saved client sessions, present resume / workflow-selection checkpoints |
+| 01 | [**Initialize Session**](activities/README.md#01-initialize-session) | 1-2m | Dispatch the client workflow as a child of meta via `dispatch_child({ session_index, workflow_id, agent_id })`; server embeds the child SessionFile inline (or creates a new top-level folder when meta is transient). Variables are restored automatically by the server on resume. |
+| 02 | [**Resolve Target**](activities/README.md#02-resolve-target) | 1-2m | Detect repo type (regular vs. submodule monorepo) and resolve `target_path` for downstream git operations |
+| 03 | [**Dispatch Client Workflow**](activities/README.md#03-dispatch-client-workflow) | variable | Compose the orchestrator prompt, dispatch the orchestrator, drive the doWhile checkpoint-yield loop until `client_workflow_completed` |
+| 04 | [**End Workflow**](activities/README.md#04-end-workflow) | 2-3m | Verify outcomes, generate summary, completion checkpoint (with abort-back path to dispatch). Final state is already on disk — the server has persisted every authenticated call. |
+
+**Detailed documentation:**
+
+- **Activities:** see [activities/README.md](activities/README.md) for steps, checkpoints, transitions, and condition tables.
+- **Skills:** see [skills/README.md](skills/README.md) for the universal skills and the rule-authority map.
+- **Resources:** see [resources/README.md](resources/README.md) for the bootstrap protocol and prompt templates.
+
+---
+
+## Workflow Flow
+
+```mermaid
+graph TD
+    startNode(["Bootstrap"]) -->|"start_session(workflow_id: meta)"| DS["00 discover-session"]
+    DS -->|"target_workflow_id, has_saved_state, is_resuming"| INI["01 initialize-session"]
+    INI -->|"client_session_index, client_planning_slug"| RT["02 resolve-target"]
+    RT -->|"target_path"| DSP["03 dispatch-client-workflow"]
+    DSP -->|"client_workflow_completed == true"| END["04 end-workflow"]
+    END -.->|"abort_completion == true"| DSP
+    END --> doneNode(["Session closed"])
+```
+
+---
 
 ## Hierarchical Orchestration Model
 
-The workflow-server implements a 3-tier hierarchical orchestration model. The top-level `meta-orchestrator` manages the outer session and user interaction, while client workflows are delegated to a `workflow-orchestrator` sub-agent, which in turn dispatches an `activity-worker` for discrete task execution.
+The workflow-server implements a 3-tier hierarchical orchestration model. Meta runs as Level 0 (user-facing); each dispatched client workflow runs in its own child session as Level 1 (workflow-orchestrator); the activity-worker runs at Level 2 with the same `session_index` as its parent orchestrator. The server snapshots parent context recursively under the child session's `parentSession` field on creation.
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant Meta as meta-orchestrator<br/>(Top-level Agent)
-    participant Client as workflow-orchestrator<br/>(Client Workflow Sub-agent)
-    participant Worker as activity-worker<br/>(Sub-agent)
+    participant Meta as meta-orchestrator<br/>(L0 — meta session)
+    participant Client as workflow-orchestrator<br/>(L1 — client session)
+    participant Worker as activity-worker<br/>(L2 — same session_index as L1)
 
-    User->>Meta: "start work package"
-    Note over Meta: Loads meta workflow,<br/>starts session
-    Meta->>Meta: Runs discover-session activity
-    Note over Meta: Matches context,<br/>sets target_workflow
-    Meta->>Meta: Runs dispatch-workflow activity
+    User->>Meta: "start work-package on issue 42"
+    Note over Meta: Bootstrap → start_session(workflow_id: meta, agent_id: orchestrator)
+    Meta->>Meta: 00 discover-session<br/>(list_workflows, match, scan)
+    Meta->>Meta: 01 initialize-session<br/>(dispatch_child(session_index, workflow_id))
+    Meta->>Meta: 02 resolve-target
 
-    Note over Meta: Calls start_session({ workflow_id })<br/>Creates session for target workflow
-    Meta->>Client: spawn-agent(prompt: worker prompt with session_token)
+    Meta->>Client: 03 dispatch — spawn-agent(prompt with client_session_index)
+    Note over Client: start_session(session_index) → server restores state from session.json
 
-    Note over Client: Calls start_session({ session_token })<br/>Adopts session
-    
-    Client->>Worker: spawn-agent(prompt: worker prompt with session_token)
-    Note over Worker: Calls start_session({ session_token })<br/>Adopts session
-    
-    Note over Worker: Executes activity steps
-
-    Worker-->>Client: yields checkpoint_pending
-    Client-->>Meta: bubbles checkpoint_pending
+    Client->>Worker: spawn-agent(activity_id, same session_index)
+    Worker-->>Client: yields <checkpoint_yield>
+    Client-->>Meta: bubbles <checkpoint_yield>
+    Meta->>Meta: present_checkpoint(session_index) reads activeCheckpoint
     Meta->>User: AskQuestion (presents checkpoint)
-    User->>Meta: Selects Option
-    Meta->>Meta: respond_checkpoint
-    
-    Meta->>Client: continue-agent
+    User->>Meta: selects option
+    Meta->>Meta: respond_checkpoint(session_index, option_id)
+    Meta->>Client: continue-agent (effects)
     Client->>Worker: continue-agent
-    
-    Note over Worker: Finishes steps, writes artifacts
-    Worker-->>Client: activity_complete
 
-    Note over Client: Evaluates transitions,<br/>dispatches next activity
-    
-    Client->>Worker: continue-agent(next_activity, get_activity)
-    Note over Worker: Executes next activity...
     Worker-->>Client: activity_complete
-    
-    Note over Client: No more transitions
+    Note over Client: commit-and-persist → next_activity<br/>(server writes session.json + .session-token on every call)
     Client-->>Meta: workflow_complete
-    Note over Meta: Records completion,<br/>runs end-workflow activity
+    Meta->>Meta: 04 end-workflow<br/>(verify outcomes, summary)
+    Meta->>User: completion checkpoint
 ```
-
-## Workflow Structure
-
-```mermaid
-graph TD
-    subgraph meta[Meta Workflow]
-        Start([User Intent])
-        
-        Start -->|"start/resume/continue"| DS[00-discover-session]
-        
-        DS -->|"has target_workflow"| DW[01-dispatch-workflow]
-        
-        DW --> Done([Client Workflow Managed])
-    end
-    
-    style DS fill:#e1f5fe
-    style DW fill:#e1f5fe
-```
-
-## Activities
-
-### 1. Start Workflow
-
-**Purpose:** Begin executing a new workflow from the beginning.
-
-**Primary Skill:** `11-activity-worker`  
-**Supporting Skills:** `state-management`
-
-```mermaid
-graph TD
-    subgraph start-workflow[Start Workflow]
-        s1([Select workflow])
-        s2([Load workflow])
-        s3([Initialize state])
-        s4([Load skills])
-        s5([Discover target])
-        s6([Read submodules])
-        s7([Discover resources])
-        s8([Load start resource])
-        s9([Get initial activity])
-        s10([Present activity])
-        s11([Prepare checkpoints])
-        
-        s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> s11
-    end
-    
-    skill1((11-activity-worker))
-    skill3((state-management))
-    
-    s3 -.-> skill3
-    s9 -.-> skill1
-```
-
-| Step | Description |
-|------|-------------|
-| Select workflow | Identify target workflow from user request or present available workflows |
-| Load workflow | Load the selected workflow definition and extract metadata |
-| Initialize state | Initialize workflow state with variable defaults |
-| Load skills | Load behavioral protocols via get_skills (session-protocol, agent-conduct, workflow skills) |
-| Discover target | Check for .gitmodules to determine repository type and resolve target_path |
-| Read submodules | Parse .gitmodules for submodule selection (only when is_monorepo is true) |
-| Discover resources | Load the workflow resource index for reference |
-| Load start resource | Load the index-00 start resource if available |
-| Get initial activity | Load the activity at initialActivity to begin execution |
-| Present activity | Present first activity to user with steps and entry actions |
-| Prepare checkpoints | Identify checkpoints for presentation when reached |
-
-**Outcome:**
-- Workflow is selected and loaded
-- Initial state is created with correct initial activity
-- First activity is entered
-- Agent is ready to guide user through workflow
 
 ---
 
-### 2. Resume Workflow
+## Skills
 
-**Purpose:** Continue a workflow that was previously started.
+Universal skills referenced by canonical ID. Numeric prefixes order the files for humans; the loader strips them.
 
-**Primary Skill:** `11-activity-worker`  
-**Supporting Skills:** `state-management`
+| # | Skill | Capability |
+|---|-------|------------|
+| 00 | [`workflow-engine`](skills/00-workflow-engine.toon) | Operations and rules for workflow execution — session lifecycle, activity dispatch, transition evaluation, checkpoint protocol. Server-managed state (no agent-side persist/restore). |
+| 01 | [`agent-conduct`](skills/01-agent-conduct.toon) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline (worker / workflow-orchestrator / meta-orchestrator role split), and orchestrator discipline (`no-domain-work`, `no-inline-on-resume`, `target-path-scope`, `automatic-transitions`, `no-ad-hoc-interaction`) |
+| 02 | [`version-control`](skills/02-version-control.toon) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
+| 03 | [`github-cli-protocol`](skills/03-github-cli-protocol.toon) | GitHub CLI usage with GraphQL-deprecation workarounds — REST API for mutations |
+| 04 | [`knowledge-base-search`](skills/04-knowledge-base-search.toon) | Optimised concept-rag searches via pre-indexed domain maps |
+| 05 | [`atlassian-operations`](skills/05-atlassian-operations.toon) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
+| 06 | [`gitnexus-operations`](skills/06-gitnexus-operations.toon) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
+| 07 | [`harness-compat`](skills/07-harness-compat.toon) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`) abstracting cross-tool dispatch |
 
-```mermaid
-graph TD
-    subgraph resume-workflow[Resume Workflow]
-        r1([Identify workflow])
-        r2([Load workflow])
-        r3([Discover resources])
-        r4([Reconstruct state])
-        r5([Build state object])
-        r6([Get current activity])
-        r7([Load activity guidance resource])
-        r8([Present status])
-        r9([Resume execution])
-        
-        r1 --> r2 --> r3 --> r4 --> r5 --> r6 --> r7 --> r8 --> r9
-    end
-    
-    skill1((11-activity-worker))
-    skill3((state-management))
-    
-    r4 -.-> skill3
-    r9 -.-> skill1
+> Cross-cutting rules live in `agent-conduct`. Capability skills (`workflow-engine`, `version-control`, etc.) reference but do not restate them. This is the single-source-of-truth boundary anti-pattern 27 calls for.
+
+---
+
+## Resources
+
+| # | Resource | Purpose |
+|---|----------|---------|
+| 00 | [Bootstrap Protocol](resources/00-bootstrap-protocol.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })`. The meta workflow does the rest. |
+| 01 | [Activity Worker Prompt](resources/01-activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent (substitutes `session_index`). |
+| 02 | [Workflow Orchestrator Prompt](resources/02-workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent (substitutes `session_index`). |
+
+> The on-disk session-state shape is defined by [`schemas/session-file.schema.json`](../../schemas/session-file.schema.json); see [`docs/state_management_model.md`](../../docs/state_management_model.md) for the persistence model.
+
+---
+
+## Variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `target_workflow_id` | string | Client workflow to dispatch (set by `discover-session`) |
+| `workflow_match_ambiguous` | boolean | Multiple workflows could match the request — gates the workflow-selection checkpoint |
+| `has_saved_state` | boolean | A saved client session matched the request |
+| `saved_planning_slug` | string | Planning slug of the matched saved client session — passed to `start_session` to resume |
+| `is_resuming` | boolean | User chose to resume the matched saved session |
+| `planning_folder_path` | string | Absolute path to the client workflow's planning folder |
+| `client_session_index` | string | 6-character base32 `session_index` returned by `start_session` for the dispatched client workflow |
+| `client_planning_slug` | string | Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate `session.json` |
+| `is_monorepo` | boolean | Target is a submodule monorepo |
+| `target_path` | string | Resolved target directory — `.` for regular repos, a submodule path for monorepos |
+| `client_workflow_completed` | boolean | Dispatched client workflow reached `workflow_complete` |
+| `abort_completion` | boolean | User chose to return to dispatch from end-workflow instead of closing |
+
+---
+
+## Output
+
+Meta itself produces no domain artefacts. Its outputs are session-state side-effects:
+
+- A meta session that lives for the duration of the user's request.
+- A child client session for the matched workflow, tracked alongside the meta session via the recursive `parentSession` snapshot the server captures inside the child's `session.json`.
+- A planning folder under `.engineering/artifacts/planning/` containing the client workflow's server-managed `session.json` + `.session-token` (seal) pair and downstream artifacts.
+- A session summary presented to the user at the completion checkpoint.
+
+---
+
+## File Structure
+
 ```
-
-| Step | Description |
-|------|-------------|
-| Identify workflow | Ask user to identify the workflow being resumed |
-| Load workflow | Call `get_workflow` to load workflow definition |
-| Discover resources | Call `list_workflow_resources` to discover available resources |
-| Reconstruct state | Ask user: Which activity? What's completed? Key decisions? |
-| Build state object | Build state object per state-management skill |
-| Get current activity | Call `get_activity` for current activity |
-| Load activity guidance resource | Call `get_resource` for activity-specific guidance resource if available |
-| Present status | Present current activity status |
-| Resume execution | Resume execution from current position |
-
-**Outcome:**
-- Previous state is restored or reconstructed
-- Current activity is identified
-- Remaining work is presented
-- Agent is ready to continue guiding user
-
----
-
-### 3. End Workflow
-
-**Purpose:** Complete and finalize a workflow execution.
-
-**Primary Skill:** `11-activity-worker`  
-**Supporting Skills:** `state-management`
-
-```mermaid
-graph TD
-    subgraph end-workflow[End Workflow]
-        e1([Verify completion])
-        e2([Check checkpoints])
-        e3([Execute exit actions])
-        e4([Update state])
-        e5([Present summary])
-        e6([Cleanup])
-        
-        e1 --> e2 --> e3 --> e4 --> e5 --> e6
-    end
-    
-    skill1((11-activity-worker))
-    skill3((state-management))
-    
-    e1 -.-> skill1
-    e4 -.-> skill3
+workflows/meta/
+├── workflow.toon                            # Meta workflow definition (12 variables, 3 rules)
+├── README.md                                # This file
+├── activities/
+│   ├── 00-discover-session.toon             # Match user request, scan saved sessions
+│   ├── 01-initialize-session.toon           # Create or resume the client session
+│   ├── 02-resolve-target.toon               # Detect repo type, set target_path
+│   ├── 03-dispatch-client-workflow.toon     # Dispatch + doWhile checkpoint loop
+│   └── 04-end-workflow.toon                 # Outcome verification, summary
+├── skills/
+│   ├── 00-workflow-engine.toon              # Session lifecycle, dispatch, transitions, checkpoint protocol
+│   ├── 01-agent-conduct.toon                # Cross-cutting rules (single source of truth)
+│   ├── 02-version-control.toon
+│   ├── 03-github-cli-protocol.toon
+│   ├── 04-knowledge-base-search.toon
+│   ├── 05-atlassian-operations.toon
+│   ├── 06-gitnexus-operations.toon
+│   └── 07-harness-compat.toon
+└── resources/
+    ├── 00-bootstrap-protocol.md             # Pre-session navigation primer
+    ├── 01-activity-worker-prompt.md
+    └── 02-workflow-orchestrator-prompt.md
 ```
-
-| Step | Description |
-|------|-------------|
-| Verify completion | Verify all required activities are complete |
-| Check checkpoints | Ensure all checkpoints have responses |
-| Execute exit actions | Execute any exit actions from final activity |
-| Update state | Set workflow status to 'completed' with timestamp |
-| Present summary | Present completion summary to user |
-| Cleanup | Clear workflow context if appropriate |
-
-**Outcome:**
-- Workflow is marked as complete
-- Final state is recorded
-- User is informed of completion
-
----
-
-## Skills Summary
-
-Meta defines universal skills used by all workflows:
-
-| Skill | Capability | Description |
-|-------|------------|-------------|
-| `session-protocol` | Session lifecycle protocol | Bootstrap sequence (start_session → get_skills → get_workflow → next_activity → get_activity), token handling, step manifests, resource loading via get_resource |
-| `agent-conduct` | Agent behavioral boundaries | File sensitivity, communication tone, resource loading discipline, build command priority |
-| `11-activity-worker` | Execute a single activity | Self-bootstraps and executes activity steps using get_skill for step-level skill loading. Includes checkpoint yielding and artifact production. |
-| `state-management` | Manage workflow state | Initialize, update, and persist state across sessions. Agent writes session token + variables + trace to disk; resumes via start_session(session_token) |
-| `artifact-management` | Manage planning artifacts | Planning folder creation, regular file and submodule commit workflows |
-| `version-control-protocol` | Version control practices | Conventional commits, branch management, destructive operation guardrails |
-| `github-cli-protocol` | GitHub CLI usage | GraphQL deprecation workarounds, REST API for mutations |
-| `knowledge-base-search` | Optimise knowledge base searches | Pre-indexes domain maps before querying concept-rag |
-| `atlassian-operations` | Atlassian Jira and Confluence operations | Guides correct tool call sequences for the Atlassian MCP server |
-| `gitnexus-operations` | Query codebases via knowledge graph | GitNexus MCP tools for impact analysis, debugging, refactoring |
-| `10-meta-orchestrator` | Consolidated orchestrator skill | Workflow coordination, state management, worker dispatch, checkpoint presentation. Inline-only — never delegated to a sub-agent. |
-| `11-activity-worker` | Consolidated worker skill | Activity execution, step-level skill loading via get_skill, checkpoint yielding, artifact production. Loaded by worker sub-agents. |
-
-> **Note:** `workflow-execution` was absorbed into `11-activity-worker`. `10-meta-orchestrator`, `11-workflow-orchestrator`, and `12-activity-worker` are consolidated role-based skills — the orchestrator manages workflow lifecycle and dispatches workers; the worker self-bootstraps and executes activity steps. Agent behavioral rules are delivered through `session-protocol` and `agent-conduct` skills.
-
----
-
-## Recognition Patterns
-
-Activities are matched via these patterns:
-
-| Pattern | Activity |
-|---------|----------|
-| start a workflow, resume a workflow, continue a workflow, work on | `discover-session` |
-| dispatch the workflow, start the target workflow, begin the client workflow | `dispatch-workflow` |

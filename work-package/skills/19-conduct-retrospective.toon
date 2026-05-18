@@ -2,7 +2,7 @@ id: conduct-retrospective
 version: 2.0.0
 capability: Conduct workflow retrospective to capture lessons learned and prepare for next work package
 
-description: "Reflects on the completed work package: what went well, what could improve, and lessons for future sessions. Also handles session history capture, status updates, and next work package selection. ADR creation is handled by the separate create-adr skill; PR review response is handled by respond-to-pr-review."
+description: "Conduct a retrospective on the completed work package."
 
 inputs[2]:
   - id: planning-folder-path

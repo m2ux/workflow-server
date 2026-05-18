@@ -1,6 +1,6 @@
 ---
 id: pr-description
-version: 1.0.0
+version: 1.2.0
 ---
 
 # Pull Request Description Guide
@@ -27,7 +27,7 @@ A well-written PR description serves multiple audiences:
 - Fix bugs or address issues
 - Refactor existing code
 - Make architectural changes
-- Update dependencies with breaking changes
+- Update dependencies with breaking changes/
 
 **Simplified descriptions are acceptable for:**
 - Documentation-only changes
@@ -47,7 +47,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary of the change and key benefit]
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](link-to-start-here)  🧪 [Test Plan](link-to-test-plan)
+🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering](link-to-start-here)
 
 ---
 
@@ -88,7 +88,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary of the proposed work]
 
 
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)
+🐛 [Issue](github-issue-link)  📐 [Engineering](eng-repo-link)
 
 ---
 
@@ -140,7 +140,7 @@ A well-written PR description serves multiple audiences:
 [1-2 sentence summary with key benefit/metric achieved]
 
 
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)  🧪 [Test Plan](branch-link)
+🐛 [Issue](github-issue-link)  📐 [Engineering](eng-repo-link) 
 
 ---
 
@@ -220,27 +220,33 @@ This PR adds some improvements to search.
 - Include quantifiable impact when available
 - Keep to 1-2 sentences maximum
 
-### Ticket, ADR, Engineering, and Test Plan Links
+### Issue, ADR, Engineering, and Test Plan Links
 
 Always link to related artifacts on the same line for easy scanning:
 
 ```markdown
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan]({TARGET_REPO_URL}/blob/{BRANCH_NAME}/docs/tests/test-plan.md)
+🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
 ```
+
+The Issue link **must** point to the GitHub issue in the target repo, not the Jira ticket. The work-package workflow always captures or creates a paired GitHub issue during start-work-package (`github_issue_number` variable), so this link is always resolvable. When a Jira ticket also exists, append it as a secondary reference (see "Jira reference" below).
 
 #### CRITICAL: Resolving Link Placeholders
 
-**NEVER guess or infer repository URLs or branch names.** Always resolve them from git remotes:
+**NEVER guess or infer repository URLs, issue numbers, or branch names.** Always resolve them from workflow variables or git remotes:
 
 ```bash
+# Target repo URL (submodule where the PR is created):
+TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
+
+# GitHub issue number — read from the github_issue_number workflow variable
+# (captured by start-work-package via gh issue list / gh issue create).
+# Do NOT guess; do NOT use jira_issue_key here.
+
 # Engineering repo URL (parent repo where .engineering/ lives):
 ENG_REPO_URL=$(git -C <parent-repo-path> remote get-url origin | sed 's/\.git$//')
 
 # Engineering repo branch (the branch where planning artifacts are committed):
 ENG_BRANCH=$(git -C <parent-repo-path> branch --show-current)
-
-# Target repo URL (submodule where the PR is created):
-TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
 
 # Convert SSH URLs to HTTPS if needed:
 # git@github.com:org/repo.git → https://github.com/org/repo
@@ -248,15 +254,44 @@ TARGET_REPO_URL=$(git -C <target-path> remote get-url origin | sed 's/\.git$//')
 
 The `ENG_REPO_URL` comes from the **parent repo** (the repo containing `.engineering/`), not the target submodule. These are different repositories with different owners. The `ENG_BRANCH` is the current branch of the parent repo — do NOT assume `main`; the engineering artifacts may live on a different branch (e.g., `engineering`, a user branch, or a feature branch).
 
+**Resulting URL form (example):**
+
+```
+https://github.com/midnightntwrk/midnight-node/issues/1471
+```
+
+#### Issue-skipped placeholder (when `issue_skipped == true`)
+
+When the user explicitly skipped issue creation/verification at the `issue-verification` checkpoint in `start-work-package` (i.e., the workflow variable `issue_skipped` is `true`), the Issue line **must still be rendered** so reviewers can tell at a glance that the omission was intentional. Use the literal placeholder:
+
+```markdown
+🐛 _Issue: skipped_  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
+```
+
+**Rules:**
+- Render the placeholder exactly as `🐛 _Issue: skipped_` (italicised, no link). This is the canonical form checked by `update-pr::rules.pr-body-conformance.issue-link-or-explicit-placeholder`.
+- Do NOT drop the Issue line — that hides the fact that issue tracking was intentionally skipped.
+- Do NOT fabricate an issue number or invent a placeholder link. If `github_issue_number` is empty and `issue_skipped == true`, the placeholder above is the only acceptable rendering.
+- The Engineering link still resolves normally, on the same line, in the same format as the linked variant.
+
+This rule applies to both the Initial and Final templates. The `update-pr::verify-body` phase will flag a missing or fabricated Issue line under rule id `issue-link-or-explicit-placeholder`.
+
+#### Jira reference (when applicable)
+
+When `issue_platform == 'jira'` and `jira_issue_key` is captured, include the Jira ticket as a secondary line below the link row so reviewers tracing back to the originating ticket can find it without cluttering the primary link line:
+
+```markdown
+🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering](...)
+
+_Jira: [{JIRA_ISSUE_KEY}](https://{JIRA_DOMAIN}/browse/{JIRA_ISSUE_KEY})_
+```
+
 **When to include each link:**
-- **Ticket** - Always include if work is tracked in a ticket
-- **Engineering** - Always include; links to the README.md in the engineering artifacts planning folder for the work package. This provides reviewers access to design philosophy, planning, and review documents.
+- **Issue** - Always include; the GitHub issue in the target repo (paired with the Jira ticket, if any).
+- **Engineering** - Always include; links to the README.md in the engineering artifacts planning folder for the work package. Provides reviewers access to design philosophy, planning, and review documents.
+- **Jira** - Include as a secondary reference only when the work originated in Jira and a `jira_issue_key` was captured.
 - **ADR** - Include for architectural decisions committed to the target repo (see [Architecture Review Guide](15-architecture-review.md))
 - **Test Plan** - Include when formal test documentation exists (see [Test Plan Creation Guide](11-test-plan.md))
-
-**Important:** Link to ADRs and test plans on the *feature branch*, not main:
-- ✅ `https://github.com/OWNER/REPO/blob/feat/hybrid-search/docs/decisions/adr-hybrid-search.md`
-- ❌ `docs/decisions/adr-hybrid-search.md` (resolves to main, which won't have the file yet)
 
 **Note:** Engineering links point to the engineering artifacts repository (not the target repo), on whatever branch the parent repo uses for engineering artifacts. Resolve the branch from `git branch --show-current` in the parent repo — do not assume `main`.
 
@@ -373,116 +408,6 @@ Track remaining items before the PR can be merged:
 
 ---
 
-### Initial PR (ADR-only)
-
-Template for a PR with just the ADR (before implementation):
-
-```markdown
-## Summary
-
-[1-2 sentence summary of the proposed work]
-
-
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)
-
----
-
-## Motivation
-
-[Why this change is needed]
-
----
-
-## Changes
-
-**Implementation (coming next):**
-- [Task 1 description]
-- [Task 2 description]
-
----
-
-## 📌 Submission Checklist
-
-- [ ] Changes are backward-compatible (or flagged if breaking)
-- [ ] Pull request description explains why the change is needed
-- [ ] Self-reviewed the diff
-- [ ] I have included a change file, or skipped for this reason: [reason]
-- [ ] If the changes introduce a new feature, I have bumped the node minor version
-- [ ] Update documentation (if relevant)
-- [ ] No new todos introduced
-
----
-
-## 🔱 Fork Strategy
-
-- [ ] Node Runtime Update
-- [ ] Node Client Update
-- [ ] Other
-- [ ] N/A
-
----
-
-## 🗹 TODO before merging
-
-- [ ] Ready for review
-```
-
-### Final PR (After Implementation)
-
-Update the description to reflect completed work:
-
-```markdown
-## Summary
-
-[1-2 sentence summary with key benefit/metric achieved]
-
-
-🎫 [Ticket](link)  📐 [Engineering](eng-repo-link)  🧪 [Test Plan](branch-link)
-
----
-
-## Motivation
-
-[Why this change was needed - can keep from initial PR]
-
----
-
-## Changes
-
-- **Component A** - [What was implemented]
-- **Component B** - [What was modified]
-- **Tests** - [Coverage summary]
-
----
-
-## 📌 Submission Checklist
-
-- [x] Changes are backward-compatible (or flagged if breaking)
-- [x] Pull request description explains why the change is needed
-- [x] Self-reviewed the diff
-- [x] I have included a change file, or skipped for this reason: [reason]
-- [x] If the changes introduce a new feature, I have bumped the node minor version
-- [x] Update documentation (if relevant)
-- [x] No new todos introduced
-
----
-
-## 🔱 Fork Strategy
-
-- [x] Node Runtime Update
-- [ ] Node Client Update
-- [ ] Other
-- [ ] N/A
-
----
-
-## 🗹 TODO before merging
-
-- [x] Ready for review
-```
-
----
-
 ## Updating PR Descriptions
 
 Always use the GitHub API for PR updates (`gh pr edit` uses GraphQL which fails due to Projects Classic deprecation):
@@ -536,7 +461,7 @@ gh pr ready
 Implement content-aware chunking that preserves semantic boundaries, reducing retrieval errors by 40% on the evaluation dataset.
 
 
-🎫 [Ticket](https://{JIRA_DOMAIN}/browse/{TICKET_ID})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)  🧪 [Test Plan](https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/feat/smart-chunking/docs/tests/test-plan-content-chunking.md)
+🐛 [Issue](https://github.com/{TARGET_REPO_OWNER}/{TARGET_REPO_NAME}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering](https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
 ```
 
 ### Good Motivation Section
@@ -577,7 +502,8 @@ Before submitting a PR, verify:
 - [ ] No redundant information (commits, files changed)
 
 ### Links and References
-- [ ] Ticket linked (if applicable)
+- [ ] GitHub Issue linked (always; URL form `{TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER}`, NOT a Jira browse URL)
+- [ ] Jira ticket included as a secondary reference (only if `issue_platform == 'jira'`)
 - [ ] ADR linked on feature branch (if applicable)
 - [ ] Test plan linked (if applicable)
 
@@ -596,5 +522,4 @@ Before submitting a PR, verify:
 ## Related Guides
 
 - [Architecture Review Guide](15-architecture-review.md)
-- [Test Plan Creation Guide](11-test-plan.md)
 - [Complete Guide](21-complete-wp.md)

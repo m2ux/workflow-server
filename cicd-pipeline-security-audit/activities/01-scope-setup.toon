@@ -1,7 +1,7 @@
 id: scope-setup
 version: 1.0.0
 name: Scope Setup
-description: "Confirm target submodules, discover all GitHub Actions workflow files, create planning folder with START-HERE.md. Fully automated — no user checkpoints."
+description: "Set up the audit scope and planning folder."
 problem: The audit requires confirmed targets, a complete workflow file inventory, and an organized artifact folder before scanning begins.
 recognition[4]:
   - start cicd audit
@@ -9,7 +9,6 @@ recognition[4]:
   - scan github actions
   - cicd security audit
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-cicd-audit
 required: true

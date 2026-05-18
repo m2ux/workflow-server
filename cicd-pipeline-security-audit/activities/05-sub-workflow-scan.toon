@@ -1,13 +1,12 @@
 id: sub-workflow-scan
 version: 1.0.0
 name: Per-Submodule Workflow Scan
-description: "Scanner sub-agent activity: apply all seven detection patterns (P1-P7) to every GitHub Actions workflow file in the assigned submodule. Produces structured JSON output with findings, evidence, and source-to-sink mappings."
+description: "Scan the assigned submodule's workflow files for the seven detection patterns."
 problem: Each submodule's workflow files must be systematically scanned for expression injection, Pwn Request patterns, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, and dangerous execution patterns.
 recognition[2]:
   - scan submodule workflows
   - run detection patterns
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-sub-agent
 required: false

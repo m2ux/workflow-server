@@ -1,10 +1,9 @@
 id: requirements-refinement
 version: 1.0.0
 name: Requirements Refinement
-description: "Systematically elicit workflow design details from the user, one question at a time. Each design dimension has its own checkpoint to ensure atomic, sequential elicitation."
+description: "Elicit workflow design details from the user."
 problem: The user's free-form description needs to be refined into a complete workflow specification
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - workflow-design
 required: true

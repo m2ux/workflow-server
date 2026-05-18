@@ -2,7 +2,7 @@ id: review-assumptions
 version: 3.0.0
 capability: Collect, classify, and review assumptions made during workflow activities
 
-description: "Cross-cutting skill used by multiple activities (design-philosophy, requirements-elicitation, research, implementation-analysis, plan-prepare, implement) to systematically identify, document, and validate assumptions. Each activity generates assumptions in different categories; this skill provides the standard protocol for collection, presentation, and recording."
+description: "Collect, classify, and review assumptions made during a workflow activity."
 
 inputs[2]:
   - id: activity-context

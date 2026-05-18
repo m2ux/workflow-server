@@ -1,14 +1,13 @@
 id: ensemble-pass
 version: 2.3.0
 name: Ensemble Pass
-description: "Optional second-model audit run on priority-1/2 components. Merges findings with the primary report using union-with-consensus-severity strategy. Fully automated — no user checkpoints."
+description: "Optional second-model audit run with merged findings."
 problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures findings that are non-deterministically detected in any single run, improving overall coverage.
 recognition[3]:
   - run ensemble pass
   - second model audit
   - multi-model merge
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-audit
 required: false

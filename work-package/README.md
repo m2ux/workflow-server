@@ -1,12 +1,12 @@
 # Work Package Implementation Workflow
 
-> v3.6.1 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.7.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
 ## Overview
 
-This workflow guides the complete lifecycle of a single work package through fourteen activities, each with defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
+This workflow guides the complete lifecycle of a single work package through 14 activities total — 13 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
@@ -28,7 +28,7 @@ This workflow guides the complete lifecycle of a single work package through fou
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (25 skills) and protocol flow diagrams.
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (26 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
 - **Resources:** See [resources/README.md](resources/README.md) for the resource index (26 resources).
 
 ---
@@ -140,7 +140,7 @@ sequenceDiagram
 - Evaluates transition conditions between activities
 - Manages rework loops (transitions back to earlier activities)
 
-**Worker** (skill: `11-activity-worker`):
+**Worker** (skill: `activity-worker`):
 - Self-bootstraps from `next_activity` and `get_skill`
 - Executes activity steps sequentially using the skill protocol
 - Handles all checkpoints and user interaction directly
@@ -286,10 +286,11 @@ The workflow declares 66 variables that drive control flow, store checkpoint sta
 | `issue_skipped` | boolean | Set when user chooses to skip issue creation |
 | `issue_approved` | boolean | Set when drafted issue is approved for creation |
 | `issue_cancelled` | boolean | Set when issue creation is cancelled |
-| `on_feature_branch` | boolean | Whether already on a feature branch |
 | `pr_exists` | boolean | Whether a PR already exists for the branch |
-| `use_existing_branch` | boolean | Whether to use the existing branch |
 | `use_existing_pr` | boolean | Whether to use the existing PR |
+| `reference_path` | string | Reference checkout (monorepo root or standalone repo) used for comprehension and GitNexus indexing |
+| `component_name` | string | Basename of the component being worked on; used in the canonical worktree path |
+| `worktree_created` | boolean | Whether `start-work-package` materialized (or reused) a worktree at `target_path` |
 | `pr_skipped` | boolean | Set when PR creation is skipped |
 | `has_stakeholder_input` | boolean | Whether stakeholder discussion was provided |
 | `post_jira_comment` | boolean | Whether to post assumptions to Jira |

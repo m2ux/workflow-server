@@ -1,13 +1,12 @@
 id: sub-verification
 version: 1.0.0
 name: Scan Verification
-description: "Verification sub-agent activity: validate scan completeness across all scanner outputs. Verify every workflow file was covered, every detection pattern was applied, and no scanner produced malformed output. Produce gap report for targeted re-scan."
+description: "Verify scan completeness across all scanner outputs."
 problem: Scanner outputs must be verified for completeness before merge to ensure no workflow files were missed and no detection patterns were skipped.
 recognition[2]:
   - verify scan results
   - check scan completeness
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-sub-agent
 required: false

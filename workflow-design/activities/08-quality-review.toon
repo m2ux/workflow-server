@@ -1,10 +1,9 @@
 id: quality-review
 version: 1.0.1
 name: Quality Review
-description: "Create/update mode: four review passes over drafted content — schema expressiveness, convention conformance, rule hygiene (restatements, contradictions, cross-level duplications, prefix patterns), and rule-to-structure — each with a checkpoint. Review mode: six audit areas on the existing workflow (principles, anti-patterns, schema validation, tool-skill-doc consistency, compliance report, disposition) per resources/04-review-mode-guide.md."
+description: "Quality review of drafted workflow content."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - workflow-design
 required: true
@@ -32,7 +31,7 @@ steps[16]:
       value: true
   - id: anti-pattern-scan
     name: Anti-Pattern Scan
-    description: "Check the workflow against all anti-patterns from resource 02 (including rule hygiene anti-patterns 24-28). For each anti-pattern found, record the file, the violating content, and the recommended fix."
+    description: "Check the workflow against every anti-pattern in resource 02 and record file, content, and fix for each finding."
     condition:
       type: simple
       variable: is_review_mode

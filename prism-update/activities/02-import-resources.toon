@@ -1,10 +1,9 @@
 id: import-resources
 version: 1.0.0
 name: Import Resources
-description: "Apply all approved resource file changes: sync modified, apply renames, import new, remove deleted. Each change type is committed separately."
+description: "Apply approved resource file changes."
 problem: Resource files need to be created, updated, renamed, or removed to match upstream
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - sync-resources
 

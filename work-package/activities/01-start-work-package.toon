@@ -1,7 +1,7 @@
 id: start-work-package
-version: 3.4.0
+version: 3.7.0
 name: Start Work Package
-description: "Initialize the work package: verify or create an issue, set up feature branch and draft PR, and create planning folder. Establishes traceability from requirements through implementation."
+description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
 recognition[6]:
   - start work package
@@ -12,14 +12,18 @@ recognition[6]:
   - create github issue
 required: true
 estimatedTime: 10-20m
-rules[1]:
-  - "PREREQUISITE: Before calling ANY Jira tool (getJiraIssue, searchJiraIssuesUsingJql, etc.), the agent MUST first call getAccessibleAtlassianResources to obtain the cloudId. Load the atlassian-operations supporting skill for the full protocol."
 entryActions[1]:
   - action: log
     message: Starting issue management
 skills:
-  primary: meta/activity-worker
-steps[21]:
+  supporting[6]:
+    - atlassian-operations
+    - create-issue
+    - github-cli-protocol
+    - gitnexus-operations
+    - manage-artifacts
+    - manage-git
+steps[27]:
   - id: detect-review-mode
     name: Detect Review Mode
     description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
@@ -38,16 +42,36 @@ steps[21]:
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: resolve-target
-    name: Resolve Target Directory
-    description: "Read target_path from state variables (set during workflow initialization). Verify the directory exists. All git operations (branch, PR) will be performed inside this directory."
-  - id: initialize-target
-    name: Initialize Target Directory
-    description: "cd into target_path. Fetch origin and checkout the default branch (main/master). Pull latest. This ensures the target is at HEAD before creating a feature branch."
-    skill: manage-git
+  - id: resolve-reference
+    name: Resolve Reference Path and Component Name
+    description: "Read the path the user originally pointed at (the value coming out of start-workflow's discover-target). Detect whether it is a monorepo with a submodule (parent has .gitmodules listing the path's basename) or a standalone repo. Set reference_path to the monorepo root in the first case and to the path itself in the second. Set component_name to the basename in both cases. The reference is used for comprehension, GitNexus, and read-only investigation only — edits will happen in a worktree created later in this activity."
+    actions[2]:
+      - action: set
+        target: reference_path
+        description: "Monorepo root when the discovered path is a submodule; the discovered path itself when standalone"
+      - action: set
+        target: component_name
+        description: "Basename of the discovered path (e.g., 'midnight-node')"
+  - id: update-reference-submodules
+    name: Update Reference Submodules to HEAD
+    description: "manage-git::update-reference-submodules(reference_path: {reference_path}). Brings every submodule of the reference monorepo to its tracked branch's remote HEAD so downstream comprehension, GitNexus, and code-resolvable assumption analysis operate against a fresh codebase. No-op for standalone references."
+    condition:
+      type: simple
+      variable: reference_path
+      operator: notExists
+  - id: analyze-reference-with-gitnexus
+    name: Re-index Reference with GitNexus
+    description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries. The analyze CLI emits stats; capture them in trace logs but do not gate the workflow on them."
+  - id: verify-signing-precondition
+    name: Verify Commit-Signing Pre-conditions
+    description: "Verify commit signing is configured."
+    actions[1]:
+      - action: validate
+        target: signing.configured == true
+        message: "Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running. The workflow does not modify your git configuration."
   - id: detect-merge-strategy
     name: Detect Merge Strategy
-    description: "Detect whether the target repo permits squash merges. Sets squash_merge_available for downstream DCO merge path routing."
+    description: "Detect whether the reference repo permits squash merges via the GitHub API (allow_squash_merge). Sets squash_merge_available for downstream DCO merge path routing — drives the merge-strategy-reminder in submit-for-review."
     skill: manage-git
     actions[1]:
       - action: set
@@ -55,7 +79,7 @@ steps[21]:
         description: "true if allow_squash_merge=true in repo settings, false otherwise"
   - id: detect-project-type
     name: Detect Project Type
-    description: "Auto-detect project type inside target_path: Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'."
+    description: "Auto-detect project type inside reference_path/component_name (the component's source as it appears in the reference): Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'. Performed against the reference because the worktree does not exist yet — both paths see the same files."
   - id: check-issue
     name: Check for Existing Issue
     description: "Check whether the user provided an issue key or URL. If no issue reference found, present the issue-verification checkpoint. If a key is provided, detect the platform from the format: '#N' or bare number → GitHub, 'PROJ-N' → Jira."
@@ -67,16 +91,18 @@ steps[21]:
   - id: verify-jira-issue
     name: Verify Jira Issue
     description: "Load the atlassian-operations supporting skill. Call getAccessibleAtlassianResources to obtain cloudId, then call getJiraIssue to verify the issue exists. Capture issue_number and issue_url."
-    skill: atlassian-operations
     condition:
       type: simple
       variable: issue_platform
       operator: "=="
       value: jira
+    actions[1]:
+      - action: validate
+        target: jira_cloud_id != null
+        message: "Atlassian cloudId not set. Load the atlassian-operations skill and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations."
   - id: verify-github-issue
     name: Verify GitHub Issue
     description: "Run 'gh issue view <number>' to verify the issue exists. Capture issue_number and issue_url."
-    skill: github-cli-protocol
     condition:
       type: simple
       variable: issue_platform
@@ -85,7 +111,6 @@ steps[21]:
   - id: search-github-issue
     name: Search for linked GitHub issue
     description: "When the provided issue is a Jira ticket, search the target repo for a GitHub issue that references the Jira key. Run: gh issue list --search '<jira_issue_key>' --repo <target_repo> --json number,title,url --limit 5 inside target_path. Match against the Jira key appearing in the issue title or body. If a match is found set github_issue_found=true and capture github_issue_number and github_issue_url. If no match is found set github_issue_found=false."
-    skill: github-cli-protocol
     condition:
       type: simple
       variable: issue_platform
@@ -116,7 +141,6 @@ steps[21]:
   - id: create-github-issue-for-jira
     name: Create GitHub issue for Jira ticket
     description: "Create a GitHub issue in the target repo that mirrors the Jira ticket. Set issue_platform to 'github' temporarily so the create-issue skill routes to the GitHub protocol. The issue title should match the Jira ticket summary. The issue body should include a reference to the Jira ticket URL. After creation capture github_issue_number and github_issue_url, then restore issue_platform to 'jira'."
-    skill: create-issue
     condition:
       type: simple
       variable: needs_github_issue_creation
@@ -125,7 +149,6 @@ steps[21]:
   - id: create-issue
     name: Create Issue
     description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
-    skill: create-issue
     checkpoint: platform-selection
     condition:
       type: simple
@@ -135,7 +158,6 @@ steps[21]:
   - id: activate-issue
     name: Activate Issue
     description: "Transition the issue to 'In Progress' and assign it to the current user. (1) For Jira: call atlassianUserInfo to get the current user's account ID, then call editJiraIssue to set the assignee field to { accountId: <current_user_account_id> }. Next, call getTransitionsForJiraIssue to discover available transitions, find the one targeting 'In Progress' (or equivalent active status), and call transitionJiraIssue with that transition ID. (2) For GitHub: run 'gh issue edit <number> --add-assignee @me' to self-assign. Skip transition for GitHub (no built-in status workflow). (3) If the issue is already in progress or already assigned, skip the respective operation silently."
-    skill: atlassian-operations
     condition:
       type: simple
       variable: issue_skipped
@@ -147,30 +169,55 @@ steps[21]:
     actions[1]:
       - action: message
         message: "**Problem Overview** (plain-language summary for stakeholder reference)"
+  - id: derive-branch-name
+    name: Derive Feature Branch Name
+    description: "Compute the feature branch name from the issue per the naming convention 'type/issue-number-short-description'. Type is derived from issue_type (feature → feat, bug → fix, task/enhancement → chore/refactor as appropriate). Short description is a slugified form of the issue title (lowercase, dashes, max ~40 chars). Set branch_name. Skipped in review mode (branch_name was already captured from the PR reference)."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    actions[1]:
+      - action: set
+        target: branch_name
+        description: "Derived feature branch name: type/{issue-number}-{slugified-issue-title}"
+  - id: compute-canonical-target-path
+    name: Compute Canonical Target Path
+    description: "Compute target_path = '~/projects/work/{component_name}/{wp-slug}/' where wp-slug is the work-package planning slug 'YYYY-MM-DD-{initiative-name}' (same form as planning_folder_path). Set target_path. From this point on, every step that says 'inside target_path' refers to the worktree (not the component's checkout inside the monorepo). In review mode, derive wp-slug from the PR title or branch name."
+    actions[1]:
+      - action: set
+        target: target_path
+        description: "Canonical worktree path '~/projects/work/{component_name}/{wp-slug}/'"
+  - id: create-component-worktree
+    name: Create Component Worktree
+    description: "manage-git::create-worktree(reference_path: {reference_path}, component_name: {component_name}, target_path: {target_path}, branch_name: {branch_name}). Materializes the worktree at target_path and creates the feature branch in one step (git worktree add -b {branch_name} {target_path} origin/{default_branch}). Idempotent: if target_path already exists and is registered as a worktree on the expected branch, reuses it; if it exists but is not such a worktree, surfaces an error rather than destroying the user's data. Sets worktree_created=true on success."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    actions[1]:
+      - action: set
+        target: worktree_created
+        description: "true once the worktree has been successfully created or verified existing"
+  - id: create-review-worktree
+    name: Create Worktree for Review
+    description: "manage-git::create-worktree(reference_path: {reference_path}, component_name: {component_name}, target_path: {target_path}, branch_name: {branch_name}). Review-mode counterpart: materializes a worktree of the component at target_path, checked out on the PR's branch (no -b — the branch already exists upstream). Idempotent reuse semantics match create-component-worktree. Sets worktree_created=true on success."
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+    actions[1]:
+      - action: set
+        target: worktree_created
+        description: "true once the worktree has been successfully created or verified existing"
   - id: check-branch
     name: Check Current Branch
-    description: "INSIDE target_path: Check if already on a feature branch (not main/master). Run 'git branch --show-current' and compare against main/master."
-    skill: manage-git
-  - id: create-branch
-    name: Create Feature Branch
-    description: "INSIDE target_path: Create feature branch from the default branch with naming convention: type/issue-number-short-description."
-    skill: manage-git
-    checkpoint: branch-check
-    condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: use_existing_branch
-          operator: ==
-          value: false
+    description: "INSIDE target_path (the worktree): Check if on a feature branch (not main/master). Run 'git branch --show-current'. With the worktree-creation flow above, this is always true on a fresh worktree — this step exists to handle resume cases where target_path pre-existed and we reused an established worktree."
   - id: check-pr
     name: Check for Existing PR
     description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path. If a PR is found, set pr_exists=true and capture the PR number in existing_pr_number. If no PR is found, pr_exists remains false."
-    skill: github-cli-protocol
     checkpoint: pr-check
     condition:
       type: simple
@@ -183,8 +230,7 @@ steps[21]:
         description: "Set to true when an existing PR is found for the current branch"
   - id: create-pr
     name: Create Draft PR
-    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number. The PR is against the target's default branch. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names."
-    skill: github-cli-protocol
+    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number (for Jira, include the issue key so the Development panel auto-links the PR). The PR is against the target's default branch. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names. After creation, self-assign the PR to the current GitHub user: run 'gh pr edit <pr_number> --add-assignee @me' inside target_path. Capture pr_number and pr_url for the link-pr-to-ticket step."
     checkpoint: pr-creation
     condition:
       type: and
@@ -197,14 +243,41 @@ steps[21]:
           variable: use_existing_pr
           operator: ==
           value: false
+    actions[3]:
+      - action: set
+        target: pr_number
+        description: "PR number captured from gh pr create output"
+      - action: set
+        target: pr_url
+        description: "PR URL captured from gh pr create output"
+      - action: set
+        target: pr_exists
+        value: true
+        description: "Mark PR as existing once successfully created so downstream activities (validate, strategic-review, submit-for-review) see the correct state"
+  - id: link-pr-to-ticket
+    name: Link PR to Ticket
+    description: "Record the PR reference on the issue using the ticket platform's native mechanism so the PR appears in the issue's linked-PRs view. (1) For Jira: the PR is auto-linked via the Development panel when the branch name and PR title contain the issue key (already enforced upstream) — verify by calling getJiraIssue and confirming the PR is detectable. As a durable fallback that does not depend on the Atlassian-GitHub integration, also add a comment to the issue via addCommentToJiraIssue with body 'Pull Request: <pr_url>'. If the project exposes a custom 'Pull Request URL' field, prefer editJiraIssue to set that field instead of (or in addition to) the comment. (2) For GitHub: the PR body's 'Closes #<issue_number>' reference (from the Initial PR template in resource 12) already creates the native cross-link — verify the issue's timeline shows the PR reference via 'gh issue view <issue_number>'. (3) If issue_skipped is true, skip this step."
+    condition:
+      type: and
+      conditions[3]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: pr_number
+          operator: exists
+        - type: simple
+          variable: issue_skipped
+          operator: "!="
+          value: true
   - id: initialize-planning-folder
     name: Initialize Planning Folder
     description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title. Use attached resource 01 (readme) for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text."
-    skill: manage-artifacts
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"
-checkpoints[11]:
+checkpoints[10]:
   - id: issue-verification
     name: Issue Verification Checkpoint
     condition:
@@ -231,27 +304,6 @@ checkpoints[11]:
         effect:
           setVariable:
             issue_skipped: true
-  - id: branch-check
-    name: Branch Check Checkpoint
-    condition:
-      type: simple
-      variable: on_feature_branch
-      operator: "=="
-      value: true
-    message: "You're currently on branch '{current_branch}'. Would you like to use this branch or create a new one?"
-    options[2]:
-      - id: use-existing
-        label: Use existing branch
-        description: Continue work on the current feature branch
-        effect:
-          setVariable:
-            use_existing_branch: true
-      - id: create-new
-        label: Create new branch
-        description: Create a new feature branch from main/master
-        effect:
-          setVariable:
-            use_existing_branch: false
   - id: pr-check
     name: PR Check Checkpoint
     condition:
@@ -486,24 +538,28 @@ transitions[1]:
     isDefault: true
 exitActions[1]{action,message}:
   log,"Issue management complete - issue verified/created, PR ready"
-outcome[5]:
+outcome[6]:
   - Issue exists or is created in appropriate platform
   - Issue transitioned to In Progress and assigned to current user
   - Feature branch created from main
-  - Draft PR created and linked to issue
+  - Draft PR created, assigned to current GitHub user, and linked to issue
+  - PR reference recorded on the issue via the platform's native PR linkage
   - Planning folder initialized
-context_to_preserve[17]:
+context_to_preserve[20]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
   - issue_platform - github or jira
   - issue_type - Type of issue (feature, bug, task, enhancement, epic)
   - issue_url - URL to the issue
   - issue_assignee_account_id - Account ID of the assigned user (Jira)
   - branch_name - Feature branch name
-  - pr_number - Draft PR number (new or existing)
+  - pr_number - Draft PR number
+  - pr_url - URL to the PR
   - project_type - Detected project type (rust-substrate or other)
   - planning_folder_path - Path to planning artifacts folder
-  - on_feature_branch - Whether already on a feature branch (not main/master)
-  - use_existing_branch - Whether to use the existing branch
+  - reference_path - Path to the reference checkout
+  - component_name - Basename of the component being worked on
+  - target_path - Canonical worktree path '~/projects/work/{component_name}/{wp-slug}/'
+  - worktree_created - Whether create-component-worktree successfully materialized or reused the worktree at target_path
   - pr_exists - Whether a PR already exists for the branch
   - use_existing_pr - Whether to use the existing PR
   - jira_cloud_id - Atlassian cloud ID for subsequent Jira operations

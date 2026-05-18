@@ -1,7 +1,7 @@
 id: select-mode
 version: 2.0.0
 name: Plan Analysis
-description: "Analyze the user's request to determine what to analyze, detect scope and target type, recommend a pipeline mode with rationale, and present the recommendation for confirmation. Delegates all planning logic to the plan-analysis skill."
+description: "Select an analysis mode for the user's request."
 problem: User needs the analysis planned and configured before execution begins
 recognition[11]:
   - analyze
@@ -16,7 +16,6 @@ recognition[11]:
   - error resilience
   - behavioral analysis
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - plan-analysis
 steps[3]:

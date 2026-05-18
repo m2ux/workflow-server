@@ -2,7 +2,7 @@ id: build-comprehension
 version: 1.0.0
 capability: Build or augment codebase comprehension through progressive analysis and persistent knowledge artifacts
 
-description: "This skill serves the codebase-comprehension activity. It handles: discovering existing comprehension artifacts and recommending them; performing hierarchical codebase analysis (architecture → modules → abstractions → design rationale); creating and augmenting persistent comprehension artifacts in .engineering/artifacts/comprehension/; facilitating user-driven deep-dive exploration into specific areas."
+description: "Build or augment codebase comprehension via progressive analysis and persistent artifacts."
 
 inputs[3]:
   - id: problem-statement
@@ -20,11 +20,12 @@ protocol:
     - Summarize relevant artifacts with coverage scope and last-updated date
   check-gitnexus[3]:
     - "Check if the target codebase has a GitNexus index: call list_repos or read gitnexus://repo/{name}/context"
-    - "If indexed: use attached resource meta/06 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill."
+    - "If indexed: use attached resource meta/03 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill."
     - "If not indexed or stale: fall back to grep/read/glob for all exploration steps."
-  architecture-survey[6]:
+  architecture-survey[7]:
     - "Top-down survey: start with project root structure, build system, entry points"
     - "When GitNexus is available: use query() to discover execution flows and functional areas, read cluster resources for module groupings, and context() for dependency mapping — this yields structural understanding faster than grep and is the required primary approach"
+    - "Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey"
     - "Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs"
     - "Map dependency relationships between modules (imports, trait implementations, cross-module calls)"
     - "Identify overarching patterns: layered architecture, event-driven, actor model, plugin system, etc."
@@ -73,7 +74,7 @@ output[1]:
 
 rules:
   gitnexus-usage[2]:
-    - "gitnexus-first: When the target codebase has a GitNexus index, the agent MUST use gitnexus query() and context() as the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for specific text patterns, string literals, and codebases without a GitNexus index. This is not a preference — it is a requirement. Use attached resource meta/06 (gitnexus-reference) for checklists, pattern tables, and worked examples."
+    - "gitnexus-first: When the target codebase has a GitNexus index, the agent MUST use gitnexus query() and context() as the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for specific text patterns, string literals, and codebases without a GitNexus index. This is not a preference — it is a requirement. Use attached resource meta/03 (gitnexus-reference) for checklists, pattern tables, and worked examples."
     - "gitnexus-skill: For GitNexus-based analysis, the gitnexus-operations skill (meta workflow) provides the full task-oriented protocol — explore, impact-analysis, debug, refactor. Load it via get_skill skill_id: 'gitnexus-operations', workflow_id: 'meta' when performing codebase exploration or impact analysis with a GitNexus index."
   persistent-artifacts: "Comprehension artifacts persist across work packages — they are cumulative knowledge, not disposable planning documents"
   augment-not-replace: "When existing artifacts cover the same area, augment them with new sections and deeper detail rather than replacing"
@@ -82,11 +83,9 @@ rules:
   relevance-focus: "Prioritize areas relevant to the current problem statement while still building broadly useful knowledge"
   cross-reference: "Cross-reference related comprehension artifacts and note dependencies between codebase areas"
   question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
-
-  tool-usage: "use glob to map directory structure, find module files, and locate test files"
 resources[2]:
   - "25"
-  - "meta/06"
+  - "meta/03"
 
 errors:
   no_existing_artifacts:

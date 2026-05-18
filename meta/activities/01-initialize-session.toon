@@ -1,0 +1,26 @@
+id: initialize-session
+version: 5.0.0
+name: Initialize Session
+description: "Dispatch the client workflow as a child of the meta session."
+problem: The client workflow needs a session_index before its orchestrator can be dispatched, and the planning folder must exist before fresh starts
+required: true
+estimatedTime: 1-2m
+operations[2]:
+  - "workflow-engine::create-session"
+  - "version-control::initialize-folder"
+steps[2]:
+  - id: start-or-resume-session
+    description: "workflow-engine::create-session(parent_session_index: {meta_session_index}, workflow_id: {target_workflow_id})"
+  - id: derive-planning-folder
+    description: "version-control::initialize-folder(initiative_name: <kebab-case from issue title or work-package description>)"
+    when: "is_resuming == false"
+transitions[1]:
+  - to: resolve-target
+    isDefault: true
+outcome[3]:
+  - Client session created or resumed
+  - Prior variables restored from session.json on resume; schema defaults on fresh start
+  - Planning folder exists on disk
+context_to_preserve[2]:
+  - client_session_index - The session_index for the dispatched client workflow
+  - client_planning_slug - Planning slug for the client's planning folder

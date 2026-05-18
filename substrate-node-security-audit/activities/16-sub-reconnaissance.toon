@@ -1,14 +1,13 @@
 id: sub-reconnaissance
 version: 1.0.0
 name: "Sub-Agent: Codebase Reconnaissance"
-description: "Dispatched at the start of reconnaissance to perform the codebase analysis that the orchestrator previously did inline. The sub-agent reads workspace manifests, scans all source files, classifies crates, identifies trust boundaries and consensus paths, enumerates pallet hooks and config structs, traces data flows, checks safety boundary overrides, and builds the function registry. All outputs are written to files in the planning folder, eliminating the context accumulation that previously saturated the orchestrator before primary audit even began."
+description: "Perform codebase reconnaissance and build the function registry."
 problem: "The orchestrator previously performed 9 heavy reconnaissance steps inline — reading Cargo.toml, scanning hundreds of source files, building crate maps and function registries. This consumed 10-15K tokens of context before primary agent dispatch, reducing the orchestrator's effective budget for coordination tasks. Since the orchestrator's role is coordination (dispatch, verify, route), the analysis work should be delegated to a sub-agent with a dedicated context window."
 recognition[3]:
   - codebase reconnaissance
   - map architecture
   - build function registry
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - map-codebase
 required: false

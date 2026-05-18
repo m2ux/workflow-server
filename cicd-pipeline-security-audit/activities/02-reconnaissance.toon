@@ -1,14 +1,13 @@
 id: reconnaissance
 version: 1.0.0
 name: Reconnaissance
-description: "Classify all discovered workflows by trigger type, map permission scopes, identify checkout patterns, and assign per-submodule scanner agents. Fully automated — no user checkpoints."
+description: "Classify discovered workflows and assign scanner agents."
 problem: Scanner agents need a structured inventory with trigger classification, permission mapping, and checkout pattern identification to apply detection patterns efficiently.
 recognition[3]:
   - classify workflows
   - reconnaissance
   - map triggers
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-cicd-audit
 required: true

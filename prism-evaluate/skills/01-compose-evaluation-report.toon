@@ -2,7 +2,7 @@ id: compose-evaluation-report
 version: 1.0.0
 capability: Consolidate prism analysis artifacts from multiple evaluation dimensions into a unified evaluation report with cross-dimensional synthesis
 
-description: "Given completed prism analysis artifacts organised by evaluation dimension, extract definitive findings per dimension, identify cross-dimensional patterns, and compose a structured EVALUATION-REPORT.md. The report presents findings as conclusions — no methodology metadata. Conservation laws, meta-laws, and synthesis details remain in the dimension-specific artifacts for readers who want methodological depth."
+description: "Compose a unified EVALUATION-REPORT.md from per-dimension prism artifacts."
 
 inputs[4]:
   - id: output_path

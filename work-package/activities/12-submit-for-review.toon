@@ -1,7 +1,7 @@
 id: submit-for-review
-version: 1.2.0
+version: 1.4.0
 name: Submit for Review
-description: "Push implementation, update PR, mark ready for review, then handle the review cycle. If review feedback requires significant changes, transition back to plan-prepare."
+description: "Submit the PR for review and handle reviewer feedback."
 problem: User needs to submit the PR for review and handle reviewer feedback
 recognition[4]:
   - submit for review
@@ -13,12 +13,17 @@ estimatedTime: 30-60m
 entryActions[1]{action,message}:
   log,Submitting PR for review
 skills:
-  primary: meta/activity-worker
+  supporting[6]:
+    - dco-provenance
+    - github-cli-protocol
+    - manage-git
+    - respond-to-pr-review
+    - review-code
+    - update-pr
 steps[13]:
   - id: consolidate-review-findings
     name: Consolidate Review Findings
     description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
-    skill: review-code
     condition:
       type: simple
       variable: is_review_mode
@@ -27,7 +32,6 @@ steps[13]:
   - id: generate-review-summary
     name: Generate Review Summary
     description: "Use attached resource 24 (review-mode) via get_skill (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
-    skill: review-code
     condition:
       type: simple
       variable: is_review_mode
@@ -45,7 +49,6 @@ steps[13]:
   - id: post-pr-review
     name: Post PR Review
     description: "Post review to GitHub PR using 'gh pr review'. Include consolidated findings with severity ratings."
-    skill: github-cli-protocol
     condition:
       type: simple
       variable: is_review_mode
@@ -61,11 +64,9 @@ steps[13]:
       variable: is_review_mode
       operator: "!="
       value: true
-    required: true
   - id: push-commits
     name: Push all commits
     description: "Push all local commits to remote branch."
-    skill: manage-git
     condition:
       type: simple
       variable: is_review_mode
@@ -73,8 +74,7 @@ steps[13]:
       value: true
   - id: update-description
     name: Update PR description
-    description: "Update PR description with final implementation details. Apply automatically — user can edit the PR directly in GitHub/Jira if adjustments are needed."
-    skill: update-pr
+    description: "Update the PR description with final implementation details."
     condition:
       type: simple
       variable: is_review_mode
@@ -93,7 +93,6 @@ steps[13]:
   - id: mark-ready
     name: Mark PR ready for review
     description: "Mark the draft PR as ready for review using gh pr ready."
-    skill: github-cli-protocol
     condition:
       type: simple
       variable: is_review_mode
@@ -102,24 +101,39 @@ steps[13]:
   - id: await-review
     name: Await Manual Review
     description: "Wait for PR to receive manual review from team members."
-    skill: respond-to-pr-review
     checkpoint: review-received
   - id: process-review-comments
     name: Process Review Comments
     description: "Analyze and respond to PR review feedback."
-    skill: respond-to-pr-review
   - id: determine-review-outcome
     name: Determine Review Outcome
     description: "Based on review feedback, determine whether changes are needed."
-    skill: respond-to-pr-review
   - id: analyze-review-outcome
     name: Analyze Review Outcome
-    description: "Analyze the PR review comments and classify the overall outcome. If all comments are minor/nit, recommend minor-changes. If comments indicate approval, recommend approved. If comments require significant rework, recommend significant-changes. Set recommended_outcome accordingly."
+    description: "Analyze PR review comments and recommend an outcome."
     checkpoint: review-outcome
-    actions[1]:
+    actions[2]:
       - action: set
         target: recommended_outcome
-        description: "Set to the recommended review-outcome option based on comment analysis"
+        description: "Recommended review-outcome option."
+      - action: set
+        target: review_comments_summary
+        description: "Multi-line summary of reviewer comments (severity tag + one-line description per comment)."
+loops[1]:
+  - id: verify-pr-body-rerender
+    name: PR Body Verification Re-render Loop
+    type: while
+    condition:
+      type: simple
+      variable: body_conforms
+      operator: ==
+      value: false
+    maxIterations: 2
+    description: "Re-render the PR body until body_conforms=true."
+    steps[1]:
+      - id: rerender-and-verify
+        name: Re-render and Verify Body
+        description: "update-pr::render(template: final, pr_number: {pr_number}); update-pr::verify-body"
 checkpoints[6]:
   - id: dco-sign-off
     name: DCO Sign-off
@@ -159,7 +173,7 @@ checkpoints[6]:
         description: Continue waiting for review
   - id: review-outcome
     name: Review Outcome Checkpoint
-    message: "Based on review comment analysis, the recommended outcome is {recommended_outcome}. Auto-advancing in 30s."
+    message: "Review outcome analysis complete.\n\nReviewer comments:\n{review_comments_summary}\n\nRecommended outcome: {recommended_outcome}. Auto-advancing in 30s."
     blocking: false
     defaultOption: approved
     autoAdvanceMs: 30000
@@ -182,17 +196,6 @@ checkpoints[6]:
         effect:
           setVariable:
             review_requires_changes: true
-  - id: review-ready
-    name: Review Ready Check
-    message: "Has the PR received review feedback from a human reviewer?"
-    blocking: true
-    options[2]:
-      - id: feedback-available
-        label: Yes — review comments are available
-        description: Proceed to process review comments
-      - id: still-waiting
-        label: Not yet — still waiting
-        description: Pause and check back when review is available
   - id: review-summary-approval
     name: Review Summary Approval Checkpoint
     condition:
@@ -217,6 +220,37 @@ checkpoints[6]:
         effect:
           setVariable:
             review_posted: false
+  - id: body-non-conformant
+    name: PR Body Non-Conformant Checkpoint
+    condition:
+      type: simple
+      variable: body_conforms
+      operator: "=="
+      value: false
+    message: "The PR body still fails update-pr::rules.pr-body-conformance after the verify-pr-body-rerender loop's two iterations.\n\nFindings:\n{body_findings}\n\nHow do you want to proceed?"
+    blocking: true
+    options[3]:
+      - id: proceed-with-override
+        label: Proceed with override
+        description: "Acknowledge the deviation and continue."
+        effect:
+          setVariable:
+            body_conforms: true
+            body_override_recorded: true
+      - id: provide-input
+        label: Provide missing input
+        description: "Supply the missing input (e.g., push the engineering branch, add an issue rationale), then re-enter submit-for-review."
+        effect:
+          setVariable:
+            body_conforms: false
+          transitionTo: submit-for-review
+      - id: abort
+        label: Abort submission
+        description: "Terminate the activity with a failure status."
+        effect:
+          setVariable:
+            submission_aborted: true
+          transitionTo: complete
 transitions[3]:
   - to: complete
     condition:
@@ -243,9 +277,14 @@ outcome[3]:
   - PR pushed and marked ready for review
   - Review comments received and addressed
   - Review outcome determined (proceed or rework)
-context_to_preserve[5]:
+context_to_preserve[10]:
   - pr_url - PR URL
   - pr_status - PR status (draft/ready)
   - review_analysis_path - Path to review analysis document
   - review_actions_completed - List of completed review actions
   - review_requires_changes - Whether review feedback requires returning to planning
+  - review_comments_summary - Concise multi-line summary of reviewer comments interpolated into the review-outcome checkpoint message
+  - body_conforms - True once the rendered PR body passes pr-body-conformance
+  - body_findings - List of pr-body-conformance violations
+  - body_override_recorded - True when proceed-with-override selected on body-non-conformant
+  - submission_aborted - True when abort selected on body-non-conformant

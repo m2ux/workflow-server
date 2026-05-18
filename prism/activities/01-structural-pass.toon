@@ -1,9 +1,8 @@
 id: structural-pass
 version: 2.1.0
 name: Structural Analysis Pass
-description: "Iterate over analysis_units and run the appropriate analysis for each unit. For single and full-prism units, runs the L12 structural lens. For portfolio units, runs multiple independent lenses. For behavioral units, dispatches 4 independent behavioral lenses. Each iteration writes artifacts namespaced by unit. After all units complete, transitions based on pipeline mode."
+description: "Run the assigned structural analysis for each analysis unit."
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - structural-analysis
 artifacts[6]:

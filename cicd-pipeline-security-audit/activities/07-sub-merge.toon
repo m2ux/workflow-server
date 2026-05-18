@@ -1,13 +1,12 @@
 id: sub-merge
 version: 1.0.0
 name: Finding Merge
-description: "Merge sub-agent activity: load all scanner outputs, deduplicate findings, apply cross-pattern correlation for compound vulnerabilities, and produce the unified finding set with reconciliation table. Fully automated."
+description: "Merge scanner outputs into a unified finding set."
 problem: Findings from multiple per-submodule scanners must be deduplicated, correlated across patterns, and reconciled into a single canonical finding set before severity scoring.
 recognition[2]:
   - merge findings
   - consolidate scan results
 skills:
-  primary: meta/activity-worker
   supporting[1]:
     - execute-sub-agent
 required: false

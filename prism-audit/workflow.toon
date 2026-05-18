@@ -1,7 +1,7 @@
 id: prism-audit
 version: 1.0.0
 title: Security Audit Workflow
-description: "Orchestrate security audits by generating tailored audit prompts from user descriptions and triggering prism workflow(s) for analysis. A user provides an audit description and target codebase; the workflow analyses the codebase structure to identify security-relevant characteristics, composes a detailed audit prompt, triggers one or more prism analytical pipelines, and post-processes the results into audit-specific deliverables (AUDIT-REPORT.md, DETAILED-FINDINGS.md, DESIGN-TRADE-OFFS.md). Audit-specific customisation is isolated here, keeping the prism workflow generic."
+description: "Orchestrate security audits by generating tailored audit prompts from user descriptions and triggering prism workflow(s) for analysis. Audit-specific customisation is isolated here, keeping the prism workflow generic."
 author: m2ux
 tags[6]:
   - audit
@@ -20,7 +20,6 @@ rules[6]:
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
 
 skills:
-  primary: meta/workflow-orchestrator
 variables[16]:
   - name: audit_description
     type: string

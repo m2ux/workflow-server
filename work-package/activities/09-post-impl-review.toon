@@ -1,7 +1,7 @@
 id: post-impl-review
-version: 1.8.0
+version: 1.10.0
 name: Post-Implementation Review
-description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
+description: "Review implementation quality before validation."
 problem: User needs to review implementation quality before validation
 recognition[3]:
   - review implementation
@@ -17,7 +17,13 @@ rules[4]:
 entryActions[1]{action,message}:
   log,Starting post-implementation review
 skills:
-  primary: meta/activity-worker
+  supporting[6]:
+    - prism/structural-analysis
+    - review-code
+    - review-diff
+    - review-test-suite
+    - summarize-architecture
+    - version-control
 artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"
@@ -47,18 +53,15 @@ steps[7]:
   - id: manual-diff-review
     name: Manual Diff Review
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
-    skill: review-diff
     required: true
     checkpoint: file-index-table
   - id: code-review
     name: Code Review
     description: "Perform comprehensive code review of all implementation changes. Create code-review.md report."
-    skill: review-code
     required: true
   - id: structural-analysis-inline
     name: Structural Analysis (Single Pass)
     description: "Load the L12 structural lens from the prism workflow (prism resource 00 — attached to skill response via get_skill) and apply it to the changed files. Produces conservation law, meta-law, and classified bug table. Write findings to structural-findings.md. This inline pass runs for simple and moderate complexity work packages."
-    skill: prism/structural-analysis
     required: true
     condition:
       type: not
@@ -86,27 +89,27 @@ steps[7]:
   - id: test-suite-review
     name: Test Suite Review
     description: "Review test quality and create test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
-    skill: review-test-suite
     required: true
   - id: architecture-summary
     name: Architecture Summary
     description: "Create architecture-summary.md if the diff introduces new modules, changes dependency structure, or modifies public interfaces. Skipped for minor changes, documentation, or configuration."
-    skill: summarize-architecture
     required: false
     condition:
       type: simple
       variable: skip_architecture_summary
       operator: "!="
       value: true
-  - id: analyze-review-findings
-    name: Analyze Review Findings
-    description: "Analyze the severity of code review and test suite review findings. If critical or high-severity findings exist, recommend fix-code or improve-tests. If all findings are low/informational, recommend all-acceptable. Set recommended_review_option accordingly."
-    checkpoint: review-findings
-    actions[1]:
+  - id: classify-and-route-findings
+    name: Classify and Route Review Findings
+    description: "Classify every code-review and test-suite-review finding by severity (Critical / Major / Minor / Nit / Informational). Set needs_code_fixes=true when any code-review finding has severity >= Minor; otherwise false. Set needs_test_improvements=true when any test-suite finding has severity >= Minor; otherwise false. Findings at Nit/Informational severity are NOT auto-fixed — they are documented in the review reports for the user to triage if they choose. The review-fix-cycle doWhile loop runs automatically when either flag is true; nit-only and clean runs proceed straight to validate. Rationale: Critical/Major/Minor findings are quality-gate failures; making the user opt INTO fixing them inverts the gate. Nit-only findings are debatable and intentionally not automated."
+    actions[2]:
       - action: set
-        target: recommended_review_option
-        description: "Set to the recommended review-findings option based on severity analysis"
-checkpoints[4]:
+        target: needs_code_fixes
+        description: "true when any code-review finding has severity >= Minor (Critical, Major, or Minor); false when all code-review findings are Nit/Informational or there are no findings"
+      - action: set
+        target: needs_test_improvements
+        description: "true when any test-suite finding has severity >= Minor (Critical, Major, or Minor); false when all test-suite findings are Nit/Informational or there are no findings"
+checkpoints[3]:
   - id: file-index-table
     name: File Index Checkpoint
     message: "File index written to {change_block_index_path}. The index includes a rationale paragraph for each change block written by the agent. Please review the diff in your side-by-side app. Then: (1) confirm the rationale paragraphs are accurate (or note corrections), and (2) provide row numbers for any blocks with issues (e.g., '24, 31, 106') or 'none'. Your confirmation of the rationale serves as your provenance attestation for each change."
@@ -167,35 +170,6 @@ checkpoints[4]:
       - id: skip-block
         label: Skip this block
         description: No longer an issue, move to next
-  - id: review-findings
-    name: Review Findings Checkpoint
-    message: "Code review and test quality reports complete. Based on findings analysis, the recommended action is {recommended_review_option}. Auto-advancing in 30s."
-    blocking: false
-    defaultOption: all-acceptable
-    autoAdvanceMs: 30000
-    options[4]:
-      - id: all-acceptable
-        label: All findings acceptable
-        description: Code quality and test coverage are adequate — proceed (default — auto-accepts after 30s)
-      - id: fix-code
-        label: Fix code review findings
-        description: Address code review findings before proceeding
-        effect:
-          setVariable:
-            needs_code_fixes: true
-      - id: improve-tests
-        label: Improve tests
-        description: Address test coverage gaps before proceeding
-        effect:
-          setVariable:
-            needs_test_improvements: true
-      - id: fix-both
-        label: Fix code and improve tests
-        description: Address both code review and test quality findings
-        effect:
-          setVariable:
-            needs_code_fixes: true
-            needs_test_improvements: true
 loops[1]:
   - id: review-fix-cycle
     name: Review-Fix Cycle
@@ -216,7 +190,6 @@ loops[1]:
       - id: apply-fixes
         name: Apply Fixes
         description: "Implement the code review findings (needs_code_fixes) and/or test improvements (needs_test_improvements) selected by the user. Commit changes."
-        skill: version-control-protocol
         required: true
       - id: reset-fix-flags
         name: Reset Fix Flags
@@ -225,22 +198,18 @@ loops[1]:
       - id: regenerate-index
         name: Regenerate Change Block Index
         description: "Re-parse git diff and regenerate change-block-index.md reflecting the new changes."
-        skill: version-control-protocol
         required: true
       - id: re-manual-diff-review
         name: Re-run Manual Diff Review
         description: "Present updated file index to user for manual diff review of the fix changes."
-        skill: review-diff
         required: true
       - id: re-code-review
         name: Re-run Code Review
         description: "Re-run code review on the updated diff to verify fixes resolved prior findings. May set needs_code_fixes if new issues are found."
-        skill: review-code
         required: true
       - id: re-test-suite-review
         name: Re-run Test Suite Review
         description: "Re-run test suite review to verify fix quality. May set needs_test_improvements if new issues are found."
-        skill: review-test-suite
         required: true
 decisions[1]:
   - id: blocker-gate
@@ -265,9 +234,9 @@ outcome[6]:
   - Manual diff review completed with indexed block table and interview findings
   - Manual diff review report created (manual-diff-review.md)
   - Code review complete with documented findings
-  - Structural analysis complete (single-pass or full-prism based on complexity)
+  - Structural analysis complete
   - Test suite quality reviewed
-  - Architecture summary created (if applicable)
+  - Architecture summary created when applicable
 context_to_preserve[10]:
   - change_block_index_path - Path to change-block-index.md file
   - change_block_data - Parsed hunk data for interview loop
@@ -278,6 +247,6 @@ context_to_preserve[10]:
   - test_review_findings - Findings from test suite review
   - architecture_summary_created - Whether architecture summary was created
   - manual_diff_review_report_path - Path to generated manual diff review report
-  - prism_artifact_paths - Paths to prism structural analysis artifacts (single-pass or full-prism)
+  - prism_artifact_paths - Paths to prism structural analysis artifacts
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark review artifacts as ✅ Complete.

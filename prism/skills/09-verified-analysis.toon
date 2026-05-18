@@ -2,7 +2,7 @@ id: verified-analysis
 version: 1.0.0
 capability: Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-analyze with gap corrections for highest accuracy
 
-description: "Verified mode addresses confabulation by making knowledge gaps explicit. Initial L12 finds structural properties. Gap detection (boundary+audit on the L12 output) identifies claims that depend on unverifiable facts. Re-analysis injects gap context so the model can mark uncertain claims rather than confabulate."
+description: "Run L12 with gap detection and gap-corrected re-analysis."
 
 inputs[3]:
   - id: target-content

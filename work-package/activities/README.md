@@ -8,7 +8,7 @@ Each activity section below includes its purpose, skills, steps, checkpoints, tr
 
 ### 01. Start Work Package
 
-**Purpose:** Initialize the work package — verify or create an issue, set up feature branch and draft PR, create planning folder. In review mode: captures PR reference and extracts associated Jira ticket.
+**Purpose:** Initialize the work package — detect monorepo vs standalone reference, refresh the reference (submodules + GitNexus), verify or create an issue, materialize a dedicated git worktree of the component at `~/projects/work/{component_name}/{wp-slug}/`, set up the feature branch + draft PR inside that worktree, and create the planning folder. In review mode: captures PR reference, checks out the PR's branch in the worktree, extracts associated Jira ticket.
 
 **Skills:**
 
@@ -17,48 +17,58 @@ Each activity section below includes its purpose, skills, steps, checkpoints, tr
 | primary | `create-issue` |
 | supporting | `manage-git` |
 | supporting | `manage-artifacts` |
+| supporting | `gitnexus-operations` |
 
 **Steps:**
 
-1. **resolve-target** — Read `target_path` from state variables and verify the directory exists.
-2. **initialize-target** — Fetch origin and checkout the default branch inside `target_path`.
-3. **detect-project-type** — Auto-detect project type from `Cargo.toml` (Substrate dependencies: `sp-*`, `frame-*`, `pallet-*`). Set `project_type` to `rust-substrate` if found, otherwise `other`.
-4. **check-issue** — Verify whether an issue has been specified by user or in context. Detect platform from key format.
-5. **verify-jira-issue** — Load Jira issue via Atlassian MCP (conditional: `issue_platform == jira`).
-6. **verify-github-issue** — Verify GitHub issue via `gh issue view` (conditional: `issue_platform == github`).
-7. **create-issue** — If needed, create issue in selected platform (GitHub or Jira) via platform-selection checkpoint.
-8. **activate-issue** — Transition issue to In Progress and assign to current user.
-9. **present-problem-overview** — Synthesize a plain-language problem overview for stakeholder reference.
-10. **check-branch** — Check if already on a feature branch (not `main`/`master`).
-11. **create-branch** — Create feature branch: `type/issue-number-short-description`.
-12. **check-pr** — Check if PR already exists for current branch via `gh pr list --head <branch>`.
-13. **create-pr** — Create draft PR linked to issue.
-14. **initialize-planning-folder** — Create planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/`.
-15. **determine-next-activity** — Based on issue details, determine if requirements elicitation is needed.
+1. **resolve-reference** — Read the user-provided path; detect monorepo vs standalone. Set `reference_path` (monorepo root or standalone repo) and `component_name` (basename).
+2. **update-reference-submodules** — `git -C {reference_path} submodule update --init --recursive --remote` so the reference mirrors current upstream HEAD across every submodule. Skipped silently for standalone references.
+3. **analyze-reference-with-gitnexus** — `gitnexus-operations::analyze` against `reference_path` so downstream comprehension/impact queries see fresh content.
+4. **detect-project-type** — Auto-detect project type from `Cargo.toml` inside `reference_path/component_name`.
+5. **check-issue** — Verify whether an issue has been specified by user or in context. Detect platform from key format.
+6. **verify-jira-issue** — Load Jira issue via Atlassian MCP (conditional: `issue_platform == jira`).
+7. **verify-github-issue** — Verify GitHub issue via `gh issue view` (conditional: `issue_platform == github`).
+8. **search-github-issue / check-github-issue / create-github-issue-for-jira** — Pair Jira tickets with a GitHub issue in the target repo (find or create).
+9. **create-issue** — If needed, create issue in selected platform (GitHub or Jira) via platform-selection checkpoint.
+10. **activate-issue** — Transition issue to In Progress and assign to current user.
+11. **present-problem-overview** — Synthesize a plain-language problem overview for stakeholder reference.
+12. **derive-branch-name** — Compute feature branch name `type/issue-number-short-description` from the verified/created issue.
+13. **compute-canonical-target-path** — Compute `target_path = ~/projects/work/{component_name}/{wp-slug}/` where wp-slug matches the planning-folder slug.
+14. **create-component-worktree** — `manage-git::create-worktree` materializes the worktree at `target_path` and creates the feature branch in one step. Idempotent on the canonical path.
+15. **create-review-worktree** — Review-mode counterpart: worktree on the existing PR branch (no new branch).
+16. **check-branch / check-pr / create-pr** — Inside the worktree, ensure feature-branch state is correct and create (or reuse) the draft PR.
+17. **link-pr-to-ticket** — Record the PR reference on the issue via the platform's native PR linkage.
+18. **initialize-planning-folder** — Create planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/`.
+19. **determine-next-activity** — Based on issue details, determine if requirements elicitation is needed.
 
-**Checkpoints (8):**
+**Checkpoints (10):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
+| `review-mode-detection` | Confirm review mode (when detected from request) | yes |
+| `review-pr-reference` | Capture PR reference in review mode | yes |
 | `issue-verification` | Confirm issue exists or choose to create/skip | yes |
-| `branch-check` | Use existing branch or create new one | yes |
 | `pr-check` | Use existing PR or create new one | yes |
 | `platform-selection` | Choose GitHub or Jira for issue creation | yes |
 | `jira-project-selection` | Select Jira project (if Jira chosen) | yes |
 | `issue-type-selection` | Choose issue type: Feature, Bug, Task, Enhancement, Epic | yes |
 | `issue-review` | Confirm drafted issue before creation | no (autoAdvance 30s) |
 | `pr-creation` | Confirm branch and PR creation | no (autoAdvance 30s) |
+| `github-issue-missing` | Offer to create GitHub issue paired with Jira ticket | no (autoAdvance 30s) |
 
 **Transitions:** Default transition to `design-philosophy`.
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> detectProject["Detect project type"]
+    entryNode(["Entry"]) --> resolveRef["Resolve reference: monorepo or standalone"]
+    resolveRef --> updateSubs["Update reference submodules to HEAD"]
+    updateSubs --> analyze["GitNexus analyze (reference)"]
+    analyze --> detectProject["Detect project type"]
     detectProject --> checkIssue["Check for existing issue"]
     checkIssue --> cpIssue{"issue-verification checkpoint"}
     cpIssue -->|"provide existing"| platformSelect
     cpIssue -->|"create new"| platformSelect{"platform-selection checkpoint"}
-    cpIssue -->|"skip issue"| checkBranch
+    cpIssue -->|"skip issue"| deriveBranch
 
     platformSelect -->|"GitHub"| createGitHub["Create GitHub issue"]
     platformSelect -->|"Jira"| selectJiraProject{"jira-project-selection checkpoint"}
@@ -67,12 +77,11 @@ graph TD
 
     createGitHub --> reviewIssue{"issue-review checkpoint"}
     createJira --> reviewIssue
-    reviewIssue --> checkBranch["Check current branch"]
+    reviewIssue --> deriveBranch["Derive feature branch name"]
 
-    checkBranch --> cpBranch{"branch-check checkpoint"}
-    cpBranch -->|"use existing"| checkPR
-    cpBranch -->|"create new"| createBranch["Create feature branch"]
-    createBranch --> checkPR["Check for existing PR"]
+    deriveBranch --> computePath["Compute canonical target_path"]
+    computePath --> createWorktree["Create component worktree (branch + worktree in one step)"]
+    createWorktree --> checkPR["Check for existing PR (inside worktree)"]
 
     checkPR --> cpPR{"pr-check checkpoint"}
     cpPR -->|"use existing"| initPlanning
@@ -172,11 +181,10 @@ graph TD
 7. **create-comprehension-artifact** — Write/augment artifact to `.engineering/artifacts/comprehension/{codebase-area}.md`.
 8. **deep-dive-loop** — Interactive loop: present areas for deeper exploration, perform targeted analysis, append to artifact.
 
-**Checkpoints (2):**
+**Checkpoints (1):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `architecture-confirmed` | Confirm architecture survey and key abstractions are correct | no (autoAdvance 30s) |
 | `comprehension-sufficient` | Confirm understanding is sufficient or select area for deeper exploration (conditional: has_open_questions) | no (autoAdvance 30s) |
 
 **Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration explores a selected area, performs targeted analysis, and updates the artifact.
@@ -205,12 +213,13 @@ graph TD
     archSurvey["Architecture survey"] --> keyAbstractions["Key abstractions & data model"]
     keyAbstractions --> designRationale["Design rationale mapping"]
     designRationale --> domainMapping["Domain concept mapping"]
-    domainMapping --> cpArch{"architecture-confirmed checkpoint"}
-    cpArch -->|"confirmed"| createArtifact["Create/augment comprehension artifact"]
-    cpArch -->|"corrections"| archSurvey
-    cpArch -->|"more depth"| deepDive
+    domainMapping --> createArtifact["Create/augment comprehension artifact"]
 
-    createArtifact --> cpSufficient{"comprehension-sufficient checkpoint"}
+    createArtifact --> initialDeepDive["Initial deep-dive (mandatory)"]
+    initialDeepDive --> reviseQuestions["Revise open questions"]
+    reviseQuestions --> hasOpen{"Open questions remain?"}
+    hasOpen -->|"no"| pathBranch
+    hasOpen -->|"yes"| cpSufficient{"comprehension-sufficient checkpoint"}
     cpSufficient -->|"sufficient"| pathBranch{"Selected path?"}
     cpSufficient -->|"dive deeper"| deepDive["Deep-dive: select area"]
     cpSufficient -->|"different area"| deepDive

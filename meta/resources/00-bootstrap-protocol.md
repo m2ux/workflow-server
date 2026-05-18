@@ -1,25 +1,19 @@
 ---
 id: bootstrap-protocol
-version: 4.0.0
+version: 8.0.0
 ---
 
-IMPORTANT: Do NOT attempt to connect to Github/Jira to resolve issue details yet. This happens later.
+# Bootstrap Protocol
 
-## START a new workflow
+IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
-1. Call `list_workflows` to get available workflows.
-2. **Compare** the user's stated goal to workflow descriptions. If multiple workflows could match:
-   * Present workflows with title, description, and tags and let the user select one.
-   * IMPORTANT! Never skip workflow matching. If no workflow matches, **inform the user** — this is a design gap.
-3. Call `start_session({ workflow_id: "<matched-workflow-id>", agent_id: "orchestrator" })`. Use the workflow_id matched in step 2 — do NOT default to "meta".
-4. Save the returned `session_token` — it is required for all subsequent calls.
-5. Call `get_skill(session_token: <session_token>)` to load the workflow's primary skill. This is the orchestrator skill — it tells you how to coordinate the workflow. Do NOT skip this step.
-6. Follow the skill protocol to continue the bootstrap process
+1. Fetch:
+   - `workflow-server://schemas/workflow`
+   - `workflow-server://schemas/skill`
+   - `workflow-server://schemas/activity`
 
-## RESUME an existing workflow
+2. `start_session({ workflow_id: "meta", agent_id: "orchestrator" })`. Save the returned `session_index` (6-character base32). The server creates or rebinds `session.json` + `.session-token` (seal) under the planning folder on this call; no agent-side state writes are required.
 
-1. Read the `workflow-state.json` file to get the saved `sessionToken` and `state.completedActivities`.
-2. Call `start_session({ session_token: "<saved-token>", agent_id: "orchestrator" })`. The workflow is derived from the token.
-3. Save the returned `session_token` — it is required for all subsequent calls.
-4. Call `get_workflow(session_token: <session_token>)` to load the workflow definition and its primary skill. The primary skill is the orchestrator skill — it tells you how to coordinate the workflow. Do NOT skip this step. Do NOT call next_activity or get_activity before loading the orchestrator skill.
-5. Follow the skill protocol starting at the `resume-session` step. It determines the current activity using `get_workflow_status` and the next activity from the state file's `completedActivities`, then calls `next_activity` with the correct `activity_id` if appropriate.
+3. `get_workflow({ session_index })`. The response carries the workflow's resolved operations bundle ahead of the workflow definition (separated by `\n\n---\n\n`). Follow the operations and rules in the bundle to drive execution.
+
+Pass `session_index` on every subsequent authenticated tool call. The index is stable across the entire session — there is no token rotation, adoption, or recovery protocol for the agent to manage.
