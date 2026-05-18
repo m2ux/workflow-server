@@ -40,9 +40,9 @@ The fix works as a layered safety net. First, the publish step now reads its own
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-3h | ✅ Complete |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ✅ Complete |
+| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
@@ -64,4 +64,4 @@ The fix works as a layered safety net. First, the publish step now reads its own
 
 ---
 
-**Status:** Implementation complete (2026-05-15). All seven touch sites landed across 11 commits on `chore/docs-retrospective-followups` (parent worktree) and `chore/docs-retrospective-followups-meta` (workflows submodule), with the submodule pointer bumped in the parent. Every TOON edit passes `validate-workflow-toon` for both `work-package` and `meta`. Plan & test plan complete; approach confirmed at `approach-confirmed` checkpoint. Assumptions review complete (2026-05-15) — `A-DP-05-residual` and `A-DP-09` Validated; no new assumptions surfaced; `has_open_assumptions = false`, `stakeholder_review_complete = true`. Touch sites 1–8 implemented (touch site 9 removed; bootstrap obs §4.2 retracted). Persistent comprehension artifact at `.engineering/artifacts/comprehension/work-package-workflow-content.md`. Worktree at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`, branched off `feat/115-server-managed-session-state`. Draft PR [#120](https://github.com/m2ux/workflow-server/pull/120) open against the parent branch. Next: `post-impl-review` per the workflow's transition table.
+**Status:** post-impl-review complete (2026-05-18). Touch site 9 re-introduced (bootstrap obs §4.2 un-retracted) across four sub-edits in commits `9be34eb`. Two prose-cleanup commits (`cf18f6c`, `ffc03cd`) and one anti-pattern-doc commit (`5d9ce9c`) landed alongside. All three schema validators (`validate-workflow-toon work-package`, `validate-workflow-toon meta`, `validate-activities work-package`) PASS at HEAD `9be34eb`. Review artifacts produced: change-block index (14 rows covering the full `97be373..9be34eb` range), code review (1 Critical, 3 Major, 3 Minor, 2 Nit, 2 Informational), test-suite review (2 Major, 4 Minor, 1 Nit). Findings flag a regression on §9.8 (`list-workflows` reverted to MCP tool form), a deviation on §9.2 (review-strategy delegates rather than restating audit bullets), and a deviation on §9.6 (1 composite validate, not 6). Worktree at `~/projects/work/workflow-server/2026-05-15-address-docs-retrospective-issues/` on branch `chore/docs-retrospective-followups`. PR #120 currently CLOSED on GitHub. Next: `validate` per the workflow's transition table.
