@@ -67,9 +67,9 @@ exitActions[2]{action,message}:
   set,primary_scan_complete=true
 outcome[6]:
   - All scanner agents dispatched and returned with verified dispatch completeness
-  - Every workflow file scanned for all seven patterns (verified by V)
-  - Verification agent confirmed completeness (verification_complete set by V)
-  - Merge agent produced unified finding set with reconciliation (zero Unaccounted)
+  - Every workflow file scanned for all seven patterns
+  - Verification agent confirmed completeness
+  - Merge agent produced unified finding set with zero Unaccounted in reconciliation
   - All scanner output files persisted in planning folder
   - Findings ready for severity scoring and report generation
 context_to_preserve[7]:

@@ -37,6 +37,6 @@ exitActions[1]:
     message: "Workflow session closed"
 outcome[2]:
   - Outcome audit presented to the user with any gaps surfaced
-  - Final state persisted to session.json by the server (atomic write completed on every authenticated tool call across the session)
+  - Final state persisted to session.json
 context_to_preserve[1]:
   - abort_completion - Whether the user chose to return to dispatch instead of closing

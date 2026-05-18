@@ -176,5 +176,5 @@ context_to_preserve[5]:
   - completed_tasks - Tasks completed during implementation
   - assumptions - Assumptions made during implementation
   - commits - Commits created
-  - has_uncertain_symbols - Whether the current task's self-review flagged symbols without provenance (drives the symbol-provenance-confirmed checkpoint condition)
-  - uncertain_symbols_list - Multi-line list of flagged symbols interpolated into the symbol-provenance-confirmed checkpoint message
+  - has_uncertain_symbols - Whether the current task's self-review flagged symbols without provenance
+  - uncertain_symbols_list - Multi-line list of flagged symbols

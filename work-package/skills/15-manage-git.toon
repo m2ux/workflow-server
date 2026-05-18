@@ -58,7 +58,8 @@ protocol:
   push-commits[2]:
     - Push all local commits to remote
     - Verify push succeeded
-  gpg-resign-range[3]:
+  gpg-resign-range[4]:
+    - "Check signatures: 'git log {default_branch}...HEAD --format=\"%h %G? %s\"' in target_path. Skip remaining steps if no commit is marked 'N'."
     - Resolve MERGE_BASE against default branch (same order as validate strategic preflight)
     - Re-sign each commit in MERGE_BASE..HEAD via rebase --exec 'git commit --amend --no-edit -S' (GPG); ensure user.signingkey and gpg agent are available
     - After rewrite, verify with git log --format='%h %G?' MERGE_BASE..HEAD; push with --force-with-lease only when appropriate for the PR branch

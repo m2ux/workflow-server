@@ -163,7 +163,7 @@ outcome[3]:
 context_to_preserve[6]:
   - open_assumptions - List of open assumptions to review
   - assumption_decisions - Map of assumption ID to decision (accept/reject/defer)
-  - has_deferred_assumptions - Whether any assumptions were deferred (triggers issue tracker posting)
+  - has_deferred_assumptions - Whether any assumptions were deferred
   - stakeholder_review_complete - Whether all assumptions have been reviewed
   - needs_further_discussion - Whether further discussion is needed
   - needs_plan_revision - Whether significant plan revision is needed
