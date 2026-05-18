@@ -2,7 +2,7 @@ id: update-pr
 version: 1.1.0
 capability: Update PR with final implementation details and mark ready for review
 
-description: "Handles the final PR lifecycle stages — pushing all commits, updating the PR description with implementation details, and marking the PR ready for review. In review mode, generates and posts consolidated PR review comments instead."
+description: "Finalize the PR for review, or post consolidated review comments in review mode."
 
 inputs[3]:
   - id: pr-number

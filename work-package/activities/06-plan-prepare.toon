@@ -21,7 +21,7 @@ skills:
 steps[11]:
   - id: env-prerequisites
     name: Verify Environment Prerequisites
-    description: "Verify environment prerequisites before planning."
+    description: "Verify environment prerequisites."
     actions[6]:
       - action: validate
         target: workflows.worktree.present == true

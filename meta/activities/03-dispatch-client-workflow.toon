@@ -1,8 +1,8 @@
 id: dispatch-client-workflow
 version: 5.0.0
 name: Dispatch Client Workflow
-description: "Drive the client workflow's activity loop. One orchestrator agent operates against both the meta session_index (for orchestrator-level decisions) and the client_session_index (for client activity dispatch and checkpoint resolution). Worker agents are spawned per activity at depth-1."
-problem: spawn-agent operates depth-1 only, so the meta orchestrator must drive the client workflow's activity loop inline rather than via a spawned client orchestrator
+description: "Drive the client workflow's activity loop."
+problem: The orchestrator must drive the client workflow's activity loop inline rather than via a spawned client orchestrator
 required: true
 operations[5]:
   - "workflow-engine::dispatch-activity"
@@ -18,7 +18,7 @@ entryActions[1]:
     message: "Cannot dispatch without a client session_index; initialize-session must run first"
 steps[1]:
   - id: prime-initial-activity
-    description: "Set current_activity from get_workflow({ session_index: {client_session_index} }).initialActivity when session.json#currentActivity is unset; otherwise resume from session.json#currentActivity."
+    description: "Determine the first activity to dispatch."
 loops[1]:
   - id: client-activity-loop
     name: Client Activity Loop
@@ -29,18 +29,21 @@ loops[1]:
       operator: "!="
       value: null
     maxIterations: 200
-    steps[4]:
+    steps[5]:
       - id: dispatch-activity
         description: "workflow-engine::dispatch-activity(activity_id: {current_activity}, session_index: {client_session_index}, prompt_template: meta/activity-worker-prompt, state: {variables})"
-      - id: handle-yielded-checkpoint
+      - id: present-yielded-checkpoint
         when: "worker_yielded_checkpoint == true"
-        description: "workflow-engine::present-checkpoint-to-user(session_index: {client_session_index}); workflow-engine::respond-checkpoint(session_index: {client_session_index}, resolution: {user_selection}); re-dispatch the worker via dispatch-activity to resume from the resolved checkpoint."
+        description: "workflow-engine::present-checkpoint-to-user(session_index: {client_session_index})"
+      - id: respond-yielded-checkpoint
+        when: "worker_yielded_checkpoint == true"
+        description: "workflow-engine::respond-checkpoint(session_index: {client_session_index}, resolution: {user_selection})"
       - id: commit-activity-artifacts
         when: "worker_yielded_checkpoint == false"
         description: "workflow-engine::commit-and-persist(activity_id: {current_activity}, planning_folder_path: {planning_folder_path}, target_path: {target_path})"
       - id: advance-activity
         when: "worker_yielded_checkpoint == false"
-        description: "workflow-engine::evaluate-transition(activity: {completed_activity}, state: {variables}, transition_override: {transition_override}) → assigns current_activity (null signals workflow_complete)"
+        description: "workflow-engine::evaluate-transition(activity: {completed_activity}, state: {variables}, transition_override: {transition_override})"
 transitions[1]:
   - to: end-workflow
     condition:
@@ -53,5 +56,5 @@ outcome[3]:
   - Every yielded checkpoint presented to the user; selections forwarded via respond_checkpoint
   - Client workflow reached workflow_complete (current_activity == null after evaluate-transition)
 context_to_preserve[2]:
-  - current_activity - Server-resident in session.json#currentActivity; mirrored locally for the loop condition
-  - worker_yielded_checkpoint - Set true by dispatch-activity when the worker output a checkpoint_yield block
+  - current_activity - Server-resident activity pointer mirrored locally for the loop condition
+  - worker_yielded_checkpoint - Whether the dispatched worker yielded a checkpoint

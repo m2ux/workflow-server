@@ -2,7 +2,7 @@ id: workflow-engine
 version: 6.1.0
 capability: Operations and rules for workflow execution — session lifecycle, activity dispatch, transition evaluation, checkpoint flow
 
-description: "Capability skill bundling everything needed to execute a workflow's structured flow. Operations cover session lifecycle (resume or create via start_session), activity dispatch and transition evaluation, the post-activity commit hook, sub-workflow handling, and the full checkpoint protocol (yield, bubble, present-to-user, respond, resume). State persistence is server-managed: every authenticated tool call atomically writes session.json + .session-token (seal) into the planning folder, so no agent-side persist/restore operations exist. Rules cover session-index usage, checkpoint discipline, state-mutation invariants, and orchestrator/worker behavioural boundaries. Each operation is a short linear procedure invoking a small set of MCP / harness / shell tools."
+description: "Operations and rules for executing a workflow's structured flow."
 
 operations:
   list-workflows:
@@ -159,7 +159,7 @@ operations:
         recovery: "Take the first matching transition in array order. Log a warning."
 
   commit-and-persist:
-    description: "Post-activity hook — commit source-side changes (target_path), then commit engineering artifacts (.engineering/artifacts/) including the session.json + .session-token seal that the server wrote during this activity. The server persists session state atomically on every authenticated tool call, so no explicit persist step is required; this operation only orchestrates the git commits that capture those server-written files alongside the activity's other artifacts."
+    description: "Post-activity hook: commit source-side changes and engineering artifacts."
     inputs[3]:
       - activity_id: "Activity that just completed"
       - planning_folder_path: "Path to the planning folder"
@@ -172,7 +172,7 @@ operations:
       session-files-ride-along: "session.json and .session-token are written by the server on every authenticated tool call and so are always present in the planning folder by the time this operation runs. Stage them in the SAME engineering commit as the activity's other artifacts — do not produce a separate 'state' commit."
 
   handle-sub-workflow:
-    description: "Dispatch a child workflow under the current session as its parent. The calling agent drives the child workflow's activity loop directly (depth-1-only constraint on spawn-agent)."
+    description: "Dispatch a child workflow under the current session as its parent."
     inputs[2]:
       - parent_session_index: "The current session's session_index — passed to the server so it can append the child under the parent's triggeredWorkflows[] with the child's SessionFile embedded inline"
       - workflow_id: "Child workflow ID"
