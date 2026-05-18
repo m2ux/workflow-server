@@ -1,7 +1,7 @@
 id: gap-analysis
 version: 2.1.0
 name: Gap Analysis
-description: "Compare the AI audit report against a professional reference report. Produce a finding-by-finding mapping, identify gaps, analyze severity calibration differences, and provide root cause analysis for missed findings. Fully automated — no user checkpoints."
+description: "Compare the AI audit report against a professional reference."
 problem: Without comparison against a professional benchmark, the AI audit's coverage and calibration cannot be assessed. Gap analysis identifies structural blind spots and informs template improvements.
 recognition[3]:
   - compare with reference audit

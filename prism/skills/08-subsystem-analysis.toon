@@ -2,7 +2,7 @@ id: subsystem-analysis
 version: 1.0.0
 capability: Decompose source code into subsystems, assign different prisms per region via calibration, and synthesize cross-boundary findings
 
-description: "Subsystem mode finds bugs that exist BETWEEN code regions — invisible to single-prism whole-file analysis. AST decomposition splits code into structural units (classes, functions). A calibration call assigns the optimal prism to each unit, maximizing analytical diversity. Per-subsystem analysis runs with the assigned prism. Cross-subsystem synthesis finds coupling patterns, shared assumptions, and inter-region bugs."
+description: "Decompose code into subsystems, analyze each with an assigned prism, then synthesize cross-boundary findings."
 
 inputs[3]:
   - id: target-content

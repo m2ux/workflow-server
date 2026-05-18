@@ -2,7 +2,7 @@ id: compose-audit-prompt
 version: 1.0.0
 capability: Analyse a codebase to identify security-relevant characteristics and compose a detailed audit prompt tailored to its architecture, language, and trust boundaries
 
-description: "Given a target codebase path and a user's audit description, survey the codebase structure, identify security-relevant characteristics (cryptography, auth, network surfaces, state management, serialisation, unsafe code), map those characteristics to audit domains with calibrated risk levels, and compose a self-contained audit prompt that can drive a prism analytical pipeline."
+description: "Compose a self-contained audit prompt tailored to the target codebase."
 
 inputs[3]:
   - id: target_path

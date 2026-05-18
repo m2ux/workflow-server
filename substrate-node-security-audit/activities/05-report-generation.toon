@@ -1,7 +1,7 @@
 id: report-generation
 version: 3.4.0
 name: Report Generation
-description: "Consolidate all findings from primary audit and adversarial verification into a final report. Uses the structured merge table from primary-audit as the canonical finding inventory. Apply severity scoring rubric with cross-check against calibration examples, verify coverage gate, and produce the deliverable audit report. Fully automated — no user checkpoints."
+description: "Consolidate findings into the final audit report."
 problem: Findings from multiple agents and phases must be severity-calibrated and formatted into a cohesive report with coverage verification. The structured merge table from primary-audit ensures no findings are lost.
 recognition[3]:
   - generate audit report

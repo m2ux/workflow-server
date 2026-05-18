@@ -2,7 +2,7 @@ id: reflect-analysis
 version: 1.0.0
 capability: Apply recursive meta-analysis to L12 output using the claim prism, then synthesize findings with constraint history
 
-description: "Reflect mode treats prior analysis as a target for further analysis. L12 produces structural findings. The claim prism then interrogates the L12 output for hidden assumptions, overclaims, and unfounded assertions — exposing what the structural analysis conceals about itself. A synthesis step combines both with any available constraint history."
+description: "Apply recursive meta-analysis to L12 output and synthesize findings."
 
 inputs[3]:
   - id: target-content

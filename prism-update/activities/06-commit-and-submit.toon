@@ -1,7 +1,7 @@
 id: commit-and-submit
 version: 1.0.0
 name: Commit and Submit
-description: "Create a feature branch if needed, push all commits, and create a pull request against the workflows branch."
+description: "Submit changes as a pull request."
 problem: Changes need to be submitted as a PR for review
 skills:
   supporting[1]:

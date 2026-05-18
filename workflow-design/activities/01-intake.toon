@@ -1,7 +1,7 @@
 id: intake
 version: 1.0.1
 name: Intake
-description: "Accept the user's free-form workflow description, determine whether this is a create or update operation, and extract the initial design intent."
+description: "Accept the user's workflow description and determine the operation type."
 problem: User wants to create or update a workflow and needs a guided process
 recognition[6]:
   - create a workflow

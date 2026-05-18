@@ -1,7 +1,7 @@
 id: reflect-pass
 version: 1.0.0
 name: Reflect Analysis Pass
-description: "L12 structural analysis followed by meta-analysis (claim prism applied to L12 output) and constraint synthesis. 3 fresh workers. Applies recursive meta-analysis — running a prism on the output of another prism to find what the first analysis conceals about itself."
+description: "L12 structural analysis with recursive meta-analysis and constraint synthesis."
 problem: "Single-pass analysis cannot examine its own blind spots. Reflect uses the claim prism to attack the L12 output as a text artifact, revealing hidden assumptions in the analysis itself, not just the code."
 skills:
   supporting[1]:

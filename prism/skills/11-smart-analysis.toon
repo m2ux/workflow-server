@@ -2,7 +2,7 @@ id: smart-analysis
 version: 1.0.0
 capability: Automatically compose an analysis pipeline based on input characteristics — the only mode where the system decides the pipeline topology
 
-description: "Smart mode chains prereq → knowledge fill → {subsystem OR L12} → dispute → profile. Each step is conditional: prereq runs always, knowledge fill runs if questions extracted, analysis mode depends on code structure, dispute runs if analysis produced sufficient output. The system decides each step."
+description: "Automatically compose an analysis pipeline based on input characteristics."
 
 inputs[3]:
   - id: target-content

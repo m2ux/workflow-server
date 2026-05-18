@@ -2,7 +2,7 @@ id: dispute-analysis
 version: 1.0.0
 capability: Run 2 maximally orthogonal prisms against the same target and synthesize their disagreements for lightweight self-correction
 
-description: "Dispute mode executes 2 prisms chosen for maximum analytical divergence, then synthesizes ONLY where they disagree. Produces blind spots, implicit convergence, and the deepest cross-lens finding. 3 calls for ~$0.15 — genuine self-correction at 1/3 full-prism cost."
+description: "Run two orthogonal prisms and synthesize their disagreements."
 
 inputs[3]:
   - id: target-content

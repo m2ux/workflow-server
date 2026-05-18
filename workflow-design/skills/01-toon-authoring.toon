@@ -2,7 +2,7 @@ id: toon-authoring
 version: 1.0.0
 capability: Author syntactically valid TOON files that pass schema validation
 
-description: "Supporting skill for TOON file creation. Provides format rules, syntax patterns, and validation guidance. Agents using this skill produce TOON files that parse correctly and pass schema validation on the first attempt."
+description: "Supporting skill for authoring valid TOON files."
 
 inputs[2]:
   - id: schema-type

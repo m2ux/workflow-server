@@ -1,7 +1,7 @@
 id: report-generation
 version: 1.0.0
 name: Report Generation
-description: "Apply severity scoring to all merged findings, verify coverage gate, and produce the final CI/CD security audit report with remediation recommendations. Fully automated — no user checkpoints."
+description: "Produce the final CI/CD security audit report."
 problem: Merged findings must be severity-scored using the Impact x Exploitability rubric, coverage verified, and formatted into a structured report with actionable remediation guidance.
 recognition[3]:
   - generate audit report

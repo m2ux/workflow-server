@@ -2,7 +2,7 @@ id: portfolio-analysis
 version: 1.1.0
 capability: Apply multiple complementary portfolio lenses to produce diverse structural findings with zero overlap
 
-description: "Run two or more portfolio lenses against the same artifact. The portfolio catalog includes original lenses (pedagogy, claim, scarcity, rejected-paths, degradation, contract), SDL structural lenses (deep-scan, sdl-trust, sdl-coupling, sdl-abstraction, fix-cascade, identity, l12-universal, sdl-simulation), individual behavioral lenses (error-resilience, optimize, evolution, api-surface), hybrid/specialized lenses (evidence-cost, reachability, fidelity, state-audit, archaeology, audit-code, cultivation, simulation, security, testability), knowledge/epistemic lenses (knowledge-audit, knowledge-boundary, knowledge-typed, l12g, oracle), generative lenses (architect, genesis), meta/epistemic lenses (blindspot, falsify, significance), counterfactual/historical lenses (counterfactual, history), emergent lenses (emergence), knowledge lenses (prereq, verify-claims), and code-specific lenses (arc-code, codegen). Each lens finds genuinely different structural properties. Each output is written to a separate artifact file."
+description: "Run two or more portfolio lenses against the same artifact."
 
 inputs[4]:
   - id: artifact-content

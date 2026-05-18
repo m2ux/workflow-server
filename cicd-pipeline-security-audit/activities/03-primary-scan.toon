@@ -1,7 +1,7 @@
 id: primary-scan
 version: 1.0.0
 name: Primary Scan
-description: "Dispatch per-submodule scanner agents concurrently, each applying all seven detection patterns (P1-P7). After all scanners return, dispatch verification (V) and merge (M) agents. Fully automated — no user checkpoints."
+description: "Run per-submodule scanner agents and merge their findings."
 problem: Each submodule's GitHub Actions workflows must be scanned for all seven vulnerability classes, findings verified for completeness, and merged into a unified finding set.
 recognition[3]:
   - scan workflows
