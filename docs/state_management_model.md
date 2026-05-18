@@ -80,8 +80,15 @@ Activities react to active modes through their `transitions` (conditioned on the
 
 ## 5. Persistence
 
-After each activity completion and state mutation, the Workflow Orchestrator must persist the current variable dictionary, session token, and trace tokens to disk.
+**State persistence is server-managed.** The server owns the canonical session state and writes it to disk atomically on every authenticated tool call. Agents do not read or write session state themselves — they only pass a 6-character `session_index` on every call.
 
-The session token is opaque — agents must never decode the token payload to extract session identity (decoding tokens risks corruption). Session identity is embedded within the HMAC-signed token itself; there is no separate `session_id` or `sessionId` field.
+For each session, the server maintains two files under the planning folder (`<workspace>/.engineering/artifacts/planning/<slug>/`):
 
-This enables the session to be safely paused, terminated, or resumed at any point without losing its place in the state machine. If a session is resumed, the Workflow Orchestrator reads the saved state, passes the saved `sessionToken` to `start_session(agent_id, session_token=saved_token)`, and the server either inherits the session (HMAC valid), adopts it by re-signing (HMAC invalid due to server restart, but payload intact — returns `adopted: true`), or falls back to a fresh session (payload corrupted — returns `recovered: true`). When `recovered: true` is returned, the orchestrator must reconstruct state by transitioning to the `currentActivity` and restoring variables from the saved state file.
+* **`session.json`** — Plaintext, JSON-Schema-validated session state (`schemas/session-file.schema.json`). Contains `sessionIndex`, `workflowId`, `workflowVersion`, `agentId`, `seq`, `currentActivity`, `currentSkill`, `condition`, `activeCheckpoint`, `variables`, `completedActivities`, `skippedActivities`, `checkpointResponses`, `history`, `triggeredWorkflows`, and (for child workflows) a snapshot of the parent under `parentSession`. The file is human-inspectable and reproducible from the workflow definition.
+* **`.session-token`** — A sealed, HMAC-signed envelope binding the `session.json` contents to the workspace + server signing key. Verified on every read; any mismatch between `session.json` and `.session-token` raises a hard `SealMismatchError`.
+
+Writes are atomic (write-temp + rename) and ordered: `session.json` first, then `.session-token`. Reads verify the seal before returning state.
+
+The `session_index` is deterministically derived from the planning slug (a single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`). For background, design rationale, and the full file shape, see Phase 3 and Phase 4 of the implementation plan (`05-work-package-plan.md`) and the JSON Schema (`schemas/session-file.schema.json`).
+
+This enables the session to be safely paused, terminated, or resumed at any point without losing its place in the state machine. Resume is a single call: `start_session({ agent_id, planning_slug })` — the server loads `session.json`, verifies the seal, and returns the same `session_index`. Because state lives in `session.json` (not in the token), server restarts are transparent and there is no "adoption" or "recovery" step for the agent to handle.

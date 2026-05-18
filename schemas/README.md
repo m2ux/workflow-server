@@ -6,13 +6,14 @@ The server also exposes these schemas as MCP resources under `workflow-server://
 
 ## Overview
 
-The workflow server uses five interconnected schemas:
+The workflow server uses six interconnected schemas:
 
 | Schema | Purpose | Use Case |
 |--------|---------|----------|
 | `workflow.schema.json` | Defines workflow structure | Creating new workflows with activities, steps, checkpoints |
 | `condition.schema.json` | Defines conditional expressions | Controlling transitions and decisions |
-| `state.schema.json` | Tracks runtime execution state | Persisting workflow progress |
+| `state.schema.json` | In-memory runtime execution state schema | Internal workflow-engine progress tracking |
+| `session-file.schema.json` | Persistent server-managed session file (`session.json`) | On-disk session state owned by the workflow server; loaded by `session_index` and sealed by `.session-token` |
 | `skill.schema.json` | Defines agent skill capabilities | Describing tool orchestration patterns and execution guidance |
 | `activity.schema.json` | Defines unified activities | Combining intent matching with workflow execution stages |
 
@@ -62,9 +63,10 @@ The second diagram shows how the schema files depend on each other:
 - **activity.schema.json** defines unified activities with steps, checkpoints, decisions, loops, transitions, and triggers
 - **skill.schema.json** defines agent capabilities, tool orchestration patterns, and execution protocols
 - **condition.schema.json** provides reusable condition expressions (simple comparisons, AND/OR/NOT combinators)
-- **state.schema.json** tracks runtime execution state, linking back to the workflow definition
+- **state.schema.json** describes the in-memory runtime execution state used internally by the workflow engine
+- **session-file.schema.json** describes the persistent server-managed session file (`session.json`) that lives under each planning folder; it captures workflow ID/version, current activity, variables, history, active checkpoint, and (for child workflows) the parent session snapshot. The companion `.session-token` is an HMAC-signed seal binding `session.json` to the workspace + server signing key.
 
-At design-time, you work with `workflow.schema.json`, `activity.schema.json`, and `skill.schema.json`. At runtime, `state.schema.json` captures progress through the workflow.
+At design-time, you work with `workflow.schema.json`, `activity.schema.json`, and `skill.schema.json`. At runtime, `state.schema.json` represents the in-memory state used by the engine and `session-file.schema.json` describes the on-disk session file loaded by `session_index`.
 
 ```mermaid
 flowchart TB
@@ -1504,13 +1506,13 @@ Describe how and when to use each tool:
   "tools": {
     "get_workflow": {
       "when": "Loading workflow for execution",
-      "params": "session_token",
+      "params": "session_index",
       "returns": "Complete workflow definition",
       "preserve": ["id", "initialActivity", "variables", "rules", "activities"]
     },
     "next_activity": {
       "when": "Entering a new activity",
-      "params": "session_token, activity_id",
+      "params": "session_index, activity_id",
       "returns": "Activity details with steps, checkpoints, decisions",
       "preserve": ["steps", "checkpoints", "decisions", "transitions"]
     }
@@ -1604,13 +1606,13 @@ A minimal skill demonstrating key concepts:
     },
     "next_activity": {
       "when": "Ready to transition to an activity",
-      "params": "session_token, activity_id",
+      "params": "session_index, activity_id",
       "returns": "Activity definition",
       "next": "get_step_skill"
     },
     "get_step_skill": {
       "when": "After loading an activity",
-      "params": "session_token, step_id",
+      "params": "session_index, step_id",
       "returns": "Skill definition for the step"
     }
   },

@@ -5,7 +5,7 @@ import { registerWorkflowTools } from './tools/workflow-tools.js';
 import { registerResourceTools } from './tools/resource-tools.js';
 
 import { registerSchemaResources } from './resources/schema-resources.js';
-import { logInfo } from './logging.js';
+import { logInfo, setAuditWorkspaceDir } from './logging.js';
 
 export function createServer(config: ServerConfig): McpServer {
   const resolvedConfig: ResolvedServerConfig = {
@@ -13,11 +13,13 @@ export function createServer(config: ServerConfig): McpServer {
     traceStore: config.traceStore ?? new TraceStore(),
   };
 
+  setAuditWorkspaceDir(resolvedConfig.workspaceDir);
+
   const server = new McpServer(
     { name: resolvedConfig.serverName, version: resolvedConfig.serverVersion },
     { capabilities: { tools: {}, resources: {} } }
   );
-  logInfo('Creating workflow server', { name: resolvedConfig.serverName, version: resolvedConfig.serverVersion, workflowDir: resolvedConfig.workflowDir });
+  logInfo('Creating workflow server', { name: resolvedConfig.serverName, version: resolvedConfig.serverVersion, workflowDir: resolvedConfig.workflowDir, workspaceDir: resolvedConfig.workspaceDir });
   registerWorkflowTools(server, resolvedConfig);
   registerResourceTools(server, resolvedConfig);
   registerSchemaResources(server, resolvedConfig);

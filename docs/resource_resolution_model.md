@@ -119,7 +119,7 @@ The bundle is the union of `activity.operations` (activity-declared refs) and `C
 
 | Set | Operations |
 |-----|-----------|
-| `CORE_ORCHESTRATOR_OPS` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `present-checkpoint-to-user`, `respond-checkpoint`, `bubble-checkpoint-up`, `persist`; `agent-conduct::orchestrator-discipline`, `checkpoint-discipline`, `operational-discipline` |
+| `CORE_ORCHESTRATOR_OPS` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `present-checkpoint-to-user`, `respond-checkpoint`, `bubble-checkpoint-up`; `agent-conduct::orchestrator-discipline`, `checkpoint-discipline`, `operational-discipline` |
 | `CORE_WORKER_OPS` | `workflow-engine::yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
 
 ## 6. Universal Skill Fallback
@@ -154,7 +154,7 @@ Resource refs may live at the skill level or per-operation. Server responses do 
 When the agent encounters an operation that needs a resource, it calls:
 
 ```javascript
-get_resource({ session_token, resource_id: "meta/activity-worker-prompt" })
+get_resource({ session_index, resource_id: "meta/activity-worker-prompt" })
 ```
 
 The server resolves the reference using `parseResourceRef`:

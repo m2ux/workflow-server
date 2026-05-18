@@ -216,7 +216,7 @@ Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
 
 1. Create `{NN}-{skill-id}.toon` in `workflows/meta/skills/`
 2. Use sequential index (00, 01, 02, etc.)
-3. Skills are auto-discovered. Their operations and rules become referenceable via `skill-id::operation-name` from any workflow.
+3. Access via: `get_skills` (workflow-level primary skill) or `get_skill { session_index, step_id: "{step-id}" }` (step-level)
 4. Commit to the `workflows` branch
 
 ### Workflow-Specific Skills
@@ -225,14 +225,12 @@ Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
 
 1. Create `{NN}-{skill-id}.toon` in `workflows/{workflow-id}/skills/`
 2. Use sequential index (00, 01, 02, etc.)
-3. Skills are auto-discovered — no manifest update needed.
-4. Reference their elements from activity / workflow `operations:` arrays as `skill-id::element-name`. The legacy `get_skill { session_token, step_id }` path remains for workflows still using per-step `skill:` references.
+3. Skills are auto-discovered - no manifest update needed
+4. Access via: `get_skill { session_index, step_id: "{step-id}" }` (when referenced by a step)
 5. Commit to the `workflows` branch
 
 ### Skill Resolution
 
-When resolving a skill (via the `resolve_operations` lookup or the legacy `get_skill` path), the workflow is determined from the session token:
+When loading a skill, the workflow is determined from the session's `session.json` (resolved via `session_index`):
 1. First checks `{workflow}/skills/{NN}-{skill-id}.toon`
 2. Falls back to `meta/skills/{NN}-{skill-id}.toon` (universal)
-
-Operations and rules in those skills are bundled automatically into `get_workflow` and `get_activity` responses according to the workflow's and activity's `operations:` arrays (plus the corresponding core orchestrator / worker op set).

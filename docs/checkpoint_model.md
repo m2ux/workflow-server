@@ -9,17 +9,17 @@ Because the system uses a [Hierarchical Dispatch Model](dispatch_model.md), sub-
 ### 1. Yielding at the Worker (Level 2)
 When an Activity Worker reaches a step that defines a `checkpoint` ID, it halts its domain work and calls the server API:
 ```javascript
-yield_checkpoint({ session_token, checkpoint_id: "verify-issue" })
+yield_checkpoint({ session_index, checkpoint_id: "verify-issue" })
 ```
-The server marks the session token as blocked (setting the `bcp` field) and returns a new token string. The worker uses this token string as the `checkpoint_handle`.
+The server records the active checkpoint in the session's `session.json` (`activeCheckpoint`) and mints a one-shot `checkpoint_handle` (an opaque, HMAC-signed string) that the worker passes up the chain. The persistent session state continues to live under `session_index`; the handle is purely a transport for the JIT bubble-up.
 
-**Hard gate during yield:** Cannot yield a new checkpoint while another checkpoint (`bcp`) is already active. This prevents nested checkpoint yields.
+**Hard gate during yield:** Cannot yield a new checkpoint while another checkpoint is already active in `session.json`. This prevents nested checkpoint yields.
 
 To pass this pause up the chain, the worker outputs a specialized JSON block in its final text response and stops:
 ```json
 <checkpoint_yield>
 {
-  "checkpoint_handle": "<opaque_token_string>"
+  "checkpoint_handle": "<opaque_handle_string>"
 }
 </checkpoint_yield>
 ```
@@ -32,23 +32,23 @@ The Workflow Orchestrator does not attempt to resolve the checkpoint itself. It 
 ### 3. Presenting and Resolving at the Meta Orchestrator (Level 0)
 The Meta Orchestrator (the user-facing agent) receives the yield block. It extracts the `checkpoint_handle` and queries the server for the human-readable metadata:
 ```javascript
-present_checkpoint({ checkpoint_handle: "<opaque_token_string>" })
+present_checkpoint({ checkpoint_handle: "<opaque_handle_string>" })
 ```
-The server decodes the handle (or accepts `session_token` as an alternative), locates the specific checkpoint in the workflow definition, and returns the message, options, and effects.
+The server decodes the handle, looks up the active checkpoint recorded in `session.json`, locates the matching checkpoint in the workflow definition, and returns the message, options, and effects.
 
 The Meta Orchestrator then calls its host UI tool (e.g., Cursor's `AskQuestion`, Claude Code's interactive prompts) to present the options to the human user.
 
 Once the user selects an option, the Meta Orchestrator finalizes the resolution on the server:
 ```javascript
-respond_checkpoint({ checkpoint_handle: "<opaque_token_string>", option_id: "proceed" })
+respond_checkpoint({ checkpoint_handle: "<opaque_handle_string>", option_id: "proceed" })
 ```
-The server clears the `bcp` block, records the decision, and returns any state updates (`effects`, such as variable changes) associated with the user's choice.
+The server clears `activeCheckpoint` from `session.json`, records the decision and any variable `effects` in the persistent session state, and returns those effects to the caller.
 
 **Three resolution modes:**
 
 1. **`option_id`** — The user's selected option. The server validates the option against the checkpoint definition and enforces a minimum response time (default 3 seconds since the checkpoint was yielded). This prevents instant auto-resolve without user interaction.
 
-2. **`auto_advance: true`** — For non-blocking checkpoints with `autoAdvanceMs`, the server uses the `defaultOption` but only after the full timer has elapsed. The elapsed time is estimated from the token's `ts` timestamp.
+2. **`auto_advance: true`** — For non-blocking checkpoints with `autoAdvanceMs`, the server uses the `defaultOption` but only after the full timer has elapsed. The elapsed time is measured from the `yieldedAt` timestamp recorded in `session.json` when the checkpoint was yielded.
 
 3. **`condition_not_met: true`** — Dismisses a conditional checkpoint whose prerequisite evaluated to false. Only valid when the checkpoint has a `condition` field. The server validates the presence of the condition field but cannot verify the condition's actual truth value.
 
@@ -65,13 +65,13 @@ The Workflow Orchestrator updates its internal JSON state tracker, and then resu
 > "The checkpoint has been resolved. Apply these variable updates: `is_monorepo = true`. Call `resume_checkpoint` to proceed."
 
 **Clearing the Local Lock (L2 API Call):**
-Because the Activity Worker needs a cryptographically valid, unblocked token to continue calling server tools (like `next_activity`), it must make one final API call:
+Before the Activity Worker can resume calling regular workflow tools (like `next_activity`), it must signal the unblock to the server with its `session_index` and the one-shot handle:
 ```javascript
-resume_checkpoint({ session_token: "<checkpoint_handle>" })
+resume_checkpoint({ session_index, checkpoint_handle: "<opaque_handle_string>" })
 ```
-The server verifies that the checkpoint was successfully resolved by the Meta Orchestrator (checking that `bcp` is cleared), and returns a fresh, unblocked session token. The Activity Worker uses this new token to execute the next step in its activity.
+The server verifies that the checkpoint has been resolved (by the Meta Orchestrator) and that `activeCheckpoint` is cleared in `session.json`, then returns the recorded variable effects so the worker can apply them locally. The Activity Worker uses its existing `session_index` for the next step.
 
-**Hard gate on resume:** `resume_checkpoint` throws a hard error if `bcp` is still active — the checkpoint must be resolved before the worker can proceed.
+**Hard gate on resume:** `resume_checkpoint` throws a hard error if `activeCheckpoint` is still set in `session.json` — the checkpoint must be resolved before the worker can proceed.
 
 ## Checkpoint Schema
 

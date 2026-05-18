@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { WorkflowSchema } from '../src/schema/workflow.schema.js';
 import { WorkflowStateSchema } from '../src/schema/state.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
+import { SessionFileSchema } from '../src/schema/session.schema.js';
 
 const schemasDir = join(import.meta.dirname, '..', 'schemas');
 mkdirSync(schemasDir, { recursive: true });
@@ -19,4 +20,5 @@ console.log('Generating JSON Schema files...\n');
 generate(WorkflowSchema, 'workflow', 'Workflow definition schema');
 generate(WorkflowStateSchema, 'state', 'Workflow state schema');
 generate(ConditionSchema, 'condition', 'Condition expression schema');
+generate(SessionFileSchema, 'session-file', 'Server-managed session file (session.json) — canonical session state owned by the workflow server.');
 console.log('\n[PASS] Done');
