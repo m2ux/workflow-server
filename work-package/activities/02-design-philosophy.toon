@@ -1,7 +1,7 @@
 id: design-philosophy
-version: 1.4.0
+version: 1.5.0
 name: Design Philosophy
-description: "Apply structured design framework to classify the problem, determine complexity, and decide which activities to perform."
+description: "Apply the design framework to classify the problem and decide the workflow path."
 problem: User needs to understand problem nature before deciding on workflow path
 recognition[4]:
   - classify problem
@@ -35,8 +35,15 @@ steps[9]:
     description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
   - id: classify-problem
     name: Classify Problem Type
-    description: "Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity."
+    description: "Classify the problem type and assess complexity."
     checkpoint: classification-confirmed
+    actions[2]:
+      - action: set
+        target: problem_type
+        description: "One of: specific-cause-known, specific-cause-unknown, inventive-improvement, inventive-prevention."
+      - action: set
+        target: complexity
+        description: "One of: simple, moderate, complex."
   - id: determine-path
     name: Determine Workflow Path
     description: "Based on problem complexity and clarity, determine which optional activities are needed."
@@ -145,7 +152,7 @@ checkpoints[3]:
         description: Well-defined issue — no additional discovery needed
         effect:
           setVariable:
-            complexity: simple
+            path_gating_complexity: simple
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
@@ -188,10 +195,11 @@ outcome[5]:
   - Workflow path determined
   - Design philosophy documented in artifact
   - Ready for next activity based on problem nature
-context_to_preserve[7]:
+context_to_preserve[8]:
   - problem_statement - Clear problem definition
   - problem_type - Specific problem or inventive goal
   - complexity - simple, moderate, or complex
+  - path_gating_complexity - path-gating mirror of complexity for workflow-path-selected
   - needs_elicitation - Whether requirements elicitation is needed
   - needs_research - Whether research is needed
   - skip_optional_activities - Whether to skip optional discovery activities

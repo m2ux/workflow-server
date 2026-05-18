@@ -1,7 +1,7 @@
 id: validate
 version: 3.0.0
 name: Verify & Validate Design
-description: "Validate the implementation by running tests, build, format, and lint via cargo-operations (Rust/Substrate) or project-equivalent commands, then aggregate results via validate-build. Test suite quality was reviewed at the implement phase."
+description: "Validate the implementation against tests, build, format, and lint checks."
 problem: User needs to validate the implementation passes all tests
 recognition[3]:
   - validate implementation

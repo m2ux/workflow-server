@@ -1,7 +1,7 @@
 id: deliver-results
 version: 1.1.0
 name: Deliver Evaluation Results
-description: "Present the final evaluation results to the user. Reads and summarises the evaluation report, reports all artifact paths, and provides a structured summary of findings by dimension and severity. Offers the user the option to proceed with a resolution dialogue to address findings."
+description: "Present the final evaluation results to the user."
 problem: "The evaluation produces multiple artifacts across multiple prism runs. The user needs a clear summary of what was produced, key metrics (finding counts by dimension and severity), the core finding, and paths to all deliverables. The user may also want to proceed with proposing mitigations for the findings."
 skills:
   supporting[1]:

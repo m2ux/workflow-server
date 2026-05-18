@@ -1,7 +1,7 @@
 id: deliver-result
 version: 3.0.0
 name: Deliver Result
-description: "Present the final report to the user. Reads the REPORT.md artifact produced by the generate-report activity and reports paths to all underlying analysis artifacts for reference. This is the terminal activity for all prism pipeline modes."
+description: "Present the final report to the user."
 skills:
   supporting[1]:
     - structural-analysis

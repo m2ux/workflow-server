@@ -2,7 +2,7 @@ id: resolve-findings
 version: 1.0.0
 capability: Propose and apply finding-specific mitigations through structured one-by-one dialogue with the user
 
-description: "Given an evaluation report and its target, classify each finding by mitigation difficulty, propose specific mitigations that preserve claim intent where possible, and conduct a structured dialogue presenting one finding at a time. Produces a mitigation plan artifact and optionally applies accepted changes to the target."
+description: "Propose and apply finding-specific mitigations through one-by-one dialogue."
 
 inputs[4]:
   - id: evaluation_report_path

@@ -2,7 +2,7 @@ id: assess-initiative-scope
 version: 1.0.0
 capability: Identify and categorize work packages from a multi-package initiative description
 
-description: "Guides agents through decomposing a user's initiative description into distinct work packages. Validates that the initiative is genuinely multi-package (not a single work package), identifies natural boundaries between packages, and presents a structured scope summary for user confirmation."
+description: "Decompose a multi-package initiative description into distinct work packages."
 
 inputs[1]:
   - id: user-initiative-description

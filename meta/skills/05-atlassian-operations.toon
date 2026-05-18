@@ -2,7 +2,7 @@ id: atlassian-operations
 version: 3.0.0
 capability: Operations for Jira and Confluence tasks via the Atlassian MCP server
 
-description: "Operations for the common Jira and Confluence tasks. Each operation wraps one or two Atlassian MCP tools with explicit inputs and the tool reference inline. cloudId is resolved via resolve-cloud-id once per session and reused."
+description: "Operations for common Jira and Confluence tasks."
 
 operations:
   resolve-cloud-id:

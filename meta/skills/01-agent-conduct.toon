@@ -2,7 +2,7 @@ id: agent-conduct
 version: 4.0.0
 capability: Define agent behavioral boundaries for file sensitivity, communication, operational discipline, checkpoint resolution, and cross-cutting orchestrator constraints
 
-description: "Cross-cutting behavioral boundaries. Single source of truth for: file sensitivity, communication tone, attribution prohibition, code commentary, operational discipline, checkpoint discipline (worker / workflow-orchestrator / meta-orchestrator role split), and shared orchestrator-discipline rules (target-path scope, no-domain-work, automatic transitions, no ad-hoc interaction). Per-role skills reference these rules; they are not restated."
+description: "Cross-cutting behavioral boundaries for agents."
 
 rules:
   file-sensitivity[3]:
@@ -27,7 +27,7 @@ rules:
     - "Checkpoints are explicit user decision gates. The meta-orchestrator MUST NOT call respond_checkpoint with an option_id unless the user has explicitly selected that option. Never fabricate an option_id or auto-resolve."
   operational-discipline[3]:
     - "Domain-specific tools may ONLY be invoked from operations bundled into the current activity or workflow response. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls."
-    - "Do NOT read workflow resource files directly from disk — load them via get_resource({ session_token, resource_id }) using the refs declared on operations (e.g., 'meta/activity-worker-prompt'). Resource ids are preferred; numeric indices ('meta/01') resolve for backward compatibility."
+    - "Do NOT read workflow resource files directly from disk — load them via get_resource({ session_index, resource_id }) using the refs declared on operations (e.g., 'meta/activity-worker-prompt'). Resource ids are preferred; numeric indices ('meta/01') resolve for backward compatibility."
     - "cargo fmt is exempt from nice — it is fast and should run at normal priority."
   orchestrator-discipline[5]:
     - "no-domain-work: The orchestrator (meta or workflow) MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker."

@@ -1,7 +1,7 @@
 id: post-impl-review
 version: 1.9.0
 name: Post-Implementation Review
-description: "Review implementation quality regardless of whether code was newly written or adopted. Ensures code review, test suite review, and architecture summary are completed before validation."
+description: "Review implementation quality before validation."
 problem: User needs to review implementation quality before validation
 recognition[3]:
   - review implementation
@@ -210,9 +210,9 @@ outcome[6]:
   - Manual diff review completed with indexed block table and interview findings
   - Manual diff review report created (manual-diff-review.md)
   - Code review complete with documented findings
-  - Structural analysis complete (single-pass or full-prism based on complexity)
+  - Structural analysis complete
   - Test suite quality reviewed
-  - Architecture summary created (if applicable)
+  - Architecture summary created when applicable
 context_to_preserve[10]:
   - change_block_index_path - Path to change-block-index.md file
   - change_block_data - Parsed hunk data for interview loop
@@ -223,6 +223,6 @@ context_to_preserve[10]:
   - test_review_findings - Findings from test suite review
   - architecture_summary_created - Whether architecture summary was created
   - manual_diff_review_report_path - Path to generated manual diff review report
-  - prism_artifact_paths - Paths to prism structural analysis artifacts (single-pass or full-prism)
+  - prism_artifact_paths - Paths to prism structural analysis artifacts
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark review artifacts as ✅ Complete.

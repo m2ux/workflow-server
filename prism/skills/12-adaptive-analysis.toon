@@ -2,7 +2,7 @@ id: adaptive-analysis
 version: 1.0.0
 capability: Automatically escalate analysis depth from cheap/fast to deep/expensive based on signal quality assessment
 
-description: "Adaptive mode minimizes cost by starting with the cheapest analysis (SDL deep_scan, ~$0.02 on Haiku) and escalating only when signal quality is insufficient. Stage 1: SDL quick scan. Stage 2: L12 deep (if needed). Stage 3: Full 3-pass pipeline (if still needed). Stops at the first stage producing adequate analytical depth."
+description: "Cost-minimizing depth escalation from cheap to deep analysis."
 
 inputs[3]:
   - id: target-content

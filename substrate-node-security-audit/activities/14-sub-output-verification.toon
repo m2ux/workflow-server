@@ -1,7 +1,7 @@
 id: sub-output-verification
 version: 1.0.0
 name: "Sub-Agent: Output Verification"
-description: "Dispatched after primary agent collection to mechanically validate that all agent outputs meet structural completeness requirements, coverage gates, and target profile obligations. Produces a gap report with re-dispatch recommendations and extracts table-derived findings. Runs in a dedicated context window to avoid orchestrator verification shallowness."
+description: "Mechanically validate primary-agent output completeness."
 problem: "The orchestrator executes 10+ verification protocols inline after composing prompts for 8+ agents and collecting their outputs. By this point the orchestrator's context window is saturated and verification becomes shallow — mandatory tables are assumed present, coverage gates are loosely checked, and target profile obligations are not mechanically verified. This produces inconsistent finding counts across runs on the same codebase."
 recognition[3]:
   - verify agent outputs

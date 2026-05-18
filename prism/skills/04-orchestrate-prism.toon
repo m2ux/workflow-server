@@ -2,7 +2,7 @@ id: orchestrate-prism
 version: 1.1.0
 capability: Orchestrate the prism workflow with isolated sub-agent passes for analytical independence
 
-description: "Coordination skill for the prism workflow orchestrator. Dispatches each analytical pass to a FRESH sub-agent (never resumed) to guarantee context isolation. The adversarial pass must never share generation history with the structural pass. The orchestrator passes artifact paths between workers — each worker reads prior artifacts from the filesystem and writes its own artifact. Supports single-pass, full-prism (3-pass), portfolio, and behavioral (4+1) modes."
+description: "Coordination skill for the prism workflow orchestrator."
 
 inputs[5]:
   - id: target-content

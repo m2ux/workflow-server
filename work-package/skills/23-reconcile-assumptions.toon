@@ -2,7 +2,7 @@ id: reconcile-assumptions
 version: 1.0.0
 capability: Iteratively resolve code-analyzable assumptions through targeted codebase analysis until only stakeholder-dependent assumptions remain
 
-description: "Cross-cutting skill that closes the gap between assumption collection and user review. After an activity collects assumptions, this skill classifies each as code-resolvable or not, runs targeted analysis on the resolvable ones, captures newly surfaced assumptions, and repeats until convergence — the point where no open assumptions can be further reduced through code examination. The user then reviews only the irreducible set."
+description: "Iteratively resolve code-analyzable assumptions until only stakeholder-dependent ones remain."
 
 inputs[3]:
   - id: assumptions-log-path

@@ -2,7 +2,7 @@ id: workflow-design
 version: 1.0.1
 capability: Guide agents through designing and drafting workflow definitions that maximize schema expressiveness and follow established conventions
 
-description: "Primary skill for the workflow-design workflow. Provides design principles, schema construct awareness, quality review checklists, and structural enforcement guidance. Agents using this skill produce workflow definitions where every piece of structured information uses the most specific formal construct the schema provides."
+description: "Primary skill for the workflow-design workflow."
 
 inputs[2]:
   - id: user-description

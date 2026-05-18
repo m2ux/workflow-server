@@ -1,7 +1,7 @@
 id: strategic-review
 version: 2.5.1
 name: Strategic Review
-description: "Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. Confirms GPG signatures on PR commits (with user consent before history rewrite) and ensures a changelog fragment exists when the target repo uses a root-level changes/ convention."
+description: "Review the implementation to ensure changes are minimal and focused."
 problem: User needs to ensure changes are minimal and focused
 recognition[3]:
   - strategic review
@@ -160,7 +160,7 @@ outcome[6]:
   - Investigation artifacts and over-engineering removed
   - Review findings documented in strategic-review-{n}.md
   - Architecture summary created in architecture-summary.md for stakeholder communication
-  - PR commit GPG signature expectations addressed (resign completed or user declined with documentation)
+  - Resign completed for any unsigned commits, or user decline documented
   - Changelog fragment added when target repo uses root changes/ and none existed for this work
 context_to_preserve[7]:
   - review_findings - Findings from strategic review
@@ -168,5 +168,5 @@ context_to_preserve[7]:
   - items_removed - List of items removed during cleanup
   - unsigned_commits_in_pr - Whether any unsigned commits remained after strategic review
   - resign_unsigned_commits_requested - Whether user requested resign at checkpoint
-  - strategic_findings_summary - Concise multi-line summary of findings interpolated into the review-findings checkpoint message
-  - fragment_references_issue - Whether the change fragment references issue_url (true/false/null per verify-change-fragment)
+  - strategic_findings_summary - Concise multi-line summary of findings
+  - fragment_references_issue - Whether the change fragment references issue_url (true, false, or null)

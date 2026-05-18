@@ -2,7 +2,7 @@ id: orchestrate-package-execution
 version: 1.0.0
 capability: Trigger and manage work-package workflow instances for each planned package in priority order
 
-description: "Orchestrates the implementation loop by triggering the work-package workflow for each planned package. Handles context passing between the parent work-packages workflow and each child work-package workflow instance. Updates roadmap status after each package completes."
+description: "Trigger and manage work-package workflow instances for each planned package."
 
 inputs[3]:
   - id: remaining-packages

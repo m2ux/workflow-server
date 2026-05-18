@@ -1,6 +1,6 @@
 ---
 id: pr-description
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Pull Request Description Guide
@@ -250,6 +250,22 @@ The `ENG_REPO_URL` comes from the **parent repo** (the repo containing `.enginee
 ```
 https://github.com/midnightntwrk/midnight-node/issues/1471
 ```
+
+#### Issue-skipped placeholder (when `issue_skipped == true`)
+
+When the user explicitly skipped issue creation/verification at the `issue-verification` checkpoint in `start-work-package` (i.e., the workflow variable `issue_skipped` is `true`), the Issue line **must still be rendered** so reviewers can tell at a glance that the omission was intentional. Use the literal placeholder:
+
+```markdown
+🐛 _Issue: skipped_  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
+```
+
+**Rules:**
+- Render the placeholder exactly as `🐛 _Issue: skipped_` (italicised, no link). This is the canonical form checked by `update-pr::rules.pr-body-conformance.issue-link-or-explicit-placeholder`.
+- Do NOT drop the Issue line — that hides the fact that issue tracking was intentionally skipped.
+- Do NOT fabricate an issue number or invent a placeholder link. If `github_issue_number` is empty and `issue_skipped == true`, the placeholder above is the only acceptable rendering.
+- The Engineering link still resolves normally, on the same line, in the same format as the linked variant.
+
+This rule applies to both the Initial and Final templates. The `update-pr::verify-body` phase will flag a missing or fabricated Issue line under rule id `issue-link-or-explicit-placeholder`.
 
 #### Jira reference (when applicable)
 

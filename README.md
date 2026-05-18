@@ -19,7 +19,7 @@ workflows/                    # Worktree checkout
 │   ├── resources/            # Reference material (indexed)
 │   │   └── {NN}-{name}.md    # 00-bootstrap-protocol, 01-activity-worker-prompt, ...
 │   └── skills/               # Universal skills (indexed, auto-resolved across workflows)
-│       └── {NN}-{id}.toon    # 00-session-protocol, 01-agent-conduct, ...
+│       └── {NN}-{id}.toon    # 00-workflow-engine, 01-agent-conduct, ...
 ├── {workflow-id}/            # Each workflow folder
 │   ├── README.md             # Workflow documentation with Mermaid diagrams
 │   ├── workflow.toon         # Workflow definition
@@ -52,18 +52,14 @@ Skills are referenced by canonical ID (the filename minus the `NN-` prefix). The
 
 | Skill | Description |
 |-------|-------------|
-| [`session-protocol`](meta/skills/00-session-protocol.toon) | Session lifecycle protocol: token mechanics, checkpoint-handle discipline, step manifests, resource-loading conventions |
+| [`workflow-engine`](meta/skills/00-workflow-engine.toon) | Operations and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
 | [`agent-conduct`](meta/skills/01-agent-conduct.toon) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
-| [`state-management`](meta/skills/02-state-management.toon) | Concept reference for variable mutation, persist-after-activity, and adopted/recovered token semantics (state I/O via save_state/restore_state MCP tools) |
-| [`version-control`](meta/skills/03-version-control.toon) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
-| [`github-cli-protocol`](meta/skills/04-github-cli-protocol.toon) | GitHub CLI usage: GraphQL-deprecation workarounds, REST API for mutations |
-| [`knowledge-base-search`](meta/skills/05-knowledge-base-search.toon) | Optimised concept-rag searches via pre-indexed domain maps |
-| [`atlassian-operations`](meta/skills/06-atlassian-operations.toon) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
-| [`gitnexus-operations`](meta/skills/07-gitnexus-operations.toon) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
-| [`meta-orchestrator`](meta/skills/08-meta-orchestrator.toon) | Inline meta-workflow role: checkpoint mediation, sub-agent dispatch, meta-level errors |
-| [`activity-worker`](meta/skills/09-activity-worker.toon) | Engine logic for the activity-worker role: bootstrap, step iteration, checkpoint yielding, artifact production |
-| [`workflow-orchestrator`](meta/skills/10-workflow-orchestrator.toon) | Engine logic for driving an arbitrary client workflow: doWhile-over-activities, transitions, persist hooks |
-| [`harness-compat`](meta/skills/11-harness-compat.toon) | Harness-independent operations (spawn-agent, continue-agent, spawn-concurrent) abstracting cross-tool dispatch |
+| [`version-control`](meta/skills/02-version-control.toon) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
+| [`github-cli-protocol`](meta/skills/03-github-cli-protocol.toon) | GitHub CLI usage: GraphQL-deprecation workarounds, REST API for mutations |
+| [`knowledge-base-search`](meta/skills/04-knowledge-base-search.toon) | Optimised concept-rag searches via pre-indexed domain maps |
+| [`atlassian-operations`](meta/skills/05-atlassian-operations.toon) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
+| [`gitnexus-operations`](meta/skills/06-gitnexus-operations.toon) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
+| [`harness-compat`](meta/skills/07-harness-compat.toon) | Harness-independent operations (spawn-agent, continue-agent, spawn-concurrent) abstracting cross-tool dispatch |
 
 ## Worktree Setup
 
@@ -95,7 +91,7 @@ git worktree add ./workflows workflows
 
 **Skills:**
 1. Create `{NN}-{skill-id}.toon` with two-digit index
-2. Universal: Create in `meta/skills/` (e.g., `00-session-protocol.toon`)
+2. Universal: Create in `meta/skills/` (e.g., `00-workflow-engine.toon`)
 3. Workflow-specific: Create in `{workflow-id}/skills/`
 4. Commit to this branch
 

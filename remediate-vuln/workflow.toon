@@ -2,7 +2,7 @@
 id: remediate-vuln
 version: 1.0.1
 title: Security Vulnerability Remediation Workflow
-description: "A highly isolated workflow for remediating security vulnerabilities without public disclosure. Bypasses all public issue tracking and PR creation, operating exclusively on a private security remote."
+description: "Remediate security vulnerabilities without public disclosure."
 author: m2ux
 tags[5]:
   - security

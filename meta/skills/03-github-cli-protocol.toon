@@ -2,7 +2,7 @@ id: github-cli-protocol
 version: 3.0.0
 capability: Operations for GitHub CLI usage with GraphQL-deprecation workarounds
 
-description: "Operations for common GitHub PR/issue tasks. Mutating operations route through gh's REST API (gh api) because gh's GraphQL paths fail under Projects Classic deprecation. Read operations use the standard gh CLI."
+description: "Operations for common GitHub PR and issue tasks."
 
 operations:
   update-pr-description:

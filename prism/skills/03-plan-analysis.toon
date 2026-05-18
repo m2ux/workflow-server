@@ -2,7 +2,7 @@ id: plan-analysis
 version: 1.1.0
 capability: Plan an analysis strategy by detecting scope, classifying targets, and selecting lenses appropriate to each unit of work
 
-description: "Given a target and an analytical goal, produce an execution plan that maps each unit of work to a pipeline mode and lens selection. Handles five scope types: query (a question, idea, or concept — no files), file (single source file or document), module (coherent code group), codebase (repository with multiple modules), and document-set (directory of non-code artifacts). For query and file scopes, produces a direct lens recommendation. For broader scopes, surveys the structure, classifies units by role and risk, and produces a prioritised execution plan with cost estimates."
+description: "Produce an execution plan mapping each unit of work to a pipeline mode and lens selection."
 
 inputs[6]:
   - id: target

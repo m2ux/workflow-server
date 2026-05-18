@@ -2,7 +2,7 @@ id: knowledge-base-search
 version: 3.0.0
 capability: Operations for targeted concept-rag searches via pre-indexed domain maps
 
-description: "Operations for searching the knowledge base. Domain indexes in .engineering/resources/ map natural terminology to indexed concept terms, reducing exploratory queries from 3-5 to 2 targeted ones."
+description: "Operations for searching the knowledge base."
 
 operations:
   load-domain-index:

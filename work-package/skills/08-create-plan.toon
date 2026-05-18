@@ -2,7 +2,7 @@ id: create-plan
 version: 2.1.0
 capability: Create work package plan with task breakdown, dependencies, and ordering
 
-description: "Design the implementation approach and produce work-package-plan.md. Applies design framework to structure the approach, breaks work into atomic tasks with explicit dependencies, and documents design decisions and assumptions. Test plan creation is handled by the separate create-test-plan skill."
+description: "Design the implementation approach and produce work-package-plan.md."
 
 inputs[4]:
   - id: design-philosophy

@@ -1,69 +1,60 @@
 id: dispatch-client-workflow
-version: 4.0.0
+version: 5.0.0
 name: Dispatch Client Workflow
-description: "Compose the workflow-orchestrator prompt, dispatch the orchestrator, and drive the checkpoint-yield loop until workflow_complete."
-problem: The orchestrator runs as a sub-agent (or inline persona) and surfaces checkpoints upward; meta must mediate user interaction for those checkpoints and resume the orchestrator with the resolved effects
+description: "Drive the client workflow's activity loop."
+problem: The orchestrator must drive the client workflow's activity loop inline rather than via a spawned client orchestrator
 required: true
 operations[5]:
-  - "workflow-engine::compose-prompt"
-  - "workflow-engine::extract-checkpoint-handle"
-  - "workflow-engine::handle-workflow-complete"
-  - "harness-compat::spawn-agent"
-  - "harness-compat::continue-agent"
+  - "workflow-engine::dispatch-activity"
+  - "workflow-engine::evaluate-transition"
+  - "workflow-engine::commit-and-persist"
+  - "workflow-engine::present-checkpoint-to-user"
+  - "workflow-engine::respond-checkpoint"
 rules[1]:
-  - "Pass client_session_token to the orchestrator prompt — the orchestrator inherits state via that token, NEVER via the meta session token"
+  - "Authenticate every tool call inside the loop with client_session_index. The meta session_index is used only at activity boundaries (commit-and-persist's engineering commit) and at end-workflow."
 entryActions[1]:
   - action: validate
-    target: client_session_token
-    message: "Cannot dispatch without a client session token; initialize-session must run first"
-steps[2]:
-  - id: compose-orchestrator-prompt
-    description: "workflow-engine::compose-prompt(template_ref: meta/workflow-orchestrator-prompt, substitutions: { workflow_id: {target_workflow_id}, session_token: {client_session_token}, planning_folder_path: {planning_folder_path}, target_path: {target_path}, agent_id: workflow-orchestrator })"
-  - id: dispatch-orchestrator
-    description: "harness-compat::spawn-agent(prompt: {composed_orchestrator_prompt}, description: Workflow orchestrator for {target_workflow_id})"
+    target: client_session_index
+    message: "Cannot dispatch without a client session_index; initialize-session must run first"
+steps[1]:
+  - id: prime-initial-activity
+    description: "Determine the first activity to dispatch."
 loops[1]:
-  - id: checkpoint-loop
-    name: Checkpoint-Yield Loop
-    type: doWhile
-    description: "Iterate until the orchestrator reports workflow_complete."
+  - id: client-activity-loop
+    name: Client Activity Loop
+    type: while
     condition:
       type: simple
-      variable: client_workflow_completed
-      operator: "=="
-      value: false
+      variable: current_activity
+      operator: "!="
+      value: null
     maxIterations: 200
     steps[5]:
-      - id: capture-checkpoint-yield
-        description: "workflow-engine::extract-checkpoint-handle(output: {orchestrator_output})"
-        when: "client_workflow_completed == false"
-      - id: capture-workflow-complete
-        description: "workflow-engine::handle-workflow-complete(result: {orchestrator_output})"
-        when: "client_workflow_completed == false"
-      - id: present-and-resolve
-        description: "workflow-engine::present-checkpoint-to-user(checkpoint_handle: {pending_checkpoint_handle})"
-        when: "client_workflow_completed == false"
-      - id: respond-checkpoint
-        description: "workflow-engine::respond-checkpoint(checkpoint_handle: {pending_checkpoint_handle}, resolution: {user_selection})"
-        when: "client_workflow_completed == false"
-        actions[1]:
-          - action: set
-            target: client_session_token
-            value: "{resumed_session_token}"
-            description: "Advance the client session token to the post-respond handle returned by respond_checkpoint. The previous client_session_token still has bcp set; reusing it would gate every subsequent worker call."
-      - id: continue-orchestrator
-        description: "harness-compat::continue-agent(session_token: {client_session_token}, prompt: Checkpoint resolved. Use this resumed session_token for all subsequent calls (NOT your yield-time checkpoint_handle — that still has bcp set): {client_session_token}. Effects to apply: {effects}. Continue execution from the paused step.)"
-        when: "client_workflow_completed == false"
+      - id: dispatch-activity
+        description: "workflow-engine::dispatch-activity(activity_id: {current_activity}, session_index: {client_session_index}, prompt_template: meta/activity-worker-prompt, state: {variables})"
+      - id: present-yielded-checkpoint
+        when: "worker_yielded_checkpoint == true"
+        description: "workflow-engine::present-checkpoint-to-user(session_index: {client_session_index})"
+      - id: respond-yielded-checkpoint
+        when: "worker_yielded_checkpoint == true"
+        description: "workflow-engine::respond-checkpoint(session_index: {client_session_index}, resolution: {user_selection})"
+      - id: commit-activity-artifacts
+        when: "worker_yielded_checkpoint == false"
+        description: "workflow-engine::commit-and-persist(activity_id: {current_activity}, planning_folder_path: {planning_folder_path}, target_path: {target_path})"
+      - id: advance-activity
+        when: "worker_yielded_checkpoint == false"
+        description: "workflow-engine::evaluate-transition(activity: {completed_activity}, state: {variables}, transition_override: {transition_override})"
 transitions[1]:
   - to: end-workflow
     condition:
       type: simple
-      variable: client_workflow_completed
+      variable: current_activity
       operator: "=="
-      value: true
+      value: null
 outcome[3]:
-  - Client workflow orchestrator dispatched and lifecycle managed inline by meta
-  - Every yielded checkpoint presented to the user; selections forwarded to the server with respond_checkpoint
-  - Client workflow reached workflow_complete (or the user aborted via end-workflow's completion-confirmed checkpoint)
+  - Client workflow's activity loop driven to completion by the meta orchestrator
+  - Every yielded checkpoint presented to the user; selections forwarded via respond_checkpoint
+  - Client workflow reached workflow_complete (current_activity == null after evaluate-transition)
 context_to_preserve[2]:
-  - client_workflow_completed - Whether the client workflow has finalised
-  - pending_checkpoint_handle - The most recently yielded checkpoint (cleared after each iteration)
+  - current_activity - Server-resident activity pointer mirrored locally for the loop condition
+  - worker_yielded_checkpoint - Whether the dispatched worker yielded a checkpoint

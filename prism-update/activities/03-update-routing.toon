@@ -1,7 +1,7 @@
 id: update-routing
 version: 1.0.0
 name: Update Routing
-description: "Update all prism workflow skills to reflect resource changes: fix renamed references, add goal-mapping entries, expand catalogs, update resource lists."
+description: "Update prism workflow skills to reflect resource changes."
 problem: Skill routing tables reference prism names and indices that may have changed
 skills:
   supporting[1]:

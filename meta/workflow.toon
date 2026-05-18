@@ -2,7 +2,7 @@
 id: meta
 version: 5.0.0
 title: Meta Workflow
-description: "Top-level lifecycle workflow. Five activities run in the meta session: identify the target workflow and any matching saved client session, create or adopt the client session as a child of meta, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out. Excluded from list_workflows — bootstrap navigates here directly."
+description: "Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly."
 author: m2ux
 tags[5]:
   - meta
@@ -18,8 +18,8 @@ initialActivity: discover-session
 rules[3]:
   - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
   - "Skills in this workflow are universal and resolve for any client workflow via the loader's universal-skill fallback"
-  - "Meta does not perform domain work — every activity exists to identify, create, adopt, dispatch, or close out a client session"
-variables[14]:
+  - "Meta does not perform domain work — every activity exists to identify, create, resume, dispatch, or close out a client session"
+variables[12]:
   - name: target_workflow_id
     type: string
     description: "ID of the client workflow to dispatch (set by discover-session)"
@@ -31,9 +31,9 @@ variables[14]:
     type: boolean
     description: "Whether discover-session matched a saved client session for the request"
     defaultValue: false
-  - name: saved_session_token
+  - name: saved_planning_slug
     type: string
-    description: "Saved client session token from a matched workflow-state.toon (set by discover-session when has_saved_state)"
+    description: "Planning slug of the matched saved client session (set by discover-session when has_saved_state) — passed to start_session to resume the existing session.json"
   - name: is_resuming
     type: boolean
     description: "Whether the user chose to resume the matched saved session"
@@ -41,17 +41,12 @@ variables[14]:
   - name: planning_folder_path
     type: string
     description: "Absolute path to the planning folder for the client workflow"
-  - name: client_session_token
+  - name: client_session_index
     type: string
-    description: "Session token for the dispatched client workflow (created or adopted by initialize-session)"
-  - name: session_recovered
-    type: boolean
-    description: "Whether start_session returned recovered: true (saved payload corrupted; state must be reconstructed)"
-    defaultValue: false
-  - name: session_adopted
-    type: boolean
-    description: "Whether start_session returned adopted: true (saved payload preserved; token re-signed)"
-    defaultValue: false
+    description: "6-character base32 session_index for the dispatched client workflow (returned by start_session when initialize-session creates or resumes the session)"
+  - name: client_planning_slug
+    type: string
+    description: "Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate session.json"
   - name: is_monorepo
     type: boolean
     description: "Whether the target repository is a submodule monorepo (set by resolve-target)"
@@ -64,9 +59,6 @@ variables[14]:
     type: boolean
     description: "Whether the dispatched client workflow has reached workflow_complete"
     defaultValue: false
-  - name: pending_checkpoint_handle
-    type: string
-    description: "Most recently yielded checkpoint_handle awaiting resolution (cleared after each iteration of the dispatch loop)"
   - name: abort_completion
     type: boolean
     description: "Whether the user chose to return to dispatch from end-workflow instead of closing"

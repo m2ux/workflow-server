@@ -2,7 +2,7 @@ id: validate-build
 version: 2.0.0
 capability: Triage validation failures and aggregate cross-check results for the validate activity
 
-description: "Provides the orchestration operations the validate activity needs OUTSIDE of cargo execution: analysing the root cause of a failed check, applying a fix, and aggregating per-check outcomes into a single validation_results envelope. Cargo command execution lives entirely in cargo-operations — this skill never invokes cargo and never describes cargo invocations; it operates on the OUTPUTS of cargo-operations operations and on source files."
+description: "Triage validation failures and aggregate cross-check results."
 
 operations:
   analyze-failure:
