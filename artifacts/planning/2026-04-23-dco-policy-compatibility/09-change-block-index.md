@@ -2,8 +2,8 @@
 
 **Activity:** post-impl-review (resume mode)
 **Diff source:** `git diff workflows...HEAD` in `/home/mike1/projects/work/workflow-server/2026-05-18-dco-policy-update`
-**Range:** `workflows` → `dco-update-2026-05-18` (HEAD `b5b7b7c`)
-**Hunks counted:** 40 unified-diff hunks across 13 changed files (T13 covers 2 files).
+**Range:** `workflows` → `dco-update-2026-05-18` (HEAD `1d490c8`)
+**Hunks counted:** 44 unified-diff hunks across 13 changed files (T13 covers 2 files). Rows 41–44 are the review-fix-cycle iteration 1 hunks (commit `1d490c8`) resolving finding C1.
 **Rationale source:** Each row's rationale is reproduced from the existing planning record (`06-wp-plan.md`, written 2026-04-23 and backfilled 2026-05-19 against the same diff). Resume-mode practice: the user has already authored a per-task rationale at planning time; this index links each diff hunk back to the originating task and re-states the task-level rationale at hunk granularity. No new rationale is invented here.
 
 > **Resume-mode rationale-confirmation note.** Per the worker prompt, this artifact records the rationale confirmation pass that the `file-index-table` checkpoint normally surfaces interactively. The reviewer can compare each row's rationale against the diff in their side-by-side app; if any row is wrong, they raise it at the next live workflow gate (strategic-review's diff-review step, or a fresh post-impl-review run with the corrections fed back).
@@ -54,6 +54,10 @@
 | 38 | `work-package/workflow.toon` | L1–6 (header) | T1 | Version bump 3.11.0 → 3.12.0 — minor bump per the workflow-level versioning convention because the variable surface is non-trivially changed. |
 | 39 | `work-package/workflow.toon` | L43–46 (modes block context) | T1 | Hunk context only — no semantic change in the modes block. Included because the `variables[88]` → `[87]` counter on the next line sits in this hunk's tail. |
 | 40 | `work-package/workflow.toon` | L289–303 (variable surface) | T1 | The core variable-surface change. Three variables removed (`unsigned_commits_in_pr`, `resign_unsigned_commits_requested`, `unsigned_commit_list_summary`) and two added (`squash_merge_available`, `context_scope`). Net -1 variable (88 → 87) but conceptually replaces a three-variable cluster supporting agent-side resign with a two-variable cluster supporting human-time attestation routing and provenance. |
+| 41 | `work-package/workflow.toon` | L3 (header) | review-fix-cycle / C1 | Version bump 3.12.0 → 3.12.1 — patch bump for an in-PR fix-cycle commit that lands on the same review. |
+| 42 | `work-package/workflow.toon` | L46 + L218–223 (variable add) | review-fix-cycle / C1 | Bump `variables[87]` → `[88]` and insert `rationale_confirmed` (boolean, default false) directly after `has_flagged_blocks`. The new variable carries the user's "I confirmed the rationale paragraphs" intent independently of `has_flagged_blocks`, which now means strictly "I have block-level issues to interview". |
+| 43 | `work-package/activities/09-post-impl-review.toon` | L2 (header) | review-fix-cycle / C1 | Version bump 1.10.0 → 1.11.0 — minor bump for the checkpoint-condition rewrite. |
+| 44 | `work-package/activities/09-post-impl-review.toon` | L118–139 (checkpoint effects + condition) | review-fix-cycle / C1 | Three coupled edits in the `file-index-table` and `rationale-amendment` checkpoint definitions: (a) add `effect.setVariable.rationale_confirmed: true` to the `rationale-confirmed` option (previously had no effect); (b) extend the `rationale-confirmed-with-issues` option's existing setVariable block to also set `rationale_confirmed: true` (alongside the pre-existing `has_flagged_blocks: true`); (c) rewrite the `rationale-amendment` condition from `has_flagged_blocks == false` to `rationale_confirmed == true`. The `has-issues` option deliberately does NOT set `rationale_confirmed` — that option's user-stated intent is "rationale review deferred", so the amendment checkpoint stays bypassed on that path. `block-interview`'s condition (`has_flagged_blocks == true`) is unchanged and remains independent. |
 
 ---
 
@@ -65,7 +69,7 @@
 | `work-package/activities/01-start-work-package.toon` | 4 | +12 −3 |
 | `work-package/activities/04-research.toon` | 4 | +35 −4 |
 | `work-package/activities/08-implement.toon` | 3 | +18 −6 |
-| `work-package/activities/09-post-impl-review.toon` | 2 | +30 −6 |
+| `work-package/activities/09-post-impl-review.toon` | 4 | +37 −9 |
 | `work-package/activities/10-validate.toon` | 4 | +1 −16 |
 | `work-package/activities/11-strategic-review.toon` | 4 | +3 −36 |
 | `work-package/activities/12-submit-for-review.toon` | 4 | +51 −7 |
@@ -74,8 +78,8 @@
 | `work-package/skills/15-manage-git.toon` | 1 | +15 −7 |
 | `work-package/skills/25-dco-provenance.toon` | 1 (new file) | +29 −0 |
 | `work-package/skills/README.md` | 3 | +4 −3 |
-| `work-package/workflow.toon` | 3 | +6 −9 |
-| **Total** | **40** | **+216 −100** |
+| `work-package/workflow.toon` | 5 | +12 −10 |
+| **Total** | **44** | **+229 −104** |
 
 The diff stat from `git diff workflows...HEAD --stat` reports a slightly different gross line count because the file-level summary includes context lines counted only once.
 
@@ -86,3 +90,4 @@ The diff stat from `git diff workflows...HEAD --stat` reports a slightly differe
 - Task-level rationale: `06-wp-plan.md` (T1–T13).
 - Implementation record (task → commit map): `08-implement-record.md`.
 - Findings raised against rows in this index: `09-code-review.md` (C1 on row 16, C2 on row 29).
+- Review-fix-cycle resolutions: `09-code-review.md` "Resolution log" section (C1 → commit `1d490c8`, rows 41–44 above).

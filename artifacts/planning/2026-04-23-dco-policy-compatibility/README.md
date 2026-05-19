@@ -58,6 +58,7 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 | 09 | Code Review | `09-code-review.md` — 1 Minor (C1 inverted condition), 2 Nit (C2 dead text, C3 README v-string drift), 1 Informational | — | ✅ Complete |
 | 09 | Test Suite Review | `09-test-suite-review.md` — validator + vitest (322 passed) + typecheck green; no Major findings; needs_test_improvements=false | — | ✅ Complete |
 | 09 | Structural Findings | `09-structural-findings.md` — single-pass L12 lens (conservation law + meta-law + 7-row classified bug table); no Critical/Major | — | ✅ Complete |
+| 09 | Review-Fix Cycle iter 1 | Resolve C1 (inverted `rationale-amendment` condition) via new `rationale_confirmed` boolean; commit `1d490c8` on `dco-update-2026-05-18`. workflow.toon 3.12.0 → 3.12.1; activity 09 1.10.0 → 1.11.0. Validator + typecheck green. | 10-20m | ✅ Complete |
 | — | PR review | External review feedback cycle | TBD | ⏳ In progress |
 | — | Merge | Squash-merge with `-s -S` on `workflows` branch | — | ⏳ Pending |
 

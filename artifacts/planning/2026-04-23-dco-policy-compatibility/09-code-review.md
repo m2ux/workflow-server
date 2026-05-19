@@ -24,7 +24,7 @@ Severity ladder (per workflow-server convention): **Critical** = quality-gate fa
 
 | ID | Severity | File | Line(s) | Finding |
 |----|----------|------|--------:|---------|
-| C1 | Minor | `work-package/activities/09-post-impl-review.toon` | 133–150 | **Inverted condition on the `rationale-amendment` checkpoint.** See detail below. |
+| C1 | Minor | `work-package/activities/09-post-impl-review.toon` | 133–150 | **Inverted condition on the `rationale-amendment` checkpoint.** See detail below. **Resolved** in commit `1d490c8` (review-fix-cycle iteration 1). |
 | C2 | Nit | `work-package/activities/12-submit-for-review.toon` | 149–163 | **Dead text in `merge-strategy-reminder` message.** See detail below. |
 | C3 | Nit | `work-package/README.md` | 3 | **README header still reports `v3.7.0`** while `workflow.toon` declares `version: 3.12.0`. Pre-existing on `workflows` HEAD (not introduced by this PR — the only line this PR touches in `README.md` is L31, the skill-count). Recording as Informational rather than promoting to a fix here because the header drift predates the work package; would be appropriate to fix in a sweep PR. |
 | C4 | Informational | `work-package/skills/15-manage-git.toon` | 66–70 | `squash-merge-instruction` example uses `'feat: description (#{pr_number})'` as the commit subject template. The example would benefit from referencing the existing `{type}` interpolation slot consistently (the protocol's own bullet 4 uses `{type}: {description}`, but the `12-submit-for-review` checkpoint message at L151 hard-codes `feat:`). Not a correctness issue — the checkpoint text is illustrative — but worth aligning if a follow-up sweep touches this skill. |
@@ -128,3 +128,27 @@ These are agent-level reads that the strategic-review activity may choose to act
 **Variables set by this report:**
 
 - `needs_code_fixes` = **true** (one Minor finding at C1 trips the gate per the activity's strict reading).
+
+---
+
+## Resolution log (review-fix-cycle)
+
+### Iteration 1 — C1 resolved (commit `1d490c8`, 2026-05-19)
+
+Adopted **Option A** from the suggested resolution: introduced a new boolean variable `rationale_confirmed` on the work-package workflow surface (workflow.toon `variables[88]`) and set it from both `rationale-confirmed` and `rationale-confirmed-with-issues` options on the `file-index-table` checkpoint. The `rationale-amendment` checkpoint condition is now `rationale_confirmed == true`, which fires on both rationale-confirming paths and is bypassed on the `has-issues` path (which explicitly defers rationale review). `block-interview`'s condition remains `has_flagged_blocks == true` and is independent.
+
+Files touched on the PR branch (`dco-update-2026-05-18`):
+
+- `work-package/workflow.toon` — variables count `[87] → [88]`; added `rationale_confirmed` entry directly after `has_flagged_blocks`; bumped `version: 3.12.0 → 3.12.1`.
+- `work-package/activities/09-post-impl-review.toon` — added `setVariable: rationale_confirmed: true` to `rationale-confirmed` option; extended `rationale-confirmed-with-issues` effect to also set `rationale_confirmed: true`; rewrote `rationale-amendment` condition from `has_flagged_blocks == false` to `rationale_confirmed == true`; bumped `version: 1.10.0 → 1.11.0`.
+
+Verification on `main`:
+
+- `npx tsx scripts/validate-workflow-toon.ts work-package` → all TOON files valid (workflow.toon ID `work-package`, version `3.12.1`, 14 activities; all 14 activity files and all 26 skill files pass).
+- `npm run typecheck` → clean (no server source touched).
+
+Variables set by this iteration:
+
+- `needs_code_fixes` = **false** (C1 resolved; no other Minor+ code-review findings remain).
+- `needs_test_improvements` = **false** (unchanged; test-suite review had no Minor+ findings).
+- `has_critical_blocker` = **false** (unchanged).
