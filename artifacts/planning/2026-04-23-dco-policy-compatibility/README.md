@@ -53,6 +53,11 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 | 06 | Test Plan | `06-test-plan.md` — schema validation, typecheck, vitest verification surface | — | ✅ Complete |
 | 07 | Assumptions Review | `07-assumptions-review.md` — resume-mode reconciliation: no open or deferred assumptions | 10-20m | ✅ Complete |
 | 08 | Implementation | `08-implement-record.md` — resume-mode task→commit map for 13 tasks across 6 commits on `feat/dco-policy-compatibility` | — | ✅ Complete |
+| 09 | Change-Block Index | `09-change-block-index.md` — 40-row index of diff hunks with per-block rationale paragraphs and cross-references | — | ✅ Complete |
+| 09 | Manual Diff Review | `09-manual-diff-review.md` — resume-mode rationale-confirmation pass; 37 clean, 3 flagged for code-review follow-up | — | ✅ Complete |
+| 09 | Code Review | `09-code-review.md` — 1 Minor (C1 inverted condition), 2 Nit (C2 dead text, C3 README v-string drift), 1 Informational | — | ✅ Complete |
+| 09 | Test Suite Review | `09-test-suite-review.md` — validator + vitest (322 passed) + typecheck green; no Major findings; needs_test_improvements=false | — | ✅ Complete |
+| 09 | Structural Findings | `09-structural-findings.md` — single-pass L12 lens (conservation law + meta-law + 7-row classified bug table); no Critical/Major | — | ✅ Complete |
 | — | PR review | External review feedback cycle | TBD | ⏳ In progress |
 | — | Merge | Squash-merge with `-s -S` on `workflows` branch | — | ⏳ Pending |
 
