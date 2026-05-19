@@ -49,6 +49,8 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 | — | Validation | `npx tsx scripts/validate-workflow-toon.ts` on merged work-package; `npm run typecheck` and full test suite | 10-20m | ✅ Complete |
 | 01 | Design Philosophy | `01-design-philosophy.md` — problem classification, complexity, workflow path | 10-20m | ✅ Complete |
 | 01 | Assumptions Log | `01-assumptions-log.md` — initial assumptions from design-philosophy | — | ✅ Complete |
+| 06 | Work Package Plan | `06-wp-plan.md` — 13-task breakdown reverse-engineered from PR #109 | 20-45m | ✅ Complete |
+| 06 | Test Plan | `06-test-plan.md` — schema validation, typecheck, vitest verification surface | — | ✅ Complete |
 | — | PR review | External review feedback cycle | TBD | ⏳ In progress |
 | — | Merge | Squash-merge with `-s -S` on `workflows` branch | — | ⏳ Pending |
 
