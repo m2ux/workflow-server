@@ -231,3 +231,16 @@ All assumptions in this log were either pre-resolved by the bootstrap (C1–C4, 
 **Stakeholder-input audit:** No assumption in this log is awaiting external stakeholder input. The stakeholder-dependent assumptions (A1, A2, A3, B3, C1, C4, D2, D3, E1, E2, E3, G2) are resolved either by the policy itself (the canonical reference) or by the path-decision pre-resolutions in the bootstrap.
 
 **Conclusion:** `has_open_assumptions = false` for this activity's interview loop. No deferred-assumption summary needs posting to the issue tracker. The log is ready to be carried forward and amended by subsequent activities as new assumptions surface.
+
+---
+
+## Reconciliation — assumptions-review activity (2026-05-19, resume run)
+
+Re-loaded the log under the `assumptions-review` activity. Outcome of the evaluate-open-assumptions step:
+
+- **Open assumptions requiring stakeholder input:** none. Every entry above is `resolved` or `accepted`; no entry sits in `open` or `partially-validated` state pending a human decision.
+- **Stakeholder-deferred items:** none. PR #109 has shipped and been merged into the rebased branch; the work is observable in the running implementation, so the assumptions are validated by the artefact itself rather than by a pending stakeholder gate.
+- **Interview loop:** skipped (`has_open_assumptions = false`).
+- **Post-summary checkpoint:** skipped (`has_deferred_assumptions = false`).
+
+Variables recorded by this activity: `has_open_assumptions = false`, `has_deferred_assumptions = false`, `stakeholder_review_complete = true`, `post_jira_comment = false`, `needs_plan_revision = false`, `needs_further_discussion = false`.
