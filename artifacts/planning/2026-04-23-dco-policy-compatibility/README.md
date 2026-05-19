@@ -52,6 +52,7 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 | 06 | Work Package Plan | `06-wp-plan.md` — 13-task breakdown reverse-engineered from PR #109 | 20-45m | ✅ Complete |
 | 06 | Test Plan | `06-test-plan.md` — schema validation, typecheck, vitest verification surface | — | ✅ Complete |
 | 07 | Assumptions Review | `07-assumptions-review.md` — resume-mode reconciliation: no open or deferred assumptions | 10-20m | ✅ Complete |
+| 08 | Implementation | `08-implement-record.md` — resume-mode task→commit map for 13 tasks across 6 commits on `feat/dco-policy-compatibility` | — | ✅ Complete |
 | — | PR review | External review feedback cycle | TBD | ⏳ In progress |
 | — | Merge | Squash-merge with `-s -S` on `workflows` branch | — | ⏳ Pending |
 
