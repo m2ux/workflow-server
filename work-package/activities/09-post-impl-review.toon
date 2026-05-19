@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.10.0
+version: 1.11.0
 name: Post-Implementation Review
 description: "Review implementation quality before validation."
 problem: User needs to review implementation quality before validation
@@ -118,12 +118,16 @@ checkpoints[3]:
       - id: rationale-confirmed
         label: "Rationale confirmed — no issues"
         description: "Agent rationale paragraphs are accurate. All changes understood. Proceed with automated reviews."
+        effect:
+          setVariable:
+            rationale_confirmed: true
       - id: rationale-confirmed-with-issues
         label: "Rationale confirmed (with corrections) — issues found"
         description: "Provide corrections to any rationale paragraphs and comma-separated block indices with issues"
         effect:
           setVariable:
             has_flagged_blocks: true
+            rationale_confirmed: true
       - id: has-issues
         label: Issues found — rationale not yet reviewed
         description: Enter comma-separated list of block indices with issues; rationale review deferred
@@ -134,9 +138,9 @@ checkpoints[3]:
     name: Rationale Amendment Checkpoint
     condition:
       type: simple
-      variable: has_flagged_blocks
+      variable: rationale_confirmed
       operator: "=="
-      value: false
+      value: true
     message: "Please provide any corrections to the agent rationale paragraphs in change-block-index.md, or confirm they are all accurate. Corrections are recorded in manual-diff-review-report.md as your provenance statement."
     blocking: false
     defaultOption: all-accurate

@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: work-package
-version: 3.12.0
+version: 3.12.1
 title: Work Package Implementation Workflow
 description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
 author: m2ux
@@ -43,7 +43,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[87]:
+variables[88]:
   - name: target_path
     type: string
     description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
@@ -217,6 +217,10 @@ variables[87]:
   - name: has_flagged_blocks
     type: boolean
     description: Whether user flagged any change blocks during manual diff review
+    defaultValue: false
+  - name: rationale_confirmed
+    type: boolean
+    description: "True when the user picked rationale-confirmed or rationale-confirmed-with-issues on the file-index-table checkpoint. Drives the rationale-amendment checkpoint condition so users who want to amend rationale paragraphs land at the amendment prompt regardless of whether they also flagged block issues."
     defaultValue: false
   - name: has_critical_blocker
     type: boolean
