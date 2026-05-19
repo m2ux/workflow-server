@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "work-package",
+  "workflowVersion": "3.11.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "MJ3XF4",
+  "currentActivity": "design-philosophy",
+  "currentSkill": "",
+  "condition": "",
+  "seq": 5,
+  "ts": 1779206057,
+  "startedAt": "2026-05-19T15:49:32.496Z",
+  "completedActivities": [
+    "start-work-package"
+  ],
+  "skippedActivities": [],
+  "variables": {},
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-05-19T15:49:32.496Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "start-work-package",
+      "timestamp": "2026-05-19T15:52:07.244Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "start-work-package",
+      "timestamp": "2026-05-19T15:53:42.630Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "design-philosophy",
+      "timestamp": "2026-05-19T15:53:42.630Z",
+      "type": "activity_entered"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "parentSession": {
+    "agentId": "orchestrator",
+    "checkpointResponses": {},
+    "completedActivities": [
+      "discover-session"
+    ],
+    "condition": "",
+    "currentActivity": "initialize-session",
+    "currentSkill": "",
+    "history": [
+      {
+        "timestamp": "2026-05-19T14:45:34.875Z",
+        "type": "workflow_started"
+      },
+      {
+        "activity": "discover-session",
+        "timestamp": "2026-05-19T14:46:47.065Z",
+        "type": "activity_entered"
+      },
+      {
+        "activity": "discover-session",
+        "timestamp": "2026-05-19T15:46:40.945Z",
+        "type": "activity_exited"
+      },
+      {
+        "activity": "initialize-session",
+        "timestamp": "2026-05-19T15:46:40.945Z",
+        "type": "activity_entered"
+      }
+    ],
+    "schemaVersion": 1,
+    "seq": 6,
+    "sessionIndex": "VE6FOH",
+    "skippedActivities": [],
+    "startedAt": "2026-05-19T14:45:34.875Z",
+    "status": "running",
+    "triggeredWorkflows": [],
+    "ts": 1779205633,
+    "variables": {},
+    "workflowId": "meta",
+    "workflowVersion": "5.0.0"
+  }
+}

@@ -47,6 +47,8 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 | — | Authoring | Initial PR drafted directly (no start-work-package run) | 2-4h | ✅ Complete |
 | — | Rebase | Reconcile with `workflows` HEAD `a2645ca` (2026-05-18 sweep + cargo-operations + worktree refactor) | 1-2h | ✅ Complete |
 | — | Validation | `npx tsx scripts/validate-workflow-toon.ts` on merged work-package; `npm run typecheck` and full test suite | 10-20m | ✅ Complete |
+| 01 | Design Philosophy | `01-design-philosophy.md` — problem classification, complexity, workflow path | 10-20m | ✅ Complete |
+| 01 | Assumptions Log | `01-assumptions-log.md` — initial assumptions from design-philosophy | — | ✅ Complete |
 | — | PR review | External review feedback cycle | TBD | ⏳ In progress |
 | — | Merge | Squash-merge with `-s -S` on `workflows` branch | — | ⏳ Pending |
 
