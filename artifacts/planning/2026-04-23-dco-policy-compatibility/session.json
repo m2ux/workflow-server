@@ -5,11 +5,16 @@
   "workflowVersion": "3.11.0",
   "agentId": "orchestrator",
   "sessionIndex": "MJ3XF4",
-  "currentActivity": "strategic-review",
+  "currentActivity": "submit-for-review",
   "currentSkill": "",
-  "condition": "",
-  "seq": 22,
-  "ts": 1779266695,
+  "condition": "review_passed == true",
+  "activeCheckpoint": {
+    "activityId": "submit-for-review",
+    "checkpointId": "review-received",
+    "yieldedAt": "2026-05-20T08:52:07.199Z"
+  },
+  "seq": 25,
+  "ts": 1779267127,
   "startedAt": "2026-05-19T15:49:32.496Z",
   "completedActivities": [
     "start-work-package",
@@ -18,7 +23,8 @@
     "assumptions-review",
     "implement",
     "post-impl-review",
-    "validate"
+    "validate",
+    "strategic-review"
   ],
   "skippedActivities": [],
   "variables": {
@@ -138,6 +144,22 @@
       },
       "timestamp": "2026-05-20T08:43:59.000Z",
       "type": "variable_set"
+    },
+    {
+      "activity": "strategic-review",
+      "timestamp": "2026-05-20T08:50:23.712Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "submit-for-review",
+      "timestamp": "2026-05-20T08:50:23.712Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "submit-for-review",
+      "checkpoint": "review-received",
+      "timestamp": "2026-05-20T08:52:07.199Z",
+      "type": "checkpoint_reached"
     }
   ],
   "triggeredWorkflows": [],
