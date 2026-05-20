@@ -34,6 +34,7 @@ The consequence is that the on-disk planning trail no longer matches what the do
 |---|------|-------------|----------|--------|
 | 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 02 | [Comprehension: dispatch_child transient-parent path](../../comprehension/dispatch-child-transient-parent.md) | Code path, helpers, contract, and tests for the defect site | 20-45m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
@@ -57,4 +58,4 @@ The consequence is that the on-disk planning trail no longer matches what the do
 
 ---
 
-**Status:** Design philosophy complete — proceeding to codebase comprehension
+**Status:** Codebase comprehension complete — proceeding to plan-prepare
