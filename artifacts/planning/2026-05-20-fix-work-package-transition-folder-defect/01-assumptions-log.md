@@ -103,3 +103,14 @@ These do not block design-philosophy completion; they are raised here so plan-pr
 ## Convergence
 
 All assumptions raised during design-philosophy and plan-prepare are now resolved by either (a) reading the code, (b) reading the documented contract, or (c) the user's explicit "keep activities simple" framing. No code-resolvable assumptions remain. The slug-derivation choice (A9) is the only design decision a reviewer might wish to revisit; it surfaces at the approach-confirmed checkpoint.
+
+---
+
+## Assumptions Review (activity stamp)
+
+- **Reviewed:** 2026-05-20
+- **Open assumptions at activity entry:** 0
+- **Decisions:** A1–A13 carry their final statuses from design-philosophy and plan-prepare. The user approved the slug-derivation choice (A9 → Option B) at the `approach-confirmed` checkpoint; that approval validates the stakeholder-dependent items (A1, A5, A7) that fed into the plan.
+- **Interview loop:** skipped — no open assumptions remained when this activity ran. Per the user's "keep activities simple" framing, no deep stakeholder interview was performed; resolutions captured during plan-prepare stand.
+- **Deferred:** none. No post-summary required to the issue tracker.
+- **Outcome:** `stakeholder_review_complete=true`. Proceeds to implement.

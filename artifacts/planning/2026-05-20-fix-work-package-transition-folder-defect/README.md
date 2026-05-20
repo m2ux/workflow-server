@@ -60,4 +60,4 @@ The change is small and contained: one branch in `dispatch_child` is rewritten t
 
 ---
 
-**Status:** Ready — plan & test plan approved; PR body updated with planning summary.
+**Status:** Ready — plan & test plan approved; PR body updated with planning summary; assumptions review complete (no open items, no deferrals).
