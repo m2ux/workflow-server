@@ -1,7 +1,7 @@
 # Fix Work Package Transition Folder Defect - May 2026
 
 **Created:** 2026-05-20
-**Status:** Ready
+**Status:** Complete
 **Type:** Bug-Fix
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -44,9 +44,9 @@ The change is small and contained: one branch in `dispatch_child` is rewritten t
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | 07 | [Architecture summary](architecture-summary.md) | Stakeholder-facing summary with C4 + sequence diagrams | 15-30m | ✅ Complete |
 | 10 | [Validation](10-validation.md) | Typecheck + test suite verification (322 passed, 4 skipped) | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ✅ Complete |
+| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ✅ Complete |
+| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ✅ Complete |
 
 ---
 
@@ -65,4 +65,4 @@ The change is small and contained: one branch in `dispatch_child` is rewritten t
 
 ---
 
-**Status:** Ready — plan & test plan approved; PR body updated with planning summary; assumptions review complete (no open items, no deferrals).
+**Status:** Complete — PR [#121](https://github.com/m2ux/workflow-server/pull/121) approved on self-review and ready for the user to merge at their discretion. Validation passed (322 tests, typecheck clean); strategic review surfaced one hygiene finding (S2) which was addressed in commit `3aca657`. Completion summary and workflow retrospective produced.

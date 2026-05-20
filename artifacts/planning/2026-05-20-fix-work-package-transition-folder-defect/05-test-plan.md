@@ -2,8 +2,14 @@
 
 **Created:** 2026-05-20
 **Activity:** plan-prepare
-**Status:** Draft (pending approach-confirmed checkpoint)
+**Status:** Complete — test source links finalised at completion time.
 **Scope:** Defect-fix. Reuses the existing test surface — no new test files.
+
+> **Source-file note (added at `complete`):** Line numbers in the test cases below correspond to the test file as authored at plan time. The defect-encoding tests grew during the rewrite (TC-1 added tmp-snapshot/discard assertions; TC-2 became the longer recursive walk), so the on-disk line numbers in [`tests/mcp-server.test.ts`](https://github.com/m2ux/workflow-server/blob/fix/work-package-transition-folder-defect/tests/mcp-server.test.ts) at HEAD are:
+>
+> - TC-1 → [tests/mcp-server.test.ts#L1568-L1645](https://github.com/m2ux/workflow-server/blob/fix/work-package-transition-folder-defect/tests/mcp-server.test.ts#L1568-L1645) (`it('meta sessions live in os.tmpdir() …')`).
+> - TC-2 → [tests/mcp-server.test.ts#L1647-L1730](https://github.com/m2ux/workflow-server/blob/fix/work-package-transition-folder-defect/tests/mcp-server.test.ts#L1647-L1730) (`it('three-level dispatch (A → B → C → D) …')`).
+> - TC-3 → unchanged persistent-parent regression suite at [tests/mcp-server.test.ts#L1541-L1566](https://github.com/m2ux/workflow-server/blob/fix/work-package-transition-folder-defect/tests/mcp-server.test.ts#L1541-L1566), [#L1847-L1887](https://github.com/m2ux/workflow-server/blob/fix/work-package-transition-folder-defect/tests/mcp-server.test.ts#L1847-L1887), [#L1912-L1959](https://github.com/m2ux/workflow-server/blob/fix/work-package-transition-folder-defect/tests/mcp-server.test.ts#L1912-L1959), [#L1961-L1993](https://github.com/m2ux/workflow-server/blob/fix/work-package-transition-folder-defect/tests/mcp-server.test.ts#L1961-L1993).
 
 ---
 
