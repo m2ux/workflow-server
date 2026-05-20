@@ -64,7 +64,7 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 | 11 | Architecture Summary | `11-architecture-summary.md` — stakeholder-facing summary with before/after system context, package diagram, and DCO sign-off sequence diagram. | — | ✅ Complete |
 | 11 | Strategic Review — fix-findings pass | Refresh `work-package/activities/README.md` for PR #109 scope (04 Research, 08 Implement, 09 Post-Impl Review, 10 Validate, 11 Strategic Review, 12 Submit for Review). Resolves S2. Commit `2d93abc`. | 15-30m | ✅ Complete |
 | 12 | Submission Record | `12-submission-record.md` — per-step status table for `submit-for-review` v1.3.0; documents the policy-driven skip of `verify-commit-signatures` (PR implements the new DCO model; signing happens at squash-merge by the human); PR confirmed OPEN/non-draft at HEAD `2d93abc` on `workflows`. | 10-20m | ✅ Complete |
-| — | PR review | External review feedback cycle — `await-review` yielded at `review-received` blocking checkpoint | TBD | ⏳ In progress |
+| 12 | Review Cycle 1 | `12-review-analysis.md` — in-conversation review (no GitHub reviews); 4 directives actioned: rebase (`b5b7b7c`), engineering link fix, C1 inverted condition (`1d490c8`), S2 activities/README refresh (`2d93abc`); recommended outcome `approved`. | 10-20m | ✅ Complete |
 | — | Merge | Squash-merge with `-s -S` on `workflows` branch | — | ⏳ Pending |
 
 ---

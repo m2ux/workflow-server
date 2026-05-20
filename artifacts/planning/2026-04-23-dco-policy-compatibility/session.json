@@ -10,11 +10,11 @@
   "condition": "review_passed == true",
   "activeCheckpoint": {
     "activityId": "submit-for-review",
-    "checkpointId": "review-received",
-    "yieldedAt": "2026-05-20T08:52:07.199Z"
+    "checkpointId": "review-outcome",
+    "yieldedAt": "2026-05-20T13:53:24.764Z"
   },
-  "seq": 25,
-  "ts": 1779267127,
+  "seq": 28,
+  "ts": 1779285204,
   "startedAt": "2026-05-19T15:49:32.496Z",
   "completedActivities": [
     "start-work-package",
@@ -39,6 +39,10 @@
       },
       "optionId": "fix-findings",
       "respondedAt": "2026-05-20T08:43:59.000Z"
+    },
+    "submit-for-review-review-received": {
+      "optionId": "yes-review",
+      "respondedAt": "2026-05-20T13:51:55.000Z"
     }
   },
   "history": [
@@ -159,6 +163,21 @@
       "activity": "submit-for-review",
       "checkpoint": "review-received",
       "timestamp": "2026-05-20T08:52:07.199Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "submit-for-review",
+      "checkpoint": "review-received",
+      "data": {
+        "optionId": "yes-review"
+      },
+      "timestamp": "2026-05-20T13:51:55.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "submit-for-review",
+      "checkpoint": "review-outcome",
+      "timestamp": "2026-05-20T13:53:24.764Z",
       "type": "checkpoint_reached"
     }
   ],
