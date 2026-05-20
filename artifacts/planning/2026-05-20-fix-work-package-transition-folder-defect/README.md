@@ -60,4 +60,10 @@ The change is small and contained: one branch in `dispatch_child` is rewritten t
 
 ---
 
+## 📝 Implementation Notes
+
+- **Slug-derivation refinement (Task 1).** The plan specified the promoted slug as `lookupTransientSlugByFolder(parentFolder) ?? \`${YYYY-MM-DD}-${workflow_id}\``. In practice the registry is always populated — `start_session` mints a synthetic `transition-<uuid>` slug when `planning_slug` is omitted and registers it the same way as a user-supplied slug — so the bare `??` fallback never fired and the workspace folder was being named `transition-<uuid>` (the exact symptom Task 5 was meant to catch). The implementation treats slugs that start with `transition-` as "no slug supplied" and falls through to the dated form. This is a behaviour-preserving refinement of the plan's intent (Option B), not a scope expansion: the only paths affected are those the plan already intends to land in the fallback.
+
+---
+
 **Status:** Ready — plan & test plan approved; PR body updated with planning summary; assumptions review complete (no open items, no deferrals).
