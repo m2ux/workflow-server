@@ -68,3 +68,38 @@ Convention:
 3. **Backfill of existing buggy sessions** (A6). Confirm with user that no retroactive migration is wanted.
 
 These do not block design-philosophy completion; they are raised here so plan-prepare picks them up.
+
+---
+
+## Planning Phase (added during plan-prepare)
+
+### A9 — Slug derivation strategy: user-supplied pass-through with dated derived fallback (resolves A5, Q1, Q2)
+**Assumption.** When promoting the transient folder, use the slug the meta session was registered under if one is in the transient registry (the common case — `start_session({ planning_slug })` was called explicitly). Otherwise derive `YYYY-MM-DD-<child-workflow-id>` (note: date-first, not the current `workflow-id-YYYY-MM-DD`).
+**Resolvability.** Stakeholder-dependent design decision; resolved here without re-asking the user because (a) the user directed "keep activities simple" and this is the smallest viable convention, (b) the pass-through case is what the current code already does, so behaviour for explicitly-named sessions is unchanged, and (c) the fallback only fires when no slug was supplied — exactly the case that produces the buggy `transition-<uuid>` today.
+**Status.** Resolved. Documented in `05-work-package-plan.md` as Option B with rationale. The user reviews this at the approach-confirmed checkpoint and can request a different convention.
+
+### A10 — No folder-rename helper added to the session store
+**Assumption.** The fix does not introduce a `renamePlanningFolder` helper. Folder promotion is achieved by the existing idiom: `ensurePlanningFolder(workspace, promotedSlug)` to materialise the new folder, write the (new top-level) session file there via `writeSessionFile`, then `discardTransient(parentFolder)` to clean up the tmp dir.
+**Resolvability.** Resolved (code) — the existing transient-parent branch already follows exactly this idiom. Reusing it keeps the fix surface area small and avoids broadening scope to a session-store API change.
+**Status.** Resolved. Out-of-scope item recorded in `05-work-package-plan.md`.
+
+### A11 — No new automated tests — update the two existing defect-encoding tests in place
+**Assumption.** The two existing tests at `tests/mcp-server.test.ts:1568-1613` and `:1615-1661` are rewritten to assert the contract shape; the four persistent-parent tests at `:1847-1993` are left untouched and serve as branch-B regression coverage. A single manual reproduction check covers the derived-fallback slug path. No new test files or `describe` blocks are added.
+**Resolvability.** Resolved (code review of the test surface — comprehension artifact Test Surface table). The two defect-encoding tests already set up the precise scenarios needed for post-fix assertions; the persistent-parent tests already pin the target shape; no coverage gap remains.
+**Status.** Resolved. Test cases enumerated in `05-test-plan.md`.
+
+### A12 — Caveat: derived-slug collision risk is bounded and acceptable
+**Assumption.** Two work-packages started on the same day, both via meta with no explicit `planning_slug`, both of the same child workflow id, would derive the same `YYYY-MM-DD-<workflow-id>` slug. We accept this risk because (a) `ensurePlanningFolder` is idempotent, so the second dispatch would not crash on the directory itself but would surface a COLLISION via `findPlanningFolderBySlug` if the folder is already in use by a different session, (b) the no-explicit-slug case is the bootstrap-fallback path, not the recommended entry point, and (c) users wanting deterministic slugs supply `planning_slug` explicitly.
+**Resolvability.** Resolved (code) — collision detection is the existing responsibility of `findPlanningFolderBySlug`, unchanged by this fix.
+**Status.** Resolved. Caveat recorded in `05-work-package-plan.md` Design Note.
+
+### A13 — Migration: no retroactive change to legacy on-disk shapes (re-confirms A6, resolves Q3)
+**Assumption.** Existing planning folders under the legacy (buggy) shape — child workflow at top, `parentSession` containing meta — are left as-is. The schema accepts both shapes; the loaders tolerate both; no migration step runs on startup or on dispatch.
+**Resolvability.** Resolved (code) — `parentSession?` is a valid optional field on `SessionFile`; the load path uses `loadSessionForTool` which handles either shape; no migration code exists today and none is being added.
+**Status.** Resolved. The plan flags this explicitly so a reviewer can confirm during the approach-confirmed checkpoint.
+
+---
+
+## Convergence
+
+All assumptions raised during design-philosophy and plan-prepare are now resolved by either (a) reading the code, (b) reading the documented contract, or (c) the user's explicit "keep activities simple" framing. No code-resolvable assumptions remain. The slug-derivation choice (A9) is the only design decision a reviewer might wish to revisit; it surfaces at the approach-confirmed checkpoint.

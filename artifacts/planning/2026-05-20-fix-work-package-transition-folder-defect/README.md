@@ -1,7 +1,7 @@
 # Fix Work Package Transition Folder Defect - May 2026
 
 **Created:** 2026-05-20
-**Status:** Planning
+**Status:** Ready
 **Type:** Bug-Fix
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -24,7 +24,9 @@ The consequence is that the on-disk planning trail no longer matches what the do
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix updates a single branch of the dispatch code so the on-disk record of a new work package looks the way the system's own documentation says it should look. When the user starts a new work package today, the temporary "scratchpad" record is incorrectly turned into the top record on disk, with the prior tracking record demoted underneath it, and the folder keeps its temporary name. After the fix, the prior tracking record stays at the top, the new work package is slotted underneath it as a child entry, and the folder is renamed to a stable, dated name (either the name the user supplied at session start, or a derived name of the form `YYYY-MM-DD-<workflow-id>` when none was supplied). The temporary folder is cleaned up immediately afterwards.
+
+The change is small and contained: one branch in `dispatch_child` is rewritten to match the already-correct branch used for non-temporary parents, with the one extra step of promoting the folder name. Two existing tests that currently lock in the buggy behaviour are flipped to assert the documented contract; four other tests that already exercise the correct behaviour for non-temporary parents act as untouched regression coverage. There are no schema changes, no new helpers added to the session store, and no migration of pre-existing on-disk records — the fix governs forward behaviour only.
 
 ---
 
@@ -35,8 +37,8 @@ The consequence is that the on-disk planning trail no longer matches what the do
 | 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 02 | [Comprehension: dispatch_child transient-parent path](../../comprehension/dispatch-child-transient-parent.md) | Code path, helpers, contract, and tests for the defect site | 20-45m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
@@ -58,4 +60,4 @@ The consequence is that the on-disk planning trail no longer matches what the do
 
 ---
 
-**Status:** Codebase comprehension complete — proceeding to plan-prepare
+**Status:** Ready — plan & test plan approved; PR body updated with planning summary.
