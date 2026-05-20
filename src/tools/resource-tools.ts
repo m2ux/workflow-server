@@ -261,7 +261,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Dispatch a child workflow from the current session. Pass `session_index` of the parent (any depth) and `workflow_id` of the child workflow. ' +
         'The server appends a child entry under the parent\'s `triggeredWorkflows[]` with the child\'s full SessionFile embedded inline (the entire work-package tree lives in the top-level session.json). ' +
         'Returns the child\'s `session_index`, which the agent threads to subsequent authenticated tool calls operating on the child. ' +
-        'Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the child becomes a new top-level workspace folder rather than nesting inside the parent; the parent\'s tmp folder is discarded post-capture.',
+        'Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the parent\'s state is promoted onto disk under a stable workspace planning folder (taking the slug it was registered under, or a `YYYY-MM-DD-<workflow-id>` fallback) before the child is embedded; the parent\'s tmp folder is discarded post-promotion. The on-disk shape matches the persistent-parent case — parent at the top of the file, child under `triggeredWorkflows[0].state`.',
       inputSchema: z.object({
         ...sessionIndexParam,
         workflow_id: z.string().describe('Workflow id for the child (e.g. "work-package"). Must resolve to a workflow definition in the workflows directory.'),
@@ -281,28 +281,56 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const triggeredAt = new Date().toISOString();
 
       if (parentIsTransient) {
-        // Transient parent (meta-bootstrap) — child becomes a new top-level
-        // workspace folder, with parentSession populated from the parent's
-        // snapshot. Slug is taken from the transient registry entry the
-        // parent was registered under, falling back to a workflowId-derived
-        // form if the registry has no entry (defensive).
-        const parentSlug = lookupTransientSlugByFolder(parentFolder)
-          ?? `${loaded.state.workflowId}-${new Date().toISOString().slice(0, 10)}`;
-        const childFolder = await ensurePlanningFolder(config.workspaceDir, parentSlug);
-        const childSessionIndex = await computeSessionIndex(childFolder);
+        // Transient parent (meta-bootstrap) — promote the parent's state onto
+        // disk under a stable workspace planning folder, then embed the child
+        // under triggeredWorkflows[0].state exactly like the persistent-parent
+        // branch below. The only differences from that branch are:
+        //   - the workspace folder is materialised here (the parent never had
+        //     one), and
+        //   - the original tmp folder is discarded once the new file is durable.
+        // The promoted slug comes from the transient registry (the slug the
+        // caller passed to start_session), falling back to a dated
+        // workflow-id form when no slug was supplied. start_session mints a
+        // synthetic `transition-<uuid>` slug when planning_slug is omitted;
+        // those synthetic slugs are treated as "no slug supplied" so the
+        // promoted folder gets a stable dated name instead of leaking the
+        // transitional UUID into the workspace.
+        const registrySlug = lookupTransientSlugByFolder(parentFolder);
+        const promotedSlug = (registrySlug && !registrySlug.startsWith('transition-'))
+          ? registrySlug
+          : `${new Date().toISOString().slice(0, 10)}-${workflow_id}`;
+        const promotedWorkspaceFolder = await ensurePlanningFolder(config.workspaceDir, promotedSlug);
+        const childSessionIndex = await computeEmbeddedSessionIndex(
+          promotedWorkspaceFolder,
+          ['triggeredWorkflows', 0, 'state'],
+        );
         const childInitial = createInitialSessionFile({
           sessionIndex: childSessionIndex,
           workflowId: workflow_id,
           workflowVersion: effectiveWorkflowVersion,
           agentId: agent_id,
-          parentSession: loaded.state,
         });
-        await writeSessionFile(childFolder, childInitial);
-        // Discard the transient parent now that the child has captured its
-        // state into parentSession.
+        const parentNext = advanceSession(loaded.state, (draft) => {
+          draft.triggeredWorkflows.push({
+            workflowId: workflow_id,
+            sessionIndex: childSessionIndex,
+            triggeredAt,
+            triggeredFrom: { activityId: draft.currentActivity || '' },
+            status: 'running',
+            state: childInitial,
+          });
+          draft.history.push({
+            timestamp: triggeredAt,
+            type: 'workflow_triggered',
+            activity: draft.currentActivity || undefined,
+            data: { workflowId: workflow_id, sessionIndex: childSessionIndex },
+          });
+        });
+        await writeSessionFile(promotedWorkspaceFolder, parentNext);
+        // The promoted file is durable; drop the tmp folder.
         await discardTransient(parentFolder);
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: parentSlug }, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: promotedSlug }, null, 2) }],
           _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
         };
       }

@@ -1566,8 +1566,9 @@ describe('mcp-server integration', () => {
     });
 
     it('meta sessions live in os.tmpdir() (not the workspace) and are discarded when a child captures them', async () => {
-      const { existsSync } = await import('node:fs');
+      const { existsSync, readFileSync } = await import('node:fs');
       const path = await import('node:path');
+      const os = await import('node:os');
 
       // 1. Start a meta session. The slug is a label only — the workspace
       //    planning root must not see a folder for it. Meta state lives
@@ -1587,11 +1588,16 @@ describe('mcp-server integration', () => {
       // Workspace folder must not exist — meta is transient (tmp-rooted).
       expect(existsSync(metaWorkspaceFolder)).toBe(false);
 
+      // Snapshot the existing tmp folders for the workflow-server prefix so
+      // we can later assert the meta's tmp folder is gone after dispatch.
+      const { readdirSync } = await import('node:fs');
+      const tmpBefore = readdirSync(os.tmpdir())
+        .filter((n) => n.startsWith('workflow-server-transient-'));
+
       // 2. Dispatch a child workflow from the meta session. The server
-      //    snapshots the meta state into the child's parentSession and
-      //    discards the meta /tmp folder. The child becomes a new
-      //    top-level workspace folder named after the slug the meta was
-      //    registered under.
+      //    promotes the meta's state onto disk under the workspace planning
+      //    slug it was registered under, embeds the child under
+      //    triggeredWorkflows[0].state, and discards the tmp folder.
       const metaIdx = metaResponse.session_index;
       const child = await client.callTool({
         name: 'dispatch_child',
@@ -1605,11 +1611,37 @@ describe('mcp-server integration', () => {
       const childResponse = parseToolResponse(child);
       expect(childResponse.workflow.id).toBe('work-package');
 
-      // The child's folder lives under the workspace at the slug the
-      // meta was bound to (meta-bootstrap), sealed.
-      const childWorkspaceFolder = path.join(workspaceDir, '.engineering/artifacts/planning', metaSlug);
-      expect(existsSync(path.join(childWorkspaceFolder, 'session.json'))).toBe(true);
-      expect(existsSync(path.join(childWorkspaceFolder, '.session-token'))).toBe(true);
+      // The promoted folder lives under the workspace at the slug the meta
+      // was bound to (meta-bootstrap), sealed.
+      const promotedFolder = path.join(workspaceDir, '.engineering/artifacts/planning', metaSlug);
+      expect(existsSync(path.join(promotedFolder, 'session.json'))).toBe(true);
+      expect(existsSync(path.join(promotedFolder, '.session-token'))).toBe(true);
+
+      // Contract: meta is at the top of the promoted file; work-package is
+      // embedded under triggeredWorkflows[0].state. parentSession is absent
+      // on the top (meta has no parent) — the persistent-parent embedding
+      // shape applies here too.
+      const topState = JSON.parse(readFileSync(path.join(promotedFolder, 'session.json'), 'utf8'));
+      expect(topState.workflowId).toBe('meta');
+      expect(topState.parentSession).toBeUndefined();
+      expect(topState.triggeredWorkflows).toHaveLength(1);
+      const entry = topState.triggeredWorkflows[0];
+      expect(entry.workflowId).toBe('work-package');
+      expect(entry.sessionIndex).toBe(childResponse.session_index);
+      expect(entry.status).toBe('running');
+      expect(entry.state).toBeDefined();
+      expect(entry.state.workflowId).toBe('work-package');
+      expect(entry.state.sessionIndex).toBe(childResponse.session_index);
+
+      // The original /tmp folder for the meta is gone (discardTransient ran).
+      const tmpAfter = readdirSync(os.tmpdir())
+        .filter((n) => n.startsWith('workflow-server-transient-'));
+      // Exactly the new tmp entries created since the snapshot must be
+      // absent: i.e. no folder created during the meta start_session is
+      // still around. The discard is best-effort, so tolerate older orphans
+      // (only require that tmpAfter ⊆ tmpBefore).
+      const newOrphans = tmpAfter.filter((n) => !tmpBefore.includes(n));
+      expect(newOrphans).toEqual([]);
     });
 
     it('three-level dispatch (A → B → C → D) records the full chain in D\'s session.json', async () => {
@@ -1618,10 +1650,12 @@ describe('mcp-server integration', () => {
 
       // Build the chain root → leaf via start_session for the root and
       // dispatch_child for each subsequent level. Layout:
-      // - A (meta) is transient (/tmp) and discarded when B captures it,
-      //   so B becomes the workspace root at slugA.
-      // - C, D are EMBEDDED inside B's session.json under
-      //   triggeredWorkflows[N].state recursively.
+      // - A (meta) is transient (/tmp) at start. When B is dispatched, the
+      //   server promotes A onto disk under slugA and embeds B under
+      //   A.triggeredWorkflows[0].state. The tmp folder is discarded.
+      // - C, D are EMBEDDED recursively inside the promoted top file under
+      //   triggeredWorkflows[N].state. The single top-level session.json at
+      //   slugA holds the entire chain.
       const aResult = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slugA },
@@ -1643,21 +1677,24 @@ describe('mcp-server integration', () => {
       });
       expect(dResult.isError).toBeFalsy();
 
-      // Read the single top-level session.json at slugA (which is now B's
-      // root after meta was discarded) and walk down via
-      // triggeredWorkflows[0].state recursively.
+      // Read the single top-level session.json at slugA (now owned by the
+      // meta after promotion) and walk down via triggeredWorkflows[0].state
+      // recursively from meta → work-package → remediate-vuln → prism-update.
       const { readFileSync } = await import('node:fs');
       const topStatePath = join(workspaceDir, '.engineering/artifacts/planning', slugA, 'session.json');
       const topState = JSON.parse(readFileSync(topStatePath, 'utf8'));
 
-      // Top is B (work-package). C is embedded under B. D is embedded under C.
-      expect(topState.workflowId).toBe('work-package');
-      // B's parentSession is the meta snapshot.
-      expect(topState.parentSession?.workflowId).toBe('meta');
-      // C embedded.
-      expect(topState.triggeredWorkflows?.[0]?.state?.workflowId).toBe('remediate-vuln');
-      // D embedded inside C.
-      expect(topState.triggeredWorkflows?.[0]?.state?.triggeredWorkflows?.[0]?.state?.workflowId).toBe('prism-update');
+      // Top is the meta (A). It has no parent.
+      expect(topState.workflowId).toBe('meta');
+      expect(topState.parentSession).toBeUndefined();
+      // B (work-package) embedded under A.
+      expect(topState.triggeredWorkflows?.[0]?.state?.workflowId).toBe('work-package');
+      // C (remediate-vuln) embedded under B.
+      expect(topState.triggeredWorkflows?.[0]?.state?.triggeredWorkflows?.[0]?.state?.workflowId).toBe('remediate-vuln');
+      // D (prism-update) embedded under C.
+      expect(
+        topState.triggeredWorkflows?.[0]?.state?.triggeredWorkflows?.[0]?.state?.triggeredWorkflows?.[0]?.state?.workflowId,
+      ).toBe('prism-update');
     });
 
     it('dispatch depth > 5 emits a soft warning in _meta.validation', async () => {
