@@ -53,7 +53,7 @@ The consequence is that the on-disk planning trail no longer matches what the do
 | Resource | Link |
 |----------|------|
 | Issue | _Skipped at user request (issue-verification checkpoint)_ |
-| PR | _Pending — created during this activity_ |
+| PR | [#121](https://github.com/m2ux/workflow-server/pull/121) |
 
 ---
 
