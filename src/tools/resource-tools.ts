@@ -110,6 +110,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // session inside it) or creates a fresh meta-bootstrap session under
       // os.tmpdir() registered to the slug. Child workflows are dispatched
       // by calling dispatch_child against the returned session_index.
+      const slugIsSynthetic = planning_slug === undefined;
       const slug = planning_slug ?? `transition-${randomUUID()}`;
       // If a workspace folder already exists for the slug, resume the
       // top-level session there — the workflow_id stored in state wins.
@@ -198,9 +199,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
         // If this is a transient session, register so its session_index
         // resolves back to the os.tmpdir() folder. Done AFTER writeSessionFile
-        // so the registry only points at fully-sealed folders.
+        // so the registry only points at fully-sealed folders. The slug is
+        // registered only when the caller actually supplied one — synthetic
+        // `transition-<uuid>` slugs are minted per-call from a fresh UUID, so
+        // a slug-keyed entry for them would never be hit by a future lookup,
+        // and leaving it out lets `lookupTransientSlugByFolder` return
+        // undefined for the synthetic case (which dispatch_child relies on to
+        // fall through to the dated workflow-id folder name).
         if (isTransientSession) {
-          registerTransient(sessionIndex, folder, slug);
+          registerTransient(sessionIndex, folder, slugIsSynthetic ? undefined : slug);
         }
       }
 
@@ -290,15 +297,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         //   - the original tmp folder is discarded once the new file is durable.
         // The promoted slug comes from the transient registry (the slug the
         // caller passed to start_session), falling back to a dated
-        // workflow-id form when no slug was supplied. start_session mints a
-        // synthetic `transition-<uuid>` slug when planning_slug is omitted;
-        // those synthetic slugs are treated as "no slug supplied" so the
-        // promoted folder gets a stable dated name instead of leaking the
-        // transitional UUID into the workspace.
-        const registrySlug = lookupTransientSlugByFolder(parentFolder);
-        const promotedSlug = (registrySlug && !registrySlug.startsWith('transition-'))
-          ? registrySlug
-          : `${new Date().toISOString().slice(0, 10)}-${workflow_id}`;
+        // workflow-id form when no slug was supplied. start_session only
+        // registers user-supplied slugs in transientFolderBySlug — synthetic
+        // `transition-<uuid>` slugs are deliberately omitted, so
+        // lookupTransientSlugByFolder returns undefined for them and the
+        // `??` fallback fires, producing a stable dated folder name instead
+        // of leaking the transitional UUID into the workspace.
+        const promotedSlug =
+          lookupTransientSlugByFolder(parentFolder)
+          ?? `${new Date().toISOString().slice(0, 10)}-${workflow_id}`;
         const promotedWorkspaceFolder = await ensurePlanningFolder(config.workspaceDir, promotedSlug);
         const childSessionIndex = await computeEmbeddedSessionIndex(
           promotedWorkspaceFolder,
