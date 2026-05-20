@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.6.0
+version: 3.7.0
 name: Start Work Package
 description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -23,7 +23,7 @@ skills:
     - gitnexus-operations
     - manage-artifacts
     - manage-git
-steps[26]:
+steps[27]:
   - id: detect-review-mode
     name: Detect Review Mode
     description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
@@ -69,6 +69,14 @@ steps[26]:
       - action: validate
         target: signing.configured == true
         message: "Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running. The workflow does not modify your git configuration."
+  - id: detect-merge-strategy
+    name: Detect Merge Strategy
+    description: "Detect whether the reference repo permits squash merges via the GitHub API (allow_squash_merge). Sets squash_merge_available for downstream DCO merge path routing — drives the merge-strategy-reminder in submit-for-review."
+    skill: manage-git
+    actions[1]:
+      - action: set
+        target: squash_merge_available
+        description: "true if allow_squash_merge=true in repo settings, false otherwise"
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type inside reference_path/component_name (the component's source as it appears in the reference): Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'. Performed against the reference because the worktree does not exist yet — both paths see the same files."
@@ -537,7 +545,7 @@ outcome[6]:
   - Draft PR created, assigned to current GitHub user, and linked to issue
   - PR reference recorded on the issue via the platform's native PR linkage
   - Planning folder initialized
-context_to_preserve[19]:
+context_to_preserve[20]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
   - issue_platform - github or jira
   - issue_type - Type of issue (feature, bug, task, enhancement, epic)
@@ -557,3 +565,4 @@ context_to_preserve[19]:
   - jira_cloud_id - Atlassian cloud ID for subsequent Jira operations
   - github_issue_found - Whether a GitHub issue linked to the Jira ticket was found
   - github_issue_number - GitHub issue number linked to the Jira ticket (if found or created)
+  - squash_merge_available - Whether target repo allows squash merges (drives DCO merge path)

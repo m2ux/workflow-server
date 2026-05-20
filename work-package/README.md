@@ -28,7 +28,7 @@ This workflow guides the complete lifecycle of a single work package through 14 
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (24 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (26 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
 - **Resources:** See [resources/README.md](resources/README.md) for the resource index (26 resources).
 
 ---
