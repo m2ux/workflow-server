@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "work-package",
+  "workflowVersion": "3.11.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "ZBVR67",
+  "currentActivity": "start-work-package",
+  "currentSkill": "",
+  "condition": "",
+  "seq": 14,
+  "ts": 1779269446,
+  "startedAt": "2026-05-20T09:02:15.753Z",
+  "completedActivities": [],
+  "skippedActivities": [],
+  "variables": {
+    "issue_skipped": true,
+    "pr_skipped": false
+  },
+  "checkpointResponses": {
+    "start-work-package-issue-verification": {
+      "effects": {
+        "variablesSet": {
+          "issue_skipped": true
+        }
+      },
+      "optionId": "skip-issue",
+      "respondedAt": "2026-05-20T09:14:16.000Z"
+    },
+    "start-work-package-pr-creation": {
+      "effects": {
+        "variablesSet": {
+          "pr_skipped": false
+        }
+      },
+      "optionId": "proceed",
+      "respondedAt": "2026-05-20T09:29:45.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-05-20T09:02:15.753Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "start-work-package",
+      "timestamp": "2026-05-20T09:11:10.289Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "start-work-package",
+      "checkpoint": "issue-verification",
+      "timestamp": "2026-05-20T09:13:49.099Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "start-work-package",
+      "checkpoint": "issue-verification",
+      "data": {
+        "optionId": "skip-issue"
+      },
+      "timestamp": "2026-05-20T09:14:16.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "start-work-package",
+      "data": {
+        "name": "issue_skipped",
+        "value": true
+      },
+      "timestamp": "2026-05-20T09:14:16.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "start-work-package",
+      "checkpoint": "pr-creation",
+      "timestamp": "2026-05-20T09:25:36.859Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "start-work-package",
+      "checkpoint": "pr-creation",
+      "data": {
+        "optionId": "proceed"
+      },
+      "timestamp": "2026-05-20T09:29:45.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "start-work-package",
+      "data": {
+        "name": "pr_skipped",
+        "value": false
+      },
+      "timestamp": "2026-05-20T09:29:45.000Z",
+      "type": "variable_set"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "parentSession": {
+    "agentId": "orchestrator",
+    "checkpointResponses": {},
+    "completedActivities": [
+      "discover-session"
+    ],
+    "condition": "default",
+    "currentActivity": "initialize-session",
+    "currentSkill": "",
+    "history": [
+      {
+        "timestamp": "2026-05-20T08:57:47.348Z",
+        "type": "workflow_started"
+      },
+      {
+        "activity": "discover-session",
+        "timestamp": "2026-05-20T08:58:04.972Z",
+        "type": "activity_entered"
+      },
+      {
+        "activity": "discover-session",
+        "timestamp": "2026-05-20T09:01:48.574Z",
+        "type": "activity_exited"
+      },
+      {
+        "activity": "initialize-session",
+        "timestamp": "2026-05-20T09:01:48.574Z",
+        "type": "activity_entered"
+      }
+    ],
+    "schemaVersion": 1,
+    "seq": 6,
+    "sessionIndex": "VPT3FR",
+    "skippedActivities": [],
+    "startedAt": "2026-05-20T08:57:47.348Z",
+    "status": "running",
+    "triggeredWorkflows": [],
+    "ts": 1779267727,
+    "variables": {},
+    "workflowId": "meta",
+    "workflowVersion": "5.0.0"
+  }
+}
