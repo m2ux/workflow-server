@@ -8,13 +8,8 @@
   "currentActivity": "strategic-review",
   "currentSkill": "",
   "condition": "",
-  "activeCheckpoint": {
-    "activityId": "strategic-review",
-    "checkpointId": "review-findings",
-    "yieldedAt": "2026-05-19T16:47:54.202Z"
-  },
-  "seq": 20,
-  "ts": 1779209274,
+  "seq": 22,
+  "ts": 1779266695,
   "startedAt": "2026-05-19T15:49:32.496Z",
   "completedActivities": [
     "start-work-package",
@@ -26,8 +21,20 @@
     "validate"
   ],
   "skippedActivities": [],
-  "variables": {},
-  "checkpointResponses": {},
+  "variables": {
+    "needs_strategic_fixes": true
+  },
+  "checkpointResponses": {
+    "strategic-review-review-findings": {
+      "effects": {
+        "variablesSet": {
+          "needs_strategic_fixes": true
+        }
+      },
+      "optionId": "fix-findings",
+      "respondedAt": "2026-05-20T08:43:59.000Z"
+    }
+  },
   "history": [
     {
       "timestamp": "2026-05-19T15:49:32.496Z",
@@ -113,6 +120,24 @@
       "checkpoint": "review-findings",
       "timestamp": "2026-05-19T16:47:54.202Z",
       "type": "checkpoint_reached"
+    },
+    {
+      "activity": "strategic-review",
+      "checkpoint": "review-findings",
+      "data": {
+        "optionId": "fix-findings"
+      },
+      "timestamp": "2026-05-20T08:43:59.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "strategic-review",
+      "data": {
+        "name": "needs_strategic_fixes",
+        "value": true
+      },
+      "timestamp": "2026-05-20T08:43:59.000Z",
+      "type": "variable_set"
     }
   ],
   "triggeredWorkflows": [],

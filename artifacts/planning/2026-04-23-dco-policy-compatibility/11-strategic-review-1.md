@@ -2,18 +2,18 @@
 
 **Work Package:** DCO Policy Compatibility
 **PR:** [#109](https://github.com/m2ux/workflow-server/pull/109)
-**Branch:** `dco-update-2026-05-18` (head `5369ef9`, was `1d490c8` before cleanup)
+**Branch:** `dco-update-2026-05-18` (head `2d93abc`, was `5369ef9` before fix-findings pass, `1d490c8` before initial cleanup)
 **Base:** `workflows`
-**Date:** 2026-05-19
+**Date:** 2026-05-19 (initial pass); 2026-05-20 (fix-findings pass)
 **Reviewer:** strategic-review worker
 
 ---
 
 ## Summary
 
-PR #109 contains 14 files changed (+235/-107) across the work-package workflow surface, plus one strategic-review cleanup commit applied here. Changes are minimal, on-topic, and aligned with the DCO-Safe Agentic Coding Policy. One Minor orphan-reference finding was identified and fixed in-place; one Informational finding documented for follow-up outside this PR's scope.
+PR #109 contains 14 files changed (+235/-107) across the work-package workflow surface, plus two strategic-review cleanup commits applied here. Changes are minimal, on-topic, and aligned with the DCO-Safe Agentic Coding Policy. One Minor orphan-reference finding was identified and fixed in-place (S1); one Informational finding (S2: stale activities/README.md) was initially deferred and then resolved in a fix-findings pass after the user opted to address it before submit-for-review.
 
-**Outcome:** `acceptable` — no findings ≥ Major remain.
+**Outcome:** `acceptable` — no findings ≥ Major remain; both S1 and S2 resolved in-PR.
 
 ---
 
@@ -59,7 +59,7 @@ Plus three cleanup vectors aligned with the same theme: drop the resign infrastr
 | # | Severity | Type | Finding | Action |
 |---|----------|------|---------|--------|
 | S1 | Minor | Orphan reference | `work-package/skills/12-review-strategy.toon` `commit-signatures` protocol block referenced `resign-unsigned-pr-commits` (removed step) and `unsigned_commits_in_pr` (removed variable). No consumer called this protocol. | **Fixed**: removed block; bumped skill 1.3.0 → 1.4.0. Commit `5369ef9`. |
-| S2 | Informational | Stale documentation | `work-package/activities/README.md` (hand-maintained doc) has four stale lines referencing `scan-commit-signatures-for-strategic`, `resign-unsigned-pr-commits`, `unsigned-commits-prompt`, and the unsigned-commits mermaid node. The file already drifts in many places from the current TOON state. | **Deferred**: out of scope for this PR. Resolving requires a full README regeneration pass; tracked as a documentation work package candidate. |
+| S2 | Informational | Stale documentation | `work-package/activities/README.md` (hand-maintained doc) had stale lines referencing `scan-commit-signatures-for-strategic`, `resign-unsigned-pr-commits`, `unsigned-commits-prompt`, the unsigned-commits mermaid node, and missed the new DCO surface (dco-sign-off, merge-strategy-reminder, declare-context-scope, provenance-log, rationale-amendment). | **Resolved**: refreshed activities README to match current TOON state for activities 04, 08, 09, 10, 11, 12. Commit `2d93abc`. Scoped to PR #109's changes; pre-existing doc rot in unrelated sections left untouched. |
 
 No over-engineering identified. No investigation/debug artifacts. No commented-out code introduced. No duplicate functionality. The new `dco-provenance` skill carries exactly the surface the activities reference; no speculative interface.
 
@@ -99,14 +99,14 @@ Not re-run in this pass — the PR description was last updated at submit-for-re
 ## Findings Summary
 
 ```
-[Minor]         S1: orphan commit-signatures protocol block in skill 12 — FIXED in commit 5369ef9
-[Informational] S2: stale references in activities/README.md (hand-maintained) — DEFERRED
+[Minor]         S1: orphan commit-signatures protocol block in skill 12 — RESOLVED in commit 5369ef9
+[Informational] S2: stale references in activities/README.md (hand-maintained) — RESOLVED in commit 2d93abc (fix-findings pass)
 ```
 
 - Critical: 0
 - Major: 0
-- Minor: 1 (fixed in this activity)
-- Informational: 1 (deferred, out of scope)
+- Minor: 1 (resolved in this activity)
+- Informational: 1 (resolved in fix-findings pass)
 
 ---
 
@@ -115,8 +115,8 @@ Not re-run in this pass — the PR description was last updated at submit-for-re
 | Variable | Value |
 |----------|-------|
 | `review_passed` | `true` |
-| `needs_strategic_fixes` | `false` |
+| `needs_strategic_fixes` | `false` (resolved via fix-findings pass; S1 + S2 both addressed) |
 | `needs_cleanup` | `false` (cleanup applied inline; nothing left) |
 | `recommended_strategic_option` | `acceptable` |
 | `fragment_references_issue` | `null` |
-| `strategic_findings_summary` | See above |
+| `strategic_findings_summary` | `[Minor] S1: orphan commit-signatures protocol — RESOLVED (5369ef9). [Informational] S2: stale activities/README.md — RESOLVED (2d93abc).` |

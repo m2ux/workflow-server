@@ -62,6 +62,7 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 | 10 | Validation Record | `10-validation-record.md` — confirmation pass at PR HEAD `1d490c8`: both schema validators green, typecheck clean, vitest 13/13 files & 322/322 tests passed (4 skipped) in 28.63s. No findings. | 10-20m | ✅ Complete |
 | 11 | Strategic Review | `11-strategic-review-1.md` — diff minimal and on-topic; 1 Minor finding (orphan `commit-signatures` protocol in review-strategy skill) fixed in-place; 1 Informational finding (activities/README.md drift) deferred. Outcome: `acceptable`. | 15-30m | ✅ Complete |
 | 11 | Architecture Summary | `11-architecture-summary.md` — stakeholder-facing summary with before/after system context, package diagram, and DCO sign-off sequence diagram. | — | ✅ Complete |
+| 11 | Strategic Review — fix-findings pass | Refresh `work-package/activities/README.md` for PR #109 scope (04 Research, 08 Implement, 09 Post-Impl Review, 10 Validate, 11 Strategic Review, 12 Submit for Review). Resolves S2. Commit `2d93abc`. | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | TBD | ⏳ In progress |
 | — | Merge | Squash-merge with `-s -S` on `workflows` branch | — | ⏳ Pending |
 
@@ -78,4 +79,4 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 
 ---
 
-**Status:** PR rebased onto current `workflows` (2026-05-18). Strategic review complete (1 Minor fix applied in commit `5369ef9`, head now `5369ef9`). All schema validation, server typecheck, and tests green. Awaiting human review.
+**Status:** PR rebased onto current `workflows` (2026-05-18). Strategic review complete with fix-findings pass — S1 (orphan protocol) resolved in `5369ef9`, S2 (stale activities/README.md) resolved in `2d93abc`; head now `2d93abc`. All schema validation, server typecheck, and tests green. Awaiting human review.
