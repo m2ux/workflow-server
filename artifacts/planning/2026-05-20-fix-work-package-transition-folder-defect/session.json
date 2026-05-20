@@ -8,13 +8,8 @@
   "currentActivity": "submit-for-review",
   "currentSkill": "",
   "condition": "review_passed == true",
-  "activeCheckpoint": {
-    "activityId": "submit-for-review",
-    "checkpointId": "review-received",
-    "yieldedAt": "2026-05-20T13:45:04.404Z"
-  },
-  "seq": 62,
-  "ts": 1779284704,
+  "seq": 69,
+  "ts": 1779287715,
   "startedAt": "2026-05-20T09:02:15.753Z",
   "completedActivities": [
     "start-work-package",
@@ -36,6 +31,7 @@
     "path_gating_complexity": "simple",
     "pr_skipped": false,
     "resign_unsigned_commits_requested": false,
+    "review_requires_changes": false,
     "skip_optional_activities": true
   },
   "checkpointResponses": {
@@ -94,6 +90,19 @@
       },
       "optionId": "decline-resign",
       "respondedAt": "2026-05-20T11:52:06.000Z"
+    },
+    "submit-for-review-review-outcome": {
+      "effects": {
+        "variablesSet": {
+          "review_requires_changes": false
+        }
+      },
+      "optionId": "approved",
+      "respondedAt": "2026-05-20T14:34:57.000Z"
+    },
+    "submit-for-review-review-received": {
+      "optionId": "yes-review",
+      "respondedAt": "2026-05-20T14:33:42.000Z"
     }
   },
   "history": [
@@ -378,6 +387,39 @@
       "checkpoint": "review-received",
       "timestamp": "2026-05-20T13:45:04.404Z",
       "type": "checkpoint_reached"
+    },
+    {
+      "activity": "submit-for-review",
+      "checkpoint": "review-received",
+      "data": {
+        "optionId": "yes-review"
+      },
+      "timestamp": "2026-05-20T14:33:42.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "submit-for-review",
+      "checkpoint": "review-outcome",
+      "timestamp": "2026-05-20T14:34:33.658Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "submit-for-review",
+      "checkpoint": "review-outcome",
+      "data": {
+        "optionId": "approved"
+      },
+      "timestamp": "2026-05-20T14:34:57.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "submit-for-review",
+      "data": {
+        "name": "review_requires_changes",
+        "value": false
+      },
+      "timestamp": "2026-05-20T14:34:57.000Z",
+      "type": "variable_set"
     }
   ],
   "triggeredWorkflows": [],
