@@ -1,8 +1,9 @@
 # DCO Policy Compatibility - April 2026
 
 **Created:** 2026-04-23
-**Status:** In Review (PR open, rebased onto current `workflows` 2026-05-18)
+**Status:** Complete — pending human squash-merge `-s -S` onto `workflows`
 **Type:** Enhancement
+**ADR:** [ADR-0004](../../adr/0004-dco-policy-compatibility.md)
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
 
@@ -65,7 +66,10 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 | 11 | Strategic Review — fix-findings pass | Refresh `work-package/activities/README.md` for PR #109 scope (04 Research, 08 Implement, 09 Post-Impl Review, 10 Validate, 11 Strategic Review, 12 Submit for Review). Resolves S2. Commit `2d93abc`. | 15-30m | ✅ Complete |
 | 12 | Submission Record | `12-submission-record.md` — per-step status table for `submit-for-review` v1.3.0; documents the policy-driven skip of `verify-commit-signatures` (PR implements the new DCO model; signing happens at squash-merge by the human); PR confirmed OPEN/non-draft at HEAD `2d93abc` on `workflows`. | 10-20m | ✅ Complete |
 | 12 | Review Cycle 1 | `12-review-analysis.md` — in-conversation review (no GitHub reviews); 4 directives actioned: rebase (`b5b7b7c`), engineering link fix, C1 inverted condition (`1d490c8`), S2 activities/README refresh (`2d93abc`); recommended outcome `approved`. | 10-20m | ✅ Complete |
-| — | Merge | Squash-merge with `-s -S` on `workflows` branch | — | ⏳ Pending |
+| 13 | ADR | [ADR-0004](../../adr/0004-dco-policy-compatibility.md) — Accepted; documents the agent-signed → human-signed-squash-merge relocation, design choices, and consequences. | 20-30m | ✅ Complete |
+| 13 | Completion Document | `13-COMPLETE.md` — deliverables, task-by-task status, in-conversation review log, validation status, deferred items, known limitations, follow-up items. | 15-30m | ✅ Complete |
+| 13 | Workflow Retrospective | `13-workflow-retrospective.md` — what went well, what could improve, lessons learned; notes the meta-irony of using the workflow to redefine itself, and the C1 bug that would have shipped silently without `09-post-impl-review`. | 10-20m | ✅ Complete |
+| — | Merge | Squash-merge with `-s -S` on `workflows` branch (worktree preserved at `/home/mike1/projects/work/workflow-server/2026-05-18-dco-policy-update` for the human to perform the merge) | — | ⏳ Pending (human) |
 
 ---
 
@@ -80,4 +84,4 @@ The supporting variable surface shrinks: `unsigned_commits_in_pr`, `resign_unsig
 
 ---
 
-**Status:** PR rebased onto current `workflows` (2026-05-18). Strategic review complete with fix-findings pass — S1 (orphan protocol) resolved in `5369ef9`, S2 (stale activities/README.md) resolved in `2d93abc`; head now `2d93abc`. All schema validation, server typecheck, and tests green. Awaiting human review.
+**Status:** Complete — pending human squash-merge. PR #109 approved at HEAD `2d93abc`; ADR-0004 accepted; completion document, workflow retrospective, and progress table finalised. All schema validation, server typecheck, and tests green (322/322). Worktree at `/home/mike1/projects/work/workflow-server/2026-05-18-dco-policy-update` preserved for the human to perform `git merge --squash` + `git commit -s -S` onto `workflows`; clean up post-merge with `git -C /home/mike1/projects/main/workflow-server worktree remove /home/mike1/projects/work/workflow-server/2026-05-18-dco-policy-update`.

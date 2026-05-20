@@ -1,20 +1,15 @@
 {
   "schemaVersion": 1,
-  "status": "running",
+  "status": "completed",
   "workflowId": "work-package",
   "workflowVersion": "3.11.0",
   "agentId": "orchestrator",
   "sessionIndex": "MJ3XF4",
-  "currentActivity": "submit-for-review",
+  "currentActivity": "complete",
   "currentSkill": "",
-  "condition": "review_passed == true",
-  "activeCheckpoint": {
-    "activityId": "submit-for-review",
-    "checkpointId": "review-outcome",
-    "yieldedAt": "2026-05-20T13:53:24.764Z"
-  },
-  "seq": 28,
-  "ts": 1779285204,
+  "condition": "review_requires_changes == false",
+  "seq": 31,
+  "ts": 1779285294,
   "startedAt": "2026-05-19T15:49:32.496Z",
   "completedActivities": [
     "start-work-package",
@@ -24,11 +19,13 @@
     "implement",
     "post-impl-review",
     "validate",
-    "strategic-review"
+    "strategic-review",
+    "submit-for-review"
   ],
   "skippedActivities": [],
   "variables": {
-    "needs_strategic_fixes": true
+    "needs_strategic_fixes": true,
+    "review_requires_changes": false
   },
   "checkpointResponses": {
     "strategic-review-review-findings": {
@@ -39,6 +36,15 @@
       },
       "optionId": "fix-findings",
       "respondedAt": "2026-05-20T08:43:59.000Z"
+    },
+    "submit-for-review-review-outcome": {
+      "effects": {
+        "variablesSet": {
+          "review_requires_changes": false
+        }
+      },
+      "optionId": "approved",
+      "respondedAt": "2026-05-20T13:54:10.000Z"
     },
     "submit-for-review-review-received": {
       "optionId": "yes-review",
@@ -179,6 +185,38 @@
       "checkpoint": "review-outcome",
       "timestamp": "2026-05-20T13:53:24.764Z",
       "type": "checkpoint_reached"
+    },
+    {
+      "activity": "submit-for-review",
+      "checkpoint": "review-outcome",
+      "data": {
+        "optionId": "approved"
+      },
+      "timestamp": "2026-05-20T13:54:10.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "submit-for-review",
+      "data": {
+        "name": "review_requires_changes",
+        "value": false
+      },
+      "timestamp": "2026-05-20T13:54:10.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "submit-for-review",
+      "timestamp": "2026-05-20T13:54:16.356Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "complete",
+      "timestamp": "2026-05-20T13:54:16.356Z",
+      "type": "activity_entered"
+    },
+    {
+      "timestamp": "2026-05-20T13:54:16.356Z",
+      "type": "workflow_completed"
     }
   ],
   "triggeredWorkflows": [],
