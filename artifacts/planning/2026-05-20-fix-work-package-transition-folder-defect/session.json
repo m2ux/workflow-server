@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "status": "running",
+  "status": "completed",
   "workflowId": "work-package",
   "workflowVersion": "3.11.0",
   "agentId": "orchestrator",
   "sessionIndex": "ZBVR67",
-  "currentActivity": "submit-for-review",
+  "currentActivity": "complete",
   "currentSkill": "",
-  "condition": "review_passed == true",
-  "seq": 69,
-  "ts": 1779287715,
+  "condition": "review_requires_changes == false",
+  "seq": 71,
+  "ts": 1779287778,
   "startedAt": "2026-05-20T09:02:15.753Z",
   "completedActivities": [
     "start-work-package",
@@ -20,7 +20,8 @@
     "implement",
     "post-impl-review",
     "validate",
-    "strategic-review"
+    "strategic-review",
+    "submit-for-review"
   ],
   "skippedActivities": [],
   "variables": {
@@ -420,6 +421,20 @@
       },
       "timestamp": "2026-05-20T14:34:57.000Z",
       "type": "variable_set"
+    },
+    {
+      "activity": "submit-for-review",
+      "timestamp": "2026-05-20T14:35:50.616Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "complete",
+      "timestamp": "2026-05-20T14:35:50.616Z",
+      "type": "activity_entered"
+    },
+    {
+      "timestamp": "2026-05-20T14:35:50.616Z",
+      "type": "workflow_completed"
     }
   ],
   "triggeredWorkflows": [],
