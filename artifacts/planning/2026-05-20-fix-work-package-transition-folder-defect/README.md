@@ -41,7 +41,8 @@ The change is small and contained: one branch in `dispatch_child` is rewritten t
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-4h | ✅ Complete |
 | 06 | [Post-implementation review](06-post-impl-review.md) | Single-pass focused review (manual diff + code + tests combined; full prism skipped per user direction) | 15-30m | ✅ Complete |
-| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
+| 07 | [Architecture summary](architecture-summary.md) | Stakeholder-facing summary with C4 + sequence diagrams | 15-30m | ✅ Complete |
 | 10 | [Validation](10-validation.md) | Typecheck + test suite verification (322 passed, 4 skipped) | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
