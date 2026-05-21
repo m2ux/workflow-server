@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.6.0
+version: 3.6.1
 name: Start Work Package
 description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -61,7 +61,12 @@ steps[26]:
       operator: notExists
   - id: analyze-reference-with-gitnexus
     name: Re-index Reference with GitNexus
-    description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries. The analyze CLI emits stats; capture them in trace logs but do not gate the workflow on them."
+    description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries."
+    actions[1]:
+      - action: set
+        target: gitnexus_indexed
+        value: true
+        description: "Set gitnexus_indexed=true on successful index. Downstream steps gated on this variable (e.g., post-impl-review's gitnexus-detect-changes-preflight, implement-task protocol phases) become structurally enabled. The analyze CLI emits stats; capture them in trace logs but do not gate the workflow on them."
   - id: verify-signing-precondition
     name: Verify Commit-Signing Pre-conditions
     description: "Verify commit signing is configured."

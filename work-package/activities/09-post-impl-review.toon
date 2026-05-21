@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.9.0
+version: 1.9.1
 name: Post-Implementation Review
 description: "Review implementation quality before validation."
 problem: User needs to review implementation quality before validation
@@ -9,10 +9,9 @@ recognition[3]:
   - quality review
 required: true
 estimatedTime: 30-60m
-rules[4]:
-  - "This activity runs after implement, whether code was new or adopted"
+rules[3]:
   - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
-  - "All three automated reviews (code, test suite, architecture) should be completed"
+  - "All three automated reviews (code, test suite, architecture) must be completed before transitioning to validate"
   - "Adoption workflows must still complete quality reviews"
 entryActions[1]{action,message}:
   log,Starting post-implementation review
@@ -52,8 +51,8 @@ artifacts[6]:
 steps[8]:
   - id: gitnexus-detect-changes-preflight
     name: GitNexus Detect Changes Preflight
-    description: "Run `gitnexus_detect_changes()` on the current diff. Capture the affected processes and changed-symbol set as input to the subsequent code-review and test-suite-review steps. Skip this step ONLY if no GitNexus index exists for the target codebase; otherwise this preflight is required. See work-package resource 27 for the full reference."
-    required: false
+    description: "Run `gitnexus_detect_changes()` on the current diff. Capture the affected processes and changed-symbol set as input to the subsequent code-review and test-suite-review steps. See work-package resource 27 for the full reference."
+    when: "gitnexus_indexed == true"
   - id: manual-diff-review
     name: Manual Diff Review
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
@@ -105,7 +104,7 @@ steps[8]:
       value: true
   - id: classify-and-route-findings
     name: Classify and Route Review Findings
-    description: "Classify every code-review and test-suite-review finding by severity (Critical / Major / Minor / Nit / Informational). Set needs_code_fixes=true when any code-review finding has severity >= Minor; otherwise false. Set needs_test_improvements=true when any test-suite finding has severity >= Minor; otherwise false. Findings at Nit/Informational severity are NOT auto-fixed — they are documented in the review reports for the user to triage if they choose. The review-fix-cycle doWhile loop runs automatically when either flag is true; nit-only and clean runs proceed straight to validate. Rationale: Critical/Major/Minor findings are quality-gate failures; making the user opt INTO fixing them inverts the gate. Nit-only findings are debatable and intentionally not automated."
+    description: "Classify every code-review and test-suite-review finding by severity (Critical / Major / Minor / Nit / Informational). Set needs_code_fixes=true when any code-review finding has severity >= Minor; otherwise false. Set needs_test_improvements=true when any test-suite finding has severity >= Minor; otherwise false. Findings at Nit/Informational severity are NOT auto-fixed — they are documented in the review reports for the user to triage if they choose. The review-fix-cycle doWhile loop runs automatically when either flag is true; nit-only and clean runs proceed straight to validate."
     actions[2]:
       - action: set
         target: needs_code_fixes

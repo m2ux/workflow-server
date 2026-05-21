@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> v3.11.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.12.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
@@ -235,7 +235,7 @@ graph LR
 
 ---
 
-## Variables (66)
+## Variables (89)
 
 The workflow declares 66 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
 
@@ -366,3 +366,23 @@ The following 7 rules are declared at the workflow level and apply to all activi
 | [12 Submit for Review](activities/README.md#12-submit-for-review) | 10-15 min |
 | [13 Complete](activities/README.md#13-complete) | 30-60 min |
 | **Total (full workflow)** | **~4-10 hours** |
+
+---
+
+## Appendix: Recent Changes
+
+### v3.12.0 (2026-05-21)
+
+- Add `gitnexus_indexed` workflow variable, set to true by `start-work-package`'s `analyze-reference-with-gitnexus` step. Downstream gitnexus-dependent steps gate on this variable (e.g., post-impl-review's `gitnexus-detect-changes-preflight` step now uses `when: gitnexus_indexed == true` instead of `required: false` + text-gating).
+- Trim AP-36 description rationale tails (gitnexus-discipline rule in implement-task; classify-and-route-findings step in post-impl-review).
+- Drop AP-40 positional fact from post-impl-review rules (canonical in transitions table).
+- Rephrase AP-39-violating validate-action messages in plan-prepare to detection-only (no `gh auth login` / `gpgconf --launch` directives).
+- Correct workflow-level description reference: `work-packages.toon` → `work-packages workflow`.
+
+### v3.11.0 (2026-05-21)
+
+- Strengthen gitnexus utilisation across 15 analysis-heavy skills and the post-impl-review activity. Adds `pre-edit-impact-check` and `post-edit-verification` protocol phases on `implement-task` (with a `gitnexus-discipline` MUST rule), folds graph-aware analysis bullets into the protocols of `review-code`, `review-test-suite`, `review-diff`, `review-strategy`, `analyze-implementation`, `summarize-architecture`, `reconcile-assumptions`, and 7 medium-leverage skills.
+- Add a `gitnexus-detect-changes-preflight` step at the start of `post-impl-review` to bound subsequent reviews by the changed-symbol set.
+- Resource 27 (`gitnexus-reference.md`) gains a "Work-package Integration Patterns" section documenting the eight integration patterns the skills above reference.
+
+Surfaced by a self-review pass against workflow-design's design principles and anti-pattern catalog.

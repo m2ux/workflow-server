@@ -614,7 +614,7 @@ graph TD
 
 **Review stages:**
 
-1. **GitNexus detect-changes preflight** — Run `gitnexus_detect_changes()` on the current diff to capture the affected processes and changed-symbol set. Output feeds the subsequent code-review and test-suite-review stages. `required: false` — skip ONLY when no GitNexus index exists for the target codebase; otherwise required. See work-package resource 27.
+1. **GitNexus detect-changes preflight** — Run `gitnexus_detect_changes()` on the current diff to capture the affected processes and changed-symbol set. Output feeds the subsequent code-review and test-suite-review stages. Gated by `when: gitnexus_indexed == true` — automatically skipped when the workflow's `gitnexus_indexed` variable is false (i.e., the reference codebase was not indexed in `start-work-package`). See work-package resource 27.
 2. **Manual diff review** — Pull and diff, create change-block index, present file table to user, collect flagged blocks, interview each flagged block, write report.
 3. **Code review** — Comprehensive code review using Rust/Substrate criteria (if applicable).
 4. **Test suite review** — Assess test quality, coverage, and anti-patterns.
