@@ -1,5 +1,5 @@
 id: implement-task
-version: 2.1.1
+version: 2.1.2
 capability: Implement a single task from the work package plan by writing code changes
 
 description: "Implement a single task from the plan by writing code changes."
@@ -38,6 +38,7 @@ output[1]:
 
 rules:
   single-task-focus: "Implement exactly one task — do not scope-creep into adjacent tasks"
+  gitnexus-discipline: "MUST run gitnexus_impact on the target symbol before any edit and MUST run gitnexus_detect_changes before commit. The protocol's pre-edit-impact-check and post-edit-verification blocks describe the calls; this rule asserts they are non-negotiable in implementations of the project CLAUDE.md mandate. Skipping when the codebase is indexed is a discipline violation."
 
 resources[3]:
   - "14"
