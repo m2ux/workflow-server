@@ -1,7 +1,7 @@
 id: context-and-literacy
-version: 1.0.1
+version: 1.1.0
 name: Context and Literacy
-description: "Load the schema system and verify TOON format comprehension."
+description: "Schema-system and TOON-format baseline established before drafting begins."
 problem: Agent must internalize the schema system and format conventions before producing any workflow content
 skills:
   supporting[1]:
@@ -15,16 +15,16 @@ rules[3]:
 steps[7]:
   - id: load-schemas
     name: Load Schema Definitions
-    description: "Fetch the workflow-server://schemas MCP resource to load all five JSON schema definitions (workflow.schema.json, activity.schema.json, skill.schema.json, condition.schema.json, state.schema.json). These are the authoritative definitions that all workflow content must conform to."
+    description: "Authoritative JSON schemas (workflow, activity, skill, condition, state) — the conformance reference for all drafted content."
   - id: read-schema-documentation
     name: Read Schema Documentation
-    description: "Read schemas/README.md from the workflow-server repository. This 45KB document contains the full schema ontology, entity relationships (ER diagram), field tables for every construct, complete examples, and validation guidance. This is the essential reference for understanding what constructs exist and how to use them correctly."
+    description: "Schema ontology + field tables + examples + validation guidance from schemas/README.md — the construct reference."
   - id: survey-existing-workflows
     name: Survey Existing Workflows
-    description: "Call list_workflows to discover all available workflows. Select at least two workflows of similar type (sequential or independent, depending on the target). Call get_workflow for each to examine their structure."
+    description: "Two-or-more reference workflows of similar type loaded as the pattern baseline."
   - id: read-toon-examples
     name: Read TOON File Examples
-    description: "Read at least one workflow.toon, one activity .toon, and one skill .toon from the surveyed workflows. Confirm understanding of TOON syntax: key-value pairs, arrays with [N] suffix, nested objects, quoted strings with colons, inline object shorthand with {keys}."
+    description: "Sample TOON files (workflow / activity / skill) read to ground TOON syntax understanding (key-value pairs, `[N]` array suffixes, nested objects, inline `{}` shorthand)."
     condition:
       type: and
       conditions[2]:
@@ -38,10 +38,10 @@ steps[7]:
           value: true
   - id: identify-applicable-constructs
     name: Identify Applicable Constructs
-    description: "Based on the design intent from intake and the schema documentation, identify which schema constructs are applicable. Cross-reference the schema field tables to confirm correct field names, types, required properties, and valid values. Present the construct inventory with examples from the surveyed workflows."
+    description: "Construct inventory applicable to the design intent (with field name / type / required-property cross-checks and reference-workflow examples)."
   - id: auto-confirm-literacy
     name: Auto-confirm format literacy
-    description: "In update mode, the agent demonstrated format understanding during intake by loading and analyzing the target workflow."
+    description: "Update-mode shortcut: literacy already demonstrated by loading and analysing the target workflow during intake, so the literacy checkpoints are skipped."
     condition:
       type: simple
       variable: is_update_mode
@@ -56,7 +56,7 @@ steps[7]:
         value: true
   - id: present-convention-summary
     name: Present Convention Summary
-    description: "Summarize the conventions observed: file naming (NN-name.toon), folder structure (activities/, skills/, resources/), field ordering, version format, transition patterns, checkpoint structure. Present to user for confirmation."
+    description: "User-facing summary of observed conventions (naming, folder structure, field ordering, versions, transition and checkpoint shapes) as the literacy confirmation surface."
     condition:
       type: and
       conditions[2]:
@@ -86,13 +86,13 @@ checkpoints[2]:
     options[2]:
       - id: confirmed
         label: "Yes, proceed"
-        description: Format understanding is correct
+        description: "Format understanding confirmed."
         effect:
           setVariable:
             format_literacy_confirmed: true
       - id: incorrect
         label: "Needs correction"
-        description: There are errors in the format understanding
+        description: "Format understanding has errors that must be corrected before proceeding."
   - id: constructs-confirmed
     name: Schema Constructs Checkpoint
     condition:
@@ -110,13 +110,13 @@ checkpoints[2]:
     options[2]:
       - id: confirmed
         label: "Yes, these are the right constructs"
-        description: Proceed with these constructs
+        description: "Construct coverage confirmed."
         effect:
           setVariable:
             schema_constructs_confirmed: true
       - id: adjust
         label: "Needs adjustment"
-        description: Add or remove constructs from the list
+        description: "Construct list requires additions or removals before proceeding."
 transitions[2]:
   - to: quality-review
     condition:

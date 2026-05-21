@@ -1,7 +1,7 @@
 id: intake
-version: 1.0.1
+version: 1.1.0
 name: Intake
-description: "Accept the user's workflow description and determine the operation type."
+description: "Operation-type capture: classify the user's request as create, update, or review and establish the corresponding mode + target."
 problem: User wants to create or update a workflow and needs a guided process
 recognition[6]:
   - create a workflow
@@ -21,7 +21,7 @@ rules[2]:
 steps[10]:
   - id: load-target-workflow
     name: Load Target Workflow
-    description: "Call get_workflow with target_workflow_id to load the full workflow definition. Call next_activity for each activity to get complete details including steps, checkpoints, and transitions."
+    description: "Full workflow definition for `target_workflow_id` (workflow.toon + per-activity detail) loaded as the review baseline."
     condition:
       type: simple
       variable: is_review_mode
@@ -29,7 +29,7 @@ steps[10]:
       value: true
   - id: enumerate-workflow-contents
     name: Enumerate Workflow Contents
-    description: "List all files in the target workflow directory (workflow.toon, activities, skills, resources, README). Record file count, activity count, skill count, resource count, checkpoint count, and transition count."
+    description: "Structural inventory of the target: file counts and entity counts (activities, skills, resources, checkpoints, transitions)."
     condition:
       type: simple
       variable: is_review_mode
@@ -37,7 +37,7 @@ steps[10]:
       value: true
   - id: present-review-scope
     name: Present Review Scope
-    description: "Present the workflow structure summary to the user. Show the activity sequence, checkpoint locations, skill assignments, and resource index. Confirm this is the workflow to review."
+    description: "User-facing summary of the target workflow's structure as the scope confirmation surface."
     condition:
       type: simple
       variable: is_review_mode
@@ -45,7 +45,7 @@ steps[10]:
       value: true
   - id: load-existing-workflow
     name: Load Existing Workflow
-    description: "Call get_workflow with target_workflow_id to load the full workflow definition. Present the workflow structure (activities, skills, resources) to the user."
+    description: "Full workflow definition for `target_workflow_id` loaded as the update baseline."
     condition:
       type: simple
       variable: is_update_mode
@@ -53,7 +53,7 @@ steps[10]:
       value: true
   - id: parse-change-request
     name: Parse Change Request
-    description: "Extract what the user wants to change from their description. Categorize as: add activity, modify activity, add/modify skill, add/modify resource, change workflow metadata, or structural refactoring."
+    description: "Categorised change request derived from the user's description (add/modify activity, skill, resource, metadata, or structural refactor)."
     condition:
       type: simple
       variable: is_update_mode
@@ -61,7 +61,7 @@ steps[10]:
       value: true
   - id: present-current-structure
     name: Present Current Structure
-    description: "Display the current workflow's activity sequence, checkpoint locations, skill references, and resource index. This establishes the baseline for impact analysis."
+    description: "Baseline view of the existing workflow's structure that feeds impact analysis."
     condition:
       type: simple
       variable: is_update_mode
@@ -69,7 +69,7 @@ steps[10]:
       value: true
   - id: accept-description
     name: Accept User Description
-    description: "Receive the user's free-form description of the workflow they want to create. Acknowledge receipt and summarize the key points."
+    description: "Capture surface for the user's free-form workflow description, with a key-points summary back to the user."
     condition:
       type: simple
       variable: is_review_mode
@@ -77,7 +77,7 @@ steps[10]:
       value: true
   - id: classify-operation
     name: Classify Operation
-    description: "Determine whether this is a create or update operation based on user intent. If the user references an existing workflow by name or ID, classify as update. Otherwise, classify as create."
+    description: "Create vs update classification from user intent — existing-workflow reference signals update; otherwise create."
     condition:
       type: simple
       variable: is_review_mode
@@ -85,7 +85,7 @@ steps[10]:
       value: true
   - id: extract-design-intent
     name: Extract Design Intent
-    description: "From the user's description, extract: the workflow's purpose, domain, rough activity count, whether it is sequential or independent, and any mentioned constraints or requirements. Present this summary to the user."
+    description: "Distilled design intent (purpose, domain, rough activity count, sequential vs independent model, constraints) presented back to the user."
     condition:
       type: simple
       variable: is_review_mode
@@ -93,7 +93,7 @@ steps[10]:
       value: true
   - id: set-mode
     name: Set Mode Variable
-    description: "Set is_update_mode and workflow_id variables based on classification. For update mode, also set target_workflow_id."
+    description: "Mode wiring: `is_update_mode`, `workflow_id`, and (update mode only) `target_workflow_id` populated from the classification."
     condition:
       type: simple
       variable: is_review_mode
@@ -113,13 +113,13 @@ checkpoints[3]:
     options[2]:
       - id: confirm-review-target
         label: "Yes — audit this workflow"
-        description: Proceed with this target
+        description: "Target confirmed; flow continues with the current `target_workflow_id`."
         effect:
           setVariable:
             review_scope_confirmed: true
       - id: wrong-review-target
         label: "No — wrong target"
-        description: Clarify the correct target_workflow_id before continuing; remains blocked until confirmed
+        description: "Target rejected; checkpoint remains blocking until a correct `target_workflow_id` is supplied."
         effect:
           setVariable:
             review_scope_confirmed: false
@@ -135,13 +135,13 @@ checkpoints[3]:
     options[2]:
       - id: confirm-create
         label: "Yes, create a new workflow"
-        description: Proceed in create mode
+        description: "Create-mode classification confirmed."
         effect:
           setVariable:
             is_update_mode: false
       - id: confirm-update
         label: "Yes, update an existing workflow"
-        description: Proceed in update mode
+        description: "Update-mode classification confirmed."
         effect:
           setVariable:
             is_update_mode: true
@@ -157,13 +157,13 @@ checkpoints[3]:
     options[3]:
       - id: confirmed
         label: "Yes, that's correct"
-        description: Proceed with these changes
+        description: "Change request and current structure both confirmed."
       - id: refine
         label: "Needs refinement"
-        description: Let me clarify what I want changed
+        description: "Change request requires further clarification before continuing."
       - id: cancel
         label: "Cancel — create new instead"
-        description: Switch to create mode
+        description: "Update path abandoned; mode flips back to create."
         effect:
           setVariable:
             is_update_mode: false

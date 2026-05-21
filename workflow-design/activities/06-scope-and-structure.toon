@@ -1,7 +1,7 @@
 id: scope-and-structure
-version: 1.0.0
+version: 1.0.1
 name: Scope and Structure
-description: "Define the complete file manifest and structural design."
+description: "Complete file manifest and structural design for the target workflow, including folder layout and implementation order."
 problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution begins
 skills:
   supporting[1]:
@@ -15,10 +15,10 @@ rules[3]:
 steps[5]:
   - id: verify-worktree
     name: Verify Workflows Worktree
-    description: "Check that the workflows worktree is checked out at the expected path. Run 'git worktree list' and verify the workflows branch is present. If not, instruct the user to run 'git worktree add ./workflows workflows'."
+    description: "Worktree readiness check: the workflows branch must be present and checked out at the expected path before any path definitions proceed."
   - id: design-folder-structure
     name: Design Folder Structure
-    description: "Based on requirements and adopted patterns, define the folder structure: workflow-{id}/ with activities/, skills/, resources/ subfolders. Determine the file naming scheme (NN-name.toon for activities and skills, NN-name.md for resources)."
+    description: "Folder layout (workflow-{id}/ with activities/, skills/, resources/) and file naming scheme (NN-name.toon for activities and skills, NN-name.md for resources)."
     condition:
       type: simple
       variable: is_update_mode
@@ -26,13 +26,13 @@ steps[5]:
       value: true
   - id: enumerate-files
     name: Enumerate File Manifest
-    description: "Create the complete file manifest. For each file, specify: full path relative to workflows/, action (create/modify/remove), file type (workflow/activity/skill/resource/readme), and a one-line description. Include workflow.toon, all activity files, all skill files, all resource files, and README.md."
+    description: "Exhaustive file manifest with per-file path, action (create/modify/remove), type (workflow/activity/skill/resource/readme), and one-line description."
   - id: present-structural-design
     name: Present Structural Design
-    description: "Present the proposed structure as a directory tree with the file manifest alongside it. For sequential workflows, show the activity transition diagram. Compare against patterns from reference workflows."
+    description: "Directory tree of the proposed structure with adjacent file manifest, transition diagram (for sequential workflows), and comparison against reference patterns."
   - id: present-approach
     name: Present Approach
-    description: "Describe the order in which files will be drafted: workflow.toon first (establishes metadata and references), then activities in order, then skills, then resources, then README. Explain why this order is necessary (activities reference skills, skills reference resources)."
+    description: "Drafting order (workflow.toon, activities, skills, resources, README) with rationale grounded in the reference-dependency chain."
 checkpoints[1]:
   - id: scope-and-structure-confirmed
     name: Scope and Structure Confirmation
@@ -43,14 +43,14 @@ checkpoints[1]:
     options[2]:
       - id: confirmed
         label: "Yes, scope and structure are correct"
-        description: File manifest and implementation order are correct
+        description: "File manifest and implementation order are accurate."
         effect:
           setVariable:
             scope_manifest_confirmed: true
             approach_confirmed: true
       - id: revise
         label: "Needs revision"
-        description: Adjust the file manifest or implementation order
+        description: "File manifest or implementation order requires adjustment."
 transitions[1]:
   - to: content-drafting
     condition:

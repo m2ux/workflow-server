@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.1.0
+version: 1.1.1
 name: Quality Review
 description: "Quality review of drafted workflow content."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
@@ -15,7 +15,7 @@ rules[3]:
 steps[16]:
   - id: load-all-workflow-files
     name: Load All Workflow Files
-    description: "Read every file in the target workflow directory: workflow.toon, all activity .toon files, all skill .toon files, all resource .md files, and README.md. Build a complete picture of the workflow content."
+    description: "Full file inventory of the target workflow as the audit baseline (workflow.toon, activities, skills, resources, READMEs)."
     condition:
       type: simple
       variable: is_review_mode
@@ -23,7 +23,7 @@ steps[16]:
       value: true
   - id: principle-compliance-audit
     name: Principle Compliance Audit
-    description: "Run the `audit-principle-compliance` phase of the workflow-design skill protocol against the target workflow."
+    description: "Principle-compliance audit pass: target adherence to the 14 design principles in resource 00, classified per principle as Pass / Partial / Violation with file/field/line citations."
     condition:
       type: simple
       variable: is_review_mode
@@ -31,7 +31,7 @@ steps[16]:
       value: true
   - id: anti-pattern-scan
     name: Anti-Pattern Scan
-    description: "Run the `audit-anti-pattern-scan` phase of the workflow-design skill protocol against the target workflow."
+    description: "Anti-pattern scan pass: target content matched against the AP catalog in resource 02 (40 entries across 7 categories)."
     condition:
       type: simple
       variable: is_review_mode
@@ -39,7 +39,7 @@ steps[16]:
       value: true
   - id: schema-validation-check
     name: Schema Validation Check
-    description: "Run the `audit-schema-validation` phase of the workflow-design skill protocol against the target workflow."
+    description: "Schema validation pass: every TOON file checked against its JSON schema, with per-file pass/fail."
     condition:
       type: simple
       variable: is_review_mode
@@ -47,7 +47,7 @@ steps[16]:
       value: true
   - id: tool-skill-doc-consistency
     name: Tool-Skill-Doc Consistency Audit
-    description: "Run the `audit-tool-skill-doc-consistency` phase of the workflow-design skill protocol against the target workflow."
+    description: "Consistency audit pass over the tool / skill / bootstrap-resource / doc boundary: tool-name accuracy, return-value fidelity, bootstrap completeness, cross-skill consistency, behavioural-guidance duplication, tool-surface overlap, doc parity (AP-30–35)."
     condition:
       type: simple
       variable: is_review_mode
@@ -55,7 +55,7 @@ steps[16]:
       value: true
   - id: compile-compliance-report
     name: Compile Compliance Report
-    description: "Run the `compile-compliance-report` phase of the workflow-design skill protocol to produce the structured findings report."
+    description: "Structured findings report assembled from every audit pass, following the report template in resource 04."
     condition:
       type: simple
       variable: is_review_mode
@@ -63,7 +63,7 @@ steps[16]:
       value: true
   - id: present-compliance-report
     name: Present Compliance Report
-    description: "Present the full compliance report to the user with severity-rated findings and recommended fixes."
+    description: "User-facing surface of the compliance report with severity-rated findings and recommended fixes."
     condition:
       type: simple
       variable: is_review_mode
@@ -71,7 +71,7 @@ steps[16]:
       value: true
   - id: offer-fixes
     name: Offer to Fix Issues
-    description: "Ask the user whether they want to fix the identified issues. If yes, set user_wants_fixes to true to transition to update mode for remediation."
+    description: "Disposition gate for remediation — review-disposition checkpoint that transitions to update mode when fixes are wanted."
     condition:
       type: simple
       variable: is_review_mode
@@ -79,7 +79,7 @@ steps[16]:
       value: true
   - id: expressiveness-review
     name: Schema Expressiveness Review
-    description: "Run the `audit-expressiveness` phase of the workflow-design skill protocol against the drafted content."
+    description: "Schema-expressiveness audit pass over drafted content: prose passages cross-checked against the construct inventory in resource 01; substitutions for formal constructs flagged for rewriting."
     condition:
       type: simple
       variable: is_review_mode
@@ -87,7 +87,7 @@ steps[16]:
       value: true
   - id: present-expressiveness-findings
     name: Present Expressiveness Findings
-    description: "Present the expressiveness audit results: how many instances were found, which files were affected, and what constructs were used as replacements. Show before/after for each change."
+    description: "User-facing surface of the expressiveness-pass results: counts, affected files, replacement constructs, before/after per flagged instance."
     condition:
       type: simple
       variable: is_review_mode
@@ -95,7 +95,7 @@ steps[16]:
       value: true
   - id: conformance-review
     name: Convention Conformance Review
-    description: "Run the `audit-conformance` phase of the workflow-design skill protocol against the drafted content."
+    description: "Convention-conformance audit pass over drafted content vs reference workflows (file naming, field ordering, version format, transition patterns, checkpoint structure, skill structure)."
     condition:
       type: simple
       variable: is_review_mode
@@ -103,7 +103,7 @@ steps[16]:
       value: true
   - id: present-conformance-findings
     name: Present Conformance Findings
-    description: "Present the conformance audit results: which conventions were followed, which diverged, and whether divergences are justified."
+    description: "User-facing surface of the conformance-pass results: conventions followed, conventions diverged, and the justification status for each divergence."
     condition:
       type: simple
       variable: is_review_mode
@@ -111,7 +111,7 @@ steps[16]:
       value: true
   - id: rule-hygiene-audit
     name: Rule Hygiene Audit
-    description: "Run the `audit-rule-hygiene` phase of the workflow-design skill protocol against every rules section in the target."
+    description: "Rule-hygiene audit pass over rules[] across the workflow, activities, and skills (AP-24–29 plus the worker-visibility carve-out on AP-27)."
     condition:
       type: simple
       variable: is_review_mode
@@ -119,7 +119,7 @@ steps[16]:
       value: true
   - id: present-rule-hygiene-findings
     name: Present Rule Hygiene Findings
-    description: "Present the rule hygiene audit results: protocol restatements found, contradictions, cross-level duplications, prefix patterns, and ambiguities. For each finding, cite the file, rule key, and recommended action."
+    description: "User-facing surface of the rule-hygiene-pass results: restatements, contradictions, cross-level duplications, prefix patterns, and ambiguities with file + rule-key citations and recommended actions."
     condition:
       type: simple
       variable: is_review_mode
@@ -127,7 +127,7 @@ steps[16]:
       value: true
   - id: rule-to-structure-audit
     name: Rule-to-Structure Audit
-    description: "Run the `audit-rule-to-structure` phase of the workflow-design skill protocol against every rules[] entry in the target."
+    description: "Rule-to-structure audit pass over rules[] entries: text-only enforcement vs structural backing (checkpoint, condition, validate action, decision)."
     condition:
       type: simple
       variable: is_review_mode
@@ -135,7 +135,7 @@ steps[16]:
       value: true
   - id: present-enforcement-findings
     name: Present Enforcement Findings
-    description: "Present the rule-to-structure audit results: which rules are text-only, which are structurally enforced, and recommendations for adding structural enforcement where needed."
+    description: "User-facing surface of the rule-to-structure-pass results: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed."
     condition:
       type: simple
       variable: is_review_mode
