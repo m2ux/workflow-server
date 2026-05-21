@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../../Incoming"
+		},
+		{
+			"path": "../../work"
 		}
 	],
 	"settings": {}

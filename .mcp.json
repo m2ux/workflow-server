@@ -1,9 +1,23 @@
 {
   "mcpServers": {
+    "rust-docs-mcp": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcpdoc",
+        "mcpdoc",
+        "--urls",
+        "Rust:https://github.com/m2ux/llms/blob/main/rust-llms.txt",
+        "--transport",
+        "stdio",
+        "--allowed-domains",
+        "*"
+      ]
+    },
     "concept-rag": {
       "command": "node",
       "args": [
-        "/home/mike1/projects/dev/concept-rag/dist/conceptual_index.js",
+        "/home/mike1/projects/main/concept-rag/dist/conceptual_index.js",
         "/home/mike1/.concept_rag"
       ]
     },
@@ -17,17 +31,14 @@
     },
     "workflow-server": {
       "command": "node",
-      "args": [
-        "/home/mike1/projects/main/workflow-server/dist/index.js"
-      ],
+      "args": ["/home/mike1/projects/main/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/home/mike1/projects/main/workflow-server/workflows"
+        "WORKFLOW_WORKSPACE": "/home/mike1/projects/dev/midnight-agent-eng"
       }
     },
     "gitnexus": {
-      "command": "/home/mike1/.nvm/versions/node/v22.16.0/bin/node",
+      "command": "/usr/local/bin/gitnexus",
       "args": [
-        "/home/mike1/.nvm/versions/node/v22.16.0/bin/gitnexus",
         "mcp"
       ]
     }
