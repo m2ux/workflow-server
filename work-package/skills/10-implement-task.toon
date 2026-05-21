@@ -16,12 +16,18 @@ protocol:
     - Read the task description and requirements from the plan
     - Identify affected files, dependencies, and related code
     - Review test plan for acceptance criteria relevant to this task
+  pre-edit-impact-check[3]:
+    - "Run `gitnexus_impact({target: <symbol>, direction: 'upstream'})` on the target symbol before any edit"
+    - "Read the impact report; if HIGH or CRITICAL risk, surface it to the user before proceeding"
+    - "Use `gitnexus_context({name: <symbol>})` to understand callers/callees of the symbol — see resource 27 for the full reference"
   write-code[3]:
     - Implement the code changes for this task
     - Follow existing code patterns and conventions in the target codebase
     - "For Rust projects, follow TDD best practices from resource 23 (tdd-concepts-rust)"
   verify-locally[1]:
     - Check for obvious regressions in affected code
+  post-edit-verification[1]:
+    - "Run `gitnexus_detect_changes()` before commit to confirm the changes affect only the expected symbols and execution flows"
 
 output[1]:
   - id: task-implementation
@@ -33,9 +39,10 @@ output[1]:
 rules:
   single-task-focus: "Implement exactly one task — do not scope-creep into adjacent tasks"
 
-resources[2]:
+resources[3]:
   - "14"
   - "23"
+  - "27"
 
 errors:
   compilation_failure:

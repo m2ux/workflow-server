@@ -49,7 +49,11 @@ artifacts[6]:
     name: "structural-findings.md"
     location: planning
     description: "Prism structural analysis findings — conservation law, meta-law, and classified bug table. For complex work packages, includes adversarial and synthesis pass artifacts."
-steps[7]:
+steps[8]:
+  - id: gitnexus-detect-changes-preflight
+    name: GitNexus Detect Changes Preflight
+    description: "Run `gitnexus_detect_changes()` on the current diff. Capture the affected processes and changed-symbol set as input to the subsequent code-review and test-suite-review steps. Skip this step ONLY if no GitNexus index exists for the target codebase; otherwise this preflight is required. See work-package resource 27 for the full reference."
+    required: false
   - id: manual-diff-review
     name: Manual Diff Review
     description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."

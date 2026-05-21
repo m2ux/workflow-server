@@ -14,22 +14,25 @@ inputs[3]:
     required: false
 
 protocol:
-  identify-scope[3]:
+  identify-scope[4]:
     - Determine which architectural components are affected by the changes
     - Map changed files to modules and subsystems
     - Identify external interactions and boundaries
+    - "Use `gitnexus_detect_changes()` to bound the scope of diagrams to the affected processes and symbols. See resource 27."
   create-context-diagram[3]:
     - Create Mermaid system context diagram
     - Show the system and its external interactions
     - Use C4 system context notation
-  create-package-diagram[3]:
+  create-package-diagram[4]:
     - If module structure is affected, create package diagram
     - Show internal organization and boundaries
     - Use Mermaid syntax
-  create-sequence-diagrams[3]:
+    - "Source package-diagram structure from `gitnexus://repo/{name}/clusters` (functional areas with cohesion scores) and `gitnexus://repo/{name}/cluster/{name}` (area members) when the codebase is indexed."
+  create-sequence-diagrams[4]:
     - For key flows affected by changes, create sequence diagrams
     - Show interactions between components
     - Use Mermaid sequence diagram syntax
+    - "Source sequence-diagram structure from `gitnexus://repo/{name}/process/{name}` (step-by-step execution traces) when the codebase is indexed."
   write-summary[3]:
     - Create architecture-summary.md in planning folder
     - Combine diagrams with narrative explanation
@@ -46,9 +49,10 @@ output[1]:
       sequence_diagrams: "Sequence diagrams for key flows"
       narrative: "Narrative explanation of impact and scope"
 
-resources[2]:
+resources[3]:
   - "15"
   - "19"
+  - "27"
 
 rules:
   stakeholder-audience: "Write for management stakeholders — focus on impact, scope, and risk, not implementation details"

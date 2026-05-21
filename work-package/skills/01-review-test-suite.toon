@@ -12,6 +12,10 @@ protocol:
   load-guidance[2]:
     - Use attached resource 17 (test-suite-review) for full review criteria
     - Identify all test files in the project related to changed code
+  diff-aware-coverage-map[3]:
+    - "Coverage assessment must be diff-aware — scope evaluation to the changed-symbol set rather than absolute project coverage"
+    - "Use `gitnexus_detect_changes()` to enumerate the changed-symbol set, then for each changed symbol use `gitnexus_context({name: <symbol>})` to find existing test callers (incoming references from test files)"
+    - "Map symbols-with-no-test-callers to coverage gaps and symbols-with-stale-test-callers to update candidates. See resource 27."
   run-tests[1]:
     - Run the test suite to establish a passing baseline
   review-tests[5]:
@@ -40,9 +44,10 @@ rules:
   coverage-relative: "Assess coverage relative to the changes made, not absolute project coverage"
   actionable-recommendations: "Every finding must include a concrete improvement suggestion"
 
-resources[2]:
+resources[3]:
   - "17"
   - "23"
+  - "27"
 
 errors:
   tests_fail:

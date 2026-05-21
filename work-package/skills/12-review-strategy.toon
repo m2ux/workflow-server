@@ -20,6 +20,11 @@ protocol:
     - Review changes for scope and relevance to work package
     - Document any changes unrelated to requirements as scope creep
     - Flag scope creep for user decision if found
+  scope-discipline-check[1]:
+    - "Use `gitnexus_detect_changes()` to verify the diff stays within the work-package's intended scope; flag scope creep where changes touch processes outside the requirements. See resource 27."
+  orphan-check[2]:
+    - "Use `gitnexus_cypher` to find functions with zero in-degree CALLS edges (orphan/unused symbols). Example: `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`. This beats grep heuristics for orphan detection."
+    - "Cross-reference orphan results against the changed-file set so introduced-but-unreferenced symbols are surfaced as over-engineering candidates."
   commit-signatures[2]:
     - After resign-unsigned-pr-commits (if run), re-check git log %G? for MERGE_BASE..HEAD and align unsigned_commits_in_pr with orchestrator state
     - If the user declined resign at unsigned-commits-prompt, record unsigned commits in strategic-review-{n}.md
@@ -67,9 +72,10 @@ output[2]:
       uml_diagrams: "UML-style diagrams of implementation"
       summary: "High-level architecture description"
 
-resources[2]:
+resources[3]:
   - "18"
   - "15"
+  - "27"
 
 errors:
   scope_creep:
