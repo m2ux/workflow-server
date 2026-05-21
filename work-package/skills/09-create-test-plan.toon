@@ -17,10 +17,11 @@ protocol:
     - Define test strategy for the work package (unit, integration, e2e)
     - Identify which requirements need which types of tests
     - Determine test infrastructure needs (fixtures, mocks, test doubles)
-  create-test-cases[3]:
+  create-test-cases[4]:
     - Create specific test cases for each requirement
     - Include boundary conditions, error paths, and edge cases
     - Link each test case to its requirement and acceptance criterion
+    - "Use `gitnexus_query({query: <concept>})` to find existing test patterns for related concepts and `gitnexus_context({name: <symbol>})` to identify error-path callees as edge-case test candidates. See resource 27."
   write-artifact[2]:
     - Create test-plan.md artifact in planning folder
     - Structure with strategy, test cases, and acceptance criteria matrix
@@ -39,8 +40,9 @@ rules:
   lifecycle-phases: "Test plans have two phases: (1) Initial placeholder at PR creation — objectives only, no source links; (2) Finalized after implementation — hyperlinks to actual test source locations added by finalize-documentation skill."
   skip-conditions: "Skip formal test plan for: simple bug fixes with obvious test cases, documentation-only changes, single-test changes, refactoring with existing coverage."
 
-resources[1]:
+resources[2]:
   - "11"
+  - "27"
 
 errors:
   no_requirements:

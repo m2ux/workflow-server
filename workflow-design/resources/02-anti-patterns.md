@@ -38,7 +38,7 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 
 14. **"In fast mode, skip the research steps"** (as a rule) — Use a `mode` with `skipActivities` and `modeOverrides`.
 
-15. **"First load the workflow, then get the activity"** (as prose) — Use the skill's `protocol` with step-keyed imperative bullets.
+15. **"First load the workflow, then get the activity"** (as prose, OR as a multi-bullet checklist crammed into a step `description`) — Use the assigned skill's `protocol` with phase-keyed bullet arrays. The activity step `description` field is a one-line summary of WHAT the step does; the imperative bullets describing HOW belong in the skill the step assigns. Concrete violations of this pattern look like: `description: "Audit X. Check: (1) ..., (2) ..., (3) ..."` (numbered audit criteria), `description: "Run pass A. Then pass B. Then pass C."` (sequenced procedure), or `description: "Review every rules section... For each rule, check whether..."` (per-item iteration logic). If the description reads like a checklist or numbered procedure, the procedure belongs in `protocol`; the step description should name the step and let the worker load the skill for the bullets. **This anti-pattern is reflexive**: the workflow-design `quality-review` activity itself has historically violated it; when running a review-mode audit, scan workflow-design's own step descriptions for this pattern as part of the same pass that examines the target workflow.
 
 16. **"This skill needs a file path"** (buried in description) — Use skill `inputs[]` with `id` and `description`.
 
@@ -51,6 +51,8 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 26. **"code-foo, code-bar, code-baz"** (flat prefix keys) — Rules sharing a prefix belong in a grouped array under a descriptive key. The key name replaces the prefix and provides semantic context. Use `z.union([z.string(), z.array(z.string())])` rule format.
 
 27. **"This rule appears in the skill AND the activity AND the workflow"** — A rule should exist in exactly one authoritative location. Cross-level duplication (workflow → activity → skill) causes silent drift when one copy is updated but others aren't. The rule belongs at the level where it's enforced.
+
+    **Worker-visibility carve-out:** Workers load only `get_activity` + `get_skill` — they never receive `workflow.toon`. So a *behavioural* rule that workers must read and follow cannot be lifted to the workflow root. If multiple skills carry the same worker-directed rule (e.g. "prefer gitnexus over grep"), that duplication is the correct mechanism for worker reach, not a hygiene violation. Lifting it would silently remove the rule from workers' view. Cross-level duplication is only an anti-pattern when the rule is *orchestrator-only* (variable management, transitions, commit policy, mode handling). Before flagging a rule as duplicated across skills, ask: "Do workers need to read this?" If yes, leave the copies in place; the only valid consolidation is into a shared skill that the affected skills' activities all load.
 
 28. **"status-proposed" AND "status-accepted-directly"** — Contradictory rules in the same skill. Every rule must be checked for logical consistency with its siblings. If two rules describe mutually exclusive behaviors, one is stale — identify and remove it.
 

@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.0.1
+version: 1.1.1
 name: Quality Review
 description: "Quality review of drafted workflow content."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
@@ -15,7 +15,7 @@ rules[3]:
 steps[16]:
   - id: load-all-workflow-files
     name: Load All Workflow Files
-    description: "Read every file in the target workflow directory: workflow.toon, all activity .toon files, all skill .toon files, all resource .md files, and README.md. Build a complete picture of the workflow content."
+    description: "Full file inventory of the target workflow as the audit baseline (workflow.toon, activities, skills, resources, READMEs)."
     condition:
       type: simple
       variable: is_review_mode
@@ -23,7 +23,7 @@ steps[16]:
       value: true
   - id: principle-compliance-audit
     name: Principle Compliance Audit
-    description: "Audit the workflow against each of the 14 design principles from resource 00. For each principle, check whether the workflow complies, partially complies, or violates. Record specific file, field, and line references for each finding. Cross-reference against the actual schema definitions (workflow.schema.json, activity.schema.json, skill.schema.json, condition.schema.json) to verify correct field usage."
+    description: "Principle-compliance audit pass: target adherence to the 14 design principles in resource 00, classified per principle as Pass / Partial / Violation with file/field/line citations."
     condition:
       type: simple
       variable: is_review_mode
@@ -31,7 +31,7 @@ steps[16]:
       value: true
   - id: anti-pattern-scan
     name: Anti-Pattern Scan
-    description: "Check the workflow against every anti-pattern in resource 02 and record file, content, and fix for each finding."
+    description: "Anti-pattern scan pass: target content matched against the AP catalog in resource 02 (40 entries across 7 categories)."
     condition:
       type: simple
       variable: is_review_mode
@@ -39,7 +39,7 @@ steps[16]:
       value: true
   - id: schema-validation-check
     name: Schema Validation Check
-    description: "Validate every TOON file against its corresponding JSON schema (workflow.schema.json for workflow.toon, activity.schema.json for activity files, skill.schema.json for skill files). Use the schema validator script (npx tsx scripts/validate-workflow-toon.ts) or validate programmatically. Record pass/fail with specific error messages for each file."
+    description: "Schema validation pass: every TOON file checked against its JSON schema, with per-file pass/fail."
     condition:
       type: simple
       variable: is_review_mode
@@ -47,7 +47,7 @@ steps[16]:
       value: true
   - id: tool-skill-doc-consistency
     name: Tool-Skill-Doc Consistency Audit
-    description: "Audit the consistency boundary between tool descriptions, skill protocols, bootstrap resources, and documentation. Check: (1) every tool name in skill tools/protocol sections exists as an actual tool, (2) return value descriptions match actual behavior, (3) bootstrap sequences provide a complete path with no gaps, (4) multiple skills describing the same operation use the same tool name, (5) behavioral guidance is not duplicated across skills and tool descriptions, (6) no tool's output is a strict subset of another's, (7) docs use current tool names and descriptions. Reference anti-patterns 30-35."
+    description: "Consistency audit pass over the tool / skill / bootstrap-resource / doc boundary: tool-name accuracy, return-value fidelity, bootstrap completeness, cross-skill consistency, behavioural-guidance duplication, tool-surface overlap, doc parity (AP-30–35)."
     condition:
       type: simple
       variable: is_review_mode
@@ -55,7 +55,7 @@ steps[16]:
       value: true
   - id: compile-compliance-report
     name: Compile Compliance Report
-    description: "Compile all findings into a structured compliance report with sections: Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, and Recommended Fixes."
+    description: "Structured findings report assembled from every audit pass, following the report template in resource 04."
     condition:
       type: simple
       variable: is_review_mode
@@ -63,7 +63,7 @@ steps[16]:
       value: true
   - id: present-compliance-report
     name: Present Compliance Report
-    description: "Present the full compliance report to the user with severity-rated findings and recommended fixes."
+    description: "User-facing surface of the compliance report with severity-rated findings and recommended fixes."
     condition:
       type: simple
       variable: is_review_mode
@@ -71,7 +71,7 @@ steps[16]:
       value: true
   - id: offer-fixes
     name: Offer to Fix Issues
-    description: "Ask the user whether they want to fix the identified issues. If yes, set user_wants_fixes to true to transition to update mode for remediation."
+    description: "Disposition gate for remediation — review-disposition checkpoint that transitions to update mode when fixes are wanted."
     condition:
       type: simple
       variable: is_review_mode
@@ -79,7 +79,7 @@ steps[16]:
       value: true
   - id: expressiveness-review
     name: Schema Expressiveness Review
-    description: "Audit all drafted content against the schema construct inventory (resource 01). For each piece of prose, check whether a formal construct exists. Flag every instance where prose is used instead of: steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, variables, or modes. Rewrite flagged instances using the formal construct."
+    description: "Schema-expressiveness audit pass over drafted content: prose passages cross-checked against the construct inventory in resource 01; substitutions for formal constructs flagged for rewriting."
     condition:
       type: simple
       variable: is_review_mode
@@ -87,7 +87,7 @@ steps[16]:
       value: true
   - id: present-expressiveness-findings
     name: Present Expressiveness Findings
-    description: "Present the expressiveness audit results: how many instances were found, which files were affected, and what constructs were used as replacements. Show before/after for each change."
+    description: "User-facing surface of the expressiveness-pass results: counts, affected files, replacement constructs, before/after per flagged instance."
     condition:
       type: simple
       variable: is_review_mode
@@ -95,7 +95,7 @@ steps[16]:
       value: true
   - id: conformance-review
     name: Convention Conformance Review
-    description: "Compare all drafted content against the reference workflows from pattern analysis. Check: file naming conventions (NN-name.toon), field ordering, version format (X.Y.Z), transition patterns, checkpoint structure (id, name, message, options), skill structure (capability, protocol, rules). Flag any divergences."
+    description: "Convention-conformance audit pass over drafted content vs reference workflows (file naming, field ordering, version format, transition patterns, checkpoint structure, skill structure)."
     condition:
       type: simple
       variable: is_review_mode
@@ -103,7 +103,7 @@ steps[16]:
       value: true
   - id: present-conformance-findings
     name: Present Conformance Findings
-    description: "Present the conformance audit results: which conventions were followed, which diverged, and whether divergences are justified."
+    description: "User-facing surface of the conformance-pass results: conventions followed, conventions diverged, and the justification status for each divergence."
     condition:
       type: simple
       variable: is_review_mode
@@ -111,7 +111,7 @@ steps[16]:
       value: true
   - id: rule-hygiene-audit
     name: Rule Hygiene Audit
-    description: "Review every rules section in skills, activities, and the workflow. For each rule, check anti-patterns 24-29 from resource 02: (1) Protocol restatement — does the rule verbatim copy a protocol phase in the same skill? If so, flag for removal. (2) Apparent contradictions — do any sibling rules within the same skill logically conflict? (3) Cross-level duplication — does the same rule appear in both the workflow and an activity, or both an activity and a skill? Flag the duplicate. (4) Flat prefix patterns — do rule keys share a common prefix (e.g., foo-bar, foo-baz)? Flag for grouped array refactoring. (5) Ambiguity — could a rule be interpreted in contradictory ways without its group context providing disambiguation? (6) Single-step rules — does the rule apply to only one protocol step? If so, it belongs in that step's description, not as a standalone rule."
+    description: "Rule-hygiene audit pass over rules[] across the workflow, activities, and skills (AP-24–29 plus the worker-visibility carve-out on AP-27)."
     condition:
       type: simple
       variable: is_review_mode
@@ -119,7 +119,7 @@ steps[16]:
       value: true
   - id: present-rule-hygiene-findings
     name: Present Rule Hygiene Findings
-    description: "Present the rule hygiene audit results: protocol restatements found, contradictions, cross-level duplications, prefix patterns, and ambiguities. For each finding, cite the file, rule key, and recommended action."
+    description: "User-facing surface of the rule-hygiene-pass results: restatements, contradictions, cross-level duplications, prefix patterns, and ambiguities with file + rule-key citations and recommended actions."
     condition:
       type: simple
       variable: is_review_mode
@@ -127,7 +127,7 @@ steps[16]:
       value: true
   - id: rule-to-structure-audit
     name: Rule-to-Structure Audit
-    description: "Review every rules[] entry in both the workflow and activity files. For each rule, ask: can this rule be violated by ignoring it? If yes, verify that a structural mechanism exists to prevent the violation (checkpoint, condition, validate action). Flag any critical rules that rely solely on text."
+    description: "Rule-to-structure audit pass over rules[] entries: text-only enforcement vs structural backing (checkpoint, condition, validate action, decision)."
     condition:
       type: simple
       variable: is_review_mode
@@ -135,7 +135,7 @@ steps[16]:
       value: true
   - id: present-enforcement-findings
     name: Present Enforcement Findings
-    description: "Present the rule-to-structure audit results: which rules are text-only, which are structurally enforced, and recommendations for adding structural enforcement where needed."
+    description: "User-facing surface of the rule-to-structure-pass results: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed."
     condition:
       type: simple
       variable: is_review_mode

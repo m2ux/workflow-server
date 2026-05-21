@@ -1,7 +1,7 @@
 id: requirements-refinement
-version: 1.0.0
+version: 1.1.1
 name: Requirements Refinement
-description: "Elicit workflow design details from the user."
+description: "Guided elicitation of the workflow specification across purpose, activities, checkpoints, artifacts, variables, skills, and rules."
 problem: The user's free-form description needs to be refined into a complete workflow specification
 skills:
   supporting[1]:
@@ -15,13 +15,13 @@ rules[3]:
 steps[8]:
   - id: elicit-purpose
     name: Elicit Workflow Purpose
-    description: "Confirm or refine the workflow's purpose, target domain, and value proposition. What problem does this workflow solve? Who uses it?"
+    description: "Workflow purpose, target domain, value proposition (what problem it solves, who uses it)."
   - id: elicit-activities
     name: Elicit Activity List
-    description: "Work with the user to define the activity list. For each activity, capture: name, purpose (one sentence), whether it requires user interaction (checkpoints), and expected artifacts."
+    description: "Activity list with per-activity name, one-sentence purpose, user-interaction flag, and expected artifacts."
   - id: elicit-activity-model
     name: Elicit Activity Model
-    description: "Determine whether activities are sequential (connected by transitions, requiring initialActivity) or independent (matched via recognition patterns). Present examples of each from existing workflows."
+    description: "Activity model: sequential (transitions + `initialActivity`) vs independent (recognition-pattern matched)."
     condition:
       type: simple
       variable: is_update_mode
@@ -29,13 +29,13 @@ steps[8]:
       value: true
   - id: elicit-checkpoints
     name: Elicit Checkpoints
-    description: "For each activity, identify where user decision points should occur. For each checkpoint, capture: what question is being asked, what options the user has, and what effects each option has (setVariable, transitionTo, skipActivities)."
+    description: "Per-activity decision points: checkpoint question, available options, and per-option effects (setVariable, transitionTo, skipActivities)."
   - id: elicit-artifacts
     name: Elicit Artifacts
-    description: "Identify what artifacts each activity produces. For each artifact, capture: name, location (key into artifactLocations), description, and action (create or update)."
+    description: "Per-activity artifacts: name, `artifactLocations` key, description, and create/update action."
   - id: elicit-variables
     name: Elicit Variables
-    description: "Identify workflow-level variables needed for state tracking. For each variable, capture: name, type, description, defaultValue, and whether it's required."
+    description: "Workflow-level state-tracking variables: name, type, description, default, required flag."
     condition:
       type: simple
       variable: is_update_mode
@@ -43,7 +43,7 @@ steps[8]:
       value: true
   - id: elicit-skills
     name: Elicit Skills
-    description: "Identify what skills are needed. For each skill, capture: capability description, which activities use it (primary or supporting), and what tools/protocol/rules it needs."
+    description: "Skill inventory: capability description, primary/supporting activity assignments, required tools / protocol phases / rules per skill."
     condition:
       type: simple
       variable: is_update_mode
@@ -51,7 +51,7 @@ steps[8]:
       value: true
   - id: elicit-rules
     name: Elicit Rules
-    description: "Capture workflow-level rules that govern execution across all activities. For each rule, discuss whether it should be backed by structural enforcement (checkpoint, condition, validate action) or is guidance-only."
+    description: "Workflow-level cross-activity rules with their enforcement classification (structural via checkpoint/condition/validate, or guidance-only)."
 checkpoints[8]:
   - id: purpose-confirmed
     name: Purpose Confirmation
@@ -63,7 +63,7 @@ checkpoints[8]:
         description: Purpose is accurately captured
       - id: refine
         label: "Needs refinement"
-        description: Let me clarify the purpose
+        description: "Purpose statement requires clarification before proceeding."
   - id: activities-confirmed
     name: Activity List Confirmation
     message: "Here is the activity list I've captured with names, purposes, and expected artifacts. Is this complete?"
@@ -74,7 +74,7 @@ checkpoints[8]:
         description: Activity list is accurate and complete
       - id: refine
         label: "Needs changes"
-        description: Add, remove, or modify activities
+        description: "Activity list requires additions, removals, or modifications."
   - id: model-confirmed
     name: Activity Model Confirmation
     condition:
@@ -90,7 +90,7 @@ checkpoints[8]:
         description: Activity model is correct
       - id: change
         label: "Change model"
-        description: Switch to the other activity model
+        description: "Activity model needs to be switched to the alternative."
   - id: checkpoints-confirmed
     name: Checkpoints Confirmation
     message: "Here are the checkpoints I've defined for each activity with their options and effects. Do these cover all necessary user decision points?"
@@ -101,7 +101,7 @@ checkpoints[8]:
         description: Checkpoint coverage is adequate
       - id: refine
         label: "Needs changes"
-        description: Add, remove, or modify checkpoints
+        description: "Checkpoint set requires additions, removals, or modifications."
   - id: artifacts-confirmed
     name: Artifacts Confirmation
     message: "Here are the artifacts each activity produces. Is this complete?"
@@ -112,7 +112,7 @@ checkpoints[8]:
         description: Artifact list is accurate
       - id: refine
         label: "Needs changes"
-        description: Add, remove, or modify artifacts
+        description: "Artifact set requires additions, removals, or modifications."
   - id: variables-confirmed
     name: Variables Confirmation
     condition:
@@ -128,7 +128,7 @@ checkpoints[8]:
         description: Variable list is accurate
       - id: refine
         label: "Needs changes"
-        description: Add, remove, or modify variables
+        description: "Variable set requires additions, removals, or modifications."
   - id: skills-confirmed
     name: Skills Confirmation
     condition:
@@ -144,7 +144,7 @@ checkpoints[8]:
         description: Skill list is accurate
       - id: refine
         label: "Needs changes"
-        description: Add, remove, or modify skills
+        description: "Skill set requires additions, removals, or modifications."
   - id: rules-confirmed
     name: Rules Confirmation
     message: "Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?"
@@ -158,7 +158,7 @@ checkpoints[8]:
             requirements_confirmed: true
       - id: refine
         label: "Needs changes"
-        description: Add, remove, or modify rules
+        description: "Rule set requires additions, removals, or modifications."
 transitions[2]:
   - to: impact-analysis
     condition:

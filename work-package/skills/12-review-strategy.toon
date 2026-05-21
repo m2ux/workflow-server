@@ -1,5 +1,5 @@
 id: review-strategy
-version: 1.4.0
+version: 1.5.0
 capability: Review implementation to ensure changes are minimal, focused, and free of investigation artifacts
 
 description: "Strategic review of a PR: scope discipline, investigation-artifact removal, and final architecture summary."
@@ -20,6 +20,11 @@ protocol:
     - Review changes for scope and relevance to work package
     - Document any changes unrelated to requirements as scope creep
     - Flag scope creep for user decision if found
+  scope-discipline-check[1]:
+    - "Use `gitnexus_detect_changes()` to verify the diff stays within the work-package's intended scope; flag scope creep where changes touch processes outside the requirements. See resource 27."
+  orphan-check[2]:
+    - "Use `gitnexus_cypher` to find functions with zero in-degree CALLS edges (orphan/unused symbols). Example: `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`. This beats grep heuristics for orphan detection."
+    - "Cross-reference orphan results against the changed-file set so introduced-but-unreferenced symbols are surfaced as over-engineering candidates."
   changes-folder[5]:
     - If changes/ exists at target_path repository root, read sibling fragments as the format template
     - Create one new fragment only when none already ties to this issue/PR/work package
@@ -64,9 +69,10 @@ output[2]:
       uml_diagrams: "UML-style diagrams of implementation"
       summary: "High-level architecture description"
 
-resources[2]:
+resources[3]:
   - "18"
   - "15"
+  - "27"
 
 errors:
   scope_creep:

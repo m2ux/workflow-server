@@ -80,7 +80,7 @@ Review mode audits an existing workflow against:
 1. **Schema expressiveness** — flags prose that should be formal constructs
 2. **Convention conformance** — checks naming, structure, and field ordering
 3. **Rule-to-structure enforcement** — identifies critical rules lacking structural backing
-4. **Anti-pattern scan** — checks all 29 prohibited patterns
+4. **Anti-pattern scan** — checks all 40 prohibited patterns
 5. **Schema validation** — validates every TOON file
 
 The output is a severity-rated compliance report saved to `.engineering/artifacts/reviews/`. After review, the user can opt to fix issues (transitions to update mode) or accept the report as-is.
@@ -125,7 +125,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 |---|----------|---------|---------|
 | 00 | [Design Principles](resources/README.md#00--design-principles) | Condensed reference of all 14 principles | All activities |
 | 01 | [Schema Construct Inventory](resources/README.md#01--schema-construct-inventory) | Prose-to-formal construct mapping tables | Quality Review, Content Drafting |
-| 02 | [Anti-Patterns](resources/README.md#02--anti-patterns) | 29 prohibited patterns by category | Quality Review, Review Mode |
+| 02 | [Anti-Patterns](resources/README.md#02--anti-patterns) | 40 prohibited patterns by category | Quality Review, Review Mode |
 | 03 | [Update Mode Guide](resources/README.md#03--update-mode-guide) | Content preservation and impact analysis procedures | Update mode activities |
 | 04 | [Review Mode Guide](resources/README.md#04--review-mode-guide) | Compliance audit procedure and report structure | Review mode activities |
 
@@ -190,7 +190,7 @@ workflows/workflow-design/
     ├── README.md                         # Resource index
     ├── 00-design-principles.md           # 14 principles reference
     ├── 01-schema-construct-inventory.md  # Construct mapping tables
-    ├── 02-anti-patterns.md               # 23 anti-patterns
+    ├── 02-anti-patterns.md               # 40 anti-patterns
     ├── 03-update-mode-guide.md           # Update mode guide
     └── 04-review-mode-guide.md           # Review mode guide
 ```

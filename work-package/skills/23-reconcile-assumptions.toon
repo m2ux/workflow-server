@@ -19,8 +19,9 @@ protocol:
     - "For each, determine whether targeted code analysis could validate or invalidate it"
     - "Code-resolvable: assumptions about code behavior, data flows, type structures, API contracts, test coverage, implementation details, library behavior, ordering guarantees, error handling paths"
     - "Not code-resolvable: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external system behavior"
-  targeted-analysis[4]:
+  targeted-analysis[5]:
     - "For each code-resolvable assumption, perform focused investigation: trace relevant code paths, examine implementations, diff between versions, compare behavior"
+    - "Use gitnexus tools as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — `gitnexus_query` for concept-driven flow discovery, `gitnexus_context` for symbol-level caller/callee/process inspection, and `gitnexus_cypher` for custom traces (e.g. error-path or ordering assumptions). See resource 27."
     - "Record evidence with file paths and line numbers for every finding"
     - "Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)"
     - "Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies"
@@ -54,9 +55,10 @@ rules:
   no-user-interaction: "The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result at the activity's assumptions checkpoint."
   classification-transparency: "When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis."
 
-  tool-usage: "use glob to locate test suites and find related source files; use semantic_search to locate relevant code when exact symbols are unknown"
-resources[1]:
+  tool-usage: "For code-resolvable assumptions, use `gitnexus_query` to find execution flows by concept, `gitnexus_context` to inspect a symbol's callers, callees, and process membership, and `gitnexus_cypher` for custom traces (e.g. error-path or ordering assumptions). Fall back to glob/grep only when the codebase is not indexed. See resource 27."
+resources[2]:
   - "26"
+  - "27"
 
 errors:
   no_open_assumptions:

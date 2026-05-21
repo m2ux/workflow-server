@@ -382,7 +382,7 @@ graph TD
 
 **Steps:**
 
-1. **review-implementation** — Understand where and how the feature/component is used: location, usage, dependencies, architecture.
+1. **review-implementation** — Understand where and how the feature/component is used: location, usage, dependencies, architecture. When the codebase has a GitNexus index, use `gitnexus_query` for execution-flow discovery, `gitnexus_context` for usage/dependency mapping, and the `clusters` / `processes` resources for architectural surface. Falls back to grep/Read when not indexed. See work-package resource 27.
 2. **evaluate-effectiveness** — Gather evidence of existing performance: logs, metrics, tests, issues, comments.
 3. **establish-baselines** — Establish quantitative measurements: performance, quality, usage, reliability.
 4. **collect-assumptions** — Identify assumptions made during analysis.
@@ -563,7 +563,7 @@ graph TD
 
 **Task cycle steps (per task):**
 
-1. **implement-task** — Write code for the current task.
+1. **implement-task** — Write code for the current task. The `implement-task` skill encodes the project CLAUDE.md mandate: a `pre-edit-impact-check` protocol phase runs `gitnexus_impact` before any edit (HIGH/CRITICAL risk surfaced to the user) and a `post-edit-verification` phase runs `gitnexus_detect_changes` before commit. Backed by a `gitnexus-discipline` MUST rule.
 2. **run-tests** — Execute tests to verify implementation.
 3. **commit** — Commit changes.
 4. **log-provenance** — Append a provenance record for this task to `provenance-log.md` via `dco-provenance`.
@@ -626,10 +626,11 @@ graph TD
 
 **Review stages:**
 
-1. **Manual diff review** — Pull and diff, create change-block index, present file table to user, collect flagged blocks, interview each flagged block, write report.
-2. **Code review** — Comprehensive code review using Rust/Substrate criteria (if applicable).
-3. **Test suite review** — Assess test quality, coverage, and anti-patterns.
-4. **Architecture summary** — Create high-level architecture summary with diagrams.
+1. **GitNexus detect-changes preflight** — Run `gitnexus_detect_changes()` on the current diff to capture the affected processes and changed-symbol set. Output feeds the subsequent code-review and test-suite-review stages. Gated by `when: gitnexus_indexed == true` — automatically skipped when the workflow's `gitnexus_indexed` variable is false (i.e., the reference codebase was not indexed in `start-work-package`). See work-package resource 27.
+2. **Manual diff review** — Pull and diff, create change-block index, present file table to user, collect flagged blocks, interview each flagged block, write report.
+3. **Code review** — Comprehensive code review using Rust/Substrate criteria (if applicable).
+4. **Test suite review** — Assess test quality, coverage, and anti-patterns.
+5. **Architecture summary** — Create high-level architecture summary with diagrams.
 
 **Checkpoints (3):**
 
@@ -653,7 +654,8 @@ graph TD
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> pullDiff["Pull and diff"]
+    entryNode(["Entry"]) --> preflight["GitNexus detect-changes preflight"]
+    preflight --> pullDiff["Pull and diff"]
     pullDiff --> createIndex["Create change-block index"]
     createIndex --> cpFileIndex{"file-index-table checkpoint"}
     cpFileIndex --> collectFlagged["Collect flagged blocks"]
@@ -727,7 +729,7 @@ graph TD
 **Steps:**
 
 1. **diff-review** — Examine all changes in the PR for scope and relevance.
-2. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure.
+2. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure. Uses `gitnexus_cypher` (zero in-degree CALLS edges) for graph-aware orphan detection and `gitnexus_detect_changes` for scope-discipline checks (flag changes touching processes outside the work package's intended scope). See work-package resource 27.
 3. **verify-readme** — `manage-artifacts::verify-readme-conforms`; surface drift as an informational strategic finding.
 4. **ensure-changes-folder-entry** — If `changes/` exists at repo root, add a fragment matching existing conventions when none exists for this work.
 5. **verify-change-fragment** — Confirm the change fragment references `issue_url`; block until fixed.

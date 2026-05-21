@@ -1,7 +1,7 @@
 id: validate-and-commit
-version: 1.0.0
+version: 1.0.1
 name: Validate and Commit
-description: "Validate, commit, and document the workflow changes."
+description: "Final validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree."
 problem: All workflow content must pass validation and the complete scope must be verified before committing
 skills:
   supporting[1]:
@@ -15,7 +15,7 @@ rules[3]:
 steps[8]:
   - id: save-compliance-report
     name: Save Compliance Report
-    description: "Save the compliance report as a markdown file in the planning folder ({planning_folder_path}) with naming convention: YYYY-MM-DD-{workflow-id}-compliance-review.md"
+    description: "Compliance report markdown file in the planning folder, named YYYY-MM-DD-{workflow-id}-compliance-review.md."
     condition:
       type: simple
       variable: is_review_mode
@@ -23,7 +23,7 @@ steps[8]:
       value: true
   - id: commit-report
     name: Commit Report
-    description: "Stage and commit the compliance report to the parent repository (planning folder is a regular directory, not a submodule)."
+    description: "Compliance report committed to the parent repository (planning folder is a regular directory, not a submodule)."
     condition:
       type: simple
       variable: is_review_mode
@@ -31,7 +31,7 @@ steps[8]:
       value: true
   - id: run-schema-validation
     name: Run Schema Validation
-    description: "For each TOON file (workflow.toon, all activity files, all skill files), run the schema validator. Record pass/fail for each file. If any file fails, fix the error and re-validate before proceeding."
+    description: "Schema-validation pass/fail results for every TOON file (workflow.toon, activities, skills), with failures resolved before proceeding."
     condition:
       type: simple
       variable: is_review_mode
@@ -39,7 +39,7 @@ steps[8]:
       value: true
   - id: verify-scope-manifest
     name: Verify Scope Manifest
-    description: "Re-read the scope manifest from the scope-and-structure activity. For each item, verify: the file exists at the specified path, the action (create/modify/remove) was performed, and the content matches the reviewed draft. Flag any items not addressed."
+    description: "Scope-manifest verification report: every item checked for file presence, performed action, and content match against the reviewed draft, with any unaddressed items flagged."
     condition:
       type: simple
       variable: is_review_mode
@@ -47,7 +47,7 @@ steps[8]:
       value: true
   - id: generate-readme
     name: Generate README
-    description: "For create mode: generate README.md with workflow title, description, activity sequence table, mode descriptions, usage instructions, and links to resources. For update mode: update the existing README if the changes affect the documented structure."
+    description: "Newly generated README.md (create mode) with workflow title, description, activity sequence table, mode descriptions, usage instructions, and resource links."
     condition:
       type: and
       conditions[2]:
@@ -61,7 +61,7 @@ steps[8]:
           value: false
   - id: update-readme
     name: Update README
-    description: "For update mode: update the existing README.md to reflect any structural changes (new activities, modified activity descriptions, changed modes)."
+    description: "Updated README.md (update mode) reflecting any structural changes such as new activities, modified activity descriptions, or changed modes."
     condition:
       type: and
       conditions[2]:
@@ -75,10 +75,10 @@ steps[8]:
           value: true
   - id: stage-and-commit
     name: Stage and Commit
-    description: "Stage all created/modified files in the workflows worktree. Commit with a descriptive message following the convention: 'feat(workflow-design): create workflow-design workflow' for create mode, or 'fix(workflow-design): <change description>' for update mode. Sign the commit."
+    description: "Signed commit on the workflows worktree containing all created/modified files, with a conventional message ('feat(workflow-design): ...' for create mode, 'fix(workflow-design): ...' for update mode)."
   - id: verify-commit
     name: Verify Commit
-    description: "Run 'git log -1' and 'git status' in the workflows worktree to verify the commit was successful and no files were missed."
+    description: "Post-commit verification on the workflows worktree confirming the commit landed and no files were missed."
 checkpoints[2]:
   - id: validation-passed
     name: Validation Results Checkpoint
@@ -94,13 +94,13 @@ checkpoints[2]:
     options[2]:
       - id: proceed
         label: "Proceed to commit"
-        description: All validations passed or failures are acceptable (default — auto-proceeds after 30s)
+        description: "Validation outcomes are acceptable for commit (default — auto-proceeds after 30s)."
         effect:
           setVariable:
             all_files_validated: true
       - id: fix
         label: "Fix failures first"
-        description: Go back and fix validation failures before committing
+        description: "Validation failures must be addressed before committing."
   - id: scope-verified
     name: Scope Verification Checkpoint
     condition:
@@ -115,10 +115,10 @@ checkpoints[2]:
     options[2]:
       - id: confirmed
         label: "Scope is complete"
-        description: All items in the manifest have been addressed (default — auto-proceeds after 30s)
+        description: "Every scope-manifest item has been addressed (default — auto-proceeds after 30s)."
       - id: fix
         label: "Address remaining items"
-        description: Go back and address the missing items
+        description: "Some scope-manifest items remain unaddressed and require attention."
 transitions[1]:
   - to: post-update-review
     condition:

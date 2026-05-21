@@ -54,12 +54,13 @@ The following skills are referenced by activities but defined in other workflows
 
 ### Skill Protocol: `review-code` (00)
 
-Comprehensive code review following Rust/Substrate-specific criteria. Loads review guidance resource, reviews each changed file, documents findings with severity, and presents a summary.
+Comprehensive code review following Rust/Substrate-specific criteria. Bounds review scope with gitnexus blast-radius signal, loads review guidance, reviews each changed file, documents findings with severity, and presents a summary.
 
 ```mermaid
 graph TD
     startNode(["Start"]) --> loadGuidance["Load review guidance resource"]
-    loadGuidance --> reviewFiles["Review each changed file"]
+    loadGuidance --> boundScope["Bound review scope via gitnexus_detect_changes + gitnexus_impact"]
+    boundScope --> reviewFiles["Review each changed file"]
     reviewFiles --> documentFindings["Document findings with severity"]
     documentFindings --> presentSummary["Present review summary"]
     presentSummary --> endNode(["End"])
@@ -70,6 +71,7 @@ graph TD
 | Step Key | Action |
 |----------|--------|
 | `load-guidance` | Load `16-rust-substrate-code-review.md` resource for criteria |
+| `bound-review-scope` | Run `gitnexus_detect_changes` to map the diff to affected processes; run `gitnexus_impact` on each changed symbol to surface upstream callers and inform severity. See resource 27. |
 | `review-files` | Iterate over changed files, assess against criteria |
 | `document-findings` | Record each finding: file, line, severity, description |
 | `present-summary` | Aggregate findings by severity, present to user |
@@ -125,16 +127,18 @@ graph TD
 
 ### Skill Protocol: `implement-task` (10)
 
-Implements a single task from the work package plan following a three-phase approach: understand context, write code, verify locally.
+Implements a single task from the work package plan following a five-phase approach: understand context, pre-edit impact check, write code, verify locally, post-edit verification. The pre-edit impact check and post-edit verification phases encode the project CLAUDE.md mandate (run `gitnexus_impact` before editing any symbol; run `gitnexus_detect_changes` before committing), backed by a `gitnexus-discipline` MUST rule.
 
 ```mermaid
 graph TD
     startNode(["Start"]) --> understandContext["Understand context from plan and codebase"]
-    understandContext --> writeCode["Write code changes"]
+    understandContext --> preEditImpact["Pre-edit impact check (gitnexus_impact + context)"]
+    preEditImpact --> writeCode["Write code changes"]
     writeCode --> verifyLocally["Verify locally with tests"]
     verifyLocally --> passCheck{"Tests pass?"}
-    passCheck -->|"yes"| endNode(["End"])
     passCheck -->|"no"| writeCode
+    passCheck -->|"yes"| postEditVerify["Post-edit verification (gitnexus_detect_changes)"]
+    postEditVerify --> endNode(["End"])
 ```
 
 **Protocol steps:**
@@ -142,8 +146,10 @@ graph TD
 | Step Key | Action |
 |----------|--------|
 | `understand-context` | Read task description from plan, examine relevant source files, understand dependencies |
+| `pre-edit-impact-check` | Run `gitnexus_impact({target, direction: 'upstream'})` on the target symbol before any edit; surface HIGH/CRITICAL risk; consult `gitnexus_context` for callers/callees. See resource 27. |
 | `write-code` | Implement the task following existing code patterns and conventions |
 | `verify-locally` | Run relevant tests, check for compilation errors, verify behavior |
+| `post-edit-verification` | Run `gitnexus_detect_changes` before commit to confirm changes affect only the expected symbols and execution flows |
 
 ---
 
@@ -171,7 +177,7 @@ graph TD
 |----------|--------|
 | `load-guidance` | Load `22-manual-diff-review.md` resource for format and criteria |
 | `pull-and-diff` | Generate diff between feature branch and base |
-| `create-index` | Parse diff into numbered change blocks with file, line range, and description |
+| `create-index` | Parse diff into numbered change blocks with file, line range, and description; for each graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from `gitnexus_context`. See resource 27. |
 | `present-to-user` | Display indexed table for user to flag items of concern |
 | `collect-flagged` | Record which blocks the user wants to discuss |
 | `interview-each` | For each flagged block, ask targeted questions and record responses |

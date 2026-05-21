@@ -1,8 +1,8 @@
 "$schema": ../../schemas/workflow.schema.json
 id: work-package
-version: 3.12.1
+version: 3.13.0
 title: Work Package Implementation Workflow
-description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use work-packages.toon to create a roadmap first."
+description: "Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first."
 author: m2ux
 tags[6]:
   - implementation
@@ -43,7 +43,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/24-review-mode.md
-variables[88]:
+variables[89]:
   - name: target_path
     type: string
     description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
@@ -375,4 +375,8 @@ variables[88]:
     type: string
     description: "Path-gating mirror of complexity. Used by design-philosophy's workflow-path-selected.skip-optional effect."
     defaultValue: ""
+  - name: gitnexus_indexed
+    type: boolean
+    description: "Whether reference_path has a usable GitNexus index. Set by start-work-package's analyze-reference-with-gitnexus step. Gates GitNexus-dependent steps and protocol phases across the workflow (e.g., post-impl-review's gitnexus-detect-changes-preflight step, implement-task's pre-edit-impact-check / post-edit-verification phases)."
+    defaultValue: false
 initialActivity: start-work-package

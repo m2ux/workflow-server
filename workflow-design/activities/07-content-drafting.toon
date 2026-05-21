@@ -1,7 +1,7 @@
 id: content-drafting
-version: 1.0.0
+version: 1.0.1
 name: Content Drafting
-description: "Draft or modify each file in the scope manifest."
+description: "Per-file drafting and review pass over every entry in the confirmed scope manifest, with schema validation on each TOON file."
 problem: Content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
 skills:
   supporting[1]:
@@ -21,19 +21,19 @@ entryActions[1]:
 steps[5]:
   - id: present-file-approach
     name: Present File Approach
-    description: "For the current file in the manifest, present: what schema constructs will be used, which patterns from reference workflows will be followed, and the planned content structure."
+    description: "Per-file drafting plan covering the schema constructs to be used, the reference patterns to be followed, and the intended content structure."
   - id: draft-file-content
     name: Draft File Content
-    description: "Draft the file content following the confirmed approach. Use formal schema constructs for all structured information. For TOON files, follow TOON syntax conventions exactly."
+    description: "Drafted file content matching the confirmed approach, with formal schema constructs for structured information and exact TOON syntax for TOON files."
   - id: validate-against-schema
     name: Validate Against Schema
-    description: "For TOON files, validate the drafted content against the appropriate schema (workflow.schema.json, activity.schema.json, or skill.schema.json). Fix any validation errors immediately."
+    description: "Schema-validation result for each TOON file against its applicable schema (workflow.schema.json, activity.schema.json, or skill.schema.json), with errors resolved before proceeding."
   - id: present-for-review
     name: Present for Review
-    description: "Present the drafted file content to the user for review. Highlight which schema constructs were used and any notable design decisions."
+    description: "User-facing review of the drafted content, highlighting the schema constructs used and notable design decisions."
   - id: advance-to-next-file
     name: Advance to Next File
-    description: "Move to the next file in the scope manifest. If all files are drafted, transition to quality review."
+    description: "Loop progression to the next manifest entry, or completion when every file has been drafted."
 loops[1]:
   - id: file-drafting-loop
     name: File Drafting Loop
@@ -62,10 +62,10 @@ checkpoints[4]:
     options[2]:
       - id: confirmed
         label: "Yes, proceed with this approach"
-        description: Draft the file as described
+        description: "Drafting approach for this file is approved."
       - id: revise
         label: "Change approach"
-        description: Take a different approach to this file
+        description: "Drafting approach for this file requires revision."
   - id: file-review
     name: File Review Checkpoint
     condition:
@@ -77,13 +77,13 @@ checkpoints[4]:
     options[3]:
       - id: accepted
         label: "Accepted"
-        description: File content is correct
+        description: "Drafted file content is accurate as presented."
       - id: revise
         label: "Needs revision"
-        description: Make changes to the content
+        description: "Drafted file content requires targeted changes."
       - id: redraft
         label: "Redraft from scratch"
-        description: Start over with a different approach
+        description: "Drafted file content requires a fresh approach from scratch."
   - id: preservation-check
     name: Content Preservation Check
     condition:
@@ -101,13 +101,13 @@ checkpoints[4]:
     options[3]:
       - id: proceed
         label: "Proceed with changes"
-        description: Apply the modifications as shown
+        description: "Detected removals are intentional and the modifications stand."
       - id: preserve-more
         label: "Preserve more content"
-        description: Keep some of the content marked for removal
+        description: "Some content flagged for removal must be preserved."
       - id: rewrite
         label: "Rewrite approach"
-        description: Take a different approach to this file
+        description: "File-level approach requires a different framing entirely."
   - id: batch-review
     name: Batch Content Review
     condition:
@@ -122,13 +122,13 @@ checkpoints[4]:
     options[3]:
       - id: accepted
         label: "All changes accepted"
-        description: Proceed with all modifications as applied
+        description: "Full set of modifications across all files is approved."
       - id: revise-specific
         label: "Revise a specific file"
-        description: Go back and modify one particular file
+        description: "One particular file requires further modification."
       - id: redraft-all
         label: "Redraft all changes"
-        description: Start content drafting over from scratch
+        description: "Entire drafting pass requires restart from scratch."
 transitions[1]:
   - to: quality-review
     isDefault: true

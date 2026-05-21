@@ -134,13 +134,13 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 ### 08. Quality Review
 
-**Purpose:** Three review passes over all content: schema expressiveness, convention conformance, and rule-to-structure audit. Each pass has its own checkpoint.
+**Purpose:** Four review passes over all content: schema expressiveness, convention conformance, rule hygiene, and rule-to-structure (enforcement) audit. Each pass has its own checkpoint.
 
 **Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
 
-**Steps:** 6 steps — review and present findings for each of the three passes. Uses [resource 01](../resources/01-schema-construct-inventory.md) for expressiveness audit and [resource 02](../resources/02-anti-patterns.md) for anti-pattern scan.
+**Steps:** 8 steps — review and present findings for each of the four passes. Uses [resource 01](../resources/01-schema-construct-inventory.md) for expressiveness audit and [resource 02](../resources/02-anti-patterns.md) for anti-pattern scan. The `rule-hygiene-audit` step applies a worker-visibility carve-out when checking cross-level rule duplication: behavioural rules that workers must read cannot be lifted to the workflow root, since workers receive `get_activity` and `get_skill` responses but never `workflow.toon`. Per-skill duplication of worker-directed rules is the correct mechanism and is not flagged.
 
-**Checkpoints:** `expressiveness-confirmed`, `conformance-confirmed`, `enforcement-confirmed`.
+**Checkpoints:** `expressiveness-confirmed`, `conformance-confirmed`, `rule-hygiene-confirmed`, `enforcement-confirmed`.
 
 **Transitions:** Default to [Validate and Commit](#09-validate-and-commit).
 

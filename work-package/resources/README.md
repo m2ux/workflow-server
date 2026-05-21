@@ -32,5 +32,5 @@ The workflow includes 28 resources that provide templates, guidance, and referen
 | 24 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
 | 25 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature |
 | 26 | `assumption-reconciliation` | Assumption Reconciliation | Methodology for iterative assumption resolution through targeted code analysis |
-| 27 | `gitnexus-reference` | GitNexus Reference | GitNexus knowledge graph tool workflows and query examples |
+| 27 | `gitnexus-reference` | GitNexus Reference | GitNexus knowledge graph tool workflows and query examples; includes a "Work-package Integration Patterns" section covering pre-edit impact analysis, post-edit detect_changes, diff-aware coverage mapping, orphan-symbol cypher, scope-discipline checks, cluster/process-driven diagrams, complexity/reversibility signals, and public-API doc enumeration |
 | 28 | `pr-review-response` | PR Review Response | Guide for analyzing and responding to PR review comments |

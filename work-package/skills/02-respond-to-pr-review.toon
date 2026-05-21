@@ -31,7 +31,8 @@ protocol:
   update-pr[2]:
     - Push all fix commits to the PR branch
     - Post response summary to PR
-  assess-outcome[1]:
+  assess-outcome[2]:
+    - "After applying reviewer-requested changes, run `gitnexus_detect_changes()` to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant. See resource 27."
     - Determine if re-review is needed (significant changes) or minor fixes suffice
 
 output[1]:
@@ -48,8 +49,9 @@ rules:
   respond-to-all: "Every review comment must receive a response — acknowledged, implemented, or discussed"
   prioritize-required: "Address required changes before suggestions and nits"
 
-resources[1]:
+resources[2]:
   - "28"
+  - "27"
 
 errors:
   no_comments:
