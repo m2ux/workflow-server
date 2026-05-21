@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> v3.7.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.11.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
@@ -28,8 +28,8 @@ This workflow guides the complete lifecycle of a single work package through 14 
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (24 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
-- **Resources:** See [resources/README.md](resources/README.md) for the resource index (26 resources).
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (25 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
+- **Resources:** See [resources/README.md](resources/README.md) for the resource index (28 resources).
 
 ---
 
