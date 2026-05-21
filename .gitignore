@@ -26,3 +26,4 @@ coverage/
 .env.local
 .env.*.local
 .gitnexus
+workflow-server.code-workspace
