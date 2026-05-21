@@ -14,7 +14,7 @@ Five markdown resources providing the design principles, construct inventories, 
 | `01` | [Schema Construct Inventory](01-schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, skill, and condition schemas | [Quality Review](../activities/README.md#08-quality-review) (expressiveness audit), [Content Drafting](../activities/README.md#07-content-drafting) (construct selection) |
 | `02` | [Anti-Patterns](02-anti-patterns.md) | 40 prohibited patterns organized by category: structural, interaction, schema, rule hygiene, description hygiene, tool-skill-doc consistency, execution | [Quality Review](../activities/README.md#08-quality-review) (anti-pattern scan), review mode (compliance audit) |
 | `03` | [Update Mode Guide](03-update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns | Update mode: [Intake](../activities/README.md#01-intake), [Impact Analysis](../activities/README.md#05-impact-analysis), [Content Drafting](../activities/README.md#07-content-drafting) |
-| `04` | [Review Mode Guide](04-review-mode-guide.md) | Compliance audit procedure, 5 audit passes, report structure template | Review mode: [Quality Review](../activities/README.md#08-quality-review), [Validate and Commit](../activities/README.md#09-validate-and-commit) |
+| `04` | [Review Mode Guide](04-review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the `workflow-design` skill protocol's `audit-*` phases** — this resource does not duplicate it. | Review mode: [Quality Review](../activities/README.md#08-quality-review), [Validate and Commit](../activities/README.md#09-validate-and-commit) |
 
 ---
 
@@ -62,12 +62,11 @@ Covers the update-specific workflow concerns:
 
 ### 04 — Review Mode Guide
 
-Covers the review-specific workflow concerns:
+Supplementary guide for review mode. The audit procedure itself is canonical in the `workflow-design` skill protocol (phases prefixed with `audit-`); this resource carries only the material that doesn't fit naturally as protocol bullets:
 
-- Activation and shortened activity flow
-- Five audit passes (expressiveness, conformance, rule enforcement, anti-patterns, schema validation)
-- Compliance report structure template
-- Transition to update mode for remediation
+- Activation patterns and shortened activity flow
+- Compliance report structure template (markdown skeleton with severity table and per-pass finding sections)
+- Transition-to-update-mode contract (variable changes, finding-to-change-spec handoff)
 
 ---
 
