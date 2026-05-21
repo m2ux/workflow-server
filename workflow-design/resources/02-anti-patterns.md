@@ -38,7 +38,7 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 
 14. **"In fast mode, skip the research steps"** (as a rule) — Use a `mode` with `skipActivities` and `modeOverrides`.
 
-15. **"First load the workflow, then get the activity"** (as prose) — Use the skill's `protocol` with step-keyed imperative bullets.
+15. **"First load the workflow, then get the activity"** (as prose, OR as a multi-bullet checklist crammed into a step `description`) — Use the assigned skill's `protocol` with phase-keyed bullet arrays. The activity step `description` field is a one-line summary of WHAT the step does; the imperative bullets describing HOW belong in the skill the step assigns. Concrete violations of this pattern look like: `description: "Audit X. Check: (1) ..., (2) ..., (3) ..."` (numbered audit criteria), `description: "Run pass A. Then pass B. Then pass C."` (sequenced procedure), or `description: "Review every rules section... For each rule, check whether..."` (per-item iteration logic). If the description reads like a checklist or numbered procedure, the procedure belongs in `protocol`; the step description should name the step and let the worker load the skill for the bullets. **This anti-pattern is reflexive**: the workflow-design `quality-review` activity itself has historically violated it; when running a review-mode audit, scan workflow-design's own step descriptions for this pattern as part of the same pass that examines the target workflow.
 
 16. **"This skill needs a file path"** (buried in description) — Use skill `inputs[]` with `id` and `description`.
 

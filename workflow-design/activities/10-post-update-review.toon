@@ -1,5 +1,5 @@
 id: post-update-review
-version: 1.0.0
+version: 1.1.0
 name: Post-Update Review
 description: "Audit the workflow against design principles and anti-patterns after an update commit."
 problem: Updates can introduce new compliance issues that are invisible without a post-commit audit against the full design principles and anti-pattern catalog
@@ -17,7 +17,7 @@ steps[5]:
     description: "Call get_workflow with the target_workflow_id to reload the full workflow definition from the workflow-server. Call next_activity for each activity to get complete details. This ensures the audit operates on the committed state, not cached pre-update data."
   - id: run-audit-passes
     name: Run Audit Passes
-    description: "Run all 5 audit passes from resource 04 (review mode guide) against the reloaded workflow: (1) schema expressiveness review using resource 01, (2) convention conformance review, (3) rule-to-structure enforcement audit, (4) anti-pattern scan using resource 02, (5) schema validation of all TOON files. Record findings with severity ratings."
+    description: "Run the `audit-expressiveness`, `audit-conformance`, `audit-rule-to-structure`, `audit-anti-pattern-scan`, and `audit-schema-validation` phases of the workflow-design skill protocol against the reloaded workflow. Record findings with severity ratings."
   - id: compile-summary
     name: Compile Findings Summary
     description: "Compile a severity-rated findings summary. If zero findings, report a clean pass. If findings exist, present each with file, location, severity, and recommended fix."

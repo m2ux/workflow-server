@@ -1,5 +1,5 @@
 id: workflow-design
-version: 1.0.1
+version: 1.1.0
 capability: Guide agents through designing and drafting workflow definitions that maximize schema expressiveness and follow established conventions
 
 description: "Primary skill for the workflow-design workflow."
@@ -40,10 +40,44 @@ protocol:
     - Present approach before each file and get confirmation
     - Use formal schema constructs for all structured information
     - Validate each TOON file against its schema immediately after drafting
-  quality-review[3]:
-    - "Audit all content for prose that should be formal constructs"
-    - "Compare against reference workflows for convention conformance"
-    - "Verify critical rules are backed by structural enforcement"
+  audit-principle-compliance[3]:
+    - "Audit the workflow against each of the 14 design principles from resource 00"
+    - "For each principle, classify as compliant, partially compliant, or violating; record file, field, and line references"
+    - "Cross-reference against workflow.schema.json, activity.schema.json, skill.schema.json, and condition.schema.json to verify field usage"
+  audit-anti-pattern-scan[1]:
+    - "Walk every anti-pattern in resource 02 (currently 40 entries across 7 categories); for each finding, record file, content, and recommended fix"
+  audit-schema-validation[2]:
+    - "Run `npx tsx scripts/validate-workflow-toon.ts <workflow-path>` on every TOON file (workflow.toon, activity files, skill files)"
+    - "Record pass/fail per file with the validator's error message"
+  audit-tool-skill-doc-consistency[7]:
+    - "Verify every tool name in skill tools/protocol sections exists as an actual tool"
+    - "Verify return-value descriptions in skills and bootstrap resources match actual tool behaviour"
+    - "Verify bootstrap sequences provide a complete path from session start to first meaningful action — no gaps"
+    - "Verify multiple skills describing the same operation use the same tool name (canonical name only)"
+    - "Verify behavioural guidance is not duplicated across skills and tool descriptions"
+    - "Verify no tool's output is a strict subset of another's (redundant tool detection)"
+    - "Verify docs (workflow READMEs, skill protocols) use current tool names and descriptions; cross-check against anti-patterns 30-35"
+  audit-expressiveness[3]:
+    - "Walk every prose passage in workflow.toon, activity files, and skill files against the schema construct inventory in resource 01"
+    - "Flag every instance where prose substitutes for: steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, variables, modes, inputs, outputs, or protocol phases"
+    - "For each flagged instance, rewrite the prose as the formal construct or move it to a field that fits"
+  audit-conformance[2]:
+    - "Compare against reference workflows for file naming (NN-name.toon), field ordering, version format (X.Y.Z), transition patterns, checkpoint structure, and skill structure"
+    - "Flag every divergence; for each, decide whether the divergence is justified or should be brought into conformance"
+  audit-rule-hygiene[7]:
+    - "Protocol restatement (AP-24): does the rule verbatim copy a protocol phase in the same skill? If so, flag for removal"
+    - "Apparent contradictions (AP-25): do sibling rules within the same skill conflict?"
+    - "Cross-level duplication (AP-27): does the same rule appear at multiple levels (workflow / activity / skill)?"
+    - "Worker-visibility carve-out for AP-27: workers receive get_activity and get_skill responses but never workflow.toon; behavioural rules workers must follow cannot be lifted to the workflow root. Per-skill duplication of worker-directed rules is correct, not a violation. Only flag cross-level duplication when the rule is orchestrator-only (variable management, transitions, commit policy, mode handling)"
+    - "Flat prefix patterns (AP-26): do rule keys share a common prefix (foo-bar, foo-baz)? Flag for grouped array refactoring"
+    - "Ambiguity (AP-25): could a rule be interpreted in contradictory ways without its group context?"
+    - "Single-step rules (AP-29): does the rule apply to only one protocol step? If so, fold into the step's description and delete the standalone rule"
+  audit-rule-to-structure[2]:
+    - "For every rules[] entry in workflow.toon and activity files, ask: can this rule be violated by ignoring it? If yes, verify a structural mechanism (checkpoint, condition, validate action) backs it"
+    - "Flag any critical rule that relies solely on text"
+  compile-compliance-report[2]:
+    - "Compile findings into a structured report: Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, Tool-Skill-Doc Consistency Findings, Recommended Fixes"
+    - "Present the report with severity-rated findings and recommended fixes"
   validation[3]:
     - Run schema validator on all TOON files
     - Re-verify scope manifest completeness
