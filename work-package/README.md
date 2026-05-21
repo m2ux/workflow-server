@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> v3.12.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.13.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
@@ -28,7 +28,7 @@ This workflow guides the complete lifecycle of a single work package through 14 
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (25 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
+- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (26 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
 - **Resources:** See [resources/README.md](resources/README.md) for the resource index (28 resources).
 
 ---
@@ -370,6 +370,13 @@ The following 7 rules are declared at the workflow level and apply to all activi
 ---
 
 ## Appendix: Recent Changes
+
+### v3.13.0 (2026-05-21)
+
+- Merge of the gitnexus-utilisation work (v3.12.0) with the DCO-policy-compatibility work that landed on the `workflows` branch in parallel. Combined feature set:
+  - All gitnexus-discipline additions retained (`gitnexus_indexed` variable, preflight step on post-impl-review, gitnexus tool references across 15+ analysis skills, `audit-*` phases on workflow-design's protocol).
+  - All DCO additions retained (`context-scope-declaration` step in research, dco-provenance skill in skills index, Co-authored-by / harness-aware commit trailers, provenance log on PR description).
+- Drop the orphan `commit-signatures` protocol block from review-strategy (already removed on `workflows` via the DCO merge cleanup; no further role).
 
 ### v3.12.0 (2026-05-21)
 

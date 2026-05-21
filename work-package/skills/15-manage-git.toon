@@ -55,19 +55,27 @@ protocol:
     - Fetch and rebase/merge from main to keep branch current
     - Resolve merge conflicts if any
     - Sync before pushing to avoid conflicts
+  code-commits[3]:
+    - "Every code commit (not artifact commits) must carry a 'Co-authored-by: {display_name} <{email}>' trailer so GitHub renders both the human and assistant in the commit byline."
+    - "Whether to add it manually depends on the harness: Claude Code adds it automatically — do NOT add it again or it will appear twice. Other assistants that do not auto-inject the trailer must add it explicitly via: git commit -m $'subject\n\nCo-authored-by: {display_name} <{email}>'"
+    - "Known assistant identities — Claude (Claude Code harness): 'Co-authored-by: Claude <noreply@anthropic.com>' (auto-injected, no action needed). For other assistants, use the identity provided by their harness or documentation."
+  detect-merge-strategy[3]:
+    - "Resolve owner/repo via 'git -C {component_git_dir} remote get-url origin' (convert SSH to HTTPS if needed, strip .git suffix). component_git_dir is reference_path/component_name when the reference is a monorepo, reference_path otherwise — the same resolution create-worktree uses. The worktree at target_path does not have to exist yet; any checkout of the component repo carries the same remote."
+    - "Call: gh api repos/{owner}/{repo} --jq '{allow_squash_merge}'"
+    - "Set squash_merge_available=true if allow_squash_merge is true; false otherwise"
+  squash-merge-instruction[4]:
+    - "GitHub web UI squash merges do not produce GPG-signed commits — use the local flow for a signed merge commit"
+    - "Checkout and update default branch: git checkout {default_branch} && git pull"
+    - "Squash all branch commits: git merge --squash {branch_name}"
+    - "Commit with Signed-off-by and GPG signature: git commit -s -S -m '{type}: {description} (#{pr_number})' then git push"
   push-commits[2]:
     - Push all local commits to remote
     - Verify push succeeded
-  gpg-resign-range[4]:
-    - "Check signatures: 'git log {default_branch}...HEAD --format=\"%h %G? %s\"' in target_path. Skip remaining steps if no commit is marked 'N'."
-    - Resolve MERGE_BASE against default branch (same order as validate strategic preflight)
-    - Re-sign each commit in MERGE_BASE..HEAD via rebase --exec 'git commit --amend --no-edit -S' (GPG); ensure user.signingkey and gpg agent are available
-    - After rewrite, verify with git log --format='%h %G?' MERGE_BASE..HEAD; push with --force-with-lease only when appropriate for the PR branch
   artifact-commits[4]:
-    - "ALL planning artifact commits to the parent (engineering) repo MUST use --no-gpg-sign: git add <files> && git commit --no-gpg-sign -m 'docs(work-package): <activity> artifacts for <issue-key>'"
+    - "Commit planning artifacts to the parent (engineering) repo: 'git add <files> && git commit -m \"docs(work-package): <activity> artifacts for <issue-key>\"'."
     - "BEFORE every push, integrate sibling work-package commits onto the same engineering branch: 'git -C {reference_path} pull --rebase origin <branch>'. Without this, two work packages running in parallel on the same monorepo will produce non-fast-forward push rejections and halt mid-flow. The rebase is cheap because each work package writes only to its own planning subfolder, so conflicts are rare."
     - "Push: 'git -C {reference_path} push origin <branch>'. If the push is still rejected (race with a sibling that pushed between our rebase and our push), retry the pull --rebase + push cycle once."
-    - "Commit after each workflow activity completes. Use the message pattern: docs(work-package): <activity-name> artifacts for <issue-key>. The --no-gpg-sign flag is mandatory on all artifact commits so the workflow can proceed unattended without a GPG pinentry prompt. Artifact commits remain unsigned permanently — there is no completion-time resign step."
+    - "Commit after each workflow activity completes. Use the message pattern: docs(work-package): <activity-name> artifacts for <issue-key>. Whether commits are GPG-signed is governed by the user's local git config — the workflow does not impose --no-gpg-sign or --gpg-sign overrides."
 
 output[1]:
   - id: branch-and-pr

@@ -308,8 +308,11 @@ graph TD
 | Role | Skill ID |
 |------|----------|
 | primary | `research-knowledge-base` |
-| supporting | `review-assumptions` |
+| supporting | `dco-provenance` |
+| supporting | `knowledge-base-search` |
+| supporting | `manage-artifacts` |
 | supporting | `reconcile-assumptions` |
+| supporting | `review-assumptions` |
 
 **Steps:**
 
@@ -320,16 +323,20 @@ graph TD
 5. **document** — Create knowledge base research document.
 6. **update-assumptions-log** — Add research-phase assumptions to the assumptions log.
 7. **reconcile-assumptions** — Classify and iteratively resolve code-analyzable assumptions through targeted codebase analysis.
+8. **present-resolved-assumptions** — Display code-resolved assumptions to the user (non-interactive) before the interview loop.
+9. **declare-context-scope** — Classify the provenance scope of research sources (`repo-only` | `web-retrieval` | `mixed`) via the `context-scope-declaration` checkpoint. Sets `context_scope` for the provenance log and PR description.
+10. **interview-open-assumptions** — Present each open assumption via `research-assumption-interview`; user resolves inline or defers.
 
 **Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
 
-**Checkpoints (3):**
+**Checkpoints (4):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `research-findings` | Confirm research findings | no (autoAdvance 30s) |
 | `research-focus` | Specify additional research focus (conditional: `needs_further_research`) | yes |
 | `research-assumption-interview` | Resolve or defer open assumptions (conditional: `has_open_assumptions`) | yes |
+| `context-scope-declaration` | Classify provenance scope of research sources | no (autoAdvance 15s) |
 
 **Transitions:** Default to `implementation-analysis`.
 
@@ -537,9 +544,12 @@ graph TD
 | Role | Skill ID |
 |------|----------|
 | primary | `implement-task` |
+| supporting | `cargo-operations` |
+| supporting | `dco-provenance` |
+| supporting | `manage-git` |
+| supporting | `reconcile-assumptions` |
 | supporting | `review-assumptions` |
 | supporting | `validate-build` |
-| supporting | `manage-git` |
 
 **Entry action:** Verify on correct feature branch before any code changes.
 
@@ -547,29 +557,31 @@ graph TD
 
 | Loop | Type | Iterates over | Max |
 |------|------|---------------|-----|
-| `task-cycle` | forEach | `plan.tasks` | 100 |
-| `assumption-review-cycle` | forEach | `task_assumptions` | 100 |
+| `task-cycle` | forEach | `plan.tasks` | (default) |
+| `assumption-reconciliation` | while | `has_resolvable_assumptions` | — |
+| `assumption-interview` | forEach | `open_assumptions` | 20 |
 
 **Task cycle steps (per task):**
 
 1. **implement-task** — Write code for the current task. The `implement-task` skill encodes the project CLAUDE.md mandate: a `pre-edit-impact-check` protocol phase runs `gitnexus_impact` before any edit (HIGH/CRITICAL risk surfaced to the user) and a `post-edit-verification` phase runs `gitnexus_detect_changes` before commit. Backed by a `gitnexus-discipline` MUST rule.
 2. **run-tests** — Execute tests to verify implementation.
 3. **commit** — Commit changes.
-4. **collect-assumptions** — Identify all assumptions made during this task.
-5. **update-assumptions-log** — Record outcomes in assumptions log after review.
+4. **log-provenance** — Append a provenance record for this task to `provenance-log.md` via `dco-provenance`.
+5. **self-review** — Verify symbol provenance (flags via `symbol-provenance-confirmed` checkpoint when uncertain) and apply task-completion quality checks.
+6. **collect-assumptions** — Identify all assumptions made during this task.
 
 **Checkpoints (4):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `switch-model-pre-impl` | Switch model before implementation | no (autoAdvance 10s) |
-| `confirm-implementation` | Confirm start of implementation (all tasks) | no (autoAdvance 30s) |
+| `symbol-provenance-confirmed` | Investigate or confirm symbols flagged during self-review (conditional: `has_uncertain_symbols`) | yes |
 | `implementation-assumption-interview` | Resolve or defer open assumptions (conditional: `has_open_assumptions`) | yes |
 | `switch-model-post-impl` | Switch model after implementation | no (autoAdvance 10s) |
 
 **Transitions:** Default to `post-impl-review`.
 
-**Artifacts:** `assumptions-log.md` (continues from earlier phases).
+**Artifacts:** `assumptions-log.md` (continues from earlier phases); `provenance-log.md` (created on first task, appended per task — one row per task with task ID, model ID, prompt class, `context_scope`, and a short description; linked from PR description).
 
 ```mermaid
 graph TD
@@ -624,9 +636,9 @@ graph TD
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `file-index-table` | Present file/block index for user to flag items | yes |
-| `block-interview` | Interview user on each flagged block (conditional: has_flagged_blocks) | yes |
-| `review-findings` | Confirm review findings | no (autoAdvance 30s) |
+| `file-index-table` | Present file/block index with per-block rationale paragraphs; user confirms rationale and flags blocks with issues. Confirmation serves as the human's per-block provenance attestation. | yes |
+| `rationale-amendment` | Provide corrections to specific rationale paragraphs (conditional: `rationale_confirmed == true`); corrections recorded in `manual-diff-review-report.md` as the human's provenance statement | no (autoAdvance 20s) |
+| `block-interview` | Interview user on each flagged block (conditional: `has_flagged_blocks`) | yes |
 
 **Decision:** `blocker-gate` — If `has_critical_blocker == true`, transition back to `implement`. Otherwise proceed to `validate`.
 
@@ -678,15 +690,11 @@ graph TD
 
 **Steps:**
 
-1. **run-tests** — Execute unit, integration, and e2e tests. Observe and record results.
-2. **verify-build** — Run build. Observe and record result.
-3. **check-lint** — Run linter. Observe and record results.
-4. **evaluate-results** — Set `has_failures` and `validation_passed` from observed outcomes.
-5. **document-failures** / **assess-test-coverage** — Review mode only: document failures and assess coverage.
-6. **fix-failures** — If tests/build/lint fail, analyze root cause, fix, and re-run. Repeat until all pass. (Skipped in review mode.)
-7. **scan-commit-signatures-for-strategic** — Preflight GPG scan for `merge-base..HEAD`; sets `unsigned_commits_in_pr` and `unsigned_commit_list_summary` for strategic review.
-
-**Supporting skill:** `manage-git` (signature scan step).
+1. **preflight** — `cargo-operations::preflight()` — fail fast when toolchain prerequisites are missing.
+2. **run-suite** — `cargo-operations::run-suite(scope: '--workspace')` — runs check, clippy, test, and fmt-check concurrently and emits a single `validation_results` envelope.
+3. **evaluate-results** — Read `validation_results` from `run-suite`. Set `has_failures` and `validation_passed`.
+4. **document-failures** / **assess-test-coverage** — Review mode only: document failures and assess coverage.
+5. **fix-failures** — If tests/build/lint fail, enter the `fix-revalidate-cycle` loop (analyze failure, apply fix, re-run). Skipped in review mode.
 
 **Checkpoints (0):** This activity has no checkpoints. Test/build/lint results are observable and do not require user confirmation.
 
@@ -694,22 +702,20 @@ graph TD
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> runTests["Run all tests"]
-    runTests --> verifyBuild["Verify build succeeds"]
-    verifyBuild --> checkLint["Check for linter errors"]
-    checkLint --> evaluateResults["Evaluate results"]
-    evaluateResults --> scanSigs["Scan commit signatures preflight"]
-    scanSigs --> fixBranch{"Failures and not review mode?"}
+    entryNode(["Entry"]) --> preflight["Toolchain preflight"]
+    preflight --> runSuite["Run validation suite (check + clippy + test + fmt-check)"]
+    runSuite --> evaluateResults["Evaluate validation_results"]
+    evaluateResults --> fixBranch{"Failures and not review mode?"}
     fixBranch -->|"no"| exitNode(["strategic-review"])
     fixBranch -->|"yes"| fixFailures["Fix and revalidate loop"]
-    fixFailures --> runTests
+    fixFailures --> runSuite
 ```
 
 ---
 
 ### 11. Strategic Review
 
-**Purpose:** Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. GPG signature preflight runs in validate; if unsigned commits exist, a blocking checkpoint asks whether to re-sign before the worker continues. When the target repo has a root-level `changes/` directory, ensures a matching changelog fragment exists. Creates strategic review document and architecture summary. In review mode: documents cleanup recommendations without applying them.
+**Purpose:** Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. When the target repo has a root-level `changes/` directory, ensures a matching changelog fragment exists. Creates strategic review document and architecture summary. In review mode: documents cleanup recommendations without applying them.
 
 **Artifact prefix:** `11`
 
@@ -718,25 +724,25 @@ graph TD
 | Role | Skill ID |
 |------|----------|
 | primary | `review-strategy` |
-| supporting | `manage-git` (re-sign step when user opts in) |
+| supporting | `manage-git` |
 
 **Steps:**
 
 1. **diff-review** — Examine all changes in the PR for scope and relevance.
-2. **resign-unsigned-pr-commits** — Only if `resign_unsigned_commits_requested`: GPG re-sign via rebase in `target_path`, re-verify, force-with-lease push if needed.
-3. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure. Uses `gitnexus_cypher` (zero in-degree CALLS edges) for graph-aware orphan detection and `gitnexus_detect_changes` for scope-discipline checks (flag changes touching processes outside the work package's intended scope). See work-package resource 27.
+2. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure. Uses `gitnexus_cypher` (zero in-degree CALLS edges) for graph-aware orphan detection and `gitnexus_detect_changes` for scope-discipline checks (flag changes touching processes outside the work package's intended scope). See work-package resource 27.
+3. **verify-readme** — `manage-artifacts::verify-readme-conforms`; surface drift as an informational strategic finding.
 4. **ensure-changes-folder-entry** — If `changes/` exists at repo root, add a fragment matching existing conventions when none exists for this work.
-5. **document-findings** — Create `11-strategic-review-{n}.md` with items that should be removed or simplified.
-6. **document-cleanup-recommendations** — Review mode only.
-7. **apply-cleanup** — Remove identified artifacts when not in review mode.
-8. **create-architecture-summary** — Create `11-architecture-summary.md` using the architecture summary resource template.
-9. **analyze-strategic-findings** — Set `recommended_strategic_option`.
+5. **verify-change-fragment** — Confirm the change fragment references `issue_url`; block until fixed.
+6. **document-findings** — Create `11-strategic-review-{n}.md` with items that should be removed or simplified, plus any informational findings.
+7. **document-cleanup-recommendations** — Review mode only.
+8. **apply-cleanup** — Remove identified artifacts when not in review mode.
+9. **create-architecture-summary** — Create `11-architecture-summary.md` using the architecture summary resource template.
+10. **analyze-strategic-findings** — Set `recommended_strategic_option` and produce `strategic_findings_summary`.
 
-**Checkpoints (2):**
+**Checkpoints (1):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
-| `unsigned-commits-prompt` | Ask whether to re-sign unsigned PR commits (conditional on `unsigned_commits_in_pr`) | yes |
 | `review-findings` | Confirm strategic review findings | no (autoAdvance 30s) |
 
 **Transitions:** To `submit-for-review` when `is_review_mode` or `review_passed`; default to `plan-prepare`.
@@ -750,12 +756,12 @@ graph TD
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> cpUnsigned{"unsigned-commits-prompt if needed"}
-    cpUnsigned --> diffReview["Review diff"]
-    diffReview --> resign["Re-sign commits if requested"]
-    resign --> identifyArtifacts["Identify artifacts"]
-    identifyArtifacts --> changesFrag["Ensure changes/ fragment if repo uses it"]
-    changesFrag --> documentFindings["Document findings"]
+    entryNode(["Entry"]) --> diffReview["Review diff"]
+    diffReview --> identifyArtifacts["Identify artifacts"]
+    identifyArtifacts --> verifyReadme["Verify README conformance"]
+    verifyReadme --> changesFrag["Ensure changes/ fragment if repo uses it"]
+    changesFrag --> verifyFragment["Verify fragment references issue"]
+    verifyFragment --> documentFindings["Document findings"]
     documentFindings --> applyCleanup["Apply cleanup or review-mode doc"]
     applyCleanup --> createArchSummary["Architecture summary"]
     createArchSummary --> analyze["Analyze strategic findings"]
@@ -767,46 +773,62 @@ graph TD
 
 ### 12. Submit for Review
 
-**Purpose:** Push PR, update description with implementation details, mark ready for review, then await reviewer feedback. If significant changes are requested, loop back to plan-prepare. In review mode: consolidates all review findings and posts structured PR review comments, then ends the workflow.
+**Purpose:** Gate PR submission on a human DCO sign-off, push the branch, update the PR description, present the merge-strategy reminder, mark the PR ready, and await reviewer feedback. If significant changes are requested, loop back to plan-prepare. In review mode: consolidates all review findings and posts structured PR review comments, then ends the workflow.
 
 **Skills:**
 
 | Role | Skill ID |
 |------|----------|
 | primary | `update-pr` |
+| supporting | `dco-provenance` |
+| supporting | `github-cli-protocol` |
+| supporting | `manage-git` |
 | supporting | `respond-to-pr-review` |
+| supporting | `review-code` |
 
 **Steps (standard mode):**
 
-1. **push-commits** — Push all commits to remote.
-2. **update-description** — Update PR description with final implementation details.
-3. **mark-ready** — Mark PR as ready for review.
-4. **await-review** — Wait for PR to receive manual review.
-5. **process-review-comments** — Analyze and respond to review feedback using `respond-to-pr-review` skill.
+1. **dco-sign-off** — Gate submission on the human's DCO attestation via the `dco-sign-off` checkpoint; records timestamp/identity to `provenance-log.md`.
+2. **push-commits** — Push all commits to remote.
+3. **update-description** — Update PR description with final implementation details (including the `## AI Assistance` section).
+4. **instruct-merge-strategy** — Present the `merge-strategy-reminder` checkpoint with the local squash-merge-with-`-s -S` flow when `squash_merge_available` is true.
+5. **mark-ready** — Mark PR as ready for review (`gh pr ready`).
+6. **await-review** — Wait for the PR to receive manual review.
+7. **process-review-comments** — Analyze and respond to review feedback using `respond-to-pr-review`.
+8. **analyze-review-outcome** — Recommend a review-outcome option and produce `review_comments_summary` for the `review-outcome` checkpoint.
 
-**Checkpoints (3):**
+**Loops:** `verify-pr-body-rerender` — while `body_conforms == false` (max 2 iterations). Re-renders the PR body until it passes `update-pr::rules.pr-body-conformance`.
+
+**Checkpoints (6):**
 
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
+| `dco-sign-off` | Human DCO certification (6-item attestation); records attestation in `provenance-log.md` | yes |
+| `merge-strategy-reminder` | Walk the human through the local squash-merge-with-`-s -S` flow (conditional: `squash_merge_available`) | no (autoAdvance 20s) |
 | `review-received` | Confirm that review comments have been received | yes |
 | `review-outcome` | Determine outcome: approved, minor changes, or significant changes | no (autoAdvance 30s) |
-| `review-ready` | Confirm human review feedback is available before processing comments | yes |
+| `review-summary-approval` | Confirm consolidated review summary before posting (review mode) | yes |
+| `body-non-conformant` | Resolve PR body conformance violations after the re-render loop exhausts (conditional: `body_conforms == false`) | yes |
+
+**Artifacts:** updates `provenance-log.md` with the DCO attestation entry; PR description re-rendered to include the `## AI Assistance` section.
 
 **Transitions:**
 
 | Condition | Target |
 |-----------|--------|
+| `is_review_mode == true` | complete |
 | `review_requires_changes == true` | plan-prepare |
 | default | complete |
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> pushCommits["Push all commits"]
+    entryNode(["Entry"]) --> cpDco{"dco-sign-off checkpoint"}
+    cpDco -->|"certify"| pushCommits["Push all commits"]
+    cpDco -->|"flag legal"| pushCommits
     pushCommits --> updateDesc["Update PR description"]
-    updateDesc --> markReady["Mark PR ready for review"]
-    markReady --> cpPRDesc{"pr-description checkpoint"}
-    cpPRDesc -->|"confirmed"| awaitReview["Await manual review"]
-    cpPRDesc -->|"revise"| updateDesc
+    updateDesc --> cpMerge{"merge-strategy-reminder if squash available"}
+    cpMerge --> markReady["Mark PR ready for review"]
+    markReady --> awaitReview["Await manual review"]
 
     awaitReview --> cpReview{"review-received checkpoint"}
     cpReview -->|"comments received"| processComments["Process review comments"]

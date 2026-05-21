@@ -9,29 +9,35 @@ recognition[3]:
   - execute plan
 required: true
 estimatedTime: 1-4h
-artifacts[1]:
+artifacts[2]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions - continues from earlier phases (design-philosophy, requirements, research, analysis, planning)"
     action: update
+  - id: provenance-log
+    name: provenance-log.md
+    location: planning
+    description: "AI assistance provenance record. One row per task: task ID, model ID, prompt class (code-generation|refactoring|test-writing|docs), context_scope, and a one-line description of what was generated. Created on first task, appended on each subsequent task. Linked from PR description."
+    action: create
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 skills:
-  supporting[6]:
+  supporting[7]:
+    - cargo-operations
+    - dco-provenance
     - implement-task
     - manage-git
     - reconcile-assumptions
     - review-assumptions
     - validate-build
-    - cargo-operations
 loops[3]:
   - id: task-cycle
     name: Task Implementation Cycle
     type: forEach
     variable: current_task
     over: plan.tasks
-    steps[5]:
+    steps[6]:
       - id: implement-task
         name: Implement task
         checkpoint: switch-model-pre-impl
@@ -40,6 +46,10 @@ loops[3]:
         description: "cargo-operations::test(scope: '-p {current_task.crate}')"
       - id: commit
         name: Commit changes
+      - id: log-provenance
+        name: Log AI provenance
+        description: "Append a provenance record for this task to provenance-log.md."
+        skill: dco-provenance
       - id: self-review
         name: Self-review
         description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies, populating uncertain_symbols_list with any symbol the agent cannot confirm and setting has_uncertain_symbols=true when that list is non-empty (otherwise false); (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource 14 for verification checklist. The symbol-provenance-confirmed checkpoint only surfaces when has_uncertain_symbols is true — when every symbol resolves cleanly, the loop continues without prompting the user."
@@ -169,12 +179,14 @@ transitions[1]:
     isDefault: true
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — set Status to In Progress and mark implementation artifacts.
-outcome[2]:
+outcome[3]:
   - All tasks implemented
   - Changes committed
-context_to_preserve[5]:
+  - Provenance log created
+context_to_preserve[6]:
   - completed_tasks - Tasks completed during implementation
   - assumptions - Assumptions made during implementation
   - commits - Commits created
+  - provenance_log_path - Path to provenance-log.md
   - has_uncertain_symbols - Whether the current task's self-review flagged symbols without provenance
   - uncertain_symbols_list - Multi-line list of flagged symbols

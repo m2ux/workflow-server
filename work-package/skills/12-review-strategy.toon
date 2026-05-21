@@ -1,5 +1,5 @@
 id: review-strategy
-version: 1.3.0
+version: 1.5.0
 capability: Review implementation to ensure changes are minimal, focused, and free of investigation artifacts
 
 description: "Strategic review of a PR: scope discipline, investigation-artifact removal, and final architecture summary."
@@ -25,9 +25,6 @@ protocol:
   orphan-check[2]:
     - "Use `gitnexus_cypher` to find functions with zero in-degree CALLS edges (orphan/unused symbols). Example: `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`. This beats grep heuristics for orphan detection."
     - "Cross-reference orphan results against the changed-file set so introduced-but-unreferenced symbols are surfaced as over-engineering candidates."
-  commit-signatures[2]:
-    - After resign-unsigned-pr-commits (if run), re-check git log %G? for MERGE_BASE..HEAD and align unsigned_commits_in_pr with orchestrator state
-    - If the user declined resign at unsigned-commits-prompt, record unsigned commits in strategic-review-{n}.md
   changes-folder[5]:
     - If changes/ exists at target_path repository root, read sibling fragments as the format template
     - Create one new fragment only when none already ties to this issue/PR/work package
