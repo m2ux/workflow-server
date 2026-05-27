@@ -7,7 +7,7 @@ date: 2026-05-23
 
 # Skill architecture
 
-> The architecture that supports skill-based agent workflows. **Ontology-agnostic by design**: the server understands directories, files, and a minimal frontmatter contract; everything else  is defined at the skill level via meta-skills that workflows ship with.
+> The architecture that supports skill-based agent workflows. **Ontology-agnostic by design**: the server understands directories, files, and a minimal frontmatter contract; everything else is defined at the skill level via ontology definitions (resources) that workflows ship with.
 
 ---
 
@@ -15,20 +15,19 @@ date: 2026-05-23
 
 The server is intentionally minimal. It knows:
 
-- A skill is a folder under `skills/` containing a `SKILL.md` file.
-- Folders nest arbitrarily — `skills/<a>/<b>/<c>/.../SKILL.md`.
-- Each `SKILL.md` carries YAML frontmatter declaring `name`, `description`, and `ontology` (the only three fields the server enforces).
-- A single MCP accessor — `get_skill(path)` — resolves any path-wise descent.
-- Markdown is delivered verbatim on the wire. No transcoding.
+- A skill is a folder containing a `SKILL.md` file. Folders nest arbitrarily — `<a>/<b>/<c>/.../SKILL.md`.
+- Every `SKILL.md` carries `name` + `description` (spec-required). **Ontology-governed** skills additionally carry `metadata.ontology` + `metadata.kind`; the **absence** of `metadata.ontology` marks a freeform **resource** (still a `SKILL.md`-rooted skill, just un-governed).
+- One MCP accessor, `get_skill(name)`, resolves a **name** to a `SKILL.md` by **precedence** — the current workflow's folder first, then the `shared/` layer (local shadows shared). The server **auto-detects** the target from its frontmatter (governed technique vs freeform resource) and delivers it in the appropriate form (§7); the caller never distinguishes.
+- `get_skill` also supports **per-section** addressing: `get_skill("<name>/<section>")` returns just that section, so a skill can cite another's individual section instead of its whole body.
+- Markdown is the **stored** format; **delivery is a token-efficiency projection, not byte-verbatim** — structured **techniques** ship as TOON, freeform **resources** as simplified markdown (links → bare names, human-only affordances trimmed). Stored = human-optimized; delivered = agent-optimized. See §7.
 
 The server explicitly does NOT know:
 
-- What `kind: deliverable`, `kind: technique`, or any other ontology-specific frontmatter value means.
-- What `produces:`, `uses-techniques:`, or any extension field is for.
-- Whether a particular skill is a "deliverable", a "technique", a "navigator", a "singleton", or anything else.
-- How references between skills should be resolved beyond passing through their content.
+- What `kind: technique` or any other ontology-specific frontmatter value means.
+- Whether a technique's body is self-contained or composes other techniques — the server makes no such distinction. It only tells governed technique apart from freeform resource (see §7).
+- How references resolve *semantically* — only name-by-precedence lookup to a path.
 
-All of that semantic interpretation is the agent's responsibility, informed by the **meta-skill** referenced from each skill's `ontology:` frontmatter field. Different workflows can carry different meta-skills with different ontologies; the server treats them all the same way.
+All semantic interpretation is the agent's responsibility, informed by the **ontology definition** that a skill's `metadata.ontology` name resolves to — itself an ordinary freeform resource (see §4), not a special location or kind. Different workflows can carry different ontologies; the server treats them all the same way.
 
 ---
 
@@ -57,28 +56,28 @@ The spec blesses four optional top-level fields beyond the required `name` and `
 
 Authors MAY use any of these. The server treats them as opaque pass-through content.
 
-### 2.3 Our addition — `metadata.ontology` and `metadata.kind`
+### 2.3 Our addition — `metadata.ontology` and `metadata.kind` (on governed skills only)
 
-The architecture requires two bare-slug entries inside the spec-blessed `metadata:` slot:
+An **ontology-governed** skill carries two bare-slug entries inside the spec-blessed `metadata:` slot:
 
 ```yaml
 ---
 name: <slug>
 description: <text>
 metadata:
-  ontology: <ontology-slug>    # e.g. workflow-canonical
-  kind: <kind-slug>             # e.g. deliverable
+  ontology: <ontology-name>    # e.g. workflow-canonical
+  kind: <kind-slug>             # e.g. technique
 ---
 ```
 
-- **`metadata.ontology`** names the ontology this skill participates in. The agent resolves the meta-skill via convention: `get_skill("meta/<ontology-slug>")`.
-- **`metadata.kind`** names this skill's kind within that ontology. The ontology meta-skill defines what each kind means.
+- **`metadata.ontology`** is a **name** that resolves — by the same precedence as any reference (workflow-local → root, see §6.3) — to the ontology's **definition resource** (e.g. `shared/resources/workflow-canonical`). There is no `meta/` location convention and no `meta-skill` kind: an ontology definition is just a freeform resource, because the thing that defines an ontology cannot itself be governed by it.
+- **`metadata.kind`** names this skill's kind within that ontology. The ontology definition says what each kind means.
 
-The server validates presence of both. It does NOT interpret either value — semantic interpretation is the agent's job, informed by the meta-skill it fetches.
+A **resource** carries *neither* field — only `name` + `description`. That absence is the discriminator: ontology present ⇒ governed skill; ontology absent ⇒ freeform resource (also how a "foreign" third-party skill is recognized). The server validates `ontology` + `kind` presence *for governed skills*; it does not interpret their values.
 
-SKILL.md files authored under this architecture remain valid agentskills.io skills — `metadata` is spec-approved, `ontology` and `kind` are just entries in an author-defined map. Hosts that don't know about them ignore them; the file remains a valid skill from their perspective.
+SKILL.md files authored under this architecture remain valid agentskills.io skills — `metadata` is spec-approved, `ontology`/`kind` are just entries in an author-defined map. Hosts that don't know about them ignore them.
 
-Ontology-specific fields (e.g. `produces` under workflow-canonical) live as sibling entries under the same `metadata:` block. See §5.
+Ontology-specific fields (any sibling entries an ontology defines under workflow-canonical) live under the same `metadata:` block. See §5.
 
 The architecture adds no other constraints on top of the spec's contract.
 
@@ -108,56 +107,59 @@ Two canonical Claude skills packages were surveyed for *inspiration*, not as aut
 ## 4. On-disk shape
 
 ```
-<workflow-root>/
-  workflow.toon                  # workflow definition (out of scope here)
-  activities/                    # workflow activities (out of scope here)
-  skills/
-    <skill-name>/
-      SKILL.md                   # mandatory
-      [optional nested skill folders]
-        <nested-skill-name>/
-          SKILL.md
-          [optional deeper nesting]
-    <other-skill>/
-      SKILL.md
-    meta/                        # one convention: meta-skills live under meta/
-      <ontology-name>/
-        SKILL.md                 # the meta-skill defining an ontology
+<skills-root>/
+  shared/                          # SHARED layer — ontology-agnostic, cross-workflow
+    resources/                     #   shared freeform resources
+      workflow-canonical/SKILL.md  #     the ontology definition is just a shared resource
+      <shared-resource>/SKILL.md
+    techniques/                    #   shared / common techniques
+      <common-technique>/SKILL.md
+  <workflow>/                      # per-workflow LOCAL layer (shadows shared by name)
+    resources/<name>/SKILL.md      #   workflow-local resources
+    techniques/<name>/SKILL.md     #   workflow-local techniques
+    <skill>/SKILL.md               #   governed skills (may nest)
+      <nested>/SKILL.md
+  meta/                            # NOT special — just the folder of the workflow named `meta`
+    ...
 ```
 
 Architecture-level conventions:
 
-- **`SKILL.md` is mandatory** at every skill folder's root (uppercase, agentskills.io requirement).
-- **Lowercase-kebab directory names** matching the `name:` frontmatter field.
+- **`SKILL.md` is mandatory** at every skill folder's root (uppercase, agentskills.io requirement) — resources included. A resource is a `SKILL.md`-rooted skill that simply lacks `metadata.ontology`.
+- **Lowercase-kebab directory names** matching the `name:` field.
 - **Arbitrary nesting depth permitted.** The server walks the tree without depth restriction.
-- **No filename constraints on sibling files** — though specific ontologies may add their own conventions (the workflow-canonical ontology, for instance, mandates no sub-files at all).
-
-What is `meta/`? It's a convention for where meta-skills live. Architecturally, a meta-skill is just a skill like any other — same `SKILL.md` shape, same `get_skill` accessor. By convention we put them under `skills/meta/<ontology-name>/` so they're discoverable, but the server does not require this location.
+- **Two resolution layers.** A **`shared/`** layer (`shared/resources/`, `shared/techniques/`) and **per-workflow** folders. A referenced name resolves workflow-local first, then `shared/` (§6.3) — local overrides shared. Both layers coexist by design.
+- **`meta/` is not a reserved namespace.** It is simply the folder of the workflow named `meta`. Ontology definitions do NOT live under `meta/`; they are shared resources at `shared/resources/<ontology>/`.
 
 ---
 
 ## 5. Frontmatter contract
 
-### 5.1 Server-enforced (required on every SKILL.md)
+### 5.1 Server-enforced
 
-Two top-level spec-required fields, plus one entry inside the spec-blessed `metadata:` slot:
+Always required (every `SKILL.md`, governed or resource):
 
 | Field | Constraint | Purpose |
 |---|---|---|
 | `name` | lowercase-kebab; matches directory name; 1–64 chars | agentskills.io top-level requirement |
 | `description` | 1–1024 chars, non-empty | agentskills.io top-level requirement |
-| `metadata.ontology` | lowercase-kebab slug | architecture extension — names the ontology meta-skill (resolved by the agent as `meta/<slug>`) |
-| `metadata.kind` | lowercase-kebab slug | architecture extension — names this skill's kind within the ontology |
 
-The server validates presence of all four. It does not interpret the values of `metadata.ontology` or `metadata.kind` — the ontology meta-skill (fetched by the agent) defines what each kind means.
+Required on **governed** skills, absent on **resources**:
 
-Authors MAY also use the spec's other optional top-level fields (`license`, `compatibility`, `allowed-tools`) at their discretion; the server passes them through opaquely.
+| Field | Constraint | Purpose |
+|---|---|---|
+| `metadata.ontology` | name resolvable by precedence to the ontology-definition resource | marks the skill as governed; selects its ontology |
+| `metadata.kind` | lowercase-kebab slug | this skill's kind within that ontology |
+
+The server validates that a skill carrying `metadata.ontology` also carries `metadata.kind`; a `SKILL.md` with neither is a valid **resource**. It does not interpret the values — the ontology definition (resolved by the agent) defines what each kind means.
+
+Authors MAY also use the spec's other optional top-level fields (`license`, `compatibility`, `allowed-tools`); the server passes them through opaquely.
 
 ### 5.2 Ontology-specific (opaque to the server)
 
-The ontology meta-skill defines additional frontmatter entries and their semantics. These live as **sibling entries inside the same `metadata:` block** — keeping the SKILL.md spec-compliant.
+The ontology definition defines additional frontmatter entries and their semantics. These live as **sibling entries inside the same `metadata:` block** — keeping the SKILL.md spec-compliant.
 
-Example (a deliverable-shaped skill under workflow-canonical):
+Example (an activity-bound technique under workflow-canonical):
 
 ```yaml
 ---
@@ -165,8 +167,7 @@ name: implement-task
 description: Produces a code change scoped to one task.
 metadata:
   ontology: workflow-canonical    # architecture-required
-  kind: deliverable                # architecture-required
-  produces: task-implementation    # ontology-defined
+  kind: technique                  # architecture-required
 ---
 ```
 
@@ -182,59 +183,54 @@ metadata:
 ---
 ```
 
-Under a different ontology, `metadata.ontology` would name a different meta-skill, and different entries could appear under `metadata:`. The server does not care — it passes the entire `metadata:` map through verbatim.
+Under a different ontology, `metadata.ontology` would name a different ontology, and different entries could appear under `metadata:`. The server does not care — it passes the entire `metadata:` map through unchanged.
 
 ### 5.3 Validation responsibility split
 
 | Concern | Who validates |
 |---|---|
 | Frontmatter parseable as YAML | Server |
-| Required fields present (`name`, `description`, `ontology`) | Server |
-| `name` matches directory; `description` within length bound | Server |
-| `ontology` value is a resolvable specifier (does the meta-skill load?) | Server checks resolvability at fetch time; semantic validation deferred to agent |
-| `kind`, `produces`, other ontology-specific values | Agent, informed by the meta-skill |
-| Composition rules (no sub-files? max nesting depth? etc.) | Meta-skill defines; agent enforces |
+| `name` + `description` present; `name` matches directory; `description` within length | Server |
+| `ontology` + `kind` present together (governed) or both absent (resource) | Server |
+| `ontology` name resolves by precedence to a definition resource | Server, at fetch time; semantic validation deferred to agent |
+| `kind` and any other ontology-specific values | Agent, informed by the ontology definition |
+| Composition rules (no sub-files? max nesting depth? etc.) | Ontology definition specifies; agent enforces |
 
 ---
 
 ## 6. MCP surface
 
-### 6.1 The single accessor
+### 6.1 One accessor: `get_skill`, name-resolved by precedence, with per-section addressing
 
-**`get_skill(path)`** — fetches the SKILL.md at `skills/<path>/SKILL.md`. Returns raw markdown content (frontmatter + body) verbatim.
+**`get_skill(name)`** resolves a **name** to a `SKILL.md` by precedence — the current workflow's folder first, then the `shared/` layer (local shadows shared) — and returns the body via the §7 delivery projection (or a not-found indicator). The server **auto-detects** the target from its frontmatter: a governed technique (`metadata.ontology` + `kind: technique`) is delivered as TOON; a freeform resource (no `metadata.ontology`) as simplified markdown. **One accessor covers both — the caller does not choose.**
 
-- `path` is a relative path under `skills/`, slashes preserved, no leading slash, no `SKILL.md` suffix.
-- Path can be arbitrary depth. All of these are valid:
-  - `meta/workflow-canonical`
-  - `implement-task`
-  - `gitnexus/impact`
-  - `gitnexus/impact-analysis/analysis1`
-- The server validates the required frontmatter fields and returns either the markdown body or a not-found indicator.
+**Per-section addressing.** `get_skill("<name>/<section>")` returns only the named section. Trailing-segment resolution: if the resolved skill has a **child-skill folder** of that name, it's a nested-skill fetch; otherwise the segment is a **slugified section heading** within the skill's body, and only that section is returned. A skill with child-skill folders resolves the segment to a nested skill; one with body sections and no children resolves it to a section. This lets a skill cite another's individual section — `gitnexus-operations/impact`, `cargo-operations/check` — instead of pulling the whole body.
+
+Names are unique within the resolution scope (the ontology's disambiguation rule guarantees this), so the server keeps a name→path index per layer; a workflow-local entry shadows a `shared/` entry. Storage may be nested at any depth — the **reference is the name**, not the path.
 
 ### 6.2 What's NOT in the MCP surface
 
-- `get_technique`, `get_role`, `get_tool`, `get_subfile` — all unnecessary. Techniques, roles, tools, and sub-files (if any) are interpretations the meta-skill defines; from the server's perspective every fetch is just a path resolution via `get_skill`.
-- `get_resource` (legacy) — deprecated during migration; returns "moved to X" indicator post-migration; removed in a follow-up.
+- `get_technique`, `get_role`, `get_tool`, `get_subfile` — none needed. One `get_skill` covers every fetch; the server auto-detects governed-vs-freeform and delivers appropriately.
+- `get_resource` (legacy) — folded into `get_skill` (resources are `SKILL.md`-rooted skills). Deprecated during migration; removed in a follow-up.
 
-### 6.3 The canonical specifier format
+### 6.3 Referencing: authored vs delivered
 
-The architecture mandates one thing about cross-skill referencing: the URI format used in markdown bodies and frontmatter for referencing other skills **must be path-resolvable by `get_skill`**. The exact format (URI scheme, syntax, etc.) is meta-skill-defined; the server treats URIs as opaque content.
-
-Workflow-canonical uses `skill:<path>` — agents strip the `skill:` prefix and call `get_skill(<path>)`. Other ontologies could use different schemes. The server doesn't care.
+At rest, references are human-friendly root-relative markdown hyperlinks — to a whole skill (`[name](path/SKILL.md)`) or to a section (`[name](path/SKILL.md#section)`), clickable in an editor. On delivery the §7 pass **simplifies each to a bare name** (`<name>` or `<name>/<section>`), which the agent fetches via `get_skill` under precedence resolution. The at-rest form optimizes human navigation; the on-the-wire form optimizes tokens (and enables section-level fetches) and lets the server apply local-overrides-common without re-authoring.
 
 ---
 
 ## 7. Wire format
 
-**Markdown, verbatim, no transcoding.**
+**Stored as human markdown; delivered as a token-efficiency projection, by content kind.**
 
-Token efficiency comes from *structural* mechanisms, not encoding:
+The file at rest is human-optimized (clickable links, rich formatting). On every `get_skill` delivery the server auto-detects the target's kind from its frontmatter and projects it into the most efficient *faithful* form:
 
-- The ontology (meta-skill-defined) typically de-duplicates cross-cutting concerns into reusable composable units, so agents fetch each one once.
-- Lean top-level skills act as navigators, deferring substance to nested content that's fetched on demand.
-- Lazy loading is the default: an agent fetches what it needs when it needs it.
+- **Techniques (structured) → TOON.** A technique has a fixed schema (a self-contained body: `Pre-conditions / Invariants / Procedure / Output / Refusal paths`; a composing body: context + techniques table), so markdown → structured object → TOON is deterministic and round-trippable. **Field values stay verbatim** — a procedure body with code fences, nested lists, or inline links is an opaque string blob, never re-encoded — so the fidelity loss that sank TOON for prose does not arise. The saving is the structural envelope plus key de-duplication when several techniques ship in one payload (a composing technique's set), so the payoff scales with batch delivery, not single fetches.
+- **Resources (freeform) → simplified markdown.** Nothing regular to encode; the pass only strips links (`[name](path/SKILL.md)` → bare `name`) and trims human-only affordances.
 
-TOON encoding was considered and rejected — skill content is prose-heavy; markdown is already near-optimal token-wise; transcoding adds fidelity-loss risk on links, code fences, headings, with no meaningful saving.
+Both projections are **semantics-preserving** — presentation changes, meaning never does. This supersedes the earlier "markdown verbatim, no TOON" stance: TOON was rejected for *unstructured prose skills*; it is viable precisely because techniques now carry a formal schema, while resources stay markdown for the same reason TOON was rejected before — no schema.
+
+Structural savings compound either projection: the ontology de-duplicates cross-cutting concerns into reusable units fetched once; lean composing techniques defer substance to nested content fetched on demand; lazy loading is the default.
 
 ---
 
@@ -242,13 +238,13 @@ TOON encoding was considered and rejected — skill content is prose-heavy; mark
 
 The architecture supports migrating any TOON-based skill workflow to a markdown-skill workflow under any ontology. The generic phases:
 
-1. **Author the meta-skill.** Define the target ontology — what kinds of content exist, how they compose, what frontmatter fields they carry, how the canonical specifier works.
-2. **Scaffold the server's markdown loader.** Add the minimal frontmatter schema (server-enforced fields only); implement path-wise resolution at arbitrary depth; deliver markdown verbatim. No transcoding.
-3. **Author the target skill tree** per the meta-skill's structure — top-level skills, nested content, cross-references in the canonical specifier format.
-4. **Migrate legacy content** (TOON skills, ancillary resources) into the new structure one skill at a time. The meta-skill defines the destination shape.
+1. **Author the ontology definition** (a shared resource). Define the target ontology — what kinds of content exist, how they compose, what frontmatter fields they carry.
+2. **Scaffold the server's loader + delivery pass.** Add the minimal frontmatter schema (server-enforced fields only); implement name resolution by precedence (workflow-local → root); deliver via the §7 projection (TOON for techniques, simplified markdown for resources).
+3. **Author the target skill tree** per the ontology's structure — governed skills, nested content, resources, cross-references as root-relative hyperlinks.
+4. **Migrate legacy content** (TOON skills, ancillary resources) into the new structure one skill at a time. The ontology definition defines the destination shape.
 5. **Cutover and verify** behavioural fidelity — the post-migration worker should produce the same artifacts and make the same decisions as the pre-migration worker on representative tasks.
 
-The specific instantiation of these phases depends on the workflow being migrated and the ontology it adopts. For `work-package` migrating to the workflow-canonical ontology, see [work-package-pilot.md](./work-package-pilot.md).
+The specific instantiation of these phases depends on the workflow being migrated and the ontology it adopts. For `work-package` migrating to the workflow-canonical ontology, see [workflow-canonical-plan.md](./workflow-canonical-plan.md).
 
 ---
 
@@ -257,8 +253,8 @@ The specific instantiation of these phases depends on the workflow being migrate
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
 | Markdown loader breaks existing TOON-skill workers during transition | Low | High | Round-trip every existing TOON skill identically through `get_skill` after the loader extension lands. No regression on the TOON path during the migration window. |
-| Schema drift between server-enforced and meta-skill-defined fields | Low | Medium | Schema validation on `get_skill` is a hard fail for missing required fields; ontology-specific fields are pass-through with no validation. The split is deliberate. |
-| Cross-skill references break when a skill moves | Medium | Low | The meta-skill defines the canonical specifier; refactors that move skills require updating references. A CI `validate-references` check (per workflow) verifies every specifier resolves. |
+| Schema drift between server-enforced and ontology-defined fields | Low | Medium | Schema validation on `get_skill` is a hard fail for missing required fields; ontology-specific fields are pass-through with no validation. The split is deliberate. |
+| Cross-skill references break when a skill moves/renames | Medium | Low | References are by **name** resolved by precedence, so relocating a skill within a layer does not break refs; only renaming does. A CI `validate-references` check verifies every referenced name resolves. |
 | Frontmatter compatibility with vanilla agentskills.io hosts | Low | Low | Required fields (`name`, `description`) are spec-compliant. The `ontology` extension is one additional field; vanilla hosts can ignore it. SKILL.md files produced under this architecture are portable. |
 
 ---
@@ -267,9 +263,9 @@ The specific instantiation of these phases depends on the workflow being migrate
 
 The architecture deliberately does NOT specify:
 
-- **Which ontologies are valid.** Any meta-skill defining a coherent set of frontmatter fields and composition rules is a valid ontology.
-- **What composition patterns workflows should use.** Top-level navigators vs singletons, technique decomposition, role contracts, tool documentation — all meta-skill-defined.
-- **How agents should interpret skill content.** Reading sequence, refusal handling, sub-file conventions — all meta-skill-defined.
+- **Which ontologies are valid.** Any ontology definition specifying a coherent set of frontmatter fields and composition rules is valid.
+- **What composition patterns workflows should use.** Whether a technique's body is self-contained or composes other techniques, technique decomposition, role contracts, tool documentation — all ontology-defined.
+- **How agents should interpret skill content.** Reading sequence, refusal handling, sub-file conventions — all ontology-defined.
 - **Workflow definition (`workflow.toon`) format.** Activities, role bindings, lifecycle structure live in `workflow.toon` and are an orthogonal concern.
 
 ---
@@ -283,4 +279,4 @@ The architecture deliberately does NOT specify:
 
 For specific applications of this architecture:
 - [workflow-canonical-ontology.md](./workflow-canonical-ontology.md) — one ontology built on top of this architecture.
-- [work-package-pilot.md](./work-package-pilot.md) — the pilot migration of the work-package workflow.
+- [workflow-canonical-plan.md](./workflow-canonical-plan.md) — the pilot migration of the work-package workflow.

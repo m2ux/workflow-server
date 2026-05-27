@@ -2,8 +2,6 @@
 name: task-completion-review
 description: Define the review process performed upon completing each implementation task, including verification steps, assumption surfacing, and quality checks.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 14
   legacy_id: 14

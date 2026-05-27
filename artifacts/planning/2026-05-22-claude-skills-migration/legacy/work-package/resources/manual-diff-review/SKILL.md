@@ -2,8 +2,6 @@
 name: manual-diff-review
 description: Structured process for human review of code changes using an external side-by-side diff tool. Covers file index generation, user reporting protocol, and interview-based finding collection.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 22
   legacy_id: 22

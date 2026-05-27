@@ -2,8 +2,6 @@
 name: pr-review-response
 description: Guidelines for analyzing review comments from a GitHub Pull Request and crafting thoughtful, professional responses. Covers comment gathering, analysis, response formulation, and implementation of approved changes.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 28
   legacy_id: 28

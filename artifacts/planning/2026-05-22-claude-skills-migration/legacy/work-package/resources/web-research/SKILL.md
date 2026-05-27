@@ -2,8 +2,6 @@
 name: web-research
 description: Guidelines for conducting web research during work package planning to discover current information, documentation, and best practices from external sources.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 8
   legacy_id: 8

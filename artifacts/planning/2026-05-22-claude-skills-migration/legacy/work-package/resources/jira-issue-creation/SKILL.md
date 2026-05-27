@@ -2,8 +2,6 @@
 name: jira-issue-creation
 description: Reference material for creating Jira issues. Provides terminology, templates, and MCP tool reference.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 2.0.0
   order: 4
   legacy_id: 4

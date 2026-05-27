@@ -1,0 +1,103 @@
+---
+name: review-diff
+description: Conduct a structured manual diff review using an indexed block table.
+metadata:
+  ontology: workflow-canonical
+  kind: technique
+  version: 1.0.0
+  order: 11
+  legacy_id: 11
+---
+
+# Review Diff
+
+## Capability
+
+Conduct structured manual diff review using external side-by-side diff tool with indexed block references
+
+## Inputs
+
+### branch-name
+
+Feature branch name containing changes to review
+
+### planning-folder-path
+
+Path to planning folder for artifact output
+
+## Protocol
+
+### 1. Sync Branch
+
+- Run git pull to ensure branch is up to date
+- Resolve merge conflicts before proceeding if any
+
+### 2. Parse Diff
+
+- Parse git diff to extract list of changed files and hunks
+- Assign row index to each change block
+- Estimate review time (30 sec per change)
+
+### 3. Create Index
+
+- Create file index table with columns: Row | Path | File (each Row number hyperlinks to its rationale section, e.g. [1](#block-1))
+- Include review time estimate in index
+- Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph explaining what the change does and why it exists — covering intent, context, and any non-obvious design choices
+- Rationale paragraphs should aid manual review by giving reviewers context before they inspect the diff
+- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `context` operation (`{name: <symbol>}`) so the reviewer understands why the diff matters and which execution flows it touches.
+- Write index to change-block-index.md in planning folder
+- Always generate index before asking user to review
+- Follow the structured diff-review process in [manual-diff-review](legacy/work-package/resources/manual-diff-review/SKILL.md)
+
+### 4. Present Index
+
+- Present index to user for external diff tool review
+- User identifies issues in their external diff tool; agent does not pre-judge
+
+### 5. Collect Flagged
+
+- Collect flagged row numbers from user
+
+### 6. Interview Blocks
+
+- Conduct focused interview for each flagged block
+- Ask what the issue is and record the response
+- If user marks block as critical blocker, set has_critical_blocker=true
+
+### 7. Create Report
+
+- Create manual-diff-review.md report with all findings
+- Include flagged rows, interview responses, and severity
+
+## Outputs
+
+### change-block-index
+
+Index of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
+
+- **artifact**: `change-block-index.md`
+- **index_table**: Row (hyperlinked to rationale) | Path | File with review time estimate
+- **block_rationale**: Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices
+- **change_count**: Total number of change blocks
+
+### manual-diff-review-report
+
+Manual diff review findings from user-flagged blocks
+
+- **artifact**: `manual-diff-review.md`
+- **findings**: Per-block issues with interview responses
+- **has_critical_blocker**: True if any block marked as critical blocker
+
+## Errors
+
+### no_diff
+
+**Cause:** No changes found in diff
+
+**Recovery:** Verify correct branch and commit range
+
+### merge_conflict
+
+**Cause:** Git pull reveals conflicts
+
+**Recovery:** Resolve conflicts before proceeding

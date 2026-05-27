@@ -2,8 +2,6 @@
 name: complete-wp
 description: Guidelines for creating the COMPLETE.md document that records what was actually implemented in a work package.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 21
   legacy_id: 21

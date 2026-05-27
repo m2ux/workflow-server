@@ -2,8 +2,6 @@
 name: rust-substrate-code-review
 description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and output file generation.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 16
   legacy_id: 16

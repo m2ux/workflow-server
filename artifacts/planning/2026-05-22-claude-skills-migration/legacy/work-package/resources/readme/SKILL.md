@@ -2,8 +2,6 @@
 name: readme
 description: Guidelines for creating the README.md entry-point document for work package planning folders.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 3.0.0
   order: 1
   legacy_id: 1

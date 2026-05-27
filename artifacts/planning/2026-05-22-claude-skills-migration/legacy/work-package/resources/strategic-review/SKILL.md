@@ -2,8 +2,6 @@
 name: strategic-review
 description: Ensures the final implementation is minimal and focused by identifying and removing speculative or unnecessary changes before finalizing the PR.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 18
   legacy_id: 18

@@ -2,8 +2,6 @@
 name: knowledge-base-research
 description: Guidelines for researching the knowledge base during work package planning to discover relevant concepts, design patterns, and best practices.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 7
   legacy_id: 7

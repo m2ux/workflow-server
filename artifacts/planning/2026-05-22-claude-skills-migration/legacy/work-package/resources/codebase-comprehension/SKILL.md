@@ -2,8 +2,6 @@
 name: codebase-comprehension
 description: Resource for the codebase-comprehension activity. Provides the artifact template, comprehension techniques, and guidance for building persistent knowledge artifacts.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 25
   legacy_id: 25

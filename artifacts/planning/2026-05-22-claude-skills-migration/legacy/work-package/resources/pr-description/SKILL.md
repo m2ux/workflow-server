@@ -2,8 +2,6 @@
 name: pr-description
 description: Guidelines for creating well-structured Pull Request descriptions that communicate changes clearly and facilitate effective code review.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.2.0
   order: 12
   legacy_id: 12

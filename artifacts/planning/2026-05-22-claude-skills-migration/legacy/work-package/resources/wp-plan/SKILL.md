@@ -2,8 +2,6 @@
 name: wp-plan
 description: Guidelines for creating the work package plan artifact.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.1.0
   order: 10
   legacy_id: 10

@@ -2,8 +2,6 @@
 name: assumptions-review
 description: Define rules for identifying, documenting, and reviewing assumptions throughout the work package lifecycle. Covers both the review process and the log template.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 4.0.0
   order: 13
   legacy_id: 13

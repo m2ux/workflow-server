@@ -2,8 +2,6 @@
 name: requirements-elicitation
 description: Reference material for requirements elicitation methodology, including context, anti-patterns, and templates.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 2.0.0
   order: 5
   legacy_id: 5

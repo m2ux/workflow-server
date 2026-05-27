@@ -2,8 +2,6 @@
 name: github-issue-creation
 description: Reference material for creating GitHub issues. Provides templates, anti-patterns, and guidelines.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 2.0.0
   order: 3
   legacy_id: 3

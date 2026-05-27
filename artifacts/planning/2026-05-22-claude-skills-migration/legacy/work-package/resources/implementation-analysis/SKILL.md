@@ -2,8 +2,6 @@
 name: implementation-analysis
 description: Guidelines for analyzing the existing implementation during work package planning to establish baselines, evaluate effectiveness, and identify improvement opportunities.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 6
   legacy_id: 6

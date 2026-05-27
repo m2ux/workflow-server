@@ -2,8 +2,6 @@
 name: assumption-reconciliation
 description: Methodology for autonomous classify-analyze-converge resolution of assumptions through targeted codebase investigation, separating code-resolvable assumptions from those requiring stakeholder judgement.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 26
   legacy_id: 26

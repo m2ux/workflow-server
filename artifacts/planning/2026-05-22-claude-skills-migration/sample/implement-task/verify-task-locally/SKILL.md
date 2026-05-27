@@ -14,7 +14,7 @@ metadata:
 ## Pre-conditions
 
 - Code changes from
-  [write-task-code](skill:implement-task/write-task-code) are present
+  [write-task-code](implement-task/write-task-code/SKILL.md) are present
   in the workspace.
 - A context summary exists (used to scope the test selection).
 - The local toolchain is functional (build env configured, dependencies
@@ -24,7 +24,7 @@ metadata:
 
 - **Read-only on source.** This technique runs verification commands;
   it never edits source code. Any fix required is the responsibility of
-  [write-task-code](skill:implement-task/write-task-code), re-invoked
+  [write-task-code](implement-task/write-task-code/SKILL.md), re-invoked
   after the failure is understood.
 - **No skipping.** Verification commands are not bypassed because they
   "should" pass. Either they run, or this technique refuses to
@@ -61,10 +61,10 @@ metadata:
 ## Refusal paths
 
 - **Typecheck fails.** Refuse to complete. The failure is for
-  [write-task-code](skill:implement-task/write-task-code) to address,
+  [write-task-code](implement-task/write-task-code/SKILL.md) to address,
   re-invoked.
 - **Tests fail.** Refuse to complete. If the failure looks unrelated,
-  re-invoke [impact](skill:gitnexus/impact) on the failing test's
+  re-invoke [impact](gitnexus/impact/SKILL.md) on the failing test's
   symbols before deciding the test is flaky — most "unrelated" failures
   are real downstream consequences.
 - **Toolchain cannot run verification.** If local commands cannot be

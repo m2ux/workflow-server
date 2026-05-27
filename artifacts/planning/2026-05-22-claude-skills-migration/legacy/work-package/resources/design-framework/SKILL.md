@@ -2,8 +2,6 @@
 name: design-framework
 description: Guidelines for structuring problem-solving and solution design during work package planning, using systematic approaches to identify optimal solutions.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 9
   legacy_id: 9

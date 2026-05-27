@@ -2,8 +2,6 @@
 name: architecture-review
 description: Guidelines for conducting architecture reviews that evaluate design decisions against quality attributes, constraints, and trade-offs. Produces an Architecture Decision Record (ADR).
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 15
   legacy_id: 15

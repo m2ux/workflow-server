@@ -2,8 +2,6 @@
 name: tdd-concepts-rust
 description: Comprehensive lexicon of TDD concepts with direct translations to Rust idioms and practices, adapted from 'Test Driven Development for Embedded C'.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 23
   legacy_id: 23

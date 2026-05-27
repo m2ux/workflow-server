@@ -2,8 +2,6 @@
 name: test-plan
 description: Guidelines for creating well-structured test plans that document test cases, traceability, and validation criteria for work packages.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 11
   legacy_id: 11

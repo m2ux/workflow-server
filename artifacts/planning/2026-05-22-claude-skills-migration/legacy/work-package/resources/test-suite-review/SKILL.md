@@ -2,8 +2,6 @@
 name: test-suite-review
 description: Guidelines for reviewing and evaluating test suites. Covers test quality assessment, coverage analysis, anti-pattern detection, and improvement recommendations.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 17
   legacy_id: 17

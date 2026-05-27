@@ -2,8 +2,6 @@
 name: architecture-summary
 description: Create an architecture summary document at the end of implementation, using Mermaid diagrams to visualize how changes relate to the existing system for management-level stakeholders.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 19
   legacy_id: 19

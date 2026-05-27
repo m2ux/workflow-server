@@ -2,8 +2,6 @@
 name: workflow-retrospective
 description: Methodology and templates for analyzing work package sessions to identify workflow improvements through non-checkpoint interaction analysis.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.0.0
   order: 20
   legacy_id: 20

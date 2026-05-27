@@ -2,8 +2,6 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 1.2.0
   order: 24
   legacy_id: 24

@@ -2,8 +2,6 @@
 name: readme-02
 description: Consolidated notice — the standalone README guide has been merged into the primary README resource.
 metadata:
-  ontology: legacy
-  kind: resource
   version: 2.0.0
   order: 2
   legacy_id: 2
