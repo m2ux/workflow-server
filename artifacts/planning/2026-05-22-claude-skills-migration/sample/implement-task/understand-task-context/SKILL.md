@@ -51,8 +51,8 @@ metadata:
 
 A context summary stored in agent state, consumed by downstream
 techniques such as
-[write-task-code](implement-task/write-task-code/SKILL.md) and
-[verify-task-locally](implement-task/verify-task-locally/SKILL.md).
+[write-task-code](../write-task-code/SKILL.md) and
+[verify-task-locally](../verify-task-locally/SKILL.md).
 
 ## Refusal paths
 

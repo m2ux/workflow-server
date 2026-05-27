@@ -14,9 +14,9 @@ metadata:
 ## Pre-conditions
 
 - A context summary exists in agent state (output of
-  [understand-task-context](implement-task/understand-task-context/SKILL.md)).
+  [understand-task-context](../understand-task-context/SKILL.md)).
 - If the codebase is GitNexus-indexed, an upstream impact report has
-  been obtained via [impact](gitnexus/impact/SKILL.md) and reviewed;
+  been obtained via [impact](../../gitnexus/impact/SKILL.md) and reviewed;
   HIGH/CRITICAL findings have been resolved with the user before this
   technique runs.
 - Workspace has no uncommitted changes — the diff produced by this
@@ -31,7 +31,7 @@ metadata:
   logging, comment style — match the surrounding code, not the agent's
   defaults.
 - **TDD for Rust.** When the change is in a Rust crate,
-  [tdd-design-rust](testing/tdd-design-rust/SKILL.md) is applied —
+  [tdd-design-rust](../../testing/tdd-design-rust/SKILL.md) is applied —
   failing test first, then implementation that makes it pass, then
   refactor with tests green.
 
@@ -58,7 +58,7 @@ metadata:
 
 Code changes to the affected files, present in the workspace as a
 working diff against `HEAD`, ready for
-[verify-task-locally](implement-task/verify-task-locally/SKILL.md).
+[verify-task-locally](../verify-task-locally/SKILL.md).
 
 ## Refusal paths
 
@@ -70,5 +70,5 @@ working diff against `HEAD`, ready for
   authorise the scope expansion.
 - **Impact report contradicts the context summary.** If the report
   reveals callers/dependencies the summary missed, return to
-  [understand-task-context](implement-task/understand-task-context/SKILL.md)
+  [understand-task-context](../understand-task-context/SKILL.md)
   to rewrite the summary before editing.

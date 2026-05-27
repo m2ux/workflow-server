@@ -35,24 +35,24 @@ The task to implement from the plan (provided by the activity loop iterator)
 
 ### 2. Pre Edit Impact Check
 
-- Apply the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `impact` operation with `{target: <target-symbol>, direction: 'upstream'}` before any edit
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/SKILL.md#impact) (`{target: <target-symbol>, direction: 'upstream'}`) before any edit
 - Read the resulting impact_report; if HIGH or CRITICAL risk, surface it to the user before proceeding
-- Apply `gitnexus-operations::context` with `{name: <target-symbol>}` to understand callers/callees of the symbol
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) (`{name: <target-symbol>}`) to understand callers/callees of the symbol
 
 ### 3. Write Code
 
 - Implement the code changes for this task
 - Follow existing code patterns and conventions in the target codebase
-- For Rust projects, follow TDD best practices from [tdd-concepts-rust](legacy/work-package/resources/tdd-concepts-rust/SKILL.md)
+- For Rust projects, follow TDD best practices from [tdd-concepts-rust](../../resources/tdd-concepts-rust/SKILL.md)
 
 ### 4. Verify Locally
 
 - Check for obvious regressions in affected code
-- Apply the per-task completion review process from [task-completion-review](legacy/work-package/resources/task-completion-review/SKILL.md)
+- Apply the per-task completion review process from [task-completion-review](../../resources/task-completion-review/SKILL.md)
 
 ### 5. Post Edit Verification
 
-- Apply `gitnexus-operations::detect-changes` before commit to confirm the changes affect only the expected symbols and execution flows
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[detect-changes](../gitnexus-operations/SKILL.md#detect-changes) before commit to confirm the changes affect only the expected symbols and execution flows
 
 ## Outputs
 

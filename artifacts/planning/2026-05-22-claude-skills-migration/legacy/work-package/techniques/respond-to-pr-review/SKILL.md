@@ -29,7 +29,7 @@ Review comments fetched from PR
 
 ### 1. Fetch Comments
 
-- Use attached [pr-review-response](legacy/work-package/resources/pr-review-response/SKILL.md) for full response guidance
+- Use attached [pr-review-response](../../resources/pr-review-response/SKILL.md) for full response guidance
 - Fetch all review comments from PR using gh API
 
 ### 2. Categorize
@@ -59,7 +59,7 @@ Review comments fetched from PR
 
 ### 6. Assess Outcome
 
-- After applying reviewer-requested changes, apply the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `detect-changes` operation to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant.
+- After applying reviewer-requested changes, apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[detect-changes](../gitnexus-operations/SKILL.md#detect-changes) to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant.
 - Determine if re-review is needed (significant changes) or minor fixes suffice
 
 ## Outputs

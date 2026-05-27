@@ -40,7 +40,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 ### 2. Create Github Issue
 
-- Runs when issue_platform is github and needs_issue_creation is true. Use attached [github-issue-creation](legacy/work-package/resources/github-issue-creation/SKILL.md) for guidance.
+- Runs when issue_platform is github and needs_issue_creation is true. Use attached [github-issue-creation](../../resources/github-issue-creation/SKILL.md) for guidance.
 - Gather title, description, and acceptance criteria from user context
 - Map issue_type to GitHub labels per github-label-mapping rule
 - Create the issue, then verify creation succeeded. Capture issue_number and issue_url.
@@ -48,7 +48,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 ### 3. Create Jira Issue
 
-- Runs when issue_platform is jira and needs_issue_creation is true. Use attached [jira-issue-creation](legacy/work-package/resources/jira-issue-creation/SKILL.md) for guidance.
+- Runs when issue_platform is jira and needs_issue_creation is true. Use attached [jira-issue-creation](../../resources/jira-issue-creation/SKILL.md) for guidance.
 - Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as jira_cloud_id. This MUST be the first Jira tool call.
 - List available projects via getVisibleJiraProjects, then present the jira-project-selection checkpoint (defined on the activity) for user selection. Resolve available issue types for the selected project.
 - Gather summary, description, and acceptance criteria. Resolve assignee account ID if specified.

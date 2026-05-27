@@ -230,24 +230,28 @@ A separate case is a *pure tool namespace* (no procedure or `Output` of its own,
 
 ## 7. Cross-reference format
 
-References to techniques (every node is structurally a skill, so one mechanism covers all) are **root-relative markdown hyperlinks** to the target `SKILL.md`:
+References between techniques (every node is structurally a skill, so one mechanism covers all) are **file-relative markdown hyperlinks** to the target `SKILL.md` — relative to the *referencing file's own directory*, so they click through in any IDE / GitHub / markdown renderer:
 
 ```
-[<name>](<path>/SKILL.md)
+[<name>](<relative-path>/SKILL.md)
 ```
 
-Where `<path>` is the full path under the skills root, slashes preserved, no leading slash; the link always ends in `/SKILL.md` so it resolves to a real, openable file. Link text is the target's `name` (its final path segment). Examples:
+The `../` depth follows from where the two files sit; the link always ends in `/SKILL.md` so it resolves to a real, openable file. Link text is the target's `name` (its final path segment). From a technique to a sibling technique: `[<name>](../<name>/SKILL.md)`; from a technique to a resource: `[<name>](../../resources/<name>/SKILL.md)`. Examples (paths shown from inside `implement-task/SKILL.md`):
 
 ```
-[implement-task](implement-task/SKILL.md)                                   # top-level technique (activity-bound)
-[understand-task-context](implement-task/understand-task-context/SKILL.md)  # nested technique
-[impact](gitnexus/impact/SKILL.md)                                          # tool-namespace endpoint
-[analysis1](gitnexus/impact-analysis/analysis1/SKILL.md)                    # deeper nesting permitted
-[dco-attest-commit](workflow/dco-attest-commit/SKILL.md)                    # cross-namespace reference
-[workflow-canonical](resources/workflow-canonical/SKILL.md)                 # the ontology definition itself
+[understand-task-context](understand-task-context/SKILL.md)  # nested child technique
+[write-task-code](write-task-code/SKILL.md)                  # nested child technique
+[impact](../gitnexus/impact/SKILL.md)                        # sibling tool-namespace endpoint
+[dco-attest-commit](../workflow/dco-attest-commit/SKILL.md)  # sibling-bundle reference
 ```
 
-To fetch, the agent strips the trailing `/SKILL.md` and calls `get_skill` on the folder path.
+To reference a **specific operation or section** of another skill, hyperlink BOTH parts — the skill name to its `SKILL.md` and the op/section name to its `#<anchor>` — joined by `::`, with any params after:
+
+```
+[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>) (`{params}`)
+```
+
+e.g. `[gitnexus](../gitnexus/SKILL.md)::[impact](../gitnexus/SKILL.md#impact) (`{target, direction}`)`. Within the same file, a sibling section is just `[<op>](#<op>)`. At rest these are clickable file-relative hyperlinks; on delivery the server simplifies each to a bare name (`<skill>` or `<skill>/<section>`), so to fetch, the agent strips the trailing `/SKILL.md` and calls `get_skill` on the resolved name.
 
 ---
 

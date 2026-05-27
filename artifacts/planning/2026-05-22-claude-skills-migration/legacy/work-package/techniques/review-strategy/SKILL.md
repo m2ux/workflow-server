@@ -33,7 +33,7 @@ Pull request number for scope reference
 
 ### 1. Load Guidance
 
-- Use attached [strategic-review](legacy/work-package/resources/strategic-review/SKILL.md) and [architecture-review](legacy/work-package/resources/architecture-review/SKILL.md) for guidance
+- Use attached [strategic-review](../../resources/strategic-review/SKILL.md) and [architecture-review](../../resources/architecture-review/SKILL.md) for guidance
 - Examine all changes in the PR using git diff and git log
 
 ### 2. Examine Scope
@@ -44,11 +44,11 @@ Pull request number for scope reference
 
 ### 3. Scope Discipline Check
 
-- Apply the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `scope-discipline-check` operation with `{requirements_scope: <work-package requirements>}`; flag any affected process outside the requirements as scope creep for user decision.
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[scope-discipline-check](../gitnexus-operations/SKILL.md#scope-discipline-check) (`{requirements_scope: <work-package requirements>}`); flag any affected process outside the requirements as scope creep for user decision.
 
 ### 4. Orphan Check
 
-- Apply `gitnexus-operations::orphan-scan` with `{changed_files: <work-package changed files>}` to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[orphan-scan](../gitnexus-operations/SKILL.md#orphan-scan) (`{changed_files: <work-package changed files>}`) to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
 
 ### 5. Changes Folder
 

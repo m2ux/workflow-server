@@ -29,7 +29,7 @@ Task breakdown from create-plan skill
 
 ### 1. Load Guidance
 
-- Use attached [test-plan](legacy/work-package/resources/test-plan/SKILL.md) for test plan template and guidance
+- Use attached [test-plan](../../resources/test-plan/SKILL.md) for test plan template and guidance
 
 ### 2. Define Strategy
 
@@ -42,7 +42,7 @@ Task breakdown from create-plan skill
 - Create specific test cases for each requirement
 - Include boundary conditions, error paths, and edge cases
 - Link each test case to its requirement and acceptance criterion
-- Apply the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `query` operation (`{query: <concept>}`) to find existing test patterns for related concepts and `gitnexus-operations::context` (`{name: <symbol>}`) to identify error-path callees as edge-case test candidates.
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[query](../gitnexus-operations/SKILL.md#query) (`{query: <concept>}`) to find existing test patterns for related concepts and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) (`{name: <symbol>}`) to identify error-path callees as edge-case test candidates.
 
 ### 4. Write Artifact
 

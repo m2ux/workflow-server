@@ -75,7 +75,7 @@ Platform where issue lives (github or jira)
 
 ### 5. Create Pr
 
-- Use attached [pr-description](legacy/work-package/resources/pr-description/SKILL.md) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource.
+- Use attached [pr-description](../../resources/pr-description/SKILL.md) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource.
 - BEFORE creating the PR: commit and push the planning folder to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote.
 - Create draft PR linked to issue using gh pr create
 - Ensure PR title and body reference issue number

@@ -25,13 +25,13 @@ List of files changed in the work package (from git diff)
 
 ### 1. Load Guidance
 
-- Use attached [test-suite-review](legacy/work-package/resources/test-suite-review/SKILL.md) for full review criteria
+- Use attached [test-suite-review](../../resources/test-suite-review/SKILL.md) for full review criteria
 - Identify all test files in the project related to changed code
 
 ### 2. Diff Aware Coverage Map
 
 - Coverage assessment must be diff-aware — scope evaluation to the changed-symbol set rather than absolute project coverage
-- Apply the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `diff-coverage-map` operation: it enumerates the changed-symbol set and, for each changed symbol, finds existing test callers (incoming references from test files)
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[diff-coverage-map](../gitnexus-operations/SKILL.md#diff-coverage-map): it enumerates the changed-symbol set and, for each changed symbol, finds existing test callers (incoming references from test files)
 - Treat its coverage_gaps (symbols with no test callers) as coverage gaps and update_candidates (symbols with stale test callers) as update candidates
 
 ### 3. Run Tests
@@ -44,7 +44,7 @@ List of files changed in the work package (from git diff)
 - Check for anti-patterns (flaky tests, over-mocking, brittle assertions)
 - Verify test isolation and independence
 - Review assertion quality and error message clarity
-- For Rust projects, reference TDD best practices from [tdd-concepts-rust](legacy/work-package/resources/tdd-concepts-rust/SKILL.md)
+- For Rust projects, reference TDD best practices from [tdd-concepts-rust](../../resources/tdd-concepts-rust/SKILL.md)
 
 ### 5. Document Findings
 

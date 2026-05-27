@@ -39,7 +39,7 @@ Path to planning folder for implementation summary context
 
 ### 2. Update Description
 
-- Use attached [pr-description](legacy/work-package/resources/pr-description/SKILL.md) for template and structure
+- Use attached [pr-description](../../resources/pr-description/SKILL.md) for template and structure
 - Update PR description with implementation summary
 - Include test coverage summary
 - Document key decisions and trade-offs
@@ -69,8 +69,8 @@ PR updated and marked ready for review
 
 ### template-selection
 
-- review-mode-template: In review mode, use attached [review-mode](legacy/work-package/resources/review-mode/SKILL.md) for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there.
-- initial-template: When creating a PR before implementation (ADR-only), use the Initial template from [pr-description](legacy/work-package/resources/pr-description/SKILL.md). When updating after implementation, use the Final template.
+- review-mode-template: In review mode, use attached [review-mode](../../resources/review-mode/SKILL.md) for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there.
+- initial-template: When creating a PR before implementation (ADR-only), use the Initial template from [pr-description](../../resources/pr-description/SKILL.md). When updating after implementation, use the Final template.
 
 ### pr-body-conformance
 

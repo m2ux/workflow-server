@@ -127,7 +127,7 @@ Resource-constrained operations for the cargo subcommands used during the work-p
 **Output:**
 
 - **clippy_status** — { passed: boolean } — true when no denied warnings emitted
-- **lint_diagnostics** — Captured stdout/stderr (used by validate-build::analyze-failure)
+- **lint_diagnostics** — Captured stdout/stderr (used by [validate-build](../validate-build/SKILL.md)::[analyze-failure](../validate-build/SKILL.md#analyze-failure))
 
 **Procedure:**
 
@@ -164,7 +164,7 @@ Resource-constrained operations for the cargo subcommands used during the work-p
 
 **Errors:**
 
-- **formatting_diffs** — Cause: Source files do not match rustfmt configuration · Recovery: Run cargo-operations::fmt-fix to apply formatting, then commit the result
+- **formatting_diffs** — Cause: Source files do not match rustfmt configuration · Recovery: Run [fmt-fix](#fmt-fix) to apply formatting, then commit the result
 
 ### fmt-fix
 
@@ -239,7 +239,7 @@ Resource-constrained operations for the cargo subcommands used during the work-p
 
 **Procedure:**
 
-- Fan out four concurrent shells invoking cargo-operations::check, ::clippy, ::test, and ::fmt-check against the same {scope}. Each carries its own resource budget (nice -n 19 + CARGO_BUILD_JOBS cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all).
+- Fan out four concurrent shells invoking [check](#check), [clippy](#clippy), [test](#test), and [fmt-check](#fmt-check) against the same {scope}. Each carries its own resource budget (nice -n 19 + CARGO_BUILD_JOBS cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all).
 - Wait for ALL four to finish before composing results. Do NOT short-circuit on the first failure — collect every per-op status and diagnostics so a single pass surfaces every issue rather than forcing serial discovery.
 - Compose validation_results = { check_status, clippy_status, test_status, fmt_status, validation_passed: check_status.passed AND clippy_status.passed AND test_status.passed AND fmt_status.passed }.
 

@@ -29,7 +29,7 @@ Summary, description, and context from the linked issue
 
 ### 1. Load Framework
 
-- Use attached [design-framework](legacy/work-package/resources/design-framework/SKILL.md) for full guidance
+- Use attached [design-framework](../../resources/design-framework/SKILL.md) for full guidance
 - Review issue_details and problem_context
 
 ### 2. Define Problem
@@ -43,7 +43,7 @@ Summary, description, and context from the linked issue
 
 - Determine if specific problem (cause known/unknown) or inventive goal (improvement/prevention)
 - Assess complexity as simple, moderate, or complex
-- If preliminary target symbols can be inferred from the issue, apply the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `complexity-signal` operation (`{target}`) for an objective complexity signal — high fan-out or many affected processes indicate higher complexity than the issue text suggests.
+- If preliminary target symbols can be inferred from the issue, apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[complexity-signal](../gitnexus-operations/SKILL.md#complexity-signal) (`{target}`) for an objective complexity signal — high fan-out or many affected processes indicate higher complexity than the issue text suggests.
 - Document classification rationale
 
 ### 4. Determine Path

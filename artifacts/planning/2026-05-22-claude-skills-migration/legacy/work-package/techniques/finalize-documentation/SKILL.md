@@ -52,11 +52,11 @@ PR number for cross-referencing
 - Summarize what was delivered
 - Document what was tested and test coverage
 - List deferred items and known limitations
-- Follow the completion-document template in [complete-wp](legacy/work-package/resources/complete-wp/SKILL.md)
+- Follow the completion-document template in [complete-wp](../../resources/complete-wp/SKILL.md)
 
 ### 4. Ensure Api Docs
 
-- Apply the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `public-api-enum` operation to enumerate exactly the public/exported APIs in the diff that need doc comments.
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[public-api-enum](../gitnexus-operations/SKILL.md#public-api-enum) to enumerate exactly the public/exported APIs in the diff that need doc comments.
 - Identify public APIs in changed code
 - Verify each has inline documentation (doc comments)
 - Add missing doc comments where absent
@@ -81,7 +81,7 @@ COMPLETE.md is created after implementation is complete and PR is merged. It cap
 
 ### tool-usage
 
-Rust/Substrate: invoke cargo-operations.doc (scope='--workspace --no-deps') to verify documentation builds. Other project types: run the equivalent doc command for the project. This skill does not invoke cargo directly.
+Rust/Substrate: invoke [cargo-operations](../cargo-operations/SKILL.md)::[doc](../cargo-operations/SKILL.md#doc) (scope='--workspace --no-deps') to verify documentation builds. Other project types: run the equivalent doc command for the project. This skill does not invoke cargo directly.
 
 ## Errors
 

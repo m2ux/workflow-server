@@ -39,7 +39,7 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 ### 2. Iterate Domains
 
-- Use attached [requirements-elicitation](legacy/work-package/resources/requirements-elicitation/SKILL.md) for question domains
+- Use attached [requirements-elicitation](../../resources/requirements-elicitation/SKILL.md) for question domains
 - Iterate through domains one question at a time
 - Record responses and adapt follow-up based on answers
 - Skip irrelevant follow-ups; probe deeper when needed

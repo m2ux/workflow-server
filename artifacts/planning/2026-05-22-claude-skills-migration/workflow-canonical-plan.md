@@ -85,7 +85,7 @@ The workflow-canonical ontology adds:
 
 - The semantic interpretation of those skills — what makes one a `technique` (and whether its body is self-contained or composes other techniques) versus a freeform resource (which carries no `metadata.ontology`).
 - The composition rules — how techniques nest, how they live under their owner, how role contracts are sectioned inside the workflow technique.
-- The cross-reference format — root-relative `[name](path/SKILL.md)` hyperlinks.
+- The cross-reference format — file-relative `[name](../name/SKILL.md)` hyperlinks (relative to the referencing file's own directory).
 - The ontology-specific frontmatter fields — `kind`, and any others the ontology defines.
 
 Crucially, **everything the ontology adds lives in the ontology definition, not the server**. Authoring the ontology definition IS authoring the ontology.
@@ -376,7 +376,7 @@ The pilot is bounded and concrete:
 ### Phase 0 — Author the ontology definition (`shared/resources/workflow-canonical`)
 
 - Author `shared/resources/workflow-canonical/SKILL.md` (a shared resource) based on the planning-folder sample at `sample/resources/workflow-canonical/SKILL.md`.
-- The definition covers: Skill/Technique/Role/Tool concepts, composition rules, cross-reference format (root-relative hyperlinks), self-contained vs composing technique bodies, frontmatter schema, agent bootstrap procedure, refusal paths.
+- The definition covers: Skill/Technique/Role/Tool concepts, composition rules, cross-reference format (file-relative hyperlinks), self-contained vs composing technique bodies, frontmatter schema, agent bootstrap procedure, refusal paths.
 - Validate that the definition is fetchable via `get_skill("workflow-canonical")` (resolved to `shared/resources/workflow-canonical`).
 - Test: an agent given only the ontology definition + an empty skills tree understands the ontology well enough to interpret a sample skill correctly.
 

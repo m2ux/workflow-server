@@ -15,9 +15,9 @@ metadata:
 
 Parameterized GitNexus operations for the work-package workflow. Primitive operations wrap each GitNexus MCP tool with the canonical work-package parameter set and output interpretation; composite operations encode the multi-call analysis recipes that recur across review and planning skills.
 
-This is the single home for *how* GitNexus is driven. Skill protocol steps reference an operation by name (`gitnexus-operations::<op>`) and supply a parameter set; they do not paste raw `gitnexus_*` calls or Cypher. For the underlying tool, resource, and graph-schema reference, see [gitnexus-reference](legacy/work-package/resources/gitnexus-reference/SKILL.md).
+This is the single home for *how* GitNexus is driven. Skill protocol steps reference an operation by name (`gitnexus-operations::<op>`) and supply a parameter set; they do not paste raw `gitnexus_*` calls or Cypher. For the underlying tool, resource, and graph-schema reference, see [gitnexus-reference](../../resources/gitnexus-reference/SKILL.md).
 
-> Migration note: this skill is introduced by the markdown migration — it has no 1:1 source TOON file. It is the GitNexus analogue of [cargo-operations](legacy/work-package/techniques/cargo-operations/SKILL.md), consolidating tool-usage that the source workflow previously scattered across per-skill protocol steps and rules.
+> Migration note: this skill is introduced by the markdown migration — it has no 1:1 source TOON file. It is the GitNexus analogue of [cargo-operations](../cargo-operations/SKILL.md), consolidating tool-usage that the source workflow previously scattered across per-skill protocol steps and rules.
 
 ## Operations
 
@@ -119,7 +119,7 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 **Procedure:**
 
 - Call `gitnexus_query({query})`.
-- Use the returned processes to orient before deep-diving with `gitnexus-operations::context` on specific symbols.
+- Use the returned processes to orient before deep-diving with [context](#context) on specific symbols.
 
 **Tools:**
 
@@ -164,7 +164,7 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 
 **Inputs:**
 
-- **changed_files** — the set of files changed by the work package (from `gitnexus-operations::detect-changes`)
+- **changed_files** — the set of files changed by the work package (from [detect-changes](#detect-changes))
 
 **Output:**
 
@@ -172,7 +172,7 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 
 **Procedure:**
 
-- Run `gitnexus-operations::cypher` with `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`.
+- Run [cypher](#cypher) with `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`.
 - Intersect the orphan set with changed_files so only symbols *introduced or touched by this work* are surfaced.
 - Report the intersection as over-engineering candidates for user decision.
 
@@ -194,8 +194,8 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 
 **Procedure:**
 
-- Run `gitnexus-operations::detect-changes` to obtain the changed-symbol set.
-- Run `gitnexus-operations::cypher` with a visibility filter to keep only public/exported symbols from that set.
+- Run [detect-changes](#detect-changes) to obtain the changed-symbol set.
+- Run [cypher](#cypher) with a visibility filter to keep only public/exported symbols from that set.
 - Return the filtered set as the doc-comment work list.
 
 **Tools:**
@@ -217,8 +217,8 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 
 **Procedure:**
 
-- Run `gitnexus-operations::detect-changes` to enumerate the changed-symbol set.
-- For each changed symbol, run `gitnexus-operations::context` and inspect incoming references from test files.
+- Run [detect-changes](#detect-changes) to enumerate the changed-symbol set.
+- For each changed symbol, run [context](#context) and inspect incoming references from test files.
 - Symbols with no test callers → coverage_gaps; symbols with stale test callers → update_candidates.
 
 **Tools:**
@@ -243,7 +243,7 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 
 **Procedure:**
 
-- Run `gitnexus-operations::detect-changes` to obtain the affected execution flows.
+- Run [detect-changes](#detect-changes) to obtain the affected execution flows.
 - Compare the affected flows against requirements_scope.
 - Flag any affected flow outside requirements_scope as scope creep for user decision.
 
@@ -270,7 +270,7 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 
 **Procedure:**
 
-- Run `gitnexus-operations::detect-changes` to bound the diagram to affected processes.
+- Run [detect-changes](#detect-changes) to bound the diagram to affected processes.
 - For `'package'`: read `gitnexus://repo/{name}/clusters` (functional areas with cohesion scores) and `gitnexus://repo/{name}/cluster/{name}` (members).
 - For `'sequence'`: read `gitnexus://repo/{name}/process/{name}` (execution traces) for the affected processes.
 
@@ -296,7 +296,7 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 
 **Procedure:**
 
-- Run `gitnexus-operations::impact` with `{target, maxDepth: 2}`.
+- Run [impact](#impact) with `{target, maxDepth: 2}`.
 - High fan-out or many affected processes indicate higher complexity than the issue text alone might suggest.
 
 **Tools:**
@@ -322,7 +322,7 @@ This is the single home for *how* GitNexus is driven. Skill protocol steps refer
 
 **Procedure:**
 
-- Run `gitnexus-operations::context` for the symbol.
+- Run [context](#context) for the symbol.
 - High caller fan-out and broad process participation → path-committing; an isolated symbol → easily-reversible.
 
 **Tools:**

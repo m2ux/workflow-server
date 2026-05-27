@@ -215,7 +215,7 @@ Names are unique within the resolution scope (the ontology's disambiguation rule
 
 ### 6.3 Referencing: authored vs delivered
 
-At rest, references are human-friendly root-relative markdown hyperlinks — to a whole skill (`[name](path/SKILL.md)`) or to a section (`[name](path/SKILL.md#section)`), clickable in an editor. On delivery the §7 pass **simplifies each to a bare name** (`<name>` or `<name>/<section>`), which the agent fetches via `get_skill` under precedence resolution. The at-rest form optimizes human navigation; the on-the-wire form optimizes tokens (and enables section-level fetches) and lets the server apply local-overrides-common without re-authoring.
+At rest, references are human-friendly **file-relative** markdown hyperlinks — relative to the referencing file's own directory, so they click through in any IDE / GitHub / markdown renderer — to a whole skill (`[name](../name/SKILL.md)`) or to a section (`[name](../name/SKILL.md#section)`). To address a **specific operation or section** of another skill, hyperlink both parts joined by `::`: `[skill](../skill/SKILL.md)::[op](../skill/SKILL.md#op)` (params after, e.g. `` (`{target, direction}`) ``); within the same file a sibling section is just `[op](#op)`. On delivery the §7 pass **simplifies each to a bare name** (`<name>` or `<name>/<section>`), which the agent fetches via `get_skill` under precedence resolution. The at-rest form optimizes human navigation; the on-the-wire form optimizes tokens (and enables section-level fetches) and lets the server apply local-overrides-common without re-authoring.
 
 ---
 
@@ -240,7 +240,7 @@ The architecture supports migrating any TOON-based skill workflow to a markdown-
 
 1. **Author the ontology definition** (a shared resource). Define the target ontology — what kinds of content exist, how they compose, what frontmatter fields they carry.
 2. **Scaffold the server's loader + delivery pass.** Add the minimal frontmatter schema (server-enforced fields only); implement name resolution by precedence (workflow-local → root); deliver via the §7 projection (TOON for techniques, simplified markdown for resources).
-3. **Author the target skill tree** per the ontology's structure — governed skills, nested content, resources, cross-references as root-relative hyperlinks.
+3. **Author the target skill tree** per the ontology's structure — governed skills, nested content, resources, cross-references as file-relative hyperlinks.
 4. **Migrate legacy content** (TOON skills, ancillary resources) into the new structure one skill at a time. The ontology definition defines the destination shape.
 5. **Cutover and verify** behavioural fidelity — the post-migration worker should produce the same artifacts and make the same decisions as the pre-migration worker on representative tasks.
 

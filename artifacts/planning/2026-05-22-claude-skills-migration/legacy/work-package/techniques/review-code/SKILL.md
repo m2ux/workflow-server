@@ -29,13 +29,13 @@ List of files changed in the work package (from git diff)
 
 ### 1. Load Guidance
 
-- Use attached [rust-substrate-code-review](legacy/work-package/resources/rust-substrate-code-review/SKILL.md) for full review criteria
+- Use attached [rust-substrate-code-review](../../resources/rust-substrate-code-review/SKILL.md) for full review criteria
 - Identify all files changed since work package started using git diff
 
 ### 2. Bound Review Scope
 
-- Apply the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) `detect-changes` operation to map the diff to affected execution flows and the changed-symbol set
-- For each changed symbol of interest, apply `gitnexus-operations::impact` with `{target, direction: 'upstream'}` to surface upstream callers and bound the review's blast radius
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[detect-changes](../gitnexus-operations/SKILL.md#detect-changes) to map the diff to affected execution flows and the changed-symbol set
+- For each changed symbol of interest, apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/SKILL.md#impact) (`{target, direction: 'upstream'}`) to surface upstream callers and bound the review's blast radius
 - Use the resulting blast radius to inform severity judgements — high-fanout callers and process-critical paths raise the severity ceiling for findings in those symbols.
 
 ### 3. Review Files

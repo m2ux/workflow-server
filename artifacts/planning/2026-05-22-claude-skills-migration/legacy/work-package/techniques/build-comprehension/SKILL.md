@@ -39,14 +39,14 @@ Path to the target codebase directory
 
 ### 2. Check Gitnexus
 
-- Confirm the codebase is indexed and fresh per the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) index-freshness rule (read `gitnexus://repo/{name}/context`)
+- Confirm the codebase is indexed and fresh per the [gitnexus-operations](../gitnexus-operations/SKILL.md) index-freshness rule (read `gitnexus://repo/{name}/context`)
 - If indexed: structural analysis throughout this skill goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here. If not indexed or stale, fall back to grep/read/glob.
 - If not indexed or stale: fall back to grep/read/glob for all exploration steps.
 
 ### 3. Architecture Survey
 
 - Top-down survey: start with project root structure, build system, entry points
-- When GitNexus is available: apply `gitnexus-operations::query` to discover execution flows and functional areas, read cluster resources for module groupings, and `gitnexus-operations::context` for dependency mapping — faster than grep and the required primary approach
+- When GitNexus is available: apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[query](../gitnexus-operations/SKILL.md#query) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) for dependency mapping — faster than grep and the required primary approach
 - Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
 - Map dependency relationships between modules (imports, trait implementations, cross-module calls)
@@ -74,7 +74,7 @@ Path to the target codebase directory
 
 ### 7. Artifact Management
 
-- Follow the artifact structure and comprehension techniques in [codebase-comprehension](legacy/work-package/resources/codebase-comprehension/SKILL.md)
+- Follow the artifact structure and comprehension techniques in [codebase-comprehension](../../resources/codebase-comprehension/SKILL.md)
 - Artifact naming: {codebase-area-name}.md in .engineering/artifacts/comprehension/
 - Derive codebase-area-name from the target project or subsystem name (slugified)
 - When augmenting: add new sections, update existing sections with deeper detail, preserve prior content
@@ -85,7 +85,7 @@ Path to the target codebase directory
 
 - Present candidate areas based on architecture survey and problem relevance
 - For selected area: trace data flows, examine implementation details, document edge cases
-- When GitNexus is available: apply `gitnexus-operations::context` to trace callers/callees, read process resources for full execution traces, and `gitnexus-operations::cypher` for custom call chain queries
+- When GitNexus is available: apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[cypher](../gitnexus-operations/SKILL.md#cypher) for custom call chain queries
 - Append findings as dedicated subsections in the comprehension artifact
 
 ### 9. Question Management

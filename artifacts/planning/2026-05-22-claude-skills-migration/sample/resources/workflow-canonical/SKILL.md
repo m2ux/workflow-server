@@ -65,7 +65,7 @@ A persona contract: responsibilities, authority, refusals, qualified
 skills.
 
 Has **no on-disk folder**. Role contracts live as `##` sections
-within [workflow](workflow/SKILL.md) (e.g. `## Engineer`,
+within [workflow](../../workflow/SKILL.md) (e.g. `## Engineer`,
 `## Reviewer`, `## Planner`).
 
 Role-to-skill binding lives in `workflow.toon` activity definitions,
@@ -100,36 +100,47 @@ resource rather than a technique.
 
 ## Cross-reference format
 
-References to skills (including techniques, which are structurally
-skills) are **root-relative markdown hyperlinks** to the target
-`SKILL.md`:
+References between skills (including techniques, which are structurally
+skills) are **file-relative markdown hyperlinks** to the target
+`SKILL.md` — relative to the *referencing file's own directory*, so
+they click through in any IDE / GitHub / markdown renderer:
 
 ```
-[<skill-name>](<path>/SKILL.md)
+[<skill-name>](<relative-path>/SKILL.md)
 ```
 
-Where `<path>` is the full path under the skills root, slashes
-preserved, no leading slash; the link always ends in `/SKILL.md` so it
-resolves to a real, openable file. `<skill-name>` is the link text —
-the target's `name` (its final path segment), so the reference reads
-as the thing it names. Examples:
+The link always ends in `/SKILL.md` so it resolves to a real, openable
+file. `<skill-name>` is the link text — the target's `name` (its final
+path segment), so the reference reads as the thing it names. The `../`
+depth follows from where the two files sit. From a technique to a
+sibling technique: `[<name>](../<name>/SKILL.md)`; from a technique to a
+resource: `[<name>](../../resources/<name>/SKILL.md)`. Examples:
 
-- [implement-task](implement-task/SKILL.md) — top-level technique (activity-bound).
-- [understand-task-context](implement-task/understand-task-context/SKILL.md) — nested technique.
-- [impact](gitnexus/impact/SKILL.md) — endpoint technique under the
-  gitnexus tool namespace.
-- [analysis1](gitnexus/impact-analysis/analysis1/SKILL.md) — deeper
-  nesting is permitted; arbitrary depth.
-- [dco-attest-commit](workflow/dco-attest-commit/SKILL.md) —
-  cross-bundle reference.
+- [understand-task-context](understand-task-context/SKILL.md) — a
+  nested child technique (one level down from the referencing file).
+- [impact](../gitnexus/impact/SKILL.md) — an endpoint technique under a
+  sibling `gitnexus` tool namespace.
+- [dco-attest-commit](../workflow/dco-attest-commit/SKILL.md) —
+  cross-bundle reference to a sibling bundle.
 
-At rest these are clickable hyperlinks (human navigation). On delivery
-the server simplifies each to the bare target **name**; the agent
-fetches it via `get_skill(<name>)`, which the server resolves by
-precedence (workflow-local → shared/) and auto-detects governed-vs-resource
-for delivery. A reference may target a single section — `<name>/<section>`
-— to fetch just that part. The reference is ultimately the name, not the
-path.
+To reference a **specific operation or section** of another skill,
+hyperlink BOTH parts — the skill name to its `SKILL.md` and the
+op/section name to its `#<anchor>` — joined by `::`, with any params
+after:
+
+```
+[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>) (`{params}`)
+```
+
+e.g. `[gitnexus](../gitnexus/SKILL.md)::[impact](../gitnexus/SKILL.md#impact) (`{target, direction}`)`.
+Within the same file, a sibling section is just `[<op>](#<op>)`.
+
+At rest these are clickable file-relative hyperlinks (human navigation);
+on delivery the server simplifies each to a bare **name** (`<skill>` or
+`<skill>/<section>`) resolved by precedence via `get_skill`
+(workflow-local → shared/), which also auto-detects governed-vs-resource
+for delivery. The reference is ultimately the name; the file-relative
+path is the at-rest human-navigable form.
 
 ## Composition rules
 
@@ -241,7 +252,7 @@ When the agent receives a workflow activity assignment:
      satisfied and the role contract calls for it.
    - If the body is **self-contained**, treat it as a procedure to
      execute directly.
-4. Apply role contracts from [workflow](workflow/SKILL.md) per the
+4. Apply role contracts from [workflow](../../workflow/SKILL.md) per the
    activity's assigned role.
 5. Honour refusal paths — they are non-negotiable stops, not
    advisory.

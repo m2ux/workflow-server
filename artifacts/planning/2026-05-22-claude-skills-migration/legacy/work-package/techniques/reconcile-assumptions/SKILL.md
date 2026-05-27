@@ -41,7 +41,7 @@ Path to the codebase to analyze
 ### 2. Targeted Analysis
 
 - For each code-resolvable assumption, perform focused investigation: trace relevant code paths, examine implementations, diff between versions, compare behavior
-- Use the [gitnexus-operations](legacy/work-package/techniques/gitnexus-operations/SKILL.md) operations as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — `gitnexus-operations::query` for concept-driven flow discovery, `gitnexus-operations::context` for symbol-level caller/callee/process inspection, and `gitnexus-operations::cypher` for custom traces (e.g. error-path or ordering assumptions).
+- Use the [gitnexus-operations](../gitnexus-operations/SKILL.md) operations as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — [gitnexus-operations](../gitnexus-operations/SKILL.md)::[query](../gitnexus-operations/SKILL.md#query) for concept-driven flow discovery, [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) for symbol-level caller/callee/process inspection, and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[cypher](../gitnexus-operations/SKILL.md#cypher) for custom traces (e.g. error-path or ordering assumptions).
 - Record evidence with file paths and line numbers for every finding
 - Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)
 - Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies
@@ -51,7 +51,7 @@ Path to the codebase to analyze
 - Update assumptions-log.md: mark resolved assumptions with finding, evidence, and resolution status
 - Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)
 - Maintain a running count: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
-- Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](legacy/work-package/resources/assumption-reconciliation/SKILL.md) for correct vs incorrect examples.
+- Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](../../resources/assumption-reconciliation/SKILL.md) for correct vs incorrect examples.
 
 ### 4. Check Convergence
 

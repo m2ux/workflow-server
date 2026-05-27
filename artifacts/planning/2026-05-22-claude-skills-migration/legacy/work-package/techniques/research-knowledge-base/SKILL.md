@@ -29,7 +29,7 @@ Problem statement from design philosophy
 
 ### 1. Load Resources
 
-- Use attached [knowledge-base-research](legacy/work-package/resources/knowledge-base-research/SKILL.md) and [web-research](legacy/work-package/resources/web-research/SKILL.md) for guidance
+- Use attached [knowledge-base-research](../../resources/knowledge-base-research/SKILL.md) and [web-research](../../resources/web-research/SKILL.md) for guidance
 - Review requirements and problem_statement for research focus
 
 ### 2. Search Knowledge Base
