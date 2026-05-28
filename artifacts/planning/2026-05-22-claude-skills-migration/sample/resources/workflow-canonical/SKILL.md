@@ -165,12 +165,15 @@ path is the at-rest human-navigable form.
    The parent `SKILL.md` is the index (Capability + Operations table +
    cross-cutting Rules). Each child file carries the operation's
    per-section shape: `# <op>` h1 plus a one-line description (always
-   present), `## Procedure` and `## Tools` (always present — without
-   these the file is not an operation), and `## Inputs` / `## Output`
+   present), `## Procedure` (always present — without it the file is
+   not an operation; the procedure body is **always a numbered list**,
+   single-step procedures included), and `## Inputs` / `## Output`
    / `## Errors` / `## Rules` **only when the operation has them**
    (an op with no inputs, no structured output, no failure modes
    worth surfacing, or no op-local constraints omits the
-   corresponding section).
+   corresponding section). There is no `## Tools` section — the
+   procedure names the tool inline (`cargo …`, `gitnexus_*(…)`),
+   matching composition rule #8.
    **Rules placement — parent vs op-local.** Cross-cutting rules
    (constraints that govern multiple operations) live in the parent
    `SKILL.md`'s `## Rules`. Op-local rules (constraints that apply to

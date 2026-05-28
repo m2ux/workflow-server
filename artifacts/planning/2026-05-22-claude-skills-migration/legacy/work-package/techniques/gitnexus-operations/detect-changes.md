@@ -12,13 +12,9 @@ Map the current git diff to the changed-symbol set and the execution flows it af
 
 ## Procedure
 
-- Call `gitnexus_detect_changes({scope})`.
-- Pre-commit: confirm the changes affect only the expected symbols and flows.
-- Diff-driven review: use the changed-symbol set as the basis for coverage, scope, and severity work (see the composite operations below).
-
-## Tools
-
-- **mcp:** gitnexus
+1. Call `gitnexus_detect_changes({scope})`.
+2. Pre-commit: confirm the changes affect only the expected symbols and flows.
+3. Diff-driven review: use the changed-symbol set as the basis for coverage, scope, and severity work (see the composite operations below).
 
 ## Errors
 

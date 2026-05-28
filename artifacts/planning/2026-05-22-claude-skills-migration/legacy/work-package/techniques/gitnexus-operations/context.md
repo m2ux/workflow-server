@@ -12,12 +12,8 @@
 
 ## Procedure
 
-- Call `gitnexus_context({name})`.
-- Read caller fan-out as a blast-radius signal: many callers and broad process participation → the symbol is path-committing; an isolated symbol is low-risk to touch.
-
-## Tools
-
-- **mcp:** gitnexus
+1. Call `gitnexus_context({name})`.
+2. Read caller fan-out as a blast-radius signal: many callers and broad process participation → the symbol is path-committing; an isolated symbol is low-risk to touch.
 
 ## Errors
 

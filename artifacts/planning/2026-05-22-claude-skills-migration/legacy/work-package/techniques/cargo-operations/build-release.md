@@ -9,11 +9,7 @@ Release build; produces the final binary AND the runtime wasm artifact.
 
 ## Procedure
 
-- `nice -n 19 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build --release {scope} {features}`
-
-## Tools
-
-- **shell:** cargo
+1. `nice -n 19 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build --release {scope} {features}`
 
 ## Errors
 

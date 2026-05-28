@@ -9,11 +9,7 @@ Workspace dev build; skips the runtime wasm artifact.
 
 ## Procedure
 
-- `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build {scope} {features}`
-
-## Tools
-
-- **shell:** cargo
+1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build {scope} {features}`
 
 ## Errors
 

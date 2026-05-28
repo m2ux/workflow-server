@@ -12,13 +12,9 @@ Verify the diff stays within the work-package's intended scope; flag scope creep
 
 ## Procedure
 
-- Run [detect-changes](detect-changes.md) to obtain the affected execution flows.
-- Compare the affected flows against requirements_scope.
-- Flag any affected flow outside requirements_scope as scope creep for user decision.
-
-## Tools
-
-- **mcp:** gitnexus
+1. Run [detect-changes](detect-changes.md) to obtain the affected execution flows.
+2. Compare the affected flows against requirements_scope.
+3. Flag any affected flow outside requirements_scope as scope creep for user decision.
 
 ## Errors
 

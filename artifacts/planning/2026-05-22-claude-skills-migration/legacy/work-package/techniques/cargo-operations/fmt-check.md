@@ -13,11 +13,7 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 ## Procedure
 
-- `nice -n 19 cargo fmt {scope} -- --check`
-
-## Tools
-
-- **shell:** cargo
+1. `nice -n 19 cargo fmt {scope} -- --check`
 
 ## Errors
 

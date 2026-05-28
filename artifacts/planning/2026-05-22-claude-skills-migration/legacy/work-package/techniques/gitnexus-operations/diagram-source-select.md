@@ -13,13 +13,9 @@ Source architecture-diagram structure from graph resources rather than hand-roll
 
 ## Procedure
 
-- Run [detect-changes](detect-changes.md) to bound the diagram to affected processes.
-- For `'package'`: read `gitnexus://repo/{name}/clusters` (functional areas with cohesion scores) and `gitnexus://repo/{name}/cluster/{name}` (members).
-- For `'sequence'`: read `gitnexus://repo/{name}/process/{name}` (execution traces) for the affected processes.
-
-## Tools
-
-- **mcp:** gitnexus
+1. Run [detect-changes](detect-changes.md) to bound the diagram to affected processes.
+2. For `'package'`: read `gitnexus://repo/{name}/clusters` (functional areas with cohesion scores) and `gitnexus://repo/{name}/cluster/{name}` (members).
+3. For `'sequence'`: read `gitnexus://repo/{name}/process/{name}` (execution traces) for the affected processes.
 
 ## Errors
 

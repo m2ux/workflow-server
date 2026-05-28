@@ -8,8 +8,4 @@ Apply rustfmt formatting in place.
 
 ## Procedure
 
-- `nice -n 19 cargo fmt {scope}`
-
-## Tools
-
-- **shell:** cargo
+1. `nice -n 19 cargo fmt {scope}`

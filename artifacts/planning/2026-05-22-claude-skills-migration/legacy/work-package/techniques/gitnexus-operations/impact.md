@@ -15,14 +15,10 @@ Symbol blast radius — what depends on a symbol, at depth 1/2/3, with confidenc
 
 ## Procedure
 
-- Call `gitnexus_impact({target, direction, maxDepth, minConfidence})`.
-- Read d=1 items first — these WILL break. Weight high-confidence (>0.8) edges.
-- Derive the risk level: <5 symbols/few processes = LOW; 5–15 symbols/2–5 processes = MEDIUM; >15 symbols or many processes = HIGH; critical path (auth, payments, consensus) = CRITICAL.
-- The caller MUST surface HIGH or CRITICAL risk to the user before proceeding with an edit.
-
-## Tools
-
-- **mcp:** gitnexus
+1. Call `gitnexus_impact({target, direction, maxDepth, minConfidence})`.
+2. Read d=1 items first — these WILL break. Weight high-confidence (>0.8) edges.
+3. Derive the risk level: <5 symbols/few processes = LOW; 5–15 symbols/2–5 processes = MEDIUM; >15 symbols or many processes = HIGH; critical path (auth, payments, consensus) = CRITICAL.
+4. The caller MUST surface HIGH or CRITICAL risk to the user before proceeding with an edit.
 
 ## Errors
 

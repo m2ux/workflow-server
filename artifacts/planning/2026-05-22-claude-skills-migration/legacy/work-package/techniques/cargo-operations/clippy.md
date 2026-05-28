@@ -14,11 +14,7 @@ Run the linter against all targets, denying warnings.
 
 ## Procedure
 
-- `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo clippy {scope} --all-targets {features} -- -D warnings`
-
-## Tools
-
-- **shell:** cargo
+1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo clippy {scope} --all-targets {features} -- -D warnings`
 
 ## Errors
 

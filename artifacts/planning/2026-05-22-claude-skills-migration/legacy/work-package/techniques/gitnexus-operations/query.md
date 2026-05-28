@@ -12,12 +12,8 @@ Find execution flows related to a concept, symptom, or error string — the stru
 
 ## Procedure
 
-- Call `gitnexus_query({query})`.
-- Use the returned processes to orient before deep-diving with [context](context.md) on specific symbols.
-
-## Tools
-
-- **mcp:** gitnexus
+1. Call `gitnexus_query({query})`.
+2. Use the returned processes to orient before deep-diving with [context](context.md) on specific symbols.
 
 ## Errors
 

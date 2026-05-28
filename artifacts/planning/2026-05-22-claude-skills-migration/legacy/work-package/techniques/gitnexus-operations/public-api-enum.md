@@ -8,13 +8,9 @@ Enumerate exactly the public/exported APIs in the diff that need doc comments â€
 
 ## Procedure
 
-- Run [detect-changes](detect-changes.md) to obtain the changed-symbol set.
-- Run [cypher](cypher.md) with a visibility filter to keep only public/exported symbols from that set.
-- Return the filtered set as the doc-comment work list.
-
-## Tools
-
-- **mcp:** gitnexus
+1. Run [detect-changes](detect-changes.md) to obtain the changed-symbol set.
+2. Run [cypher](cypher.md) with a visibility filter to keep only public/exported symbols from that set.
+3. Return the filtered set as the doc-comment work list.
 
 ## Errors
 
