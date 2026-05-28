@@ -18,4 +18,4 @@ Optional title filter
 
 ## Procedure
 
-1. Call `getPagesInConfluenceSpace({ cloudId, spaceId, title? })`.
+1. Call `getPagesInConfluenceSpace { cloudId, spaceId, title? }`.

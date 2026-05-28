@@ -14,7 +14,7 @@ Search query
 
 ## Procedure
 
-1. Call `chunks_search({ source_path, query })`.
+1. Call `chunks_search { source_path, query }`.
 
 ## Errors
 

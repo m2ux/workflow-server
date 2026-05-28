@@ -18,4 +18,4 @@ Issue type ID from [list-jira-issue-types](list-jira-issue-types.md)
 
 ## Procedure
 
-1. Call `getJiraIssueTypeMetaWithFields({ cloudId, projectIdOrKey, issueTypeId })`.
+1. Call `getJiraIssueTypeMetaWithFields { cloudId, projectIdOrKey, issueTypeId }`.

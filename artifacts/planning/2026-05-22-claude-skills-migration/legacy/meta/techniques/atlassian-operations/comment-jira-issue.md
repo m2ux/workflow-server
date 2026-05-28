@@ -18,4 +18,4 @@ Markdown comment body
 
 ## Procedure
 
-1. Call `addCommentToJiraIssue({ cloudId, issueIdOrKey, commentBody })`.
+1. Call `addCommentToJiraIssue { cloudId, issueIdOrKey, commentBody }`.

@@ -14,4 +14,4 @@ Name or email to resolve
 
 ## Procedure
 
-1. Call `lookupJiraAccountId({ cloudId, searchString })`.
+1. Call `lookupJiraAccountId { cloudId, searchString }`.

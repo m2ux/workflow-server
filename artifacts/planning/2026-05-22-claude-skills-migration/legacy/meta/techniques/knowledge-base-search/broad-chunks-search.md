@@ -10,7 +10,7 @@ Mapped concept from the index
 
 ## Procedure
 
-1. Call `broad_chunks_search({ concept: concept_term })`.
+1. Call `broad_chunks_search { concept: concept_term }`.
 
 ## Errors
 

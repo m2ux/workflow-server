@@ -18,7 +18,7 @@ Transition object with `id` from [list-jira-transitions](list-jira-transitions.m
 
 ## Procedure
 
-1. Call `transitionJiraIssue({ cloudId, issueIdOrKey, transition })`.
+1. Call `transitionJiraIssue { cloudId, issueIdOrKey, transition }`.
 
 ## Errors
 

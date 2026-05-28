@@ -16,6 +16,6 @@ ID of the checkpoint being yielded
 
 ## Procedure
 
-1. Call `yield_checkpoint({ session_index, checkpoint_id })`; the server records the checkpoint as active under `session.json#activeCheckpoint`.
+1. Call `yield_checkpoint { session_index, checkpoint_id }`; the server records the checkpoint as active under `session.json#activeCheckpoint`.
 2. Emit a `<checkpoint_yield>` block (no payload required — the active checkpoint is server-resident and is read by the orchestrator via `present_checkpoint`).
 3. STOP — make no further tool calls until the orchestrator resumes you.

@@ -28,7 +28,7 @@ Trace token captured from `next_activity` response, appended to `trace_tokens`
 
 ## Procedure
 
-1. Call `next_activity({ session_index, activity_id, step_manifest })`; capture `_meta.trace_token`.
+1. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
 2. Apply [compose-prompt](compose-prompt.md) with `prompt_template` substituting `state` values.
 3. Apply [harness-compat](../harness-compat/SKILL.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await result.
 

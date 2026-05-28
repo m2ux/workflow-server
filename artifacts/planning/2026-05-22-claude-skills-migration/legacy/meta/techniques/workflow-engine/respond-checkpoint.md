@@ -20,7 +20,7 @@ Variable updates returned by the server, to pass back down to the worker on resu
 
 ## Procedure
 
-1. Call `respond_checkpoint({ session_index, ...resolution })`; the server clears `session.json#activeCheckpoint` and returns `effects`. Capture `effects` and propagate them to the worker on resume.
+1. Call `respond_checkpoint { session_index, ...resolution }`; the server clears `session.json#activeCheckpoint` and returns `effects`. Capture `effects` and propagate them to the worker on resume.
 
 ## Errors
 

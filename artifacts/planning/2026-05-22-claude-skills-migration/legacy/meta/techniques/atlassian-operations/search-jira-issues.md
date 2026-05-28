@@ -18,4 +18,4 @@ Optional array of fields to return
 
 ## Procedure
 
-1. Call `searchJiraIssuesUsingJql({ cloudId, jql, fields, maxResults })`.
+1. Call `searchJiraIssuesUsingJql { cloudId, jql, fields, maxResults }`.

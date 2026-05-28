@@ -18,4 +18,4 @@ Object of field updates
 
 ## Procedure
 
-1. Call `editJiraIssue({ cloudId, issueIdOrKey, fields })`.
+1. Call `editJiraIssue { cloudId, issueIdOrKey, fields }`.

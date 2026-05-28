@@ -22,4 +22,4 @@ Object describing the inline anchor
 
 ## Procedure
 
-1. Call `createConfluenceInlineComment({ cloudId, pageId, body, inlineCommentProperties })`.
+1. Call `createConfluenceInlineComment { cloudId, pageId, body, inlineCommentProperties }`.

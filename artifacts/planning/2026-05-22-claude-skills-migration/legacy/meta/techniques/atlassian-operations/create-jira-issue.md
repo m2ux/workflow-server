@@ -32,7 +32,7 @@ Created issue key (e.g., `ENG-123`)
 
 ## Procedure
 
-1. Call `createJiraIssue({ cloudId, projectKey, issueTypeName, summary, description?, additional_fields? })`.
+1. Call `createJiraIssue { cloudId, projectKey, issueTypeName, summary, description?, additional_fields? }`.
 
 ## Errors
 

@@ -22,4 +22,4 @@ Optional new title
 
 ## Procedure
 
-1. Call `updateConfluencePage({ cloudId, pageId, body, title? })`.
+1. Call `updateConfluencePage { cloudId, pageId, body, title? }`.

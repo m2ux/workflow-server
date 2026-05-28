@@ -16,7 +16,7 @@ execution flows (processes) grouped, with member symbols and file locations
 
 ## Procedure
 
-1. Call `gitnexus_query({query})`.
+1. Call `gitnexus_query {query}`.
 2. Use the returned processes to orient before deep-diving with [context](context.md) on specific symbols.
 
 ## Errors

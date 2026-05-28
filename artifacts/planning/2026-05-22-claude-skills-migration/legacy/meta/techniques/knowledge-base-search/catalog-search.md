@@ -10,4 +10,4 @@ Name from the index
 
 ## Procedure
 
-1. Call `catalog_search({ name: document_name })`.
+1. Call `catalog_search { name: document_name }`.

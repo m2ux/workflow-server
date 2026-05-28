@@ -14,4 +14,4 @@ Page ID
 
 ## Procedure
 
-1. Call `getConfluencePage({ cloudId, pageId, contentFormat: 'markdown' })`.
+1. Call `getConfluencePage { cloudId, pageId, contentFormat: 'markdown' }`.

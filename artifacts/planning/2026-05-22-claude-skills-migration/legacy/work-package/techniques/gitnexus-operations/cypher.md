@@ -21,7 +21,7 @@ the query result rows
 ## Procedure
 
 1. Read `gitnexus://repo/{name}/schema` first to confirm node labels and `CodeRelation.type` edge values.
-2. Call `gitnexus_cypher({query})`.
+2. Call `gitnexus_cypher {query}`.
 3. Reserve this for custom call-chain traces, ordering/error-path assertions, and visibility filters; prefer [impact](impact.md) / [context](context.md) / [query](query.md) when they suffice.
 
 ## Errors

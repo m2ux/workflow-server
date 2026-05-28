@@ -18,4 +18,4 @@ Optional result limit
 
 ## Procedure
 
-1. Call `searchConfluenceUsingCql({ cloudId, cql, limit?, cursor? })`.
+1. Call `searchConfluenceUsingCql { cloudId, cql, limit?, cursor? }`.

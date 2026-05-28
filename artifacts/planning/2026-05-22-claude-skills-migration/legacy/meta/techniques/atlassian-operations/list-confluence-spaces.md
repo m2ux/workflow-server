@@ -10,4 +10,4 @@ From [resolve-cloud-id](resolve-cloud-id.md)
 
 ## Procedure
 
-1. Call `getConfluenceSpaces({ cloudId, ...filters })`.
+1. Call `getConfluenceSpaces { cloudId, ...filters }`.

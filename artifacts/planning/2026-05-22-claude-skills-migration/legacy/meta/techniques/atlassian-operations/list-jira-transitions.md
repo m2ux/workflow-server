@@ -14,4 +14,4 @@ Issue key
 
 ## Procedure
 
-1. Call `getTransitionsForJiraIssue({ cloudId, issueIdOrKey })`.
+1. Call `getTransitionsForJiraIssue { cloudId, issueIdOrKey }`.

@@ -20,7 +20,7 @@ Same `session_index` as the input (returned for symmetry; the index is stable)
 
 ## Procedure
 
-1. Call `resume_checkpoint({ session_index })`; the server verifies that `session.json#activeCheckpoint` has been cleared by the orchestrator's `respond_checkpoint`.
+1. Call `resume_checkpoint { session_index }`; the server verifies that `session.json#activeCheckpoint` has been cleared by the orchestrator's `respond_checkpoint`.
 2. Apply `effects` to local state and continue from the paused step.
 
 ## Errors

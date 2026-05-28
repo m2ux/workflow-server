@@ -22,4 +22,4 @@ Optional result limit
 
 ## Procedure
 
-1. Call `getConfluencePageDescendants({ cloudId, pageId, depth?, limit? })`.
+1. Call `getConfluencePageDescendants { cloudId, pageId, depth?, limit? }`.

@@ -14,4 +14,4 @@ Project key (e.g., `ENG`)
 
 ## Procedure
 
-1. Call `getJiraProjectIssueTypesMetadata({ cloudId, projectIdOrKey })`.
+1. Call `getJiraProjectIssueTypesMetadata { cloudId, projectIdOrKey }`.

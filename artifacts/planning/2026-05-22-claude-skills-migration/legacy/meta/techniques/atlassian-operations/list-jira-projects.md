@@ -10,4 +10,4 @@ From [resolve-cloud-id](resolve-cloud-id.md)
 
 ## Procedure
 
-1. Call `getVisibleJiraProjects({ cloudId, searchString? })`.
+1. Call `getVisibleJiraProjects { cloudId, searchString? }`.

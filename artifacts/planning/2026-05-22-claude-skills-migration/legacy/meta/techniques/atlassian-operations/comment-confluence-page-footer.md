@@ -18,4 +18,4 @@ Markdown body
 
 ## Procedure
 
-1. Call `createConfluenceFooterComment({ cloudId, pageId, body })`.
+1. Call `createConfluenceFooterComment { cloudId, pageId, body }`.
