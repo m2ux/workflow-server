@@ -10,7 +10,7 @@ Run the linter against all targets, denying warnings.
 ## Output
 
 - **clippy_status** — { passed: boolean } — true when no denied warnings emitted
-- **lint_diagnostics** — Captured stdout/stderr (used by [validate-build](../validate-build/SKILL.md)::[analyze-failure](../validate-build/SKILL.md#analyze-failure))
+- **lint_diagnostics** — Captured stdout/stderr (used by [validate-build](../validate-build/SKILL.md)::[analyze-failure](../validate-build/analyze-failure.md))
 
 ## Procedure
 
