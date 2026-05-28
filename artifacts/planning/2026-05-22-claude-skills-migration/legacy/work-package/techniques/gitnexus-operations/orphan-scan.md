@@ -12,7 +12,7 @@ Find functions with zero in-degree CALLS edges (orphan/unused symbols) and inter
 
 ## Procedure
 
-1. Run [cypher](cypher.md) with `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`.
+1. Apply [cypher](cypher.md) with `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`.
 2. Intersect the orphan set with changed_files so only symbols *introduced or touched by this work* are surfaced.
 3. Report the intersection as over-engineering candidates for user decision.
 

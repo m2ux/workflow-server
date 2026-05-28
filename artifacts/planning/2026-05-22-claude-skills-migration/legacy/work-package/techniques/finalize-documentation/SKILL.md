@@ -81,7 +81,7 @@ COMPLETE.md is created after implementation is complete and PR is merged. It cap
 
 ### tool-usage
 
-Rust/Substrate: invoke [cargo-operations](../cargo-operations/SKILL.md)::[doc](../cargo-operations/doc.md) (scope='--workspace --no-deps') to verify documentation builds. Other project types: run the equivalent doc command for the project. This skill does not invoke cargo directly.
+Rust/Substrate: apply [cargo-operations](../cargo-operations/SKILL.md)::[doc](../cargo-operations/doc.md) (scope='--workspace --no-deps') to verify documentation builds. Other project types: run the equivalent doc command for the project. This skill does not invoke cargo directly.
 
 ## Errors
 

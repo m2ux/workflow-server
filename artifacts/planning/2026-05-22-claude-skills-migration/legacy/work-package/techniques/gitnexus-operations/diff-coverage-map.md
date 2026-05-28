@@ -9,8 +9,8 @@ Drive test-coverage review from the actual changed-symbol set rather than projec
 
 ## Procedure
 
-1. Run [detect-changes](detect-changes.md) to enumerate the changed-symbol set.
-2. For each changed symbol, run [context](context.md) and inspect incoming references from test files.
+1. Apply [detect-changes](detect-changes.md) to enumerate the changed-symbol set.
+2. For each changed symbol, apply [context](context.md) and inspect incoming references from test files.
 3. Symbols with no test callers → coverage_gaps; symbols with stale test callers → update_candidates.
 
 ## Errors

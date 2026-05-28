@@ -22,4 +22,4 @@ Verify the planning folder's README.md still matches the [readme](../../resource
 
 **Cause:** No README.md found in `planning_folder_path`
 
-**Recovery:** Re-run [create-readme](create-readme.md) to seed the README from [readme](../../resources/readme/SKILL.md) before continuing
+**Recovery:** Re-apply [create-readme](create-readme.md) to seed the README from [readme](../../resources/readme/SKILL.md) before continuing

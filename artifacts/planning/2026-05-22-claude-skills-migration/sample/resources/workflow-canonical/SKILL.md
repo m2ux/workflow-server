@@ -167,7 +167,10 @@ path is the at-rest human-navigable form.
    per-section shape: `# <op>` h1 plus a one-line description (always
    present), `## Procedure` (always present — without it the file is
    not an operation; the procedure body is **always a numbered list**,
-   single-step procedures included), and `## Inputs` / `## Output`
+   single-step procedures included; a step that invokes another
+   operation uses the verb **`apply`** — operations are *applied*,
+   not `run` / `called` / `invoked`; reserve `call` and `invoke` for
+   underlying tool invocations), and `## Inputs` / `## Output`
    / `## Errors` / `## Rules` **only when the operation has them**
    (an op with no inputs, no structured output, no failure modes
    worth surfacing, or no op-local constraints omits the

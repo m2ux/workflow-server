@@ -8,8 +8,8 @@ Enumerate exactly the public/exported APIs in the diff that need doc comments â€
 
 ## Procedure
 
-1. Run [detect-changes](detect-changes.md) to obtain the changed-symbol set.
-2. Run [cypher](cypher.md) with a visibility filter to keep only public/exported symbols from that set.
+1. Apply [detect-changes](detect-changes.md) to obtain the changed-symbol set.
+2. Apply [cypher](cypher.md) with a visibility filter to keep only public/exported symbols from that set.
 3. Return the filtered set as the doc-comment work list.
 
 ## Errors

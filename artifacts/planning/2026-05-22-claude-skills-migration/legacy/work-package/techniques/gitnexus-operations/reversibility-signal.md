@@ -12,7 +12,7 @@ Gauge how reversible a change to a symbol is, to set the reversibility flag on j
 
 ## Procedure
 
-1. Run [context](context.md) for the symbol.
+1. Apply [context](context.md) for the symbol.
 2. High caller fan-out and broad process participation → path-committing; an isolated symbol → easily-reversible.
 
 ## Errors

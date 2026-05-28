@@ -12,7 +12,7 @@ Objective complexity estimate for an issue, from the fan-out of a preliminary ta
 
 ## Procedure
 
-1. Run [impact](impact.md) with `{target, maxDepth: 2}`.
+1. Apply [impact](impact.md) with `{target, maxDepth: 2}`.
 2. High fan-out or many affected processes indicate higher complexity than the issue text alone might suggest.
 
 ## Errors

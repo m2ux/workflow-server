@@ -21,4 +21,4 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 **Cause:** Source files do not match rustfmt configuration
 
-**Recovery:** Run [fmt-fix](fmt-fix.md) to apply formatting, then commit the result
+**Recovery:** Apply [fmt-fix](fmt-fix.md) to apply formatting, then commit the result

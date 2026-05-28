@@ -64,7 +64,7 @@ metadata:
   [write-task-code](../write-task-code/SKILL.md) to address,
   re-invoked.
 - **Tests fail.** Refuse to complete. If the failure looks unrelated,
-  re-invoke [impact](../../gitnexus/impact/SKILL.md) on the failing test's
+  re-apply [impact](../../gitnexus/impact/SKILL.md) on the failing test's
   symbols before deciding the test is flaky — most "unrelated" failures
   are real downstream consequences.
 - **Toolchain cannot run verification.** If local commands cannot be
