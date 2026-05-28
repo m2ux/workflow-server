@@ -4,6 +4,7 @@ Dispatch a new isolated sub-agent with no prior context.
 
 ## Inputs
 
+- **harness** — Identifier of the harness in use: `claude-code`, `cursor`, `cline`, or `generic`
 - **prompt** — Full task prompt for the new agent
 - **description** — Short label for the agent's role (optional; useful for tracing)
 
@@ -13,16 +14,11 @@ Dispatch a new isolated sub-agent with no prior context.
 
 ## Procedure
 
-1. Use the harness's foreground spawn primitive (see Harness implementations below) with the given prompt; block until the agent yields a checkpoint or returns.
-
-## Harness implementations
-
-| Harness | Invocation |
-|---|---|
-| claude-code | `Task(subagent_type=<type>, description=<description>, prompt=<prompt>)` — same primitive across CLI, IDE extensions (Cursor, VSCode), and the web app. Omit `run_in_background` or set it to false. Spawned sub-agents do not inherit Task (depth-1-only rule). |
-| cursor | Same as claude-code (Cursor wraps the Claude Code Task primitive). |
-| cline | `use_subagents({ prompt_1: <prompt> })` |
-| generic | Any harness mechanism that starts a new agent with the given prompt and blocks until the agent yields or completes. |
+1. Select the harness-specific invocation by `harness` and dispatch it as foreground (blocking):
+   - `claude-code` or `cursor` — `Task(subagent_type=<type>, description=<description>, prompt=<prompt>)`. Same primitive across CLI, IDE extensions (Cursor, VSCode), and the web app. Omit `run_in_background` or set it to false. Cursor wraps the same Claude Code Task primitive. Spawned sub-agents do not inherit Task (depth-1-only — see Rules).
+   - `cline` — `use_subagents({ prompt_1: <prompt> })`.
+   - `generic` — any harness mechanism that starts a new agent with the given prompt and blocks until the agent yields or completes.
+2. Block until the agent yields a checkpoint or returns; capture its final output as `result`.
 
 ## Rules
 

@@ -182,6 +182,16 @@ path is the at-rest human-navigable form.
    form (`- **<name>** — <description>`). There is no `## Tools`
    section — the procedure names the tool inline (`cargo …`,
    `gitnexus_*(…)`), matching composition rule #8.
+   **Only the canonical sections enumerated above may appear in a
+   child op file.** Extension sections (Harness implementations,
+   Schema reference, Notes, Examples, etc.) are forbidden — they break
+   the server's TOON projection, which expects a fixed schema. Variant
+   logic (per-harness, per-environment, conditional invocations) is
+   encoded in the procedure by branching on a declared input; e.g.
+   `harness-compat::spawn-agent` takes a `harness` input and the
+   procedure step names the per-harness invocation inline. Reference
+   tables belong inside the relevant `## Output` description or as a
+   procedure step.
    **Rules placement — parent vs op-local.** Cross-cutting rules
    (constraints that govern multiple operations) live in the parent
    `SKILL.md`'s `## Rules`. Op-local rules (constraints that apply to

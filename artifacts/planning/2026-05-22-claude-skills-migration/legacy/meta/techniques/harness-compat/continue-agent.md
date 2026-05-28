@@ -4,6 +4,7 @@ Resume an existing sub-agent, preserving accumulated context where the harness s
 
 ## Inputs
 
+- **harness** — Identifier of the harness in use: `claude-code`, `cursor`, or `generic`
 - **agent_id** — Harness-assigned identifier for the agent to resume (harness-specific; may be unavailable on some harnesses)
 - **session_index** — Workflow-server `session_index` — included in the prompt so the resumed agent can authenticate every tool call against the server-managed `session.json`
 - **prompt** — Updated instructions or continuation context
@@ -14,15 +15,10 @@ Resume an existing sub-agent, preserving accumulated context where the harness s
 
 ## Procedure
 
-1. Use the harness's resume primitive (see Harness implementations below) with the new prompt; block until the agent yields or completes.
-
-## Harness implementations
-
-| Harness | Invocation |
-|---|---|
-| claude-code | `Task(resume=<agent_id>)` — preserves the agent's context window. Include `session_index` in the prompt. Never set `run_in_background`. Same primitive across CLI, IDE extensions, and the web app. |
-| cursor | Same as claude-code. |
-| generic | Apply [spawn-agent](spawn-agent.md) with the `session_index` prepended to the prompt. Full workflow state is read from `session.json` by the server on every authenticated call; the agent rebuilds context from artifacts and tool calls. |
+1. Select the harness-specific invocation by `harness` and dispatch it as foreground (blocking):
+   - `claude-code` or `cursor` — `Task(resume=<agent_id>)`. Preserves the agent's context window. Include `session_index` in the prompt. Never set `run_in_background`. Same primitive across CLI, IDE extensions, and the web app; Cursor wraps the same Claude Code Task primitive.
+   - `generic` — apply [spawn-agent](spawn-agent.md) with the `session_index` prepended to the prompt. Full workflow state is read from `session.json` by the server on every authenticated call; the agent rebuilds context from artifacts and tool calls.
+2. Block until the agent yields or completes; capture the output as `result`.
 
 ## Rules
 
