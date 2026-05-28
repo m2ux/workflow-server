@@ -191,7 +191,7 @@ The ontology is operationalised by a small set of composition rules:
 
 8. **Tools have no first-class slot.** Tool API calls live inline in technique prose (simple tools) or in tool-dedicated namespace resources (complex tools). No `uses-tools:` frontmatter; no `tools/` directory.
 
-9. **Single MCP accessor.** `get_skill` resolves every fetch by name (precedence — workflow-local → root) — any technique, resource, or the ontology definition — and supports per-section addressing (`<name>/<section>`). The server auto-detects governed-vs-freeform and delivers the token-efficiency projection (TOON for techniques, simplified markdown for resources). The agent picks its abstraction level by choosing which name to fetch.
+9. **Single MCP accessor.** `get_skill` resolves every fetch by name (precedence — workflow-local → `meta`) — any technique, resource, or the ontology definition — and supports per-section addressing (`<name>/<section>`). The server auto-detects governed-vs-freeform and delivers the token-efficiency projection (TOON for techniques, simplified markdown for resources). The agent picks its abstraction level by choosing which name to fetch.
 
 10. **Every nested folder is a named, action-oriented technique.** Generic stub names banned: `procedure/`, `execute/`, `main/`, `do/`, `run/`, `step-1/`. Names are verb-phrased, disambiguated where two owners would produce identical slugs (e.g. `understand-task-context` under `implement-task` vs `understand-codebase-context` under `analyze-implementation`).
 

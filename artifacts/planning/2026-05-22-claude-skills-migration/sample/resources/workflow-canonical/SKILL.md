@@ -147,7 +147,7 @@ within the same file a section is `[<op>](#<op>)`.
 At rest these are clickable file-relative hyperlinks (human navigation);
 on delivery the server simplifies each to a bare **name** (`<skill>` or
 `<skill>/<section>`) resolved by precedence via `get_skill`
-(workflow-local → shared/), which also auto-detects governed-vs-resource
+(workflow-local → `meta`), which also auto-detects governed-vs-resource
 for delivery. The reference is ultimately the name; the file-relative
 path is the at-rest human-navigable form.
 
@@ -245,7 +245,7 @@ Frontmatter splits into two layers:
 
 | Field | Required | Values |
 |---|---|---|
-| `metadata.ontology` | yes (governed) | A **name** that resolves (by precedence — workflow-local → shared/) to this ontology's definition resource. For this ontology: `workflow-canonical`. |
+| `metadata.ontology` | yes (governed) | A **name** that resolves (by precedence — workflow-local → `meta`) to this ontology's definition resource. For this ontology: `workflow-canonical`. |
 | `metadata.kind` | yes (governed) | This skill's content kind: `technique`. |
 
 There is no `produces` frontmatter field. Which technique a workflow
@@ -260,7 +260,7 @@ A **resource** (like this document) carries neither `metadata.ontology` nor `met
 
 **Why nested under `metadata:`?** The agentskills.io spec only blesses `name`, `description`, `license`, `compatibility`, `metadata`, and `allowed-tools` as top-level frontmatter fields. We place ontology entries under `metadata:` (a spec-approved map), keeping SKILL.md files spec-compliant and portable.
 
-**Resolution convention.** `metadata.ontology` is a **name**. The agent resolves it by precedence — the current workflow's resource folder first, then `shared/` — to this definition resource (`shared/resources/workflow-canonical`), and loads it once. There is no `meta/` location convention and no `meta-skill` kind.
+**Resolution convention.** `metadata.ontology` is a **name**. The agent resolves it by precedence — the current workflow's resource folder first, then `workflows/meta/` — to this definition resource (`workflows/meta/resources/workflow-canonical`), and loads it once. There is no `meta/` location convention and no `meta-skill` kind.
 
 **No recursion.** This document is a *resource*: it carries no `metadata.ontology` of its own, so loading it never re-triggers the bootstrap. It defines the ontology; it is not governed by it.
 
@@ -297,7 +297,7 @@ When the agent receives a workflow activity assignment:
    auto-detects it as a technique and delivers it as TOON.
 2. Inspect the skill's `metadata.ontology` field. If it names an
    ontology whose definition resource is not yet loaded, resolve the
-   name (workflow-local → shared/) and load that resource FIRST, then
+   name (workflow-local → `meta`) and load that resource FIRST, then
    apply its definitions.
 3. For `metadata.ontology: workflow-canonical`: apply the rules in
    this document.

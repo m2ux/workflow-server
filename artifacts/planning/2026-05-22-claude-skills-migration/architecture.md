@@ -17,7 +17,7 @@ The server is intentionally minimal. It knows:
 
 - A skill is a folder containing a `SKILL.md` file. Folders nest arbitrarily — `<a>/<b>/<c>/.../SKILL.md`.
 - Every `SKILL.md` carries `name` + `description` (spec-required). **Ontology-governed** skills additionally carry `metadata.ontology` + `metadata.kind`; the **absence** of `metadata.ontology` marks a freeform **resource** (still a `SKILL.md`-rooted skill, just un-governed).
-- One MCP accessor, `get_skill(name)`, resolves a **name** to a `SKILL.md` by **precedence** — the current workflow's folder first, then the `shared/` layer (local shadows shared). The server **auto-detects** the target from its frontmatter (governed technique vs freeform resource) and delivers it in the appropriate form (§7); the caller never distinguishes.
+- One MCP accessor, `get_skill(name)`, resolves a **name** to a `SKILL.md` by **precedence** — the current workflow's folder first, then the `workflows/meta/` layer (local shadows shared). The server **auto-detects** the target from its frontmatter (governed technique vs freeform resource) and delivers it in the appropriate form (§7); the caller never distinguishes.
 - `get_skill` also supports **per-section** addressing: `get_skill("<name>/<section>")` returns just that section, so a skill can cite another's individual section instead of its whole body.
 - Markdown is the **stored** format; **delivery is a token-efficiency projection, not byte-verbatim** — structured **techniques** ship as TOON, freeform **resources** as simplified markdown (links → bare names, human-only affordances trimmed). Stored = human-optimized; delivered = agent-optimized. See §7.
 
@@ -70,7 +70,7 @@ metadata:
 ---
 ```
 
-- **`metadata.ontology`** is a **name** that resolves — by the same precedence as any reference (workflow-local → root, see §6.3) — to the ontology's **definition resource** (e.g. `shared/resources/workflow-canonical`). There is no `meta/` location convention and no `meta-skill` kind: an ontology definition is just a freeform resource, because the thing that defines an ontology cannot itself be governed by it.
+- **`metadata.ontology`** is a **name** that resolves — by the same precedence as any reference (workflow-local → `meta`, see §6.3) — to the ontology's **definition resource** (e.g. `workflows/meta/resources/workflow-canonical`). There is no `meta/` location convention and no `meta-skill` kind: an ontology definition is just a freeform resource, because the thing that defines an ontology cannot itself be governed by it.
 - **`metadata.kind`** names this skill's kind within that ontology. The ontology definition says what each kind means.
 
 A **resource** carries *neither* field — only `name` + `description`. That absence is the discriminator: ontology present ⇒ governed skill; ontology absent ⇒ freeform resource (also how a "foreign" third-party skill is recognized). The server validates `ontology` + `kind` presence *for governed skills*; it does not interpret their values.
@@ -107,20 +107,21 @@ Two canonical Claude skills packages were surveyed for *inspiration*, not as aut
 ## 4. On-disk shape
 
 ```
-<skills-root>/
-  shared/                          # SHARED layer — ontology-agnostic, cross-workflow
-    resources/                     #   shared freeform resources
-      workflow-canonical/SKILL.md  #     the ontology definition is just a shared resource
+workflows/                         # existing `workflows` branch (worktree) — new content on a feature branch off this
+  meta/                            # the `meta` workflow — also doubles as the cross-workflow SHARED layer
+    workflow.toon                  #   unchanged
+    activities/                    #   unchanged
+    resources/                     #   meta-local + shared resources
+      workflow-canonical/SKILL.md  #     the ontology definition is a freeform resource here
       <shared-resource>/SKILL.md
-    techniques/                    #   shared / common techniques
+    techniques/                    #   meta-local + shared techniques
       <common-technique>/SKILL.md
-  <workflow>/                      # per-workflow LOCAL layer (shadows shared by name)
+  <workflow>/                      # per-workflow LOCAL layer (shadows `meta` by name)
+    workflow.toon                  #   unchanged
+    activities/                    #   unchanged
     resources/<name>/SKILL.md      #   workflow-local resources
     techniques/<name>/SKILL.md     #   workflow-local techniques
-    <skill>/SKILL.md               #   governed skills (may nest)
-      <nested>/SKILL.md
-  meta/                            # NOT special — just the folder of the workflow named `meta`
-    ...
+      <nested>/SKILL.md            #   nested skills permitted (any depth)
 ```
 
 Architecture-level conventions:
@@ -129,8 +130,8 @@ Architecture-level conventions:
 - **Lowercase-kebab directory names** matching the `name:` field.
 - **Arbitrary nesting depth permitted.** The server walks the tree without depth restriction.
 - **Sibling supporting files** (`<skill>/<segment>.md`, no frontmatter) are progressively-disclosed sub-documents of the parent skill, not skills in their own right. They have no `SKILL.md` and carry no ontology metadata. Used to split a parent skill's body into per-sub-unit files (the operations-style pattern: `cargo-operations/check.md`, `gitnexus-operations/impact.md`, etc.) so the index stays small and each sub-unit is individually fetchable via per-section addressing (§6.1). Each child file's internal shape (which sections it carries, list ordering, etc.) is the ontology's concern, not the server's — sections are present only when they have content; procedure bodies follow the ontology's own conventions (e.g. workflow-canonical mandates a numbered list and no separate `## Tools` section — tools are named inline). Rules can sit at either level: cross-cutting rules (governing multiple ops) on the parent SKILL.md, op-local rules (governing one op) on the child file.
-- **Two resolution layers.** A **`shared/`** layer (`shared/resources/`, `shared/techniques/`) and **per-workflow** folders. A referenced name resolves workflow-local first, then `shared/` (§6.3) — local overrides shared. Both layers coexist by design.
-- **`meta/` is not a reserved namespace.** It is simply the folder of the workflow named `meta`. Ontology definitions do NOT live under `meta/`; they are shared resources at `shared/resources/<ontology>/`.
+- **Two resolution layers, no separate root.** The `meta` workflow's `techniques/`/`resources/` folders serve a dual role: they hold the meta workflow's own content AND any cross-workflow shared content. A referenced name resolves workflow-local first, then falls back to `workflows/meta/` (§6.3) — local overrides meta. There is NO separate `workflows/meta/` directory at the workflows root.
+- **`meta/` plays a dual role.** It is both the folder of the workflow named `meta` AND the cross-workflow shared layer. Ontology definitions live under `workflows/meta/resources/<ontology>/`. There is no precedence ambiguity because the meta workflow's own techniques/resources and the shared content live in the same two folders and resolve under the same name.
 
 ---
 
@@ -203,7 +204,7 @@ Under a different ontology, `metadata.ontology` would name a different ontology,
 
 ### 6.1 One accessor: `get_skill`, name-resolved by precedence, with per-section addressing
 
-**`get_skill(name)`** resolves a **name** to a `SKILL.md` by precedence — the current workflow's folder first, then the `shared/` layer (local shadows shared) — and returns the body via the §7 delivery projection (or a not-found indicator). The server **auto-detects** the target from its frontmatter: a governed technique (`metadata.ontology` + `kind: technique`) is delivered as TOON; a freeform resource (no `metadata.ontology`) as simplified markdown. **One accessor covers both — the caller does not choose.**
+**`get_skill(name)`** resolves a **name** to a `SKILL.md` by precedence — the current workflow's folder first, then the `workflows/meta/` layer (local shadows shared) — and returns the body via the §7 delivery projection (or a not-found indicator). The server **auto-detects** the target from its frontmatter: a governed technique (`metadata.ontology` + `kind: technique`) is delivered as TOON; a freeform resource (no `metadata.ontology`) as simplified markdown. **One accessor covers both — the caller does not choose.**
 
 **Per-section addressing.** `get_skill("<name>/<segment>")` returns only the named sub-unit. Trailing-segment resolution proceeds in priority order:
 
@@ -213,7 +214,7 @@ Under a different ontology, `metadata.ontology` would name a different ontology,
 
 This lets a skill cite another's individual sub-unit without pulling the whole body — whether the sub-unit lives as a nested skill, a child file, or a section.
 
-Names are unique within the resolution scope (the ontology's disambiguation rule guarantees this), so the server keeps a name→path index per layer; a workflow-local entry shadows a `shared/` entry. Storage may be nested at any depth — the **reference is the name**, not the path.
+Names are unique within the resolution scope (the ontology's disambiguation rule guarantees this), so the server keeps a name→path index per layer; a workflow-local entry shadows a `workflows/meta/` entry. Storage may be nested at any depth — the **reference is the name**, not the path.
 
 ### 6.2 What's NOT in the MCP surface
 
@@ -246,7 +247,7 @@ Structural savings compound either projection: the ontology de-duplicates cross-
 The architecture supports migrating any TOON-based skill workflow to a markdown-skill workflow under any ontology. The generic phases:
 
 1. **Author the ontology definition** (a shared resource). Define the target ontology — what kinds of content exist, how they compose, what frontmatter fields they carry.
-2. **Scaffold the server's loader + delivery pass.** Add the minimal frontmatter schema (server-enforced fields only); implement name resolution by precedence (workflow-local → root); deliver via the §7 projection (TOON for techniques, simplified markdown for resources).
+2. **Scaffold the server's loader + delivery pass.** Add the minimal frontmatter schema (server-enforced fields only); implement name resolution by precedence (workflow-local → `meta`); deliver via the §7 projection (TOON for techniques, simplified markdown for resources).
 3. **Author the target skill tree** per the ontology's structure — governed skills, nested content, resources, cross-references as file-relative hyperlinks.
 4. **Migrate legacy content** (TOON skills, ancillary resources) into the new structure one skill at a time. The ontology definition defines the destination shape.
 5. **Cutover and verify** behavioural fidelity — the post-migration worker should produce the same artifacts and make the same decisions as the pre-migration worker on representative tasks.

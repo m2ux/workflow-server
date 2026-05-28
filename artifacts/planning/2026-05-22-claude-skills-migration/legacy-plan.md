@@ -22,13 +22,14 @@ references:
 
 ### Goal
 
-Translate every TOON skill file and every resource file from the existing `workflows` branch into the new markdown-skills architecture — TOON skills landing as **techniques** (carrying `metadata.ontology: workflow-canonical` + `metadata.kind: technique`, keeping their existing section shape) and TOON resources landing as **freeform resources** — on a new **`skills`** orphan branch, with **behaviour identical** to the pre-migration workflow-server when agents fetch and execute content.
+Translate every TOON skill file and every resource file from the existing `workflows` branch into the new markdown-skills architecture — TOON skills landing as **techniques** (carrying `metadata.ontology: workflow-canonical` + `metadata.kind: technique`, keeping their existing section shape) and TOON resources landing as **freeform resources** — on a new **branch off the existing `workflows` branch** (NOT a new orphan branch), with **behaviour identical** to the pre-migration workflow-server when agents fetch and execute content.
 
 Phase 1 completes when:
 
-1. All 10 workflows' skill and resource content lives on the `skills` branch in markdown form.
-2. The workflow-server serves agents exclusively from the `skills` branch (skill/resource content) and the `workflows` branch (workflow.toon, activities/).
-3. The legacy TOON skills/resources are **removed** from the `workflows` branch (see Phase 1.8) — single source of truth.
+1. All 10 workflows' technique and resource content lives at `workflows/<workflow>/{techniques,resources}/<slug>/SKILL.md` in markdown form on a new branch off `workflows`.
+2. Cross-workflow shared content (formerly conceived as a separate `shared/` root layer) lives in the `meta` workflow folder at `workflows/meta/{techniques,resources}/`. The `meta` workflow folder doubles as the de-facto shared layer.
+3. The workflow-server source has been updated (in parallel on a corresponding branch off the main repo) to load techniques and resources from the new per-workflow markdown locations, with workflow-local → `meta` precedence resolution.
+4. The legacy TOON skills/resources are **removed** from the same `workflows` branch (see Phase 1.8) — single source of truth.
 
 ### Non-goals (Phase 1 explicitly excludes)
 
@@ -47,11 +48,12 @@ Phase 1 completes when:
 | Workflow scope | All 10 workflows in one pass | User answer, 2026-05-23 |
 | TOON→markdown mapping | Each top-level TOON field becomes a `##` section; nested objects become deeper headings | User answer, 2026-05-23 |
 | Folder slug | Drop the `NN-` order prefix; folder is just the slug. Order preserved as `metadata.order`. | User answer, 2026-05-23 |
-| Resource references | Root-relative markdown hyperlinks to the target SKILL.md (`[slug](legacy/<workflow>/resources/<slug>/SKILL.md)`), placed **inline at point-of-use** — no `## Resources` section | User decisions, 2026-05-23 / 2026-05-27 |
-| Branch name | `skills` (new orphan branch, separate from existing `workflows` branch) | User instruction |
-| Top-level folder | `legacy/` (under the orphan branch root) — a plain folder name, no ontological meaning | User instruction |
-| Per-workflow structure | `legacy/<workflow>/techniques/` (techniques), `legacy/<workflow>/resources/` (freeform resources) | User instruction |
-| Ontology definition location | `shared/resources/workflow-canonical/SKILL.md` (a shared freeform resource) | Architecture convention |
+| Resource references | File-relative markdown hyperlinks to the target SKILL.md, placed **inline at point-of-use** — no `## Resources` section | User decisions, 2026-05-23 / 2026-05-27 |
+| Branch | A new feature branch off the existing **`workflows`** branch (NOT a new orphan branch). The matching workflow-server source change lands on a parallel feature branch off `main`. | User instruction, 2026-05-28 |
+| Top-level layout | Content lives directly under each workflow's folder in the `workflows` worktree — no wrapper folder (no `legacy/`, no `skills-root/`). | User instruction, 2026-05-28 |
+| Per-workflow structure | `workflows/<workflow>/techniques/<slug>/SKILL.md` (techniques) and `workflows/<workflow>/resources/<slug>/SKILL.md` (freeform resources) — sibling to the existing `workflow.toon` and `activities/`. | User instruction, 2026-05-28 |
+| Cross-workflow shared layer | `workflows/meta/{techniques,resources}/` — the `meta` workflow folder doubles as the shared layer (its `meta`-local content + the cross-workflow shared content all live under the same two folders). No separate `shared/` root at the workflows worktree top. Precedence: workflow-local → `meta`. | User instruction, 2026-05-28 |
+| Ontology definition location | `workflows/meta/resources/workflow-canonical/SKILL.md` (a freeform resource under the meta workflow) | User instruction, 2026-05-28 |
 
 ---
 
@@ -66,13 +68,13 @@ There is **one ontology** ([workflow-canonical](./sample/resources/workflow-cano
 
 ### The ontology definition
 
-The ontology is defined by a single freeform shared resource at `shared/resources/workflow-canonical/SKILL.md` — there is **no meta-skill kind** and **no `skills/meta/` location convention**. The definition resource (drafted at [sample/resources/workflow-canonical/SKILL.md](./sample/resources/workflow-canonical/SKILL.md)) describes:
+The ontology is defined by a single freeform resource at `workflows/meta/resources/workflow-canonical/SKILL.md` — there is **no meta-skill kind**. The resource lives under the `meta` workflow folder (the meta workflow's `resources/` doubles as the cross-workflow shared layer). The definition resource (drafted at [sample/resources/workflow-canonical/SKILL.md](./sample/resources/workflow-canonical/SKILL.md)) describes:
 
 - The two content categories (what a `technique` and a freeform `resource` are, structurally and semantically).
 - The TOON-field → markdown-section mapping (§5 of this plan is the canonical reference for the migration convention).
 - The cross-reference convention: file-relative markdown hyperlinks to the target SKILL.md — relative to the *referencing file's own directory*, so they click through in any IDE / GitHub / markdown renderer (e.g. from one technique to a sibling, `[<slug>](../<slug>/SKILL.md)`; from a technique to a resource, `[<slug>](../../resources/<slug>/SKILL.md)`; the `../` depth follows from where the two files sit). To reference a **specific operation or section** of another skill, hyperlink both parts joined by `::`: `[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>)` (params after, e.g. `` `{target, direction}` ``); within the same file a sibling section is just `[<op>](#<op>)`.
 - The frontmatter schema for techniques and resources.
-- Bootstrap protocol: an agent encountering a technique whose `metadata.ontology` names `workflow-canonical` resolves that name (workflow-local → shared/) and loads this definition resource before interpreting the technique.
+- Bootstrap protocol: an agent encountering a technique whose `metadata.ontology` names `workflow-canonical` resolves that name (workflow-local → `meta`) and loads this definition resource before interpreting the technique.
 
 Phase 1 lands all 10 workflows in this one ontology, keeping technique bodies in TOON-derived section shape. Phase 2 ([workflow-canonical-plan.md](./workflow-canonical-plan.md)) restructures specific workflows into the ontology's richer composing-body decomposition (composing techniques that reference nested techniques).
 
@@ -81,55 +83,58 @@ Phase 1 lands all 10 workflows in this one ontology, keeping technique bodies in
 ## 4. Target on-disk structure
 
 ```
-skills (orphan branch root)
-├── shared/
-│   └── resources/
-│       └── workflow-canonical/SKILL.md       # the ONE ontology's definition (a freeform shared resource)
-└── legacy/                                    # a plain folder name — no ontological meaning
-    ├── work-package/
-    │   ├── techniques/                        # migrated TOON skills → techniques (ontology: workflow-canonical, kind: technique)
-    │   │   ├── review-code/SKILL.md          # was 00-review-code.toon
-    │   │   ├── review-test-suite/SKILL.md    # was 01-review-test-suite.toon
-    │   │   ├── …                              # 23 more
-    │   │   └── dco-provenance/SKILL.md       # was 25-dco-provenance.toon
-    │   └── resources/                         # migrated TOON/markdown resources → freeform resources (no ontology, no kind)
-    │       ├── readme/SKILL.md               # was 01-readme.md
-    │       ├── github-issue-creation/SKILL.md
-    │       ├── …                              # 26 more
-    │       └── pr-review-response/SKILL.md
-    ├── prism/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    ├── prism-audit/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    ├── prism-evaluate/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    ├── prism-update/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    ├── remediate-vuln/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    ├── substrate-node-security-audit/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    ├── cicd-pipeline-security-audit/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    ├── work-packages/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    ├── workflow-design/
-    │   ├── techniques/ …
-    │   └── resources/ …
-    └── meta/
-        ├── techniques/ …
-        └── resources/ …
+workflows/                                     # existing `workflows` branch — a new feature branch off this
+├── meta/                                      # meta workflow + de-facto cross-workflow shared layer
+│   ├── workflow.toon                          # unchanged
+│   ├── activities/                            # unchanged
+│   ├── techniques/                            # meta-local techniques + shared techniques
+│   │   ├── workflow-engine/SKILL.md
+│   │   ├── version-control/SKILL.md
+│   │   ├── github-cli-protocol/SKILL.md
+│   │   ├── … (5 more meta-local)
+│   │   └── <shared-technique>/SKILL.md        # any cross-workflow shared techniques
+│   └── resources/                             # meta-local + shared resources (including the ontology definition)
+│       ├── workflow-canonical/SKILL.md        # the ontology definition lives here
+│       ├── bootstrap-protocol/SKILL.md
+│       ├── activity-worker-prompt/SKILL.md
+│       ├── workflow-orchestrator-prompt/SKILL.md
+│       └── <shared-resource>/SKILL.md         # any cross-workflow shared resources
+├── work-package/
+│   ├── workflow.toon                          # unchanged
+│   ├── activities/                            # unchanged
+│   ├── techniques/                            # migrated TOON skills → techniques (ontology: workflow-canonical, kind: technique)
+│   │   ├── review-code/SKILL.md              # was 00-review-code.toon
+│   │   ├── review-test-suite/SKILL.md        # was 01-review-test-suite.toon
+│   │   ├── …                                  # 23 more
+│   │   └── dco-provenance/SKILL.md           # was 25-dco-provenance.toon
+│   └── resources/                             # migrated TOON/markdown resources → freeform resources (no ontology, no kind)
+│       ├── readme/SKILL.md                   # was 01-readme.md
+│       ├── github-issue-creation/SKILL.md
+│       ├── …                                  # 26 more
+│       └── pr-review-response/SKILL.md
+├── prism/
+│   ├── workflow.toon
+│   ├── activities/
+│   ├── techniques/ …
+│   └── resources/ …
+├── prism-audit/ …                             # same shape — workflow.toon + activities/ + techniques/ + resources/
+├── prism-evaluate/ …
+├── prism-update/ …
+├── remediate-vuln/ …
+├── substrate-node-security-audit/ …
+├── cicd-pipeline-security-audit/ …
+├── work-packages/ …
+└── workflow-design/ …
 ```
 
+Notes:
+- No `workflows/meta/` root and no `legacy/` wrapper. The new `techniques/` and `resources/` folders sit beside each workflow's existing `workflow.toon` and `activities/`.
+- `meta` is the ONLY workflow whose `techniques/` and `resources/` also serve a cross-workflow role — name resolution falls back to `workflows/meta/{techniques,resources}/` when a name isn't found in the current workflow.
+- Migration tooling consumes the source TOON in `workflows/<workflow>/skills/` and `workflows/<workflow>/resources/` (existing) and writes the new layout above on the new branch. The legacy TOON skills are removed at Phase 1.8.
+
 Per-technique / per-resource shape: each is a folder containing a single `SKILL.md`. No sub-folders. Sub-files are reserved for the `*-operations` pattern (one operation per sibling `<op>.md`, no frontmatter — see §5.5); all other techniques and every resource are a single `SKILL.md`. Flat (Phase 1 does not nest; the ontology permits it, Phase 2 uses it).
+
+> **Branch & layout decision update (2026-05-28).** Earlier drafts placed the migrated content on a new `skills` orphan branch under a `legacy/` wrapper, with a separate `shared/` root for cross-workflow content. That has been superseded: the migration lands on **a new feature branch off the existing `workflows` branch**, content lives directly under each workflow's folder, and the `meta` workflow's `techniques/`/`resources/` folders double as the cross-workflow shared layer. No orphan branch, no `legacy/` wrapper, no separate `shared/` root.
 
 ---
 
@@ -402,7 +407,7 @@ This is structural enforcement of the operations idiom — the file layout makes
 
 ### Phase 1.1 — Author the ontology definition resource
 
-- Author `shared/resources/workflow-canonical/SKILL.md` (a freeform shared resource) on the new orphan branch (Phase 1.3 creates the branch; this content can be authored against the planning-folder sample at [sample/resources/workflow-canonical/SKILL.md](./sample/resources/workflow-canonical/SKILL.md) first and committed).
+- Author `workflows/meta/resources/workflow-canonical/SKILL.md` (a freeform resource under the meta workflow — its `resources/` folder doubles as the shared layer) on the new feature branch (Phase 1.3 creates the branch; this content can be authored against the planning-folder sample at [sample/resources/workflow-canonical/SKILL.md](./sample/resources/workflow-canonical/SKILL.md) first and committed).
 - Content: the two content categories (technique vs freeform resource), the TOON-field → markdown-section mapping (per §5 of this plan), the cross-reference (file-relative hyperlink) convention, the bootstrap protocol, frontmatter schema.
 - Validate: an agent reading just this definition resource can correctly interpret a migrated SKILL.md.
 
@@ -410,7 +415,7 @@ This is structural enforcement of the operations idiom — the file layout makes
 
 - One-off script (TypeScript, lives under `scripts/migrate-legacy/` in the workflow-server repo).
 - Inputs: a workflow root path (e.g. `workflows/work-package/`).
-- Outputs: a populated `legacy/<workflow>/` tree containing `techniques/<slug>/SKILL.md` and `resources/<slug>/SKILL.md` for every input file.
+- Outputs: a populated `workflows/<workflow>/` tree gaining `techniques/<slug>/SKILL.md` and `resources/<slug>/SKILL.md` (siblings of the existing `workflow.toon` and `activities/`).
 - Responsibilities:
   - Parse TOON skill files (`@toon-format/toon` library, already a dependency).
   - Parse resource files (markdown if `.md`; TOON if `.toon`).
@@ -421,12 +426,11 @@ This is structural enforcement of the operations idiom — the file layout makes
 - Idempotent — running twice on the same input produces the same output.
 - Reports per-workflow stats: count of skills migrated, count of resources migrated, count of references rewritten, count of unresolvable references (failures).
 
-### Phase 1.3 — Create the orphan branch and scaffold
+### Phase 1.3 — Create the feature branch and scaffold
 
-- Create the `skills` orphan branch in the workflow-server repo (`git checkout --orphan skills`).
-- Initial commit: the bare folder structure (`legacy/`, `shared/resources/`) plus the authored ontology definition resource from Phase 1.1.
-- Push to remote.
-- Add a `git worktree` instruction to README.md (e.g. `git worktree add ./skills skills`) so contributors can check out the new branch alongside the main branch.
+- Create a new feature branch off the existing `workflows` branch in the workflows worktree (e.g. `feat/markdown-skills-migration`).
+- Create the matching feature branch off the workflow-server `main` repo, for the parallel server-source changes (markdown loader, precedence resolver — see Phase 1.5).
+- Initial commit on the workflows branch: the authored ontology definition resource at `workflows/meta/resources/workflow-canonical/SKILL.md` from Phase 1.1, plus empty `techniques/` folders for each workflow that will gain them. No `workflows/meta/` root, no `legacy/` wrapper — content sits directly under each workflow folder beside the existing `workflow.toon` and `activities/`.
 
 ### Phase 1.4 — Migrate workflows (per-workflow batches)
 
@@ -445,7 +449,7 @@ Steps per workflow:
 1. Run the migration tooling against the workflow root.
 2. Review the output: spot-check 3–5 randomly selected migrated files; confirm content fidelity.
 3. Run the tooling's round-trip validation.
-4. Commit to the `skills` branch under `legacy/<workflow>/`.
+4. Commit to the feature branch under `workflows/<workflow>/{techniques,resources}/`.
 5. Note any unresolvable references; resolve manually if needed.
 
 ### Phase 1.4b — Update path-shaped references in `workflow.toon` and activities
@@ -463,7 +467,7 @@ These changes commit to the **existing `workflows` branch** (NOT the new `skills
 ### Phase 1.5 — Server-side support (markdown loader update)
 
 - Implement the markdown loader in the workflow-server per [architecture.md §8](./architecture.md#8-migration-approach-any-workflow-any-ontology). The loader walks the `skills` branch (mounted as a worktree alongside the main repo).
-- Generalise `get_skill(name)` to resolve names under the new tree by precedence (workflow-local → shared/): `legacy/<workflow>/techniques/<slug>`, `legacy/<workflow>/resources/<slug>`, `shared/resources/workflow-canonical`.
+- Generalise `get_skill(name)` to resolve names under the new tree by precedence (workflow-local → `meta`): `legacy/<workflow>/techniques/<slug>`, `legacy/<workflow>/resources/<slug>`, `workflows/meta/resources/workflow-canonical`.
 - No special server-side rewriting is needed for in-body references: the body contains file-relative markdown hyperlinks to SKILL.md files, which the agent resolves via subsequent `get_skill` calls (stripping the trailing `/SKILL.md`).
 - **No regression on the TOON path** during the transition window: existing `get_skill(<id>)` calls into the `workflows` branch still work. The server runs in dual-mode (both branches loadable) until cutover (Phase 1.7).
 - Add a CI check that validates every file-relative SKILL.md hyperlink in the new tree resolves to an existing file.
@@ -578,7 +582,7 @@ The plain-slug path is the canonical post-migration form. Numeric IDs are transi
 
 #### 8.4 Ontology-definition location
 
-**`shared/resources/workflow-canonical/SKILL.md`** — a freeform shared resource under the root `shared/` layer, resolved by name under precedence (workflow-local → shared/). There is **no `skills/meta/` location convention and no meta-skill kind**: an ontology definition is just a shared resource, because the thing that defines an ontology cannot itself be governed by it. (`meta/` is not reserved — it is simply the folder of the workflow named `meta`.)
+**`workflows/meta/resources/workflow-canonical/SKILL.md`** — a freeform shared resource under the root `workflows/meta/` layer, resolved by name under precedence (workflow-local → `meta`). There is **no `skills/meta/` location convention and no meta-skill kind**: an ontology definition is just a shared resource, because the thing that defines an ontology cannot itself be governed by it. (`meta/` is not reserved — it is simply the folder of the workflow named `meta`.)
 
 #### 8.5 Sub-skill nesting in Phase 1
 
@@ -613,13 +617,13 @@ Reason: TOON skills are flat; Phase 1 is a structural translation that keeps eac
 Before any implementation begins, the user is asked to confirm:
 
 1. **The one-ontology mapping** — TOON skills → techniques (`ontology: workflow-canonical`, `kind: technique`, keeping their `Capability/Protocol/Rules/Errors` body shape); TOON/markdown resources → freeform resources (no `ontology`/`kind`). Flat, no nesting in Phase 1.
-2. **The target structure** — `skills` orphan branch, `legacy/<workflow>/{techniques,resources}/<slug>/SKILL.md`, with the ontology definition at `shared/resources/workflow-canonical/SKILL.md`.
+2. **The target structure** — `skills` orphan branch, `legacy/<workflow>/{techniques,resources}/<slug>/SKILL.md`, with the ontology definition at `workflows/meta/resources/workflow-canonical/SKILL.md`.
 3. **The TOON-to-markdown mapping** (§5) — each top-level TOON field becomes a `##` section; nested objects become deeper headings.
 4. **Resource reference rewriting** — numeric IDs become inline file-relative hyperlinks (from a technique to a sibling resource: `[slug](../../resources/<slug>/SKILL.md)`), placed at point-of-use; no `## Resources` section.
 5. **The phase plan** (§6) — 9 sub-phases (1.0–1.8 plus 1.4b for workflow.toon path rewrites), with Phase 1.6 (parity validation) as the no-regression gate.
 6. **The fidelity criteria** (§7) — content, behavioural, reference.
 7. **The mandated removal** of legacy TOON skills and resources from the `workflows` branch in Phase 1.8 — single source of truth post-migration.
-8. **The resolved decisions** (§8.1–§8.6) — `.toon`/`.md` resource handling, reference resolution (slug + numeric-ID fallback + path-rewrite), no migration-introduced ontology versioning, ontology definition at `shared/resources/workflow-canonical/`, flat-only Phase 1 content, migration tooling preserved + archived.
+8. **The resolved decisions** (§8.1–§8.6) — `.toon`/`.md` resource handling, reference resolution (slug + numeric-ID fallback + path-rewrite), no migration-introduced ontology versioning, ontology definition at `workflows/meta/resources/workflow-canonical/`, flat-only Phase 1 content, migration tooling preserved + archived.
 
 Once confirmed, implementation proceeds in workflow batches per Phase 1.4.
 
@@ -632,4 +636,4 @@ Once confirmed, implementation proceeds in workflow batches per Phase 1.4.
 - [workflow-canonical-ontology.md](./workflow-canonical-ontology.md) — the ontology in detail.
 - [sample/resources/workflow-canonical/SKILL.md](./sample/resources/workflow-canonical/SKILL.md) — the ontology definition resource (operational form).
 
-The one ontology's definition resource is authored as part of Phase 1.1 and lives operationally at `shared/resources/workflow-canonical/SKILL.md` on the new orphan branch (drafted from the planning-folder sample above). There is no separate legacy meta-skill.
+The one ontology's definition resource is authored as part of Phase 1.1 and lives operationally at `workflows/meta/resources/workflow-canonical/SKILL.md` on the new orphan branch (drafted from the planning-folder sample above). There is no separate legacy meta-skill.

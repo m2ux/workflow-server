@@ -30,7 +30,7 @@ This plan addresses **one specific ontology** that workflows can adopt on top of
 - The workflow-canonical ontology is the pilot ontology. Other workflows MAY adopt it or define alternatives.
 - `work-package` is the pilot workflow for this ontology — 25 TOON skills + 28 resource files migrate to the new structure.
 - Markdown is the source-of-truth (at-rest) format; the workflow-server delivers a token-efficiency projection of it — TOON for techniques, simplified markdown for resources (see architecture.md §7).
-- The ontology lives in a definition resource at `shared/resources/workflow-canonical`. The plan covers authoring it.
+- The ontology lives in a definition resource at `workflows/meta/resources/workflow-canonical`. The plan covers authoring it.
 
 **This plan delivers**: (a) the ontology definition authoring approach (already drafted as a sample), (b) the workflow-canonical-specific package layout for `work-package`, (c) the pilot migration phases for `work-package`, (d) a generalisation template for the other 9 workflows that might adopt this ontology, (e) fidelity criteria, and (f) risks specific to the ontology rollout. Three appendices ground the design in empirical evidence from the existing `work-package` workflow.
 
@@ -98,10 +98,10 @@ The package on disk (post-migration). Key conventions:
 
 - **`SKILL.md` is mandatory** at the root of every skill folder (the only filename constraint mandated by agentskills.io).
 - **No other entry files** — `SKILL.md` is the only file in a folder; nested folders are nested skills (no `index.md`). Sub-files are reserved for the `*-operations` pattern only: a skill whose body is a flat library of named, externally-callable operations may store one operation per sibling `<op>.md` (no frontmatter — sub-documents of the parent skill); see [legacy-plan.md §5.5](./legacy-plan.md#55-adopted-refinements-beyond-mechanical-mapping).
-- **Techniques** are `SKILL.md` folders nested under their owner (`<owner>/<technique>/SKILL.md`) — no `techniques/` intermediate directory. Shared/common techniques live at `shared/techniques/`.
+- **Techniques** are `SKILL.md` folders nested under their owner (`<owner>/<technique>/SKILL.md`) — no `techniques/` intermediate directory. Shared/common techniques live at `workflows/meta/techniques/`.
 - **Content is single-kinded**: every governed unit is a `technique`. Which units are activity-bound (the existing 25) is declared in `workflow.toon`, not in frontmatter. A unit that only groups related skills with no procedure or `Output` of its own (a pure namespace, e.g. `gitnexus`) is a freeform resource, not a technique; a unit that composes sub-techniques but carries its own body is a composing technique.
 - **Roles** are `##` sections inside the `workflow` technique; **tools** have no on-disk slot (inline in prose, or a tool-dedicated namespace resource).
-- **Resources** are freeform `SKILL.md` skills (no `ontology`/`kind`) at `shared/resources/` (shared) or `<workflow>/resources/` (workflow-local) — see [Appendix C](./appendix-resource-subsumption.md) for per-file dispositions.
+- **Resources** are freeform `SKILL.md` skills (no `ontology`/`kind`) at `workflows/meta/resources/` (shared) or `<workflow>/resources/` (workflow-local) — see [Appendix C](./appendix-resource-subsumption.md) for per-file dispositions.
 
 ```
 workflows/
@@ -111,8 +111,8 @@ workflows/
 
     skills/                                # MIGRATED.
 
-      # --- Ontology definition lives in the shared/ layer, not here ---
-      # shared/resources/workflow-canonical/SKILL.md (a shared resource). A governed
+      # --- Ontology definition lives in the `meta` workflow folder (which doubles as the shared layer), not here ---
+      # workflows/meta/resources/workflow-canonical/SKILL.md (a shared resource). A governed
       # skill's `metadata.ontology: workflow-canonical` resolves to it by name.
       #   (see sample/resources/workflow-canonical/SKILL.md)
 
@@ -363,8 +363,8 @@ The server-side concerns (markdown loader, `get_skill(path)` arbitrary-depth res
 
 The only workflow-canonical-specific touchpoints with the server are:
 
-- The ontology definition at `shared/resources/workflow-canonical` is the first resource the agent loads when it sees a skill carrying `metadata.ontology: workflow-canonical`. The agent resolves the name (workflow-local → shared/) and fetches it; the server just resolves the name.
-- No `meta/` location. The ontology definition is a shared resource at `shared/resources/workflow-canonical/SKILL.md`, resolved by name under precedence. (`meta/` is not reserved — it is simply the folder of the workflow named `meta`.)
+- The ontology definition at `workflows/meta/resources/workflow-canonical` is the first resource the agent loads when it sees a skill carrying `metadata.ontology: workflow-canonical`. The agent resolves the name (workflow-local → `meta`) and fetches it; the server just resolves the name.
+- No `meta/` location. The ontology definition is a shared resource at `workflows/meta/resources/workflow-canonical/SKILL.md`, resolved by name under precedence. (`meta/` is not reserved — it is simply the folder of the workflow named `meta`.)
 - The kind value within workflow-canonical (`technique`) — opaque to the server, interpreted by the agent via the ontology definition.
 
 ---
@@ -373,11 +373,11 @@ The only workflow-canonical-specific touchpoints with the server are:
 
 The pilot is bounded and concrete:
 
-### Phase 0 — Author the ontology definition (`shared/resources/workflow-canonical`)
+### Phase 0 — Author the ontology definition (`workflows/meta/resources/workflow-canonical`)
 
-- Author `shared/resources/workflow-canonical/SKILL.md` (a shared resource) based on the planning-folder sample at `sample/resources/workflow-canonical/SKILL.md`.
+- Author `workflows/meta/resources/workflow-canonical/SKILL.md` (a shared resource) based on the planning-folder sample at `sample/resources/workflow-canonical/SKILL.md`.
 - The definition covers: Skill/Technique/Role/Tool concepts, composition rules, cross-reference format (file-relative hyperlinks), self-contained vs composing technique bodies, frontmatter schema, agent bootstrap procedure, refusal paths.
-- Validate that the definition is fetchable via `get_skill("workflow-canonical")` (resolved to `shared/resources/workflow-canonical`).
+- Validate that the definition is fetchable via `get_skill("workflow-canonical")` (resolved to `workflows/meta/resources/workflow-canonical`).
 - Test: an agent given only the ontology definition + an empty skills tree understands the ontology well enough to interpret a sample skill correctly.
 
 ### Phase 1 — Foundations (planning + alignment)
@@ -393,7 +393,7 @@ The pilot is bounded and concrete:
 - Add a minimal `SKILL.md` frontmatter schema under `src/schema/` — server-enforced fields: `name`, `description` always; `ontology`+`kind` on governed skills (absent on resources). Everything else is passed through opaquely (any ontology-defined fields).
 - Implement `parseSkillMarkdown` under `src/loaders/markdown/`: splits frontmatter from body, validates the server-required fields, returns `{ frontmatter, body }`. Does NOT validate ontology-specific fields.
 - Extend `readSkillRaw` / `tryLoadSkill` to: (a) walk recursively into nested skill folders at arbitrary depth; (b) detect markdown sources at any path depth; (c) deliver via the token-efficiency projection per architecture §7 — TOON for techniques, simplified markdown for resources, auto-detected from frontmatter; no ontology validation.
-- Generalise `get_skill` to resolve names by precedence (workflow-local → shared/) and per-section addressing (e.g. `workflow-canonical`, `gitnexus/impact`, `cargo-operations/check`).
+- Generalise `get_skill` to resolve names by precedence (workflow-local → `meta`) and per-section addressing (e.g. `workflow-canonical`, `gitnexus/impact`, `cargo-operations/check`).
 - Mark `get_resource` deprecated; have it return a "moved to X" indicator for any pre-migration resource ID still requested.
 - Add caching by `(path, mtime)`.
 - Test: every existing TOON skill must still round-trip identically through `get_skill` (no regression on TOON path during the migration window).
@@ -519,7 +519,7 @@ Per the project's worker-visibility invariant ([Workflow-server worker visibilit
 
 ### 9.2 Open questions
 
-1. **Cross-workflow technique sharing.** When 8 of 10 workflows need `gitnexus` techniques, should the `gitnexus` namespace resource live in the shared layer (`shared/techniques/gitnexus/`) or be duplicated per workflow? Decision deferred to post-pilot.
+1. **Cross-workflow technique sharing.** When 8 of 10 workflows need `gitnexus` techniques, should the `gitnexus` namespace resource live in the shared layer (`workflows/meta/techniques/gitnexus/`) or be duplicated per workflow? Decision deferred to post-pilot.
 2. **Versioning.** The current TOON skills have `version:` fields. Should `SKILL.md` frontmatter retain versioning? If so, what semantics — semver, monotonic counter, content hash? Proposal: keep a `version:` field, leave semantics informal for the pilot.
 3. **TOON wire format for sub-files.** Sub-files are currently shipped as markdown (architecture.md §7); if benchmarks show TOON-encoded sub-files behave acceptably on token cost AND fidelity, unify on TOON. Open until measured.
 4. **The "Activity" concept's home.** Activities currently live in `activities/*.toon`. With the new ontology, activities are the workflow-structural binding of role-name + producing technique. Do they stay separate, or fold into `workflow.toon`? Out of scope for the pilot — but worth a future RFC.
@@ -528,7 +528,7 @@ Per the project's worker-visibility invariant ([Workflow-server worker visibilit
 
 7. **Alternative ontologies.** The architecture supports multiple ontologies via the `metadata.ontology` field. The pilot ships exactly one — `workflow-canonical`. Open question: are there workflows where a different ontology (different conception of skill/technique/role/tool, or an entirely different vocabulary) would serve better? Decision deferred to post-pilot.
 
-8. **Ontology-definition versioning.** Should the definition itself be versioned (`shared/resources/workflow-canonical-v1`, `-v2`, etc.)? Skills frozen at v1 stay interpretable even if v2 introduces breaking changes. Open until the definition needs its first revision.
+8. **Ontology-definition versioning.** Should the definition itself be versioned (`workflows/meta/resources/workflow-canonical-v1`, `-v2`, etc.)? Skills frozen at v1 stay interpretable even if v2 introduces breaking changes. Open until the definition needs its first revision.
 
 ---
 
