@@ -4,9 +4,17 @@ List pages in a Confluence space.
 
 ## Inputs
 
-- **cloudId** — From [resolve-cloud-id](resolve-cloud-id.md)
-- **spaceId** — Space ID
-- **title** — Optional title filter
+### cloudId
+
+From [resolve-cloud-id](resolve-cloud-id.md)
+
+### spaceId
+
+Space ID
+
+### title
+
+Optional title filter
 
 ## Procedure
 

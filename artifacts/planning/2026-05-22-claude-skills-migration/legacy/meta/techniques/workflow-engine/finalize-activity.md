@@ -4,13 +4,23 @@ Compile the `activity_complete` result after all steps, checkpoints, and artifac
 
 ## Inputs
 
-- **steps_completed** — Array of completed step entries
-- **checkpoints_responded** — Array of checkpoint responses (`option_id` + effects)
-- **artifacts_produced** — Array of artifact entries (`id`, `name`, `path`)
+### steps_completed
+
+Array of completed step entries
+
+### checkpoints_responded
+
+Array of checkpoint responses (`option_id` + effects)
+
+### artifacts_produced
+
+Array of artifact entries (`id`, `name`, `path`)
 
 ## Output
 
-- **result** — `{ result_type: 'activity_complete', steps_completed, checkpoints_responded, variables_changed, artifacts_produced, transition_override? }`
+### result
+
+`{ result_type: 'activity_complete', steps_completed, checkpoints_responded, variables_changed, artifacts_produced, transition_override? }`
 
 ## Procedure
 

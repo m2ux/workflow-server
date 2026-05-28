@@ -4,12 +4,19 @@ Dispatch a fresh client workflow as a child of the meta session.
 
 ## Inputs
 
-- **parent_session_index** — `session_index` of the meta (parent) session — typically the `meta_session_index` variable
-- **workflow_id** — Target client workflow id (e.g., `work-package`)
+### parent_session_index
+
+`session_index` of the meta (parent) session — typically the `meta_session_index` variable
+
+### workflow_id
+
+Target client workflow id (e.g., `work-package`)
 
 ## Output
 
-- **session_index** — The 6-character base32 `session_index` of the newly created child session
+### session_index
+
+The 6-character base32 `session_index` of the newly created child session
 
 ## Procedure
 

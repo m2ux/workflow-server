@@ -4,8 +4,13 @@ Workspace dev build; skips the runtime wasm artifact.
 
 ## Inputs
 
-- **scope** — `'--workspace'` or `'-p <crate>'`
-- **features** — Optional --features flags (empty string when none)
+### scope
+
+`'--workspace'` or `'-p <crate>'`
+
+### features
+
+Optional --features flags (empty string when none)
 
 ## Procedure
 

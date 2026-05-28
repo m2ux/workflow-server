@@ -4,7 +4,9 @@ Apply rustfmt formatting in place.
 
 ## Inputs
 
-- **scope** — `'--all'` for the full workspace, or omit for the local crate
+### scope
+
+`'--all'` for the full workspace, or omit for the local crate
 
 ## Procedure
 

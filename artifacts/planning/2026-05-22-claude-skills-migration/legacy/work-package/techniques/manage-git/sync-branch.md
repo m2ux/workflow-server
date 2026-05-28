@@ -4,8 +4,13 @@ Fetch and rebase/merge from the default branch to keep the feature branch curren
 
 ## Inputs
 
-- **target_path** — The working directory (worktree)
-- **branch_name** — Feature branch to sync
+### target_path
+
+The working directory (worktree)
+
+### branch_name
+
+Feature branch to sync
 
 ## Procedure
 

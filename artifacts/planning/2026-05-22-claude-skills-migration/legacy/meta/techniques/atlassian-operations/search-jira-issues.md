@@ -4,9 +4,17 @@ Search Jira issues with JQL.
 
 ## Inputs
 
-- **cloudId** — From [resolve-cloud-id](resolve-cloud-id.md)
-- **jql** — JQL query string
-- **fields** — Optional array of fields to return
+### cloudId
+
+From [resolve-cloud-id](resolve-cloud-id.md)
+
+### jql
+
+JQL query string
+
+### fields
+
+Optional array of fields to return
 
 ## Procedure
 

@@ -4,7 +4,9 @@ Obtain the `cloudId` for the target Atlassian site.
 
 ## Output
 
-- **cloudId** — UUID of the cloud site, used by every product-specific tool
+### cloudId
+
+UUID of the cloud site, used by every product-specific tool
 
 ## Procedure
 

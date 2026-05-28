@@ -4,8 +4,13 @@ Drive test-coverage review from the actual changed-symbol set rather than projec
 
 ## Output
 
-- **coverage_gaps** — changed symbols with zero test callers
-- **update_candidates** — changed symbols whose test callers are stale
+### coverage_gaps
+
+changed symbols with zero test callers
+
+### update_candidates
+
+changed symbols whose test callers are stale
 
 ## Procedure
 

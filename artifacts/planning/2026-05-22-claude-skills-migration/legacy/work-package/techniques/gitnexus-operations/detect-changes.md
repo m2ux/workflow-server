@@ -4,11 +4,15 @@ Map the current git diff to the changed-symbol set and the execution flows it af
 
 ## Inputs
 
-- **scope** — `'staged'`, `'unstaged'`, or `'all'` (default `'all'`)
+### scope
+
+`'staged'`, `'unstaged'`, or `'all'` (default `'all'`)
 
 ## Output
 
-- **change_report** — changed symbols, changed files, affected execution flows, risk level
+### change_report
+
+changed symbols, changed files, affected execution flows, risk level
 
 ## Procedure
 

@@ -4,14 +4,27 @@ Symbol blast radius — what depends on a symbol, at depth 1/2/3, with confidenc
 
 ## Inputs
 
-- **target** — the symbol name to analyse
-- **direction** — `'upstream'` (dependents — what breaks if target changes; the work-package default) or `'downstream'` (dependencies)
-- **maxDepth** — optional traversal depth (default 3)
-- **minConfidence** — optional confidence floor (e.g. `0.8` to keep only high-confidence edges)
+### target
+
+the symbol name to analyse
+
+### direction
+
+`'upstream'` (dependents — what breaks if target changes; the work-package default) or `'downstream'` (dependencies)
+
+### maxDepth
+
+optional traversal depth (default 3)
+
+### minConfidence
+
+optional confidence floor (e.g. `0.8` to keep only high-confidence edges)
 
 ## Output
 
-- **impact_report** — d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); affected execution flows; risk level (LOW / MEDIUM / HIGH / CRITICAL)
+### impact_report
+
+d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); affected execution flows; risk level (LOW / MEDIUM / HIGH / CRITICAL)
 
 ## Procedure
 

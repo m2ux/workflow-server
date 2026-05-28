@@ -4,13 +4,23 @@ Dispatch a new isolated sub-agent with no prior context.
 
 ## Inputs
 
-- **harness** — Identifier of the harness in use: `claude-code`, `cursor`, `cline`, or `generic`
-- **prompt** — Full task prompt for the new agent
-- **description** — Short label for the agent's role (optional; useful for tracing)
+### harness
+
+Identifier of the harness in use: `claude-code`, `cursor`, `cline`, or `generic`
+
+### prompt
+
+Full task prompt for the new agent
+
+### description
+
+Short label for the agent's role (optional; useful for tracing)
 
 ## Output
 
-- **result** — The sub-agent's final output (text, including any `<checkpoint_yield>` block) — captured when the agent yields or completes
+### result
+
+The sub-agent's final output (text, including any `<checkpoint_yield>` block) — captured when the agent yields or completes
 
 ## Procedure
 

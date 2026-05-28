@@ -4,12 +4,19 @@ Pick the saved-session candidate that best matches an identifying context.
 
 ## Inputs
 
-- **context** — Identifying context from [extract-identifying-context](extract-identifying-context.md)
-- **candidates** — Saved sessions from [scan-saved-sessions](scan-saved-sessions.md)
+### context
+
+Identifying context from [extract-identifying-context](extract-identifying-context.md)
+
+### candidates
+
+Saved sessions from [scan-saved-sessions](scan-saved-sessions.md)
 
 ## Output
 
-- **match** — Best matching candidate `{ planning_slug, sessionIndex, savedAt }`, or null when none match
+### match
+
+Best matching candidate `{ planning_slug, sessionIndex, savedAt }`, or null when none match
 
 ## Procedure
 

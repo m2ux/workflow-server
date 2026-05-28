@@ -4,12 +4,19 @@ Query GitHub for the repo's allowed merge strategies (specifically, whether squa
 
 ## Inputs
 
-- **reference_path** — Path to the reference checkout
-- **component_name** — *(optional)* Basename of the component (for monorepo references)
+### reference_path
+
+Path to the reference checkout
+
+### component_name
+
+*(optional)* Basename of the component (for monorepo references)
 
 ## Output
 
-- **squash_merge_available** — Boolean — true if the repo allows squash merges
+### squash_merge_available
+
+Boolean — true if the repo allows squash merges
 
 ## Procedure
 

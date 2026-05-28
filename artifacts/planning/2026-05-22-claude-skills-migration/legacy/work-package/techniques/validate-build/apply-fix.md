@@ -4,12 +4,19 @@ Apply the chosen fix strategy and prepare for re-validation.
 
 ## Inputs
 
-- **check_id** — Identifier of the originally failed check
-- **fix_strategy** — `fix_strategy` from [analyze-failure](analyze-failure.md)
+### check_id
+
+Identifier of the originally failed check
+
+### fix_strategy
+
+`fix_strategy` from [analyze-failure](analyze-failure.md)
 
 ## Output
 
-- **fix_applied** — Boolean — true if the fix was applied; false if the fix requires user input or external action
+### fix_applied
+
+Boolean — true if the fix was applied; false if the fix requires user input or external action
 
 ## Procedure
 

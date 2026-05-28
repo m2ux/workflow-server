@@ -4,11 +4,15 @@ Read the matching domain index file from `.engineering/resources/`.
 
 ## Inputs
 
-- **domain** — Domain hint (e.g., `substrate`, `blockchain`)
+### domain
+
+Domain hint (e.g., `substrate`, `blockchain`)
 
 ## Output
 
-- **index** — Parsed source registry, concept lookup table, and topic clusters
+### index
+
+Parsed source registry, concept lookup table, and topic clusters
 
 ## Procedure
 

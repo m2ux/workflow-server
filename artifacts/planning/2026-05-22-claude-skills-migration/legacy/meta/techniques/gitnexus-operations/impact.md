@@ -4,14 +4,27 @@ Map upstream or downstream dependents for a symbol; assess blast radius before c
 
 ## Inputs
 
-- **repo_name** — Repository name
-- **target** — Symbol or file
-- **direction** — `upstream` (dependents) or `downstream` (dependencies)
+### repo_name
+
+Repository name
+
+### target
+
+Symbol or file
+
+### direction
+
+`upstream` (dependents) or `downstream` (dependencies)
 
 ## Output
 
-- **dependents** — Symbols / processes affected, grouped by depth
-- **risk** — Risk classification per depth: **d=1** is WILL BREAK (direct callers; must update synchronously); **d=2** is LIKELY AFFECTED (call chain at one remove; test thoroughly); **d=3** is MAY NEED TESTING (indirect; verify via [detect-changes](detect-changes.md))
+### dependents
+
+Symbols / processes affected, grouped by depth
+
+### risk
+
+Risk classification per depth: **d=1** is WILL BREAK (direct callers; must update synchronously); **d=2** is LIKELY AFFECTED (call chain at one remove; test thoroughly); **d=3** is MAY NEED TESTING (indirect; verify via [detect-changes](detect-changes.md))
 
 ## Procedure
 

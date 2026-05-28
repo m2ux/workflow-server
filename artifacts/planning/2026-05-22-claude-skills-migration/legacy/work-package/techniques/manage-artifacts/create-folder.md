@@ -4,12 +4,19 @@ Create the planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initi
 
 ## Inputs
 
-- **planning_folder_parent** — Parent path for the planning folder (typically `.engineering/artifacts/planning/`)
-- **issue_title** — Issue title used to derive the initiative-name slug
+### planning_folder_parent
+
+Parent path for the planning folder (typically `.engineering/artifacts/planning/`)
+
+### issue_title
+
+Issue title used to derive the initiative-name slug
 
 ## Output
 
-- **folder_path** — Full path to the created (or existing) planning folder
+### folder_path
+
+Full path to the created (or existing) planning folder
 
 ## Procedure
 

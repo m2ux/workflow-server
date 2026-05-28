@@ -4,12 +4,19 @@
 
 ## Inputs
 
-- **repo_path** — Filesystem path to the repository to index. For monorepos, pass the monorepo ROOT — gitnexus walks the working tree from there and indexes every source file it encounters, including content that physically lives inside submodule directories. The result is a single unified index keyed under the monorepo's name. Do NOT analyze each submodule separately when the monorepo root has already been (or will be) analyzed — that produces duplicate, harder-to-reason-about indexes. For standalone repos, pass the repo root.
-- **force** — Optional. Boolean. When true, rebuilds the index from scratch instead of incrementally updating. Defaults to false.
+### repo_path
+
+Filesystem path to the repository to index. For monorepos, pass the monorepo ROOT — gitnexus walks the working tree from there and indexes every source file it encounters, including content that physically lives inside submodule directories. The result is a single unified index keyed under the monorepo's name. Do NOT analyze each submodule separately when the monorepo root has already been (or will be) analyzed — that produces duplicate, harder-to-reason-about indexes. For standalone repos, pass the repo root.
+
+### force
+
+Optional. Boolean. When true, rebuilds the index from scratch instead of incrementally updating. Defaults to false.
 
 ## Output
 
-- **stats** — Post-analyze symbol / relationship / process counts emitted by the CLI
+### stats
+
+Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ## Procedure
 

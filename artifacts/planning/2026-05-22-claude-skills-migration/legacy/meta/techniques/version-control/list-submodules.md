@@ -4,7 +4,9 @@ Read and parse `.gitmodules` to enumerate submodule paths.
 
 ## Output
 
-- **submodules** — Array of `{ path, name, url }` entries
+### submodules
+
+Array of `{ path, name, url }` entries
 
 ## Procedure
 

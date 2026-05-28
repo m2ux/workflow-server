@@ -4,12 +4,19 @@ Source architecture-diagram structure from graph resources rather than hand-roll
 
 ## Inputs
 
-- **diagram_type** — `'package'` or `'sequence'`
-- **name** — repo name
+### diagram_type
+
+`'package'` or `'sequence'`
+
+### name
+
+repo name
 
 ## Output
 
-- **diagram_source** — for `'package'`: functional-area clusters and their members; for `'sequence'`: step-by-step process traces — bounded to processes affected by the work package
+### diagram_source
+
+for `'package'`: functional-area clusters and their members; for `'sequence'`: step-by-step process traces — bounded to processes affected by the work package
 
 ## Procedure
 

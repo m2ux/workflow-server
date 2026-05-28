@@ -4,15 +4,31 @@ Open a draft PR linked to the issue, assigned to the current GitHub user.
 
 ## Inputs
 
-- **target_path** — The working directory (worktree); all `gh` commands run from here
-- **branch_name** — Feature branch to PR
-- **issue_number** — Issue identifier (GitHub `#N` or Jira `KEY-N`)
-- **issue_platform** — Platform where the issue lives (`github` or `jira`)
+### target_path
+
+The working directory (worktree); all `gh` commands run from here
+
+### branch_name
+
+Feature branch to PR
+
+### issue_number
+
+Issue identifier (GitHub `#N` or Jira `KEY-N`)
+
+### issue_platform
+
+Platform where the issue lives (`github` or `jira`)
 
 ## Output
 
-- **pr_number** — PR number
-- **pr_url** — URL to the PR
+### pr_number
+
+PR number
+
+### pr_url
+
+URL to the PR
 
 ## Procedure
 

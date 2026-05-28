@@ -4,11 +4,15 @@ Find saved client sessions matching a target workflow under `.engineering/artifa
 
 ## Inputs
 
-- **target_workflow_id** — Workflow ID to filter candidates by
+### target_workflow_id
+
+Workflow ID to filter candidates by
 
 ## Output
 
-- **candidates** — Array of `{ planning_slug, sessionIndex, savedAt, variables }` entries whose `workflowId` matches
+### candidates
+
+Array of `{ planning_slug, sessionIndex, savedAt, variables }` entries whose `workflowId` matches
 
 ## Procedure
 

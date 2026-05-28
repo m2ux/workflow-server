@@ -4,11 +4,15 @@ Pause at a checkpoint and surface the yield.
 
 ## Inputs
 
-- **checkpoint_id** — ID of the checkpoint being yielded
+### checkpoint_id
+
+ID of the checkpoint being yielded
 
 ## Output
 
-- **emitted** — `<checkpoint_yield>` block signalling the pause
+### emitted
+
+`<checkpoint_yield>` block signalling the pause
 
 ## Procedure
 

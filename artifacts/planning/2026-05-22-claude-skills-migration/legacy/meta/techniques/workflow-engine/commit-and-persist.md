@@ -4,9 +4,17 @@ Post-activity hook: commit source-side changes and engineering artifacts.
 
 ## Inputs
 
-- **activity_id** — Activity that just completed
-- **planning_folder_path** — Path to the planning folder
-- **target_path** — Path to the target submodule where source-side changes live (typically the application repo)
+### activity_id
+
+Activity that just completed
+
+### planning_folder_path
+
+Path to the planning folder
+
+### target_path
+
+Path to the target submodule where source-side changes live (typically the application repo)
 
 ## Procedure
 

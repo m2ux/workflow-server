@@ -4,12 +4,19 @@ Run check, clippy, test, and fmt-check concurrently against the same scope and a
 
 ## Inputs
 
-- **scope** — `'--workspace'` for full validation parity with CI; `'-p <crate>'` to scope to one crate (faster but does not match CI)
-- **features** — Optional --features flags (empty string when none)
+### scope
+
+`'--workspace'` for full validation parity with CI; `'-p <crate>'` to scope to one crate (faster but does not match CI)
+
+### features
+
+Optional --features flags (empty string when none)
 
 ## Output
 
-- **validation_results** — { check_status, clippy_status, test_status, fmt_status, validation_passed } — validation_passed is true iff all four sub-statuses passed
+### validation_results
+
+{ check_status, clippy_status, test_status, fmt_status, validation_passed } — validation_passed is true iff all four sub-statuses passed
 
 ## Procedure
 

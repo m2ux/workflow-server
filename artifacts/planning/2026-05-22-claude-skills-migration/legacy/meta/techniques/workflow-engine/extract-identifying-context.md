@@ -4,11 +4,15 @@ Extract ticket, branch, PR, and work-package identifiers from a user request.
 
 ## Inputs
 
-- **user_request** — User's free-form request
+### user_request
+
+User's free-form request
 
 ## Output
 
-- **context** — Map of any identifiers found: `{ issue_number?, branch_name?, pr_number?, work_package? }`
+### context
+
+Map of any identifiers found: `{ issue_number?, branch_name?, pr_number?, work_package? }`
 
 ## Procedure
 

@@ -4,14 +4,27 @@ Append the attestation section to provenance-log.md at the dco-sign-off checkpoi
 
 ## Inputs
 
-- **certifier_name** — Display name from `git config user.name`
-- **certifier_email** — Email from `git config user.email`
-- **option** — One of: `certify` | `flag-legal`
-- **legal_review_note** — *(required only when option = flag-legal)* The concern text provided by the user
+### certifier_name
+
+Display name from `git config user.name`
+
+### certifier_email
+
+Email from `git config user.email`
+
+### option
+
+One of: `certify` | `flag-legal`
+
+### legal_review_note
+
+*(required only when option = flag-legal)* The concern text provided by the user
 
 ## Output
 
-- **provenance_log_path** — Path to the updated provenance-log.md
+### provenance_log_path
+
+Path to the updated provenance-log.md
 
 ## Procedure
 

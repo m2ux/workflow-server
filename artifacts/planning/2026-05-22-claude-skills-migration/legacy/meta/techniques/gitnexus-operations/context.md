@@ -4,12 +4,19 @@ Get the 360-degree view of a symbol — callers, callees, and process participat
 
 ## Inputs
 
-- **repo_name** — Repository name
-- **name** — Symbol name (function, class, method, etc.)
+### repo_name
+
+Repository name
+
+### name
+
+Symbol name (function, class, method, etc.)
 
 ## Output
 
-- **context** — Symbol details with callers, callees, member relationships, and processes
+### context
+
+Symbol details with callers, callees, member relationships, and processes
 
 ## Procedure
 

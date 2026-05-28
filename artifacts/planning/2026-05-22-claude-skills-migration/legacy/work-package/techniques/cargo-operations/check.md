@@ -4,12 +4,19 @@ Type-check without producing binaries; the cheapest validation pass.
 
 ## Inputs
 
-- **scope** — `'--workspace'` for the full workspace, or `'-p <crate>'` to scope to one crate (preferred during inner loops)
-- **features** — Optional --features flags (empty string when none)
+### scope
+
+`'--workspace'` for the full workspace, or `'-p <crate>'` to scope to one crate (preferred during inner loops)
+
+### features
+
+Optional --features flags (empty string when none)
 
 ## Output
 
-- **check_status** — Pass/fail and the rustc diagnostics emitted
+### check_status
+
+Pass/fail and the rustc diagnostics emitted
 
 ## Procedure
 

@@ -4,11 +4,15 @@ Determine whether a path is a regular directory or a git submodule before commit
 
 ## Inputs
 
-- **path** — Path to inspect
+### path
+
+Path to inspect
 
 ## Output
 
-- **kind** — `submodule` (mode 160000) or `regular` (mode 040000)
+### kind
+
+`submodule` (mode 160000) or `regular` (mode 040000)
 
 ## Procedure
 

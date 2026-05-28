@@ -4,7 +4,9 @@ Refresh the monorepo reference's submodules to their tracked remote HEADs, with 
 
 ## Inputs
 
-- **reference_path** — *(optional)* Path to the reference checkout (monorepo root or standalone-repo primary checkout)
+### reference_path
+
+*(optional)* Path to the reference checkout (monorepo root or standalone-repo primary checkout)
 
 ## Procedure
 

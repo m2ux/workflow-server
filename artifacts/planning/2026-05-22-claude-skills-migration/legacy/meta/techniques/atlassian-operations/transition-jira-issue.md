@@ -4,9 +4,17 @@ Move an issue to a new status.
 
 ## Inputs
 
-- **cloudId** — From [resolve-cloud-id](resolve-cloud-id.md)
-- **issueIdOrKey** — Issue key
-- **transition** — Transition object with `id` from [list-jira-transitions](list-jira-transitions.md)
+### cloudId
+
+From [resolve-cloud-id](resolve-cloud-id.md)
+
+### issueIdOrKey
+
+Issue key
+
+### transition
+
+Transition object with `id` from [list-jira-transitions](list-jira-transitions.md)
 
 ## Procedure
 

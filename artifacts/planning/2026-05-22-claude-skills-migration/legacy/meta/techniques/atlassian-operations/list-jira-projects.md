@@ -4,7 +4,9 @@ Discover Jira projects with their issue types.
 
 ## Inputs
 
-- **cloudId** — From [resolve-cloud-id](resolve-cloud-id.md)
+### cloudId
+
+From [resolve-cloud-id](resolve-cloud-id.md)
 
 ## Procedure
 

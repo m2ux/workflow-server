@@ -4,12 +4,19 @@ Continue execution after the orchestrator resolves a checkpoint.
 
 ## Inputs
 
-- **session_index** — The `session_index` for the worker's session — unchanged across the yield/respond/resume sequence (the server-managed index is stable across all tool calls)
-- **effects** — Variable updates passed back by the orchestrator
+### session_index
+
+The `session_index` for the worker's session — unchanged across the yield/respond/resume sequence (the server-managed index is stable across all tool calls)
+
+### effects
+
+Variable updates passed back by the orchestrator
 
 ## Output
 
-- **session_index** — Same `session_index` as the input (returned for symmetry; the index is stable)
+### session_index
+
+Same `session_index` as the input (returned for symmetry; the index is stable)
 
 ## Procedure
 

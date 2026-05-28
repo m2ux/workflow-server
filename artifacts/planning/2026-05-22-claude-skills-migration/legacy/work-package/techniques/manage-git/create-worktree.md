@@ -4,14 +4,27 @@ Materialise a working directory as a git worktree on a new feature branch off th
 
 ## Inputs
 
-- **reference_path** — Path to the reference checkout (monorepo root or standalone-repo primary checkout)
-- **component_name** — *(optional)* Basename of the component (submodule directory name, or basename of a standalone repo). Used to locate the component's git directory inside a monorepo reference. Omit for standalone repos.
-- **target_path** — Canonical worktree path: `~/projects/work/{component_name}/{wp-slug}/`
-- **branch_name** — Feature branch name (derived from issue per the convention `type/issue-number-short-description`)
+### reference_path
+
+Path to the reference checkout (monorepo root or standalone-repo primary checkout)
+
+### component_name
+
+*(optional)* Basename of the component (submodule directory name, or basename of a standalone repo). Used to locate the component's git directory inside a monorepo reference. Omit for standalone repos.
+
+### target_path
+
+Canonical worktree path: `~/projects/work/{component_name}/{wp-slug}/`
+
+### branch_name
+
+Feature branch name (derived from issue per the convention `type/issue-number-short-description`)
 
 ## Output
 
-- **worktree_created** — Boolean — true when the worktree exists at `target_path` on `branch_name`
+### worktree_created
+
+Boolean — true when the worktree exists at `target_path` on `branch_name`
 
 ## Procedure
 

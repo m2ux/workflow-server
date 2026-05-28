@@ -4,11 +4,15 @@ Verify the planning folder's README.md still matches the [readme](../../resource
 
 ## Inputs
 
-- **planning_folder_path** — Absolute path to the planning folder containing README.md
+### planning_folder_path
+
+Absolute path to the planning folder containing README.md
 
 ## Output
 
-- **readme_conformance** — { conforms: bool, missing_sections: [], extra_top_level_headings: [], header_block_drift: [] } — `conforms` is true iff `missing_sections`, `extra_top_level_headings`, and `header_block_drift` are all empty
+### readme_conformance
+
+{ conforms: bool, missing_sections: [], extra_top_level_headings: [], header_block_drift: [] } — `conforms` is true iff `missing_sections`, `extra_top_level_headings`, and `header_block_drift` are all empty
 
 ## Procedure
 

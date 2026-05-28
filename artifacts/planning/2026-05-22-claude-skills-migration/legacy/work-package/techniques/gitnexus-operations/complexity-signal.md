@@ -4,11 +4,15 @@ Objective complexity estimate for an issue, from the fan-out of a preliminary ta
 
 ## Inputs
 
-- **target** — a preliminary symbol inferred from the issue (when one can be inferred)
+### target
+
+a preliminary symbol inferred from the issue (when one can be inferred)
 
 ## Output
 
-- **complexity_signal** — fan-out and affected-process count as an objective complexity indicator
+### complexity_signal
+
+fan-out and affected-process count as an objective complexity indicator
 
 ## Procedure
 

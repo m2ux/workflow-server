@@ -4,14 +4,27 @@ Transition the session to a target activity and spawn a worker for it.
 
 ## Inputs
 
-- **activity_id** — Activity ID to enter
-- **prompt_template** — Resource ref for the worker prompt (e.g., [activity-worker-prompt](../../resources/activity-worker-prompt/SKILL.md))
-- **state** — Current variable state for prompt substitution
+### activity_id
+
+Activity ID to enter
+
+### prompt_template
+
+Resource ref for the worker prompt (e.g., [activity-worker-prompt](../../resources/activity-worker-prompt/SKILL.md))
+
+### state
+
+Current variable state for prompt substitution
 
 ## Output
 
-- **worker_result** — `{ type: 'checkpoint_pending' }` or `{ type: 'activity_complete', ...payload }`
-- **trace_token** — Trace token captured from `next_activity` response, appended to `trace_tokens`
+### worker_result
+
+`{ type: 'checkpoint_pending' }` or `{ type: 'activity_complete', ...payload }`
+
+### trace_token
+
+Trace token captured from `next_activity` response, appended to `trace_tokens`
 
 ## Procedure
 

@@ -4,12 +4,19 @@ Send the user's selection back to the server, clearing the active checkpoint.
 
 ## Inputs
 
-- **session_index** — `session_index` of the worker whose active checkpoint is being resolved
-- **resolution** — `{ option_id }` | `{ auto_advance: true }` | `{ condition_not_met: true }`
+### session_index
+
+`session_index` of the worker whose active checkpoint is being resolved
+
+### resolution
+
+`{ option_id }` | `{ auto_advance: true }` | `{ condition_not_met: true }`
 
 ## Output
 
-- **effects** — Variable updates returned by the server, to pass back down to the worker on resume
+### effects
+
+Variable updates returned by the server, to pass back down to the worker on resume
 
 ## Procedure
 

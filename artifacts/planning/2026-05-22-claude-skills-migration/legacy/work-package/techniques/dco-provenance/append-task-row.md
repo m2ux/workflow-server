@@ -4,16 +4,35 @@ Append a per-task row to provenance-log.md. Creates the file with the canonical 
 
 ## Inputs
 
-- **task_id** — Current task identifier
-- **assistant** — Assistant name (e.g., `claude`, `gpt`, `gemini`)
-- **model_id** — Model identifier
-- **prompt_class** — One of: `code-generation` | `refactoring` | `test-writing` | `docs` | `mixed`
-- **context_scope** — One of: `repo-only` (only repository-local sources used) | `web-retrieval` (external web sources informed the work) | `mixed` (both)
-- **description** — One-line description of what was generated
+### task_id
+
+Current task identifier
+
+### assistant
+
+Assistant name (e.g., `claude`, `gpt`, `gemini`)
+
+### model_id
+
+Model identifier
+
+### prompt_class
+
+One of: `code-generation` | `refactoring` | `test-writing` | `docs` | `mixed`
+
+### context_scope
+
+One of: `repo-only` (only repository-local sources used) | `web-retrieval` (external web sources informed the work) | `mixed` (both)
+
+### description
+
+One-line description of what was generated
 
 ## Output
 
-- **provenance_log_path** — Path to the updated provenance-log.md
+### provenance_log_path
+
+Path to the updated provenance-log.md
 
 ## Procedure
 

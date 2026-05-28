@@ -4,11 +4,15 @@ Gauge how reversible a change to a symbol is, to set the reversibility flag on j
 
 ## Inputs
 
-- **name** — the symbol the assumption touches
+### name
+
+the symbol the assumption touches
 
 ## Output
 
-- **reversibility** — `path-committing` (high caller fan-out and broad process participation) or `easily-reversible` (isolated symbol)
+### reversibility
+
+`path-committing` (high caller fan-out and broad process participation) or `easily-reversible` (isolated symbol)
 
 ## Procedure
 

@@ -4,12 +4,19 @@ Dispatch multiple independent agents in parallel.
 
 ## Inputs
 
-- **harness** — Identifier of the harness in use: `claude-code`, `cursor`, or `generic`
-- **agents** — Array of `{ description, prompt }` objects — each becomes an independent sub-agent
+### harness
+
+Identifier of the harness in use: `claude-code`, `cursor`, or `generic`
+
+### agents
+
+Array of `{ description, prompt }` objects — each becomes an independent sub-agent
 
 ## Output
 
-- **results** — Array of agent results, one per dispatched agent
+### results
+
+Array of agent results, one per dispatched agent
 
 ## Procedure
 

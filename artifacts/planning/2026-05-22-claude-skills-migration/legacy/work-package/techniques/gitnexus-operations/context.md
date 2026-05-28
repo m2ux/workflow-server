@@ -4,11 +4,15 @@
 
 ## Inputs
 
-- **name** — the symbol to inspect
+### name
+
+the symbol to inspect
 
 ## Output
 
-- **context_report** — incoming calls (callers), outgoing calls (callees), process membership with step positions
+### context_report
+
+incoming calls (callers), outgoing calls (callees), process membership with step positions
 
 ## Procedure
 

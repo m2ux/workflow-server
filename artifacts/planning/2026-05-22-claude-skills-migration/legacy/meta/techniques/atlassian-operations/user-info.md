@@ -4,7 +4,9 @@ Get the current user's account ID.
 
 ## Output
 
-- **accountId** — Current user's account ID
+### accountId
+
+Current user's account ID
 
 ## Procedure
 

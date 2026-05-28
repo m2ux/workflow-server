@@ -4,15 +4,31 @@ Create a new Jira issue.
 
 ## Inputs
 
-- **cloudId** — From [resolve-cloud-id](resolve-cloud-id.md)
-- **projectKey** — Project key
-- **issueTypeName** — Issue type name from [list-jira-issue-types](list-jira-issue-types.md)
-- **summary** — Issue summary
-- **additional_fields** — Optional object with description, assignee, labels, etc.
+### cloudId
+
+From [resolve-cloud-id](resolve-cloud-id.md)
+
+### projectKey
+
+Project key
+
+### issueTypeName
+
+Issue type name from [list-jira-issue-types](list-jira-issue-types.md)
+
+### summary
+
+Issue summary
+
+### additional_fields
+
+Optional object with description, assignee, labels, etc.
 
 ## Output
 
-- **issueKey** — Created issue key (e.g., `ENG-123`)
+### issueKey
+
+Created issue key (e.g., `ENG-123`)
 
 ## Procedure
 

@@ -4,11 +4,15 @@ Create a planning folder for a new workflow run under `.engineering/artifacts/pl
 
 ## Inputs
 
-- **initiative_name** — Kebab-case identifier derived from the issue title or work-package description
+### initiative_name
+
+Kebab-case identifier derived from the issue title or work-package description
 
 ## Output
 
-- **planning_folder_path** — Absolute path to the created folder
+### planning_folder_path
+
+Absolute path to the created folder
 
 ## Procedure
 

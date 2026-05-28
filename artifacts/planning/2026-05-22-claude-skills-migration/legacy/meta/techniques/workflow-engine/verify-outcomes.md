@@ -4,12 +4,19 @@ Compare a workflow's declared `outcome[]` against state and identify gaps.
 
 ## Inputs
 
-- **outcome** — Array of expected outcome strings from the workflow definition
-- **state** — Current variable state and completed-activities trace
+### outcome
+
+Array of expected outcome strings from the workflow definition
+
+### state
+
+Current variable state and completed-activities trace
 
 ## Output
 
-- **gaps** — Array of unsatisfied outcomes
+### gaps
+
+Array of unsatisfied outcomes
 
 ## Procedure
 

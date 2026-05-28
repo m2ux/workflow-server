@@ -4,7 +4,9 @@ Retrieve the catalog of available workflows.
 
 ## Output
 
-- **catalog** — Array of `{ id, title, description, tags }` entries
+### catalog
+
+Array of `{ id, title, description, tags }` entries
 
 ## Procedure
 

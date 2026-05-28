@@ -4,8 +4,13 @@ List issue types available in a project.
 
 ## Inputs
 
-- **cloudId** — From [resolve-cloud-id](resolve-cloud-id.md)
-- **projectIdOrKey** — Project key (e.g., `ENG`)
+### cloudId
+
+From [resolve-cloud-id](resolve-cloud-id.md)
+
+### projectIdOrKey
+
+Project key (e.g., `ENG`)
 
 ## Procedure
 

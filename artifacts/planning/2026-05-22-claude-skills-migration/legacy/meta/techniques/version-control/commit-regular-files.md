@@ -4,9 +4,17 @@ Stage, commit, and push files in a regular (non-submodule) directory of the pare
 
 ## Inputs
 
-- **paths** — Array of file paths to stage (under `.engineering/artifacts/`, `.engineering/AGENTS.md`, `.engineering/scripts/`, etc.)
-- **message** — Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
-- **branch** — Branch to push to (typically the current branch — do NOT create a new branch in the parent repo)
+### paths
+
+Array of file paths to stage (under `.engineering/artifacts/`, `.engineering/AGENTS.md`, `.engineering/scripts/`, etc.)
+
+### message
+
+Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
+
+### branch
+
+Branch to push to (typically the current branch — do NOT create a new branch in the parent repo)
 
 ## Procedure
 

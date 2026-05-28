@@ -4,7 +4,9 @@ List PRs (read-only — safe via gh CLI).
 
 ## Inputs
 
-- **filters** — Optional flags (e.g., `--state open --author @me`)
+### filters
+
+Optional flags (e.g., `--state open --author @me`)
 
 ## Procedure
 

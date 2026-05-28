@@ -4,12 +4,19 @@ Find execution flows related to a concept or term.
 
 ## Inputs
 
-- **repo_name** — Repository name
-- **search_term** — Concept, error text, or keyword
+### repo_name
+
+Repository name
+
+### search_term
+
+Concept, error text, or keyword
 
 ## Output
 
-- **flows** — Process-grouped result list ranked by relevance
+### flows
+
+Process-grouped result list ranked by relevance
 
 ## Procedure
 

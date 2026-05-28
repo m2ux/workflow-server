@@ -4,7 +4,9 @@ View an existing PR (read-only — safe via gh CLI).
 
 ## Inputs
 
-- **identifier** — PR number or URL
+### identifier
+
+PR number or URL
 
 ## Procedure
 

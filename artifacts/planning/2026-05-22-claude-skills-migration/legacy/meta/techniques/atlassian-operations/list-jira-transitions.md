@@ -4,8 +4,13 @@ Discover available status transitions for an issue.
 
 ## Inputs
 
-- **cloudId** — From [resolve-cloud-id](resolve-cloud-id.md)
-- **issueIdOrKey** — Issue key
+### cloudId
+
+From [resolve-cloud-id](resolve-cloud-id.md)
+
+### issueIdOrKey
+
+Issue key
 
 ## Procedure
 

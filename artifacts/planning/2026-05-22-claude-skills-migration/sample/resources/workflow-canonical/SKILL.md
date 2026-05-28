@@ -176,12 +176,14 @@ path is the at-rest human-navigable form.
    / `## Errors` / `## Rules` **only when the operation has them**
    (an op with no inputs, no structured output, no failure modes
    worth surfacing, or no op-local constraints omits the
-   corresponding section). `## Errors` and `## Rules` use the
-   **named-subsection form** (each entry is `### <name>` with a
-   multi-paragraph body); `## Inputs` and `## Output` use the bullet
-   form (`- **<name>** — <description>`). There is no `## Tools`
-   section — the procedure names the tool inline (`cargo …`,
-   `gitnexus_*(…)`), matching composition rule #8.
+   corresponding section). All four — `## Inputs`, `## Output`,
+   `## Errors`, `## Rules` — use the **named-subsection form**
+   (each entry is `### <name>` with a body underneath; the body
+   can be a single short paragraph for Inputs/Output or
+   multi-paragraph for Errors/Rules — the form is uniform either
+   way). Bullets in these sections are non-canonical. There is no
+   `## Tools` section — the procedure names the tool inline
+   (`cargo …`, `gitnexus_*(…)`), matching composition rule #8.
    **Only the canonical sections enumerated above may appear in a
    child op file.** Extension sections (Harness implementations,
    Schema reference, Notes, Examples, etc.) are forbidden — they break

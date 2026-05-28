@@ -4,7 +4,9 @@ List issues (read-only — safe via gh CLI).
 
 ## Inputs
 
-- **filters** — Optional flags (e.g., `--state open --label bug`)
+### filters
+
+Optional flags (e.g., `--state open --label bug`)
 
 ## Procedure
 

@@ -4,11 +4,15 @@ Find functions with zero in-degree CALLS edges (orphan/unused symbols) and inter
 
 ## Inputs
 
-- **changed_files** — the set of files changed by the work package (from [detect-changes](detect-changes.md))
+### changed_files
+
+the set of files changed by the work package (from [detect-changes](detect-changes.md))
 
 ## Output
 
-- **orphan_candidates** — symbols in changed_files with no callers — over-engineering / dead-code candidates
+### orphan_candidates
+
+symbols in changed_files with no callers — over-engineering / dead-code candidates
 
 ## Procedure
 

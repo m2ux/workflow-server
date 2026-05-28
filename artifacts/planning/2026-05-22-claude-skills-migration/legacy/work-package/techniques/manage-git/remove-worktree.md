@@ -4,14 +4,27 @@ Tear down a worktree created earlier in the work package.
 
 ## Inputs
 
-- **reference_path** — Path to the reference checkout
-- **component_name** — *(optional)* Basename of the component (for monorepo references)
-- **target_path** — The worktree path to remove
-- **worktree_created** — Must be true (set by [create-worktree](create-worktree.md)); if false, this operation is a no-op
+### reference_path
+
+Path to the reference checkout
+
+### component_name
+
+*(optional)* Basename of the component (for monorepo references)
+
+### target_path
+
+The worktree path to remove
+
+### worktree_created
+
+Must be true (set by [create-worktree](create-worktree.md)); if false, this operation is a no-op
 
 ## Output
 
-- **worktree_created** — Set to false on successful removal
+### worktree_created
+
+Set to false on successful removal
 
 ## Procedure
 

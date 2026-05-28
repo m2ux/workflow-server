@@ -4,7 +4,9 @@ Determine whether the working directory is a regular repo or a submodule monorep
 
 ## Output
 
-- **is_monorepo** — true when `.gitmodules` exists at the repo root
+### is_monorepo
+
+true when `.gitmodules` exists at the repo root
 
 ## Procedure
 

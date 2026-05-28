@@ -4,7 +4,9 @@ Generate API documentation to verify inline doc comments compile.
 
 ## Inputs
 
-- **scope** — `'--workspace --no-deps'` for the full workspace, or `'-p <crate> --no-deps'` to scope
+### scope
+
+`'--workspace --no-deps'` for the full workspace, or `'-p <crate> --no-deps'` to scope
 
 ## Procedure
 

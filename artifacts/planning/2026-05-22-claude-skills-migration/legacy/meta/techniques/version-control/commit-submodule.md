@@ -4,10 +4,21 @@ Two-step submodule commit: commit + push inside the submodule, then update the p
 
 ## Inputs
 
-- **submodule_path** — Path of the submodule from the repo root (e.g., `workflows`, `.engineering/workflows`)
-- **paths** — Array of file paths inside the submodule
-- **submodule_message** — Conventional Commits message for the submodule commit
-- **parent_branch** — Branch to push the parent commit to
+### submodule_path
+
+Path of the submodule from the repo root (e.g., `workflows`, `.engineering/workflows`)
+
+### paths
+
+Array of file paths inside the submodule
+
+### submodule_message
+
+Conventional Commits message for the submodule commit
+
+### parent_branch
+
+Branch to push the parent commit to
 
 ## Procedure
 

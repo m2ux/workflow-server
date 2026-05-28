@@ -4,11 +4,15 @@ Verify the diff stays within the work-package's intended scope; flag scope creep
 
 ## Inputs
 
-- **requirements_scope** — the processes / functional areas the work package is meant to touch
+### requirements_scope
+
+the processes / functional areas the work package is meant to touch
 
 ## Output
 
-- **scope_findings** — affected processes that fall outside requirements_scope (scope-creep candidates)
+### scope_findings
+
+affected processes that fall outside requirements_scope (scope-creep candidates)
 
 ## Procedure
 

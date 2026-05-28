@@ -4,12 +4,19 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 ## Inputs
 
-- **scope** — `'--all'` for the full workspace (default and CI parity), or omit for the local crate
+### scope
+
+`'--all'` for the full workspace (default and CI parity), or omit for the local crate
 
 ## Output
 
-- **fmt_status** — { passed: boolean } — true when no formatting diffs
-- **fmt_diff_summary** — Concise summary of files needing formatting (when not passed)
+### fmt_status
+
+{ passed: boolean } — true when no formatting diffs
+
+### fmt_diff_summary
+
+Concise summary of files needing formatting (when not passed)
 
 ## Procedure
 

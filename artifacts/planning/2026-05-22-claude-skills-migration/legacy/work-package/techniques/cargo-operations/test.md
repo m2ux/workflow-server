@@ -4,14 +4,27 @@ Run tests with bounded test parallelism; prefer nextest when configured.
 
 ## Inputs
 
-- **scope** — `'--workspace'` or `'-p <crate>'`
-- **features** — Optional --features flags (empty string when none)
-- **test_filter** — Optional test name filter (e.g., 'test_foo' or '--test integration'); empty string when none
+### scope
+
+`'--workspace'` or `'-p <crate>'`
+
+### features
+
+Optional --features flags (empty string when none)
+
+### test_filter
+
+Optional test name filter (e.g., 'test_foo' or '--test integration'); empty string when none
 
 ## Output
 
-- **test_status** — Pass/fail summary
-- **failures** — Per-test failure detail when any failed
+### test_status
+
+Pass/fail summary
+
+### failures
+
+Per-test failure detail when any failed
 
 ## Procedure
 

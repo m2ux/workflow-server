@@ -4,7 +4,9 @@ Search across documents using an indexed concept term.
 
 ## Inputs
 
-- **concept_term** — Mapped concept from the index
+### concept_term
+
+Mapped concept from the index
 
 ## Procedure
 

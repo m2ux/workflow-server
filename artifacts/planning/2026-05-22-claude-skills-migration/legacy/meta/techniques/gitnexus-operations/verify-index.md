@@ -4,12 +4,19 @@ Read the GitNexus index context resource and check freshness for the target repo
 
 ## Inputs
 
-- **repo_name** — Repository name as known to GitNexus
+### repo_name
+
+Repository name as known to GitNexus
 
 ## Output
 
-- **stats** — Symbol / relationship / process counts
-- **stale** — Boolean — true if the index is out of date
+### stats
+
+Symbol / relationship / process counts
+
+### stale
+
+Boolean — true if the index is out of date
 
 ## Procedure
 

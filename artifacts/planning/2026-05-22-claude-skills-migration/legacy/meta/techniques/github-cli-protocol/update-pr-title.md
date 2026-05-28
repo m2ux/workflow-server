@@ -4,9 +4,17 @@ Update the title of an existing PR via REST.
 
 ## Inputs
 
-- **owner** — Repo owner
-- **repo** — Repo name
-- **number** — PR number
+### owner
+
+Repo owner
+
+### repo
+
+Repo name
+
+### number
+
+PR number
 
 ## Procedure
 

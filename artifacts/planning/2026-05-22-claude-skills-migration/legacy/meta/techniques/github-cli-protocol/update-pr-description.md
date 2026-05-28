@@ -4,9 +4,17 @@ Update the body of an existing PR via REST.
 
 ## Inputs
 
-- **owner** — Repo owner (e.g., `m2ux`)
-- **repo** — Repo name
-- **number** — PR number
+### owner
+
+Repo owner (e.g., `m2ux`)
+
+### repo
+
+Repo name
+
+### number
+
+PR number
 
 ## Procedure
 

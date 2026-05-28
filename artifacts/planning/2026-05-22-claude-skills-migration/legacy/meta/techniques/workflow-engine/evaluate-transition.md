@@ -4,13 +4,23 @@ Pick the next activity from the current activity's `transitions[]`.
 
 ## Inputs
 
-- **activity** — Just-completed activity definition (with `transitions[]`)
-- **state** — Current variable state
-- **transition_override** — Optional `activity_id` from a checkpoint effect `transitionTo`
+### activity
+
+Just-completed activity definition (with `transitions[]`)
+
+### state
+
+Current variable state
+
+### transition_override
+
+Optional `activity_id` from a checkpoint effect `transitionTo`
 
 ## Output
 
-- **next_activity_id** — Activity ID to dispatch next, or null if the workflow is complete
+### next_activity_id
+
+Activity ID to dispatch next, or null if the workflow is complete
 
 ## Procedure
 

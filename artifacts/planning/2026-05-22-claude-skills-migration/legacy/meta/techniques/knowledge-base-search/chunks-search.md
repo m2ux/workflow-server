@@ -4,8 +4,13 @@ Search within a known document by its resolved path.
 
 ## Inputs
 
-- **source_path** — Path returned by [catalog-search](catalog-search.md)
-- **query** — Search query
+### source_path
+
+Path returned by [catalog-search](catalog-search.md)
+
+### query
+
+Search query
 
 ## Procedure
 

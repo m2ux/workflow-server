@@ -4,12 +4,29 @@ Perform a local signed squash merge into the default branch — used when the Gi
 
 ## Inputs
 
-- **target_path** — The working directory (worktree)
-- **branch_name** — Feature branch to squash-merge
-- **default_branch** — Default branch name (typically `main`)
-- **pr_number** — PR number, used in the merge commit message
-- **type** — Commit type prefix (feat / fix / chore / docs / etc.)
-- **description** — One-line description for the merge commit message
+### target_path
+
+The working directory (worktree)
+
+### branch_name
+
+Feature branch to squash-merge
+
+### default_branch
+
+Default branch name (typically `main`)
+
+### pr_number
+
+PR number, used in the merge commit message
+
+### type
+
+Commit type prefix (feat / fix / chore / docs / etc.)
+
+### description
+
+One-line description for the merge commit message
 
 ## Procedure
 

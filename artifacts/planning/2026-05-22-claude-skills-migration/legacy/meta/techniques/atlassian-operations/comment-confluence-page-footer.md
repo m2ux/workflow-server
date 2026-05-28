@@ -4,9 +4,17 @@ Add a page-level (footer) comment to a Confluence page.
 
 ## Inputs
 
-- **cloudId** — From [resolve-cloud-id](resolve-cloud-id.md)
-- **pageId** — Page ID
-- **body** — Markdown body
+### cloudId
+
+From [resolve-cloud-id](resolve-cloud-id.md)
+
+### pageId
+
+Page ID
+
+### body
+
+Markdown body
 
 ## Procedure
 

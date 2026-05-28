@@ -4,11 +4,25 @@ Commit planning artifacts to the parent engineering repo with the activity messa
 
 ## Inputs
 
-- **reference_path** — Path to the engineering repo where planning artifacts live
-- **activity_name** — Name of the activity that produced the artifacts (e.g., `wp-plan`, `implement`)
-- **issue_key** — Issue identifier (e.g., `WORKFLOW-123` or `#42`)
-- **files** — List of files to stage and commit
-- **branch** — Engineering branch to push to
+### reference_path
+
+Path to the engineering repo where planning artifacts live
+
+### activity_name
+
+Name of the activity that produced the artifacts (e.g., `wp-plan`, `implement`)
+
+### issue_key
+
+Issue identifier (e.g., `WORKFLOW-123` or `#42`)
+
+### files
+
+List of files to stage and commit
+
+### branch
+
+Engineering branch to push to
 
 ## Procedure
 

@@ -4,13 +4,23 @@ Run the linter against all targets, denying warnings.
 
 ## Inputs
 
-- **scope** — `'--workspace'` or `'-p <crate>'`
-- **features** — Optional --features flags (empty string when none)
+### scope
+
+`'--workspace'` or `'-p <crate>'`
+
+### features
+
+Optional --features flags (empty string when none)
 
 ## Output
 
-- **clippy_status** — { passed: boolean } — true when no denied warnings emitted
-- **lint_diagnostics** — Captured stdout/stderr (used by [validate-build](../validate-build/SKILL.md)::[analyze-failure](../validate-build/analyze-failure.md))
+### clippy_status
+
+{ passed: boolean } — true when no denied warnings emitted
+
+### lint_diagnostics
+
+Captured stdout/stderr (used by [validate-build](../validate-build/SKILL.md)::[analyze-failure](../validate-build/analyze-failure.md))
 
 ## Procedure
 

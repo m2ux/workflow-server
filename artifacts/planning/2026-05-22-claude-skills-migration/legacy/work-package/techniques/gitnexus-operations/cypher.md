@@ -4,12 +4,19 @@ Raw graph query for traces and filters not covered by the higher-level operation
 
 ## Inputs
 
-- **query** — a Cypher query string
-- **name** — repo name (usually the current repo)
+### query
+
+a Cypher query string
+
+### name
+
+repo name (usually the current repo)
 
 ## Output
 
-- **rows** — the query result rows
+### rows
+
+the query result rows
 
 ## Procedure
 

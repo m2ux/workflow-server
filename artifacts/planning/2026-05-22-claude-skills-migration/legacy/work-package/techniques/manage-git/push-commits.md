@@ -4,8 +4,13 @@ Push local commits on the feature branch to the remote.
 
 ## Inputs
 
-- **target_path** — The working directory (worktree)
-- **branch_name** — Feature branch being pushed
+### target_path
+
+The working directory (worktree)
+
+### branch_name
+
+Feature branch being pushed
 
 ## Procedure
 

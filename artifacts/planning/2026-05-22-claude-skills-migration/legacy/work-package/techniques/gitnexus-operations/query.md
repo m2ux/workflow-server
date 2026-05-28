@@ -4,11 +4,15 @@ Find execution flows related to a concept, symptom, or error string — the stru
 
 ## Inputs
 
-- **query** — a concept, symptom, or error text (e.g. `'payment validation error'`)
+### query
+
+a concept, symptom, or error text (e.g. `'payment validation error'`)
 
 ## Output
 
-- **query_report** — execution flows (processes) grouped, with member symbols and file locations
+### query_report
+
+execution flows (processes) grouped, with member symbols and file locations
 
 ## Procedure
 

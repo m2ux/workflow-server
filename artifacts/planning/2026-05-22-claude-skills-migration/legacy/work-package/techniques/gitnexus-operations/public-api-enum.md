@@ -4,7 +4,9 @@ Enumerate exactly the public/exported APIs in the diff that need doc comments â€
 
 ## Output
 
-- **public_api_symbols** â€” the exported symbols present in the diff that require documentation
+### public_api_symbols
+
+the exported symbols present in the diff that require documentation
 
 ## Procedure
 

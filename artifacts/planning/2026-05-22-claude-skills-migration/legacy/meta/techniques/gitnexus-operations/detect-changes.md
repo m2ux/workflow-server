@@ -4,11 +4,15 @@ Verify the scope of recent edits — confirm only expected files / symbols chang
 
 ## Inputs
 
-- **repo_name** — Repository name
+### repo_name
+
+Repository name
 
 ## Output
 
-- **delta** — Changed symbols / processes since last scan
+### delta
+
+Changed symbols / processes since last scan
 
 ## Procedure
 

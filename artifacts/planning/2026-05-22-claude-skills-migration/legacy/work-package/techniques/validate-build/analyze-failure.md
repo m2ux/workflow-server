@@ -4,15 +4,31 @@ Identify the root cause of a single failed validation check.
 
 ## Inputs
 
-- **check_id** — Identifier of the failed check (one of: run-tests, verify-build, check-format, check-lint)
-- **diagnostics** — stdout/stderr or structured diagnostics emitted by the underlying tool
-- **target_path** — Path the check ran against (used to read source files referenced in diagnostics)
+### check_id
+
+Identifier of the failed check (one of: run-tests, verify-build, check-format, check-lint)
+
+### diagnostics
+
+stdout/stderr or structured diagnostics emitted by the underlying tool
+
+### target_path
+
+Path the check ran against (used to read source files referenced in diagnostics)
 
 ## Output
 
-- **failure_class** — One of: compile-error, test-assertion, lint-violation, formatting-diff, environment, flaky
-- **root_cause** — One-line statement of the root cause
-- **fix_strategy** — Concrete fix approach (file edit, fmt-fix invocation, dependency install, etc.)
+### failure_class
+
+One of: compile-error, test-assertion, lint-violation, formatting-diff, environment, flaky
+
+### root_cause
+
+One-line statement of the root cause
+
+### fix_strategy
+
+Concrete fix approach (file edit, fmt-fix invocation, dependency install, etc.)
 
 ## Procedure
 
