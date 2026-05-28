@@ -51,7 +51,7 @@ Elicited requirements from elicitation activity
 - Document assumptions in planning decisions
 - Break work into atomic tasks with explicit dependencies
 - Define task ordering — never assume ordering is obvious
-- When the target symbols are knowable, apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/SKILL.md#impact) (`{target, direction: 'upstream'}`) to bound task scope and order tasks by dependency depth (edit leaves before callers).
+- When the target symbols are knowable, apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/impact.md) (`{target, direction: 'upstream'}`) to bound task scope and order tasks by dependency depth (edit leaves before callers).
 
 ### 4. Write Plan
 
@@ -78,7 +78,7 @@ Work package plan with task breakdown and dependencies
 
 ### tasks-are-code-changes-only
 
-Plan tasks describe CODE OR ARTIFACT CHANGES — the source edits, schema changes, doc updates, etc. that must be made to satisfy the goal. Tasks MUST NOT describe verification work (compile, test, lint, format) as separate items: verification runs after every task automatically via the implement activity's task-cycle (run-tests step → [cargo-operations](../cargo-operations/SKILL.md)::[test](../cargo-operations/SKILL.md#test)) and at the validate activity ([cargo-operations](../cargo-operations/SKILL.md)::[check](../cargo-operations/SKILL.md#check) / [fmt-check](../cargo-operations/SKILL.md#fmt-check) / [clippy](../cargo-operations/SKILL.md#clippy)). Adding 'Verify compilation', 'Verify tests pass', 'Run cargo X', or similar as a task duplicates that built-in cycle and is forbidden.
+Plan tasks describe CODE OR ARTIFACT CHANGES — the source edits, schema changes, doc updates, etc. that must be made to satisfy the goal. Tasks MUST NOT describe verification work (compile, test, lint, format) as separate items: verification runs after every task automatically via the implement activity's task-cycle (run-tests step → [cargo-operations](../cargo-operations/SKILL.md)::[test](../cargo-operations/test.md)) and at the validate activity ([cargo-operations](../cargo-operations/SKILL.md)::[check](../cargo-operations/check.md) / [fmt-check](../cargo-operations/fmt-check.md) / [clippy](../cargo-operations/clippy.md)). Adding 'Verify compilation', 'Verify tests pass', 'Run cargo X', or similar as a task duplicates that built-in cycle and is forbidden.
 
 ### no-raw-commands-in-plan
 

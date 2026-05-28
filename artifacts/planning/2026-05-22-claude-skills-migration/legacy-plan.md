@@ -129,7 +129,7 @@ skills (orphan branch root)
         └── resources/ …
 ```
 
-Per-technique / per-resource shape: each is a folder containing a single `SKILL.md`. No sub-folders, no sub-files. Flat (Phase 1 does not nest; the ontology permits it, Phase 2 uses it).
+Per-technique / per-resource shape: each is a folder containing a single `SKILL.md`. No sub-folders. Sub-files are reserved for the `*-operations` pattern (one operation per sibling `<op>.md`, no frontmatter — see §5.5); all other techniques and every resource are a single `SKILL.md`. Flat (Phase 1 does not nest; the ontology permits it, Phase 2 uses it).
 
 ---
 
@@ -303,9 +303,9 @@ The task to implement from the plan (provided by the activity loop iterator)
 
 ### 2. Pre Edit Impact Check
 
-- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/SKILL.md#impact) with `{target: <target-symbol>, direction: 'upstream'}` before any edit
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/impact.md) with `{target: <target-symbol>, direction: 'upstream'}` before any edit
 - Read the resulting impact_report; if HIGH or CRITICAL risk, surface it to the user before proceeding
-- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) with `{name: <target-symbol>}` to understand callers/callees of the symbol
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/context.md) with `{name: <target-symbol>}` to understand callers/callees of the symbol
 
 …
 
@@ -338,13 +338,13 @@ The target above reflects the adopted refinements (§5.5) layered on the mechani
 
 ### 5.5 Adopted refinements beyond mechanical mapping
 
-Three refinements were adopted during the work-package pilot (2026-05-23 → 2026-05-27). They are deliberate departures from a pure 1:1 mechanical mirror; everything else stays mechanical.
+Four refinements were adopted during the work-package pilot (2026-05-23 → 2026-05-27). They are deliberate departures from a pure 1:1 mechanical mirror; everything else stays mechanical.
 
 #### Cross-references as file-relative hyperlinks
 
 Every technique→technique and technique→resource reference is a file-relative markdown hyperlink to the target SKILL.md (link text = target slug; path relative to the *referencing file's own directory*, so it clicks through in any IDE / GitHub / markdown renderer; always ends in `/SKILL.md`). The `../` depth follows from where the two files sit — a technique referencing a sibling technique emits `[<slug>](../<slug>/SKILL.md)`; a technique referencing a resource emits `[<slug>](../../resources/<slug>/SKILL.md)`. This replaces the earlier `skill:<path>` specifier idea. The ontology definition resource documents this as its "Cross-reference format". To fetch, an agent strips the trailing `/SKILL.md` and calls `get_skill` on the resolved name.
 
-To reference a **specific operation or section** of another skill, hyperlink BOTH parts — the skill name to its `SKILL.md` and the op/section name to its `#<anchor>` — joined by `::`, with any params after: `[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>)` (`{params}`). Within the same file a sibling section is just `[<op>](#<op>)`. This is the at-rest, human-navigable form of per-section addressing: on delivery the server simplifies each to a bare name (`<skill>` or `<skill>/<section>`), which `get_skill` resolves by precedence.
+To reference a **specific operation or section** of another skill, hyperlink BOTH parts — the skill name to its `SKILL.md` and the op/section name to wherever it lives — joined by `::`, with any params after: `[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>)` (`{params}`). When the operation lives in its own **child file** (the `*-operations` pattern, below), the second link targets the file directly with no anchor: `[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/<op>.md)`. Within the same skill folder a sibling operation is `[<op>](<op>.md)`; within the same file a section is `[<op>](#<op>)`. This is the at-rest, human-navigable form of per-section addressing: on delivery the server simplifies each to a bare name (`<skill>` or `<skill>/<segment>`), which `get_skill` resolves by precedence — the underlying storage (section, child file, or nested skill) is transparent to the caller.
 
 #### Resources distributed inline (no `## Resources` section)
 
@@ -364,6 +364,17 @@ The pilot applied this to GitNexus:
 - The **`gitnexus-reference` resource** was trimmed: its "Work-package Integration Patterns" prose section was removed (now the composite operations); the tool/schema/CLI reference material remains.
 
 Forward-compatibility: this flat operations-technique maps cleanly onto the workflow-canonical "Tool" concept (a tool-dedicated namespace resource) in Phase 2. The same lens applies to other tools driven via per-technique rules (e.g. `gh` in `create-issue`/`update-pr`) — candidates for the same treatment, deferred.
+
+#### `*-operations` techniques split into per-operation child files
+
+Operations-style techniques (those whose body is a flat list of named, externally-callable operations rather than an ordered protocol) are stored as a parent `SKILL.md` index plus one child file per operation. The parent SKILL.md carries the frontmatter (`metadata.ontology` + `kind: technique`), the `## Capability` blurb, the `## Operations` table (each row links to the child file), and the cross-cutting `## Rules`; each child file is plain markdown with no frontmatter and the operation's per-section shape (`# <op>` h1, `## Inputs`, `## Output`, `## Procedure`, `## Tools`, `## Errors`).
+
+The pilot applied this to:
+
+- **`cargo-operations`** — 10 child files: `check.md`, `test.md`, `build-dev.md`, `build-release.md`, `clippy.md`, `fmt-check.md`, `fmt-fix.md`, `doc.md`, `preflight.md`, `run-suite.md`.
+- **`gitnexus-operations`** — 12 child files: `impact.md`, `context.md`, `detect-changes.md`, `query.md`, `cypher.md` (primitive) and `orphan-scan.md`, `public-api-enum.md`, `diff-coverage-map.md`, `scope-discipline-check.md`, `diagram-source-select.md`, `complexity-signal.md`, `reversibility-signal.md` (composite).
+
+This is structural enforcement of the operations idiom — the file layout makes the named-callable shape obvious, makes diffs scoped to one operation, and lets the server deliver just the file the caller's protocol step references (per-section addressing, architecture.md §6.1, resolution path 2: sibling supporting file). Protocol-style techniques (those with `## Protocol` and ordered numbered steps) are NOT split — their steps are sequential and not externally addressable. Only `cargo-operations` and `gitnexus-operations` qualified.
 
 ---
 

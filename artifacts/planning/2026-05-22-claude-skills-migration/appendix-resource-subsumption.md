@@ -14,7 +14,7 @@ relates-to: ./workflow-canonical-plan.md
 
 ## C.0 Classification rule (supersedes specific row dispositions where they conflict)
 
-An earlier draft of Appendix C used dispositions like "Skill-local sub-file" and "Technique-local sub-file" that **no longer exist in the architecture** — there are no sub-files of any kind. The clean rule replacing them:
+An earlier draft of Appendix C used dispositions like "Skill-local sub-file" and "Technique-local sub-file" that **no longer exist in the architecture** as places to put reference material — templates, criteria, primers are resources (see below). The only sub-files that exist are the `*-operations` pattern's per-op child files (one operation per sibling `<op>.md` inside an operations-skill's folder, e.g. `cargo-operations/check.md`); that pattern is structural, not a content disposition, and is documented in [legacy-plan.md §5.5](./legacy-plan.md#55-adopted-refinements-beyond-mechanical-mapping). The clean rule replacing the old sub-file dispositions:
 
 | Content type | Destination |
 |---|---|

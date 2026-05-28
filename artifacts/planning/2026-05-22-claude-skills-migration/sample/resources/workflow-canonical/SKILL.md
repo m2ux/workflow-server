@@ -125,15 +125,24 @@ resource: `[<name>](../../resources/<name>/SKILL.md)`. Examples:
 
 To reference a **specific operation or section** of another skill,
 hyperlink BOTH parts — the skill name to its `SKILL.md` and the
-op/section name to its `#<anchor>` — joined by `::`, with any params
+op/section name to wherever it lives — joined by `::`, with any params
 after:
 
 ```
 [<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>) (`{params}`)
 ```
 
-e.g. `[gitnexus](../gitnexus/SKILL.md)::[impact](../gitnexus/SKILL.md#impact) (`{target, direction}`)`.
-Within the same file, a sibling section is just `[<op>](#<op>)`.
+When the operation lives in its own **child file** (the
+`*-operations` pattern — see composition rule #2 below), the second
+link targets the file directly with no anchor:
+
+```
+[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/<op>.md) (`{params}`)
+```
+
+e.g. `[gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/impact.md) (`{target, direction}`)`.
+Within the same skill folder a sibling operation is `[<op>](<op>.md)`;
+within the same file a section is `[<op>](#<op>)`.
 
 At rest these are clickable file-relative hyperlinks (human navigation);
 on delivery the server simplifies each to a bare **name** (`<skill>` or
@@ -146,8 +155,18 @@ path is the at-rest human-navigable form.
 
 1. **One `SKILL.md` per folder**, mandatory. Filename uppercase
    (`SKILL.md`).
-2. **No sub-files.** Templates, criteria, primers — promote each to a
-   named nested technique, OR fold into the relevant skill body.
+2. **Sub-files are reserved for the operations pattern.** Templates,
+   criteria, primers — promote each to a named nested technique, OR
+   fold into the relevant skill body. The only exception is the
+   `*-operations` pattern: a skill whose body is a flat library of
+   named, externally-callable operations may store one operation per
+   sibling file (`<skill>/<op>.md`, no frontmatter — they are
+   sub-documents of the parent skill, not skills in their own right).
+   The parent `SKILL.md` is the index (Capability + Operations table +
+   Rules) and each child file carries the operation's per-section shape.
+   Protocol-style techniques (ordered numbered steps) MUST keep their
+   protocol in `SKILL.md` — steps are sequential, not externally
+   addressable.
 3. **Every folder under `skills/` is a skill (structural).** Nested
    folders are nested skills. Arbitrary depth is permitted. The content
    kind is `metadata.kind` (`technique`); a `SKILL.md` with no

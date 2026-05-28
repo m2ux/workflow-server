@@ -42,7 +42,7 @@ Task breakdown from create-plan skill
 - Create specific test cases for each requirement
 - Include boundary conditions, error paths, and edge cases
 - Link each test case to its requirement and acceptance criterion
-- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[query](../gitnexus-operations/SKILL.md#query) (`{query: <concept>}`) to find existing test patterns for related concepts and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) (`{name: <symbol>}`) to identify error-path callees as edge-case test candidates.
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[query](../gitnexus-operations/query.md) (`{query: <concept>}`) to find existing test patterns for related concepts and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/context.md) (`{name: <symbol>}`) to identify error-path callees as edge-case test candidates.
 
 ### 4. Write Artifact
 

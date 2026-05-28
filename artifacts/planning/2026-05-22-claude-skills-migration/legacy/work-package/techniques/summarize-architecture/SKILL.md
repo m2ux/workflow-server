@@ -36,7 +36,7 @@ Path to planning folder for context
 - Determine which architectural components are affected by the changes
 - Map changed files to modules and subsystems
 - Identify external interactions and boundaries
-- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[diagram-source-select](../gitnexus-operations/SKILL.md#diagram-source-select) to bound diagram scope to the affected processes and source diagram structure from graph resources.
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[diagram-source-select](../gitnexus-operations/diagram-source-select.md) to bound diagram scope to the affected processes and source diagram structure from graph resources.
 
 ### 2. Create Context Diagram
 
@@ -49,14 +49,14 @@ Path to planning folder for context
 - If module structure is affected, create package diagram
 - Show internal organization and boundaries
 - Use Mermaid syntax
-- Source package-diagram structure via [gitnexus-operations](../gitnexus-operations/SKILL.md)::[diagram-source-select](../gitnexus-operations/SKILL.md#diagram-source-select) (`{diagram_type: 'package'}`) (functional-area clusters and their members) when the codebase is indexed.
+- Source package-diagram structure via [gitnexus-operations](../gitnexus-operations/SKILL.md)::[diagram-source-select](../gitnexus-operations/diagram-source-select.md) (`{diagram_type: 'package'}`) (functional-area clusters and their members) when the codebase is indexed.
 
 ### 4. Create Sequence Diagrams
 
 - For key flows affected by changes, create sequence diagrams
 - Show interactions between components
 - Use Mermaid sequence diagram syntax
-- Source sequence-diagram structure via [gitnexus-operations](../gitnexus-operations/SKILL.md)::[diagram-source-select](../gitnexus-operations/SKILL.md#diagram-source-select) (`{diagram_type: 'sequence'}`) (step-by-step execution traces) when the codebase is indexed.
+- Source sequence-diagram structure via [gitnexus-operations](../gitnexus-operations/SKILL.md)::[diagram-source-select](../gitnexus-operations/diagram-source-select.md) (`{diagram_type: 'sequence'}`) (step-by-step execution traces) when the codebase is indexed.
 
 ### 5. Write Summary
 

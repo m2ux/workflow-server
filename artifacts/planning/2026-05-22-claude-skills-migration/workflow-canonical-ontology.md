@@ -185,7 +185,7 @@ The ontology is operationalised by a small set of composition rules:
 
 5. **Rules constrain techniques; rules are not invokable.** A rule like "MUST run impact analysis before any edit" mandates the use of a technique but is not itself executable.
 
-6. **No sub-files.** Every folder under `skills/` is a skill (a `SKILL.md`, possibly with nested skill folders). No flat markdown sub-files. Templates, criteria, primers, role contracts — EITHER promoted to named techniques OR folded into a body as `##` sections (the workflow technique's role contracts are the canonical example).
+6. **Sub-files reserved for the operations pattern.** Every folder under `skills/` is a skill (a `SKILL.md`, possibly with nested skill folders). Flat markdown sub-files are NOT used for general content — templates, criteria, primers, role contracts are promoted to named techniques OR folded into a body as `##` sections (the workflow technique's role contracts are the canonical example). The one exception: a skill whose body is a flat library of named, externally-callable operations (the `*-operations` pattern, e.g. `cargo-operations`, `gitnexus-operations`) MAY store one operation per sibling file (`<skill>/<op>.md`, no frontmatter — sub-documents of the parent skill, not skills in their own right); the parent `SKILL.md` is the index. Protocol-style techniques (ordered numbered steps) keep their protocol in `SKILL.md`.
 
 7. **A role qualifies one or more activity-bound techniques.** A role's persona contract (a `##` section inside [workflow/SKILL.md](workflow/SKILL.md)) declares which activity-bound techniques the role is rated to perform. Workflow.toon activities use the qualification to bind agents. Pure tool namespaces are implicitly available to any role whose qualified techniques draw from them.
 
@@ -245,13 +245,19 @@ The `../` depth follows from where the two files sit; the link always ends in `/
 [dco-attest-commit](../workflow/dco-attest-commit/SKILL.md)  # sibling-bundle reference
 ```
 
-To reference a **specific operation or section** of another skill, hyperlink BOTH parts — the skill name to its `SKILL.md` and the op/section name to its `#<anchor>` — joined by `::`, with any params after:
+To reference a **specific operation or section** of another skill, hyperlink BOTH parts — the skill name to its `SKILL.md` and the op/section name to wherever it lives — joined by `::`, with any params after:
 
 ```
 [<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>) (`{params}`)
 ```
 
-e.g. `[gitnexus](../gitnexus/SKILL.md)::[impact](../gitnexus/SKILL.md#impact) (`{target, direction}`)`. Within the same file, a sibling section is just `[<op>](#<op>)`. At rest these are clickable file-relative hyperlinks; on delivery the server simplifies each to a bare name (`<skill>` or `<skill>/<section>`), so to fetch, the agent strips the trailing `/SKILL.md` and calls `get_skill` on the resolved name.
+When the operation is stored as a **child file** of the skill (the `*-operations` pattern: one operation per sibling file inside the skill folder), the second link targets the file directly with no anchor:
+
+```
+[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/<op>.md) (`{params}`)
+```
+
+e.g. `[gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/impact.md) (`{target, direction}`)`. Within the same skill folder a sibling operation is `[<op>](<op>.md)`; within the same file a section is `[<op>](#<op>)`. At rest these are clickable file-relative hyperlinks; on delivery the server simplifies each to a bare name (`<skill>` or `<skill>/<segment>`) — the underlying storage (section, child file, or nested skill) is transparent to the caller — and `get_skill` resolves it by precedence.
 
 ---
 

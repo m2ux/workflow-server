@@ -46,7 +46,7 @@ Path to the target codebase directory
 ### 3. Architecture Survey
 
 - Top-down survey: start with project root structure, build system, entry points
-- When GitNexus is available: apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[query](../gitnexus-operations/SKILL.md#query) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) for dependency mapping — faster than grep and the required primary approach
+- When GitNexus is available: apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[query](../gitnexus-operations/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/context.md) for dependency mapping — faster than grep and the required primary approach
 - Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
 - Map dependency relationships between modules (imports, trait implementations, cross-module calls)
@@ -85,7 +85,7 @@ Path to the target codebase directory
 
 - Present candidate areas based on architecture survey and problem relevance
 - For selected area: trace data flows, examine implementation details, document edge cases
-- When GitNexus is available: apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[cypher](../gitnexus-operations/SKILL.md#cypher) for custom call chain queries
+- When GitNexus is available: apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](../gitnexus-operations/SKILL.md)::[cypher](../gitnexus-operations/cypher.md) for custom call chain queries
 - Append findings as dedicated subsections in the comprehension artifact
 
 ### 9. Question Management

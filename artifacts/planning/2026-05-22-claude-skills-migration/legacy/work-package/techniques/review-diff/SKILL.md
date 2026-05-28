@@ -44,7 +44,7 @@ Path to planning folder for artifact output
 - Include review time estimate in index
 - Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph explaining what the change does and why it exists — covering intent, context, and any non-obvious design choices
 - Rationale paragraphs should aid manual review by giving reviewers context before they inspect the diff
-- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/SKILL.md#context) (`{name: <symbol>}`) so the reviewer understands why the diff matters and which execution flows it touches.
+- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/context.md) (`{name: <symbol>}`) so the reviewer understands why the diff matters and which execution flows it touches.
 - Write index to change-block-index.md in planning folder
 - Always generate index before asking user to review
 - Follow the structured diff-review process in [manual-diff-review](../../resources/manual-diff-review/SKILL.md)

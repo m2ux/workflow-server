@@ -97,7 +97,7 @@ Crucially, **everything the ontology adds lives in the ontology definition, not 
 The package on disk (post-migration). Key conventions:
 
 - **`SKILL.md` is mandatory** at the root of every skill folder (the only filename constraint mandated by agentskills.io).
-- **No other entry files** — `SKILL.md` is the only file in a folder; nested folders are nested skills (no sub-files, no `index.md`).
+- **No other entry files** — `SKILL.md` is the only file in a folder; nested folders are nested skills (no `index.md`). Sub-files are reserved for the `*-operations` pattern only: a skill whose body is a flat library of named, externally-callable operations may store one operation per sibling `<op>.md` (no frontmatter — sub-documents of the parent skill); see [legacy-plan.md §5.5](./legacy-plan.md#55-adopted-refinements-beyond-mechanical-mapping).
 - **Techniques** are `SKILL.md` folders nested under their owner (`<owner>/<technique>/SKILL.md`) — no `techniques/` intermediate directory. Shared/common techniques live at `shared/techniques/`.
 - **Content is single-kinded**: every governed unit is a `technique`. Which units are activity-bound (the existing 25) is declared in `workflow.toon`, not in frontmatter. A unit that only groups related skills with no procedure or `Output` of its own (a pure namespace, e.g. `gitnexus`) is a freeform resource, not a technique; a unit that composes sub-techniques but carries its own body is a composing technique.
 - **Roles** are `##` sections inside the `workflow` technique; **tools** have no on-disk slot (inline in prose, or a tool-dedicated namespace resource).
@@ -119,8 +119,8 @@ workflows/
                                            # 25 producing techniques + ~7 library groupings = 32 total
       # --- Producing techniques (25) ---
       # Every skill folder contains a lean SKILL.md (a composing body) PLUS one or more action-named
-      # nested techniques. There are NO flat sub-files. Templates, criteria, primers etc.
-      # are each promoted to a named technique. Example sketches:
+      # nested techniques. Flat sub-files are reserved for the *-operations pattern (one op per sibling
+      # file) — templates, criteria, primers etc. are each promoted to a named technique. Example sketches:
 
       implement-task/
         SKILL.md                           # composing body + technique table
@@ -298,13 +298,13 @@ workflows/
 **Conventions** (full statement):
 
 - **Directory name = identity slug** (lowercase-kebab, matches the `name:` frontmatter field). Slugs are verb-phrased and disambiguated for techniques (e.g. `understand-task-context`, not `understand-context`); generic stubs (`procedure/`, `execute/`, `main/`, `do/`, `run/`, `step-1/`) are banned.
-- **`SKILL.md`** at the root of every skill folder is **mandatory** (agentskills.io spec). Every level — top-level technique, library grouping, AND nested technique — uses this filename. On-disk shape is uniform: every folder contains exactly one `SKILL.md` and may contain nested skill folders. No flat sub-files anywhere.
-- **No sub-files of any kind.** Templates, criteria, primers, role contracts, glossaries — these are not separate files. Templates and criteria become named techniques. Role contracts live as `##` sections within the workflow skill's `SKILL.md` body. Domain primers are folded into the technique body they support.
+- **`SKILL.md`** at the root of every skill folder is **mandatory** (agentskills.io spec). Every level — top-level technique, library grouping, AND nested technique — uses this filename. On-disk shape is uniform: every folder contains exactly one `SKILL.md` and may contain nested skill folders.
+- **Sub-files reserved for the `*-operations` pattern.** Templates, criteria, primers, role contracts, glossaries — these are NOT separate files. Templates and criteria become named techniques. Role contracts live as `##` sections within the workflow skill's `SKILL.md` body. Domain primers are folded into the technique body they support. The lone exception: a skill whose body is a flat library of named, externally-callable operations (the `*-operations` pattern, e.g. `cargo-operations`, `gitnexus-operations`) MAY store one operation per sibling `<op>.md` (no frontmatter — sub-documents of the parent skill, not skills in their own right). The parent `SKILL.md` is the index. Protocol-style techniques (ordered numbered steps) keep their protocol in `SKILL.md`.
 - **Frontmatter** — server-enforced fields are the minimum needed; everything else is ontology-defined:
   - **Top-level (agentskills.io spec)**: `name:`, `description:`.
   - **Under `metadata:` (architecture-required, governed skills only)**: `ontology: workflow-canonical`, `kind: technique` — two bare-slug fields; resources carry neither.
   - **Under `metadata:` (workflow-canonical-defined)**: any metadata entries per the ontology definition's schema. There is no `produces` field — which technique is the unit of workflow delegation is declared in `workflow.toon` (the activity binding), and the technique's `Output` section names the work product.
-  - **Absent fields** (under workflow-canonical): no `role:` (role-to-skill binding lives in `workflow.toon` activities), no `uses-tools:` (tool calls are inline in technique prose), no `bundles-subfiles:` (no sub-files exist).
+  - **Absent fields** (under workflow-canonical): no `role:` (role-to-skill binding lives in `workflow.toon` activities), no `uses-tools:` (tool calls are inline in technique prose), no `bundles-subfiles:` (sub-files, where present, are the `*-operations` pattern's per-op child files; they are discovered structurally by the server, not declared via frontmatter).
 - **Cross-skill technique reference**: by relative path from the referencing body — e.g. `[impact](../gitnexus/impact/SKILL.md)` from `skills/implement-task/SKILL.md`. The path drops the previously-considered `techniques/` intermediate directory.
 - **No `resources/` directory** — see [Appendix C](./appendix-resource-subsumption.md) for the per-file disposition of the 28 pre-migration resources (all now promoted to techniques or folded into the workflow skill).
 
@@ -350,7 +350,7 @@ On task completion, the activity iterator advances to the next task or to
 Notes on this sketch:
 - **Lean.** The composing body is ~25 lines. No embedded protocol; the protocol lives in the named techniques.
 - **No frontmatter `role:`, `uses-tools:`, `bundles-subfiles:`.**
-- **All folder children are named techniques.** `understand-task-context/`, `write-task-code/`, `verify-task-locally/` are sibling technique folders under `skills/implement-task/`. No `procedure/` stubs, no flat sub-files.
+- **All folder children are named techniques.** `understand-task-context/`, `write-task-code/`, `verify-task-locally/` are sibling technique folders under `skills/implement-task/`. No `procedure/` stubs. Flat sub-files appear only in the `*-operations` pattern (one operation per file inside the operations-skill's folder, e.g. `cargo-operations/check.md`).
 - **Cross-skill technique references** in the table use `../<bundle>/<technique>/SKILL.md`.
 
 The migration will produce per-skill composing bodies of this form, grounded in the existing TOON content.

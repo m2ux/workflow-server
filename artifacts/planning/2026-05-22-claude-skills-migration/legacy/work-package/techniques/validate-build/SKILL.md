@@ -37,7 +37,7 @@ Triage validation failures and aggregate cross-check results for the validate ac
 
 - Parse the diagnostics; classify into failure_class. Compile and test failures cite a file:line — read that location via the harness Read tool.
 - Distinguish flaky from real failures by inspecting the diagnostic surface (e.g., timing-related panics, network errors). Mark flaky only when there is a clear signal.
-- Map failure_class to fix_strategy. compile-error / test-assertion → source edit; formatting-diff → [cargo-operations](../cargo-operations/SKILL.md)::[fmt-fix](../cargo-operations/SKILL.md#fmt-fix); lint-violation → either source edit or an explicit allow with justification; environment → surface to the user (do not auto-install).
+- Map failure_class to fix_strategy. compile-error / test-assertion → source edit; formatting-diff → [cargo-operations](../cargo-operations/SKILL.md)::[fmt-fix](../cargo-operations/fmt-fix.md); lint-violation → either source edit or an explicit allow with justification; environment → surface to the user (do not auto-install).
 
 **Tools:**
 
@@ -62,7 +62,7 @@ Triage validation failures and aggregate cross-check results for the validate ac
 
 **Procedure:**
 
-- Execute the fix per fix_strategy: source edits go through harness Edit/Write; formatting fixes go through [cargo-operations](../cargo-operations/SKILL.md)::[fmt-fix](../cargo-operations/SKILL.md#fmt-fix); dependency or environment fixes are surfaced to the user.
+- Execute the fix per fix_strategy: source edits go through harness Edit/Write; formatting fixes go through [cargo-operations](../cargo-operations/SKILL.md)::[fmt-fix](../cargo-operations/fmt-fix.md); dependency or environment fixes are surfaced to the user.
 - Set fix_applied = true on success. Set fix_applied = false when the fix requires user input — the activity loop will surface this via its checkpoint.
 
 **Tools:**
@@ -75,10 +75,10 @@ Triage validation failures and aggregate cross-check results for the validate ac
 
 **Inputs:**
 
-- **test_results** — Pass/fail and output captured from [cargo-operations](../cargo-operations/SKILL.md)::[test](../cargo-operations/SKILL.md#test) (or the project-equivalent test command)
-- **build_status** — Pass/fail captured from [cargo-operations](../cargo-operations/SKILL.md)::[check](../cargo-operations/SKILL.md#check) or [build-release](../cargo-operations/SKILL.md#build-release) (or the project-equivalent build command)
-- **format_status** — Pass/fail captured from [cargo-operations](../cargo-operations/SKILL.md)::[fmt-check](../cargo-operations/SKILL.md#fmt-check) (or the project-equivalent format check)
-- **lint_results** — Pass/fail and output captured from [cargo-operations](../cargo-operations/SKILL.md)::[clippy](../cargo-operations/SKILL.md#clippy) (or the project-equivalent linter)
+- **test_results** — Pass/fail and output captured from [cargo-operations](../cargo-operations/SKILL.md)::[test](../cargo-operations/test.md) (or the project-equivalent test command)
+- **build_status** — Pass/fail captured from [cargo-operations](../cargo-operations/SKILL.md)::[check](../cargo-operations/check.md) or [build-release](../cargo-operations/build-release.md) (or the project-equivalent build command)
+- **format_status** — Pass/fail captured from [cargo-operations](../cargo-operations/SKILL.md)::[fmt-check](../cargo-operations/fmt-check.md) (or the project-equivalent format check)
+- **lint_results** — Pass/fail and output captured from [cargo-operations](../cargo-operations/SKILL.md)::[clippy](../cargo-operations/clippy.md) (or the project-equivalent linter)
 
 **Output:**
 

@@ -128,6 +128,7 @@ Architecture-level conventions:
 - **`SKILL.md` is mandatory** at every skill folder's root (uppercase, agentskills.io requirement) — resources included. A resource is a `SKILL.md`-rooted skill that simply lacks `metadata.ontology`.
 - **Lowercase-kebab directory names** matching the `name:` field.
 - **Arbitrary nesting depth permitted.** The server walks the tree without depth restriction.
+- **Sibling supporting files** (`<skill>/<segment>.md`, no frontmatter) are progressively-disclosed sub-documents of the parent skill, not skills in their own right. They have no `SKILL.md` and carry no ontology metadata. Used to split a parent skill's body into per-sub-unit files (the operations-style pattern: `cargo-operations/check.md`, `gitnexus-operations/impact.md`, etc.) so the index stays small and each sub-unit is individually fetchable via per-section addressing (§6.1).
 - **Two resolution layers.** A **`shared/`** layer (`shared/resources/`, `shared/techniques/`) and **per-workflow** folders. A referenced name resolves workflow-local first, then `shared/` (§6.3) — local overrides shared. Both layers coexist by design.
 - **`meta/` is not a reserved namespace.** It is simply the folder of the workflow named `meta`. Ontology definitions do NOT live under `meta/`; they are shared resources at `shared/resources/<ontology>/`.
 
@@ -204,7 +205,13 @@ Under a different ontology, `metadata.ontology` would name a different ontology,
 
 **`get_skill(name)`** resolves a **name** to a `SKILL.md` by precedence — the current workflow's folder first, then the `shared/` layer (local shadows shared) — and returns the body via the §7 delivery projection (or a not-found indicator). The server **auto-detects** the target from its frontmatter: a governed technique (`metadata.ontology` + `kind: technique`) is delivered as TOON; a freeform resource (no `metadata.ontology`) as simplified markdown. **One accessor covers both — the caller does not choose.**
 
-**Per-section addressing.** `get_skill("<name>/<section>")` returns only the named section. Trailing-segment resolution: if the resolved skill has a **child-skill folder** of that name, it's a nested-skill fetch; otherwise the segment is a **slugified section heading** within the skill's body, and only that section is returned. A skill with child-skill folders resolves the segment to a nested skill; one with body sections and no children resolves it to a section. This lets a skill cite another's individual section — `gitnexus-operations/impact`, `cargo-operations/check` — instead of pulling the whole body.
+**Per-section addressing.** `get_skill("<name>/<segment>")` returns only the named sub-unit. Trailing-segment resolution proceeds in priority order:
+
+1. **Child-skill folder** — if `<name>/<segment>/SKILL.md` exists, it's a nested-skill fetch.
+2. **Sibling supporting file** — if `<name>/<segment>.md` exists (a child file with no SKILL.md), return that file. This is how skills like `cargo-operations` and `gitnexus-operations` carry one operation per file: `cargo-operations/check` resolves to `cargo-operations/check.md`, `gitnexus-operations/impact` to `gitnexus-operations/impact.md`. The parent SKILL.md acts as the index; child files are progressively-disclosed sub-documents (no frontmatter — they are not skills in their own right).
+3. **Slugified section heading** — otherwise the segment is a heading inside `<name>/SKILL.md` and only that section is returned.
+
+This lets a skill cite another's individual sub-unit without pulling the whole body — whether the sub-unit lives as a nested skill, a child file, or a section.
 
 Names are unique within the resolution scope (the ontology's disambiguation rule guarantees this), so the server keeps a name→path index per layer; a workflow-local entry shadows a `shared/` entry. Storage may be nested at any depth — the **reference is the name**, not the path.
 
@@ -215,7 +222,7 @@ Names are unique within the resolution scope (the ontology's disambiguation rule
 
 ### 6.3 Referencing: authored vs delivered
 
-At rest, references are human-friendly **file-relative** markdown hyperlinks — relative to the referencing file's own directory, so they click through in any IDE / GitHub / markdown renderer — to a whole skill (`[name](../name/SKILL.md)`) or to a section (`[name](../name/SKILL.md#section)`). To address a **specific operation or section** of another skill, hyperlink both parts joined by `::`: `[skill](../skill/SKILL.md)::[op](../skill/SKILL.md#op)` (params after, e.g. `` (`{target, direction}`) ``); within the same file a sibling section is just `[op](#op)`. On delivery the §7 pass **simplifies each to a bare name** (`<name>` or `<name>/<section>`), which the agent fetches via `get_skill` under precedence resolution. The at-rest form optimizes human navigation; the on-the-wire form optimizes tokens (and enables section-level fetches) and lets the server apply local-overrides-common without re-authoring.
+At rest, references are human-friendly **file-relative** markdown hyperlinks — relative to the referencing file's own directory, so they click through in any IDE / GitHub / markdown renderer — to a whole skill (`[name](../name/SKILL.md)`) or to a section (`[name](../name/SKILL.md#section)`). To address a **specific operation or section** of another skill, hyperlink both parts joined by `::`: `[skill](../skill/SKILL.md)::[op](../skill/SKILL.md#op)` (params after, e.g. `` (`{target, direction}`) ``). When the operation lives in its own **child file** (the `*-operations` pattern), the second link targets the file directly: `[skill](../skill/SKILL.md)::[op](../skill/op.md)` — same `::` form, no anchor. Within the same skill folder, a sibling operation is just `[op](op.md)`; within the same file, a section is `[op](#op)`. On delivery the §7 pass **simplifies each to a bare name** (`<name>` or `<name>/<segment>`), which the agent fetches via `get_skill` under precedence resolution — the underlying storage (section, child file, or nested skill) is transparent to the caller. The at-rest form optimizes human navigation; the on-the-wire form optimizes tokens (and enables section-level fetches) and lets the server apply local-overrides-common without re-authoring.
 
 ---
 
