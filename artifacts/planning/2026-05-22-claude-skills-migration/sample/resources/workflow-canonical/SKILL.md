@@ -129,7 +129,7 @@ op/section name to wherever it lives — joined by `::`, with any params
 after:
 
 ```
-[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>) (`{params}`)
+[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/SKILL.md#<op>) `{params}`
 ```
 
 When the operation lives in its own **child file** (the
@@ -137,10 +137,10 @@ When the operation lives in its own **child file** (the
 link targets the file directly with no anchor:
 
 ```
-[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/<op>.md) (`{params}`)
+[<skill>](../<skill>/SKILL.md)::[<op>](../<skill>/<op>.md) `{params}`
 ```
 
-e.g. `[gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/impact.md) (`{target, direction}`)`.
+e.g. [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/impact.md) `{target, direction}`.
 Within the same skill folder a sibling operation is `[<op>](<op>.md)`;
 within the same file a section is `[<op>](#<op>)`.
 
@@ -170,7 +170,9 @@ path is the at-rest human-navigable form.
    single-step procedures included; a step that invokes another
    operation uses the verb **`apply`** — operations are *applied*,
    not `run` / `called` / `invoked`; reserve `call` and `invoke` for
-   underlying tool invocations), and `## Inputs` / `## Output`
+   underlying tool invocations; params following an op reference are
+   inline-code-wrapped braces — `` `{name: value, ...}` `` — with no
+   surrounding parens), and `## Inputs` / `## Output`
    / `## Errors` / `## Rules` **only when the operation has them**
    (an op with no inputs, no structured output, no failure modes
    worth surfacing, or no op-local constraints omits the

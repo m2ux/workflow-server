@@ -35,9 +35,9 @@ The task to implement from the plan (provided by the activity loop iterator)
 
 ### 2. Pre Edit Impact Check
 
-- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/impact.md) (`{target: <target-symbol>, direction: 'upstream'}`) before any edit
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[impact](../gitnexus-operations/impact.md) `{target: <target-symbol>, direction: 'upstream'}` before any edit
 - Read the resulting impact_report; if HIGH or CRITICAL risk, surface it to the user before proceeding
-- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/context.md) (`{name: <target-symbol>}`) to understand callers/callees of the symbol
+- Apply [gitnexus-operations](../gitnexus-operations/SKILL.md)::[context](../gitnexus-operations/context.md) `{name: <target-symbol>}` to understand callers/callees of the symbol
 
 ### 3. Write Code
 
