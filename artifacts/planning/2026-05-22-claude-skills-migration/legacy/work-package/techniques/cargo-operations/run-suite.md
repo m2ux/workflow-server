@@ -19,4 +19,8 @@ Run check, clippy, test, and fmt-check concurrently against the same scope and a
 
 ## Errors
 
-- **out_of_memory** — Cause: Combined peak of concurrent cargo invocations exceeded available RAM despite per-op budgets · Recovery: Halve CARGO_BUILD_JOBS for all (export CARGO_BUILD_JOBS=2) and retry. On very tight hosts, fall back to running check/clippy/test sequentially via the per-op operations.
+### out_of_memory
+
+**Cause:** Combined peak of concurrent cargo invocations exceeded available RAM despite per-op budgets
+
+**Recovery:** Halve CARGO_BUILD_JOBS for all (export CARGO_BUILD_JOBS=2) and retry. On very tight hosts, fall back to running check/clippy/test sequentially via the per-op operations.

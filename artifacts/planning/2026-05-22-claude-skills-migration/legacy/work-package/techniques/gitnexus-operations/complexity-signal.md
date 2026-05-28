@@ -17,5 +17,14 @@ Objective complexity estimate for an issue, from the fan-out of a preliminary ta
 
 ## Errors
 
-- **stale_index** — Cause: the index is out of date · Recovery: run `npx gitnexus analyze`, then retry
-- **symbol_unknown** — Cause: no target symbol can be inferred from the issue · Recovery: signal unavailable — fall back to an issue-text complexity estimate
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze`, then retry
+
+### symbol_unknown
+
+**Cause:** no target symbol can be inferred from the issue
+
+**Recovery:** signal unavailable — fall back to an issue-text complexity estimate

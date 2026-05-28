@@ -20,8 +20,17 @@ Run tests with bounded test parallelism; prefer nextest when configured.
 
 ## Errors
 
-- **out_of_memory** — Cause: Test compile or test runtime peaked above available RAM · Recovery: Halve CARGO_BUILD_JOBS and RUST_TEST_THREADS and retry; consider nextest for lower per-test peak
-- **test_failure** — Cause: One or more tests failed · Recovery: Investigate the reported failure; do not mask via --no-fail-fast
+### out_of_memory
+
+**Cause:** Test compile or test runtime peaked above available RAM
+
+**Recovery:** Halve CARGO_BUILD_JOBS and RUST_TEST_THREADS and retry; consider nextest for lower per-test peak
+
+### test_failure
+
+**Cause:** One or more tests failed
+
+**Recovery:** Investigate the reported failure; do not mask via --no-fail-fast
 
 ## Rules
 

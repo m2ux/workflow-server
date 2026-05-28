@@ -19,4 +19,8 @@ Source architecture-diagram structure from graph resources rather than hand-roll
 
 ## Errors
 
-- **stale_index** — Cause: the index is out of date · Recovery: run `npx gitnexus analyze`, then retry
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze`, then retry

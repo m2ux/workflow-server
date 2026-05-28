@@ -22,5 +22,14 @@ Symbol blast radius — what depends on a symbol, at depth 1/2/3, with confidenc
 
 ## Errors
 
-- **stale_index** — Cause: the index is out of date · Recovery: run `npx gitnexus analyze` in terminal, then retry
-- **symbol_not_found** — Cause: target does not resolve in the graph · Recovery: verify the symbol name; if it is new/unindexed, fall back to grep for callers
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze` in terminal, then retry
+
+### symbol_not_found
+
+**Cause:** target does not resolve in the graph
+
+**Recovery:** verify the symbol name; if it is new/unindexed, fall back to grep for callers

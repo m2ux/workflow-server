@@ -18,4 +18,8 @@ Find functions with zero in-degree CALLS edges (orphan/unused symbols) and inter
 
 ## Errors
 
-- **stale_index** — Cause: the index is out of date · Recovery: run `npx gitnexus analyze`, then retry
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze`, then retry

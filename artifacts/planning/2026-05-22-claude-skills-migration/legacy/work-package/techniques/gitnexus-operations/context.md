@@ -17,5 +17,14 @@
 
 ## Errors
 
-- **stale_index** — Cause: the index is out of date · Recovery: run `npx gitnexus analyze`, then retry
-- **symbol_not_found** — Cause: name does not resolve · Recovery: verify the symbol name; fall back to grep when unindexed
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze`, then retry
+
+### symbol_not_found
+
+**Cause:** name does not resolve
+
+**Recovery:** verify the symbol name; fall back to grep when unindexed

@@ -13,4 +13,8 @@ Workspace dev build; skips the runtime wasm artifact.
 
 ## Errors
 
-- **out_of_memory** — Cause: Link or codegen step exceeded available RAM · Recovery: Halve CARGO_BUILD_JOBS and retry
+### out_of_memory
+
+**Cause:** Link or codegen step exceeded available RAM
+
+**Recovery:** Halve CARGO_BUILD_JOBS and retry

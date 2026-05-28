@@ -18,4 +18,8 @@ Map the current git diff to the changed-symbol set and the execution flows it af
 
 ## Errors
 
-- **stale_index** — Cause: the index is out of date · Recovery: run `npx gitnexus analyze`, then retry
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze`, then retry

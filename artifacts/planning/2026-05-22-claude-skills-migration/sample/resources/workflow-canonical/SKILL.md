@@ -171,9 +171,12 @@ path is the at-rest human-navigable form.
    / `## Errors` / `## Rules` **only when the operation has them**
    (an op with no inputs, no structured output, no failure modes
    worth surfacing, or no op-local constraints omits the
-   corresponding section). There is no `## Tools` section — the
-   procedure names the tool inline (`cargo …`, `gitnexus_*(…)`),
-   matching composition rule #8.
+   corresponding section). `## Errors` and `## Rules` use the
+   **named-subsection form** (each entry is `### <name>` with a
+   multi-paragraph body); `## Inputs` and `## Output` use the bullet
+   form (`- **<name>** — <description>`). There is no `## Tools`
+   section — the procedure names the tool inline (`cargo …`,
+   `gitnexus_*(…)`), matching composition rule #8.
    **Rules placement — parent vs op-local.** Cross-cutting rules
    (constraints that govern multiple operations) live in the parent
    `SKILL.md`'s `## Rules`. Op-local rules (constraints that apply to

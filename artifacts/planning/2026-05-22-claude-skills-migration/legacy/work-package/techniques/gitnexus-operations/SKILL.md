@@ -13,11 +13,7 @@ metadata:
 
 ## Capability
 
-Parameterized GitNexus operations for the work-package workflow. Primitive operations wrap each GitNexus MCP tool with the canonical work-package parameter set and output interpretation; composite operations encode the multi-call analysis recipes that recur across review and planning skills.
-
-This is the single home for *how* GitNexus is driven. Skill protocol steps reference an operation by name (`gitnexus-operations::<op>`) and supply a parameter set; they do not paste raw `gitnexus_*` calls or Cypher. Each operation is defined in a sibling file; load only the operations a protocol step references. For the underlying tool, resource, and graph-schema reference, see [gitnexus-reference](../../resources/gitnexus-reference/SKILL.md).
-
-> Migration note: this skill is introduced by the markdown migration — it has no 1:1 source TOON file. It is the GitNexus analogue of [cargo-operations](../cargo-operations/SKILL.md), consolidating tool-usage that the source workflow previously scattered across per-skill protocol steps and rules.
+Parameterized GitNexus operations for the work-package workflow. Primitive operations wrap each GitNexus MCP tool with the canonical work-package parameter set and output interpretation; composite operations encode the multi-call analysis recipes that recur across review and planning skills. For the underlying tool, resource, and graph-schema reference, see [gitnexus-reference](../../resources/gitnexus-reference/SKILL.md).
 
 ## Operations
 

@@ -12,4 +12,8 @@ Generate API documentation to verify inline doc comments compile.
 
 ## Errors
 
-- **broken_doc_link** — Cause: rustdoc detected a broken intra-doc link · Recovery: Fix the link target or remove the broken reference
+### broken_doc_link
+
+**Cause:** rustdoc detected a broken intra-doc link
+
+**Recovery:** Fix the link target or remove the broken reference

@@ -17,5 +17,14 @@ Gauge how reversible a change to a symbol is, to set the reversibility flag on j
 
 ## Errors
 
-- **stale_index** — Cause: the index is out of date · Recovery: run `npx gitnexus analyze`, then retry
-- **symbol_unknown** — Cause: the symbol does not resolve · Recovery: gauge reversibility from the diff and surrounding code instead
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze`, then retry
+
+### symbol_unknown
+
+**Cause:** the symbol does not resolve
+
+**Recovery:** gauge reversibility from the diff and surrounding code instead

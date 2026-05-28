@@ -14,4 +14,8 @@ Probe required toolchain prerequisites before running any workspace cargo comman
 
 ## Errors
 
-- **missing_prerequisite** — Cause: A required toolchain component is not installed · Recovery: Surface missing_prerequisites to the user as an environment finding via the activity's validate action; do not auto-install
+### missing_prerequisite
+
+**Cause:** A required toolchain component is not installed
+
+**Recovery:** Surface missing_prerequisites to the user as an environment finding via the activity's validate action; do not auto-install

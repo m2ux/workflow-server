@@ -18,4 +18,8 @@ Run the linter against all targets, denying warnings.
 
 ## Errors
 
-- **lint_violations** — Cause: clippy emitted denied warnings · Recovery: Address the diagnostics; do not blanket-allow without justification
+### lint_violations
+
+**Cause:** clippy emitted denied warnings
+
+**Recovery:** Address the diagnostics; do not blanket-allow without justification

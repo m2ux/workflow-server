@@ -13,7 +13,11 @@ Release build; produces the final binary AND the runtime wasm artifact.
 
 ## Errors
 
-- **out_of_memory** — Cause: Release link/LTO and the nested wasm build together exceeded available RAM · Recovery: Halve CARGO_BUILD_JOBS; on tight hosts, run -p <crate> for the binary first, then a separate workspace pass for the runtime
+### out_of_memory
+
+**Cause:** Release link/LTO and the nested wasm build together exceeded available RAM
+
+**Recovery:** Halve CARGO_BUILD_JOBS; on tight hosts, run -p <crate> for the binary first, then a separate workspace pass for the runtime
 
 ## Rules
 

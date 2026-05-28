@@ -19,5 +19,14 @@ Raw graph query for traces and filters not covered by the higher-level operation
 
 ## Errors
 
-- **stale_index** — Cause: the index is out of date · Recovery: run `npx gitnexus analyze`, then retry
-- **schema_mismatch** — Cause: the query references labels/edges not in the schema · Recovery: re-read `gitnexus://repo/{name}/schema` and correct the query
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze`, then retry
+
+### schema_mismatch
+
+**Cause:** the query references labels/edges not in the schema
+
+**Recovery:** re-read `gitnexus://repo/{name}/schema` and correct the query
