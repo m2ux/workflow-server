@@ -367,7 +367,13 @@ Forward-compatibility: this flat operations-technique maps cleanly onto the work
 
 #### `*-operations` techniques split into per-operation child files
 
-Operations-style techniques (those whose body is a flat list of named, externally-callable operations rather than an ordered protocol) are stored as a parent `SKILL.md` index plus one child file per operation. The parent SKILL.md carries the frontmatter (`metadata.ontology` + `kind: technique`), the `## Capability` blurb, the `## Operations` table (each row links to the child file), and the cross-cutting `## Rules`; each child file is plain markdown with no frontmatter and the operation's per-section shape (`# <op>` h1, `## Inputs`, `## Output`, `## Procedure`, `## Tools`, `## Errors`).
+Operations-style techniques (those whose body is a flat list of named, externally-callable operations rather than an ordered protocol) are stored as a parent `SKILL.md` index plus one child file per operation. The parent SKILL.md carries the frontmatter (`metadata.ontology` + `kind: technique`), the `## Capability` blurb, the `## Operations` table (each row links to the child file), and the **cross-cutting** `## Rules` (constraints that govern multiple operations). Each child file is plain markdown with no frontmatter and the operation's per-section shape:
+
+- `# <op>` h1 (operation name) + one-line description (always present).
+- `## Procedure` and `## Tools` (always present — without these the file is not an operation).
+- `## Inputs`, `## Output`, `## Errors`, `## Rules` — **present only when the operation has them**. An op with no inputs (e.g. `cargo-operations/preflight`) omits `## Inputs`; an op that writes in place with no structured return (e.g. `cargo-operations/fmt-fix`) omits `## Output`; an op with no failure modes worth surfacing omits `## Errors`; an op with no local constraints omits `## Rules`.
+
+**Rules placement — parent vs op-local.** Cross-cutting rules (those that govern multiple operations) live in the parent SKILL.md's `## Rules`. Op-local rules (those that apply only to one operation) live in that operation's own child-file `## Rules` section. A rule moves down when it constrains exactly one operation, and stays up when it spans two or more. The cargo-operations migration applied this distinction: `release-builds-keep-wasm` → [build-release.md](legacy/work-package/techniques/cargo-operations/build-release.md#rules) (renamed `keeps-wasm-artifact`); `prefer-nextest` → [test.md](legacy/work-package/techniques/cargo-operations/test.md#rules); `fmt-uses-only-nice` stays parent-level because it spans two ops; the three genuinely cross-cutting ones (`resource-budget`, `foreground-only`, `scope-narrow-then-wide`) stay parent-level.
 
 The pilot applied this to:
 

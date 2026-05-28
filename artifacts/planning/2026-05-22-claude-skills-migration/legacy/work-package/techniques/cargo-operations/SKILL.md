@@ -32,6 +32,8 @@ Resource-constrained operations for the cargo subcommands used during the work-p
 
 ## Rules
 
+> Cross-cutting rules only — constraints that govern multiple operations live here. Op-local constraints (rules that apply to a single operation) live in that operation's own `## Rules` section: [build-release](build-release.md)::[keeps-wasm-artifact](build-release.md#keeps-wasm-artifact), [test](test.md)::[prefer-nextest](test.md#prefer-nextest).
+
 ### resource-budget
 
 Every cargo invocation made by work-package skills MUST use one of these operations. Do NOT call bare `cargo ...` from skill protocols. The inline budget — nice -n 19, CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4}, RUST_TEST_THREADS=${RUST_TEST_THREADS:-4}, SKIP_WASM_BUILD=1 (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts.
@@ -44,14 +46,6 @@ Cargo operations MUST run synchronously in the foreground of the caller. Never i
 
 During inner loops (TDD red/green in implement-task) prefer scope='-p <crate>'. Run --workspace once at the validate activity to match CI.
 
-### release-builds-keep-wasm
-
-[build-release](build-release.md) is the ONLY operation that produces the runtime wasm artifact and is therefore the ONLY operation that omits SKIP_WASM_BUILD=1. Do not 'optimise' build-release by adding it.
-
-### prefer-nextest
-
-When cargo nextest is configured for the project (.config/nextest.toml present), the [test](test.md) operation MUST use nextest — it isolates failures into separate processes, giving lower peak RAM and clearer reporting.
-
 ### fmt-uses-only-nice
 
-[fmt-check](fmt-check.md) and [fmt-fix](fmt-fix.md) do not compile, so only nice -n 19 applies; do not paste the full env budget there — it is misleading.
+[fmt-check](fmt-check.md) and [fmt-fix](fmt-fix.md) do not compile, so only nice -n 19 applies; do not paste the full env budget there — it is misleading. (Cross-cutting because the rule spans two operations; if it ever applied to only one, it would move down to that operation.)

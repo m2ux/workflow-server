@@ -163,7 +163,20 @@ path is the at-rest human-navigable form.
    sibling file (`<skill>/<op>.md`, no frontmatter — they are
    sub-documents of the parent skill, not skills in their own right).
    The parent `SKILL.md` is the index (Capability + Operations table +
-   Rules) and each child file carries the operation's per-section shape.
+   cross-cutting Rules). Each child file carries the operation's
+   per-section shape: `# <op>` h1 plus a one-line description (always
+   present), `## Procedure` and `## Tools` (always present — without
+   these the file is not an operation), and `## Inputs` / `## Output`
+   / `## Errors` / `## Rules` **only when the operation has them**
+   (an op with no inputs, no structured output, no failure modes
+   worth surfacing, or no op-local constraints omits the
+   corresponding section).
+   **Rules placement — parent vs op-local.** Cross-cutting rules
+   (constraints that govern multiple operations) live in the parent
+   `SKILL.md`'s `## Rules`. Op-local rules (constraints that apply to
+   only one operation) live in that operation's own child-file
+   `## Rules` section. A rule moves down when it constrains exactly
+   one operation, and stays up when it spans two or more.
    Protocol-style techniques (ordered numbered steps) MUST keep their
    protocol in `SKILL.md` — steps are sequential, not externally
    addressable.
