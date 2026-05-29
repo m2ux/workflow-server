@@ -52,8 +52,33 @@ This log captures assumptions made during the design-philosophy activity. It is 
 - **Confirmed** — resolved by direct code inspection or by test evidence already on the branch.
 - **Accepted** — resolved by design rationale or by referencing established prior art / pre-resolved orchestrator context.
 - **Open** — not yet resolved; will be revisited in a later activity.
+- **Deferred** — judgement item escalated to the user via the `assumption-decision` checkpoint; outcome captured here once the user responds.
 
 After `plan-prepare`: 9 Confirmed (A-001, A-002, A-003, A-004, A-009, A-010, A-011, A-013, A-014), 5 Accepted (A-005, A-006, A-007, A-008, A-012), 0 Open. Loop terminated.
+
+---
+
+## Assumptions-review outcome (2026-05-29)
+
+Activity `assumptions-review` (session `SUQLKL`) re-evaluated each entry:
+
+- **Code-analyzable Confirmed items (A-001, A-002, A-003, A-004, A-009, A-010, A-011, A-013, A-014):** verifications already cited the comprehension artifact; no further code analysis required. Status held at **Confirmed**.
+- **Judgement Accepted items (A-005, A-006, A-007, A-008, A-012):** reversibility check (`gitnexus-operations::reversibility-signal`-style heuristic — does the assumption commit a path that is expensive to undo?) finds each is either easily reversible *or* has an explicit mitigation already wired into the plan:
+  - **A-005** (two-PR coordination): mitigated by the legacy-TOON feature flag in Task B2 (brief-window safety fallback).
+  - **A-006** (`projectSkillToToon` shape): an extract-function refactor; reversible at low cost. Plan Task B3 isolates the projection contract so an alternative shape can be substituted without touching consumers beyond the single seam.
+  - **A-007** (legacy-TOON feature flag retained one cycle): the flag and its removal are explicit deliverables (Task B2 adds; Task C2 removes). Cost-of-reversal is one revert of Task C2.
+  - **A-008** (migration script lives in source repo at `scripts/migrate-skills/`): script location is a maintenance choice with no wire impact; movable in a follow-on without touching the loader.
+  - **A-012** (ADRs authored alongside implementation): each ADR's surface lives in a specific task; deferring the ADR writeup to implement doesn't change the implementation plan.
+
+Outcome: **no assumption requires stakeholder escalation**. All 14 assumptions remain reconciled (9 Confirmed, 5 Accepted, 0 Open, 0 Deferred). The `assumption-decision` interview loop is therefore not triggered (`has_open_assumptions = false`), and no issue-tracker summary is posted (`has_deferred_assumptions = false`).
+
+Variables emitted:
+
+- `has_open_assumptions = false`
+- `has_resolvable_assumptions = false`
+- `has_deferred_assumptions = false`
+- `stakeholder_review_complete = true`
+- `task_assumptions` — per-task notes already enumerated below under "TODOs derived from plan-prepare"; the implement loop consumes that section directly.
 
 ---
 
