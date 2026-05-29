@@ -138,7 +138,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Skills:** primary [`workflow-design`](../skills/README.md#skill-protocol-workflow-design-00)
 
-**Steps:** 8 steps — review and present findings for each of the four passes. Uses [resource 01](../resources/01-schema-construct-inventory.md) for expressiveness audit and [resource 02](../resources/02-anti-patterns.md) for anti-pattern scan. The `rule-hygiene-audit` step applies a worker-visibility carve-out when checking cross-level rule duplication: behavioural rules that workers must read cannot be lifted to the workflow root, since workers receive `get_activity` and `get_skill` responses but never `workflow.toon`. Per-skill duplication of worker-directed rules is the correct mechanism and is not flagged.
+**Steps:** 8 steps — review and present findings for each of the four passes. Uses [schema-construct-inventory](../resources/schema-construct-inventory/SKILL.md) for expressiveness audit and [anti-patterns](../resources/anti-patterns/SKILL.md) for anti-pattern scan. The `rule-hygiene-audit` step applies a worker-visibility carve-out when checking cross-level rule duplication: behavioural rules that workers must read cannot be lifted to the workflow root, since workers receive `get_activity` and `get_skill` responses but never `workflow.toon`. Per-skill duplication of worker-directed rules is the correct mechanism and is not flagged.
 
 **Checkpoints:** `expressiveness-confirmed`, `conformance-confirmed`, `rule-hygiene-confirmed`, `enforcement-confirmed`.
 

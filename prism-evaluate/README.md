@@ -64,8 +64,8 @@ All transitions after confirm-plan are automatic.
 
 | Index | Resource | Description |
 |-------|----------|-------------|
-| 00 | [Default Dimensions](resources/00-default-dimensions.md) | Default dimension sets by target type (proposal, codebase, mixed) |
-| 01 | [Dimension-Lens Mapping](resources/01-dimension-lens-mapping.md) | Standard and custom dimension-to-prism-lens mapping matrix |
+| 00 | [Default Dimensions](resources/default-dimensions/SKILL.md) | Default dimension sets by target type (proposal, codebase, mixed) |
+| 01 | [Dimension-Lens Mapping](resources/dimension-lens-mapping/SKILL.md) | Standard and custom dimension-to-prism-lens mapping matrix |
 
 **Detailed documentation:** See [resources/](resources/) for full content.
 

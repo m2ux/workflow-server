@@ -49,7 +49,7 @@ modes[2]:
       - pattern-analysis
     defaults:
       is_update_mode: true
-    resource: resources/03-update-mode-guide.md
+    resource: update-mode-guide
   - id: review
     name: Review Mode
     description: "Audit an existing workflow against the design principles and produce a compliance report."
@@ -70,7 +70,7 @@ modes[2]:
     defaults:
       is_review_mode: true
       review_scope_confirmed: false
-    resource: resources/04-review-mode-guide.md
+    resource: review-mode-guide
 variables[16]:
   - name: planning_folder_path
     type: string

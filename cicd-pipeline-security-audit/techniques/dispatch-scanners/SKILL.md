@@ -1,0 +1,71 @@
+---
+name: dispatch-scanners
+description: Handles the composition and concurrent dispatch of scanner sub-agents for the CI/CD pipeline security audit. Each scanner agent receives its assigned submodule path, workflow file list, reconnaissance data, and the injection pattern catalog. Also dispatches the verification (V) and merge (M) coordination agents after scanner collection.
+metadata:
+  ontology: workflow-canonical
+  kind: technique
+  version: 1.0.0
+  order: 4
+  legacy_id: 4
+---
+
+# Dispatch Scanners
+
+## Capability
+
+Compose and dispatch per-submodule scanner sub-agents and coordination agents (V, M)
+
+## Inputs
+
+### scanner-assignments
+
+Agent-to-submodule mapping from reconnaissance
+
+### reconnaissance-data
+
+Per-workflow classification data from reconnaissance
+
+## Protocol
+
+### 1. Compose Scanner Prompts
+
+- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat skill) containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity({ activity_id: <assigned-activity-id> }), follow the activity steps sequentially'; (2) context variables — submodule path, workflow file list, scanner designator (S1-Sn), planning_folder_path, reconnaissance data for the assigned submodule; (3) output format requirement — 'write structured output to s{n}-{submodule}.json conforming to the output schema in [sub-agent-output-schema](../../resources/sub-agent-output-schema/SKILL.md)'
+
+### 2. Dispatch Scanners
+
+- Dispatch all scanner agents in the roster using harness-compat::spawn-concurrent with the composed prompt from step 1.
+- All scanner agents MUST be dispatched in a single batch
+
+### 3. Collect Results
+
+- Wait for all scanners to return. Collect structured output from each. If any scanner fails or times out, record the failure and proceed with available results.
+
+### 4. Verify Dispatch Completeness
+
+- Compare the scanner roster (input) against the dispatched scanner list. Every scanner in the roster must have been dispatched and returned a result. Produce a dispatch manifest table: scanner_id, assigned_submodule, dispatched (yes/no), returned (yes/no), status. If any scanner was NOT dispatched, flag as INCOMPLETE and return the manifest for re-dispatch. Set scanners_dispatched count.
+- Verify scanners_dispatched equals scanners_assigned before proceeding
+
+### 5. Dispatch Verification
+
+- After all scanners return and dispatch completeness verified, compose V agent context with: all scanner output file paths, the workflow file inventory from scope-setup, and bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity({ activity_id: sub-verification })'. Dispatch V agent using harness-compat::spawn-agent.
+
+### 6. Dispatch Merge
+
+- After V returns, compose M agent context with: all scanner output file paths, the verification report, severity rubric ([cicd-severity-rubric](../../resources/cicd-severity-rubric/SKILL.md)), and bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity({ activity_id: sub-merge })'. Dispatch M agent using harness-compat::spawn-agent.
+
+## Outputs
+
+### dispatch-status
+
+Dispatch and collection status for all agents
+
+- **scanners_dispatched**: Count of dispatched scanner agents
+- **scanners_returned**: Count of returned scanner agents
+- **verification_dispatched**: Whether V was dispatched
+- **merge_dispatched**: Whether M was dispatched
+
+## Rules
+
+### sequential-coordination
+
+V dispatches after scanners; M dispatches after V

@@ -24,7 +24,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including steps, checkpoints, transitions, and mode overrides.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (2 skills) with protocol flows and rules.
+- **Techniques:** See [techniques/](techniques/) for the full technique inventory (2 techniques) with protocol flows and rules.
 - **Resources:** See [resources/README.md](resources/README.md) for the resource index (5 resources) with usage context and cross-workflow access.
 
 ---
@@ -110,24 +110,24 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 ---
 
-## Skills
+## Techniques
 
-| # | Skill | Capability | Used By |
+| Order | Technique | Capability | Used By |
 |---|-------|------------|---------|
-| 00 | [`workflow-design`](skills/README.md#skill-protocol-workflow-design-00) | Design and draft workflow definitions maximizing schema expressiveness | All activities (primary) |
-| 01 | [`toon-authoring`](skills/README.md#skill-protocol-toon-authoring-01) | Author syntactically valid TOON files that pass schema validation | Context and Literacy, Content Drafting, Validate and Commit (supporting) |
+| 00 | [`workflow-design`](techniques/workflow-design/SKILL.md) | Design and draft workflow definitions maximizing schema expressiveness | All activities (primary) |
+| 01 | [`toon-authoring`](techniques/toon-authoring/SKILL.md) | Author syntactically valid TOON files that pass schema validation | Context and Literacy, Content Drafting, Validate and Commit (supporting) |
 
 ---
 
 ## Resources
 
-| # | Resource | Purpose | Used By |
+| Order | Resource | Purpose | Used By |
 |---|----------|---------|---------|
-| 00 | [Design Principles](resources/README.md#00--design-principles) | Condensed reference of all 14 principles | All activities |
-| 01 | [Schema Construct Inventory](resources/README.md#01--schema-construct-inventory) | Prose-to-formal construct mapping tables | Quality Review, Content Drafting |
-| 02 | [Anti-Patterns](resources/README.md#02--anti-patterns) | 40 prohibited patterns by category | Quality Review, Review Mode |
-| 03 | [Update Mode Guide](resources/README.md#03--update-mode-guide) | Content preservation and impact analysis procedures | Update mode activities |
-| 04 | [Review Mode Guide](resources/README.md#04--review-mode-guide) | Compliance audit procedure and report structure | Review mode activities |
+| 00 | [Design Principles](resources/design-principles/SKILL.md) | Condensed reference of all 14 principles | All activities |
+| 01 | [Schema Construct Inventory](resources/schema-construct-inventory/SKILL.md) | Prose-to-formal construct mapping tables | Quality Review, Content Drafting |
+| 02 | [Anti-Patterns](resources/anti-patterns/SKILL.md) | 40 prohibited patterns by category | Quality Review, Review Mode |
+| 03 | [Update Mode Guide](resources/update-mode-guide/SKILL.md) | Content preservation and impact analysis procedures | Update mode activities |
+| 04 | [Review Mode Guide](resources/review-mode-guide/SKILL.md) | Compliance audit procedure and report structure | Review mode activities |
 
 ---
 
@@ -182,15 +182,14 @@ workflows/workflow-design/
 │   ├── 08-quality-review.toon            # Four review passes
 │   ├── 09-validate-and-commit.toon       # Validate and commit
 │   └── 10-post-update-review.toon       # Post-commit compliance audit (update mode)
-├── skills/
-│   ├── README.md                         # Skill protocols and rules
-│   ├── 00-workflow-design.toon           # Primary skill
-│   └── 01-toon-authoring.toon            # Supporting skill
+├── techniques/
+│   ├── workflow-design/SKILL.md          # Primary technique
+│   └── toon-authoring/SKILL.md           # Supporting technique
 └── resources/
     ├── README.md                         # Resource index
-    ├── 00-design-principles.md           # 14 principles reference
-    ├── 01-schema-construct-inventory.md  # Construct mapping tables
-    ├── 02-anti-patterns.md               # 40 anti-patterns
-    ├── 03-update-mode-guide.md           # Update mode guide
-    └── 04-review-mode-guide.md           # Review mode guide
+    ├── design-principles/SKILL.md        # 14 principles reference
+    ├── schema-construct-inventory/SKILL.md  # Construct mapping tables
+    ├── anti-patterns/SKILL.md            # 40 anti-patterns
+    ├── update-mode-guide/SKILL.md        # Update mode guide
+    └── review-mode-guide/SKILL.md        # Review mode guide
 ```
