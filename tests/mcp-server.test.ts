@@ -467,14 +467,14 @@ describe('mcp-server integration', () => {
   });
 
   describe('tool: get_resource', () => {
-    it('should load resource content by bare index', async () => {
+    it('should load resource content by bare id', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: '03' },
+        arguments: { session_index: sessionToken, resource_id: 'github-issue-creation' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource_id).toBe('03');
+      expect(response.resource_id).toBe('github-issue-creation');
       expect(response._body).toBeDefined();
       expect(response._body.length).toBeGreaterThan(0);
       expect(response.session_index).toBeDefined();
@@ -483,11 +483,11 @@ describe('mcp-server integration', () => {
     it('should load cross-workflow resource with prefix', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'meta/01' },
+        arguments: { session_index: sessionToken, resource_id: 'meta/activity-worker-prompt' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource_id).toBe('meta/01');
+      expect(response.resource_id).toBe('meta/activity-worker-prompt');
       expect(response.id).toBe('activity-worker-prompt');
       expect(response._body.length).toBeGreaterThan(0);
     });
@@ -495,7 +495,7 @@ describe('mcp-server integration', () => {
     it('should strip frontmatter from resource content', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: '03' },
+        arguments: { session_index: sessionToken, resource_id: 'github-issue-creation' },
       });
       const response = parseToolResponse(result);
       expect(response._body).not.toMatch(/^---/);
@@ -504,7 +504,15 @@ describe('mcp-server integration', () => {
     it('should error for nonexistent resource', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: '99' },
+        arguments: { session_index: sessionToken, resource_id: 'no-such-resource' },
+      });
+      expect(result.isError).toBe(true);
+    });
+
+    it('should reject numeric-only resource ids (numbering deprecated)', async () => {
+      const result = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: sessionToken, resource_id: '01' },
       });
       expect(result.isError).toBe(true);
     });
@@ -582,12 +590,12 @@ describe('mcp-server integration', () => {
   // ============== Cross-Workflow Resource Resolution ==============
 
   describe('cross-workflow resource resolution', () => {
-    it('meta/NN prefix can be loaded directly via get_resource', async () => {
-      // Cross-workflow resource resolution under the new model: agents fetch
-      // resources by their canonical "meta/NN" reference via get_resource.
+    it('meta/<id> prefix can be loaded directly via get_resource', async () => {
+      // Cross-workflow resource resolution: agents fetch resources by their
+      // canonical "meta/<id>" reference via get_resource. Numbered ids are deprecated.
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'meta/01' },
+        arguments: { session_index: sessionToken, resource_id: 'meta/activity-worker-prompt' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -597,7 +605,7 @@ describe('mcp-server integration', () => {
     it('get_resource should load cross-workflow resource content by ref', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'meta/01' },
+        arguments: { session_index: sessionToken, resource_id: 'meta/activity-worker-prompt' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);

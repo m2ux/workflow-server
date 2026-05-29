@@ -48,16 +48,16 @@ import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 /**
  * Parse a resource reference that may include a workflow prefix.
- * Format: "workflow/index" for cross-workflow, or bare "index" for local.
- * Examples: "meta/01" → { workflowId: "meta", index: "01" }
- *           "01"      → { workflowId: undefined, index: "01" }
+ * Format: "workflow/id" for cross-workflow, or bare "id" for local.
+ * Examples: "meta/bootstrap-protocol" → { workflowId: "meta", id: "bootstrap-protocol" }
+ *           "review-mode"             → { workflowId: undefined, id: "review-mode" }
  */
-function parseResourceRef(ref: string): { workflowId: string | undefined; index: string } {
+function parseResourceRef(ref: string): { workflowId: string | undefined; id: string } {
   const slashIdx = ref.indexOf('/');
   if (slashIdx > 0) {
-    return { workflowId: ref.substring(0, slashIdx), index: ref.substring(slashIdx + 1) };
+    return { workflowId: ref.substring(0, slashIdx), id: ref.substring(slashIdx + 1) };
   }
-  return { workflowId: undefined, index: ref };
+  return { workflowId: undefined, id: ref };
 }
 
 /**
@@ -519,10 +519,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a single resource\'s full content by its ID. Use this to fetch resources referenced in skill _resources arrays. The resource_id can be a bare index (e.g., "05") which resolves within the session\'s workflow, or a prefixed cross-workflow reference (e.g., "meta/01") which resolves from the named workflow. Returns the resource content, id, and version.',
+    'Load a single resource\'s full content by its id. Use this to fetch resources referenced in skill _resources arrays. The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Returns the resource content, id, and version.',
     {
       ...sessionIndexParam,
-      resource_id: z.string().describe('Resource ID — bare (e.g., "23") resolves within the session workflow, prefixed (e.g., "meta/01") resolves from the specified workflow'),
+      resource_id: z.string().describe('Resource id (text-only slug) — bare (e.g., "review-mode") resolves within the session workflow, prefixed (e.g., "meta/bootstrap-protocol") resolves from the specified workflow'),
     },
     withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, resource_id }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -532,7 +532,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const parsed = parseResourceRef(resource_id);
       const targetWorkflow = parsed.workflowId ?? workflow_id;
-      const result = await readResourceStructured(config.workflowDir, targetWorkflow, parsed.index);
+      const result = await readResourceStructured(config.workflowDir, targetWorkflow, parsed.id);
       if (!result.success) throw result.error;
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
