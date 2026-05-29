@@ -1,7 +1,7 @@
 # Markdown Skills Migration Implementation - May 2026
 
 **Created:** 2026-05-28  
-**Status:** Planning  
+**Status:** Ready  
 **Type:** Refactor
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -24,7 +24,9 @@ Until the markdown layout is live, contributors cannot iterate on workflow knowl
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+Today, the workflow-server stores its workflow knowledge — the instructions and reference material that guide AI agents through each step of a workflow — in a specialised text format called TOON that is faster for machines to parse but harder for people to read and edit. Contributors who want to improve a workflow have to learn that format on top of understanding the change they want to make, which slows things down and discourages contributions. The migration replaces TOON storage with plain markdown files, organised in clear per-workflow folders, while keeping the on-the-wire format that agents see unchanged. After the change, anyone who can read a markdown file can read, review, and propose edits to the workflow knowledge, but every agent that talks to the workflow-server continues to receive exactly the same content it received before.
+
+The change ships in two coordinated steps so nothing breaks during the transition. First, all the existing knowledge is rewritten into markdown files and placed into the new per-workflow folders on the content branch — this is the source-of-truth flip. Second, the workflow-server is updated to read those markdown files, with a built-in rule that lets each workflow override shared content when it needs to. As a final touch, the server projects each markdown file back into the original on-the-wire format before sending it to agents, so existing agents and tests continue to work without modification. A test suite captures the current on-the-wire output of every piece of knowledge before the change and pins the new code to produce byte-equivalent output, providing a strong guarantee that the migration preserves behaviour.
 
 ---
 
@@ -35,8 +37,8 @@ Until the markdown layout is live, contributors cannot iterate on workflow knowl
 | 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 02 | [Codebase comprehension](02-codebase-comprehension.md) | Skill/resource/workflow loaders + TOON-projection delivery deep-dive | 20-45m | ✅ Complete |
-| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 2-4h | ⬚ Pending |
 | 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
@@ -71,4 +73,4 @@ Coordination: the two branches land via two PRs that merge in order — content 
 
 ---
 
-**Status:** Codebase comprehension complete — concrete loader swap point identified (`tryLoadSkill`/`tryReadSkillRaw` in `src/loaders/skill-loader.ts:59-96`); precedence layer location resolved (inside `readSkill`/`readSkillRaw`, replacing cross-workflow scan-all). Operations-bundle assembly (`get_workflow`/`get_activity`) requires no shape changes — `Skill` Zod object stays the loader's contract surface. Assumptions A-001/A-002/A-003 moved to Confirmed pending plan-prepare's content audit.
+**Status:** Ready. Implementation plan and test plan authored. Plan covers Phase A (content placement on `feat/125-markdown-skills-content`), Phase B (source-side markdown loader, precedence resolver, projection function, resource-loader flip on `feat/125-markdown-skills-migration`), and Phase C (cutover — remove legacy TOON skills and the dual-mode safety fallback). Test plan covers 16 cases across markdown parsing, op-as-child-files assembly, precedence resolution, projection identity against captured TOON baselines, resource-loader format flip, and tool-layer preamble parity.
