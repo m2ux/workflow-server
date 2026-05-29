@@ -85,7 +85,24 @@ sequenceDiagram
 
 ---
 
-## Skills
+## Techniques and the cross-workflow shared layer
+
+The `meta/techniques/` and `meta/resources/` folders carry double duty. They
+are the local content for the meta workflow itself AND the cross-workflow
+shared layer — when any workflow asks for a technique that has no
+workflow-local definition, the loader resolves it from `meta/techniques/`.
+The ontology and section conventions every `SKILL.md` follows are defined in
+[`meta/resources/workflow-canonical/SKILL.md`](resources/workflow-canonical/SKILL.md).
+
+Markdown techniques live under [`meta/techniques/`](techniques/) — one folder
+per technique containing `SKILL.md` plus optional sibling `{op}.md` files for
+operations-as-child-files techniques. The legacy `meta/skills/` TOON tree
+below is retained during the transition window of [#125](https://github.com/m2ux/workflow-server/issues/125) and removed in
+Phase C.
+
+---
+
+## Skills (legacy TOON, removed in Phase C of #125)
 
 Universal skills referenced by canonical ID. Numeric prefixes order the files for humans; the loader strips them.
 

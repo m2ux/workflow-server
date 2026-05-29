@@ -11,25 +11,39 @@ This orphan branch contains workflow definitions, activities, skills, and resour
 
 ```
 workflows/                    # Worktree checkout
-├── meta/                     # Skill and resource repository (excluded from list_workflows)
+├── meta/                     # Lifecycle workflow + cross-workflow shared layer
 │   ├── README.md             # Meta documentation with Mermaid diagrams
 │   ├── workflow.toon         # Meta definition (activities for lifecycle management)
 │   ├── activities/           # Lifecycle activities (indexed)
 │   │   └── {NN}-{id}.toon    # 00-discover-session, 01-initialize-session, ...
-│   ├── resources/            # Reference material (indexed)
-│   │   └── {NN}-{name}.md    # 00-bootstrap-protocol, 01-activity-worker-prompt, ...
-│   └── skills/               # Universal skills (indexed, auto-resolved across workflows)
-│       └── {NN}-{id}.toon    # 00-workflow-engine, 01-agent-conduct, ...
+│   ├── techniques/           # Markdown techniques (canonical source of truth)
+│   │   └── {slug}/SKILL.md   #   workflow-engine, agent-conduct, harness-compat, ...
+│   │                         #   + sibling <op>.md files for op-as-child-files techniques
+│   ├── resources/            # Markdown resources
+│   │   └── {slug}/SKILL.md   #   bootstrap-protocol, activity-worker-prompt, workflow-canonical, ...
+│   └── skills/               # LEGACY TOON skills (removed in Phase C of #125)
+│       └── {NN}-{id}.toon
 ├── {workflow-id}/            # Each workflow folder
 │   ├── README.md             # Workflow documentation with Mermaid diagrams
 │   ├── workflow.toon         # Workflow definition
 │   ├── activities/           # Activity subdirectory (indexed)
 │   │   └── {NN}-{id}.toon    # Activities for this workflow
-│   ├── resources/            # Resource subdirectory (indexed)
-│   │   └── {NN}-{name}.md    # Guidance resources
-│   └── skills/               # Workflow-specific skills (indexed)
-│       └── {NN}-{id}.toon    # Skills for this workflow
+│   ├── techniques/           # Workflow-local markdown techniques
+│   │   └── {slug}/SKILL.md   #   workflow-local technique (overrides any meta technique of the same name)
+│   ├── resources/            # Workflow-local markdown resources
+│   │   └── {slug}/SKILL.md
+│   └── skills/               # LEGACY TOON skills (removed in Phase C of #125)
+│       └── {NN}-{id}.toon
 ```
+
+### Precedence: workflow-local → `meta`
+
+Skill / technique resolution is workflow-local first, then `meta` ([ADR forthcoming under #125](https://github.com/m2ux/workflow-server/issues/125)). The
+`meta` workflow's `techniques/` and `resources/` carry double duty — they are
+both the local content for the meta workflow itself AND the cross-workflow
+shared layer for every other workflow. The
+[workflow-canonical](meta/resources/workflow-canonical/SKILL.md) resource
+defines the ontology and section conventions that every `SKILL.md` follows.
 
 ## Available Workflows
 
@@ -89,11 +103,15 @@ git worktree add ./workflows workflows
 2. Prefix with two-digit index (00, 01, 02, etc.)
 3. Commit to this branch
 
-**Skills:**
-1. Create `{NN}-{skill-id}.toon` with two-digit index
-2. Universal: Create in `meta/skills/` (e.g., `00-workflow-engine.toon`)
-3. Workflow-specific: Create in `{workflow-id}/skills/`
+**Techniques (markdown source of truth):**
+1. Create `{workflow-id}/techniques/{slug}/SKILL.md` (or `meta/techniques/{slug}/SKILL.md` for the cross-workflow shared layer)
+2. Follow the canonical sections defined in [meta/resources/workflow-canonical/SKILL.md](meta/resources/workflow-canonical/SKILL.md)
+3. For flat operation libraries (`cargo-operations`, `gitnexus-operations`, ...), add sibling `{op}.md` children (no frontmatter) — the loader materialises them into the technique's `operations` map keyed by op basename
 4. Commit to this branch
+
+**Skills (legacy TOON, removed in Phase C of #125):**
+1. The `{workflow-id}/skills/{NN}-{skill-id}.toon` and `meta/skills/{NN}-{skill-id}.toon` files predate the markdown migration and remain in place during the transition window only
+2. Authoring new content here is discouraged — use the markdown technique shape above instead
 
 ## Validation
 
