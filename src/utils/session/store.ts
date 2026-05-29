@@ -820,6 +820,36 @@ export async function discardTransient(folder: string): Promise<void> {
 }
 
 /**
+ * Used by dispatch_child after promoting a transient parent to a workspace
+ * planning folder. The caller's session_index (issued at start_session
+ * against the tmp folder) would otherwise be orphaned: discardTransient
+ * deletes the index→folder entry, and resolveSessionLocation derives indices
+ * by hashing folder paths — so the workspace folder hashes to a different
+ * value. Repointing the existing transientFolderByIndex entry at the new
+ * workspace folder keeps the caller's index resolvable for the lifetime of
+ * this process. The slug-keyed entry is dropped (the workspace folder owns
+ * the slug now; nothing should look it up via the transient registry).
+ * The tmp folder is removed last.
+ */
+export async function redirectTransientToWorkspace(
+  oldFolder: string,
+  newFolder: string,
+): Promise<void> {
+  if (!isTransientFolder(oldFolder)) return;
+  for (const [idx, f] of transientFolderByIndex.entries()) {
+    if (f === oldFolder) transientFolderByIndex.set(idx, newFolder);
+  }
+  for (const [slug, f] of transientFolderBySlug.entries()) {
+    if (f === oldFolder) transientFolderBySlug.delete(slug);
+  }
+  try {
+    await rm(oldFolder, { recursive: true, force: true });
+  } catch {
+    /* best-effort */
+  }
+}
+
+/**
  * `true` if `folder` contains a readable `session.json`. Used by callers to
  * distinguish "fresh" from "resume" without catching `SessionStoreError`.
  */

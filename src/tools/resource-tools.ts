@@ -32,7 +32,7 @@ import {
   lookupTransientBySlug,
   lookupTransientSlugByFolder,
   isTransientFolder,
-  discardTransient,
+  redirectTransientToWorkspace,
   computeEmbeddedSessionIndex,
 } from '../utils/session/index.js';
 import {
@@ -268,14 +268,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Dispatch a child workflow from the current session. Pass `session_index` of the parent (any depth) and `workflow_id` of the child workflow. ' +
         'The server appends a child entry under the parent\'s `triggeredWorkflows[]` with the child\'s full SessionFile embedded inline (the entire work-package tree lives in the top-level session.json). ' +
         'Returns the child\'s `session_index`, which the agent threads to subsequent authenticated tool calls operating on the child. ' +
-        'Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the parent\'s state is promoted onto disk under a stable workspace planning folder (taking the slug it was registered under, or a `YYYY-MM-DD-<workflow-id>` fallback) before the child is embedded; the parent\'s tmp folder is discarded post-promotion. The on-disk shape matches the persistent-parent case — parent at the top of the file, child under `triggeredWorkflows[0].state`.',
+        'Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the parent\'s state is promoted onto disk under a stable workspace planning folder before the child is embedded. The slug is taken from (in order): the optional `planning_slug` argument; the slug registered at start_session; a `YYYY-MM-DD-<workflow-id>` fallback. The parent\'s tmp folder is discarded post-promotion, but the parent\'s session_index is retained — the orchestrator can keep using its original index to authenticate subsequent calls (it resolves to the promoted folder for the lifetime of this server process). The on-disk shape matches the persistent-parent case — parent at the top of the file, child under `triggeredWorkflows[0].state`.',
       inputSchema: z.object({
         ...sessionIndexParam,
         workflow_id: z.string().describe('Workflow id for the child (e.g. "work-package"). Must resolve to a workflow definition in the workflows directory.'),
         agent_id: z.string().default('worker').describe('agent_id stored on the child SessionFile. Defaults to "worker".'),
+        planning_slug: z.string().optional().describe('Optional. When the parent is a transient orchestrator-bootstrap session, the slug used for the promoted workspace folder. Takes precedence over any slug registered at start_session. Ignored when the parent is already persistent (the persistent parent owns the slug).'),
       }).strict(),
     },
-    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id }) => {
+    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const parentFolder = loaded.folderAbsPath;
       const parentIsTransient = isTransientFolder(parentFolder);
@@ -294,17 +295,24 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // branch below. The only differences from that branch are:
         //   - the workspace folder is materialised here (the parent never had
         //     one), and
-        //   - the original tmp folder is discarded once the new file is durable.
-        // The promoted slug comes from the transient registry (the slug the
-        // caller passed to start_session), falling back to a dated
-        // workflow-id form when no slug was supplied. start_session only
-        // registers user-supplied slugs in transientFolderBySlug — synthetic
-        // `transition-<uuid>` slugs are deliberately omitted, so
-        // lookupTransientSlugByFolder returns undefined for them and the
-        // `??` fallback fires, producing a stable dated folder name instead
-        // of leaking the transitional UUID into the workspace.
+        //   - the original tmp folder is discarded once the new file is durable
+        //     (but the parent's session_index entry in transientFolderByIndex
+        //     is repointed at the promoted folder so the caller's original
+        //     index keeps resolving — without this, the orchestrator that
+        //     called dispatch_child can no longer authenticate next_activity
+        //     for subsequent meta activities).
+        // The promoted slug is taken from (in order): the explicit
+        // `planning_slug` argument (callers that derive a descriptive
+        // initiative slug AFTER start_session pass it here); the slug the
+        // caller supplied to start_session (looked up via the folder-keyed
+        // registry); a `YYYY-MM-DD-<workflow_id>` fallback. start_session
+        // does not register synthetic `transition-<uuid>` slugs in the
+        // folder registry, so the fallback fires for the common case of
+        // bootstrap-only meta sessions and produces a stable dated folder
+        // name instead of leaking the transitional UUID into the workspace.
         const promotedSlug =
-          lookupTransientSlugByFolder(parentFolder)
+          planning_slug
+          ?? lookupTransientSlugByFolder(parentFolder)
           ?? `${new Date().toISOString().slice(0, 10)}-${workflow_id}`;
         const promotedWorkspaceFolder = await ensurePlanningFolder(config.workspaceDir, promotedSlug);
         const childSessionIndex = await computeEmbeddedSessionIndex(
@@ -334,8 +342,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           });
         });
         await writeSessionFile(promotedWorkspaceFolder, parentNext);
-        // The promoted file is durable; drop the tmp folder.
-        await discardTransient(parentFolder);
+        // The promoted file is durable; redirect the caller's transient
+        // index to it and remove the tmp folder.
+        await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
         return {
           content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: promotedSlug }, null, 2) }],
           _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
