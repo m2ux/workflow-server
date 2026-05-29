@@ -106,3 +106,20 @@ Implementation tasks for `assumptions-review` to validate alongside the assumpti
 
 - [ ] C1. Delete legacy `workflows/<workflow>/skills/*.toon` and `workflows/<workflow>/resources/*.toon` on the content branch.
 - [ ] C2. Remove the `SKILL_LOADER_LEGACY_TOON` flag and the legacy-TOON branch in `tryLoadSkill` / `tryReadSkillRaw`; delete `findSkillFile` and any dead legacy code paths.
+
+---
+
+## Implementation-time additions (2026-05-29, activity `implement`)
+
+These items surfaced during code authoring and were resolved inline rather than
+escalated. Each is recorded for traceability:
+
+| ID | Assumption | Category | Resolvability | Status |
+|----|-----------|----------|---------------|--------|
+| A-015 | `## Operations` H3 subheadings inside a `SKILL.md` are presentation-only grouping headers when they do not themselves contain `## Procedure` (e.g. workflow-engine's "Discovery and session" / "Activity lifecycle" / "Checkpoint protocol" sections wrap op-link tables, not operation bodies). | Design Approach | code-analyzable | Confirmed (workflow-engine SKILL.md inspection — no H3 carries an inline `## Procedure`; operations live in child files). |
+| A-016 | Markdown parse failures (e.g. an op-child file missing `## Procedure`) should be surfaced to callers as `SkillNotFoundError` via the existing `Result` contract, not as synchronous throws. The parser still raises a `MarkdownSkillParseError` internally so the source location and missing-section name reach the log. | Design Approach | code-analyzable | Confirmed — `tryLoadSkillInWorkflow` and `tryReadSkillRawInWorkflow` catch and log the parse error; existing test contract (Result-typed `readSkill`) is preserved. |
+| A-017 | The resource-loader needs to resolve refs in TWO post-migration shapes: legacy flat `NN-<name>.md` (still on the workflows branch during the transition) and the new folder shape `<slug>/SKILL.md`. Folder-shape lookup is keyed by slug or by frontmatter `id:`. | Scope Decisions | code-analyzable | Confirmed — `findFolderResource` handles the new shape alongside the legacy flat shape; no consumer-side changes required because resource refs in workflow files already use id strings (e.g. `meta/bootstrap-protocol`) that the loader resolves either way. |
+| A-018 | The TOON projection (`projectSkillToToon`) emits canonical field order (id, version, capability, description, inputs, protocol, output, rules, errors, resources, operations) rather than letting the in-memory Skill object's accidental key insertion order leak into the wire payload. Anything outside that canonical set is appended at the end of the projection. | Design Approach | judgement | Accepted — keeps the wire shape deterministic across runs; consumers parsing TOON do not depend on field order, but pinning it makes future projection-identity baselines stable. |
+
+All four items resolved cleanly during implementation; none required stakeholder
+escalation.
