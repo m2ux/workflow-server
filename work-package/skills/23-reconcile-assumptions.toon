@@ -21,7 +21,7 @@ protocol:
     - "Not code-resolvable: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external system behavior"
   targeted-analysis[5]:
     - "For each code-resolvable assumption, perform focused investigation: trace relevant code paths, examine implementations, diff between versions, compare behavior"
-    - "Use gitnexus tools as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — `gitnexus_query` for concept-driven flow discovery, `gitnexus_context` for symbol-level caller/callee/process inspection, and `gitnexus_cypher` for custom traces (e.g. error-path or ordering assumptions). See resource 27."
+    - "Use gitnexus tools as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — `gitnexus_query` for concept-driven flow discovery, `gitnexus_context` for symbol-level caller/callee/process inspection, and `gitnexus_cypher` for custom traces (e.g. error-path or ordering assumptions). See resource gitnexus-reference."
     - "Record evidence with file paths and line numbers for every finding"
     - "Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)"
     - "Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies"
@@ -29,7 +29,7 @@ protocol:
     - "Update assumptions-log.md: mark resolved assumptions with finding, evidence, and resolution status"
     - "Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)"
     - "Maintain a running count: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable"
-    - "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
+    - "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource assumption-reconciliation for correct vs incorrect examples."
   check-convergence[4]:
     - "Re-classify all open assumptions after the analysis pass"
     - "If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set has_resolvable_assumptions to true"
@@ -55,10 +55,10 @@ rules:
   no-user-interaction: "The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result at the activity's assumptions checkpoint."
   classification-transparency: "When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis."
 
-  tool-usage: "For code-resolvable assumptions, use `gitnexus_query` to find execution flows by concept, `gitnexus_context` to inspect a symbol's callers, callees, and process membership, and `gitnexus_cypher` for custom traces (e.g. error-path or ordering assumptions). Fall back to glob/grep only when the codebase is not indexed. See resource 27."
+  tool-usage: "For code-resolvable assumptions, use `gitnexus_query` to find execution flows by concept, `gitnexus_context` to inspect a symbol's callers, callees, and process membership, and `gitnexus_cypher` for custom traces (e.g. error-path or ordering assumptions). Fall back to glob/grep only when the codebase is not indexed. See resource gitnexus-reference."
 resources[2]:
-  - "26"
-  - "27"
+  - "assumption-reconciliation"
+  - "gitnexus-reference"
 
 errors:
   no_open_assumptions:

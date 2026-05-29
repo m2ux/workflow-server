@@ -390,6 +390,6 @@ The following 7 rules are declared at the workflow level and apply to all activi
 
 - Strengthen gitnexus utilisation across 15 analysis-heavy skills and the post-impl-review activity. Adds `pre-edit-impact-check` and `post-edit-verification` protocol phases on `implement-task` (with a `gitnexus-discipline` MUST rule), folds graph-aware analysis bullets into the protocols of `review-code`, `review-test-suite`, `review-diff`, `review-strategy`, `analyze-implementation`, `summarize-architecture`, `reconcile-assumptions`, and 7 medium-leverage skills.
 - Add a `gitnexus-detect-changes-preflight` step at the start of `post-impl-review` to bound subsequent reviews by the changed-symbol set.
-- Resource 27 (`gitnexus-reference.md`) gains a "Work-package Integration Patterns" section documenting the eight integration patterns the skills above reference.
+- resource gitnexus-reference (`gitnexus-reference.md`) gains a "Work-package Integration Patterns" section documenting the eight integration patterns the skills above reference.
 
 Surfaced by a self-review pass against workflow-design's design principles and anti-pattern catalog.

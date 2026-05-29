@@ -23,7 +23,7 @@ protocol:
     - Include review time estimate in index
     - "Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph explaining what the change does and why it exists — covering intent, context, and any non-obvious design choices"
     - Rationale paragraphs should aid manual review by giving reviewers context before they inspect the diff
-    - "When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from `gitnexus_context({name: <symbol>})` so the reviewer understands why the diff matters and which execution flows it touches. See resource 27."
+    - "When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from `gitnexus_context({name: <symbol>})` so the reviewer understands why the diff matters and which execution flows it touches. See resource gitnexus-reference."
     - Write index to change-block-index.md in planning folder
     - Always generate index before asking user to review
   present-index[2]:
@@ -57,8 +57,8 @@ output[2]:
       has_critical_blocker: "True if any block marked as critical blocker"
 
 resources[2]:
-  - "22"
-  - "27"
+  - "manual-diff-review"
+  - "gitnexus-reference"
 
 errors:
   no_diff:

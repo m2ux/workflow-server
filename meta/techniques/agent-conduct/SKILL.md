@@ -83,7 +83,7 @@ Domain-specific tools may ONLY be invoked from operations bundled into the curre
 
 ### operational-discipline-resources-via-tool
 
-Do NOT read workflow resource files directly from disk — load them via `get_resource { session_index, resource_id }` using the refs declared on operations (e.g., `meta/activity-worker-prompt`). Resource ids are preferred; numeric indices (`meta/01`) resolve for backward compatibility.
+Do NOT read workflow resource files directly from disk — load them via `get_resource { session_index, resource_id }` using the text-only refs declared on operations (e.g., `meta/activity-worker-prompt`). Resources are obtained by id only; the legacy numeric-index form is deprecated and no longer supported by the loader.
 
 ### operational-discipline-cargo-fmt-exempt
 

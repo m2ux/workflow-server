@@ -18,7 +18,7 @@ protocol:
   write-assumptions[3]:
     - Write collected assumptions to assumptions-log.md with type, statement, rationale, and alternatives for each
     - The file is the record of truth — do not duplicate assumption content in checkpoint messages
-    - "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource 26 for correct vs incorrect examples."
+    - "Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See resource assumption-reconciliation for correct vs incorrect examples."
   format-judgement-context[8]:
     - "For each open (non-code-resolvable) assumption, assemble structured context: (1) the decision space — what alternatives exist, (2) trade-off analysis for each alternative, (3) why the agent could not resolve it through code analysis, (4) relevant technical context discovered during reconciliation — code patterns found, constraints identified, related implementation details, (5) which alternative the agent's current assumption favors and why"
     - "Present the decision space (alternatives and trade-offs) before stating which option the agent's current assumption favors. This ordering reduces anchoring bias — the user encounters the options before being anchored to the agent's interpretation"
@@ -27,7 +27,7 @@ protocol:
     - "If no open assumptions remain after reconciliation, skip the judgement augmentation format and present a summary confirming all assumptions were resolved through code analysis"
     - "Focus trade-offs on measurable differences between alternatives, not uniform property lists. If two options are equivalent on a dimension, omit that dimension — it adds noise without aiding the decision"
     - "Flag decision reversibility: mark each assumption as easily-reversible (low-cost to change later) or path-committing (high-cost to reverse). This helps the user calibrate how much deliberation to invest"
-    - "Use `gitnexus_context({name: <symbol>})` to gauge reversibility — symbols with high caller fan-out and broad process participation are path-committing; isolated symbols are easily-reversible. See resource 27."
+    - "Use `gitnexus_context({name: <symbol>})` to gauge reversibility — symbols with high caller fan-out and broad process participation are path-committing; isolated symbols are easily-reversible. See resource gitnexus-reference."
   present-for-review[6]:
     - "This skill supports two presentation modes depending on the consuming activity's structure. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time via the activity's forEach loop and per-assumption checkpoint. The activity's steps, loops, and checkpoints determine which mode applies — follow the activity structure."
     - "In both modes, each assumption should contain the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context. Order by decision impact: assumptions whose resolution most affects the implementation approach come first."
@@ -55,7 +55,7 @@ rules:
   categorize-per-activity: "Use categories appropriate to the current activity phase"
 
 resources[1]:
-  - "27"
+  - "gitnexus-reference"
 
 errors:
   no_assumptions:

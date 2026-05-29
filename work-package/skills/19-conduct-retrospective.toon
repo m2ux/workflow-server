@@ -19,7 +19,7 @@ protocol:
     - "Categorize non-checkpoint messages by signal type and map to specific workflow sections"
     - "Identify root causes and determine pattern frequency across categories"
     - "Formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases)"
-    - "Create workflow-retrospective.md using resource 20 template"
+    - "Create workflow-retrospective.md using resource workflow-retrospective template"
   update-status[2]:
     - After PR merged, update work package plan status
     - Record final outcome in planning artifacts
@@ -42,7 +42,7 @@ rules:
   skip-if-trivial: "Skip retrospective if: only checkpoint responses occurred (no clarifications, corrections, or process questions), OR work package was trivial (<30 min, single task)."
 
 resources[1]:
-  - "20"
+  - "workflow-retrospective"
 
 errors:
   pr_not_merged:

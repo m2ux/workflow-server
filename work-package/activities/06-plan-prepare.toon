@@ -73,7 +73,7 @@ steps[11]:
     description: Ensure feature branch is up to date with main
   - id: update-pr
     name: Update PR description
-    description: "Update PR description with planning information. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template and populate with planning details (summary, motivation, planned changes, checklist, fork strategy)."
+    description: "Update PR description with planning information. Use attached resource pr-description for the PR description template — use the 'Initial' template and populate with planning details (summary, motivation, planned changes, checklist, fork strategy)."
     checkpoint: approach-confirmed
 loops[1]:
   - id: assumption-reconciliation

@@ -29,7 +29,7 @@ protocol:
     - Document what was tested and test coverage
     - List deferred items and known limitations
   ensure-api-docs[4]:
-    - "Use `gitnexus_detect_changes()` combined with a `gitnexus_cypher` filter on public/exported visibility to enumerate exactly the public APIs needing doc comments. See resource 27."
+    - "Use `gitnexus_detect_changes()` combined with a `gitnexus_cypher` filter on public/exported visibility to enumerate exactly the public APIs needing doc comments. See resource gitnexus-reference."
     - Identify public APIs in changed code
     - Verify each has inline documentation (doc comments)
     - Add missing doc comments where absent
@@ -46,8 +46,8 @@ output[1]:
       limitations: "Known limitations and caveats"
 
 resources[2]:
-  - "21"
-  - "27"
+  - "complete-wp"
+  - "gitnexus-reference"
 
 rules:
   completion-timing: "COMPLETE.md is created after implementation is complete and PR is merged. It captures the final delivered state — what was built, tested, and deferred. Update if post-merge changes occur."

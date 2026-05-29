@@ -19,7 +19,7 @@ protocol:
     - Offer skip option with note about limitation
     - "Stakeholder input first: User should discuss with key stakeholders before agent elicitation"
   iterate-domains[5]:
-    - Use attached resource 05 (requirements-elicitation) for question domains
+    - Use attached resource requirements-elicitation for question domains
     - Iterate through domains one question at a time
     - Record responses and adapt follow-up based on answers
     - Skip irrelevant follow-ups; probe deeper when needed
@@ -52,7 +52,7 @@ rules:
   conversation-not-interrogation: "Core principle: Conversation, not interrogation — discover what user actually needs"
 
 resources[1]:
-  - "05"
+  - "requirements-elicitation"
 
 errors:
   no_stakeholder_input:

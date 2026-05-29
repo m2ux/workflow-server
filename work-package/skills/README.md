@@ -71,7 +71,7 @@ graph TD
 | Step Key | Action |
 |----------|--------|
 | `load-guidance` | Load `16-rust-substrate-code-review.md` resource for criteria |
-| `bound-review-scope` | Run `gitnexus_detect_changes` to map the diff to affected processes; run `gitnexus_impact` on each changed symbol to surface upstream callers and inform severity. See resource 27. |
+| `bound-review-scope` | Run `gitnexus_detect_changes` to map the diff to affected processes; run `gitnexus_impact` on each changed symbol to surface upstream callers and inform severity. See resource gitnexus-reference. |
 | `review-files` | Iterate over changed files, assess against criteria |
 | `document-findings` | Record each finding: file, line, severity, description |
 | `present-summary` | Aggregate findings by severity, present to user |
@@ -146,7 +146,7 @@ graph TD
 | Step Key | Action |
 |----------|--------|
 | `understand-context` | Read task description from plan, examine relevant source files, understand dependencies |
-| `pre-edit-impact-check` | Run `gitnexus_impact({target, direction: 'upstream'})` on the target symbol before any edit; surface HIGH/CRITICAL risk; consult `gitnexus_context` for callers/callees. See resource 27. |
+| `pre-edit-impact-check` | Run `gitnexus_impact({target, direction: 'upstream'})` on the target symbol before any edit; surface HIGH/CRITICAL risk; consult `gitnexus_context` for callers/callees. See resource gitnexus-reference. |
 | `write-code` | Implement the task following existing code patterns and conventions |
 | `verify-locally` | Run relevant tests, check for compilation errors, verify behavior |
 | `post-edit-verification` | Run `gitnexus_detect_changes` before commit to confirm changes affect only the expected symbols and execution flows |
@@ -177,7 +177,7 @@ graph TD
 |----------|--------|
 | `load-guidance` | Load `22-manual-diff-review.md` resource for format and criteria |
 | `pull-and-diff` | Generate diff between feature branch and base |
-| `create-index` | Parse diff into numbered change blocks with file, line range, and description; for each graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from `gitnexus_context`. See resource 27. |
+| `create-index` | Parse diff into numbered change blocks with file, line range, and description; for each graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from `gitnexus_context`. See resource gitnexus-reference. |
 | `present-to-user` | Display indexed table for user to flag items of concern |
 | `collect-flagged` | Record which blocks the user wants to discuss |
 | `interview-each` | For each flagged block, ask targeted questions and record responses |

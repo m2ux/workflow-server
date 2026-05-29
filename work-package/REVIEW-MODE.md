@@ -29,7 +29,7 @@ modes[1]:
     activationVariable: is_review_mode
     skipActivities: [requirements-elicitation, implement]
     defaults: { needs_elicitation: false }
-    resource: resources/24-review-mode.md
+    resource: resources/review-mode/SKILL.md
 ```
 
 | Property | Purpose |
@@ -50,7 +50,7 @@ Activities express review-mode behavior through standard conditions on steps, ch
 - **Review-only checkpoints** have `condition: is_review_mode == true`
 - **Review-mode transitions** are conditioned on `is_review_mode == true`
 
-Per-activity review guidance is in `resources/24-review-mode.md`.
+Per-activity review guidance is in `resources/review-mode/SKILL.md`.
 
 ---
 
@@ -145,6 +145,6 @@ graph TD
 
 ## Related Resources
 
-- [24-review-mode.md](resources/24-review-mode.md) - Detailed review mode guide with output formats
-- [16-rust-substrate-code-review.md](resources/16-rust-substrate-code-review.md) - Code review criteria
-- [17-test-suite-review.md](resources/17-test-suite-review.md) - Test quality assessment
+- [24-review-mode.md](resources/review-mode/SKILL.md) - Detailed review mode guide with output formats
+- [16-rust-substrate-code-review.md](resources/rust-substrate-code-review/SKILL.md) - Code review criteria
+- [17-test-suite-review.md](resources/test-suite-review/SKILL.md) - Test quality assessment

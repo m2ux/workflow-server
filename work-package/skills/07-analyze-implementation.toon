@@ -14,12 +14,12 @@ inputs[3]:
 
 protocol:
   load-guidance[2]:
-    - Use attached resource 06 (implementation-analysis) for full guidance
+    - Use attached resource implementation-analysis for full guidance
     - Review requirements and problem_statement for analysis scope
   gitnexus-first-locate[3]:
     - "When the target codebase has a GitNexus index, use `gitnexus_query({query: <concept>})` to find execution flows by concept and `gitnexus_context({name: <symbol>})` for 360-degree symbol usage (callers, callees, process membership)"
     - "Read `gitnexus://repo/{name}/clusters` to identify functional areas and `gitnexus://repo/{name}/processes` for end-to-end flow inventory"
-    - "Fall back to grep/Read/glob only when the codebase is not indexed or the index is stale. See resource 27 for the full reference."
+    - "Fall back to grep/Read/glob only when the codebase is not indexed or the index is stale. See resource gitnexus-reference for the full reference."
   locate-implementation[3]:
     - "Use `gitnexus_context` to identify where the feature/component is implemented (files, modules, entry points) — falls back to grep when not indexed"
     - "Map usage and dependencies via `gitnexus_impact({target, direction: 'upstream'})` and call graph traversal; record architecture from cluster resources"
@@ -51,11 +51,11 @@ output[1]:
 
 rules:
   measure-before-improve: "You can't improve what you don't measure — establish quantitative baselines"
-  gitnexus-first-locate: "gitnexus-first when the codebase is indexed: use `gitnexus_query`, `gitnexus_context`, and the clusters/processes resources as primary tools for locate-and-map work. Grep/Read/glob are reserved for unindexed codebases or pure text patterns. See resource 27."
+  gitnexus-first-locate: "gitnexus-first when the codebase is indexed: use `gitnexus_query`, `gitnexus_context`, and the clusters/processes resources as primary tools for locate-and-map work. Grep/Read/glob are reserved for unindexed codebases or pure text patterns. See resource gitnexus-reference."
 
 resources[2]:
-  - "06"
-  - "27"
+  - "implementation-analysis"
+  - "gitnexus-reference"
 
 errors:
   no_existing_impl:

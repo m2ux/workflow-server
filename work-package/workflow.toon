@@ -42,7 +42,7 @@ modes[1]:
       - implement
     defaults:
       needs_elicitation: false
-    resource: resources/24-review-mode.md
+    resource: resources/review-mode/SKILL.md
 variables[89]:
   - name: target_path
     type: string

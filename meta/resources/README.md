@@ -10,11 +10,11 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 
 ## Resource Index
 
-| Index | Resource | Purpose | Used By |
-|-------|----------|---------|---------|
-| `00` | [Bootstrap Protocol](00-bootstrap-protocol.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` and save the returned `session_index`. | The agent at a blank-slate prompt |
-| `01` | [Activity Worker Prompt](01-activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent | `workflow-engine::dispatch-activity` |
-| `02` | [Workflow Orchestrator Prompt](02-workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent | Meta dispatch-client-workflow activity |
+| Resource ID | Resource | Purpose | Used By |
+|-------------|----------|---------|---------|
+| `bootstrap-protocol` | [Bootstrap Protocol](bootstrap-protocol/SKILL.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` and save the returned `session_index`. | The agent at a blank-slate prompt |
+| `activity-worker-prompt` | [Activity Worker Prompt](activity-worker-prompt/SKILL.md) | Template prompt for spawning an activity-worker sub-agent | `workflow-engine::dispatch-activity` |
+| `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](workflow-orchestrator-prompt/SKILL.md) | Template prompt for spawning a workflow-orchestrator sub-agent | Meta dispatch-client-workflow activity |
 
 ### Removed in v5/v6
 
@@ -31,9 +31,9 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 Any workflow can load these resources via:
 
 ```javascript
-get_resource({ session_index, resource_id: "meta/00" })   // Bootstrap protocol
-get_resource({ session_index, resource_id: "meta/01" })   // Activity worker prompt
-get_resource({ session_index, resource_id: "meta/02" })   // Workflow orchestrator prompt
+get_resource({ session_index, resource_id: "meta/bootstrap-protocol" })   // Bootstrap protocol
+get_resource({ session_index, resource_id: "meta/activity-worker-prompt" })   // Activity worker prompt
+get_resource({ session_index, resource_id: "meta/workflow-orchestrator-prompt" })   // Workflow orchestrator prompt
 ```
 
 Skills declare lightweight `_resources` array entries (e.g., `"meta/activity-worker-prompt"`) — the loader returns these as references; full content is fetched on demand via `get_resource`.

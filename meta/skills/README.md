@@ -46,6 +46,6 @@ Skills declare lightweight `_resources` arrays that resolve to markdown referenc
 
 | Skill | Resources |
 |-------|-----------|
-| `workflow-engine` | [`bootstrap-protocol`](../resources/00-bootstrap-protocol.md), [`activity-worker-prompt`](../resources/01-activity-worker-prompt.md), [`workflow-orchestrator-prompt`](../resources/02-workflow-orchestrator-prompt.md) |
+| `workflow-engine` | [`bootstrap-protocol`](../resources/bootstrap-protocol/SKILL.md), [`activity-worker-prompt`](../resources/activity-worker-prompt/SKILL.md), [`workflow-orchestrator-prompt`](../resources/workflow-orchestrator-prompt/SKILL.md) |
 
 > State persistence is server-managed; there is no `workflow-state-format` resource. The on-disk shape is defined by [`schemas/session-file.schema.json`](../../../schemas/session-file.schema.json) and described in [`docs/state_management_model.md`](../../../docs/state_management_model.md).

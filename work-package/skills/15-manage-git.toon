@@ -45,7 +45,7 @@ protocol:
     - "cd into target_path before any git operations"
     - Use naming convention type/issue-number-short-description from the default branch (main/master)
   create-pr[6]:
-    - "Use attached resource 12 (pr-description) for the PR body template and guidelines. Compose the PR body using the Initial template from the resource."
+    - "Use attached resource pr-description for the PR body template and guidelines. Compose the PR body using the Initial template from the resource."
     - "BEFORE creating the PR: commit and push the planning folder to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote."
     - Create draft PR linked to issue using gh pr create
     - Ensure PR title and body reference issue number
@@ -86,7 +86,7 @@ output[1]:
       pr_url: "URL to the PR"
 
 resources[1]:
-  - "12"
+  - "pr-description"
 
 errors:
   branch_exists:

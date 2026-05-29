@@ -50,7 +50,7 @@ steps[12]:
     description: "Systematically investigate every open question identified during the first pass (architecture survey, key abstractions, design rationale, domain mapping). This step is always performed — do not skip it and do not ask the user to select areas. For each open question, trace relevant data flows, examine implementation details, and resolve the question through targeted code analysis."
   - id: initial-lens-pass
     name: Apply Portfolio Lenses to Initial Deep-Dive
-    description: "Apply pedagogy (prism resource 06) and rejected-paths (prism resource 09) lenses to the key modules examined during the initial deep-dive. Pedagogy reveals where inherited patterns create silent problems; rejected-paths reveals hidden design trade-offs. Apply each lens independently. Append findings to the comprehension artifact under the 'Initial Deep-Dive' section."
+    description: "Apply pedagogy (prism resource pedagogy) and rejected-paths (prism resource rejected-paths) lenses to the key modules examined during the initial deep-dive. Pedagogy reveals where inherited patterns create silent problems; rejected-paths reveals hidden design trade-offs. Apply each lens independently. Append findings to the comprehension artifact under the 'Initial Deep-Dive' section."
   - id: update-artifact-initial
     name: Update Artifact with Initial Deep-Dive Findings
     description: "Append the initial deep-dive findings and portfolio lens findings to the comprehension artifact under a dedicated 'Initial Deep-Dive' section, organized by the open question each finding addresses."
@@ -109,7 +109,7 @@ loops[1]:
         description: "Dive into the selected area: trace data flows, examine implementation details, identify edge cases, document internal design decisions and their implications."
       - id: portfolio-lens-pass
         name: Apply portfolio lenses to deep-dive area
-        description: "Load portfolio lenses from the prism workflow and apply them independently to the code under examination. Use pedagogy (prism resource 06 — attached to skill response via get_skill) to trace where inherited patterns create silent problems, and rejected-paths (prism resource 09 — attached to skill response via get_skill) to reveal what design paths were rejected and what problems they would swap. Apply each lens independently to the key files in the deep-dive area. Append per-lens findings and a cross-lens synthesis (convergent vs unique) to the comprehension artifact under the current deep-dive section."
+        description: "Load portfolio lenses from the prism workflow and apply them independently to the code under examination. Use pedagogy (prism resource pedagogy — attached to skill response via get_skill) to trace where inherited patterns create silent problems, and rejected-paths (prism resource rejected-paths — attached to skill response via get_skill) to reveal what design paths were rejected and what problems they would swap. Apply each lens independently to the key files in the deep-dive area. Append per-lens findings and a cross-lens synthesis (convergent vs unique) to the comprehension artifact under the current deep-dive section."
       - id: update-artifact
         name: Update comprehension artifact
         description: "Append deep-dive findings and portfolio lens findings to the comprehension artifact under a dedicated section for this area."

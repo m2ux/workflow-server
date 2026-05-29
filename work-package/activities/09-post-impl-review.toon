@@ -51,7 +51,7 @@ artifacts[6]:
 steps[8]:
   - id: gitnexus-detect-changes-preflight
     name: GitNexus Detect Changes Preflight
-    description: "Run `gitnexus_detect_changes()` on the current diff. Capture the affected processes and changed-symbol set as input to the subsequent code-review and test-suite-review steps. See work-package resource 27 for the full reference."
+    description: "Run `gitnexus_detect_changes()` on the current diff. Capture the affected processes and changed-symbol set as input to the subsequent code-review and test-suite-review steps. See work-package resource gitnexus-reference for the full reference."
     when: "gitnexus_indexed == true"
   - id: manual-diff-review
     name: Manual Diff Review
@@ -64,7 +64,7 @@ steps[8]:
     required: true
   - id: structural-analysis-inline
     name: Structural Analysis (Single Pass)
-    description: "Load the L12 structural lens from the prism workflow (prism resource 00 — attached to skill response via get_skill) and apply it to the changed files. Produces conservation law, meta-law, and classified bug table. Write findings to structural-findings.md. This inline pass runs for simple and moderate complexity work packages."
+    description: "Load the L12 structural lens from the prism workflow (prism resource l12 — attached to skill response via get_skill) and apply it to the changed files. Produces conservation law, meta-law, and classified bug table. Write findings to structural-findings.md. This inline pass runs for simple and moderate complexity work packages."
     required: true
     condition:
       type: not

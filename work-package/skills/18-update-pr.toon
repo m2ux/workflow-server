@@ -18,7 +18,7 @@ protocol:
     - Verify push succeeded
     - Do not update PR until push completes
   update-description[5]:
-    - Use attached resource 12 (pr-description) for template and structure
+    - Use attached resource pr-description for template and structure
     - Update PR description with implementation summary
     - Include test coverage summary
     - Document key decisions and trade-offs
@@ -39,13 +39,13 @@ output[1]:
       pr_status: "Status after update (e.g., ready for review)"
 
 resources[2]:
-  - "12"
-  - "24"
+  - "pr-description"
+  - "review-mode"
 
 rules:
   template-selection[2]:
-    - "review-mode-template: In review mode, use attached resource 24 for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there."
-    - "initial-template: When creating a PR before implementation (ADR-only), use the Initial template from resource 12. When updating after implementation, use the Final template."
+    - "review-mode-template: In review mode, use attached resource review-mode for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there."
+    - "initial-template: When creating a PR before implementation (ADR-only), use the Initial template from resource pr-description. When updating after implementation, use the Final template."
   pr-body-conformance[5]:
     - "summary-max-two-sentences: Summary section is 1-2 sentences, leads with the outcome, and includes measurable impact when available."
     - "engineering-link-mandatory: Engineering link is present, resolved from the parent repo's `git remote get-url origin` and current `git branch --show-current`, and resolves to a committed file on the remote."

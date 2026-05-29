@@ -49,7 +49,7 @@ modes[1]:
       - implement
     defaults:
       needs_elicitation: false
-    resource: resources/24-review-mode.md
+    resource: resources/review-mode/SKILL.md
 ```
 
 ### Activity-Level Behavior

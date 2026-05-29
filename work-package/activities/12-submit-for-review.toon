@@ -31,7 +31,7 @@ steps[13]:
       value: true
   - id: generate-review-summary
     name: Generate Review Summary
-    description: "Use attached resource 24 (review-mode) via get_skill (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
+    description: "Use attached resource review-mode via get_skill (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
     condition:
       type: simple
       variable: is_review_mode

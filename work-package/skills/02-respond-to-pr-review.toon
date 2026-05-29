@@ -12,7 +12,7 @@ inputs[2]:
 
 protocol:
   fetch-comments[2]:
-    - Use attached resource 28 (pr-review-response) for full response guidance
+    - Use attached resource pr-review-response for full response guidance
     - Fetch all review comments from PR using gh API
   categorize[3]:
     - Categorize comments by type (required change, suggestion, question, nit)
@@ -32,7 +32,7 @@ protocol:
     - Push all fix commits to the PR branch
     - Post response summary to PR
   assess-outcome[2]:
-    - "After applying reviewer-requested changes, run `gitnexus_detect_changes()` to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant. See resource 27."
+    - "After applying reviewer-requested changes, run `gitnexus_detect_changes()` to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant. See resource gitnexus-reference."
     - Determine if re-review is needed (significant changes) or minor fixes suffice
 
 output[1]:
@@ -50,8 +50,8 @@ rules:
   prioritize-required: "Address required changes before suggestions and nits"
 
 resources[2]:
-  - "28"
-  - "27"
+  - "pr-review-response"
+  - "gitnexus-reference"
 
 errors:
   no_comments:

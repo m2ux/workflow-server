@@ -19,11 +19,11 @@ protocol:
   pre-edit-impact-check[3]:
     - "Run `gitnexus_impact({target: <symbol>, direction: 'upstream'})` on the target symbol before any edit"
     - "Read the impact report; if HIGH or CRITICAL risk, surface it to the user before proceeding"
-    - "Use `gitnexus_context({name: <symbol>})` to understand callers/callees of the symbol — see resource 27 for the full reference"
+    - "Use `gitnexus_context({name: <symbol>})` to understand callers/callees of the symbol — see resource gitnexus-reference for the full reference"
   write-code[3]:
     - Implement the code changes for this task
     - Follow existing code patterns and conventions in the target codebase
-    - "For Rust projects, follow TDD best practices from resource 23 (tdd-concepts-rust)"
+    - "For Rust projects, follow TDD best practices from resource tdd-concepts-rust"
   verify-locally[1]:
     - Check for obvious regressions in affected code
   post-edit-verification[1]:
@@ -41,9 +41,9 @@ rules:
   gitnexus-discipline: "Implementations MUST execute the pre-edit-impact-check and post-edit-verification protocol phases on every task when the codebase is GitNexus-indexed. The phases describe the calls; this rule asserts they are non-negotiable."
 
 resources[3]:
-  - "14"
-  - "23"
-  - "27"
+  - "task-completion-review"
+  - "tdd-concepts-rust"
+  - "gitnexus-reference"
 
 errors:
   compilation_failure:

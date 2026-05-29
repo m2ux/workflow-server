@@ -111,7 +111,7 @@ operations:
     description: "Transition the session to a target activity and spawn a worker for it"
     inputs[3]:
       - activity_id: "Activity ID to enter"
-      - prompt_template: "Resource ref for the worker prompt (e.g., meta/01)"
+      - prompt_template: "Resource ref for the worker prompt (e.g., meta/activity-worker-prompt)"
       - state: "Current variable state for prompt substitution"
     output[2]:
       - worker_result: "{ type: 'checkpoint_pending' } or { type: 'activity_complete', ...payload }"

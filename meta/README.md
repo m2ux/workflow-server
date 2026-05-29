@@ -11,7 +11,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](resources/00-bootstrap-protocol.md)) calls `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` directly and saves the returned `session_index`. There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
+- Bootstrap (resource [`bootstrap-protocol`](resources/bootstrap-protocol/SKILL.md)) calls `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` directly and saves the returned `session_index`. There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
 - Universal skills resolve for any session via the loader's workflow-specific → cross-workflow → universal fallback chain.
 - State persistence is server-managed. Every authenticated tool call atomically writes `session.json` + `.session-token` (seal) into the planning folder, so there are no agent-side persist or restore steps.
 
@@ -123,11 +123,11 @@ Universal skills referenced by canonical ID. Numeric prefixes order the files fo
 
 ## Resources
 
-| # | Resource | Purpose |
-|---|----------|---------|
-| 00 | [Bootstrap Protocol](resources/00-bootstrap-protocol.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })`. The meta workflow does the rest. |
-| 01 | [Activity Worker Prompt](resources/01-activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent (substitutes `session_index`). |
-| 02 | [Workflow Orchestrator Prompt](resources/02-workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent (substitutes `session_index`). |
+| Resource ID | Resource | Purpose |
+|-------------|----------|---------|
+| `bootstrap-protocol` | [Bootstrap Protocol](resources/bootstrap-protocol/SKILL.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })`. The meta workflow does the rest. |
+| `activity-worker-prompt` | [Activity Worker Prompt](resources/activity-worker-prompt/SKILL.md) | Template prompt for spawning an activity-worker sub-agent (substitutes `session_index`). |
+| `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](resources/workflow-orchestrator-prompt/SKILL.md) | Template prompt for spawning a workflow-orchestrator sub-agent (substitutes `session_index`). |
 
 > The on-disk session-state shape is defined by [`schemas/session-file.schema.json`](../../schemas/session-file.schema.json); see [`docs/state_management_model.md`](../../docs/state_management_model.md) for the persistence model.
 
@@ -185,7 +185,7 @@ workflows/meta/
 │   ├── 06-gitnexus-operations.toon
 │   └── 07-harness-compat.toon
 └── resources/
-    ├── 00-bootstrap-protocol.md             # Pre-session navigation primer
-    ├── 01-activity-worker-prompt.md
-    └── 02-workflow-orchestrator-prompt.md
+    ├── bootstrap-protocol/SKILL.md          # Pre-session navigation primer
+    ├── activity-worker-prompt/SKILL.md
+    └── workflow-orchestrator-prompt/SKILL.md
 ```

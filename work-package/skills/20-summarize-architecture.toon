@@ -18,7 +18,7 @@ protocol:
     - Determine which architectural components are affected by the changes
     - Map changed files to modules and subsystems
     - Identify external interactions and boundaries
-    - "Use `gitnexus_detect_changes()` to bound the scope of diagrams to the affected processes and symbols. See resource 27."
+    - "Use `gitnexus_detect_changes()` to bound the scope of diagrams to the affected processes and symbols. See resource gitnexus-reference."
   create-context-diagram[3]:
     - Create Mermaid system context diagram
     - Show the system and its external interactions
@@ -50,9 +50,9 @@ output[1]:
       narrative: "Narrative explanation of impact and scope"
 
 resources[3]:
-  - "15"
-  - "19"
-  - "27"
+  - "architecture-review"
+  - "architecture-summary"
+  - "gitnexus-reference"
 
 rules:
   stakeholder-audience: "Write for management stakeholders — focus on impact, scope, and risk, not implementation details"
