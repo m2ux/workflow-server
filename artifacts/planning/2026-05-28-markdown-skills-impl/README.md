@@ -34,6 +34,7 @@ Until the markdown layout is live, contributors cannot iterate on workflow knowl
 |---|------|-------------|----------|--------|
 | 01 | [Design philosophy](01-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 02 | [Codebase comprehension](02-codebase-comprehension.md) | Skill/resource/workflow loaders + TOON-projection delivery deep-dive | 20-45m | ✅ Complete |
 | 05 | [Work package plan](05-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 2-4h | ⬚ Pending |
@@ -70,4 +71,4 @@ Coordination: the two branches land via two PRs that merge in order — content 
 
 ---
 
-**Status:** Design philosophy complete — classification confirmed (`task` + `complex`); workflow-path-selected resolved as `skip-optional` (elicitation, research, implementation-analysis skipped; codebase-comprehension and review activities retained).
+**Status:** Codebase comprehension complete — concrete loader swap point identified (`tryLoadSkill`/`tryReadSkillRaw` in `src/loaders/skill-loader.ts:59-96`); precedence layer location resolved (inside `readSkill`/`readSkillRaw`, replacing cross-workflow scan-all). Operations-bundle assembly (`get_workflow`/`get_activity`) requires no shape changes — `Skill` Zod object stays the loader's contract surface. Assumptions A-001/A-002/A-003 moved to Confirmed pending plan-prepare's content audit.
