@@ -54,7 +54,19 @@ Until the markdown layout is live, contributors cannot iterate on workflow knowl
 |----------|------|
 | GitHub Issue | [#125](https://github.com/m2ux/workflow-server/issues/125) |
 | Original Plan | [2026-05-22-claude-skills-migration](../2026-05-22-claude-skills-migration/) |
-| PR | _Pending_ |
+| PR (source) | [#126](https://github.com/m2ux/workflow-server/pull/126) — draft, `feat/125-markdown-skills-migration` ← `main` |
+| PR (content) | _Pending_ — will track `feat/125-markdown-skills-content` ← `workflows` once content lands |
+
+## 🌿 Branches & worktrees
+
+This work-package touches BOTH the workflow-server source branch AND the workflows-data branch in parallel.
+
+| Side | Branch | Base | Worktree | Scope |
+|---|---|---|---|---|
+| **workflow-server source** | `feat/125-markdown-skills-migration` | `origin/main` | `~/projects/work/workflow-server/2026-05-28-markdown-skills-impl/` | `src/`, `schemas/`, `dist/` — the markdown loader, precedence resolver, TOON-projection delivery pass |
+| **workflows content** | `feat/125-markdown-skills-content` | `origin/workflows` | `~/projects/work/workflows/2026-05-28-markdown-skills-impl/` | New `workflows/<workflow>/{techniques,resources}/` content sourced from the planning-folder `legacy/{work-package,meta}/` trees |
+
+Coordination: the two branches land via two PRs that merge in order — content side first to populate the new layout, then the source side to flip the loader. Implementation tasks must specify which worktree they operate against.
 
 ---
 
