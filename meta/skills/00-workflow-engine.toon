@@ -1,5 +1,5 @@
 id: workflow-engine
-version: 6.1.0
+version: 6.2.0
 capability: Operations and rules for workflow execution — session lifecycle, activity dispatch, transition evaluation, checkpoint flow
 
 description: "Operations and rules for executing a workflow's structured flow."
@@ -60,14 +60,15 @@ operations:
         - Read
 
   create-session:
-    description: "Dispatch a fresh client workflow as a child of the meta session"
-    inputs[2]:
+    description: "Dispatch a fresh client workflow as a child of the meta session, supplying the derived planning slug so the server promotes the meta's workspace folder to a descriptive name"
+    inputs[3]:
       - parent_session_index: "session_index of the meta (parent) session — typically the meta_session_index variable"
       - workflow_id: "Target client workflow id (e.g., 'work-package')"
+      - planning_slug: "Slug for the promoted meta workspace folder (output of version-control::initialize-folder). Required on fresh starts so the folder name reflects the work item; omit on resume — the parent already lives at its planning slug."
     output[1]:
       - session_index: "The 6-character base32 session_index of the newly created child session"
     procedure[1]:
-      - "Call dispatch_child({ session_index: <parent_session_index>, workflow_id: <target client workflow id>, agent_id: 'orchestrator' }); capture the returned session_index for use in all subsequent calls inside the child workflow. The server appends the child under parent.triggeredWorkflows[N].state and embeds the full child SessionFile inline; the agent does not deal with separate child folders."
+      - "Call dispatch_child({ session_index: <parent_session_index>, workflow_id: <target client workflow id>, agent_id: 'orchestrator', planning_slug: <planning_slug> }); capture the returned session_index (the child's) for use in all subsequent calls inside the child workflow. The server appends the child under parent.triggeredWorkflows[N].state, embeds the full child SessionFile inline, and (on transient parents) promotes the parent's state to a workspace folder named by planning_slug. The parent's original session_index keeps resolving — the orchestrator does not need to refresh it."
     tools:
       workflow-server[1]:
         - dispatch_child

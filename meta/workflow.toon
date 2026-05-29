@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: meta
-version: 5.0.0
+version: 5.1.0
 title: Meta Workflow
 description: "Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly."
 author: m2ux

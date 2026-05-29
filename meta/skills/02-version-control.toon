@@ -1,5 +1,5 @@
 id: version-control
-version: 5.0.0
+version: 5.1.0
 capability: Initialize planning folders and commit artifacts in the parent repository or a submodule
 
 description: "Version-control operations for planning folders, regular-directory commits, and the two-step submodule commit pattern."
@@ -26,22 +26,19 @@ operations:
         - Read
 
   initialize-folder:
-    description: "Create a planning folder for a new workflow run under .engineering/artifacts/planning/"
+    description: "Compose the planning slug + absolute folder path for a new workflow run. The folder itself is materialised by dispatch_child when the meta is promoted to client_planning_slug; this operation only computes the strings."
     inputs[1]:
       - initiative_name: "Kebab-case identifier derived from the issue title or work-package description"
-    output[1]:
-      - planning_folder_path: "Absolute path to the created folder"
-    procedure[3]:
-      - "Compose path: .engineering/artifacts/planning/YYYY-MM-DD-{initiative_name}/"
-      - "mkdir -p the path"
-      - "Return the absolute path as planning_folder_path"
-    tools:
-      shell[1]:
-        - mkdir
+    output[2]:
+      - client_planning_slug: "Composed slug 'YYYY-MM-DD-{initiative_name}' (today's date in UTC). This slug is passed to dispatch_child so the server promotes the meta to a workspace folder of that name."
+      - planning_folder_path: "Absolute path the server will create: '<workspace>/.engineering/artifacts/planning/{client_planning_slug}/'"
+    procedure[2]:
+      - "Compose client_planning_slug as 'YYYY-MM-DD-{initiative_name}' using today's date in UTC"
+      - "Compose planning_folder_path as '<workspace>/.engineering/artifacts/planning/{client_planning_slug}/' for downstream artifact writes; do NOT mkdir — the server creates the folder during dispatch_child promotion. mkdir-ing before dispatch_child can desync the folder name from the server's planning_slug parameter."
     errors:
       no_folder_path:
         cause: "Attempted to write an artifact without a planning folder"
-        recovery: "Run version-control::initialize-folder first"
+        recovery: "Run version-control::initialize-folder first, then ensure dispatch_child has been called with the resulting client_planning_slug — the server materialises the folder during promotion"
 
   commit-regular-files:
     description: "Stage, commit, and push files in a regular (non-submodule) directory of the parent repo"
