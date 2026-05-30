@@ -7,7 +7,7 @@ The workflow includes 28 resources that provide templates, guidance, and referen
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
 | `readme` | README Guide | Entry point and artifact index template for planning folders |
-| `readme-02` | README Guide (deprecated) | **Deprecated** — consolidated into `readme` as of v2.0.0; retained as a redirect stub. New planning-folder work uses `id: readme`. |
+| `readme-deprecated-notice` | README Guide (deprecated) | **Deprecated** — consolidated into `readme` as of v2.0.0; retained as a redirect stub. New planning-folder work uses `id: readme`. |
 | `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
 | `jira-issue-creation` | Jira Issue Creation | Guide for creating Jira issues with proper field mapping |
 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
