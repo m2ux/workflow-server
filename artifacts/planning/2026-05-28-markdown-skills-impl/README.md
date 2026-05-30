@@ -41,9 +41,12 @@ The change ships in two coordinated steps so nothing breaks during the transitio
 | 05 | [Test plan](05-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 2-4h | ✅ Complete |
 | — | [Provenance log](provenance-log.md) | AI-assistance attribution per task | 10m | ✅ Complete |
-| 06 | [Change block index](06-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | [Code review](06-code-review.md) | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](06-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| 06 | [Change block index](change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| 06 | [Manual diff review](manual-diff-review-report.md) | User-attested rationale + finding F1 record | 10-20m | ✅ Complete |
+| 06 | [Code review](code-review.md) | Automated code quality review | 10-20m | ✅ Complete |
+| 06 | [Structural findings](structural-findings.md) | L12 single-pass structural analysis | 10-20m | ✅ Complete |
+| 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
+| 06 | [Architecture summary](architecture-summary.md) | C4 context + package + sequence diagrams | 10-20m | ✅ Complete |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |

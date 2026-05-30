@@ -56,8 +56,28 @@ Hunks are grouped per file × commit. The `#` column is a row index for this rev
 | 14 | f9a673c | `meta/techniques/<slug>/SKILL.md` + sibling op-child files (8 techniques: agent-conduct, atlassian-operations, github-cli-protocol, gitnexus-operations, harness-compat, knowledge-base-search, version-control, workflow-engine) | +~1800 lines | Cross-workflow shared technique layer. Each technique is a folder with a `SKILL.md` index (frontmatter + Capability + optional Operations table linking to child files + Rules) and one `<op>.md` file per operation in the canonical Inputs/Output/Procedure/Errors/Rules shape. Sourced verbatim from the 2026-05-22 planning-folder `legacy/meta/techniques/` tree via the migrate-skills script. |
 | 15 | f9a673c | `meta/resources/<slug>/SKILL.md` (4 resources: activity-worker-prompt, bootstrap-protocol, workflow-canonical, workflow-orchestrator-prompt) | +~400 lines | Cross-workflow shared resource layer. The ontology definition lands at `meta/resources/workflow-canonical/SKILL.md` (per Task A2 acceptance criteria). |
 | 16 | 538de1d | `work-package/techniques/<slug>/SKILL.md` + sibling op-child files (27 techniques) | +~3800 lines | Work-package-local technique layer. Same canonical shape as commit 14. Six techniques use the op-as-child-files pattern (`cargo-operations`, `dco-provenance`, `gitnexus-operations`, `manage-artifacts`, `manage-git`, `validate-build`). |
-| 17 | 538de1d | `work-package/resources/<slug>/SKILL.md` (22 resources) | +~12000 lines | Work-package-local resource layer. Same shape as commit 15. Includes the rust-substrate code review and tdd-concepts-rust resources, both large reference documents. |
+| 17 | 538de1d | `work-package/resources/<slug>/SKILL.md` (28 resources) | +~12000 lines | Work-package-local resource layer. Same shape as commit 15. Count reflects the post-F1 flat-shape conversion on commit `f52b565`, which appended six additional resources (`gitnexus-reference`, `manual-diff-review`, `readme`, `readme-02`, `review-mode`, `web-research`) into the folder shape. Includes the rust-substrate code review and tdd-concepts-rust resources, both large reference documents. |
 | 18 | 8d8591f | `README.md`, `meta/README.md` | +~40 lines | Documents the new `techniques/` and `resources/` directory layout and the workflow-local → meta precedence (Task A3). |
+
+---
+
+## Review-fix-cycle iteration 1 commits
+
+These rows record the commits produced by iteration 1 of the `post-impl-review` `review-fix-cycle` loop. Each row stands behind a distinct Minor finding from the automated reviews. The rationale paragraph for each commit names the finding it closes and the precise surface area the change touches.
+
+### Source-side (feat/125-markdown-skills-migration)
+
+| # | Commit | Path | Lines | Rationale |
+|---|--------|------|-------|-----------|
+| 30 | c4e619a | tests/skill-loader.test.ts, tests/fixtures/markdown-skills/{meta,work-package}/techniques/explicit-prefix-target/SKILL.md | +73 / -3 across three files | Closes F-TS-01, F-TS-02, F-TS-03 from `test-suite-review.md`. (a) Tightens PR126-TC-06 to assert both `result.success === false` and `error.name === 'SkillNotFoundError'`, replacing the previous "either path passes" comment. (b) Adds a four-line comment above the workflow-engine threshold assertions declaring them as deliberate lower bounds and naming the live content path they couple to. (c) Adds PR126-TC-05b — `meta/<id>` explicit-prefix wins over a workflow-local override — backed by a new dedicated `explicit-prefix-target` fixture pair (meta + work-package) so TC-04's no-override premise stays intact. Suite count: 329 → 330 (4 skipped unchanged); typecheck clean. |
+
+### Content-side (feat/125-markdown-skills-content)
+
+| # | Commit | Path scope | Lines | Rationale |
+|---|--------|------------|-------|-----------|
+| 31 | 0a510e3 | `work-package/resources/{readme-02 → readme-deprecated-notice}/SKILL.md`, `work-package/resources/README.md` | +4 / -6 across two files (rename + edit) | Closes F-CR-02 from `code-review.md`. Renames the consolidated-notice resource from the deprecated `readme-02` slug (which leaked an `-02` numeric ordering tail forbidden by the id-only contract) to `readme-deprecated-notice`. Updates frontmatter `name:` to match, drops the now-meaningless `metadata.order` and `metadata.legacy_id` numeric fields, fixes the broken intra-body link (the previous `[01-readme.md](01-readme.md)` path no longer exists; rewritten to the sibling `../readme/SKILL.md`), and updates the resources README table row. The redirect notice itself is preserved during the migration window per the finding's "rename rather than delete" recommendation. |
+
+> Note: F-CR-01 (this index's row-17 stale count) was a documentation-only fix in `.engineering` and is therefore not represented as a commit-bearing row above. Row 17 itself was updated in place to `28 resources` with an inline note naming the six post-F1 appended slugs.
 
 ---
 

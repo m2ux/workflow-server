@@ -57,3 +57,17 @@ The user's correction was framed as a rationale correction. However, the underly
 
 - The `block-interview` checkpoint that gated this resumption was driven by the user-supplied global correction. With the rationale now updated to reflect id-only contract, no per-block interview is required.
 - Subject to orchestrator clearance of the active checkpoint, the activity should proceed to its remaining steps (impact analysis, lint, type-check verification, summary) per the activity definition.
+
+## Review fix cycle iteration 1
+
+Iteration 1 of the `review-fix-cycle` loop. Applied the five Minor findings from the automated reviews. Loop exit condition (no remaining Minor+ findings) is satisfied after this iteration.
+
+| Finding | Source | Severity | Status | Fix commit | Note |
+|---|---|---|---|---|---|
+| F-CR-01 | code-review.md | Minor | Fixed | (doc-only — `.engineering`) | Updated row 17 in `change-block-index.md` from `22 resources` to `28 resources`; appended the post-F1 explanation naming the six appended slugs. |
+| F-CR-02 | code-review.md | Minor | Fixed | `0a510e3` (content branch `feat/125-markdown-skills-content`) | Renamed `work-package/resources/readme-02/` → `work-package/resources/readme-deprecated-notice/`; dropped `metadata.order` and `metadata.legacy_id`; fixed broken `[01-readme.md]` body link to point at `../readme/SKILL.md`; updated the resources README table row. |
+| F-TS-01 | test-suite-review.md | Minor | Fixed | `c4e619a` (source branch `feat/125-markdown-skills-migration`) | Tightened PR126-TC-06 to assert both `success === false` AND `error.name === 'SkillNotFoundError'`; replaced the "either path passes" comment with one that pins the now-closed regression gap. |
+| F-TS-02 | test-suite-review.md | Minor | Fixed | `c4e619a` (source branch) | Added a four-line comment above the magic-number thresholds in `tests/skill-loader.test.ts` declaring them as lower bounds, naming the content path they couple to, and stating the intentional shrink-detection signal. |
+| F-TS-03 | test-suite-review.md | Minor | Fixed | `c4e619a` (source branch) | Added PR126-TC-05b asserting `meta/<id>` explicit-prefix wins over a workflow-local override. Backed by a new dedicated `explicit-prefix-target` fixture pair (meta + work-package) so TC-04's no-override premise stays intact. Suite grew from 329 → 330 tests; typecheck clean. |
+
+**Exit condition:** `needs_code_fixes==true OR needs_test_improvements==true` evaluates to **false** after iteration 1 — no remaining Minor+ findings across either automated review report. The `blocker-gate` decision evaluates `has_critical_blocker=false` (stale `true` from the prior worker has been cleared by the F1 remediation it referred to; F1 itself is closed in this report's row 1 above).
