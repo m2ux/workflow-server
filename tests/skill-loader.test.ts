@@ -50,6 +50,12 @@ describe('skill-loader', () => {
       if (result.success) {
         const skill = result.value;
         expect(skill.operations).toBeDefined();
+        // Thresholds below are deliberately lower bounds, not exact counts, so
+        // they tolerate organic growth of the meta/workflow-engine content.
+        // They are coupled to the live content at
+        // workflows/meta/techniques/workflow-engine/ (≥ 6 ops, ≥ 3 rules at
+        // time of writing). A content restructure that drops below either
+        // bound will fail this test by design — that signal is intentional.
         expect(Object.keys(skill.operations!).length).toBeGreaterThanOrEqual(6);
         expect(skill.rules).toBeDefined();
         expect(Object.keys(skill.rules!).length).toBeGreaterThanOrEqual(3);
@@ -111,12 +117,34 @@ describe('skill-loader', () => {
       }
     });
 
+    it('PR126-TC-05b: explicit meta/<id> prefix wins over a workflow-local override', async () => {
+      // Inverse direction of TC-05: when a workflow-local override exists, an
+      // explicit `meta/<id>` reference must bypass precedence and force-target
+      // the meta layer. The `explicit-prefix-target` slug ships paired fixtures
+      // (meta tagged `description: meta-version`, work-package tagged
+      // `description: workflow-local override`) so the assertion can confirm
+      // the meta-side value is returned despite the override existing. Uses a
+      // dedicated slug to avoid coupling with TC-04's no-override premise.
+      const result = await readSkill('meta/explicit-prefix-target', FIXTURE_DIR, 'work-package');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.description).toMatch(/meta-version/i);
+        expect(result.value.description).not.toMatch(/workflow-local override/i);
+      }
+    });
+
     it('PR126-TC-06: malformed op-child file (missing Procedure) raises a loader error', async () => {
       const result = await readSkill('malformed-ops', FIXTURE_DIR, 'work-package');
-      // Parser surfaces the error as SkillNotFoundError (matches contract). Verify either:
-      //   (a) the result is failed, OR
-      //   (b) the operation was silently dropped (regression — should be false).
+      // Contract: a parse failure in an op-child file must surface as
+      // SkillNotFoundError (the loader wraps parse failures as not-found at the
+      // public boundary). Asserting both the success flag AND the error name
+      // distinguishes "parser surfaced the error" from "skill is missing for an
+      // unrelated reason" — closes the regression gap where a silent op-drop
+      // would still satisfy `result.success === false`.
       expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.name).toBe('SkillNotFoundError');
+      }
     });
 
     it('PR126-TC-07: returns SkillNotFoundError when neither workflow-local nor meta has the skill', async () => {
