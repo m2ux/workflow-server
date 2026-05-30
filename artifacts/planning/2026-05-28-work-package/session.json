@@ -232,10 +232,11 @@
           "codebase-comprehension",
           "plan-prepare",
           "assumptions-review",
-          "implement"
+          "implement",
+          "post-impl-review"
         ],
         "condition": "default",
-        "currentActivity": "post-impl-review",
+        "currentActivity": "validate",
         "currentSkill": "",
         "history": [
           {
@@ -594,16 +595,26 @@
             },
             "timestamp": "2026-05-29T15:22:51.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-05-30T09:01:38.843Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-05-30T09:01:38.843Z",
+            "type": "activity_entered"
           }
         ],
         "schemaVersion": 1,
-        "seq": 70,
+        "seq": 73,
         "sessionIndex": "SUQLKL",
         "skippedActivities": [],
         "startedAt": "2026-05-28T16:34:23.567Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1780072241,
+        "ts": 1780131800,
         "variables": {
           "has_critical_blocker": true,
           "has_flagged_blocks": true,

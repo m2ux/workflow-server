@@ -48,7 +48,7 @@ The change ships in two coordinated steps so nothing breaks during the transitio
 | 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
 | 06 | [Architecture summary](architecture-summary.md) | C4 context + package + sequence diagrams | 10-20m | ✅ Complete |
 | 07 | [Strategic review](07-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
