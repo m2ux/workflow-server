@@ -224,6 +224,15 @@
             },
             "optionId": "proceed",
             "respondedAt": "2026-05-29T06:14:17.000Z"
+          },
+          "strategic-review-review-findings": {
+            "effects": {
+              "variablesSet": {
+                "review_passed": true
+              }
+            },
+            "optionId": "acceptable",
+            "respondedAt": "2026-05-30T09:49:50.000Z"
           }
         },
         "completedActivities": [
@@ -233,10 +242,11 @@
           "plan-prepare",
           "assumptions-review",
           "implement",
-          "post-impl-review"
+          "post-impl-review",
+          "validate"
         ],
         "condition": "default",
-        "currentActivity": "validate",
+        "currentActivity": "strategic-review",
         "currentSkill": "",
         "history": [
           {
@@ -605,16 +615,50 @@
             "activity": "validate",
             "timestamp": "2026-05-30T09:01:38.843Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-05-30T09:35:05.740Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-05-30T09:35:05.740Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "review-findings",
+            "timestamp": "2026-05-30T09:47:02.250Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "review-findings",
+            "data": {
+              "optionId": "acceptable"
+            },
+            "timestamp": "2026-05-30T09:49:50.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "review_passed",
+              "value": true
+            },
+            "timestamp": "2026-05-30T09:49:50.000Z",
+            "type": "variable_set"
           }
         ],
         "schemaVersion": 1,
-        "seq": 73,
+        "seq": 81,
         "sessionIndex": "SUQLKL",
         "skippedActivities": [],
         "startedAt": "2026-05-28T16:34:23.567Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1780131800,
+        "ts": 1780134590,
         "variables": {
           "has_critical_blocker": true,
           "has_flagged_blocks": true,
@@ -627,6 +671,7 @@
           "path_gating_complexity": "simple",
           "pr_skipped": false,
           "rationale_confirmed": true,
+          "review_passed": true,
           "skip_optional_activities": true
         },
         "workflowId": "work-package",
