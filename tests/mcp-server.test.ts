@@ -1536,6 +1536,32 @@ describe('mcp-server integration', () => {
       expect(text).toMatch(/must be an absolute path/);
     });
 
+    it('accepts a planning_folder reached via a symlinked workspace alias (canonicalises both sides via realpath)', async () => {
+      // Simulate the real-world scenario where the server is launched with a
+      // symlinked alias path (e.g., `/projects/dev/workflow-server` is a
+      // symlink to `/projects/main/workflow-server`), and the agent passes
+      // the canonical-side path. String comparison would reject; realpath
+      // canonicalisation must accept.
+      const { symlinkSync, unlinkSync } = await import('node:fs');
+      const aliasDir = workspaceDir + '-alias';
+      symlinkSync(workspaceDir, aliasDir);
+      try {
+        const slug = '2026-05-31-symlinked-workspace';
+        const aliasedPath = join(aliasDir, '.engineering/artifacts/planning', slug);
+        const result = await client.callTool({
+          name: 'start_session',
+          arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: aliasedPath },
+        });
+        expect(result.isError).toBeFalsy();
+        const response = parseToolResponse(result);
+        // Stored path should be the canonical (realpath) form — the alias is
+        // resolved before the path is persisted.
+        expect(response.planning_folder_path).toBe(join(workspaceDir, '.engineering/artifacts/planning', slug));
+      } finally {
+        unlinkSync(aliasDir);
+      }
+    });
+
     it('rejects long-form planning_folder outside the workspace planning root', async () => {
       const result = await client.callTool({
         name: 'start_session',

@@ -46,8 +46,27 @@ import {
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
+import { realpathSync } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
-import { basename, isAbsolute, resolve, sep } from 'node:path';
+import { basename, dirname, isAbsolute, join, resolve, sep } from 'node:path';
+
+/**
+ * Canonicalise a path via `realpath`, walking up to the deepest existing
+ * ancestor when the leaf doesn't yet exist. The returned path is the
+ * symlink-resolved canonical form (e.g., if `/projects/dev` is a symlink to
+ * `/projects/main`, both resolve to the same canonical string). Used for
+ * boundary checks so that two paths pointing at the same on-disk location
+ * compare equal regardless of which alias the caller passed.
+ */
+function realpathToExistingAncestor(p: string): string {
+  try {
+    return realpathSync(p);
+  } catch {
+    const parent = dirname(p);
+    if (parent === p) return p;
+    return join(realpathToExistingAncestor(parent), basename(p));
+  }
+}
 /**
  * Parse a resource reference that may include a workflow prefix.
  * Format: "workflow/index" for cross-workflow, or bare "index" for local.
@@ -130,12 +149,19 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             `Bare slugs and relative paths are rejected. Omit planning_folder entirely for the meta bootstrap (slug not yet known).`,
           );
         }
-        const normalised = resolve(planning_folder);
-        const planningRootPath = resolve(config.workspaceDir, '.engineering/artifacts/planning');
-        const planningRootPrefix = planningRootPath + sep;
+        // Canonicalise both the supplied path and the workspace planning root
+        // via realpath. Two distinct path strings that point at the same
+        // on-disk location (e.g., a workspaceDir bound through a symlinked
+        // alias like /projects/dev → /projects/main) must compare equal here,
+        // otherwise the boundary check spuriously rejects valid inputs.
+        const planningRootCanonical = realpathToExistingAncestor(
+          resolve(config.workspaceDir, '.engineering/artifacts/planning'),
+        );
+        const normalised = realpathToExistingAncestor(resolve(planning_folder));
+        const planningRootPrefix = planningRootCanonical + sep;
         if (!normalised.startsWith(planningRootPrefix)) {
           throw new Error(
-            `start_session: planning_folder '${normalised}' is outside the server's planning root '${planningRootPath}'. ` +
+            `start_session: planning_folder '${normalised}' is outside the server's planning root '${planningRootCanonical}'. ` +
             `Either restart the server with --workspace=<the workspace that contains this folder>, or move the folder under the current planning root.`,
           );
         }
