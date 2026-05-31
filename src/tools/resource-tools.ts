@@ -18,7 +18,6 @@ import {
   SessionStoreError,
   ensurePlanningFolder,
   ensureNestedPlanningFolder,
-  PLANNING_DIR_MODE,
   findPlanningFolderBySlug,
   sessionFileExists,
   writeSessionFile,
@@ -46,27 +45,7 @@ import {
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
-import { realpathSync } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
-import { basename, dirname, isAbsolute, join, resolve, sep } from 'node:path';
-
-/**
- * Canonicalise a path via `realpath`, walking up to the deepest existing
- * ancestor when the leaf doesn't yet exist. The returned path is the
- * symlink-resolved canonical form (e.g., if `/projects/dev` is a symlink to
- * `/projects/main`, both resolve to the same canonical string). Used for
- * boundary checks so that two paths pointing at the same on-disk location
- * compare equal regardless of which alias the caller passed.
- */
-function realpathToExistingAncestor(p: string): string {
-  try {
-    return realpathSync(p);
-  } catch {
-    const parent = dirname(p);
-    if (parent === p) return p;
-    return join(realpathToExistingAncestor(parent), basename(p));
-  }
-}
+import { basename, isAbsolute, resolve } from 'node:path';
 /**
  * Parse a resource reference that may include a workflow prefix.
  * Format: "workflow/index" for cross-workflow, or bare "index" for local.
@@ -110,18 +89,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'start_session',
     {
       description:
-        'Start or resume the TOP-LEVEL workflow session. Identifies the planning folder via `planning_folder` — the absolute path to the folder under the workspace planning root (e.g., `/home/user/repo/.engineering/artifacts/planning/2026-05-28-my-slug`). The slug is derived from `basename(path)`. ' +
-        'Returns a 6-character base32 `session_index` for the root session, plus basic workflow metadata. ' +
-        'Behaviour: if the folder already contains `session.json`, the server resumes it (workflow_id taken from state — caller cannot rebrand a live session). Otherwise the folder is created and a fresh session is written. When `planning_folder` is omitted entirely, a fresh meta-bootstrap session is created in `os.tmpdir()` and a synthetic slug is registered so subsequent dispatch_child calls can promote it to a workspace folder. ' +
-        'Paths outside the workspace planning root are rejected — the server resolves subsequent calls by walking this root, so off-workspace folders are unreachable. The full absolute path is persisted as `planningFolderPath` inside session.json; on resume, if the caller-supplied path differs from the recorded value (e.g., the folder was moved or renamed within the planning root), the server silently overwrites the stored path with the new location. ' +
+        'Start or resume the TOP-LEVEL workflow session. Identifies the planning folder via `planning_folder` — an absolute path whose basename is the slug (e.g., `/home/user/repo/.engineering/artifacts/planning/2026-05-28-my-slug` → slug `2026-05-28-my-slug`). Only the basename is consumed; the path part is a hint and is otherwise ignored, so a stale or off-workspace path passed by the agent is harmless. The server always resolves the slug against its own workspace planning root. ' +
+        'Returns a 6-character base32 `session_index` for the root session, plus basic workflow metadata, plus the canonical server-side `planning_folder_path` (the absolute path of the folder under THIS server\'s workspace) — the agent can pick up the current location from this response without doing any path math. ' +
+        'Behaviour: if a folder for that slug already exists under the server\'s workspace planning root with `session.json`, the server resumes it (workflow_id taken from state — caller cannot rebrand a live session). Otherwise the folder is created (for non-meta workflows) or a transient tmp folder is used (for meta-bootstrap), and a fresh session is written. When `planning_folder` is omitted entirely, a fresh meta-bootstrap session is created in `os.tmpdir()` and a synthetic UUID slug is registered so subsequent `dispatch_child` calls can promote it. ' +
+        'The full resolved absolute path is persisted as `planningFolderPath` inside session.json; on resume, if the folder has been renamed or moved within the planning root, the recorded value is silently overwritten with its current location. ' +
         'Other tools identify the session by `session_index` (returned here) — they do not need the path, because session.json carries it. ' +
         'Child workflows are not created through start_session — call `dispatch_child({ session_index, workflow_id })` from inside the parent session to append a child under `triggeredWorkflows[]` (embedded inline; the whole work-package tree lives in the top-level session.json). ' +
         'If the resolved folder contains legacy `workflow-state.json` + `.session-token` artefacts, the server migrates them in place. ' +
         'The agent_id parameter is stored on `session.json#agentId`, distinguishing orchestrator from worker calls in the trace.',
       inputSchema: z
         .object({
-          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh top-level session (e.g., "work-package"). Defaults to "meta". Ignored when the folder already resolves to an existing `session.json` (the workflow is taken from the resumed state).'),
-          planning_folder: z.string().optional().describe('Optional. Absolute path to the planning folder. Must live under the server\'s workspace planning root (`<workspaceDir>/.engineering/artifacts/planning/`). The slug is derived as `basename(path)`. When omitted, the server mints a transitional slug derived from a fresh UUID and registers it for the meta bootstrap session.'),
+          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh top-level session (e.g., "work-package"). Defaults to "meta". Ignored when the slug already resolves to an existing `session.json` (the workflow is taken from the resumed state).'),
+          planning_folder: z.string().optional().describe('Optional. Absolute path whose basename is treated as the planning slug. The path part is informational — the slug is resolved against the SERVER\'s own workspace planning root, not the path you pass. Bare slugs and relative paths are rejected. When omitted, the server mints a transitional UUID slug and registers it for the meta bootstrap session.'),
           agent_id: z.string().default('orchestrator').describe('Sets the agentId field inside the session state. Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
         })
         .strict(),
@@ -135,38 +114,23 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // to the slug. Child workflows are dispatched by calling dispatch_child
       // against the returned session_index.
       //
-      // `planning_folder` is the absolute path to the folder under the
-      // workspace planning root. The slug is derived from basename(path).
-      // Relative paths and bare slugs are rejected — at start_session time the
-      // server has no other handle on the folder; subsequent tool calls use
-      // session_index (which session.json now binds to the recorded path).
-      let effectivePlanningFolderPath: string | undefined;
+      // `planning_folder` is treated as a HINT supplied by the agent. The
+      // server only consumes its basename as the slug; the rest of the path
+      // is ignored. This means a stale or off-workspace path passed by the
+      // agent is harmless — the server always resolves the slug against its
+      // own workspace planning root, and the agent never has to reconcile
+      // paths. The canonical server-side path is recorded into session.json
+      // (and returned in the response), so the agent can pick up the
+      // current location on resume without doing any path math.
       let planning_slug: string | undefined;
       if (planning_folder !== undefined) {
         if (!isAbsolute(planning_folder)) {
           throw new Error(
-            `start_session: when supplied, planning_folder must be an absolute path under the workspace planning root, got '${planning_folder}'. ` +
+            `start_session: when supplied, planning_folder must be an absolute path, got '${planning_folder}'. ` +
             `Bare slugs and relative paths are rejected. Omit planning_folder entirely for the meta bootstrap (slug not yet known).`,
           );
         }
-        // Canonicalise both the supplied path and the workspace planning root
-        // via realpath. Two distinct path strings that point at the same
-        // on-disk location (e.g., a workspaceDir bound through a symlinked
-        // alias like /projects/dev → /projects/main) must compare equal here,
-        // otherwise the boundary check spuriously rejects valid inputs.
-        const planningRootCanonical = realpathToExistingAncestor(
-          resolve(config.workspaceDir, '.engineering/artifacts/planning'),
-        );
-        const normalised = realpathToExistingAncestor(resolve(planning_folder));
-        const planningRootPrefix = planningRootCanonical + sep;
-        if (!normalised.startsWith(planningRootPrefix)) {
-          throw new Error(
-            `start_session: planning_folder '${normalised}' is outside the server's planning root '${planningRootCanonical}'. ` +
-            `Either restart the server with --workspace=<the workspace that contains this folder>, or move the folder under the current planning root.`,
-          );
-        }
-        effectivePlanningFolderPath = normalised;
-        planning_slug = basename(normalised);
+        planning_slug = basename(resolve(planning_folder));
       }
 
       const slugIsSynthetic = planning_slug === undefined;
@@ -174,43 +138,22 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const effectiveWfId = workflow_id ?? DEFAULT_WORKFLOW_ID;
       const wouldBeTransient = effectiveWfId === DEFAULT_WORKFLOW_ID;
 
-      // Folder resolution has three shapes:
-      //   1. Path supplied AND already contains session.json → resume in place.
-      //   2. No path supplied → slug-based lookup or transient bootstrap.
-      //   3. Path supplied but no session.json yet → fresh start. For meta
-      //      (transient) workflows we still route through a tmp folder and
-      //      register the slug so dispatch_child promotes to the supplied
-      //      path; for non-meta workflows we mkdir the path and write
-      //      session.json there directly.
+      // Folder resolution is slug-based regardless of whether planning_folder
+      // was supplied or not — the path's basename is the only part we use.
+      //   1. Existing folder under the workspace planning root → resume.
+      //   2. No existing folder + meta workflow → transient tmp bootstrap.
+      //   3. No existing folder + non-meta workflow → fresh workspace folder.
       let folder: string;
       let isTransientSession: boolean;
-      if (effectivePlanningFolderPath && await sessionFileExists(effectivePlanningFolderPath)) {
-        folder = effectivePlanningFolderPath;
-        isTransientSession = false;
-      } else if (!effectivePlanningFolderPath) {
-        const slugCandidate = await findPlanningFolderBySlug(config.workspaceDir, slug);
-        isTransientSession = !slugCandidate && wouldBeTransient;
-        if (slugCandidate) {
-          folder = slugCandidate;
-        } else if (isTransientSession) {
-          const existing = lookupTransientBySlug(slug);
-          folder = existing ?? await createTransientFolder();
-        } else {
-          folder = await ensurePlanningFolder(config.workspaceDir, slug);
-        }
+      const slugCandidate = await findPlanningFolderBySlug(config.workspaceDir, slug);
+      isTransientSession = !slugCandidate && wouldBeTransient;
+      if (slugCandidate) {
+        folder = slugCandidate;
+      } else if (isTransientSession) {
+        const existing = lookupTransientBySlug(slug);
+        folder = existing ?? await createTransientFolder();
       } else {
-        // Path supplied but folder not yet on disk.
-        isTransientSession = wouldBeTransient;
-        if (isTransientSession) {
-          // Meta bootstrap: hold state in tmp and let dispatch_child promote
-          // to the supplied path. The slug (basename of the path) is what
-          // the promotion target derives from.
-          const existing = lookupTransientBySlug(slug);
-          folder = existing ?? await createTransientFolder();
-        } else {
-          folder = effectivePlanningFolderPath;
-          await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
-        }
+        folder = await ensurePlanningFolder(config.workspaceDir, slug);
       }
 
       // Detect-and-migrate legacy session-state in the folder before anything

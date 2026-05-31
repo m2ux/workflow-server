@@ -1536,44 +1536,22 @@ describe('mcp-server integration', () => {
       expect(text).toMatch(/must be an absolute path/);
     });
 
-    it('accepts a planning_folder reached via a symlinked workspace alias (canonicalises both sides via realpath)', async () => {
-      // Simulate the real-world scenario where the server is launched with a
-      // symlinked alias path (e.g., `/projects/dev/workflow-server` is a
-      // symlink to `/projects/main/workflow-server`), and the agent passes
-      // the canonical-side path. String comparison would reject; realpath
-      // canonicalisation must accept.
-      const { symlinkSync, unlinkSync } = await import('node:fs');
-      const aliasDir = workspaceDir + '-alias';
-      symlinkSync(workspaceDir, aliasDir);
-      try {
-        const slug = '2026-05-31-symlinked-workspace';
-        const aliasedPath = join(aliasDir, '.engineering/artifacts/planning', slug);
-        const result = await client.callTool({
-          name: 'start_session',
-          arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: aliasedPath },
-        });
-        expect(result.isError).toBeFalsy();
-        const response = parseToolResponse(result);
-        // Stored path should be the canonical (realpath) form — the alias is
-        // resolved before the path is persisted.
-        expect(response.planning_folder_path).toBe(join(workspaceDir, '.engineering/artifacts/planning', slug));
-      } finally {
-        unlinkSync(aliasDir);
-      }
-    });
-
-    it('rejects long-form planning_folder outside the workspace planning root', async () => {
+    it('treats an off-workspace planning_folder as a slug hint — basename is used, server resolves under its own workspace', async () => {
+      // The agent supplies a path that points at a totally different workspace
+      // (or a stale location). The server must NOT reject — it should consume
+      // only the basename and resolve against its own planning root.
+      const slug = '2026-05-31-off-workspace-hint';
+      const offWorkspacePath = `/totally/different/workspace/.engineering/artifacts/planning/${slug}`;
       const result = await client.callTool({
         name: 'start_session',
-        arguments: {
-          workflow_id: 'meta',
-          agent_id: 'orchestrator',
-          planning_folder: '/tmp/some-other-workspace/.engineering/artifacts/planning/x',
-        },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: offWorkspacePath },
       });
-      expect(result.isError).toBeTruthy();
-      const text = (result.content as { text: string }[])[0]?.text ?? '';
-      expect(text).toMatch(/outside the server's planning root/);
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.planning_slug).toBe(slug);
+      // The recorded planning_folder_path is the canonical SERVER-side path,
+      // not what the agent supplied.
+      expect(response.planning_folder_path).toBe(join(workspaceDir, '.engineering/artifacts/planning', slug));
     });
 
     it('rejects a relative-path planning_folder (ambiguous)', async () => {
