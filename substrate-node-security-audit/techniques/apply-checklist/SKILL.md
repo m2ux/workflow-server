@@ -19,7 +19,7 @@ Given a checklist (from a resource) and a set of items (functions, crate compone
 
 ### checklist-source
 
-Resource containing the checklist entries (e.g., [toolkit-checklist](../../resources/toolkit-checklist/SKILL.md) for toolkit, audit template §3 for crate review)
+Resource containing the checklist entries (e.g., [toolkit-checklist](../../resources/toolkit-checklist/SKILL.md) for toolkit, or the `§3` manual-review checklist for crate review — see [audit-template-reference](../../resources/audit-template-reference/SKILL.md) for the `§X.Y` section index that every reference below resolves to)
 
 ### item-set
 

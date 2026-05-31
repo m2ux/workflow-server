@@ -12,6 +12,8 @@ metadata:
 
 All sub-agents dispatched during the primary-audit phase must return their results in this structured format. The orchestrator uses this schema to mechanically validate completeness, perform the structured merge, and verify elevation.
 
+The `§3.X` keys in the `checklist_coverage` object below are the manual-review checklist identifiers indexed in [audit-template-reference](../audit-template-reference/SKILL.md).
+
 ## Schema
 
 ```json
