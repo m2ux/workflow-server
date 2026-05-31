@@ -1652,6 +1652,76 @@ describe('mcp-server integration', () => {
       expect(newOrphans).toEqual([]);
     });
 
+    it('dispatch_child accepts planning_slug to control the promoted workspace folder', async () => {
+      const { existsSync } = await import('node:fs');
+      const path = await import('node:path');
+
+      // start_session without a planning_slug — the server mints a synthetic
+      // transition-<uuid> sentinel that is deliberately NOT registered in
+      // the folder→slug map (it would leak the UUID into the workspace).
+      const meta = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
+      });
+      const metaIdx = parseToolResponse(meta).session_index;
+
+      const derivedSlug = '2026-05-28-remove-separate-parity-db-instances';
+      const child = await client.callTool({
+        name: 'dispatch_child',
+        arguments: {
+          session_index: metaIdx,
+          workflow_id: 'work-package',
+          agent_id: 'worker-1',
+          planning_slug: derivedSlug,
+        },
+      });
+      expect(child.isError).toBeFalsy();
+      const childResponse = parseToolResponse(child);
+      expect(childResponse.planning_slug).toBe(derivedSlug);
+
+      // The promoted folder uses the caller-supplied slug (NOT the
+      // YYYY-MM-DD-<workflow_id> fallback).
+      const promotedFolder = path.join(workspaceDir, '.engineering/artifacts/planning', derivedSlug);
+      expect(existsSync(path.join(promotedFolder, 'session.json'))).toBe(true);
+      // The fallback-named folder must NOT exist.
+      const today = new Date().toISOString().slice(0, 10);
+      const fallbackFolder = path.join(workspaceDir, '.engineering/artifacts/planning', `${today}-work-package`);
+      expect(existsSync(fallbackFolder)).toBe(false);
+    });
+
+    it('the parent session_index keeps resolving after dispatch_child promotes a transient meta', async () => {
+      // Regression: before the redirect, discardTransient unregistered the
+      // caller's session_index along with the tmp folder. The workspace
+      // folder hashes to a different value, so the orchestrator was unable
+      // to authenticate next_activity for subsequent meta activities.
+      const meta = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
+      });
+      const metaIdx = parseToolResponse(meta).session_index;
+
+      await client.callTool({
+        name: 'dispatch_child',
+        arguments: {
+          session_index: metaIdx,
+          workflow_id: 'work-package',
+          agent_id: 'worker-1',
+          planning_slug: 'redirect-test-meta',
+        },
+      });
+
+      // The orchestrator's original meta index must still authenticate.
+      const after = await client.callTool({
+        name: 'get_workflow',
+        arguments: { session_index: metaIdx, summary: true },
+      });
+      expect(after.isError).toBeFalsy();
+      const afterResponse = parseWorkflowResponse(after);
+      // get_workflow returns the meta workflow definition (the promoted
+      // file is at the top of the planning folder; meta is its workflowId).
+      expect(afterResponse.id).toBe('meta');
+    });
+
     it('three-level dispatch (A → B → C → D) records the full chain in D\'s session.json', async () => {
       const slugA = 'chain-a';
       // B, C, D have no slugs — they're embedded inside A's session.json.
