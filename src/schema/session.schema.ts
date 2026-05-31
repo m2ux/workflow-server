@@ -118,6 +118,20 @@ const SessionFileBaseSchema = z.object({
    * inside the top-level `session.json`. See `EmbeddedSessionRefSchema`.
    */
   triggeredWorkflows: z.array(z.lazy(() => EmbeddedSessionRefSchema)).default([]),
+
+  /**
+   * Absolute path of the planning folder that owns this session.json at the
+   * time of the most recent `start_session`. Recorded for diagnostics and
+   * agent-side bookkeeping (workflows can reference it without re-deriving
+   * paths from their own context). On resume, if `start_session` is called
+   * with a `planning_folder_path` that differs from the recorded value, the
+   * server silently overwrites it with the new path — the folder is mobile,
+   * the stored path tracks wherever it currently lives. Server resolution
+   * itself is by stored `sessionIndex`, not by this path; the field exists
+   * to expose the canonical location, not to drive lookups. Optional for
+   * back-compat with older session files.
+   */
+  planningFolderPath: z.string().optional(),
 });
 
 /**
@@ -145,6 +159,7 @@ export interface SessionFile {
   status: 'running' | 'completed' | 'aborted';
   triggeredWorkflows: EmbeddedSessionRef[];
   parentSession?: SessionFile;
+  planningFolderPath?: string;
 }
 
 /**
@@ -222,6 +237,7 @@ export function createInitialSessionFile(args: {
   workflowVersion: string;
   agentId: string;
   parentSession?: SessionFile;
+  planningFolderPath?: string;
 }): SessionFile {
   const now = new Date();
   const file: SessionFile = {
@@ -245,5 +261,6 @@ export function createInitialSessionFile(args: {
     triggeredWorkflows: [],
   };
   if (args.parentSession) file.parentSession = args.parentSession;
+  if (args.planningFolderPath) file.planningFolderPath = args.planningFolderPath;
   return file;
 }

@@ -89,6 +89,7 @@ const TOP_LEVEL_KEY_PRIORITY = [
   'workflowVersion',
   'agentId',
   'sessionIndex',
+  'planningFolderPath',
   'currentActivity',
   'currentSkill',
   'condition',
@@ -397,11 +398,6 @@ export interface SessionLocation {
  * for the root session). Walks top-level folders, reading each folder's
  * `session.json` to match the stored `sessionIndex` field at the root and
  * recursively under `triggeredWorkflows[i].state`.
- *
- * Resolution is by the stored `sessionIndex` value — NOT by re-deriving the
- * index from the folder's current path. This makes a planning folder freely
- * relocatable: moving it (or copying it across workspaces) does not change
- * the index that subsequent calls look up.
  *
  * Transient (in-memory) sessions resolve via the registry first.
  */

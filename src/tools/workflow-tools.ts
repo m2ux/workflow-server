@@ -358,9 +358,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(view, result.value),
       );
 
-      // Auto-skip if this checkpoint already has a response recorded from a
-      // prior run of the same activity (e.g., a session being resumed). The
-      // worker receives the stored option and reconstructed effect and
+      // Replay the recorded response if this checkpoint already has one from
+      // a prior run of the same activity (e.g., a session being resumed).
+      // The worker receives the stored option and reconstructed effect and
       // continues without yielding to the orchestrator — the user is not
       // prompted twice for the same decision. checkpointResponses is keyed
       // by `<activity-id>-<checkpoint-id>`.
@@ -377,11 +377,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         if (effects?.transitionedTo) effect['transitionTo'] = effects.transitionedTo;
         if (effects?.activitiesSkipped) effect['skipActivities'] = effects.activitiesSkipped;
 
-        const skippedAt = new Date().toISOString();
+        const replayedAt = new Date().toISOString();
         const next = advanceSession(state, (draft) => {
           draft.history.push({
-            timestamp: skippedAt,
-            type: 'checkpoint_auto_skipped',
+            timestamp: replayedAt,
+            type: 'checkpoint_replayed',
             activity: activity_id,
             checkpoint: checkpoint_id,
             data: { optionId: priorResponse.optionId },
@@ -390,11 +390,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         await saveSessionForTool(loaded, next);
 
         const responsePayload: Record<string, unknown> = {
-          status: 'auto_resolved',
+          status: 'replayed',
           checkpoint_id,
           session_index,
           resolved_option: priorResponse.optionId,
-          message: `Checkpoint '${checkpoint_id}' was already resolved in a prior run with option '${priorResponse.optionId}'. The stored response has been re-applied; apply any returned effect to your local state and continue execution WITHOUT yielding to the orchestrator.`,
+          message: `Checkpoint '${checkpoint_id}' already has a recorded response (option '${priorResponse.optionId}') from a prior run. The stored response has been replayed; apply any returned effect to your local state and continue execution WITHOUT yielding to the orchestrator.`,
         };
         if (Object.keys(effect).length > 0) responsePayload['effect'] = effect;
 

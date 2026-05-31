@@ -259,10 +259,6 @@ describe('session-store primitives', () => {
 
     it('returns the unique folder when exactly one match exists', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc10');
-      // Resolution reads the stored sessionIndex from session.json, so the
-      // folder must contain a session.json with the index field populated.
-      // computeSessionIndex still gives us a deterministic value for the
-      // folder; we persist it via writeSessionFile.
       const idx = await computeSessionIndex(folder);
       await writeSessionFile(folder, { sessionIndex: idx, sentinel: 'tc10' });
       const resolved = await resolveSessionIndex(workspace, idx);
