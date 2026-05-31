@@ -20,3 +20,9 @@ what was generated.
 | B5 | claude-opus-4-7[1m] | refactoring | src/loaders/resource-loader.ts, planning §B5 | Flip the resource loader to markdown-only and add `<slug>/SKILL.md` folder-shape resolution alongside the legacy flat `NN-name.md` shape. |
 | B6 | claude-opus-4-7[1m] | refactoring | package.json, planning §B6 | Add `npm run migrate-skills` script entry that runs `tsx scripts/migrate-skills/migrate.ts`. |
 | B7 | claude-opus-4-7[1m] | test-writing | tests/skill-loader.test.ts, tests/fixtures/markdown-skills/, planning §B7, test plan PR126-TC suite | Add fixture tree covering rules-only / op-as-child-files / workflow-local override / malformed-Procedure / projection round-trip / parseSkillFilename alias regression. Replace TOON-specific malformed-handling tests with markdown equivalents. |
+
+## DCO Attestation
+
+| Timestamp | Identity | Model | Attestation |
+|---|---|---|---|
+| 2026-05-31 | Mike Clay <mike.clay@shielded.io> | claude-opus-4-7[1m] | Certified all six DCO clauses for work package `markdown-skills-impl` (issue #125). Diff reviewed, contribution rights confirmed, provenance traceable, tests/linters covered, accepting responsibility. |

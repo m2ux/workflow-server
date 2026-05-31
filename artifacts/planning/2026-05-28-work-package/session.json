@@ -233,6 +233,18 @@
             },
             "optionId": "acceptable",
             "respondedAt": "2026-05-30T09:49:50.000Z"
+          },
+          "submit-for-review-dco-sign-off": {
+            "optionId": "certify",
+            "respondedAt": "2026-05-31T10:59:54.000Z"
+          },
+          "submit-for-review-merge-strategy-reminder": {
+            "optionId": "acknowledged",
+            "respondedAt": "2026-05-31T11:04:00.000Z"
+          },
+          "submit-for-review-review-received": {
+            "optionId": "no-waiting",
+            "respondedAt": "2026-05-31T11:10:39.000Z"
           }
         },
         "completedActivities": [
@@ -243,11 +255,12 @@
           "assumptions-review",
           "implement",
           "post-impl-review",
-          "validate"
+          "validate",
+          "strategic-review"
         ],
-        "condition": "default",
-        "currentActivity": "strategic-review",
-        "currentSkill": "",
+        "condition": "review_passed == true",
+        "currentActivity": "submit-for-review",
+        "currentSkill": "dco-provenance",
         "history": [
           {
             "timestamp": "2026-05-28T16:34:23.567Z",
@@ -649,16 +662,71 @@
             },
             "timestamp": "2026-05-30T09:49:50.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-05-30T09:50:12.711Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-05-30T09:50:12.711Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off",
+            "timestamp": "2026-05-30T09:52:33.276Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off",
+            "data": {
+              "optionId": "certify"
+            },
+            "timestamp": "2026-05-31T10:59:54.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "merge-strategy-reminder",
+            "timestamp": "2026-05-31T11:03:00.123Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "merge-strategy-reminder",
+            "data": {
+              "optionId": "acknowledged"
+            },
+            "timestamp": "2026-05-31T11:04:00.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-received",
+            "timestamp": "2026-05-31T11:04:43.672Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-received",
+            "data": {
+              "optionId": "no-waiting"
+            },
+            "timestamp": "2026-05-31T11:10:39.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 81,
+        "seq": 93,
         "sessionIndex": "SUQLKL",
         "skippedActivities": [],
         "startedAt": "2026-05-28T16:34:23.567Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1780134590,
+        "ts": 1780225839,
         "variables": {
           "has_critical_blocker": true,
           "has_flagged_blocks": true,
