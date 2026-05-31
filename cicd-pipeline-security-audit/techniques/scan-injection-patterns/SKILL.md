@@ -40,7 +40,7 @@ Pre-classified trigger, permission, and checkout data from reconnaissance
 - Search run: blocks for ${{ }} expressions
 - Cross-reference each expression against the untrusted context variable list
 - Distinguish safe contexts (if: conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)
-- For each unsafe expression, document the source context variable and the sink (run block, script, action)
+- For each unsafe expression, document the source context variable and the sink (run block, script, action) using the structured finding format (see [sub-agent-output-schema](../../resources/sub-agent-output-schema/SKILL.md))
 - Expressions in if: conditions, env: key-value (not interpolated into shell), and action version pins are safe and should not be flagged
 
 ### 3. P2 Pwn Request
@@ -115,7 +115,3 @@ For P2 and P5, trace the complete chain from trigger through checkout to executi
 **Cause:** Workflow file cannot be read
 
 **Recovery:** Record as unscanned and flag in coverage report
-
-## Resources
-
-- [sub-agent-output-schema](../../resources/sub-agent-output-schema/SKILL.md)

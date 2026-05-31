@@ -30,7 +30,7 @@ Free-form description of the workflow the user wants to create or modify
 ### 1. Intake
 
 - Accept the user's free-form description and summarize key design intent
-- Classify as create or update based on whether an existing workflow is referenced
+- Classify as create or update based on whether an existing workflow is referenced (for update mode, see [update-mode-guide](../../resources/update-mode-guide/SKILL.md))
 - Set mode variables and present classification for confirmation
 
 ### 2. Context Loading
@@ -69,7 +69,7 @@ Free-form description of the workflow the user wants to create or modify
 
 ### 7. Audit Principle Compliance
 
-- Audit the workflow against each of the 14 design principles from [design-principles](../../resources/design-principles/SKILL.md)
+- Audit the workflow against each of the 14 design principles from [design-principles](../../resources/design-principles/SKILL.md) (when auditing an existing workflow in review mode, see [review-mode-guide](../../resources/review-mode-guide/SKILL.md))
 - For each principle, classify as compliant, partially compliant, or violating; record file, field, and line references
 - Cross-reference against workflow.schema.json, activity.schema.json, skill.schema.json, and condition.schema.json to verify field usage
 
@@ -180,8 +180,3 @@ list_workflows requires no params and no session token
 **Cause:** Prose is used where a formal schema construct exists
 
 **Recovery:** Check the schema construct inventory ([schema-construct-inventory](../../resources/schema-construct-inventory/SKILL.md)) and replace prose with the formal construct
-
-## Resources
-
-- [update-mode-guide](../../resources/update-mode-guide/SKILL.md)
-- [review-mode-guide](../../resources/review-mode-guide/SKILL.md)

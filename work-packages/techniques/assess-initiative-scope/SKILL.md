@@ -41,7 +41,7 @@ Free-form description of the initiative from the user
 
 - Present the identified packages in a numbered table with name and description
 - Highlight any packages that seem too large (should be split) or too small (should be merged)
-- Set initiative_name based on the overall theme of the packages
+- Set initiative_name based on the overall theme of the packages (see [planning-folder-template](../../resources/planning-folder-template/SKILL.md))
 
 ## Outputs
 
@@ -76,7 +76,3 @@ Packages should be 2-8 hours of agentic work. Larger packages should be split; s
 **Cause:** Cannot determine where one package ends and another begins
 
 **Recovery:** Ask the user to clarify which changes are independent and which must ship together
-
-## Resources
-
-- [planning-folder-template](../../resources/planning-folder-template/SKILL.md)

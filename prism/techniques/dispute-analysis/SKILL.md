@@ -34,7 +34,7 @@ Directory for dispute-lens-a.md, dispute-lens-b.md, dispute-synthesis.md
 ### 1. Select Pair
 
 - For code: l12 (00) + identity (17) — highest pairwise uniqueness
-- For general: l12_universal (18) + claim (07)
+- For general: [l12_universal](../../resources/l12-universal/SKILL.md) (18) + claim (07)
 - l12+identity for code, l12_universal+claim for general — these pairs maximize analytical divergence
 
 ### 2. Execute Lenses
@@ -74,7 +74,3 @@ Each prism uses its optimal model from YAML frontmatter. Synthesis uses sonnet.
 ### tool-usage
 
 spawn-agent via harness-compat for description and prompt — do NOT use continue-agent on prior workers
-
-## Resources
-
-- [l12-universal](../../resources/l12-universal/SKILL.md)

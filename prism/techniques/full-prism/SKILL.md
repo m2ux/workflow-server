@@ -43,7 +43,7 @@ Directory to write the analysis artifact
 
 ### 1. Load Lens
 
-- Resources are attached to skill responses (loaded via get_skill or get_skills). Resource index lens-resource-index is available in the _resources field after loading the lens prompt
+- Resources are attached to skill responses (loaded via get_skill or get_skills). Resource index lens-resource-index is available in the _resources field after loading the lens prompt: 00 structural ([l12](../../resources/l12/SKILL.md)), 01 adversarial ([l12-complement-adversarial](../../resources/l12-complement-adversarial/SKILL.md)), 02 synthesis ([l12-synthesis](../../resources/l12-synthesis/SKILL.md))
 - The lens prompt is the program — it defines the exact sequence of analytical operations to execute
 
 ### 2. Read Prior Artifacts
@@ -134,9 +134,3 @@ The lens resource is an imperative program. Execute its operations in order, pro
 **Cause:** Could not write artifact to the output path
 
 **Recovery:** Verify the output-path directory exists and is writable.
-
-## Resources
-
-- [l12](../../resources/l12/SKILL.md)
-- [l12-complement-adversarial](../../resources/l12-complement-adversarial/SKILL.md)
-- [l12-synthesis](../../resources/l12-synthesis/SKILL.md)

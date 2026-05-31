@@ -41,7 +41,7 @@ Directory for subsystem-{name}.md and subsystem-synthesis.md
 
 ### 2. Calibrate
 
-- Load subsystem calibration resource (63)
+- Load subsystem calibration resource (63) ([subsystem-calibration](../../resources/subsystem-calibration/SKILL.md))
 - Send prism catalog + subsystem summaries to calibration worker
 - Parse JSON assignments — fallback to L12 for unassigned subsystems
 - Prism assignments MUST maximize diversity — the calibration prompt enforces this
@@ -74,7 +74,3 @@ Paths to per-subsystem artifacts, synthesis artifact, and prism assignments
 ### code-only
 
 Subsystem mode requires code input. Reject general targets with guidance to use portfolio mode instead.
-
-## Resources
-
-- [subsystem-calibration](../../resources/subsystem-calibration/SKILL.md)

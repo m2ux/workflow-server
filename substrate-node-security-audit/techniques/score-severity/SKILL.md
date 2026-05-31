@@ -44,7 +44,7 @@ Compute finding severity using the Impact x Feasibility rubric with calibrated e
 
 ### rubric-required
 
-Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration examples in [severity-calibration](../../resources/severity-calibration/SKILL.md) (and target profile if present) before finalizing. Do not assign severity intuitively.
+Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration examples in [severity-calibration](../../resources/severity-calibration/SKILL.md) (and the [target-profile](../../resources/target-profile/SKILL.md) target-specific benchmarks if present) before finalizing. Do not assign severity intuitively.
 
 ### under-rating
 
@@ -53,7 +53,3 @@ Infrastructure and availability findings (pool sharing, SSL, genesis consistency
 ### over-rating
 
 Configuration/toggle findings (mock data source, feature flags, InMemory keystore) are systematically over-rated. Use calibration examples in [severity-calibration](../../resources/severity-calibration/SKILL.md).
-
-## Resources
-
-- [target-profile](../../resources/target-profile/SKILL.md)

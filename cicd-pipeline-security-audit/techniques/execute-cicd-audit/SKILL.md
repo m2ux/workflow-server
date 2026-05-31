@@ -31,7 +31,7 @@ Path to the planning folder for artifacts
 
 - Confirm target submodules exist and contain .github/workflows/
 - Discover all workflow files (.yml and .yaml) across targets
-- Create planning folder with START-HERE.md
+- Create planning folder with [START-HERE.md](../../resources/start-here/SKILL.md)
 
 ### 2. Phase 2 Reconnaissance
 
@@ -92,7 +92,3 @@ Enforce exitAction gates before advancing phases
 **Cause:** Merge agent reported Unaccounted > 0
 
 **Recovery:** HARD STOP — investigate missing findings
-
-## Resources
-
-- [start-here](../../resources/start-here/SKILL.md)

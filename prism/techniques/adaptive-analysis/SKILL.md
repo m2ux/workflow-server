@@ -53,7 +53,7 @@ Directory for adaptive-stage1.md, adaptive-stage2.md (conditional), and full-pri
 ### 4. Stage 3 Full
 
 - If still insufficient: run full-prism 3-pass pipeline
-- Produces structural-analysis.md, adversarial-analysis.md, synthesis.md
+- Produces structural-analysis.md, adversarial-analysis.md ([l12-complement-adversarial](../../resources/l12-complement-adversarial/SKILL.md)), synthesis.md ([l12-synthesis](../../resources/l12-synthesis/SKILL.md))
 
 ## Outputs
 
@@ -82,8 +82,3 @@ Stage 1: Haiku. Stage 2: Sonnet. Stage 3: per-prism optimal models.
 ### tool-usage
 
 use harness-compat spawn-agent — adaptive mode uses a new worker for each stage via spawn-agent and never skips stage ordering
-
-## Resources
-
-- [l12-complement-adversarial](../../resources/l12-complement-adversarial/SKILL.md)
-- [l12-synthesis](../../resources/l12-synthesis/SKILL.md)

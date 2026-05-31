@@ -41,7 +41,7 @@ Directory to write verified-initial.md, verified-gaps.md, and verified-corrected
 ### 2. Gap Detection
 
 - Dispatch gap detection to a fresh worker
-- Worker loads knowledge_boundary (41) and knowledge_audit (40)
+- Worker loads knowledge_boundary (41) ([knowledge-boundary](../../resources/knowledge-boundary/SKILL.md)) and knowledge_audit (40) ([knowledge-audit](../../resources/knowledge-audit/SKILL.md))
 - Worker applies both to the L12 OUTPUT (not source code), writes to {output-path}/verified-gaps.md
 - Gap detection prisms run on the L12 OUTPUT, not on source code
 
@@ -83,8 +83,3 @@ L12 passes use optimal model from YAML frontmatter. Gap detection uses sonnet.
 ### tool-usage
 
 use harness-compat spawn-agent for three worker dispatches in verified mode; gap-detection worker runs both boundary and audit prisms in one context; orchestrator never uses continue-agent on prior workers; spawn-agent via harness-compat for description and prompt — do NOT use continue-agent
-
-## Resources
-
-- [knowledge-audit](../../resources/knowledge-audit/SKILL.md)
-- [knowledge-boundary](../../resources/knowledge-boundary/SKILL.md)

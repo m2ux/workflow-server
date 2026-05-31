@@ -45,17 +45,17 @@ Directory for smart-prereq.md, smart-analysis.md (or subsystem-*.md), and smart-
 
 - For code: attempt AST decomposition via _split_into_subsystems logic
 - If >1 subsystem found: use subsystem mode (different prisms per region)
-- If 1 subsystem or general target: use L12 single pass (or 3-pass for general)
+- If 1 subsystem or general target: use L12 ([l12](../../resources/l12/SKILL.md)) single pass (or 3-pass for general)
 
 ### 4. Execute Analysis
 
-- Run the selected analysis mode with enriched content (verified facts injected)
+- Run the selected analysis mode with enriched content (verified facts injected); subsystem mode assigns different prisms per region, e.g. [claim](../../resources/claim/SKILL.md) and [identity](../../resources/identity/SKILL.md)
 - Capture output for dispute decision
 
 ### 5. Dispute Correction
 
 - Check analysis output quality: look for conservation law presence and output length
-- If adequate output (>200 chars): run dispute for self-correction
+- If adequate output (>200 chars): run dispute ([dispute-synthesis](../../resources/dispute-synthesis/SKILL.md)) for self-correction
 - If analysis found a conservation law, dispute is supplementary; if not, dispute is critical
 
 ## Outputs
@@ -86,10 +86,3 @@ Each sub-step uses the optimal model for its prism. Prereq uses sonnet. Analysis
 ### tool-usage
 
 use harness-compat spawn-agent — smart mode never uses continue-agent and each sub-step uses a new worker; use read_file — orchestrator reads artifacts to decide conditionals and inject verified_knowledge
-
-## Resources
-
-- [l12](../../resources/l12/SKILL.md)
-- [claim](../../resources/claim/SKILL.md)
-- [identity](../../resources/identity/SKILL.md)
-- [dispute-synthesis](../../resources/dispute-synthesis/SKILL.md)

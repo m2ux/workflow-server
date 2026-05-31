@@ -41,7 +41,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 1. Check Dispatch Completeness
 
-- If a dispatch_manifest is provided, verify every agent in the agent_assignments was dispatched and returned. Produce a dispatch status table: crate, assigned_group, agent_dispatched (yes/no), structured_output_received (yes/no). If any assigned agent was not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — the orchestrator must dispatch missing agents before proceeding.
+- If a dispatch_manifest is provided, verify every agent in the agent_assignments was dispatched and returned. Produce a dispatch status table: crate, assigned_group, agent_dispatched (yes/no), structured_output_received (yes/no) — i.e. output conforming to the [sub-agent-output-schema](../../resources/sub-agent-output-schema/SKILL.md). If any assigned agent was not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — the orchestrator must dispatch missing agents before proceeding.
 
 ### 2. Check Coverage Gate
 
@@ -113,7 +113,3 @@ Verification report with gap list and re-dispatch recommendations.
 **Cause:** An agent returned prose instead of a required structured table
 
 **Recovery:** Re-dispatch the agent with explicit output format instructions
-
-## Resources
-
-- [sub-agent-output-schema](../../resources/sub-agent-output-schema/SKILL.md)
