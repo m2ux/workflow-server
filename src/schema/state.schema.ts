@@ -8,7 +8,7 @@ export const HistoryEventTypeSchema = z.enum([
   'workflow_triggered', 'workflow_returned', 'workflow_suspended',
   'activity_entered', 'activity_exited', 'activity_skipped',
   'step_started', 'step_completed',
-  'checkpoint_reached', 'checkpoint_response',
+  'checkpoint_reached', 'checkpoint_response', 'checkpoint_auto_skipped',
   'decision_reached', 'decision_branch_taken',
   'loop_started', 'loop_iteration', 'loop_completed', 'loop_break',
   'variable_set', 'error',

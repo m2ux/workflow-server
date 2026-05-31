@@ -358,6 +358,52 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(view, result.value),
       );
 
+      // Auto-skip if this checkpoint already has a response recorded from a
+      // prior run of the same activity (e.g., a session being resumed). The
+      // worker receives the stored option and reconstructed effect and
+      // continues without yielding to the orchestrator — the user is not
+      // prompted twice for the same decision. checkpointResponses is keyed
+      // by `<activity-id>-<checkpoint-id>`.
+      const responseKey = `${activity_id}-${checkpoint_id}`;
+      const priorResponse = state.checkpointResponses?.[responseKey];
+      if (priorResponse) {
+        // Reconstitute the TOON-shape effect payload from the schema-shape
+        // record (mirrors respond_checkpoint's reverse transform). The
+        // variable bag has already been mutated on the original response, so
+        // this payload is informational for the worker's own bookkeeping.
+        const effects = priorResponse.effects;
+        const effect: Record<string, unknown> = {};
+        if (effects?.variablesSet) effect['setVariable'] = effects.variablesSet;
+        if (effects?.transitionedTo) effect['transitionTo'] = effects.transitionedTo;
+        if (effects?.activitiesSkipped) effect['skipActivities'] = effects.activitiesSkipped;
+
+        const skippedAt = new Date().toISOString();
+        const next = advanceSession(state, (draft) => {
+          draft.history.push({
+            timestamp: skippedAt,
+            type: 'checkpoint_auto_skipped',
+            activity: activity_id,
+            checkpoint: checkpoint_id,
+            data: { optionId: priorResponse.optionId },
+          });
+        });
+        await saveSessionForTool(loaded, next);
+
+        const responsePayload: Record<string, unknown> = {
+          status: 'auto_resolved',
+          checkpoint_id,
+          session_index,
+          resolved_option: priorResponse.optionId,
+          message: `Checkpoint '${checkpoint_id}' was already resolved in a prior run with option '${priorResponse.optionId}'. The stored response has been re-applied; apply any returned effect to your local state and continue execution WITHOUT yielding to the orchestrator.`,
+        };
+        if (Object.keys(effect).length > 0) responsePayload['effect'] = effect;
+
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify(responsePayload, null, 2) }],
+          _meta: { session_index, validation },
+        };
+      }
+
       const yieldedAt = new Date().toISOString();
       const next = advanceSession(state, (draft) => {
         draft.activeCheckpoint = {

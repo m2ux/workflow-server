@@ -164,10 +164,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const wfPreLoad = await loadWorkflow(config.workflowDir, effectiveWorkflowId);
       const effectiveWorkflowVersion = wfPreLoad.success ? (wfPreLoad.value.version ?? '') : '';
 
-      // Compute the canonical session_index for the folder.
-      const sessionIndex = await computeSessionIndex(folder);
-
-      // If session.json already exists, resume; otherwise create + seal.
+      // session_index resolution differs by branch:
+      //   - On RESUME, the stored sessionIndex in session.json wins.
+      //   - On FRESH creation, derive the index from the new folder's
+      //     realpath, persist it via createInitialSessionFile, and return.
+      let sessionIndex: string;
       let state: SessionFile;
       if (await sessionFileExists(folder)) {
         const { state: rawState } = await verifySeal(folder);
@@ -180,6 +181,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           );
         }
         state = parsed.data;
+        sessionIndex = state.sessionIndex;
         // Update agent_id on resume (matches legacy aid-mismatch semantics).
         if (state.agentId !== agent_id) {
           state = { ...state, agentId: agent_id };
@@ -188,6 +190,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       } else {
         // Fresh top-level session — no parent. Children are dispatched via
         // dispatch_child after start_session returns the index.
+        sessionIndex = await computeSessionIndex(folder);
         const newState = createInitialSessionFile({
           sessionIndex,
           workflowId: effectiveWorkflowId,
