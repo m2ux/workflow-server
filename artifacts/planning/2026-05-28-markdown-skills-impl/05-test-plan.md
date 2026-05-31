@@ -2,7 +2,7 @@
 
 **ADR:** _Pending_ — five ADRs forward-referenced in [01-design-philosophy.md §Architectural Decisions Worthy of ADRs](01-design-philosophy.md)
 **Ticket:** [#125](https://github.com/m2ux/workflow-server/issues/125)
-**PR:** [#126](https://github.com/m2ux/workflow-server/pull/126) (source-side) + _Pending_ (content-side)
+**PR:** [#126](https://github.com/m2ux/workflow-server/pull/126) (source-side) + [#127](https://github.com/m2ux/workflow-server/pull/127) (content-side)
 
 ---
 
@@ -47,7 +47,27 @@ The strategy is two layers:
 | PR126-TC-15 | Verify `parseActivityFilename` is no longer imported under a `parseSkillFilename` alias in `skill-loader.ts` (regression guard for the alias removal in B2) | Unit |
 | PR126-TC-16 | Verify the existing test suite at `tests/skill-loader.test.ts:11-89` continues to pass against the post-migration `workflows/meta/techniques/` layout | Unit |
 
-*Detailed steps, expected results, and source links will be added after implementation.*
+## Test Source Locations
+
+The implemented suite consolidated several planned cases. The table below maps each planned case to its actual source location on the source-side branch (`feat/125-markdown-skills-migration`, PR [#126](https://github.com/m2ux/workflow-server/pull/126)). Line anchors are accurate as of the approved review state.
+
+| Test ID | Implemented as | Source |
+|---------|----------------|--------|
+| PR126-TC-01 | `loads meta/agent-conduct (rules-only technique)` | [`tests/skill-loader.test.ts:19`](../../../tests/skill-loader.test.ts#L19) |
+| PR126-TC-02 | `loads meta/workflow-engine` + `materialises workflow-engine operations and rules from markdown` | [`tests/skill-loader.test.ts:28`](../../../tests/skill-loader.test.ts#L28), [`:47`](../../../tests/skill-loader.test.ts#L47) |
+| PR126-TC-03 | `materialises op-as-child-files into Skill.operations keyed by op basename` | [`tests/skill-loader.test.ts:91`](../../../tests/skill-loader.test.ts#L91) |
+| PR126-TC-04 | `falls back to meta when no workflow-local override exists` | [`tests/skill-loader.test.ts:104`](../../../tests/skill-loader.test.ts#L104) |
+| PR126-TC-05 | `workflow-local override suppresses the meta version` (+ `TC-05b` explicit `meta/` prefix wins) | [`tests/skill-loader.test.ts:112`](../../../tests/skill-loader.test.ts#L112), [`:120`](../../../tests/skill-loader.test.ts#L120) |
+| PR126-TC-06 | `malformed op-child file (missing Procedure) raises a loader error` | [`tests/skill-loader.test.ts:136`](../../../tests/skill-loader.test.ts#L136) |
+| PR126-TC-07 | `returns SkillNotFoundError when neither workflow-local nor meta has the skill` (+ real-content variant) | [`tests/skill-loader.test.ts:150`](../../../tests/skill-loader.test.ts#L150), [`:38`](../../../tests/skill-loader.test.ts#L38) |
+| PR126-TC-08 | `projectSkillToToon round-trip preserves the Skill object` | [`tests/skill-loader.test.ts:158`](../../../tests/skill-loader.test.ts#L158) |
+| PR126-TC-09 | Projection identity validated via the round-trip case (`readSkillRaw` projected-TOON decode) rather than stored `.toon` baselines | [`tests/skill-loader.test.ts:182`](../../../tests/skill-loader.test.ts#L182) |
+| PR126-TC-10 / TC-11 | Resource format-flip exercised through the markdown-only loader edge-case suite | [`tests/skill-loader.test.ts:197`](../../../tests/skill-loader.test.ts#L197) |
+| PR126-TC-13 / TC-14 | `get_workflow` / `get_activity` preamble shapes (integration) | [`tests/mcp-server.test.ts`](../../../tests/mcp-server.test.ts) |
+| PR126-TC-15 | `skill-loader.ts no longer imports parseActivityFilename under a parseSkillFilename alias` | [`tests/skill-loader.test.ts:176`](../../../tests/skill-loader.test.ts#L176) |
+| PR126-TC-16 | Backward-compatibility — the real-content `readSkill` suite runs against the migrated `workflows/` tree | [`tests/skill-loader.test.ts:18`](../../../tests/skill-loader.test.ts#L18) |
+
+Fixtures for the precedence and op-as-child-files cases live under [`tests/fixtures/markdown-skills/`](../../../tests/fixtures/markdown-skills/). Implementation under test: [`src/loaders/markdown-skill-loader.ts`](../../../src/loaders/markdown-skill-loader.ts), [`src/loaders/skill-loader.ts`](../../../src/loaders/skill-loader.ts), [`src/loaders/resource-loader.ts`](../../../src/loaders/resource-loader.ts).
 
 ---
 

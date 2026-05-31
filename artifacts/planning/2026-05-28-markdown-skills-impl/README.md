@@ -1,7 +1,7 @@
 # Markdown Skills Migration Implementation - May 2026
 
 **Created:** 2026-05-28  
-**Status:** In Progress  
+**Status:** Complete — PRs approved, pending merge  
 **Type:** Refactor
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -49,9 +49,9 @@ The change ships in two coordinated steps so nothing breaks during the transitio
 | 06 | [Architecture summary](architecture-summary.md) | C4 context + package + sequence diagrams | 10-20m | ✅ Complete |
 | 11 | [Strategic review](11-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ✅ Approved |
+| 08 | [Completion summary](08-COMPLETE.md) | Deliverables, decisions, lessons learned | 10-20m | ✅ Complete |
+| 08 | [Workflow retrospective](08-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ✅ Complete |
 
 ---
 
@@ -61,8 +61,10 @@ The change ships in two coordinated steps so nothing breaks during the transitio
 |----------|------|
 | GitHub Issue | [#125](https://github.com/m2ux/workflow-server/issues/125) |
 | Original Plan | [2026-05-22-claude-skills-migration](../2026-05-22-claude-skills-migration/) |
-| PR (source) | [#126](https://github.com/m2ux/workflow-server/pull/126) — draft, `feat/125-markdown-skills-migration` ← `main` |
-| PR (content) | _Pending_ — will track `feat/125-markdown-skills-content` ← `workflows` once content lands |
+| PR (source) | [#126](https://github.com/m2ux/workflow-server/pull/126) — open, approved, `feat/125-markdown-skills-migration` ← `main` |
+| PR (content) | [#127](https://github.com/m2ux/workflow-server/pull/127) — open, approved, `feat/125-markdown-skills-content` ← `workflows` |
+| Completion summary | [08-COMPLETE.md](08-COMPLETE.md) |
+| Retrospective | [08-workflow-retrospective.md](08-workflow-retrospective.md) |
 
 ## 🌿 Branches & worktrees
 
@@ -77,4 +79,4 @@ Coordination: the two branches land via two PRs that merge in order — content 
 
 ---
 
-**Status:** Ready. Implementation plan and test plan authored. Plan covers Phase A (content placement on `feat/125-markdown-skills-content`), Phase B (source-side markdown loader, precedence resolver, projection function, resource-loader flip on `feat/125-markdown-skills-migration`), and Phase C (cutover — remove legacy TOON skills and the dual-mode safety fallback). Test plan covers 16 cases across markdown parsing, op-as-child-files assembly, precedence resolution, projection identity against captured TOON baselines, resource-loader format flip, and tool-layer preamble parity.
+**Status:** Complete — implementation, validation, and reviews are done; PR review outcome was **Approved** for both PRs. Phase A (content placement) and Phase B (source-side markdown loader, precedence resolver, projection function, resource-loader flip) shipped in PRs [#127](https://github.com/m2ux/workflow-server/pull/127) and [#126](https://github.com/m2ux/workflow-server/pull/126). Full suite at 329 passing / 4 skipped (pre-existing), no regressions. Both PRs are open and non-draft, pending merge in order (content first, then source). Phase C (cutover — remove the legacy-TOON safety branch and `parseActivityFilename` alias) is deferred to a follow-up release cycle per F-CR-04. Completion summary and retrospective recorded in `08-COMPLETE.md` and `08-workflow-retrospective.md`.

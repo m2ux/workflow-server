@@ -5,11 +5,12 @@
   "workflowVersion": "5.0.0",
   "agentId": "orchestrator",
   "sessionIndex": "F4346H",
+  "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-05-28-markdown-skills-impl",
   "currentActivity": "dispatch-client-workflow",
   "currentSkill": "",
   "condition": "",
-  "seq": 17,
-  "ts": 1780051461,
+  "seq": 19,
+  "ts": 1780238185,
   "startedAt": "2026-05-28T16:32:38.299Z",
   "completedActivities": [
     "discover-session",
@@ -242,6 +243,15 @@
             "optionId": "acknowledged",
             "respondedAt": "2026-05-31T11:04:00.000Z"
           },
+          "submit-for-review-review-outcome": {
+            "effects": {
+              "variablesSet": {
+                "review_requires_changes": false
+              }
+            },
+            "optionId": "approved",
+            "respondedAt": "2026-05-31T15:11:15.000Z"
+          },
           "submit-for-review-review-received": {
             "optionId": "no-waiting",
             "respondedAt": "2026-05-31T11:10:39.000Z"
@@ -256,10 +266,11 @@
           "implement",
           "post-impl-review",
           "validate",
-          "strategic-review"
+          "strategic-review",
+          "submit-for-review"
         ],
-        "condition": "review_passed == true",
-        "currentActivity": "submit-for-review",
+        "condition": "review_requires_changes == false",
+        "currentActivity": "complete",
         "currentSkill": "dco-provenance",
         "history": [
           {
@@ -717,16 +728,117 @@
             },
             "timestamp": "2026-05-31T11:10:39.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off",
+            "data": {
+              "optionId": "certify"
+            },
+            "timestamp": "2026-05-31T14:37:47.616Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "merge-strategy-reminder",
+            "data": {
+              "optionId": "acknowledged"
+            },
+            "timestamp": "2026-05-31T14:38:16.819Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-received",
+            "data": {
+              "optionId": "no-waiting"
+            },
+            "timestamp": "2026-05-31T14:38:20.940Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-outcome",
+            "timestamp": "2026-05-31T14:38:30.684Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-outcome",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-05-31T15:11:15.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_requires_changes",
+              "value": false
+            },
+            "timestamp": "2026-05-31T15:11:15.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off",
+            "data": {
+              "optionId": "certify"
+            },
+            "timestamp": "2026-05-31T15:12:05.511Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "merge-strategy-reminder",
+            "data": {
+              "optionId": "acknowledged"
+            },
+            "timestamp": "2026-05-31T15:12:23.680Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-received",
+            "data": {
+              "optionId": "no-waiting"
+            },
+            "timestamp": "2026-05-31T15:12:26.706Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-outcome",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-05-31T15:12:30.810Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-05-31T15:13:35.192Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-05-31T15:13:35.192Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-05-31T15:13:35.192Z",
+            "type": "workflow_completed"
           }
         ],
         "schemaVersion": 1,
-        "seq": 93,
+        "seq": 107,
         "sessionIndex": "SUQLKL",
         "skippedActivities": [],
         "startedAt": "2026-05-28T16:34:23.567Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1780225839,
+        "ts": 1780240437,
         "variables": {
           "has_critical_blocker": true,
           "has_flagged_blocks": true,
@@ -740,6 +852,7 @@
           "pr_skipped": false,
           "rationale_confirmed": true,
           "review_passed": true,
+          "review_requires_changes": false,
           "skip_optional_activities": true
         },
         "workflowId": "work-package",
