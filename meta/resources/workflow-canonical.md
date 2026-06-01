@@ -27,8 +27,9 @@ There is **no `SKILL.md`**. A workflow's content lives under `techniques/` and
 | **Grouped operations** | `techniques/<group>/TECHNIQUE.md` + `techniques/<group>/<op>.md` | index: yes; op files: none | The folder is a namespace; `TECHNIQUE.md` is its index; each `<op>.md` is one operation. |
 | **Resource** | `resources/<slug>.md` | yes | Freeform reference material; no operations. |
 
-Each workflow also has a **root index** at `techniques/TECHNIQUE.md` — see
-*Base-contract inheritance* below.
+Each workflow also has a **root base contract** at `techniques/TECHNIQUE.md` —
+isomorphic to a technique, carrying no technique list (the technique set is implied
+by the folder contents). See *Base-contract inheritance* below.
 
 A technique is addressed by its `name` (the file/folder slug). An operation is
 addressed `group::op`, resolving to `techniques/<group>/<op>.md`. Operations on a
@@ -57,9 +58,9 @@ Techniques and operations both use `## Protocol`. There is no `## Procedure`.
 
 ## Base-contract inheritance
 
-`techniques/TECHNIQUE.md` is the per-workflow **root index**: it lists the workflow's
-techniques **and** acts as a base contract, *isomorphic to a technique*. Its sections
-are inherited by every technique in the workflow:
+`techniques/TECHNIQUE.md` is the per-workflow **root base contract** — *isomorphic to a
+technique* (frontmatter + `## Capability` + optional contract sections, no technique
+list). Its sections are inherited by every technique in the workflow:
 
 - **Inputs / Outputs / Rules / Errors** — merged in (union; a technique-local entry
   with the same id/name overrides the inherited one).
