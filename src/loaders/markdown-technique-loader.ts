@@ -658,7 +658,6 @@ export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueI
       version: parsed.version,
       capability: parsed.capability,
     };
-    if (parsed.description !== undefined) technique['description'] = parsed.description;
     if (parsed.inputs && parsed.inputs.length > 0) technique['inputs'] = parsed.inputs;
     if (parsed.protocol && parsed.protocol.length > 0) technique['protocol'] = parsed.protocol;
     if (parsed.output && parsed.output.length > 0) technique['output'] = parsed.output;

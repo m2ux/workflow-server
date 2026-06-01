@@ -106,7 +106,7 @@ describe('technique-loader', () => {
       const result = await readTechnique('agent-conduct', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.description).toMatch(/meta-version/i);
+        expect(result.value.capability).toMatch(/meta-version/i);
       }
     });
 
@@ -114,7 +114,7 @@ describe('technique-loader', () => {
       const result = await readTechnique('build-comprehension', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.description).toMatch(/workflow-local override/i);
+        expect(result.value.capability).toMatch(/workflow-local override/i);
       }
     });
 
@@ -129,8 +129,8 @@ describe('technique-loader', () => {
       const result = await readTechnique('meta/explicit-prefix-target', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.description).toMatch(/meta-version/i);
-        expect(result.value.description).not.toMatch(/workflow-local override/i);
+        expect(result.value.capability).toMatch(/meta-version/i);
+        expect(result.value.capability).not.toMatch(/workflow-local override/i);
       }
     });
 

@@ -166,7 +166,6 @@ export const TechniqueSchema = z.object({
   id: z.string(),
   version: SemanticVersionSchema,
   capability: z.string(),
-  description: z.string().optional(),
   architecture: ArchitectureSchema.optional(),
   tools: z.record(ToolDefinitionSchema).optional(),
   flow: z.array(z.string()).optional(),
@@ -188,7 +187,6 @@ export const TechniqueSchema = z.object({
   inputs: InputsDefinitionSchema.optional(),
   protocol: ProtocolDefinitionSchema.optional(),
   output: OutputDefinitionSchema.optional(),
-  resources: z.array(z.string()).optional().describe('Resource indices or IDs this technique depends on (e.g. 02, 04, 08)'),
   operations: z.record(OperationDefinitionSchema).optional().describe('Named operations this technique defines (e.g. spawn-agent, continue-agent)'),
 }).strict();
 export type Technique = z.infer<typeof TechniqueSchema>;

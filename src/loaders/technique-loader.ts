@@ -33,13 +33,11 @@ export function projectTechniqueToToon(technique: Technique): string {
   ordered['id'] = technique.id;
   ordered['version'] = technique.version;
   ordered['capability'] = technique.capability;
-  if (technique.description !== undefined) ordered['description'] = technique.description;
   if (technique.inputs !== undefined) ordered['inputs'] = technique.inputs;
   if (technique.protocol !== undefined) ordered['protocol'] = technique.protocol;
   if (technique.output !== undefined) ordered['output'] = technique.output;
   if (technique.rules !== undefined) ordered['rules'] = technique.rules;
   if (technique.errors !== undefined) ordered['errors'] = technique.errors;
-  if (technique.resources !== undefined) ordered['resources'] = technique.resources;
   if (technique.operations !== undefined) ordered['operations'] = technique.operations;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.

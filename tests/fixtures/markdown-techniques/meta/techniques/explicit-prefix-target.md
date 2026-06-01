@@ -9,7 +9,7 @@ metadata:
 
 ## Capability
 
-Meta-side fixture for PR126-TC-05b. An explicit `meta/explicit-prefix-target`
+meta-version — meta-side fixture for PR126-TC-05b. An explicit `meta/explicit-prefix-target`
 reference must resolve to this version even when the requesting workflow
 ships a tagged override under the same slug.
 
