@@ -214,8 +214,7 @@
         },
         "inputs": { "$ref": "#/definitions/inputsDefinition" },
         "protocol": { "$ref": "#/definitions/protocolDefinition" },
-        "output": { "$ref": "#/definitions/outputDefinition" },
-        "operations": { "$ref": "#/definitions/operationsDefinition" }
+        "output": { "$ref": "#/definitions/outputDefinition" }
       },
       "required": ["id", "version", "capability"],
       "additionalProperties": false

@@ -224,7 +224,6 @@ interface IndexParse {
   output: Array<{ id: string; description?: string; artifact?: { name: string }; components?: Record<string, string> }> | undefined;
   rules: Record<string, string | string[]> | undefined;
   errors: Record<string, { cause?: string; recovery?: string }> | undefined;
-  inlineOperations: Record<string, unknown> | undefined;
 }
 
 function parseSkillIndex(raw: string, sourcePath: string): IndexParse {
@@ -255,7 +254,6 @@ function parseSkillIndex(raw: string, sourcePath: string): IndexParse {
     output: parseOutputsSection(findSection(sections, 'Outputs') ?? findSection(sections, 'Output')),
     rules: parseRulesSection(findSection(sections, 'Rules')),
     errors: parseErrorsSection(findSection(sections, 'Errors')),
-    inlineOperations: parseInlineOperations(findSection(sections, 'Operations'), sourcePath),
   };
 }
 
@@ -434,28 +432,12 @@ function matchLabelledParagraph(body: string, label: string): string | undefined
   return buffer.length > 0 ? buffer.join(' ').trim() : undefined;
 }
 
-function parseInlineOperations(section: Section | undefined, sourcePath: string): IndexParse['inlineOperations'] {
-  if (!section) return undefined;
-  // When the Operations section is purely a table of links to child files (the canonical shape),
-  // its H3 subheadings are either absent or just grouping headers (e.g. "Discovery and session" labels
-  // grouping a table of links). Only H3 subsections that themselves declare the canonical op shape
-  // (a `## Protocol` heading inside their body) materialise into inline operations. Everything else
-  // is treated as presentation and skipped — child files own the operations in those cases.
-  const items = splitSections(section.body, 3);
-  if (items.length === 0) return undefined;
-  const result: Record<string, unknown> = {};
-  for (const item of items) {
-    if (!/^##\s+Protocol\b/m.test(item.body)) continue;
-    result[item.title] = parseOperationBody(item.body, `${sourcePath}#${item.title}`);
-  }
-  return Object.keys(result).length > 0 ? result : undefined;
-}
 
 /* -------------------------------------------------------------------------- */
 /* <op>.md → OperationDefinition                                               */
 /* -------------------------------------------------------------------------- */
 
-interface OperationParse {
+export interface OperationParse {
   description: string;
   inputs?: Array<Record<string, string>>;
   output?: Array<Record<string, string>>;
@@ -635,24 +617,8 @@ export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueI
     const indexRaw = await readFile(indexPath, 'utf-8');
     const parsed = parseSkillIndex(indexRaw, indexPath);
 
-    // Assemble the operations map: grouped techniques contribute op-child files; flat
-    // standalone techniques carry only their inline Operations section. Inline ops fill any gaps.
-    const operations: Record<string, unknown> = {};
-    if (located.kind === 'grouped') {
-      const childFiles = await listOpChildFiles(located.folder);
-      for (const child of childFiles) {
-        const opName = child.replace(/\.md$/, '');
-        const childPath = join(located.folder, child);
-        const childRaw = await readFile(childPath, 'utf-8');
-        operations[opName] = parseOperationFile(childRaw, childPath);
-      }
-    }
-    if (parsed.inlineOperations) {
-      for (const [name, value] of Object.entries(parsed.inlineOperations)) {
-        if (!(name in operations)) operations[name] = value;
-      }
-    }
-
+    // A technique carries its own contract only. Operations are independent `<op>.md` files
+    // resolved on demand (see tryLoadOperationFile / resolveOperations) — never materialised here.
     const technique: Record<string, unknown> = {
       id: parsed.id,
       version: parsed.version,
@@ -663,7 +629,6 @@ export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueI
     if (parsed.output && parsed.output.length > 0) technique['output'] = parsed.output;
     if (parsed.rules && Object.keys(parsed.rules).length > 0) technique['rules'] = parsed.rules;
     if (parsed.errors && Object.keys(parsed.errors).length > 0) technique['errors'] = parsed.errors;
-    if (Object.keys(operations).length > 0) technique['operations'] = operations;
 
     const result = safeValidateTechnique(technique);
     if (!result.success) {
@@ -707,18 +672,15 @@ export async function tryReadMarkdownTechniqueRaw(
 }
 
 /**
- * Enumerate <op>.md children for a technique folder (excludes SKILL.md and README.md).
- * Sorted lexicographically for deterministic output.
+ * Load a single operation from `<techniquesDir>/<group>/<op>.md`, parsed as an operation body.
+ * Returns null when the file does not exist. Throws MarkdownTechniqueParseError on a malformed op
+ * (e.g. missing `## Protocol`), mirroring the technique parser's loud-failure contract.
  */
-async function listOpChildFiles(folder: string): Promise<string[]> {
-  try {
-    const entries = await readdir(folder);
-    return entries
-      .filter((f) => f.endsWith('.md') && f !== 'TECHNIQUE.md' && f !== 'README.md')
-      .sort();
-  } catch {
-    return [];
-  }
+export async function tryLoadOperationFile(techniquesDir: string, group: string, opName: string): Promise<OperationParse | null> {
+  const path = join(techniquesDir, group, `${opName}.md`);
+  if (!existsSync(path)) return null;
+  const raw = await readFile(path, 'utf-8');
+  return parseOperationFile(raw, path);
 }
 
 /* -------------------------------------------------------------------------- */

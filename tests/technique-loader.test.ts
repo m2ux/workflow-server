@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readTechnique, readTechniqueRaw, projectTechniqueToToon, listWorkflowTechniqueIds, composeTechnique } from '../src/loaders/technique-loader.js';
+import { readTechnique, readTechniqueRaw, projectTechniqueToToon, listWorkflowTechniqueIds, composeTechnique, resolveOperations } from '../src/loaders/technique-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -48,36 +48,32 @@ describe('technique-loader', () => {
       const result = await readTechnique('meta/workflow-engine', WORKFLOW_DIR);
       expect(result.success).toBe(true);
       if (result.success) {
-        const technique = result.value;
-        expect(technique.operations).toBeDefined();
-        // Thresholds below are deliberately lower bounds, not exact counts, so
-        // they tolerate organic growth of the meta/workflow-engine content.
-        // They are coupled to the live content at
-        // workflows/meta/techniques/workflow-engine/ (≥ 6 ops, ≥ 3 rules at
-        // time of writing). A content restructure that drops below either
-        // bound will fail this test by design — that signal is intentional.
-        expect(Object.keys(technique.operations!).length).toBeGreaterThanOrEqual(6);
-        expect(technique.rules).toBeDefined();
-        expect(Object.keys(technique.rules!).length).toBeGreaterThanOrEqual(3);
-
-        const opsWithErrors = Object.values(technique.operations!).filter(
-          (op) => (op as { errors?: Record<string, unknown> }).errors !== undefined,
-        );
-        expect(opsWithErrors.length).toBeGreaterThanOrEqual(1);
+        // The index carries rules but NO operations map — operations are files now.
+        expect((result.value as { operations?: unknown }).operations).toBeUndefined();
+        expect(result.value.rules).toBeDefined();
+        expect(Object.keys(result.value.rules!).length).toBeGreaterThanOrEqual(3);
       }
+      // Operations resolve from their `<op>.md` files via resolveOperations.
+      const resolved = await resolveOperations(
+        ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::commit-and-persist'],
+        WORKFLOW_DIR,
+      );
+      const ops = resolved.filter((r) => r.type === 'operation');
+      expect(ops.length).toBe(3);
+      expect((ops[0]!.body as { protocol?: unknown }).protocol).toBeDefined();
     });
 
-    it('materialises per-operation errors with cause + recovery', async () => {
-      const result = await readTechnique('meta/workflow-engine', WORKFLOW_DIR);
-      expect(result.success).toBe(true);
-      if (result.success && result.value.operations) {
-        for (const [opName, opDef] of Object.entries(result.value.operations)) {
-          const errors = (opDef as { errors?: Record<string, { cause?: string; recovery?: string }> }).errors;
-          if (!errors) continue;
-          for (const [errorName, errorInfo] of Object.entries(errors)) {
-            expect(errorInfo.cause, `${opName}::${errorName} should have 'cause' field`).toBeDefined();
-            expect(errorInfo.recovery, `${opName}::${errorName} should have 'recovery' field`).toBeDefined();
-          }
+    it('resolved operation errors carry cause + recovery', async () => {
+      const resolved = await resolveOperations(
+        ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::handle-sub-workflow'],
+        WORKFLOW_DIR,
+      );
+      for (const entry of resolved.filter((r) => r.type === 'operation')) {
+        const errors = (entry.body as { errors?: Record<string, { cause?: string; recovery?: string }> }).errors;
+        if (!errors) continue;
+        for (const [errorName, info] of Object.entries(errors)) {
+          expect(info.cause, `${entry.name}::${errorName} should have 'cause'`).toBeDefined();
+          expect(info.recovery, `${entry.name}::${errorName} should have 'recovery'`).toBeDefined();
         }
       }
     });
@@ -88,18 +84,21 @@ describe('technique-loader', () => {
   /* ------------------------------------------------------------------------ */
 
   describe('markdown fixtures (PR126-TC suite)', () => {
-    it('PR126-TC-03: materialises op-as-child-files into Technique.operations keyed by op basename', async () => {
-      const result = await readTechnique('cargo-operations', FIXTURE_DIR, 'work-package');
-      expect(result.success).toBe(true);
-      if (result.success) {
-        const ops = result.value.operations ?? {};
-        expect(ops['check']).toBeDefined();
-        expect(ops['test']).toBeDefined();
-        const check = ops['check'] as { protocol?: Array<{ steps: string[] }>; inputs?: unknown };
-        expect(Array.isArray(check.protocol)).toBe(true);
-        expect(check.protocol!.length).toBeGreaterThan(0);
-        expect(check.protocol!.flatMap((b) => b.steps).length).toBeGreaterThan(0);
-      }
+    it('PR126-TC-03: resolves op-as-child-files via resolveOperations (group::op -> op file)', async () => {
+      const resolved = await resolveOperations(
+        ['work-package/cargo-operations::check', 'work-package/cargo-operations::test'],
+        FIXTURE_DIR,
+      );
+      const byName = Object.fromEntries(resolved.map((r) => [r.name, r]));
+      expect(byName['check']?.type).toBe('operation');
+      expect(byName['test']?.type).toBe('operation');
+      const check = byName['check']!.body as { protocol?: Array<{ steps: string[] }> };
+      expect(Array.isArray(check.protocol)).toBe(true);
+      expect(check.protocol!.flatMap((b) => b.steps).length).toBeGreaterThan(0);
+      // The grouped index itself loads as a plain technique with no operations map.
+      const idx = await readTechnique('cargo-operations', FIXTURE_DIR, 'work-package');
+      expect(idx.success).toBe(true);
+      if (idx.success) expect((idx.value as { operations?: unknown }).operations).toBeUndefined();
     });
 
     it('PR126-TC-04: falls back to meta when no workflow-local override exists', async () => {
@@ -134,18 +133,13 @@ describe('technique-loader', () => {
       }
     });
 
-    it('PR126-TC-06: malformed op-child file (missing Procedure) raises a loader error', async () => {
-      const result = await readTechnique('malformed-ops', FIXTURE_DIR, 'work-package');
-      // Contract: a parse failure in an op-child file must surface as
-      // TechniqueNotFoundError (the loader wraps parse failures as not-found at the
-      // public boundary). Asserting both the success flag AND the error name
-      // distinguishes "parser surfaced the error" from "technique is missing for an
-      // unrelated reason" — closes the regression gap where a silent op-drop
-      // would still satisfy `result.success === false`.
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.name).toBe('TechniqueNotFoundError');
-      }
+    it('PR126-TC-06: a malformed op file (missing Protocol) does not resolve as an operation', async () => {
+      // broken.md has no `## Protocol`; the op parser throws and resolveOperations surfaces the ref
+      // as not-found rather than a partial/silent operation. The grouped index still loads fine.
+      const resolved = await resolveOperations(['work-package/malformed-ops::broken'], FIXTURE_DIR);
+      expect(resolved[0]!.type).toBe('not-found');
+      const idx = await readTechnique('malformed-ops', FIXTURE_DIR, 'work-package');
+      expect(idx.success).toBe(true);
     });
 
     it('PR126-TC-07: returns TechniqueNotFoundError when neither workflow-local nor meta has the technique', async () => {
@@ -266,7 +260,7 @@ describe('technique-loader', () => {
       }
     });
 
-    it('resolves a grouped technique from <group>/TECHNIQUE.md + op children with ## Protocol', async () => {
+    it('resolves an operation from a grouped <group>/<op>.md; the index has no operations map', async () => {
       const dir = join(tempDir, 'meta', 'techniques', 'vc');
       await mkdir(dir, { recursive: true });
       await writeFile(
@@ -279,15 +273,16 @@ describe('technique-loader', () => {
         ['commit a thing', '', '## Protocol', '', '1. Stage files', '2. Commit', ''].join('\n'),
         'utf-8',
       );
-      const result = await readTechnique('vc', tempDir);
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.value.id).toBe('vc');
-        expect(result.value.operations).toBeDefined();
-        expect(result.value.operations?.['commit']).toBeDefined();
-        const op = result.value.operations?.['commit'] as { protocol?: Array<{ steps: string[] }> };
-        expect(op.protocol).toEqual([{ steps: ['Stage files', 'Commit'] }]);
+      const idx = await readTechnique('vc', tempDir);
+      expect(idx.success).toBe(true);
+      if (idx.success) {
+        expect(idx.value.id).toBe('vc');
+        expect((idx.value as { operations?: unknown }).operations).toBeUndefined();
       }
+      const resolved = await resolveOperations(['vc::commit'], tempDir);
+      expect(resolved[0]!.type).toBe('operation');
+      const op = resolved[0]!.body as { protocol?: Array<{ steps: string[] }> };
+      expect(op.protocol).toEqual([{ steps: ['Stage files', 'Commit'] }]);
     });
 
     it('lists flat + grouped technique ids and excludes the root TECHNIQUE.md index', async () => {

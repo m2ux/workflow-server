@@ -10,7 +10,9 @@ import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
   tryLoadMarkdownTechnique,
   tryReadMarkdownTechniqueRaw,
+  tryLoadOperationFile,
   getWorkflowTechniquesDir,
+  MarkdownTechniqueParseError,
 } from './markdown-technique-loader.js';
 
 /* -------------------------------------------------------------------------- */
@@ -38,7 +40,6 @@ export function projectTechniqueToToon(technique: Technique): string {
   if (technique.output !== undefined) ordered['output'] = technique.output;
   if (technique.rules !== undefined) ordered['rules'] = technique.rules;
   if (technique.errors !== undefined) ordered['errors'] = technique.errors;
-  if (technique.operations !== undefined) ordered['operations'] = technique.operations;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.
   for (const key of Object.keys(technique) as (keyof Technique)[]) {
@@ -268,28 +269,38 @@ export async function resolveOperations(
       continue;
     }
 
-    const skillResult = await readTechnique(
-      parsed.workflow ? `${parsed.workflow}/${parsed.technique}` : parsed.technique,
-      workflowDir,
-    );
+    const techRef = parsed.workflow ? `${parsed.workflow}/${parsed.technique}` : parsed.technique;
+
+    // 1. Operation: an `<op>.md` file under the technique's grouped folder. Unprefixed refs resolve
+    //    under meta (mirrors readTechnique's no-workflowId precedence); a `workflow/technique::op`
+    //    prefix targets that workflow. Operations are files — never a materialised map on a technique.
+    const opTechniquesDir = getWorkflowTechniquesDir(workflowDir, parsed.workflow ?? META_WORKFLOW_ID);
+    let opBody: unknown = null;
+    try {
+      opBody = await tryLoadOperationFile(opTechniquesDir, parsed.technique, parsed.name);
+    } catch (error) {
+      if (!(error instanceof MarkdownTechniqueParseError)) throw error;
+      logWarn('Malformed operation file', { ref, error: error.message });
+      opBody = null; // surface as not-found below
+    }
+    if (opBody) {
+      results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'operation', body: opBody, ref });
+      // Cache the group index so its shared rules auto-include below.
+      const idxResult = await readTechnique(techRef, workflowDir);
+      if (idxResult.success) {
+        touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: idxResult.value });
+      }
+      continue;
+    }
+
+    // 2. Rule / error on the technique index.
+    const skillResult = await readTechnique(techRef, workflowDir);
     if (!skillResult.success) {
       results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
       continue;
     }
     const technique = skillResult.value;
 
-    if (technique.operations && parsed.name in technique.operations) {
-      results.push({
-        source: parsed.technique,
-        workflow: parsed.workflow,
-        name: parsed.name,
-        type: 'operation',
-        body: technique.operations[parsed.name],
-        ref,
-      });
-      touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: technique });
-      continue;
-    }
     if (technique.rules && parsed.name in technique.rules) {
       explicitRules.add(ruleKey(parsed.workflow, parsed.technique, parsed.name));
       results.push({
@@ -403,22 +414,6 @@ export async function composeTechnique(
   if (rules) composed['rules'] = rules; else delete composed['rules'];
   if (errors) composed['errors'] = errors; else delete composed['errors'];
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
-
-  if (technique.operations) {
-    const ops: Record<string, unknown> = {};
-    for (const [name, opRaw] of Object.entries(technique.operations)) {
-      const op = opRaw as Record<string, unknown>;
-      const composedOp: Record<string, unknown> = { ...op };
-      const opRules = mergeKeyed(rules as Record<string, unknown> | undefined, op['rules'] as Record<string, unknown> | undefined);
-      const opErrors = mergeKeyed(errors as Record<string, unknown> | undefined, op['errors'] as Record<string, unknown> | undefined);
-      const opProtocol = concatProtocol(protocol, op['protocol'] as ProtocolBlock[] | undefined);
-      if (opRules) composedOp['rules'] = opRules;
-      if (opErrors) composedOp['errors'] = opErrors;
-      if (opProtocol) composedOp['protocol'] = opProtocol;
-      ops[name] = composedOp;
-    }
-    composed['operations'] = ops;
-  }
 
   const result = safeValidateTechnique(composed);
   if (!result.success) {

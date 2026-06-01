@@ -187,7 +187,6 @@ export const TechniqueSchema = z.object({
   inputs: InputsDefinitionSchema.optional(),
   protocol: ProtocolDefinitionSchema.optional(),
   output: OutputDefinitionSchema.optional(),
-  operations: z.record(OperationDefinitionSchema).optional().describe('Named operations this technique defines (e.g. spawn-agent, continue-agent)'),
 }).strict();
 export type Technique = z.infer<typeof TechniqueSchema>;
 
