@@ -7,8 +7,8 @@ export type {
   DecisionBranch, 
   Decision, 
   Transition, 
-  Loop, 
-  SkillsReference,
+  Loop,
+  TechniquesReference,
   WorkflowTrigger,
   Activity,
 } from '../schema/activity.schema.js';

@@ -203,7 +203,7 @@ export interface ActivityIndexEntry {
   id: string;
   workflowId: string;
   problem: string;
-  primary_skill?: string;
+  primary_technique?: string;
   next_action?: {
     tool: string;
     parameters: Record<string, string>;
@@ -247,7 +247,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       const validation = safeValidateActivity(decoded);
       const activity = validation.success ? validation.data : decoded as Activity;
       
-      const primarySkill = activity.techniques?.primary
+      const primaryTechnique = activity.techniques?.primary
         ?? activity.steps?.find(s => s.technique)?.technique;
       const primaryStep = activity.steps?.find(s => s.technique);
 
@@ -255,7 +255,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
         id: activity.id,
         workflowId: entry.workflowId,
         problem: activity.problem ?? activity.description ?? activity.name,
-        ...(primarySkill ? { primary_skill: primarySkill } : {}),
+        ...(primaryTechnique ? { primary_technique: primaryTechnique } : {}),
         ...(primaryStep ? {
           next_action: {
             tool: 'get_technique',

@@ -171,7 +171,7 @@
           "properties": {
             "primary": {
               "type": "string",
-              "description": "LEGACY: Primary technique ID for this workflow. Optional — workflows may declare skill_operations[] instead and let get_workflow bundle the resolved operations."
+              "description": "LEGACY: Primary technique ID for this workflow. Optional — workflows may declare operations[] instead and let get_workflow bundle the resolved operations."
             }
           },
           "additionalProperties": false,
@@ -533,7 +533,7 @@
                       },
                       "description": "Workflows to trigger from this step"
                     },
-                    "skill_args": {
+                    "technique_args": {
                       "type": "object",
                       "additionalProperties": {
                         "type": [
@@ -1390,7 +1390,7 @@
                             },
                             "description": "Workflows to trigger from this step"
                           },
-                          "skill_args": {
+                          "technique_args": {
                             "type": "object",
                             "additionalProperties": {
                               "type": [

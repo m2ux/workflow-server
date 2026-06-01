@@ -99,12 +99,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state);
       await saveSessionForTool(loaded, next);
 
-      const primarySkillId = wf.techniques?.primary;
-      let primarySkillContent = '';
-      if (primarySkillId) {
-        const skillResult = await readTechniqueRaw(primarySkillId, config.workflowDir, workflow_id);
-        if (skillResult.success) {
-          primarySkillContent = skillResult.value;
+      const primaryTechniqueId = wf.techniques?.primary;
+      let primaryTechniqueContent = '';
+      if (primaryTechniqueId) {
+        const techniqueResult = await readTechniqueRaw(primaryTechniqueId, config.workflowDir, workflow_id);
+        if (techniqueResult.success) {
+          primaryTechniqueContent = techniqueResult.value;
         }
       }
 
@@ -119,7 +119,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // followed by the resolved-operations bundle. Tests and clients split on
       // the first '\n\n---\n\n' to recover the workflow section, so we keep
       // that single separator and concatenate technique + ops before it.
-      const preambleParts = [primarySkillContent, opsBlock].filter(s => s.length > 0);
+      const preambleParts = [primaryTechniqueContent, opsBlock].filter(s => s.length > 0);
       const preamble = preambleParts.length > 0 ? preambleParts.join('\n\n') + '\n\n---\n\n' : '';
 
       if (summary) {

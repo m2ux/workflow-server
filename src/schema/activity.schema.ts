@@ -4,12 +4,12 @@ import { SemanticVersionSchema } from './common.js';
 
 const TimeEstimateSchema = z.string().regex(/^\d+(-\d+)?\s*(m|min|h|hr|hours?|d|days?)?$/i).optional();
 
-// Skills reference (activity-level — optional when steps declare their own techniques)
+// Techniques reference (activity-level — optional when steps declare their own techniques)
 export const TechniquesReferenceSchema = z.object({
   primary: z.string().optional().describe('Primary technique ID for this activity. Optional when steps declare individual techniques.'),
   supporting: z.array(z.string()).optional().describe('Supporting technique IDs'),
 });
-export type SkillsReference = z.infer<typeof TechniquesReferenceSchema>;
+export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
 // Action schema
 export const ActionSchema = z.object({
@@ -46,7 +46,7 @@ export const StepSchema = z.object({
   condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons.'),
   actions: z.array(ActionSchema).optional(),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this step'),
-  skill_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('LEGACY: Arguments to pass to the technique. Prefer inline operation invocation in description.'),
+  technique_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('LEGACY: Arguments to pass to the technique. Prefer inline operation invocation in description.'),
 });
 export type Step = z.infer<typeof StepSchema>;
 
@@ -142,7 +142,7 @@ export const ActivitySchema = z.object({
   problem: z.string().optional().describe('Description of the user problem this activity addresses'),
   recognition: z.array(z.string()).optional().describe('Patterns to match user intent to this activity'),
   
-  // Skills (LEGACY — primary/supporting model). Optional. Prefer operations.
+  // Techniques (LEGACY — primary/supporting model). Optional. Prefer operations.
   techniques: TechniquesReferenceSchema.optional(),
 
   // Operations (NEW — flat array of technique-id::operation-name refs the activity uses)

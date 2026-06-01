@@ -49,11 +49,11 @@
         },
         "description": {
           "type": "string",
-          "description": "Detailed guidance for executing this step. Carries inline operation invocations of the form `skill-id::operation-name(arg: {var}, ...)` when a step wraps a known operation."
+          "description": "Detailed guidance for executing this step. Carries inline operation invocations of the form `technique-id::operation-name(arg: {var}, ...)` when a step wraps a known operation."
         },
-        "skill": {
+        "technique": {
           "type": "string",
-          "description": "LEGACY: Skill ID to apply for this step. Prefer inline operation invocation in description."
+          "description": "LEGACY: Technique ID to apply for this step. Prefer inline operation invocation in description."
         },
         "when": {
           "type": "string",
@@ -84,12 +84,12 @@
           },
           "description": "Workflows to trigger from this step"
         },
-        "skill_args": {
+        "technique_args": {
           "type": "object",
           "additionalProperties": {
             "type": ["string", "number", "boolean"]
           },
-          "description": "LEGACY: Arguments to pass to the skill. Prefer inline operation invocation in description."
+          "description": "LEGACY: Arguments to pass to the technique. Prefer inline operation invocation in description."
         }
       },
       "required": ["id"],
@@ -375,19 +375,19 @@
       "required": ["id", "name"],
       "additionalProperties": false
     },
-    "skills": {
+    "techniques": {
       "type": "object",
       "properties": {
         "primary": {
           "type": "string",
-          "description": "Primary skill ID for this activity"
+          "description": "Primary technique ID for this activity"
         },
         "supporting": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Supporting skill IDs"
+          "description": "Supporting technique IDs"
         }
       },
       "required": ["primary"],
@@ -424,14 +424,14 @@
           },
           "description": "Patterns to match user intent to this activity"
         },
-        "skills": {
-          "$ref": "#/definitions/skills",
-          "description": "LEGACY: Skill references (primary/supporting). Prefer skill_operations."
+        "techniques": {
+          "$ref": "#/definitions/techniques",
+          "description": "LEGACY: Technique references (primary/supporting). Prefer operations."
         },
         "operations": {
           "type": "array",
           "items": { "type": "string" },
-          "description": "Flat array of skill-id::operation-name (or skill-id::rule-name) references this activity uses. Resolved via resolve_operations and bundled into get_activity."
+          "description": "Flat array of technique-id::operation-name (or technique-id::rule-name) references this activity uses. Resolved via resolve_operations and bundled into get_activity."
         },
         "steps": {
           "type": "array",
@@ -530,10 +530,10 @@
           "items": {
             "type": "string"
           },
-          "description": "Activity-level rules and constraints (string array of ordered imperative directives) that agents MUST follow during this activity. Domain-specific rules are on the skill; sequencing rules are here. Note: skill schemas use a different format (object with named key-value rule pairs)."
+          "description": "Activity-level rules and constraints (string array of ordered imperative directives) that agents MUST follow during this activity. Domain-specific rules are on the technique; sequencing rules are here. Note: technique schemas use a different format (object with named key-value rule pairs)."
         }
       },
-      "required": ["id", "version", "name", "skills"],
+      "required": ["id", "version", "name"],
       "additionalProperties": false
     }
   }

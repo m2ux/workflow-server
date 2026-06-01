@@ -39,7 +39,7 @@ export const ModeSchema = z.object({
 export type Mode = z.infer<typeof ModeSchema>;
 
 export const WorkflowTechniquesSchema = z.object({
-  primary: z.string().optional().describe('LEGACY: Primary technique ID for this workflow. Optional — workflows may declare skill_operations[] instead and let get_workflow bundle the resolved operations.'),
+  primary: z.string().optional().describe('LEGACY: Primary technique ID for this workflow. Optional — workflows may declare operations[] instead and let get_workflow bundle the resolved operations.'),
 });
 export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
 
@@ -81,5 +81,5 @@ export {
   type Loop,
   type Transition,
   type Action,
-  type SkillsReference,
+  type TechniquesReference,
 } from './activity.schema.js';
