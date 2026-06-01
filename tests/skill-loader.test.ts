@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readSkill, readSkillRaw, projectSkillToToon, listWorkflowSkillIds } from '../src/loaders/skill-loader.js';
+import { readSkill, readSkillRaw, projectSkillToToon, listWorkflowSkillIds, composeTechnique } from '../src/loaders/skill-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -95,9 +95,10 @@ describe('skill-loader', () => {
         const ops = result.value.operations ?? {};
         expect(ops['check']).toBeDefined();
         expect(ops['test']).toBeDefined();
-        const check = ops['check'] as { procedure?: string[]; inputs?: unknown };
-        expect(Array.isArray(check.procedure)).toBe(true);
-        expect(check.procedure!.length).toBeGreaterThan(0);
+        const check = ops['check'] as { protocol?: Array<{ steps: string[] }>; inputs?: unknown };
+        expect(Array.isArray(check.protocol)).toBe(true);
+        expect(check.protocol!.length).toBeGreaterThan(0);
+        expect(check.protocol!.flatMap((b) => b.steps).length).toBeGreaterThan(0);
       }
     });
 
@@ -284,8 +285,8 @@ describe('skill-loader', () => {
         expect(result.value.id).toBe('vc');
         expect(result.value.operations).toBeDefined();
         expect(result.value.operations?.['commit']).toBeDefined();
-        const op = result.value.operations?.['commit'] as { procedure?: string[] };
-        expect(op.procedure).toEqual(['Stage files', 'Commit']);
+        const op = result.value.operations?.['commit'] as { protocol?: Array<{ steps: string[] }> };
+        expect(op.protocol).toEqual([{ steps: ['Stage files', 'Commit'] }]);
       }
     });
 
@@ -301,6 +302,51 @@ describe('skill-loader', () => {
       expect(ids).toContain('standalone');
       expect(ids).toContain('grp');
       expect(ids).not.toContain('TECHNIQUE');
+    });
+
+    it('composeTechnique inherits the root contract and prepends the root protocol', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root base.', '', '## Rules', '', '### no-skip', '', 'Never skip steps.', '', '## Protocol', '', '### 1. Preamble', '', '- Read AGENTS.md', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'do-thing.md'),
+        [...FM('do-thing'), '## Capability', '', 'Do the thing.', '', '## Rules', '', '### own-rule', '', 'Be careful.', '', '## Protocol', '', '### 1. Work', '', '- Do the work', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await composeTechnique('do-thing', tempDir, 'wp');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.rules?.['no-skip']).toBeDefined(); // inherited from root
+        expect(result.value.rules?.['own-rule']).toBeDefined(); // technique-local
+        expect(result.value.protocol?.[0]?.steps).toEqual(['Read AGENTS.md']); // root preamble first
+        expect(result.value.protocol?.[1]?.steps).toEqual(['Do the work']); // then own
+      }
+    });
+
+    it('composeTechnique never inherits the meta root into a non-meta workflow', async () => {
+      const metaDir = join(tempDir, 'meta', 'techniques');
+      await mkdir(metaDir, { recursive: true });
+      await writeFile(
+        join(metaDir, 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Meta root.', '', '## Rules', '', '### meta-only', '', 'Orchestrator scope.', ''].join('\n'),
+        'utf-8',
+      );
+      const wpDir = join(tempDir, 'wp', 'techniques');
+      await mkdir(wpDir, { recursive: true });
+      await writeFile(
+        join(wpDir, 'solo.md'),
+        [...FM('solo'), '## Capability', '', 'Solo technique, no wp root.', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await composeTechnique('solo', tempDir, 'wp');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.rules?.['meta-only']).toBeUndefined(); // meta root must NOT bleed in
+      }
     });
   });
 });

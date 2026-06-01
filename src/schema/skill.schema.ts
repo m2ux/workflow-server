@@ -102,8 +102,17 @@ export type ProtocolStep = z.infer<typeof ProtocolStepSchema>;
 export const InputsDefinitionSchema = z.array(InputItemDefinitionSchema).describe('Inputs the skill expects from context: array of named items (mirrors output structure for deterministic binding)');
 export type InputsDefinition = z.infer<typeof InputsDefinitionSchema>;
 
-/** Phase- or step-keyed procedure: each key is the step/phase name; each value is an ordered array of imperative bullets. No description in protocol — use the skill-level description. */
-export const ProtocolDefinitionSchema = z.object({}).catchall(z.array(z.string()).describe('Ordered list of imperative bullets for this step or phase.'));
+/** A single protocol block: an optional label and an ordered list of imperative step bullets. */
+export const ProtocolBlockSchema = z.object({
+  title: z.string().optional().describe('Optional label for this block (the authored `### Title`, ordinal prefix stripped).'),
+  steps: z.array(z.string()).describe('Ordered imperative step bullets for this block.'),
+});
+export type ProtocolBlock = z.infer<typeof ProtocolBlockSchema>;
+
+/** Protocol: a single ordered list of step blocks (no "phase" construct). Blocks are positional;
+ *  composition concatenates ancestor blocks before a nested technique's own, and the server renumbers
+ *  the combined sequence for display. Unified across techniques and operations. */
+export const ProtocolDefinitionSchema = z.array(ProtocolBlockSchema);
 export type ProtocolDefinition = z.infer<typeof ProtocolDefinitionSchema>;
 
 /** Named rules: each key is a rule name or group; each value is a single rule string or an array of related rules. */
@@ -144,7 +153,7 @@ export const OperationDefinitionSchema = z.object({
   description: z.string().describe('What this operation does'),
   inputs: z.array(OperationInputSchema).optional().describe('Positional input entries — each item is a single-key object mapping input name to its description'),
   output: z.array(OperationOutputSchema).optional().describe('Output entries produced by this operation — same shape as inputs'),
-  procedure: z.array(z.string()).optional().describe('Ordered imperative bullets describing how to perform the operation'),
+  protocol: ProtocolDefinitionSchema.optional().describe('Ordered list of step blocks describing how to perform the operation (formerly "procedure"; unified with technique Protocol).'),
   tools: z.record(z.array(z.string())).optional().describe('Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys "shell" (regular shell programs) and "harness" (agent built-ins like Read, Write, AskQuestion). Provenance hint only — tool specs come from the tool descriptions themselves.'),
   resources: z.array(z.string()).optional().describe('Resource refs (text-only ids, e.g., "meta/bootstrap-protocol") this operation needs. Resources are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
   errors: z.record(ErrorDefinitionSchema).optional().describe('Errors this operation can encounter, keyed by error name. Each entry is { cause, recovery, ... }. Errors are scoped per-operation — only included in resolved-operation output for operations actually requested.'),

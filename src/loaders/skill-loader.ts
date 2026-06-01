@@ -5,7 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { decodeToonRaw, encodeToon } from '../utils/toon.js';
-import type { Skill } from '../schema/skill.schema.js';
+import type { Skill, ProtocolBlock } from '../schema/skill.schema.js';
 import { safeValidateSkill } from '../schema/skill.schema.js';
 import { parseActivityFilename } from './filename-utils.js';
 import {
@@ -442,6 +442,102 @@ export async function resolveOperations(
   }
 
   return results;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Technique composition — root-contract inheritance (R4)                      */
+/* -------------------------------------------------------------------------- */
+
+/** Filename stem of the per-workflow root index. Loadable for its contract, but never an
+ *  addressable technique (excluded from listWorkflowSkillIds). */
+const ROOT_INDEX_ID = 'TECHNIQUE';
+
+/** Union two id-keyed arrays (inputs/outputs); child entries override parent entries by `id`. */
+function mergeById<T extends { id: string }>(parent: T[] | undefined, child: T[] | undefined): T[] | undefined {
+  if (!parent?.length && !child?.length) return undefined;
+  const map = new Map<string, T>();
+  for (const e of parent ?? []) map.set(e.id, e);
+  for (const e of child ?? []) map.set(e.id, e);
+  const arr = [...map.values()];
+  return arr.length ? arr : undefined;
+}
+
+/** Union two name-keyed records (rules/errors); child entries override parent entries by key. */
+function mergeKeyed<T>(parent: Record<string, T> | undefined, child: Record<string, T> | undefined): Record<string, T> | undefined {
+  if (!parent && !child) return undefined;
+  const out: Record<string, T> = { ...(parent ?? {}), ...(child ?? {}) };
+  return Object.keys(out).length ? out : undefined;
+}
+
+/** Concatenate protocol block lists: ancestor blocks first, then the nested technique's own. */
+function concatProtocol(parent: ProtocolBlock[] | undefined, child: ProtocolBlock[] | undefined): ProtocolBlock[] | undefined {
+  const arr = [...(parent ?? []), ...(child ?? [])];
+  return arr.length ? arr : undefined;
+}
+
+/** Load the executing workflow's root index (`techniques/TECHNIQUE.md`) for its contract, or null. */
+async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promise<Skill | null> {
+  return tryLoadMarkdownSkill(getWorkflowTechniquesDir(workflowDir, workflowId), ROOT_INDEX_ID);
+}
+
+/**
+ * Compose a technique with its workflow-root base contract (R4).
+ *
+ * Inheritance is **executing-workflow-only** — `workflowId`'s root, never meta's. Keyed sections
+ * (inputs/outputs/rules/errors) union with the technique-local entry overriding; protocol blocks are
+ * prepended (root → technique) preserving order (the array order IS the renumbering). The technique's
+ * operations recursively inherit the composed technique's rules/errors and protocol preamble.
+ */
+export async function composeTechnique(
+  techniqueId: string,
+  workflowDir: string,
+  workflowId: string,
+): Promise<Result<Skill, SkillNotFoundError>> {
+  const base = await readSkill(techniqueId, workflowDir, workflowId);
+  if (!base.success) return base;
+  const skill = base.value;
+
+  const root = await loadWorkflowRoot(workflowDir, workflowId);
+  if (!root || root.id === skill.id) return ok(skill); // no root, or the skill IS the root index
+
+  const composed: Record<string, unknown> = { ...skill };
+  const inputs = mergeById(root.inputs, skill.inputs);
+  const output = mergeById(root.output, skill.output);
+  const rules = mergeKeyed(root.rules, skill.rules);
+  const errors = mergeKeyed(root.errors, skill.errors);
+  const protocol = concatProtocol(root.protocol, skill.protocol);
+  if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
+  if (output) composed['output'] = output; else delete composed['output'];
+  if (rules) composed['rules'] = rules; else delete composed['rules'];
+  if (errors) composed['errors'] = errors; else delete composed['errors'];
+  if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
+
+  if (skill.operations) {
+    const ops: Record<string, unknown> = {};
+    for (const [name, opRaw] of Object.entries(skill.operations)) {
+      const op = opRaw as Record<string, unknown>;
+      const composedOp: Record<string, unknown> = { ...op };
+      const opRules = mergeKeyed(rules as Record<string, unknown> | undefined, op['rules'] as Record<string, unknown> | undefined);
+      const opErrors = mergeKeyed(errors as Record<string, unknown> | undefined, op['errors'] as Record<string, unknown> | undefined);
+      const opProtocol = concatProtocol(protocol, op['protocol'] as ProtocolBlock[] | undefined);
+      if (opRules) composedOp['rules'] = opRules;
+      if (opErrors) composedOp['errors'] = opErrors;
+      if (opProtocol) composedOp['protocol'] = opProtocol;
+      ops[name] = composedOp;
+    }
+    composed['operations'] = ops;
+  }
+
+  const result = safeValidateSkill(composed);
+  if (!result.success) {
+    logWarn('Composed technique failed validation; returning uncomposed', {
+      techniqueId,
+      workflowId,
+      errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
+    });
+    return ok(skill);
+  }
+  return ok(result.data);
 }
 
 /**

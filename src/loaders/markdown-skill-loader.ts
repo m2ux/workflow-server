@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { SkillNotFoundError } from '../errors.js';
 import { logWarn } from '../logging.js';
-import type { Skill } from '../schema/skill.schema.js';
+import type { Skill, ProtocolBlock } from '../schema/skill.schema.js';
 import { safeValidateSkill } from '../schema/skill.schema.js';
 
 /**
@@ -220,7 +220,7 @@ interface IndexParse {
   description: string | undefined;
   capability: string;
   inputs: Array<{ id: string; description?: string; required?: boolean }> | undefined;
-  protocol: Record<string, string[]> | undefined;
+  protocol: ProtocolBlock[] | undefined;
   output: Array<{ id: string; description?: string; artifact?: { name: string }; components?: Record<string, string> }> | undefined;
   rules: Record<string, string | string[]> | undefined;
   errors: Record<string, { cause?: string; recovery?: string }> | undefined;
@@ -279,29 +279,42 @@ function parseInputsSection(section: Section | undefined): IndexParse['inputs'] 
 
 function parseProtocolSection(section: Section | undefined): IndexParse['protocol'] {
   if (!section) return undefined;
-  const phases = splitSections(section.body, 3);
-  if (phases.length === 0) return undefined;
-  const protocol: Record<string, string[]> = {};
-  for (const phase of phases) {
-    const key = slugifyPhase(phase.title);
-    const bullets = bodyAsList(phase.body);
-    if (bullets.length === 0) {
-      const para = bodyParagraphs(phase.body);
-      if (para) protocol[key] = [para];
-      continue;
-    }
-    protocol[key] = bullets;
-  }
-  return protocol;
+  return protocolBlocksFromBody(section.body);
 }
 
-function slugifyPhase(title: string): string {
-  // Strip leading "N. " ordering prefix, then kebab-case the remaining title.
-  const stripped = title.replace(/^\d+\.\s*/, '').trim();
-  return stripped
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+/**
+ * Parse a `## Protocol` body into an ordered list of step blocks.
+ * - When the body has `### ` sub-headings, each becomes a block `{ title, steps }`
+ *   (the ordinal prefix is stripped from the title; bullet-less blocks keep their prose as one step).
+ * - When the body is a flat numbered/bulleted list (the op shape), it becomes a single untitled block.
+ * Returns undefined when there are no steps at all.
+ */
+function protocolBlocksFromBody(body: string): ProtocolBlock[] | undefined {
+  const subBlocks = splitSections(body, 3);
+  if (subBlocks.length > 0) {
+    const result: ProtocolBlock[] = [];
+    for (const b of subBlocks) {
+      const title = stripStepOrdinal(b.title);
+      const steps = bodyAsList(b.body);
+      if (steps.length > 0) {
+        result.push({ title, steps });
+      } else {
+        const para = bodyParagraphs(b.body);
+        if (para) result.push({ title, steps: [para] });
+      }
+    }
+    return result.length > 0 ? result : undefined;
+  }
+  const steps = bodyAsList(body);
+  if (steps.length === 0) {
+    const para = bodyParagraphs(body);
+    return para ? [{ steps: [para] }] : undefined;
+  }
+  return [{ steps }];
+}
+
+function stripStepOrdinal(title: string): string {
+  return title.replace(/^\d+\.\s*/, '').trim();
 }
 
 function parseOutputsSection(section: Section | undefined): IndexParse['output'] {
@@ -446,7 +459,7 @@ interface OperationParse {
   description: string;
   inputs?: Array<Record<string, string>>;
   output?: Array<Record<string, string>>;
-  procedure?: string[];
+  protocol?: ProtocolBlock[];
   errors?: Record<string, { cause?: string; recovery?: string }>;
   rules?: Record<string, string>;
 }
@@ -532,15 +545,15 @@ function parseOperationBody(body: string, sourcePath: string, description: strin
 
   // Operation step sequence: canonical heading is '## Protocol'; '## Procedure' is accepted
   // transitionally until the content migration renames all op files.
-  const procedureSection = findSection(sections, 'Protocol') ?? findSection(sections, 'Procedure');
-  if (!procedureSection) {
+  const protocolSection = findSection(sections, 'Protocol') ?? findSection(sections, 'Procedure');
+  if (!protocolSection) {
     throw new MarkdownSkillParseError(`Missing required '## Protocol' section at ${sourcePath}`);
   }
-  const procedure = bodyAsList(procedureSection.body);
-  if (procedure.length === 0) {
+  const protocol = protocolBlocksFromBody(protocolSection.body);
+  if (!protocol || protocol.length === 0) {
     throw new MarkdownSkillParseError(`Empty '## Protocol' section at ${sourcePath}`);
   }
-  op.procedure = procedure;
+  op.protocol = protocol;
 
   const errorsSection = findSection(sections, 'Errors');
   if (errorsSection) {
@@ -652,7 +665,7 @@ export async function tryLoadMarkdownSkill(techniquesDir: string, skillId: strin
     };
     if (parsed.description !== undefined) skill['description'] = parsed.description;
     if (parsed.inputs && parsed.inputs.length > 0) skill['inputs'] = parsed.inputs;
-    if (parsed.protocol && Object.keys(parsed.protocol).length > 0) skill['protocol'] = parsed.protocol;
+    if (parsed.protocol && parsed.protocol.length > 0) skill['protocol'] = parsed.protocol;
     if (parsed.output && parsed.output.length > 0) skill['output'] = parsed.output;
     if (parsed.rules && Object.keys(parsed.rules).length > 0) skill['rules'] = parsed.rules;
     if (parsed.errors && Object.keys(parsed.errors).length > 0) skill['errors'] = parsed.errors;
