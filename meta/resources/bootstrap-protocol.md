@@ -9,7 +9,7 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
 1. Fetch:
    - `workflow-server://schemas/workflow`
-   - `workflow-server://schemas/skill`
+   - `workflow-server://schemas/technique`
    - `workflow-server://schemas/activity`
 
 2. `start_session { workflow_id: "meta", agent_id: "orchestrator" }`. Save the returned `session_index` (6-character base32). The server creates or rebinds `session.json` + `.session-token` (seal) under the planning folder on this call; no agent-side state writes are required.

@@ -16,7 +16,7 @@ Maps informal patterns (what agents tend to write as prose) to their formal sche
 |--------|------|---------------|
 | Workflow | `schemas/workflow.schema.json` | `schemas/README.md — Workflow Schema` |
 | Activity | `schemas/activity.schema.json` | `schemas/README.md — Activity Schema` |
-| Skill | `schemas/skill.schema.json` | `schemas/README.md — Skill Schema` |
+| Technique | `schemas/technique.schema.json` | `schemas/README.md — Technique Schema` |
 | Condition | `schemas/condition.schema.json` | `schemas/README.md — Condition Schema` |
 | State | `schemas/state.schema.json` | `schemas/README.md — State Schema` |
 

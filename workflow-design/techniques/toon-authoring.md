@@ -17,7 +17,7 @@ Author syntactically valid TOON files that pass schema validation
 
 ### schema-type
 
-Which schema applies to this file — one of: workflow (schemas/workflow.schema.json), activity (schemas/activity.schema.json), skill (schemas/skill.schema.json)
+Which schema applies to this file — one of: workflow (schemas/workflow.schema.json), activity (schemas/activity.schema.json), technique (schemas/technique.schema.json)
 
 ### reference-file
 
