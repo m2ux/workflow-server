@@ -15,21 +15,6 @@ metadata:
 
 Resource-constrained operations for the cargo subcommands used during the work-package workflow.
 
-## Operations
-
-| Operation | Purpose |
-|---|---|
-| [check](./check.md) | Type-check without producing binaries; the cheapest validation pass |
-| [test](./test.md) | Run tests with bounded test parallelism; prefer nextest when configured |
-| [build-dev](./build-dev.md) | Workspace dev build; skips the runtime wasm artifact |
-| [build-release](./build-release.md) | Release build; produces the final binary AND the runtime wasm artifact |
-| [clippy](./clippy.md) | Lint against all targets, denying warnings |
-| [fmt-check](./fmt-check.md) | Canonical formatting check; matches CI exactly |
-| [fmt-fix](./fmt-fix.md) | Apply rustfmt formatting in place |
-| [doc](./doc.md) | Generate API documentation to verify inline doc comments compile |
-| [preflight](./preflight.md) | Probe required toolchain prerequisites before any workspace cargo command |
-| [run-suite](./run-suite.md) | Run check + clippy + test + fmt-check concurrently and aggregate |
-
 ## Rules
 
 ### resource-budget

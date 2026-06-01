@@ -15,20 +15,6 @@ metadata:
 
 Manage git operations — branching, worktree lifecycle, PR lifecycle, branch synchronization, and reference-repo submodule maintenance.
 
-## Operations
-
-| Operation | Purpose |
-|---|---|
-| [update-reference-submodules](./update-reference-submodules.md) | Refresh the monorepo reference's submodules to their tracked remote HEADs (with locking and skip-if-recent) |
-| [create-worktree](./create-worktree.md) | Materialise a working directory with a feature branch from the component's default branch |
-| [remove-worktree](./remove-worktree.md) | Tear down a worktree created earlier in the work package |
-| [create-pr](./create-pr.md) | Open a draft PR linked to the issue, assigned to the current user |
-| [sync-branch](./sync-branch.md) | Fetch and rebase/merge from main to keep the feature branch current |
-| [detect-merge-strategy](./detect-merge-strategy.md) | Query GitHub for the repo's allowed merge strategies |
-| [squash-merge](./squash-merge.md) | Perform a local signed squash merge into the default branch |
-| [push-commits](./push-commits.md) | Push local commits on the feature branch to the remote |
-| [artifact-commits](./artifact-commits.md) | Commit planning artifacts to the parent engineering repo with the activity message pattern |
-
 ## Rules
 
 ### directory-scope

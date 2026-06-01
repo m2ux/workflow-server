@@ -15,15 +15,6 @@ metadata:
 
 Manage planning artifacts — create folders, enforce activity-based artifact prefixing, and organize documents.
 
-## Operations
-
-| Operation | Purpose |
-|---|---|
-| [create-folder](./create-folder.md) | Create the planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initiative}/` |
-| [create-readme](./create-readme.md) | Create README.md from the readme template in the planning folder |
-| [write-artifact](./write-artifact.md) | Write artifact content to the planning folder with the activity prefix applied |
-| [verify-readme-conforms](./verify-readme-conforms.md) | Verify the planning folder's README.md matches the template structure |
-
 ## Rules
 
 ### activity-prefix

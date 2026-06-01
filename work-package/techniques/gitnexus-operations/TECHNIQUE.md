@@ -15,30 +15,6 @@ metadata:
 
 Parameterized GitNexus operations for the work-package workflow. Primitive operations wrap each GitNexus MCP tool with the canonical work-package parameter set and output interpretation; composite operations encode the multi-call analysis recipes that recur across review and planning skills. For the underlying tool, resource, and graph-schema reference, see [gitnexus-reference](../../resources/gitnexus-reference.md).
 
-## Operations
-
-### Primitive
-
-| Operation | Purpose |
-|---|---|
-| [impact](./impact.md) | Symbol blast radius (upstream/downstream) with confidence and risk level — the primary pre-edit safety check |
-| [context](./context.md) | 360-degree view of one symbol (callers, callees, process membership) |
-| [detect-changes](./detect-changes.md) | Map the current git diff to changed symbols and affected execution flows |
-| [query](./query.md) | Find execution flows related to a concept, symptom, or error string |
-| [cypher](./cypher.md) | Raw graph query for traces and filters not covered by higher-level operations |
-
-### Composite
-
-| Operation | Purpose | Caller |
-|---|---|---|
-| [orphan-scan](./orphan-scan.md) | Find unreferenced symbols introduced by the diff (over-engineering candidates) | review-strategy |
-| [public-api-enum](./public-api-enum.md) | Enumerate exported symbols in the diff that need doc comments | finalize-documentation |
-| [diff-coverage-map](./diff-coverage-map.md) | Drive test-coverage review from the changed-symbol set | review-test-suite |
-| [scope-discipline-check](./scope-discipline-check.md) | Flag affected flows outside the work package's intended scope | review-strategy, respond-to-pr-review |
-| [diagram-source-select](./diagram-source-select.md) | Source architecture-diagram structure from graph resources, bounded to affected processes | summarize-architecture |
-| [complexity-signal](./complexity-signal.md) | Objective complexity estimate from fan-out of a preliminary target symbol | classify-problem |
-| [reversibility-signal](./reversibility-signal.md) | Reversibility flag for judgement-augmentation assumptions | review-assumptions |
-
 ## Rules
 
 ### must-use-operations

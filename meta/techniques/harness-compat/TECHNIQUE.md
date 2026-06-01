@@ -15,14 +15,6 @@ metadata:
 
 Abstract sub-agent dispatch operations — harness-independent vocabulary for spawning, continuing, and concurrently dispatching agents.
 
-## Operations
-
-| Operation | Purpose |
-|---|---|
-| [spawn-agent](./spawn-agent.md) | Dispatch a new isolated sub-agent with no prior context |
-| [continue-agent](./continue-agent.md) | Resume an existing sub-agent, preserving accumulated context where the harness supports it |
-| [spawn-concurrent](./spawn-concurrent.md) | Dispatch multiple independent agents in parallel |
-
 ## Rules
 
 ### harness-independence

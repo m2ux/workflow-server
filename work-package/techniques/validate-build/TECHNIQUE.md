@@ -15,14 +15,6 @@ metadata:
 
 Triage validation failures and aggregate cross-check results for the validate activity.
 
-## Operations
-
-| Operation | Purpose |
-|---|---|
-| [analyze-failure](./analyze-failure.md) | Identify the root cause of a single failed validation check |
-| [apply-fix](./apply-fix.md) | Apply the chosen fix strategy and prepare for re-validation |
-| [aggregate-results](./aggregate-results.md) | Combine per-check outcomes into a single validation_results envelope |
-
 ## Rules
 
 ### no-cargo-here

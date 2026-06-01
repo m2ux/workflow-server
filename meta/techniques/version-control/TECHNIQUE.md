@@ -15,17 +15,6 @@ metadata:
 
 Initialize planning folders and commit artifacts in the parent repository or a submodule — including the two-step submodule commit pattern that keeps parent pointers in sync with submodule HEADs.
 
-## Operations
-
-| Operation | Purpose |
-|---|---|
-| [detect-repo-type](./detect-repo-type.md) | Determine whether the working directory is a regular repo or a submodule monorepo |
-| [list-submodules](./list-submodules.md) | Read and parse `.gitmodules` to enumerate submodule paths |
-| [initialize-folder](./initialize-folder.md) | Create a planning folder under `.engineering/artifacts/planning/` |
-| [commit-regular-files](./commit-regular-files.md) | Stage, commit, and push files in a regular (non-submodule) directory of the parent repo |
-| [commit-submodule](./commit-submodule.md) | Two-step submodule commit: commit + push inside the submodule, then update the parent's pointer |
-| [identify-path-type](./identify-path-type.md) | Determine whether a path is a regular directory or a git submodule before committing |
-
 ## Rules
 
 ### no-destructive-ops
