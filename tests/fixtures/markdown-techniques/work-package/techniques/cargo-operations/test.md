@@ -8,6 +8,6 @@ Run the test suite.
 
 `'--workspace'` or `'-p <crate>'`
 
-## Procedure
+## Protocol
 
 1. `cargo test {scope}`

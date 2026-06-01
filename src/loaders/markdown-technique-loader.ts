@@ -436,16 +436,16 @@ function matchLabelledParagraph(body: string, label: string): string | undefined
 
 function parseInlineOperations(section: Section | undefined, sourcePath: string): IndexParse['inlineOperations'] {
   if (!section) return undefined;
-  // When SKILL.md's Operations section is purely a table of links to child files (the canonical shape),
+  // When the Operations section is purely a table of links to child files (the canonical shape),
   // its H3 subheadings are either absent or just grouping headers (e.g. "Discovery and session" labels
   // grouping a table of links). Only H3 subsections that themselves declare the canonical op shape
-  // (a `## Procedure` heading inside their body) materialise into inline operations. Everything else
+  // (a `## Protocol` heading inside their body) materialise into inline operations. Everything else
   // is treated as presentation and skipped — child files own the operations in those cases.
   const items = splitSections(section.body, 3);
   if (items.length === 0) return undefined;
   const result: Record<string, unknown> = {};
   for (const item of items) {
-    if (!/^##\s+(Protocol|Procedure)\b/m.test(item.body)) continue;
+    if (!/^##\s+Protocol\b/m.test(item.body)) continue;
     result[item.title] = parseOperationBody(item.body, `${sourcePath}#${item.title}`);
   }
   return Object.keys(result).length > 0 ? result : undefined;
@@ -543,9 +543,8 @@ function parseOperationBody(body: string, sourcePath: string, description: strin
     if (output.length > 0) op.output = output;
   }
 
-  // Operation step sequence: canonical heading is '## Protocol'; '## Procedure' is accepted
-  // transitionally until the content migration renames all op files.
-  const protocolSection = findSection(sections, 'Protocol') ?? findSection(sections, 'Procedure');
+  // Operation step sequence lives under '## Protocol'.
+  const protocolSection = findSection(sections, 'Protocol');
   if (!protocolSection) {
     throw new MarkdownTechniqueParseError(`Missing required '## Protocol' section at ${sourcePath}`);
   }
@@ -598,15 +597,14 @@ type LocatedTechnique =
   | { kind: 'flat'; index: string }
   | { kind: 'grouped'; folder: string; index: string };
 
-/** Index filenames recognised inside a grouped folder, in precedence order.
- *  `SKILL.md` is transitional — retained until the content migration completes the hard cutover. */
-const GROUPED_INDEX_NAMES = ['TECHNIQUE.md', 'SKILL.md'] as const;
+/** Index filename inside a grouped technique folder. */
+const GROUPED_INDEX_NAME = 'TECHNIQUE.md';
 
 /**
  * Locate a technique by id.
  * Resolution order:
  *   1. Standalone flat file: `<techniquesDir>/<techniqueId>.md`.
- *   2. Grouped folder: `<techniquesDir>/<techniqueId>/TECHNIQUE.md` (or transitional `SKILL.md`).
+ *   2. Grouped folder: `<techniquesDir>/<techniqueId>/TECHNIQUE.md`.
  * Returns null when neither exists.
  */
 async function locateTechnique(techniquesDir: string, techniqueId: string): Promise<LocatedTechnique | null> {
@@ -615,11 +613,8 @@ async function locateTechnique(techniquesDir: string, techniqueId: string): Prom
   const flat = join(techniquesDir, `${techniqueId}.md`);
   if (existsSync(flat)) return { kind: 'flat', index: flat };
 
-  const folder = join(techniquesDir, techniqueId);
-  for (const indexName of GROUPED_INDEX_NAMES) {
-    const index = join(folder, indexName);
-    if (existsSync(index)) return { kind: 'grouped', folder, index };
-  }
+  const index = join(techniquesDir, techniqueId, GROUPED_INDEX_NAME);
+  if (existsSync(index)) return { kind: 'grouped', folder: join(techniquesDir, techniqueId), index };
   return null;
 }
 
@@ -720,7 +715,7 @@ async function listOpChildFiles(folder: string): Promise<string[]> {
   try {
     const entries = await readdir(folder);
     return entries
-      .filter((f) => f.endsWith('.md') && f !== 'TECHNIQUE.md' && f !== 'SKILL.md' && f !== 'README.md')
+      .filter((f) => f.endsWith('.md') && f !== 'TECHNIQUE.md' && f !== 'README.md')
       .sort();
   } catch {
     return [];

@@ -1,22 +1,17 @@
 import { existsSync } from 'node:fs';
-import { readFile, readdir } from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
-import { decodeToonRaw, encodeToon } from '../utils/toon.js';
+import { encodeToon } from '../utils/toon.js';
 import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
-import { parseActivityFilename } from './filename-utils.js';
 import {
   tryLoadMarkdownTechnique,
   tryReadMarkdownTechniqueRaw,
   getWorkflowTechniquesDir,
 } from './markdown-technique-loader.js';
-
-/** Environment-driven safety fallback. When set to "true", the loader continues to read legacy TOON
- *  techniques as a fallback after the markdown reader misses. Removed in Phase C — defaults off. */
-const LEGACY_TOON_ENABLED = process.env['SKILL_LOADER_LEGACY_TOON'] === 'true';
 
 /* -------------------------------------------------------------------------- */
 /* TOON-projection delivery (B3)                                              */
@@ -57,115 +52,32 @@ export function projectTechniqueToToon(technique: Technique): string {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Legacy TOON loader (retained behind SKILL_LOADER_LEGACY_TOON until Phase C) */
-/* -------------------------------------------------------------------------- */
-
-/** Find a legacy TOON technique file by ID inside the workflow's legacy `techniques/` directory. */
-async function findLegacySkillFile(techniqueDir: string, techniqueId: string): Promise<string | null> {
-  if (!existsSync(techniqueDir)) return null;
-  try {
-    const files = await readdir(techniqueDir);
-    const matchingFile = files.find((f) => {
-      const parsed = parseActivityFilename(f);
-      return parsed && parsed.id === techniqueId;
-    });
-    return matchingFile ? join(techniqueDir, matchingFile) : null;
-  } catch (error) {
-    logWarn('Failed to read legacy technique directory', { techniqueDir, error: error instanceof Error ? error.message : String(error) });
-    return null;
-  }
-}
-
-function getWorkflowLegacySkillsDir(workflowDir: string, workflowId: string): string {
-  return join(workflowDir, workflowId, 'techniques');
-}
-
-async function tryLoadLegacyToonSkill(techniqueDir: string, techniqueId: string): Promise<Technique | null> {
-  const filePath = await findLegacySkillFile(techniqueDir, techniqueId);
-  if (!filePath) return null;
-
-  try {
-    const content = await readFile(filePath, 'utf-8');
-    const decoded = decodeToonRaw(content);
-    const result = safeValidateTechnique(decoded);
-    if (!result.success) {
-      logWarn('Legacy TOON technique validation failed', {
-        techniqueId,
-        path: filePath,
-        errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
-      });
-      return null;
-    }
-    return result.data;
-  } catch (error) {
-    logWarn('Failed to decode legacy TOON technique', { techniqueId, path: filePath, error: error instanceof Error ? error.message : String(error) });
-    return null;
-  }
-}
-
-async function tryReadLegacyToonSkillRaw(techniqueDir: string, techniqueId: string): Promise<string | null> {
-  const filePath = await findLegacySkillFile(techniqueDir, techniqueId);
-  if (!filePath) return null;
-
-  try {
-    const content = await readFile(filePath, 'utf-8');
-    const decoded = decodeToonRaw(content);
-    const result = safeValidateTechnique(decoded);
-    if (!result.success) {
-      logWarn('Legacy TOON technique validation failed', {
-        techniqueId,
-        path: filePath,
-        errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
-      });
-      return null;
-    }
-    return content;
-  } catch (error) {
-    logWarn('Failed to decode legacy TOON technique', { techniqueId, path: filePath, error: error instanceof Error ? error.message : String(error) });
-    return null;
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* Markdown-first leaf loaders (B2)                                            */
+/* Markdown leaf loaders                                                       */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Try to load a technique from a workflow's techniques directory, falling back to the legacy TOON
- * `techniques/` directory when SKILL_LOADER_LEGACY_TOON is enabled.
- *
- * The signature accepts `workflowDir + workflowId` rather than a pre-joined `techniqueDir` so a single
- * call site here owns the path layout (techniques vs techniques) — callers in readTechnique / readTechniqueRaw
- * don't need to know about either.
+ * Try to load a technique from a workflow's techniques directory.
+ * Accepts `workflowDir + workflowId` so this call site owns the `techniques/` path layout —
+ * callers in readTechnique / readTechniqueRaw don't need to know it.
  */
 async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<Technique | null> {
   try {
-    const md = await tryLoadMarkdownTechnique(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId);
-    if (md) return md;
+    return await tryLoadMarkdownTechnique(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId);
   } catch (error) {
     // Markdown parser surfaced a loud-failure on a malformed technique. Log and treat as "not found"
     // so the caller's Result-typed contract isn't broken by a synchronous throw deep in the parser.
     logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
-  if (LEGACY_TOON_ENABLED) {
-    return tryLoadLegacyToonSkill(getWorkflowLegacySkillsDir(workflowDir, workflowId), techniqueId);
-  }
-  return null;
 }
 
 async function tryReadSkillRawInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<string | null> {
   try {
-    const md = await tryReadMarkdownTechniqueRaw(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId, projectTechniqueToToon);
-    if (md !== null) return md;
+    return await tryReadMarkdownTechniqueRaw(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId, projectTechniqueToToon);
   } catch (error) {
     logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
-  if (LEGACY_TOON_ENABLED) {
-    return tryReadLegacyToonSkillRaw(getWorkflowLegacySkillsDir(workflowDir, workflowId), techniqueId);
-  }
-  return null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -179,9 +91,8 @@ async function listMarkdownTechniqueIds(techniquesDir: string): Promise<string[]
     const result = new Set<string>();
     for (const entry of entries) {
       if (entry.isDirectory()) {
-        // Grouped technique: folder with a TECHNIQUE.md index (SKILL.md transitional).
-        const folder = join(techniquesDir, entry.name);
-        if (existsSync(join(folder, 'TECHNIQUE.md')) || existsSync(join(folder, 'SKILL.md'))) {
+        // Grouped technique: folder with a TECHNIQUE.md index.
+        if (existsSync(join(techniquesDir, entry.name, 'TECHNIQUE.md'))) {
           result.add(entry.name);
         }
       } else if (entry.isFile() && entry.name.endsWith('.md')) {
@@ -197,28 +108,11 @@ async function listMarkdownTechniqueIds(techniquesDir: string): Promise<string[]
   }
 }
 
-async function listLegacyToonSkillIds(techniqueDir: string): Promise<string[]> {
-  if (!existsSync(techniqueDir)) return [];
-  try {
-    const files = await readdir(techniqueDir);
-    return files
-      .map((f) => parseActivityFilename(f)?.id)
-      .filter((id): id is string => id !== undefined)
-      .sort();
-  } catch (error) {
-    logWarn('Failed to list legacy TOON techniques', { techniqueDir, error: error instanceof Error ? error.message : String(error) });
-    return [];
-  }
-}
-
 /**
- * List technique IDs available in a workflow's techniques (or legacy techniques) directory.
- * Markdown techniques are the primary source; legacy TOON ids are appended when the safety flag is on.
+ * List technique IDs available in a workflow's techniques directory.
  */
 export async function listWorkflowTechniqueIds(workflowDir: string, workflowId: string): Promise<string[]> {
-  const md = await listMarkdownTechniqueIds(getWorkflowTechniquesDir(workflowDir, workflowId));
-  if (md.length > 0 || !LEGACY_TOON_ENABLED) return md;
-  return listLegacyToonSkillIds(getWorkflowLegacySkillsDir(workflowDir, workflowId));
+  return listMarkdownTechniqueIds(getWorkflowTechniquesDir(workflowDir, workflowId));
 }
 
 /* -------------------------------------------------------------------------- */

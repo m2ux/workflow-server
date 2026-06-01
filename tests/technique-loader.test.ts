@@ -206,7 +206,7 @@ describe('technique-loader', () => {
       await rm(tempDir, { recursive: true, force: true });
     });
 
-    it('returns TechniqueNotFoundError when no SKILL.md exists', async () => {
+    it('returns TechniqueNotFoundError when no technique file exists', async () => {
       const result = await readTechnique('does-not-exist', tempDir);
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -214,18 +214,18 @@ describe('technique-loader', () => {
       }
     });
 
-    it('rejects a SKILL.md with no frontmatter as validation failure', async () => {
-      await mkdir(join(tempDir, 'meta', 'techniques', 'malformed'), { recursive: true });
-      await writeFile(join(tempDir, 'meta', 'techniques', 'malformed', 'SKILL.md'), 'just a plain string', 'utf-8');
+    it('rejects a flat technique file with no frontmatter as validation failure', async () => {
+      await mkdir(join(tempDir, 'meta', 'techniques'), { recursive: true });
+      await writeFile(join(tempDir, 'meta', 'techniques', 'malformed.md'), 'just a plain string', 'utf-8');
       const result = await readTechnique('malformed', tempDir);
       expect(result.success).toBe(false);
     });
 
-    it('loads a minimal SKILL.md with frontmatter + Capability', async () => {
-      const dir = join(tempDir, 'meta', 'techniques', 'minimal');
+    it('loads a minimal flat technique with frontmatter + Capability', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
       await mkdir(dir, { recursive: true });
       await writeFile(
-        join(dir, 'SKILL.md'),
+        join(dir, 'minimal.md'),
         ['---', 'name: minimal', 'description: minimal description', 'metadata:', '  version: 1.0.0', '---', '', '# Minimal', '', '## Capability', '', 'A minimal capability statement.', ''].join('\n'),
         'utf-8',
       );

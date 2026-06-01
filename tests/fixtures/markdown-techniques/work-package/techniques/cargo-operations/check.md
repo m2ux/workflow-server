@@ -14,7 +14,7 @@ Type-check without producing binaries.
 
 Pass/fail summary
 
-## Procedure
+## Protocol
 
 1. `cargo check {scope}`
 
