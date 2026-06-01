@@ -53,7 +53,7 @@ workflow-server/
 │   ├── schema/               # Zod runtime schemas for validation
 │   │   ├── workflow.schema.ts
 │   │   ├── activity.schema.ts
-│   │   ├── skill.schema.ts
+│   │   ├── technique.schema.ts
 │   │   ├── condition.schema.ts
 │   │   ├── state.schema.ts
 │   │   ├── resource.schema.ts
@@ -62,7 +62,8 @@ workflow-server/
 │   ├── loaders/              # File loaders (filesystem → validated objects)
 │   │   ├── workflow-loader.ts
 │   │   ├── activity-loader.ts
-│   │   ├── skill-loader.ts   # Includes resolveOperations (skill::element ref resolver)
+│   │   ├── technique-loader.ts          # Includes resolveOperations (technique::element ref resolver)
+│   │   ├── markdown-technique-loader.ts # Parses markdown technique files into Technique objects
 │   │   ├── resource-loader.ts
 │   │   ├── core-ops.ts       # CORE_ORCHESTRATOR_OPS / CORE_WORKER_OPS (op refs bundled into get_workflow / get_activity)
 │   │   ├── schema-loader.ts
@@ -71,7 +72,7 @@ workflow-server/
 │   │   └── index.ts          # Barrel exports
 │   ├── tools/                # MCP tool implementations
 │   │   ├── workflow-tools.ts # discover, list_workflows, get_workflow, next_activity, get_activity, yield_checkpoint, resume_checkpoint, present_checkpoint, respond_checkpoint, get_trace, health_check, get_workflow_status
-│   │   ├── resource-tools.ts # start_session, get_skills, get_skill, get_resource, resolve_operations
+│   │   ├── resource-tools.ts # start_session, dispatch_child, get_technique, get_resource, resolve_operations
 │   │   └── index.ts          # Tool registration entry point
 │   ├── resources/            # MCP resource registration
 │   │   └── schema-resources.ts # workflow-server://schemas
@@ -84,7 +85,7 @@ workflow-server/
 ├── schemas/                  # JSON Schema files for IDE tooling
 │   ├── workflow.schema.json
 │   ├── activity.schema.json
-│   ├── skill.schema.json
+│   ├── technique.schema.json
 │   ├── condition.schema.json
 │   └── state.schema.json
 ├── scripts/                  # Build scripts
@@ -95,12 +96,12 @@ workflow-server/
 │   ├── meta/                 # Bootstrap workflow
 │   │   ├── workflow.toon
 │   │   ├── activities/
-│   │   └── skills/
+│   │   └── techniques/
 │   └── {workflow-id}/        # Each workflow folder
 │       ├── workflow.toon
 │       ├── activities/
 │       ├── resources/
-│       └── skills/
+│       └── techniques/
 └── docs/                     # Documentation
 ```
 
@@ -139,7 +140,7 @@ npm test -- --run --coverage
 | `schema-loader.test.ts` | JSON Schema loading and serving |
 | `mcp-server.test.ts` | All MCP tools, trace lifecycle, activity manifest, operation bundles |
 | `activity-loader.test.ts` | Activity loading and dynamic index |
-| `skill-loader.test.ts` | Skill loading, dynamic index, `resolveOperations` |
+| `technique-loader.test.ts` | Technique loading, dynamic index, `resolveOperations` |
 | `session.test.ts` | Token create/decode/advance, sid, aid, parent context |
 | `trace.test.ts` | TraceStore, trace token encode/decode |
 | `validation.test.ts` | Transition, manifest, condition validation |
@@ -196,41 +197,45 @@ git push origin workflows
 
 ## Adding New Resources
 
-Resources are stored in a `resources/` subdirectory within each workflow:
+Resources are stored in a `resources/` subdirectory within each workflow as slug-named markdown files:
 
-1. Create `{NN}-{name}.toon` or `{NN}-{name}.md` in `workflows/{workflow-id}/resources/`
-2. Use sequential index (00, 01, 02, etc.)
+1. Create `{slug}.md` in `workflows/{workflow-id}/resources/`
+2. The filename slug is the resource id (the frontmatter `name:` should match)
 3. Resources are auto-discovered - no manifest update needed
-4. Access via: `get_resource` with the resource index (referenced from skill `resources` arrays)
+4. Access via: `get_resource` with the resource slug (referenced from per-operation `resources` arrays); cross-workflow refs use `{workflow}/{slug}`
 5. Commit to the `workflows` branch
 
 Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
 
-## Adding New Skills
+## Adding New Techniques
 
-Skills can be **universal** (apply to all workflows) or **workflow-specific**. All skills use NN- indexed filenames.
+Techniques are markdown files. They can be **universal** (apply to all workflows, stored in `meta`) or **workflow-specific**. A technique is one of three shapes:
 
-### Universal Skills
+- **Standalone technique** — a flat `techniques/{slug}.md`.
+- **Grouped technique** — a `techniques/{group}/TECHNIQUE.md` base contract plus one `{op}.md` file per operation, addressed `{group}::{op}`.
+- **Per-workflow root base contract** — `techniques/TECHNIQUE.md`, inherited recursively by every technique in that workflow.
 
-Universal skills are stored in the `meta` workflow's `skills/` subdirectory:
+### Universal Techniques
 
-1. Create `{NN}-{skill-id}.toon` in `workflows/meta/skills/`
-2. Use sequential index (00, 01, 02, etc.)
-3. Access via: `get_skills` (workflow-level primary skill) or `get_skill { session_index, step_id: "{step-id}" }` (step-level)
+Universal techniques are stored in the `meta` workflow's `techniques/` subdirectory:
+
+1. Create `techniques/{slug}.md` (standalone) or `techniques/{group}/TECHNIQUE.md` + `techniques/{group}/{op}.md` (grouped) under `workflows/meta/`
+2. Access via: `get_technique` (workflow- or activity-primary technique, optionally a step's technique via `step_id`)
+3. Commit to the `workflows` branch
+
+### Workflow-Specific Techniques
+
+Workflow-specific techniques are stored in each workflow's `techniques/` subdirectory:
+
+1. Create `techniques/{slug}.md` or `techniques/{group}/...` in `workflows/{workflow-id}/`
+2. Techniques are auto-discovered - no manifest update needed
+3. Access via: `get_technique { session_index, step_id: "{step-id}" }` (when referenced by a step)
 4. Commit to the `workflows` branch
 
-### Workflow-Specific Skills
+### Technique Resolution
 
-Workflow-specific skills are stored in each workflow's `skills/` subdirectory:
+When loading a technique, the workflow is determined from the session's `session.json` (resolved via `session_index`):
+1. First checks the session's workflow: `{workflow}/techniques/{slug}.md` (or `{group}/TECHNIQUE.md`)
+2. Falls back to `meta/techniques/...` (universal)
 
-1. Create `{NN}-{skill-id}.toon` in `workflows/{workflow-id}/skills/`
-2. Use sequential index (00, 01, 02, etc.)
-3. Skills are auto-discovered - no manifest update needed
-4. Access via: `get_skill { session_index, step_id: "{step-id}" }` (when referenced by a step)
-5. Commit to the `workflows` branch
-
-### Skill Resolution
-
-When loading a skill, the workflow is determined from the session's `session.json` (resolved via `session_index`):
-1. First checks `{workflow}/skills/{NN}-{skill-id}.toon`
-2. Falls back to `meta/skills/{NN}-{skill-id}.toon` (universal)
+An operation reference `{group}::{op}` resolves to `{group}/{op}.md` — unprefixed resolves under `meta`, while `{workflow}/{group}::{op}` resolves within the named workflow.

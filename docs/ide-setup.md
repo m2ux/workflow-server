@@ -26,7 +26,7 @@ Because `discover` is the entry point, the procedure stays in sync with the serv
 
 ## Schema Awareness (Optional)
 
-The server also exposes the JSON Schemas for `workflow`, `activity`, `skill`, `condition`, and `state` via an MCP resource at `workflow-server://schemas`. Agents that want to author or validate workflow definitions locally can fetch this resource on startup. See [schemas/README.md](../schemas/README.md) for the schema reference.
+The server also exposes the JSON Schemas for `workflow`, `activity`, `technique`, `condition`, and `state` via an MCP resource at `workflow-server://schemas`. Agents that want to author or validate workflow definitions locally can fetch this resource on startup. See [schemas/README.md](../schemas/README.md) for the schema reference.
 
 ## Verifying the Connection
 

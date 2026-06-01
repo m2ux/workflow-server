@@ -20,24 +20,24 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 ### How It Works
 
 1. **Discover** — The agent calls `discover` to learn available workflows and the bootstrap procedure
-2. **Start session** — `start_session` returns a session token; `get_workflow` returns the workflow structure, the workflow's primary skill (when present), a bundled `operations` block (workflow-declared ops + core orchestrator ops), and the `initialActivity` ID
+2. **Start session** — `start_session` returns a session token; `get_workflow` returns the workflow structure, the workflow's primary technique (when present), a bundled `operations` block (workflow-declared ops + core orchestrator ops), and the `initialActivity` ID
 3. **Navigate** — `next_activity` advances the session to the next activity; `get_activity` returns the activity's full definition (steps, checkpoints, transitions) along with a bundled worker `operations` block (activity-declared ops + core worker ops). `get_resource` lazy-loads reference material referenced by operations
 4. **Execute** — The agent works through activities, with checkpoints for user decisions and transitions governing the flow between activities
 
 ### Architecture
 
 ```
-User Goal → Workflow → Activities → Skills → Tools
+User Goal → Workflow → Activities → Techniques → Tools
 ```
 
 - **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
 - **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
-- **Skills** are containers for named operations, rules, and errors; activities and workflows compose behavior by referencing `skill-id::operation-name`
+- **Techniques** are markdown definitions of a capability, with optional rules, errors, and operations; activities and workflows compose behavior by referencing `technique-id` or `group::operation-name`
 - **Tools** are the MCP operations the agent invokes, all correlated by the session token
 
 ### MCP Tools at a Glance
 
-The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
+The server registers 16 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
 
 | Concern | Tools |
 |---------|-------|
@@ -45,7 +45,7 @@ The server registers 17 MCP tools across five concerns. See [docs/api-reference.
 | Session | `start_session`, `get_workflow_status` |
 | Workflow / activity navigation | `get_workflow`, `next_activity`, `get_activity` |
 | Checkpoint flow | `yield_checkpoint`, `resume_checkpoint`, `present_checkpoint`, `respond_checkpoint` |
-| Skills, operations, resources | `get_skills`, `get_skill`, `get_resource`, `resolve_operations` |
+| Techniques, operations, resources | `get_technique`, `get_resource`, `resolve_operations` |
 | Trace | `get_trace` |
 
 ---

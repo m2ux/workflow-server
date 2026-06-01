@@ -22,10 +22,10 @@ Orchestra defines the grammar and semantic constraints for the four workflow pri
 |-----------|-------------|----------------|
 | **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator `operations:` refs | Legacy — Orchestra variant TBD |
 | **Activity** | Execution unit: steps, decisions, loops composed into flows; declares worker `operations:` refs | **Defined in this specification** |
-| **Skill** | Container for named `operations`, `rules`, and `errors` | Legacy — Orchestra variant TBD |
+| **Technique** | Markdown definition of a capability, with named `operations`, `rules`, and `errors` | Legacy — Orchestra variant TBD |
 | **Resource** | Reference material: documentation, templates, guides | Legacy — Orchestra variant TBD |
 
-This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, skill, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Orchestra variants are designed.
+This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, technique, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Orchestra variants are designed.
 
 ### Design Goal
 
@@ -47,13 +47,13 @@ The activity is the primary execution unit. It defines steps, decisions, and loo
 
 #### 3.1.1 Steps
 
-A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps invoke a named operation — either by listing the activity-level `operations:` array (a flat list of `skill-id::operation-name` refs) and writing a plain step description, or by inlining the invocation in the step's description (`skill-id::operation-name(arg: {var}, ...)`). The legacy `skill:` reference (just the skill ID) is still accepted and is resolved through `get_skill(step_id)`, but new activities should prefer operation references.
+A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps invoke a named operation — either by listing the activity-level `operations:` array (a flat list of `group::operation-name` refs) and writing a plain step description, or by inlining the invocation in the step's description (`group::operation-name(arg: {var}, ...)`). The legacy `skill:` reference (just the technique ID) is still accepted and is resolved through `get_technique(step_id)`, but new activities should prefer operation references.
 
-**Input/output resolution**: An operation declares its inputs and outputs by name in the skill definition. At runtime, the agent resolves each input by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). Inline invocations may supply arguments explicitly (`skill-id::operation-name(arg: {var}, ...)`), overriding scope resolution for those names. Outputs are injected into the current scope after execution.
+**Input/output resolution**: An operation declares its inputs and outputs by name in the technique definition. At runtime, the agent resolves each input by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). Inline invocations may supply arguments explicitly (`group::operation-name(arg: {var}, ...)`), overriding scope resolution for those names. Outputs are injected into the current scope after execution.
 
-**Rules live in skills**: Steps do not carry rules. If a step requires behavioural constraints, that signals an operation or rule is needed — both live in the skill definition and are pulled into the activity's bundled response when the activity references at least one element of the source skill (auto-included rules). This keeps steps as pure references and rules co-located with the procedural knowledge that enforces them.
+**Rules live in techniques**: Steps do not carry rules. If a step requires behavioural constraints, that signals an operation or rule is needed — both live in the technique definition and are pulled into the activity's bundled response when the activity references at least one element of the source technique (auto-included rules). This keeps steps as pure references and rules co-located with the procedural knowledge that enforces them.
 
-**Deterministic vs. dynamic questions**: Fixed-option questions with known branches are handled by interactive decisions (see Section 2.2). Dynamic questions — where the content, phrasing, or follow-up logic depends on runtime context — are steps backed by a skill. The skill declares its own context inputs (current domain, prior responses, etc.) and produces structured outputs (question text, user response, adaptation signals). These resolve from the environment automatically.
+**Deterministic vs. dynamic questions**: Fixed-option questions with known branches are handled by interactive decisions (see Section 2.2). Dynamic questions — where the content, phrasing, or follow-up logic depends on runtime context — are steps backed by a technique. The technique declares its own context inputs (current domain, prior responses, etc.) and produces structured outputs (question text, user response, adaptation signals). These resolve from the environment automatically.
 
 **EBNF**:
 
@@ -73,7 +73,7 @@ fact StepUniqueness {
   all disj s1, s2: Step | s1.id != s2.id
 }
 
--- Skill inputs resolve from the scoping chain at the point of invocation
+-- Technique inputs resolve from the scoping chain at the point of invocation
 -- Resolution: local flow outputs > loop variable > activity inputs > workflow vars
 fact InputProvenance {
   all a: Activity, s: a.steps | some s.skill implies
@@ -89,15 +89,15 @@ steps:
   collect-assumptions:
     description: "Identify assumptions made when interpreting user responses."
     skill: assumptions-review
-    # skill declares inputs: [raw-responses] — resolved from scope
-    # skill declares outputs: [categorized-assumptions] — injected into scope
+    # technique declares inputs: [raw-responses] — resolved from scope
+    # technique declares outputs: [categorized-assumptions] — injected into scope
 
   post-assumptions-to-jira:
     description: "Prepare assumptions as Jira comment, get approval, post to ticket."
     skill: jira-comment
-    # skill declares inputs: [categorized-assumptions, issue-number]
+    # technique declares inputs: [categorized-assumptions, issue-number]
     # categorized-assumptions resolves from local flow (collect-assumptions output)
-    # issue-number resolves from activity 01 — skill qualifies as 01.create-issue.issue-number
+    # issue-number resolves from activity 01 — technique qualifies as 01.create-issue.issue-number
 ```
 
 #### 3.1.2 Decisions
@@ -479,7 +479,7 @@ sig Step {
 
 sig SkillRef {
   id: one Id
-  -- inputs/outputs are declared in the skill definition (separate file)
+  -- inputs/outputs are declared in the technique definition (separate file)
   -- resolved from the scoping chain at the invocation point
 }
 
@@ -540,7 +540,7 @@ sig Break extends FlowItem {}
 #### 3.3.2 Structural Constraints
 
 ```alloy
--- PROV-001: Every required skill input resolves from the scoping chain
+-- PROV-001: Every required technique input resolves from the scoping chain
 -- at the step's invocation point
 fact InputProvenance {
   all a: Activity, s: a.steps | some s.skill implies
@@ -549,7 +549,7 @@ fact InputProvenance {
         i.name in resolve[scopeAt[a, s]]
 }
 
--- PROV-002: Cross-activity references in skill input declarations use
+-- PROV-002: Cross-activity references in technique input declarations use
 -- qualified NN.step-id.name form
 fact QualifiedCrossRef {
   all d: SkillDef, i: elems[d.declaredInputs] |
@@ -701,33 +701,33 @@ inputs: raw-responses, 01.create-issue.issue-number, 01.check-issue.issue-platfo
 # ============================================================
 
 steps:
-  # Trivial step — no skill binding
+  # Trivial step — no technique binding
   stakeholder-discussion:                                         # [SYM-001]
     description: "Prompt user to initiate discussion with key stakeholders."
 
-  # Dynamic question — skill-backed, context-dependent
+  # Dynamic question — technique-backed, context-dependent
   ask-question:                                                   # [PROV-001]
     description: "Present ONE question from current domain. Wait for response."
     skill: domain-question
-    # skill inputs [current-domain, elicitation-log] resolve from loop var + scope
-    # skill outputs [question-text, user-response] injected into scope
+    # technique inputs [current-domain, elicitation-log] resolve from loop var + scope
+    # technique outputs [question-text, user-response] injected into scope
 
   record-response:
     description: "Capture answer or mark as skipped. Adapt follow-up."
     skill: response-capture
-    # skill inputs [user-response, current-domain] resolve from local flow + loop var
-    # skill outputs [elicitation-log] injected, accumulates across iterations
+    # technique inputs [user-response, current-domain] resolve from local flow + loop var
+    # technique outputs [elicitation-log] injected, accumulates across iterations
 
   collect-assumptions:
     description: "Identify assumptions made when interpreting user responses."
     skill: assumptions-review
-    # skill inputs [raw-responses] resolve from activity inputs
+    # technique inputs [raw-responses] resolve from activity inputs
 
   post-assumptions-to-jira:
     description: "Prepare assumptions as Jira comment, get approval, post to ticket."
     skill: jira-comment
-    # skill inputs [categorized-assumptions] from local flow
-    # skill inputs [issue-number] qualified as 01.create-issue.issue-number in skill def
+    # technique inputs [categorized-assumptions] from local flow
+    # technique inputs [issue-number] qualified as 01.create-issue.issue-number in technique def
 
   post-assumptions-to-github:
     description: "Post assumptions as GitHub issue comment."
@@ -843,8 +843,8 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 
 | Rule | Severity | Description | Alloy Ref |
 |------|----------|-------------|-----------|
-| `PROV-001` | ERROR | Every required skill input (declared in the skill definition) must resolve from the scoping chain at the step's invocation point | `InputProvenance` |
-| `PROV-002` | ERROR | Cross-activity references in skill input declarations must use qualified `NN.step-id.name` form | `QualifiedCrossRef` |
+| `PROV-001` | ERROR | Every required technique input (declared in the technique definition) must resolve from the scoping chain at the step's invocation point | `InputProvenance` |
+| `PROV-002` | ERROR | Cross-activity references in technique input declarations must use qualified `NN.step-id.name` form | `QualifiedCrossRef` |
 
 ### Symbol Uniqueness
 
@@ -896,15 +896,15 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 
 ---
 
-## 4. Skill
+## 4. Technique
 
-TBD — Orchestra grammar and constraints for the skill primitive are not yet defined. See `schemas/skill.schema.json` for the current legacy schema. In that schema, a skill is a container for three element kinds:
+TBD — Orchestra grammar and constraints for the technique primitive are not yet defined. See `schemas/technique.schema.json` for the current schema. A technique is authored as markdown — a standalone `techniques/<slug>.md`, a grouped `techniques/<group>/TECHNIQUE.md` plus one `<op>.md` per operation, or a per-workflow root base contract `techniques/TECHNIQUE.md` — and exposes three element kinds:
 
-* **`operations`** — named procedures with `inputs`, `output`, `procedure`, `tools`, optional per-operation `resources`, `errors`, `rules`, and `prose`. Referenced from activities/workflows as `skill-id::operation-name`. The discrete `harness` field has been dropped — implementation hints fold into `procedure`, `prose`, and `tools` instead.
-* **`rules`** — named behavioural invariants (string or grouped string array). Referenced as `skill-id::rule-name` and auto-included when any element from the same skill is resolved.
-* **`errors`** — named error definitions with `cause`, `recovery`, `detection`, and `resolution`. Referenced as `skill-id::error-name`.
+* **`operations`** — individual `<op>.md` files within a grouped technique, each with `inputs`, `output`, a `## Protocol` step list, `tools`, optional per-operation `resources`, `errors`, `rules`, and `prose`. Referenced from activities/workflows as `group::operation-name`.
+* **`rules`** — named behavioural invariants (string or grouped string array). Referenced as `group::rule-name` and auto-included when any element from the same technique is resolved.
+* **`errors`** — named error definitions with `cause`, `recovery`, `detection`, and `resolution`. Referenced as `group::error-name`.
 
-See [Skill, Operation & Resource Resolution Architecture](resource_resolution_model.md) for resolution semantics.
+See [Technique, Operation & Resource Resolution Architecture](resource_resolution_model.md) for resolution semantics.
 
 ---
 
