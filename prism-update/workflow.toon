@@ -8,7 +8,7 @@ tags[3]:
   - maintenance
   - sync
 
-skills:
+techniques:
 artifactLocations:
   planning:
     path: "{planning_folder_path}"

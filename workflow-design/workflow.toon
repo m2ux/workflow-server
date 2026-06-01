@@ -27,7 +27,7 @@ rules[14]:
   - "Corrections must persist — record corrections and verify compliance at every subsequent checkpoint"
   - "Non-destructive updates — compare new content against existing content and flag any material being removed"
   - "Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/) following the style established by the prism workflow."
-skills:
+techniques:
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
