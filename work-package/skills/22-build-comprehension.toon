@@ -19,9 +19,9 @@ protocol:
     - Match existing artifacts by project name, module name, or domain terms from problem_statement
     - Summarize relevant artifacts with coverage scope and last-updated date
   check-gitnexus[3]:
-    - "Check if the target codebase has a GitNexus index: call list_repos or read gitnexus://repo/{name}/context"
-    - "If indexed: use attached resource meta/03 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill."
-    - "If not indexed or stale: fall back to grep/read/glob for all exploration steps."
+    - "Honor the workflow-resolved gitnexus_indexed variable set by start-work-package — it already determined whether the reference codebase is indexed. Do not re-probe with an independent list_repos check unless gitnexus_indexed is unset; if you must, call list_repos or read gitnexus://repo/{name}/context."
+    - "If indexed: use attached resource 27 (gitnexus-reference) for the full tool reference with exploration workflows, checklists, and examples. GitNexus tools are REQUIRED for structural analysis throughout this skill — query() and context() are the default, not grep."
+    - "Only when gitnexus_indexed is false (codebase genuinely not indexed or stale): fall back to grep/read/glob for all exploration steps."
   architecture-survey[7]:
     - "Top-down survey: start with project root structure, build system, entry points"
     - "When GitNexus is available: use query() to discover execution flows and functional areas, read cluster resources for module groupings, and context() for dependency mapping — this yields structural understanding faster than grep and is the required primary approach"
@@ -74,7 +74,7 @@ output[1]:
 
 rules:
   gitnexus-usage[2]:
-    - "gitnexus-first: gitnexus query() and context() are the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for pure text patterns and unindexed codebases — not a default. This is a requirement, not a preference. Use attached resource meta/03 (gitnexus-reference) for checklists, pattern tables, and worked examples."
+    - "gitnexus-first: gitnexus query() and context() are the primary tools for understanding execution flows, call relationships, module dependencies, and architecture. Grep is reserved for pure text patterns and unindexed codebases — not a default. This is a requirement, not a preference. Use attached resource 27 (gitnexus-reference) for checklists, pattern tables, and worked examples."
     - "gitnexus-skill: For GitNexus-based analysis, the gitnexus-operations skill (meta workflow) provides the full task-oriented protocol — explore, impact-analysis, debug, refactor. Load it via get_skill skill_id: 'gitnexus-operations', workflow_id: 'meta' when performing codebase exploration or impact analysis with a GitNexus index."
   persistent-artifacts: "Comprehension artifacts persist across work packages — they are cumulative knowledge, not disposable planning documents"
   augment-not-replace: "When existing artifacts cover the same area, augment them with new sections and deeper detail rather than replacing"
@@ -85,7 +85,7 @@ rules:
   question-driven-exploration: "The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch."
 resources[2]:
   - "25"
-  - "meta/03"
+  - "27"
 
 errors:
   no_existing_artifacts:
