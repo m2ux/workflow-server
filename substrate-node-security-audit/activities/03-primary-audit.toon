@@ -7,7 +7,7 @@ recognition[3]:
   - run primary audit
   - dispatch audit agents
   - execute audit template
-skills:
+techniques:
   supporting[1]:
     - execute-audit
 required: true
@@ -47,17 +47,17 @@ steps[13]:
   - id: dispatch-all-agents
     name: "Dispatch All Primary Agents"
     required: true
-    skill: dispatch-sub-agents
+    technique: dispatch-sub-agents
     description: "Dispatch all primary agents concurrently in a single batch per the target profile: A1, A2, A3, A4, A5, A6, A7, B, D1, D2. Every assigned agent MUST be dispatched."
   - id: verify-checklist-prompt-coverage
     name: "Verify Checklist-to-Prompt Coverage"
     required: true
-    skill: verify-sub-agent-output
+    technique: verify-sub-agent-output
     description: "Verify every §3 checklist item (§3.1–§3.14) appears in at least one agent's prompt. Dispatch follow-up for uncovered items."
   - id: verify-dispatch-completeness
     name: "Verify Dispatch Completeness (HARD STOP)"
     required: true
-    skill: verify-sub-agent-output
+    technique: verify-sub-agent-output
     description: "Compare agents_dispatched against agents_assigned. Dispatch missing agents before proceeding. HARD STOP."
   - id: collect-all
     name: Collect All Results
@@ -70,7 +70,7 @@ steps[13]:
   - id: dispatch-verification-agent
     name: "Dispatch Verification Sub-Agent (V)"
     required: true
-    skill: dispatch-sub-agents
+    technique: dispatch-sub-agents
     description: "Dispatch the verification sub-agent following the sub-output-verification activity. The agent receives all persisted agent output files, the target profile, file inventory, vulnerability domain map, and dispatch manifest. It mechanically validates output completeness and produces a gap report with re-dispatch recommendations and table-derived findings. The orchestrator MUST NOT self-certify verification — V sets verification_complete=true."
   - id: act-on-gap-report
     name: "Act on Verification Gap Report"
@@ -83,16 +83,16 @@ steps[13]:
   - id: dispatch-merge-agent
     name: "Dispatch Merge Sub-Agent (M)"
     required: true
-    skill: dispatch-sub-agents
+    technique: dispatch-sub-agents
     description: "Dispatch the merge sub-agent following the sub-structured-merge activity. M receives: all persisted agent output JSON files, the severity rubric (resource 02), the calibration benchmark table (from resource 06), the §3.10 DEFAULT-FAIL rule, and the observation elevation rules. M performs the structured merge, deduplication, severity scoring, reconciliation, and observation elevation in a fresh context window. The orchestrator MUST NOT perform the merge inline — this is the primary cause of finding regression across runs."
   - id: validate-reconciliation
     name: "Validate Finding Count Reconciliation (HARD STOP)"
     required: true
-    skill: verify-sub-agent-output
+    technique: verify-sub-agent-output
     description: "Read M's reconciliation table. Verify Unaccounted == 0 for every agent. If Unaccounted > 0, re-dispatch M with the specific agent output files that have unaccounted findings. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
   - id: verify-checklist-completeness
     name: "Verify §3 Checklist Completeness"
-    skill: verify-sub-agent-output
+    technique: verify-sub-agent-output
     description: "Produce a checklist coverage matrix from M's output. Dispatch follow-up for any unevaluated items."
   - id: preserve-verification-report
     name: "Preserve Verification Report for Adversarial Phase"

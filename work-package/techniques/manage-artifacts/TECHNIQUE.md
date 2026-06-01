@@ -19,7 +19,7 @@ Manage planning artifacts — create folders, enforce activity-based artifact pr
 
 ### activity-prefix
 
-Artifact filenames are prefixed with the producing activity's `artifactPrefix` (server-computed from the activity filename). Skills declare bare names (e.g., `code-review.md`); the prefix is applied at write time (e.g., `09-code-review.md`). This groups artifacts by activity and sorts them in workflow order.
+Artifact filenames are prefixed with the producing activity's `artifactPrefix` (server-computed from the activity filename). Techniques declare bare names (e.g., `code-review.md`); the prefix is applied at write time (e.g., `09-code-review.md`). This groups artifacts by activity and sorts them in workflow order.
 
 ### committed-to-parent
 

@@ -43,7 +43,7 @@ Update mode is activated by recognition patterns: "update workflow", "modify wor
 List all files in the target workflow directory with their purpose:
 - `workflow.toon` — root definition
 - `activities/*.toon` — activity definitions
-- `skills/*.toon` — skill definitions
+- `techniques/*.toon` — technique definitions
 - `resources/*.md` — resource files
 - `README.md` — documentation
 
@@ -64,7 +64,7 @@ If activities are being added, removed, or reordered:
 
 ### Step 4: Check Reference Integrity
 
-- Verify all `skills.primary` and `skills.supporting` references resolve to existing skill files
+- Verify all `techniques.primary` and `techniques.supporting` references resolve to existing technique files
 - Verify all resource index references resolve to existing resource files
 - Verify all `artifactLocations` keys used by activities exist in the workflow
 
@@ -78,8 +78,8 @@ If activities are being added, removed, or reordered:
 
 | Change Type | Potential Side-Effects |
 |---|---|
-| Add activity | May need new transitions from upstream activities. May need new skills or resources. |
-| Remove activity | Breaks incoming transitions. May orphan skills only used by this activity. |
+| Add activity | May need new transitions from upstream activities. May need new techniques or resources. |
+| Remove activity | Breaks incoming transitions. May orphan techniques only used by this activity. |
 | Rename activity ID | Breaks all transition references, initialActivity, modeOverrides keys. |
 | Add checkpoint | May need new variables for checkpoint effects. |
 | Modify checkpoint options | May invalidate downstream conditions that depend on set variables. |

@@ -1,9 +1,9 @@
 id: requirements-refinement
 version: 1.1.1
 name: Requirements Refinement
-description: "Guided elicitation of the workflow specification across purpose, activities, checkpoints, artifacts, variables, skills, and rules."
+description: "Guided elicitation of the workflow specification across purpose, activities, checkpoints, artifacts, variables, techniques, and rules."
 problem: The user's free-form description needs to be refined into a complete workflow specification
-skills:
+techniques:
   supporting[1]:
     - workflow-design
 required: true
@@ -41,9 +41,9 @@ steps[8]:
       variable: is_update_mode
       operator: "!="
       value: true
-  - id: elicit-skills
-    name: Elicit Skills
-    description: "Skill inventory: capability description, primary/supporting activity assignments, required tools / protocol phases / rules per skill."
+  - id: elicit-techniques
+    name: Elicit Techniques
+    description: "Technique inventory: capability description, primary/supporting activity assignments, required tools / protocol phases / rules per technique."
     condition:
       type: simple
       variable: is_update_mode
@@ -129,22 +129,22 @@ checkpoints[8]:
       - id: refine
         label: "Needs changes"
         description: "Variable set requires additions, removals, or modifications."
-  - id: skills-confirmed
-    name: Skills Confirmation
+  - id: techniques-confirmed
+    name: Techniques Confirmation
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
-    message: "Here are the skills needed by this workflow. Is this complete?"
+    message: "Here are the techniques needed by this workflow. Is this complete?"
     blocking: true
     options[2]:
       - id: confirmed
-        label: "Yes, skills are complete"
-        description: Skill list is accurate
+        label: "Yes, techniques are complete"
+        description: Technique list is accurate
       - id: refine
         label: "Needs changes"
-        description: "Skill set requires additions, removals, or modifications."
+        description: "Technique set requires additions, removals, or modifications."
   - id: rules-confirmed
     name: Rules Confirmation
     message: "Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?"
@@ -178,5 +178,5 @@ context_to_preserve[8]:
   - checkpoint_design - Checkpoints per activity with options and effects
   - artifact_design - Artifacts per activity with names and locations
   - variable_design - Workflow variables with types and defaults
-  - skill_design - Skills with capabilities and activity assignments
+  - technique_design - Techniques with capabilities and activity assignments
   - rule_design - Workflow rules with enforcement classification

@@ -1,6 +1,6 @@
 ---
 name: execute-cicd-audit
-description: Top-level orchestration skill for the CI/CD pipeline security audit workflow. Defines the phase sequence, agent dispatch model, and coordination responsibilities. The orchestrator loads this skill and uses it to drive activity transitions, dispatch scanner sub-agents, and enforce phase gates. The orchestrator coordinates only — all detection and analysis is delegated to sub-agents.
+description: Top-level orchestration technique for the CI/CD pipeline security audit workflow. Defines the phase sequence, agent dispatch model, and coordination responsibilities. The orchestrator loads this technique and uses it to drive activity transitions, dispatch scanner sub-agents, and enforce phase gates. The orchestrator coordinates only — all detection and analysis is delegated to sub-agents.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -9,7 +9,7 @@ recognition[3]:
   - prepare for implementation
 required: true
 estimatedTime: 20-45m
-skills:
+techniques:
   supporting[7]:
     - classify-problem
     - create-plan
@@ -43,7 +43,7 @@ steps[11]:
         message: "GPG agent is not reachable. Ensure it is running at your preferred scope before re-running."
   - id: apply-design
     name: Apply design framework
-    description: Use design framework skill to structure the approach
+    description: Use design framework technique to structure the approach
   - id: create-plan
     name: Create work package plan
     description: "Create work package plan document"
@@ -64,7 +64,7 @@ steps[11]:
     description: "Add planning-phase assumptions to the assumptions log"
   - id: reconcile-assumptions
     name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
   - id: create-todos
     name: Create TODO list from plan
     description: "Break down plan into actionable tasks and add to assumptions log for review"
@@ -84,7 +84,7 @@ loops[1]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions skill protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration

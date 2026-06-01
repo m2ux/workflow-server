@@ -1,6 +1,6 @@
 ---
 name: setup-audit-target
-description: A reusable skill for initializing an audit or review session against a specific codebase revision. Defines the procedure for extracting target parameters from user input or workflow variables, applying defaults and validation, checking out the codebase at the target revision, running dependency scans with fallback handling, and generating file inventories.
+description: A reusable technique for initializing an audit or review session against a specific codebase revision. Defines the procedure for extracting target parameters from user input or workflow variables, applying defaults and validation, checking out the codebase at the target revision, running dependency scans with fallback handling, and generating file inventories.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -28,7 +28,7 @@ The MCP resource `workflow-server://schemas` returns all five schemas as a singl
 
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
-| "Do X, then do Y, then do Z" | **Steps** | `steps[].id`, `.name`, `.description`, `.skill`, `.actions` |
+| "Do X, then do Y, then do Z" | **Steps** | `steps[].id`, `.name`, `.description`, `.technique`, `.actions` |
 | "Ask the user whether to proceed" | **Checkpoint** | `checkpoints[].id`, `.name`, `.message`, `.options[]` with `.effect` |
 | "If X then do A, otherwise do B" (automated) | **Decision** | `decisions[].branches[]` with `.condition` and `.transitionTo` |
 | "Repeat for each item" / "do until done" | **Loop** | `loops[].type` (forEach/while/doWhile), `.variable`, `.over`, `.condition` |
@@ -51,7 +51,7 @@ The MCP resource `workflow-server://schemas` returns all five schemas as a singl
 | "Artifacts go in the planning folder" | **Artifact location** | `artifactLocations.{key}.path`, `.description` |
 | "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |
 
-## Skill-Level Constructs (skill.schema.json)
+## Technique-Level Constructs (technique.schema.json)
 
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|

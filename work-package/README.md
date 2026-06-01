@@ -374,8 +374,8 @@ The following 7 rules are declared at the workflow level and apply to all activi
 ### v3.13.0 (2026-05-21)
 
 - Merge of the gitnexus-utilisation work (v3.12.0) with the DCO-policy-compatibility work that landed on the `workflows` branch in parallel. Combined feature set:
-  - All gitnexus-discipline additions retained (`gitnexus_indexed` variable, preflight step on post-impl-review, gitnexus tool references across 15+ analysis skills, `audit-*` phases on workflow-design's protocol).
-  - All DCO additions retained (`context-scope-declaration` step in research, dco-provenance skill in skills index, Co-authored-by / harness-aware commit trailers, provenance log on PR description).
+  - All gitnexus-discipline additions retained (`gitnexus_indexed` variable, preflight step on post-impl-review, gitnexus tool references across 15+ analysis techniques, `audit-*` phases on workflow-design's protocol).
+  - All DCO additions retained (`context-scope-declaration` step in research, dco-provenance technique in techniques index, Co-authored-by / harness-aware commit trailers, provenance log on PR description).
 - Drop the orphan `commit-signatures` protocol block from review-strategy (already removed on `workflows` via the DCO merge cleanup; no further role).
 
 ### v3.12.0 (2026-05-21)
@@ -388,8 +388,8 @@ The following 7 rules are declared at the workflow level and apply to all activi
 
 ### v3.11.0 (2026-05-21)
 
-- Strengthen gitnexus utilisation across 15 analysis-heavy skills and the post-impl-review activity. Adds `pre-edit-impact-check` and `post-edit-verification` protocol phases on `implement-task` (with a `gitnexus-discipline` MUST rule), folds graph-aware analysis bullets into the protocols of `review-code`, `review-test-suite`, `review-diff`, `review-strategy`, `analyze-implementation`, `summarize-architecture`, `reconcile-assumptions`, and 7 medium-leverage skills.
+- Strengthen gitnexus utilisation across 15 analysis-heavy techniques and the post-impl-review activity. Adds `pre-edit-impact-check` and `post-edit-verification` protocol phases on `implement-task` (with a `gitnexus-discipline` MUST rule), folds graph-aware analysis bullets into the protocols of `review-code`, `review-test-suite`, `review-diff`, `review-strategy`, `analyze-implementation`, `summarize-architecture`, `reconcile-assumptions`, and 7 medium-leverage techniques.
 - Add a `gitnexus-detect-changes-preflight` step at the start of `post-impl-review` to bound subsequent reviews by the changed-symbol set.
-- resource gitnexus-reference (`gitnexus-reference.md`) gains a "Work-package Integration Patterns" section documenting the eight integration patterns the skills above reference.
+- resource gitnexus-reference (`gitnexus-reference.md`) gains a "Work-package Integration Patterns" section documenting the eight integration patterns the techniques above reference.
 
 Surfaced by a self-review pass against workflow-design's design principles and anti-pattern catalog.

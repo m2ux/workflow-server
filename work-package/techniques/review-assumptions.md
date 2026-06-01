@@ -49,7 +49,7 @@ Which activity is generating assumptions
 
 ### 4. Present For Review
 
-- This skill supports two presentation modes depending on the consuming activity's structure. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time via the activity's forEach loop and per-assumption checkpoint. The activity's steps, loops, and checkpoints determine which mode applies — follow the activity structure.
+- This technique supports two presentation modes depending on the consuming activity's structure. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time via the activity's forEach loop and per-assumption checkpoint. The activity's steps, loops, and checkpoints determine which mode applies — follow the activity structure.
 - In both modes, each assumption should contain the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context. Order by decision impact: assumptions whose resolution most affects the implementation approach come first.
 - Include a clickable markdown link to assumptions-log.md for full details and reconciliation history
 - Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping. The agent has already resolved everything it can.

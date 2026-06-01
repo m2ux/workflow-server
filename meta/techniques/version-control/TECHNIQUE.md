@@ -39,7 +39,7 @@ Follow Conventional Commits: `type(optional-scope): description`. Common types: 
 
 ### dco-sign-off
 
-All commits made via this skill use `git commit -s`. The `Signed-off-by` trailer is required by DCO and harmless when not. Adding it by default avoids the failure-then-retry pattern when target repos enforce DCO via a pre-commit hook.
+All commits made via this technique use `git commit -s`. The `Signed-off-by` trailer is required by DCO and harmless when not. Adding it by default avoids the failure-then-retry pattern when target repos enforce DCO via a pre-commit hook.
 
 ### respect-submodule-agents
 

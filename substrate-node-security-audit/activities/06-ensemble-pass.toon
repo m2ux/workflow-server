@@ -7,7 +7,7 @@ recognition[3]:
   - run ensemble pass
   - second model audit
   - multi-model merge
-skills:
+techniques:
   supporting[1]:
     - execute-audit
 required: false
@@ -35,8 +35,8 @@ steps[5]:
     description: "Run the audit template against priority-1/2 components. The second pass follows the same §3 checklist and §5 execution requirements."
   - id: union-merge
     name: Union-Merge Findings
-    skill: merge-findings
-    skill_args:
+    technique: merge-findings
+    technique_args:
       merge_strategy: union-merge
     description: "Merge second-pass findings with the primary report using union strategy."
   - id: update-report

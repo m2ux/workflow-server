@@ -1,6 +1,6 @@
 ---
 name: dispatch-sub-agents
-description: Defines the procedure for dispatching sub-agents during a multi-agent orchestrated workflow. The orchestrator provides the agent roster (IDs, activities, context); this skill defines how to compose the sub-agent prompt, include bootstrap instructions, attach context variables and cross-scope supplementary files, and dispatch all agents concurrently. See harness-compat skill for spawn-agent and spawn-concurrent operations.
+description: Defines the procedure for dispatching sub-agents during a multi-agent orchestrated workflow. The orchestrator provides the agent roster (IDs, activities, context); this technique defines how to compose the sub-agent prompt, include bootstrap instructions, attach context variables and cross-scope supplementary files, and dispatch all agents concurrently. See harness-compat technique for spawn-agent and spawn-concurrent operations.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -23,7 +23,7 @@ List of agents to dispatch, each with: agent_id, activity_id, context variables 
 
 ### 1. Compose Prompts
 
-- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat skill) containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the output schema resource.'
+- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat technique) containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the output schema resource.'
 
 ### 2. Dispatch All
 

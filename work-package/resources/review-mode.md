@@ -49,7 +49,7 @@ modes[1]:
       - implement
     defaults:
       needs_elicitation: false
-    resource: resources/review-mode/SKILL.md
+    resource: resources/review-mode.md
 ```
 
 ### Activity-Level Behavior
@@ -186,8 +186,8 @@ Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}`
 
 | Agent Role | Toon File |
 |------------|-----------|
-| Code Review Agent | `skills/00-review-code.toon` |
-| Test Suite Review Agent | `skills/01-review-test-suite.toon` |
+| Code Review Agent | `techniques/review-code.md` |
+| Test Suite Review Agent | `techniques/review-test-suite.md` |
 | Validation Agent | `activities/10-validate.toon` |
 | Strategic Review Agent | `activities/11-strategic-review.toon` |
 
@@ -209,7 +209,7 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 ## PR Review Summary
 
 **PR**: #XXX - Title  
-**Reviewers**: [Code Review Agent]({workflow_base}/skills/00-review-code.toon) · [Test Suite Review Agent]({workflow_base}/skills/01-review-test-suite.toon) · [Validation Agent]({workflow_base}/activities/10-validate.toon) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.toon)  
+**Reviewers**: [Code Review Agent]({workflow_base}/techniques/review-code.md) · [Test Suite Review Agent]({workflow_base}/techniques/review-test-suite.md) · [Validation Agent]({workflow_base}/activities/10-validate.toon) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.toon)  
 **Reports**: `Code Review` · `Test Suite Review`  
 **Date**: YYYY-MM-DD
 

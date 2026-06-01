@@ -108,7 +108,7 @@ The template is the **checklist** — this workflow is the **execution framework
 - Phase sequencing and automatic transitions (no checkpoints)
 - Concurrent agent dispatch and result collection with verification agent
 - Adversarial verification with field-enumeration as a separate phase
-- Severity calibration via the skill rubric with cross-check
+- Severity calibration via the technique rubric with cross-check
 - Ensemble and gap analysis orchestration
 - Mechanical verification of historically-missed patterns (Group B via [static-analysis-patterns](./static-analysis-patterns.md))
 

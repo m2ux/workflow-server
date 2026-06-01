@@ -10,7 +10,7 @@ metadata:
 
 Guidance for auditing existing workflows against the 14 design principles. Review mode produces a compliance report without modifying the target workflow, then offers to switch to update mode for remediation.
 
-This guide carries the **supplementary** material for review mode: activation/flow framing, the compliance report template, and the transition-to-update-mode contract. The **audit procedure itself** is canonical in the `workflow-design` skill protocol — the worker loads the skill via `get_skill` and reads the procedure phases inline. This file does not restate the procedure.
+This guide carries the **supplementary** material for review mode: activation/flow framing, the compliance report template, and the transition-to-update-mode contract. The **audit procedure itself** is canonical in the `workflow-design` technique protocol — the worker loads the technique via `get_technique` and reads the procedure phases inline. This file does not restate the procedure.
 
 ---
 
@@ -24,16 +24,16 @@ Review mode follows a shortened activity sequence:
 
 1. **Intake** — Load the target workflow, enumerate its contents, then the `review-scope-confirmed` checkpoint (blocking) confirms `target_workflow_id` before continuing.
 2. **Context and Literacy** — Load schemas and construct inventory as the audit baseline.
-3. **Quality Review** — Run the audit passes from the `workflow-design` skill protocol against the existing workflow. This is the core of review mode.
+3. **Quality Review** — Run the audit passes from the `workflow-design` technique protocol against the existing workflow. This is the core of review mode.
 4. **Validate and Commit** — Save the compliance report as an artifact.
 
 Activities 3–7 (requirements-refinement, pattern-analysis, impact-analysis, scope-and-structure, content-drafting) are skipped — there is no design or drafting in review mode.
 
 ## Audit Procedure
 
-Canonical location: the `workflow-design` skill protocol, phases prefixed with `audit-` (e.g. `audit-expressiveness`, `audit-conformance`, `audit-rule-to-structure`, `audit-anti-pattern-scan`, `audit-schema-validation`, `audit-tool-skill-doc-consistency`, `audit-principle-compliance`, `audit-rule-hygiene`), plus `compile-compliance-report`.
+Canonical location: the `workflow-design` technique protocol, phases prefixed with `audit-` (e.g. `audit-expressiveness`, `audit-conformance`, `audit-rule-to-structure`, `audit-anti-pattern-scan`, `audit-schema-validation`, `audit-tool-technique-doc-consistency`, `audit-principle-compliance`, `audit-rule-hygiene`), plus `compile-compliance-report`.
 
-Each phase's bullets are the executable procedure. The `quality-review` and `post-update-review` activities reference these phases from their step descriptions; the worker loads the skill and executes the phase. This file deliberately does not duplicate the bullets — there is one canonical source.
+Each phase's bullets are the executable procedure. The `quality-review` and `post-update-review` activities reference these phases from their step descriptions; the worker loads the technique and executes the phase. This file deliberately does not duplicate the bullets — there is one canonical source.
 
 References cited by the audit phases:
 
@@ -83,7 +83,7 @@ The compliance report follows this structure:
 ## Schema Validation Results
 (per-file pass/fail)
 
-## Tool-Skill-Doc Consistency Findings
+## Tool-Technique-Doc Consistency Findings
 (per-check pass/fail with specific mismatches)
 
 ## Recommended Fixes

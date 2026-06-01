@@ -1,6 +1,6 @@
 ---
 name: toon-authoring
-description: Supporting skill for authoring valid TOON files.
+description: Supporting technique for authoring valid TOON files.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -35,7 +35,7 @@ Which schema applies to this file — one of: workflow (schemas/workflow.schema.
 
 - Identify which schema fields will be used by consulting the JSON schema definition (schemas/{type}.schema.json)
 - Map each piece of content to the appropriate field and determine the correct TOON syntax
-- Cross-check required vs optional properties — id, version, name are required for activities; id, version, capability are required for skills
+- Cross-check required vs optional properties — id, version, name are required for activities; id, version, capability are required for techniques
 
 ### 3. Draft Content
 
@@ -45,7 +45,7 @@ Which schema applies to this file — one of: workflow (schemas/workflow.schema.
 
 ### 4. Validate
 
-- Validate the file against its JSON schema (workflow.schema.json, activity.schema.json, or skill.schema.json)
+- Validate the file against its JSON schema (workflow.schema.json, activity.schema.json, or technique.schema.json)
 - Use npx tsx scripts/validate-workflow-toon.ts for full workflow directory validation
 - Fix any validation errors and re-check
 

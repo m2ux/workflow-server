@@ -381,7 +381,7 @@ When generating a test suite review report, include a reference back to this gui
 **Work Package:** [Name]  
 **Issue:** #[number] - [Title]  
 **Date:** YYYY-MM-DD  
-**Author:** [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/test-suite-review/SKILL.md) Agent
+**Author:** [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/test-suite-review.md) Agent
 
 ---
 

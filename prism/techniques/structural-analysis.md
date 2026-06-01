@@ -33,7 +33,7 @@ The code to analyze. Can be a file path (agent reads it), a diff, or inline code
 
 ### 1. Load Lens
 
-- Use attached [l12](../resources/l12.md) (l12-structural) from the prism workflow: get_skill ([l12](../resources/l12.md) attached in _resources)
+- Use attached [l12](../resources/l12.md) (l12-structural) from the prism workflow: get_technique ([l12](../resources/l12.md) attached in _resources)
 - The resource contains the full L12 lens prompt — a sequence of analytical operations the agent must execute step by step
 
 ### 2. Read Target

@@ -3,7 +3,7 @@ version: 1.0.0
 name: Generate Final Report
 description: "Generate the final REPORT.md from prior-pass analysis artifacts."
 problem: "Analysis artifacts (structural-analysis.md, adversarial-analysis.md, synthesis.md, portfolio-*.md, behavioral-synthesis.md) contain methodology-specific language (conservation laws, meta-laws, analysis scorecards, dispute resolutions) that is valuable for analytical rigour but obscures the definitive results for readers who need actionable findings."
-skills:
+techniques:
   supporting[1]:
     - generate-report
 steps[5]:

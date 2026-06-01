@@ -2,7 +2,7 @@ id: behavioral-synthesis-pass
 version: 1.0.0
 name: Behavioral Synthesis Pass
 description: "Run the behavioral synthesis lens against each behavioral unit's artifacts."
-skills:
+techniques:
   supporting[1]:
     - behavioral-pipeline
 artifacts[1]:

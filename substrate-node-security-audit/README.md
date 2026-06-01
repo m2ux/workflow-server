@@ -16,9 +16,9 @@ This workflow guides the complete lifecycle of a security audit:
 
 **Design principles:**
 - Fully automated sequential flow with phase gates
-- **Goal → Activity → Skill → Tools** ontology with progressive disclosure
+- **Goal → Activity → Technique → Tools** ontology with progressive disclosure
 - Workflow-directed sub-agents that bootstrap the workflow-server, load assigned activities, and follow steps sequentially with verifiable outputs
-- Composable skill architecture — 18 single-responsibility skills across orchestrator, analysis, and sub-agent tiers
+- Composable technique architecture — 18 single-responsibility techniques across orchestrator, analysis, and sub-agent tiers
 - Single-batch concurrent dispatch of all primary agents (A1-A7, B, D1, D2)
 - Dedicated verification sub-agent (V) validates output completeness in a fresh context window before finding merge
 - Dedicated merge sub-agent (M) performs structured merge, deduplication, severity scoring, and reconciliation in a fresh context window to prevent finding regression from orchestrator context saturation
@@ -144,7 +144,7 @@ After agent collection, a dedicated verification sub-agent (V) runs all verifica
 
 ### Sub-Agent Activity Flows
 
-Each sub-agent bootstraps the workflow-server, loads its assigned activity and the `execute-sub-agent` skill, then follows steps sequentially with verifiable outputs.
+Each sub-agent bootstraps the workflow-server, loads its assigned activity and the `execute-sub-agent` technique, then follows steps sequentially with verifiable outputs.
 
 #### `sub-crate-review` (Group A — one per crate)
 
@@ -170,7 +170,7 @@ graph LR
     SA5 --> SA6[Format output]
 ```
 
-Uses the `search-pattern-catalog` supporting skill for catalog-based pattern execution. Mechanical checks include preallocation mismatch, mock data source toggle, and SmallRng security-context triage.
+Uses the `search-pattern-catalog` supporting technique for catalog-based pattern execution. Mechanical checks include preallocation mismatch, mock data source toggle, and SmallRng security-context triage.
 
 #### `sub-toolkit-review` (Group D)
 
@@ -191,7 +191,7 @@ Produces three structured tables: function enumeration, function × checklist ma
 
 Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder.
 
-**Skills:** `execute-audit`, `setup-audit-target`
+**Techniques:** `execute-audit`, `setup-audit-target`
 
 **Steps:** confirm-target → confirm-commit → record-reference → checkout-submodule → run-cargo-audit → create-file-inventory → create-planning-folder → load-template
 
@@ -203,7 +203,7 @@ Confirm target submodule and commit, checkout codebase, run dependency scanning,
 
 Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. Assign crates to sub-agent groups with cross-crate supplement mappings.
 
-**Skill:** `execute-audit`
+**Technique:** `execute-audit`
 
 **Steps:** identify-crates -> map-architecture -> identify-trust-boundaries -> identify-consensus-paths -> identify-config-structs -> identify-pallet-hooks -> map-data-flows -> check-send-sync -> build-function-registry -> dispatch-architectural-analysis -> map-vulnerability-domains -> assign-agent-groups -> route-reconnaissance-leads
 
@@ -215,7 +215,7 @@ Map the codebase architecture, identify all crates, trust boundaries, consensus 
 
 Dispatch all primary agents concurrently. After collecting results, dispatch a dedicated verification sub-agent (V) to mechanically validate output completeness. Act on the gap report before consolidating findings.
 
-**Skill:** `execute-audit`
+**Technique:** `execute-audit`
 
 **Steps:** dispatch-all-agents -> verify-checklist-prompt-coverage -> verify-dispatch-completeness -> collect-all -> verify-agent-output-files -> **dispatch-verification-agent** -> **act-on-gap-report** -> extract-table-derived-findings -> **dispatch-merge-agent** -> **validate-reconciliation** -> verify-checklist-completeness -> preserve-verification-report -> preserve-merge-output
 
@@ -225,7 +225,7 @@ Dispatch all primary agents concurrently. After collecting results, dispatch a d
 
 Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. PASS item selection is informed by the verification agent's gap report — areas flagged as potentially incomplete are automatically elevated to the adversarial queue. The agent's role is to refute, not confirm.
 
-**Skill:** `execute-audit`
+**Technique:** `execute-audit`
 
 **Steps:** **seed-from-verification-report** -> extract-pass-items -> decompose-claims -> field-enumeration -> verify-properties -> compile-results
 
@@ -235,7 +235,7 @@ Verify every High/Medium PASS item from audit scratchpads by decomposing each cl
 
 Consolidate all findings from primary audit and adversarial verification. Apply severity scoring with calibration cross-check. Produce the deliverable report.
 
-**Skills:** `execute-audit`, `score-severity`
+**Techniques:** `execute-audit`, `score-severity`
 
 **Steps:** integrate-adversarial-results → apply-severity → severity-crosscheck → coverage-gate → verify-elevation-completeness → write-report
 
@@ -283,13 +283,13 @@ These activities are dispatched by the orchestrator during reconnaissance or pri
 
 ---
 
-## Skills
+## Techniques
 
-Skills define tool orchestration, protocols, and composable capabilities.
+Techniques define tool orchestration, protocols, and composable capabilities.
 
-### Orchestrator Skills
+### Orchestrator Techniques
 
-| Skill | Capability | Used By |
+| Technique | Capability | Used By |
 |-------|------------|---------|
 | `execute-audit` | Orchestrator-level audit execution, agent dispatch coordination, consolidation | All orchestrator activities |
 | `score-severity` | Impact × Feasibility severity scoring with calibration examples | report-generation, ensemble-pass |
@@ -301,9 +301,9 @@ Skills define tool orchestration, protocols, and composable capabilities.
 | `write-gap-analysis` | Structure and format the gap analysis report | gap-analysis |
 | `map-vulnerability-domains` | Bind architectural analysis to §3 verification procedures, partitioned by crate | reconnaissance |
 
-### Analysis Skills
+### Analysis Techniques
 
-| Skill | Capability | Used By |
+| Technique | Capability | Used By |
 |-------|------------|---------|
 | `apply-checklist` | Iterate items against checklist entries, produce verdict matrix | primary-audit, sub-crate-review, sub-toolkit-review |
 | `build-function-registry` | Enumerate functions by type and priority | reconnaissance, sub-crate-review |
@@ -314,9 +314,9 @@ Skills define tool orchestration, protocols, and composable capabilities.
 | `setup-audit-target` | Validate target codebase, run dependency scanning, file inventory | scope-setup |
 | `search-pattern-catalog` | Execute catalog patterns against codebase scope, triage results | sub-static-analysis |
 
-### Sub-Agent Skills
+### Sub-Agent Techniques
 
-| Skill | Capability | Used By |
+| Technique | Capability | Used By |
 |-------|------------|---------|
 | `execute-sub-agent` | Bootstrap workflow-server, load assigned activity, follow steps, return structured output | All sub-agent activities |
 
@@ -324,13 +324,13 @@ Skills define tool orchestration, protocols, and composable capabilities.
 
 ## Resources
 
-Resources contain detailed reference content loaded on demand by skills.
+Resources contain detailed reference content loaded on demand by techniques.
 
 | Index | Resource | Content | Loaded By |
 |-------|----------|---------|-----------|
 | `00` | `start-here.md` | Quick start guide and workflow overview | Orchestrator bootstrap |
 | `01` | `audit-template-reference.md` | Audit prompt template summary | Orchestrator setup |
-| `02` | `severity-rubric.md` | Impact/Feasibility scales and severity mapping | `score-severity` skill |
+| `02` | `severity-rubric.md` | Impact/Feasibility scales and severity mapping | `score-severity` technique |
 | `03` | `toolkit-checklist.md` | 8-item toolkit minimum checklist | `execute-sub-agent` (toolkit review) |
 | `04` | `sub-agent-output-schema.md` | Structured output schema with per-group requirements | `execute-sub-agent` (all) |
 | `05` | `static-analysis-patterns.md` | Grep patterns, mechanical checks, storage lifecycle patterns | `search-pattern-catalog` |

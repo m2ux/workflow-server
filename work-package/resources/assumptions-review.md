@@ -172,11 +172,11 @@ This provides context for why an assumption was made and what alternatives were 
 
 ## Judgement Augmentation Review
 
-**Approach:** After the `reconcile-assumptions` skill has resolved all code-analyzable assumptions, present remaining open assumptions together as a structured interview-style list. Each entry provides the context needed for the user to make an informed decision.
+**Approach:** After the `reconcile-assumptions` technique has resolved all code-analyzable assumptions, present remaining open assumptions together as a structured interview-style list. Each entry provides the context needed for the user to make an informed decision.
 
 ### Prerequisites
 
-Before presenting assumptions for user review, the `reconcile-assumptions` skill must have run to convergence. This means:
+Before presenting assumptions for user review, the `reconcile-assumptions` technique must have run to convergence. This means:
 
 1. All code-analyzable assumptions have been resolved through targeted codebase analysis
 2. Only stakeholder-dependent assumptions remain open

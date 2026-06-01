@@ -9,7 +9,7 @@ recognition[3]:
   - review implementation
 required: true
 estimatedTime: 15-30m
-skills:
+techniques:
   supporting[2]:
     - manage-git
     - review-strategy

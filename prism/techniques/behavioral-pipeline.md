@@ -35,7 +35,7 @@ Directory to write the analysis artifact
 
 ### 1. Load Lens
 
-- Resources are attached to skill responses (loaded via get_skill or get_skills). Resource index lens-resource-index is available in the _resources field after loading the lens prompt
+- Resources are attached to technique responses (loaded via get_technique). Resource index lens-resource-index is available in the _resources field after loading the lens prompt
 - The lens prompt is the program — execute its operations in order
 
 ### 2. Read Target
@@ -108,7 +108,7 @@ All findings must cite specific code: file paths, function names, line ranges.
 
 ### lens_not_loaded
 
-**Cause:** resource not found in skill response for the given index
+**Cause:** resource not found in technique response for the given index
 
 **Recovery:** Report the error. Valid behavioral indices: 19-23.
 

@@ -9,7 +9,7 @@ recognition[3]:
   - implementation analysis
 required: false
 estimatedTime: 10-20m
-skills:
+techniques:
   supporting[4]:
     - analyze-implementation
     - manage-artifacts
@@ -61,7 +61,7 @@ steps[12]:
     description: "Add analysis-phase assumptions to the assumptions log"
   - id: reconcile-assumptions
     name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
   - id: present-resolved-assumptions
     name: Present resolved assumptions
     description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."
@@ -80,7 +80,7 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions skill protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration

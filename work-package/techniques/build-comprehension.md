@@ -38,7 +38,7 @@ Path to the target codebase directory
 ### 2. Check Gitnexus
 
 - Confirm the codebase is indexed and fresh per the [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md) index-freshness rule (read `gitnexus://repo/{name}/context`)
-- If indexed: structural analysis throughout this skill goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here. If not indexed or stale, fall back to grep/read/glob.
+- If indexed: structural analysis throughout this technique goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here. If not indexed or stale, fall back to grep/read/glob.
 - If not indexed or stale: fall back to grep/read/glob for all exploration steps.
 
 ### 3. Architecture Survey

@@ -3,7 +3,7 @@ version: 1.1.0
 name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
 problem: Need to understand context before detailed work package planning
-skills:
+techniques:
   supporting[1]:
     - analyze-initiative-context
 steps[3]:

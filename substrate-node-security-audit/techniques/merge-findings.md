@@ -1,6 +1,6 @@
 ---
 name: merge-findings
-description: "A reusable skill for consolidating findings from multiple agents or audit passes. Supports three merge strategies: structured-merge (concatenate and dedup), integration (add new items to existing table), and union-merge (combine two independent runs with consensus flagging). The flat table produced is the canonical finding inventory for reporting."
+description: "A reusable technique for consolidating findings from multiple agents or audit passes. Supports three merge strategies: structured-merge (concatenate and dedup), integration (add new items to existing table), and union-merge (combine two independent runs with consensus flagging). The flat table produced is the canonical finding inventory for reporting."
 metadata:
   ontology: workflow-canonical
   kind: technique

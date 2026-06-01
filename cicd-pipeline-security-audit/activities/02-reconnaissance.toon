@@ -7,7 +7,7 @@ recognition[3]:
   - classify workflows
   - reconnaissance
   - map triggers
-skills:
+techniques:
   supporting[1]:
     - execute-cicd-audit
 required: true
@@ -23,15 +23,15 @@ entryActions[1]{action,message}:
 steps[5]:
   - id: classify-triggers
     name: Classify Workflow Triggers
-    skill: inventory-workflows
+    technique: inventory-workflows
     description: "For each workflow file, extract and classify all trigger events. Flag pull_request_target, issue_comment, and pull_request_review_comment as high-priority for scanner agents."
   - id: map-permissions
     name: Map Permission Scopes
-    skill: inventory-workflows
+    technique: inventory-workflows
     description: "For each workflow, extract permissions blocks at workflow, job, and step levels. Flag workflows with write permissions or no explicit permissions (which default to broad access)."
   - id: identify-checkout-patterns
     name: Identify Checkout Patterns
-    skill: inventory-workflows
+    technique: inventory-workflows
     description: "For each workflow, identify actions/checkout usages and their ref parameters. Flag any checkout of PR head SHA, head.ref, or fork code."
   - id: build-reconnaissance-summary
     name: Build Reconnaissance Summary

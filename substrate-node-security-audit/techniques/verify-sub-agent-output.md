@@ -1,6 +1,6 @@
 ---
 name: verify-sub-agent-output
-description: A reusable verification skill for multi-agent workflows. After collecting sub-agent results, this skill defines how to check that each agent's output contains all required tables, covers all expected files, and meets structural completeness criteria. Missing outputs are flagged for targeted re-dispatch.
+description: A reusable verification technique for multi-agent workflows. After collecting sub-agent results, this technique defines how to check that each agent's output contains all required tables, covers all expected files, and meets structural completeness criteria. Missing outputs are flagged for targeted re-dispatch.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -29,7 +29,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### dispatch-manifest
 
-*(optional)* Dispatch manifest from the dispatch-sub-agents skill showing assigned vs dispatched agents
+*(optional)* Dispatch manifest from the dispatch-sub-agents technique showing assigned vs dispatched agents
 
 ### agent-assignments
 

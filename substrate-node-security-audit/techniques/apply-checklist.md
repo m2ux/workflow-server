@@ -1,6 +1,6 @@
 ---
 name: apply-checklist
-description: A reusable skill for systematic checklist application. The checklist content comes from a resource; the item set comes from a prior enumeration step. This skill defines the iteration protocol, verdict types (PASS/FAIL/NA), evidence requirements, and completeness verification. It prevents skimming by requiring an explicit entry for every item x checklist combination.
+description: A reusable technique for systematic checklist application. The checklist content comes from a resource; the item set comes from a prior enumeration step. This technique defines the iteration protocol, verdict types (PASS/FAIL/NA), evidence requirements, and completeness verification. It prevents skimming by requiring an explicit entry for every item x checklist combination.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -59,7 +59,7 @@ Source files to read for evidence gathering
 
 ### 5. Produce Verdict Matrix
 
-- Output the complete item x checklist verdict matrix in the format specified by the activity step that invoked this skill.
+- Output the complete item x checklist verdict matrix in the format specified by the activity step that invoked this technique.
 
 ## Outputs
 

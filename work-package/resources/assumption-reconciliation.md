@@ -69,7 +69,7 @@ Convergence does NOT mean all assumptions are resolved. It means the remaining o
 
 ## Handoff to Judgement Augmentation
 
-After reconciliation converges, the remaining open assumptions are presented to the user through the `review-assumptions` skill's judgement augmentation protocol. Reconciliation directly feeds this process:
+After reconciliation converges, the remaining open assumptions are presented to the user through the `review-assumptions` technique's judgement augmentation protocol. Reconciliation directly feeds this process:
 
 ### What reconciliation provides
 
@@ -82,7 +82,7 @@ After reconciliation converges, the remaining open assumptions are presented to 
 
 ### What reconciliation does NOT provide
 
-The `review-assumptions` skill is responsible for:
+The `review-assumptions` technique is responsible for:
 - Assembling per-assumption trade-off analysis from the raw evidence, covering relevant dimensions (implementation complexity, maintenance burden, consistency, side-effect risk, reversibility, requirements alignment, time/effort cost)
 - Ordering assumptions by decision impact for presentation
 - Presenting alternatives before the agent's position to reduce anchoring bias
@@ -93,7 +93,7 @@ The `review-assumptions` skill is responsible for:
 
 ### All-resolved case
 
-If reconciliation resolves every assumption (the open set is empty after convergence), the `review-assumptions` skill skips the judgement augmentation format and presents a summary confirming that all assumptions were verified through code analysis. No user input is needed.
+If reconciliation resolves every assumption (the open set is empty after convergence), the `review-assumptions` technique skips the judgement augmentation format and presents a summary confirming that all assumptions were verified through code analysis. No user input is needed.
 
 ## Integration with Comprehension Artifacts
 

@@ -1,6 +1,6 @@
 ---
 name: scan-storage-lifecycle
-description: A reusable skill for auditing storage lifecycle completeness in Substrate-based codebases. Finds all insert/push/append sites and all remove/take sites for each StorageMap, pairs them, flags unpaired inserts as finding leads, and checks capacity enforcement at insertion points. Optionally extends to cross-function invariant comparison (verifying that paired functions maintain the same storage invariants).
+description: A reusable technique for auditing storage lifecycle completeness in Substrate-based codebases. Finds all insert/push/append sites and all remove/take sites for each StorageMap, pairs them, flags unpaired inserts as finding leads, and checks capacity enforcement at insertion points. Optionally extends to cross-function invariant comparison (verifying that paired functions maintain the same storage invariants).
 metadata:
   ontology: workflow-canonical
   kind: technique

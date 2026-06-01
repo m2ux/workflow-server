@@ -1,9 +1,9 @@
 id: update-routing
 version: 1.0.0
 name: Update Routing
-description: "Update prism workflow skills to reflect resource changes."
+description: "Update prism workflow techniques to reflect resource changes."
 problem: Skill routing tables reference prism names and indices that may have changed
-skills:
+techniques:
   supporting[1]:
     - update-skill-routing
 
@@ -14,30 +14,30 @@ entryActions[1]:
 
 steps[5]:
   - id: update-plan-analysis
-    name: Update plan-analysis skill
+    name: Update plan-analysis technique
     description: "Add goal-mapping entries for new prisms. Fix renamed references. Update resource list and rules."
     required: true
   - id: update-portfolio-analysis
-    name: Update portfolio-analysis skill
+    name: Update portfolio-analysis technique
     description: "Expand lens catalog and selection guide. Fix renamed references. Update resource list."
     required: true
   - id: update-behavioral-pipeline
-    name: Update behavioral-pipeline skill
+    name: Update behavioral-pipeline technique
     description: "Fix any renamed references to behavioral lens names."
     required: true
   - id: update-orchestrate-prism
-    name: Update orchestrate-prism skill
+    name: Update orchestrate-prism technique
     description: "Update index mappings and fix renamed references."
     required: true
   - id: commit-routing
     name: Commit routing updates
-    description: "Stage and commit all modified skill files."
+    description: "Stage and commit all modified technique files."
     required: true
 
 artifacts[1]:
   - id: routing-commit
     name: Skill routing commit
-    description: "Commit with updated skill files"
+    description: "Commit with updated technique files"
     location: workflows
     action: create
 
@@ -50,4 +50,4 @@ estimatedTime: "10-20m"
 
 outcome[2]:
   - "All skill routing tables reflect current resource state"
-  - "No stale prism name references in skills"
+  - "No stale prism name references in techniques"

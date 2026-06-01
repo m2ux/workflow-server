@@ -3,7 +3,7 @@ version: 1.0.0
 name: Subsystem Analysis Pass
 description: "Decompose code into subsystems, analyze each, then synthesize cross-subsystem findings."
 problem: "Whole-file analysis with a single prism misses bugs that exist BETWEEN subsystems and structural properties that span class boundaries. Different code regions benefit from different analytical lenses."
-skills:
+techniques:
   supporting[1]:
     - subsystem-analysis
 artifacts[2]:

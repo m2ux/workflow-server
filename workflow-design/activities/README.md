@@ -56,13 +56,13 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
 
-**Steps:** 8 steps covering purpose, activities, activity model, checkpoints, artifacts, variables, skills, and rules.
+**Steps:** 8 steps covering purpose, activities, activity model, checkpoints, artifacts, variables, techniques, and rules.
 
-**Checkpoints:** 8 atomic checkpoints — one per design dimension: `purpose-confirmed`, `activities-confirmed`, `model-confirmed`, `checkpoints-confirmed`, `artifacts-confirmed`, `variables-confirmed`, `skills-confirmed`, `rules-confirmed`.
+**Checkpoints:** 8 atomic checkpoints — one per design dimension: `purpose-confirmed`, `activities-confirmed`, `model-confirmed`, `checkpoints-confirmed`, `artifacts-confirmed`, `variables-confirmed`, `techniques-confirmed`, `rules-confirmed`.
 
 **Transitions:** Default to [Pattern Analysis](#04-pattern-analysis).
 
-**Mode:** Skipped in review mode. In update mode, skips `elicit-activity-model`, `elicit-variables`, `elicit-skills`.
+**Mode:** Skipped in review mode. In update mode, skips `elicit-activity-model`, `elicit-variables`, `elicit-techniques`.
 
 ---
 

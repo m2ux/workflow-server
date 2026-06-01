@@ -3,7 +3,7 @@ version: 1.0.0
 name: Smart Analysis Pass
 description: "Adaptively compose the analysis pipeline based on input characteristics."
 problem: "Users must manually select the right pipeline mode. Smart mode removes this burden by composing the pipeline automatically based on what the input needs."
-skills:
+techniques:
   supporting[1]:
     - smart-analysis
 artifacts[3]:

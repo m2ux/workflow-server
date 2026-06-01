@@ -34,7 +34,7 @@ Problem statement from design philosophy
 
 - Fetch concept-rag://activities resource to load activity index
 - Match research goal to an available activity from the index
-- Follow the matched activity's skill workflow and tool sequence
+- Follow the matched activity's technique workflow and tool sequence
 - Identify key concepts, patterns, and specific guidance from results
 - Map findings to work package requirements
 

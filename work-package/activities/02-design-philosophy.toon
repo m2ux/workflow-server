@@ -24,7 +24,7 @@ artifacts[2]:
     name: assumptions-log.md
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
-skills:
+techniques:
   supporting[3]:
     - classify-problem
     - reconcile-assumptions
@@ -67,7 +67,7 @@ steps[9]:
     description: "Create the assumptions log with initial assumptions from this activity."
   - id: reconcile-assumptions
     name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
   - id: assess-ticket-completeness
     name: Assess Ticket Completeness
     description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
@@ -94,7 +94,7 @@ loops[1]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions skill protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration

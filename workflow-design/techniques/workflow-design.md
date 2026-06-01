@@ -1,6 +1,6 @@
 ---
 name: workflow-design
-description: Primary skill for the workflow-design workflow.
+description: Primary technique for the workflow-design workflow.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -33,7 +33,7 @@ Free-form description of the workflow the user wants to create or modify
 
 ### 2. Context Loading
 
-- Fetch workflow-server://schemas MCP resource to load all five JSON schema definitions (workflow, activity, skill, condition, state)
+- Fetch workflow-server://schemas MCP resource to load all five JSON schema definitions (workflow, activity, technique, condition, state)
 - Read schemas/README.md for the full schema ontology, entity relationships, field tables, examples, and validation guidance
 - Call list_workflows and get_workflow for 2+ reference workflows
 - Read existing TOON files to confirm format understanding
@@ -43,7 +43,7 @@ Free-form description of the workflow the user wants to create or modify
 ### 3. Elicitation
 
 - Elicit one design dimension at a time with a dedicated checkpoint per question
-- Capture purpose, activity list, activity model, checkpoints, artifacts, variables, skills, rules
+- Capture purpose, activity list, activity model, checkpoints, artifacts, variables, techniques, rules
 - Present accumulated design after each answer so the user can track progress
 - Each elicitation question is a separate checkpoint. Never combine multiple questions.
 
@@ -60,7 +60,7 @@ Free-form description of the workflow the user wants to create or modify
 
 ### 6. Content Drafting
 
-- Draft files in order — workflow.toon, activities, skills, resources, README
+- Draft files in order — workflow.toon, activities, techniques, resources, README
 - Present approach before each file and get confirmation
 - Use formal schema constructs for all structured information
 - Validate each TOON file against its schema immediately after drafting
@@ -69,7 +69,7 @@ Free-form description of the workflow the user wants to create or modify
 
 - Audit the workflow against each of the 14 design principles from [design-principles](../resources/design-principles.md) (when auditing an existing workflow in review mode, see [review-mode-guide](../resources/review-mode-guide.md))
 - For each principle, classify as compliant, partially compliant, or violating; record file, field, and line references
-- Cross-reference against workflow.schema.json, activity.schema.json, skill.schema.json, and condition.schema.json to verify field usage
+- Cross-reference against workflow.schema.json, activity.schema.json, technique.schema.json, and condition.schema.json to verify field usage
 
 ### 8. Audit Anti Pattern Scan
 
@@ -77,36 +77,36 @@ Free-form description of the workflow the user wants to create or modify
 
 ### 9. Audit Schema Validation
 
-- Run `npx tsx scripts/validate-workflow-toon.ts <workflow-path>` on every TOON file (workflow.toon, activity files, skill files)
+- Run `npx tsx scripts/validate-workflow-toon.ts <workflow-path>` on every TOON file (workflow.toon, activity files, technique files)
 - Record pass/fail per file with the validator's error message
 
-### 10. Audit Tool Skill Doc Consistency
+### 10. Audit Tool Technique Doc Consistency
 
-- Verify every tool name in skill tools/protocol sections exists as an actual tool
-- Verify return-value descriptions in skills and bootstrap resources match actual tool behaviour
+- Verify every tool name in technique tools/protocol sections exists as an actual tool
+- Verify return-value descriptions in techniques and bootstrap resources match actual tool behaviour
 - Verify bootstrap sequences provide a complete path from session start to first meaningful action — no gaps
-- Verify multiple skills describing the same operation use the same tool name (canonical name only)
-- Verify behavioural guidance is not duplicated across skills and tool descriptions
+- Verify multiple techniques describing the same operation use the same tool name (canonical name only)
+- Verify behavioural guidance is not duplicated across techniques and tool descriptions
 - Verify no tool's output is a strict subset of another's (redundant tool detection)
-- Verify docs (workflow READMEs, skill protocols) use current tool names and descriptions; cross-check against anti-patterns 30-35
+- Verify docs (workflow READMEs, technique protocols) use current tool names and descriptions; cross-check against anti-patterns 30-35
 
 ### 11. Audit Expressiveness
 
-- Walk every prose passage in workflow.toon, activity files, and skill files against the schema construct inventory in [schema-construct-inventory](../resources/schema-construct-inventory.md)
+- Walk every prose passage in workflow.toon, activity files, and technique files against the schema construct inventory in [schema-construct-inventory](../resources/schema-construct-inventory.md)
 - Flag every instance where prose substitutes for: steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, variables, modes, inputs, outputs, or protocol phases
 - For each flagged instance, rewrite the prose as the formal construct or move it to a field that fits
 
 ### 12. Audit Conformance
 
-- Compare against reference workflows for file naming (NN-name.toon), field ordering, version format (X.Y.Z), transition patterns, checkpoint structure, and skill structure
+- Compare against reference workflows for file naming (NN-name.toon), field ordering, version format (X.Y.Z), transition patterns, checkpoint structure, and technique structure
 - Flag every divergence; for each, decide whether the divergence is justified or should be brought into conformance
 
 ### 13. Audit Rule Hygiene
 
-- Protocol restatement (AP-24): does the rule verbatim copy a protocol phase in the same skill? If so, flag for removal
-- Apparent contradictions (AP-25): do sibling rules within the same skill conflict?
-- Cross-level duplication (AP-27): does the same rule appear at multiple levels (workflow / activity / skill)?
-- Worker-visibility carve-out for AP-27: workers receive get_activity and get_skill responses but never workflow.toon; behavioural rules workers must follow cannot be lifted to the workflow root. Per-skill duplication of worker-directed rules is correct, not a violation. Only flag cross-level duplication when the rule is orchestrator-only (variable management, transitions, commit policy, mode handling)
+- Protocol restatement (AP-24): does the rule verbatim copy a protocol phase in the same technique? If so, flag for removal
+- Apparent contradictions (AP-25): do sibling rules within the same technique conflict?
+- Cross-level duplication (AP-27): does the same rule appear at multiple levels (workflow / activity / technique)?
+- Worker-visibility carve-out for AP-27: workers receive get_activity and get_technique responses but never workflow.toon; behavioural rules workers must follow cannot be lifted to the workflow root. Per-technique duplication of worker-directed rules is correct, not a violation. Only flag cross-level duplication when the rule is orchestrator-only (variable management, transitions, commit policy, mode handling)
 - Flat prefix patterns (AP-26): do rule keys share a common prefix (foo-bar, foo-baz)? Flag for grouped array refactoring
 - Ambiguity (AP-25): could a rule be interpreted in contradictory ways without its group context?
 - Single-step rules (AP-29): does the rule apply to only one protocol step? If so, fold into the step's description and delete the standalone rule
@@ -118,7 +118,7 @@ Free-form description of the workflow the user wants to create or modify
 
 ### 15. Compile Compliance Report
 
-- Compile findings into a structured report: Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, Tool-Skill-Doc Consistency Findings, Recommended Fixes
+- Compile findings into a structured report: Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, Tool-Technique-Doc Consistency Findings, Recommended Fixes
 - Present the report with severity-rated findings and recommended fixes
 
 ### 16. Validation
@@ -131,11 +131,11 @@ Free-form description of the workflow the user wants to create or modify
 
 ### workflow-file-set
 
-Complete workflow definition: workflow.toon, activity files, skill files, resource files, README
+Complete workflow definition: workflow.toon, activity files, technique files, resource files, README
 
 - **workflow-toon**: Root workflow definition with metadata, modes, variables, rules, artifactLocations
 - **activity-files**: One .toon file per activity with steps, checkpoints, transitions
-- **skill-files**: One .toon file per skill with protocol, inputs, output, rules
+- **technique-files**: One .toon file per technique with protocol, inputs, output, rules
 - **resource-files**: Markdown resource files for agent guidance
 - **readme**: Workflow README with description, activity table, and usage
 
@@ -143,11 +143,11 @@ Complete workflow definition: workflow.toon, activity files, skill files, resour
 
 ### workflow-rules-authoritative
 
-Cross-cutting design invariants live in workflow.toon rules[] (14 items). Apply those as the single source of truth; this skill does not duplicate them.
+Cross-cutting design invariants live in workflow.toon rules[] (14 items). Apply those as the single source of truth; this technique does not duplicate them.
 
 ### resource-loading
 
-Use get_resource(session_token, resource_index) for each entry in a skill's _resources after get_skills or get_skill — refs are lightweight until loaded.
+Use get_resource(session_token, resource_index) for each entry in a technique's _resources after get_technique — refs are lightweight until loaded.
 
 ### tool-usage
 

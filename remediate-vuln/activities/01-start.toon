@@ -5,7 +5,7 @@ description: "Initialize a high-sensitivity security fix."
 problem: User needs to remediate a security vulnerability without public disclosure
 required: true
 estimatedTime: 10-15m
-skills:
+techniques:
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR or Issue creation tools (gh pr create, gh issue create)."
   - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
@@ -32,22 +32,22 @@ steps[9]:
   - id: configure-sec-vuln-remote
     name: Configure Security Remote
     description: "INSIDE target_path: Add the private fork URL as a git remote named 'security'. If it exists, update it. For monorepos, ensure the submodule remote is updated as well."
-    skill: manage-git
+    technique: manage-git
   - id: initialize-security-branch
     name: Initialize Security Branch
     description: "Fetch from 'security' remote and checkout a new local branch from the private fork: vuln/remediate-{short_id}."
-    skill: manage-git
+    technique: manage-git
   - id: initialize-planning-folder
     name: Initialize Private Planning Folder
     description: "Create planning folder. Use a modified README template that excludes the Links table (no public PR/Issue)."
-    skill: manage-artifacts
+    technique: manage-artifacts
   - id: present-security-overview
     name: Present Security Overview
     description: "Generate a plain-language overview of the vulnerability risk. Write to the private planning README."
   - id: finalize-setup
     name: Finalize Security Setup
     description: "Verify that 'origin' remote is not being tracked by the current branch."
-    skill: manage-git
+    technique: manage-git
 checkpoints[4]:
   - id: confirm-security-remote
     name: Confirm Security Remote

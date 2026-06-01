@@ -20,7 +20,7 @@ Branch to push the parent commit to
 
 ## Protocol
 
-1. Read `{submodule_path}/AGENTS.md` (when present). If it forbids Co-Authored-By, LLM attribution, or similar trailers, strip them from `{submodule_message}` BEFORE committing — fixing it after commit usually requires a force push, which this skill forbids.
+1. Read `{submodule_path}/AGENTS.md` (when present). If it forbids Co-Authored-By, LLM attribution, or similar trailers, strip them from `{submodule_message}` BEFORE committing — fixing it after commit usually requires a force push, which this technique forbids.
 2. `cd {submodule_path}`.
 3. `git add {paths} && git commit -s -m '{submodule_message}' && git push origin <submodule-branch>`.
 4. `cd` back to the repo root.

@@ -1,7 +1,7 @@
 id: prism-update
 version: 1.1.0
 title: Prism Update Workflow
-description: "Sync the prism workflow's resources, skills, and documentation with upstream changes from the agi-in-md project."
+description: "Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project."
 author: m2ux
 tags[3]:
   - prism

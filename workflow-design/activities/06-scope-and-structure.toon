@@ -3,7 +3,7 @@ version: 1.0.1
 name: Scope and Structure
 description: "Complete file manifest and structural design for the target workflow, including folder layout and implementation order."
 problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution begins
-skills:
+techniques:
   supporting[1]:
     - workflow-design
 required: true
@@ -18,7 +18,7 @@ steps[5]:
     description: "Worktree readiness check: the workflows branch must be present and checked out at the expected path before any path definitions proceed."
   - id: design-folder-structure
     name: Design Folder Structure
-    description: "Folder layout (workflow-{id}/ with activities/, skills/, resources/) and file naming scheme (NN-name.toon for activities and skills, NN-name.md for resources)."
+    description: "Folder layout (workflow-{id}/ with activities/, techniques/, resources/) and file naming scheme (NN-name.toon for activities and techniques, NN-name.md for resources)."
     condition:
       type: simple
       variable: is_update_mode
@@ -26,13 +26,13 @@ steps[5]:
       value: true
   - id: enumerate-files
     name: Enumerate File Manifest
-    description: "Exhaustive file manifest with per-file path, action (create/modify/remove), type (workflow/activity/skill/resource/readme), and one-line description."
+    description: "Exhaustive file manifest with per-file path, action (create/modify/remove), type (workflow/activity/technique/resource/readme), and one-line description."
   - id: present-structural-design
     name: Present Structural Design
     description: "Directory tree of the proposed structure with adjacent file manifest, transition diagram (for sequential workflows), and comparison against reference patterns."
   - id: present-approach
     name: Present Approach
-    description: "Drafting order (workflow.toon, activities, skills, resources, README) with rationale grounded in the reference-dependency chain."
+    description: "Drafting order (workflow.toon, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain."
 checkpoints[1]:
   - id: scope-and-structure-confirmed
     name: Scope and Structure Confirmation

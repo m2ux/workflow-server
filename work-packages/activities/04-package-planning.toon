@@ -3,7 +3,7 @@ version: 1.1.0
 name: Work Package Planning
 description: Define scope, dependencies, effort, and success criteria for each work package
 problem: Each work package needs detailed planning before prioritization
-skills:
+techniques:
   supporting[1]:
     - plan-work-package-scope
 steps[1]:

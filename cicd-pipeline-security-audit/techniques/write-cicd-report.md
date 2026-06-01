@@ -1,6 +1,6 @@
 ---
 name: write-cicd-report
-description: Report generation skill for the CI/CD pipeline security audit. Formats the merged, severity-scored findings into a structured markdown report. Each finding includes pattern identification, source-to-sink mapping, severity assessment, affected file, vulnerable code snippet, and specific remediation recommendation. The report includes an executive summary, finding details, severity distribution, remediation roadmap, and methodology notes.
+description: Report generation technique for the CI/CD pipeline security audit. Formats the merged, severity-scored findings into a structured markdown report. Each finding includes pattern identification, source-to-sink mapping, severity assessment, affected file, vulnerable code snippet, and specific remediation recommendation. The report includes an executive summary, finding details, severity distribution, remediation roadmap, and methodology notes.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -17,7 +17,7 @@ Produce the final CI/CD security audit report with findings, severity scores, an
 
 ### scored-findings
 
-Merged findings with severity scores from the scoring skill
+Merged findings with severity scores from the scoring technique
 
 ### coverage-data
 

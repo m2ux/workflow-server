@@ -6,7 +6,7 @@ problem: Findings from multiple per-submodule scanners must be deduplicated, cor
 recognition[2]:
   - merge findings
   - consolidate scan results
-skills:
+techniques:
   supporting[1]:
     - execute-sub-agent
 required: false
@@ -23,23 +23,23 @@ entryActions[1]{action,message}:
 steps[5]:
   - id: load-scanner-outputs
     name: Load All Scanner Outputs
-    skill: merge-scan-findings
+    technique: merge-scan-findings
     description: "Load every s{n}-{submodule}.json from the planning folder."
   - id: deduplicate
     name: Deduplicate Findings
-    skill: merge-scan-findings
+    technique: merge-scan-findings
     description: "Identify and merge duplicate findings (same file, same line, same pattern). Keep the most complete evidence."
   - id: correlate-patterns
     name: Cross-Pattern Correlation
-    skill: merge-scan-findings
+    technique: merge-scan-findings
     description: "Identify compound vulnerability chains where multiple patterns converge on the same workflow. Merge into compound findings with elevated severity notes."
   - id: build-reconciliation
     name: Build Reconciliation Table
-    skill: merge-scan-findings
+    technique: merge-scan-findings
     description: "Map every scanner finding (by scanner ID and finding number) to its merged finding number. Verify Unaccounted equals zero."
   - id: write-merged-output
     name: Write Merged Output
-    skill: execute-sub-agent
+    technique: execute-sub-agent
     description: "Produce merged-findings.json with the unified finding set, reconciliation table, and observation list. Output format must conform to the merge schema."
 transitions[0]:
 exitActions[1]{action,message}:

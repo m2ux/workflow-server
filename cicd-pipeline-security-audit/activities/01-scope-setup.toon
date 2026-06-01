@@ -8,7 +8,7 @@ recognition[4]:
   - audit pipelines
   - scan github actions
   - cicd security audit
-skills:
+techniques:
   supporting[1]:
     - execute-cicd-audit
 required: true
@@ -26,7 +26,7 @@ steps[5]:
     description: "Extract target submodules from request. If 'all' specified, enumerate every submodule containing .github/workflows/. Validate each path exists."
   - id: discover-workflows
     name: Discover Workflow Files
-    skill: inventory-workflows
+    technique: inventory-workflows
     description: "For each target submodule, enumerate all .github/workflows/*.yml and .github/workflows/*.yaml files. Record total count."
   - id: discover-ai-configs
     name: Discover AI Configuration Files

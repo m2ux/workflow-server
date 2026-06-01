@@ -1,6 +1,6 @@
 ---
 name: execute-sub-agent
-description: This skill defines how a sub-agent (dispatched by the orchestrator during primary-scan) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the spawn-agent prompt (harness-compat).
+description: This technique defines how a sub-agent (dispatched by the orchestrator during primary-scan) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the spawn-agent prompt (harness-compat).
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -31,9 +31,9 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 
 - For each step, read the description field to understand what is required
 
-### 5. Exec Load Step Skill
+### 5. Exec Load Step Technique
 
-- If a step references a skill (step.skill), call get_skill({ skill_id, workflow_id: 'cicd-pipeline-security-audit' }) and follow its protocol for that step
+- If a step references a technique (step.technique), call get_technique({ technique_id, workflow_id: 'cicd-pipeline-security-audit' }) and follow its protocol for that step
 
 ### 6. Exec Produce Output
 

@@ -15,7 +15,7 @@ estimatedTime: 10-20m
 entryActions[1]:
   - action: log
     message: Starting issue management
-skills:
+techniques:
   supporting[6]:
     - atlassian-operations
     - create-issue
@@ -77,7 +77,7 @@ steps[27]:
   - id: detect-merge-strategy
     name: Detect Merge Strategy
     description: "Detect whether the reference repo permits squash merges via the GitHub API (allow_squash_merge). Sets squash_merge_available for downstream DCO merge path routing — drives the merge-strategy-reminder in submit-for-review."
-    skill: manage-git
+    technique: manage-git
     actions[1]:
       - action: set
         target: squash_merge_available
@@ -95,7 +95,7 @@ steps[27]:
         description: "Set to 'github' or 'jira' based on key format detection"
   - id: verify-jira-issue
     name: Verify Jira Issue
-    description: "Load the atlassian-operations supporting skill. Call getAccessibleAtlassianResources to obtain cloudId, then call getJiraIssue to verify the issue exists. Capture issue_number and issue_url."
+    description: "Load the atlassian-operations supporting technique. Call getAccessibleAtlassianResources to obtain cloudId, then call getJiraIssue to verify the issue exists. Capture issue_number and issue_url."
     condition:
       type: simple
       variable: issue_platform
@@ -104,7 +104,7 @@ steps[27]:
     actions[1]:
       - action: validate
         target: jira_cloud_id != null
-        message: "Atlassian cloudId not set. Load the atlassian-operations skill and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations."
+        message: "Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations."
   - id: verify-github-issue
     name: Verify GitHub Issue
     description: "Run 'gh issue view <number>' to verify the issue exists. Capture issue_number and issue_url."
@@ -145,7 +145,7 @@ steps[27]:
           value: false
   - id: create-github-issue-for-jira
     name: Create GitHub issue for Jira ticket
-    description: "Create a GitHub issue in the target repo that mirrors the Jira ticket. Set issue_platform to 'github' temporarily so the create-issue skill routes to the GitHub protocol. The issue title should match the Jira ticket summary. The issue body should include a reference to the Jira ticket URL. After creation capture github_issue_number and github_issue_url, then restore issue_platform to 'jira'."
+    description: "Create a GitHub issue in the target repo that mirrors the Jira ticket. Set issue_platform to 'github' temporarily so the create-issue technique routes to the GitHub protocol. The issue title should match the Jira ticket summary. The issue body should include a reference to the Jira ticket URL. After creation capture github_issue_number and github_issue_url, then restore issue_platform to 'jira'."
     condition:
       type: simple
       variable: needs_github_issue_creation
@@ -153,7 +153,7 @@ steps[27]:
       value: true
   - id: create-issue
     name: Create Issue
-    description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
+    description: "Create issue in selected platform using issue-management technique. Technique routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
     checkpoint: platform-selection
     condition:
       type: simple
@@ -278,7 +278,7 @@ steps[27]:
           value: true
   - id: initialize-planning-folder
     name: Initialize Planning Folder
-    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title. Use attached resource readme for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text."
+    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management technique. Derive initiative-name from issue title. Use attached resource readme for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text."
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"

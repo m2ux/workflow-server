@@ -7,7 +7,7 @@ recognition[3]:
   - map architecture
   - codebase reconnaissance
   - identify crates and trust boundaries
-skills:
+techniques:
   supporting[1]:
     - execute-audit
 required: true
@@ -24,7 +24,7 @@ steps[7]:
   - id: dispatch-reconnaissance-agent
     name: "Dispatch Reconnaissance Sub-Agent (R)"
     required: true
-    skill: dispatch-sub-agents
+    technique: dispatch-sub-agents
     description: "Dispatch the reconnaissance sub-agent (R) following the sub-reconnaissance activity. R receives: target_submodule, target_commit, in_scope, out_of_scope, planning_folder_path, target profile (resource 06). R writes r-crate-map.json, r-function-registry.json, and r-reconnaissance-data.json to the planning folder."
   - id: verify-reconnaissance-files
     name: "Verify Reconnaissance Output Files"
@@ -33,7 +33,7 @@ steps[7]:
   - id: dispatch-security-architecture-agent
     name: "Dispatch Security Architecture Sub-Agent (S)"
     required: true
-    skill: dispatch-sub-agents
+    technique: dispatch-sub-agents
     description: "Dispatch the security architecture sub-agent (S) following the sub-architectural-analysis activity. S receives R's output files from the planning folder (r-crate-map.json, r-reconnaissance-data.json) plus the file inventory. S writes s-architectural-analysis.json to the planning folder."
   - id: verify-security-architecture-file
     name: "Verify Security Architecture Output File"
@@ -41,15 +41,15 @@ steps[7]:
     description: "Verify that S produced s-architectural-analysis.json in the planning folder. If missing, re-dispatch S."
   - id: map-vulnerability-domains
     name: Map Vulnerability Domains
-    skill: map-vulnerability-domains
+    technique: map-vulnerability-domains
     description: "Read r-crate-map.json, r-reconnaissance-data.json, and s-architectural-analysis.json from the planning folder. Bind architectural analysis artifacts to §3 verification procedures. Produces a domain map partitioned by crate for sub-agent distribution. This is a coordination task — the orchestrator uses the target profile's vulnerability domain hints as seeds."
   - id: assign-agent-groups
     name: Assign Agent Groups
-    skill: dispatch-sub-agents
+    technique: dispatch-sub-agents
     description: "Read the crate map and target profile. Assign crates to sub-agent groups per the target profile's Agent Dispatch Assignments and File Coverage Obligations tables. Identify cross-crate supplementary files."
   - id: route-reconnaissance-leads
     name: Route Reconnaissance Leads to Agents
-    skill: dispatch-sub-agents
+    technique: dispatch-sub-agents
     description: "Read r-reconnaissance-data.json for leads. Produce a leads-to-agent routing table. Every pattern, potential issue, or observation noted by R MUST be explicitly assigned to a specific sub-agent designator (a1, a2, ..., a7, b, d1, d2). Unrouted leads are lost."
 transitions[1]{to,isDefault}:
   primary-audit,true

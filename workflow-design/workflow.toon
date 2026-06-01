@@ -20,13 +20,13 @@ rules[14]:
   - "All TOON files must pass schema validation before commit — run validation on every produced file"
   - "Content-reducing updates require explicit user approval — flag removed material and get confirmation"
   - "Convention over invention — search for existing naming conventions before introducing new patterns"
-  - "Modular over inline — workflow.toon defines metadata and references; activities, skills, and resources live in their own files"
+  - "Modular over inline — workflow.toon defines metadata and references; activities, techniques, and resources live in their own files"
   - "Encode critical constraints as structure, not just text — back rules with checkpoints, conditions, and validate actions"
   - "Format literacy before content — verify TOON syntax understanding by reading existing files before drafting"
   - "Define complete scope before execution — enumerate all files to create, modify, or remove before starting"
   - "Corrections must persist — record corrections and verify compliance at every subsequent checkpoint"
   - "Non-destructive updates — compare new content against existing content and flag any material being removed"
-  - "Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/) following the style established by the prism workflow."
+  - "Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/) following the style established by the prism workflow."
 techniques:
 artifactLocations:
   planning:

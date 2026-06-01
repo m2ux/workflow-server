@@ -21,7 +21,7 @@ Elicited requirements with success criteria
 
 ### plan-tasks
 
-Task breakdown from create-plan skill
+Task breakdown from create-plan technique
 
 ## Protocol
 
@@ -62,7 +62,7 @@ Test strategy and acceptance criteria
 
 ### lifecycle-phases
 
-Test plans have two phases: (1) Initial placeholder at PR creation — objectives only, no source links; (2) Finalized after implementation — hyperlinks to actual test source locations added by finalize-documentation skill.
+Test plans have two phases: (1) Initial placeholder at PR creation — objectives only, no source links; (2) Finalized after implementation — hyperlinks to actual test source locations added by finalize-documentation technique.
 
 ### skip-conditions
 

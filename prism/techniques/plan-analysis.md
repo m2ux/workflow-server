@@ -17,7 +17,7 @@ Plan an analysis strategy by detecting scope, classifying targets, and selecting
 
 ### target
 
-What to analyze. Can be: a file path, a directory path, inline text, a question, a concept, or a topic. The skill detects the scope from the form of the input.
+What to analyze. Can be: a file path, a directory path, inline text, a question, a concept, or a topic. The technique detects the scope from the form of the input.
 
 ### analytical-goal
 

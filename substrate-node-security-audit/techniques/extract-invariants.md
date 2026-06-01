@@ -1,6 +1,6 @@
 ---
 name: extract-invariants
-description: A reusable analysis skill for formal invariant extraction from source code. For each function in a priority set, identifies four categories of invariants that must hold for correctness. The resulting table serves as the basis for checklist application and cross-function comparison.
+description: A reusable analysis technique for formal invariant extraction from source code. For each function in a priority set, identifies four categories of invariants that must hold for correctness. The resulting table serves as the basis for checklist application and cross-function comparison.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -17,7 +17,7 @@ For a set of priority functions, enumerate preconditions, postconditions, cross-
 
 ### function-registry
 
-Registry of priority functions to analyze (from build-function-registry skill output)
+Registry of priority functions to analyze (from build-function-registry technique output)
 
 ### source-files
 

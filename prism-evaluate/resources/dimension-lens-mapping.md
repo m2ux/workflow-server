@@ -8,7 +8,7 @@ metadata:
 
 # Dimension-to-Lens Mapping Matrix
 
-Maps evaluation dimensions to prism pipeline modes and lens configurations. Used by the plan-evaluation skill during the map-dimensions-to-lenses protocol step.
+Maps evaluation dimensions to prism pipeline modes and lens configurations. Used by the plan-evaluation technique during the map-dimensions-to-lenses protocol step.
 
 ## Standard Mappings
 
@@ -21,7 +21,7 @@ Maps evaluation dimensions to prism pipeline modes and lens configurations. Used
 
 ## Custom Dimension Mappings
 
-For dimensions not matching the standard patterns, use the prism plan-analysis skill's goal-mapping matrix:
+For dimensions not matching the standard patterns, use the prism plan-analysis technique's goal-mapping matrix:
 
 | Goal Pattern | Recommended Lenses |
 |--------------|-------------------|

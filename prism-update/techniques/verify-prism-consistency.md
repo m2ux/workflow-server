@@ -11,7 +11,7 @@ metadata:
 
 ## Capability
 
-Verify consistency across prism workflow resources, skills, and documentation
+Verify consistency across prism workflow resources, techniques, and documentation
 
 ## Inputs
 
@@ -33,7 +33,7 @@ Path to the prism workflow resources directory
 ### 2. Verify Prompt Routing
 
 - Parse the Prompt Guide table from prism/README.md.
-- Parse the goal-mapping-matrix from prism/techniques/plan-analysis/SKILL.md.
+- Parse the goal-mapping-matrix from prism/techniques/plan-analysis.md.
 - For each prompt, verify the matrix routes to the claimed prism. Flag mismatches.
 
 ### 3. Verify Resource Counts

@@ -44,7 +44,7 @@ Before designing a solution, research the knowledge base using concept-rag MCP t
 
 ## Research Approach
 
-Use concept-rag MCP tools to query the knowledge base, following the Activity → Skill → Tool model.
+Use concept-rag MCP tools to query the knowledge base, following the Activity → Technique → Tool model.
 
 ---
 
@@ -52,7 +52,7 @@ Use concept-rag MCP tools to query the knowledge base, following the Activity �
 
 - [ ] `concept-rag://activities` fetched at start of session (MANDATORY)
 - [ ] Activity matched to research goal
-- [ ] Skill workflow followed for selected activity
+- [ ] Technique workflow followed for selected activity
 - [ ] Key concepts identified and noted
 - [ ] Relevant documents discovered
 - [ ] Specific guidance extracted from sources
@@ -82,9 +82,9 @@ Store research findings in a discrete planning document:
 
 ## Research Approach
 
-| Activity | Skill Used | Results Summary |
+| Activity | Technique Used | Results Summary |
 |----------|------------|-----------------|
-| [activity used] | [skill followed] | [Brief findings] |
+| [activity used] | [technique followed] | [Brief findings] |
 
 ---
 

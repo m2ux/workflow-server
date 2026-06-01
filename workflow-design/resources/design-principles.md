@@ -14,7 +14,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 1. Internalize Before Producing
 
-**Rule:** Demonstrate understanding of the conceptual model (Goal → Activity → Skill), schema-vs-runtime boundaries, inline-vs-modular distinctions, and existing conventions before producing any content.
+**Rule:** Demonstrate understanding of the conceptual model (Goal → Activity → Technique), schema-vs-runtime boundaries, inline-vs-modular distinctions, and existing conventions before producing any content.
 
 **Enforcement:** `02-context-and-literacy` activity with `format-literacy` and `constructs-confirmed` checkpoints. Both must pass before content drafting can begin.
 
@@ -64,7 +64,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 9. Modular Over Inline
 
-**Rule:** workflow.toon defines metadata and references only. Activities, skills, and resources live in their own files. Content exists in exactly one location.
+**Rule:** workflow.toon defines metadata and references only. Activities, techniques, and resources live in their own files. Content exists in exactly one location.
 
 **Enforcement:** Workflow rule. `08-quality-review` conformance check flags inline content.
 
@@ -94,6 +94,6 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 14. Complete Documentation Structure
 
-**Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/). Root README documents the workflow overview, modes, activity sequence, variables, and file structure. Subfolder READMEs document the contents of that folder.
+**Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/). Root README documents the workflow overview, modes, activity sequence, variables, and file structure. Subfolder READMEs document the contents of that folder.
 
 **Enforcement:** `generate-readme` / `update-readme` steps in validate-and-commit. Scope manifest must include README files.

@@ -11,7 +11,7 @@ metadata:
 
 ## Capability
 
-Update prism workflow skill files to reflect resource changes
+Update prism workflow technique files to reflect resource changes
 
 ## Inputs
 
@@ -44,15 +44,15 @@ Change set with new, renamed, and deleted prisms
 
 ### 5. Commit
 
-- Stage all modified skill files. Commit: 'feat: update skill routing for N new prisms and M renames'.
+- Stage all modified technique files. Commit: 'feat: update skill routing for N new prisms and M renames'.
 
 ## Outputs
 
 ### routing-result
 
-Summary of skill updates
+Summary of technique updates
 
-- **skills_modified**: List of modified skill files
+- **skills_modified**: List of modified technique files
 - **entries_added**: Number of new goal-mapping entries
 - **references_fixed**: Number of renamed references updated
 
@@ -64,8 +64,8 @@ Every routing surface must be updated: goal-mapping-matrix, code-vs-general, mod
 
 ## Errors
 
-### missing_skill
+### missing_technique
 
-**Cause:** Expected skill file not found
+**Cause:** Expected technique file not found
 
-**Recovery:** Check that the prism workflow skills directory exists.
+**Recovery:** Check that the prism workflow techniques directory exists.

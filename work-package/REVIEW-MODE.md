@@ -29,7 +29,7 @@ modes[1]:
     activationVariable: is_review_mode
     skipActivities: [requirements-elicitation, implement]
     defaults: { needs_elicitation: false }
-    resource: resources/review-mode/SKILL.md
+    resource: resources/review-mode.md
 ```
 
 | Property | Purpose |
@@ -50,7 +50,7 @@ Activities express review-mode behavior through standard conditions on steps, ch
 - **Review-only checkpoints** have `condition: is_review_mode == true`
 - **Review-mode transitions** are conditioned on `is_review_mode == true`
 
-Per-activity review guidance is in `resources/review-mode/SKILL.md`.
+Per-activity review guidance is in `resources/review-mode.md`.
 
 ---
 

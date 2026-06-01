@@ -22,7 +22,7 @@ artifacts[2]:
     action: create
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
-skills:
+techniques:
   supporting[7]:
     - cargo-operations
     - dco-provenance
@@ -49,7 +49,7 @@ loops[3]:
       - id: log-provenance
         name: Log AI provenance
         description: "Append a provenance record for this task to provenance-log.md."
-        skill: dco-provenance
+        technique: dco-provenance
       - id: self-review
         name: Self-review
         description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies, populating uncertain_symbols_list with any symbol the agent cannot confirm and setting has_uncertain_symbols=true when that list is non-empty (otherwise false); (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource task-completion-review for verification checklist. The symbol-provenance-confirmed checkpoint only surfaces when has_uncertain_symbols is true — when every symbol resolves cleanly, the loop continues without prompting the user."
@@ -72,7 +72,7 @@ loops[3]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions skill protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
@@ -95,7 +95,7 @@ loops[3]:
 steps[4]:
   - id: reconcile-assumptions
     name: Reconcile assumptions
-    description: "Classify all accumulated implementation assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    description: "Classify all accumulated implementation assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
   - id: present-resolved-assumptions
     name: Present resolved assumptions
     description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."

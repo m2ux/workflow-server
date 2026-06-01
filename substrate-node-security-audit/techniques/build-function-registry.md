@@ -1,6 +1,6 @@
 ---
 name: build-function-registry
-description: A reusable skill for enumerating functions in a Rust codebase. For each source file, identifies pallet hooks, inherent provider methods, extrinsics, public functions, trait implementations, storage declarations, and event types. Produces a structured registry that serves as the basis for checklist application and coverage tracking.
+description: A reusable technique for enumerating functions in a Rust codebase. For each source file, identifies pallet hooks, inherent provider methods, extrinsics, public functions, trait implementations, storage declarations, and event types. Produces a structured registry that serves as the basis for checklist application and coverage tracking.
 metadata:
   ontology: workflow-canonical
   kind: technique

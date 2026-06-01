@@ -82,7 +82,7 @@ Pull request number for scope reference
 
 ### 10. Create Architecture Summary
 
-- Create architecture-summary.md following the format defined by the summarize-architecture skill (skill 20), which is the authoritative owner of diagram conventions
+- Create architecture-summary.md following the format defined by the summarize-architecture technique (technique 20), which is the authoritative owner of diagram conventions
 - Target stakeholder communication
 
 ## Outputs

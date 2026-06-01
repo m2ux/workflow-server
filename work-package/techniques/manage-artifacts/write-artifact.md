@@ -12,7 +12,7 @@ The activity's `artifactPrefix` (server-computed from the activity filename, e.g
 
 ### bare_filename
 
-Skill-declared bare artifact filename (e.g., `code-review.md`)
+Technique-declared bare artifact filename (e.g., `code-review.md`)
 
 ### content
 

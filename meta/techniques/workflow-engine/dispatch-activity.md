@@ -64,9 +64,9 @@ If an activity defines required checkpoints and the worker returns `checkpoints_
 
 Workflow orchestrators NEVER call `get_activity`. The activity definition is the worker's domain. Orchestrators need only the `activity_id` (from `initialActivity` or `transitions`) to call `next_activity` and compose the worker prompt.
 
-### no-pre-load-skills
+### no-pre-load-techniques
 
-NEVER call `get_skill` or `get_skills` to pre-load skills. The worker self-bootstraps via `get_activity`, which bundles the operations the activity needs.
+NEVER call `get_technique` to pre-load techniques. The worker self-bootstraps via `get_activity`, which bundles the operations the activity needs.
 
 ### variable-mutation-source
 

@@ -3,7 +3,7 @@ version: 1.0.0
 name: Define Evaluation Scope
 description: "Collect the evaluation target, description, and output path."
 problem: "The evaluation requires a confirmed target, a clear description of evaluation goals, validated dimensions, and an organised output directory before analysis planning can begin."
-skills:
+techniques:
   supporting[1]:
     - plan-evaluation
 steps[5]:

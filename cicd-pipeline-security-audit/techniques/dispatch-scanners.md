@@ -27,7 +27,7 @@ Per-workflow classification data from reconnaissance
 
 ### 1. Compose Scanner Prompts
 
-- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat skill) containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity({ activity_id: <assigned-activity-id> }), follow the activity steps sequentially'; (2) context variables — submodule path, workflow file list, scanner designator (S1-Sn), planning_folder_path, reconnaissance data for the assigned submodule; (3) output format requirement — 'write structured output to s{n}-{submodule}.json conforming to the output schema in [sub-agent-output-schema](../resources/sub-agent-output-schema.md)'
+- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat technique) containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity({ activity_id: <assigned-activity-id> }), follow the activity steps sequentially'; (2) context variables — submodule path, workflow file list, scanner designator (S1-Sn), planning_folder_path, reconnaissance data for the assigned submodule; (3) output format requirement — 'write structured output to s{n}-{submodule}.json conforming to the output schema in [sub-agent-output-schema](../resources/sub-agent-output-schema.md)'
 
 ### 2. Dispatch Scanners
 
