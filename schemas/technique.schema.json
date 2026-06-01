@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "skill.schema.json",
-  "title": "skill",
-  "description": "Skill definition schema for workflow-server",
-  "$ref": "#/definitions/skill",
+  "$id": "technique.schema.json",
+  "title": "technique",
+  "description": "Technique definition schema for workflow-server",
+  "$ref": "#/definitions/technique",
   "definitions": {
     "errorDefinition": {
       "type": "object",
@@ -51,14 +51,19 @@
       "items": { "$ref": "#/definitions/inputItemDefinition" },
       "description": "Inputs the skill expects from context: array of named items (mirrors output structure for deterministic binding). When a protocol step uses an existing artifact (e.g. loads from a path or file), the skill MUST declare one or more associated input entries that supply that artifact or path."
     },
-    "protocolDefinition": {
+    "protocolBlock": {
       "type": "object",
-      "additionalProperties": {
-        "type": "array",
-        "items": { "type": "string" },
-        "description": "Ordered list of imperative bullets for this step or phase."
+      "properties": {
+        "title": { "type": "string", "description": "Optional label for this block (the authored `### Title`, ordinal prefix stripped)." },
+        "steps": { "type": "array", "items": { "type": "string" }, "description": "Ordered imperative step bullets for this block." }
       },
-      "description": "Phase- or step-keyed procedure: each key is the step/phase name; each value is an ordered array of imperative bullets. Skill-level description is at the skill root, not in protocol."
+      "required": ["steps"],
+      "additionalProperties": false
+    },
+    "protocolDefinition": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/protocolBlock" },
+      "description": "Protocol: a single ordered list of step blocks (no phase construct). Composition concatenates ancestor blocks before a nested technique's own, and the server renumbers for display. Unified across techniques and operations."
     },
     "rulesDefinition": {
       "type": "object",
@@ -138,10 +143,9 @@
           },
           "description": "Output entries produced by this operation — same shape as inputs"
         },
-        "procedure": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Ordered imperative bullets describing how to perform the operation"
+        "protocol": {
+          "$ref": "#/definitions/protocolDefinition",
+          "description": "Ordered list of step blocks describing how to perform the operation (unified with technique Protocol)."
         },
         "tools": {
           "type": "object",
@@ -182,25 +186,21 @@
       "additionalProperties": { "$ref": "#/definitions/operationDefinition" },
       "description": "Named harness-independent operations, each with a description, inputs, harness implementations, and optional notes. Used by capability skills (e.g. harness-compat) to define abstract operations that other skills reference."
     },
-    "skill": {
+    "technique": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the skill"
+          "description": "Unique identifier for the technique"
         },
         "version": {
           "type": "string",
           "pattern": "^\\d+\\.\\d+\\.\\d+$",
-          "description": "Semantic version of the skill"
+          "description": "Semantic version of the technique"
         },
         "capability": {
           "type": "string",
-          "description": "What this skill enables agents to do"
-        },
-        "description": {
-          "type": "string",
-          "description": "Detailed description of the skill"
+          "description": "What this technique enables agents to do"
         },
         "rules": {
           "$ref": "#/definitions/rulesDefinition"
@@ -215,12 +215,7 @@
         "inputs": { "$ref": "#/definitions/inputsDefinition" },
         "protocol": { "$ref": "#/definitions/protocolDefinition" },
         "output": { "$ref": "#/definitions/outputDefinition" },
-        "operations": { "$ref": "#/definitions/operationsDefinition" },
-        "resources": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Resource indices or IDs this skill depends on (e.g. 02, 04, 08)"
-        }
+        "operations": { "$ref": "#/definitions/operationsDefinition" }
       },
       "required": ["id", "version", "capability"],
       "additionalProperties": false
